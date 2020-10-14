@@ -224,6 +224,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.invokeMethod( 'process#entityName#_import', arguments );
 	    }
 	    
+        // TODO: dependancy lookup
+        // TODO: handle already generated stuff, like brand [if the same brand was created by some previous record]
+ 
 	    arguments.entity.populate( arguments.entityQueueData );
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
@@ -562,10 +565,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * Fallback order 
          * 1. generator-function provided in the propertyMetadata
          * 
-         * 2. conventional generator-functions `generate_[entityName]_[examplePropertyIdentifier]` in the service, 
+         * 2. conventional generator-functions `generate[entityName][examplePropertyIdentifier]` in the service, 
          *    where ProertyName ==> propertyMetaData.propertyIdentifier
          *    
-         *    Ex. generate_account_activeFlag(){......}
+         *    Ex. generateAccountActiveFlag(){......}
          * 
          * 3. value in the incoming data
          * 
@@ -582,9 +585,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             
             return this.invokeMethod( arguments.propertyMetaData.generatorFunction, arguments );
             
-        } else if( structKeyExists(this, 'generate_'&entityName&'_'&arguments.propertyMetaData.propertyIdentifier) ){
+        } else if( structKeyExists(this, 'generate'&entityName&''&arguments.propertyMetaData.propertyIdentifier) ){
             
-            return this.invokeMethod( 'generate_'&entityName&'_'&arguments.propertyMetaData.propertyIdentifier, arguments );
+            return this.invokeMethod( 'generate'&entityName&''&arguments.propertyMetaData.propertyIdentifier, arguments );
             
         } else if( structKeyExists(arguments, 'sourcePropertyName') && structKeyExists(arguments.data, arguments.sourcePropertyName) ){
             
@@ -626,20 +629,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	/*****************         GENERATOR-FUNCTIONS                 ******************/
 	/**
-	    Conventional generator-functions `generate_[entityName]_[examplePropertyIdentifier]` in the service, 
+	    Conventional generator-functions `generate[entityName][examplePropertyIdentifier]` in the service, 
         where ProertyName ==> propertyMetaData.propertyIdentifier
         
-        Ex. generate_account_activeFlag(){......}
+        Ex. generateAccountActiveFlag(){......}
 	*/
 	
 	/**
 	 * Example function, is getting used to generate passwords for imported accounts 
 	*/
-	public any function generate_accountAuthentication_password( struct data, struct mapping, struct propertyMetaData ){
+	public any function generateAccountAuthenticationPassword( struct data, struct mapping, struct propertyMetaData ){
 	    return this.getHibachiUtilityService().generateRandomPassword(10);
 	}
 	
-	public boolean function generate_Account_activeFlag( struct data, struct mapping, struct propertyMetaData ){
+	public boolean function generateAccountActiveFlag( struct data, struct mapping, struct propertyMetaData ){
 	    return true;
 	}
 	
