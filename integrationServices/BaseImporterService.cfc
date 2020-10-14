@@ -216,7 +216,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
 	    
-	    this.getHibachiScope().setImporterPopulateFlag(true);
+	    this.getHibachiScope().setObjectPopulateMode( 'private' );;
 
 	    var entityName = arguments.entity.getClassName();
 	    
@@ -224,10 +224,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.invokeMethod( 'process#entityName#_import', arguments );
 	    }
 	    
-        // TODO: dependancy lookup
-        // TODO: handle already generated stuff, like brand [if the same brand was created by some previous record]
- 
-	    arguments.entity.populate( arguments.entityQueueData );
+	    arguments.entity.populate( 
+	        date = arguments.entityQueueData,
+	        objectPopulateMode = 'private'
+	    );
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( entityName );
@@ -621,7 +621,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var compositeValue =  arguments.mapping.importIdentifier.keys.reduce( function(result, key){ 
                             	        // it is expected that each key will exist in the data
-                            	        return ListAppend( result , hash( data[ key ], 'MD5' ), '_'); 
+                            	        return ListAppend( result , hash( trim( data[ key ] ), 'MD5' ), '_'); 
                         	    }, '');
         return compositeValue;
 	}
