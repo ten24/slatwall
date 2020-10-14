@@ -2094,4 +2094,50 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.order;
 	}
 	
+	public any function processOrder_batchApproveFullRmas( required any order, struct data = {} ){
+		var pageRecordsShow = 300;
+		var pageRecordsStart = 0;
+		var recordsCount = 1;
+		
+		var salesOrderTypeID = getService('TypeService').getTypeBySystemCode('otSalesOrder').getTypeID();
+		var returnOrderTypeID = getService('TypeService').getTypeBySystemCode('otReturnOrder').getTypeID();
+		var receivedStatusTypeID = getService('TypeService').getTypeByTypeCode('rmaReceived').getTypeID();
+		
+		while(recordsCount > 0){
+			var fullRmaSql = 'SELECT 
+								ro.orderID
+							FROM sworder ro
+								JOIN sworder o on o.orderID = ro.referencedOrderID
+							WHERE ro.orderTypeID = :returnOrderTypeID
+								AND o.orderTypeID = :salesOrderTypeID
+								AND ro.orderStatusTypeID = :receivedStatusTypeID
+								AND o.calculatedSubtotal = -1 * ro.calculatedSubtotal
+							ORDER BY ro.orderID
+							LIMIT #pageRecordsShow# OFFSET #pageRecordsStart#';
+			var fullRmaParams = {
+				'salesOrderTypeID':salesOrderTypeID,
+				'returnOrderTypeID':returnOrderTypeID,
+				'receivedStatusTypeID':receivedStatusTypeID
+			};
+			var fullRmas = queryExecute(fullRmaSql,fullRmaParams);
+			
+			recordsCount = fullRmas.RECORDCOUNT;
+			if(recordsCount == 0){
+				continue;
+			}
+			pageRecordsStart += pageRecordsShow;
+			
+			for(var record in fullRmas){
+				var entityQueueArguments = {
+					baseObject:'Order',
+					baseID:record['orderID'],
+					processMethod:'processOrder_approveReturn'
+				};
+				getHibachiScope().addEntityQueueData(argumentCollection=entityQueueArguments);
+			}
+		}
+		// writeDump(var=getHibachiScope().getEntityQueueData(),top=5);abort;
+		return arguments.order;
+	}
+	
 }
