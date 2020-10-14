@@ -225,7 +225,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    arguments.entity.populate( 
-	        date = arguments.entityQueueData,
+	        data = arguments.entityQueueData,
 	        objectPopulateMode = 'private'
 	    );
 	    

@@ -664,7 +664,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             
 	    expect( data ).toHaveKey( 'exampleRelationProperty' );
 	    expect( data.exampleRelationProperty ).toHaveKey( 'keyxx' );
-	    expect( data.exampleRelationProperty.keyxx ).toHaveKey( 'valuexx' );
+	    expect( data.exampleRelationProperty.keyxx ).toBe( 'valuexx' );
        
         // cleanup
         structDelete( variables.service, 'getAccountExampleRelationProperty_spy');
@@ -701,7 +701,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             
 	    expect( data ).toHaveKey( 'exampleRelationXXXYYYProperty' );
 	    expect( data.exampleRelationXXXYYYProperty ).toHaveKey( 'keyxx' );
-	    expect( data.exampleRelationXXXYYYProperty.keyxx ).toHaveKey( 'valuexx' );
+	    expect( data.exampleRelationXXXYYYProperty.keyxx ).toBe( 'valuexx' );
        
         // cleanup
         structDelete( variables.service, 'getAccountExampleRelationXXXYYYProperty_spy');
