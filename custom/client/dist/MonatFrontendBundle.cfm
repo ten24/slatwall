@@ -1,9 +1,9 @@
 <cfoutput>
      
-        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/client/dist/monatFrontendVendor.54ead1f6a4911960c4e8.bundle.js"></script>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/client/dist/monatFrontendVendor.44c29a08e403c5b272ea.bundle.js"></script>
      
-        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/client/dist/hibachiFrontend.94bd066399cecc8bfe60.bundle.js"></script>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/client/dist/hibachiFrontend.428fe7caff47f027351c.bundle.js"></script>
      
-        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/client/dist/monatFrontend.b7be8b8fd95fa756024f.bundle.js"></script>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/client/dist/monatFrontend.7588c67e9e7822335479.bundle.js"></script>
     
 </cfoutput>

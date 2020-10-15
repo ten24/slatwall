@@ -97,6 +97,9 @@ class MonatEnrollmentController {
 					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && !this.upgradeFlow){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
+					}else if(cart.orderItems && cart.orderItems.length && this.currentStepName == 'starterPack'){
+						this.goToStep('todaysOrder');
+						this.reviewContext = false;
 					}
 				 }else if(cart.monatOrderType?.typeCode.length){
 				 	this.handleUpgradeSteps(cart);
