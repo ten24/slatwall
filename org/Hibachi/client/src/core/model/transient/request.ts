@@ -36,7 +36,6 @@ class Request extends BaseTransient {
         this.data=data;
         this.method=method;
         this.utilityService = <UtilityService>this.getService('utilityService');
-
         if(!method){
             if (data == undefined){
                 method = "get";
@@ -46,8 +45,7 @@ class Request extends BaseTransient {
         }
 
         var deferred:any = this.$q.defer();
-
-        if (method == "post"){
+        if (method.toLowerCase() == "post"){
             if(this.headers['Content-Type']!=="application/json"){
                 data = this.toFormParams(data);
             }
@@ -112,7 +110,7 @@ class Request extends BaseTransient {
 
     private extractPublicAction=(url:string)=>{
         //get in between api/scope and / or ? or end of word
-        var regex = /\api\/scope\/(.*?)(?=\/|\?|$)/;
+        var regex = /api\/scope\/(.*?)(?=\/|\?|$)/;
         var arr = regex.exec(url);
         return arr[1];
     }
