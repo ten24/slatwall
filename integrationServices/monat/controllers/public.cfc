@@ -72,7 +72,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         newOrder = getService('OrderService').saveOrder(newOrder);
         
         var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
-        
+        newOrder.setSharedByAccount( ownerAccount );
         newOrder.setAccount(ownerAccount);
         
         var emailData = {
@@ -91,13 +91,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     public void function resumeEnrollment(required struct rc){
         param name="arguments.rc.enrollmentCode";
         
-        if(len(arguments.rc.enrollmentCode) != 64){
+        if(len(arguments.rc.enrollmentCode) != 32){
             getService('PublicService').addError(arguments.rc,{'resumeEnrollment':getHibachiScope().getRBKey('frontend.resumeEnrollmentError.enrollmentCode')});
             getHibachiScope().addActionResult('monat:public.resumeEnrollment',true);
             return;
         }
-        var orderID = left(arguments.rc.enrollmentCode,32);
-        var ownerAccountID = right(arguments.rc.enrollmentCode,32);
+        var orderID = arguments.rc.enrollmentCode;
         
         var order = getService('OrderService').getOrder( orderID );
         if(isNull( order ) || order.hasAccount() ){
@@ -105,7 +104,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
             getHibachiScope().addActionResult( 'monat:public.resumeEnrollment', true );
             return;
         }
-        var ownerAccount = getService('AccountService').getAccount( ownerAccountID );
+        
+        var ownerAccount = order.getSharedByAccount();
         if( isNull( ownerAccount ) || isNull( ownerAccount.getAccountNumber() ) ){
             getService('PublicService').addError( arguments.rc, {'resumeEnrollment':getHibachiScope().getRBKey('frontend.resumeEnrollmentError.ownerAccount')} );
             getHibachiScope().addActionResult('monat:public.resumeEnrollment',true);
@@ -123,6 +123,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         var https = getPageContext().getRequest().isSecure() ? 's' : '';
         
         var redirectURL = '/enrollment/' & accountType & '/enroll';
+        
+        order.setPromotionCacheKey('');
+        getService('OrderService').processOrder(order,'updateOrderAmounts');
 
         getHibachiScope().flushORMSession();
         getFramework().redirectExact(redirectURL);
