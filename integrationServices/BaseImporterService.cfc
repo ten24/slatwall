@@ -643,19 +643,28 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return true;
 	}
 	public any function generate_Brand_UrlTitle( struct data, struct mapping, struct propertyMetaData ){
-	   return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.brandName,string spacer="-");
+	   return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.brandName);
 	}
 	public any function generate_Product_UrlTitle( struct data, struct mapping, struct propertyMetaData){
-	   return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.productName,string spacer="-");
+	   return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.productName);
 	}
 	public any function generate_ProductType_UrlTitle( struct data, struct mapping, struct propertyMetaData ){
-	    return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.productTypeName,string spacer="-");
+	    return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.productTypeName);
 	}
 	public any function generate_ProductType_ProductTypeIDPath( struct data, struct mapping, struct propertyMetaData ){
 	    /*** Logic to be discussed ***/
 	}
 	public any function generate_ProductType_ProductTypeNamePath( struct data, struct mapping, struct propertyMetaData ){
 	    /*** Logic to be discussed ***/
+	}
+	public any function generate_ProductType_ParentProductType( struct data, struct mapping, struct propertyMetaData ){
+	    var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+    	        "entityName"  : ProductType,
+    	        "uniqueKey"   : 'remoteProductTypeID',
+    	        "uniqueValue" : importRemoteID
+    	    );
+
+	   return  parentProductTypeID =  primaryIDValue ?: '444df2f7ea9c87e60051f3cd87b435a1';
 	}
 	
 	

@@ -92,6 +92,60 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
+	private struct function getSampleProductData(){
+        
+        var randomUsername = "nitin.yadav.test"&rand();
+	    
+	    return {
+	        
+	        remoteProductID        : 123, 
+	        productName            : "Test Product",  
+	        productCode            : "Test123", 
+	        productDescription     : "Testing transform data for product", 
+	        publishedFlag          : true,
+	        activeFlag             : true,
+	        
+	        //Brand
+	        brandName              : "Test Brand",
+            brandWebsite           : "test@test.com", 
+            publishedFlag          : true, 
+            activeFlag             : true, 
+	        
+	        //ProductType
+	        remoteProductTypeID        : 456,
+            productTypeName            : "TestType", 
+            systemCode                 : "456", 
+            productTypeDescription     : "Testing transform data for product type",
+            publishedFlag              : true,
+	        activeFlag                 : true, 
+
+            //Sku
+            remoteSkuID             : 789,
+            skuName                 : "TestSku", 
+            skuCode                 : "Test789", 
+            publishedFlag           : true,
+            remoteStockID           : 121,
+
+            //SkuPrice
+            skuPriceID                  : 234,
+            minQuantity                 : 1,
+            maxQuantity                 : 5, 
+            currencyCode                : "USD",
+            price                       : 122, 
+            listPrice                   : 122,
+            activeFlag                  : true,
+
+            //SkuPrice
+            minQuantity                 : 1,
+            maxQuantity                 : 5, 
+            currencyCode                : "USD",
+            price                       : 122, 
+            listPrice                   : 122,
+            activeFlag                  : true 
+	    };
+	    
+	}
+	
 	private any function insertRow( required string tableName, required struct keyValuePairs ){
 	    var sql = "INSERT INTO #arguments.tableName#";
 	    var qry = new query();
@@ -1029,6 +1083,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'processAccountImport');
     }
     
+    /**
+     * @test
+    */
+    public void function processEntityImport_check_transform_data(){
+        
+        var sampleProductData = getSampleProductData();
+        
+        var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
+
+        
+        debug(data);
+    }
     
     
 }

@@ -84,6 +84,8 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
+	
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

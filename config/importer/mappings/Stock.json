@@ -1,16 +1,6 @@
 {
     "entityName": "Stock",
     
-    "generatedProperties" : [
-        {
-            "propertyIdentifier" : "minQuantity",
-            "generatorFunction"  : "generate_stock_minQuantity"
-        },
-        {
-            "propertyIdentifier" : "maxQuantity",
-            "generatorFunction"  : "generate_stock_maxQuantityd"
-        }
-    ],
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",

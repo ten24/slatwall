@@ -1,5 +1,5 @@
 {
-    "entityName": "`SkuPrice",
+    "entityName": "SkuPrice",
     
     "properties": {
         
@@ -11,16 +11,14 @@
         },
         "minQuantity":  {
             "propertyIdentifier": "minQuantity",
-            "defaultValue":"null",
             "validations": {
-                "dataType": "string"
+                "dataType": "numeric"
             }
         },
         "maxQuantity": {
             "propertyIdentifier": "maxQuantity",
-            "defaultValue":"null",
             "validations": {
-                "dataType": "string"
+                "dataType": "numeric"
             }
         },
         "currencyCode": {

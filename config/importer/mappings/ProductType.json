@@ -55,6 +55,10 @@
             "generatorFunction"  : "generate_ProductType_ProductTypeIDPath"
         },
         {
+            "propertyIdentifier" : "parentProductType",
+            "generatorFunction"  : "generate_ProductType_ParentProductType"
+        },
+        {
             "propertyIdentifier" : "productTypeNamePath",
             "generatorFunction"  : "generate_ProductType_ProductTypeNamePath"
         }
