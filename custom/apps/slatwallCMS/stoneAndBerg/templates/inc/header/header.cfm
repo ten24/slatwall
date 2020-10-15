@@ -48,13 +48,13 @@
         <div class="container">
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <!-- Search-->
-            <div class="input-group-overlay d-lg-none my-3">
+            <div class="input-group-overlay d-lg-none my-3 ml-0">
               <div class="input-group-prepend-overlay"><span class="input-group-text"><i class="far fa-search"></i></span></div>
               <input class="form-control prepended-form-control" type="text" placeholder="Search for products">
             </div>
             
             <!-- Primary menu-->
-            <ul class="navbar-nav">
+            <ul class="navbar-nav nav-categories">
               <cfset local.productsMainNav = $.slatwall.getService('contentService').getContentCollectionList()>
               <cfset local.productsMainNav.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,parentContent.contentID,parentContent.urlTitle,parentContent.title,parentContent.linkUrl')>
               <cfset local.productsMainNav.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())>
@@ -63,6 +63,7 @@
               <cfset local.productsMainNav.addFilter("parentContent.urlTitle","productCategories","!=")>
               <cfset local.productsMainNav.addOrderBy("parentContent.sortOrder|ASC")>
               <cfset local.productsMainNav.addOrderBy("sortOrder|ASC")>
+              <cfset local.productsMainNav.setPageRecordsShow(100) />
               <cfset local.productCategories = local.productsMainNav.getPageRecords()>
               <cfparam name="local.categoryCounter" default="0">
               <cfparam name="local.categoryPrevious" default="">
@@ -74,19 +75,19 @@
                 --->
                 <cfif local.categoryCounter NEQ "0" AND local.categoryPrevious NEQ local.productCategory['parentContent_title']>
                       </div>
-                      <div class="nav-shop-all">
-                        <a href="#local.productCategory['parentContent_linkUrl']#">
-                          Shop All #local.productCategory['parentContent_title']# <i class="far fa-arrow-right"></i>
-                        </a>
-                      </div>
                     </div>
                   </li>
                   
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#local.productCategory['parentContent_linkUrl']#" data-toggle="dropdown">
-                      #local.productCategory['parentContent_title']#
+                      #local.productCategory['parentContent_title']#<span></span>
                     </a>
-                    <div class="dropdown-menu p-0">
+                    <div class="dropdown-menu pt-0 pb-3">
+                      <div class="nav-shop-all">
+                        <a href="#local.productCategory['parentContent_linkUrl']#">
+                          Shop All #local.productCategory['parentContent_title']#<i class="far fa-arrow-right ml-2"></i>
+                        </a>
+                      </div>
                       <div class="d-flex flex-wrap flex-lg-nowrap px-2">
                         <div class="mega-dropdown-column py-4 px-3">
                           <div class="widget widget-links mb-3">
@@ -103,11 +104,15 @@
                 <cfelseif local.categoryCounter EQ "0">
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#local.productCategory['parentContent_linkUrl']#" data-toggle="dropdown">
-                    #local.productCategory['parentContent_title']#
+                    #local.productCategory['parentContent_title']#<span></span>
                   </a>
-                  <div class="dropdown-menu p-0">
+                  <div class="dropdown-menu pt-0 pb-3">
+                    <div class="nav-shop-all">
+                      <a href="#local.productCategory['parentContent_linkUrl']#">
+                        Shop All #local.productCategory['parentContent_title']#<i class="far fa-arrow-right ml-2"></i>
+                      </a>
+                    </div>
                     <div class="d-flex flex-wrap flex-lg-nowrap px-2">
-                      
                       <div class="mega-dropdown-column py-4 px-3">
                         <div class="widget widget-links mb-3">
                           #local.productCategory['customBody']#
@@ -132,19 +137,14 @@
                   
               </cfloop>
                   </div>
-                  <div class="nav-shop-all">
-                    <a href="#local.productCategory['parentContent_linkUrl']#">
-                      Shop All #local.productCategory['parentContent_title']# <i class="far fa-arrow-right"></i>
-                    </a>
-                  </div>
                 </div>
               </li>
               
             </ul>
             
             <!-- Departments menu-->
-            <ul class="navbar-nav mega-nav pl-lg-3 ml-lg-2">
-              <li class="nav-item"><a class="nav-link pl-0" href="##"><i class="far fa-industry-alt mr-2"></i>Shop by Manufacturer</a></li>
+            <ul class="navbar-nav mega-nav ml-lg-2">
+              <li class="nav-item"><a class="nav-link" href="##"><i class="far fa-industry-alt mr-2"></i>Shop by Manufacturer</a></li>
             </ul>
           </div>
         </div>
