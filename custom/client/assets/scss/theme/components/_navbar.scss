@@ -5,20 +5,52 @@
 // Styles for collapsed navbar (mobile view)
 
 // Navbar nav
+.navbar .container {
+  position: relative;
+}
+
+.nav-categories {
+  flex: 1;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .navbar-nav {
   .nav-item {
     margin-bottom: $navbar-nav-link-padding-y / 4;
   }
   .nav-link {
-    padding: {
-      top: $navbar-nav-link-padding-y / 1;
-      bottom: $navbar-nav-link-padding-y / 1;
+    padding: 10px;
+    position: relative;
+    @include media-breakpoint-up(md) {
+      span {
+        display: none;
+        background: white;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+      }
+      &:active, &:hover {
+        color: $white;
+        span {
+          display: block;
+        }
+      }
     }
+  }
+  .dropdown {
+    position: inherit;
   }
   .dropdown-menu {
     min-width: $navbar-dropdown-min-width;
     border-color: $border-color;
     box-shadow: none;
+    width: 100%;
+    @include media-breakpoint-down(md) {
+      position: relative;
+    }
     .dropdown-menu {
       width: calc(100% - (#{$spacer} * 2));
       margin: 0 $spacer;
@@ -88,7 +120,7 @@
     &:hover {
       color: $widget-links-dark-hover-color;
     }
-    @include media-breakpoint-down(lg) {
+    @include media-breakpoint-down(md) {
       color: $widget-links-light-color;
       &:hover {
         color: $white;
@@ -110,6 +142,10 @@
   background-color: $gray-300;
   padding: 5px 20px;
   font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   a {
     color: $gray-900;
   }
@@ -174,6 +210,7 @@
 }
 .mega-dropdown-column {
   width: $navbar-mega-dropdown-column-width;
+  flex: 1;
 }
 .mega-nav .dropdown-menu {
   > .mega-dropdown { position: static; }
@@ -316,10 +353,7 @@
           .nav-item { margin-bottom: 0; }
           .nav-link {
             font-size: 14px;
-            padding: {
-              top: 10px;
-              bottom: 10px;
-            }
+            padding: 10px;
           }
         }
         .navbar-nav:not(.mega-nav) .nav-link.dropdown-toggle::after {

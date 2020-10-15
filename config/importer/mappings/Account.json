@@ -42,9 +42,31 @@
             "validations": {
                 "dataType": "boolean"
             }
+        },
+        "activeFlag": {
+            "propertyIdentifier": "activeFlag",
         }
-        
     },
+    
+    "generatedProperties": [],
+    
+    "relations": [
+        {
+            "type": "oneToOne",
+            "entityName": "AccountEmailAddress",
+            "propertyIdentifier": "primaryEmailAddress"
+        },
+        {
+            "type": "oneToOne",
+            "entityName": "AccountPhoneNumber",
+            "propertyIdentifier": "primaryPhoneNumber"
+        },
+        {
+            "type": "oneToMany",
+            "entityName": "AccountAuthentication",
+            "propertyIdentifier": "accountAuthentications",
+        }
+    ],
     
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
@@ -54,14 +76,8 @@
         ]
     },
     
-    "relations": [
-        {
-            "entityName": "AccountEmailAddress",
-            "propertyIdentifier": "primaryEmailAddress"
-        },
-        {
-            "entityName": "AccountPhoneNumber",
-            "propertyIdentifier": "primaryPhoneNumber"
-        }
-    ]
+    "validationContext": "save",
+    
+    "postPopulateMethods": [ "updateCalculatedProperties" ]
+    
 }

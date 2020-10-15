@@ -2,11 +2,10 @@
 <cfinclude template="inc/header/header.cfm" />
 
 <cfoutput>
-<div class="container">
-      <div class="container bg-light p-0">
+<div class="bg-light p-0">
 
 <!---- start template copy ---->
-     <!-- Page Title (Shop)-->
+    <!-- Page Title (Shop)-->
     <div class="page-title-overlap bg-lightgray pt-4">
       <div class="container d-lg-flex justify-content-between py-2 py-lg-3">
         <div class="order-lg-2 mb-3 mb-lg-0 pt-lg-2">
@@ -26,28 +25,29 @@
     </div>
     <!-- Page Content-->
       <!-- Gallery + details-->
-      <div class="bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5 mx-5">
+      <div class="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
         <div class="px-lg-3">
           <div class="row">
             <!-- Product gallery-->
-            <div class="col-lg-7 pr-lg-0 pt-0">
+            <div class="col-lg-6 pr-lg-5 pt-0">
               <div class="cz-product-gallery">
                 <div class="cz-preview order-sm-2">
-                  <div class="cz-preview-item active" id="first"><img class="cz-image-zoom w-100" src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" data-zoom="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product image">
+                  <div class="cz-preview-item active" id="first"><img class="cz-image-zoom w-100 mx-auto" src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" data-zoom="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product image" style="max-width: 500px;">
                     <div class="cz-image-zoom-pane"></div>
                   </div>
                 </div>
               </div>
             </div>
             <!-- Product details-->
-            <div class="col-lg-5 pt-0">
-              <div class="product-details ml-auto pb-3">
+            <div class="col-lg-6 pt-0">
+              <div class="product-details pb-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                    <span class="d-inline-block font-size-sm align-middle px-2 bg-primary text-light">On Special</span>
-                  <button class="btn-wishlist mr-0 mr-lg-n3" type="button" data-toggle="tooltip" title="Add to wishlist"><i class="fa fa-heart fa-circle"></i></button>
+                  <button class="btn-wishlist mr-0 mr-lg-n3" type="button" data-toggle="tooltip" title="Add to wishlist"><i class="far fa-heart fa-circle"></i></button>
                 </div>
-                <div class="mb-3"><span class="text-small text-muted">product: </span><span class="h4 font-weight-normal text-large text-accent mr-1">1812</span>
-                </div>
+                <div class="mb-2"><span class="text-small text-muted">product: </span><span class="h4 font-weight-normal text-large text-accent mr-1">1812</span>
+                </div> 
+                <h2 class="h4 mb-2">Product Title Here</h2>
                 <div class="mb-3 font-weight-light font-size-small text-muted">
                   After finding the item they want and clicking the box to go to the product detail page, that page should be configured to the item that was clicked back on the product listing page. AKA, Click on Gardall 1812-G-E, should be brought to the 1812 series page with a grey safe w/ electronic lock already configured.
                 </div>
@@ -76,7 +76,10 @@
                       <option value="4">4</option>
                       <option value="5">5</option>
                     </select>
-                    <button class="btn btn-primary btn-shadow btn-block" type="submit"><i class="fa fa-shopping-cart font-size-lg mr-2"></i>Add to Cart</button>
+                    <button class="btn btn-primary btn-block" type="submit"><i class="far fa-shopping-cart font-size-lg mr-2"></i>Add to Cart</button>
+                  </div>
+                  <div class="alert alert-danger" role="alert">
+                    <i class="far fa-exclamation-circle"></i> This item is not eligable for free freight
                   </div>
                 </form>
                 <!-- Product panels-->
@@ -84,8 +87,8 @@
                   <div class="card">
                     <div class="card-header">
                       <h3 class="accordion-heading"><a href="##productInfo" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="productInfo">
-                        <i class="fa fa-key font-size-lg align-middle mt-n1 mr-2"></i>
-                        Product info<span class="accordion-indicator"><i class="fa fa-chevron-up"></i></span></a></h3>
+                        <i class="far fa-key font-size-lg align-middle mt-n1 mr-2"></i>
+                        Product info<span class="accordion-indicator"></span></a></h3>
                     </div>
                     <div class="collapse show" id="productInfo" data-parent="##productPanels">
                       <div class="card-body">
@@ -112,64 +115,29 @@
                   </div>
                   <div class="card">
                     <div class="card-header">
-                      <h3 class="accordion-heading"><a class="collapsed" href="##shippingOptions" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="shippingOptions"><i class="fa fa-key align-middle mt-n1 mr-2"></i>Shipping options<span class="accordion-indicator"><i class="fa fa-chevron-up"></i></span></a></h3>
+                      <h3 class="accordion-heading"><a class="collapsed" href="##technicalinfo" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="technicalinfo"><i class="far fa-drafting-compass align-middle mt-n1 mr-2"></i>Technical Info<span class="accordion-indicator"></span></a></h3>
                     </div>
-                    <div class="collapse" id="shippingOptions" data-parent="##productPanels">
+                    <div class="collapse" id="technicalinfo" data-parent="##productPanels">
                       <div class="card-body font-size-sm">
-                        <div class="d-flex justify-content-between border-bottom pb-2">
-                          <div>
-                            <div class="font-weight-semibold text-dark">Courier</div>
-                            <div class="font-size-sm text-muted">2 - 4 days</div>
-                          </div>
-                          <div>$26.50</div>
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                          <div class="font-weight-semibold text-dark">Document Title</div>
+                          <a href="##">Download</a>
                         </div>
                         <div class="d-flex justify-content-between border-bottom py-2">
-                          <div>
-                            <div class="font-weight-semibold text-dark">Local shipping</div>
-                            <div class="font-size-sm text-muted">up to one week</div>
-                          </div>
-                          <div>$10.00</div>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom py-2">
-                          <div>
-                            <div class="font-weight-semibold text-dark">Flat rate</div>
-                            <div class="font-size-sm text-muted">5 - 7 days</div>
-                          </div>
-                          <div>$33.85</div>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom py-2">
-                          <div>
-                            <div class="font-weight-semibold text-dark">UPS ground shipping</div>
-                            <div class="font-size-sm text-muted">4 - 6 days</div>
-                          </div>
-                          <div>$18.00</div>
-                        </div>
-                        <div class="d-flex justify-content-between pt-2">
-                          <div>
-                            <div class="font-weight-semibold text-dark">Local pickup from store</div>
-                            <div class="font-size-sm text-muted">&mdash;</div>
-                          </div>
-                          <div>$0.00</div>
+                          <div class="font-weight-semibold text-dark">Document Title</div>
+                          <a href="##">Download</a>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="card">
                     <div class="card-header">
-                      <h3 class="accordion-heading"><a class="collapsed" href="##localStore" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="localStore"><i class="fa fa-key font-size-lg align-middle mt-n1 mr-2"></i>Find in local store<span class="accordion-indicator"><i class="fa fa-chevron-up"></i></span></a></h3>
+                      <h3 class="accordion-heading"><a class="collapsed" href="##questions" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="questions"><i class="far fa-question-circle font-size-lg align-middle mt-n1 mr-2"></i>Questions?<span class="accordion-indicator"></span></a></h3>
                     </div>
-                    <div class="collapse" id="localStore" data-parent="##productPanels">
+                    <div class="collapse" id="questions" data-parent="##productPanels">
                       <div class="card-body">
-                        <select class="custom-select">
-                          <option value>Select your country</option>
-                          <option value="Argentina">Argentina</option>
-                          <option value="Belgium">Belgium</option>
-                          <option value="France">France</option>
-                          <option value="Germany">Germany</option>
-                          <option value="Spain">Spain</option>
-                          <option value="UK">United Kingdom</option>
-                          <option value="USA">USA</option>
-                        </select>
+                        <p>Have questions about this product?</p>
+                        <a href="/contact">Contact Us</a>
                       </div>
                     </div>
                   </div>
@@ -179,57 +147,32 @@
           </div>
         </div>
       </div>
+    </div>
 
-<!---- start slider ---->
-      <div class="bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5 mx-5">
+    <!---- start slider ---->
+    <div class="container px-5">
+      <div class="px-4 py-3 mb-5">
         <div class="px-lg-3">
-<div class="product-slider row mt-4">
+          <h3 class="h3 text-center">Related Products</h3>
+          <div class="product-slider row mt-4">
           
-          <!--- start of product tile --->
-          <div class="col-md-4 col-sm-6 px-2">
-            <div class="card product-card">
-              <!--- only display heart when user is logged in --->
-              <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
-                <i class="far fa-heart"></i>
-                <!--- For solid heart (when product has been added to wishlist)
-                <i class="far fa-heart"></i> --->
-              </button>
-              <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
-                <img src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product">
-              </a>
-              <div class="card-body py-2 text-left">
-                <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
-                <h3 class="product-title font-size-sm">
-                  <a href="shop-single-v1.html">Product Title Here</a>
-                </h3>
-                <div class="product-price">
-                  <span class="text-accent">$156.99</span>
-                  $209.24 <!--- list price here --->
-                </div>
-              </div>
-            </div>
-          </div>
-          <!--- end of product tile --->
-          
-          <!--- start of product tile --->
-          <div class="col-md-4 col-sm-6 px-2">
-            <div class="card product-card">
-              <span class="badge badge-primary">On Special</span>
-              <!--- only display heart when user is logged in --->
-              <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
-                <i class="far fa-heart"></i>
-                <!--- For solid heart (when product has been added to wishlist)
-                <i class="far fa-heart"></i> --->
-              </button>
-              <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
-                <img src="#$.getThemePath()#/custom/client/assets/images/product-img-2.png" alt="Product">
-              </a>
-              <div class="card-body py-2 text-left">
-                <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
-                <h3 class="product-title font-size-sm">
-                  <a href="shop-single-v1.html">Product Title Here</a>
-                </h3>
-                <div class="d-flex justify-content-between">
+            <!--- start of product tile --->
+            <div class="col-md-4 col-sm-6 px-2">
+              <div class="card product-card">
+                <!--- only display heart when user is logged in --->
+                <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
+                  <i class="far fa-heart"></i>
+                  <!--- For solid heart (when product has been added to wishlist)
+                  <i class="far fa-heart"></i> --->
+                </button>
+                <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product">
+                </a>
+                <div class="card-body py-2 text-left">
+                  <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
+                  <h3 class="product-title font-size-sm">
+                    <a href="shop-single-v1.html">Product Title Here</a>
+                  </h3>
                   <div class="product-price">
                     <span class="text-accent">$156.99</span>
                     $209.24 <!--- list price here --->
@@ -237,100 +180,129 @@
                 </div>
               </div>
             </div>
-          </div>
-          <!--- end of product tile --->
-          
-          <!--- start of product tile --->
-          <div class="col-md-4 col-sm-6 px-2">
-            <div class="card product-card">
-              <!--- only display heart when user is logged in --->
-              <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
-                <i class="far fa-heart"></i>
-                <!--- For solid heart (when product has been added to wishlist)
-                <i class="far fa-heart"></i> --->
-              </button>
-              <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
-                <img src="#$.getThemePath()#/custom/client/assets/images/product-img-3.png" alt="Product">
-              </a>
-              <div class="card-body py-2 text-left">
-                <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
-                <h3 class="product-title font-size-sm">
-                  <a href="shop-single-v1.html">Product Title Here</a>
-                </h3>
-                <div class="d-flex justify-content-between">
-                  <div class="product-price">
-                    <span class="text-accent">$156.99</span>
-                    $209.24 <!--- list price here --->
+            <!--- end of product tile --->
+            
+            <!--- start of product tile --->
+            <div class="col-md-4 col-sm-6 px-2">
+              <div class="card product-card">
+                <span class="badge badge-primary">On Special</span>
+                <!--- only display heart when user is logged in --->
+                <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
+                  <i class="far fa-heart"></i>
+                  <!--- For solid heart (when product has been added to wishlist)
+                  <i class="far fa-heart"></i> --->
+                </button>
+                <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-2.png" alt="Product">
+                </a>
+                <div class="card-body py-2 text-left">
+                  <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
+                  <h3 class="product-title font-size-sm">
+                    <a href="shop-single-v1.html">Product Title Here</a>
+                  </h3>
+                  <div class="d-flex justify-content-between">
+                    <div class="product-price">
+                      <span class="text-accent">$156.99</span>
+                      $209.24 <!--- list price here --->
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!--- end of product tile --->
-          
-          <!--- start of product tile --->
-          <div class="col-md-4 col-sm-6 px-2">
-            <div class="card product-card">
-              <!--- only display heart when user is logged in --->
-              <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
-                <i class="far fa-heart"></i>
-                <!--- For solid heart (when product has been added to wishlist)
-                <i class="far fa-heart"></i> --->
-              </button>
-              
-              <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
-                <img src="#$.getThemePath()#/custom/client/assets/images/product-img-4.png" alt="Product">
-              </a>
-              <div class="card-body py-2 text-left">
-                <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
-                <h3 class="product-title font-size-sm">
-                  <a href="shop-single-v1.html">Product Title Here</a>
-                </h3>
-                <div class="d-flex justify-content-between">
-                  <div class="product-price">
-                    <span class="text-accent">$156.99</span>
-                    $209.24 <!--- list price here --->
+            <!--- end of product tile --->
+            
+            <!--- start of product tile --->
+            <div class="col-md-4 col-sm-6 px-2">
+              <div class="card product-card">
+                <!--- only display heart when user is logged in --->
+                <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
+                  <i class="far fa-heart"></i>
+                  <!--- For solid heart (when product has been added to wishlist)
+                  <i class="far fa-heart"></i> --->
+                </button>
+                <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-3.png" alt="Product">
+                </a>
+                <div class="card-body py-2 text-left">
+                  <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
+                  <h3 class="product-title font-size-sm">
+                    <a href="shop-single-v1.html">Product Title Here</a>
+                  </h3>
+                  <div class="d-flex justify-content-between">
+                    <div class="product-price">
+                      <span class="text-accent">$156.99</span>
+                      $209.24 <!--- list price here --->
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!--- end of product tile --->
-          
-          <!--- start of product tile --->
-          <div class="col-md-4 col-sm-6 px-2">
-            <div class="card product-card">
-              <!--- only display heart when user is logged in --->
-              <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
-                <i class="far fa-heart"></i>
-                <!--- For solid heart (when product has been added to wishlist)
-                <i class="far fa-heart"></i> --->
-              </button>
-              <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
-                <img src="#$.getThemePath()#/custom/client/assets/images/product-img-3.png" alt="Product">
-              </a>
-              <div class="card-body py-2 text-left">
-                <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
-                <h3 class="product-title font-size-sm">
-                  <a href="shop-single-v1.html">Product Title Here</a>
-                </h3>
-                <div class="d-flex justify-content-between">
-                  <div class="product-price">
-                    <span class="text-accent">$156.99</span>
-                    $209.24 <!--- list price here --->
+            <!--- end of product tile --->
+            
+            <!--- start of product tile --->
+            <div class="col-md-4 col-sm-6 px-2">
+              <div class="card product-card">
+                <!--- only display heart when user is logged in --->
+                <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
+                  <i class="far fa-heart"></i>
+                  <!--- For solid heart (when product has been added to wishlist)
+                  <i class="far fa-heart"></i> --->
+                </button>
+                
+                <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-4.png" alt="Product">
+                </a>
+                <div class="card-body py-2 text-left">
+                  <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
+                  <h3 class="product-title font-size-sm">
+                    <a href="shop-single-v1.html">Product Title Here</a>
+                  </h3>
+                  <div class="d-flex justify-content-between">
+                    <div class="product-price">
+                      <span class="text-accent">$156.99</span>
+                      $209.24 <!--- list price here --->
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!--- end of product tile --->
+            <!--- end of product tile --->
+            
+            <!--- start of product tile --->
+            <div class="col-md-4 col-sm-6 px-2">
+              <div class="card product-card">
+                <!--- only display heart when user is logged in --->
+                <button class="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
+                  <i class="far fa-heart"></i>
+                  <!--- For solid heart (when product has been added to wishlist)
+                  <i class="far fa-heart"></i> --->
+                </button>
+                <a class="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-3.png" alt="Product">
+                </a>
+                <div class="card-body py-2 text-left">
+                  <a class="product-meta d-block font-size-xs pb-1" href="##">Brand Here</a>
+                  <h3 class="product-title font-size-sm">
+                    <a href="shop-single-v1.html">Product Title Here</a>
+                  </h3>
+                  <div class="d-flex justify-content-between">
+                    <div class="product-price">
+                      <span class="text-accent">$156.99</span>
+                      $209.24 <!--- list price here --->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--- end of product tile --->
           
+          </div>
         </div>
-<!---- end slider ---->
-
-</div>
-</div>
-</div>
+      </div>
+    </div>
+    <!---- end slider ---->
+    
+  </div>
 </div>
 </cfoutput>
 

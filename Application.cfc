@@ -59,7 +59,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	// @hint this will fire 1 time if you are running the application.  If the application is bootstraped then it won't run
 	public void function onInternalRequest() {
 		if(listFindNoCase("public", getSubsystem(request.context.slatAction))) {
-			getHibachiScope().setPublicPopulateFlag( true );
+			getHibachiScope().setObjectPopulateMode( 'public' );
 		}
 	}
 	
