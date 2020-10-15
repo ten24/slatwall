@@ -647,7 +647,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "generatorFunction":  "getAccountExampleRelationProperty_spy"
         }];
 
-        function getAccountExampleRelationProperty_spy( struct data, struct parentEntityapping, struct relationMetaData){
+        function getAccountExampleRelationProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             variables.this['getAccountExampleRelationProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
             return {"keyxx": 'valuexx'};
@@ -684,7 +684,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "propertyIdentifier": "exampleRelationXXXYYYProperty",
         }];
 
-        function getAccountExampleRelationXXXYYYProperty_spy( struct data, struct parentEntityapping, struct relationMetaData){
+        function getAccountExampleRelationXXXYYYProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             variables.this['getAccountExampleRelationXXXYYYProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
             return {"keyxx": 'valuexx'};
@@ -1091,4 +1091,3 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     
     
 }
-

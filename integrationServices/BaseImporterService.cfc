@@ -528,7 +528,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            
                 var transformedRelationData = this.getOrGenerateRelationData(
                     data                = arguments.data,
-                    parentEntityapping  = arguments.mapping,
+                    parentEntityMapping  = arguments.mapping,
                     relationMetaData    = relation
                 );
 	                
@@ -559,7 +559,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * Fallback order 
          * 1. generator-function provided in the propertyMetadata
          * 
-         * 2. conventional generator-functions `generate[entityName][ProertyName]` in the service, 
+         * 2. conventional generator-functions `generate[entityName][PropertyName]` in the service, 
          *    where ProertyName ==> propertyMetaData.propertyIdentifier
          *    
          *    Ex. generateAccountActiveFlag(){......}
@@ -601,7 +601,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     */ 
     public any function getOrGenerateRelationData( 
         required struct data, 
-        required struct parentEntityapping,
+        required struct parentEntityMapping,
         required struct relationMetaData
     ){
         
@@ -622,7 +622,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             return this.invokeMethod( arguments.relationMetaData.generatorFunction, arguments );
         }
         
-        var conventionalGeneratorFunctionName = 'generate'&arguments.parentEntityapping.entityName&arguments.relationMetaData.propertyIdentifier;
+        var conventionalGeneratorFunctionName = 'generate'&arguments.parentEntityMapping.entityName&arguments.relationMetaData.propertyIdentifier;
         if( structKeyExists(this, conventionalGeneratorFunctionName) ){
             return this.invokeMethod( conventionalGeneratorFunctionName, arguments );
         }
