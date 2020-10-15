@@ -246,7 +246,7 @@ class EnrollmentMPController {
 			this.paginationObject['categoryID'] = category.value;
 		}
 		
-		this.publicService.doAction('getproductsByCategoryOrContentID', data).then((result) => {
+		this.publicService.doAction('getproductsByCategoryOrContentID', data, 'GET').then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount

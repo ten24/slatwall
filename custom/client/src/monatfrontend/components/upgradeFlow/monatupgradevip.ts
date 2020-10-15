@@ -156,7 +156,7 @@ class VIPUpgradeController {
 	public getProductList = () => {
 		this.loading = true;
 		
-		this.publicService.doAction('getProductsByCategoryOrContentID', {priceGroupCode: 3}).then((result) => {
+		this.publicService.doAction('getProductsByCategoryOrContentID', {priceGroupCode: 3}, 'GET').then((result) => {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');
