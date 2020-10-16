@@ -221,7 +221,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	
-	public any function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
+	public void function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
 	    
 	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies"
 	    if( structKeyExists(this, extentionFunctionName) ){
@@ -242,7 +242,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 
                 arguments.entity.addError( 
                     dependency.propertyIdentifier, 
-                    "Depandancy #dependency.propertyIdentifier# (#dependency.entityName#) is not resolved yet"    
+                    "Depandancy for propertyIdentifier [#dependency.propertyIdentifier#] on Entity [#dependency.entityName#] could not be resolved yet"    
                 );
                 
                 break;
@@ -252,8 +252,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             
             arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#primaryIDProperty#" : primaryIDValue }
         }
-
-	    return arguments.entity;
 	}
 
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
@@ -269,7 +267,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    if( structKeyExists(arguments.entityQueueData, '__dependancies') ){
             
-            arguments.entity = this.resolveEntityDependencies(argumentCollection = arguments);
+            this.resolveEntityDependencies(argumentCollection = arguments);
     	    
     	    if(arguments.entity.hasErrors()){
     	        return arguments.entity;
