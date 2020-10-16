@@ -16,7 +16,7 @@ class SWStatWidgetController {
     ) {
 
         this.observerService.attach((config) => {
-            this.period = config.period
+            this.period = config.periodLabel
             this.startDateTime = config.startDateTime
             this.endDateTime = config.endDateTime
             this.getMetrics()
