@@ -1867,6 +1867,7 @@ textarea:focus,
 select:focus {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
+  outline: none !important;
 }
 .modal {
   z-index: 3003 !important;
@@ -2437,9 +2438,6 @@ table .s-edit-elements a:hover {
   position: relative;
   display: inline-block;
   width: 100%;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper .form-control {
-  border: 1px solid #428bca;
 }
 .s-table-header-options {
   background: #fff;
@@ -5810,6 +5808,9 @@ a.disabled > i.hibachi-ui-radio-checked {
   height: 34px;
   margin-top: 22px;
 }
+#reporting-top .flex-cal .btn-default.refresh {
+  margin-left: 4px;
+}
 #reporting-top .flex-cal .btn-default:hover {
   background-color: #fff;
 }
@@ -5885,8 +5886,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-color: #fff;
 }
 #reporting-top .flex.compare {
-  position: relative;
-  padding-left: 20px;
+  padding-left: 10px;
 }
 .flex.compare .icon-wrapper {
   margin: auto;
@@ -5898,7 +5898,6 @@ a.disabled > i.hibachi-ui-radio-checked {
   width: 100%;
   height: 34px;
   background-color: #fff;
-  border: 1px solid #DDDDDD;
   border-radius: 0;
   -webkit-appearance: none;
   background-position: right 50%;
@@ -5909,7 +5908,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-image: url(data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%20%3C%21DOCTYPE%20svg%20PUBLIC%20%22-//W3C//DTD%20SVG%201.1//EN%22%20%22http%3A//www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd%22%3E%20%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20x%3D%220px%22%20y%3D%220px%22%20width%3D%2214px%22%20height%3D%2212px%22%20viewBox%3D%220%200%2014%2012%22%20enable-background%3D%22new%200%200%2014%2012%22%20xml%3Aspace%3D%22preserve%22%3E%20%3Cpolygon%20points%3D%223.862%2C7.931%200%2C4.069%207.725%2C4.069%20%22/%3E%3C/svg%3E);
 }
 #reporting-top .flex.flex-col-left .col {
-  margin-right: 25px;
+  margin-right: 20px;
 }
 #reporting-top .flex.flex-col-left .col:last-child {
   flex: 1 0 50%;
@@ -5919,9 +5918,17 @@ a.disabled > i.hibachi-ui-radio-checked {
   justify-content: flex-start;
 }
 #reporting-top .mBorder {
-  border: 1px solid #cecaca;
+  background-color: #fff;
   border-radius: 5px;
   padding: 21px 10px 12px 10px;
+  position: relative;
+  border-bottom: 1px solid #e7eaec;
+  border-right: 1px solid #e7eaec;
+}
+#reporting-top .mBorder .btn-text {
+  position: absolute;
+  top: 7px;
+  right: 10px;
 }
 #reporting-top .col-cal {
   margin-left: 10px;
@@ -8656,6 +8663,7 @@ table.s-detail-content-table tbody tr.s-done {
 }
 #navTabs-Container {
   padding: 2em 1em;
+  margin: 0 auto;
 }
 #navTabs-Container .nav-tabs {
   padding-left: 0;
@@ -8685,6 +8693,7 @@ table.s-detail-content-table tbody tr.s-done {
 }
 #navTabs-Container .tab-content {
   background-color: #ffffff;
+  margin-bottom: 24px;
 }
 #navTabs-Container .tab-content ul li {
   color: #666666;
@@ -8695,30 +8704,18 @@ table.s-detail-content-table tbody tr.s-done {
   color: #a2a2a2;
   font-weight: 400;
 }
-.Mcard-wrapper {
-  padding: 1em;
-}
-.Mcard {
-  background-color: #ffffff;
-}
-.Mcard-body {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 0.75em 1em;
-}
-.Mcard-body h1 {
-  color: #666666;
-  display: inline;
-  vertical-align: sub;
-  font-weight: 500;
-  line-height: 0;
+.report-menu-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 .Mcard-wrapper {
   padding: 1em;
 }
 .Mcard {
   background-color: #ffffff;
+}
+.card-shadow {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.12), 0 4px 4px rgba(0, 0, 0, 0.12), 0 8px 8px rgba(0, 0, 0, 0.12);
 }
 .Mcard-body {
   display: flex;
@@ -8746,9 +8743,6 @@ table.s-detail-content-table tbody tr.s-done {
 .Mcard-wrapper {
   padding: 1em;
 }
-.Mcard {
-  background-color: #ffffff;
-}
 .Mcard-body {
   display: flex;
   align-items: flex-end;
@@ -8774,9 +8768,43 @@ table.s-detail-content-table tbody tr.s-done {
   position: absolute;
   top: -29%;
   right: -2px;
-  color: grey;
   font-weight: bold;
   font-size: 1.2em;
+}
+.configure-bar-container {
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1em 1em 0 1em;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.report-btn-container {
+  margin-bottom: 20px;
+}
+.hibachi-report-date-group,
+.hibachi-report-date-group-custom-toggle {
+  padding: 4px 16px;
+  margin-right: 8px;
+  background: none;
+  border: 2px solid #707070;
+  color: #707070;
+  border-radius: 32px;
+  font-size: 15px;
+}
+.hibachi-report-date-group:hover,
+.hibachi-report-date-group:active,
+.hibachi-report-date-group-custom-toggle:hover,
+.hibachi-report-date-group-custom-toggle:active {
+  background: #f9bb82;
+  border: 2px solid #4e4e4e;
+  color: #4e4e4e;
+}
+.hibachi-report-date-group + .active {
+  color: #4e4e4e;
+  font-weight: 700;
+  border: 2px solid #4e4e4e;
+  background: #fac89a;
 }
 .col span .save-icon {
   margin: 0 5px;
@@ -8821,13 +8849,13 @@ table.s-detail-content-table tbody tr.s-done {
   background-color: #f38631;
 }
 .Mcard-footer2 {
-  background-color: #5f7d8b;
+  background-color: #5a7988;
 }
 .Mcard-footer3 {
-  background-color: #90d08c;
+  background-color: #378632;
 }
 .Mcard-footer4 {
-  background-color: #dc7374;
+  background-color: #c84c4c;
 }
 .Mbtn-round {
   border-radius: 17px;
@@ -8859,4 +8887,33 @@ table.s-detail-content-table tbody tr.s-done {
 }
 #j-property-box .form-group-sm .form-control {
   padding: 16px 10px;
+}
+#hibachi-report {
+  padding-top: 24px;
+  width: 90%;
+  margin: 0 auto;
+}
+#loadinghibachi-report {
+  width: 100vw!important;
+  height: 100vh!important;
+}
+#hibachi-report-configure-bar {
+  padding-bottom: 12px;
+}
+.site-selector-container {
+  margin-bottom: 20px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+}
+.site-selector-title {
+  margin-right: 12px;
+}
+.hibachi-report-chart-container {
+  margin: 0 auto 24px auto;
+}
+.hibachi-report-chart-title {
+  padding: 8px;
+  border-bottom: 1px solid #666666;
+  margin-bottom: 24px;
 }

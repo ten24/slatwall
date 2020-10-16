@@ -1511,10 +1511,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(paymentTransaction.hasError('runTransaction') || paymentTransaction.getTransactionSuccessFlag() == false) {
 				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			}
-			
-			if (paymentTransaction.getTransactionSuccessFlag() == false){
-				arguments.accountPayment.setActiveFlag(false);
-			}
+		
 		}
 
 		return arguments.accountPayment;
@@ -1828,10 +1825,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
-			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
 			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
 			//clears cache keys on the permissiongroup Object
 			getService('HibachiCacheService').resetCachedKeyByPrefix('PermissionGroup.');
+			
+			//reset permission cache
+			getService('HibachiCacheService').resetPermissionCache();
+			
+			//reset server instance settings cache
+			getService('HibachiCacheService').updateServerInstanceSettingsCache();
 		}
 
 		return arguments.permissionGroup;

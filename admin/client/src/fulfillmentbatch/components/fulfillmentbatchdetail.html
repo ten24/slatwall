@@ -479,11 +479,11 @@
                                     
                                     <div class="col-md-12" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
                                         <div class="btn-group s-btn-dropdown" role="group"> 
-                                            <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill(); swFulfillmentBatchDetailController.state.loading = true">
+                                            <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();">
 						                    	<span><!---<span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0">Capture &amp;</span>---> Fulfill</span> 
 						                    </button>
                                             <ul class="dropdown-menu" role="menu">
-												<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();swFulfillmentBatchDetailController.state.loading = true">Fulfill</a></li>
+												<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();">Fulfill</a></li>
 						                    </ul>
                                             <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
 												<span class="caret"></span>
