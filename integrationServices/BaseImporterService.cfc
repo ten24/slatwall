@@ -219,6 +219,42 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    return arguments.entity;
 	}
+	
+	
+	public any function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
+	    
+	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies"
+	    if( structKeyExists(this, extentionFunctionName) ){
+	        return this.invokeMethod( extentionFunctionName, arguments );
+	    }
+	      
+	      
+        for( var dependency in arguments.entityQueueData.__dependancies ){
+             
+            var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+                                        "entityName"  : dependency.entityName,
+                            	        "uniqueKey"   : dependency.lookupKey,
+                            	        "uniqueValue" : dependency.lookupValue
+                                    );
+                
+                                    
+            if( this.hibachiIsEmpty(primaryIDValue) ){
+                
+                arguments.entity.addError( 
+                    dependency.propertyIdentifier, 
+                    "Depandancy #dependency.propertyIdentifier# (#dependency.entityName#) is not resolved yet"    
+                );
+                
+                break;
+            }
+                         
+            var primaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
+            
+            arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#primaryIDProperty#" : primaryIDValue }
+        }
+
+	    return arguments.entity;
+	}
 
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
 	    
@@ -230,11 +266,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.invokeMethod( 'process#entityName#_import', arguments );
 	    }
 	    
-	    arguments.entity.populate( 
-	        data = arguments.entityQueueData,
-	        objectPopulateMode = 'private'
-	    );
 	    
+	    if( structKeyExists(arguments.entityQueueData, '__dependancies') ){
+            
+            arguments.entity = this.resolveEntityDependencies(argumentCollection = arguments);
+    	    
+    	    if(arguments.entity.hasErrors()){
+    	        return arguments.entity;
+    	    }
+	    }
+	    
+	    
+	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
+	    
+	
 	    if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( entityName );
         }
@@ -436,7 +481,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	/*****************                      TRANSFORM                 ******************/
 
-    public struct function transformEntityData(required string entityName, required struct data, struct mapping ){
+    public struct function transformEntityData(required string entityName, required struct data, struct mapping, boolean nested=false ){
         
         if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( arguments.entityName );
@@ -450,7 +495,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
     }
     
-	public struct function transformData( required struct data, required struct mapping ){
+	public struct function transformData( required struct data, required struct mapping, boolean nested=false){
 	    var entityName = arguments.mapping.entityName;
 	    var transformedData = {};
 	    
@@ -542,6 +587,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        }
 	    }
 	    
+	    
+	    // relational dependancies[ entities which should be present bofore this record can be processed],
+	    // like `Product` should be present before SKU can be imported 
+	    if( !arguments.nested && structKeyExists(arguments.mapping, 'dependencies') ){
+	        
+	        transformedData['__dependancies'] = [];
+	        for( var dependency in arguments.mapping.dependencies ){
+	            dependency['lookupValue'] = arguments.data[ dependency.key ];
+	            transformedData['__dependancies'].append( dependency );
+	        }
+	    }
 	    
 	    // relations, properties which belong to some slatwall entity, like `email` is stored in AccountEmailAddress
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
@@ -661,7 +717,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // if source-property for the relation already exist in the incoming-data, than it should be an array
         // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
         
-        var transformedRelationData = this.transformEntityData( arguments.relationMetaData.entityName, arguments.data );
+        var transformedRelationData = this.transformEntityData( 
+            entityName  = arguments.relationMetaData.entityName, 
+            data        = arguments.data,
+            nested      = true
+        );
         
         if( listFindNoCase('oneToOne,manyToOne', arguments.relationMetaData.type) ){
             return transformedRelationData;
