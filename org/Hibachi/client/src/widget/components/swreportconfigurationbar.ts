@@ -61,7 +61,7 @@ class SWReportConfigurationBarController{
         	this.endDateTime = endTime
         	this.period = period
         	this.customToggle = false
-        	this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": this.period});
+        	this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": this.period, "periodLabel": this.period});
     }
 
     	startCustomRange = ($event) =>{
@@ -88,7 +88,7 @@ class SWReportConfigurationBarController{
 	    	}else if(diff > 1 && diff <= 7){
 	    		dynamicPeriod = "day"
 	    	}
-	    	this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": dynamicPeriod});
+	    	this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": dynamicPeriod, "periodLabel": "period"});
 
     	}
     
