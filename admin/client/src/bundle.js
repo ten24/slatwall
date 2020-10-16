@@ -91980,29 +91980,59 @@ var SWReportMenuController = /** @class */ (function () {
         this.requestService = requestService;
         this.accountService = accountService;
         this.collectionConfigService = collectionConfigService;
+        this.chunkify = function (a, n, balanced) {
+            if (n < 2)
+                return [a];
+            var len = a.length, out = [], i = 0, size;
+            if (len % n === 0) {
+                size = Math.floor(len / n);
+                while (i < len) {
+                    out.push(a.slice(i, i += size));
+                }
+            }
+            else if (balanced) {
+                while (i < len) {
+                    size = Math.ceil((len - i) / n--);
+                    out.push(a.slice(i, i += size));
+                }
+            }
+            else {
+                n--;
+                size = Math.floor(len / n);
+                if (len % size === 0)
+                    size--;
+                while (i < size * n) {
+                    out.push(a.slice(i, i += size));
+                }
+                out.push(a.slice(size * n));
+            }
+            return out;
+        };
         this.getPopularReports = function () {
             var popularReports = _this.collectionConfigService.newCollectionConfig('Collection');
             popularReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag,accountOwner.accountID');
             popularReports.addFilter('reportFlag', 1);
             popularReports.addFilter('accountOwner.accountID', 'null', 'is not');
+            popularReports.setOrderBy('collectionObject|ASC');
             popularReports.setAllRecords(true);
             popularReports.getEntity().then(function (data) {
                 data.records.forEach(function (customRecord) {
                     customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig);
                 });
-                _this.popularReports = data.records;
+                _this.popularReports = _this.chunkify(data.records, 3, true);
             });
         };
         this.getAllReports = function () {
             var allReports = _this.collectionConfigService.newCollectionConfig('Collection');
             allReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
+            allReports.setOrderBy('collectionObject|ASC');
             allReports.addFilter('reportFlag', 1);
             allReports.setAllRecords(true);
             allReports.getEntity().then(function (data) {
                 data.records.forEach(function (customRecord) {
                     customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig);
                 });
-                _this.allReports = data.records;
+                _this.allReports = _this.chunkify(data.records, 3, true);
             });
         };
         this.getMyCustomReports = function () {
@@ -92011,12 +92041,13 @@ var SWReportMenuController = /** @class */ (function () {
             myCustomReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
             myCustomReports.addFilter('createdByAccountID', _this.slatwall.account.accountID, '=', 'OR', '', 'group1');
             myCustomReports.addFilter('accountOwner.accountID', _this.slatwall.account.accountID, '=', 'OR', '', 'group1');
+            myCustomReports.setOrderBy('collectionObject|ASC');
             myCustomReports.setAllRecords(true);
             myCustomReports.getEntity().then(function (data) {
                 data.records.forEach(function (customRecord) {
                     customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig);
                 });
-                _this.myCustomReports = data.records;
+                _this.myCustomReports = _this.chunkify(data.records, 3, true);
             });
         };
         this.slatwall = $rootScope.slatwall;
@@ -93227,7 +93258,8 @@ var SWChartWidgetController = /** @class */ (function () {
         this.observerService = observerService;
         this.chartID = 'report-chart';
         this.dates = [];
-        this.period = "Day";
+        this.period = "day";
+        this.periodLabel = "day";
         this.periodIntervalKey = "createdDateTime";
         this.metricKey = "orderTotal";
         this.getMyChart = function () {
@@ -93302,7 +93334,7 @@ var SWChartWidgetController = /** @class */ (function () {
                         xAxes: [{
                                 display: true,
                                 scaleLabel: {
-                                    labelString: "Revenue by " + _this.period,
+                                    labelString: "Revenue this " + _this.periodLabel,
                                     display: true,
                                 },
                             }]
@@ -93316,6 +93348,7 @@ var SWChartWidgetController = /** @class */ (function () {
         };
         this.observerService.attach(function (config) {
             _this.period = config.period;
+            _this.periodLabel = config.periodLabel;
             _this.startDateTime = config.startDateTime;
             _this.endDateTime = config.endDateTime;
             _this.getMyChart();
@@ -93390,7 +93423,7 @@ var SWReportConfigurationBarController = /** @class */ (function () {
             _this.endDateTime = endTime;
             _this.period = period;
             _this.customToggle = false;
-            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": _this.period });
+            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": _this.period, "periodLabel": _this.period });
         };
         this.startCustomRange = function ($event) {
             $event.preventDefault();
@@ -93416,7 +93449,7 @@ var SWReportConfigurationBarController = /** @class */ (function () {
             else if (diff > 1 && diff <= 7) {
                 dynamicPeriod = "day";
             }
-            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": dynamicPeriod });
+            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": dynamicPeriod, "periodLabel": "period" });
         };
         var now = new Date();
         this.startOfToday = '{ts \'' + new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
@@ -93623,7 +93656,7 @@ var SWStatWidgetController = /** @class */ (function () {
             });
         };
         this.observerService.attach(function (config) {
-            _this.period = config.period;
+            _this.period = config.periodLabel;
             _this.startDateTime = config.startDateTime;
             _this.endDateTime = config.endDateTime;
             _this.getMetrics();
