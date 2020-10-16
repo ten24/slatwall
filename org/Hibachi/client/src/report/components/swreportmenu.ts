@@ -21,45 +21,88 @@ class SWReportMenuController{
 	    this.getAllReports();
     }
 
+	public chunkify = (a, n, balanced) => {
+    
+    if (n < 2)
+        return [a];
 
+    var len = a.length,
+            out = [],
+            i = 0,
+            size;
+
+    if (len % n === 0) {
+        size = Math.floor(len / n);
+        while (i < len) {
+            out.push(a.slice(i, i += size));
+        }
+    }
+
+    else if (balanced) {
+        while (i < len) {
+            size = Math.ceil((len - i) / n--);
+            out.push(a.slice(i, i += size));
+        }
+    }
+
+    else {
+
+        n--;
+        size = Math.floor(len / n);
+        if (len % size === 0)
+            size--;
+        while (i < size * n) {
+            out.push(a.slice(i, i += size));
+        }
+        out.push(a.slice(size * n));
+
+    }
+
+    return out;
+	}
     
     public getPopularReports = () =>{
 		var popularReports = this.collectionConfigService.newCollectionConfig('Collection');
     	popularReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag,accountOwner.accountID');
     	popularReports.addFilter('reportFlag',1)
 		popularReports.addFilter('accountOwner.accountID', 'null', 'is not');
+		popularReports.setOrderBy('collectionObject|ASC');
 		popularReports.setAllRecords(true);
         popularReports.getEntity().then((data)=>{
         	data.records.forEach((customRecord)=>{
         		customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig)
         	})
-        	this.popularReports = data.records;
+        	this.popularReports = this.chunkify(data.records, 3, true);
         });
     }
     public getAllReports = () =>{
 		var allReports = this.collectionConfigService.newCollectionConfig('Collection');
     	allReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
+    	allReports.setOrderBy('collectionObject|ASC');
     	allReports.addFilter('reportFlag',1)
     	allReports.setAllRecords(true);
         allReports.getEntity().then((data)=>{
         	data.records.forEach((customRecord)=>{
         		customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig)
         	})
-        	this.allReports = data.records;
+        	this.allReports = this.chunkify(data.records, 3, true);
         });
     }
+    
+
     public getMyCustomReports = () =>{
 		var myCustomReports = this.collectionConfigService.newCollectionConfig('Collection');
     	myCustomReports.setReportFlag(1)
     	myCustomReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
 		myCustomReports.addFilter('createdByAccountID', 	this.slatwall.account.accountID ,'=', 'OR', '', 'group1');
 		myCustomReports.addFilter('accountOwner.accountID',	this.slatwall.account.accountID ,'=','OR','', 'group1');
+		myCustomReports.setOrderBy('collectionObject|ASC');
 		myCustomReports.setAllRecords(true);
 		myCustomReports.getEntity().then((data)=>{
 			data.records.forEach((customRecord)=>{
         		customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig)
         	})
-        	this.myCustomReports = data.records;
+        	this.myCustomReports =  this.chunkify(data.records, 3, true);
         });
     }
     

@@ -14,7 +14,8 @@ class SWChartWidgetController {
     private chart;
     private dates = [];
     private siteId;
-    private period = "Day";
+    private period = "day";
+    private periodLabel = "day";
     private periodIntervalKey = "createdDateTime";
     private metricKey = "orderTotal";
     private startDateTime;
@@ -33,6 +34,7 @@ class SWChartWidgetController {
     ) {
         this.observerService.attach((config) => {
             this.period = config.period
+            this.periodLabel = config.periodLabel
             this.startDateTime = config.startDateTime
             this.endDateTime = config.endDateTime
             this.getMyChart()
@@ -136,7 +138,7 @@ class SWChartWidgetController {
                     xAxes: [{
                         display: true,
                         scaleLabel: {
-                            labelString: "Revenue by " + this.period,
+                            labelString: "Revenue this " + this.periodLabel,
                             display: true,
                         },
                     }]
