@@ -72,13 +72,15 @@
     border-radius: 50%;
     background-color: $accordion-indicator-bg;
     font: {
-      family: 'cartzilla-icons';
+      family: 'Font Awesome 5 Pro';
       size: $accordion-indicator-icon-size;
       weight: bold;
     }
     line-height: $accordion-indicator-box-size - .125rem;
     text-align: center;
-    &::before { content: '\e90c'; }
+    &::before { 
+      content: '\f106'; 
+    }
   }
   .collapsed .accordion-indicator {
     transform: rotate(-180deg);

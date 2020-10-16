@@ -5,17 +5,20 @@
 
 <!--- Footer--->
   <footer class="pt-5">
-    <div class="bg-primary p-5">
-     <div class="container">
-      <div class="row">
-        <div class="col-0 col-md-2"></div>
-        <div class="col-md-8 text-center">
-         	#$.renderContent($.getContentByUrlTitlePath('footer/contact-us').getContentID(), 'customBody')#
+    <cfif $.slatwall.getContent().getUrlTitlePath() NEQ "contact">
+      <div class="bg-primary p-5">
+       <div class="container">
+        <div class="row">
+          <div class="col-0 col-md-2"></div>
+          <div class="col-md-8 text-center">
+           	#$.renderContent($.getContentByUrlTitlePath('footer/contact-us').getContentID(), 'customBody')#
+          </div>
+          <div class="col-0 col-md-2"></div>
         </div>
-        <div class="col-0 col-md-2"></div>
+      </div>     
       </div>
-    </div>     
-    </div>
+    </cfif>
+    
     <div class="bg-light pt-4">
       <div class="container">
         <div class="row pt-2">
@@ -79,6 +82,7 @@
   <script src="#$.getThemePath()#/custom/client/assets/js/bootstrap.min.js"></script>
   <script src="#$.getThemePath()#/custom/client/assets/js/slick.min.js"></script>
   <script src="#$.getThemePath()#/custom/client/assets/js/theme.js"></script>
+  <script src="#$.getThemePath()#/custom/client/assets/js/simplebar.min.js"></script>
 </body>
 </html>
 
