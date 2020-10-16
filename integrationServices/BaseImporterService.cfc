@@ -72,21 +72,27 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	public struct function getEntityMapping( required string entityName ){
 	    
-	    var entityMappings = this.getCachedEntityMappings();
+	    var extentionFunctionName = 'get#arguments.entityName#Mapping';
+	    if( structKeyExists(this, extentionFunctionName) ){
+	        return this.invokeMethod( extentionFunctionName, arguments );
+	    }
 	    
-	    if( !structKeyExists( entityMappings, arguments.entityName) ){
+	    
+	    var cachedMappings = this.getCachedEntityMappings();
+	    
+	    if( !structKeyExists( cachedMappings, arguments.entityName) ){
 	        
 	        //Can be overriden to Read from Files/DB/Function whatever 
 	        var mappingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#arguments.entityName#.json');
 	        
 	        if( isJson(mappingJson) ){
-	            entityMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);
+	            cachedMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);
 	        } else {
 	            throw( "Mapping for #arguments.entityName#.json is not valid : \n" &mappingJson );
 	        }
 	    }
 	    
-        return entityMappings[ arguments.entityName ];
+        return cachedMappings[ arguments.entityName ];
 	}
 
   	public struct function createEntityCSVHeaderMetaDataRecursively( required string entityName ){
