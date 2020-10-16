@@ -29,14 +29,14 @@
                 "dataType": "string"
             }
         },
-        "publishedFlag": {
+        "productTypePublishedFlag": {
             "propertyIdentifier": "publishedFlag",
             "defaultValue": true,
             "validations": {
                 "dataType": "boolean"
             }
         },
-        "activeFlag": {
+        "productTypeActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true,
             "validations": {
@@ -48,19 +48,16 @@
     "generatedProperties" : [
         {
             "propertyIdentifier" : "urlTitle",
-            "generatorFunction"  : "generate_ProductType_UrlTitle"
+            "generatorFunction"  : "generateProductTypeUrlTitle",
+            "allowUpdate": false,
         },
         {
             "propertyIdentifier" : "productTypeIDPath",
-            "generatorFunction"  : "generate_ProductType_ProductTypeIDPath"
-        },
-        {
-            "propertyIdentifier" : "parentProductType",
-            "generatorFunction"  : "generate_ProductType_ParentProductType"
+            "generatorFunction"  : "generateProductTypeProductTypeIDPath"
         },
         {
             "propertyIdentifier" : "productTypeNamePath",
-            "generatorFunction"  : "generate_ProductType_ProductTypeNamePath"
+            "generatorFunction"  : "generateProductTypeProductTypeNamePath"
         }
     ],
     

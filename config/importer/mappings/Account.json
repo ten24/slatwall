@@ -43,7 +43,7 @@
                 "dataType": "boolean"
             }
         },
-        "activeFlag": {
+        "accountActiveFlag": {
             "propertyIdentifier": "activeFlag",
         }
     },

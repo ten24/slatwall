@@ -635,36 +635,40 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	/**
 	 * Example function, is getting used to generate passwords for imported accounts 
 	*/
-	public any function generate_AccountAuthentication_Password( struct data, struct mapping, struct propertyMetaData ){
+	public any function generateAccountAuthenticationPassword( struct data, struct mapping, struct propertyMetaData ){
 	    return this.getHibachiUtilityService().generateRandomPassword(10);
 	}
 	
-	public boolean function generate_Account_activeFlag( struct data, struct mapping, struct propertyMetaData ){
+	public boolean function generateAccountactiveFlag( struct data, struct mapping, struct propertyMetaData ){
 	    return true;
 	}
-	public any function generate_Brand_UrlTitle( struct data, struct mapping, struct propertyMetaData ){
+	
+	public any function generateBrandUrlTitle( struct data, struct mapping, struct propertyMetaData ){
 	   return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.brandName);
 	}
-	public any function generate_Product_UrlTitle( struct data, struct mapping, struct propertyMetaData){
+	
+	public any function generateProductUrlTitle( struct data, struct mapping, struct propertyMetaData){
 	   return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.productName);
 	}
-	public any function generate_ProductType_UrlTitle( struct data, struct mapping, struct propertyMetaData ){
+	
+	public any function generateProductTypeUrlTitle( struct data, struct mapping, struct propertyMetaData ){
 	    return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.productTypeName);
 	}
-	public any function generate_ProductType_ProductTypeIDPath( struct data, struct mapping, struct propertyMetaData ){
+	
+	public any function generateProductTypeProductTypeIDPath( struct data, struct mapping, struct propertyMetaData ){
 	    /*** Logic to be discussed ***/
 	}
-	public any function generate_ProductType_ProductTypeNamePath( struct data, struct mapping, struct propertyMetaData ){
+	
+	public any function generateProductTypeProductTypeNamePath( struct data, struct mapping, struct propertyMetaData ){
 	    /*** Logic to be discussed ***/
 	}
-	public any function generate_ProductType_ParentProductType( struct data, struct mapping, struct propertyMetaData ){
-	    var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-    	        "entityName"  : ProductType,
-    	        "uniqueKey"   : 'remoteProductTypeID',
-    	        "uniqueValue" : importRemoteID
-    	    );
-
-	   return  parentProductTypeID =  primaryIDValue ?: '444df2f7ea9c87e60051f3cd87b435a1';
+	
+	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
+	  return  { 'parentProductTypeID' = '444df2f7ea9c87e60051f3cd87b435a1'; }
+	}
+	
+	public any function generateSkuImageFile( struct data, struct mapping, struct propertyMetaData ){
+		
 	}
 	
 	

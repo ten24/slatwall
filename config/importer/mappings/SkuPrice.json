@@ -31,7 +31,7 @@
         "price": {
             "propertyIdentifier": "price",
             "validations": {
-                "required": false,
+                "required": true,
                 "dataType": "numeric"
             }
         },
@@ -42,7 +42,7 @@
                 "dataType": "numeric"
             }
         },
-        "activeFlag": {
+        "SkuPriceActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true,
             "validations": {

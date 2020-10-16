@@ -24,14 +24,29 @@
                 "dataType": "string"
             }
         },
-        "publishedFlag": {
+        "skuDescription": {
+            "propertyIdentifier": "skuDescription",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "skuPublishedFlag": {
             "propertyIdentifier": "publishedFlag",
+            "defaultValue": true
+        },
+        "skuActiveFlag": {
+            "propertyIdentifier": "activeFlag",
             "defaultValue": true
         }
         
     },
     
-    "generatedProperties": [],
+    "generatedProperties": [
+        {
+            "propertyIdentifier" : "imageFile",
+            "generatorFunction"  : "generateSkuImageFile"
+        }
+    ],
     
     "relations": [
         {

@@ -23,11 +23,11 @@
                 "dataType": "string"
             }
         },
-        "publishedFlag": {
+        "brandPublishedFlag": {
             "propertyIdentifier": "publishedFlag",
             "defaultValue": true
         },
-        "activeFlag": {
+        "brandActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true
         }
@@ -36,7 +36,8 @@
     "generatedProperties" : [
         {
             "propertyIdentifier" : "urlTitle",
-            "generatorFunction"  : "generate_Brand_UrlTitle"
+            "generatorFunction"  : "generateBrandUrlTitle",
+            "allowUpdate": false,
         }
     ],
     

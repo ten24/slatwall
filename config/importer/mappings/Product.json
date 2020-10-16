@@ -29,14 +29,14 @@
                 "dataType": "string"
             }
         },
-        "publishedFlag": {
+        "productPublishedFlag": {
             "propertyIdentifier": "publishedFlag",
             "defaultValue": true,
             "validations": {
                 "dataType": "boolean"
             }
         },
-        "activeFlag": {
+        "productActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true,
             "validations": {
@@ -48,7 +48,8 @@
     "generatedProperties" : [
         {
             "propertyIdentifier" : "urlTitle",
-            "generatorFunction"  : "generate_Product_UrlTitle"
+            "generatorFunction"  : "generateProductUrlTitle",
+            "allowUpdate": false,
         }
     ],
     
