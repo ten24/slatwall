@@ -72,21 +72,27 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	public struct function getEntityMapping( required string entityName ){
 	    
-	    var entityMappings = this.getCachedEntityMappings();
+	    var extentionFunctionName = 'get#arguments.entityName#Mapping';
+	    if( structKeyExists(this, extentionFunctionName) ){
+	        return this.invokeMethod( extentionFunctionName, arguments );
+	    }
 	    
-	    if( !structKeyExists( entityMappings, arguments.entityName) ){
+	    
+	    var cachedMappings = this.getCachedEntityMappings();
+	    
+	    if( !structKeyExists( cachedMappings, arguments.entityName) ){
 	        
 	        //Can be overriden to Read from Files/DB/Function whatever 
 	        var mappingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#arguments.entityName#.json');
 	        
 	        if( isJson(mappingJson) ){
-	            entityMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);
+	            cachedMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);
 	        } else {
 	            throw( "Mapping for #arguments.entityName#.json is not valid : \n" &mappingJson );
 	        }
 	    }
 	    
-        return entityMappings[ arguments.entityName ];
+        return cachedMappings[ arguments.entityName ];
 	}
 
   	public struct function createEntityCSVHeaderMetaDataRecursively( required string entityName ){
@@ -445,32 +451,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     }
     
 	public struct function transformData( required struct data, required struct mapping ){
-	    var transformedData = {};
 	    var entityName = arguments.mapping.entityName;
-	    
-	    // First level properties from mapping everything inside `mapping.properties`
-	    if( structKeyExists(arguments.mapping, 'properties') ){
-    	    for( var sourcePropertyName in arguments.mapping.properties ){
-    	        
-    	        var propertyMetaData = arguments.mapping.properties[ sourcePropertyName ];
-    	        
-    	        var propertyValue = this.getOrGeneratePropertyValue(
-    	            data               : arguments.data, 
-        	        mapping            : arguments.mapping,
-        	        propertyMetaData   : propertyMetaData,
-        	        sourcePropertyName : sourcePropertyName
-    	        );
-                        	        
-    	        if( !isNull(propertyValue) ){
-            	    transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
-    	        }
-    	    }
-	    }
+	    var transformedData = {};
 	    
 	    // Inferd properties, importRemoteID and `primaryIDProperty`
 	    var importRemoteIDValue = this.createEntityImportRemoteID( entityName, arguments.data );
 	  	transformedData['importRemoteID'] = importRemoteIDValue;
-	  
 	  
 	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( entityName );
 	    /**
@@ -479,7 +465,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	      * otherwise set it to empty string (in case of insert)
 	      * 
 	    */
-	    if( !structKeyExists( arguments.data, primaryIDPropertyName) ){
+	    if( !structKeyExists( arguments.data, primaryIDPropertyName ) || this.hibachiIsEmpty( arguments.data[ primaryIDPropertyName ] ) ){
 	        
     	    /** 
     	     * This will execute a query to the DB like:
@@ -504,16 +490,51 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    transformedData[ primaryIDPropertyName ] = arguments.data[ primaryIDPropertyName ];
 	    
 	    
-	    // generated-properties, properties which don't have a source-property and are complete generated in slatwall, like `url-title`
+	    // First level properties from mapping everything inside `mapping.properties`
+	    if( structKeyExists(arguments.mapping, 'properties') ){
+	        
+    	    for( var sourcePropertyName in arguments.mapping.properties ){
+    	        
+    	        var propertyMetaData = arguments.mapping.properties[ sourcePropertyName ];
+    	        
+    	        // SKIP if it's a create-only property, and we're upserting
+    	        if(structKeyExists(propertyMetaData, 'allowUpdate') && !propertyMetaData.allowUpdate ){
+    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	                continue;
+    	            }
+    	        }
+    	        
+    	        var propertyValue = this.getOrGeneratePropertyValue(
+    	            data               : arguments.data, 
+        	        mapping            : arguments.mapping,
+        	        propertyMetaData   : propertyMetaData,
+        	        sourcePropertyName : sourcePropertyName
+    	        );
+                
+    	        if( !isNull(propertyValue) ){
+            	    transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
+    	        }
+    	    }
+	    }
+	    
+	    
+	    // generated-properties, properties which don't have a source-property and are completely generated in slatwall, like `url-title`
 	    if( structKeyExists(arguments.mapping, 'generatedProperties') ){
 	        
 	        for(var propertyMetaData in arguments.mapping.generatedProperties ){
+	            
+	            // SKIP if it's a create-only property, and we're upserting
+    	        if(structKeyExists(propertyMetaData, 'allowUpdate') && !propertyMetaData.allowUpdate ){
+    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	                continue;
+    	            }
+    	        }
 	            
     	        var propertyValue = this.getOrGeneratePropertyValue(
     	            data               : arguments.data, 
         	        mapping            : arguments.mapping,
         	        propertyMetaData   : propertyMetaData
-        	   );
+        	    );
         	   
     	        if( !isNull(propertyValue) ){
             	    transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
@@ -521,14 +542,22 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        }
 	    }
 	    
+	    
 	    // relations, properties which belong to some slatwall entity, like `email` is stored in AccountEmailAddress
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
 	        
 	        for(var relation in arguments.mapping.relations ){
 	            
+	            // SKIP if it's a create-only relation, and we're upserting
+    	        if( structKeyExists(relation, 'allowUpdate') && !relation.allowUpdate ){
+    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	                continue;
+    	            }
+    	        }
+	            
                 var transformedRelationData = this.getOrGenerateRelationData(
                     data                = arguments.data,
-                    parentEntityMapping  = arguments.mapping,
+                    parentEntityMapping = arguments.mapping,
                     relationMetaData    = relation
                 );
 	                
@@ -538,8 +567,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        }
 	        
 	    }
-	    
-	    
+	   
+	   
 	    return transformedData;
 	}
 	

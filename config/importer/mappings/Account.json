@@ -48,7 +48,12 @@
         }
     },
     
-    "generatedProperties": [],
+    "generatedProperties": [
+        {
+            "propertyIdentifier": "urtTitle",
+            "allowUpdate": false,
+        }    
+    ],
     
     "relations": [
         {
