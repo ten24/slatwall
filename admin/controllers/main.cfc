@@ -179,8 +179,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				arguments.rc.ajaxResponse["report"]["hideReport"] = true; 	
 			}
 			
-		} else {
-			arguments.rc.pageTitle = arguments.rc.report.getReportTitle();
 		}
 		
 	}

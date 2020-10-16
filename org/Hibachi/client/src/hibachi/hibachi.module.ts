@@ -9,6 +9,7 @@ import {dialogmodule} from "../dialog/dialog.module";
 import {entitymodule} from "../entity/entity.module";
 import {paginationmodule} from "../pagination/pagination.module";
 import {formmodule} from "../form/form.module";
+import {reportmodule} from "../report/report.module";
 import {validationmodule} from "../validation/validation.module";
 import {widgetmodule} from "../widget/widget.module";
 import {workflowmodule} from "../workflow/workflow.module";
@@ -25,6 +26,7 @@ var hibachimodule = angular.module('hibachi',[
     listingmodule.name,
     paginationmodule.name,
     formmodule.name,
+    reportmodule.name,
     validationmodule.name,
     widgetmodule.name,
     workflowmodule.name

@@ -8,7 +8,7 @@ webpackJsonphibachi([0],[
 var root_1 = __webpack_require__(10);
 var toSubscriber_1 = __webpack_require__(607);
 var observable_1 = __webpack_require__(38);
-var pipe_1 = __webpack_require__(60);
+var pipe_1 = __webpack_require__(61);
 /**
  * A representation of any set of values over any amount of time. This is the most basic building block
  * of RxJS.
@@ -4917,7 +4917,7 @@ exports.Observable = Observable;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(827)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(829)(module)))
 
 /***/ }),
 /* 2 */
@@ -5931,7 +5931,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var ScalarObservable_1 = __webpack_require__(44);
+var ScalarObservable_1 = __webpack_require__(45);
 var EmptyObservable_1 = __webpack_require__(15);
 var isScheduler_1 = __webpack_require__(11);
 /**
@@ -6290,7 +6290,7 @@ var swhref_1 = __webpack_require__(673);
 var swprocesscaller_1 = __webpack_require__(681);
 var swsortable_1 = __webpack_require__(685);
 var sworderbycontrols_1 = __webpack_require__(680);
-var alert_module_1 = __webpack_require__(61);
+var alert_module_1 = __webpack_require__(62);
 var dialog_module_1 = __webpack_require__(300);
 var coremodule = angular.module('hibachi.core', [
     //Angular Modules
@@ -6652,7 +6652,7 @@ exports.Notification = Notification;
 var isScheduler_1 = __webpack_require__(11);
 var of_1 = __webpack_require__(203);
 var from_1 = __webpack_require__(202);
-var concatAll_1 = __webpack_require__(47);
+var concatAll_1 = __webpack_require__(48);
 /* tslint:enable:max-line-length */
 /**
  * Creates an output Observable which sequentially emits all values from given
@@ -7040,10 +7040,10 @@ exports.MergeMapSubscriber = MergeMapSubscriber;
 
 "use strict";
 
-var scan_1 = __webpack_require__(55);
-var takeLast_1 = __webpack_require__(57);
-var defaultIfEmpty_1 = __webpack_require__(49);
-var pipe_1 = __webpack_require__(60);
+var scan_1 = __webpack_require__(56);
+var takeLast_1 = __webpack_require__(58);
+var defaultIfEmpty_1 = __webpack_require__(50);
+var pipe_1 = __webpack_require__(61);
 /* tslint:enable:max-line-length */
 /**
  * Applies an accumulator function over the source Observable, and returns the
@@ -8591,6 +8591,92 @@ exports.isFunction = isFunction;
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+//modules
+var core_module_1 = __webpack_require__(17);
+//services
+var collectionconfigservice_1 = __webpack_require__(653);
+var collectionservice_1 = __webpack_require__(654);
+//controllers
+var collections_1 = __webpack_require__(648);
+var createcollection_1 = __webpack_require__(650);
+var confirmationcontroller_1 = __webpack_require__(649);
+var entity_createcollection_1 = __webpack_require__(651);
+//directives
+var swcollection_1 = __webpack_require__(627);
+var swaddfilterbuttons_1 = __webpack_require__(626);
+var swdisplayoptions_1 = __webpack_require__(642);
+var swdisplayitem_1 = __webpack_require__(640);
+var swdisplayitemaggregate_1 = __webpack_require__(641);
+var swcollectiontable_1 = __webpack_require__(628);
+var swcolumnitem_1 = __webpack_require__(629);
+var swconditioncriteria_1 = __webpack_require__(630);
+var swcriteria_1 = __webpack_require__(631);
+var swcriteriaboolean_1 = __webpack_require__(632);
+var swcriteriadate_1 = __webpack_require__(633);
+var swcriteriamanytomany_1 = __webpack_require__(634);
+var swcriteriamanytoone_1 = __webpack_require__(635);
+var swcriterianumber_1 = __webpack_require__(636);
+var swcriteriaonetomany_1 = __webpack_require__(637);
+var swcriteriarelatedobject_1 = __webpack_require__(638);
+var swcriteriastring_1 = __webpack_require__(639);
+var sweditfilteritem_1 = __webpack_require__(643);
+var swfiltergroups_1 = __webpack_require__(645);
+var swfilteritem_1 = __webpack_require__(646);
+var swfiltergroupitem_1 = __webpack_require__(644);
+var swrestrictionconfig_1 = __webpack_require__(647);
+//filters
+var aggregatefilter_1 = __webpack_require__(652);
+var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
+    .config([function () {
+    }]).run([function () {
+    }])
+    //constants
+    .constant('collectionPartialsPath', 'collection/components/')
+    //controllers
+    .controller('collections', collections_1.CollectionController)
+    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
+    .controller('createCollection', createcollection_1.CreateCollection)
+    .controller('entity_createcollection', entity_createcollection_1.CollectionCreateController)
+    //services
+    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', 'observerService', function (rbkeyService, $hibachi, utilityService, observerService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService, observerService); }])
+    .service('collectionService', collectionservice_1.CollectionService)
+    //directives
+    .directive('swRestrictionConfig', swrestrictionconfig_1.SWRestrictionConfig.Factory())
+    .directive('swCollection', swcollection_1.SWCollection.Factory())
+    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
+    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
+    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
+    .directive('swDisplayItemAggregate', swdisplayitemaggregate_1.SWDisplayItemAggregate.Factory())
+    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
+    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
+    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
+    .directive('swCriteria', swcriteria_1.SWCriteria.Factory())
+    .directive('swCriteriaBoolean', swcriteriaboolean_1.SWCriteriaBoolean.Factory())
+    .directive('swCriteriaDate', swcriteriadate_1.SWCriteriaDate.Factory())
+    .directive('swCriteriaManyToMany', swcriteriamanytomany_1.SWCriteriaManyToMany.Factory())
+    .directive('swCriteriaManyToOne', swcriteriamanytoone_1.SWCriteriaManyToOne.Factory())
+    .directive('swCriteriaNumber', swcriterianumber_1.SWCriteriaNumber.Factory())
+    .directive('swCriteriaOneToMany', swcriteriaonetomany_1.SWCriteriaOneToMany.Factory())
+    .directive('swCriteriaRelatedObject', swcriteriarelatedobject_1.SWCriteriaRelatedObject.Factory())
+    .directive('swCriteriaString', swcriteriastring_1.SWCriteriaString.Factory())
+    .directive('swEditFilterItem', sweditfilteritem_1.SWEditFilterItem.Factory())
+    .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
+    .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory())
+    .directive('swFilterGroupItem', swfiltergroupitem_1.SWFilterGroupItem.Factory())
+    //filters
+    .filter('aggregateFilter', ['$filter', aggregatefilter_1.AggregateFilter.Factory]);
+exports.collectionmodule = collectionmodule;
+
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -8650,7 +8736,7 @@ exports.ScalarObservable = ScalarObservable;
 //# sourceMappingURL=ScalarObservable.js.map
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8745,7 +8831,7 @@ exports.RaceSubscriber = RaceSubscriber;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8869,7 +8955,7 @@ var AuditSubscriber = (function (_super) {
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8930,7 +9016,7 @@ exports.concatAll = concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9003,7 +9089,7 @@ exports.concatMap = concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9086,7 +9172,7 @@ var DefaultIfEmptySubscriber = (function (_super) {
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9200,7 +9286,7 @@ var DistinctUntilChangedSubscriber = (function (_super) {
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9300,7 +9386,7 @@ var FilterSubscriber = (function (_super) {
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9406,7 +9492,7 @@ exports.FindValueSubscriber = FindValueSubscriber;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9549,7 +9635,7 @@ var OnErrorResumeNextSubscriber = (function (_super) {
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9640,7 +9726,7 @@ var RefCountSubscriber = (function (_super) {
 //# sourceMappingURL=refCount.js.map
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9767,7 +9853,7 @@ var ScanSubscriber = (function (_super) {
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9915,7 +10001,7 @@ var SwitchMapSubscriber = (function (_super) {
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10030,7 +10116,7 @@ var TakeLastSubscriber = (function (_super) {
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10061,7 +10147,7 @@ exports.Timestamp = Timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10072,12 +10158,12 @@ exports.noop = noop;
 //# sourceMappingURL=noop.js.map
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var noop_1 = __webpack_require__(59);
+var noop_1 = __webpack_require__(60);
 /* tslint:enable:max-line-length */
 function pipe() {
     var fns = [];
@@ -10103,7 +10189,7 @@ exports.pipeFromArray = pipeFromArray;
 //# sourceMappingURL=pipe.js.map
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10121,92 +10207,6 @@ var alertmodule = angular.module('hibachi.alert', [])
     //services
     .service('alertService', alertservice_1.AlertService);
 exports.alertmodule = alertmodule;
-
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../typings/tsd.d.ts' />
-//modules
-var core_module_1 = __webpack_require__(17);
-//services
-var collectionconfigservice_1 = __webpack_require__(653);
-var collectionservice_1 = __webpack_require__(654);
-//controllers
-var collections_1 = __webpack_require__(648);
-var createcollection_1 = __webpack_require__(650);
-var confirmationcontroller_1 = __webpack_require__(649);
-var entity_createcollection_1 = __webpack_require__(651);
-//directives
-var swcollection_1 = __webpack_require__(627);
-var swaddfilterbuttons_1 = __webpack_require__(626);
-var swdisplayoptions_1 = __webpack_require__(642);
-var swdisplayitem_1 = __webpack_require__(640);
-var swdisplayitemaggregate_1 = __webpack_require__(641);
-var swcollectiontable_1 = __webpack_require__(628);
-var swcolumnitem_1 = __webpack_require__(629);
-var swconditioncriteria_1 = __webpack_require__(630);
-var swcriteria_1 = __webpack_require__(631);
-var swcriteriaboolean_1 = __webpack_require__(632);
-var swcriteriadate_1 = __webpack_require__(633);
-var swcriteriamanytomany_1 = __webpack_require__(634);
-var swcriteriamanytoone_1 = __webpack_require__(635);
-var swcriterianumber_1 = __webpack_require__(636);
-var swcriteriaonetomany_1 = __webpack_require__(637);
-var swcriteriarelatedobject_1 = __webpack_require__(638);
-var swcriteriastring_1 = __webpack_require__(639);
-var sweditfilteritem_1 = __webpack_require__(643);
-var swfiltergroups_1 = __webpack_require__(645);
-var swfilteritem_1 = __webpack_require__(646);
-var swfiltergroupitem_1 = __webpack_require__(644);
-var swrestrictionconfig_1 = __webpack_require__(647);
-//filters
-var aggregatefilter_1 = __webpack_require__(652);
-var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
-    .config([function () {
-    }]).run([function () {
-    }])
-    //constants
-    .constant('collectionPartialsPath', 'collection/components/')
-    //controllers
-    .controller('collections', collections_1.CollectionController)
-    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
-    .controller('createCollection', createcollection_1.CreateCollection)
-    .controller('entity_createcollection', entity_createcollection_1.CollectionCreateController)
-    //services
-    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', 'observerService', function (rbkeyService, $hibachi, utilityService, observerService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService, observerService); }])
-    .service('collectionService', collectionservice_1.CollectionService)
-    //directives
-    .directive('swRestrictionConfig', swrestrictionconfig_1.SWRestrictionConfig.Factory())
-    .directive('swCollection', swcollection_1.SWCollection.Factory())
-    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
-    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
-    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
-    .directive('swDisplayItemAggregate', swdisplayitemaggregate_1.SWDisplayItemAggregate.Factory())
-    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
-    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
-    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
-    .directive('swCriteria', swcriteria_1.SWCriteria.Factory())
-    .directive('swCriteriaBoolean', swcriteriaboolean_1.SWCriteriaBoolean.Factory())
-    .directive('swCriteriaDate', swcriteriadate_1.SWCriteriaDate.Factory())
-    .directive('swCriteriaManyToMany', swcriteriamanytomany_1.SWCriteriaManyToMany.Factory())
-    .directive('swCriteriaManyToOne', swcriteriamanytoone_1.SWCriteriaManyToOne.Factory())
-    .directive('swCriteriaNumber', swcriterianumber_1.SWCriteriaNumber.Factory())
-    .directive('swCriteriaOneToMany', swcriteriaonetomany_1.SWCriteriaOneToMany.Factory())
-    .directive('swCriteriaRelatedObject', swcriteriarelatedobject_1.SWCriteriaRelatedObject.Factory())
-    .directive('swCriteriaString', swcriteriastring_1.SWCriteriaString.Factory())
-    .directive('swEditFilterItem', sweditfilteritem_1.SWEditFilterItem.Factory())
-    .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
-    .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory())
-    .directive('swFilterGroupItem', swfiltergroupitem_1.SWFilterGroupItem.Factory())
-    //filters
-    .filter('aggregateFilter', ['$filter', aggregatefilter_1.AggregateFilter.Factory]);
-exports.collectionmodule = collectionmodule;
 
 
 /***/ }),
@@ -22973,7 +22973,7 @@ var Subject_1 = __webpack_require__(7);
 var Observable_1 = __webpack_require__(0);
 var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(6);
-var refCount_1 = __webpack_require__(54);
+var refCount_1 = __webpack_require__(55);
 /**
  * @class ConnectableObservable<T>
  */
@@ -23881,7 +23881,7 @@ exports.timeInterval = timeInterval;
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var audit_1 = __webpack_require__(46);
+var audit_1 = __webpack_require__(47);
 var timer_1 = __webpack_require__(204);
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
@@ -24871,7 +24871,7 @@ exports.concat = concat;
 
 "use strict";
 
-var concatMap_1 = __webpack_require__(48);
+var concatMap_1 = __webpack_require__(49);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -25864,7 +25864,7 @@ exports.DistinctSubscriber = DistinctSubscriber;
 
 "use strict";
 
-var distinctUntilChanged_1 = __webpack_require__(50);
+var distinctUntilChanged_1 = __webpack_require__(51);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item,
@@ -26566,7 +26566,7 @@ var FinallySubscriber = (function (_super) {
 
 "use strict";
 
-var find_1 = __webpack_require__(52);
+var find_1 = __webpack_require__(53);
 /**
  * Emits only the index of the first value emitted by the source Observable that
  * meets some condition.
@@ -27059,7 +27059,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(2);
-var noop_1 = __webpack_require__(59);
+var noop_1 = __webpack_require__(60);
 /**
  * Ignores all items emitted by the source Observable and only passes calls of `complete` or `error`.
  *
@@ -27988,7 +27988,7 @@ var PairwiseSubscriber = (function (_super) {
 "use strict";
 
 var not_1 = __webpack_require__(606);
-var filter_1 = __webpack_require__(51);
+var filter_1 = __webpack_require__(52);
 /**
  * Splits the source Observable into two, one with values that satisfy a
  * predicate, and another with values that don't satisfy the predicate.
@@ -28193,7 +28193,7 @@ exports.publishReplay = publishReplay;
 "use strict";
 
 var isArray_1 = __webpack_require__(12);
-var race_1 = __webpack_require__(45);
+var race_1 = __webpack_require__(46);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that mirrors the first source Observable to emit an item
@@ -28958,7 +28958,7 @@ var SequenceEqualCompareToSubscriber = (function (_super) {
 "use strict";
 
 var multicast_1 = __webpack_require__(16);
-var refCount_1 = __webpack_require__(54);
+var refCount_1 = __webpack_require__(55);
 var Subject_1 = __webpack_require__(7);
 function shareSubjectFactory() {
     return new Subject_1.Subject();
@@ -29444,7 +29444,7 @@ var SkipWhileSubscriber = (function (_super) {
 "use strict";
 
 var ArrayObservable_1 = __webpack_require__(14);
-var ScalarObservable_1 = __webpack_require__(44);
+var ScalarObservable_1 = __webpack_require__(45);
 var EmptyObservable_1 = __webpack_require__(15);
 var concat_1 = __webpack_require__(20);
 var isScheduler_1 = __webpack_require__(11);
@@ -29497,7 +29497,7 @@ exports.startWith = startWith;
 
 "use strict";
 
-var switchMap_1 = __webpack_require__(56);
+var switchMap_1 = __webpack_require__(57);
 var identity_1 = __webpack_require__(292);
 function switchAll() {
     return switchMap_1.switchMap(identity_1.identity);
@@ -47981,7 +47981,7 @@ var UnsubscriptionError_1 = __webpack_require__(290);
 exports.UnsubscriptionError = UnsubscriptionError_1.UnsubscriptionError;
 var timeInterval_1 = __webpack_require__(205);
 exports.TimeInterval = timeInterval_1.TimeInterval;
-var timestamp_1 = __webpack_require__(58);
+var timestamp_1 = __webpack_require__(59);
 exports.Timestamp = timestamp_1.Timestamp;
 var TestScheduler_1 = __webpack_require__(598);
 exports.TestScheduler = TestScheduler_1.TestScheduler;
@@ -47991,7 +47991,7 @@ var AjaxObservable_1 = __webpack_require__(201);
 exports.AjaxResponse = AjaxObservable_1.AjaxResponse;
 exports.AjaxError = AjaxObservable_1.AjaxError;
 exports.AjaxTimeoutError = AjaxObservable_1.AjaxTimeoutError;
-var pipe_1 = __webpack_require__(60);
+var pipe_1 = __webpack_require__(61);
 exports.pipe = pipe_1.pipe;
 var asap_1 = __webpack_require__(285);
 var async_1 = __webpack_require__(5);
@@ -48337,7 +48337,7 @@ Observable_1.Observable.pairs = pairs_1.pairs;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var race_1 = __webpack_require__(45);
+var race_1 = __webpack_require__(46);
 Observable_1.Observable.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
@@ -49534,7 +49534,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var ScalarObservable_1 = __webpack_require__(44);
+var ScalarObservable_1 = __webpack_require__(45);
 var EmptyObservable_1 = __webpack_require__(15);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -51363,7 +51363,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var noop_1 = __webpack_require__(59);
+var noop_1 = __webpack_require__(60);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -52390,7 +52390,7 @@ exports.never = NeverObservable_1.NeverObservable.create;
 
 "use strict";
 
-var onErrorResumeNext_1 = __webpack_require__(53);
+var onErrorResumeNext_1 = __webpack_require__(54);
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNextStatic;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
@@ -52450,7 +52450,7 @@ exports.zip = zip_1.zipStatic;
 
 "use strict";
 
-var audit_1 = __webpack_require__(46);
+var audit_1 = __webpack_require__(47);
 /**
  * Ignores source values for a duration determined by another Observable, then
  * emits the most recent value from the source Observable, then repeats this
@@ -53085,7 +53085,7 @@ exports.concat = concat;
 
 "use strict";
 
-var concatAll_1 = __webpack_require__(47);
+var concatAll_1 = __webpack_require__(48);
 /* tslint:enable:max-line-length */
 /**
  * Converts a higher-order Observable into a first-order Observable by
@@ -53147,7 +53147,7 @@ exports.concatAll = concatAll;
 
 "use strict";
 
-var concatMap_1 = __webpack_require__(48);
+var concatMap_1 = __webpack_require__(49);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -53467,7 +53467,7 @@ exports.debounceTime = debounceTime;
 
 "use strict";
 
-var defaultIfEmpty_1 = __webpack_require__(49);
+var defaultIfEmpty_1 = __webpack_require__(50);
 /* tslint:enable:max-line-length */
 /**
  * Emits a given value if the source Observable completes without emitting any
@@ -53735,7 +53735,7 @@ exports.distinct = distinct;
 
 "use strict";
 
-var distinctUntilChanged_1 = __webpack_require__(50);
+var distinctUntilChanged_1 = __webpack_require__(51);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item.
@@ -54167,7 +54167,7 @@ exports.expand = expand;
 
 "use strict";
 
-var filter_1 = __webpack_require__(51);
+var filter_1 = __webpack_require__(52);
 /* tslint:enable:max-line-length */
 /**
  * Filter items emitted by the source Observable by only emitting those that
@@ -54241,7 +54241,7 @@ exports._finally = _finally;
 
 "use strict";
 
-var find_1 = __webpack_require__(52);
+var find_1 = __webpack_require__(53);
 /* tslint:enable:max-line-length */
 /**
  * Emits only the first value emitted by the source Observable that meets some
@@ -55272,7 +55272,7 @@ exports.observeOn = observeOn;
 
 "use strict";
 
-var onErrorResumeNext_1 = __webpack_require__(53);
+var onErrorResumeNext_1 = __webpack_require__(54);
 /* tslint:enable:max-line-length */
 /**
  * When any of the provided Observable emits an complete or error notification, it immediately subscribes to the next one
@@ -55586,7 +55586,7 @@ exports.publishReplay = publishReplay;
 
 var race_1 = __webpack_require__(250);
 // NOTE: to support backwards compatability with 5.4.* and lower
-var race_2 = __webpack_require__(45);
+var race_2 = __webpack_require__(46);
 exports.raceStatic = race_2.race;
 /* tslint:enable:max-line-length */
 /**
@@ -55887,7 +55887,7 @@ exports.sampleTime = sampleTime;
 
 "use strict";
 
-var scan_1 = __webpack_require__(55);
+var scan_1 = __webpack_require__(56);
 /* tslint:enable:max-line-length */
 /**
  * Applies an accumulator function over the source Observable, and returns each
@@ -56314,7 +56314,7 @@ exports._switch = _switch;
 
 "use strict";
 
-var switchMap_1 = __webpack_require__(56);
+var switchMap_1 = __webpack_require__(57);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -56477,7 +56477,7 @@ exports.take = take;
 
 "use strict";
 
-var takeLast_1 = __webpack_require__(57);
+var takeLast_1 = __webpack_require__(58);
 /**
  * Emits only the last `count` values emitted by the source Observable.
  *
@@ -56875,7 +56875,7 @@ exports.timeoutWith = timeoutWith;
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var timestamp_1 = __webpack_require__(58);
+var timestamp_1 = __webpack_require__(59);
 /**
  * @param scheduler
  * @return {Observable<Timestamp<any>>|WebSocketSubject<T>|Observable<T>}
@@ -57280,7 +57280,7 @@ exports.zipAll = zipAll;
 
 "use strict";
 
-var audit_1 = __webpack_require__(46);
+var audit_1 = __webpack_require__(47);
 exports.audit = audit_1.audit;
 var auditTime_1 = __webpack_require__(206);
 exports.auditTime = auditTime_1.auditTime;
@@ -57302,9 +57302,9 @@ var combineLatest_1 = __webpack_require__(33);
 exports.combineLatest = combineLatest_1.combineLatest;
 var concat_1 = __webpack_require__(214);
 exports.concat = concat_1.concat;
-var concatAll_1 = __webpack_require__(47);
+var concatAll_1 = __webpack_require__(48);
 exports.concatAll = concatAll_1.concatAll;
-var concatMap_1 = __webpack_require__(48);
+var concatMap_1 = __webpack_require__(49);
 exports.concatMap = concatMap_1.concatMap;
 var concatMapTo_1 = __webpack_require__(215);
 exports.concatMapTo = concatMapTo_1.concatMapTo;
@@ -57314,7 +57314,7 @@ var debounce_1 = __webpack_require__(217);
 exports.debounce = debounce_1.debounce;
 var debounceTime_1 = __webpack_require__(218);
 exports.debounceTime = debounceTime_1.debounceTime;
-var defaultIfEmpty_1 = __webpack_require__(49);
+var defaultIfEmpty_1 = __webpack_require__(50);
 exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
 var delay_1 = __webpack_require__(219);
 exports.delay = delay_1.delay;
@@ -57324,7 +57324,7 @@ var dematerialize_1 = __webpack_require__(221);
 exports.dematerialize = dematerialize_1.dematerialize;
 var distinct_1 = __webpack_require__(222);
 exports.distinct = distinct_1.distinct;
-var distinctUntilChanged_1 = __webpack_require__(50);
+var distinctUntilChanged_1 = __webpack_require__(51);
 exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
 var distinctUntilKeyChanged_1 = __webpack_require__(223);
 exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
@@ -57338,11 +57338,11 @@ var exhaustMap_1 = __webpack_require__(227);
 exports.exhaustMap = exhaustMap_1.exhaustMap;
 var expand_1 = __webpack_require__(228);
 exports.expand = expand_1.expand;
-var filter_1 = __webpack_require__(51);
+var filter_1 = __webpack_require__(52);
 exports.filter = filter_1.filter;
 var finalize_1 = __webpack_require__(229);
 exports.finalize = finalize_1.finalize;
-var find_1 = __webpack_require__(52);
+var find_1 = __webpack_require__(53);
 exports.find = find_1.find;
 var findIndex_1 = __webpack_require__(230);
 exports.findIndex = findIndex_1.findIndex;
@@ -57382,7 +57382,7 @@ var multicast_1 = __webpack_require__(16);
 exports.multicast = multicast_1.multicast;
 var observeOn_1 = __webpack_require__(35);
 exports.observeOn = observeOn_1.observeOn;
-var onErrorResumeNext_1 = __webpack_require__(53);
+var onErrorResumeNext_1 = __webpack_require__(54);
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 var pairwise_1 = __webpack_require__(243);
 exports.pairwise = pairwise_1.pairwise;
@@ -57410,13 +57410,13 @@ var retry_1 = __webpack_require__(253);
 exports.retry = retry_1.retry;
 var retryWhen_1 = __webpack_require__(254);
 exports.retryWhen = retryWhen_1.retryWhen;
-var refCount_1 = __webpack_require__(54);
+var refCount_1 = __webpack_require__(55);
 exports.refCount = refCount_1.refCount;
 var sample_1 = __webpack_require__(255);
 exports.sample = sample_1.sample;
 var sampleTime_1 = __webpack_require__(256);
 exports.sampleTime = sampleTime_1.sampleTime;
-var scan_1 = __webpack_require__(55);
+var scan_1 = __webpack_require__(56);
 exports.scan = scan_1.scan;
 var sequenceEqual_1 = __webpack_require__(257);
 exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
@@ -57445,13 +57445,13 @@ exports.startWith = startWith_1.startWith;
 // export { subscribeOn } from './operators/subscribeOn';
 var switchAll_1 = __webpack_require__(266);
 exports.switchAll = switchAll_1.switchAll;
-var switchMap_1 = __webpack_require__(56);
+var switchMap_1 = __webpack_require__(57);
 exports.switchMap = switchMap_1.switchMap;
 var switchMapTo_1 = __webpack_require__(267);
 exports.switchMapTo = switchMapTo_1.switchMapTo;
 var take_1 = __webpack_require__(268);
 exports.take = take_1.take;
-var takeLast_1 = __webpack_require__(57);
+var takeLast_1 = __webpack_require__(58);
 exports.takeLast = takeLast_1.takeLast;
 var takeUntil_1 = __webpack_require__(269);
 exports.takeUntil = takeUntil_1.takeUntil;
@@ -57469,7 +57469,7 @@ var timeout_1 = __webpack_require__(274);
 exports.timeout = timeout_1.timeout;
 var timeoutWith_1 = __webpack_require__(275);
 exports.timeoutWith = timeoutWith_1.timeoutWith;
-var timestamp_1 = __webpack_require__(58);
+var timestamp_1 = __webpack_require__(59);
 exports.timestamp = timestamp_1.timestamp;
 var toArray_1 = __webpack_require__(276);
 exports.toArray = toArray_1.toArray;
@@ -61177,7 +61177,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWCriteriaDate = /** @class */ (function () {
-    function SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder) {
+    function SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService) {
         return {
             restrict: 'E',
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriadate.html',
@@ -61193,7 +61193,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Date",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
+                                    type: 'date',
                                 }
                             },
                             {
@@ -61215,9 +61215,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
-                                    measureCount: 0,
-                                    behavior: 'toDate'
+                                    measureType: 'today'
                                 }
                             },
                             {
@@ -61225,9 +61223,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
-                                    measureCount: -1,
-                                    behavior: 'toDate'
+                                    measureType: 'yesterday'
                                 }
                             },
                             {
@@ -61235,8 +61231,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'w',
-                                    behavior: 'toDate'
+                                    measureType: 'thisWeek'
                                 }
                             },
                             {
@@ -61244,8 +61239,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'm',
-                                    behavior: 'toDate'
+                                    measureType: 'thisMonth'
                                 }
                             },
                             {
@@ -61253,8 +61247,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'q',
-                                    behavior: 'toDate'
+                                    measureType: 'thisQuarter'
                                 }
                             },
                             {
@@ -61262,88 +61255,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'y',
-                                    behavior: 'toDate'
-                                }
-                            },
-                            {
-                                display: "Last Week to Current Day",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lwtc',
-                                    measureTypeDisplay: 'Weeks',
-                                    behavior: 'toDate',
-                                }
-                            },
-                            {
-                                display: "Last Month to Current Day",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lmtc',
-                                    measureTypeDisplay: 'Months',
-                                    behavior: 'toDate',
-                                }
-                            },
-                            {
-                                display: "Last Quarter to Current Day",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lqtc',
-                                    measureTypeDisplay: 'Quarters',
-                                    behavior: 'toDate',
-                                }
-                            },
-                            {
-                                display: "Last Year to Current Day",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lytc',
-                                    measureTypeDisplay: 'Years',
-                                    behavior: 'toDate',
-                                },
-                            },
-                            {
-                                display: "Last Full Week",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lw',
-                                    measureTypeDisplay: 'Weeks',
-                                    behavior: 'toDate',
-                                }
-                            },
-                            {
-                                display: "Last Full Month",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lm',
-                                    behavior: 'toDate',
-                                    measureTypeDisplay: 'Months'
-                                }
-                            },
-                            {
-                                display: "Last Full Quarter",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lq',
-                                    behavior: 'toDate',
-                                    measureTypeDisplay: 'Quarters'
-                                }
-                            },
-                            {
-                                display: "Last Full Year",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'ly',
-                                    behavior: 'toDate',
-                                    measureTypeDisplay: 'Years'
+                                    measureType: 'thisYear'
                                 }
                             },
                             {
@@ -61351,7 +61263,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'h',
+                                    measureType: 'lastHour',
                                     measureTypeDisplay: 'Hours'
                                 }
                             },
@@ -61360,7 +61272,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
+                                    measureType: 'lastDay',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -61369,7 +61281,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'w',
+                                    measureType: 'lastWeek',
                                     measureTypeDisplay: 'Weeks'
                                 }
                             },
@@ -61378,7 +61290,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'm',
+                                    measureType: 'lastMonth',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -61387,7 +61299,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'q',
+                                    measureType: 'lastQuarter',
                                     measureTypeDisplay: 'Quarters'
                                 }
                             },
@@ -61396,16 +61308,52 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'y',
+                                    measureType: 'lastYear',
                                     measureTypeDisplay: 'Years'
+                                }
+                            },
+                            {
+                                display: "Last Full Week",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'lastFullWeek',
+                                    measureTypeDisplay: 'Week'
+                                }
+                            },
+                            {
+                                display: "Last Full Month",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'lastFullMonth',
+                                    measureTypeDisplay: 'Month'
+                                }
+                            },
+                            {
+                                display: "Last Full Quarter",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'lastFullQuarter',
+                                    measureTypeDisplay: 'Quarter'
+                                }
+                            },
+                            {
+                                display: "Last Full Year",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'lastFullYear',
+                                    measureTypeDisplay: 'Year'
                                 }
                             },
                             {
                                 display: "More Than N Day(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'moreDays',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -61413,8 +61361,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Week(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'w',
+                                    type: 'calculation',
+                                    measureType: 'moreWeeks',
                                     measureTypeDisplay: 'Weeks'
                                 }
                             },
@@ -61422,8 +61370,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Month(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
+                                    type: 'calculation',
+                                    measureType: 'moreMonths',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -61431,8 +61379,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Year(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'y',
+                                    type: 'calculation',
+                                    measureType: 'moreYears',
                                     measureTypeDisplay: 'Years'
                                 }
                             },
@@ -61440,8 +61388,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Day(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'exactDays',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -61449,8 +61397,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Month(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
+                                    type: 'calculation',
+                                    measureType: 'exactMonths',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -61458,36 +61406,45 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Year(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'y',
+                                    type: 'calculation',
+                                    measureType: 'exactYears',
                                     measureTypeDisplay: 'Years'
                                 }
                             },
                             {
-                                display: "Exact N Day(s) Ago",
+                                display: "Exact N Day(s) From Now",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'exactDayFromNow',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
                             {
-                                display: "Exact N Month(s) Ago",
-                                comparisonOperator: "between",
+                                display: "Match Day of Month",
+                                comparisonOperator: "=",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
-                                    measureTypeDisplay: 'Months'
+                                    type: 'matchPart',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Day'
                                 }
                             },
                             {
-                                display: "Exact N Year(s) Ago",
-                                comparisonOperator: "between",
+                                display: "Match Month",
+                                comparisonOperator: "=",
                                 dateInfo: {
-                                    type: 'exactDate',
+                                    type: 'matchPart',
+                                    measureType: 'm',
+                                    measureTypeDisplay: 'Month'
+                                }
+                            },
+                            {
+                                display: "Match Year",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
                                     measureType: 'y',
-                                    measureTypeDisplay: 'Years'
+                                    measureTypeDisplay: 'Year'
                                 }
                             },
                             {
@@ -61499,6 +61456,16 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Not Defined",
                                 comparisonOperator: "is",
                                 value: "null"
+                            },
+                            {
+                                display: "Past",
+                                comparisonOperator: "<=",
+                                value: "now()"
+                            },
+                            {
+                                display: "Future",
+                                comparisonOperator: ">=",
+                                value: "now()"
                             }
                         ];
                     }
@@ -61561,123 +61528,234 @@ var SWCriteriaDate = /** @class */ (function () {
                     if (angular.isDefined(selectedCondition.dateInfo)) {
                         //is condition a calculation
                         if (selectedCondition.dateInfo.type === 'calculation') {
-                            selectedCondition.showCriteriaStart = true;
-                            selectedCondition.showCriteriaEnd = true;
-                            selectedCondition.disableCriteriaStart = true;
-                            selectedCondition.disableCriteriaEnd = true;
-                            //if item is a calculation of an N number of measure display the measure and number input
-                            if (angular.isUndefined(selectedCondition.dateInfo.behavior)) {
-                                $log.debug('Not toDate');
-                                selectedCondition.showNumberOf = true;
-                                selectedCondition.conditionDisplay = 'Number of ' + selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                            var setStartRange = false;
+                            var setEndRange = false;
+                            var setNumberOf = false;
+                            var setStartDate = Date.parse('today');
+                            var setEndDate = Date.parse('today');
+                            //get this Measure to date
+                            switch (selectedCondition.dateInfo.measureType) {
+                                case "today":
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    break;
+                                case "yesterday":
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    setEndDate = setStartDate;
+                                    break;
+                                case 'thisWeek': //This Week
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = Date.today().monday().add(-7).days(); //added 7 days because Date.today().monday() is not returning this week's monday
+                                    setEndDate = Date.today().sunday();
+                                    break;
+                                case 'thisMonth': //This Month
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = new Date.today().moveToFirstDayOfMonth();
+                                    setEndDate = new Date.today().moveToLastDayOfMonth();
+                                    break;
+                                case 'thisQuarter': //This Quarter
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    var month = Date.parse('today').toString('M');
+                                    var year = Date.parse('today').toString('yyyy');
+                                    var quarterMonth = (Math.floor(month / 3) * 3);
+                                    setStartDate = new Date(year, quarterMonth, 1);
+                                    setEndDate = new Date(year, quarterMonth, 1).addMonths(3).add(-1).days();
+                                    break;
+                                case 'thisYear': //This Year
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year, 0, 1);
+                                    setEndDate = new Date(year, 11, 31);
+                                    break;
+                                case 'lastHour': //Last N Hour
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    break;
+                                case 'lastDay': //Last N Day
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    setEndDate = setStartDate;
+                                    break;
+                                case 'lastWeek': //Last N Week
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = Date.today().monday().add(-2).weeks();
+                                    setEndDate = Date.today().sunday().add(-1).weeks();
+                                    break;
+                                case 'lastMonth': //Last N Month
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
+                                    setEndDate = new Date.today().last().month().moveToLastDayOfMonth();
+                                    break;
+                                case 'lastQuarter': //Last Quarter
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    var month = Date.parse('today').toString('M');
+                                    var year = Date.parse('today').toString('yyyy');
+                                    var quarterMonth = (Math.floor(month / 3) * 3);
+                                    setStartDate = new Date(year, quarterMonth, 1).addMonths(-3);
+                                    setEndDate = new Date(year, quarterMonth, 1).add(-1).days();
+                                    break;
+                                case 'lastYear': //Last N Year
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year - 1, 0, 1);
+                                    setEndDate = new Date(year - 1, 11, 31);
+                                    break;
+                                case 'lastFullWeek': //Last Full Week
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = Date.today().last().week().sunday();
+                                    setEndDate = Date.today().last().saturday();
+                                    break;
+                                case 'lastFullMonth': //Last Full Month
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = Date.today().last().month().moveToFirstDayOfMonth();
+                                    setEndDate = Date.today().last().month().moveToLastDayOfMonth();
+                                    break;
+                                case 'lastFullQuarter': //Last Full Quarter
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
+                                    var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+                                    setEndDate = firstDayOfCurrentQuarter.add(-1).days();
+                                    var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+                                    setStartDate = lastXQuartersAgo.add(-3).months();
+                                    break;
+                                case 'lastFullYear': //Last Full Year
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    var lastyear = Date.parse('today').last().year().toString('yyyy');
+                                    setStartDate = new Date(lastyear, 0, 1);
+                                    setEndDate = new Date(lastyear, 11, 31);
+                                    break;
+                                case 'moreDays': //More than N Day Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    break;
+                                case 'moreWeeks': //More than N Week Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = Date.today().monday().add(-2).weeks();
+                                    break;
+                                case 'moreMonths': //More than N Month Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
+                                    break;
+                                case 'moreYears': //More than N Year Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year - 1, 0, 1);
+                                    break;
+                                case 'exactDays': //Exact N Day Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactMonths': //Exact N Month Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactYears': //Exact N Year Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactDayFromNow':
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
                             }
-                            else {
-                                $log.debug('toDate');
-                                var today = Date.parse('today');
-                                var todayEOD = today.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = todayEOD;
-                                //get this Measure to date
-                                switch (selectedCondition.dateInfo.measureType) {
-                                    case 'd':
-                                        var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
-                                        dateBOD.setHours(0, 0, 0, 0);
-                                        selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
-                                        break;
-                                    case 'w':
-                                        var firstDayOfWeek = Date.today().last().monday();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
-                                        break;
-                                    case 'lwtc':
-                                        var lastweekstart = Date.today().last().week().sunday();
-                                        selectedFilterProperty.criteriaRangeStart = lastweekstart.getTime();
-                                        break;
-                                    case 'lw':
-                                        var lastweekstart = Date.today().last().week().sunday();
-                                        var lastweekend = Date.today().last().saturday();
-                                        selectedFilterProperty.criteriaRangeStart = lastweekstart.getTime();
-                                        selectedFilterProperty.criteriaRangeEnd = lastweekend.getTime();
-                                        break;
-                                    case 'm':
-                                        var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-                                        break;
-                                    case 'lmtc':
-                                        var firstDayOfMonth = Date.today().last().month().moveToFirstDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-                                        break;
-                                    case 'lm':
-                                        var firstDayOfMonth = Date.today().last().month().moveToFirstDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-                                        var lastDayOfMonth = Date.today().last().month().moveToLastDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeEnd = lastDayOfMonth.getTime();
-                                        break;
-                                    case 'q':
-                                        var month = Date.parse('today').toString('MM');
-                                        var year = Date.parse('today').toString('yyyy');
-                                        var quarterMonth = (Math.floor(month / 3) * 3);
-                                        var firstDayOfQuarter = new Date(year, quarterMonth, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
-                                        break;
-                                    case 'lqtc':
-                                        var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
-                                        var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                        lastXQuartersAgo.add(-3).months();
-                                        selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
-                                        break;
-                                    case 'lq':
-                                        var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
-                                        var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                        var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
-                                        lastDayOfPreviousQuarter.setHours(23, 59, 59, 999);
-                                        selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
-                                        var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                        lastXQuartersAgo.add(-3).months();
-                                        selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
-                                        break;
-                                    case 'y':
-                                        var year = Date.parse('today').toString('yyyy');
-                                        var firstDayOfYear = new Date(year, 0, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-                                        break;
-                                    case 'lytc':
-                                        var lastyear = Date.parse('today').last().year().toString('yyyy');
-                                        var firstDayOfYear = new Date(lastyear, 0, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-                                        break;
-                                    case 'ly':
-                                        var lastyear = Date.parse('today').last().year().toString('yyyy');
-                                        var firstDayOfYear = new Date(lastyear, 0, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-                                        var lastDayOfYear = new Date(lastyear, 11, 31);
-                                        selectedFilterProperty.criteriaRangeEnd = lastDayOfYear.getTime();
-                                        break;
+                            if (setStartRange == true) {
+                                selectedCondition.showCriteriaStart = true;
+                                selectedCondition.disableCriteriaStart = true;
+                                if (selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
+                                 {
+                                    selectedFilterProperty.criteriaRangeStart = setStartDate.setHours(0, 0, 0, 0);
+                                }
+                                else {
+                                    selectedFilterProperty.criteriaRangeStart = setStartDate.getTime();
                                 }
                             }
+                            else {
+                                selectedCondition.showCriteriaStart = false;
+                                selectedCondition.disableCriteriaStart = false;
+                            }
+                            if (setEndRange == true) {
+                                selectedCondition.showCriteriaEnd = true;
+                                selectedCondition.disableCriteriaEnd = true;
+                                if (selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
+                                 {
+                                    selectedFilterProperty.criteriaRangeEnd = setEndDate.setHours(23, 59, 59, 999);
+                                }
+                                else {
+                                    selectedFilterProperty.criteriaRangeEnd = setEndDate.getTime();
+                                }
+                            }
+                            else {
+                                selectedCondition.showCriteriaEnd = false;
+                                selectedCondition.disableCriteriaEnd = false;
+                            }
+                            selectedCondition.showNumberOf = setNumberOf;
+                            if (setNumberOf == true) {
+                                if (angular.isDefined(selectedCondition.dateInfo.measureTypeDisplay)) {
+                                    selectedCondition.conditionDisplay = 'Number of ' + selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                                }
+                            }
+                            else {
+                                selectedCondition.conditionDisplay = "";
+                            }
+                            //if item is a calculation of an N number of measure display the measure and number input
+                            // if(angular.isUndefined(selectedCondition.dateInfo.behavior)){
+                            // 	selectedCondition.showNumberOf = true;
+                            // 	selectedCondition.conditionDisplay = 'Number of '+ selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                            // }else{
+                            // }
                         }
-                        if (selectedCondition.dateInfo.type === 'range') {
+                        else if (selectedCondition.dateInfo.type === 'range') {
                             selectedCondition.showCriteriaStart = true;
                             selectedCondition.showCriteriaEnd = true;
                             selectedCondition.disableCriteriaStart = false;
                             selectedCondition.disableCriteriaEnd = false;
                             selectedCondition.showNumberOf = false;
                         }
-                        if (selectedCondition.dateInfo.type === 'exactDate') {
+                        else if (selectedCondition.dateInfo.type === 'date') {
                             selectedCondition.showCriteriaStart = true;
                             selectedCondition.showCriteriaEnd = false;
                             selectedCondition.disableCriteriaStart = false;
-                            selectedCondition.disableCriteriaEnd = true;
-                            if (!selectedCondition.dateInfo.measureType) {
-                                selectedCondition.conditionDisplay = '';
-                                selectedCondition.showCriteriaStart = true;
-                                selectedCondition.showNumberOf = false;
-                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
-                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
-                            }
-                            else {
-                                selectedCondition.conditionDisplay = 'How many ' + selectedCondition.dateInfo.measureTypeDisplay + ' ago?';
-                                selectedCondition.showCriteriaStart = false;
-                                selectedCondition.showNumberOf = true;
-                            }
+                            selectedCondition.showNumberOf = false;
+                        }
+                        else if (selectedCondition.dateInfo.type === 'matchPart') {
+                            selectedCondition.showCriteriaStart = false;
+                            selectedCondition.showCriteriaEnd = false;
+                            selectedCondition.showNumberOf = true;
+                            selectedCondition.conditionDisplay = 'Enter ' + selectedCondition.dateInfo.measureTypeDisplay + ':';
                         }
                     }
                     else {
@@ -61690,69 +61768,68 @@ var SWCriteriaDate = /** @class */ (function () {
                     $log.debug('selectedConditionChanged Result');
                     $log.debug(selectedCondition);
                     $log.debug(selectedFilterProperty);
-                };
+                }; //End selectedConditionChanged
                 scope.criteriaRangeChanged = function (selectedFilterProperty) {
                     $log.debug('criteriaRangeChanged');
                     $log.debug(selectedFilterProperty);
                     var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+                    var measureCount = selectedFilterProperty.criteriaNumberOf;
                     if (selectedCondition.dateInfo.type === 'calculation') {
-                        var measureCount = selectedFilterProperty.criteriaNumberOf;
                         switch (selectedCondition.dateInfo.measureType) {
-                            case 'h':
-                                var today = Date.parse('today');
-                                selectedFilterProperty.criteriaRangeEnd = today.getTime();
+                            case 'lastHour':
                                 var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
                                 selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
                                 break;
-                            case 'd':
-                                var lastFullDay = Date.parse('today').add(-1).days();
-                                lastFullDay.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullDay.getTime();
+                            case 'lastDay':
+                            case 'moreDays':
+                                //case 'ed':
                                 var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
                                 selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
                                 break;
-                            case 'w':
-                                var lastFullWeekEnd = Date.today().last().sunday();
-                                lastFullWeekEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd.getTime();
-                                var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
+                            case 'lastWeek':
+                            case 'moreWeeks':
+                                var lastXWeeksAgo = Date.today().last().monday().add(-(measureCount)).weeks();
                                 selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
                                 break;
-                            case 'm':
-                                var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
-                                lastFullMonthEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd.getTime();
-                                var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
+                            case 'lastMonth':
+                            case 'moreMonths':
+                                //case 'em':
+                                var lastXMonthsAgo = Date.today().months().moveToFirstDayOfMonth().add(-(measureCount)).months();
                                 selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
                                 break;
-                            case 'q':
+                            case 'lastQuarter':
                                 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
-                                var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
-                                lastDayOfPreviousQuarter.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
                                 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
                                 lastXQuartersAgo.add(-(measureCount * 3)).months();
                                 selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
                                 break;
-                            case 'y':
-                                var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
-                                lastFullYearEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd.getTime();
-                                var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount) - 1).years();
+                            case 'lastYear':
+                            case 'moreYears':
+                                //case 'ey':
+                                var lastXYearsAgo = new Date(new Date().getFullYear(), 0, 1).add(-measureCount).years();
                                 selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
                                 break;
+                            case 'exactDayFromNow':
+                                var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
+                                selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0, 0, 0, 0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                                break;
                         }
+                        // if(selectedCondition.dateInfo.measureType == "em" || selectedCondition.dateInfo.measureType == "ed" || selectedCondition.dateInfo.measureType == "ey") {
+                        // 	selectedFilterProperty.criteriaRangeEnd = selectedFilterProperty.criteriaRangeStart.setHours(23,59,59,999);
+                        // }
                     }
-                    if (selectedCondition.dateInfo.type === 'exactDate' && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)) {
-                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0, 0, 0, 0);
-                        selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                    if (selectedCondition.dateInfo.type === 'date') {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                            selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+                            selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                        }
                     }
                     if (selectedCondition.dateInfo.type === 'range') {
-                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
                             selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
                         }
-                        if (angular.isDefined(selectedFilterProperty.criteriaRangeEnd) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeEnd)) {
                             selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23, 59, 59, 999);
                         }
                     }
@@ -61787,11 +61864,12 @@ var SWCriteriaDate = /** @class */ (function () {
         };
     }
     SWCriteriaDate.Factory = function () {
-        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) { return new SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder); };
+        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService) { return new SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService); };
         directive.$inject = [
             '$log',
             'collectionPartialsPath',
-            'hibachiPathBuilder'
+            'hibachiPathBuilder',
+            'rbkeyService',
         ];
         return directive;
     };
@@ -63453,38 +63531,50 @@ var SWEditFilterItem = /** @class */ (function () {
                                 else {
                                     if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation') {
                                         var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart), new Date(selectedFilterProperty.criteriaRangeEnd));
-                                        filterItem.value = _daysBetween;
                                         filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                         if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                        }
-                                    }
-                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') {
-                                        if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)) {
-                                            filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                            filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
+                                            filterItem.value = filterItem.criteriaNumberOf;
+                                            //Update Display Value
+                                            filterItem.displayValue = filterItem.displayValue.replace("N", filterItem.criteriaNumberOf);
                                         }
                                         else {
-                                            filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
-                                            filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                             filterItem.criteriaNumberOf = "0";
-                                            if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
-                                                filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                            }
-                                            filterItem.value = filterItem.criteriaNumberOf;
-                                            filterItem.displayValue = filterItem.criteriaNumberOf;
+                                            filterItem.value = _daysBetween;
+                                        }
+                                    }
+                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart') {
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+                                            filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
                                             switch (filterItem.measureType) {
                                                 case 'd':
-                                                    filterItem.displayValue += ' Day';
+                                                    filterItem.displayValue += 'Day ';
                                                     break;
                                                 case 'm':
-                                                    filterItem.displayValue += ' Month';
+                                                    filterItem.displayValue += 'Month ';
                                                     break;
                                                 case 'y':
-                                                    filterItem.displayValue += ' Year';
+                                                    filterItem.displayValue += 'Year ';
+                                                    break;
+                                                case 'lastWeek':
+                                                    filterItem.displayValue = ' Last Week';
+                                                    break;
+                                                case 'lastMonth':
+                                                    filterItem.displayValue = ' Last Month';
+                                                    break;
+                                                case 'lastQuarter':
+                                                    filterItem.displayValue = ' Last Quarter';
+                                                    break;
+                                                case 'lastYear':
+                                                    filterItem.displayValue = ' Last Year';
                                                     break;
                                             }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '') + ' Ago';
+                                            filterItem.displayValue += filterItem.value;
                                         }
                                     }
                                     else {
@@ -66792,6 +66882,7 @@ var SWExpandableRecordController = /** @class */ (function () {
             angular.forEach(_this.collectionConfig.joins, function (join) {
                 _this.childCollectionConfig.addJoin(join);
             });
+            _this.childCollectionConfig.orderBy = _this.collectionConfig.orderBy;
             _this.childCollectionConfig.groupBys = _this.collectionConfig.groupBys;
         };
         this.getEntity = function () {
@@ -66806,7 +66897,7 @@ var SWExpandableRecordController = /** @class */ (function () {
                         pageRecord.depth++;
                         //push the children into the listing display
                         _this.children.push(pageRecord);
-                        _this.records.splice(_this.recordIndex + 1, 0, pageRecord);
+                        _this.records.push(pageRecord);
                     });
                 }
                 _this.childrenLoaded = true;
@@ -78439,17 +78530,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
-var alert_module_1 = __webpack_require__(61);
+var alert_module_1 = __webpack_require__(62);
 var card_module_1 = __webpack_require__(618);
-var collection_module_1 = __webpack_require__(62);
+var collection_module_1 = __webpack_require__(44);
 var listing_module_1 = __webpack_require__(786);
 var dialog_module_1 = __webpack_require__(300);
 var entity_module_1 = __webpack_require__(751);
 var pagination_module_1 = __webpack_require__(790);
 var form_module_1 = __webpack_require__(767);
-var validation_module_1 = __webpack_require__(809);
-var widget_module_1 = __webpack_require__(811);
-var workflow_module_1 = __webpack_require__(826);
+var report_module_1 = __webpack_require__(793);
+var validation_module_1 = __webpack_require__(811);
+var widget_module_1 = __webpack_require__(813);
+var workflow_module_1 = __webpack_require__(828);
 //directives
 var swsaveandfinish_1 = __webpack_require__(769);
 var hibachimodule = angular.module('hibachi', [
@@ -78461,6 +78553,7 @@ var hibachimodule = angular.module('hibachi', [
     listing_module_1.listingmodule.name,
     pagination_module_1.paginationmodule.name,
     form_module_1.formmodule.name,
+    report_module_1.reportmodule.name,
     validation_module_1.validationmodule.name,
     widget_module_1.widgetmodule.name,
     workflow_module_1.workflowmodule.name
@@ -80983,7 +81076,7 @@ exports.SWListingSearch = SWListingSearch;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
-var collection_module_1 = __webpack_require__(62);
+var collection_module_1 = __webpack_require__(44);
 //services
 var listingservice_1 = __webpack_require__(787);
 //directives
@@ -82001,7 +82094,7 @@ exports.ListingService = ListingService;
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-var alert_module_1 = __webpack_require__(61);
+var alert_module_1 = __webpack_require__(62);
 var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
     .run([function () {
     }]);
@@ -82280,6 +82373,93 @@ exports.PaginationService = PaginationService;
 
 /***/ }),
 /* 792 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWReportMenuController = /** @class */ (function () {
+    function SWReportMenuController($rootScope) {
+        var _this = this;
+        this.$rootScope = $rootScope;
+        this.$onInit = function () {
+            _this.getPersistedReports();
+        };
+        this.getPersistedReports = function () {
+            var persistedReportsCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
+            persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
+            persistedReportsCollectionList.addFilter('reportFlag', 1);
+            persistedReportsCollectionList.addFilter('collectionObject', _this.collectionConfig.baseEntityName);
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', true, true, false, 'accountOwner');
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', 'NULL', 'IS', 'OR', true, true, false, 'accountOwner');
+            persistedReportsCollectionList.setAllRecords(true);
+            persistedReportsCollectionList.getEntity().then(function (data) {
+                _this.persistedReportCollections = data.records;
+            });
+        };
+    }
+    return SWReportMenuController;
+}());
+var SWReportMenu = /** @class */ (function () {
+    function SWReportMenu(reportPartialPath, hibachiPathBuilder) {
+        this.restrict = "E";
+        this.controller = SWReportMenuController;
+        this.controllerAs = "swReportMenu";
+        this.scope = {};
+        this.bindToController = {
+            propertyDisplay: "=?",
+            propertyIdentifier: "@?",
+            name: "@?",
+            class: "@?",
+            collectionConfig: "<?"
+        };
+        this.link = function (scope, element, attrs, transcludeFn) {
+        };
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(reportPartialPath) + 'reportmenu.html';
+    }
+    /**
+        * Handles injecting the partials path into this class
+        */
+    SWReportMenu.Factory = function () {
+        var directive = function (reportPartialPath, hibachiPathBuilder) { return new SWReportMenu(reportPartialPath, hibachiPathBuilder); };
+        directive.$inject = [
+            'reportPartialPath',
+            'hibachiPathBuilder'
+        ];
+        return directive;
+    };
+    return SWReportMenu;
+}());
+exports.SWReportMenu = SWReportMenu;
+
+
+/***/ }),
+/* 793 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../typings/hibachiTypescript.d.ts" />
+Object.defineProperty(exports, "__esModule", { value: true });
+//modules
+var collection_module_1 = __webpack_require__(44);
+//directives
+var swreportmenu_1 = __webpack_require__(792);
+var reportmodule = angular.module('hibachi.report', [collection_module_1.collectionmodule.name])
+    .run([function () {
+    }])
+    //directives
+    .directive('swReportMenu', swreportmenu_1.SWReportMenu.Factory())
+    //constants
+    .constant('reportPartialPath', 'report/components/');
+exports.reportmodule = reportmodule;
+
+
+/***/ }),
+/* 794 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82668,7 +82848,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-/* 793 */
+/* 795 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82700,7 +82880,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-/* 794 */
+/* 796 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82733,7 +82913,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-/* 795 */
+/* 797 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82797,7 +82977,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-/* 796 */
+/* 798 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82827,7 +83007,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-/* 797 */
+/* 799 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82857,7 +83037,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-/* 798 */
+/* 800 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82891,7 +83071,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-/* 799 */
+/* 801 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82924,7 +83104,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-/* 800 */
+/* 802 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82958,7 +83138,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-/* 801 */
+/* 803 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82991,7 +83171,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-/* 802 */
+/* 804 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83021,7 +83201,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-/* 803 */
+/* 805 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83051,7 +83231,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-/* 804 */
+/* 806 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83082,7 +83262,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-/* 805 */
+/* 807 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83119,7 +83299,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-/* 806 */
+/* 808 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83152,7 +83332,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-/* 807 */
+/* 809 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83189,7 +83369,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-/* 808 */
+/* 810 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83346,7 +83526,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-/* 809 */
+/* 811 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83355,24 +83535,24 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-var swvalidate_1 = __webpack_require__(792);
-var swvalidationminlength_1 = __webpack_require__(800);
-var swvalidationdatatype_1 = __webpack_require__(793);
-var swvalidationeq_1 = __webpack_require__(794);
-var swvalidationeqproperty_1 = __webpack_require__(795);
-var swvalidationgte_1 = __webpack_require__(796);
-var swvalidationlte_1 = __webpack_require__(797);
-var swvalidationmaxlength_1 = __webpack_require__(798);
-var swvalidationmaxvalue_1 = __webpack_require__(799);
-var swvalidationminvalue_1 = __webpack_require__(801);
-var swvalidationneq_1 = __webpack_require__(802);
-var swvalidationnumeric_1 = __webpack_require__(803);
-var swvalidationregex_1 = __webpack_require__(804);
-var swvalidationrequired_1 = __webpack_require__(805);
-var swvalidationunique_1 = __webpack_require__(806);
-var swvalidationuniqueornull_1 = __webpack_require__(807);
+var swvalidate_1 = __webpack_require__(794);
+var swvalidationminlength_1 = __webpack_require__(802);
+var swvalidationdatatype_1 = __webpack_require__(795);
+var swvalidationeq_1 = __webpack_require__(796);
+var swvalidationeqproperty_1 = __webpack_require__(797);
+var swvalidationgte_1 = __webpack_require__(798);
+var swvalidationlte_1 = __webpack_require__(799);
+var swvalidationmaxlength_1 = __webpack_require__(800);
+var swvalidationmaxvalue_1 = __webpack_require__(801);
+var swvalidationminvalue_1 = __webpack_require__(803);
+var swvalidationneq_1 = __webpack_require__(804);
+var swvalidationnumeric_1 = __webpack_require__(805);
+var swvalidationregex_1 = __webpack_require__(806);
+var swvalidationrequired_1 = __webpack_require__(807);
+var swvalidationunique_1 = __webpack_require__(808);
+var swvalidationuniqueornull_1 = __webpack_require__(809);
 //services
-var validationservice_1 = __webpack_require__(808);
+var validationservice_1 = __webpack_require__(810);
 var core_module_1 = __webpack_require__(17);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -83400,7 +83580,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-/* 810 */
+/* 812 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83409,10 +83589,32 @@ exports.validationmodule = validationmodule;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWStatWidgetController = /** @class */ (function () {
-    function SWStatWidgetController() {
-        this.init = function () {
-        };
-        this.init();
+    function SWStatWidgetController($scope, $http, $hibachi) {
+        // console.log('hi')
+        // let data = {
+        // 	slatAction: 'admin:report.default',
+        // 	reportDateTimeGroupBy: "hello there"
+        // };
+        this.$scope = $scope;
+        this.$http = $http;
+        this.$hibachi = $hibachi;
+        //      $http({
+        //  		url: "http://slatwalldevelop.local:8906/",
+        //  		method: "POST",
+        // 	data: data,
+        // 	headers: {
+        // 		"Content-Type": "JSON",
+        // 		"X-Hibachi-AJAX": true,
+        // 	}
+        // }).then(function successCallback(response) {
+        //         // this callback will be called asynchronously
+        //         // when the response is available
+        //         console.log(response);
+        //     }, function errorCallback(response) {
+        //         // called asynchronously if an error occurs
+        //         // or server returns response with an error status.
+        //         console.log(response);
+        // });
     }
     return SWStatWidgetController;
 }());
@@ -83456,7 +83658,7 @@ exports.SWStatWidget = SWStatWidget;
 
 
 /***/ }),
-/* 811 */
+/* 813 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83465,9 +83667,9 @@ exports.SWStatWidget = SWStatWidget;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
-var collection_module_1 = __webpack_require__(62);
+var collection_module_1 = __webpack_require__(44);
 //directives
-var swstatwidget_1 = __webpack_require__(810);
+var swstatwidget_1 = __webpack_require__(812);
 var widgetmodule = angular.module('hibachi.widget', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -83479,7 +83681,7 @@ exports.widgetmodule = widgetmodule;
 
 
 /***/ }),
-/* 812 */
+/* 814 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83513,7 +83715,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-/* 813 */
+/* 815 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83551,7 +83753,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 814 */
+/* 816 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83585,7 +83787,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-/* 815 */
+/* 817 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83706,7 +83908,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-/* 816 */
+/* 818 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83737,7 +83939,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-/* 817 */
+/* 819 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83787,7 +83989,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-/* 818 */
+/* 820 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83834,7 +84036,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-/* 819 */
+/* 821 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84106,7 +84308,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 820 */
+/* 822 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84306,7 +84508,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-/* 821 */
+/* 823 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84408,7 +84610,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-/* 822 */
+/* 824 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84453,7 +84655,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-/* 823 */
+/* 825 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84742,7 +84944,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-/* 824 */
+/* 826 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84854,7 +85056,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-/* 825 */
+/* 827 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84912,7 +85114,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 826 */
+/* 828 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84921,21 +85123,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-var workflowconditionservice_1 = __webpack_require__(825);
-var scheduleservice_1 = __webpack_require__(824);
+var workflowconditionservice_1 = __webpack_require__(827);
+var scheduleservice_1 = __webpack_require__(826);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(812);
-var swworkflowbasic_1 = __webpack_require__(814);
-var swworkflowcondition_1 = __webpack_require__(815);
-var swworkflowconditiongroupitem_1 = __webpack_require__(816);
-var swworkflowconditiongroups_1 = __webpack_require__(817);
-var swworkflowtask_1 = __webpack_require__(818);
-var swworkflowtaskactions_1 = __webpack_require__(819);
-var swworkflowtasks_1 = __webpack_require__(820);
-var swworkflowtrigger_1 = __webpack_require__(821);
-var swworkflowtriggers_1 = __webpack_require__(823);
-var swworkflowtriggerhistory_1 = __webpack_require__(822);
-var swschedulepreview_1 = __webpack_require__(813);
+var swadmincreatesuperuser_1 = __webpack_require__(814);
+var swworkflowbasic_1 = __webpack_require__(816);
+var swworkflowcondition_1 = __webpack_require__(817);
+var swworkflowconditiongroupitem_1 = __webpack_require__(818);
+var swworkflowconditiongroups_1 = __webpack_require__(819);
+var swworkflowtask_1 = __webpack_require__(820);
+var swworkflowtaskactions_1 = __webpack_require__(821);
+var swworkflowtasks_1 = __webpack_require__(822);
+var swworkflowtrigger_1 = __webpack_require__(823);
+var swworkflowtriggers_1 = __webpack_require__(825);
+var swworkflowtriggerhistory_1 = __webpack_require__(824);
+var swschedulepreview_1 = __webpack_require__(815);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -84961,7 +85163,7 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
-/* 827 */
+/* 829 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -84989,8 +85191,6 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 828 */,
-/* 829 */,
 /* 830 */,
 /* 831 */,
 /* 832 */,
@@ -85004,11 +85204,13 @@ module.exports = function(module) {
 /* 840 */,
 /* 841 */,
 /* 842 */,
-/* 843 */
+/* 843 */,
+/* 844 */,
+/* 845 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(303);
 
 
 /***/ })
-],[843]);
+],[845]);

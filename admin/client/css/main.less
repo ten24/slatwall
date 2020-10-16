@@ -1003,7 +1003,6 @@ table .s-edit-elements a:hover {  background-color: #E6E6E6;border-color: #D1D1D
 .s-add-filter-secondary-layout.s-add-filter h4 {margin-top: 15px;color: #666 !important;}
 .s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper:after {content: "\f105";font-family:"Font Awesome 5 Free";font-weight: 600;right: -26px;position: absolute;font-size: 20px;background: #f1863b;color: #ffffff;padding: 3px;z-index: 400;line-height: 14px;top: 10px;}
 .s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper {position: relative;display: inline-block;width: 100%;}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper .form-control {border: 1px solid @brand-primary}
 .s-table-header-options {background: #fff;padding-right: 10px;padding-left: 10px;padding-top: 1px;margin-bottom: 5px;border: 1px solid #ddd;}
 .s-multiple-option-btn {float: none}
 .s-multiple-option-btn .dropdown-toggle {border-left: 1px solid #3A73A5;}
@@ -2119,7 +2118,6 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
   width: 100%;
   height: 34px;
   background-color: #fff;
-  border: 1px solid #DDDDDD;
   border-radius: 0;
   -webkit-appearance: none;
   background-position: right 50%;
@@ -4255,7 +4253,10 @@ table.s-detail-content-table tbody tr.s-done {
 	
    .s-search-wrapper button:focus {outline-style: none !important; outline: 0 !important; box-shadow: none !important;}
 
-	#navTabs-Container { padding:2em 1em; }
+	#navTabs-Container { 
+		padding: 2em 1em; 
+		margin: 0 auto;
+	}
 	
 	#navTabs-Container .nav-tabs{
 	  padding-left:0;
@@ -4288,6 +4289,7 @@ table.s-detail-content-table tbody tr.s-done {
 	
 	#navTabs-Container .tab-content{
 	  background-color:#ffffff;
+	  margin-bottom: 24px;
 	}
 	
 	#navTabs-Container .tab-content ul li {
@@ -4299,6 +4301,11 @@ table.s-detail-content-table tbody tr.s-done {
 	#navTabs-Container .tab-content ul li span{
 	  color:#a2a2a2;
 	  font-weight:400;
+	}
+	
+	.report-menu-list {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
 	}
 
 	.Mcard-wrapper { padding:1em; }
@@ -4342,8 +4349,9 @@ table.s-detail-content-table tbody tr.s-done {
 
 	.configure-bar-container {
 		display: flex; 
-		width: 90%;
+		width: 100%;
 		margin: 0 auto;
+		padding: 1em 1em 0 1em;
 		justify-content: space-between;
 		align-items: flex-end;	
 	}
@@ -4353,13 +4361,13 @@ table.s-detail-content-table tbody tr.s-done {
 	}
 	
 	.hibachi-report-date-group, .hibachi-report-date-group-custom-toggle {
-		padding: 4px 16px; 
+		padding: 3px 30px; 
 		margin-right: 8px; 
 		background: none; 
-		border: 2px solid #707070; 
-		color: #707070; 
+		border: 2px solid lighten(#707070, 30%); 
+		color: lighten(#707070, 30%); 
 		border-radius: 32px; 
-		font-size: 15px;
+		font-size: 13px;
 	}
 	
 	.hibachi-report-date-group:hover, 
@@ -4367,16 +4375,16 @@ table.s-detail-content-table tbody tr.s-done {
 	.hibachi-report-date-group-custom-toggle:hover, 
 	.hibachi-report-date-group-custom-toggle:active,
 	{
-		background: lighten(@brand-ten24, 20%);	
-		border: 2px solid #4e4e4e; 
-		color: #4e4e4e; 
+		border: 2px solid #707070; 
+		color: #707070;  
 	}
 	
 	.hibachi-report-date-group + .active {
-		color: #4e4e4e;
+		color: #707070;
 		font-weight: 700;
-		border: 2px solid #4e4e4e;
-		background: lighten(@brand-ten24, 25%);	
+		border: 2px solid #707070;
+		background: none;
+		box-shadow: none;
 	}
 	
 	.col span .save-icon{
@@ -4455,6 +4463,17 @@ table.s-detail-content-table tbody tr.s-done {
 	padding: 16px 10px;
 }
 
+#hibachi-report {
+	padding-top: 24px;
+	width: 90%;
+	margin: 0 auto;
+}
+
+#loadinghibachi-report {
+	width: 100vw!important;
+	height: 100vh!important;
+}
+
 #hibachi-report-configure-bar {
 	padding-bottom: 12px;	
 }
@@ -4462,11 +4481,16 @@ table.s-detail-content-table tbody tr.s-done {
 .site-selector-container {
 	margin-bottom: 20px; 
 	width: 300px;
+	display: flex;
+	align-items: center;
+}
+
+.site-selector-title {
+	margin-right: 12px;
 }
 
 .hibachi-report-chart-container {
-	width: 94vw;
-	margin: 0 auto;
+	margin: 0 auto 24px auto;
 }
 
 .hibachi-report-chart-title {
