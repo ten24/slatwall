@@ -74,8 +74,8 @@ class SWReportConfigurationBarController{
     	}
     	
     	updateCustomPeriod = () =>{
-       		this.startDateTime =  '{ts \'' +   this.customReportStartDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-    		this.endDateTime =  '{ts \'' +   this.customReporEndDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+       		this.startDateTime =  '{ts \'' +     this.customReportStartDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+    		this.endDateTime =  '{ts \'' +   new Date(  this.customReporEndDateTime.getFullYear(),   this.customReporEndDateTime.getMonth(),  this.customReporEndDateTime.getDate(), 23,59,59).toString('yyyy-MM-dd HH:mm:ss')  + '\'}'
     		let dynamicPeriod = 'hour'
 	    	let diff =( this.customReporEndDateTime - this.customReportStartDateTime ) /(1000 * 3600 * 24)
 	    	
