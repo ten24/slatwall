@@ -512,7 +512,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    
-	    // generated-properties, properties which don't have a source-property and are complete generated in slatwall, like `url-title`
+	    // generated-properties, properties which don't have a source-property and are completely generated in slatwall, like `url-title`
 	    if( structKeyExists(arguments.mapping, 'generatedProperties') ){
 	        
 	        for(var propertyMetaData in arguments.mapping.generatedProperties ){
