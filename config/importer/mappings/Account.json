@@ -51,7 +51,7 @@
     "generatedProperties": [
         {
             "propertyIdentifier": "urtTitle",
-            "allowUpdate": true,
+            "allowUpdate": false,
         }    
     ],
     

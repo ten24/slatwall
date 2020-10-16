@@ -499,10 +499,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        }
     	        
     	        var propertyValue = this.getOrGeneratePropertyValue(
-    	            data                        : arguments.data, 
-        	        mapping                     : arguments.mapping,
-        	        propertyMetaData            : propertyMetaData,
-        	        sourcePropertyName          : sourcePropertyName,
+    	            data               : arguments.data, 
+        	        mapping            : arguments.mapping,
+        	        propertyMetaData   : propertyMetaData,
+        	        sourcePropertyName : sourcePropertyName
     	        );
                 
     	        if( !isNull(propertyValue) ){
@@ -525,9 +525,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        }
 	            
     	        var propertyValue = this.getOrGeneratePropertyValue(
-    	            data                        : arguments.data, 
-        	        mapping                     : arguments.mapping,
-        	        propertyMetaData            : propertyMetaData
+    	            data               : arguments.data, 
+        	        mapping            : arguments.mapping,
+        	        propertyMetaData   : propertyMetaData
         	    );
         	   
     	        if( !isNull(propertyValue) ){
@@ -551,7 +551,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            
                 var transformedRelationData = this.getOrGenerateRelationData(
                     data                = arguments.data,
-                    parentEntityMapping  = arguments.mapping,
+                    parentEntityMapping = arguments.mapping,
                     relationMetaData    = relation
                 );
 	                
