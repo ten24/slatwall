@@ -544,7 +544,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_should_call_generator_function_when_proviced(){
+    public void function transformAccountDataTest_should_use_generator_function_for_properties_when_declared_in_mapping(){
         
         var sampleAccountData = getSampleAccountData();
         
@@ -554,7 +554,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "generatorFunction":  "generateAccountActiveFlag_spy"
         };
 
-        function generateAccountActiveFlag_spy(any propertyValue, any constraintValue){
+        function generateAccountActiveFlag_spy(struct data, struct mapping, struct propertyMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             variables.this['generateAccountActiveFlag_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
             return true;
@@ -585,30 +585,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'generateAccountActiveFlag_spy_called');
     }
     
-    
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_generator_functions_should_provide_value(){
-        
-        var sampleAccountData = getSampleAccountData();
-        
-        var data = this.getService().transformEntityData("Account", sampleAccountData);
-        debug(data);
-
-	    expect( data )
-	        .toHaveKey('activeFlag', "key activeFlag should exist in transformed data");
-	        
-	    expect( data.activeFlag )
-	        .toBe( true, "the defaule value for activeFlag should get generated and should be true");
-	        
-    }
-    
-    
-    /** 
-	 * @test
-	*/
-    public void function transformAccountDataTest_should_use_conventional_generator_function_when_declared(){
+    public void function transformAccountDataTest_should_use_conventional_generator_function_for_properties_when_declared_in_service(){
         
         var sampleAccountData = getSampleAccountData();
         
@@ -617,7 +597,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "propertyIdentifier": "examplePropertyIdentifier",
         };
 
-        function generateAccountExamplePropertyIdentifier_spy(any propertyValue, any constraintValue){
+        function generateAccountExamplePropertyIdentifier_spy(struct data, struct mapping, struct propertyMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             this['generateAccountExamplePropertyIdentifier_spy_called'] = 'it-does-not-matter'; 
             return 'example_value';
@@ -650,6 +630,85 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'generateAccountExamplePropertyIdentifier_spy_called');
         structDelete( variables.service, 'generateAccountExamplePropertyIdentifier');
     }
+    
+    
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_use_generator_function_for_properties_when_declared_in_mapping(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations = [{
+            "propertyIdentifier": "exampleRelationProperty",
+            "generatorFunction":  "getAccountExampleRelationProperty_spy"
+        }];
+
+        function getAccountExampleRelationProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
+            // puting something in the THIS scope of the SERVICE so it can be verified later
+            variables.this['getAccountExampleRelationProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
+            return {"keyxx": 'valuexx'};
+        }
+        // declare a mock generator-finction on the target-service
+        variables.service['getAccountExampleRelationProperty_spy'] = getAccountExampleRelationProperty_spy;
+
+
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+        expect( variables.service ).toHaveKey('getAccountExampleRelationProperty_spy_called');
+        expect( variables.service.getAccountExampleRelationProperty_spy_called ).toBe('xxxxx-yyyyy-does-not-matter');
+            
+	    expect( data ).toHaveKey( 'exampleRelationProperty' );
+	    expect( data.exampleRelationProperty ).toHaveKey( 'keyxx' );
+	    expect( data.exampleRelationProperty.keyxx ).toBe( 'valuexx' );
+       
+        // cleanup
+        structDelete( variables.service, 'getAccountExampleRelationProperty_spy');
+        structDelete( variables.service, 'getAccountExampleRelationProperty_spy_called');
+    }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_use_conventional_generator_function_for_relations_when_declared_in_service(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations = [{
+            "propertyIdentifier": "exampleRelationXXXYYYProperty",
+        }];
+
+        function getAccountExampleRelationXXXYYYProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
+            // puting something in the THIS scope of the SERVICE so it can be verified later
+            variables.this['getAccountExampleRelationXXXYYYProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
+            return {"keyxx": 'valuexx'};
+        }
+        // declare a mock generator-finction on the target-service
+        variables.service['generateAccountExampleRelationXXXYYYProperty'] = getAccountExampleRelationXXXYYYProperty_spy;
+
+
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+        expect( variables.service ).toHaveKey('getAccountExampleRelationXXXYYYProperty_spy_called');
+        expect( variables.service.getAccountExampleRelationXXXYYYProperty_spy_called ).toBe('xxxxx-yyyyy-does-not-matter');
+            
+	    expect( data ).toHaveKey( 'exampleRelationXXXYYYProperty' );
+	    expect( data.exampleRelationXXXYYYProperty ).toHaveKey( 'keyxx' );
+	    expect( data.exampleRelationXXXYYYProperty.keyxx ).toBe( 'valuexx' );
+       
+        // cleanup
+        structDelete( variables.service, 'getAccountExampleRelationXXXYYYProperty_spy');
+        structDelete( variables.service, 'getAccountExampleRelationXXXYYYProperty_spy_called');
+    }
+    
+    
     
     
     
@@ -1032,4 +1091,3 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     
     
 }
-
