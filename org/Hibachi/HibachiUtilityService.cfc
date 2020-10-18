@@ -403,6 +403,8 @@
 				addon++;
 				returnValue = "#arguments.propertyValue#-#addon#";
 				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
+				
+				// if count is morethan 50 break
 			}
 
 			return returnValue;
@@ -764,14 +766,40 @@
 
 			return arguments.filename;
 		}
+		
+				
+		/**
+          * Utlility Function to sluggify any string input;
+          * 
+          * @stringToBeSlugged 
+          * @spacer, the char to seperate words int the slug
+          *
+          * Uses: 
+          * 
+          * ``` var sluggified = createSEOString( "example string", '-' ); ```
+          * ``` var sluggified = createSEOString("[{,./?:;(*&^%$@!~ This IS a sTrIng abcde àáâãäå èéêë ìíîï òóôö ùúûü ñ año ñññññññññññññ"); ```
+        */
+		public string function createSEOString(required string toFormat, string delimiter="-", boolean smallCase=true){
 
-		public string function createSEOString(required string toFormat, string delimiter="-"){
-
-			//take out all special characters except -
-			arguments.toFormat = reReplace(lcase(trim(arguments.toFormat)), "[^a-z0-9 \-]", "", "all");
-
-			//replate spaces with -
-			return reReplace(arguments.toFormat, "[-\s]+", delimiter, "all");
+			var result = replace(arguments.toFormat,"'", "", "all");
+        	
+        	result = trim(ReReplaceNoCase(result, "<[^>]*>", "", "ALL"));
+        	
+        	result = ReplaceList(result, "À,Á,Â,Ã,Ä,Å,Æ,È,É,Ê,Ë,Ì,Í,Î,Ï,Ð,Ñ,Ò,Ó,Ô,Õ,Ö,Ø,Ù,Ú,Û,Ü,Ý,à,á,â,ã,ä,å,æ,è,é,ê,ë,ì,í,î,ï,ñ,ò,ó,ô,õ,ö,ø,ù,ú,û,ü,ý,&nbsp;,&amp;", "A,A,A,A,A,A,AE,E,E,E,E,I,I,I,I,D,N,O,O,O,O,O,0,U,U,U,U,Y,a,a,a,a,a,a,ae,e,e,e,e,i,i,i,i,n,o,o,o,o,o,0,u,u,u,u,y, , ");
+        	
+        	result = trim(rereplace(result, "[[:punct:]]"," ","all"));
+        	
+        	result = rereplace(result, "[[:space:]]+","!","all");
+        	
+        	result = ReReplace(result, "[^a-zA-Z0-9!]", "", "ALL");
+        
+        	result = trim(rereplace(result, "!+", arguments.delimiter, "all"));
+            
+            if( arguments.smallCase ){
+                result = lcase(result);
+            }
+            
+        	return result;
 		}
 
 		public void function duplicateDirectory(required string source, required string destination, boolean overwrite=false, boolean recurse=true, string copyContentExclusionList='', boolean deleteDestinationContent=false, string deleteDestinationContentExclusionList="" ){

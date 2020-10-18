@@ -72,21 +72,27 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	public struct function getEntityMapping( required string entityName ){
 	    
-	    var entityMappings = this.getCachedEntityMappings();
+	    var extentionFunctionName = 'get#arguments.entityName#Mapping';
+	    if( structKeyExists(this, extentionFunctionName) ){
+	        return this.invokeMethod( extentionFunctionName, arguments );
+	    }
 	    
-	    if( !structKeyExists( entityMappings, arguments.entityName) ){
+	    
+	    var cachedMappings = this.getCachedEntityMappings();
+	    
+	    if( !structKeyExists( cachedMappings, arguments.entityName) ){
 	        
 	        //Can be overriden to Read from Files/DB/Function whatever 
 	        var mappingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#arguments.entityName#.json');
 	        
 	        if( isJson(mappingJson) ){
-	            entityMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);
+	            cachedMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);
 	        } else {
 	            throw( "Mapping for #arguments.entityName#.json is not valid : \n" &mappingJson );
 	        }
 	    }
 	    
-        return entityMappings[ arguments.entityName ];
+        return cachedMappings[ arguments.entityName ];
 	}
 
   	public struct function createEntityCSVHeaderMetaDataRecursively( required string entityName ){
@@ -216,23 +222,26 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
 	    
-	    this.getHibachiScope().setImporterPopulateFlag(true);
+	    this.getHibachiScope().setObjectPopulateMode( 'private' );;
 
 	    var entityName = arguments.entity.getClassName();
 	    
-	    if( structKeyExists(this, 'process#entityName#Import') ){
-	        return this.invokeMethod( 'process#entityName#Import', arguments );
+	    if( structKeyExists(this, 'process#entityName#_import') ){
+	        return this.invokeMethod( 'process#entityName#_import', arguments );
 	    }
 	    
-	    arguments.entity.populate( arguments.entityQueueData );
+	    arguments.entity.populate( 
+	        data = arguments.entityQueueData,
+	        objectPopulateMode = 'private'
+	    );
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( entityName );
         }
 
 	    // Functions to be called after populating the entity, like `updateCalculatedProperties`
-	    if( structKeyExists(arguments.mapping, 'postPostulateMethods') && isArray(arguments.mapping.postPostulateMethods) ){
-	        for( var methodName in arguments.mapping.postPostulateMethods ){
+	    if( structKeyExists(arguments.mapping, 'postPopulateMethods') && isArray(arguments.mapping.postPopulateMethods) ){
+	        for( var methodName in arguments.mapping.postPopulateMethods ){
 	            arguments.entity.invokeMethod( methodName );
 	        }
 	    }
@@ -442,32 +451,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     }
     
 	public struct function transformData( required struct data, required struct mapping ){
-	    var transformedData = {};
 	    var entityName = arguments.mapping.entityName;
-	    
-	    // First level properties from mapping everything inside `mapping.properties`
-	    if( structKeyExists(arguments.mapping, 'properties') ){
-    	    for( var sourcePropertyName in arguments.mapping.properties ){
-    	        
-    	        var propertyMetaData = arguments.mapping.properties[ sourcePropertyName ];
-    	        
-    	        var propertyValue = this.getOrGeneratePropertyValue(
-    	            data               : arguments.data, 
-        	        mapping            : arguments.mapping,
-        	        propertyMetaData   : propertyMetaData,
-        	        sourcePropertyName : sourcePropertyName
-    	        );
-                        	        
-    	        if( !isNull(propertyValue) ){
-            	    transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
-    	        }
-    	    }
-	    }
+	    var transformedData = {};
 	    
 	    // Inferd properties, importRemoteID and `primaryIDProperty`
 	    var importRemoteIDValue = this.createEntityImportRemoteID( entityName, arguments.data );
 	  	transformedData['importRemoteID'] = importRemoteIDValue;
-	  
 	  
 	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( entityName );
 	    /**
@@ -476,7 +465,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	      * otherwise set it to empty string (in case of insert)
 	      * 
 	    */
-	    if( !structKeyExists( arguments.data, primaryIDPropertyName) ){
+	    if( !structKeyExists( arguments.data, primaryIDPropertyName ) || this.hibachiIsEmpty( arguments.data[ primaryIDPropertyName ] ) ){
 	        
     	    /** 
     	     * This will execute a query to the DB like:
@@ -501,16 +490,51 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    transformedData[ primaryIDPropertyName ] = arguments.data[ primaryIDPropertyName ];
 	    
 	    
-	    // generated-properties, properties which don't have a source-property and are complete generated in slatwall, like `url-title`
+	    // First level properties from mapping everything inside `mapping.properties`
+	    if( structKeyExists(arguments.mapping, 'properties') ){
+	        
+    	    for( var sourcePropertyName in arguments.mapping.properties ){
+    	        
+    	        var propertyMetaData = arguments.mapping.properties[ sourcePropertyName ];
+    	        
+    	        // SKIP if it's a create-only property, and we're upserting
+    	        if(structKeyExists(propertyMetaData, 'allowUpdate') && !propertyMetaData.allowUpdate ){
+    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	                continue;
+    	            }
+    	        }
+    	        
+    	        var propertyValue = this.getOrGeneratePropertyValue(
+    	            data               : arguments.data, 
+        	        mapping            : arguments.mapping,
+        	        propertyMetaData   : propertyMetaData,
+        	        sourcePropertyName : sourcePropertyName
+    	        );
+                
+    	        if( !isNull(propertyValue) ){
+            	    transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
+    	        }
+    	    }
+	    }
+	    
+	    
+	    // generated-properties, properties which don't have a source-property and are completely generated in slatwall, like `url-title`
 	    if( structKeyExists(arguments.mapping, 'generatedProperties') ){
 	        
 	        for(var propertyMetaData in arguments.mapping.generatedProperties ){
+	            
+	            // SKIP if it's a create-only property, and we're upserting
+    	        if(structKeyExists(propertyMetaData, 'allowUpdate') && !propertyMetaData.allowUpdate ){
+    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	                continue;
+    	            }
+    	        }
 	            
     	        var propertyValue = this.getOrGeneratePropertyValue(
     	            data               : arguments.data, 
         	        mapping            : arguments.mapping,
         	        propertyMetaData   : propertyMetaData
-        	   );
+        	    );
         	   
     	        if( !isNull(propertyValue) ){
             	    transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
@@ -518,31 +542,33 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        }
 	    }
 	    
+	    
 	    // relations, properties which belong to some slatwall entity, like `email` is stored in AccountEmailAddress
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
+	        
 	        for(var relation in arguments.mapping.relations ){
 	            
+	            // SKIP if it's a create-only relation, and we're upserting
+    	        if( structKeyExists(relation, 'allowUpdate') && !relation.allowUpdate ){
+    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	                continue;
+    	            }
+    	        }
 	            
-	            //TODO: ( if-needed ) properly handle scenarios for -to-Many relations
-	            // if source-property for the relation already exist in the incoming-data, than it should be an array
-	            // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
-	            
-	            var transformedRelationData = this.transformEntityData( relation.entityName, arguments.data );
-	            
-	            if( listFindNoCase('oneToOne,manyToOne', relation.type) ){
+                var transformedRelationData = this.getOrGenerateRelationData(
+                    data                = arguments.data,
+                    parentEntityMapping = arguments.mapping,
+                    relationMetaData    = relation
+                );
 	                
-	                transformedData[ relation.propertyIdentifier ] = transformedRelationData;
-	                
-	            } else if(  relation.type == 'oneToMany' ){
-	                
-	                // currently this expect only one item for [ -to-many ] array
-	                transformedRelationData = [ transformedRelationData ];
-	                transformedData[ relation.propertyIdentifier ] = transformedRelationData;
-	            }
+                if( !isNull(transformedRelationData) ){
+                    transformedData[ relation.propertyIdentifier ] = transformedRelationData;
+                }
 	        }
+	        
 	    }
-	    
-	    
+	   
+	   
 	    return transformedData;
 	}
 	
@@ -562,41 +588,90 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * Fallback order 
          * 1. generator-function provided in the propertyMetadata
          * 
-         * 2. conventional generator-functions `generate_[entityName]_[examplePropertyIdentifier]` in the service, 
+         * 2. conventional generator-functions `generate[entityName][PropertyName]` in the service, 
          *    where ProertyName ==> propertyMetaData.propertyIdentifier
          *    
-         *    Ex. generate_account_activeFlag(){......}
+         *    Ex. generateAccountActiveFlag(){......}
          * 
          * 3. value in the incoming data
          * 
          * 4. default value from the propertyMetadata
         */
+
+        var entityName = arguments.mapping.entityName;
         
         if( !structKeyExists(arguments, 'mapping')){
-            arguments[ 'mapping' ] = this.getEntityMapping( arguments.entityName );
+            arguments[ 'mapping' ] = this.getEntityMapping( entityName );
         }
         
-        var entityName = arguments.mapping.entityName;
-
         if( structKeyExists(arguments.propertyMetaData, 'generatorFunction') ){
-            
             return this.invokeMethod( arguments.propertyMetaData.generatorFunction, arguments );
-            
-        } else if( structKeyExists(this, 'generate_'&entityName&'_'&arguments.propertyMetaData.propertyIdentifier) ){
-            
-            return this.invokeMethod( 'generate_'&entityName&'_'&arguments.propertyMetaData.propertyIdentifier, arguments );
-            
-        } else if( structKeyExists(arguments, 'sourcePropertyName') && structKeyExists(arguments.data, arguments.sourcePropertyName) ){
-            
+        }  
+        
+        var conventionalGeneratorFunctionName = 'generate'&entityName&arguments.propertyMetaData.propertyIdentifier;
+        if( structKeyExists(this, conventionalGeneratorFunctionName) ){
+            return this.invokeMethod( conventionalGeneratorFunctionName, arguments );
+        }  
+        
+        if( structKeyExists(arguments, 'sourcePropertyName') && structKeyExists(arguments.data, arguments.sourcePropertyName) ){
             return arguments.data[ arguments.sourcePropertyName ];
-            
-        } else if( structKeyExists(arguments.propertyMetaData, 'defaultValue') ){
-            
+        }  
+        
+        if( structKeyExists(arguments.propertyMetaData, 'defaultValue') ){
             return arguments.propertyMetaData.defaultValue;
         }
 	        
     }
     
+    
+    /**
+     * utility function to get relation value either from @data or generated using some helper functions  
+     * 
+    */ 
+    public any function getOrGenerateRelationData( 
+        required struct data, 
+        required struct parentEntityMapping,
+        required struct relationMetaData
+    ){
+        
+        /**
+         * Fallback order 
+         * 1. generator-function provided in the relationMetaData
+         * 
+         * 2. conventional generator-functions `generate[entityName][relatedProertyName]` in the service, 
+         *    where ProertyName ==> relationMetaData.propertyIdentifier
+         *    
+         *    Ex. generateAccountPrimaryEmailAddress(){......}
+         * 
+         * 3. transform it using regular `transformEntityData` flow
+         * 
+        */
+        
+        if( structKeyExists(arguments.relationMetaData, 'generatorFunction') ){
+            return this.invokeMethod( arguments.relationMetaData.generatorFunction, arguments );
+        }
+        
+        var conventionalGeneratorFunctionName = 'generate'&arguments.parentEntityMapping.entityName&arguments.relationMetaData.propertyIdentifier;
+        if( structKeyExists(this, conventionalGeneratorFunctionName) ){
+            return this.invokeMethod( conventionalGeneratorFunctionName, arguments );
+        }
+        
+        
+        //TODO: ( if-needed ) properly handle scenarios for -to-Many relations
+        // if source-property for the relation already exist in the incoming-data, than it should be an array
+        // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
+        
+        var transformedRelationData = this.transformEntityData( arguments.relationMetaData.entityName, arguments.data );
+        
+        if( listFindNoCase('oneToOne,manyToOne', arguments.relationMetaData.type) ){
+            return transformedRelationData;
+        }  
+        
+        if(  arguments.relationMetaData.type == 'oneToMany' ){
+            // currently this expect only one item for [ -to-many ] array
+            return [ transformedRelationData ];
+        }
+    }
     
 	public string function createEntityImportRemoteID( required string entityName, required struct data, struct mapping){
 	    
@@ -618,7 +693,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var compositeValue =  arguments.mapping.importIdentifier.keys.reduce( function(result, key){ 
                             	        // it is expected that each key will exist in the data
-                            	        return ListAppend( result , hash( data[ key ], 'MD5' ), '_'); 
+                            	        return ListAppend( result , hash( trim( data[ key ] ), 'MD5' ), '_'); 
                         	    }, '');
         return compositeValue;
 	}
@@ -626,10 +701,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	/*****************         GENERATOR-FUNCTIONS                 ******************/
 	/**
-	    Conventional generator-functions `generate_[entityName]_[examplePropertyIdentifier]` in the service, 
+	    Conventional generator-functions `generate[entityName][examplePropertyIdentifier]` in the service, 
         where ProertyName ==> propertyMetaData.propertyIdentifier
         
-        Ex. generate_account_activeFlag(){......}
+        Ex. generateAccountActiveFlag(){......}
 	*/
 	
 	/**
@@ -639,6 +714,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return this.getHibachiUtilityService().generateRandomPassword(10);
 	}
 	
+<<<<<<< HEAD
 	public boolean function generateAccountactiveFlag( struct data, struct mapping, struct propertyMetaData ){
 	    return true;
 	}
@@ -664,11 +740,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
-	  return  { 'parentProductTypeID' = '444df2f7ea9c87e60051f3cd87b435a1'; }
+	  return {
+            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1';
+        }
 	}
 	
 	public any function generateSkuImageFile( struct data, struct mapping, struct propertyMetaData ){
-		
+
 	}
 	
 	
