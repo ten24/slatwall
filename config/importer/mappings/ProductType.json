@@ -65,6 +65,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
+            "remoteProductID",
             "remoteProductTypeID"
         ]
     }

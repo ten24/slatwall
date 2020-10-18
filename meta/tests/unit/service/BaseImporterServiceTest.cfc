@@ -164,13 +164,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             listPrice                   : 122,
             activeFlag                  : true,
 
-            //SkuPrice
+            //stock
             minQuantity                 : 1,
-            maxQuantity                 : 5, 
-            currencyCode                : "USD",
-            price                       : 122, 
-            listPrice                   : 122,
-            activeFlag                  : true 
+            maxQuantity                 : 5
 	    };
 	    
 	}
@@ -1201,9 +1197,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     */
     public void function processEntityImport_check_transform_data(){
         
-        var sampleProductData = getSampleSkuData();
+        var sampleProductData = getSampleProductData();
         
-        var data = this.getService().transformEntityData( entityName="Sku", data=sampleProductData );
+        var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
 
         
         debug(data);

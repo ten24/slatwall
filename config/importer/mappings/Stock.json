@@ -9,18 +9,19 @@
                 "dataType": "numeric"
             }
         },
-        "maxQuantity": {
+    "maxQuantity": {
             "propertyIdentifier": "maxQuantity",
             "validations": {
                 "dataType": "numeric"
             }
         }
-    }
+    },
         
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
+            "remoteSkuID",
             "remoteStockID"
         ]
     }

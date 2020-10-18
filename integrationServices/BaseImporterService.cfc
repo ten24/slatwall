@@ -714,21 +714,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return this.getHibachiUtilityService().generateRandomPassword(10);
 	}
 	
-<<<<<<< HEAD
 	public boolean function generateAccountactiveFlag( struct data, struct mapping, struct propertyMetaData ){
 	    return true;
 	}
 	
 	public any function generateBrandUrlTitle( struct data, struct mapping, struct propertyMetaData ){
-	   return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.brandName);
+	   return this.getHibachiUtilityService().createUniqueProperty(arguments.data.brandName);
 	}
 	
 	public any function generateProductUrlTitle( struct data, struct mapping, struct propertyMetaData){
-	   return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.productName);
+	   return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productName);
 	}
 	
 	public any function generateProductTypeUrlTitle( struct data, struct mapping, struct propertyMetaData ){
-	    return this.getHibachiUtilityService().generateSlugifyUrl(arguments.data.productTypeName);
+	    return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productTypeName);
 	}
 	
 	public any function generateProductTypeProductTypeIDPath( struct data, struct mapping, struct propertyMetaData ){
@@ -741,12 +740,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
 	  return {
-            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1';
+            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1'
         }
 	}
 	
 	public any function generateSkuImageFile( struct data, struct mapping, struct propertyMetaData ){
+		var imageNameString = arguments.data.skuCode;
+		var name = getService("HibachiUtilityService").createSEOString(imageNameString, "-");
+		var ext = ".jpeg";
 
+		return name & ext;
 	}
 	
 	
