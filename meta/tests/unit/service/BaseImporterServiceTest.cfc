@@ -92,13 +92,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
+	
+
+	
 	private struct function getSampleProductData(){
 
-	    return {
+	    var productData =  {
 	        
 	        remoteProductID        : 123, 
 	        productName            : "Test Product",  
-	        productCode            : "Test123", 
+	        productCode            : "test123", 
 	        productDescription     : "Testing transform data for product", 
 	        publishedFlag          : true,
 	        activeFlag             : true,
@@ -111,36 +114,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	        
 	        //ProductType
 	        remoteProductTypeID        : 456,
-            productTypeName            : "TestType", 
-            systemCode                 : "456", 
+            productTypeName            : "Test Product Type", 
+            systemCode                 : "test_product_type_456", 
             productTypeDescription     : "Testing transform data for product type",
             publishedFlag              : true,
 	        activeFlag                 : true, 
-
-            //Sku
-            remoteSkuID             : 789,
-            skuName                 : "TestSku", 
-            skuCode                 : "Test789", 
-            publishedFlag           : true,
-            remoteStockID           : 121,
-
-            //SkuPrice
-            skuPriceID                  : 234,
-            minQuantity                 : 1,
-            maxQuantity                 : 5, 
-            currencyCode                : "USD",
-            price                       : 122, 
-            listPrice                   : 122,
-            activeFlag                  : true,
-
-            //SkuPrice
-            minQuantity                 : 1,
-            maxQuantity                 : 5, 
-            currencyCode                : "USD",
-            price                       : 122, 
-            listPrice                   : 122,
-            activeFlag                  : true 
 	    };
+	    
+	    productData.append( getSampleSkuData() );
+	    
+	    return productData;
 	    
 	}
 	
@@ -149,24 +132,23 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    return {
 	        
             //Sku
-            remoteSkuID             : 789,
-            skuName                 : "TestSku", 
-            skuCode                 : "Test789", 
-            publishedFlag           : true,
-            remoteStockID           : 121,
+            remoteSkuID         : 789,
+            skuName             : "TestSku", 
+            skuCode             : "Test789", 
+            publishedFlag       : true,
 
             //SkuPrice
-            skuPriceID                  : 234,
-            minQuantity                 : 1,
-            maxQuantity                 : 5, 
-            currencyCode                : "USD",
-            price                       : 122, 
-            listPrice                   : 122,
-            activeFlag                  : true,
+            skuPriceID          : 234,
+            minQuantity         : 1,
+            maxQuantity         : 5, 
+            currencyCode        : "USD",
+            price               : 122, 
+            listPrice           : 122,
+            activeFlag          : true,
 
             //stock
-            minQuantity                 : 1,
-            maxQuantity                 : 5
+            minQuantity         : 1,
+            maxQuantity         : 5
 	    };
 	    
 	}

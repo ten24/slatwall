@@ -397,14 +397,17 @@
 				returnValue = '#returnValue#-1';
 			}
 
-			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
-
+			var unique = getHibachiDAO().verifyUniquePropertyValue(
+    			entityName=arguments.entityName, 
+    			propertyName=arguments.propertyName, 
+    			value=returnValue
+			);
+            
+            
 			while(!unique) {
 				addon++;
 				returnValue = "#arguments.propertyValue#-#addon#";
 				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
-				
-				// if count is morethan 50 break
 			}
 
 			return returnValue;
@@ -1150,18 +1153,7 @@
     		return ArrayToList( arrPassword, "" );
 	    }
 
-		/**
-		 * Utility function to generate url title for string provided
-		 * Example. generateSlugifyUrl()
-		**/
-		public string function generateSlugifyUrl(required string toFormat, string delimiter="-"){
-            
-            //take out all special characters except -
-			arguments.toFormat = reReplace(lcase(trim(arguments.toFormat)), "[^a-z0-9 \-]", "", "all");
 
-			//replate spaces with -
-			return reReplace(arguments.toFormat, "[-\s]+", delimiter, "all");
-	    }
 		private string function getEncryptionKeyFilePath() {
 			return getEncryptionKeyLocation() & getEncryptionKeyFileName();
 		}

@@ -50,23 +50,25 @@
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateProductTypeUrlTitle",
             "allowUpdate": false,
-        },
-        {
-            "propertyIdentifier" : "productTypeIDPath",
-            "generatorFunction"  : "generateProductTypeProductTypeIDPath"
-        },
-        {
-            "propertyIdentifier" : "productTypeNamePath",
-            "generatorFunction"  : "generateProductTypeProductTypeNamePath"
         }
     ],
+    
+    "relations" : [
+        {
+            "type": "manyToOne",
+            "entityName": "ProductType",
+            "propertyIdentifier": "parentProductType",
+            "generatorFunction" : "generateProductTypeParentProductType"
+        }   
+    ],
+    
+    "postPopulateMethods": ["createProductTypeNamePath"],
     
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "remoteProductID",
-            "remoteProductTypeID"
+            "productTypeName"
         ]
     }
 } 

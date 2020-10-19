@@ -57,12 +57,13 @@
         {
             "type": "manyToOne",
             "entityName": "Brand",
-            "propertyIdentifier": "Brand"
+            "propertyIdentifier": "brand"
+            "volatile": "true"
         },
         {
             "type": "manyToOne",
             "entityName": "ProductType",
-            "propertyIdentifier": "ProductType"
+            "propertyIdentifier": "productType"
         },
         {
             "type": "manyToOne",

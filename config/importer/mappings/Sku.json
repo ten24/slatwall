@@ -1,8 +1,6 @@
 {
     "entityName": "Sku",
-    
     "properties": {
-        
         "remoteSkuID": {
             "propertyIdentifier": "remoteID",
             "validations": {
@@ -38,22 +36,19 @@
             "propertyIdentifier": "activeFlag",
             "defaultValue": true
         }
-        
     },
-    
     "generatedProperties": [
         {
-            "propertyIdentifier" : "imageFile",
-            "generatorFunction"  : "generateSkuImageFile"
+            "propertyIdentifier": "imageFile",
+            "generatorFunction": "generateSkuImageFile"
         }
     ],
-    
     "relations": [
         {
             "type": "oneToMany",
             "entityName": "Stock",
-            "propertyIdentifier": "stocks"
-            "generatorFunction"  : "generateSkuStocks"
+            "propertyIdentifier": "stocks",
+            "generatorFunction": "generateSkuStocks"
         },
         {
             "type": "oneToMany",
@@ -61,7 +56,6 @@
             "propertyIdentifier": "skuPrice"
         }
     ],
-    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",

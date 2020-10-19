@@ -288,23 +288,55 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             }
         }
 	}
+	
+	public any function invokePostPopulateMethodsRecursively(required any entity, required any mapping){
+	    
+	    if( structKeyExists(arguments.mapping, 'postPopulateMethods') && isArray(arguments.mapping.postPopulateMethods) ){
+	        for( var methodName in arguments.mapping.postPopulateMethods ){
+	            arguments.entity.invokeMethod( methodName );
+	        }
+	    }
+	    
+	    if( structKeyExists(arguments.mapping, 'relations') ){
+	       
+	        for(var related in mapping.relations ){
+	            // this might return an entity or an array in case of *-to-many relations
+  	            var relatedEntityOrArray = arguments.entity.invokeMethod( 'get'&related.propertyIdentifier );
+  	         
+  	            if( !isNull(relatedEntityOrArray) ){
+  	                
+                    if( !isArray(relatedEntityOrArray) ){
+                        relatedEntityOrArray = [ relatedEntityOrArray ];
+                    }
+                    
+                    for( var reltedEntity in relatedEntityOrArray ){
+                        this.invokePostPopulateMethodsRecursively( 
+                            entty   = relatedEntity,
+                            mapping = this.getEntityMapping( reltedEntity.getClassName() )
+                        ); 
+                    }
+  	            }
+	        }
+	        
+	    }
+	}
 
 
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
 	    
-	    this.getHibachiScope().setObjectPopulateMode( 'private' );
-
 	    var entityName = arguments.entity.getClassName();
-	    
-	    if( structKeyExists(this, 'process#entityName#_import') ){
-	        return this.invokeMethod( 'process#entityName#_import', arguments );
+        
+        var extentionFunctionName = 'process#entityName#_import';
+	    if( structKeyExists(this, extentionFunctionName) ){
+	        return this.invokeMethod( extentionFunctionName, arguments );
 	    }
-	    
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( entityName );
         }
-	    
+        
+        // make-sure all of the dependancies had been resolved, 
+        // like Product is required before SKU can be created for that Product	    
 	    if( structKeyExists(arguments.entityQueueData, '__dependancies') ){
             this.resolveEntityDependencies(argumentCollection = arguments);
     	    if(arguments.entity.hasErrors()){
@@ -312,28 +344,30 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    }
 	    }
 	    
+	    // make-sure that volatile-relaions are resolved
+	    // volatile-relaions --> 
+	    // related-entities which can be created by one of many records in the queue, 
+	    // for example, Brand can be created by one of multiple-products(which belongs to the same brand) getting imported 
 	    if( structKeyExists(arguments.entityQueueData, '__volatiles') ){
             this.resolveEntityVolatileRelations(entityName, arguments.entityQueueData);
 	    }
 	    
 	    
+	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
 	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
 
-	    // Functions to be called after populating the entity, like `updateCalculatedProperties`
-	    if( structKeyExists(arguments.mapping, 'postPopulateMethods') && isArray(arguments.mapping.postPopulateMethods) ){
-	        for( var methodName in arguments.mapping.postPopulateMethods ){
-	            arguments.entity.invokeMethod( methodName );
-	        }
-	    }
+	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
+	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
+	    
 	    
 	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
-
 	    if( !structKeyExists(arguments.mapping, 'validationContext') ){
 	        arguments.mapping['validationContext'] = 'save';
 	    }
-
+	    
 	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
-	        "#entityName#"  : arguments.entity, // "#entityName#" needs to be unwrapped, as variables are not allowed as keys in stucts
+	        // "#entityName#" needs to be unwrapped, as variables are not allowed as keys in stucts
+	        "#entityName#"  : arguments.entity, 
 	        "context"       : arguments.mapping.validationContext
 	    });
 	    
@@ -776,7 +810,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * Fallback order 
          * 1. generator-function provided in the relationMetaData
          * 
-         * 2. conventional generator-functions `generate[entityName][relatedProertyName]` in the service, 
+         * 2. conventional generator-functions `generate[entityName][relatedPropertyName]` in the service, 
          *    where ProertyName ==> relationMetaData.propertyIdentifier
          *    
          *    Ex. generateAccountPrimaryEmailAddress(){......}
@@ -843,15 +877,18 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	/*****************         GENERATOR-FUNCTIONS                 ******************/
 	/**
-	    Conventional generator-functions `generate[entityName][examplePropertyIdentifier]` in the service, 
+	    Conventional generator-functions `generate[entityName][ProertyName]` in the service, 
         where ProertyName ==> propertyMetaData.propertyIdentifier
         
         Ex. generateAccountActiveFlag(){......}
 	*/
 	
-	/**
-	 * Example function, is getting used to generate passwords for imported accounts 
-	*/
+	
+	
+	
+	/////////////////.                 Account
+	
+	
 	public any function generateAccountAuthenticationPassword( struct data, struct mapping, struct propertyMetaData ){
 	    return this.getHibachiUtilityService().generateRandomPassword(10);
 	}
@@ -860,39 +897,68 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return true;
 	}
 	
+	
+	
+	
+	/////////////////.                  Product 
+	
+	
+	public any function generateProductUrlTitle( struct data, struct mapping, struct propertyMetaData){
+	   return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productName);
+	}
+
 	public any function generateBrandUrlTitle( struct data, struct mapping, struct propertyMetaData ){
 	   return this.getHibachiUtilityService().createUniqueProperty(arguments.data.brandName);
 	}
 	
-	public any function generateProductUrlTitle( struct data, struct mapping, struct propertyMetaData){
-	   return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productName);
+	public any function generateProductProductType( struct data, struct mapping, struct propertyMetaData ){
+	    
+	    var productTypeImportRemoteID = this.createEntityImportRemoteID( 'ProductType', arguments.data, arguments.mapping);
+	    
+	    var productTypeID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  : 'ProductType',
+	        "uniqueKey"   : 'importRemoteID',
+	        "uniqueValue" : productTypeImportRemoteID
+	    );
+    	    
+    	if( !this.hibachiIsEmpty(productTypeID) ){
+    	    return { "productTypeID" : productTypeID }
+    	}
+    	
+    	return this.transformEntityData( 
+                    entityName  = "ProductType", 
+                    data        = arguments.data,
+                    mapping     = arguments.mapping,
+                    nested      = true
+                );
 	}
 	
 	public any function generateProductTypeUrlTitle( struct data, struct mapping, struct propertyMetaData ){
 	    return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productTypeName);
 	}
 	
-	public any function generateProductTypeProductTypeIDPath( struct data, struct mapping, struct propertyMetaData ){
-	    /*** Logic to be discussed ***/
-	}
-	
-	public any function generateProductTypeProductTypeNamePath( struct data, struct mapping, struct propertyMetaData ){
-	    /*** Logic to be discussed ***/
-	}
-	
 	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
 	  return {
-            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1'
+            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1' // Product-type Merchandise 
         }
 	}
 	
+	
+	
+	
+	/////////////////.                  SKU
+	
+	
 	public any function generateSkuImageFile( struct data, struct mapping, struct propertyMetaData ){
-		var imageNameString = arguments.data.skuCode;
-		var name = getService("HibachiUtilityService").createSEOString(imageNameString, "-");
-		var ext = ".jpeg";
-
-		return name & ext;
+		return arguments.data.skuCode & ".jpeg";
 	}
+	
+	public any function generateSkuStocks( struct data, struct mapping, struct propertyMetaData ){
+	    var locations = //get location's IDs
+	    
+		return [];
+	}
+	
 	
 	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
