@@ -223,6 +223,11 @@ component accessors="true" output="false" persistent="false" {
 		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
+	public void function traceHibachi(required string message, boolean generalLog=true){
+		arguments.logType = 'Trace';
+		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
+	}
+	
 	public void function logHibachiException(required any exception){
 		getService("hibachiUtilityService").logException(exception=arguments.exception);		
 	}

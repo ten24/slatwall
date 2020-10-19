@@ -4,6 +4,8 @@
 class SWListingDisplayController{
     /* local state variables */
     public  actions = [];
+    public actionBarActions;
+    public listActions;
     public adminattributes;
     public administrativeCount;
     public allpropertyidentifiers:string = "";
@@ -238,7 +240,19 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showFilters)){
            this.showFilters = true;
         }
-        
+        if(angular.isUndefined(this.actionBarActions)){
+            this.actionBarActions = {
+                export:true,
+                print:true,
+                email:true
+            }
+        }else if(typeof this.actionBarActions == 'string'){
+            let actionBarArray = this.actionBarActions.split(',');
+            this.actionBarActions = {};
+            for(let i = 0; i< actionBarArray.length; i++){
+                this.actionBarActions[actionBarArray[i]] = true;
+            }
+        }
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -835,6 +849,18 @@ class SWListingDisplayController{
                 .remove();
         }
     };
+    
+    public executeListAction(listAction:any){
+        let data = {};
+        if(listAction.selectedRecords){
+            data[this.multiselectFieldName] = this.selectionService.getSelections(this.tableID).join();
+        }
+        $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'='+listAction.action+'" method="post" id="executeListAction"></form>');
+        if(listAction.selectedRecords){
+            $('#executeListAction').append("<input type='hidden' name='"+this.multiselectFieldName+"' value='" + this.selectionService.getSelections(this.tableID).join() + "' />")
+        }
+        $('#executeListAction').submit().remove();
+    }
 
     public printCurrentList =(printTemplateID)=>{
 
@@ -930,6 +956,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /*Admin Actions*/
             actions:"<?",
+            actionBarActions:"@?",
             administrativeCount:"@?",
             
             recordEditModal:"<?",
@@ -979,6 +1006,7 @@ class SWListingDisplay implements ng.IDirective{
             }
             ]
             */
+            listActions:'<?',
             listingColumns:'<?',
 
             /*Hierachy Expandable*/

@@ -59,6 +59,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function before() {
 		getFW().setView("public:main.blank");
+		getHibachiScope().clearSessionValue('cartData');
+	        getHibachiScope().clearSessionValue('accountData');
 	}
 
 	public void function after( required struct rc ) {

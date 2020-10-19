@@ -31,8 +31,10 @@
 	<cfparam name="attributes.deleteQueryString" type="string" default="" />
 
 	<!--- Process Specific Values --->
-	<cfparam name="attributes.processAction" type="string" default="">
-	<cfparam name="attributes.processContext" type="string" default="">
+	<cfparam name="attributes.processAction" type="string" default="" />
+	<cfparam name="attributes.processContext" type="string" default="" />
+	
+	<cfparam name="attributes.confirm" type="boolean" default="false" />
 
 <cfelse>
 	<cfif not structKeyExists(request.context, "modal") or not request.context.modal>
@@ -232,9 +234,26 @@
 									<div class="btn-group btn-group-sm">
 										<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 									</div>
-									<div class="btn-group btn-group-sm">
-										<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
-									</div>
+									<cfif NOT attributes.confirm>
+										<div class="btn-group btn-group-sm">
+											<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
+										</div>
+									<cfelse>
+										<cfset queryString = "" />
+										<cfif NOT isNull(attributes.processContext) >
+											<cfset queryString = "processContext=#attributes.processContext#" />
+										</cfif>
+										<!---<cfif NOT isNull(attributes.queryString--->
+										<a title="submit" 
+											class="btn btn-primary alert-confirm" 
+											target="_self" 
+											href="#attributes.hibachiScope.buildURL(action=attributes.processAction,querystring='processContext=#attributes.processContext#')#"
+											data-confirm="#attributes.hibachiScope.rbKey('entity.#attributes.object.getClassName()#.process.#attributes.processContext#_confirm')#"
+											data-include-form="true"
+										>
+											#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#
+										</a>
+									</cfif>
 								</cfif>
 							
 

@@ -154,8 +154,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			orderFulfillments.shippingAddress.street2Address,
 			orderFulfillments.shippingAddress.city,
 			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode,
-			orderDeliveries.trackingUrl
+			orderFulfillments.shippingAddress.postalCode
 		');
 		
 		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID());
@@ -166,9 +165,28 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		}
 		ordersList.addGroupBy('orderID');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
 		
-		return { "ordersOnAccount":  ordersList.getPageRecords(), "records": ordersList.getRecordsCount()}
+		var orderRecords = ordersList.getPageRecords();
+		var orderRecordMap = StructNew();
+		var orderIDs = '';
+		for(var orderRecord in orderRecords){
+			orderIDs = listAppend(orderIDs, orderRecord['orderID']);
+			orderRecordMap[orderRecord['orderID']] = orderRecord;
+			orderRecord['orderDeliveries_trackingUrl'] = '';
+		}
+		var orderDeliveryCollectionList = getService('OrderService').getOrderDeliveryCollectionList();
+		orderDeliveryCollectionList.setDisplayProperties('order.orderID,trackingUrl');
+		orderDeliveryCollectionList.addFilter('order.orderID',orderIDs,'IN');
+		
+		var orderDeliveries = orderDeliveryCollectionList.getRecords();
+		
+		for(var orderDelivery in orderDeliveries){
+			var orderRecord = orderRecordMap[orderDelivery['order_orderID']];
+			orderRecord['orderDeliveries_trackingUrl'] = listAppend(orderRecord['orderDeliveries_trackingUrl'],orderDelivery['trackingUrl']);
+		}
+		
+		return { "ordersOnAccount":  orderRecords, "records": ordersList.getRecordsCount()}
 	}
 	
 	/**
