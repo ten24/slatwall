@@ -807,6 +807,15 @@ Notes:
 		return total;
 	}
 	
+	public string function getFormattedErrorMessage(any integrationName,any errorCode,string fallbackMessage){
+        var errorMsg = getHibachiScope().rbKey('#integrationName#_errorcode_#errorCode#');
+        if(find("missing",errorMsg) > 0){
+            //If error message is not found in RB keys
+             errorMsg = arguments.fallbackMessage;
+        }
+        return errorMsg;
+    }
+	
 	</cfscript>
 
 </cfcomponent>

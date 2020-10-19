@@ -86,8 +86,17 @@
 <div ng-cloak ng-show="monatEnrollment.showCanPlaceOrderAlert && !monatEnrollment.monatService.canPlaceOrder" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
     <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
 </div>
-    
 <footer ng-if="monatEnrollment.currentStepName !== 'checkout'" class="steps-footer d-flex flex-column">
+	<div
+		ng-hide=
+		"monatEnrollment.currentStepName != 'todaysOrder' 
+		|| monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping <= 0"
+		ng-show=
+		"monatEnrollment.currentStepName == 'todaysOrder'
+		&& monatEnrollment.type = 'vip'
+		&& monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping > 0"
+		class="text-white align-items-center"><span ng-hide="!monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShippingLoaded" sw-rbkey="'frontend.enrollment.threshold'"></span>
+	</div>
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		<!-- Back button --->
 		<div class="d-flex align-items-center">

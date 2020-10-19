@@ -75,7 +75,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 getHibachiScope().clearSessionValue('cartData');
                 getHibachiScope().clearSessionValue('accountData');
             }
+
         } 
+
     }
 
     public any function get( required struct rc ) {
