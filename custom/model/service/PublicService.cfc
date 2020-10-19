@@ -2712,5 +2712,4 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
-    
 }
