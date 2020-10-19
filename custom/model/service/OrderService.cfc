@@ -545,7 +545,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'calculatedListPrice,total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,temporaryFlag,sku.skuID';  
+		var displayProperties = 'calculatedListPrice,calculatedTotal,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,temporaryFlag,sku.skuID';  
 
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 

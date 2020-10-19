@@ -2143,7 +2143,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getOrderTemplates(required any data){ 
-		param name="arguments.data.optionalProperties" default="qualifiesForOFYProducts"; 
+		param name="arguments.data.optionalProperties" default=""; 
 		
 		super.getOrderTemplates(argumentCollection = arguments);
 		
@@ -2151,7 +2151,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		for(var ot in arguments.data['ajaxResponse']['orderTemplates'] ){
 		  
 		    //this is some add-on optimization, as if flexship qualifies, or is-canceled, it definately can't have an OFY on it
-		    if(!ot.qualifiesForOFYProducts && ot.statusCode != "otstCanceled"){ 
+		    if(ot['orderTemplateStatusType_systemCode'] != "otstCanceled"){ 
 		        ot['associatedOFYProduct'] = this.getService('orderService').getAssociatedOFYProductForFlexship(ot.orderTemplateID);
 		    }
 		}
