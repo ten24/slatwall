@@ -68,6 +68,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         var newOrder = getService('OrderService').processOrder(cart,{referencedOrderFlag:false},'duplicateOrder');
         
         newOrder.setAccountType(cart.getAccountType());
+        newOrder.setPriceGroup(cart.getPriceGroup());
         newOrder.setMonatOrderType(cart.getMonatOrderType());
         newOrder = getService('OrderService').saveOrder(newOrder);
         
@@ -85,49 +86,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         
         email.setEmailTo(arguments.rc.emailAddress);
         email = getService('EmailService').processEmail(email, arguments, 'addToQueue');
+        arguments.rc.messages = [getHibachiScope().getRBKey('frontend.saveEnrollmentSuccess')];
         getHibachiScope().addActionResult('monat:public.saveEnrollment',email.hasErrors());
-    }
-    
-    public void function resumeEnrollment(required struct rc){
-        param name="arguments.rc.enrollmentCode";
-        
-        if(len(arguments.rc.enrollmentCode) != 32){
-            getService('PublicService').addError(arguments.rc,{'resumeEnrollment':getHibachiScope().getRBKey('frontend.resumeEnrollmentError.enrollmentCode')});
-            getHibachiScope().addActionResult('monat:public.resumeEnrollment',true);
-            return;
-        }
-        var orderID = arguments.rc.enrollmentCode;
-        
-        var order = getService('OrderService').getOrder( orderID );
-        if(isNull( order ) || order.hasAccount() ){
-            getService('PublicService').addError( arguments.rc, {'resumeEnrollment':getHibachiScope().getRBKey('frontend.resumeEnrollmentError.order')} );
-            getHibachiScope().addActionResult( 'monat:public.resumeEnrollment', true );
-            return;
-        }
-        
-        var ownerAccount = order.getSharedByAccount();
-        if( isNull( ownerAccount ) || isNull( ownerAccount.getAccountNumber() ) ){
-            getService('PublicService').addError( arguments.rc, {'resumeEnrollment':getHibachiScope().getRBKey('frontend.resumeEnrollmentError.ownerAccount')} );
-            getHibachiScope().addActionResult('monat:public.resumeEnrollment',true);
-            return;
-        }
-        
-        getHibachiScope().getSession().setOrder(order);
-        getHibachiScope().setSessionValue('ownerAccountNumber',ownerAccount.getAccountNumber());
-
-        var accountType = order.getAccountType();
-        if(accountType == 'marketPartner'){
-            accountType = 'market-partner';
-        }
-
-        var https = getPageContext().getRequest().isSecure() ? 's' : '';
-        
-        var redirectURL = '/enrollment/' & accountType & '/enroll';
-        
-        order.setPromotionCacheKey('');
-        getService('OrderService').processOrder(order,'updateOrderAmounts');
-
-        getHibachiScope().flushORMSession();
-        getFramework().redirectExact(redirectURL);
     }
 }

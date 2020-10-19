@@ -12,7 +12,7 @@
 					<button 
 						class="btn btn-secondary" 
 						ng-click="monatEnrollment.saveEnrollment()"
-						ng-if="monatEnrollment.currentStepName == 'todaysOrder'">Save Enrollment</button>
+						ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">Save Enrollment</button>
 				</div>
 				<div class="header-cart">
 					<hybrid-cart type="monatEnrollment.type" is-enrollment="true"></hybrid-cart>

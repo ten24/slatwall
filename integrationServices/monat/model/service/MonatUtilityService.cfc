@@ -64,4 +64,37 @@ component extends="Slatwall.model.service.HibachiService" {
         return siteStruct;
     }
     
+    public void function resumeEnrollment(required string enrollmentCode){
+        param name="enrollmentCode";
+        
+        if(len(enrollmentCode) != 32){
+
+            getHibachiScope().addActionResult('monat:public.resumeEnrollment',true);
+            return;
+        }
+        var orderID = enrollmentCode;
+        
+        var order = getService('OrderService').getOrder( orderID );
+        if(isNull( order ) || order.hasAccount() ){
+            getHibachiScope().addActionResult( 'monat:public.resumeEnrollment', true );
+            return;
+        }
+        
+        var ownerAccount = order.getSharedByAccount();
+        if( isNull( ownerAccount ) || isNull( ownerAccount.getAccountNumber() ) ){
+            getHibachiScope().addActionResult('monat:public.resumeEnrollment',true);
+            return;
+        }
+        
+        getHibachiScope().getSession().setOrder(order)
+        getHibachiScope().setSessionValue('ownerAccountNumber',ownerAccount.getAccountNumber());
+        // getHibachiScope().setSessionValue('resumeEnrollmentID',order.getOrderID());
+        order.setPromotionCacheKey('');
+        getService('OrderService').processOrder(order,'updateOrderAmounts');
+        getService("HibachiSessionService").persistSession();
+        getHibachiScope().flushORMSession();
+        // getHibachiScope().addActionResult('monat:public.resumeEnrollment',false);
+        // writeDump(var=getHibachiScope().getCart(),top=3);
+    }
+    
 }
