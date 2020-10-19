@@ -44,14 +44,14 @@
             }
         },
         "accountActiveFlag": {
-            "propertyIdentifier": "activeFlag",
+            "propertyIdentifier": "activeFlag"
         }
     },
     
     "generatedProperties": [
         {
             "propertyIdentifier": "urtTitle",
-            "allowUpdate": false,
+            "allowUpdate": false
         }    
     ],
     

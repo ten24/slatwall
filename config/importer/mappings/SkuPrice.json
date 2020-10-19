@@ -42,7 +42,7 @@
                 "dataType": "numeric"
             }
         },
-        "SkuPriceActiveFlag": {
+        "skuPriceActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true,
             "validations": {
