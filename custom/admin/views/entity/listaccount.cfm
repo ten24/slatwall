@@ -78,7 +78,7 @@ Notes:
 	displayProperty='primaryEmailAddress.emailAddress',
 	columnConfig={
 		isVisible=true,
-		isSearchable=true,
+		isSearchable=false,
 		isDeletable=true
 	})/>
 	
