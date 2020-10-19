@@ -663,12 +663,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_should_use_generator_function_for_properties_when_declared_in_mapping(){
+    public void function transformAccountDataTest_should_use_generator_function_for_relations_when_declared_in_mapping(){
         
         var sampleAccountData = getSampleAccountData();
         
         var mapping = this.getService().getEntityMapping( 'Account' );
         mapping.relations = [{
+            "entityName": "Account",
             "propertyIdentifier": "exampleRelationProperty",
             "generatorFunction":  "getAccountExampleRelationProperty_spy"
         }];
@@ -676,7 +677,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         function getAccountExampleRelationProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             variables.this['getAccountExampleRelationProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
-            return {"keyxx": 'valuexx'};
+            return {"keyxx": 'valuexx', 'accountID': '12345'};
         }
         // declare a mock generator-finction on the target-service
         variables.service['getAccountExampleRelationProperty_spy'] = getAccountExampleRelationProperty_spy;
@@ -707,13 +708,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         var mapping = this.getService().getEntityMapping( 'Account' );
         mapping.relations = [{
+            "entityName": "Account",
             "propertyIdentifier": "exampleRelationXXXYYYProperty",
         }];
 
         function getAccountExampleRelationXXXYYYProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             variables.this['getAccountExampleRelationXXXYYYProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
-            return {"keyxx": 'valuexx'};
+            return {"keyxx": 'valuexx', 'accountID': '12345'};
         }
         // declare a mock generator-finction on the target-service
         variables.service['generateAccountExampleRelationXXXYYYProperty'] = getAccountExampleRelationXXXYYYProperty_spy;

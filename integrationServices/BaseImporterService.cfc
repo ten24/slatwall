@@ -254,9 +254,45 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
 	}
 
+
+	public void function resolveEntityVolatileRelations(required string entityName, required struct entityData ){
+	    
+	    var extentionFunctionName = "resolve#arguments.entityName#VolatileRelations"
+	    if( structKeyExists(this, extentionFunctionName) ){
+	        return this.invokeMethod( extentionFunctionName, arguments );
+	    }
+	      
+        for( var relation in arguments.entityData.__volatiles ){
+             
+            var relationData = arguments.entityData[ relation.propertyIdentifier ];
+            if( relation.isVolatile ){
+                
+                var relationPrimaryIDValue = this.getHibachiService()
+                    .getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+                        "entityName"  : relation.entityName,
+            	        "uniqueKey"   : 'importRemoteID',
+            	        "uniqueValue" : relationData.importRemoteID
+                    );
+                
+                if( !this.hibachiIsEmpty(relationPrimaryIDValue) ){
+                    
+                    var relationPrimaryIDProperty = this.getHibachiService()
+                        .getPrimaryIDPropertyNameByEntityName( relation.entityName );
+                        
+                    // mutates the nested struct in arguments.entityData
+                    relationData = { "#relationPrimaryIDProperty#" : relationPrimaryIDValue }; 
+                }
+                
+            } else if(relation.hasVolatiles) {
+                this.resolveEntityVolatileRelations( relation.entityName, relationData );
+            }
+        }
+	}
+
+
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
 	    
-	    this.getHibachiScope().setObjectPopulateMode( 'private' );;
+	    this.getHibachiScope().setObjectPopulateMode( 'private' );
 
 	    var entityName = arguments.entity.getClassName();
 	    
@@ -265,22 +301,23 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    
+	    if( !structKeyExists(arguments, 'mapping') ){
+            arguments.mapping = this.getEntityMapping( entityName );
+        }
+	    
 	    if( structKeyExists(arguments.entityQueueData, '__dependancies') ){
-            
             this.resolveEntityDependencies(argumentCollection = arguments);
-    	    
     	    if(arguments.entity.hasErrors()){
     	        return arguments.entity;
     	    }
 	    }
 	    
+	    if( structKeyExists(arguments.entityQueueData, '__volatiles') ){
+            this.resolveEntityVolatileRelations(entityName, arguments.entityQueueData);
+	    }
+	    
 	    
 	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
-	    
-	
-	    if( !structKeyExists(arguments, 'mapping') ){
-            arguments.mapping = this.getEntityMapping( entityName );
-        }
 
 	    // Functions to be called after populating the entity, like `updateCalculatedProperties`
 	    if( structKeyExists(arguments.mapping, 'postPopulateMethods') && isArray(arguments.mapping.postPopulateMethods) ){
@@ -320,11 +357,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             return this.invokeMethod( validatorFunctionName, arguments );
         } else {
             
-    	    return this.validateData( argumentCollection = arguments);
+    	    return this.genericValidateEntityData( argumentCollection = arguments);
         }
     }
 
-	public struct function validateData( required struct data, required struct mapping, boolean collectErrors = false ){
+	public struct function genericValidateEntityData( required struct data, required struct mapping, boolean collectErrors = false ){
 	    
 	    var validationService = this.getHibachiValidationService();
 	    var utilityService = this.getHibachiUtilityService();
@@ -489,11 +526,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             return this.invokeMethod( 'transform#arguments.entityName#Data', arguments );
         } 
         else {
-    	    return this.transformData( argumentCollection = arguments);
+    	    return this.genericTransformEntityData( argumentCollection = arguments);
         }
     }
     
-	public struct function transformData( required struct data, required struct mapping, boolean nested=false){
+	public struct function genericTransformEntityData( required struct data, required struct mapping, boolean nested=false){
 	    var entityName = arguments.mapping.entityName;
 	    var transformedData = {};
 	    
@@ -616,7 +653,54 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 );
 	                
                 if( !isNull(transformedRelationData) ){
+                    
                     transformedData[ relation.propertyIdentifier ] = transformedRelationData;
+                    
+                    if( !isStruct(transformedRelationData) ){
+                        continue;
+                        // we're only supporting struct as volatiles, [ many-to-one & one-to-one ] relations
+                    }
+                    
+                    /**********************************************************************************************
+                     * A volatile relation is any relation which can be generated by multiple recoards in the queue,
+                     * 
+                     * for example we'll import Product and ProductType and Brand all together, and when there is not a brand for a given name, 
+                     * a new Brand will get created automatically. But there can be a scenario 
+                     * when there are multiple products in the queue that belongs to the same brnad and the brand does not exist in Slatwall,
+                     * in that case we'd want to create the brand when the first product get's created 
+                     * and for the rest of them we'd want to re-use that same recoard.
+                     * 
+                     * 
+                     * if this relation is-volatile or if it has-volatiles we'll carrying it forward to the `processEntityImport` function
+                     * so before creating actual entity-record we can query the DB and replace volatiles with already created entities
+                     * 
+                     ***********************************************************************************************/
+                    
+                    // if relation has one or ore sub-entities which are volatile
+                    relation['hasVolatiles'] = structKeyExists(transformedRelationData, '__volatiles');
+                    
+                    if( !structKeyExists(relation, 'isVolatile') ){
+                        relation['isVolatile'] = false;
+                    }
+                    
+                    // when the relation was volatile, but we're not creating a new recoard for this  
+                    // as we have the primaaryID for the related entity
+                    var relationPrimaryIdPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( relation.entityName );
+                    var relationPrimaryIdValue = transformedRelationData[ relationPrimaryIdPropertyName ];
+                    if( relation.isVolatile && !this.hibachiIsEmpty( relationPrimaryIdValue )  ){
+                        relation['isVolatile'] = false;
+                    }
+                    
+                    
+                    if( relation.isVolatile || relation.hasVolatiles ){
+                        
+                        if( !structKeyExists(transformedData, '__volatiles') ){
+                            transformedData['__volatiles'] = [];
+                        }
+                        
+                        transformedData.__volatiles.append(relation);
+                    }
+                    
                 }
 	        }
 	        
