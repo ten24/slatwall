@@ -2093,4 +2093,50 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.order;
 	}
 	
+	public any function processOrder_batchApproveFullRmas( required any order, struct data = {} ){
+
+		var salesOrderTypeID = getService('TypeService').getTypeBySystemCode('otSalesOrder').getTypeID();
+		var returnOrderTypeID = getService('TypeService').getTypeBySystemCode('otReturnOrder').getTypeID();
+		var receivedStatusTypeID = getService('TypeService').getTypeByTypeCode('rmaReceived').getTypeID();
+		
+		var fullRmaSql = "INSERT IGNORE INTO swentityqueue (
+							entityQueueID, 
+							baseObject, 
+							baseID, 
+							processMethod, 
+							entityQueueDateTime, 
+							createdDateTime, 
+							createdByAccountID, 
+							modifiedDateTime, 
+							modifiedByAccountID, 
+							tryCount
+						)
+						SELECT 
+							LOWER(MD5(CONCAT('Order_',ro.orderID ,'_processOrder_approveReturn_{}'))) as entityQueueID,
+							'Order' as baseObject,
+							ro.orderID as baseID,
+							'processOrder_approveReturn' as processMethod,
+							NOW() as entityQueueDateTime,
+							NOW() as createdDateTime,
+							'#getHibachiScope().getAccount().getAccountID()#' as createdByAccountID,
+							NOW() as modifiedDateTime,
+							'#getHibachiScope().getAccount().getAccountID()#' as modifiedByAccountID,
+							1 as tryCount
+						FROM sworder ro
+							JOIN sworder o on o.orderID = ro.referencedOrderID
+						WHERE ro.orderTypeID = :returnOrderTypeID
+							AND o.orderTypeID = :salesOrderTypeID
+							AND ro.orderStatusTypeID = :receivedStatusTypeID
+							AND o.calculatedSubtotal = -1 * ro.calculatedSubtotal
+						ORDER BY ro.orderID";
+		var fullRmaParams = {
+			'salesOrderTypeID':salesOrderTypeID,
+			'returnOrderTypeID':returnOrderTypeID,
+			'receivedStatusTypeID':receivedStatusTypeID
+		};
+			
+
+		return arguments.order;
+	}
+	
 }
