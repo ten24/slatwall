@@ -44,7 +44,8 @@ class MonatCheckoutController {
 	public sponsorLoading:boolean;
 	public isLoading:boolean;
 	public addingSavedPaymentMethod = false;
-	
+	public formHasBeenPosted = false;
+
 	// @ngInject
 	constructor(
 		public publicService,
@@ -113,7 +114,9 @@ class MonatCheckoutController {
 		const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
-     
+		
+		this.$scope.slatwall.preValidate = this.preValidate;
+		
         do {
             this.yearOptions.push(manipulateableYear++);
         }
@@ -428,6 +431,26 @@ class MonatCheckoutController {
 		if(!this.account.accountID.length) return;
 		this.getCurrentCheckoutScreen(setDefault, hardRefresh);
 
+	}
+	
+	public preValidate = (model) => {
+		
+		let emptyZip = false;
+		
+		if(typeof model.postalCode === 'string' && model.postalCode.trim() == ""){
+			emptyZip = true;
+		} else if (model.postalCode == undefined){
+			emptyZip = true;
+		}
+		
+		if(model.countryCode  && model.countryCode == "IE" && !this.formHasBeenPosted && emptyZip){
+			this.formHasBeenPosted = true;
+			$("#promptForZip").modal('show');
+			return false;
+		} else {
+			return true;
+		}
+		
 	}
 }
 

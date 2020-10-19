@@ -1,7 +1,7 @@
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal';
+        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal';
     }
    
 	public array function getOrderEventOptions(){
@@ -580,13 +580,21 @@ component extends="Slatwall.model.service.OrderService" {
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
 		
+		if( orderType.getSystemCode() == 'otSalesOrder'
+			&& arguments.systemCode == 'ostProcessing'
+			&& !len(arguments.typeCode)
+			&& arguments.order.isOrderPartiallyDelivered() ){
+				
+			arguments.typeCode = 'partiallyShipped';
+		}
+		
         /** 
          * if order is locked it can go back and forth b/w processsing1 and processing2 status 
          * but if that's not the case, we're checking further
         */ 
         if( 
         	arguments.order.getIsLockedInProcessingFlag() && 
-        	( !ListFindNoCase( 'processing1,processing2', arguments.typeCode)  || arguments.systemCode != 'ostProcessing') 
+        	( !ListFindNoCase( 'processing1,processing2,partiallyShipped', arguments.typeCode)  || arguments.systemCode != 'ostProcessing') 
         ) {
 
 	        /** 
@@ -676,7 +684,7 @@ component extends="Slatwall.model.service.OrderService" {
 						
 						// all processing status allowed when called with a specific typecode
 						arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode) );
-						
+					
 					} else if( currentOrderStatusType.getSystemCode() == 'ostClosed') {
 						
 						//reopening closed-order, which is ostProcessing
@@ -745,7 +753,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		///Order Item Data
 		var ordersItemsList = this.getOrderItemCollectionList();
-		ordersItemsList.setDisplayProperties('quantity,price,calculatedListPrice,calculatedExtendedPriceAfterDiscount,sku.product.productName,sku.product.productID,sku.product.productType.systemCode,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,orderFulfillment.handlingFee,orderFulfillment.fulfillmentCharge');
+		ordersItemsList.setDisplayProperties('orderItemID,quantity,price,calculatedListPrice,calculatedExtendedPriceAfterDiscount,sku.product.productName,sku.product.productID,sku.product.productType.systemCode,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,orderFulfillment.handlingFee,orderFulfillment.fulfillmentCharge');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.addFilter('showInCartFlag', 0, '!=');
@@ -766,14 +774,14 @@ component extends="Slatwall.model.service.OrderService" {
 		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
 		//Tracking info
-		var orderDeliveriesList = this.getOrderDeliveryCollectionList();
-		orderDeliveriesList.setDisplayProperties('trackingUrl');
-		orderDeliveriesList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		var orderDeliveryItemsList = this.getOrderDeliveryItemCollectionList();
+		orderDeliveryItemsList.setDisplayProperties('orderDelivery.orderDeliveryID,orderDelivery.trackingUrl,quantity,orderItem.orderItemID,orderItem.sku.product.productName');
+		orderDeliveryItemsList.addFilter( 'orderDelivery.order.orderID', arguments.data.orderID, '=');
 		
 		var orderPayments = orderPaymentList.getPageRecords();
 		var orderItems = ordersItemsList.getPageRecords();
 		var orderPromotions = orderPromotionList.getPageRecords();
-		var orderDeliveries = orderDeliveriesList.getPageRecords();
+		var orderDeliveryItems = orderDeliveryItemsList.getPageRecords();
 		var orderItemData = {};
 		
 		orderItemData['orderPayments'] = orderPayments;
@@ -782,11 +790,30 @@ component extends="Slatwall.model.service.OrderService" {
 		orderItemData['orderRefundTotal'] = orderRefundTotal;
 		orderItemData['purchasePlusTotal'] = order.getPurchasePlusTotal();
 		
-		if ( len( orderDeliveries ) ) {
-			orderItemData['orderDelivery'] = orderDeliveries[1];
+		if ( len( orderDeliveryItems ) ) {
+			var orderDeliveriesMap = {};
+			var orderDeliveries = [];
+			for(var orderDeliveryItem in orderDeliveryItems){
+				var itemData = {
+					'productName':orderDeliveryitem.orderItem_sku_product_productName,
+					'quantity':orderDeliveryItem.quantity
+				};
+				
+				if( !structKeyExists( orderDeliveriesMap, orderDeliveryItem.orderDelivery_orderDeliveryID ) ){
+					var orderDeliveryData = {
+						'trackingUrl':orderDeliveryItem.orderDelivery_trackingUrl,
+						'orderDeliveryItems':[]
+					}
+					orderDeliveriesMap[orderDeliveryItem.orderDelivery_orderDeliveryID] = orderDeliveryData;
+					ArrayAppend(orderDeliveries, orderDeliveryData);
+				}
+				
+				ArrayAppend(orderDeliveriesMap[orderDeliveryItem.orderDelivery_orderDeliveryID].orderDeliveryItems, itemData);
+			}
+			orderItemData['orderDeliveries'] = orderDeliveries;
 		}
 		
-		return orderItemData
+		return orderItemData;
     }
     
     public void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
@@ -910,7 +937,35 @@ component extends="Slatwall.model.service.OrderService" {
 	    return order;
 	}
 	
-	public any function processOrder_approveReturn(required any order, required struct data){
+	public any function processOrderReturn_receive(required any orderReturn, required any processObject, struct data){
+		var orderReturn = super.processOrderReturn_receive(argumentCollection=arguments);
+		var order = orderReturn.getOrder();
+		var orderItems = order.getOrderItems();
+		var incompleteReturnFlag = false;
+		var itemsToRemove = [];
+		
+		for(var orderItem in orderItems){
+			var quantity = orderItem.getQuantity();
+			var quantityReceived = orderItem.getQuantityReceived();
+			if(quantityReceived < quantity){
+				incompleteReturnFlag = true;
+				orderItem.setQuantity(quantityReceived);
+				var comment = getCommentService().newComment();
+				comment.setPublicFlag(false);
+				comment.setComment('Order Item #orderItem.getOrderItemID()# (Sku #orderItem.getSku().getSkuCode()#) Original Quantity: #quantity#, Received Quantity: #quantityReceived#');
+				var commentRelationship = getCommentService().newCommentRelationship();
+				commentRelationship.setOrder(order);
+				commentRelationship.setComment(comment);
+				commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
+				comment = getCommentService().saveComment(comment,{});
+			}
+		}
+		order.setIncompleteReturnFlag(incompleteReturnFlag);
+		this.saveOrder(order);
+		return orderReturn;
+	}
+	
+	public any function processOrder_approveReturn(required any order, struct data={}){
 		
 	    if(!isNull(arguments.data.orderItems) &&arrayLen(arguments.data.orderItems)){
 	        for(var orderItemStruct in arguments.data.orderItems){

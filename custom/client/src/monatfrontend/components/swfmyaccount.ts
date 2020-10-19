@@ -40,7 +40,7 @@ class swfAccountController {
     public orderPayments:any;
     public uploadImageError:boolean;
     public accountProfileImage;
-    public orderDelivery:any;
+    public orderDeliveries:any;
     public orderPromotions:any;
     public RAFGiftCard:any;
     public orderItemTotal:number = 0;
@@ -285,7 +285,7 @@ class swfAccountController {
                 this.orderPayments = result.OrderItemsByOrderID.orderPayments;
                 this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
                 this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
-                this.orderDelivery = result.OrderItemsByOrderID.orderDelivery;
+                this.orderDeliveries = result.OrderItemsByOrderID.orderDeliveries;
                 this.purchasePlusTotal = result.OrderItemsByOrderID.purchasePlusTotal;
                 
                 if(this.orderPayments.length){

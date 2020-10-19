@@ -61,7 +61,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.orderImportBatch.setOrderImportBatchName(arguments.processObject.getOrderImportBatchName());
 		arguments.orderImportBatch.setOrderImportBatchStatusType(getTypeService().getTypeBySystemCode('oibstNew'));
-		
+		arguments.orderImportBatch.setOrderType(arguments.processObject.getOrderType());
 	    // If a count file was uploaded, then we can use that
 		if( !isNull(arguments.processObject.getBatchFile()) ) {
 
@@ -188,7 +188,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderImportBatch;
 	}
 	
-	public any function processOrderImportBatch_Process(required any orderImportBatch){
+	public any function processOrderImportBatch_process(required any orderImportBatch){
 		var placedOrders = 0;
 		var origin = getOrderService().getOrderOriginByOrderOriginName('Batch Import');
 
@@ -207,10 +207,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!structKeyExists(local,'currencyCode')){
 				var currencyCode = 'USD';
 			}
-			
+			order.setOrderType(arguments.orderImportBatch.getOrderType());
 			order.setCurrencyCode(currencyCode);
 			order.setOrderImportBatch(arguments.orderImportBatch);
 			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
+			order.setSendEmailNotificationsFlag(arguments.orderImportBatch.getSendEmailNotificationsFlag());
 			if(!isNull(origin)){
 				order.setOrderOrigin(origin);
 			}
@@ -221,6 +222,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//Save Order
 			getOrderService().saveOrder(order);
 			orderImportBatchItem.setOrder(order);
+			
+			if(!isNull(arguments.orderImportBatch.getComment())){
+				var comment = getService('CommentService').newComment();
+				var data = {
+					'commentID':'',
+					'comment':arguments.orderImportBatch.getComment(),
+					'commentRelationships':[
+						{
+							'commentRelationshipID':'',
+							'order':{
+								orderID:order.getOrderID()
+							}
+						}
+					],
+					'publicFlag':0
+				};
+				comment = getService('CommentService').saveComment(comment, data);
+			}
 
 			//Create Order Fulfillment
 			var orderFulfillment = getOrderService().newOrderFulfillment();
@@ -263,14 +282,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(orderItem.hasErrors()){
 					order.addErrors(orderItem.getErrors());
 				}else{
-					
-					orderImportBatchItem.setOrderItem(orderItem);
-					getHibachiDAO().flushORMSession();
-					order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
-					
 					if(!order.hasErrors()){
-						orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstPlaced'));	
-						placedOrders += 1;
+						orderImportBatchItem.setOrderItem(orderItem);
+						getHibachiScope().flushORMSession();
+						order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
+						
+						if(!order.hasErrors()){
+							orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstPlaced'));	
+							placedOrders += 1;
+						}
 					}
 				}
 			}
@@ -278,6 +298,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(order.hasErrors()){
 				orderImportBatchItem.setProcessingErrors(serialize(order.getErrors()));
 				orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstError'))
+				getService('orderService').deleteOrder(order);
 			}
 			
 			getDAO('OrderImportBatchDao').updateOrderImportBatchItem(
@@ -285,6 +306,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderImportBatchItemID = orderImportBatchItem.getOrderImportBatchItemID(), 
 				processingErrors = orderImportBatchItem.getProcessingErrors()
 			)
+			
+			
 		}
 		
 		
@@ -334,6 +357,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arrayLen(result)){
 			return getShippingAddressFromOrder(result[1]);
 		}
+	}
+	
+	public any function processOrderImportBatch_downloadReport(required any orderImportBatch){
+		var orderCollection = getService('orderService').getOrderCollectionList();
+		orderCollection.addFilter('orderImportBatch.orderImportBatchID',arguments.orderImportBatch.getOrderImportBatchID());
+		orderCollection.setDisplayProperties('orderID,orderNumber,account.accountNumber,account.calculatedFullName',{isExportable:true});
+
+		getService('HibachiCollectionService').collectionConfigExport({collectionConfig:serializeJSON(orderCollection.getCollectionConfigStruct())});
+		return orderImportBatch;
+	}
+	
+	public any function getOrderTypeOptions(){
+		if(!structKeyExists(variables, 'orderTypeOptions')){
+			var orderTypeCollectionList = getService('TypeService').getTypeCollectionList();
+			orderTypeCollectionList.addFilter('systemCode','otSalesOrder,otReplacementOrder','in');
+			variables.orderTypeOptions = orderTypeCollectionList.getRecordOptions(false);
+		}
+		return variables.orderTypeOptions;
 	}
 	
 	// =====================  END: Logical Methods ============================

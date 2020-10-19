@@ -40,12 +40,16 @@ class MonatProductListingController {
 
     
     public $onInit = () => {
-        this.publicService.getCart();
+        this.monatService.getCart(); // monat-service caches cart in session-cache for 15 min
         this.getWishlistItems();
     }
     
 	public $postLink = () => {
-        if(this.callEndpoint) this.getProducts();
+        if(this.callEndpoint){
+        	this.publicService.getAccount().then(result =>{
+        		this.getProducts()
+        	});
+        } 
         
         this.observerService.attach(this.getWishlistItems,'getAccountSuccess');
         this.observerService.attach(this.addWishlistItemID, 'addWishlistItemID');
@@ -105,10 +109,13 @@ class MonatProductListingController {
         if(this.argumentsObject['categoryFilterFlag']){
         	this.argumentsObject['cmsCategoryFilterFlag'] = false;
         }
+        if(this.publicService.account?.priceGroups?.length){
+        	this.argumentsObject['priceGroupCode'] = this.publicService.account.priceGroups[0].priceGroupCode;
+		}
         
         this.argumentsObject.returnJsonObjects='';
         
-        this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
+        this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject, 'GET').then(result => {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');

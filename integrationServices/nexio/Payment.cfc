@@ -374,16 +374,24 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				
 				if (!isNull(responseData.avsResults)){
 					arguments.responseBean.addMessage(messageName="nexio.avsResults.error", message="#responseData.avsResults.error#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
+					if (!isNull(responseData.avsResults.gatewayMessage.avsresponse)) {
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
+					}
+					if (!isNull(responseData.avsResults.gatewayMessage.message)) {
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
+					}
 				} else {
 					arguments.responseBean.addMessage(messageName="nexio.avsResults", message="avsResults is undefinied; verifyAvsSetting set to 'Do not perform AVS check'");
 				}
 				
 				if (!isNull(responseData.cvcResults)){
 					arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
+					if (!isNull(responseData.cvcResults.gatewayMessage.cvvresponse)){
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
+					}
+					if (!isNull(responseData.cvcResults.gatewayMessage.message)){
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
+					}
 				} else {
 					arguments.responseBean.addMessage(messageName="nexio.cvcResults", message="cvcResults is undefinied; verifyCvcFlag set to 'No'");
 				}

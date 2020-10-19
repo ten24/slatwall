@@ -85,7 +85,7 @@ import { OrderTemplateService } from "./services/ordertemplateservice";
 import { MonatHttpInterceptor } from "./services/monatHttpInterceptor";
 import { MonatHttpQueueInterceptor } from "./services/monatHttpQueueInterceptor";
 import { MonatAlertService } from "./services/monatAlertService";
-import { PublicService } from "./services/pubicservice";
+import { PublicService } from "./services/publicservice";
 
 //State-management
 import { FlexshipCheckoutStore } from "./states/flexship-checkout-store";

@@ -24,6 +24,7 @@ class SWFFormController {
     public closeModal:boolean;
     public modalId:string;
     public newMethod:string;
+    public preFormPost:any;
     // @ngInject
     constructor(
         public $rootScope,
@@ -83,11 +84,15 @@ class SWFFormController {
     }
     
     public submitForm = ()=>{
-
         let method = this.newMethod ? this.newMethod : this.method;
         if(this.form.$valid){
             this.loading = true;
             let formData = this.getFormData();
+            if(this.preFormPost && !this.preFormPost(formData)){
+                this.loading = false;
+                return new Promise((reject)=>[]);
+            }
+            
             if(this.closeModal && this.modalId){
                 $(`#${this.modalId}`).modal('toggle');
             }
@@ -203,6 +208,7 @@ class SWFForm  {
         fileFlag:"@?",
         afterSubmitEventName:"@?",
         closeModal:"@?",
+        preFormPost:"<?", //method that executes before form post, return false to stop execution of ajax call.
         modalId:"@?",
     };
     public controller       = SWFFormController;
