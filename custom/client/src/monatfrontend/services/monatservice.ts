@@ -482,7 +482,7 @@ export class MonatService {
 
 	public getProductFilters() {
 		return this.publicService
-			.doAction("?slatAction=monat:public.getProductListingFilters")
+			.doAction("?slatAction=monat:public.getProductListingFilters", null, "GET")
 			.then((response) => {
 				if (response.hairCategories) {
 					this.hairFilters = response.hairCategories;
