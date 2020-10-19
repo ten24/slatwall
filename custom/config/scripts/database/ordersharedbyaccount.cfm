@@ -3,6 +3,8 @@
 <cftry>
     <cfquery name="local.ordersharedbyaccount">
         ALTER TABLE sworder
+        LOCK=SHARED,
+        ALGORITHM=COPY,
         ADD COLUMN sharedByAccountID varchar(32),
         ADD FOREIGN KEY (sharedByAccountID) references swaccount(accountID);
 	</cfquery>
