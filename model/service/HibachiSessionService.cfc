@@ -63,7 +63,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		config[ 'rbLocale' ] = getHibachiScope().getRBLocale();
 		config[ 'dateFormat' ] = getHibachiScope().setting('globalDateFormat');
 		config[ 'timeFormat' ] = getHibachiScope().setting('globalTimeFormat');
-	//	config[ 'currencies' ] = getService("currencyService").getAllActiveCurrencies(detailFlag=true);
+		config[ 'currencies' ] = getService("currencyService").getAllActiveCurrencies(detailFlag=true);
 			
 		return config; 
 	}
