@@ -741,12 +741,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_should_use_generator_function_for_properties_when_declared_in_mapping(){
+    public void function transformAccountDataTest_should_use_generator_function_for_relations_when_declared_in_mapping(){
         
         var sampleAccountData = getSampleAccountData();
         
         var mapping = this.getService().getEntityMapping( 'Account' );
         mapping.relations = [{
+            "entityName": "Account",
             "propertyIdentifier": "exampleRelationProperty",
             "generatorFunction":  "getAccountExampleRelationProperty_spy"
         }];
@@ -754,7 +755,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         function getAccountExampleRelationProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             variables.this['getAccountExampleRelationProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
-            return {"keyxx": 'valuexx'};
+            return {"keyxx": 'valuexx', 'accountID': '12345'};
         }
         // declare a mock generator-finction on the target-service
         variables.service['getAccountExampleRelationProperty_spy'] = getAccountExampleRelationProperty_spy;
@@ -785,13 +786,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         var mapping = this.getService().getEntityMapping( 'Account' );
         mapping.relations = [{
+            "entityName": "Account",
             "propertyIdentifier": "exampleRelationXXXYYYProperty",
         }];
 
         function getAccountExampleRelationXXXYYYProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             variables.this['getAccountExampleRelationXXXYYYProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
-            return {"keyxx": 'valuexx'};
+            return {"keyxx": 'valuexx', 'accountID': '12345'};
         }
         // declare a mock generator-finction on the target-service
         variables.service['generateAccountExampleRelationXXXYYYProperty'] = getAccountExampleRelationXXXYYYProperty_spy;
@@ -1188,8 +1190,69 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         debug(variables.service.processAccount_import_spy_called);
         
         // cleanup
-        structDelete( variables.service, 'processAccountImport_spy_called');
-        structDelete( variables.service, 'processAccountImport');
+        structDelete( variables.service, 'processAccount_import_spy_called');
+        structDelete( variables.service, 'processAccount_import');
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function resolveAccountDependencies_spy(required any entity, required struct entityQueueData, ){
+            this['resolveAccountDependencies_spy_called'] = "it works";
+        }
+        
+        variables.service['resolveAccountDependencies'] = resolveAccountDependencies_spy;
+        
+        var data = this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        
+        var tempAccount = this.getService().getHibachiService().newAccount();
+	    tempAccount = this.getService().resolveEntityDependencies( tempAccount, data );
+
+        
+        expect( variables.service ).toHaveKey('resolveAccountDependencies_spy_called');
+        expect( variables.service.resolveAccountDependencies_spy_called ).toBe('it works');
+        
+        debug(variables.service.resolveAccountDependencies_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'resolveAccountDependencies_spy_called');
+        structDelete( variables.service, 'resolveAccountDependencies');
+    }
+    
+    
+    
+    
+    
+    private struct function getAccountEmailAddressMapping(){
+        return {
+            "entityName": "AccountEmailAddress",
+            "properties": {
+                "email": {
+                    "propertyIdentifier": "emailAddress",
+                    "validations": { "required": true, "dataType": "email" }
+                }
+            },
+            "importIdentifier": {
+                "propertyIdentifier": "importRemoteID",
+                "type": "composite",
+                "keys": [
+                    "remoteAccountID",
+                    "email"
+                ]
+            },
+            "dependencies" : [{
+                "key"                : "remoteAccountID",
+                "entityName"         : "Account",
+                "lookupKey"          : "remoteID",
+                "propertyIdentifier" : "account"
+            }]
+        };
     }
     
     /**
@@ -1205,5 +1268,95 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         debug(data);
     }
     
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_add_errors_when_dependancy_is_not_resolve(){
+        var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
+        
+        var data = {
+            'remoteAccountID' : '12345465',
+            'email': "abc@xyz.com"
+        };
+        
+
+        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+        debug(transformedData);
+        
+        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        
+        debug( emailAddress.getErrors() );
+        
+        expect( emailAddress.getErrors() ).toBeStruct();
+        expect( emailAddress.getErrors() ).toHaveKey( 'account' );
+        
+        expect( emailAddress.getErrors().account[1] )
+        .toBe('Depandancy for propertyIdentifier [account] on Entity [Account] could not be resolved yet');
+        
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_not_add_errors_when_dependancy_is_resolve(){
+        var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
+        
+        var data = {
+            'remoteAccountID' : '12345465',
+            'email': "abc@xyz.com"
+        };
+        
+        var accountID = hash("123xxxunittest"&now(), 'MD5');
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        
+        
+        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+
+        debug(transformedData);
+        
+        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        
+        debug( emailAddress.getErrors() );
+        expect( emailAddress.getErrors() ).toBeEmpty();
+        
+        deleteRow('swAccount', 'accountID', accountID );
+    }
+    
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_add_dependancy_data_when_resolved(){
+        var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
+        
+        var data = {
+            'remoteAccountID' : '12345465',
+            'email': "abc@xyz.com"
+        };
+        
+        var accountID = hash("123xxxunittest"&now(), 'MD5');
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        
+        
+        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+
+        debug(transformedData);
+        
+        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        
+        debug( transformedData );
+        
+        expect( transformedData ).toHaveKey('account');
+        expect( transformedData.account ).toBeStruct();
+        expect( transformedData.account ).toHaveKey('accountID');
+        expect( transformedData.account.accountID ).toBe( accountID );
+        
+        deleteRow('swAccount', 'accountID', accountID );
+    }
+
+
     
 }

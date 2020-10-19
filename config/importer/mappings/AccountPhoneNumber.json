@@ -1,5 +1,6 @@
 {
     "entityName": "AccountPhoneNumber",
+    
     "properties": {
         "phone": {
             "propertyIdentifier": "phoneNumber",
@@ -15,6 +16,7 @@
             }
         }
     },
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
@@ -22,5 +24,14 @@
             "remoteAccountID",
             "phone"
         ]
-    }
+    },
+    
+    "dependencies" : [
+        {
+            "key"                : "remoteAccountID",
+            "entityName"         : "Account",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "account"
+        }
+    ]
 }
