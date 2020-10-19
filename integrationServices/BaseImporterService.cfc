@@ -299,7 +299,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    if( structKeyExists(arguments.mapping, 'relations') ){
 	       
-	        for(var related in mapping.relations ){
+	        for(var related in arguments.mapping.relations ){
 	            // this might return an entity or an array in case of *-to-many relations
   	            var relatedEntityOrArray = arguments.entity.invokeMethod( 'get'&related.propertyIdentifier );
   	         
