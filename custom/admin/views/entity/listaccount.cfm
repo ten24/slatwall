@@ -73,6 +73,7 @@ Notes:
 		isDeletable=true
 	})/>
 	
+	
 	<cfset accountCollectionList.addDisplayProperty(
 	displayProperty='primaryEmailAddress.emailAddress',
 	columnConfig={
@@ -81,13 +82,14 @@ Notes:
 		isDeletable=true
 	})/>
 	
+	<!---
 	<cfset accountCollectionList.addDisplayProperty(
 	displayProperty='primaryPhoneNumber.phoneNumber',
 	columnConfig={
 		isVisible=false,
 		isSearchable=true,
 		isDeletable=true
-	})/>
+	})/>--->
 	
 	<cfset accountCollectionList.addDisplayProperty(
 	displayProperty='ownerAccount.firstName',
