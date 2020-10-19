@@ -88,13 +88,11 @@ component extends="Slatwall.model.service.HibachiService" {
         
         getHibachiScope().getSession().setOrder(order)
         getHibachiScope().setSessionValue('ownerAccountNumber',ownerAccount.getAccountNumber());
-        // getHibachiScope().setSessionValue('resumeEnrollmentID',order.getOrderID());
+
         order.setPromotionCacheKey('');
         getService('OrderService').processOrder(order,'updateOrderAmounts');
         getService("HibachiSessionService").persistSession();
         getHibachiScope().flushORMSession();
-        // getHibachiScope().addActionResult('monat:public.resumeEnrollment',false);
-        // writeDump(var=getHibachiScope().getCart(),top=3);
     }
     
 }

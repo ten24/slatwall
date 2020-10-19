@@ -9,17 +9,6 @@ class SaveEnrollmentModalController {
         this.observerService.attach(this.closeModal,'saveEnrollmentSuccess')
     }
     
-    public $onInit = () => {
-    // 	this.makeTranslations();
-    };
-    
-    // private makeTranslations = () => {
-    // 	//TODO make translations for success/failure alert messages
-    // 	this.translations['wishlistName'] = this.rbkeyService.rbKey('frontend.wishlist.name');
-    // 	this.translations['save'] = this.rbkeyService.rbKey('frontend.marketPartner.save');
-    // 	this.translations['cancel'] = this.rbkeyService.rbKey('frontend.wishlist.cancel');
-    // }
-    
     public saveEnrollment = () => {
         this.loading = true;
         let data = {
@@ -29,6 +18,10 @@ class SaveEnrollmentModalController {
         .then(result=>{
             if(result.errors){
                 this.monatAlertService.error(result.errors);
+            }else if(result.messages){
+                for(let message of result.messages){
+                    this.monatAlertService.success(message);
+                }
             }
             this.loading = false;
         });
