@@ -1032,6 +1032,39 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.addPriceGroup(priceGroup);
         }
         
+        if(arguments.accountType == 'customer'){
+            var employeeDomains = getService('SettingService').getSettingValue('globalEmployeeEmailDomains');
+            var emailDomain = reReplace(arguments.data.emailAddress,'^.+@(.+)$','\1');
+            if(listFindNoCase(employeeDomains,emailDomain)){
+                //Add Employee price group
+                var employeePriceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('15');
+                if(!isNull(employeePriceGroup)){
+                    account.addPriceGroup(employeePriceGroup);
+                }
+                
+                //Set employee sponsor
+                var sponsor5 = getService('AccountService').getAccountByAccountNumber('5');
+                if(!isNull(sponsor5)){
+                    if(account.hasParentAccountRelationship()){
+                        for(var accountRelationship in account.getParentAccountRelationships()){
+                            if(accountRelationship.getParentAccountID() != sponsor5.getAccountID()){
+                                getService('accountService').deleteAccountRelationship(accountRelationship);
+                            }
+                        }
+                    }
+                    if(!account.hasParentAccountRelationship()){
+                        var accountRelationship = getService('accountService').newAccountRelationship();
+                        accountRelationship.setParentAccount(sponsor5);
+                        accountRelationship.setChildAccount(account);
+                        accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
+                    }
+                    account.setOwnerAccount(sponsor5);
+                }
+                account.setActiveFlag(false);
+                arguments.data.messages = [getHibachiScope().getRbKey('monat.employeeAccount.enrollmentMessage')];
+            }
+        }
+        
         var accountStatusType = getService('TypeService').getTypeBySystemCodeOnly(accountTypeInfo[arguments.accountType].statusSystemCode);
         
         account.setAccountStatusType(accountStatusType);
@@ -2143,7 +2176,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getOrderTemplates(required any data){ 
-		param name="arguments.data.optionalProperties" default="qualifiesForOFYProducts"; 
+		param name="arguments.data.optionalProperties" default=""; 
 		
 		super.getOrderTemplates(argumentCollection = arguments);
 		
@@ -2151,7 +2184,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		for(var ot in arguments.data['ajaxResponse']['orderTemplates'] ){
 		  
 		    //this is some add-on optimization, as if flexship qualifies, or is-canceled, it definately can't have an OFY on it
-		    if(!ot.qualifiesForOFYProducts && ot.statusCode != "otstCanceled"){ 
+		    if(ot['orderTemplateStatusType_systemCode'] != "otstCanceled"){ 
 		        ot['associatedOFYProduct'] = this.getService('orderService').getAssociatedOFYProductForFlexship(ot.orderTemplateID);
 		    }
 		}
@@ -2711,6 +2744,5 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", true);    
         }
     }
-    
     
 }

@@ -545,7 +545,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'calculatedListPrice,total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,temporaryFlag,sku.skuID';  
+		var displayProperties = 'calculatedListPrice,calculatedTotal,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,temporaryFlag,sku.skuID';  
 
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
@@ -2087,19 +2087,12 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function processOrder_commitTax(required any order, struct data={}) {
 		//Only commit the tax document after the order has been closed
+		//Only commit the tax document after the order has been closed
 		var orderStatusType = arguments.order.getOrderStatusType();
-		var orderType = arguments.order.getOrderType();
-		
 
 		var orderIsClosed = orderStatusType.getSystemCode() == 'ostClosed';
-		var orderIsClosedRMA = orderIsClosed && orderType.getSystemCode() != 'otSalesOrder';
 		
-		if(orderIsClosed && !orderIsClosedRMA){
-			var orderStatusHistory = arguments.order.getOrderStatusHistoryTypeCodeList();
-		}
-		var orderSkippedProcessingOne = !orderIsClosedRMA && orderIsClosed && !listContains(orderStatusHistory,'processing1');
-		
-		if ( orderIsClosedRMA || orderSkippedProcessingOne || orderStatusType.getTypeCode() == 'processing1'){
+		if ( isNull(arguments.order.getTaxTransactionReferenceNumber()) && (orderIsClosed || listFindNoCase('processing1,processing2',orderStatusType.getTypeCode())) ){
 			
 			//First get integration and make sure the commit tax document flag is set
 			var integration = getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
@@ -2113,8 +2106,14 @@ component extends="Slatwall.model.service.OrderService" {
 				
 				// Call the API and store the responseBean by integrationID
 				try{
-					integrationTaxAPI.getTaxRates( taxRatesRequestBean );
-					arguments.order.setTaxCommitDateTime(now());
+					var responseBean = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
+					if(!responseBean.hasErrors()){
+						var data = responseBean.getData();
+						if(!isNull(data) && structKeyExists(data,'DocCode')){
+							arguments.order.setTaxCommitDateTime(now());
+							arguments.order.setTaxTransactionReferenceNumber(responseBean.getData()['DocCode']);
+						}
+					}
 				}catch (any e){
 					logHibachi('An error occured with the Avatax integration when trying to call commitTaxDocument()', true);
 					logHibachiException(e);
@@ -2122,6 +2121,52 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 		}
 	
+		return arguments.order;
+	}
+	
+	public any function processOrder_batchApproveFullRmas( required any order, struct data = {} ){
+
+		var salesOrderTypeID = getService('TypeService').getTypeBySystemCode('otSalesOrder').getTypeID();
+		var returnOrderTypeID = getService('TypeService').getTypeBySystemCode('otReturnOrder').getTypeID();
+		var receivedStatusTypeID = getService('TypeService').getTypeByTypeCode('rmaReceived').getTypeID();
+		
+		var fullRmaSql = "INSERT IGNORE INTO swentityqueue (
+							entityQueueID, 
+							baseObject, 
+							baseID, 
+							processMethod, 
+							entityQueueDateTime, 
+							createdDateTime, 
+							createdByAccountID, 
+							modifiedDateTime, 
+							modifiedByAccountID, 
+							tryCount
+						)
+						SELECT 
+							LOWER(MD5(CONCAT('Order_',ro.orderID ,'_processOrder_approveReturn_{}'))) as entityQueueID,
+							'Order' as baseObject,
+							ro.orderID as baseID,
+							'processOrder_approveReturn' as processMethod,
+							NOW() as entityQueueDateTime,
+							NOW() as createdDateTime,
+							'#getHibachiScope().getAccount().getAccountID()#' as createdByAccountID,
+							NOW() as modifiedDateTime,
+							'#getHibachiScope().getAccount().getAccountID()#' as modifiedByAccountID,
+							1 as tryCount
+						FROM sworder ro
+							JOIN sworder o on o.orderID = ro.referencedOrderID
+						WHERE ro.orderTypeID = :returnOrderTypeID
+							AND o.orderTypeID = :salesOrderTypeID
+							AND ro.orderStatusTypeID = :receivedStatusTypeID
+							AND o.calculatedSubtotal = -1 * ro.calculatedSubtotal
+						ORDER BY ro.orderID";
+		var fullRmaParams = {
+			'salesOrderTypeID':salesOrderTypeID,
+			'returnOrderTypeID':returnOrderTypeID,
+			'receivedStatusTypeID':receivedStatusTypeID
+		};
+			
+
 		return arguments.order;
 	}
 	

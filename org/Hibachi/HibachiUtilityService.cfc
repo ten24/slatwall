@@ -1359,12 +1359,21 @@
 		<cfargument name="messageType" default="" />
 		<cfargument name="messageCode" default="" />
 		<cfargument name="templatePath" default="" />
-		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
+		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning | Trace  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
 		<cfargument name="logPrefix" default="" />
 
 		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
 			<!--- Set default logPrefix if not explicitly provided --->
+			<cfif arguments.logType EQ "Trace">
+				<cfif NOT getHibachiScope().hasValue('startTimer')>
+					<cfset getHibachiScope().setValue('startTimer', getTickCount()) />
+					<cfset getHibachiScope().setValue('lastTimer', getTickCount()) />
+				</cfif>
+				<cfset var timeSpentSinceFirstMarker = getTickCount() - getHibachiScope().getValue('startTimer') />
+				<cfset var timeSpentSinceLastMarker = getTickCount() - getHibachiScope().getValue('lastTimer') />
+				<cfset getHibachiScope().setValue('lastTimer', getTickCount()) />
+			</cfif>
 			
 			<cfif not len(arguments.logPrefix)>
 				<cfif arguments.generalLog>
@@ -1376,6 +1385,9 @@
 			
 			<cfset var logText = arguments.logPrefix />
 
+			<cfif arguments.logType eq "Trace">
+				<cfset logText &= " - [ Time Spent: #timeSpentSinceLastMarker# / #timeSpentSinceFirstMarker# ]" />
+			</cfif>
 			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
 				<cfset logText &= " - #arguments.messageType#" />
 			</cfif>
@@ -1388,9 +1400,9 @@
 			<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
 				<cfset logText &= " - #arguments.message#" />
 			</cfif>
-
+			
 			<!--- Verify that the log type was correct --->
-			<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
+			<cfif not ListFind("Information,Error,Fatal,Warning,Trace", arguments.logType)>
 				<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
 				<cfset arguments.logType = "Information" />
 			</cfif>

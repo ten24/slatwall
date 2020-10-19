@@ -68,17 +68,16 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         
         
         //if we have a get request there is nothing to persist because nothing changed
-        if(
-            structKeyExists(arguments.rc,'context') 
-            && len(arguments.rc.context) >= 3 
-            && left(arguments.rc.context,3) == 'GET'
-        ){
-            getHibachiScope().setPersistSessionFlag(false);
-        } else if (arguments.rc.context != "getCart" && arguments.rc.context != "getAccount") {
-            // if it's a post request clear cart / account cache
-            getHibachiScope().clearSessionValue('cartData');
-            getHibachiScope().clearSessionValue('accountData');
-        }        
+        if(!isNull(arguments.rc.requestHeaderData.method)){
+            if(arguments.rc.requestHeaderData.method == 'GET'){
+                getHibachiScope().setPersistSessionFlag(false);
+            }else if(!structKeyExists(arguments.rc, 'context') || (arguments.rc.context != "getCart" && arguments.rc.context != "getAccount")){
+                getHibachiScope().clearSessionValue('cartData');
+                getHibachiScope().clearSessionValue('accountData');
+            }
+
+        } 
+
     }
 
     public any function get( required struct rc ) {
