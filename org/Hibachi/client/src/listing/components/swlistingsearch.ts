@@ -359,6 +359,9 @@ class SWListingSearchController {
         if(column.propertyIdentifier){
             searchableColumns.push(column.propertyIdentifier);
         }else{
+            searchableColumns = this.searchableColumns;
+        }
+        if(!searchableColumns.length){
             return;
         }
 
