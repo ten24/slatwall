@@ -55,6 +55,7 @@ component displayname="Shipping Method" entityname="SlatwallShippingMethod" tabl
 	property name="shippingMethodName" ormtype="string";
 	property name="shippingMethodCode" ormtype="string";
 	property name="sortOrder" ormtype="integer" sortContext="fulfillmentMethod";
+	property name="shippingMethodDescription" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	
@@ -79,8 +80,6 @@ component displayname="Shipping Method" entityname="SlatwallShippingMethod" tabl
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-
-
 	public array function getShippingMethodRateIntegrationOptions() {
 		var optionsSL = getService("integrationService").getIntegrationSmartList();
 		optionsSL.addFilter('activeFlag', '1');
