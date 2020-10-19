@@ -201,7 +201,7 @@ class SWColumnItem{
 				};
 
 				var removeSorting = (column,saving?)=>{
-					if(column.sorting.active === true){
+					if(column?.sorting?.active === true){
 						for(var i in scope.columns){
 							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority){
 								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
