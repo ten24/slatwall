@@ -355,12 +355,11 @@ class SWListingSearchController {
     };
 
     private configureSearchableColumns=(column)=>{
-
         var searchableColumns = [];
         if(column.propertyIdentifier){
             searchableColumns.push(column.propertyIdentifier);
         }else{
-            searchableColumns = this.searchableColumns;
+            return;
         }
 
         for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
