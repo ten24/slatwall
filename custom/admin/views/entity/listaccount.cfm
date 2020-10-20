@@ -74,7 +74,7 @@ Notes:
 	})/>
 	
 	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='primaryEmailAddress.emailAddress',
+	displayProperty='calculatedEmailAddress',
 	columnConfig={
 		isVisible=true,
 		isSearchable=true,
@@ -82,9 +82,9 @@ Notes:
 	})/>
 	
 	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='primaryPhoneNumber.phoneNumber',
+	displayProperty='calculatedPhoneNumber',
 	columnConfig={
-		isVisible=false,
+		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
 	})/>
