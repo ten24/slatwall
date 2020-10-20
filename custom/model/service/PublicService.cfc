@@ -2745,4 +2745,41 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+    
+    public void function getProductReviews(required struct data){
+        
+        var reviews = getService('MonatDataService').getProductReviews(data=arguments.data);
+        arguments.data.ajaxResponse['pageRecords'] = reviews;
+        
+        if(structKeyExists(arguments.data,'getRecordsCount') && arguments.data.getRecordsCount){
+            arguments.data.ajaxResponse['recordsCount'] = getService('MonatDataService').getProductReviewCount(data=arguments.data);
+        }
+        
+    }
+    
+    public void function getMarketPartners(required struct data){
+        
+        var marketPartners = getService('MonatDataService').getMarketPartners(data=arguments.data);
+        arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
+        arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
+
+    }
+    
+    public void function getProductListingFilters( required struct data ){
+        var integration = getService('IntegrationService').getIntegrationByIntegrationPackage('monat').getIntegrationCFC();
+        
+        var skinProductCategoryIDs = integration.setting('SiteSkinProductListingCategoryFilters');
+        var hairProductCategoryIDs = integration.setting('SiteHairProductListingCategoryFilters');
+        
+        var skinProductCategoryCollection = getService('ContentService').getCategoryCollectionList();
+        var hairProductCategoryCollection = getService('ContentService').getCategoryCollectionList();
+        
+        skinProductCategoryCollection.addFilter( 'categoryID', skinProductCategoryIDs, 'IN' );
+        hairProductCategoryCollection.addFilter( 'categoryID', hairProductCategoryIDs, 'IN' );
+        
+        arguments.data.ajaxResponse['skinCategories'] = skinProductCategoryCollection.getRecordOptions();
+        arguments.data.ajaxResponse['hairCategories'] = hairProductCategoryCollection.getRecordOptions();
+        
+    }
+    
 }
