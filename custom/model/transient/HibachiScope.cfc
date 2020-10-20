@@ -160,4 +160,48 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		return hibachiConfig;
 	}
 	
+	
+	
+	public function getRedirectSiteCode(){
+        
+        	//No GEOIP checks if this is the users site. 
+		if(!isNull(getAccount().getAccountCreatedSite()) && getAccount().getAccountCreatedSite().getCmsSiteID() == getCurrentRequestSite().getCmsSiteID()){
+			return '';	
+		}
+	
+		if(!structKeyExists(variables, 'redirectCountriesSiteMapping')){
+			variables.redirectCountriesSiteMapping = {
+				'GB' : 'uk',
+				'PL' : 'pl',
+				'IE' : 'ie',
+				'AU' : 'au',
+				'CA' : 'ca'
+			};
+		}
+	
+		var requestCountryOrigin = getSession().getCountryCode();
+		
+		//Land user on US site for IP's outside of recognized countries
+		if(!listFindNoCase('GB,PL,IE,AU,CA,US', requestCountryOrigin) && getCurrentRequestSite().getCmsSiteID() != 'default' ){
+			return 'default';
+		}
+		
+		//Land user on recognized Country Site based on User's IP
+		if(structKeyExists(variables.redirectCountriesSiteMapping, requestCountryOrigin) && getCurrentRequestSite().getCmsSiteID() != variables.redirectCountriesSiteMapping[requestCountryOrigin]){
+			return variables.redirectCountriesSiteMapping[requestCountryOrigin];
+		}
+		
+		return '';	
+	}
+	
+	public any function getAccountData(string propertyList) {
+		var data = super.getAccountData(argumentCollection=arguments);
+		
+		var siteCode = getRedirectSiteCode();
+		if(len(siteCode)){
+			data['redirectTo'] = siteCode;
+		}
+		return data;
+	}
+	
 }
