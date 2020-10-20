@@ -21,17 +21,6 @@
             "email"
         ]
     },
-    
-      
-    "dependencies" : [
-        {
-            "key"                : "remoteAccountID",
-            "entityName"         : "Account",
-            "lookupKey"          : "remoteID",
-            "propertyIdentifier" : "account"
-        }
-    ],
-    
       
     "dependencies" : [
         {
