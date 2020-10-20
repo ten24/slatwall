@@ -238,7 +238,8 @@ property name="sapItemCode" ormtype="string";
 
  property name="displayOnlyFlag" ormtype="boolean" hb_formatType="yesno" default="0";
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
- property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
+ property name="backorderDate" ormtype="timestamp" hb_formatType="date";
+ property name="dangerousGoodsFlag" ormtype="boolean" hb_formatType="yesno";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -2078,26 +2079,29 @@ property name="sapItemCode" ormtype="string";
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
 public boolean function canBePurchased(required any account, any order){
+		
+		var accountType = 'customer';
+		
 		if( !isNull(arguments.order) && !isNull(arguments.order.getAccountType()) ){
-			var accountType = arguments.order.getAccountType();
+			accountType = arguments.order.getAccountType();
 		} else if ( !isNull(arguments.account.getAccountType()) ) {
-			var accountType = arguments.account.getAccountType();
+			accountType = arguments.account.getAccountType();
 		}
-		
-		if( isNull(accountType) ){
-			return this.getRetailFlag() == true;
-		}else{
-		
-			var notValidVipItem = ( accountType == "vip" && this.getVipFlag() != true );
-			var notValidMpItem = ( accountType == "marketPartner" && this.getMpFlag() != true );
-			var notValidRetailItem = ( accountType == "customer" && this.getRetailFlag() != true );
-			
-			if( notValidRetailItem || notValidVipItem || notValidMpItem ){
-				return false;
-			}
+	
+		return canBePurchasedByAccountType(accountType);
+	}
+	
+	public boolean function canBePurchasedByAccountType(required string accountType){
+		switch (arguments.accountType) {
+			case 'marketPartner':
+				return this.getVipFlag() ?: false;
+			case 'vip':
+				return this.getMpFlag() ?: false;
+			case 'customer':
+				return this.getRetailFlag() ?: false;
+			default:
+				return true;
 		}
-		
-		return true;
 	}
 	
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
