@@ -26,6 +26,7 @@ class HybridCartController {
 	public otherDiscounts:number;
 	public type:string;
 	public timedToggle:any = {};
+	public loading:boolean = false;
 
 	//@ngInject
 	constructor(public monatAlertService, public monatService, public observerService, public orderTemplateService, public publicService, public $timeout:ng.ITimeoutService) {
@@ -107,27 +108,33 @@ class HybridCartController {
 	}
 	
 	public removeItem = (item:GenericOrderItem):void => {
+		this.loading = true;
 		this.monatService.removeFromCart(item.orderItemID).then(res => {
 			if(res.hasErrors){
 				this.monatAlertService.showErrorsFromResponse(res);
 			}
+			this.loading = false;
 		});
 	}
 	
 	public increaseItemQuantity = (item:GenericOrderItem):void => {
+		this.loading = true;
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity + 1).then(res => {
 			if(res.hasErrors){
 				this.monatAlertService.showErrorsFromResponse(res);
 			}
+			this.loading = false;
 		});
 	}
 	
 	public decreaseItemQuantity = (item:GenericOrderItem):void => {
 		if (item.quantity <= 1) return;
+		this.loading = true;
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity - 1).then(res => {
 			if(res.hasErrors){
 				this.monatAlertService.showErrorsFromResponse(res);
 			}
+			this.loading = false;
 		});
 	}
 }
