@@ -46,6 +46,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService" type="any";
 	property name="roundingRuleService" type="any";
 	property name="skuService" type="any";
+	property name="orderService" type="any";
 
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
 		
@@ -62,8 +63,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					&& !isNull(orderItem.getOrder())
 					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
 				){	
-					order = orderItem.getOrder();
-					order.removeOrderItem(orderItem);
+					getOrderService().deleteOrderItem(orderItem,false);
 				}
 			}
 			ArrayClear(orderItem.getAppliedPromotions());	
