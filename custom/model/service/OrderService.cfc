@@ -1388,7 +1388,8 @@ component extends="Slatwall.model.service.OrderService" {
 					){
 						foundItem = true;
 						var foundOrderItem = orderItem;
-						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						var oldQuantity = orderItem.getQuantity();
+						foundOrderItem.setQuantity(oldQuantity + arguments.processObject.getQuantity());
 						if(!isNull(arguments.processObject.getSellOnBackOrderFlag()) && arguments.processObject.getSellOnBackorderFlag()){
 							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
 						}
@@ -1411,6 +1412,7 @@ component extends="Slatwall.model.service.OrderService" {
 								}
 
 							}
+							foundOrderItem.setQuantity(oldQuantity);
 						}
 						break;
 					}
@@ -1524,10 +1526,10 @@ component extends="Slatwall.model.service.OrderService" {
 						var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
 						message = newOrderItem.stringReplace(message);
 					
-						arguments.order.addError('addOrderItem', message, true);
-						newOrderItem.addError("addOrderItem", message, true);
+						arguments.order.addError('addOrderItem', message);
 					}
 				}
+				newOrderItem.removeOrder(order);
 			}else{
 				//begin stock hold logic
 				if(arguments.processObject.getSku().setting('skuStockHold')){
