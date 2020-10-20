@@ -2094,9 +2094,9 @@ public boolean function canBePurchased(required any account, any order){
 	public boolean function canBePurchasedByAccountType(required string accountType){
 		switch (arguments.accountType) {
 			case 'marketPartner':
-				return this.getVipFlag() ?: false;
-			case 'vip':
 				return this.getMpFlag() ?: false;
+			case 'vip':
+				return this.getVipFlag() ?: false;
 			case 'customer':
 				return this.getRetailFlag() ?: false;
 			default:
