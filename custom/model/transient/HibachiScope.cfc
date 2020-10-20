@@ -194,14 +194,4 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		return '';	
 	}
 	
-	public any function getAccountData(string propertyList) {
-		var data = super.getAccountData(argumentCollection=arguments);
-		
-		var siteCode = getRedirectSiteCode();
-		if(len(siteCode)){
-			data['redirectTo'] = siteCode;
-		}
-		return data;
-	}
-	
 }

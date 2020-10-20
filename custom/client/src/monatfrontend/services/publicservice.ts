@@ -78,11 +78,11 @@ export class PublicService extends PublicServiceCore {
 
         request.promise.then((result:any)=>{
             // handle custom account redirect
-            if (result['account'] && result['account']['redirectTo']){
-                if(result['account']['redirectTo'] == 'default'){
-                    result['account']['redirectTo'] = '';
+            if (result['redirectTo']){
+                if(result['redirectTo'] == 'default'){
+                    result['redirectTo'] = '';
                 }
-                window.location.replace('/'+result['account']['redirectTo']);
+                window.location.replace('/'+result['redirectTo']);
             }
             //don't need account and cart for anything other than account and cart calls.
             if ( setter.indexOf('account') == -1) {

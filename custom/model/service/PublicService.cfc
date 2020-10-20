@@ -2745,6 +2745,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+    public void function getAccountData(any data) {
+        var accountData = { 
+            'account': getHibachiScope().getAccountData()
+        };
+        
+        var siteCode = getHibachiScope().getRedirectSiteCode();
+		if(len(siteCode)){
+			accountData['redirectTo'] = siteCode;
+		}
+        arguments.data.ajaxResponse = accountData;
+    }
+    
     
     public void function getProductReviews(required struct data){
         
