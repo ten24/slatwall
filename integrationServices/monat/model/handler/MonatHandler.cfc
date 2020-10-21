@@ -348,4 +348,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		
  		QueryExecute(insertSQL);
 	}
+	
+	
+	public void function onSessionAccountLogin(){
+		getService('HibachiTagService').cfcookie(name="accountType", value=getHibachiScope().getAccount().getAccountType(), httpOnly=true);
+		
+	}
+	
+	public void function onSessionAccountLogout(){
+		getService('HibachiTagService').cfcookie(name="accountType", value='', expires=now(), httpOnly=true);
+	}
 }

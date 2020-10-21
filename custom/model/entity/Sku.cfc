@@ -14,26 +14,29 @@ component {
 	property name="AllowBackorderFlag" persistent="false";
 
 	public boolean function canBePurchased(required any account, any order){
+		
+		var accountType = 'customer';
+		
 		if( !isNull(arguments.order) && !isNull(arguments.order.getAccountType()) ){
-			var accountType = arguments.order.getAccountType();
+			accountType = arguments.order.getAccountType();
 		} else if ( !isNull(arguments.account.getAccountType()) ) {
-			var accountType = arguments.account.getAccountType();
+			accountType = arguments.account.getAccountType();
 		}
-		
-		if( isNull(accountType) ){
-			return this.getRetailFlag() == true;
-		}else{
-		
-			var notValidVipItem = ( accountType == "vip" && this.getVipFlag() != true );
-			var notValidMpItem = ( accountType == "marketPartner" && this.getMpFlag() != true );
-			var notValidRetailItem = ( accountType == "customer" && this.getRetailFlag() != true );
-			
-			if( notValidRetailItem || notValidVipItem || notValidMpItem ){
-				return false;
-			}
+	
+		return canBePurchasedByAccountType(accountType);
+	}
+	
+	public boolean function canBePurchasedByAccountType(required string accountType){
+		switch (arguments.accountType) {
+			case 'marketPartner':
+				return this.getMpFlag() ?: false;
+			case 'vip':
+				return this.getVipFlag() ?: false;
+			case 'customer':
+				return this.getRetailFlag() ?: false;
+			default:
+				return true;
 		}
-		
-		return true;
 	}
 	
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
