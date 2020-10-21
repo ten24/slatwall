@@ -357,9 +357,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var entityName = arguments.entity.getClassName();
         
-        var extentionFunctionName = 'process#entityName#_import';
-	    if( structKeyExists(this, extentionFunctionName) ){
-	        return this.invokeMethod( extentionFunctionName, arguments );
+        var extensionFunctionName = 'process#entityName#_import';
+	    if( structKeyExists(this, extensionFunctionName) ){
+	        return this.invokeMethod( extensionFunctionName, arguments );
 	    }
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
@@ -403,7 +403,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    });
 	    
 	    
-        // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
+        // will invoke Functions to be called after saving the entity, like `updateCalculatedProperties`
         this.invokePostSaveMethodsRecursively( arguments.entity, arguments.mapping );
    
 	    
