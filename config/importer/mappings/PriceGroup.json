@@ -6,6 +6,7 @@
         "remotePriceGroupID": {
             "propertyIdentifier": "remoteID",
             "validations": {
+                "required": true,
                 "dataType": "string"
             }
         },
@@ -34,20 +35,11 @@
         }
     },
     
-    "relations" : [
-        {
-            "type": "manyToOne",
-            "entityName": "PriceGroup",
-            "propertyIdentifier": "parentPriceGroup",
-            "generatorFunction": "generatePriceGroupParentPriceGroup"
-        }
-    ],
-    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "priceGroupName"
+            "remotePriceGroupID"
         ]
     }
 

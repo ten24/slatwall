@@ -136,8 +136,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
 
 	// Remote properties
-	property name="remoteID" ormtype="string";
-	
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
 	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties

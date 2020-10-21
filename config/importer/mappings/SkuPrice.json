@@ -60,11 +60,18 @@
         }
     ],
     
+    "dependencies" : [
+        {
+            "key"                : "remoteSkuID",
+            "entityName"         : "Sku",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "sku"
+        }
+    ],
+    
     "importIdentifier": {
-        "propertyIdentifier": "importRemoteID",
-        "type": "composite",
-        "keys": [
-            "remoteSkuID", "remoteSkuPriceID"
-        ]
+        "propertyIdentifier" : "importRemoteID",
+        "keys" : [ "remoteSkuID" ],
+        "generatorFunction"  : "createSkuPriceImportRemoteID"
     }
 }

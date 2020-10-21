@@ -49,7 +49,7 @@
         {
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateProductUrlTitle",
-            "allowUpdate": false,
+            "allowUpdate"        : false
         }
     ],
     
@@ -57,13 +57,14 @@
         {
             "type": "manyToOne",
             "entityName": "Brand",
-            "propertyIdentifier": "brand"
+            "propertyIdentifier": "brand",
             "volatile": "true"
         },
         {
             "type": "manyToOne",
             "entityName": "ProductType",
-            "propertyIdentifier": "productType"
+            "propertyIdentifier": "productType",
+            "generatorFunction"  : "generateProductProductType"
         },
         {
             "type": "manyToOne",

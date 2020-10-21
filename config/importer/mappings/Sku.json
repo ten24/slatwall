@@ -30,32 +30,44 @@
         },
         "skuPublishedFlag": {
             "propertyIdentifier": "publishedFlag",
-            "defaultValue": true
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
+            }
         },
         "skuActiveFlag": {
             "propertyIdentifier": "activeFlag",
-            "defaultValue": true
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
+            }
         }
     },
+    
     "generatedProperties": [
         {
             "propertyIdentifier": "imageFile",
             "generatorFunction": "generateSkuImageFile"
         }
     ],
+    
     "relations": [
-        {
-            "type": "oneToMany",
-            "entityName": "Stock",
-            "propertyIdentifier": "stocks",
-            "generatorFunction": "generateSkuStocks"
-        },
         {
             "type": "oneToMany",
             "entityName": "SkuPrice",
             "propertyIdentifier": "skuPrices"
         }
     ],
+    
+    "dependencies" : [
+        {
+            "key"                : "remoteProductID",
+            "entityName"         : "Product",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "product"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",

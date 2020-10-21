@@ -75,8 +75,7 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	property name="physicals" hb_populateEnabled="false" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalBrand" fkcolumn="brandID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote properties
-	property name="remoteID" ormtype="string";
-	
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
 	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
