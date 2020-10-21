@@ -410,13 +410,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getAccountData(string propertyList) {
 		
-		if(hasSessionValue('accountData')){
-			var data = getSessionValue('accountData');
-			if(isStruct(data) && !structIsEmpty(data)){
-				return data;
-			}
-		}
-		
 		var availablePropertyList = getAvailableAccountPropertyList();
 
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
@@ -443,7 +436,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
 		}
 		
-		setSessionValue('accountData', data);
 		return data;
 	}
 
@@ -506,13 +498,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getCartData(string propertyList,string cartDataOptions="full", boolean updateOrderAmounts) {
 		
-		if(hasSessionValue('cartData')){
-			var data = getSessionValue('cartData');
-			if(isStruct(data) && !structIsEmpty(data)){
-				return data;
-			}
-		}
-		
 		var availablePropertyList = getAvailableCartPropertyList(arguments.cartDataOptions);
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 		
@@ -567,7 +552,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
             data[ 'processObjects' ][ key ][ 'errors' ] = getCart().getProcessObjects()[ key ].getErrors();
         }
 		
-		setSessionValue('cartData', data);
 		return data;
 	}
 
