@@ -56,12 +56,13 @@
     "relations": [
         {
             "type": "manyToOne",
+            "volatile": "true",
             "entityName": "Brand",
-            "propertyIdentifier": "brand",
-            "volatile": "true"
+            "propertyIdentifier": "brand"
         },
         {
             "type": "manyToOne",
+            "volatile": "true",
             "entityName": "ProductType",
             "propertyIdentifier": "productType",
             "generatorFunction"  : "generateProductProductType"

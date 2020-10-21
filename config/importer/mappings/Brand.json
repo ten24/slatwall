@@ -6,7 +6,6 @@
         "remoteBrandID": {
             "propertyIdentifier": "remoteID",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },

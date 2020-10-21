@@ -270,17 +270,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             var relationData = arguments.entityData[ relation.propertyIdentifier ];
             if( relation.isVolatile ){
                 
-                var relationPrimaryIDValue = this.getHibachiService()
-                    .getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+                var relationPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
                         "entityName"  : relation.entityName,
             	        "uniqueKey"   : 'importRemoteID',
             	        "uniqueValue" : relationData.importRemoteID
                     );
                 
-                if( !this.hibachiIsEmpty(relationPrimaryIDValue) ){
-                    
-                    var relationPrimaryIDProperty = this.getHibachiService()
-                        .getPrimaryIDPropertyNameByEntityName( relation.entityName );
+                if( !isNull(relationPrimaryIDValue) && !this.hibachiIsEmpty(relationPrimaryIDValue) ){
+                    var relationPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( relation.entityName );
                         
                     // mutates the nested struct in arguments.entityData
                     relationData = { "#relationPrimaryIDProperty#" : relationPrimaryIDValue }; 
