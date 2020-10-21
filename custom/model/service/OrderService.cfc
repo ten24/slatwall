@@ -2056,19 +2056,12 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function processOrder_commitTax(required any order, struct data={}) {
 		//Only commit the tax document after the order has been closed
+		//Only commit the tax document after the order has been closed
 		var orderStatusType = arguments.order.getOrderStatusType();
-		var orderType = arguments.order.getOrderType();
-		
 
 		var orderIsClosed = orderStatusType.getSystemCode() == 'ostClosed';
-		var orderIsClosedRMA = orderIsClosed && orderType.getSystemCode() != 'otSalesOrder';
 		
-		if(orderIsClosed && !orderIsClosedRMA){
-			var orderStatusHistory = arguments.order.getOrderStatusHistoryTypeCodeList();
-		}
-		var orderSkippedProcessingOne = !orderIsClosedRMA && orderIsClosed && !listContains(orderStatusHistory,'processing1');
-		
-		if ( orderIsClosedRMA || orderSkippedProcessingOne || orderStatusType.getTypeCode() == 'processing1'){
+		if ( isNull(arguments.order.getTaxTransactionReferenceNumber()) && (orderIsClosed || listFindNoCase('processing1,processing2',orderStatusType.getTypeCode())) ){
 			
 			//First get integration and make sure the commit tax document flag is set
 			var integration = getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
@@ -2082,8 +2075,14 @@ component extends="Slatwall.model.service.OrderService" {
 				
 				// Call the API and store the responseBean by integrationID
 				try{
-					integrationTaxAPI.getTaxRates( taxRatesRequestBean );
-					arguments.order.setTaxCommitDateTime(now());
+					var responseBean = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
+					if(!responseBean.hasErrors()){
+						var data = responseBean.getData();
+						if(!isNull(data) && structKeyExists(data,'DocCode')){
+							arguments.order.setTaxCommitDateTime(now());
+							arguments.order.setTaxTransactionReferenceNumber(responseBean.getData()['DocCode']);
+						}
+					}
 				}catch (any e){
 					logHibachi('An error occured with the Avatax integration when trying to call commitTaxDocument()', true);
 					logHibachiException(e);
