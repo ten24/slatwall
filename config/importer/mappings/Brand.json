@@ -24,11 +24,13 @@
         },
         "brandPublishedFlag": {
             "propertyIdentifier": "publishedFlag",
-            "defaultValue": true
+            "defaultValue": true,
+            "allowUpdate": false
         },
         "brandActiveFlag": {
             "propertyIdentifier": "activeFlag",
-            "defaultValue": true
+            "defaultValue": true,
+            "allowUpdate": false
         }
     },
     
@@ -36,7 +38,7 @@
         {
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateBrandUrlTitle",
-            "allowUpdate": false,
+            "allowUpdate": false
         }
     ],
     

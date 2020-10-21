@@ -45,6 +45,7 @@
         "skuPriceActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true,
+            "allowUpdate": false,
             "validations": {
                 "dataType": "boolean"
             }

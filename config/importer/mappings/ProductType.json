@@ -31,6 +31,7 @@
         "productTypePublishedFlag": {
             "propertyIdentifier": "publishedFlag",
             "defaultValue": true,
+            "allowUpdate": false,
             "validations": {
                 "dataType": "boolean"
             }
@@ -38,6 +39,7 @@
         "productTypeActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true,
+            "allowUpdate": false,
             "validations": {
                 "dataType": "boolean"
             }
@@ -48,7 +50,7 @@
         {
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateProductTypeUrlTitle",
-            "allowUpdate": false,
+            "allowUpdate": false
         }
     ],
     
