@@ -65,7 +65,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         if ( arguments.rc.jsonRequest == true && structKeyExists( arguments.rc, 'deserializedJSONData') ){
            	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
         }
-        
+        //if we have a get request there is nothing to persist because nothing changed
+        if(!isNull(arguments.rc.requestHeaderData.method) && arguments.rc.requestHeaderData.method == 'GET'){
+            getHibachiScope().setPersistSessionFlag(false);
+        }
     }
 
     public any function get( required struct rc ) {
