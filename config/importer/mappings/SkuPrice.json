@@ -50,11 +50,21 @@
             }
         }
     },
+    
+    "relations" : [
+        {
+            "type": "manyToOne",
+            "entityName": "PriceGroup",
+            "propertyIdentifier": "priceGroup",
+            "generatorFunction": "generateSkuPricePriceGroup"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "skuPriceID"
+            "remoteSkuID", "remoteSkuPriceID"
         ]
     }
 }

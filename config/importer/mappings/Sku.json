@@ -53,7 +53,7 @@
         {
             "type": "oneToMany",
             "entityName": "SkuPrice",
-            "propertyIdentifier": "skuPrice"
+            "propertyIdentifier": "skuPrices"
         }
     ],
     "importIdentifier": {

@@ -921,10 +921,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        "uniqueValue" : productTypeImportRemoteID
 	    );
     	    
-    	if( !this.hibachiIsEmpty(productTypeID) ){
+    	if( !isNull(priceGroupID) && !this.hibachiIsEmpty(productTypeID) ){
     	    return { "productTypeID" : productTypeID }
     	}
     	
+    	
+    	// create new product-type
     	return this.transformEntityData( 
                     entityName  = "ProductType", 
                     data        = arguments.data,
@@ -933,15 +935,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 );
 	}
 	
-	public any function generateProductTypeUrlTitle( struct data, struct mapping, struct propertyMetaData ){
-	    return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productTypeName);
-	}
-	
 	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
 	  return {
             'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1' // Product-type Merchandise 
         }
 	}
+	
+	public any function generateProductTypeUrlTitle( struct data, struct mapping, struct propertyMetaData ){
+	    return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productTypeName);
+	}
+	
 	
 	
 	
@@ -955,11 +958,38 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function generateSkuStocks( struct data, struct mapping, struct propertyMetaData ){
 	    var locations = //get location's IDs
-	    
+	    // TODO : 
 		return [];
 	}
 	
+	public any function generateSkuPricePriceGroup( struct data, struct mapping, struct propertyMetaData ){
+
+	    var priceGroupImportRemoteID = this.createEntityImportRemoteID( 'PriceGroup', arguments.data, arguments.mapping);
+	    
+	    var priceGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  : 'PriceGroup',
+	        "uniqueKey"   : 'importRemoteID',
+	        "uniqueValue" : priceGroupImportRemoteID
+	    );
+    	    
+    	if( !isNull(priceGroupID) && !this.hibachiIsEmpty(priceGroupID) ){
+    	    return { "priceGroupID" : priceGroupID }
+    	}
+    	
+    	// create a new price-group
+    	return this.transformEntityData( 
+                    entityName  = "PriceGroup", 
+                    data        = arguments.data,
+                    mapping     = arguments.mapping,
+                    nested      = true
+                );
+	}
 	
+	public any function generatePriceGroupParentPriceGroup(argument) {
+	   // return {
+    //         'priceGroupID' : '' // Default price-group ID 
+    //     }
+	}
 	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 
