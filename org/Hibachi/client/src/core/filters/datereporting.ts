@@ -4,7 +4,7 @@ class DateReporting{
     //@ngInject
     public static Factory($filter){
         return (date,periodInterval)=>{
-            if(date.trim && date.trim().length===0){
+            if( !date?.trim?.()?.length ){
                 return '';
             }
             switch(periodInterval){
