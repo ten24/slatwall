@@ -66,16 +66,6 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
            	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
         }
         
-        
-        //if we have a get request there is nothing to persist because nothing changed
-        if(!isNull(arguments.rc.requestHeaderData.method)){
-            if(arguments.rc.requestHeaderData.method == 'GET'){
-                getHibachiScope().setPersistSessionFlag(false);
-            }else if(!structKeyExists(arguments.rc, 'context') || (arguments.rc.context != "getCart" && arguments.rc.context != "getAccount")){
-                getHibachiScope().clearSessionValue('cartData');
-                getHibachiScope().clearSessionValue('accountData');
-            }
-        } 
     }
 
     public any function get( required struct rc ) {
