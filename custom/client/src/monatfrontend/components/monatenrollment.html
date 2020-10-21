@@ -82,12 +82,9 @@
 </div>
 <footer ng-if="monatEnrollment.currentStepName !== 'checkout'" class="steps-footer d-flex flex-column">
 	<div
-		ng-hide=
-		"monatEnrollment.currentStepName != 'todaysOrder' 
-		|| monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping <= 0"
 		ng-show=
 		"monatEnrollment.currentStepName == 'todaysOrder'
-		&& monatEnrollment.type = 'vip'
+		&& monatEnrollment.type == 'vip'
 		&& monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping > 0"
 		class="text-white align-items-center"><span ng-hide="!monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShippingLoaded" sw-rbkey="'frontend.enrollment.threshold'"></span>
 	</div>

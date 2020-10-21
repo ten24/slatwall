@@ -31,8 +31,8 @@ class EnrollmentMPController {
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
 	public showUpgradeErrorMessage = false;
 	public loadingBundles: boolean = false;
-	public hairProductFilter:any;
-	public skinProductFilter:any;
+	public productFilters:any = {};
+	public showProductFilter:any = {};
 	public sortedBundles = [];
 	
 	// @ngInject
@@ -227,6 +227,15 @@ class EnrollmentMPController {
 		tmp.innerHTML = html;
 		return tmp.textContent || tmp.innerText || '';
 	};
+		
+	public toggleShowFilterCategory = (categoryName)=>{
+		for(let category of this.monatService.productFilterCategories){
+			if(category != categoryName){
+				this.showProductFilter[category] = false;
+			}
+		}
+		this.showProductFilter[categoryName] = !this.showProductFilter[categoryName];
+	}
 
 	public getProductList = ( category:any, categoryType:string ) => {
 		this.loading = true;
@@ -240,9 +249,10 @@ class EnrollmentMPController {
 		if(category){
 			data.categoryFilterFlag = true;
 			data.categoryID = category.value;
-			this.hairProductFilter = null;
-			this.skinProductFilter = null;
-			this[`${categoryType}ProductFilter`] = category;
+			for(var key in this.productFilters){
+				this.productFilters[key] = null;
+			}
+			this.productFilters[categoryType] = category;
 			this.paginationObject['categoryID'] = category.value;
 		}
 		

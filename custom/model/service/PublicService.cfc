@@ -47,6 +47,7 @@ Notes:
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
+    property name="contentService";
     
      public any function login( required struct data ){
          
@@ -2743,6 +2744,36 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", true);    
         }
+    }
+    
+    public void function getProductListingFilters( required struct data ){
+        
+        var integration = getService('IntegrationService').getIntegrationByIntegrationPackage('monat').getIntegrationCFC();
+        
+        var skinProductCategoryIDs = integration.setting('SiteSkinProductListingCategoryFilters');
+        var hairProductCategoryIDs = integration.setting('SiteHairProductListingCategoryFilters');
+        var wellnessProductCategoryIDs = integration.setting('SiteWellnessProductListingCategoryFilters');
+        var promotionProductCategoryIDs = integration.setting('SitePromotionProductListingCategoryFilters');
+        
+        var skinProductCategoryCollection = getContentService().getCategoryCollectionList();
+        var hairProductCategoryCollection = getContentService().getCategoryCollectionList();
+        var wellnessProductCategoryCollection = getContentService().getCategoryCollectionList();
+        var promotionProductCategoryCollection = getContentService().getCategoryCollectionList();
+        
+        skinProductCategoryCollection.addFilter( 'categoryID', skinProductCategoryIDs, 'IN' );
+        hairProductCategoryCollection.addFilter( 'categoryID', hairProductCategoryIDs, 'IN' );
+        wellnessProductCategoryCollection.addFilter( 'categoryID', wellnessProductCategoryIDs, 'IN' );
+        promotionProductCategoryCollection.addFilter( 'categoryID', promotionProductCategoryIDs, 'IN' );
+        
+        var categories = {
+            'Skin':skinProductCategoryCollection.getRecordOptions(),
+            'Hair':hairProductCategoryCollection.getRecordOptions(),
+            'Wellness':wellnessProductCategoryCollection.getRecordOptions(),
+            'Promotion':promotionProductCategoryCollection.getRecordOptions()
+        };
+        
+        arguments.data.ajaxResponse['categories'] = categories;
+        
     }
     
 }
