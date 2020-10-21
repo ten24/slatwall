@@ -8,8 +8,18 @@
 			<div class="d-flex flex-wrap">
 				<!--product image-->
 				<div class="product-img">
-					<img image-manager ng-src="{{monatProductModal.product.skuImagePath[0]}}" ng-attr-alt="{{monatProductModal.product.productName}}" />
-				</div>
+                <!--- Length check on monatProductCard.product.skuImagePath[0] to check if skuImagePath is a string or an array. --->
+                <img 
+                    ng-if="monatProductCard.product.skuImagePath[0].length > 1"
+                    image-manager
+                    ng-src="{{ monatProductCard.product.skuImagePath[0] }}" 
+                />
+                <img 
+                    ng-if="monatProductCard.product.skuImagePath[0].length === 1"
+                    image-manager
+                    ng-src="{{ monatProductCard.product.skuImagePath }}" 
+                />				
+		</div>
 				<!-- end product image-->
 	
 				<!--product details-->

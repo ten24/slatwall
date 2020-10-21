@@ -454,7 +454,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					){
 						foundItem = true;
 						var foundOrderItem = orderItem;
-						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						var oldQuantity = orderItem.getQuantity();
+						foundOrderItem.setQuantity(oldQuantity + arguments.processObject.getQuantity());
 						if(!isNull(arguments.processObject.getSellOnBackOrderFlag()) && arguments.processObject.getSellOnBackorderFlag()){
 							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
 						}
@@ -472,11 +473,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
 									message = foundOrderItem.stringReplace(message);
 								
-									foundOrderItem.addError('addOrderItem', message, true);
-									arguments.order.addError('addOrderItem', message, true);
+									foundOrderItem.addError('addOrderItem', message);
+									arguments.order.addError('addOrderItem', message);
 								}
 
 							}
+							foundOrderItem.setQuantity(oldQuantity);
 						}
 						break;
 					}
@@ -2447,8 +2449,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.optionalProperties" type="string" default=""; //optional properties requested in the api call
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'calculatedSubTotal,orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
-		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName,currencyCode";
+		var displayProperties = 'calculatedSubTotal,orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth';
+		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName,orderTemplateStatusType.systemCode,currencyCode";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
@@ -5772,7 +5774,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
 			}
 			thisOption['publishedFlag'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getPublishedFlag();
-
+			thisOption['shippingMethodDescription'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodDescription();
+			
 			var inserted = false;
 
 			arrayAppend(optionsArray, thisOption);

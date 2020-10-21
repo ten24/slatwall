@@ -22,6 +22,8 @@ export class OrderTemplateService {
 	public lastAddedProduct;
 	public cartTotalThresholdForOFYAndFreeShipping;
 	public appliedPromotionCodeList = [];
+	public cartTotalThresholdForOFYAndFreeShippingLoaded: boolean = false;
+
 	
 	//@ngInject
 	constructor(
@@ -518,6 +520,7 @@ export class OrderTemplateService {
        
         if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
             this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+            this.cartTotalThresholdForOFYAndFreeShippingLoaded = true;
         }
     }
     
