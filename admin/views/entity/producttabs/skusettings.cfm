@@ -103,5 +103,6 @@ Notes:
 		<cfif rc.product.getProductType().getBaseProductType() eq "miscFee">
 			<swa:SlatwallSetting settingName="skuIsRefundFee" settingObject="#rc.product#"/>
 		</cfif>
+		<swa:SlatwallSetting settingName="skuAllowableRefundPercentages" settingObject="#rc.product#"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
