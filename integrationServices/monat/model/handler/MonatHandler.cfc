@@ -351,8 +351,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	
 	
 	public void function onSessionAccountLogin(){
-		getService('HibachiTagService').cfcookie(name="accountType", value=getHibachiScope().getAccount().getAccountType(), httpOnly=true);
-		
+		if(!isNull(getHibachiScope().getAccount().getAccountType())){
+			getService('HibachiTagService').cfcookie(name="accountType", value=getHibachiScope().getAccount().getAccountType(), httpOnly=true);
+		}
 	}
 	
 	public void function onSessionAccountLogout(){
