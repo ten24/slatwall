@@ -92,10 +92,21 @@ class SWReportMenuController{
 
     public getMyCustomReports = () =>{
 		var myCustomReports = this.collectionConfigService.newCollectionConfig('Collection');
-    	myCustomReports.setReportFlag(1)
     	myCustomReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
-		myCustomReports.addFilter('createdByAccountID', 	this.slatwall.account.accountID ,'=', 'OR', '', 'group1');
-		myCustomReports.addFilter('accountOwner.accountID',	this.slatwall.account.accountID ,'=','OR','', 'group1');
+    	myCustomReports.addFilter('reportFlag',1,'=', '' )
+		myCustomReports.addFilterGroup([{
+			propertyIdentifier: 'createdByAccountID',
+			comparisonValue: 	this.slatwall.account.accountID,
+			comparisonOperator: '=',
+			logicalOperator: 'OR',
+			hidden: false,
+		},{
+						propertyIdentifier: 'accountOwner.accountID',
+			comparisonValue: 	this.slatwall.account.accountID,
+			comparisonOperator: '=',
+			logicalOperator: 'OR',
+			hidden: false,
+		}]);
 		myCustomReports.setOrderBy('collectionObject|ASC');
 		myCustomReports.setAllRecords(true);
 		myCustomReports.getEntity().then((data)=>{
