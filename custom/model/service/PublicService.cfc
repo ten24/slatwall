@@ -2742,6 +2742,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+
     public void function getAccountData(any data) {
         var accountData = { 
             'account': getHibachiScope().getAccountData()
