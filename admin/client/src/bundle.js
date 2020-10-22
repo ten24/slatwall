@@ -90279,7 +90279,12 @@ var SWListingReportController = /** @class */ (function () {
             });
         }
         else {
-            this.getPeriodColumns();
+            this.getPeriodColumns().then(function () {
+                _this.selectPeriodColumn(_this.periodColumns[_this.periodColumns.findIndex(function (periodColumn) { return periodColumn.name === 'createdDateTime'; })]);
+                _this.selectPeriodInterval('day');
+                _this.startDate = new Date().addDays(-30);
+                _this.endDate = new Date();
+            });
             this.selectedPeriodPropertyIdentifierArray = [this.collectionConfig.baseEntityAlias];
             $("#get-started-report").removeClass("hide");
         }
