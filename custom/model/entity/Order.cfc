@@ -644,4 +644,14 @@ component {
 	public boolean function isOrderPartiallyDelivered(){
 		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
 	}
+	
+	public boolean function hasCBDProduct(){
+		var orderItems = getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if(orderItems[i].getCBDFlag()){
+				return true
+			}
+		}
+		return false
+	}
 }
