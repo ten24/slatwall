@@ -2578,5 +2578,18 @@ public numeric function getPersonalVolumeSubtotal(){
 	
 	public boolean function isOrderPartiallyDelivered(){
 		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
+	}
+	
+	public boolean function hasCBDProduct(){
+		var orderItems = getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+					logHibachi("<------ CBD", true);
+					logHibachi(isNull(orderItems[i].getSku().getCBDFlag()), true);
+
+			if(!isNull(orderItems[i].getSku().getCBDFlag()) && orderItems[i].getSku().getCBDFlag()){
+				return true
+			}
+		}
+		return false
 	}//CUSTOM FUNCTIONS END
 }

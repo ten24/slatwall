@@ -648,7 +648,7 @@ component {
 	public boolean function hasCBDProduct(){
 		var orderItems = getRootOrderItems(); 
 		for(var i=1; i<=arrayLen(orderItems); i++) {
-			if(orderItems[i].getCBDFlag()){
+			if(!isNull(orderItems[i].getSku().getCBDFlag()) && orderItems[i].getSku().getCBDFlag()){
 				return true
 			}
 		}

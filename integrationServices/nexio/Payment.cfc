@@ -278,7 +278,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		return arguments.base64String;
 	}
 	
-	private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
+	private any function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			
