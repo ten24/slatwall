@@ -965,6 +965,37 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderReturn;
 	}
 	
+	public any function processOrder_changeReturnPercentage(required any order, struct data={}){
+			getHibachiScope().addExcludedModifiedEntityName('TaxApplied');
+			getHibachiScope().addExcludedModifiedEntityName('PromotionApplied');
+		if (structKeyExists(arguments.data, "returnPercentage") &&  Len(arguments.data.returnPercentage) > 1){
+			var orderItems = order.getOrderItems();
+			for(var returnOrderItem in orderItems){
+					returnOrderItem.setPrice(getService('HibachiUtilityService').precisionCalculate(returnOrderItem.getReferencedOrderItem().getExtendedUnitPriceAfterDiscount()  * (arguments.data.returnPercentage /100)));
+					returnOrderItem.setSkuPrice(getService('HibachiUtilityService').precisionCalculate(returnOrderItem.getReferencedOrderItem().getExtendedUnitPriceAfterDiscount()  * (arguments.data.returnPercentage /100)   ));
+
+					for(var priceField in variables.customPriceFields){
+	            		var price = returnOrderItem.getReferencedOrderItem().invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
+	            		if(!isNull(price)){
+			            	if(returnOrderItem.getReferencedOrderItem().getExtendedPriceAfterDiscount() != 0){
+			                	price = price * returnOrderItem.getPrice() / returnOrderItem.getReferencedOrderItem().getExtendedPriceAfterDiscount();
+			            	}else{
+			            		price = 0;
+			            	}
+	            			returnOrderItem.invokeMethod('set#priceField#',{1=price})
+	            		}
+					}
+
+				 returnOrderItem = this.saveOrderItem( orderItem=returnOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
+			}
+			
+			this.saveOrderReturn( arguments.order);
+			getHibachiScope().flushORMSession(); 
+
+		}
+	    return arguments.order;
+	}
+	
 	public any function processOrder_approveReturn(required any order, struct data={}){
 		
 	    if(!isNull(arguments.data.orderItems) &&arrayLen(arguments.data.orderItems)){
@@ -1357,7 +1388,8 @@ component extends="Slatwall.model.service.OrderService" {
 					){
 						foundItem = true;
 						var foundOrderItem = orderItem;
-						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						var oldQuantity = orderItem.getQuantity();
+						foundOrderItem.setQuantity(oldQuantity + arguments.processObject.getQuantity());
 						if(!isNull(arguments.processObject.getSellOnBackOrderFlag()) && arguments.processObject.getSellOnBackorderFlag()){
 							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
 						}
@@ -1380,6 +1412,7 @@ component extends="Slatwall.model.service.OrderService" {
 								}
 
 							}
+							foundOrderItem.setQuantity(oldQuantity);
 						}
 						break;
 					}
@@ -1493,10 +1526,10 @@ component extends="Slatwall.model.service.OrderService" {
 						var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
 						message = newOrderItem.stringReplace(message);
 					
-						arguments.order.addError('addOrderItem', message, true);
-						newOrderItem.addError("addOrderItem", message, true);
+						arguments.order.addError('addOrderItem', message);
 					}
 				}
+				newOrderItem.removeOrder(order);
 			}else{
 				//begin stock hold logic
 				if(arguments.processObject.getSku().setting('skuStockHold')){

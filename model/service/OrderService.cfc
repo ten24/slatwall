@@ -454,7 +454,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					){
 						foundItem = true;
 						var foundOrderItem = orderItem;
-						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						var oldQuantity = orderItem.getQuantity();
+						foundOrderItem.setQuantity(oldQuantity + arguments.processObject.getQuantity());
 						if(!isNull(arguments.processObject.getSellOnBackOrderFlag()) && arguments.processObject.getSellOnBackorderFlag()){
 							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
 						}
@@ -472,11 +473,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
 									message = foundOrderItem.stringReplace(message);
 								
-									foundOrderItem.addError('addOrderItem', message, true);
-									arguments.order.addError('addOrderItem', message, true);
+									foundOrderItem.addError('addOrderItem', message);
+									arguments.order.addError('addOrderItem', message);
 								}
 
 							}
+							foundOrderItem.setQuantity(oldQuantity);
 						}
 						break;
 					}

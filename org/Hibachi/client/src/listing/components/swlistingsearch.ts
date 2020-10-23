@@ -40,6 +40,7 @@ class SWListingSearchController {
         public $scope,
         public $rootScope,
         public $hibachi,
+        public $timeout,
         public metadataService,
         public listingService,
         public collectionService,
@@ -126,8 +127,8 @@ class SWListingSearchController {
         }
             
             
-        
         this.configureSearchableColumns(this.selectedSearchColumn);
+ 
 
         if(this.swListingControls.showPrintOptions){
             //load the options
@@ -346,18 +347,22 @@ class SWListingSearchController {
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         
         this.swListingDisplay.collectionConfig = this.collectionConfig;
+        
+         this.configureSearchableColumns(this.selectedSearchColumn);
 
         this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
 
     };
 
     private configureSearchableColumns=(column)=>{
-
         var searchableColumns = [];
         if(column.propertyIdentifier){
             searchableColumns.push(column.propertyIdentifier);
         }else{
             searchableColumns = this.searchableColumns;
+        }
+        if(!searchableColumns.length){
+            return;
         }
 
         for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
