@@ -4,7 +4,7 @@
 <cfoutput>
   
   <!--- Hero slider --->
-  <div class="hero" style="background-image: url(#$.getThemePath()#/custom/client/assets/images/main-bg-img.jpg);">
+  <div class="hero mt-2" style="background-image: url(#$.getThemePath()#/custom/client/assets/images/main-bg-img.jpg);">
     <!--- Featured Products --->
     <div class="container">
       <div class="featured-products bg-white text-center pb-5 pt-5">
