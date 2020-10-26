@@ -6,9 +6,9 @@
 </head>
   
   <!-- Body-->
-  <body class="toolbar-enabled">
+  <body>
     <!-- Navbar 3 Level (Light)-->
-    <header class="box-shadow-sm">
+    <header class="shadow-sm">
 
     <!-- Remove "navbar-sticky" class to make navigation bar scrollable with the page.-->
     <div class="navbar-sticky bg-light">
@@ -30,7 +30,7 @@
               </div>
               <div class="navbar-toolbar d-flex flex-shrink-0 align-items-center">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="##navbarCollapse"><span class="navbar-toggler-icon"></span></button><a class="navbar-tool navbar-stuck-toggler" href="##"><span class="navbar-tool-tooltip">Expand menu</span>
-                  <div class="navbar-tool-icon-box"><i class="far fa-user"></i></div></a><a class="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" href="##" data-toggle="modal">
+                  <div class="navbar-tool-icon-box"><i class="far fa-bars"></i></div></a><a class="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" href="##" data-toggle="modal">
                   <div class="navbar-tool-icon-box"><i class="far fa-user"></i></div>
                   <div class="navbar-tool-text ml-n3"><small>Hello, Sign in</small>My Account</div></a>
                 <div class="navbar-tool ml-3"><a class="navbar-tool-icon-box bg-secondary" href="##"><span class="navbar-tool-label">4</span><i class="far fa-shopping-cart"></i></a><a class="navbar-tool-text" href="shop-cart.html"><small>My Cart</small>$265.00</a>
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="navbar navbar-expand-lg navbar-dark bg-dark navbar-stuck-menu mt-2 pt-0 pb-0">
-        <div class="container">
+        <div class="container p-0">
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <!-- Search-->
             <div class="input-group-overlay d-lg-none my-3 ml-0">
