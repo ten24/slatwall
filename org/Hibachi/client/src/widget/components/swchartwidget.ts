@@ -138,7 +138,7 @@ class SWChartWidgetController {
                     xAxes: [{
                         display: true,
                         scaleLabel: {
-                            labelString: "Revenue this " + this.periodLabel,
+                            labelString: "Revenue by " + this.period,
                             display: true,
                         },
                     }]
