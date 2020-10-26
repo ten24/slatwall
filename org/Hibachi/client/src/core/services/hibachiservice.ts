@@ -562,7 +562,7 @@ class HibachiService{
 	getCurrencies = () =>{
 		if(this.appConfig.currencies){
 			var deferredCurrency = this.$q.defer();
-			deferredCurrency.resolve(this.appConfig.currencies);
+			deferredCurrency.resolve({ 'data' : this.appConfig.currencies });
 			return deferredCurrency.promise; 
 		}
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies';

@@ -191,6 +191,7 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 	property name="netAmount" persistent="false" hb_formatType="currency";
+	property name="allowableRefundPercent" persistent="false";
 
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
@@ -1466,6 +1467,26 @@ public void function refreshAmounts(){
 		
 		return discountAmount;
 	}
+	public any function getAllowableRefundPercent(){
+        if(!structKeyExists(variables,'allowableRefundPercent')){
+	    	var map = getSku().setting('skuAllowableRefundPercentages')
+	        var dateDiff = 0;
+	        if(!isNull(this.getOrder().getOrderCloseDateTime())){
+	            dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
+	        }
+	        
+            variables.allowableRefundPercent = 100
+            if(!isNull(map)){
+		        map = DeserializeJSON(map);
+		        for (var rule in map) {
+					if(rule.minDays <= dateDiff && rule.maxDays >= dateDiff){
+						variables.allowableRefundPercent = rule.refundPercent
+					}
+				}
+            }
+        }
+        return variables.allowableRefundPercent;
+    }
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#arguments.priceField#')){

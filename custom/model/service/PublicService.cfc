@@ -2104,22 +2104,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getOrderItemsByOrderID(required any data){
-        var orderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
+        var orderItems = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
         
         var skuService = getService('skuService');
-        var count = 1;
-        if(structKeyExists(orderItemsByOrderID,'orderItems')){
-        	for (var getOrderItems in orderItemsByOrderID.orderItems){
-        		var skuScope = skuService.getSkuByskuID(getOrderItems.sku_skuID);
-            	var skuAllowBackOrderFlag = skuScope.getAllowBackOrderFlag();
-            	var backOrderedMessaging = skuScope.getBackOrderedMessaging();
-            	orderItemsByOrderID['orderItems'][count]['skuAllowBackorderFlag'] = skuAllowBackOrderFlag;
-            	orderItemsByOrderID['orderItems'][count]['backorderedMessaging'] = backOrderedMessaging;
-            	count++;
+
+        if(structKeyExists(orderItems,'orderItems')){
+        	for (var orderItemStruct in orderItems.orderItems){
+        		var sku = skuService.getSku(orderItemStruct.sku_skuID);
+            	orderItemStruct['skuAllowBackorderFlag'] = sku.getAllowBackOrderFlag();
+            	orderItemStruct['backorderedMessaging'] = sku.getBackOrderedMessaging();
         	}
         }
         
-        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = orderItemsByOrderID;
+        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = orderItems;
     }
     
     public void function getMarketPartners(required struct data){
@@ -2745,6 +2742,55 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+
+    public void function getAccountData(any data) {
+        var accountData = { 
+            'account': getHibachiScope().getAccountData()
+        };
+        
+        var siteCode = getHibachiScope().getRedirectSiteCode();
+		if(len(siteCode)){
+			accountData['redirectTo'] = siteCode;
+		}
+        arguments.data.ajaxResponse = accountData;
+    }
+    
+    
+    public void function getProductReviews(required struct data){
+        
+        var reviews = getService('MonatDataService').getProductReviews(data=arguments.data);
+        arguments.data.ajaxResponse['pageRecords'] = reviews;
+        
+        if(structKeyExists(arguments.data,'getRecordsCount') && arguments.data.getRecordsCount){
+            arguments.data.ajaxResponse['recordsCount'] = getService('MonatDataService').getProductReviewCount(data=arguments.data);
+        }
+        
+    }
+    
+    public void function getMarketPartners(required struct data){
+        
+        var marketPartners = getService('MonatDataService').getMarketPartners(data=arguments.data);
+        arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
+        arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
+
+    }
+    
+    public void function getProductListingFilters( required struct data ){
+        var integration = getService('IntegrationService').getIntegrationByIntegrationPackage('monat').getIntegrationCFC();
+        
+        var skinProductCategoryIDs = integration.setting('SiteSkinProductListingCategoryFilters');
+        var hairProductCategoryIDs = integration.setting('SiteHairProductListingCategoryFilters');
+        
+        var skinProductCategoryCollection = getService('ContentService').getCategoryCollectionList();
+        var hairProductCategoryCollection = getService('ContentService').getCategoryCollectionList();
+        
+        skinProductCategoryCollection.addFilter( 'categoryID', skinProductCategoryIDs, 'IN' );
+        hairProductCategoryCollection.addFilter( 'categoryID', hairProductCategoryIDs, 'IN' );
+        
+        arguments.data.ajaxResponse['skinCategories'] = skinProductCategoryCollection.getRecordOptions();
+        arguments.data.ajaxResponse['hairCategories'] = hairProductCategoryCollection.getRecordOptions();
+    }
+        
     public void function saveEnrollment(required struct data){
         param name="arguments.data.emailAddress";
         if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
@@ -2771,7 +2817,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var emailData = {
             order:newOrder,
             emailTemplate:emailTemplate
-        }
+        };
         
         var email = getService('emailService').processEmail(email,emailData,'createFromTemplate');
         newOrder.removeAccount();

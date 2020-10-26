@@ -68,5 +68,57 @@ export class PublicService extends PublicServiceCore {
         return request.promise;
 
     }
+    
+    
+    /** accessors for states */
+    public getData=(url, setter, param, method='post'):any =>  {
+
+        let urlBase = url + param;
+        let request = this.requestService.newPublicRequest(urlBase, null, method);
+
+        request.promise.then((result:any)=>{
+            // handle custom account redirect
+            if (result['redirectTo']){
+                if(result['redirectTo'] == 'default'){
+                    result['redirectTo'] = '';
+                }
+                window.location.replace('/'+result['redirectTo']);
+            }
+            //don't need account and cart for anything other than account and cart calls.
+            if ( setter.indexOf('account') == -1) {
+                 
+                if (result['account']){delete result['account'];}
+            }
+            if ( setter.indexOf('cart') == -1) {
+                if (result['cart']){delete result['cart'];}
+            }
+
+            if((setter == 'cart'||setter=='account') && this[setter] && this[setter].populate){
+                //cart and account return cart and account info flat
+                this[setter].populate(result[setter]);
+
+            }else{
+                //other functions reutrn cart,account and then data
+                if(setter == 'states'){
+                    this[setter]={};
+                    this.$timeout(()=>{
+                        this[setter]=(result);
+                    });
+                }else{
+                    this[setter]=(result);
+                }
+            }
+
+        }).catch((reason)=>{
+
+
+        });
+
+        this.requests[request.getAction()]=request;
+        return request.promise;
+    }
+    
+    
+    
 
 }
