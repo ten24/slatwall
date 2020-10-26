@@ -1163,6 +1163,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
     }
     
+    public any function getGovernmentIdentificationNumber(){
+        var accountGovernmentIdentification = '';
+        if('uk' ==  getHibachiScope().getAccount().getAccountCreatedSite().getCmsSiteID() ){
+            var accountGovernmentIdentification = getService('AccountService').getGovernmentIdentificationNumber();
+        }
+		arguments.data['ajaxResponse']['GovernmentIdentification'] = accountGovernmentIdentification;
+
+    }
+    
     public void function submitSponsor(required struct data){
         param name="arguments.data.sponsorID" default="";
         
