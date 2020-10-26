@@ -2581,12 +2581,13 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public boolean function hasCBDProduct(){
-		var orderItems = getRootOrderItems(); 
-		for(var i=1; i<=arrayLen(orderItems); i++) {
-			if(!isNull(orderItems[i].getSku().getCBDFlag()) && orderItems[i].getSku().getCBDFlag()){
-				return true
-			}
-		}
-		return false
+	 	if(!structKeyExists(variables,'CBDProduct')){
+	 		variables.CBDProduct = false;
+			var cbdcollectionList = getService('orderService').getOrderItemCollectionList();
+    		cbdcollectionList.addFilter('order.orderID',this.getOrderID() );
+    		cbdcollectionList.addFilter('sku.cbdFlag', true);
+			variables.CBDProduct = cbdcollectionList.getRecordsCount() > 0;
+	 	}
+	 	return variables.CBDProduct
 	}//CUSTOM FUNCTIONS END
 }
