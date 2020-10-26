@@ -2080,13 +2080,7 @@ property name="sapItemCode" ormtype="string";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-public string function getBackOrderedMessaging(){
-		if(!StructKeyExists(variables, "backOrderedMessaging") || isNull(variables.backOrderedMessaging)) {
-			return '';
-		}
-		return variables.backOrderedMessaging;
-	}
-	
+
 	public boolean function canBePurchased(required any account, any order){
 		
 		var accountType = 'customer';
