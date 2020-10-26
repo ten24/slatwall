@@ -8784,27 +8784,27 @@ table.s-detail-content-table tbody tr.s-done {
 }
 .hibachi-report-date-group,
 .hibachi-report-date-group-custom-toggle {
-  padding: 4px 16px;
+  padding: 3px 30px;
   margin-right: 8px;
   background: none;
-  border: 2px solid #707070;
-  color: #707070;
+  border: 2px solid #bdbdbd;
+  color: #bdbdbd;
   border-radius: 32px;
-  font-size: 15px;
+  font-size: 13px;
 }
 .hibachi-report-date-group:hover,
 .hibachi-report-date-group:active,
 .hibachi-report-date-group-custom-toggle:hover,
 .hibachi-report-date-group-custom-toggle:active {
-  background: #f9bb82;
-  border: 2px solid #4e4e4e;
-  color: #4e4e4e;
+  border: 2px solid #707070;
+  color: #707070;
 }
 .hibachi-report-date-group + .active {
-  color: #4e4e4e;
+  color: #707070;
   font-weight: 700;
-  border: 2px solid #4e4e4e;
-  background: #fac89a;
+  border: 2px solid #707070;
+  background: none;
+  box-shadow: none;
 }
 .col span .save-icon {
   margin: 0 5px;

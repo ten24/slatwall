@@ -66,7 +66,12 @@ class SWListingReportController {
                 this.selectReport(selectedReport);
             });
         }else{
-            this.getPeriodColumns();
+            this.getPeriodColumns().then(()=>{
+            this.selectPeriodColumn(this.periodColumns[this.periodColumns.findIndex( periodColumn => periodColumn.name === 'createdDateTime')]);
+            this.selectPeriodInterval('day');
+            this.startDate = new Date().addDays(-30);
+            this.endDate = new Date();
+            })
             this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
             $("#get-started-report").removeClass("hide");
         }
@@ -533,7 +538,7 @@ class SWListingReportController {
                     this.periodColumns.push(column);
                 }
             }
-            
+
         });
         return promise;
     }
