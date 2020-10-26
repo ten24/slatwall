@@ -14,7 +14,7 @@ class SaveEnrollmentModalController {
         let data = {
           emailAddress:this.emailAddress
         };
-        return this.publicService.doAction('?slatAction=monat:public.saveEnrollment',data)
+        return this.publicService.doAction('saveEnrollment',data)
         .then(result=>{
             if(result.errors){
                 this.monatAlertService.error(result.errors);

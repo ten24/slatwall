@@ -2745,4 +2745,41 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+    public void function saveEnrollment(required struct data){
+        param name="arguments.data.emailAddress";
+        if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
+            var ownerAccountNumber = getHibachiScope().getSessionValue('ownerAccountNumber');
+        }else{
+            addError(arguments.data,{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')});
+            getHibachiScope().addActionResult('public:account.saveEnrollment',true);
+            return;
+        }
+        var cart = getHibachiScope().getCart();
+        var emailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Share Enrollment');
+        var email = getService('EmailService').newEmail();
+        var newOrder = getService('OrderService').processOrder(cart,{referencedOrderFlag:false},'duplicateOrder');
+        
+        newOrder.setAccountType(cart.getAccountType());
+        newOrder.setPriceGroup(cart.getPriceGroup());
+        newOrder.setMonatOrderType(cart.getMonatOrderType());
+        newOrder = getService('OrderService').saveOrder(newOrder);
+        
+        var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
+        newOrder.setSharedByAccount( ownerAccount );
+        newOrder.setAccount(ownerAccount);
+        
+        var emailData = {
+            order:newOrder,
+            emailTemplate:emailTemplate
+        }
+        
+        var email = getService('emailService').processEmail(email,emailData,'createFromTemplate');
+        newOrder.removeAccount();
+        
+        email.setEmailTo(arguments.data.emailAddress);
+        email = getService('EmailService').processEmail(email, arguments, 'addToQueue');
+        arguments.data.messages = [getHibachiScope().getRBKey('frontend.saveEnrollmentSuccess')];
+        getHibachiScope().addActionResult('public:account.saveEnrollment',email.hasErrors());
+    }
+    
 }
