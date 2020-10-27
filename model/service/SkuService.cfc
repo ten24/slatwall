@@ -154,7 +154,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	/** 
+	 * Function append settings value to existing sku List
+	 * @param - array of skus
+	 * @return - updated array of skus
+	 **/
+	public array function appendSettingsToSku(required array skus) {
+		if(arrayLen(arguments.skus)) {
+			
+			for(var sku in arguments.skus) {
+	            
+	            var currentSku = this.getSku(sku.skuID);
+	            sku['skuOrderMinimumQuantity'] = currentSku.setting('skuOrderMinimumQuantity');
+	            sku['skuOrderMaximumQuantity'] = currentSku.setting('skuOrderMaximumQuantity');
+	            sku['skuFulfillmentMethods'] = currentSku.getEligibleFulfillmentMethodsWithShippingMethods();
+	        }
+		}
+		return arguments.skus;
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================

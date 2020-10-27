@@ -35,6 +35,7 @@ class SWListingReportController {
     public createdByAccountID:string;
     public swListingDisplay:any;
     public isPublic:boolean;
+    public reportChanged:boolean;
     public accountOwnerID:string;
     public initchartobj:any;
     public comparechartobj: any;
@@ -65,7 +66,12 @@ class SWListingReportController {
                 this.selectReport(selectedReport);
             });
         }else{
-            this.getPeriodColumns();
+            this.getPeriodColumns().then(()=>{
+            this.selectPeriodColumn(this.periodColumns[this.periodColumns.findIndex( periodColumn => periodColumn.name === 'createdDateTime')]);
+            this.selectPeriodInterval('day');
+            this.startDate = new Date().addDays(-30);
+            this.endDate = new Date();
+            })
             this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
             $("#get-started-report").removeClass("hide");
         }
@@ -370,7 +376,7 @@ class SWListingReportController {
         this.reportingData = reportingData;
 		var dates = [];
 		var datasets = [];
-		
+		this.reportChanged=true;
 		
         
 		if(ctx.is($("#myChartCompare"))){
@@ -532,7 +538,7 @@ class SWListingReportController {
                     this.periodColumns.push(column);
                 }
             }
-            
+
         });
         return promise;
     }

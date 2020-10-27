@@ -186,7 +186,7 @@ Notes:
 										<!--- Existing Account --->
 										<hb:HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
 											<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
-											<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+											<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"  object="#rc.order#" property="account"/>
 										</hb:HibachiDisplayToggle>
 									</fieldset>
 									<br>
@@ -300,9 +300,10 @@ Notes:
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
-
+											<span ng-if="shippingAccountAddressID == ''">
 											<!--- Address Display --->
 											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+											</span>
 
 										<cfif !isNull(rc.order.getAccount())>
 											<!--- Save New Address --->

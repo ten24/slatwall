@@ -7,6 +7,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods='';
     this.publicMethods=listAppend(this.publicMethods, 'get');
     this.publicMethods=listAppend(this.publicMethods, 'post');
+    
+    this.publicMethods=ListAppend(this.publicMethods, 'getShippingMethodOptions');
 
     public void function init( required any fw ) {
         setFW( arguments.fw );
@@ -86,5 +88,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             this.get(rc);
         }
     }
+    
+    public void function getShippingMethodOptions(required any rc) {
+        arguments.rc.account = getHibachiScope().getAccount();
+        getPublicService().getShippingMethodOptions(arguments.rc);
+	}
 
 }

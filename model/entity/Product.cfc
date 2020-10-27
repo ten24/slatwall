@@ -151,8 +151,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	
-		
+
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -434,7 +433,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var skuCollectionRecordsCount = arrayLen(skuCollectionRecords);
 		for(var i=1; i<=skuCollectionRecordsCount; i++) {
 			var skuData = skuCollectionRecords[i];
-
+			
+			if( isEmpty( Trim(skuData['imageFile'])) ) {
+				continue;
+			}
+			
 			ArrayAppend(filenames, skuData['imageFile']);
 
 			var thisImage = {};
@@ -626,6 +629,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			optionCode,
 			optionDescription,
 			sortOrder,
+			optionGroup.imageGroupFlag,
 			optionGroup.optionGroupName,
 			optionGroup.optionGroupCode,
 			optionGroup.optionGroupID,
@@ -691,6 +695,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				skuOptionDetails[ ogCode ][ "optionGroupName" ] = optionData['optionGroup_optionGroupName'];
 				skuOptionDetails[ ogCode ][ "optionGroupCode" ] = optionData['optionGroup_optionGroupCode'];
 				skuOptionDetails[ ogCode ][ "optionGroupID" ] = optionData['optionGroup_optionGroupID'];
+				skuOptionDetails[ ogCode ][ "optionGroupImageGroupFlag" ] = optionData['optionGroup_imageGroupFlag'];
 				skuOptionDetails[ ogCode ][ "sortOrder" ] = optionData['optionGroup_sortOrder'];
 			}
 
@@ -1464,6 +1469,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.assignedAttributeSetSmartList;
+	}
+	
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList=""){
+		
+		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, defaultSku.price, defaultSku.listPrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, productType.productTypeID, defaultSku.imageFile, brand.brandID, brand.brandName";
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 
 	// ==================  END:  Overridden Methods ========================

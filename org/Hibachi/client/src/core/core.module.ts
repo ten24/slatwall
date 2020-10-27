@@ -227,6 +227,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('cartService',CartService)
 .service('hibachiValidationService',HibachiValidationService)
 .service('entityService',EntityService)
+
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters 

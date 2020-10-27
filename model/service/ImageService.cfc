@@ -181,6 +181,10 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 		            arguments.height = getSettingService().getSettingValue("productImageLargeHeight");
 		            arguments.width  = getSettingService().getSettingValue("productImageLargeWidth");
 		            break;
+		        case 'xl': case "extraLarge":
+		        	arguments.height = getSettingService().getSettingValue("productImageXLargeHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageXLargeWidth");
+		            break;
 		        default:
 		            arguments.height = getSettingService().getSettingValue("productImageSmallHeight");
 		            arguments.width  = getSettingService().getSettingValue("productImageSmallWidth");

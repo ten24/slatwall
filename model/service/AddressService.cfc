@@ -54,33 +54,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public boolean function isAddressInZoneByZoneID(required any addressZoneID, required any address) {
-		return this.isAddressInZone(argumentCollection=arguments);
+	public boolean function isAddressInZone(required any address, required any addressZone) {
+		return isAddressInZoneByZoneID(arguments.address,arguments.addressZone.getAddressZoneID());
 	}
-
-	public boolean function isAddressInZone(required any address, any addressZone, string addressZoneID) {
 	
-		if(!structKeyExists(arguments, 'addressZone') && !structKeyExists(arguments, 'addressZoneID')){
-			return false; //assuming failure
-		} 
-
-		if(!structKeyExists(arguments, 'addressZoneID')){
-			arguments.addressZoneID = arguments.addressZone.getAddresssZoneID(); 	
-		}//addressZone not used beloww  
- 
-		var cacheKey = "isAddressInZoneByZoneID" & arguments.addressZoneID;
-		if(!isNull(arguments.address.getPostalCode())){
-			cacheKey &= arguments.address.getPostalCode();
-		}
-		if(!isNull(arguments.address.getCity())){
-			cacheKey &= arguments.address.getCity();
-		}
-		if(!isNull(arguments.address.getStateCode())){
-			cacheKey &= arguments.address.getStateCode();
-		}
-		if(!isNull(arguments.address.getCountryCode())){
-			cacheKey &= arguments.address.getCountryCode();
-		}
+	public boolean function isAddressInZoneByZoneID(required any address, required string addressZoneID) {
+		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZoneID
+			&arguments.address.getPostalCode()&arguments.address.getCity()&arguments.address.getStateCode()
+			&arguments.address.getCountryCode();
 		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 
 			var isAddressInZone = ORMExecuteQuery("

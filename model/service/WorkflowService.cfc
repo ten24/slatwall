@@ -448,7 +448,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				workflowTask.getActiveFlag() 
 				&& (
 					!structKeyExists(arguments.data,'entity')
-					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
+					|| !arguments.data.entity.hasErrors() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
 				)
 			){
 				
@@ -653,7 +653,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}	
 	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
-		
+	
 		getHibachiDAO().flushORMSession();
 		
 		/*

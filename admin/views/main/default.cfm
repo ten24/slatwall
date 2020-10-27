@@ -49,49 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.orderSmartList" type="any" />
-<cfparam name="rc.productReviewSmartList" type="any" />
+<cfparam name="rc.report" type="any" />
 
 <cfoutput>
-	<div class="row s-body-nav">
-	    <nav class="navbar navbar-default" role="navigation">
-	      <div class="col-md-4 s-header-info">
-
-				<!--- Page Title --->
-				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.default')#</h1>
-			</div>
-		 </div>
-	   </nav>
-	 </div>
-	
-	<div class="col-md-12"><hb:HibachiMessageDisplay /></div>
-
-	<div class="col-md-6">
-		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" 
-			collectionList="#rc.orderCollectionList#"
-			recordDetailAction="admin:entity.detailorder">
-			
-		</hb:HibachiListingDisplay>
-		<br />
-		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" 
-				recordDetailAction="admin:entity.detailproductreview"
-			collectionList="#rc.productReviewCollectionList#"
-			>
-			
-		</hb:HibachiListingDisplay>
+	<div class="col-md-12">
+		<hb:HibachiMessageDisplay />
 	</div>
-	
-	<div class="col-md-6">
-		<div class="row s-detail-content-wrapper">
-			<div class="col-xs-12 s-results-listing">
-				<div class="s-detail-body">
-					<div class="s-content-header">
-						<h2>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h2>
-					</div>
-					<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
-				</div>
-			</div>
-		</div>
-	</div>
-	
-
+	<hb:HibachiReportViewer report="#rc.report#" collectionList="#rc.orderCollectionList#" />
 </cfoutput>

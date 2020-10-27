@@ -446,6 +446,84 @@ component extends="HibachiService" accessors="true" {
 		}
 		return result;
 	}
+	
+	public any function getAllRelatedProducts(required any productID) {
+		var relatedProducts = this.getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile, relatedProduct.calculatedSalePrice, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID, relatedProduct.defaultSku.skuID");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+
+	public any function getAllProductReviews(required any productID) {
+		var relatedProducts = this.getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, createdDateTime, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+	
+	/** Function append Images to existing product List
+	 * @param - array of products
+	 * @param - image property name
+	 * @param - addAltImage - boolean to ignore alt images
+	 * @return - updated array of products
+	 **/
+	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+		if(arrayLen(arguments.products)) {
+			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
+			var resizeSizes=['s','m','l','xl']; //add all sized images
+			
+			for(var product in arguments.products) {
+	            var imageFile = product[arguments.propertyName] ? : '';
+	            if( isEmpty(imageFile) ) {
+	            	continue;
+	            }
+	            var imageArray = [];
+	            for( var size in resizeSizes) {
+	            	var resizeImageData = {
+		                size=size, //Large Image
+		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
+		                missingImagePath = missingImageSetting
+		            };
+		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
+	            }
+	            
+	            product['images'] = imageArray;
+	        }
+	        
+	        //If there's only one product in response, add alternate images as well
+	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage ) {
+	        	//Modify image size to be used as size index
+	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
+	        }
+	        
+		}
+		return arguments.products;
+	}
+	
+	public any function appendCategoriesToProduct(required array products) {
+		if(arrayLen(arguments.products)) {
+			for(var product in arguments.products) {
+				
+				var currentProduct = this.getProduct(product.productID);
+				var categories = [];
+				if( arrayLen(currentProduct.getCategories()) ) {
+					var productCategories = currentProduct.getCategories();
+					for( var i=1; i<= arrayLen(productCategories); i++ ) {
+						categories[i]['categoryID'] = productCategories[i].getCategoryID();
+						categories[i]['categoryName'] = productCategories[i].getCategoryName();
+					}
+				}
+				
+				product['categories'] = categories;
+			}
+		}
+		
+		return arguments.products;
+	}
 
 
 	// =====================  END: Logical Methods ============================
@@ -734,7 +812,7 @@ component extends="HibachiService" accessors="true" {
 
 		arguments.product = createSingleSku(arguments.product,arguments.processObject);
 		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
-		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
+		arguments.product.getDefaultSku().setBaseRedemptionAmount(arguments.processObject.getBaseRedemptionAmount());
 		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
 			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
 			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);

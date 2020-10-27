@@ -583,16 +583,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getTaxAmount() {
-		if(!structKeyExists(variables,'taxAmount')){
 			var taxAmount = 0;
 
 			for(var taxApplied in getAppliedTaxes()) {
 				taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
 			}
 			variables.taxAmount = taxAmount;
-		}
-		
-
+			
 		return variables.taxAmount;
 	}
 

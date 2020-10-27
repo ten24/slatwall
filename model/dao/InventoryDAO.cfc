@@ -152,34 +152,45 @@ Notes:
 		
 		//Quantity Delivered on Order
 		public array function getQDOO(required string productID, string productRemoteID){
-			var hql = "SELECT NEW MAP(
-							coalesce( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							sku.skuID as skuID, 
-							stock.stockID as stockID, 
-							location.locationID as locationID, 
-							location.locationIDPath as locationIDPath)
-						FROM
-							SlatwallOrderItem orderItem
-						  LEFT JOIN
-					  		orderItem.orderDeliveryItems orderDeliveryItem
-					  	  LEFT JOIN
-					  	  	orderItem.stock stock
-					  	  LEFT JOIN
-					  	  	orderItem.sku sku
-					  	  LEFT JOIN 
-					  	  	stock.location location
-						WHERE
-							orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
-						  AND
-						  	orderItem.orderItemType.systemCode = 'oitSale'
-						  AND 
-							sku.product.productID = :productID
-						GROUP BY
-							sku.skuID,
-							stock.stockID,
-							location.locationID,
-							location.locationIDPath";
-			var QDOO = ormExecuteQuery(hql, {productID=arguments.productID});	
+			var q = new Query();
+			var sql = "SELECT 
+						coalesce(sum(orderdeliveryitem.quantity), 0) as quantity, 
+						sku.skuID as skuID, 
+						stock.stockID as stockID, 
+						location.locationID as locationID, 
+						location.locationIDPath as locationIDPath 
+						
+						FROM SwOrderItem orderitem 
+							left outer join SwOrderDeliveryItem orderdeliveryitem on orderitem.orderItemID=orderdeliveryitem.orderItemID 
+							left outer join SwStock stock on orderitem.stockID=stock.stockID 
+							left outer join SwLocation location on stock.locationID=location.locationID 
+							left outer join SwSku sku on orderitem.skuID=sku.skuID 
+							inner join SwOrder ord 
+							inner join SwType type 
+							inner join SwType othertype 
+						WHERE orderitem.orderID=ord.orderID 
+							and ord.orderStatusTypeID=type.typeID 
+							and orderitem.orderItemTypeID=othertype.typeID 
+							and (type.systemCode not in ('ostNotPlaced' , 'ostClosed' , 'ostCanceled')) 
+							and othertype.systemCode='oitSale' 
+							and sku.productID=:productID 
+						GROUP BY sku.skuID, stock.stockID ,location.locationID ,location.locationIDPath
+						  	 ";
+			q.addParam(name="productID", value="#arguments.productID#", cfsqltype="CF_SQL_VARCHAR");	
+			q.setSQL(sql);
+
+			var records = q.execute().getResult();
+			var QDOO = [];
+
+			for (var record in records){
+				var hm = {};
+				hm['QDOO'] = record.quantity;
+				hm['skuID'] = record.skuID;
+				hm['stockID'] = record.stockID;
+				hm['locationID'] = record.locationID;
+				hm['locationIDPath'] = record.locationIDPath;
+				arrayAppend(QDOO, hm);
+			}
 			return QDOO;
 		}	
 		

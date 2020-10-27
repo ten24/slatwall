@@ -59,6 +59,7 @@ component  accessors="true" output="false"
     property name="hibachiSessionService" type="any";
     property name="hibachiUtilityService" type="any";
     property name="productService" type="any";
+    property name="skuService" type="any";
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
     property name="hibachiService" type="any";
@@ -87,6 +88,410 @@ component  accessors="true" output="false"
 		
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
+	
+	/**
+	 * Get Order Details with Order Invoice
+	 * @param orderID
+	 * @return none
+	 * */
+	 public void function getOrderDetails(required struct data) {
+	     param name="arguments.data.orderID";
+	     
+	     var account = getHibachiScope().getAccount();
+	     if(!isNull(account) && !isEmpty(account.getAccountID())) {
+	         var order = orderService.getOrder(arguments.data.orderID);
+	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
+	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID());
+	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
+	         } else {
+	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	         }
+	     } else {
+	         getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	     }
+	 }
+	
+	/**
+	 * Function add account phone phone
+	 * @param phoneNumber required
+	 * @return none
+	 * */
+	 public void function addAccountPhoneNumber(required struct data) {
+	     param name="arguments.data.phoneNumber";
+	     
+	     var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'addAccountPhoneNumber');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('addAccountPhoneNumber').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.addAccountPhoneNumber",account.hasErrors());
+	 }
+	
+	/**
+	 * Function add account email address
+	 * @param emailAddress required
+	 * @return none
+	 * */
+	 public void function addAccountEmailAddress(required struct data) {
+	     param name="arguments.data.emailAddress";
+	     
+	     var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'addAccountEmailAddress');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('addAccountEmailAddress').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.addAccountEmailAddress",account.hasErrors());
+	 }
+	
+     /**
+     * Function to set primary email address
+     * @param accountEmailAddressID required
+     * @return none
+     **/
+     public void function setPrimaryEmailAddress(required struct data) {
+        param name="arguments.data.accountEmailAddressID";
+        var accountEmailAddress = getService('accountService').getAccountEmailAddress(arguments.data.accountEmailAddressID);
+        if(!isNull(accountEmailAddress) && getHibachiScope().getAccount().getAccountID() == accountEmailAddress.getAccount().getAccountID() ) {
+            getHibachiScope().getAccount().setPrimaryEmailAddress(accountEmailAddress);
+            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
+            getHibachiScope().addActionResult( "public:setPrimaryEmailAddress", accountSave.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:setPrimaryEmailAddress", true );
+        }
+        
+        if(isNull(accountEmailAddress)){
+            addErrors(arguments.data, getHibachiScope().rbKey('validate.setPrimaryEmailAddress.accountEmailAddressID.isRequired')) ;
+        }else if(getHibachiScope().getAccount().getAccountID() != accountEmailAddress.getAccount().getAccountID()){
+            addErrors(arguments.data, getHibachiScope().rbKey('validate.addAccountEmailAddress.Account_AddAccountEmailAddress.emailAddress.isUniqueEmailToAccount'));
+        }
+        
+        
+        
+     }
+    
+    
+    /**
+     * Function to set primary account address
+     * @param accountAddressId required
+     * @return none
+     **/
+     public void function setPrimaryAccountAddress(required struct data) {
+        param name="arguments.data.accountAddressID";
+        var accountAddress = getService('accountService').getAccountAddress(arguments.data.accountAddressID);
+        if(!isNull(accountAddress) && getHibachiScope().getAccount().getAccountID() == accountAddress.getAccount().getAccountID() ) {
+            
+            getHibachiScope().getAccount().setPrimaryAddress(accountAddress);
+            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
+            getHibachiScope().addActionResult( "public:cart.setPrimaryAccountAddress", accountSave.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:cart.setPrimaryAccountAddress", true );
+        }
+     }
+	
+	
+	/**
+     * Function to set primary phone number
+     * @param accountPhoneNumberID required
+     * @return none
+     **/
+     public void function setPrimaryPhoneNumber(required struct data) {
+        param name="arguments.data.accountPhoneNumberID";
+        var accountPhoneNumber = getService('accountService').getAccountPhoneNumber(arguments.data.accountPhoneNumberID);
+        if(!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ) {
+            
+            getHibachiScope().getAccount().setPrimaryPhoneNumber(accountPhoneNumber);
+            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
+            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", accountSave.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", true );
+        }
+     }
+     
+    
+    /**
+     * Function to get Types by Type Code
+     * It adds typeList as key in ajaxResponse
+     * @param typeCode required
+     * @return none
+    */
+    public void function getSystemTypesByTypeCode(required struct data){
+        param name="arguments.data.typeCode" default="";
+        
+        var typeList = getService('TypeService').getTypeByTypeCode(arguments.data.typeCode);
+        arguments.data.ajaxResponse['typeList'] = typeList;
+    }
+    
+    /**
+     * Function to get Sku Stock
+     * It adds stock as key in ajaxResponse
+     * @param skuID required
+     * @param locationID required
+     * @return none
+    */
+    public void function getSkuStock(required struct data){
+        param name="arguments.data.skuID" default="";
+        param name="arguments.data.locationID" default="";
+        
+        var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
+        arguments.data.ajaxResponse['stock'] = stock;
+    }
+    
+    /**
+     * Function to get Product Reviews
+     * It adds productReviews as key in ajaxResponse
+     * @param productID
+     * @return none
+    */
+    public void function getProductReviews(required struct data){
+        param name="arguments.data.productID" default="";
+        
+        var productReviews = getService('productService').getAllProductReviews(productID = arguments.data.productID);
+        arguments.data.ajaxResponse['productReviews'] = productReviews;
+    }
+    
+    /**
+     * Function to get Related Products
+     * It adds relatedProducts as key in ajaxResponse
+     * @param productID
+     * @return none
+    */
+    public void function getRelatedProducts(required struct data){
+        param name="arguments.data.productID" default="";
+        var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
+        //add images
+        if(arrayLen(relatedProducts)) {
+            relatedProducts = getService('productService').appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
+        }
+        arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
+    }
+    
+    /**
+     * Function get Images assigned to product
+     * It adds Images array as key in ajaxResponse
+     * @param productID
+     * @param defaultSkuOnlyFlag
+     * @param resizeSizes ('s,m,l') optional
+     * @return none
+    */
+    public void function getProductImageGallery(required struct data){
+        param name="arguments.data.productID" default="";
+        param name="arguments.data.defaultSkuOnlyFlag" default="false";
+        
+        var product = getService('productService').getProduct(arguments.data.productID);
+        if(structKeyExists(arguments.data,'resizeSizes')){
+            var sizeArray = [];
+            for(var size in arguments.data.resizeSizes){
+                arrayAppend(sizeArray,{"size"=size});
+            }
+            arguments.data.resizeSizes = sizeArray;
+        }
+        arguments.data.ajaxResponse['images'] = product.getImageGalleryArray(argumentCollection=arguments.data);
+    }
+    
+     /**
+     * Function get Product Options By Option Group
+     * It adds productOptions as key in ajaxResponse
+     * @param productID
+     * @param optionGroupID
+     * @return none
+    */
+    public void function getProductOptionsByOptionGroup(required struct data){
+        param name="arguments.data.productID" default="";
+        param name="arguments.data.optionGroupID" default="";
+        
+        arguments.data.ajaxResponse['productOptions'] = getService('optionService').getOptionsByOptionGroup( arguments.data.productID, arguments.data.optionGroupID );
+    }
+    
+    /**
+     * Function to get applied payments on order
+     * adds appliedPayments in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAppliedPayments(required any data) {
+        
+        arguments.data['ajaxResponse']['appliedPayments'] = getOrderService().getAppliedOrderPayments(getHibachiScope().getCart());
+    }
+    
+    /**
+     * Function to get applied promotions on order
+     * adds appliedPromotionCodes in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAppliedPromotionCodes(required any data) {
+        
+        arguments.data['ajaxResponse']['appliedPromotionCodes'] = getHibachiScope().getCart().getAllAppliedPromotions();
+    }
+    
+    /**
+     * Function to get all eligible account payment methods 
+     * adds availableShippingMethods in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAvailablePaymentMethods(required any data) {
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountPaymentMethods = getService("accountService").getAvailablePaymentMethods( argumentCollection=arguments );
+	    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
+    }
+    
+    /**
+     * Function to get all available shipping methods 
+     * adds availableShippingMethods in ajaxResponse
+     * @param request data
+     * @return none
+     **/
+    public void function getAvailableShippingMethods(required any data) {
+        var orderFulfillments = getHibachiScope().getCart().getOrderFulfillments();
+        for(var orderFulfillment in orderFulfillments) {
+            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() == "shipping") {
+                var shippingMethods = getOrderService().getShippingMethodOptions(orderFulfillment);
+	            arguments.data['ajaxResponse']['availableShippingMethods'] = shippingMethods;
+	            break;
+            }
+        }
+    }
+	
+	/**
+     * Function to get the parent accounts of user account
+     **/
+    public void function getParentOnAccount(required any data) {
+        arguments.data['ajaxResponse']['parentAccount'] = getAccountService().getAllParentsOnAccount(getHibachiScope().getAccount());
+    }
+    
+    /**
+     * Function to get the child accounts of user account
+     **/
+    public void function getChildOnAccount(required any data) {
+        arguments.data['ajaxResponse']['childAccount'] = getAccountService().getAllChildsOnAccount(getHibachiScope().getAccount());
+    }
+	
+	/**
+     * Function to get list of subscription usage
+     * adds subscriptionUsageOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/
+    public void function getSubscriptionsUsageOnAccount(required any data) {
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( argumentCollection=arguments );
+        arguments.data['ajaxResponse']['subscriptionUsageOnAccount'] = subscriptionUsage;
+    }
+	
+	/**
+     * Function to get list of gift cards for user
+     * adds giftCardsOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/
+    public void function getAllGiftCardsOnAccount(required any data) {
+        arguments.account = getHibachiScope().getAccount();
+        var giftCards = getService('giftCardService').getAllGiftCardsOnAccount( argumentCollection=arguments);
+        arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
+    }
+	
+	/**
+     * Function to get all order deliveries for user
+     * adds cartsAndQuotesOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/
+    public void function getAllOrderDeliveryOnAccount(required any data) {
+        arguments.account = getHibachiScope().getAccount();
+        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount( argumentCollection=arguments );
+        arguments.data['ajaxResponse']['orderDeliveryOnAccount'] = accountOrders;
+    }
+	
+	/**
+     * Function to get all order fulfilments for user
+     * adds cartsAndQuotesOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/
+    public void function getAllOrderFulfillmentsOnAccount(required any data) {
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount( argumentCollection=arguments );
+        arguments.data['ajaxResponse']['orderFulFillemntsOnAccount'] = accountOrders;
+    }
+	
+	/**
+     * Function to get all carts and quotes for user
+     * adds cartsAndQuotesOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/
+    public void function getAllCartsAndQuotesOnAccount(required any data) {
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount( argumentCollection=arguments );
+        arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
+    }
+	
+	/**
+     * Function to get all orders for user
+     * adds ordersOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/ 
+    public void function getAllOrdersOnAccount(required any data){
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getAccountService().getAllOrdersOnAccount(
+            argumentCollection=arguments );
+        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
+    }
+	
+	
+	
+	/**
+      * Updates an Account address.
+      */
+    public void function updateAccountAddress(required data){
+     	param name="arguments.data.countryCode" default="US";
+     	param name="arguments.data.accountAddressID" default="";
+     	param name="arguments.data.phoneNumber" default="";
+
+     	var addressID = "";
+     	var accountAddress = getHibachiScope().getService("AccountService").getAccountAddress( arguments.data.accountAddressID );
+        
+        if (!isNull(accountAddress) && getHibachiScope().getAccount().getAccountID() == accountAddress.getAccount().getAccountID() ){
+            addressID = accountAddress.getAddressID();
+        }
+
+     	var newAddress = getService("AddressService").getAddress(addressID);
+     	if ( !isNull(newAddress) && !newAddress.hasErrors() ) {
+     	    
+     	    newAddress = getService("AddressService").saveAddress(newAddress, arguments.data, "full");
+     	    
+     	    //save account address
+     	    accountAddress = getHibachiScope().getService("AccountService").saveAccountAddress( accountAddress, arguments.data );
+     	    
+            if(!newAddress.hasErrors() && !accountAddress.hasErrors()) {
+  	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
+            }else {
+                getHibachiScope().addActionResult( "public:cart.updateAddress", (newAddress.hasErrors() || accountAddress.hasErrors() ) ); 
+            }
+    	}else {
+    	    if(isNull(newAddress)) {
+                getHibachiScope().addActionResult( "public:cart.updateAddress", false );
+    	    } else {
+    	        getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.getErrors() );
+    	    }
+        }
+     }
     
     /**
      * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
@@ -159,6 +564,7 @@ component  accessors="true" output="false"
             }
             addErrors(data, getHibachiScope().getAccount().getProcessObject("login").getErrors());
         }
+        
         return accountProcess;
     }
     
@@ -224,11 +630,18 @@ component  accessors="true" output="false"
      */
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
+        param name="arguments.data.returnTokenFlag" default="0";        
         
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
 
         if(account.hasErrors()){
             addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
+        } else if(arguments.data.returnTokenFlag) {
+            //Attempt Login
+            var accountProcess = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
+            if ( !accountProcess.hasErrors() && getHibachiScope().getLoggedinFlag() ){
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
+            }
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
@@ -261,10 +674,7 @@ component  accessors="true" output="false"
 
         var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookieNPSID( arguments.data.request_token, true );
         sessionEntity.setDeviceID(arguments.data.deviceID);
-        
-        //If this is a request from the api, setup the response header and populate it with data.
-        //any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct data
-        handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);  
+          
     }
     
     
@@ -285,19 +695,50 @@ component  accessors="true" output="false"
     }
     
     /**
+      * @method resetPasswordUpdate
+      * @http-context resetPasswordUpdate
+      * @http-verb POST
+      * @description  Reset User Password based on reset token - This method to be used as API end point
+      * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
+      * @param accountID {string}
+      * @param emailAddress {string}
+      * @ProcessMethod Account_ResetPassword
+      **/
+    public void function resetPasswordUpdate( required struct data ) {
+        param name="data.swprid";
+        
+        var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
+        
+        //Check if account is not null and has correct reset token
+        if(!isNull(account) && getAccountService().getPasswordResetID(account, false) == arguments.data.swprid ) {
+            var account = getService("AccountService").processAccount(account, data, "resetPassword");
+            if (account.hasErrors()) {
+                addErrors(arguments.data, account.getProcessObject('resetPassword').getErrors());
+            }
+            
+            getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
+            
+        } else {
+            getHibachiScope().addActionResult( "public:account.resetPassword", true );
+        }
+    }
+    
+    /**
       * @method resetPassword
       * @http-context resetPassword
       * @http-verb POST
-      * @description  Sends an email to a user to reset a password.  
+      * @description  Reset password based on reset token - This method to be used with frontend form, it logs userin after successful reset
       * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
       * @param accountID {string}
       * @param emailAddress {string}
       * @ProcessMethod Account_ResetPassword
       **/
     public void function resetPassword( required struct data ) {
-        param name="data.accountID" default="";
-        var account = getAccountService().getAccount( data.accountID );
-        if(!isNull(account)) {
+        param name="data.swprid";
+        
+        var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
+        //Check if account is not null and has correct reset token
+        if(!isNull(account) && getAccountService().getPasswordResetID(account, false) == arguments.data.swprid ) {
             var account = getService("AccountService").processAccount(account, data, "resetPassword");
             getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
             // As long as there were no errors resetting the password, then we can set the email address in the form scope so that a chained login action will work
@@ -419,7 +860,6 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:account.verifyAccountEmailAddress", true );
         }
-        handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
     }
     
     /** 
@@ -515,7 +955,7 @@ component  accessors="true" output="false"
       		accountAddress.setAddress(newAddress);
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
-          getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
+              getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
                 data.accountAddressID = savedAccountAddress.getAccountAddressID();
@@ -592,14 +1032,25 @@ component  accessors="true" output="false"
                 }
                 var order = getHibachiScope().cart();
                 order.setShippingAddress(savedAddress);
+                
                 for(var fulfillment in order.getOrderFulfillments()){
                   if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                     var orderFulfillment = fulfillment;
                   }
                 }
+                
                 if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
                   orderFulfillment.setShippingAddress(savedAddress);
+                  
+                  //Add Shiping Method on Order Fulfillment
+                  if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                    var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
+                    if(!isNull(shippingMethod)) {
+                        orderFulfillment.setShippingMethod(shippingMethod);
+                    }
+                  }
                 }
+                
                 if (structKeyExists(data, "saveShippingAsBilling") && data.saveShippingAsBilling){
                     order.setBillingAddress(savedAddress);
                 }
@@ -629,6 +1080,7 @@ component  accessors="true" output="false"
     
     /** Adds a shipping address to an order using an account address */
     public void function addShippingAddressUsingAccountAddress(required data){
+        
         if(structKeyExists(data,'accountAddressID')){
           var accountAddressId = data.accountAddressID;
         }else{
@@ -661,7 +1113,18 @@ component  accessors="true" output="false"
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
               orderFulfillment.setAccountAddress(accountAddress);
+              
+              //Add Shiping Method on Order Fulfillment
+              if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
+                if(!isNull(shippingMethod)) {
+                    orderFulfillment.setShippingMethod(shippingMethod);
+                }
+              }
+              
+              getService("OrderService").saveOrderFulfillment(orderFulfillment);
             }
+            
             getService("OrderService").saveOrder(order);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
@@ -756,9 +1219,8 @@ component  accessors="true" output="false"
             	var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             }
             orderFulfillment.setShippingMethod(shippingMethod);
-            getService("OrderService").saveOrder(order); 
-            getDao('hibachiDao').flushOrmSession();;           
-            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
+            getService("OrderService").saveOrder(order);
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
@@ -986,7 +1448,14 @@ component  accessors="true" output="false"
             arguments.data['cartDataOptions']='full';
         }
     
-        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
+        var cartDataOptions = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
+        
+        //Append fulfillment method with order items
+        for(var orderItem in cartDataOptions.orderItems) {
+            orderItem['skuFulfillmentMethods'] = getSkuService().getSku(orderItem.sku.skuID).getEligibleFulfillmentMethodsWithShippingMethods();
+        }
+        
+        arguments.data.ajaxResponse = cartDataOptions;
     }
     
     public void function getAccountData(any data) {
@@ -1048,6 +1517,14 @@ component  accessors="true" output="false"
      */
     public void function clearOrder( required struct data ) {
         var cart = getService("OrderService").processOrder( getHibachiScope().cart(), arguments.data, 'clear');
+        
+        if( !cart.hasErrors() ) {
+            //create new session with blank orderid
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
+            }
+            
+        }
         
         getHibachiScope().addActionResult( "public:cart.clear", cart.hasErrors() );
     }
@@ -1179,6 +1656,12 @@ component  accessors="true" output="false"
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
             
+            //create new token with cart information
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
+            }
+            
+            
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
@@ -1272,6 +1755,65 @@ component  accessors="true" output="false"
         var cart = getService("OrderService").processOrder( getHibachiScope().cart(), arguments.data, 'updateOrderFulfillment');
         
         getHibachiScope().addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
+    }
+    
+    /**
+     * Method To change fulfillment method on existing order items
+     * @param - orderItemIDList
+     * @param - fulfillmentMethodID
+     * */
+    public void function changeOrderFulfillment(required any data) {
+        param name="orderItemIDList";
+        param name="fulfillmentMethodID";
+        
+        var cart = getHibachiScope().getCart();
+        
+        var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
+        
+        var existingOrderFulfillment = "";
+        
+        //check if fulfillment method already exists on order
+        var allOrderFulfillments = cart.getOrderFulfillments();
+        for(var orderFulfillment in allOrderFulfillments) {
+            
+            //get existing fulfillment method based on fulfillment method ID
+            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodID() == arguments.data.fulfillmentMethodID ) {
+                existingOrderFulfillment = orderFulfillment;
+            }
+        }
+        
+        var orderItems = cart.getOrderItems();
+        for(var orderItem in orderItems) {
+            
+            //Get List of eligible methods
+            var eligibleFulfillmentMethods = listToArray(orderItem.getSku().setting("skuEligibleFulfillmentMethods"));
+            
+            //Check if item id exists, existing fulfillment method is different than the one we're passing, and new fulfillment should be eligible
+            if( ArrayContains(orderItemIDList, orderItem.getOrderItemID()) && orderItem.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() != arguments.data.fulfillmentMethodID &&  ArrayContains(eligibleFulfillmentMethods, arguments.data.fulfillmentMethodID) ) {
+                
+                //Remove existing method
+                orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
+                
+                if( !isEmpty(existingOrderFulfillment) ) {
+                    orderItem.setOrderFulfillment( existingOrderFulfillment );
+                } else {
+                    //get fulfillment method
+                    var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
+                
+                    //create new method
+                    var orderFulfillment = getService("OrderService").newOrderFulfillment();
+                    orderFulfillment.setOrder( cart );
+                    orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
+    				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
+                    
+                    orderItem.setOrderFulfillment( orderFulfillment );
+                }
+            }
+        }
+        
+        getService("OrderService").saveOrder(getHibachiScope().getCart());
+        
+        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
     }
 
 
@@ -1410,26 +1952,37 @@ component  accessors="true" output="false"
 
 
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
-            if (!structKeyExists(data.newOrderPayment, 'billingAddress')) {
-
-                var orderPayment = getPaymentService().newOrderPayment();
-                orderPayment.populate(data.newOrderPayment);
-                orderPayment.setOrder(getHibachiScope().getCart());
-                if (orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment') {
-                    orderPayment.setTermPaymentAccount(getHibachiScope().getAccount());
+            
+            //If we have saveShippingAsBilling
+             if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
+                 
+                 var addressData = {
+                    address=order.getShippingAddress()
+                };
+                 
+                 var newBillingAddress = this.addBillingAddress(addressData, "billing");
+                 
+             } else {
+                if (!structKeyExists(data.newOrderPayment, 'billingAddress') ) {
+                    var orderPayment = getPaymentService().newOrderPayment();
+                    orderPayment.populate(data.newOrderPayment);
+                    orderPayment.setOrder(getHibachiScope().getCart());
+                    if (orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment') {
+                        orderPayment.setTermPaymentAccount(getHibachiScope().getAccount());
+                    }
+                    //Add billing address error
+                    orderPayment.addError('addBillingAddress', getHibachiScope().rbKey('validate.processOrder_addOrderPayment.billingAddress'));
+                    //Validate to get all errors
+                    orderPayment.validate('save');
+    
+                    this.addErrors(data, orderPayment.getErrors());
+    
+                    getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
+                    return;
                 }
-                //Add billing address error
-                orderPayment.addError('addBillingAddress', getHibachiScope().rbKey('validate.processOrder_addOrderPayment.billingAddress'));
-                //Validate to get all errors
-                orderPayment.validate('save');
-
-                this.addErrors(data, orderPayment.getErrors());
-
-                getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
-                return;
-            }
-            //use this billing information
-            var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+                //use this billing information
+                var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+             }
         }
 
         if (!isNull(newBillingAddress) && newBillingAddress.hasErrors()) {
@@ -1509,6 +2062,9 @@ component  accessors="true" output="false"
             if(!order.hasErrors()) {
                 getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
                 getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
+                
+                //create new session with blank orderid
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
             }else{
               this.addErrors(data,order.getErrors());
             }

@@ -193,6 +193,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		});
 		
+		//When user adding payment method to account
+		var getPaymentMethodType = $(".j-custom-select option:selected").attr('paymentmethodtype');
+		jQuery.each( jQuery( scopeSelector ).find( jQuery('.hibachi-display-toggle.hide') ), function(index, value){
+			if($("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == getPaymentMethodType || (getPaymentMethodType != undefined && $("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == 'creditCard,termPayment')){
+				$("#"+jQuery(this).attr('id')).removeClass("hide");
+			}
+	    });
 		
 		// Form Empty value clear (IMPORTANT!!! KEEP THIS ABOVE THE VALIDATION ASIGNMENT)
 		jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
@@ -1776,14 +1783,16 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 	}
 	
+
+	
 	function updateReport( page ) {
 		if(jQuery("#hibachi-report").length){
 			var data = {
 				slatAction: 'admin:report.default',
 				reportID: jQuery('input[name="reportID"]').val(),
 				reportName: jQuery('#hibachi-report').data('reportname'),
-				reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
-				reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
+				reportStartDateTime: jQuery('a.hibachi-report-date-group.active').data('start'),
+				reportEndDateTime: jQuery('a.hibachi-report-date-group.active').data('end'),
 				reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
 				reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
 				reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
@@ -1792,7 +1801,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				dimensions: jQuery('input[name="dimensions"]').val(),
 				metrics: jQuery('input[name="metrics"]').val(),
 				reportType: jQuery('select[name="reporttype"]').val(), 
-				orderByType: jQuery('select[name="orderbytype"]').val()
+				orderByType: jQuery('select[name="orderbytype"]').val(),
+				reportSite: jQuery('select[name="siteSelector"').val()
 			};
 		
 			if(jQuery('input[name="showReport"]').is(':checked')){
@@ -1820,14 +1830,62 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 					removeLoadingDiv( 'hibachi-report' );
 				},
 				success: function( r ) {
+
 					if(r.report.hideChart !== undefined){ 
 						jQuery("#hibachi-report-chart").remove();
 						jQuery("#hibachi-report-chart-wrapper").hide();
 					} else { 
 						if(r.report.chartData.series !== undefined){
-							var html = "<div id='hibachi-report-chart'></div>";
+
+							var html = "<canvas id='hibachi-report-chart' width='1800' height='600'></canvas>";
 							jQuery("#hibachi-report-chart-wrapper").html(html);
-							var chart = new Highcharts.Chart(r.report.chartData);	
+							jQuery("#sales-revenue-this-period").html(r.report.salesRevenueThisPeriod);
+							jQuery("#order-count-this-period").html(r.report.orderCount);
+							jQuery("#average-order-total-this-period").html(r.report.averageOrderTotal);
+							jQuery("#accounts-created-this-period").html(r.report.accountCount);
+							jQuery(".time-period").html(r.report.period);
+
+							var ctx = jQuery("#hibachi-report-chart")[0].getContext("2d");
+							var chart = new Chart(ctx, {
+							    type: r.report.chartData.data.type,
+							    data: {
+							        datasets: [{
+							            label: r.report.chartData.series[0].label,
+							            data: r.report.chartData.series[0].data,
+							            borderColor: [
+							                '#f38631'
+							            ],
+							            pointBackgroundColor: "#f38631",
+							            pointBorderColor: "#f38631",
+							            fill: false,
+							            borderWidth: 3,
+							            lineTension: 0
+							        }]
+							    },
+							    options: {
+							        scales: {
+							            yAxes: [{
+							                ticks: {
+							                    beginAtZero: true
+							                }
+							            }],
+							            xAxes: [{
+							            	type: 'time',
+							            	ticks: {
+							            		source: 'data',
+							            	},
+							            	time: {
+							            		parser: 'string',
+							            		unit: r.report.reportDateTimeGroupBy,
+							            		stepSize: 1,
+							            	}
+							            }]
+							        },
+							        legend: {
+							        	display: false
+							        }
+							    }
+							});	
 						}
 						jQuery("#hibachi-report-chart-wrapper").show();
 					}
@@ -1839,7 +1897,6 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						jQuery("#hibachi-report-table").show();
 					}
 						
-					jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
 					initUIElements('#hibachi-report');
 					removeLoadingDiv( 'hibachi-report' );
 				}
@@ -1879,7 +1936,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		if($('#'+tabID).html().trim().length === 0){
 			//add loading spinner prior to loading
 			$('#'+tabID).html(''+
-				'<i  class="fa fa-refresh fa-spin"></i>'+
+				'<div class="text-center"> <i class="fa fa-spinner fa-spin"></i><div>'+
 			'');
 			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
 
