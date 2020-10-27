@@ -64,5 +64,55 @@ Notes:
 		
 	</cffunction>
 	
+	<cffunction name="getSiteCodes">
+		<cfargument name="delimiter" type="string" default="," />
+		<cfquery name="local.siteCodes">
+			SELECT siteCode FROM swsite where appID is not null
+		</cfquery>
+
+		<cfreturn ValueList(local.siteCodes.siteCode, arguments.delimiter) />
+	</cffunction>
+	
+	<cffunction name="validateDomainName">
+		<cfargument name="domainNames" type="string" required="true" />
+		<cfargument name="siteID" type="string" default="" />
+		<cfif len(arguments.siteID) >
+			<cfquery name="local.query" >
+				SELECT st.siteID FROM swsite AS st where st.siteID <> "#arguments.siteID#" AND FIND_IN_SET("#arguments.domainNames#",LOWER(st.domainNames))
+			</cfquery>
+		<cfelse>
+			<cfquery name="local.query" >
+				SELECT st.siteID FROM swsite AS st where FIND_IN_SET("#arguments.domainNames#",LOWER(st.domainNames))
+			</cfquery>
+		</cfif>
+		<cfreturn local.query.recordCount />
+	</cffunction>
+	
+	<cffunction name="removeSite" returntype="void" access="public">
+	
+		<cfargument name="siteID" type="string" required="true" />
+
+		<cfquery name="rs">
+			UPDATE Swpromotion SET siteID = NULL,activeFlag=0 
+			WHERE siteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
+		</cfquery>
+
+		<cfquery name="rs">
+			UPDATE Swcontent SET siteID = NULL 
+			WHERE siteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
+		</cfquery>
+		
+		<cfquery name="rs">
+			UPDATE Swlocationsite SET siteID = NULL 
+			WHERE siteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
+		</cfquery>
+		
+		<cfquery name="rs">
+			UPDATE Sworder SET orderCreatedSiteID = NULL
+			WHERE orderCreatedSiteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
+		</cfquery>
+		
+	</cffunction>
+
 </cfcomponent>
 

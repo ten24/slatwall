@@ -55,47 +55,63 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	public string function loginAccount(required any account, required any accountAuthentication) {
 		super.loginAccount(argumentCollection=arguments);
 		
-		// If the current order has an account, and it is different from the one being logged in... then create a copy of the order without any personal information
-		if( !isNull(getHibachiScope().getSession().getOrder().getAccount()) && getHibachiScope().getSession().getOrder().getAccount().getAccountID() != arguments.account.getAccountID()) {
-			
-			var newOrder = getOrderService().duplicateOrderWithNewAccount( getHibachiScope().getSession().getOrder(), getHibachiScope().getSession().getAccount() ); 
-			getHibachiScope().getSession().setOrder( newOrder );
-			
-		// If the current order doesn't have an account, and the current order is not new, then set this account in the current order
-		} else if ( isNull(getHibachiScope().getSession().getOrder().getAccount()) && !getHibachiScope().getSession().getOrder().getNewFlag() ) {
-			
-			getHibachiScope().getSession().getOrder().setAccount( getHibachiScope().getAccount() );
-			
-		// If there is not current order, and the account has existing cart or carts attach the most recently modified
-		} else if ( getHibachiScope().getSession().getOrder().getNewFlag() ) {
-			
-			var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getAccount().getAccountID() );
-			if(!isNull(mostRecentCart)) {
-				getHibachiScope().getSession().setOrder( mostRecentCart );
-			}
-			
-		}
-		this.saveSession(getHibachiScope().getSession());
-		// Force persistance
-		getHibachiDAO().flushORMSession();
+		if(
+			(
+				structKeyExists(request,'context') 
+				&& structKeyExists(request.context,'fw')
+				&& request.context.fw.getSubsystem(request.context[request.context.fw.getAction()]) != 'admin'
+			)
+			||(
+				structKeyExists(request,'context') 
+				&& !structKeyExists(request.context,'fw')
+			)
+		){
 		
-		// If the current order is not new, and has an account, and  orderitems array length is greater than 1
-		if( !getHibachiScope().getSession().getOrder().getNewFlag() && !isNull(getHibachiScope().getSession().getOrder().getAccount()) && arrayLen(getHibachiScope().getSession().getOrder().getOrderItems())){
-			getService('orderService').processOrder( getHibachiScope().getSession().getOrder(), {}, 'updateOrderAmounts');	
+			// If the current order has an account, and it is different from the one being logged in... then create a copy of the order without any personal information
+			if( !isNull(getHibachiScope().getSession().getOrder().getAccount()) && getHibachiScope().getSession().getOrder().getAccount().getAccountID() != arguments.account.getAccountID()) {
+				
+				var newOrder = getOrderService().duplicateOrderWithNewAccount( getHibachiScope().getSession().getOrder(), getHibachiScope().getSession().getAccount() ); 
+				getHibachiScope().getSession().setOrder( newOrder );
+				
+			// If the current order doesn't have an account, and the current order is not new, then set this account in the current order
+			} else if ( isNull(getHibachiScope().getSession().getOrder().getAccount()) && !getHibachiScope().getSession().getOrder().getNewFlag() ) {
+				
+				getHibachiScope().getSession().getOrder().setAccount( getHibachiScope().getAccount() );
+				
+			// If there is not current order, and the account has existing cart or carts attach the most recently modified
+			} else if ( getHibachiScope().getSession().getOrder().getNewFlag() ) {
+				
+				var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getAccount().getAccountID() );
+				if(!isNull(mostRecentCart)) {
+					getHibachiScope().getSession().setOrder( mostRecentCart );
+				}
+				
+			}
+			this.saveSession(getHibachiScope().getSession());
+			
+			// Force persistance
+			getHibachiDAO().flushORMSession();
+			
+			// If the current order is not new, and has an account, and  orderitems array length is greater than 1
+			if( !getHibachiScope().getSession().getOrder().getNewFlag() && !isNull(getHibachiScope().getSession().getOrder().getAccount()) && arrayLen(getHibachiScope().getSession().getOrder().getOrderItems())){
+				getService('orderService').processOrder( getHibachiScope().getSession().getOrder(), {}, 'updateOrderAmounts');	
+			}
+		
 		}
 		
 		// Add the CKFinder Permissions
 		session[ "#getApplicationValue('applicationKey')#CKFinderAccess"] = getHibachiScope().authenticateAction("admin:main.ckfinder");
 	}
 	
-	public void function setProperSession() {
+	public void function setProperSession(boolean stateless=false) {
+		
 		if(len(getHibachiScope().setting('globalNoSessionIPRegex')) && reFindNoCase(getHibachiScope().setting('globalNoSessionIPRegex'), getRemoteAddress())) {
 			getHibachiScope().setPersistSessionFlag( false );
 		} else if (getHibachiScope().setting('globalNoSessionPersistDefault')) {
 			getHibachiScope().setPersistSessionFlag( false );
 		}
 		
-		super.setProperSession();
+		super.setProperSession(arguments.stateless);
 		
 		// If the current session account was authenticated by an integration, then check the verifySessionLogin() method to make sure that we should still be logged in
 		if(!isNull(getHibachiScope().getSession().getAccountAuthentication()) && !isNull(getHibachiScope().getSession().getAccountAuthentication().getIntegration()) && !getHibachiScope().getSession().getAccountAuthentication().getIntegration().getIntegrationCFC("authentication").verifySessionLogin()) {
@@ -109,6 +125,38 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			// Force persistance
 			getHibachiDAO().flushORMSession();
 		}
+	}
+	
+	/**
+	 * Method override to setup cart information on session
+	 * */
+	public void function setAccountSessionByAuthToken(required string authToken) {
+		super.setAccountSessionByAuthToken(arguments.authToken);
+
+		//Set Cart on Session
+		if(!isNull(getHibachiScope().getSession()) && getHibachiScope().getSession().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+			
+			var authorizationHeader = arguments.authToken;
+			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(right(authorizationHeader,len(authorizationHeader) - len('Bearer ')));
+			//don't need to call verify as it's being verified in super
+			var jwtPayload = jwt.getPayload();
+			
+			//if order id exists in payload then use that to get recent order else get most recent not placed order order
+			if( structKeyExists(jwtPayload, 'orderid') && !isEmpty(jwtPayload.orderid)) {
+				var mostRecentCart = getOrderService().getOrder( jwtPayload.orderid );
+			}
+			
+			if(!isNull(mostRecentCart)) {
+
+				getHibachiScope().getSession().setOrder( mostRecentCart );
+
+				this.saveSession(getHibachiScope().getSession());
+
+				// Force persistance
+				getHibachiDAO().flushORMSession();
+			}
+		}
+
 	}
 	
 }

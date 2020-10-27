@@ -53,23 +53,23 @@ Notes:
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay smartList="#rc.sku.getPlacedOrderItemsSmartList()#"
+	<cfset placedOrderItemsCollectionlist = rc.sku.getPlacedOrderItemsCollectionList()/>
+
+	<cfset placedOrderItemsCollectionlist.setDisplayProperties('order.account.calculatedFullName,order.orderNumber,sku.skuCode,order.orderOpenDateTime,order.orderCloseDateTime,quantity,price',{isVisible=true, isSearchable=true, isDeletable=true})/>
+
+	<cfif rc.sku.getBaseProductType() EQ "event">
+		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventStartDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
+		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventEndDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
+	</cfif>
+	<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='orderItemID',columnConfig={isVisible=false, isSearchable=false, isDeletable=false })/>
+	<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='orderItemStatusType.typeName',title="#getHibachiScope().rbkey('define.status')#",columnConfig={isvisible=true} )/>
+	<hb:HibachiListingDisplay collectionList="#placedOrderItemsCollectionlist#" 
 			recordEditAction="admin:entity.editorderitem"
-			recorddetailaction="admin:entity.detailorderitem">
-		<hb:HibachiListingColumn propertyIdentifier="order.account.firstname" />
-		<hb:HibachiListingColumn propertyIdentifier="order.account.lastname" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.typeName" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.skudefinition" />
-		
-		<cfif rc.sku.getProduct().getBaseProductType() EQ "event">
-			<hb:HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-			<hb:HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
-		</cfif>
+			recorddetailaction="admin:entity.detailorderitem"
+			usingPersonalCollection="true"
+			personalCollectionIdentifier="SalesHistory"
+			>
 	</hb:HibachiListingDisplay>
+	
 
 </cfoutput>

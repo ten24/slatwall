@@ -53,15 +53,19 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 	public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
+		var cacheKey = "HibachiService_getHasAttributeByEntityNameAndPropertyIdentifier_#arguments.entityName##arguments.propertyIdentifier#";
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var result = getEntityHasAttributeByEntityName( 
+				entityName=getLastEntityNameInPropertyIdentifier(
+					arguments.entityName, 
+					arguments.propertyIdentifier
+				), 
+				attributeCode=listLast(arguments.propertyIdentifier, ".") 
+			);
+			getService('HibachiCacheService').setCachedValue(cacheKey,result);
+		}
 		
-		
-		return getEntityHasAttributeByEntityName( 
-			entityName=getLastEntityNameInPropertyIdentifier(
-				arguments.entityName, 
-				arguments.propertyIdentifier
-			), 
-			attributeCode=listLast(arguments.propertyIdentifier, ".") 
-		);
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode

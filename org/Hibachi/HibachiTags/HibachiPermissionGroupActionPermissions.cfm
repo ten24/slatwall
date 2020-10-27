@@ -26,12 +26,12 @@
 								<cfset subsystemFormIndex = request.context.permissionFormIndex />
 								<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='action', subsystem=subsystemName) />
 								
-								<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
-								<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="action" />
-								<input type="hidden" name="permissions[#request.context.permissionFormIndex#].subsystem" value="#subsystemName#" />
+								<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
+								<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].accessType" value="action" />
+								<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].subsystem" value="#subsystemName#" />
 								
-								<input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowActionFlag" value="" />
-								<input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowActionFlag" value="1" class="hibachi-permission-checkbox"<cfif !isNull(thisPermission.getAllowActionFlag()) and thisPermission.getAllowActionFlag()> checked="checked"</cfif> />
+								<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].allowActionFlag" value="" />
+								<input type="checkbox" name="actionpermission.permissions[#request.context.permissionFormIndex#].allowActionFlag" value="1" class="hibachi-permission-checkbox"<cfif !isNull(thisPermission.getAllowActionFlag()) and thisPermission.getAllowActionFlag()> checked="checked"</cfif> />
 							<cfelse>
 								#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateSubsystemActionByPermissionGroup(subsystem=subsystemName, permissionGroup=attributes.permissionGroup), "yesno")#
 							</cfif>
@@ -49,13 +49,13 @@
 										<cfset sectionFormIndex = request.context.permissionFormIndex />
 										<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='action', subsystem=subsystemName, section=sectionName) />
 										
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="action" />
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].subsystem" value="#subsystemName#" />
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].section" value="#sectionName#" />
+										<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
+										<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].accessType" value="action" />
+										<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].subsystem" value="#subsystemName#" />
+										<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].section" value="#sectionName#" />
 										
-										<input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowActionFlag" value="" />
-										<input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowActionFlag" value="1" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#subsystemFormIndex#].allowActionFlag" <cfif !isNull(thisPermission.getAllowActionFlag()) and thisPermission.getAllowActionFlag()>checked="checked"</cfif> />
+										<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].allowActionFlag" value="" />
+										<input type="checkbox" name="actionpermission.permissions[#request.context.permissionFormIndex#].allowActionFlag" value="1" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="actionpermission.permissions[#subsystemFormIndex#].allowActionFlag" <cfif !isNull(thisPermission.getAllowActionFlag()) and thisPermission.getAllowActionFlag()>checked="checked"</cfif> />
 									<cfelse>
 										#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateSubsystemSectionActionByPermissionGroup(subsystem=subsystemName, section=sectionName, permissionGroup=attributes.permissionGroup), "yesno")#
 									</cfif>
@@ -69,15 +69,16 @@
 										<cfif attributes.edit>
 											<cfset request.context.permissionFormIndex++ />
 											<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='action', subsystem=subsystemName, section=sectionName, item=itemName) />
-										
-											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
-											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="action" />
-											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].subsystem" value="#subsystemName#" />
-											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].section" value="#sectionName#" />
-											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].item" value="#itemName#" />
 											
-											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowActionFlag" value="" />
-											<input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowActionFlag" value="1" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#sectionFormIndex#].allowActionFlag" <cfif !isNull(thisPermission.getAllowActionFlag()) and thisPermission.getAllowActionFlag()>checked="checked"</cfif> />	
+											<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
+											
+											<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].accessType" value="action" />
+											<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].subsystem" value="#subsystemName#" />
+											<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].section" value="#sectionName#" />
+											<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].item" value="#itemName#" />
+											
+											<input type="hidden" name="actionpermission.permissions[#request.context.permissionFormIndex#].allowActionFlag" value="" />
+											<input type="checkbox" name="actionpermission.permissions[#request.context.permissionFormIndex#].allowActionFlag" value="1" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="actionpermission.permissions[#sectionFormIndex#].allowActionFlag" <cfif !isNull(thisPermission.getAllowActionFlag()) and thisPermission.getAllowActionFlag()>checked="checked"</cfif> />	
 										<cfelse>
 											#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateSubsystemSectionItemActionByPermissionGroup(subsystem=subsystemName, section=sectionName, item=itemName, permissionGroup=attributes.permissionGroup), "yesno")#
 										</cfif>

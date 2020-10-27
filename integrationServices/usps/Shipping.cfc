@@ -127,6 +127,28 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 		return this;
 	}
 	
+	private any function getResponse(required string requestPacket, required string urlString, required string format="xml"){
+		// Setup Request to push to FedEx
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+		httpRequest.setPort("443");
+		httpRequest.setTimeout(45);
+		httpRequest.setUrl(arguments.urlString);
+		httpRequest.setResolveurl(false);
+		if(arguments.format == 'xml'){
+			httpRequest.addParam(type="XML", name="name",value=trim(arguments.requestPacket));
+			var result = httpRequest.send().getPrefix();
+			if (!isNull(result) && structKeyExists(result, "fileContent")){
+				return XmlParse(REReplace(result.fileContent, "^[^<]*", "", "one"));	
+			}
+		}else{
+			httpRequest.addParam(type="header",name="Content-Type",value="application/json");
+			httpRequest.addParam(type="body", value=trim(arguments.requestPacket));
+			return deserializeJson(httpRequest.send().getPrefix().fileContent);
+		}
+		
+	}
+	
 	public struct function getShippingMethods() {
 		return variables.shippingMethods;
 	}
@@ -240,5 +262,87 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 	}
 	
 	
-}
+	//verifyAddress return success == true if the address passed in is an exact match with
+	//the one the shipping integration provides. Otherwise, it returns success == false with either
+	// an error message or a suggested address
+	
+	public any function verifyAddress(required struct data){
+		
+		param name="arguments.data.streetAddress" default="";	
+		param name="arguments.data.street2Address" default="";
+		param name="arguments.data.city" default="";
+		param name="arguments.data.stateCode" default="";
+		param name="arguments.data.postalCode" default="";	
+		param name="arguments.data.countryCode" default="";		
+		param name="arguments.data.addressID" default="";
+		
+		var requestURL = "";
+        
+        var testingFlag = setting('testingFlag');
+        
+        if(testingFlag) {
+        	requestURL = setting("testAddressAPIEndpointURL");
+        } else {
+        	requestURL = setting("liveAddressAPIEndpointURL");
+        }
+		
+		var xmlPacket = "";
+		var response = {};
+		savecontent variable="xmlPacket"{
+			include "VerifyAddressTemplate.cfm"
+		}
+		
+		requestUrl &= "?API=Verify&XML=#trim(xmlPacket)#";
+		var httpRequest = new http();
+        httpRequest.setMethod("GET");
+        if(findNoCase("https://",requestURL)){
+			httpRequest.setPort(443);
+        } else {
+			httpRequest.setPort(80);
+        }
+		httpRequest.setTimeout(45);
+		httpRequest.setURL(requestURL);
+		httpRequest.setResolveurl(false);
+		
+		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+		if (isDefined('xmlResponse.AddressValidateResponse.Address.Error')) {
+			
+			response['success'] = false;
+			response['message'] = xmlResponse.AddressValidateResponse.Address.Error.Description.xmlText;
 
+		} else if(!structKeyExists(xmlResponse,'AddressValidateResponse')){
+			response['success'] = false;
+			response['message'] = getHibachiScope().rbKey("admin.entity.cannotVerifyAddressNoMessage");
+		} else if (	!findNoCase(arguments.data["streetAddress"], xmlResponse.AddressValidateResponse.Address.Address2.xmlText) ||
+					!findNoCase(arguments.data["street2Address"], xmlResponse.AddressValidateResponse.Address.Address2.xmlText) ||
+					!findNoCase(arguments.data["city"], xmlResponse.AddressValidateResponse.Address.City.xmlText) ||
+					!findNoCase(arguments.data["stateCode"], xmlResponse.AddressValidateResponse.Address.State.xmlText) ||
+					!findNoCase(arguments.data["postalCode"], xmlResponse.AddressValidateResponse.Address.Zip5.xmlText)
+		){
+			var formattedZipCode = "";
+			if(isDefined('xmlResponse.AddressValidateResponse.Address.Zip4') && len(xmlResponse.AddressValidateResponse.Address.Zip4.xmlText)){
+				formattedZipCode = xmlResponse.AddressValidateResponse.Address.Zip5.xmlText & "-" & xmlResponse.AddressValidateResponse.Address.Zip4.xmlText;
+			} else {
+				formattedZipCode = xmlResponse.AddressValidateResponse.Address.Zip5.xmlText;
+			}
+			
+			response['message'] = "";
+			response['suggestedAddress'] = {
+				"streetAddress" = xmlResponse.AddressValidateResponse.Address.Address2.xmlText,
+				"city" = xmlResponse.AddressValidateResponse.Address.City.xmlText,
+				"stateCode" = xmlResponse.AddressValidateResponse.Address.State.xmlText,
+				"postalCode" = formattedZipCode,
+				"addressID" = arguments.data['addressID']
+			};
+			
+			//match postal code only up to first 5
+			
+			response['success'] = compareNoCase(arguments.data["streetAddress"],response['suggestedAddress']["streetAddress"]) == 0
+								  && compareNoCase(arguments.data["city"],response['suggestedAddress']["city"]) == 0
+								  && compareNoCase(arguments.data["stateCode"],response['suggestedAddress']["stateCode"]) == 0
+								  && compareNoCase(left(arguments.data["postalCode"],5),left(response['suggestedAddress']["postalCode"],5)) == 0;
+
+		}
+		return response;
+	}
+}

@@ -49,29 +49,54 @@ Notes:
 <cfcomponent extends="HibachiDAO">
 	
 	<cfscript>
-		
-		// Quantity on hand. Physically at any location
-		public array function getQOH(required string productID, string productRemoteID) {
-			var params = [arguments.productID];
-			
-			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, 
-							sku.skuID as skuID, 
-							stock.stockID as stockID, 
-							location.locationID as locationID, 
-							location.locationIDPath as locationIDPath)
+		 
+		public array function getQOHbyProductTypeID(required string productTypeID){
+			var params = [arguments.productTypeID];
+			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH)
 						FROM
 							SlatwallInventory inventory
 							LEFT JOIN inventory.stock stock
 							LEFT JOIN stock.sku sku
 							LEFT JOIN stock.location location
 						WHERE
-							sku.product.productID = ?
+							sku.product.productType.productTypeID = ?
 						GROUP BY
 							sku.skuID,
 							stock.stockID,
 							location.locationID,
 							location.locationIDPath";
-			
+
+			return ormExecuteQuery(hql, params);
+		}
+		
+		// Quantity on hand. Physically at any location
+		public array function getQOH(required string productID, string productRemoteID, string currencyCode) {
+			var params = {productID=arguments.productID};
+			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, 
+							sku.skuID as skuID, 
+							stock.stockID as stockID, 
+							location.locationID as locationID, 
+							location.locationIDPath as locationIDPath
+						)
+						FROM
+							SlatwallInventory inventory
+							LEFT JOIN inventory.stock stock
+							LEFT JOIN stock.sku sku
+							LEFT JOIN stock.location location
+						WHERE
+							sku.product.productID = :productID
+						";
+			if(structKeyExists(arguments,'currencyCode')){
+				hql &= " AND inventory.currencyCode=:currencyCode ";
+				params['currencyCode'] = arguments.currencyCode;
+			}
+						
+			hql &=" GROUP BY
+							sku.skuID,
+							stock.stockID,
+							location.locationID,
+							location.locationIDPath";
+
 			return ormExecuteQuery(hql, params);
 		}
 		
@@ -83,7 +108,7 @@ Notes:
 		
 		//Quantity on Order
 		public array function getQOO(required string productID, string productRemoteID){
-			var params = { productID = arguments.productID };
+			var params = { productID = arguments.productID, currentTime=now() };
 			var hql = "SELECT NEW MAP(
 							COALESCE(sum(orderItem.quantity),0) as QOO, 
 							sku.skuID as skuID, 
@@ -98,8 +123,19 @@ Notes:
 					  	  	stock.location location
 					  	  LEFT JOIN 
 					  	  	orderItem.sku sku
+					  	  LEFT JOIN
+					  		orderItem.stockHolds stockHold
 						WHERE
+									(
 										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+										OR 
+										(
+											stockHold.stockHoldExpirationDateTime > :currentTime
+											AND orderItem.order.orderStatusType.systemCode = 'ostNotPlaced'
+										)
+										OR 
+										orderItem.order.paymentProcessingInProgressFlag=1
+									)
 						  			AND
 						  				orderItem.orderItemType.systemCode = 'oitSale'
 						  			AND 
@@ -116,34 +152,45 @@ Notes:
 		
 		//Quantity Delivered on Order
 		public array function getQDOO(required string productID, string productRemoteID){
-			var hql = "SELECT NEW MAP(
-							coalesce( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							sku.skuID as skuID, 
-							stock.stockID as stockID, 
-							location.locationID as locationID, 
-							location.locationIDPath as locationIDPath)
-						FROM
-							SlatwallOrderItem orderItem
-						  LEFT JOIN
-					  		orderItem.orderDeliveryItems orderDeliveryItem
-					  	  LEFT JOIN
-					  	  	orderItem.stock stock
-					  	  LEFT JOIN
-					  	  	orderItem.sku sku
-					  	  LEFT JOIN 
-					  	  	stock.location location
-						WHERE
-							orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
-						  AND
-						  	orderItem.orderItemType.systemCode = 'oitSale'
-						  AND 
-							sku.product.productID = :productID
-						GROUP BY
-							sku.skuID,
-							stock.stockID,
-							location.locationID,
-							location.locationIDPath";
-			var QDOO = ormExecuteQuery(hql, {productID=arguments.productID});	
+			var q = new Query();
+			var sql = "SELECT 
+						coalesce(sum(orderdeliveryitem.quantity), 0) as quantity, 
+						sku.skuID as skuID, 
+						stock.stockID as stockID, 
+						location.locationID as locationID, 
+						location.locationIDPath as locationIDPath 
+						
+						FROM SwOrderItem orderitem 
+							left outer join SwOrderDeliveryItem orderdeliveryitem on orderitem.orderItemID=orderdeliveryitem.orderItemID 
+							left outer join SwStock stock on orderitem.stockID=stock.stockID 
+							left outer join SwLocation location on stock.locationID=location.locationID 
+							left outer join SwSku sku on orderitem.skuID=sku.skuID 
+							inner join SwOrder ord 
+							inner join SwType type 
+							inner join SwType othertype 
+						WHERE orderitem.orderID=ord.orderID 
+							and ord.orderStatusTypeID=type.typeID 
+							and orderitem.orderItemTypeID=othertype.typeID 
+							and (type.systemCode not in ('ostNotPlaced' , 'ostClosed' , 'ostCanceled')) 
+							and othertype.systemCode='oitSale' 
+							and sku.productID=:productID 
+						GROUP BY sku.skuID, stock.stockID ,location.locationID ,location.locationIDPath
+						  	 ";
+			q.addParam(name="productID", value="#arguments.productID#", cfsqltype="CF_SQL_VARCHAR");	
+			q.setSQL(sql);
+
+			var records = q.execute().getResult();
+			var QDOO = [];
+
+			for (var record in records){
+				var hm = {};
+				hm['QDOO'] = record.quantity;
+				hm['skuID'] = record.skuID;
+				hm['stockID'] = record.stockID;
+				hm['locationID'] = record.locationID;
+				hm['locationIDPath'] = record.locationIDPath;
+				arrayAppend(QDOO, hm);
+			}
 			return QDOO;
 		}	
 		
@@ -156,11 +203,34 @@ Notes:
 			var QDOO = getQDOO(productID=arguments.productID);
 			
 			var QDOOHashMap = {};
+			
+			//This variable will store the total QDOO and QOO by skuID
+			var skuTotalsHashMap = {};
+			
 			for(var i=1;i <= arrayLen(QDOO);i++){
-				QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 
+				
+				if ( structKeyExists(QDOO[i], 'stockID')){
+					QDOOHashMap["#QDOO[i]['stockID']#"] = QDOO[i]; 
+				} else {
+					QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 
+				}
+				
+				if ( !structKeyExists(skuTotalsHashMap, "#QDOO[i]['skuID']#") ){
+					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] = 0;
+					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQOO'] = 0;
+				}
+				
+				skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] += QDOO[i]['QDOO'];
+				
 			}
 			
 			var QOO = getQOO(productID=arguments.productID);
+			
+			for(var item in QOO){ 
+				if(structKeyExists(skuTotalsHashMap,item['skuID'])){
+					skuTotalsHashMap[item['skuID']]['totalQOO'] += item['QOO'];
+				}
+			}
 			
 			for(var QOOData in QOO){
 				var record = {};
@@ -181,21 +251,20 @@ Notes:
 					record['locationIDPath'] = javacast('null','');
 				}
 				var quantityReceived = 0;
-				if(structKeyExists(QDOOHashMap,'#QOOData['skuID']#')){
-					quantityReceived = QDOOHashMap['#QOOData['skuID']#']['QDOO'];
+				
+				if( structKeyExists(QOOData, 'stockID' ) && structKeyExists(QDOOHashMap,"#QOOData['stockID']#")){
+					quantityReceived = QDOOHashMap['#QOOData['stockID']#']['QDOO'];
+						
+					record['QNDOO'] = QOOData['QOO'] - quantityReceived;
+				}else if( structKeyExists(skuTotalsHashMap,'#QOOData['skuID']#') ){
+					
+					record['QNDOO'] = skuTotalsHashMap["#QOOData['skuID']#"]['totalQOO'] - skuTotalsHashMap["#QOOData['skuID']#"]['totalQDOO'];
 				}
-				record['QNDOO'] = QOOData['QOO'] - quantityReceived;
+				
 				arrayAppend(QNDOO,record);
 			}
 			
-			
 			return QNDOO;	
-		}
-		
-		// Quantity not delivered on return vendor order 
-		public numeric function getQNDORVO(required string productID, string productRemoteID) {
-			// TODO: Impliment this later when we add return vendor orders
-			return 0;
 		}
 		
 		//Quantity delivered on stock adjustment
@@ -393,6 +462,116 @@ Notes:
 			}
 			
 			return QNRORO;
+		}
+		
+		public array function getQDORVO(required string productID, string productRemoteID){
+			var hql = "SELECT NEW MAP(
+							coalesce( sum(vendorOrderDeliveryItem.quantity), 0 ) as QDORVO, 
+							sku.skuID as skuID, 
+							stock.stockID as stockID, 
+							location.locationID as locationID,
+							location.locationIDPath as locationIDPath)
+						FROM
+							SlatwallVendorOrderItem vendorOrderItem
+						  LEFT JOIN
+					  		vendorOrderItem.vendorOrderDeliveryItems vendorOrderDeliveryItem
+					  	  LEFT JOIN
+					  	  	vendorOrderItem.stock stock
+					  	  LEFT JOIN
+					  	  	stock.sku sku
+					  	  LEFT JOIN 
+					  	  	stock.location location
+						WHERE
+							vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('vostPartiallyReceived','vostNew')
+						  AND
+						  	vendorOrderItem.vendorOrder.vendorOrderType = 'votReturn'
+						  AND 
+							vendorOrderItem.stock.sku.product.productID = :productID
+						GROUP BY
+							sku.skuID,
+							stock.stockID,
+							location.locationID,
+							location.locationIDPath";
+			var QDORVO = ormExecuteQuery(hql, {productID=arguments.productID});	
+			return QDORVO;
+		}
+		
+		public array function getQORVO(required string productID, string productRemoteID){
+			var params = { productID = arguments.productID };
+			var hql = "
+						SELECT NEW MAP(
+							COALESCE(sum(vendorOrderItem.quantity),0) as QORVO,
+							sku.skuID as skuID, 
+							stock.stockID as stockID,
+							location.locationID as locationID,
+							location.locationIDPath as locationIDPath
+						)
+						FROM SlatwallVendorOrderItem vendorOrderItem
+					  	  LEFT JOIN
+					  	  	vendorOrderItem.stock stock
+					  	  LEFT JOIN
+					  	  	stock.sku sku
+					  	  LEFT JOIN 
+					  	  	stock.location location
+					  	  WHERE 
+					  	  		vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votReturnOrder'
+					  	  	AND
+					  	  		vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('vostClosed','vostPartiallyReceived')
+					  	  	AND
+					  	  		sku.product.productID = :productID
+					  	  GROUP BY
+					  	  	sku.skuID,
+					  	  	stock.stockID,
+					  	  	location.locationID,
+					  	  	location.locationIDPath
+					  	 ";
+			var QORVO = ORMExecuteQuery(hql,params);	
+			return QORVO;
+		}
+		
+		// Quantity not delivered on return vendor order 
+		public array function getQNDORVO(required string productID, string productRemoteID) {
+			// TODO: Impliment this later when we add return vendor orders
+			var QNDORVO = [];
+			
+			var params = { productID = arguments.productID };
+			
+			var QDORVO = getQDORVO(productID=arguments.productID);
+			var QDORVOHashMap = {};
+			for(var i=1;i <= arrayLen(QDORVO);i++){
+				QDORVOHashMap["#QDORVO[i]['skuID']#"] = QDORVO[i]; 
+			}
+			
+			var QORVO = getQORVO(productID=arguments.productID);
+			
+			for(var QORVOData in QORVO){
+				var record = {};
+				record['skuID'] = QORVOData['skuID'];
+				if(structKeyExists(QORVOData,'stockID')){
+					record['stockID'] = QORVOData['stockID'];
+				}else{
+					record['stockID'] = javacast('null','');
+				}
+				if(structKeyExists(QORVOData,'locationID')){
+					record['locationID'] = QORVOData['locationID'];	
+				}else{
+					record['locationID'] = javacast('null','');
+				}
+				if(structKeyExists(QORVOData,'locationIDPath')){
+					record['locationIDPath'] = QORVOData['locationIDPath'];
+				}else{
+					record['locationIDPath'] = javacast('null','');
+				}
+				var quantityDelivered = 0;
+				if(structKeyExists(QDORVOHashMap,'#QORVOData['skuID']#')){
+					quantityDelivered = QDORVOHashMap['#QORVOData['skuID']#']['QDORVO'];
+				}
+				record['QNDORVO'] = QORVOData['QORVO'] - quantityDelivered;
+				arrayAppend(QNDORVO,record);
+			}
+			
+			
+			return QNDORVO;
 		}
 		
 		public array function getQROVO(required string productID, string productRemoteID){
@@ -599,7 +778,59 @@ Notes:
 		public numeric function getQS(string stockID, string skuID, string productID, string stockRemoteID, string skuRemoteID, string productRemoteID) {
 			return 0;
 		}
+
+		public any function getSkuLocationQuantityBySkuIDAndLocationID( required string skuID, locationID){
+			var result = ormExecuteQuery( "SELECT sli FROM SlatwallSkuLocationQuantity sli INNER JOIN sli.sku ss INNER JOIN sli.location ll WHERE ss.skuID = :skuID AND ll.locationID = :locationID", {skuID=arguments.skuID, locationID=arguments.locationID}, true ); 
+
+			if (isNull(result)) {
+				return new('SkuLocationQuantity');
+			}
+
+			return result;
+		}
+		
+		//Quantity Delivered on Order for Sku in Period
+		public any function getSkuOrderQuantityForPeriod(required string skuID, required any fromDateTime, required any toDateTime){
+			var hql = "SELECT NEW MAP(
+						coalesce( sum(orderDeliveryItem.quantity), 0 ) as quantity
+					)
+					FROM SlatwallOrderItem orderItem
+					  	LEFT JOIN orderItem.orderDeliveryItems orderDeliveryItem
+				  	  	LEFT JOIN orderItem.sku sku
+					WHERE sku.skuID = :skuID
+						AND orderItem.order.orderStatusType.systemCode IN ('ostClosed','ostProcessing')
+						AND orderItem.order.orderCloseDateTime BETWEEN :fromDateTime AND :toDateTime
+						AND orderItem.orderItemType.systemCode = 'oitSale'";
+
+			return ormExecuteQuery(hql, {skuID=arguments.skuID,fromDateTime=arguments.fromDateTime,toDateTime=arguments.toDateTime}, true);
+		}
+
 	</cfscript>
+	
+	<cffunction name="getQOQ">
+		<cfargument type="string" required="true" name="skuID" />
+		<cfargument type="string" name="locationID" />
+		<cfset local.locationIDExists = structKeyExists(arguments,'locationID') AND NOT isNull(arguments.locationID) AND len(arguments.locationID) />
+		<cfquery name="local.query">
+			SELECT COALESCE( SUM(oi.quantity) ,0) as QOQ FROM swOrderItem oi
+			LEFT JOIN swOrder o 
+			ON oi.orderID = o.orderID
+			<cfif locationIDExists >
+				LEFT JOIN swStock st ON st.skuID = oi.skuID
+				LEFT JOIN swLocation l on st.locationID = l.locationID
+			</cfif>
+			WHERE
+				o.QuoteFlag = 1
+			AND
+				o.quotePriceExpiration > NOW()
+			AND
+				oi.skuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.skuID#" />
+			<cfif locationIDExists>
+				AND l.locationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.locationID#" />
+			</cfif>
+		</cfquery>
+		
+		<cfreturn local.query.qoq />
+	</cffunction>
 
 </cfcomponent>
-

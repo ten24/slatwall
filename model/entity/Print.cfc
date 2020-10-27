@@ -50,7 +50,7 @@ component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors
 	
 	// Persistent Properties
 	property name="printID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="printContent" ormtype="string" length="8000";
+	property name="printContent" ormtype="string" length="8000" hb_populateEnabled="public";
 	
 	// Related Object Properties (many-to-one)
 	

@@ -8,9 +8,13 @@ import {formbuildermodule} from "../formbuilder/formbuilder.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
 import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
+import {orderfulfillmentmodule} from "../orderfulfillment/orderfulfillment.module";
+import {fulfillmentbatchdetailmodule} from "../fulfillmentbatch/fulfillmentbatchdetail.module";
+import {orderdeliverydetailmodule} from "../orderdelivery/orderdeliverydetail.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {skumodule} from "../sku/sku.module";
+import {subscriptionusagemodule} from "../subscriptionusage/subscriptionusage.module";
 
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
@@ -33,13 +37,18 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   giftcardmodule.name,
   optiongroupmodule.name,
   orderitemmodule.name,
+  orderfulfillmentmodule.name,
+  fulfillmentbatchdetailmodule.name,
+  orderdeliverydetailmodule.name,
   productmodule.name,
   productbundlemodule.name,
   skumodule.name,
+  subscriptionusagemodule.name,
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
 .constant('slatwallPathBuilder', new SlatwallPathBuilder())
+.constant('isAdmin',true)
 .config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
      ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig,slatwallPathBuilder,appConfig) =>
   {
@@ -119,18 +128,17 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             //Don't count the field if its undefied or not a number
             if(obj.amount != undefined && !isNaN(obj.amount)) {
                 //Charge / adjustment condition for subtotal
-                if($scope.paymentType==paymentType.aptCharge || $scope.paymentType == paymentType.aptAdjustment) {
-                    if(obj.paymentType==paymentType.aptCharge)
-                        $scope.totalAmountToApply += parseFloat(obj.amount);
-                    else if(obj.paymentType==paymentType.aptCredit)
-                        $scope.totalAmountToApply -= parseFloat(obj.amount);
-
+                if($scope.paymentType==paymentType.aptCharge) {
+                    $scope.totalAmountToApply += parseFloat(obj.amount);
                 //Credit condition for subtotal
                 } else if($scope.paymentType==paymentType.aptCredit) {
-                    if(obj.paymentType==paymentType.aptCharge)
-                        $scope.totalAmountToApply -= parseFloat(obj.amount);
-                    else if(obj.paymentType==paymentType.aptCredit)
+                    $scope.totalAmountToApply -= parseFloat(obj.amount);
+                }else if($scope.paymentType == paymentType.aptAdjustment){
+                    if(obj.paymentType==paymentType.aptCharge){
                         $scope.totalAmountToApply += parseFloat(obj.amount);
+                    }else if(obj.paymentType==paymentType.aptCredit){
+                        $scope.totalAmountToApply -= parseFloat(obj.amount);
+                    }
                 }
             }
         });
@@ -148,7 +156,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 }])
 //filters
 
-.filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
+.filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])
 
 ;
 export{

@@ -23,7 +23,7 @@
             <ul class="list-unstyled list-inline s-last">
                 <li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-ng-click="swWorkflowTaskActions.selectWorkflowTaskAction(swWorkflowTaskActions.workflowTaskActions[$index]); swWorkflowTaskActions.setHidden(swWorkflowTaskActions.workflowTaskActions[$index]);">
                     <a class="btn btn-lgrey s-edit" data-target="#s-add-obj-1">
-                    <i 	class="fa fa-pencil"
+                    <i 	class="fas fa-pen"
                         ></i>
                     </a>
                 </li>
@@ -32,7 +32,7 @@
                         sw-confirm 
                         data-confirm-text="Confirm"
                         data-message-text="Are you sure you want to delete this task action?" 
-                        data-callback="swWorkflowTaskActions.deleteEntity(workflowTaskActions[$index])"
+                        data-callback="swWorkflowTaskActions.deleteEntity(swWorkflowTaskActions.workflowTaskActions[$index])"
                         data-use-rb-key="false"
                         data-simple=false
                         data-yes-text="Yes"
@@ -83,6 +83,7 @@
 	                            <h4>Email Template</h4>
 	                            <div class="form-group form-group-sm">
                                     <div sw-typeahead-search
+                                         data-search-on-load="false"
                                          data-collection-config="swWorkflowTaskActions.emailTemplateCollectionConfig"
                                          data-property-to-show="'emailTemplateName'"
                                          data-placeholder-text="Search Email templates..."
@@ -101,6 +102,7 @@
 	                            <h4>Print Template</h4>
 	                            <div class="form-group form-group-sm">
                                     <div sw-typeahead-search
+                                         data-search-on-load="false"
                                          data-collection-config="swWorkflowTaskActions.printTemplateCollectionConfig"
                                          data-property-to-show="'printTemplateID'"
                                          data-placeholder-text="Search Print templates..."
@@ -112,13 +114,19 @@
 	                        </div>
 	                        <!-- //Filter Criteria End -->
 	                        <!-- Filter Criteria Start -->
-	                        <div 	class="s-filter-group-item"
-                                    data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'update'"
+	                        <div class="s-filter-group-item"
+                                    data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'webhook'"
 	                            >
-	                            <h4>Update Data</h4>
+	                            <h4>Webhook URL</h4>
 	                            <div class="form-group form-group-sm">
-	                                <input type="text" class="form-control" placeholder="Ready To Capture">
-	                                <!-- <p class="help-block">Help text here.</p> -->
+	                                <sw-property-display
+	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+	                                data-property-identifier="webhookURL"
+	                                data-editable="true"
+	                                data-editing="true"
+	                                data-options-arguments="{property:'webhookURL'}"
+	                                >
+	                            </sw-property-display>
 	                            </div>
 	                        </div>
 	                        <!-- //Filter Criteria End -->
@@ -190,7 +198,7 @@
 	                        <div class="s-button-select-group">
 									<button
                                         type="button"
-                                        class="btn btn-sm s-btn-ten24"
+                                        class= "btn btn-sm btn-primary"
                                         data-ng-click="swWorkflowTaskActions.saveWorkflowTaskAction(swWorkflowTaskActions.workflowTaskActions.selectedTaskAction, 'add')"
                                         data-ng-disabled="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType == 'delete'  && !swWorkflowTaskActions.deleteConfirmed"
                                     >
@@ -199,7 +207,7 @@
 	                            <div class="s-or-box">OR</div>
 									<button
                                         type="button"
-                                        class="btn btn-sm s-btn-ten24"
+                                        class= "btn btn-sm btn-primary"
                                         data-ng-click="swWorkflowTaskActions.saveWorkflowTaskAction(swWorkflowTaskActions.workflowTaskActions.selectedTaskAction, 'finish')"
                                         data-ng-disabled="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType == 'delete' && !swWorkflowTaskActions.deleteConfirmed"
                                     >

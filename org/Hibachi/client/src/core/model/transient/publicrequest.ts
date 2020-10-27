@@ -34,7 +34,6 @@ class PublicRequest extends Request{
 
 
                 this.observerService.notify(successfulAction.split('.')[1]+'Success',result.data);
-                console.log("Successful action result:", result);
             }
             this.failureActions = result.failureActions;
             for(var i in this.failureActions){

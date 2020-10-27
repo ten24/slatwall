@@ -81,48 +81,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assert(variables.entity.getSucessfulPaymentTransactionExistsFlag());
 	}
-		
-	/**
-	* @test
-	*/
-	public void function getPeerOrderPaymentNullAmountExistsFlag_returns_true_when_should(){ 
-		var orderTrueData = { 
-			orderID = '',
-			orderPayments=[
-				{
-					orderPaymentID='',
-					orderPaymentStatusType={
-						orderPaymentStatusTypeID = '5accbf57dcf5bb3eb71614febe83a31d'	
-					}
-				},
-				{ 
-					orderPaymentID='', 
-					orderPaymentStatusType={
-						orderPaymentStatusTypeID = '5accbf57dcf5bb3eb71614febe83a31d'	
-					}
-				}
-			]
-		}; 
-		
-		var orderFalseData = { 
-			orderID = '',
-			orderPayments=[
-				{
-					orderPaymentID='',
-					orderPaymentStatusType={
-						orderPaymentStatusTypeID = '5accbf58a94b61fe031f854ffb220f4b'	
-					}
-				}
-			]
-		};
-		
-		var order1 = createPersistedTestEntity('order', orderTrueData);
-		var order2 = createPersistedTestEntity('order', orderFalseData);
-		
-		assertTrue(order1.getOrderPayments()[2].getPeerOrderPaymentNullAmountExistsFlag()); 
-		assertFalse(order1.getOrderPayments()[1].getPeerOrderPaymentNullAmountExistsFlag()); 
-		assertFalse(order2.getOrderPayments()[1].getPeerOrderPaymentNullAmountExistsFlag()); 
-	}
+	
 		
 	/**
 	* @test

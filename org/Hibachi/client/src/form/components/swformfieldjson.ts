@@ -49,4 +49,3 @@ class SWFormFieldJson implements ng.IDirective {
 export{
     SWFormFieldJson
 }
-

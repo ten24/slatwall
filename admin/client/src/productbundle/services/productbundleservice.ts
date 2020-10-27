@@ -4,8 +4,12 @@
 
 class ProductBundleService{
 
-    //ngInject
-    constructor(private $log:ng.ILogService, private $hibachi, private utilityService){
+    //@ngInject
+    constructor(
+        private $log:ng.ILogService, 
+        private $hibachi, 
+        private utilityService
+    ){
 
         this.$log = $log;
         this.$hibachi = $hibachi;

@@ -96,9 +96,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public array function getLocationIDOptions() {
 		if( !structKeyExists(variables,"locationIDOptions") ) {
-			variables.loyaltyIDOptions = getService("locationService").getLocationOptions();
+			variables.locationIDOptions = getService("locationService").getLocationOptions();
 		}
-		return variables.loyaltyIDOptions;
+		return variables.locationIDOptions;
 	}
 	
 	// ======================  END: Data Options ===========================

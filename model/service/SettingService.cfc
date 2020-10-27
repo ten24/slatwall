@@ -53,13 +53,13 @@ globalEncryptionKeySize
 component extends="HibachiService" output="false" accessors="true" {
 
 	property name="settingDAO" type="any";
-
 	property name="hibachiEventService" type="any";
 	property name="contentService" type="any";
 	property name="currencyService" type="any";
 	property name="emailService" type="any";
 	property name="fulfillmentService" type="any";
 	property name="integrationService" type="any";
+	property name="ledgerAccountService" type="any";
 	property name="locationService" type="any";
 	property name="measurementService" type="any";
 	property name="paymentService" type="any";
@@ -67,6 +67,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="taskService" type="any";
 	property name="taxService" type="any";
 	property name="typeService" type="any";
+	property name="skuService" type="any";
 
 	// ====================== START: META DATA SETUP ============================
 
@@ -84,6 +85,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"productType",
 			"product",
 			"content",
+			"category",
 			"account",
 			"address",
 			"image",
@@ -92,23 +94,31 @@ component extends="HibachiService" output="false" accessors="true" {
 			"stock",
 			"site",
 			"task",
-			"sku"
+			"sku",
+			"attribute",
+			"physical",
+			"location",
+			"integration",
+			"order"
 		];
 	}
 
 	public struct function getSettingLookupOrder() {
 		return {
 			stock = ["sku.skuID", "sku.product.productID", "sku.product.productType.productTypeIDPath&sku.product.brand.brandID", "sku.product.productType.productTypeIDPath"],
+			location=["locationIDPath"],
 			locationConfiguration = ["location.locationID"	],
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
 			content = ["contentIDPath","site.siteID"],
+			category = ["categoryIDPath",'site.siteID'],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
 			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
-			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ]
+			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ],
+			account = ["accountCreatedSite.siteID"]
 		};
 	}
 
@@ -120,7 +130,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			accountEligiblePaymentTerms = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentTerm", defaultValue=getPaymentService().getAllActivePaymentTermIDList()},
 			accountPaymentTerm = {fieldType="select"},
-			accountTermCreditLimit = {fieldType="text", formatType="currency",defaultValue=0},
+			accountTermCreditLimit = {fieldType="text", formatType="currency",defaultValue=0,validate={dataType="numeric"}},
 			accountFailedAdminLoginAttemptCount = {fieldType="text", defaultValue=6, validate={dataType="numeric", required=true, maxValue=6}},
 			accountFailedPublicLoginAttemptCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			accountAdminForcePasswordResetAfterDays = {fieldType="text", defaultValue=90, validate={dataType="numeric", required=true, maxValue=90}},
@@ -129,6 +139,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountHTMLTitleString = {fieldType="text", defaultValue="${firstName} ${lastName}"},
 			accountMetaDescriptionString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
 			accountMetaKeywordsString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			accountDisableGravatars = {fieldType="yesno",defaultValue=0},
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
@@ -138,13 +149,19 @@ component extends="HibachiService" output="false" accessors="true" {
 			addressHTMLTitleString = {fieldType="text", defaultValue="${name}"},
 			addressMetaDescriptionString = {fieldType="textarea", defaultValue="${name}"},
 			addressMetaKeywordsString = {fieldType="textarea", defaultValue="${name}"},
-			
+
+			//Attribute
+			attributeDisplayTemplate = {fieldType="select"},
+			attributeHTMLTitleString = {fieldType="text", defaultValue="${attributeName}"},
+			attributeMetaDescriptionString = {fieldType="textarea", defaultValue="${attributeName}"},
+			attributeMetaKeywordsString = {fieldType="textarea", defaultValue="${attributeName}"},
+
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
 			brandMetaDescriptionString = {fieldType="textarea", defaultValue="${brandName}"},
 			brandMetaKeywordsString = {fieldType="textarea", defaultValue="${brandName}"},
-
+			
 			// Content
 			contentRestrictAccessFlag = {fieldType="yesno",defaultValue=0},
 			contentRequirePurchaseFlag = {fieldType="yesno",defaultValue=0},
@@ -158,6 +175,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
 			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 			contentEnableTrackingFlag = {fieldType="yesno",defaultValue=0},
+			
+			//Category
+			categoryDisplayTemplate = {fieldType="select"},
+			categoryHTMLTitleString = {fieldType="text", defaultValue="${categoryName}"},
+			categoryMetaDescriptionString = {fieldType="textarea", defaultValue="${categoryName}"},
+			categoryMetaKeywordsString = {fieldType="textarea", defaultValue="${categoryName}"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
@@ -188,13 +211,18 @@ component extends="HibachiService" output="false" accessors="true" {
 			fulfillmentMethodEmailSubjectString = {fieldType="text"},
 			fulfillmentMethodAutoLocation = {fieldType="select", defaultValue="88e6d435d3ac2e5947c81ab3da60eba2"},
 			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
+			fulfillmentMethodTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 
 			// Global
+			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
+			globalAllowThirdPartyShippingAccount={fieldType="yesno",defaultValue=0},
+			globalDisableSearchSettings={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
 			globalAPIPageShowLimit = {fieldtype="text", defaultValue=250},
+			globalAssetsImageBaseURL = {fieldType="text", defaultValue=''},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
@@ -204,6 +232,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
 			globalCurrencyType = {fieldType="select",defaultValue="Local"},
 			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalDeploySitesAndApplicationsOnUpdate = {fieldtype="yesno", defaultValue=1}, 
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
 			globalEncryptionEncoding = {fieldType="select",defaultValue="Base64"},
@@ -213,7 +242,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalExtendedSessionAutoLogoutInDays = {fieldtype="text", defaultValue=5, validate={dataType="numeric", required=false}},
 			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
-      		globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalLogApiRequests = {fieldtype="yesno",defaultValue=0},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
 			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
@@ -224,23 +254,43 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
+			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
+			globalCollectionKeywordWildcardConfig={fieldType='select', defaultValue="both", valueOptions=[{name="wildcard on both sides %example%",value="both"}, {name="wildcard on left sides %example",value="left"}, {name="wildcard on right sides example%",value="right"}]},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
+			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
 			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
 			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
+			globalURLKeyCategory = {fieldType="text",defaultValue="cat"},
+			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
+			globalShippingIntegrationForAddressVerification = {fieldtype="select"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
-
+			globalS3Bucket = {fieldtype="text"},
+			globalS3AccessKey = {fieldtype="text"},
+			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
+			globalWhiteListedEmailDomains = {fieldtype="text"},
+			globalTestingEmailDomain = {fieldtype="text"},
+			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
+			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
+			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
+			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
+			imageMaxSize = {fieldType="text",defaultValue="10"},
 
+			// Location
+			locationRequiresQATSForOrdering = {fieldType="yesno",defaultValue=1},
+			locationExcludeFromQATS = {fieldType="yesno",defaultValue=0},
+			
 			// Location Configuration
 			locationConfigurationCapacity = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 			locationConfigurationAdditionalPreReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
@@ -248,9 +298,34 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			//Order Fulfillment
 			orderFulfillmentEmailTemplate = {fieldtype="select", defaultValue=""},
+			
+			//Order
+			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
 
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
+
+			// Physical
+			physicalEligibleExpenseLedgerAccount = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="LedgerAccount",
+				listingMultiselectFilters=[{
+					propertyIdentifier="ledgerAccountType.systemCode",
+					value="latExpense"
+				}],
+				defaultValue=getLedgerAccountService().getExpenseLedgerAccountIDList()
+			},
+			physicalDefaultExpenseLedgerAccount = {fieldType="select", defaultValue="54ce88cfbe2ae9636311ce9c189d9c18"},
+			physicalEligibleAssetLedgerAccount = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="LedgerAccount",
+				listingMultiselectFilters=[{
+					propertyIdentifier="ledgerAccountType.systemCode",
+					value="latAsset"
+				}],
+				defaultValue=getLedgerAccountService().getAssetLedgerAccountIDList()
+			},
+			physicalDefaultAssetLedgerAccount = {fieldType="select", defaultValue="54cae22ca5a553fe209cf183fac8f8dc"},
 
 			// Product
 			productDisplayTemplate = {fieldType="select"},
@@ -282,6 +357,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
 			// Shipping Method Rate
+			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
+			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
+			shippingMethodRateHandlingFeeType = {fieldType="select",defaultValue="amount"},
+			shippingMethodRateHandlingFeeAmount = {fieldType="text", formatType="currency",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateAdjustmentType = {fieldType="select", defaultValue="increasePercentage"},
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
@@ -305,6 +384,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
             skuGiftCardEnforceExpirationTerm = {fieldType="yesno", defaultValue=0},
+			skuGiftCardRecipientRequired = {fieldType="yesno", defaultValue=1},
 			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
@@ -315,13 +395,22 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuQATSIncludesQNROROFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROVOFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROSAFlag = {fieldType="yesno", defaultValue=0},
+			skuQATSIncludesMQATSBOMFlag = {fieldtype="yesno",defaultValue=0},
 			skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingWeight = {fieldType="text", defaultValue=1},
 			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
+			skuStockHold = {fieldType="yesno", defaultValue=0},
+			skuStockHoldTime = {fieldType="text", defaultValue=0,  validate={dataType="numeric"}},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
 			
+			skuRevenueLedgerAccount = {fieldType="select", defaultValue="54cf9c67d219bd4eddc6aa7dfe32aa02"},
+			skuCogsLedgerAccount = {fieldType="select", defaultValue="54cd90d6dd39c2e90c99cdb675371a05"},
+			skuAssetLedgerAccount = {fieldType="select", defaultValue="54cae22ca5a553fe209cf183fac8f8dc"},
+			skuLiabilityLedgerAccount = {fieldType="select", defaultValue="54d093ffb88d0185aea97fb735890055"},
+			skuDeferredRevenueLedgerAccount = {fieldType="select", defaultValue=""},
+			skuExpenseLedgerAccount = {fieldType="select", defaultValue="54ce88cfbe2ae9636311ce9c189d9c18"},
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -353,6 +442,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			productImageMediumHeight = {fieldType="text", defaultValue="300", formatType="pixels", validate={dataType="numeric", required=true}},
 			productImageLargeWidth = {fieldType="text", defaultValue="600", formatType="pixels", validate={dataType="numeric", required=true}},
 			productImageLargeHeight = {fieldType="text", defaultValue="600", formatType="pixels", validate={dataType="numeric", required=true}},
+			productImageXLargeWidth = {fieldType="text", defaultValue="800", formatType="pixels", validate={dataType="numeric", required=true}},
+			productImageXLargeHeight = {fieldType="text", defaultValue="800", formatType="pixels", validate={dataType="numeric", required=true}},
+			productListingImageHeight = {fieldType="text", defaultValue="263", formatType="pixels", validate={dataType="numeric", required=true}},
+			productListingImageWidth = {fieldType="text", defaultValue="212", formatType="pixels", validate={dataType="numeric", required=true}},
 			productMissingImagePath = {fieldType="text", defaultValue="/plugins/Slatwall/assets/images/missingimage.jpg"}
 
 		};
@@ -411,6 +504,16 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "address" );
+			case "attributeDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "attribute", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "attribute" );
+			case "categoryDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "category", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "category" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
@@ -437,6 +540,12 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getLocationService().getLocationOptions();
 			case "fulfillmentMethodShippingOptionSortType" :
 				return [{name=rbKey('define.sortOrder'), value='sortOrder'},{name=rbKey('define.price'), value='price'}];
+			case "fulfillmentMethodTaxCategory":
+				var optionSL = getTaxService().getTaxCategorySmartList();
+				optionSL.addFilter('activeFlag', 1);
+				optionSL.addSelect('taxCategoryName', 'name');
+				optionSL.addSelect('taxCategoryID', 'value');
+				return optionSL.getRecords();
 			case "globalDefaultSite":
 				var optionSL = getSiteService().getSiteSmartList();
 				optionSL.addSelect('siteName', 'name');
@@ -462,6 +571,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
+			case "globalShippingIntegrationForAddressVerification":
+				var options = getShippingIntegrationOptions();
+				arrayPrepend(options, {name='Internal', value='internal'});
+				return options;
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');
@@ -483,6 +596,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return optionSL.getRecords();
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
+			case "ShippingMethodRateHandlingFeeType" :
+				return [{name='Amount', value='amount'}, {name='Percentage', value='percentage'}];
 			case "shippingMethodRateAdjustmentType" :
 				return [{name='Increase Percentage', value='increasePercentage'}, {name='Decrease Percentage', value='decreasePercentage'}, {name='Increase Amount', value='increaseAmount'}, {name='Decrease Amount', value='decreaseAmount'}];
 			case "skuCurrency" :
@@ -497,6 +612,24 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('taxCategoryName', 'name');
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
+			case "skuRevenueLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latRevenue');
+				return optionsSL.getRecords();
+			case "skuCogsLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latCogs');
+				return optionsSL.getRecords();
+			case "skuAssetLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
+				return optionsSL.getRecords();
+			case "skuLiabilityLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
+				return optionsSL.getRecords();
+			case "skuDeferredRevenueLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latLiability');
+				return optionsSL.getRecords();
+			case "skuExpenseLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latExpense');
+				return optionsSL.getRecords();
 			case "subscriptionUsageRenewalReminderEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "SubscriptionUsage" );
 			case "taskFailureEmailTemplate":
@@ -505,6 +638,12 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Task" );
 			case "siteRecaptchaProtectedEvents":
 				return getHibachiEventService().getEntityEventNameOptions('before');
+			case "physicalDefaultExpenseLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latExpense');
+				return optionsSL.getRecords();
+			case "physicalDefaultAssetLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
+				return optionsSL.getRecords();
 		}
 
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {
@@ -515,7 +654,25 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingOptionsSmartList(required string settingName) {
-			return getServiceByEntityName( getSettingMetaData(arguments.settingName).listingMultiselectEntityName ).invokeMethod("get#getSettingMetaData(arguments.settingName).listingMultiselectEntityName#SmartList");
+		var sl = getServiceByEntityName( getSettingMetaData(arguments.settingName).listingMultiselectEntityName ).invokeMethod("get#getSettingMetaData(arguments.settingName).listingMultiselectEntityName#SmartList");
+		if(structKeyExists(getSettingMetaData(arguments.settingName),'listingMultiselectFilters')){
+			var filters = getSettingMetaData(arguments.settingName).listingMultiselectFilters;
+			for(var filter in filters){
+				sl.addFilter(filter.propertyIdentifier,filter.value);	
+			}
+		}
+		return sl;
+	}
+
+
+	public array function getShippingIntegrationOptions() {
+		var integrationCollectionList = getService("IntegrationService").getIntegrationCollectionList();
+		integrationCollectionList.addFilter('activeFlag', '1');
+		integrationCollectionList.addFilter('installedFlag', '1');
+		integrationCollectionList.addFilter('integrationTypeList', 'shipping',"in");
+		integrationCollectionList.setDisplayProperties('integrationName|name,integrationPackage|value');
+		var options = integrationCollectionList.getRecords();
+		return options;
 	}
 
 	public array function getCustomIntegrationOptions() {
@@ -673,9 +830,34 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
-		// Build out the cached key
+		// Automatically add the site-level context, we may find a setting value within the context of the site handling the request
+		if (!isNull(getHibachiScope().getCurrentRequestSite())) {
+
+			// Make sure a site entity does not already exist in the filterEntities, we do not want to unecessarily add the additional site combo that can't exist
+			var siteFound = false;
+			for(var entity in arguments.filterEntities) {
+				if (entity.getClassName() == 'Site') {
+					siteFound = true;
+					break;
+				}
+			}
+
+			if (!siteFound) {
+				arrayAppend(arguments.filterEntities, getHibachiScope().getCurrentRequestSite());
+			}
+		}
+		
+		var globalSettingPrefix = 'global';
+
+
+		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
-		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+		if(
+			structKeyExists(arguments, "object") 
+			&& arguments.object.isPersistent() 
+			&& !arguments.object.getNewFlag()
+			&& left(arguments.settingName,len(globalSettingPrefix)) != globalSettingPrefix
+		) {
 			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
 		}
 		if(structKeyExists(arguments, "filterEntities")) {
@@ -701,11 +883,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public boolean function isGlobalSetting(required string settingName){
-		return left(arguments.settingName, 6) == "global" || left(arguments.settingName, 11) == "integration";
+		return left(arguments.settingName, 6) == "global";
 	}
 
 	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
-
+		
 		// Create some placeholder Var's
 		var foundValue = false;
 		var settingRecord = "";
@@ -714,13 +896,36 @@ component extends="HibachiService" output="false" accessors="true" {
 			settingValueFormatted = "",
 			settingID = "",
 			settingRelationships = {},
-			settingInherited = false
+			settingInherited = false,
+			settingValueResolvedLevel = "undefined",
+			siteProvided = false,
+			siteContext = {
+				siteID = "",
+				siteCode = ""
+			}
 		};
 		var settingMetaData = getSettingMetaData(arguments.settingName);
+
+		// Method argument validation for site-level setting value resolution
+		if (isNull(arguments.object) || arguments.object.getClassName() != 'Site') {
+			for (var entity in arguments.filterEntities) {
+				if (entity.getClassName() == 'Site') {
+					settingDetails.siteProvided = true;
+					settingDetails.siteContext.siteID = entity.getSiteID();
+					settingDetails.siteContext.siteCode = entity.getSiteCode();
+					break;
+				}
+			}
+		} else {
+			settingDetails.siteProvided = true;
+			settingDetails.siteContext.siteID = arguments.object.getSiteID();
+			settingDetails.siteContext.siteCode = arguments.object.getSiteCode();
+		}
 
 		//if we have a default value initialize it
 		if(structKeyExists(settingMetaData, "defaultValue")) {
 			settingDetails.settingValue = settingMetaData.defaultValue;
+			settingDetails.settingValueResolvedLevel = "global.metadata";
 
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 				settingDetails.settingInherited = true;
@@ -738,6 +943,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				settingDetails.settingValue = settingRecord.settingValue;
 				settingDetails.settingID = settingRecord.settingID;
 				settingDetails.settingInherited = false;
+				settingDetails.settingValueResolvedLevel = "global";
 			}
 
 		// If this is not a global setting, but one with a prefix, then we need to check the relationships
@@ -751,24 +957,54 @@ component extends="HibachiService" output="false" accessors="true" {
 			// If an object was passed in, then first we can look for relationships based on that persistent object
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 
-				// First Check to see if there is a setting the is explicitly defined to this object
+				// Setup settingRelationships based on filterEntities with all primary keys and values
 				settingDetails.settingRelationships[ arguments.object.getPrimaryIDPropertyName() ] = arguments.object.getPrimaryIDValue();
 				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
 
-				settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-				if(settingRecord.recordCount) {
-					foundValue = true;
-					settingDetails.settingValue = settingRecord.settingValue;
-					settingDetails.settingID = settingRecord.settingID;
-					settingDetails.settingInherited = false;
-				} else {
-					structClear(settingDetails.settingRelationships);
+				// Attempting lowest object level value resolution with consideration for site context if necessary
+				// A site exists
+				if (settingDetails.siteProvided) {
+					// Trying object-site level value resolution with the siteID and any other specified relationships
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingInherited = false;
+						settingDetails.settingValueResolvedLevel = 'object.site';
+					}
 				}
+
+				// Attempt object level value resolution without site context if necessary
+				if (!foundValue) {
+					// Delete any siteID from settingRelationship if present
+					structDelete(settingDetails.settingRelationships, 'siteID');
+
+					// Now try just object level value resolution without siteID in settingRelationships
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingInherited = false;
+						settingDetails.settingValueResolvedLevel = 'object';
+
+						// object-site inherits from object
+						if (settingDetails.siteProvided) {
+							settingDetails.settingInherited = true;
+						}
+
+					// Still not found, resets settingRelationships for next step: ancestor lookup, it re-processes the filterEntities
+					} else {
+						structClear(settingDetails.settingRelationships);
+					}
+				}
+				
 				// If we haven't found a value yet, check to see if there is a lookup order
 				if(!foundValue && structKeyExists(getSettingLookupOrder(), arguments.object.getClassName()) && structKeyExists(getSettingLookupOrder(), settingPrefix)) {
-
+					
 					var hasPathRelationship = false;
 					var pathList = "";
 					var relationshipKey = "";
@@ -800,24 +1036,51 @@ component extends="HibachiService" output="false" accessors="true" {
 							}
 							settingDetails.settingRelationships[ relationshipKey ] = relationshipValue;
 						}
+						
+						// Setup settingRelationships based on filterEntities with all primary keys and values
 						for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 							settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 						}
 
-						settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-						if(settingRecord.recordCount) {
-							foundValue = true;
-							settingDetails.settingValue = settingRecord.settingValue;
-							settingDetails.settingID = settingRecord.settingID;
-
-							// Add custom logic for cmsContentID
-							if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
-								settingDetails.settingInherited = false;
-							} else {
-								settingDetails.settingInherited = true;
+						// Site was provided so we need to try and resolve on object's ancestor-site level and possibly object's ancestor level after
+						if (settingDetails.siteProvided) {
+							// Trying object's ancestor-site level value resolution with the siteID and any other specified relationships
+							settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+							if(settingRecord.recordCount) {
+								foundValue = true;
+								settingDetails.settingValue = settingRecord.settingValue;
+								settingDetails.settingID = settingRecord.settingID;
+								settingDetails.settingValueResolvedLevel = "ancestor.site";
+	
+								// Add custom logic for cmsContentID
+								if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
+									settingDetails.settingInherited = false;
+								} else {
+									settingDetails.settingInherited = true;
+								}
 							}
-						} else {
-							structClear(settingDetails.settingRelationships);
+						}
+
+						// Attempt object's ancestor level value resolution without site context if necessary
+						if (!foundValue) {
+							// Delete any siteID from settingRelationship if present
+							structDelete(settingDetails.settingRelationships, 'siteID'); 
+							settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+							if(settingRecord.recordCount) {
+								foundValue = true;
+								settingDetails.settingValue = settingRecord.settingValue;
+								settingDetails.settingID = settingRecord.settingID;
+								settingDetails.settingValueResolvedLevel = "ancestor";
+	
+								// Add custom logic for cmsContentID
+								if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
+									settingDetails.settingInherited = false;
+								} else {
+									settingDetails.settingInherited = true;
+								}
+							} else {
+								structClear(settingDetails.settingRelationships);
+							}
 						}
 
 						if(nextPathListIndex==0) {
@@ -828,21 +1091,49 @@ component extends="HibachiService" output="false" accessors="true" {
 				}
 			}
 
-			// If we still haven't found a value yet, lets look for this with no relationships
+			// Look at the highest-levels if we still haven't found a value yet, no lower-level relationships associated with setting value
 			if(!foundValue) {
-				settingDetails.settingRelationships = {};
+				structClear(settingDetails.settingRelationships);
+
+				// Setup settingRelationships based on filterEntities with all primary keys and values
 				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
-				settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-				if(settingRecord.recordCount) {
-					foundValue = true;
-					settingDetails.settingValue = settingRecord.settingValue;
-					settingDetails.settingID = settingRecord.settingID;
-					if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
-						settingDetails.settingInherited = true;
-					} else {
-						settingDetails.settingInherited = false;
+
+				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also
+				if (settingDetails.siteProvided) {
+					// Trying site level value resolution with the siteID and any other specified relationships
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingValueResolvedLevel = "site";
+
+						if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+							settingDetails.settingInherited = true;
+						} else {
+							settingDetails.settingInherited = false;
+						}
+					}
+				}
+
+				// Attempt global level value resolution without site context
+				if (!foundValue) {
+					structDelete(settingDetails.settingRelationships, 'siteID');
+
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingValueResolvedLevel = "global";
+
+						if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+							settingDetails.settingInherited = true;
+						} else {
+							settingDetails.settingInherited = false;
+						}
 					}
 				}
 			}
@@ -911,6 +1202,15 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		return settingDetails;
 	}
+	
+	private void function updateBaseEntityCalculations(required any setting ){
+		if( !isNull(arguments.setting.getBaseObject()) ){
+			var entityService = getServiceByEntityName(entityName=arguments.setting.getBaseObject());
+			var primaryIDProperty = getPrimaryIDPropertyNameByEntityName(arguments.setting.getBaseObject());
+			var updateEntity = entityService.invokeMethod( "get#arguments.setting.getBaseObject()#", {1=arguments.setting.invokeMethod("get#primaryIDProperty#")} );
+			getHibachiScope().addModifiedEntity(updateEntity); 
+		}
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -934,7 +1234,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 	public boolean function deleteSetting(required any entity) {
 
-		getHibachiScope().addModifiedEntity(arguments.entity); 
+		updateBaseEntityCalculations(arguments.entity);
 
 		// Check to see if we are going to need to update the
 		var calculateStockNeeded = false;
@@ -966,29 +1266,29 @@ component extends="HibachiService" output="false" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveSetting(required any entity, struct data={}) {
+		
+		//On save we're setting a base object string so we can find this 
+		if( isNull(arguments.entity.getBaseObject()) 
+			&& structKeyExists(arguments.data, 'formCollectionsList')
+			&& len(arguments.data.formCollectionsList)
+		){
+			arguments.entity.setBaseObject(arguments.data.formCollectionsList);
+		}
+		
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
-
-		getHibachiScope().addModifiedEntity(arguments.entity); 
 
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
  
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
+			getHibachiCacheService().updateServerInstanceSettingsCache();
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
-			}
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-			var serverInstanceSmartList = this.getServerInstanceSmartList();
-			serverInstanceSmartList.addWhereCondition("a#lcase(getDao('hibachiDao').getApplicationKey())#serverinstance.serverInstanceID != '#serverInstance.getServerInstanceID()#'");
-			for(var serverInstance in serverInstanceSmartList.getRecords()){
-				serverInstance.setServerInstanceExpired(true);
-
 			}
 		}
 

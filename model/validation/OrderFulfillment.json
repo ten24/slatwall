@@ -28,6 +28,7 @@
 		"orderFulfillmentItems":			[{"contexts":"placeOrder,fulfillItems","minCollection":1}],
 		"quantityUndelivered":				[{"contexts":"fulfillItems","minValue":0}],
 		"emailAddress":						[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmailWithoutRecipients","required":true},{"contexts":"save,placeOrder","dataType":"email"}],
+		"estimatedShippingDate":			[{"contexts":"save","dataType":"date"}],
 		"pickupLocation":					[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],
 		"requiredShippingInfoExistsFlag":	[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","eq":true}],
 		"shippingMethod":			[
@@ -35,9 +36,10 @@
 			{"contexts":"placeOrder","conditions":"fulfillmentTypeShippingWithoutRateOverride","method":"hasValidShippingMethodRate"}
 		],
 		"orderStatusCode":			[
-			{"contexts":"edit,manualFulfillmentCharge","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
+			{"contexts":"edit,manualFulfillmentCharge,changeFulfillmentMethod","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 			{"contexts":"fulfillItems","inList":"ostNew,ostProcessing"}
-		]
+		],
+		"statusCode":	[{"contexts":"changeFulfillmentMethod","eq":"ofstUnfulfilled"}]
 	},
 	"populatedPropertyValidation":{
 		"shippingAddress":[

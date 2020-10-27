@@ -53,6 +53,7 @@ component entityname="SlatwallSubscriptionBenefit" table="SwSubsBenefit" persist
 	property name="subscriptionBenefitName" ormtype="string";
 	property name="maxUseCount" ormtype="integer";
 	
+	
 	// Related Object Properties (many-to-one)
 	property name="accessType" cfc="Type" fieldtype="many-to-one" fkcolumn="accessTypeID" hb_optionsSmartListData="f:parentType.systemCode=accessType";
 	

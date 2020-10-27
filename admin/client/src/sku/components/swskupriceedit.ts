@@ -8,6 +8,8 @@ class SWSkuPriceEditController{
     public maxQuantity:string;
     public skuCode:string;
     public price:string;
+    public priceGroup:any;
+    public priceGroupId:string;
     public currencyFilter:any;
     public currencyCode:string;
     public eligibleCurrencyCodeList:string;
@@ -45,6 +47,7 @@ class SWSkuPriceEditController{
         private $filter,
         private $timeout
     ){
+        
         if(angular.isDefined(this.pageRecord)){
             this.pageRecord.edited = false;
         }
@@ -82,7 +85,6 @@ class SWSkuPriceEditController{
         ){
             throw("You must provide either a skuID or a skuPriceID or a sku or a skuPrice to SWSkuPriceSingleEditController");
         } else {
-
             if(angular.isDefined(this.skuId) && angular.isUndefined(this.sku)){
                 var skuData = {
                     skuID : this.skuId,
@@ -102,6 +104,8 @@ class SWSkuPriceEditController{
                     price: this.currencyFilter(this.price, this.currencyCode, 2, false)
                 }
                 this.skuPrice = this.$hibachi.populateEntity("SkuPrice", skuPriceData);
+                this.priceGroup = this.$hibachi.populateEntity('PriceGroup',{priceGroupID:this.priceGroupId});
+                this.skuPrice.$$setPriceGroup(this.priceGroup);
             }
         }
         if(angular.isDefined(this.masterPriceObject)){
@@ -141,6 +145,7 @@ class SWSkuPriceEdit implements ng.IDirective{
         skuPriceId:"@?",
         skuCode:"@?",
         price:"@?",
+        priceGroupId:"@?",
         baseEntityId:"@?",
         baseEntityName:"@?",
         bundledSkuSkuId:"@?",
@@ -202,8 +207,9 @@ class SWSkuPriceEdit implements ng.IDirective{
         if(angular.isDefined(currentScope["pageRecordKey"])){
              scope.swSkuPriceEdit.pageRecordIndex = currentScope["pageRecordKey"];
         }
-
+        
         var skuPricesEditScope = this.scopeService.getRootParentScope(scope, "swSkuPricesEdit");
+        
         if(skuPricesEditScope != null){
             scope.swSkuPriceEdit.baseEntityId = skuPricesEditScope["swSkuPricesEdit"].baseEntityId;
             scope.swSkuPriceEdit.baseEntityName = skuPricesEditScope["swSkuPricesEdit"].baseEntityName;

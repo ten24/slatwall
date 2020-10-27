@@ -10,7 +10,6 @@ class SWProductBundleGroupType{
 			formService,
             collectionConfigService,
 			productBundlePartialsPath,
-			productBundleService,
 			slatwallPathBuilder
         )=> new SWProductBundleGroupType(
             $http,
@@ -19,7 +18,6 @@ class SWProductBundleGroupType{
 			formService,
             collectionConfigService,
 			productBundlePartialsPath,
-			productBundleService,
 			slatwallPathBuilder
         );
         directive.$inject = [
@@ -29,11 +27,11 @@ class SWProductBundleGroupType{
 			'formService',
             'collectionConfigService',
 			'productBundlePartialsPath',
-			'productBundleService',
 			'slatwallPathBuilder'
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         $http,
 		$log,
@@ -41,7 +39,6 @@ class SWProductBundleGroupType{
 		formService,
         collectionConfigService,
 		productBundlePartialsPath,
-		productBundleService,
 			slatwallPathBuilder
     ){
         return {

@@ -1,5 +1,6 @@
 {
 	"properties":{
-		"quantity":			[{"contexts":"save","required":true,"minValue":0,"dataType":"numeric"}]
+		"quantity":			[{"contexts":"save","required":true,"minValue":0,"dataType":"numeric"}],
+		"stockAdjustment":[{"contexts":"edit,delete","method":"isNotClosed"}]
 	}
 }

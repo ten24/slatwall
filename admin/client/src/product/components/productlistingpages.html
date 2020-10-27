@@ -7,17 +7,22 @@
             data-has-action-bar="false"
             data-administrative-count="1"
             data-base-entity-name="ProductListingPage"
+            data-name="addProductListingPages"
         >
             <sw-listing-columns>
                 <sw-listing-column data-property-identifier="content.title"
+                                   data-fallback-property-identifiers="title"
                                    data-action="admin:entity.detailcontent"
                                    data-query-string="contentID=${content.contentID}">
                 </sw-listing-column>
-                <sw-listing-column data-property-identifier="content.titlePath">
+                <sw-listing-column data-property-identifier="content.titlePath"
+                                   data-fallback-property-identifiers="titlePath">
                 </sw-listing-column>
-                <sw-listing-column data-property-identifier="content.site.siteName">
+                <sw-listing-column data-property-identifier="content.site.siteName"
+                                   data-fallback-property-identifiers="site_siteName">
                 </sw-listing-column>
-                <sw-listing-column data-property-identifier="content.activeFlag">
+                <sw-listing-column data-property-identifier="content.activeFlag"
+                                   data-fallback-property-identifiers="activeFlag">
                 </sw-listing-column>
             </sw-listing-columns>
 
@@ -29,17 +34,13 @@
                         <sw-collection-column data-property-identifier="productListingPageID"
                                               data-is-visible="false"
                         ></sw-collection-column>
-                        <sw-collection-column data-property-identifier="content.title"
-                                              data-fallback-property-identifiers="title"
+                        <sw-collection-column data-property-identifier="content.title"                  
                         ></sw-collection-column>
-                        <sw-collection-column data-property-identifier="content.titlePath"
-                                              data-fallback-property-identifiers="titlePath"
+                        <sw-collection-column data-property-identifier="content.titlePath"             
                         ></sw-collection-column>
-                        <sw-collection-column data-property-identifier="content.site.siteName"
-                                              data-fallback-property-identifiers="site_siteName"
+                        <sw-collection-column data-property-identifier="content.site.siteName"               
                         ></sw-collection-column>
                         <sw-collection-column data-property-identifier="content.activeFlag"
-                                              data-fallback-property-identifiers="activeFlag"
                         ></sw-collection-column>
                         <sw-collection-column data-property-identifier="content.contentID"
                                               data-fallback-property-identifiers="contentID"
@@ -63,14 +64,15 @@
                                     data-in-listing-display="true"
                                     data-selection-field-name="assignedContentIDList"
                                     data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"
-                                    data-fallback-properties-to-compare="content_contentID"
+                                    data-fallback-properties-to-compare="contentID,content_contentID"
                                     data-right-content-property-identifier="titlePath"
                                     >
                             <sw-typeahead-search-line-item data-property-identifier="title"></sw-typeahead-search-line-item>
                         </sw-typeahead-multiselect>
                     </div>
                     <div class="col-sm-2 s-action-right">
-                        <sw-site-selector data-disabled="!swProductListingPages.edit"
+                        <sw-site-selector ng-show="swProductListingPages.edit"
+                                          data-disabled="!swProductListingPages.edit"
                                           data-collection-config-to-filter="swProductListingPages.collectionConfig"
                                           data-filter-property-identifier="site.siteID"
                                           data-in-listing-display="false"

@@ -53,8 +53,11 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfset selectedListingPageIDPaths = "" />
-<cfloop array="#rc.product.getListingPages()#" index="local.lp">
-	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp.getContentIDPath(),',','/','all')) />
+<cfset listingPagesCollectionList = rc.product.getListingPagesCollectionList()/>
+<cfset listingPagesCollectionList.setDisplayProperties('content.contentIDPath')/>
+<cfset listingPageRecords = listingPagesCollectionList.getRecords()/> 
+<cfloop array="#listingPageRecords#" index="local.lp">
+	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp['content_contentIDPath'],',','/','all')) />
 </cfloop>
 <cfoutput>
 	<sw-product-listing-pages

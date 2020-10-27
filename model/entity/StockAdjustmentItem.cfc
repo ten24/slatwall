@@ -50,7 +50,9 @@ component entityname="SlatwallStockAdjustmentItem" table="SwStockAdjustmentItem"
 
 	// Persistent Properties
 	property name="stockAdjustmentItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantity" ormtype="integer" default=0;
+	property name="quantity" ormtype="float" default=0;
+	property name="cost" ormtype="big_decimal" hb_formatType="currency";
+	property name="currencyCode" ormtype="string" length="3";
 	
 	// Related Object Properties (many-to-one)
 	property name="stockAdjustment" cfc="StockAdjustment" fieldtype="many-to-one" fkcolumn="stockAdjustmentID";
@@ -67,6 +69,10 @@ component entityname="SlatwallStockAdjustmentItem" table="SwStockAdjustmentItem"
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+		
+	public boolean function isNotClosed(){
+		return variables.stockAdjustment.getStockAdjustmentStatusType().getSystemCode() != "sastClosed";
+	}	
 		
 	// For use with Adjustment Items interface, get one stock that we will use displaying sku info. 
 	public any function getOneStock() {

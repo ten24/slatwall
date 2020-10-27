@@ -9,6 +9,9 @@
     	"eventSku":{
 	    	"baseProductType":	{"eq":"event"},
 	    	"bundleFlag":		{"eq":0}
+ 	    },
+ 	    "trackedByMeasurement":{
+ 	    	"inventoryTrackBy": {"neq":"Quantity"}
  	    }
 	},
 	"properties":{
@@ -22,11 +25,11 @@
 		"product":					[{"contexts":"save","required":true}],
 		"renewalPrice":				[{"contexts":"save","dataType":"numeric","minValue":0}],
 		"skuCode":					[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
-		"redemptionAmount":			[{"conditions":"isGiftCardSku", "dataType":"numeric","minValue":0}],
+		"baseRedemptionAmount":			[{"conditions":"isGiftCardSku", "dataType":"numeric","minValue":0}],
 		"redemptionAmountType":     [{"conditions":"isGiftCardSku", "required":true}],
 		"transactionExistsFlag":	[{"contexts":"delete","eq":false}],
 		"physicalCounts":			[{"contexts":"delete","maxCollection":0}],
-		"redemptionAmount":	[{"conditions":"isGiftCardSku", "dataType":"numeric", "minValue":0}],
-		"eventConflictExistsFlag":  [{"contexts":"save","conditions":"eventSku","eq":false}]
+		"eventConflictExistsFlag":  [{"contexts":"save","conditions":"eventSku","eq":false}],
+		"measurementUnitID":	[{"contexts":"save","conditions":"trackedByMeasurement","required":true}]
 	}
 }

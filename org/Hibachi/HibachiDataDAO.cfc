@@ -74,7 +74,7 @@ Notes:
 	<cffunction name="getInsertedDataFile">
 		<cfset var returnFile = "" />
 		
-		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm' />
+		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/system/') & 'insertedData.txt.cfm' />
 		
 		<cfif !fileExists(filePath)>
 			<cffile action="write" file="#filePath#" output="" addnewline="false" /> 
@@ -88,7 +88,7 @@ Notes:
 	<cffunction name="updateInsertedDataFile">
 		<cfargument name="idKey" type="string" required="true" />
 		
-		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm' />
+		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/system/') & 'insertedData.txt.cfm' />
 		
 		<cffile action="append" file="#filePath#" output=",#arguments.idKey#" addnewline="false" />
 	</cffunction>
@@ -149,21 +149,49 @@ Notes:
 		<cfargument name="referenceObject" type="string" required="true" />
 		
 		<cfset var rs = "" />
-		<cfset var newShortReferenceID = 1 />
-			
-		<cfquery name="rs">
-			SELECT MAX(shortReferenceID) as shortReferenceID FROM #getTableNameByEntityName('ShortReference')#
+		
+		<cfquery name="rs" result="local.referenceResult">
+			INSERT INTO #getTableNameByEntityName('ShortReference')# ( referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
 		</cfquery>
 		
-		<cfif rs.shortReferenceID neq "" and isNumeric(rs.shortReferenceID)>
-			<cfset newShortReferenceID = rs.shortReferenceID + 1 />
-		</cfif>
-		
-		<cfquery name="rs">
-			INSERT INTO #getTableNameByEntityName('ShortReference')# (shortReferenceID, referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_integer" value="#newShortReferenceID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
-		</cfquery>
-		
-		<cfreturn newShortReferenceID />
+		<cfreturn referenceResult["generatedkey"] />
 	</cffunction>
+	
+	<cfscript>
+		public void function truncateTablesWithoutDefaultData(){
+			var excludeList = getDao('hibachiDao').getTablesWithDefaultData();
+			excludelist = listAppend(excludelist,'swaccount');
+			excludelist = listAppend(excludelist,'swaccountauthentication');
+			excludelist = listAppend(excludelist,'swaccountemailaddress');
+			excludelist = listAppend(excludelist,'swaccountaddress');
+			var q = new Query();
+			var sql = "  select table_name 
+		 		 from INFORMATION_SCHEMA.TABLES 
+			  where table_name like 'sw%'
+			  and table_type = 'BASE TABLE'
+			  and table_schema = '#getApplicationValue('datasource')#'
+			  and table_name not in (:excludeList)
+			  GROUP BY table_name;";
+			q.addParam(name="excludeList",value=excludeList,cfsqltype="cf_sql_varchar",list=true);
+			
+			q.setSQL(sql);
+			var records = q.execute().getResult();
+			var truncateQuery = new Query();
+			sql = "  SET FOREIGN_KEY_CHECKS = 0";
+			truncateQuery.setSQL(sql); 
+    		truncateQuery.execute();
+    
+			for(var record in records){
+				truncateQuery = new Query();
+				sql = " TRUNCATE table #record.table_Name#";
+				truncateQuery.setSQL(sql);
+				truncateQuery.execute();
+			}
+			truncateQuery = new Query();
+			sql = "SET FOREIGN_KEY_CHECKS = 1";
+			truncateQuery.setSQL(sql);
+			truncateQuery.execute();
+		}
+	</cfscript>
 	
 </cfcomponent>

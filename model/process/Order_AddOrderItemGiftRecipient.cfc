@@ -26,17 +26,17 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms
     of your choice, provided that you follow these specific guidelines:
-	- You also meet the terms and conditions of the license of each
-	  independent module
-	- You must not alter the default display of the Slatwall name or logo from
-	  any part of the application
-	- Your custom code must not alter or create any files inside Slatwall,
-	  except in the following directories:
-		/integrationServices/
-	You may copy and distribute the modified version of this program that meets
-	the above guidelines as a combined work under the terms of GPL for this program,
-	provided that you include the source code of that other code when and as the
-	GNU GPL requires distribution of source code.
+    - You also meet the terms and conditions of the license of each
+      independent module
+    - You must not alter the default display of the Slatwall name or logo from
+      any part of the application
+    - Your custom code must not alter or create any files inside Slatwall,
+      except in the following directories:
+        /integrationServices/
+    You may copy and distribute the modified version of this program that meets
+    the above guidelines as a combined work under the terms of GPL for this program,
+    provided that you include the source code of that other code when and as the
+    GNU GPL requires distribution of source code.
 
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
@@ -46,25 +46,41 @@ Notes:
 */
 component output="false" accessors="true" extends="HibachiProcess"{
 
-	// Injected Entity
-	property name="order" cfc="Order";
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
+    // Injected Entity
+    property name="order" cfc="Order";
+    property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
 
-	property name="recipient" cfc="OrderItemGiftRecipient";
+    property name="recipient" cfc="OrderItemGiftRecipient" fieldType="many-to-one";
 
-	// Data Properties
- 	property name="firstName" type="string";
- 	property name="lastName" type="string";
- 	property name="emailAddress" type="string";
- 	property name="account";
- 	property name="quantity" type="numeric";
- 	property name="giftMessage";
+    // Data Properties
+    property name="firstName" type="string";
+    property name="lastName" type="string";
+    property name="emailAddress" type="string";
+    property name="account";
+    property name="quantity" type="numeric";
+    property name="giftMessage";
+    
+    // @hint Validation method to verify gift card codes are unique and not presently in use
+    public boolean function hasUniqueGiftCardCode() {
+        var recipient = getRecipient();
+        if(!isNull(recipient) && !isNull(recipient.getManualGiftCardCode())) {
+            if (!getDAO("giftCardDAO").verifyUniqueGiftCardCode(recipient.getManualGiftCardCode())) {
+                // Invalid gift card code, it is not unique because it already exists in database
+                return false;
+            }
+        }
 
- 	public string function getEmailAddress(){
- 		if(!structKeyExists(variables, "emailAddress")){
- 			return recipient.getEmailAddress();
- 		}
- 		return variables.emailAddress;
- 	}
+        return true;
+    }
+    // @hint Validation method to verify the length of the gift card codes
+    public boolean function hasProperGiftCardCodeLength() {
+        var recipient = getRecipient();
+        if(!isNull(recipient) && !isNull(recipient.getManualGiftCardCode())) {
+            if (len(recipient.getManualGiftCardCode()) != getOrderItem().getSku().setting('skuGiftCardCodeLength')) {
+                return false;
+            }
+        }
 
+        return true;
+    }
 }

@@ -69,13 +69,18 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="urlTitle" hb_populateEnabled="public" ormtype="string";
+
+	property name="verifiedByIntegrationFlag" hb_populateEnabled="false" ormtype="boolean";
+	property name="IntegrationVerificationErrorMessage" hb_populateEnabled="public" ormtype="string";
+	property name="verificationCacheKey" ormtype="string" hb_auditable="false";
+	property name="verificationJson" ormtype="string" hb_auditable="false";
 	
 	//Calculated Properties
 	property name="calculatedAddressName" ormtype="string" length="1024"; 
 	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
- 
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
@@ -120,6 +125,10 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	public any function copyAddress( saveNewAddress=true ) {
 		return getService("addressService").copyAddress( this, arguments.saveNewAddress );
+	}
+	
+	public boolean function getVerifiedByIntegrationFlag(){
+		return !isNull(variables.verifiedByIntegrationFlag) ? variables.verifiedByIntegrationFlag : false;
 	}
 	
 	public string function getFullAddress(string delimiter = ", ") {
@@ -179,6 +188,20 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 			rbKey('define.salutationMs'),
 			rbKey('define.salutationMiss')
 		];
+	}
+	
+	public any function getStateCodeFromAddressZoneOptions(){
+		var collectionList = getService('AddressService').getAddressZoneCollectionList();
+		collectionList.setDisplayProperties('stateCode|value,stateName|name');
+		if(!isNull(getCountryCode())) {
+			collectionList.addFilter("addressZoneCode", getCountryCode());	
+		} else {
+			collectionList.addFilter("addressZoneCode", 'US');
+		}
+		var options = [{'value' ='', 'name'='-- Select a State'}];
+		arrayAppend(options, collectionList.getRecords(), true );
+
+		return options;
 	}
 	
 	public array function getStateCodeOptions() {

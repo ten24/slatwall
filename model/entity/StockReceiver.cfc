@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallStockReceiver" table="SwStockReceiver" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component entityname="SlatwallStockReceiver" table="SwStockReceiver" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" hb_permission="stockAdjustment.stockReceivers"{
 	
 	
 	// Persistent Properties
@@ -62,6 +62,9 @@ component entityname="SlatwallStockReceiver" table="SwStockReceiver" persistent=
 	
 	// Related Object Properties (one-to-many)
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" fieldtype="one-to-many" fkcolumn="stockReceiverID" cascade="all-delete-orphan" inverse="true";
+	
+	// Remote Properties
+	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

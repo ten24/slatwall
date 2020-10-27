@@ -61,11 +61,17 @@ Notes:
 <cfoutput>
     <hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderitemgiftrecipients')#" smartList="#local.recipientList#" 
                 recordDetailAction="admin:entity.detailorderitemgiftrecipient"
-                recordEditAction="admin:entity.editorderitemgiftrecipient">
-            <hb:HibachiListingColumn propertyIdentifier="firstName" />
-            <hb:HibachiListingColumn propertyIdentifier="lastName" />
-            <hb:HibachiListingColumn propertyIdentifier="emailAddress" />
-            <hb:HibachiListingColumn propertyIdentifier="giftMessage" />
-            <hb:HibachiListingColumn propertyIdentifier="quantity" />
+				recordEditAction="admin:entity.editorderitemgiftrecipient">
+			<cfif rc.orderItem.getSku().getGiftCardRecipientRequiredFlag()>
+            	<hb:HibachiListingColumn propertyIdentifier="firstName" />
+            	<hb:HibachiListingColumn propertyIdentifier="lastName" />
+            	<hb:HibachiListingColumn propertyIdentifier="emailAddress" />
+				<hb:HibachiListingColumn propertyIdentifier="giftMessage" />
+			</cfif>
+			<cfif rc.orderItem.getSku().getGiftCardAutoGenerateCodeFlag()>
+				<hb:HibachiListingColumn propertyIdentifier="quantity" />
+			<cfelse>
+				<hb:HibachiListingColumn propertyIdentifier="manualGiftCardCode" />
+			</cfif>
     </hb:HibachiListingDisplay>
 </cfoutput>

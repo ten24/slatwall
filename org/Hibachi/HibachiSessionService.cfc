@@ -21,10 +21,62 @@ component output="false" accessors="true" extends="HibachiService"  {
 		config[ 'rbLocale' ] = rbLocale;
 		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
 		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
+		config[ 'attributeCacheKey' ] = '#getAttributeCacheKey()#';
 		return config;
 	}
 	
-	public void function setProperSession() {
+	public string function generateCSRFToken(boolean forceNew=false, string tokenName='hibachiCSRFToken'){ 
+		if(arguments.forceNew || !hasSessionValue(arguments.tokenName)){
+			setSessionValue(arguments.tokenName, createUUID());
+			this.logHibachi('generating new CSRF: #getSessionValue(arguments.tokenName)#');
+		} 
+		return getSessionValue(arguments.tokenName);
+	}
+
+	public boolean function verifyCSRFToken(required string requestToken,string tokenName='hibachiCSRFToken'){
+		if(!hasSessionValue(arguments.tokenName)){
+			return false; 
+		}
+
+		return arguments.requestToken == getSessionValue(arguments.tokenName); 
+	} 
+
+	public any function verifyCSRF(required any rc, required any framework){
+		// Right now this logic only runs if CSRF token is present, not as secure as it could be. 
+		if(structKeyExists(arguments.rc, "csrf") && !this.verifyCSRFToken(arguments.rc.csrf)){
+				
+				getHibachiScope().showMessage(getHibachiScope().rbKey("admin.define.csrfinvalid"),"success");
+	
+				//If the token is invalid we don't know if the original request was successful or not, right now this logic assumes success (not ideal)
+				if(structKeyExists(arguments.rc, "sRedirectURL")) {
+						arguments.framework.redirectExact( redirectlocation=arguments.rc.sRedirectURL );
+				} else if (structKeyExists(arguments.rc, "sRedirectAction")) {
+						if(!structKeyExists(arguments.rc,"sRedirectQS")){
+							arguments.rc.sRedirectQS = '';
+						}
+						arguments.framework.redirect( action=arguments.rc.sRedirectAction, preserve="messages", queryString=arguments.rc.sRedirectQS );
+				} else {
+					var frameworkConfig = arguments.framework.getConfig();  
+					var action = arguments.framework.getAction(); 
+					var subsystem = arguments.framework.getSubsystem(); 
+					var section = frameworkConfig['defaultSection'];
+					var item = frameworkConfig['defaultItem'];
+					var defaultSubsystemAction = subsystem & ':' & section & '.' & item;  
+ 					arguments.framework.redirect( action=defaultSubsystemAction, preserve="messages");
+				}	
+		}
+		
+		//only force a new token if one was passed in
+		arguments.rc.csrf = this.generateCSRFToken(structKeyExists(arguments.rc, "csrf")); 
+		
+ 		return arguments.rc;	
+	}
+	
+	public void function setProperSession(boolean stateless=false) {
+		if(arguments.stateless){
+			getHibachiScope().setSession(this.newSession());
+			return;
+		}
 		var requestHeaders = getHTTPRequestData();
 		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
@@ -205,6 +257,33 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
 		
 	}
+	
+	/**
+	 * Method to create account session using Bearer Token
+	 * */
+	public void function setAccountSessionByAuthToken(required string authToken){
+		var authorizationHeader = arguments.authToken;
+		var prefix = 'Bearer ';
+		//get token by stripping prefix
+		var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+		var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
+
+		if(jwt.verify()){
+			var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+			if(!isNull(jwtAccount)){
+				jwtAccount.setJwtToken(jwt);
+				getHibachiScope().getSession().setAccount( jwtAccount );
+			}
+		}
+	}
+	
+	public any function getSessionBySessionCookieNPSID(any cookie,boolean isNew=false){
+		var sessionEntity = getDao('accountDAO').getSessionBySessionCookieNPSID();
+		if(isNew && isNull(sessionEntity)){
+			return this.newSession();
+		}
+		return sessionEntity;
+ 	}
 	
 	public void function persistSession(boolean updateLoginCookies=false) {
 	

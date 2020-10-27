@@ -1,6 +1,7 @@
 {
 	"properties":{
 		"locationName":			[{"contexts":"save","required":true}],
+		"locationCode":			[{"contexts":"save","uniqueOrNull":true}],
 		"primaryAddress":		[{"contexts":"save","required":true}],
 		"stocks":	[{"contexts":"delete","maxCollection":0}],
 		"physicals":			[{"contexts":"delete","maxCollection":0}],

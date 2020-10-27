@@ -1,30 +1,75 @@
+/// <reference path="../../../../../../node_modules/typescript/lib/lib.es6.d.ts" />
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-class TypeaheadService{
+import * as TypeaheadStore from '../prototypes/swstore';
+import {Observable, Subject} from 'rxjs';
+
+
+class TypeaheadService {
     
     public typeaheadData = {};
-    public typeaheadPromises = {};
-    public typeaheadStates = {}; 
     
-    //@ngInject
-    constructor(
-        public $timeout, 
-        public observerService
-    ){
-        
+    public typeaheadPromises = {};
+    
+    //The state of the store
+    private typeaheadStates = {};
+    
+    private state:Object = {
+        typeaheadInstances: this.typeaheadStates
+    };
+
+    /**
+     * The reducer is responsible for modifying the state of the state object into a new state.
+     */
+    public typeaheadStateReducer = (state, action:TypeaheadStore.Action<string>):Object => {
+        switch(action.type) {
+            case 'TYPEAHEAD_QUERY':
+                //modify the state.
+                return {
+                    ...state, action
+                };
+            case 'TYPEAHEAD_USER_SELECTION':
+                //passthrough - no state change. anyone subscribed can handle this.
+                return {
+                    ...state, action
+                };
+            default:
+                return state;
+        }
     }
 
+    /**
+     *  Store stream. Set the initial state of the typeahead using startsWith and then scan. 
+     *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
+     * it with the newest result. 
+     */
+    public typeaheadStore:any;
+
+
+    //@ngInject
+    constructor(public $timeout, public observerService){
+        this.typeaheadStore = new TypeaheadStore.IStore(this.state, this.typeaheadStateReducer);//.combineLatest(this.loggerEpic)
+    }
+    
     public getTypeaheadSelectionUpdateEvent = (key:string) =>{
         return "typeaheadSelectionUpdated" + key; 
+    }
+    
+    public getTypeaheadClearSearchEvent = (key:string) =>{
+        return key + "clearSearch"; 
     }
 
     public attachTypeaheadSelectionUpdateEvent = (key:string, callback) =>{
         this.observerService.attach(callback, this.getTypeaheadSelectionUpdateEvent(key));
     }
 
-    public notifyTypeaheadSelectionUpdateEvent = (key:string) =>{
-        this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key)); 
+    public notifyTypeaheadSelectionUpdateEvent = (key:string, data:any) =>{
+        this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key), data); 
+    }
+    
+    public notifyTypeaheadClearSearchEvent = (key:string, data:any) =>{
+        this.observerService.notify(this.getTypeaheadClearSearchEvent(key), data); 
     }
 
     public setTypeaheadState = (key:string, state:any) =>{
@@ -57,7 +102,8 @@ class TypeaheadService{
             this.typeaheadData[key] = [];
         }
         this.typeaheadData[key].push(data); 
-        this.notifyTypeaheadSelectionUpdateEvent(key); 
+        this.notifyTypeaheadSelectionUpdateEvent(key,data); 
+       
     } 
 
     public removeSelection = (key:string, index:number, data?:any) => {
@@ -72,7 +118,7 @@ class TypeaheadService{
         ){
             this.updateSelections(key);
             var removedItem = this.typeaheadData[key].splice(index,1)[0];//this will always be an array of 1 element
-            this.notifyTypeaheadSelectionUpdateEvent(key); 
+            this.notifyTypeaheadSelectionUpdateEvent(key,removedItem); 
             return removedItem; 
         }
     }

@@ -59,7 +59,9 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 
 	// Related Object Properties (one-to-many)
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderDeliveryItemID" inverse="true" cascade="all"; // Used For Returns
-
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderDeliveryItemID" cfc="FulfillmentBatchItem" inverse="true";
+	property name="containerItems" singularname="containerItem" fieldType="one-to-many" type="array" fkColumn="orderDeliveryItemID" cfc="ContainerItem" inverse="true";
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -96,6 +98,41 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 			return this.getOrderItem().getSku();
 		}
 		return;
+	}
+	
+	public numeric function getPrice() {
+		if(!structKeyExists(variables,'price')){
+			var variables.price = 0;
+
+			if( !isNull(getOrderItem().getPrice()) ){
+				variables.price = getOrderItem().getPrice();
+			}
+		}
+
+		return variables.price;
+
+	}
+
+	public numeric function getExtendedPrice() {
+		if(!structKeyExists(variables,'extendedPrice')){
+			variables.extendedPrice = val(getService('HibachiUtilityService').precisionCalculate(round(getPrice() * val(getQuantity()) * 100) / 100));
+		}
+
+		return variables.extendedPrice;
+	}
+
+	public numeric function getDiscountAmount(boolean forceCalculationFlag = true) {
+		var discountAmount = getOrderItem().getDiscountAmount();
+
+		if (discountAmount > 0 ) {
+			discountAmount = getService('HibachiUtilityService').precisionCalculate( (discountAmount * 100) / getOrderItem().getQuantity() * getQuantity() / 100);
+		}
+
+		return discountAmount;
+	}
+
+	public numeric function getExtendedPriceAfterDiscount(boolean forceCalculationFlag = false) {
+		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments));
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
@@ -146,6 +183,14 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	}
 	public void function removeReferencingOrderItem(required any referencingOrderItem) {
 		arguments.referencingOrderItem.removeReferencedOrderDeliveryItem( this );
+	}
+	
+	// Fulfillment Batch Items (one-to-many)
+	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		arguments.fulfillmentBatchItem.setOrderDeliveryItem( this );
+	}
+	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		arguments.fulfillmentBatchItem.removeOrderDeliveryItem( this );
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

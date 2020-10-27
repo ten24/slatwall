@@ -121,6 +121,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
+	public void function getProperlyCasedPropertyIdentifierTest(){
+		assertTrue(variables.service.getProperlyCasedPropertyIdentifier('product','categories.categoryid') == 'categories.categoryID');
+		assertTrue(variables.service.getProperlyCasedPropertyIdentifier('product','CaTeGoRiEs.CaTeGoRyID') == 'categories.categoryID');
+	}
+
+	/**
+	* @test
+	*/
 	public void function transformArrayOfStructsToQueryTest(){
 
 	}
@@ -129,6 +137,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 //	public void function getHasAttributeByEntityNameAndPropertyIdentifierTest(){
 //		assertTrue(variables.service.getHasAttributeByEntityNameAndPropertyIdentifier('SlatwallSku','product.asdf'));
 //	}
+
+
+
+
 }
 
 

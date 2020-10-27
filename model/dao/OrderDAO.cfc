@@ -57,15 +57,66 @@ Notes:
 			UPDATE SwSession SET orderID = null WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="turnOnPaymentProcessingFlag" access="public" returntype="void" output="false">
+		<cfargument name="orderID" type="string" required="true" />
+		
+		<cfset var rs = "" />
+ 		<cfquery name="rs">
+			UPDATE sworder set paymentProcessingInProgressFlag=true where orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+		</cfquery>
+	</cffunction>
+	
+	<cffunction name="getDeliveredQuantitySum" access="public" returntype="any">
+			<cfargument name="orderItemID" type="string" required="true" />
 
+			<cfset var rs = "" />
+
+			<cfquery name="rs">
+					SELECT COALESCE(sum(odi.quantity),0) as deliveredQuantity
+						FROM SwOrderDeliveryItem odi
+						INNER JOIN SwOrderItem oi on oi.orderItemID = odi.orderItemID 
+						WHERE odi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+			</cfquery>
+			<cfreturn rs.deliveredQuantity>
+	</cffunction>
+	
+	<cffunction name="getDeliveredQuantitySumByOrderID" access="public" returntype="any">
+			<cfargument name="orderID" type="string" required="true" />
+
+			<cfset var rs = "" />
+
+			<cfquery name="rs">
+					SELECT COALESCE(sum(odi.quantity),0) as deliveredQuantity
+						FROM SwOrderDeliveryItem odi
+						INNER JOIN SwOrderItem oi on oi.orderItemID = odi.orderItemID 
+						INNER JOIN swOrder o on o.orderID = oi.orderID
+						WHERE o.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+			</cfquery>
+			<cfreturn rs.deliveredQuantity>
+	</cffunction>
+	
+	<cffunction name="getOrderItemCountByProductTypeName" access="public" returntype="boolean">
+		<cfargument name="orderID" type="string" required="true" />
+		<cfargument name="productTypeName" type="string" required="true" />
+		<cfquery name="local.orderItemCount">
+			    SELECT count(*) as count FROM swOrderItem oi
+			    INNER JOIN swSku s ON oi.skuID = s.skuID
+			    INNER JOIN swProduct p ON s.productID = p.productID
+			    INNER JOIN swProductType pt ON p.productTypeID = pt.productTypeID
+			    WHERE pt.productTypeName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeName#" />
+			    AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+		</cfquery>
+		<cfreturn local.orderItemCount.count />
+	</cffunction>
+		
 	<cfscript>
 		public any function getMostRecentNotPlacedOrderByAccountID( required string accountID ) {
-			var results = ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = ? ORDER BY modifiedDateTime DESC", [arguments.accountID], false, {maxResults=1});
-			if(arrayLen(results) && results[1].getOrderStatusType().getSystemCode() == "ostNotPlaced" ) {
-				return results[1];
-			}
-		}
-
+			return ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = :accountID AND o.orderStatusType.systemCode = :orderStatusType AND o.orderType.systemCode = :orderType ORDER BY modifiedDateTime DESC", 
+			{accountID:arguments.accountID,orderStatusType:'ostNotPlaced',orderType:'otSalesOrder'}, true, {maxResults=1}
+			);
+		}		
+	
 		public struct function getQuantityPriceSkuAlreadyReturned(required any orderID, required any skuID) {
 			var params = [arguments.orderID, arguments.skuID];
 
@@ -110,13 +161,19 @@ Notes:
 		}
 
 		public boolean function getPeerOrderPaymentNullAmountExistsFlag(required string orderID, string orderPaymentID) {
-			var result = ormExecuteQuery("SELECT orderPaymentID FROM SlatwallOrderPayment op WHERE op.order.orderID = ? AND op.amount IS NULL AND op.orderPaymentStatusType.systemCode = ?", [arguments.orderID, 'opstActive']);
-
-			if(arrayLen(result) && (!structKeyExists(arguments, "orderPaymentID") || result[1] neq arguments.orderPaymentID)) {
-				return true;
+		
+			var params = [arguments.orderID, 'opstActive'];
+			var hql = "SELECT count(orderPaymentID) FROM SlatwallOrderPayment op WHERE op.order.orderID = ? AND op.amount IS NULL AND op.orderPaymentStatusType.systemCode = ?";
+			
+			if(structKeyExists(arguments, "orderPaymentID") ){
+				arrayAppend(params,arguments.orderpaymentID);
+				hql &= " AND op.orderPaymentID !=?";
 			}
+			
+			var result = ormExecuteQuery(hql,params,true );
 
-			return false;
+			
+			return result;
 		}
 
 		public array function getRootOrderItems(required string orderID){
@@ -127,6 +184,37 @@ Notes:
 					   AND oi.order.orderID = ? ";
 
 			return ormExecuteQuery(hql, params);
+		}
+		
+		public void function insertSubscriptionOrderDeliveryItem(
+			required string subscriptionOrderItemID, 
+			numeric quantity=1, 
+			numeric extendedprice,
+			numeric taxAmount,
+			required string deliveryScheduleDateID
+		){
+			var q = new query();
+			
+			var subscriptionOrderDeliveryItemID = createHibachiUUID();
+			q.addParam(name='subscriptionOrderDeliveryItemID',value=subscriptionOrderDeliveryItemID);
+			q.addParam(name='subscriptionOrderItemID',value=arguments.subscriptionOrderItemID);
+			q.addParam(name='quantity',value=arguments.quantity);
+			q.addParam(name="earned",value=arguments.quantity*arguments.extendedprice);
+			q.addParam(name="taxAmount",value=arguments.quantity*arguments.taxAmount);
+			q.addParam(name='createdByAccountID',value=getHibachiScope().getAccount().getAccountID());
+			q.addParam(name='createdDateTime',value=now(),cfsqltype="cf_sql_timestamp");
+			q.addParam(name='modifiedByAccountID',value=getHibachiScope().getAccount().getAccountID());
+			q.addParam(name='modifiedDateTime',value=now(),cfsqltype="cf_sql_timestamp");
+			//Subscription Order Delivery Item Type Delivered
+			q.addParam(name='subscriptionOrderDeliveryItemTypeID',value='f22e6a41d678334700a550bddec925d2');
+			q.addParam(name="deliveryScheduleDateID",value=arguments.deliveryScheduleDateID);
+			
+			var sql = "INSERT INTO swsubscriptionorderdeliveryitem (subscriptionOrderDeliveryItemID,subscriptionOrderItemID,quantity,createdByAccountID,createdDateTime,modifiedByAccountID,modifiedDateTime,earned,taxAmount,subscriptionOrderDeliveryItemTypeID,deliveryScheduleDateID) 
+						VALUES (:subscriptionOrderDeliveryItemID,:subscriptionOrderItemID,:quantity,:createdByAccountID,:createdDateTime,:modifiedByAccountID,:modifiedDateTime,:earned,:taxAmount,:subscriptionOrderDeliveryItemTypeID,:deliveryScheduleDateID)";
+			
+			q.setSQL(sql);
+			
+			q.execute();
 		}
 
 	</cfscript>
@@ -210,7 +298,10 @@ Notes:
 			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem oi
     		LEFT JOIN SwSku s ON s.skuID = oi.skuID
     		LEFT JOIN SwProduct p ON s.productID = p.productID
-    		WHERE p.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4" />
+    		LEFT JOIN SwProductType pt on p.productTypeID = pt.productTypeID
+    		
+    		where pt.productTypeIDPath LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4%" />
+
     		AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 

@@ -51,6 +51,11 @@ class UtilityService extends BaseService{
      public isLowerCase = (character)=>{
         return character == character.toLowerCase()
     }
+    
+    public toCamelCase = (s)=>{
+        return s.toUpperCase().split("")[0]+s.toLowerCase().slice(1);
+;
+    }
 
     public snakeToCapitalCase = (s)=>{
         return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();}).slice(1);
@@ -178,26 +183,22 @@ class UtilityService extends BaseService{
     };
 
     /**
-     * Removes a substring from a string.
-     * str: The original string.
-     * subStr: The string to remove.
-     * returns the modified string.
+     * Removes an element from a list.
+     * str: The original list.
+     * subStr: The element to remove.
+     * returns the modified list.
      */
-     public listRemove = (str:string, substring:string) => {
-        if (str.indexOf(substring) != -1){
-            //remove it cause its no longer selected.
-            str = str.replace(substring, "");
-            str = str.replace(",,", "");
-            if (str == ","){
-                str = "";
-            }
-            if (str.substring(0, 1) == ',') { 
-                str = str.substring(1);
-            }
-            str = str.substring(0, str.length-1);
+      public listRemove = (str:string, substring:string) => {
+        
+        var strArray = str.split(',');
+        var index = strArray.indexOf(substring);
+        
+        if (index > -1) {
+            strArray.splice(index, 1);
         }
-
-        return str;
+        
+        return strArray.join();
+        
     }
 
     public formatValue=(value,formatType,formatDetails,entityInstance)=>{
@@ -381,7 +382,7 @@ class UtilityService extends BaseService{
     //utility service toJson avoids circular references
     public toJson = (obj) =>{
         var seen = [];
-
+        
         return JSON.stringify(obj, (key, val)=>{
             if (val != null && typeof val == "object") {
                 if (seen.indexOf(val) >= 0) {
@@ -391,6 +392,22 @@ class UtilityService extends BaseService{
             }
             return val;
         });
+    }
+    
+    public getCaseInsensitiveStructKey=(obj,prop)=>{
+      prop = (prop + "").toLowerCase();
+      for(var p in obj){
+         if(obj.hasOwnProperty(p) && prop == (p+ "").toLowerCase()){
+               return p;
+               break;
+          }
+       }
+    }
+    
+    public listFindNoCase = (list: string = '', value: string = '', delimiter: string = ',')=>{
+        list = list.toLowerCase();
+        value=value.toLowerCase();
+        return this.listFind(list,value,delimiter);
     }
 
     public listFind = (list: string = '', value: string = '', delimiter: string = ','): number => {
@@ -462,16 +479,12 @@ class UtilityService extends BaseService{
             return returnArray;
     };
 
+
         public minutesOfDay = (m):number=>{
             return m.getMinutes() + m.getHours() * 60;
         };
 
-        public removeTimeOffset = (timestampStr) =>{ 
-            var date = new Date(timestampStr);
-            var correctDate = new Date();
-            correctDate.setUTCFullYear(date.getFullYear(),date.getMonth(),date.getDate());
-            return correctDate.setUTCHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
-        };
+
 }
 export {
     UtilityService

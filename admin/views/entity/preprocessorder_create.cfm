@@ -71,6 +71,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="createAuthenticationFlag" edit="#rc.edit#" fieldType="yesno">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#" fieldType="yesno">
 				<hb:HibachiDisplayToggle selector="input[name='createAuthenticationFlag']" loadVisable="#rc.processObject.getCreateAuthenticationFlag()#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
@@ -86,8 +87,10 @@ Notes:
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeID" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderOriginID" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="defaultStockLocationID" edit="#rc.edit#">
+			<!---location type ahead collection--->
+			<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" object="#rc.processObject#" property="defaultStockLocationID" edit="true">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

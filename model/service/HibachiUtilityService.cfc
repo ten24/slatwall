@@ -54,14 +54,27 @@ Notes:
 		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
 			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
-				var currency = getService("currencyService").getCurrency( arguments.formatDetails.currencyCode );
-				if(!isNull(currency)){
-					return currency.getCurrencySymbol() & LSNumberFormat(arguments.value, ',.__');
+				var currencySymbol = getCurrencySymbolByCurrencyCode(arguments.formatDetails.currencyCode);
+				if(!isNull(currencySymbol)){
+					return currencySymbol & LSNumberFormat(arguments.value, ',.__');
 				}
 			}
 
 			// Otherwsie use the global currencyLocal
 			return LSCurrencyFormat(arguments.value, getSettingService().getSettingValue("globalCurrencyType"), getSettingService().getSettingValue("globalCurrencyLocale"));
+		}
+		
+		public any function getCurrencySymbolByCurrencyCode(required string currencyCode){
+			var cacheKey = 'getCurrencySymbolByCurrencyCode#arguments.currencyCode#';
+			if(!structKeyExists(variables,cacheKey)){
+				var currency = getService("currencyService").getCurrency( arguments.currencyCode );
+				if(!isNull(currency)){
+					variables[cacheKey] = currency.getCurrencySymbol();
+					return variables[cacheKey];
+				}
+			}else{
+				variables[cacheKey];
+			}
 		}
 
 		public any function formatValue_datetime( required string value, struct formatDetails={} ) {
@@ -89,7 +102,7 @@ Notes:
 
 				return keyLocation & '/';
 			}
-			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+			return expandPath('/#getApplicationValue('applicationKey')#/custom/system/');
 		}
 
 		public string function getLegacyEncryptionAlgorithm() {
@@ -105,6 +118,21 @@ Notes:
 		}
 
 	</cfscript>
+	
+	<cffunction name="arrayReverse">
+		<cfargument name="inArray">
+		<cfscript>
+			var outArray = ArrayNew(1);
+		    var i=0;
+		    var j = 1;
+		    for (i=ArrayLen(arguments.inArray);i GT 0;i=i-1){
+		        outArray[j] = arguments.inArray[i];
+		        j = j + 1;
+		    }
+		    return outArray;
+		</cfscript>
+	</cffunction>
+	
 	<!---
 	QueryTreeSort takes a query and efficiently (O(n)) resorts it hierarchically (parent-child), adding a Depth column that can then be used when displaying the data.
 
@@ -417,7 +445,8 @@ Notes:
 	* @return struct with file info.
 	*/
 	public struct function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean download = true ) {
-		 return getService("HibachiService").export(data=data, columns=columns, columnNames=columnNames, fileName=fileName, fileType=fileType, downloadFile=download);
+		 arguments.downloadFile = arguments.download;
+		 return getService("HibachiService").export(argumentCollection=arguments);
 	}
 	
 	// @hint utility function to sort array of ojbects can be used to override getCollection() method to add sorting.
@@ -455,6 +484,41 @@ Notes:
 	        	arrayAppend(sortedArray, tempStruct[keys[i]]);
 	        }
 	        return sortedArray;
+	}
+	
+	// strictSerializeJSON should be used in place of the default SerializeJSON
+	public string function strictSerializeJSON(required any data){
+		if(isStruct(data)){
+			var json = "{";
+			for(var key in data){
+				if(!structKeyExists(data, key)){
+					continue;
+				}
+
+				json &= '"#key#":';
+				if(!isSimpleValue(data[key])){
+					json &= strictSerializeJSON(data[key]);
+					json &= ',';
+				}else{
+					json &= '"#data[key]#",';
+				}
+			}
+			json = REReplace(json, ",$", "");
+			json &= "}";
+		}else if(isArray(data)){
+			var json="[";
+			for(var value in data){
+				if(!isSimpleValue(value)){
+					json &= strictSerializeJSON(value);
+					json &= ',';
+				}else{
+					json &= '"#value#",';
+				}
+			}
+			json = REReplace(json, ",$", "");
+			json &= "]";
+		}
+		return json;
 	}
 
 	// remove primary key from cols listing 

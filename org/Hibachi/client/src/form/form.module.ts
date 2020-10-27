@@ -11,6 +11,8 @@ import {FileService} from "./services/fileservice";
 import {SWInput} from "./components/swinput";
 import {SWFFormField} from "./components/swfformfield";
 import {SWForm} from "./components/swform";
+import {SWFForm} from "./components/swfform";
+import {SWFFileInput} from "./components/swffileinput";
 import {SWFormField} from "./components/swformfield";
 import {SWFormFieldFile} from "./components/swformfieldfile";
 import {SWFormFieldJson} from "./components/swformfieldjson";
@@ -21,6 +23,7 @@ import {SWAddressForm} from "./components/swaddressform";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
+import {SWVerifyAddressDialog} from "./components/swverifyaddressdialog";
 
 var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',coremodule.name]).config(()=>{
 
@@ -32,6 +35,8 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',core
 .directive('swInput',SWInput.Factory())
 .directive('swfFormField',SWFFormField.Factory())
 .directive('swForm',SWForm.Factory())
+.directive('swfForm',SWFForm.Factory())
+.directive('swfFileInput',SWFFileInput.Factory())
 .directive('swFormField',SWFormField.Factory())
 .directive('swFormFieldFile',SWFormFieldFile.Factory())
 .directive('swFormFieldJson',SWFormFieldJson.Factory())
@@ -41,7 +46,9 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',core
 .directive('swPropertyDisplay',SWPropertyDisplay.Factory(SWPropertyDisplay,"propertydisplay.html"))
 .directive('swErrorDisplay',SWErrorDisplay.Factory())
 .directive('swAddressForm',SWAddressForm.Factory())
+.directive('swVerifyAddressDialog',SWVerifyAddressDialog.Factory())
 .directive('swFormSubscriber',SWFormSubscriber.Factory());
+
 export{
 	formmodule
 }

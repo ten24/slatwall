@@ -58,10 +58,13 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="minimumShipmentItemPrice" ormtype="big_decimal" hb_formatType="currency"  hb_nullRBKey="define.0";
 	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.unlimited";
 	property name="rateMultiplierAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
+	property name="ratePerContainer" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
 	property name="defaultAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
+	property name="ratePercentage" ormtype="big_decimal" hb_formatType="percentage" hb_nullRBKey="define.0";
 	property name="shippingIntegrationMethod" ormtype="string";
 	property name="splitShipmentWeight" ormtype="float" hb_nullRBKey="define.unlimited";
 	property name="activeFlag" ormtype="boolean";
+	property name="rateType" ormtype="string" hb_formFieldType="select" default="amount";
 	
 	// Related Object Properties (many-to-one)
 	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
@@ -70,7 +73,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	
 	// Related Object Properties (one-to-many)
 	property name="shippingMethodOptions" singularname="shippingMethodOption" cfc="ShippingMethodOption" type="array" fieldtype="one-to-many" fkcolumn="shippingMethodRateID" cascade="delete-orphan" inverse="true" lazy="extra";
-    
+    property name="manualRateIntegrationMethods" singularname="manualRateIntegrationMethod" cfc="ShippingMethodRateIntegrationMethod" type="array" fieldtype="one-to-many" fkcolumn="shippingMethodRateID" cascade="delete-orphan" inverse="true";
 	// Related Object Properties (many-to-many - owner)
 	property name="priceGroups" singularname="priceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwShippingMethodRatePriceGroup" fkcolumn="shippingMethodRateID" inversejoincolumn="priceGroupID";
     
@@ -109,6 +112,10 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		}
 		return variables.addressZoneOptions;
 	}
+		
+	public any function getRateTypeOptions(){
+		return ["Amount","Percentage"];
+	}
 	
 	public string function getShipmentWeightRange() {
 		if(!structKeyExists(variables, "shipmentWeightRange")) {
@@ -138,6 +145,11 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		}
 		return variables.shipmentWeightRange;
 	}
+	
+	public boolean function hasShippingMethodRateIntegrationMethod(required string method,required string integrationID){
+		return getDAO('ShippingDAO').hasShippingMethodRateIntegrationMethod(this.getShippingMethodRateID(),arguments.method,arguments.integrationID);
+	}
+	
 	
 	public string function getShipmentQuantityRange() {
         if(!structKeyExists(variables, "shipmentQuantityRange")) {

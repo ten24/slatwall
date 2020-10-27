@@ -157,10 +157,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				paymentMethodSmartList.addInFilter('paymentMethodID', arguments.order.getAccount().setting('accountEligiblePaymentMethods'));
 			}
 			var activePaymentMethods = paymentMethodSmartList.getRecords();
-			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-				var epmList = arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods");
-				for(var x=1; x<=listLen( epmList ); x++) {
-					var thisPaymentMethodID = listGetAt(epmList, x);
+			
+			//loop over orderitems and compare the skuEligiblePaymentMethods
+			var orderItemsCount = arrayLen(arguments.order.getOrderItems());
+			for(var i=1; i<=orderItemsCount; i++) {
+				var epmArray = listToArray(arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods"));
+				var empArrayCount = arrayLen(epmArray);
+				for(var x=1; x<=empArrayCount; x++) {
+					var thisPaymentMethodID = epmArray[x];
 					if(!structKeyExists(paymentMethodMaxAmount, thisPaymentMethodID)) {
 						paymentMethodMaxAmount[thisPaymentMethodID] = arguments.order.getFulfillmentChargeAfterDiscountTotal();
 					}
@@ -169,7 +173,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Loop over and update the maxAmounts on these payment methods based on the skus for each
-			for(var i=1; i<=arrayLen(activePaymentMethods); i++) {
+			var activePaymentsCount = arrayLen(activePaymentMethods);
+			for(var i=1; i<=activePaymentsCount; i++) {
 				if( structKeyExists(paymentMethodMaxAmount, activePaymentMethods[i].getPaymentMethodID()) && paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ] gt 0 ) {
 
 					// Define the maximum amount
@@ -182,8 +187,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					// If the maximumAmount is more than we need for this order, then just set it to the amount needed
-					if(maximumAmount > arguments.order.getOrderPaymentChargeAmountNeeded()) {
-						maximumAmount = arguments.order.getOrderPaymentChargeAmountNeeded();
+					var orderPaymentChargeAmountNeeded = arguments.order.getOrderPaymentChargeAmountNeeded();
+					if(maximumAmount > orderPaymentChargeAmountNeeded) {
+						maximumAmount = orderPaymentChargeAmountNeeded;
 					}
 
 					// If this is a termPayment type, then we need to check the account on the order to verify the max that it can use.
@@ -198,17 +204,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								if(arguments.order.getAccount().getTermAccountAvailableCredit() < maximumAmount) {
 									maximumAmount = arguments.order.getAccount().getTermAccountAvailableCredit();
 								}
-								var eligiblePaymentMethod = getTransient('EligiblePaymentMethodBean');
-								eligiblePaymentMethod.setPaymentMethod(activePaymentMethods[i]);
-								eligiblePaymentMethod.setPaymentTerm(paymentTerm);
-								eligiblePaymentMethod.setMaximumAmount(maximumAmount);
+								var eligiblePaymentMethod = {};
+								eligiblePaymentMethod.paymentMethod = activePaymentMethods[i];
+								eligiblePaymentMethod.maximumAmount =maximumAmount;
+								eligiblePaymentMethod.paymentTerm = paymentTerm;
+								
 								arrayAppend(eligiblePaymentMethodDetails, eligiblePaymentMethod);
 							}
 						}
 					} else {
-						var eligiblePaymentMethod = getTransient('EligiblePaymentMethodBean');
-						eligiblePaymentMethod.setPaymentMethod(activePaymentMethods[i]);
-						eligiblePaymentMethod.setMaximumAmount(maximumAmount);
+						
+						var eligiblePaymentMethod = {};
+						eligiblePaymentMethod.paymentMethod = activePaymentMethods[i];
+						eligiblePaymentMethod.maximumAmount =maximumAmount;
+						
 						arrayAppend(eligiblePaymentMethodDetails, eligiblePaymentMethod);
 					}
 				}
@@ -224,7 +233,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var l = len(trim(arguments.creditCardNumber));
 			if( (l == 13 || l == 16) && left(n,1) == 4 ) {
 				return 'Visa';
-			} else if ( l == 16 && left(n,2) >= 51 && left(n,2) <= 55 ) {
+			} else if ( l == 16 && ((left(n,2) >= 51 && left(n,2) <= 55) || (left(n,4) >= 2221 && left(n,4) <= 2720)) ) {
 				return 'MasterCard';
 			} else if ( l == 16 && left(n,2) == 35 ) {
 				return 'JCB';
@@ -292,6 +301,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 
+	public any function processPaymentTransaction_voidTransaction(required any paymentTransaction, required struct data) {
+		var originalPaymentTransaction = arguments.paymentTransaction;
+		
+		// Create a new payment transaction
+		var newPaymentTransaction = this.newPaymentTransaction();
+		
+		// Setup the orderPayment in the transaction to be used by the 'runTransaction'
+		newPaymentTransaction.setOrderPayment( originalPaymentTransaction.getOrderPayment() );
+		
+		// Setup the transaction data
+		transactionData = {
+			transactionType = 'void',
+			originalPaymentTransaction = originalPaymentTransaction
+		};
+		
+		// Run the transaction
+		newPaymentTransaction = this.processPaymentTransaction(newPaymentTransaction, transactionData, 'runTransaction');
+		// If the paymentTransaction has errors, then add those errors to the orderPayment itself
+		if(newPaymentTransaction.hasError('runTransaction')) {
+			originalPaymentTransaction.addError('createTransaction', newPaymentTransaction.getError('runTransaction'), true);
+		} else {
+			//On the void transaction, cancel out the original amount(s).
+			if (!isNull(originalPaymentTransaction.getAmountReceived())){
+				newPaymentTransaction.setAmountReceived(originalPaymentTransaction.getAmountReceived() * -1);
+			}
+			
+			if (!isNull(originalPaymentTransaction.getAmountCredited())){
+				newPaymentTransaction.setAmountCredited(originalPaymentTransaction.getAmountCredited() * -1);
+			}
+		}				
+ 		return paymentTransaction;
+	}
 
 	public any function processPaymentTransaction_runTransaction(required any paymentTransaction, required struct data) {
 		param name="arguments.data.amount" default="0";
@@ -371,6 +412,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							arguments.paymentTransaction.setCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPaymentMethod") {
 							requestBean.populatePaymentInfoWithAccountPaymentMethod( arguments.paymentTransaction.getPayment() );
+						}
+
+						if(!isNull(arguments.data.originalPaymentTransaction)){
+							requestBean.setOriginalProviderTransactionID( arguments.data.originalPaymentTransaction.getProviderTransactionID() );
 						}
 
 						// Wrap in a try / catch so that the transaction will still get saved to the DB even in error
@@ -482,12 +527,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         if(
                         	!isNull(arguments.paymentTransaction.getPayment().getPaymentMethod())
                         	&& listFindNoCase("giftCard", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType())
+                        	&& !isNull(arguments.paymentTransaction.getOrderPayment().getGiftCardNumberEncrypted())
                         ){
                             var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.paymentTransaction.getOrderPayment().getGiftCardNumberEncrypted()));
 
 							var amount = arguments.data.amount;
 
-                            if(arguments.data.transactionType == "charge"){
+                            if(arguments.data.transactionType == "charge" || arguments.data.transactionType == "receive"){
 
                                 var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
 
@@ -534,6 +580,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                             }
 
                         } else {
+                        	if(arguments.paymentTransaction.getPayment().getClassName() == 'OrderPayment'){
+                        		var orderPaymentProcessObject = arguments.paymentTransaction.getPayment().getOrder().getProcessObject('addOrderPayment');
+                        	}
 		
                             // Setup amountReceived
                             if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
@@ -544,6 +593,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                             if( listFindNoCase("credit,creditOffline", arguments.data.transactionType) ) {
                                 arguments.paymentTransaction.setAmountCredited( arguments.data.amount );
                             }
+                            
+                            if(arguments.paymentTransaction.getPayment().getClassName() == 'OrderPayment' && orderPaymentProcessObject.hasErrors()) {
+								// add errors to the paymentTransaction
+								arguments.paymentTransaction.addError('runTransaction', orderPaymentProcessObject.getErrors(), true);
+							}
+                            arguments.paymentTransaction.setTransactionSuccessFlag( false );
                         }
                         arguments.paymentTransaction.setTransactionSuccessFlag( true );
 

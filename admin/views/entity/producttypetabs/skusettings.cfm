@@ -52,7 +52,7 @@ Notes:
 <cfparam name="rc.productType" type="any" />
 
 <cfoutput>
-	<swa:SlatwallSettingTable>
+	<swa:SlatwallSettingTable showMultiSite="true" includeSettingNamesOnlyForSites="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods">
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.productType#" />
@@ -72,11 +72,28 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.productType#" />
+		<cfif rc.productType.getBaseProductType() eq "gift-card">
+			<swa:SlatwallSetting settingName="skuGiftCardAutoGenerateCode" settingObject="#rc.productType#" />
+			<swa:SlatwallSetting settingName="skuGiftCardCodeLength" settingObject="#rc.productType#" />
+			<swa:SlatwallSetting settingName="skuGiftCardRecipientRequired" settingObject="#rc.productType#" />
+		</cfif>
 		<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.productType#" />
 		<cfif rc.productType.getBaseProductType() eq "merchandise">
 			<!--- Wrap this arround settings if you want to disable them for certain product types --->
 		<cfelseif  rc.productType.getBaseProductType() eq "event">
 			<swa:SlatwallSetting settingName="skuEventEnforceConflicts" settingObject="#rc.productType#" />
+		</cfif>
+		<cfif rc.productType.getBaseProductType() neq "gift-card">
+			<swa:SlatwallSetting settingName="skuExpenseLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuRevenueLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuCogsLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuAssetLedgerAccount" settingObject="#rc.productType#"/>
+		</cfif>
+		<cfif rc.productType.getBaseProductType() eq "gift-card">
+			<swa:SlatwallSetting settingName="skuLiabilityLedgerAccount" settingObject="#rc.productType#"/>
+		</cfif>
+		<cfif rc.productType.getBaseProductType() eq "subscription">
+			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.productType#"/>
 		</cfif>
 	</swa:SlatwallSettingTable>
 </cfoutput>

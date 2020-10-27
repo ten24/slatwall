@@ -85,7 +85,13 @@ Notes:
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="takeOffHold" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="cancelOrder" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />
-
+			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateOrderAmounts" type="list" />
+			
+			<!--- Reopen a placed order --->
+			<cfif rc.order.getOrderStatusType().getSystemCode() eq "ostClosed">
+				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="reopenOrder" type="list" hideDisabled="false" />
+			</cfif>
+			
 			<!--- Create Return --->
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" type="list" modal="true" />
 
@@ -144,8 +150,11 @@ Notes:
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.order#" attributeSet="#attributeSet#" />
 			</cfloop>
 
+			<!--- Settings --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/ordersettings" />
+			
 			<!--- Comments --->
-			<swa:SlatwallAdminTabComments object="#rc.order#" childObjects="#rc.order.getOrderItems()#" />
+			<swa:SlatwallAdminTabComments object="#rc.order#" />
 
 		</hb:HibachiEntityDetailGroup>
 

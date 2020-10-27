@@ -49,43 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.orderSmartList" type="any" />
-<cfparam name="rc.productReviewSmartList" type="any" />
+<cfparam name="rc.report" type="any" />
 
 <cfoutput>
-	<div class="row s-body-nav">
-	    <nav class="navbar navbar-default" role="navigation">
-	      <div class="col-md-4 s-header-info">
-
-				<!--- Page Title --->
-				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.default')#</h1>
-			</div>
-		 </div>
-	   </nav>
-	 </div>
-	
-	<div class="col-md-12"><hb:HibachiMessageDisplay /></div>
-
-	<div class="col-md-6">
-		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" smartList="#rc.orderSmartList#"
-				recordDetailAction="admin:entity.detailorder">
-			<hb:HibachiListingColumn propertyIdentifier="orderNumber" />
-			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-			<hb:HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
-			<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" filter="true"/>
-			<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
-		</hb:HibachiListingDisplay>
-		<br />
-		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" smartList="#rc.productReviewSmartList#"
-				recordDetailAction="admin:entity.detailproductreview">
-			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.calculatedTitle" />
-			<hb:HibachiListingColumn propertyIdentifier="reviewerName" />
-			<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
-		</hb:HibachiListingDisplay>
+	<div class="col-md-12">
+		<hb:HibachiMessageDisplay />
 	</div>
-	<div class="col-md-6">
-		<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
-		<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
-	</div>
-	
-
+	<hb:HibachiReportViewer report="#rc.report#" collectionList="#rc.orderCollectionList#" />
 </cfoutput>

@@ -9,6 +9,7 @@
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
+			
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="urlTitle" edit="#rc.edit#" valueLink="#rc.product.getProductURL()#">
@@ -16,6 +17,17 @@
 				<hb:HibachiPropertyDisplay object="#rc.product#" property="purchaseStartDateTime" hb_rbKey="entity.product.purchaseStartDateTime" edit="#rc.edit#"/>
 				<hb:HibachiPropertyDisplay object="#rc.product#" property="purchaseEndDateTime" hb_rbKey="entity.product.purchaseEndDateTime" edit="#rc.edit#"/>
 			</cfif>
+			<hb:HibachiPropertyDisplay object="#rc.product#" property="deferredRevenueFlag" edit="#rc.edit#">
+			<hb:HibachiDisplayToggle 
+				selector="input[name='deferredRevenueFlag']"  
+				loadVisable="#rc.product.getDeferredRevenueFlag()#" showValues="1"
+			>
+				<cfif !isNull(rc.product.getNextDeliveryScheduleDate())>
+					<hb:HibachiPropertyDisplay object="#rc.product.getNextDeliveryScheduleDate()#" property="deliveryScheduleDateValue" edit="false">
+				</cfif>
+			</hb:HibachiDisplayToggle>
+			
+			
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">

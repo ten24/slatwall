@@ -13,7 +13,7 @@ class SWGiftCardOrderInfoController{
 	public init = ():void =>{
 
 		var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
-		orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
+		orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, orderOrigin.orderOriginName, account.firstName, account.lastName");
 		orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
 		orderConfig.setAllRecords(true);
 

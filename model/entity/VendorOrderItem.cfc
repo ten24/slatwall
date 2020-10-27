@@ -50,8 +50,12 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	// Persistent Properties
 	property name="vendorOrderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantity" ormtype="integer" default=0;
+	property name="quantity" ormtype="float" default=0;
 	property name="cost" ormtype="big_decimal" hb_formatType="currency";
+	property name="price" ormtype="big_decimal" hb_formatType="currency";
+	property name="skuPrice" ormtype="big_decimal" hb_formatType="currency" hint="Stores the price of the sku at time of order based on currency code.";
+
+	property name="shippingWeight" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="estimatedReceivalDateTime" ormtype="timestamp";
 
@@ -59,11 +63,18 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="vendorOrderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="vendorOrderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=vendorOrderItemType";
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 	property name="vendorOrder" cfc="VendorOrder" fieldtype="many-to-one" fkcolumn="vendorOrderID";
+	property name="vendorAlternateSkuCode" cfc="AlternateSkuCode" fieldtype="many-to-one" fkcolumn="vendorAlternateSkuCodeID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 
 	// Related Object Properties (One-to-Many)
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" cascade="all-delete-orphan" inverse="true";
+	property name="vendorOrderDeliveryItems" singularname="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" inverse="true" cascade="delete-orphan";
+	
+	//Calculated Properties
+	property name="calculatedQuantityReceived" ormtype="integer";
+	property name="calculatedQuantityUnreceived" ormtype="integer";
 
+	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
@@ -73,13 +84,74 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-
 	// Non-persistent properties
 	property name="extendedCost" persistent="false" hb_formatType="currency";
+	property name="grossProfitMargin" persistent="false" hb_formatType="percentage";
+	property name="extendedWeight" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
+	property name="quantityDelivered" persistent="false";
+	property name="quantityUnDelivered" persistent="false";
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getPrice(){
+		if( !structKeyExists(variables,"price") ){
+			if(getCurrencyCode() == getSku().getCurrencyCode()){
+				variables.price = !isNull(getSku().getPrice()) ? getSku().getPrice() : 0; 
+			}else{
+				var skuPrice = getSku().getLivePriceByCurrencyCode(getCurrencyCode());
+				variables.price = !isNull(skuPrice) ? skuPrice : 0; 
+			}
+		}
+		
+		return variables.price;
+	}
+	
+	public numeric function getGrossProfitMargin(){
+		if(!isNull(getPrice()) && !isNull(getCost()) && getPrice() > 0){
+			return NumberFormat( ( (val(getPrice()) - val(getCost())) / val(getPrice()) ) * 100,'9.99');
+		}
+		
+		return 0;
+	}
+	
+
+	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getLandingAmountByQuantity(){
+		if(!isNull(getVendorOrder()) && !isNull(getQuantity())){
+			var totalQuantity = getVendorOrder().getTotalQuantity();
+			var percentageOfTotal = 0;
+			if(totalQuantity > 0 && getQuantity() > 0){
+				percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getQuantity()/totalQuantity);
+			}
+			
+			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
+		}
+		return 0;
+	}
+	
+	public numeric function getLandingAmountByWeight(){
+		if(!isNull(getVendorOrder()) && !isNull(getExtendedWeight())){
+			var totalWeight = getVendorOrder().getTotalWeight();
+			if(totalWeight==0){
+				return 0;
+			}
+			var percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getExtendedWeight()/totalWeight);
+			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
+		}
+		return 0;
+	}
+	
+	public numeric function getLandingAmountByCost(){
+		if(!isNull(getVendorOrder()) && !isNull(getExtendedCost())){
+			var totalCost = getVendorOrder().getTotalCost();
+			var percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getExtendedCost()/totalCost);
+			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
+		}
+		return 0;
+	}
 
 	public numeric function getExtendedCost() {
 		if(!isNull(getCost())) {
@@ -87,6 +159,15 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 		}
 		return 0;
 
+	}
+	
+	public numeric function getExtendedWeight() {
+		if(
+			!isNull(getShippingWeight())
+		) {
+			return getShippingWeight() * getQuantity();
+		}
+		return 0;
 	}
 
 	public numeric function getQuantityReceived() {
@@ -101,6 +182,21 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	public numeric function getQuantityUnreceived() {
 		return getQuantity() - getQuantityReceived();
+	}
+	
+	public numeric function getQuantityUnDelivered() {
+		return getQuantity() - getQuantityDelivered();
+	}
+	
+	public numeric function getQuantityDelivered() {
+		var quantityDelivered = 0;
+		var vendorOrderDeliveryItems = getVendorOrderDeliveryItems();
+		
+		for( var i=1; i<=arrayLen(vendorOrderDeliveryItems); i++){
+			quantityDelivered += vendorOrderDeliveryItems[i].getQuantity();
+		}
+
+		return quantityDelivered;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -150,10 +246,19 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentation() {
-		if(!isNull(getStock().getSku().getProduct().getCalculatedTitle())) {
-			return getStock().getSku().getProduct().getCalculatedTitle();
+		var simpleRepresentation = "";
+		if(
+			!isNull(getStock())
+			&& !isNull(getStock().getSku())
+			&& !isNull(getStock().getSku().getProduct())
+		){
+			if(!isNull(getStock().getSku().getProduct().getCalculatedTitle())){
+				simpleRepresentation = getStock().getSku().getProduct().getCalculatedTitle();
+			}else if(!isNull(getStock().getSku().getProduct().getTitle())){
+				simpleRepresentation = getStock().getSku().getProduct().getTitle();
+			}
 		}
-		return getStock().getSku().getProduct().getTitle();
+		return simpleRepresentation;
 	}
 
 	// ==================  END:  Overridden Methods ========================

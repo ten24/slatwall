@@ -50,7 +50,7 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	
 	// Persistent Properties
 	property name="accountPaymentAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="amount" ormtype="big_decimal" notnull="true";
+	property name="amount" ormtype="big_decimal" notnull="true" hb_formatType="currency";
 	
 	// Calculated Properties
 

@@ -54,8 +54,10 @@ Notes:
 component persistent="false" extends="HibachiService" output="false" accessors="true" {
 
 	property name="hibachiTagService" type="any";
+	property name="hibachiUtilityService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
+	property name="siteService" type="any";
 
 	// @hint Returns an image HTML element with the additional attributes
 	public string function getResizedImage() {
@@ -84,6 +86,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
      * skuIDList = "8a8080834721af1a0147220714810083,4028818d4b31a783014b5653ad5d00d2,4028818d4b05b871014b102acb0700d5"
      * ...should return three paths.
      */
+     
     public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
 
         if(arguments.profileName == "medium"){
@@ -99,10 +102,20 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 
         var resizedImagePaths = [];
-        var skus = [];
+        //var skus = [];
+        
+        var skuRecords = getService('skuDAO').getImageFileDataBySkuIDList(arguments.skuIDList);
+        for(var skuRecord in skuRecords){
+        	ArrayAppend(
+        		resizedImagePaths, 
+        		getService('imageService').getResizedImagePath(
+        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#skuRecord['imageFile']#"
+        		)
+        	);
+        }
 
         //smart list to load up sku array
-        var skuSmartList = getSkuService().getSkuSmartList();
+        /*var skuSmartList = getSkuService().getSkuSmartList();
         skuSmartList.addInFilter('skuID', arguments.skuIDList);
 
         if( skuSmartList.getRecordsCount() > 0){
@@ -111,7 +124,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
             for  (var sku in skus){
                 ArrayAppend(resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));
             }
-        }
+        }*/
         return resizedImagePaths;
     }
     
@@ -124,28 +137,28 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	}
 
 	// Image File Methods
-	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
+	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="", string size) {
 		var resizedImagePath = "";
 		// If the image can't be found default to a missing image
-		if(!fileExists(expandPath(arguments.imagePath))) {
+		if(!fileExists(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath))) {
 			
 			//look if the path was supplied
-			if(structKeyExists(arguments, "missingImagePath") && fileExists(expandPath(arguments.missingImagePath))) {
+			if(structKeyExists(arguments, "missingImagePath") && fileExists(getHibachiUtilityService().hibachiExpandPath(arguments.missingImagePath))) {
 			
 				arguments.imagePath = "#getApplicationValue('baseURL')##arguments.missingImagePath#";
 				
 		    //look if this has been supplied at the site level.
-			} else if (!isNull(getService('siteService').getCurrentRequestSite()) && !isNull(getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath'))) {
+			} else if (!isNull(getSiteService().getCurrentRequestSite()) && !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))) {
                 
-                arguments.imagePath = getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath');
+                arguments.imagePath = getSiteService().getCurrentRequestSite().setting('siteMissingImagePath');
 			
 			//check the custom location
-			} else if(fileExists(expandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {
+			} else if(fileExists(getHibachiUtilityService().hibachiExpandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {
                
                 arguments.imagePath = "#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg";
                 
             //Check settings location
-			}else if( fileExists(expandPath(getHibachiScope().setting('imageMissingImagePath'))) ){
+			}else if( fileExists(getHibachiUtilityService().hibachiExpandPath(getHibachiScope().setting('imageMissingImagePath'))) ){
                
 				arguments.imagePath = "#getApplicationValue('baseURL')##getHibachiScope().setting('imageMissingImagePath')#";			
             
@@ -158,6 +171,25 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			
 		}
 
+		if(structKeyExists(arguments, "size") && !structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")){
+			switch(arguments.size){
+				case "m": case "medium":
+		            arguments.height = getSettingService().getSettingValue("productImageMediumHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageMediumWidth");
+		            break;
+		        case "l": case "large":
+		            arguments.height = getSettingService().getSettingValue("productImageLargeHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageLargeWidth");
+		            break;
+		        case 'xl': case "extraLarge":
+		        	arguments.height = getSettingService().getSettingValue("productImageXLargeHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageXLargeWidth");
+		            break;
+		        default:
+		            arguments.height = getSettingService().getSettingValue("productImageSmallHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageSmallWidth");
+			}
+		}
 		// if no width and height is passed in, display the original image
 		if(!structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")) {
 
@@ -220,7 +252,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			// Figure out the image extension
 			var imageExt = listLast(arguments.imagePath,".");
 
-			var cacheDirectory = replaceNoCase(replaceNoCase(expandPath(arguments.imagePath), '\', '/', 'all'), listLast(arguments.imagePath, "/"), "cache/");
+			var cacheDirectory = replaceNoCase(replaceNoCase(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath), '\', '/', 'all'), listLast(arguments.imagePath, "/"), "cache/");
 
 			if(!directoryExists(cacheDirectory)) {
 				directoryCreate(cacheDirectory);
@@ -229,23 +261,23 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			var resizedImagePath = replaceNoCase(replaceNoCase(arguments.imagePath, listLast(arguments.imagePath, "/\"), "cache/#listLast(arguments.imagePath, "/\")#"),".#imageExt#","#imageNameSuffix#.#imageExt#");
 
 			// Make sure that if a cached images exists that it is newer than the original
-			if(fileExists(expandPath(resizedImagePath))) {
+			if(fileExists(getHibachiUtilityService().hibachiExpandPath(resizedImagePath))) {
 
-				var originalFileObject = createObject("java","java.io.File").init(expandPath(arguments.imagePath));
-				var resizedFileObject = createObject("java","java.io.File").init(expandPath(resizedImagePath));
+				var originalFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath));
+				var resizedFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
 
-				if(originalFileObject.lastModified() > resizedFileObject.lastModified()) {
-					fileDelete(expandPath(resizedImagePath));
+				if(originalFileObject.lastModified > resizedFileObject.lastModified) {
+					fileDelete(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
 				}
 			}
 
-			if(!fileExists(expandPath(resizedImagePath))) {
+			if(!fileExists(getHibachiUtilityService().hibachiExpandPath(resizedImagePath))) {
 
 				// wrap image functions in a try-catch in case the image uploaded is "problematic" for CF to work with
 				try{
 
 					// Read the Image
-					var img = imageRead(expandPath(arguments.imagePath));
+					var img = imageRead(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath));
 
 					// If the method is scale
 					if(listFindNoCase("scale", arguments.resizeMethod)) {
@@ -337,12 +369,23 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 
 					// Write the image to the disk
-					imageWrite(img,expandPath(resizedImagePath));
+					imageWrite(img,getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
+					//Give public permission to s3 object
+					if(getHibachiUtilityService().isS3Path(resizedImagePath)){
+						StoreSetACL(getHibachiUtilityService().hibachiExpandPath(resizedImagePath), [{group="all", permission="read"}]);
+					}
 				} catch(any e) {
 					// log the error
 					logHibachiException(e);
 				}
 			}
+		}
+		if(getHibachiUtilityService().isS3Path(resizedImagePath)){
+			var globalAssetsImageBaseURL = getHibachiScope().setting('globalAssetsImageBaseURL');
+			if(!len(globalAssetsImageBaseURL)){
+				globalAssetsImageBaseURL = 'https://s3.amazonaws.com';
+			}
+			resizedImagePath = globalAssetsImageBaseURL & '/' & listLast(resizedImagePath, '@');
 		}
 		return resizedImagePath;
 	}
@@ -405,24 +448,52 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	}
 
 
-	// =================== OLD FUNCTIONS =================================
+	public any function deleteImage(any image) {
+		var filename = arguments.image.getImageFile();
+
+		var deleteOK = super.delete(arguments.image);
+		if(deleteOK){
+			var imageFullPath = getProductImagePathByImageFile(filename);
+
+
+			if(getHibachiUtilityService().isS3Path(imageFullPath)){
+				imageFullPath = getHibachiUtilityService().formatS3Path(imageFullPath);
+			}
+
+			if(fileExists(imageFullPath)) {
+				fileDelete(imageFullPath);
+			}
+			clearImageCache("#getHibachiScope().getBaseImageURL()#/product",filename);
+		}
+		return deleteOK;
+	}
+
 
 	public void function clearImageCache(string directoryPath, string imageName){
+		if(getHibachiUtilityService().isS3Path(arguments.directoryPath)){
+			var cacheFolder = getHibachiUtilityService().formatS3Path(arguments.directoryPath) & "/cache/";
+			var searchFor = '%/cache/#listgetat(arguments.imageName,1,'.')#%';
+			var fileColumnName = 'name';
+		}else{
 		var cacheFolder = expandpath(arguments.directoryPath & "/cache/");
+			var searchFor = '#listgetat(arguments.imageName,1,'.')#%';
+			var fileColumnName = 'filename';
+		}
 
-		var files = getUtilityTagService().cfdirectory(action="list",directory=cacheFolder);
+
+		var files = DirectoryList(cacheFolder,false,'query');
 
 		cachedFiles = new Query();
 	    cachedFiles.setDBType('query');
 	    cachedFiles.setAttributes(rs=files);
-	    cachedFiles.addParam(name='filename', value='#listgetat(arguments.imageName,1,'.')#%', cfsqltype='cf_sql_varchar');
+
+	    cachedFiles.addParam(name='filename', value='#searchFor#', cfsqltype='cf_sql_varchar');
 	    cachedFiles.setSQL('SELECT * FROM rs where NAME like :filename');
 	    cachedFiles = cachedFiles.execute().getResult();
 
-		for(i=1; i <= cachedFiles.recordcount; i++){
-			if(fileExists(cachedFiles.directory[i] & '/' & cachedFiles.name)) {
-				fileDelete(cachedFiles.directory[i] & '/' & cachedFiles.name);
-			}
+
+		for(var i=1; i <= cachedFiles.recordcount; i++){
+			fileDelete(cachedFiles.Directory[i] & '/' & cachedFiles.Name[i]);
 		}
 	}
 

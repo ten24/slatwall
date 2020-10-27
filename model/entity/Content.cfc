@@ -59,8 +59,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productSortProperty" ormtype="string";
 	property name="productSortDefaultDirection" ormtype="string";
 	//property name="productSortableProperties";nonpersistent?
-	property name="urlTitle" ormtype="string" length="4000";
-	property name="urlTitlePath" ormtype="string" length="8000";
+	property name="urlTitle" ormtype="string" length="255" index="PI_urltitle";
+	property name="urlTitlePath" ormtype="string" length="255" index="PI_urltitlepath";
 	property name="contentBody" ormtype="string" length="8000" hb_formFieldType="wysiwyg";
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
@@ -126,19 +126,28 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			contentCacheKey &= getDao('hibachiDao').getApplicationKey();
 			contentCacheKey &= getHibachiScope().site().getSiteCode();
 			contentCacheKey &= getUrlTitlePath();
-			if (!isNull(getHibachiScope().getBrand())) {
+			
+			if(!isNull(getCmsContentID())){
+				contentCacheKey &= getCmsContentID();				
+			}
+			
+			if(!isNull(getHibachiScope().getCategory()) && !getHibachiScope().getCategory().getNewFlag()){
+				contentCacheKey &= getHibachiScope().getCategory().getCategoryID();
+			}
+			
+			if (!isNull(getHibachiScope().getBrand()) && !getHibachiScope().getBrand().getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getBrand().getBrandID();
 			}
-			if(!isNull(getHibachiScope().getProduct())) {
+			if(!isNull(getHibachiScope().getProduct()) && !getHibachiScope().getProduct().getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getProduct().getProductID();
 			}
-			if (!isNull(getHibachiScope().getProductType())) {
+			if (!isNull(getHibachiScope().getProductType()) && !getHibachiScope().getProductType().getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getProductType().getProductTypeID();
 			}
-			if (!isNull(getHibachiScope().getRouteEntity('Address'))) {
+			if (!isNull(getHibachiScope().getRouteEntity('Address')) && !getHibachiScope().getRouteEntity('Address').getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getRouteEntity('Address').getPrimaryIDValue();
 			}
-			if (!isNull(getHibachiScope().getRouteEntity('Account'))) {
+			if (!isNull(getHibachiScope().getRouteEntity('Account'))  && !getHibachiScope().getRouteEntity('Account').getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getRouteEntity('Account').getPrimaryIDValue();
 			}
 			contentCacheKey &= replace(CGI.QUERY_STRING,'clearTemplateCache=true',''); 
@@ -157,6 +166,48 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			titlePath = Replace(titlePath,' >',arguments.delimiter,'ALL');
 		}
 		return titlePath;
+	}
+
+	public any function getContentBody(){
+		if(structKeyExists(variables,'contentBody')){
+			//if not dynamic cache for 60 seconds
+			if(!getNewFlag() && !getService('HibachiUtilityService').isStringTemplate(variables.contentBody)){
+				var cacheKey = 'Content_getContentBody#getContentID()#';
+				if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+					var contentData = {
+						contentBody = variables.contentBody,
+						lastCached = now()
+					};
+					getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+					return getService('HibachiCacheService').getCachedValue(cacheKey).contentBody;
+				}else{
+					//check if cache expired
+					
+					if(getService('HibachiCacheService').getCachedValue(cacheKey).lastCached < dateAdd('s','-60',now())){
+						var contentData = {
+							contentBody = variables.contentBody,
+							lastCached = now()
+						};
+						getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+					}
+					return getService('HibachiCacheService').getCachedValue(cacheKey).contentBody;
+				}
+			}
+			return variables.contentBody;
+		}
+	}
+	
+	public void function setContentBody(string contentBody){
+		variables.contentBody = arguments.contentBody;
+		if(!getNewFlag() && !getService('HibachiUtilityService').isStringTemplate(variables.contentBody)){
+			var cacheKey = 'Content_getContentBody#getContentID()#';
+			var contentData = {
+				contentBody = variables.contentBody,
+				lastCached = now()
+			};
+			getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+		}
+		
 	}
 
 	public string function getSharedAssetsPath(){

@@ -46,114 +46,139 @@
 Notes:
 
 */
-component accessors="true" output="false" displayname="Vertex" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
-	variables.commitDocFlag = false;
-	
+component accessors="true" output="false" displayname="Avatax" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
 	public any function getTaxRates(required any requestBean) {
 
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
 		
-		var taxExempt = false;
-		var taxForce = false;
 		var docType = 'SalesOrder';
 		var usageType = '';
-		var ExemptionNo ='';
+		var exemptionNo ='';
 		
-		if(len(setting('taxExemptPropertyIdentifier'))) {
-			var piValue = arguments.requestBean.getOrder().getValueByPropertyIdentifier( setting('taxExemptPropertyIdentifier') );
-			if(len(piValue) && isBoolean(piValue)) {
-				taxExempt = piValue;
+		//If account is tax exempt, just set the exemption number to yes so that Avatax can flag them as tax exempt
+		//This will get overriden with an actual exemptionNo if one exists
+		if(!isNull(arguments.requestBean.getOrder().getAccount()) && !isNull(arguments.requestBean.getOrder().getAccount().getTaxExemptFlag()) && arguments.requestBean.getOrder().getAccount().getTaxExemptFlag()) {
+			exemptionNo = 'yes';
+		}
+		
+		if(len(setting('customerUsageTypePropertyIdentifier'))) {
+			if (!isNull(arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('customerUsageTypePropertyIdentifier')) ) ){
+				usageType = arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('customerUsageTypePropertyIdentifier') );
 			}
 		}
 		
+		if(len(setting('taxExemptNumberPropertyIdentifier'))) {
+			if ( !isNull( arguments.requestBean.getAccount().getValueByPropertyIdentifier(setting('taxExemptNumberPropertyIdentifier')) ) 
+				&& len(arguments.requestBean.getAccount().getValueByPropertyIdentifier(setting('taxExemptNumberPropertyIdentifier')) )
+			){
+				exemptionNo = arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('taxExemptNumberPropertyIdentifier') );
+			}
+		}
+		
+		//When this flag is turned on, set the exemption no and usage type to an empty string to prevent tax exemption
 		if(setting('taxExemptRequiresCompanyPaymentMethodFlag')) {
-
 			var opSmartList = arguments.requestBean.getOrder().getOrderPaymentsSmartList();
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
 			
 			if(arrayLen(opSmartList.getRecords(refresh=true))) {
 				for(var i = 1; i <= arrayLen(opSmartList.getRecords()); i++){
 					if(opSmartList.getRecords()[i].getAmount() > 0 && (isNull(opSmartList.getRecords()[i].getCompanyPaymentMethodFlag()) || !opSmartList.getRecords()[i].getCompanyPaymentMethodFlag()))  {
-						taxForce = true;
-						break;
+						usageType = '';
+						exemptionNo = '';
+						break; 
 					}
 				}
 			}
-			
 		}
 		
-		if(len(setting('customerUsageTypePropertyIdentifier'))) {
-			usageType = arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('customerUsageTypePropertyIdentifier') );
-		}
-		
-		if(len(setting('taxExemptNumberPropertyIdentifier'))) {
-			exemptionNo = arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('taxExemptNumberPropertyIdentifier') );
-		}
-		
-		//Only commit if both integration setting and request bean are set to true
-		if(variables.commitDocFlag) {
+		if ( arguments.requestBean.getOrder().getOrderType().getSystemCode() == 'otReturnOrder'  && setting('taxDocumentCommitType') == 'commitOnClose' ){
+			docType = 'ReturnInvoice';
+		} else if ( setting('taxDocumentCommitType') == 'commitOnClose' && !isNull(arguments.requestBean.getOrder().getOrderNumber()) && len(arguments.requestBean.getOrder().getOrderNumber()) ){
 			docType = 'SalesInvoice';
 		}
 		
-		if( !taxExempt || taxForce ) {
+		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
+			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
+			docType = 'SalesInvoice';
+		} else if ( !isNull(arguments.requestBean.getOrderReturn()) && setting('taxDocumentCommitType') == 'commitOnDelivery' ){
+			var docCode = arguments.requestBean.getOrderReturn().getShortReferenceID( true )
+			docType = 'ReturnInvoice';
+		} else{
+			var docCode = arguments.requestBean.getOrder().getShortReferenceID( true )
+		}
+		
+		// Setup the request data structure
+		var requestDataStruct = {
+			Client = "a0o33000003xVEI",
+			companyCode = setting('companyCode'),
+			DocCode = docCode,
+			DocDate = dateFormat(now(),'yyyy-mm-dd'),
+			DocType = docType,
+			CustomerUsageType= usageType,
+			ExemptionNo= exemptionNo,
+			commit=arguments.requestBean.getCommitTaxDocFlag(),
+			Addresses = [
+				{
+					AddressCode = 1,
+					Line1 = setting('sourceStreetAddress'),
+					Line2 = setting('sourceStreetAddress2'),
+					City = setting('sourceCity'),
+					Region = setting('sourceRegion'),
+					Country = setting('sourceCountry'),
+					PostalCode = setting('sourcePostalCode')
+				}
+			],
+			Lines = []
+		};
+		
+		if (docType =='ReturnInvoice'){
 			
-			// Setup the request data structure
-			var requestDataStruct = {
-				Client = "a0o33000003xVEI",
-				companyCode = setting('taxExemptNumberPropertyIdentifier'),
-				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
-				DocDate = dateFormat(now(),'yyyy-mm-dd'),
-				DocType = docType,
-				CustomerUsageType= usageType ,
-				ExemptionNo= exemptionNo,
-				Addresses = [
-					{
-						AddressCode = 1,
-						Line1 = setting('sourceStreetAddress'),
-						Line2 = setting('sourceStreetAddress2'),
-						City = setting('sourceCity'),
-						Region = setting('sourceRegion'),
-						Country = setting('sourceCountry'),
-						PostalCode = setting('sourcePostalCode')
-					}
-				],
-				Lines = []
+			if ( !isNull(arguments.requestBean.getOrder().getReferencedOrder()) ){
+				var taxDate = dateFormat(arguments.requestBean.getOrder().getReferencedOrder().getOrderOpenDateTime(), 'yyyy-mm-dd');
+			} else {
+				var taxDate =dateFormat(arguments.requestBean.getOrder().getOrderOpenDateTime(), 'yyyy-mm-dd');
+			}
+			
+			requestDataStruct.TaxOverride = {
+				reason = 'Return',
+				TaxOverrideType = 'TaxDate',
+				TaxDate = taxDate
+			};
+		}
+		
+		if(!isNull(arguments.requestBean.getAccount())) {
+			requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
+		}
+		
+		// Loop over each unique tax address
+		var addressIndex = 1;
+		var referenceObjectTypeHashMap = {};
+
+		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
+			
+			addressIndex ++;
+			
+			// Pull out just the items for this address
+			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
+
+			// Setup this address data
+			var addressData = {
+				AddressCode = addressIndex,
+				Line1 = addressTaxRequestItems[1].getTaxStreetAddress(),
+				Line2 = addressTaxRequestItems[1].getTaxStreet2Address(),
+				City = addressTaxRequestItems[1].getTaxCity(),
+				Region = addressTaxRequestItems[1].getTaxStateCode(),
+				Country = addressTaxRequestItems[1].getTaxCountryCode(),
+				PostalCode = addressTaxRequestItems[1].getTaxPostalCode()
 			};
 			
-			if (variables.commitDocFlag){
-				StructInsert(requestDataStruct, 'commit', true);
-			}
+			// Add this address to the request data struct
+			arrayAppend(requestDataStruct.addresses, addressData );
 			
-			if(!isNull(arguments.requestBean.getAccount())) {
-				requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
-			}
-			
-			// Loop over each unique tax address
-			var addressIndex = 1;
-			for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
-				addressIndex ++;
-				
-				// Pull out just the items for this address
-				var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
-				
-				// Setup this address data
-				var addressData = {
-					AddressCode = addressIndex,
-					Line1 = addressTaxRequestItems[1].getTaxStreetAddress(),
-					Line2 = addressTaxRequestItems[1].getTaxStreet2Address(),
-					City = addressTaxRequestItems[1].getTaxCity(),
-					Region = addressTaxRequestItems[1].getTaxStateCode(),
-					Country = addressTaxRequestItems[1].getTaxCountryCode(),
-					PostalCode = addressTaxRequestItems[1].getTaxPostalCode()
-				};
-				
-				// Add this address to the request data struct
-				arrayAppend(requestDataStruct.addresses, addressData );
-				
-				// Loop over each unique item for this address
-				for(var item in addressTaxRequestItems) {
-					
+			// Loop over each unique item for this address
+			for(var item in addressTaxRequestItems) {
+				if (item.getReferenceObjectType() == 'OrderItem'){
 					// Setup the itemData
 					var itemData = {};
 					itemData.LineNo = item.getOrderItemID();
@@ -163,85 +188,155 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 					itemData.TaxCode = item.getTaxCategoryRateCode();
 					itemData.Description = item.getOrderItem().getSku().getProduct().getProductName();	
 					itemData.Qty = item.getQuantity();
-					itemData.Amount = item.getExtendedPriceAfterDiscount();
+					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn"){
+						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
+					}else {
+						itemData.Amount = item.getExtendedPriceAfterDiscount();
+					}
 					
 					arrayAppend(requestDataStruct.Lines, itemData);
+					
+					StructInsert(referenceObjectTypeHashMap, item.getOrderItemID(), 'OrderItem');
+
+					
+				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
+					// Setup the itemData
+					var itemData = {};
+					itemData.LineNo = item.getOrderFulfillmentID();
+					itemData.DestinationCode = addressIndex;
+					itemData.OriginCode = 1;
+					itemData.ItemCode = 'Shipping';
+					itemData.TaxCode = 'FR';
+					itemData.Qty = 1;
+					itemData.Amount = item.getPrice();
+					
+					arrayAppend(requestDataStruct.Lines, itemData);
+					
+					StructInsert(referenceObjectTypeHashMap, item.getOrderFulfillmentID(), 'OrderFulfillment');
+
 				}
 			}
+		}
+		
+		// Setup the auth string
+		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
+		
+		// Setup Request to push to Avatax
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+        var testingFlag = setting('testingFlag');
+        if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
+        	testingFlag = arguments.requestBean.getOrder().getTestOrderFlag();
+        }
+        
+        if(testingFlag) {
+        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/get");	
+        } else {
+        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/get");
+        }
+		httpRequest.addParam(type="header", name="Content-type", value="application/json");
+		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
+		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
+		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
+		
+		var responseData = httpRequest.send().getPrefix();
+		
+		if (IsJSON(responseData.FileContent)){
 			
-			// Setup the auth string
-			var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
+			var fileContent = DeserializeJSON(responseData.FileContent);
 			
-			// Setup Request to push to Avatax
-	        var httpRequest = new http();
-	        httpRequest.setMethod("POST");
-	        var testingFlag = setting('testingFlag');
-	        if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-	        	testingFlag = arguments.requestBean.getOrder().getTestOrderFlag();
-	        }
-	        
-	        if(testingFlag) {
-	        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/get");	
-	        } else {
-	        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/get");
-	        }
-			httpRequest.addParam(type="header", name="Content-type", value="application/json");
-			httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
-			httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
-			httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
+			if (fileContent.resultCode == 'Error'){
+				responseBean.setData(fileContent.messages);
+			}
 			
-			var responseData = httpRequest.send().getPrefix();
+			if( setting('debugModeFlag') ) {
+				responseBean.addMessage("Request", serializeJSON(requestDataStruct));
+				responseBean.addMessage("Response", serializeJSON(responseData));
+			}
 			
-			if (IsJSON(responseData.FileContent)){
-				
-				var fileContent = DeserializeJSON(responseData.FileContent);
-				
-				if (fileContent.resultCode == 'Error'){
-					responseBean.setData(fileContent.messages);
-				}
-				
-				if (structKeyExists(fileContent, 'TaxLines')){
-					// Loop over all orderItems in response
-					for(var taxLine in fileContent.TaxLines) {
+			if (structKeyExists(fileContent, 'TaxLines')){
+				// Loop over all orderItems in response
+				for(var taxLine in fileContent.TaxLines) {
+					
+					// Make sure that there is a taxAmount for this orderItem
+					if(taxLine.Tax > 0) {
 						
-						// Make sure that there is a taxAmount for this orderItem
-						if(taxLine.Tax > 0) {
-							
-							// Loop over the details of that taxAmount
-							for(var taxDetail in taxLine.TaxDetails) {
-								// For each detail make sure that it is applied to this item
-								if(taxDetail.Tax > 0) {
-									
-									// Add the details of the taxes charged
-									responseBean.addTaxRateItem(
-										orderItemId = taxLine.LineNo,
-										taxAmount = taxDetail.Tax, 
-										taxRate = taxDetail.Rate * 100,
-										taxJurisdictionName=taxDetail.JurisName,
-										taxJurisdictionType=taxDetail.JurisType,
-										taxImpositionName=taxDetail.TaxName
-									);
-										
-								}
+						// Loop over the details of that taxAmount
+						for(var taxDetail in taxLine.TaxDetails) {
+							// For each detail make sure that it is applied to this item
+							if(taxDetail.Tax > 0 && structKeyExists(referenceObjectTypeHashMap, taxLine.LineNo )) {
+								responseBean.addTaxRateItem(
+									referenceObjectID = taxLine.LineNo,
+									taxAmount = taxDetail.Tax, 
+									taxRate = taxDetail.Rate * 100,
+									taxJurisdictionName=taxDetail.JurisName,
+									taxJurisdictionType=taxDetail.JurisType,
+									taxImpositionName=taxDetail.TaxName,
+									referenceObjectType = referenceObjectTypeHashMap['#taxLine.LineNo#']
+								);
 							}
 						}
 					}
 				}
-			}else{
-				responseBean.setData(responseData.Responseheader.Explanation);
 			}
-		}
+		}if(structKeyExists(responseData,'ResponseHeader') && structKeyExists(responseData.responseHeader,'Explanation')){
+ 			responseBean.setData(responseData.Responseheader.Explanation);
+		}else{
+			responseBean.setData('An Error occured when attempting to retrieve tax information');
+ 		}
 		
 		return responseBean;
 	}
 	
-	public void function commitTaxDocument(required any requestBean){
-		variables.commitDocFlag = true;
+	public any function voidTaxDocument(required any requestBean){
+		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
+			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
+		} else{
+			var docCode = arguments.requestBean.getOrder().getShortReferenceID( true )
+		}
 		
-		getTaxRates(requestBean);
+		var requestDataStruct = {
+			Client = "a0o33000003xVEI",
+			companyCode = setting('companyCode'),
+			DocCode = docCode,
+			CancelCode = 'DocDeleted',
+			DocType = 'SalesInvoice'
+		};
 		
-		variables.commitDocFlag = false;
+		// Setup the auth string
+		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
 		
-	}
+		// Setup Request to push to Avatax
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+        var testingFlag = setting('testingFlag');
+        if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
+        	testingFlag = arguments.requestBean.getOrder().getTestOrderFlag();
+        }
+        
+        if(testingFlag) {
+        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/cancel");	
+        } else {
+        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/cancel");
+        }
 
+		httpRequest.addParam(type="header", name="Content-type", value="application/json");
+		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
+		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
+		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
+		
+		var responseData = httpRequest.send().getPrefix();
+		if (IsJSON(responseData.FileContent)){
+			var fileContent = DeserializeJSON(responseData.FileContent);
+
+			if (fileContent.resultCode == 'Error'){
+				responseBean.setData(fileContent.messages);
+			}
+				
+		}else{
+			responseBean.setData(responseData.Responseheader.Explanation);
+		}
+	}
 }

@@ -68,6 +68,7 @@
 <cfparam name="attributes.fieldNamePrefix" type="string" default="" />
 <cfparam name="attributes.fieldList" type="string" default="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode" />
 <cfparam name="attributes.fieldClass" type="string" default="" />
+<cfparam name="attributes.getLocationsFromAddressZoneFlag" type="boolean" default="false">
 
 <cfif isNull(attributes.address.getCountryCode())>
 	<cfset attributes.address.setCountryCode('US') />
@@ -179,8 +180,12 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.stateCode')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<cfif arrayLen(attributes.address.getStateCodeOptions())>
-								<sw:FormField type="select" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" valueOptions="#attributes.address.getCountry().getStateCodeOptions()#" class="#attributes.fieldClass#" />
+							<cfif arrayLen(attributes.address.getStateCodeOptions()) OR arrayLen(attributes.address.getStateCodeFromAddressZoneOptions())>
+								<cfif !attributes.getLocationsFromAddressZoneFlag>
+									<sw:FormField type="select" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" valueOptions="#attributes.address.getCountry().getStateCodeOptions()#" class="#attributes.fieldClass#" />
+									<cfelse>
+										<sw:FormField type="select" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" valueOptions="#attributes.address.getCountry().getStateCodeFromAddressZoneOptions()#" class="#attributes.fieldClass#" />
+								</cfif>
 							<cfelse>
 								<sw:FormField type="text" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" class="#attributes.fieldClass#" />
 							</cfif>

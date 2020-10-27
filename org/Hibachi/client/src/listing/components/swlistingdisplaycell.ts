@@ -29,8 +29,9 @@ class SWListingDisplayCellController{
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.listingPartialPath = listingPartialPath;
         this.$scope = $scope;
-        this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
-        
+        if(!this.value && this.pageRecord && this.column){
+            this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
+        }
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
         this.hasActionCaller = false;
@@ -45,7 +46,6 @@ class SWListingDisplayCellController{
         }
 
         if(this.cellView){
-
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
             this.template = htmlCellView;
             
@@ -70,22 +70,39 @@ class SWListingDisplayCellController{
 
 
     }
+    
+    public hasAggregate = ()=>{
+        return this.column.aggregate && this.column.aggregate.aggregateFunction && this.column.aggregate.aggregateFunction.length;
+    }
 
     public getDirectiveTemplate = ()=>{
-
+        
         var templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycell.html';
         
         if(this.expandable || (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary')){
             templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplayselectablecellexpandable.html';
         }
+        
 
         if(!this.swListingDisplay.expandable || !this.column.tdclass || this.column.tdclass !== 'primary'){
             if(this.column.ormtype === 'timestamp'){
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycelldate.html';
             }else if(this.column.type==='currency'){
-
+                if(this.hasAggregate() && this.pageRecord){
+                    var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias);
+                    this.value = this.pageRecord[pageRecordKey];
+                }
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellcurrency.html';
-            }else if(this.column.aggregate){
+            }else if([
+                "double", 
+                "float", 
+                "integer", 
+                "long", 
+                "short", 
+                "big_decimal"
+            ].indexOf(this.column.ormtype) != -1){  
+                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellnumeric.html'; 
+            }else if(this.hasAggregate()){
                 this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellaggregate.html';
             }
@@ -103,6 +120,7 @@ class SWListingDisplayCell {
         swListingDisplay:"=?",
         column:"=?",
         pageRecord:"=?",
+        value:"=?",
         cellView:"@?",
         expandableRules:"=?"
     }

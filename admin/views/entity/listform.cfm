@@ -59,23 +59,30 @@ Notes:
 			<sw-process-caller data-action="admin:entity.createform" data-title-rb-key="entity.Form.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
 		</sw-entity-action-bar-button-group>
 	</sw-entity-action-bar>
-
-
-	<sw-listing-display
-			data-collection="'Form'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailform"
-			data-record-edit-action="admin:entity.editform"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="formID" is-visible="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="emailTo"></sw-listing-column>
-		<sw-listing-column data-property-identifier="formCode"></sw-listing-column>
-		<sw-listing-column data-property-identifier="formName"></sw-listing-column>
-	</sw-listing-display>
+	
+	
+	<cfset formCollectionList = getHibachiScope().getService('formService').getFormCollectionList()>
+	<cfset serchableDisplayProperties = "emailTo,formCode,formName"/>
+	<cfset formCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset formCollectionList.addDisplayProperty(displayProperty='formID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#formCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(formCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(formCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

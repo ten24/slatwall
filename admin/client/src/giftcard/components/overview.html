@@ -16,7 +16,8 @@
 
 <!--Small content block-->
 <div class="s-sm-content-block s-status"
-     ng-class="{'s-red': swGiftCardOverview.giftCard.activeFlag !== 'Yes ', 's-green': swGiftCardOverview.giftCard.activeFlag === 'Yes '}">
+	 ng-class="{'s-red': swGiftCardOverview.giftCard.activeFlag !== 'Yes ' || swGiftCardOverview.giftCard.activeFlag === true, 
+	 		    's-green': swGiftCardOverview.giftCard.activeFlag === 'Yes ' && swGiftCardOverview.giftCard.activeFlag !== true}">
 	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon"
 		 >
 		<i class="fa fa-circle"></i>
@@ -26,8 +27,8 @@
 			Status
 		</div>
 		<div class="s-body">
-			<span ng-show="swGiftCardOverview.giftCard.activeFlag === 'Yes '">Active</span>
-			<span ng-show="swGiftCardOverview.giftCard.activeFlag !== 'Yes '">Inactive</span>
+			<span ng-show="swGiftCardOverview.giftCard.activeFlag === 'Yes ' || swGiftCardOverview.giftCard.activeFlag === true">Active</span>
+			<span ng-show="swGiftCardOverview.giftCard.activeFlag !== 'Yes ' && swGiftCardOverview.giftCard.activeFlag !== true">Inactive</span>
 			<div class="dropdown s-action">
 				<a href="##" class="dropdown-toggle hide" id="dropdownMenu1" data-toggle="dropdown">
 					<i class="fa fa-ellipsis-h" title="actions"></i>
@@ -56,7 +57,7 @@
 				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length > 0" ng-bind="swGiftCardOverview.giftCard.expirationDate"></span>
 				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length == 0">Never</span>
 				<a href="##" class="s-action hide" title="edit">
-					<i class="fa fa-pencil"></i>
+					<i class="fas fa-pen"></i>
 				</a>
 			</div>
 		</div>

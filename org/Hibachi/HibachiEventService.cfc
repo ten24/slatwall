@@ -40,8 +40,6 @@
 */
 component output="false" update="true" extends="HibachiService" {
 
-	variables.registeredEvents = {};
-	variables.registeredEventHandlers = {};
 	variables.eventNameOptions = {};
 	/*{
 		"triggerEvent":"triggerEventRBKey"
@@ -49,29 +47,34 @@ component output="false" update="true" extends="HibachiService" {
 	variables.triggerEventRBKeyHashMap = {};
 	
 	public any function getRegisteredEventHandlers(){
+		if(!structKeyExists(variables,'registeredEventHandlers')){
+			variables.registeredEventHandlers={};
+			var eventHandlerBeanInfo = getBeanFactory().getBeanInfo(regex="\w+Handler").beanInfo;
+			for(var beanInfo in eventHandlerBeanInfo){
+				variables.registeredEventHandlers[eventHandlerBeanInfo[beanInfo].cfc] = getBeanFactory().getBean(beanInfo);
+			}
+		}
 		return variables.registeredEventHandlers;
 	}
 	
 	public any function getRegisteredEvents(){
+		if(!structKeyExists(variables,'registeredEvents')){
+			var registeredEventHandlers = getRegisteredEventHandlers();
+			for(var key in registeredEventHandlers){
+				var registeredEventHandler = registeredEventHandlers[key];
+				registerEventHandler(registeredEventHandler);
+			}
+		}
 		return variables.registeredEvents;
 	}
 	
 	public any function getEventHandler( required string objectFullname ) {
-		if(!structKeyExists(variables.registeredEventHandlers, arguments.objectFullname)) {
-			try {
-				variables.registeredEventHandlers[ arguments.objectFullname ] = createObject("component", arguments.objectFullname);
-			} catch(any e) {
-				logHibachi("The event handler: #arguments.objectFullname# could not be instantiated.  Please verify that this component does not have errors.  In addition whenever possible eventHandler names should start from the Application root mapping at #getApplicationValue('applicationKey')#.xxx");
-			}
-		}
-		if(structKeyExists(variables.registeredEventHandlers, arguments.objectFullname)) {
-			return variables.registeredEventHandlers[ arguments.objectFullname ];
-		}
+		return getRegisteredEventHandlers()[objectFullName];
 	}
 	
 	private any function setEventHandler( required any object ) {
 		var objectFullname = getMetadata(arguments.object).fullname;
-		variables.registeredEventHandlers[ objectFullname ] = arguments.object;
+		getRegisteredEventHandlers()[ objectFullname ] = arguments.object;
 		return objectFullname;
 	}
 	
@@ -82,16 +85,16 @@ component output="false" update="true" extends="HibachiService" {
 		arguments.eventData[ "#getApplicationValue('applicationKey')#Scope" ] = getHibachiScope();
 		
 		// If there is an onEvent registered, then we call that first
-		if(structKeyExists(variables.registeredEvents, "onEvent")) {
+		if(structKeyExists(getRegisteredEvents(), "onEvent")) {
 			
 			var onEventData = arguments.eventData;
 			onEventData.eventName = arguments.eventName;
 			
 			// Loop over all of the different registered events for a given eventName
-			for(var i=1; i<=arrayLen(variables.registeredEvents.onEvent); i++) {
+			for(var i=1; i<=arrayLen(getRegisteredEvents().onEvent); i++) {
 				
 				// Get the object to call the method on
-				var object = getEventHandler(variables.registeredEvents.onEvent[i]);
+				var object = getEventHandler(getRegisteredEvents().onEvent[i]);
 				
 				// Call the onEvent Method
 				object.onEvent(argumentcollection=onEventData);	
@@ -100,13 +103,13 @@ component output="false" update="true" extends="HibachiService" {
 		}
 		
 		// Check to see if there are any events registered
-		if(structKeyExists(variables.registeredEvents, arguments.eventName)) {
+		if(structKeyExists(getRegisteredEvents(), arguments.eventName)) {
 			
 			// Loop over all of the different registered events for a given eventName
-			for(var i=1; i<=arrayLen(variables.registeredEvents[ arguments.eventName ]); i++) {
+			for(var i=1; i<=arrayLen(getRegisteredEvents()[ arguments.eventName ]); i++) {
 				
 				// Get the object to call the method on
-				var object = getEventHandler(variables.registeredEvents[ arguments.eventName ][i]);
+				var object = getEventHandler(getRegisteredEvents()[ arguments.eventName ][i]);
 				
 				// Stick the Hibachi Scope in with the rest of the event data
 				arguments.eventData[ "#getApplicationValue('applicationKey')#Scope" ] = getHibachiScope();
@@ -125,6 +128,10 @@ component output="false" update="true" extends="HibachiService" {
 	}
 	
 	public void function registerEvent( required string eventName, required any object, string objectFullname ) {
+		if(!structKeyExists(variables,'registeredEvents')){
+			variables.registeredEvents={};
+		}
+	
 		if(!structKeyExists(variables.registeredEvents, arguments.eventName)) {
 			variables.registeredEvents[ arguments.eventName ] = [];
 		}
@@ -136,7 +143,7 @@ component output="false" update="true" extends="HibachiService" {
 	
 	public void function registerEventHandler( required any eventHandler ) {
 		if(isObject(arguments.eventHandler)) {
-			var objectFullname = setEventHandler( arguments.eventHandler );
+			var objectFullname = getMetadata(arguments.eventHandler).fullname;
 			var object = arguments.eventHandler;
 		} else if (isSimpleValue(arguments.eventHandler)) {
 			var objectFullname = arguments.eventHandler;
@@ -168,26 +175,6 @@ component output="false" update="true" extends="HibachiService" {
 				}	
 			}
 		}
-	}
-	
-	public void function registerEventHandlers() {
-		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/model/handler')) {
-			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/model/handler');
-			for(var h=1; h<=arrayLen(dirList); h++) {
-				if(listLast(dirList[h], '.') eq 'cfc') {
-					registerEventHandler( "#getApplicationValue('applicationKey')#.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
-				}
-			}
-		}
-		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/custom/model/handler')) {
-			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/custom/model/handler');
-			for(var h=1; h<=arrayLen(dirList); h++) {
-				if(listLast(dirList[h], '.') eq 'cfc') {
-					registerEventHandler( "#getApplicationValue('applicationKey')#.custom.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
-				}
-			}
-		}
-		
 	}
 	
 	public any function getEntityEventNameHashMap(){

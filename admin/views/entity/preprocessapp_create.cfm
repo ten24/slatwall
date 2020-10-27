@@ -49,7 +49,6 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.app" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -65,6 +64,7 @@ Notes:
 				<!--- General Details --->
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="appName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="appCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="createAppTemplatesFlag" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

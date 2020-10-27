@@ -67,6 +67,10 @@ Notes:
 		<swa:SlatwallSetting settingName="productImageMediumHeight"/>
 		<swa:SlatwallSetting settingName="productImageLargeWidth" />
 		<swa:SlatwallSetting settingName="productImageLargeHeight" />
+		<swa:SlatwallSetting settingName="productImageXLargeWidth" />
+		<swa:SlatwallSetting settingName="productImageXLargeHeight" />
+		<swa:SlatwallSetting settingName="productListingImageHeight" />
+		<swa:SlatwallSetting settingName="productListingImageWidth" />
 		
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">

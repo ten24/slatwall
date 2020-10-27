@@ -51,6 +51,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// Persistent Properties
 	property name="accountPaymentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormType="boolean";
+	property name="currencyCode" ormtype="string" length="3";
 	property name="accountPaymentMethodName" hb_populateEnabled="public" ormType="string";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
@@ -136,17 +137,19 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 	public boolean function isExpired(){
 		if(!isNull(this.getExpirationMonth()) && !isNull(this.getExpirationYear())){
-			var expirationYearAsInteger =  LSParseNumber(this.getExpirationYear());
+			var expirationYearAsInteger =  right(LSParseNumber(this.getExpirationYear()),2);
 			var expirationMonthAsInteger = LSParseNumber(this.getExpirationMonth());
 			var currentYear = right(year(now()),2);
 			var currentMonth = month(now());
 
-			if(currentYear < expirationYearAsInteger){
+			if(currentYear == expirationYearAsInteger && currentMonth < expirationMonthAsInteger 
+			|| currentYear < expirationYearAsInteger){
 				return false;
-			} else {
-				return currentMonth >= expirationMonthAsInteger
-					&& currentYear == expirationYearAsInteger;
-			}
+				
+			} else if (currentYear == expirationYearAsInteger && currentMonth >= expirationMonthAsInteger 
+			|| currentYear > expirationYearAsInteger) {
+				return true;
+			} 
 		} else {
 			return false;
 		}
@@ -212,6 +215,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.accountPayment.getPaymentMethod() );
+		setCurrencyCode( arguments.accountPayment.getCurrencyCode() );
 
 		// Company PaymentMethod Flag
 		if(!isNull(arguments.accountPayment.getCompanyPaymentMethodFlag())) {
@@ -365,6 +369,33 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	public any function getBillingAccountAddressOptions(string accountID){
+		if (!isNull(getAccount()) && !isNull(getAccount().getAccountID())){
+			arguments.accountID = getAccount().getAccountID();
+		}
+		if (isNull(variables.billingAccountAddressOptions)){
+			variables.billingAccountAddressOptions = [];
+			var accountAddressCollectionList = getService("AddressService").getAccountAddressCollectionList();
+			accountAddressCollectionList.addFilter("account.accountID", "#arguments.accountID#");
+			accountAddressCollectionList.setDisplayProperties("accountAddressName,accountAddressID,address.streetAddress,address.postalCode");
+			var options = accountAddressCollectionList.getRecords();
+			var index = 1;
+			for (var option in options){
+				if (index == 1){
+					arrayAppend(variables.billingAccountAddressOptions, {selected="selected",value="#option['accountAddressID']#", name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+				}else{
+					arrayAppend(variables.billingAccountAddressOptions, {value="#option['accountAddressID']#", name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+				}
+				index++;
+			}
+			
+			arrayPrepend(variables.billingAccountAddressOptions, {value="new", name="New"});
+			if( arrayLen(variables.billingAccountAddressOptions) == 1){
+			    variables.billingAccountAddressOptions[1]['selected'] = "selected";
+			}
+		}
+		return variables.billingAccountAddressOptions;
+	}
 
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {

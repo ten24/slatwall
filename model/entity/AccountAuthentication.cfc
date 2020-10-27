@@ -63,7 +63,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	property name="authenticationDescription" ormtype="string";
 
 	// Related Object Properties (many-to-one)
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select" hb_cascadeCalculate="true";
 	property name="integration" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID" hb_optionsNullRBKey="define.select";
 
 	// Related Object Properties (one-to-many)

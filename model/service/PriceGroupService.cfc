@@ -122,7 +122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If the returnRate is null, then check the sku against the parent priceGroup which will check product and productType (this is done with recursion)
 		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup())) {
-			returnRate = getRateForSkuBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup.getParentPriceGroup());
+			returnRate = getRateForSkuBasedOnPriceGroup(sku=arguments.sku, priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
 
 		// As long as the returnRate is not null, then return it.
@@ -417,21 +417,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
-		if( !isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups()) ) {
+		var totalQuantity = arguments.order.getTotalItemQuantity();
+		if(!isNull(arguments.order.getAccount())){
+			var priceGroups = arguments.order.getAccount().getPriceGroups();
+			var priceGroupList = '';
+			for(var priceGroup in priceGroups){
+				priceGroupList &= priceGroup.getPriceGroupID();
+			}
+		}else{
+			var priceGroupList = '';
+		}
+		var priceGroupCacheKey = hash(totalQuantity & priceGroupList,'md5');
+		
+		if( isNull(arguments.order.getPriceGroupCacheKey()) || arguments.order.getPriceGroupCacheKey() != priceGroupCacheKey ) {
+			
+			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
 			for(var orderItem in arguments.order.getOrderItems()){
-				if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
-					var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
-					if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
-						orderItem.setPrice( priceGroupDetails.price );
-						orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
+				orderItem.removeAppliedPriceGroup();
+				
+				if(!isNull(arguments.order.getAccount())){
+					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
+						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
+						if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
+							orderItem.setPrice( priceGroupDetails.price );
+							orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
+						}
+					}else{
+						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(orderItem.getSku(), arguments.order.getAccount());
+						if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
+							orderItem.setPrice( priceGroupDetails.price );
+							orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
+						}
 					}
-
-				}else{
-					var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(orderItem.getSku(), arguments.order.getAccount());
-					if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
-						orderItem.setPrice( priceGroupDetails.price );
-						orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
-					}
+					
 				}
 			}
 		}

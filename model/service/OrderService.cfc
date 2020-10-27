@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="orderDAO";
+	property name="productDAO";
 
 	property name="accountService";
 	property name="addressService";
@@ -73,8 +74,85 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="typeService";
 
 	// ===================== START: Logical Methods ===========================
-
-	public string function getOrderRequirementsList(required any order) {
+	
+	/**
+	 * Function to return order details - it includes following 
+	 * - order items
+	 * - order fulfillment
+	 * - order payments
+	 * */
+	public any function getOrderDetails(required string orderID, string accountID) {
+		
+        param name="arguments.accountID" default=getHibachiScope().getAccount().getAccountID();
+        //check if user is a superUser, if yes then we won't check for Account ID with order
+        var superUser = false;
+        var account = getAccountService().getAccount(arguments.accountID);
+        if(!isNull(account)) {
+        	superUser = getAccountService().getAccount(arguments.accountID).getSuperUserFlag();
+        }
+        
+        
+        var orderDetails = {}; //return object
+        
+        //Order Information
+        var orderCollectionList = this.getOrderCollectionList();
+        orderCollectionList.setDisplayProperties('orderID, calculatedTotalQuantity, estimatedFulfillmentDateTime, currencyCode, calculatedSubTotalAfterItemDiscounts, orderCloseDateTime, calculatedDiscountTotal, calculatedTaxTotal, quoteFlag, calculatedTotalItems, calculatedTotal, calculatedSubTotal, orderOpenDateTime, calculatedFulfillmentTotal, orderNumber, modifiedDateTime, orderStatusType.typeName, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode');
+        orderCollectionList.addFilter( 'orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderCollectionList.addFilter( 'account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderInfo'] = orderCollectionList.getRecords(formatRecords = false);
+        
+    	///Order Items Information
+		var ordersItemsCollectionList = this.getOrderItemCollectionList();
+		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle');
+		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		var orderItems = ordersItemsCollectionList.getRecords(formatRecords = false);
+		//Append images to products
+		orderItems = getService("productService").appendImagesToProduct(orderItems, "sku_imageFile", false);
+		
+        orderDetails['orderItems'] = orderItems;
+		
+		//Order Payments Information
+		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();
+		orderPaymentCollectionList.setDisplayProperties('paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
+		orderPaymentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderPaymentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		
+		orderDetails['orderPayments'] = orderPaymentCollectionList.getRecords(formatRecords = false);
+		
+		// //Order Promotions Information
+		var orderPromotionCollectionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
+		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount')
+		orderPromotionCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderPromotionCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderPromotions'] = orderPromotionCollectionList.getRecords(formatRecords = false);
+		
+		///Order Fulfillment Information
+		var ordersFulfillmentCollectionList = this.getOrderItemCollectionList();
+		ordersFulfillmentCollectionList.setDisplayProperties('sku.skuID, orderFulfillment.fulfillmentCharge, orderFulfillment.currencyCode, orderFulfillment.estimatedDeliveryDateTime, orderFulfillment.estimatedFulfillmentDateTime, orderFulfillment.fulfillmentMethod.fulfillmentMethodName, orderFulfillment.fulfillmentMethod.fulfillmentMethodType, orderFulfillment.pickupLocation.locationName, orderFulfillment.shippingAddress.streetAddress, orderFulfillment.shippingAddress.street2Address, orderFulfillment.shippingAddress.city, orderFulfillment.shippingAddress.stateCode, orderFulfillment.shippingAddress.postalCode, orderFulfillment.shippingAddress.name, orderFulfillment.shippingAddress.countryCode, orderFulfillment.shippingMethod.shippingMethodName, orderFulfillment.shippingMethod.shippingMethodCode');
+		ordersFulfillmentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			ordersFulfillmentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderFulfillments'] = ordersFulfillmentCollectionList.getRecords(formatRecords = false);
+		
+		return orderDetails;
+    }
+	
+	public string function getOrderRequirementsList(required any order, struct data = {}) {
 		var orderRequirementsList = "";
 
 
@@ -84,7 +162,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Check each of the orderFulfillments to see if they are ready to process
-		for(var i = 1; i <= arrayLen(arguments.order.getOrderFulfillments()); i++) {
+		var orderFulfillmentsCount = arrayLen(arguments.order.getOrderFulfillments());
+		for(var i = 1; i <= orderFulfillmentsCount; i++) {
 			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" )
 				|| arguments.order.getOrderFulfillments()[i].hasErrors()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
@@ -93,14 +172,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Check each of the orderReturns to see if they are ready to process
-		for(var i = 1; i <= arrayLen(arguments.order.getOrderReturns()); i++) {
+		var orderReturnsCount = arrayLen(arguments.order.getOrderReturns());
+		for(var i = 1; i <= orderReturnsCount; i++) {
 			if(!arguments.order.getOrderReturns()[i].isProcessable( context="placeOrder" ) || arguments.order.getOrderReturns()[i].hasErrors()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "return");
 				break;
 			}
 		}
 
-		if(arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()){
+		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){
 			//If is allowed to place order without payment and there is no payment, skip payment order
 			return orderRequirementsList;
 		}
@@ -129,6 +209,166 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		return orderRequirementsList;
+	}
+	
+	//Function get all available order paymentss
+	public any function getAppliedOrderPayments(required any order) {
+		var appliedPaymentMethods = this.getOrderPaymentCollectionList();
+		appliedPaymentMethods.setDisplayProperties('expirationYear, purchaseOrderNumber, nameOnCreditCard, expirationMonth, creditCardLastFour, currencyCode, orderPaymentID, amount, creditCardType');
+	    appliedPaymentMethods.addFilter("order.orderID",arguments.order.getOrderID());
+	    appliedPaymentMethods.addFilter("orderPaymentStatusType.systemCode","opstActive");
+	    //writeDump("#appliedPaymentMethods.getHQL()#");
+	    return appliedPaymentMethods.getRecords(formatRecords = false);
+	}
+	
+	/**
+     * Function to get all carts and quotes for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllCartsAndQuotesOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderCollectionList();
+
+		ordersList.addOrderBy('createdDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			orderStatusType.typeName,
+			calculatedTotal,
+			createdDateTime
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+    
+    /**
+     * Function to get all order fulfillments for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderFulfillmentsOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderFulfillmentCollectionList();
+		ordersList.setDisplayProperties(' orderFulfillmentID, estimatedShippingDate, pickupDate, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderFulfillmentStatusType.typeName');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+	
+	/**
+     * Function to get all order deliveries for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderDeliveryOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderDeliveryCollectionList();
+		ordersList.setDisplayProperties(' orderDeliveryID, invoiceNumber, trackingNumber, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber'); //TODO: not included property yet orderDeliveryStatusType.typeName
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+	
+	
+	public string function getProductsScheduledForDelivery(required any currentDateTime){
+		
+		//get all products that are scheduled for a delivery if the nextDeliveryScheduleDate is ready
+		var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(arguments.currentDateTime);
+		productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');
+		
+		return productsScheduledForDeliveryCollectionList.getPrimaryIDList();
+	}
+	
+	public any function getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(required any currentDateTime, required string productsScheduledForDelivery){
+		//find all order items that require delivery based on the term
+		var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
+		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount,orderItem.sku.product.nextDeliveryScheduleDate.deliveryScheduleDateID');
+		subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
+		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',arguments.productsScheduledForDelivery,'IN');
+		//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
+		subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.effectiveDateTime',arguments.currentDateTime,'<=');
+		subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive','=');
+		
+		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
+		
+		return subscriptionOrderItemCollectionList.getRecords();
+		
+	}
+	
+	public any function createSubscriptionOrderDeliveries(any currentDateTime=now()){
+	
+		transaction{
+			//list of productIDs based on the nextDeliveryScheduleDate
+			var productsScheduledForDelivery = getProductsScheduledForDelivery(currentDateTime);
+			//subscription order item data for creating 
+			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(arguments.currentDateTime,productsScheduledForDelivery);
+			//create a delivery for each subscription Order Item 
+			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
+				//insert a single subscriptionOrderDeliveryItem if we haven't completed delivering all the items in the subscription
+				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['subscriptionUsage_subscriptionTerm_itemsToDeliver']){
+					getOrderDao().insertSubscriptionOrderDeliveryItem(
+						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),
+						1,
+						subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],
+						subscriptionOrderItemRecord['orderItem_calculatedTaxAmount'],
+						subscriptionOrderItemRecord['orderItem_sku_product_nextDeliveryScheduleDate_deliveryScheduleDateID']
+					);
+				}
+			}
+			//update NextDeliveryDate
+			var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(arguments.currentDateTime);
+			productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');
+			var productsScheduledForDeliveryRecords = productsScheduledForDeliveryCollectionList.getRecords(formatRecords=false);
+			
+			for(var productsScheduledForDeliveryRecord in productsScheduledForDeliveryRecords){
+				var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
+				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateID,deliveryScheduleDateValue');
+				deliveryScheduleDateCollectionList.addFilter('product.productID',productsScheduledForDeliveryRecord['productID']);
+				
+				//if start in current period flag is set then get the closest previous date in the past otherwise closest in the future
+				if(structKeyExists(productsScheduledForDeliveryRecord,'startInCurrentPeriodFlag') && productsScheduledForDeliveryRecord['startInCurrentPeriodFlag']){
+					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',arguments.currentDateTime,'<');
+					deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue|DESC');
+				}else{
+					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',arguments.currentDateTime,'>');
+					deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue');
+				}
+				//make sure the date has not been completed
+				//deliveryScheduleDateCollectionList.addFilter('completedFlag',1,'!=');
+				
+				deliveryScheduleDateCollectionList.setPageRecordsShow(1);
+				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getPageRecords(formatRecords=false);
+				
+				if(arrayLen(deliveryScheduleDateRecords)){
+					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateID']));
+				}
+			}
+		}
 	}
 
 
@@ -205,6 +445,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// First See if we can use an existing order fulfillment
 			var orderFulfillment = processObject.getOrderFulfillment();
+			
 			// Next if orderFulfillment is still null, then we can check the order to see if there is already an orderFulfillment
 			if(isNull(orderFulfillment) && ( isNull(processObject.getOrderFulfillmentID()) || processObject.getOrderFulfillmentID() != 'new' ) && arrayLen(arguments.order.getOrderFulfillments())) {
 				for(var f=1; f<=arrayLen(arguments.order.getOrderFulfillments()); f++) {
@@ -222,6 +463,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var fulfillmentMethod = arguments.processObject.getFulfillmentMethod();
 
 				// If the fulfillmentMethod is still null because the above didn't execute, then we can pull it in from the first ID in the sku settings
+				
 				if(isNull(fulfillmentMethod) && listLen(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods'))) {
 					var fulfillmentMethod = getFulfillmentService().getFulfillmentMethod( listFirst(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods')) );
 				}
@@ -236,14 +478,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// Setup 'Shipping' Values
 					if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping") {
-
+						
+						
+						if(!isNull(arguments.processObject.getThirdPartyShippingAccountIdentifier()) && len(arguments.processObject.getThirdPartyShippingAccountIdentifier())){
+							orderFulfillment.setThirdPartyShippingAccountIdentifier(arguments.processObject.getThirdPartyShippingAccountIdentifier());
+						} 
 						// Check for an accountAddress
 						if(len(arguments.processObject.getShippingAccountAddressID())) {
 
 							// Find the correct account address, and set it in the order fulfillment
 							var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getShippingAccountAddressID() );
 							orderFulfillment.setAccountAddress( accountAddress );
-
+							var address = getAddressService().saveAddress(arguments.processObject.getShippingAddress());
+							if(!address.hasErrors()){
+								orderFulfillment.setShippingAddress(address);
+							}else{
+								orderFulfillment.addErrors(address.getErrors());
+							}
 						// Otherwise try to setup a new shipping address
 						} else {
 
@@ -295,7 +546,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 
 					}
-
+					
+					//Sets the status type
+					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
 					orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
@@ -309,14 +562,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 
 			}
-
-			// Check the fullfillment for a pickup location.
-			if (!isNull(orderFulfillment.getPickupLocation())){
-
+			
+			// Set Stock reference, check the fullfillment for a pickup location
+			if (!arguments.processObject.hasErrors() && !isNull(orderFulfillment.getPickupLocation())){
 				// The item being added to the cart should have its stockID added based on that location
 				var location = orderFulfillment.getPickupLocation();
-				var stock = getService("StockService").getStockBySkuAndLocation(sku=processObject.getSku(), location=location);
-
+				var stock = getService("StockService").getStockBySkuAndLocation(sku=arguments.processObject.getSku(), location=location);
+				
 				//If we found a stock for that location, then set the stock to the process.
 				if (!isNull(stock)){
 					arguments.processObject.setStock(stock);
@@ -324,16 +576,50 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
-			if(!arguments.order.hasErrors()) {
-				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
+			if(!arguments.processObject.hasErrors() && !arguments.order.hasErrors()) {
+				for(var i=arraylen(orderFulfillment.getOrderFulfillmentItems());i>0; i--  ){
+				
+					var orderItem = orderFulfillment.getOrderFulfillmentItems()[i];
+					//evaluate existing stockHold
+					if(arraylen(orderItem.getStockHolds())){
+						//currently only supporting singular stockholds
+						var stockHold = orderItem.getStockHolds()[1];
+						if(stockHold.isExpired()){
+							getService('stockService').deleteStockHold(stockHold);
+							arguments.order.removeOrderItem(orderItem);
+							continue;
+						}
+					}
 					// If the sku, price, attributes & stock all match then just increase the quantity if and only if the match parent orderitem is null.
-					if(arguments.processObject.matchesOrderItem( orderItem ) && isNull(orderItem.getParentOrderItem())){
+					if(
+						arguments.processObject.matchesOrderItem( orderItem ) 
+						&& isNull(orderItem.getParentOrderItem())
+					){
 						foundItem = true;
 						var foundOrderItem = orderItem;
 						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						if(!isNull(arguments.processObject.getSellOnBackOrderFlag()) && arguments.processObject.getSellOnBackorderFlag()){
+							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
+						}
 						foundOrderItem.validate(context='save');
+						
 						if(foundOrderItem.hasErrors()) {
-							arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
+							//String replace the max order qty to give user feedback (with 0 as the minimum)
+							var messageReplaceKeys = {
+								quantityAvailable =  foundOrderItem.getMaximumOrderQuantity(),
+								maxQuantity = foundOrderItem.getSku().setting('skuOrderMaximumQuantity')
+							};
+							
+							for (var error in foundOrderItem.getErrors()){
+								for (var errorMessage in foundOrderItem.getErrors()[error]){
+									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+									message = foundOrderItem.stringReplace(message);
+								
+									foundOrderItem.addError('addOrderItem', message, true);
+									arguments.order.addError('addOrderItem', message, true);
+								}
+
+							}
 						}
 						break;
 					}
@@ -370,6 +656,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.setStock(arguments.processObject.getStock());
 			}
 
+			if (processObject.getSellOnBackOrderFlag() == true){
+				newOrderItem.setSellOnBackOrderFlag(true); //used at the line item level to show it was sold out of stock.
+			}
+			
+			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
 			newOrderItem.setPublicRemoteID( arguments.processObject.getPublicRemoteID() );
@@ -399,7 +690,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setSku( arguments.processObject.getSku() );
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
 
 			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
 			if(
@@ -410,7 +701,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				) && isNumeric(arguments.processObject.getPrice()) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );
 			} else {
-				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
 			}
 
 			// If a stock was passed in assign it to this new item
@@ -433,25 +724,89 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem = this.saveOrderItem( newOrderItem );
 
 			if(newOrderItem.hasErrors()) {
-				arguments.order.addError('addOrderItem', newOrderItem.getErrors());
+				//String replace the max order qty to give user feedback with the minimum of 0
+				var messageReplaceKeys = {
+					quantityAvailable = newOrderItem.getMaximumOrderQuantity(),
+					maxQuantity = newOrderItem.getSku().setting('skuOrderMaximumQuantity')
+				};
+				
+ 				for (var error in newOrderItem.getErrors()){
+					for (var errorMessage in newOrderItem.getErrors()[error]){
+						var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+						message = newOrderItem.stringReplace(message);
+					
+						arguments.order.addError('addOrderItem', message, true);
+						newOrderItem.addError("addOrderItem", message, true);
+					}
+				}
+			}else{
+				//begin stock hold logic
+				if(arguments.processObject.getSku().setting('skuStockHold')){
+					var stockHold = getService('stockService').newStockHold();
+					stockHold.setSku(arguments.processObject.getSku());
+					stockHold.setOrderItem(newOrderItem);
+					stockHold.setStock(arguments.processObject.getStock());
+					stockHold.setStockHoldExpirationDateTime(dateAdd('n',arguments.processObject.getSku().setting('skuStockHoldTime'),now()));
+					
+					stockHold = getService('stockService').saveStockHold(stockHold);
+				}
 			}
 		}
 
-        var recipients = arguments.processObject.getRecipients();
-		if(!isNull(recipients) && arguments.processObject.getSku().isGiftCardSku()){
-	        for(var i=1; i<=ArrayLen(recipients);i++){
-				var recipientProcessObject = arguments.order.getProcessObject("addOrderItemGiftRecipient");
-				var recipient = this.newOrderItemGiftRecipient();
-				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
-				if(foundItem){
-					recipientProcessObject.setOrderItem(foundOrderItem);
-				} else {
-					recipientProcessObject.setOrderItem(newOrderItem);
-				}
-				recipientProcessObject.setRecipient(recipient);
-				this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+		// Applies only to order items for gift card skus
+		if(arguments.processObject.getSku().isGiftCardSku()){
+			
+			var orderItem = "";
+			if(foundItem){
+				orderItem = foundOrderItem;
+			} else {
+				orderItem = newOrderItem;
 			}
 
+			// Additional processing when gift card codes manually provided or gift gard recipient(s) required
+			if (!arguments.processObject.getSku().getGiftCardAutoGenerateCodeFlag() || arguments.processObject.getSku().getGiftCardRecipientRequiredFlag()) {
+
+				// Retrieve gift card recipient data from order_addOrderItem process object
+				var orderItemGiftCardRecipientData = arguments.processObject.getRecipients();
+
+				if (!isNull(orderItemGiftCardRecipientData)) {
+
+					// Loop over all gift card recipient data.
+					for (var data in orderItemGiftCardRecipientData){
+						
+						// Note: OrderItemGiftRecipient entity is used to handle a couple use cases.
+						// A small subset of its properties might used depending on the context, sku settings, order item fulfillment type
+						// Entity may contain all recipient detail email/contact or simply for storage of manually provided gift card codes
+
+						// Populate using the orderItemGiftRecipient data provided
+						var orderItemGiftRecipient = this.newOrderItemGiftRecipient();
+						orderItemGiftRecipient.populate(data);
+						orderItemGiftRecipient.setOrderItem(orderItem);
+
+						// Set values using process object
+						// This process should really be done using a process like processOrderItem_AddGiftRecipient(..., {orderItemGiftRecipient=...}, 'create') so a new process object for each
+						// Because same instance of a process object will be used for entire life of the order object
+						// TODO: Refactor later
+						addOrderItemGiftRecipientProcessObject = arguments.order.getProcessObject('addOrderItemGiftRecipient', {
+							orderItem = orderItem,
+							recipient = orderItemGiftRecipient
+						});
+						// Allows subproperty validation to occur on these objects
+						addOrderItemGiftRecipientProcessObject.addPopulatedSubProperty('orderItem', orderItem);
+						addOrderItemGiftRecipientProcessObject.addPopulatedSubProperty('recipient', orderItemGiftRecipient);
+						
+						// Run process to associate gift recipient with orderItem
+						this.processOrder(arguments.order, {}, 'addOrderItemGiftRecipient');
+
+						if (addOrderItemGiftRecipientProcessObject.hasErrors()) {
+							if (addOrderItemGiftRecipientProcessObject.getRecipient().hasErrors()) {
+								orderItem.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
+								arguments.order.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
+							}
+						}
+					}
+				}
+			}
 		}
 
 
@@ -623,78 +978,61 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         return arguments.orderItem;
 	}
 
+	// @hint Process to associate orderItem and orderItemGiftRecipient
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
+		var orderItem = arguments.processObject.getOrderItem();
+		var orderItemGiftRecipient = arguments.processObject.getRecipient();
 
-		var item = arguments.processObject.getOrderItem();
+		// Associate account if the recipient's email address matches an existing account email address
+		if(orderItem.getSku().getGiftCardRecipientRequiredFlag() && isNull(orderItemGiftRecipient.getAccount())){
+            if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(orderItemGiftRecipient.getEmailAddress())){
+				orderItemGiftRecipient.setAccount(getAccountService().getAccount(getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(orderItemGiftRecipient.getEmailAddress())));
+            }
+		}
 
-		if(isNull(arguments.processObject.getRecipient())){
-			var recipient = this.newOrderItemGiftRecipient();
+		// Persist relationship between orderItem and orderItemGiftRecipient
+        orderItemGiftRecipient = this.saveOrderItemGiftRecipient(orderItemGiftRecipient);
+
+		// Save order
+		if (!orderItemGiftRecipient.hasErrors()) {
+			arguments.order = this.saveOrder(arguments.order);
+		// Add any orderItemGiftRecipient errors to order
 		} else {
-			var recipient = arguments.processObject.getRecipient();
+			arguments.order.addErrors(orderItemGiftRecipient.getErrors());
 		}
 
-		if(!isNull(arguments.processObject.getFirstName())){
-			recipient.setFirstName(arguments.processObject.getFirstName());
-		}
-
-		if(!isNull(arguments.processObject.getLastName())){
-			recipient.setLastName(arguments.processObject.getLastName());
-		}
-
-		if(isNull(arguments.processObject.getAccount())){
-            if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getEmailAddress())){
-				recipient.setAccount(getService("HibachiService").get("Account", getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
-                recipient.setEmailAddress(arguments.processObject.getEmailAddress());
-            } else {
-				recipient.setEmailAddress(arguments.processObject.getEmailAddress());
-			}
-
-		} else {
-			recipient.setAccount(arguments.processObject.getAccount());
-		}
-
-		if(!isNull(arguments.processObject.getGiftMessage())){
-			recipient.setGiftMessage(arguments.processObject.getGiftMessage());
-		}
-
-		if(!isNull(processObject.getQuantity())){
-        	recipient.setQuantity(processObject.getQuantity());
-        }
-
-        recipient = this.saveOrderItemGiftRecipient(recipient);
-
-        recipient.setOrderItem(item);
-
-
-		if(!recipient.hasErrors()){
-			return this.saveOrder(arguments.order);
-		} else {
-			arguments.order.addErrors(recipient.getErrors());
-			return arguments.order;
-		}
-
+		return arguments.order;
 	}
 
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
 		// Get the populated newOrderPayment out of the processObject
 		var newOrderPayment = processObject.getNewOrderPayment();
-
+		
+		
 		// If this is an existing account payment method, then we can pull the data from there
 		if( arguments.processObject.getCopyFromType() == 'accountPaymentMethod' && len(arguments.processObject.getAccountPaymentMethodID())) {
 			// Setup the newOrderPayment from the existing payment method
 			var accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.processObject.getAccountPaymentMethodID() );
-			newOrderPayment.copyFromAccountPaymentMethod( accountPaymentMethod );
-
+			if ( accountPaymentMethod.getAccount().getAccountID() == arguments.order.getAccount().getAccountID() ){
+				newOrderPayment.copyFromAccountPaymentMethod( accountPaymentMethod );
+			} else {
+				newOrderPayment.addError('orderPaymentID', "An issue occured while adding your Order Payment.");
+			}
 		// If they just used an exiting account address then we can try that by itself
 		}else if(arguments.processObject.getCopyFromType() == 'previousOrderPayment' && len(arguments.processObject.getPreviousOrderPaymentID())){
 			// Setup the newOrderPayment from the existing payment method
 			var orderPayment = getService('OrderService').getOrderPayment(arguments.processObject.getPreviousOrderPaymentID());
-			newOrderPayment.copyFromOrderPayment(orderPayment);
+			if ( orderPayment.getOrder().getOrderID() == arguments.order.getOrderID() ){
+				newOrderPayment.copyFromOrderPayment( orderPayment );
+			} else {
+				newOrderPayment.addError('orderPaymentID', "An issue occured while adding your Order Payment.");
+			}
 
 		}else if(!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
 
 			if(!isNull(accountAddress)) {
+				newOrderPayment.setBillingAccountAddress(accountAddress);
 				newOrderPayment.setBillingAddress( accountAddress.getAddress().copyAddress( true ) );
 			}
 		}
@@ -723,10 +1061,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
-            	if( arguments.order.getPaymentAmountDueAfterGiftCards() > giftCard.getBalanceAmount() ){
+            	if( arguments.order.getPaymentAmountDue() > giftCard.getBalanceAmount() ){
 					newOrderPayment.setAmount(giftCard.getBalanceAmount());
 				} else {
-					newOrderPayment.setAmount(arguments.order.getPaymentAmountDueAfterGiftCards());
+					newOrderPayment.setAmount(arguments.order.getPaymentAmountDue());
 				}
             } else {
             	newOrderPayment.addError('giftCard', rbKey('validate.giftCardCode.invalid'));
@@ -762,6 +1100,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
 
 		} else if(newOrderPayment.hasErrors()) {
+			
+			
 			arguments.order.addError('addOrderPayment', newOrderPayment.getErrors());
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
 		} else if (!newOrderPayment.hasErrors()
@@ -769,6 +1109,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				|| (arguments.processObject.getSaveGiftCardToAccountFlag()
 				&& (!isNull(giftCard) && isNull(giftCard.getOwnerAccount())) ))
 				&& isNull(newOrderPayment.getAccountPaymentMethod())) {
+			
 			// Create a new Account Payment Method
 			var newAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
 			// Attach to Account
@@ -795,12 +1136,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod, {runSaveAccountPaymentMethodTransactionFlag=false} );
 
 			newOrderPayment.setAccountPaymentMethod(newAccountPaymentMethod);
-
+			if(newAccountPaymentMethod.hasErrors()){
+				newOrderPayment.addErrors(newAccountPaymentMethod.getErrors());
+			}
 		}
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderPayment.getPaymentTerm().getTerm().getEndDate() );
 		}
+
 		return arguments.order;
 	}
 
@@ -821,6 +1165,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//if promo has a max use and the promo has been used more than the max use than display the over max use message
 		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'), true);
+		//If promo site does not match order site, display incorrect site message
+		} else if( 
+			!isNull(pc.getPromotion().getSite())
+			&& !isNull(arguments.order.getOrderCreatedSite())
+			&& pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() 
+		) {
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'), true);
 		} else {
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
 			if(!arguments.order.hasPromotionCode( pc )) {
@@ -851,13 +1202,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						transactionType = 'credit'
 					};
 					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
+					
+					if (orderPayment.hasErrors() && !isNull(orderPayment.getError('createTransaction'))){
+						order.addError("cancelOrder", orderPayment.getErrors());
+						return orderPayment; //stop processing this cancel on error.
+					}
 				}
+			}
+		}
+				
+		for(var orderItem in arguments.order.getOrderItems()){
+			if(!isNull(orderItem.getStock())){
+				getHibachiScope().addModifiedEntity(orderItem.getStock());
+				getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
 			}
 		}
 
 		// Change the status
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostCanceled") );
-
+		arguments.order.setOrderCanceledDateTime(now());
+		
 		return arguments.order;
 	}
 
@@ -932,8 +1296,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 		//Setup Site Origin if using slatwall cms
-		if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
-			arguments.order.setOrderCreatedSite(getHibachiScope().getSite());
+		if(!isNull(getHibachiScope().getCurrentRequestSite()) && getHibachiScope().getCurrentRequestSite().isSlatwallCMS()){
+			arguments.order.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
+		}else if ( !isNull(arguments.processObject.getOrderCreatedSite()) ) {
+			arguments.order.setOrderCreatedSite(arguments.processObject.getOrderCreatedSite());
 		}
 
 		// Setup Account
@@ -985,6 +1351,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		returnOrder.setAccount( arguments.order.getAccount() );
 		returnOrder.setOrderType( getTypeService().getTypeBySystemCode(arguments.processObject.getOrderTypeCode()));
 		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
+		returnOrder.setOrderCreatedSite( arguments.order.getOrderCreatedSite() );
 		returnOrder.setReferencedOrder( arguments.order );
 		returnOrder.setReferencedOrderType('return');
 
@@ -1046,50 +1413,109 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Recalculate the order amounts for tax and promotions
 		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
+		
 
 		// Check to see if we are attaching an referenced orderPayment
-		if(len(arguments.processObject.getRefundOrderPaymentID())) {
+		var originalOrderPayment = "";
+		if (len(arguments.processObject.getRefundOrderPaymentID())) {
+			originalOrderPayment = this.getOrderPayment( arguments.processObject.getRefundOrderPaymentID() );
+		}
 
-			var originalOrderPayment = this.getOrderPayment( arguments.processObject.getRefundOrderPaymentID() );
+		
+		var returnOrderPayment = this.newOrderPayment();
+		var placeOrderData = {};
 
-			if(!isNull(originalOrderPayment)) {
-				var returnOrderPayment = this.newOrderPayment();
+		// Referencing original order payment
+		if (isObject(originalOrderPayment)) {
+			var returnOrderPayment = this.newOrderPayment();
 				returnOrderPayment.copyFromOrderPayment( originalOrderPayment );
 				returnOrderPayment.setReferencedOrderPayment( originalOrderPayment );
 				returnOrderPayment.setOrder( returnOrder );
 				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
 				returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
 				returnOrderPayment.setAmount( getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1) );
+
+		// New return order payment, provided order payment information is not related to any previous order payments
+		} else {
+
+			// Manually populate for 'placeOrder' data, and set payment type as 'credit' rather than the default 'charge'
+			placeOrderData.newOrderPayment = {};
+			if (structKeyExists(arguments.data, 'newOrderPayment')) {
+				placeOrderData.newOrderPayment = arguments.data.newOrderPayment;
 			}
+			placeOrderData.newOrderPayment.orderPaymentID = "";
+			placeOrderData.newOrderPayment.order = { orderID = returnOrder.getOrderID() };
+			placeOrderData.newOrderPayment.currencyCode = returnOrder.getCurrencyCode();
+			placeOrderData.newOrderPayment.orderPaymentType = { typeID = getTypeService().getTypeBySystemCode( 'optCredit' ).getTypeID() };
+			placeOrderData.newOrderPayment.amount = getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1);
+			
+			placeOrderData.accountPaymentMethodID = arguments.processObject.getAccountPaymentMethodID();
+			placeOrderData.accountAddressID = arguments.processObject.getAccountAddressID();
+			placeOrderData.saveAccountPaymentMethodFlag = arguments.processObject.getSaveAccountPaymentMethodFlag();
+			placeOrderData.saveAccountPaymentMethodName = arguments.processObject.getSaveAccountPaymentMethodName();
 
+			// For some unknown reason, without explicitly setting this to empty '' when null
+			// The processOrder_addOrderPayment method will use 'accountPaymentMethod' and not be null instead, which is not desired
+			if (!isNull(arguments.processObject.getCopyFromType())) {
+				placeOrderData.copyFromType = arguments.processObject.getCopyFromType();
+			} else {
+				placeOrderData.copyFromType = '';
+			}
 		}
-
+		
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
-
 			if(arguments.processObject.getOrderTypeCode() eq "otReturnOrder" && orderItemFoundFlag) {
-				returnOrder = this.processOrder(returnOrder, {}, 'placeOrder');
+				// 'placeOrder' process will handle logic for the order payment
+				returnOrder = this.processOrder(returnOrder, placeOrderData, 'placeOrder');
 
-				// If the process object was set to automatically receive these items, then we will do that
-				if(!returnOrder.hasErrors() && (arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())) {
-					var receiveData = {};
-					receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
-					receiveData.orderReturnItems = [];
-					receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
-					for(var returnItem in orderReturn.getOrderReturnItems()) {
-						var thisData = {};
-						thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
-						thisData.quantity = returnItem.getQuantity();
-						arrayAppend(receiveData.orderReturnItems, thisData);
+				if(!returnOrder.hasErrors()) {
+					//if no errors and the order has a product with deferred revenue then check if we need to record a subscriptionOrderDeliveryItem
+					for(var orderItem in returnOrder.getOrderItems()){
+						if(orderItem.getSku().getProduct().getDeferredRevenueFlag()){
+							var subscriptionOrderItem = orderItem.getReferencedOrderItem().getSubscriptionOrderItem();
+							if(!isNull(subscriptionOrderItem)){
+								var refundBalance = orderItem.getPrice() - subscriptionOrderItem.getDeferredRevenue();
+								var refundTaxBalance = orderItem.getTaxAmount() - subscriptionOrderItem.getDeferredTaxAmount();
+								//if refundBalance is greater than the deferredRevenue then we are balanceing previous deliveries, prorating, 
+								//or providing a courteous refund greater than a single delivery
+								if(refundBalance != 0 || refundTaxBalance != 0){
+									var subscriptionOrderDeliveryItem = this.newSubscriptionOrderDeliveryItem();
+									var subscriptionOrderDeliveryItemType = getService('TypeService').getTypeBySystemCode('soditRefunded');
+									subscriptionOrderDeliveryItem.setSubscriptionOrderDeliveryItemType(subscriptionOrderDeliveryItemType);
+									subscriptionOrderDeliveryItem.setEarned(refundBalance);
+									subscriptionOrderDeliveryItem.setTaxAmount(refundTaxBalance);
+									subscriptionOrderDeliveryItem.setQuantity(1);
+									subscriptionOrderDeliveryItem.setSubscriptionOrderItem(subscriptionOrderItem);
+									subscriptionOrderDeliveryItem = getService('subscriptionService').saveSubscriptionOrderDeliveryItem(subscriptionOrderDeliveryItem);
+								}
+							}
+						}
 					}
-					orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');
+					
+					// If the process object was set to automatically receive these items, then we will do that
+					if((arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())){
+						var receiveData = {};
+						receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
+						receiveData.orderReturnItems = [];
+						receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
+						for(var returnItem in orderReturn.getOrderReturnItems()) {
+							var thisData = {};
+							thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
+							thisData.quantity = returnItem.getQuantity();
+							arrayAppend(receiveData.orderReturnItems, thisData);
+						}
+						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
+					}
 				}
 			}
+			
 		}
-
-
-
+		// We are processing return order at multiple Placeses so error can be genertaed in any sub process
+		if(returnOrder.hasErrors()){
+			this.getHibachiScope().setORMHasErrors(true);
+		}
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
 	}
@@ -1118,6 +1544,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         //set the site placed so that it is available on return orders.
         if (!isNull( arguments.order.getOrderPlacedSite()) && isObject( arguments.order.getOrderPlacedSite())){
             newOrder.setOrderPlacedSite( arguments.order.getOrderPlacedSite() );
+        }
+        
+        //set the site created so that it is available on return orders.
+        if (!isNull( arguments.order.getOrderCreatedSite()) && isObject( arguments.order.getOrderCreatedSite())){
+            newOrder.setOrderCreatedSite( arguments.order.getOrderCreatedSite() );
         }
 
 		if (referencedOrderFlag == true){
@@ -1314,10 +1745,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
-	public any function processOrder_placeOrder(required any order, required struct data) {
+	public boolean function isAllowedToPlaceOrderWithoutPayment(required any order, struct data = {}){
+
+		if(getHibachiScope().getAccount().getAdminAccountFlag() && structKeyExists(arguments.data, 'newOrderPayment.paymentMethod.paymentMethodID') && arguments.data['newOrderPayment.paymentMethod.paymentMethodID'] == 'none'){
+			return true;
+		}
+
+		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
+			var settingValue = arguments.order.getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder");
+			if(isNull(settingValue) || len(settingValue) == 0 || val(settingValue) > 0){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public any function processOrder_placeOrder(required any order, struct data={}) {
+		
 		// First we need to lock the session so that this order doesn't get placed twice.
 		lock scope="session" timeout="60" {
-
+			arguments.order.setPlaceOrderFlag(true);
 			// Reload the order in case it was already in cache
 			getHibachiDAO().reloadEntity(arguments.order);
 			// Make sure that the entity is notPlaced before going any further
@@ -1337,11 +1785,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 
 						//check if is payment is needed to place order and addPayment
-						if(!arguments.order.isAllowedToPlaceOrderWithoutPayment() ||
-							( arguments.order.isAllowedToPlaceOrderWithoutPayment() && arguments.order.getPaymentAmountTotal() > 0)
+						if(!this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data) ||
+							( arguments.order.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data) && arguments.order.getPaymentAmountTotal() > 0)
 						){
 							// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
-							if (arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()
+							if ((arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() && structKeyExists(arguments.data, 'newOrderPayment'))
 							|| (
 								arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()
 								&& !arguments.order.hasSavedAccountPaymentMethod()
@@ -1359,8 +1807,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 
 						// Generate the order requirements list, to see if we still need action to be taken
-						var orderRequirementsList = getOrderRequirementsList( arguments.order );
-
+						var orderRequirementsList = getOrderRequirementsList( arguments.order, arguments.data );
+						
 						// Verify the order requirements list, to make sure that this order has everything it needs to continue
 						if(len(orderRequirementsList)) {
 
@@ -1386,45 +1834,60 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var amountAuthorizeCreditReceive = 0;
 
 							// Process All Payments and Save the ones that were successful
-							for(var orderPayment in arguments.order.getOrderPayments()) {
-								// As long as this orderPayment is active then we can run the place order transaction
-								if(orderPayment.getStatusCode() == 'opstActive') {
-									orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
-									amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
-								}
+							if(!order.hasItemsQuantityWithinMaxOrderQuantity()){
+								arguments.order.addError('orderItem','an orderitem is out of stock');	
 							}
+							
+							//Sets the payment processing flag
+							var orderDAO = getDAO("OrderDao");
+							orderDAO.turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
+							
+							if(order.hasErrors()){
+								
+								arguments.order.setPaymentProcessingInProgressFlag(false);
+								
+							} else {
+								// Process All Payments and Save the ones that were successful
+								for(var orderPayment in arguments.order.getOrderPayments()) {
+									// As long as this orderPayment is active then we can run the place order transaction
+									if(orderPayment.getStatusCode() == 'opstActive') {
+										orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
+										amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
+									}
+								}
 
-
-
-							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
-							for(var orderitem in arguments.order.getOrderItems()) {
-								var errors = orderItem.validate('save').getErrors();
-								if(StructCount(errors)){
-									for(var errorKey in errors){
-										for(var message in errors[errorKey]){
-											arguments.order.addError('orderItem',message);
+								arguments.order.setPaymentProcessingInProgressFlag(false);
+								// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
+								for(var orderitem in arguments.order.getOrderItems()) {
+									var errors = orderItem.validate('save').getErrors();
+									if(StructCount(errors)){
+										for(var errorKey in errors){
+											for(var message in errors[errorKey]){
+												arguments.order.addError('orderItem',message);
+											}
 										}
 									}
-								}
-								if(orderitem.getSku().getBaseProductType() == "event") {
-									if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
-										arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
-									}
-									if(!orderItem.hasEventRegistration()){
-										arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
-									}
-
-									if (!arguments.order.hasErrors()){
-										for ( var eventRegistration in orderItem.getEventRegistrations() ) {
-											// Set registration status - Should this be done when order is placed instead?
-											if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
-											}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
-											}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
-											}else{
-												eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+									
+									if(orderitem.getSku().getBaseProductType() == "event") {
+										if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
+											arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
+										}
+										if(!orderItem.hasEventRegistration()){
+											arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
+										}
+	
+										if (!arguments.order.hasErrors()){
+											for ( var eventRegistration in orderItem.getEventRegistrations() ) {
+												// Set registration status - Should this be done when order is placed instead?
+												if (orderItem.getOrderItemType().getSystemCode() == 'oitDeposit'){
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+												}else if( orderitem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingApproval"));
+												}else if (orderitem.getSku().getAvailableSeatCount() > 0) {
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
+												}else{
+													eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
+												}
 											}
 										}
 									}
@@ -1432,8 +1895,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 
 							// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
-							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()))) {
-
+							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)))) {
+	
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 								}
@@ -1461,11 +1924,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// Save the order to the database
 								getHibachiDAO().save( arguments.order );
 
-								// Do a flush so that the order is commited to the DB
-								getHibachiDAO().flushORMSession();
 
-								// Log that the order was placed
-								logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
 								// if order had error but payment was captured, clear error and log to hibachi
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
@@ -1476,23 +1935,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}
 									arguments.order.getHibachiErrors().setErrors(structnew());
 								}
+
+								// Do a flush so that the order is commited to the DB
+								getHibachiDAO().flushORMSession();
+
+								// Log that the order was placed
+								logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
+	
 								// Look for 'auto' order fulfillments
-								for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
-									//don't auto fulfill if the deposit has been paid but not the full amount.
-									createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
-								}
-								for(var orderItem in order.getOrderItems()){
-									//run calculated props if success on product, sku and order item
-									//product must run before sku because sku depends on product info to calculate correctly
-									orderItem.getSku().getProduct().updateCalculatedProperties(true);
-									orderItem.getSku().updateCalculatedProperties(true);
-									orderItem.updateCalculatedProperties(true);
+								createOrderDeliveriesForAutoFulfillmentMethod(arguments.order);
+
+								// Flush again to really lock in that order status change
+								getHibachiDAO().flushORMSession();
+								
+								for(var orderItem in arguments.order.getOrderItems()){
+									if(!isNull(orderItem.getStock())){
+										//via cascade calculate stock should update sku then product 
+										getHibachiScope().addModifiedEntity(orderItem.getStock());
+										getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
+										getHibachiScope().flushORMSession();
+									}else{
+										//via cascade calculate stock should update product 
+										getHibachiScope().addModifiedEntity(orderItem.getSku());
+									}
 								}
 							}
 						}
 					}
 				}
-
 			} else {
 				arguments.order.addError('duplicate', rbKey('validate.processOrder_PlaceOrder.duplicate'));
 			}
@@ -1510,11 +1980,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return false;
 	}
-
+	
+	public any function createOrderDeliveriesForAutoFulfillmentMethod(required any order){
+		for(var i=1; i<=arrayLen( order.getOrderFulfillments() ); i++) {
+			//don't auto fulfill if the deposit has been paid but not the full amount.
+			if (order.getOrderFulfillments()[i].isAutoFulfillment()) {
+				var orderDelivery = createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[i]);
+				if (!isNull(orderDelivery) && orderDelivery.hasMessage('autoFulfillmentMessage')) {
+					order.addMessage('autoFulfillmentMessage', orderDelivery.getMessages()['autoFulfillmentMessage'][1]);
+				}
+			}
+		}
+			//if already closed then no need to updateStatus
+		if(arguments.order.getOrderStatusType().getSystemCode() neq 'ostClosed'){
+			order = getService('orderService').processOrder(order,{},'updateStatus');
+		}
+	}
+	
+	
+	
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
-
-		var order = arguments.orderFulfillment.getOrder();
-
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
 		    arguments.orderFulfillment.isAutoFulfillmentReadyToBeFulfilled()
@@ -1523,7 +2008,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var newOrderDelivery = this.newOrderDelivery();
 			var processData = {};
 			processData.order = {};
-			processData.order.orderID = order.getOrderID();
+			processData.order.orderID = arguments.orderFulfillment.getOrder().getOrderID();
 			processData.location.locationID = arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoLocation');
 			processData.orderFulfillment.orderFulfillmentID = arguments.orderFulfillment.getOrderFulfillmentID();
 
@@ -1568,6 +2053,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// concurrent invocation error caused by reading and modifying the array in the same request.
 			for(var n = ArrayLen(orderItemsToRemove); n >=1; n--)	{
 				var orderItem = this.getOrderItem(orderItemsToRemove[n]);
+				if(arraylen(orderItem.getStockHolds())){
+					//currently only supporting singular stockholds
+					var stockHold = orderItem.getStockHolds()[1];
+					if(stockHold.isExpired()){
+						getService('stockService').deleteStockHold(stockHold);
+						arguments.order.removeOrderItem(orderItem);
+						continue;
+					}
+				}
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(!isNull(orderItem) && arrayFindNoCase(orderItemsToRemove, orderItem.getOrderItemID())) {
 
@@ -1625,8 +2119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(orderPayment.getOrderPaymentID() == arguments.data.orderPaymentID) {
 					if(orderPayment.isDeletable()) {
-						arguments.order.removeOrderPayment( orderPayment );
-						this.deleteOrderPayment( arguments.order , orderPayment );
+						this.deleteOrderPayment( orderPayment );
 					} else {
 						orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstRemoved') );
 					}
@@ -1681,12 +2174,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// First we make sure that this order status is not 'closed', 'canceled', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
-
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
-			if(val(getService('HibachiUtilityService').precisionCalculate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal())) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
+			var  isOrderPaidFor = arguments.order.isOrderPaidFor();
+			
+			var isOrderFullyDelivered = arguments.order.isOrderFullyDelivered();
+			
+			if(!isOrderPaidFor){
+				logHibachi('order is not fully paid for');
+			}
+			
+			if(!isOrderFullyDelivered){
+				logHibachi('order is not fully delivered #arguments.order.getQuantityUndelivered()# vs #arguments.order.getQuantityUnreceived()#');
+			}
+			
+			if(isOrderPaidFor && isOrderFullyDelivered)	{
 				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostClosed") );
-			// The default case is just to set it to processing
-			} else {
+			// The default case is just to set it to processing if only one thing is done
+			} else if(
+				!arguments.order.getPlaceOrderFlag()
+			){
 				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostProcessing") );
 			}
 
@@ -1731,7 +2237,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
-
+		
+		//Update the inventory Status Type
+		orderFulfillment.setOrderFulfillmentInvStatusType(orderFulfillment.getOrderFulfillmentInvStatusType());
+		
 		if(!orderFulfillment.hasErrors()) {
 			arguments.order = this.saveOrder(arguments.order);
 		} else {
@@ -1773,18 +2282,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
 
-			// Loop over the orderItems to see if the skuPrice Changed
+			
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
-				for(var orderItem in arguments.order.getOrderItems()){
-					var skuPrice = val(orderItem.getSkuPrice());
-					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
- 					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
- 						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
- 							orderItem.setPrice(SkuPriceByCurrencyCode);
- 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
- 						}
+				//quote logic should freeze the price based on the expiration therefore short circuiting the logic
+				if(
+ 					!arguments.order.getQuoteFlag() 
+ 					|| (
+ 						arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired()
+ 					)
+ 				){
+ 					// Loop over the orderItems to see if the skuPrice Changed
+					for(var orderItem in arguments.order.getOrderItems()){
+						var skuPrice = val(orderItem.getSkuPrice());
+						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
+	 					
+	 					if(
+	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
+	 					){
+	 						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
+	 							orderItem.setPrice(SkuPriceByCurrencyCode);
+	 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
+	 						}
+						}
 					}
-				}
+ 				}
 			}
 
 			// First Re-Calculate the 'amounts' base on price groups
@@ -1794,10 +2315,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
-			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		    	if(arguments.order.getPaymentAmountDue() != 0){
+				getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		    	}
 
 			//update the calculated properties
-			arguments.order.updateCalculatedProperties(true);
+			getHibachiScope().addModifiedEntity(arguments.order);
 
 		}
 		return arguments.order;
@@ -1834,13 +2357,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	public any function addOrderFulfillmentItemsToOrderDelivery(required any orderDelivery, required any processObject){
+		// Gift card OrderItems that are not eligible for auto-fulfillment
+		var ineligibleGiftCardOrderItems = [];
+
 		// Loop over delivery items from processObject and add them with stock to the orderDelivery
 		for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
 
 			// Local pointer to the orderItem
 			var thisOrderItem = arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()[i];
 
-			if(thisOrderItem.getQuantityUndelivered() && thisOrderItem.hasAllGiftCardsAssigned()) {
+			// Edge case, we can't assume all manual gift cards have been assigned
+			// This exception occurs when gift card information doesn't exist yet for an orderItem which requires gift recipient and using manual gift card codes
+			// This could be eliminated by updating a requirement that gift card code must be entered when adding the recipient to orderItem
+			// Determine if gift card orderDeliveryItems are ineligible for auto-fulfillment
+			var giftCardOrderItemIneligibleFlag = false;
+			if (thisOrderItem.isGiftCardOrderItem() && thisOrderItem.getSku().getGiftCardRecipientRequiredFlag() && !thisOrderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
+				giftCardOrderItemIneligibleFlag = true;
+				arrayAppend(ineligibleGiftCardOrderItems, thisOrderItem);
+			}
+
+			if(thisOrderItem.getQuantityUndelivered() && !giftCardOrderItemIneligibleFlag) {
 				// Create a new orderDeliveryItem
 				var orderDeliveryItem = this.newOrderDeliveryItem();
 
@@ -1849,6 +2385,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
 				orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
 				orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
+			}
+
+			// Add a message to the orderDelivery to inform that items were skipped. It was not an error with intial gift card functionality, and allows other orderItems to auto-fulfill
+			if (arrayLen(ineligibleGiftCardOrderItems)) {
+				orderDelivery.addMessage('autoFulfillmentMessage', rbKey('validate.create.OrderDelivery_Create.giftCardCodes.missingGiftCardCode'));
 			}
 
 		}
@@ -1885,14 +2426,64 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over delivery items from processObject and add them with stock to the orderDelivery
 		for(var i=1; i<=arrayLen(arguments.processObject.getOrderDeliveryItems()); i++) {
 			var orderDeliveryItem = arguments.processObject.getOrderDeliveryItems()[i];
-			addOrderDeliveryItemToOrderDeliveryStruct(arguments.orderDelivery,orderDeliveryItem);
+			if (orderDeliveryItem.quantity > 0) {
+				addOrderDeliveryItemToOrderDeliveryStruct(arguments.orderDelivery,orderDeliveryItem);
+			}
+		}
+		return arguments.orderDelivery;
+	}
+	
+	public any function addOrderDeliveryItemsToOrderDeliveryByContainer(required any orderDelivery, required any processObject){
+		// Loop over delivery items from processObject and add them with stock to the orderDelivery
+		
+		for(var i=1; i<=arrayLen(arguments.processObject.getContainers()); i++) {
+			var containerStruct = arguments.processObject.getContainers()[i];
+			arguments.orderDelivery = getService('containerService').populateContainerFromContainerStructAndOrderDelivery(containerStruct,arguments.orderDelivery);
+		}
+		return arguments.orderDelivery;
+	}
+	
+	public any function processOrderDelivery_getContainerDetails(required any orderDelivery,required any processObject){
+		var containerStruct = getService('containerService').getContainerDetails(arguments.processObject,true);
+		arguments.data.apiResponse.content['containerStruct'] = containerStruct;
+		return arguments.orderDelivery;
+	}
+	
+	private any function generateInvoiceNumber(required any processObject){
+		var orderDeliveryCollectionList = this.getOrderDeliveryCollectionList();
+
+		orderDeliveryCollectionList.addFilter("order.orderID", arguments.processObject.getOrder().getOrderID());
+		
+		var orderDeliveriesCount = orderDeliveryCollectionList.getRecordsCount();
+		var invoiceNumber = "#arguments.processObject.getOrder().getOrderNumber()#-#orderDeliveriesCount#";
+		
+		return invoiceNumber;
+	}
+	
+	public any function processOrderDelivery_generateShippingLabel(required any orderDelivery, required any processObject, struct data){
+		//prevent overwriting existing labels
+
+		if (
+			(
+				isNull(arguments.orderDelivery.getTrackingNumber())
+				|| !len(arguments.orderDelivery.getTrackingNumber())
+			)
+			&& arguments.orderDelivery.getOrderFulfillment().hasShippingIntegration()
+		) {
+
+			//get the shipping integration from the previously attempting label generation 
+			var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.orderDelivery.getOrderFulfillment().getShippingIntegration());
+
+			// Populates processObject trackingNumber and generates containerLabel if shipping.cfc has 'processShipmentRequest' method
+			if(structKeyExists(shippingIntegrationCFC, 'processShipmentRequest')){
+				shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_generateShippingLabel(arguments.processObject);
+			}
 		}
 		return arguments.orderDelivery;
 	}
 
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
-
 		var amountToBeCaptured = 0;
 
 		// If we need to capture payments first, then we do that to make sure the rest of the delivery can take place
@@ -1913,7 +2504,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() == "shipping"
 			) {
 
-
+				
 				if (!isNull(arguments.processObject.getShippingMethod())){
  					arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
  				}
@@ -1954,7 +2545,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
 				}
 			}
-
+			
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
 				(
@@ -1965,19 +2556,58 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					)
 				)
 				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())
-				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")
 			) {
+				// Prepare orderDelivery to auto-fulfill all "undelivered" orderItems from orderFulfillment
 				addOrderFulfillmentItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 
-			} else {
-				addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
+			}  else {
+				
+				if(isNull(arguments.processObject.getContainers()) || !arrayLen(arguments.processObject.getContainers())){
+					// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
+					arguments.orderDelivery = addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
+				}else{
+					arguments.orderDelivery = addOrderDeliveryItemsToOrderDeliveryByContainer(arguments.orderDelivery,arguments.processObject);
+				}
 			}
 
+			// Beyond this point orderDelivery.getOrderDeliveryItems() has populated with orderDeliveryItem data from the processObject
+
+			// Manually populating arguments.data.giftCardCodes, necessary when gift card codes were provided using processOrder_addOrderItem() prior to this processOrderDelivery_create()
+			// arguments.data.giftCardCodes will be used for orderDeliveryItem_createGiftCards() process
+			if (!structKeyExists(arguments.data, 'giftCardCodes')) {
+				arguments.data.giftCardCodes = [];
+			}
+			
+			// Normalizing manual gift cards into arguments.data.giftCardCodes as they may be provided directly or need to be looked up from the OrderItemGiftRecipient
+			for (var orderDeliveryItem in orderDelivery.getOrderDeliveryItems()) {
+				var orderItem = orderDeliveryItem.getOrderItem();
+
+				// Need to populate gift card code data needed later during gift card processing (orderItem with recipient will have giftCardCode stored in OrderItemGiftRecipient)
+				if (orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag() && !orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
+					var giftCardCreateCount = 1;
+					// Could be partial fulfillment
+					for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+
+						// Check to make sure gift card code has not already been fulfilled and assigned
+						if (!orderItemGiftRecipient.hasAllAssignedGiftCards() && giftCardCreateCount <= orderDeliveryItem.getQuantity()) {
+							arrayAppend(arguments.data.giftCardCodes, {giftCardCode=orderItemGiftRecipient.getManualGiftCardCode(), orderItemID=orderItem.getOrderItemID()});
+							giftCardCreateCount++;
+						}
+					}
+				}
+			}
+			// Clean up if not needed
+			if (!arrayLen(arguments.data.giftCardCodes)) {
+				structDelete(arguments.data, 'giftCardCodes');
+			}
+
+			// Used to maintain state for gift card code processing and validation
+			var orderDeliveryGiftCardCodes = [];
+			var orderDeliveryGiftCardCodesPopulatedFlag = false;
+
 			// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
-			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
-
-				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
-
+			for(var orderDeliveryItem in arguments.orderDelivery.getOrderDeliveryItems()) {
+				
 				// If the sku has a subscriptionTerm, then we can process the item to setupSubscription
 				if(!isNull(orderDeliveryItem.getOrderItem().getSku().getSubscriptionTerm())) {
 					orderDeliveryItem = this.processOrderDeliveryItem(orderDeliveryItem, {}, 'setupSubscription');
@@ -1987,19 +2617,91 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(arrayLen(orderDeliveryItem.getOrderItem().getSku().getAccessContents())) {
 					orderDeliveryItem = this.processOrderDeliveryItem(orderDeliveryItem, {}, 'setupContentAccess');
 				}
+				
+				// Create gift cards
+				if (orderDeliveryItem.getOrderItem().isGiftCardOrderItem()) {
+					
+					// Manual gift card code orderDeliveryItems require special setup to use provided gift card codes
+					var orderDeliveryItemGiftCardCodes = [];
+					if (!orderDeliveryItem.getOrderItem().getSku().getGiftCardAutoGenerateCodeFlag()) {
+							
+						// find all gift card codes for the specific orderItem
+						for (var giftCardCodeData in arguments.data.giftCardCodes) {
+							if (!isNull(giftCardCodeData.giftCardCode)) {
+								// Note: need to manage two arrays of gift card codes
+								// 1. all gift card codes to be used for processObject validation to ensure no duplicates
+								// 2. the subset of gift card codes associated with each orderDeliveryItem for giftCard creation
+
+								// Keeping references of all gift card codes to be created for processObject validation
+								// Population should only need to execute once and be used for all orderDeliveryItems
+								if (!orderDeliveryGiftCardCodesPopulatedFlag) {
+									arrayAppend(orderDeliveryGiftCardCodes, giftCardCodeData.giftCardCode);
+								}
+
+								// Gift card codes subset for those with this orderItem, matching on orderItemID
+								if (orderDeliveryItem.getOrderItem().getOrderItemID() == giftCardCodeData.orderItemID) {
+									// Add giftCardCode to array for further processing
+									arrayAppend(orderDeliveryItemGiftCardCodes, giftCardCodeData.giftCardCode);
+								}
+							}
+						}
+
+						if (!orderDeliveryGiftCardCodesPopulatedFlag) {
+							orderDeliveryGiftCardCodesPopulatedFlag = true;
+						}
+					}
+
+					// The two gift card structures are not the same (ie. giftCardCodes is a subset of orderDeliveryGiftCardCodes)
+					// It provides more data for the gift card code validation process during processOrderDeliveryItem_createGiftCards
+					var orderDeliveryItemCreateGiftCardsData = {
+						giftCardCodes = orderDeliveryItemGiftCardCodes, // gift card codes that only apply to order deliver item
+						orderDeliveryGiftCardCodes = orderDeliveryGiftCardCodes // all gift card codes for entire order delivery
+					};
+					
+					// Create the actual gift cards whether gift card code is auto generated or manually provided
+					this.processOrderDeliveryItem(orderDeliveryItem, orderDeliveryItemCreateGiftCardsData, 'createGiftCards');
+
+					// Add any gift card generation errors to the orderDelivery
+					if (orderDeliveryItem.getProcessObject('createGiftCards').hasError('giftCardCodes')) {
+						arguments.orderDelivery.addErrors(orderDeliveryItem.getProcessObject('createGiftCards').getErrors());
+						// Halt further processing of orderDeliveryItems
+						break;
+					}
+				}
 
 			}
-
+			
 			// Save the orderDelivery
 			arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
-
-			// Update the orderStatus
+			this.saveOrderFulfillment( arguments.processObject.getOrderFulfillment() );
+			
+			
+			if(arguments.orderDelivery.hasErrors()){
+				arguments.processObject.getOrderFulfillment().addErrors(arguments.orderDelivery.getErrors());
+			}
+			
+			//must flush otherwise the dao won't get the correct amount.
+			if (!arguments.processObject.getOrderFulfillment().hasErrors()){
+				ormFlush();
+			}
+			
+			// generate invoice number for this order delivery
+			arguments.orderDelivery.setInvoiceNumber(generateInvoiceNumber(arguments.processObject));
+			
+			// Update the orderFulfillmentStatus
+			if (arguments.processObject.getOrderFulfillment().getQuantityUnDelivered() == 0) {
+				arguments.processObject.getOrderFulfillment().setOrderFulfillmentStatusType( getTypeService().getTypeBySystemCode("ofstFulfilled") );
+				
+				for (var item in arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()){
+					item.setOrderItemStatusType( getTypeService().getTypeBySystemCode("oistFulfilled"));
+				}
+			}
+			
 			this.processOrder(arguments.orderDelivery.getOrder(), {updateItems=true}, 'updateStatus');
-
 		} else {
 			arguments.processObject.addError('capturableAmount', rbKey('validate.processOrderDelivery_create.captureAmount'));
 		}
-
+		
 
 		// Make sure the orderDelivery doesn't have errors
 		if (!arguments.orderDelivery.hasErrors()) {
@@ -2038,31 +2740,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 
-            		// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
-			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
-
-				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
-
-
-				//bypass auto fulfillment for non auto generated codes
-				if(orderDeliveryItem.getOrderItem().hasAllGiftCardsAssigned() && orderDeliveryItem.getOrder().hasGiftCardOrderItems()){
-					if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
-						creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
-					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
-						creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
-					}
-				}
-
-
+			// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
+			for(var orderDeliveryItem in arguments.orderDelivery.getOrderDeliveryItems()) {
+				
 				if(arguments.orderDelivery.getOrderFulfillment().getFulfillmentMethodType() == "email"){
 					emailFulfillOrderDeliveryItem(orderDeliveryItem, arguments.orderDelivery);
 				}
 
 				// If the order picked up any erros when trying to process giftCard stuff, add those errors to the delivery
 				if(arguments.processObject.getOrder().hasErrors()){
-                 			arguments.orderDelivery.addErrors(arguments.processObject.getOrder().getErrors());
-              			}
-
+                	arguments.orderDelivery.addErrors(arguments.processObject.getOrder().getErrors());
+              	}
 			}
 
 			saveOrderFulfillment( orderFulfillment );
@@ -2071,12 +2759,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private any function emailFulfillOrderDeliveryItem(required any orderDeliveryItem, required any orderDelivery){
-		if(orderDeliveryItem.getOrder().hasGiftCardOrderItems()){
-			recipients = orderDeliveryItem.getOrderItem().getOrderItemGiftRecipients();
-
-			for(var recipient in recipients){
+		if(orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
+			for(var recipient in orderDeliveryItem.getOrderItem().getOrderItemGiftRecipients()){
 				for(var giftCard in recipient.getGiftCards()){
-					sendEmail(recipient.getEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
+					sendEmail(giftCard.getOwnerEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
 				}
 			}
 		} else {
@@ -2095,72 +2781,141 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		email = getEmailService().sendEmail(email);
 	}
 
+	public any function processOrderDeliveryItem_createGiftCards(required any orderDeliveryItem, struct data={}, required any processObject) {
+		var orderItem = arguments.orderDeliveryItem.getOrderItem();
+		var term = orderItem.getSku().getGiftCardExpirationTerm();
+		var giftCardCodes = arguments.data.giftCardCodes;
+		
+		if (!orderItem.getSku().getGiftCardRecipientRequiredFlag() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
+			
+			// Creates a simple lookup of the orderItemGiftRecipient by using giftCardCode as the key
+			var orderItemGiftRecipientsByGiftCardCodeStruct = {};
+			for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+				orderItemGiftRecipientsByGiftCardCodeStruct[orderItemGiftRecipient.getManualGiftCardCode()] = orderItemGiftRecipient;
+			}
 
-    private any function creditGiftCardForOrderDeliveryItem(required any order, required any orderDelivery, any giftCardCodes){
+			for (var giftCardCode in giftCardCodes) {
+				
+				var giftCard = this.newGiftCard();
+				var giftCard_create = giftCard.getProcessObject('create');
+				
+				// Expecting a one-to-one relationship between orderItem and orderItemGiftRecipient when manual gift card codes are required
+				// However more refactoring with gift card validation could be done standardize and eliminate these sort of checks
+				if (structKeyExists(orderItemGiftRecipientsByGiftCardCodeStruct, giftCardCode)) {
+					giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipientsByGiftCardCodeStruct[giftCardCode]);
+				}
+				giftCard_create.setOriginalOrderItem(orderItem);
+				giftCard_create.setGiftCardCode(giftCardCode);
+				giftCard_create.setGiftCardPin("");
+				giftCard_create.setOrderPayments(orderItem.getOrder().getOrderPayments());
+				giftCard_create.setOwnerAccount(orderItem.getOrder().getAccount());
+				giftCard_create.setOwnerEmailAddress(orderItem.getOrder().getAccount().getEmailAddress());
+				giftCard_create.setOwnerFirstName(orderItem.getOrder().getAccount().getFirstName());
+				giftCard_create.setOwnerLastName(orderItem.getOrder().getAccount().getLastName());
+				giftCard_create.setCreditGiftCardFlag(true);
+				giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+				if (!isNull(term)) {
+					giftCard_create.setGiftCardExpirationTerm(term);
+				}
 
-		var item = orderDelivery.getOrderItem();
-        var quantity = item.getQuantity();
-        var term = item.getSku().getGiftCardExpirationTerm();
-        var recipients = item.getOrderItemGiftRecipients();
-        var giftCardCodeIndex = 1;
+				// Create the gift card
+				giftCard = getService("giftCardService").process(giftCard, giftCard_create, 'create');
 
-        //recipients and cards have already been validated so put them together
-        for(var recipient in recipients){
-            if(!recipient.hasAllAssignedGiftCards()){
-                for(var i=0; i<recipient.getQuantity(); i++){
-                    var card = this.newGiftCard();
-                    var createGiftCard = card.getProcessObject( 'Create' );
+				if(giftCard.hasErrors()){
+					orderItem.getOrder().addErrors(giftCard.getErrors());
+				}
+			}
+		} else if(!orderItem.getSku().getGiftCardRecipientRequiredFlag() && orderItem.getSku().getGiftCardAutoGenerateCodeFlag()){
+			var totalGiftCardsNeeded = arguments.orderDeliveryItem.getQuantity();
+			for(var i=1; i <= totalGiftCardsNeeded; i++){
+				var giftCard = this.newGiftCard();
+				var giftCard_create = giftCard.getProcessObject('create');
+ 				giftCard_create.setOriginalOrderItem(orderItem);
+				giftCard_create.setGiftCardPin("");
+				giftCard_create.setOrderPayments(orderItem.getOrder().getOrderPayments());
+				giftCard_create.setOwnerAccount(orderItem.getOrder().getAccount());
+				giftCard_create.setOwnerEmailAddress(orderItem.getOrder().getAccount().getEmailAddress());
+				giftCard_create.setOwnerFirstName(orderItem.getOrder().getAccount().getFirstName());
+				giftCard_create.setOwnerLastName(orderItem.getOrder().getAccount().getLastName());
+				giftCard_create.setCreditGiftCardFlag(true);
+				giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+				if (!isNull(term)) {
+					giftCard_create.setGiftCardExpirationTerm(term);
+				}
+ 				// Create the gift card
+				giftCard = getService("giftCardService").process(giftCard, giftCard_create, 'create');
+ 				if(giftCard.hasErrors()){
+					orderItem.getOrder().addErrors(giftCard.getErrors());
+				}
+			}
+		} else {
 
-                    createGiftCard.setOriginalOrderItem(item);
+			// Possible one-to-many relationship between orderItemGiftRecipient and quantity of gift cards to create
+			// Also need to consider case with partial fulfillments existing
 
-                    if(!isNull(term)){
-                        createGiftCard.setGiftCardExpirationTerm(term);
-                    }
+			// Gift cards needs may fully or partially span across multiple OrderItemGiftRecipients attached to orderItem depending on quantities allocated to each
+			var totalGiftCardsNeeded = arguments.orderDeliveryItem.getQuantity();
+			var totalGiftCardsCreated = 0;
 
-                    createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
-                    createGiftCard.setOrderItemGiftRecipient(recipient);
+			// Helps keep track of which provided gift card codes have been allocated during the process
+			var giftCardCodeIndex = 0;
 
-                    if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
-						createGiftCard.setGiftCardCode(giftCardCodes[giftCardCodeIndex]);
-						giftCardCodeIndex++;
-                    }
 
-                    if(!isNull(recipient.getAccount())){
-                        createGiftCard.setOwnerAccount(recipient.getAccount());
-                        createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                    } else {
-                        if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipient.getEmailAddress())){
-                            createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipient.getEmailAddress())));
-                            createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                        } else {
-                            createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                        }
-                    }
+			for(var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+				// Make sure orderItemGiftRecipient still needs gift cards created, it is possible it does not if prior orderDelivery occurred in partial fulfillment scenario
+				if (totalGiftCardsCreated < totalGiftCardsNeeded && orderItemGiftRecipient.getNumberOfUnassignedGiftCards()) {
 
-                    if(!isNull(recipient.getFirstName())){
-                        createGiftCard.setOwnerFirstName(recipient.getFirstName());
-                    }
+					// Determine how many of the total gift cards needed for this orderDeliveryItem can be allocated to this orderItemGiftRecipient
+					var maxGiftCardsForOrderItemGiftRecipient = min(orderItemGiftRecipient.getNumberOfUnassignedGiftCards(), arguments.orderDeliveryItem.getQuantity());
 
-                    if(!isNull(recipient.getLastName())){
-                        createGiftCard.setOwnerLastName(recipient.getLastName());
-                    }
-
-                    createGiftCard.setCreditGiftCardFlag(true);
-                    createGiftCard.setCurrencyCode(arguments.order.getCurrencyCode());
-
-                    card = getService("giftCardService").process(card, createGiftCard, 'Create');
-
-                    if(card.hasErrors()){
-                        arguments.order.addErrors(card.getErrors());
-                    } else {
-                        var cardData = {};
-                        cardData.entity=card;
-                    }
-                }
-            }
-        }
-        return arguments.order;
-    }
+					for(var i = 0; i < maxGiftCardsForOrderItemGiftRecipient; i++){
+						var giftCard = this.newGiftCard();
+						var giftCard_create = giftCard.getProcessObject('create');
+	
+						giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipient);
+						giftCard_create.setOriginalOrderItem(orderItem);
+	
+						// Manual gift card code
+						if(!orderItem.getSku().getGiftCardAutoGenerateCodeFlag()){
+							giftCardCodeIndex++;
+							giftCard_create.setGiftCardCode(giftCardCodes[giftCardCodeIndex]);
+							giftCard_create.setGiftCardPin("");
+						}
+	
+						giftCard_create.setOrderPayments(orderItem.getOrder().getOrderPayments());
+	
+						if(!isNull(orderItemGiftRecipient.getAccount())){
+							giftCard_create.setOwnerAccount(orderItemGiftRecipient.getAccount());
+							giftCard_create.setOwnerEmailAddress(orderItemGiftRecipient.getEmailAddress());
+						} else {
+							if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(orderItemGiftRecipient.getEmailAddress())) {
+								giftCard_create.setOwnerAccount(getAccountService().getAccount(getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(orderItemGiftRecipient.getEmailAddress())));
+								giftCard_create.setOwnerEmailAddress(orderItemGiftRecipient.getEmailAddress());
+							} else {
+								giftCard_create.setOwnerEmailAddress(orderItemGiftRecipient.getEmailAddress());
+							}
+						}
+						giftCard_create.setOwnerFirstName(orderItemGiftRecipient.getFirstName());
+						giftCard_create.setOwnerLastName(orderItemGiftRecipient.getLastName());
+						giftCard_create.setCreditGiftCardFlag(true);
+						giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+						if(!isNull(term)){
+							giftCard_create.setGiftCardExpirationTerm(term);
+						}
+	
+						giftCard = getService("giftCardService").process(giftCard, giftCard_create, 'create');
+						totalGiftCardsCreated++;
+	
+						if(giftCard.hasErrors()){
+							arguments.order.addErrors(giftCard.getErrors());
+						}
+					}
+				}
+			}
+		}
+		
+		return arguments.orderDeliveryItem;
+	}
 
 	private any function populateChildOrderItems(required parentOrderItem, required childOrderItem, required childOrderItemData, required order, required orderFulfillment){
 		// Populate the childOrderItem with the data
@@ -2268,6 +3023,101 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return arguments.orderFulfillment;
+	}
+	
+	// Process: Order Fulfillment
+	public any function processOrderFulfillment_manualHandlingFee(required any orderFulfillment, struct data={}) {
+
+		arguments.orderFulfillment.setManualHandlingFeeFlag( true );
+		arguments.orderFulfillment = this.saveOrderFulfillment(arguments.orderFulfillment, arguments.data);
+
+		if(arguments.orderFulfillment.hasErrors()) {
+			arguments.orderFulfillment.setManualHandlingFeeFlag( false );
+		}
+
+		return arguments.orderFulfillment;
+	}
+	
+	public any function processOrderFulfillment_changeFulfillmentMethod(required any orderFulfillment, required any processObject){
+		
+		if(isNull(arguments.processObject.getFulfillmentMethod())){
+			return arguments.orderFulfillment;
+		}
+		//Set new fulfillment method
+		arguments.orderFulfillment.setFulfillmentMethod(arguments.processObject.getFulfillmentMethod());
+		
+		var newFulfillmentMethodType = arguments.processObject.getFulfillmentMethod().getFulfillmentMethodType();
+		
+		//Clear unnecessary information
+		if(newFulfillmentMethodType != 'shipping'){
+			arguments.orderFulfillment.removeShippingAddress();
+			arguments.orderFulfillment.removeShippingMethod();
+		}
+		if(newFulfillmentMethodType != 'pickup'){
+			arguments.orderFulfillment.removePickupLocation();
+		}
+		if(newFulfillmentMethodType != 'email'){
+			arguments.orderFulfillment.removeEmailAddress();
+		}
+		
+		//Set Necessary information
+		if(newFulfillmentMethodType == 'shipping'){
+			//Try to get address from accountAddress
+			var accountAddress = arguments.processObject.getShippingAccountAddress();
+			if(!isNull(accountAddress)){
+				arguments.orderFulfillment.setAccountAddress(accountAddress);
+				arguments.orderFulfillment.setShippingAddress(accountAddress.getAddress());
+				arguments.orderFulfillment.getOrder().setShippingAccountAddress(accountAddress);
+				arguments.orderFulfillment.getOrder().setShippingAddress(accountAddress.getAddress());
+			//Else try to get address from new address form
+			}else if(!isNull(arguments.processObject.getShippingAddress())){
+				var shippingAddress = arguments.processObject.getShippingAddress();
+				getService('addressService').saveAddress(shippingAddress);
+				if(!shippingAddress.hasErrors()){
+					arguments.orderFulfillment.setShippingAddress(shippingAddress);
+					arguments.orderFulfillment.getOrder().setShippingAddress(shippingAddress);
+					if(arguments.processObject.getSaveShippingAccountAddressFlag()){
+						//Create/save account address
+						var accountAddress = getService('addressService').newAccountAddress();
+						accountAddress.setAccountAddressName(arguments.processObject.getSaveShippingAccountAddressName());
+						accountAddress.setAddress(shippingAddress);
+						accountAddress.setAccount(arguments.orderFulfillment.getOrder().getAccount());
+						getService('addressService').saveAccountAddress(accountAddress);
+						if(!accountAddress.hasErrors()){
+							arguments.orderFulfillment.setAccountAddress(accountAddress);
+							arguments.orderFulfillment.getOrder().setShippingAccountAddress(accountAddress);
+						}else{
+							arguments.orderFulfillment.addErrors(accountAddress.getErrors());
+						}
+					}
+				}else{
+					arguments.orderFulfillment.addErrors(shippingAddress.getErrors());
+				}
+			}
+		}
+		if(newFulfillmentMethodType == 'pickup'){
+			if(!isNull(arguments.processObject.getPickupLocation())){
+				arguments.orderFulfillment.setPickupLocation(arguments.processObject.getPickupLocation());
+			}
+		}
+		if(newFulfillmentMethodType == 'email'){
+			var emailAddress = arguments.processObject.getEmailAddress();
+			if(!isNull(emailAddress)){
+				arguments.orderFulfillment.setEmailAddress(emailAddress);
+				if(arguments.processObject.getSaveAccountEmailAddressFlag() && isNull(arguments.processObject.getAccountEmailAddress())){
+					var accountEmailAddress = getService('accountService').newAccountEmailAddress();
+					accountEmailAddress.setAccount(arguments.orderFulfillment.getOrder().getAccount());
+					accountEmailAddress.setEmailAddress(emailAddress);
+					getService('accountService').saveAccountEmailAddress(accountEmailAddress);
+					if(accountEmailAddress.hasErrors()){
+						arguments.orderFulfillment.addErrors(accountEmailAddress.getErrors());
+					}
+				}
+			}
+		}
+		this.saveOrderFulfillment(arguments.orderFulfillment);
+		return arguments.orderFulfillment;
+		
 	}
 
 	// Process: Order Item
@@ -2385,6 +3235,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					stockReceiverItem.setStock( stock );
 					stockReceiverItem.setOrderItem( orderReturnItem );
 					stockReceiverItem.setStockReceiver( stockReceiver );
+					stockreceiverItem.setCurrencyCode(orderReturnItem.getCurrencyCode());
 
 				}
 				//create a stock adjustment with a comment for items that were added back in
@@ -2698,7 +3549,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Call the generic save method to populate and validate
 		arguments.order = save(entity=arguments.order, data=arguments.data, context=arguments.context);
-
+		
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 
@@ -2712,6 +3563,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// loop over the orderItems to remove any that have a qty of 0
 			for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--) {
+				var orderItem = arguments.order.getOrderItems()[i];
+				//evaluate existing stockHold
+				if(arraylen(orderItem.getStockHolds())){
+					//currently only supporting singular stockholds
+					var stockHold = orderItem.getStockHolds()[1];
+					if(stockHold.isExpired()){
+						getService('stockService').deleteStockHold(stockHold);
+						getHibachiScope().addMessage('stockHoldExpired', rbKey('define.stockhold.stockHoldExpired') & ' ' & orderItem.getSku().getSkuDefinition());
+						arguments.order.removeOrderItem(orderItem);
+						continue;
+					}
+				}
 				if(arguments.order.getOrderItems()[i].getQuantity() < 1) {
 					arguments.order.removeOrderItem(arguments.order.getOrderItems()[i]);
 				} else if( !isNull(arguments.order.getOrderItems()[i].getOrderFulfillment()) && !arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID())) {
@@ -2818,10 +3681,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-
+		
+		// We need to get the thirdPartyShippingAccountIdentifier from the data struct and set it on the orderFulfillment
+		if(structKeyExists(arguments.data, 'thirdPartyShippingAccountIdentifier')){
+			var thirdPartyShippingAccountIdentifier = arguments.data.thirdPartyShippingAccountIdentifier;
+			arguments.orderfulfillment.setThirdPartyShippingAccountIdentifier(thirdPartyShippingAccountIdentifier);
+		}
+		
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
-
 
  		//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
  		if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
@@ -2852,6 +3720,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Save the accountAddress if needed
 				arguments.orderFulfillment.checkNewAccountAddressSave();
+				
+				//verify address
+				arguments.orderFulfillment.setVerifiedShippingAddressFlag( arguments.orderFulfillment.getShippingAddress().getVerifiedByIntegrationFlag() );
 			}
 		}
 
@@ -2940,7 +3811,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(
 			!arguments.orderPayment.getSucessfulPaymentTransactionExistsFlag()
 			&& !arguments.orderPayment.hasErrors()
-			&& isNull(arguments.orderPayment.getAccountPaymentMethod())
+			&& (isNull(arguments.orderPayment.getAccountPaymentMethod()) || (!isNull(arguments.orderPayment.getAccountPaymentMethod()) && ListFindNoCase('authorize,authorizeAndCharge',arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())))
 			&& isNull(arguments.orderPayment.getReferencedOrderPayment())
 			&& !isNull(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
 			&& len(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
@@ -2968,7 +3839,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Save Overrides ============================
 
 	// ==================== START: Smart List Overrides =======================
-
+	
 	public any function getOrderSmartList(struct data={}) {
 		arguments.entityName = "SlatwallOrder";
 
@@ -3058,7 +3929,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Recalculate the order amounts
 			this.processOrder( order, {}, 'updateOrderAmounts' );
-			order.updateCalculatedProperties();
+			getHibachiScope().addModifiedEntity(order);
 
 			getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
 			getHibachiEventService().announceEvent("afterOrderItemDeleteSuccess", arguments);
@@ -3072,13 +3943,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 
-	public any function deleteOrderPayment( required any order, required any orderPayment ) {
+	public any function deleteOrderPayment(required any orderPayment ) {
 
 		// Check delete validation
 		if(arguments.orderPayment.isDeletable()) {
 
 			// Remove the primary fields so that we can delete this entity
-			arguments.order.removeOrderPayment( arguments.orderPayment );
+			arguments.orderPayment.getOrder().removeOrderPayment( arguments.orderPayment );
 
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderPayment );
@@ -3128,16 +3999,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	/** Given an orderfulfillment, this will return the shipping method options. */
 	public any function getShippingMethodOptions(any orderFulfillment) {
-		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated
-		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
+		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
+		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( arguments.orderFulfillment );
 
 		// At this point they have either been populated just before, or there were already options
 		var optionsArray = [];
-		var sortType = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
-		for(var shippingMethodOption in orderFulfillment.getFulfillmentShippingMethodOptions()) {
+		var sortType = arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
+		
+		for(var shippingMethodOption in arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) {
 
 			var thisOption = {};
-			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+			if(!isNull(arguments.orderFulfillment.getHandlingFee()) && arguments.orderFulfillment.getHandlingFee() > 0){
+				thisOption['name'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodName();
+			}else{
+				thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+			}
 			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
 			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
 			thisOption['totalChargeAfterDiscount'] = shippingMethodOption.getTotalChargeAfterDiscount();
@@ -3145,29 +4021,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if( !isNull(shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode()) ){
 				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
 			}
+			thisOption['publishedFlag'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getPublishedFlag();
 
 			var inserted = false;
 
-			for(var i=1; i<=arrayLen(optionsArray); i++) {
-				var thisExistingOption = optionsArray[i];
-
-				if( ((sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
-				  	||
-					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) && !this.hasOption(optionsArray, thisOption)) {
-
-					arrayInsertAt(optionsArray, i, thisOption);
-					inserted = true;
-					break;
+			arrayAppend(optionsArray, thisOption);
 				}
-
+		var sortProperty = "";
+		if(sortType == 'price'){
+			sortProperty = 'totalCharge';
+		}else if(sortType == 'sortOrder'){
+			sortProperty = 'shippingMethodSortOrder';
 			}
 
-			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
-
-				arrayAppend(optionsArray, thisOption);
-			}
-
-		}
+		optionsArray = getService('hibachiUtilityService').arrayOfStructsSort(optionsArray,sortProperty);
 
 		if(!arrayLen(optionsArray)) {
 			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
@@ -3224,6 +4091,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderItem.getOrderReturn())) {
 			arguments.orderItem.removeOrderReturn();
 		}
+		
+		for(var stockHold in arguments.orderItem.getStockHolds()){
+			getService('stockService').deleteStockHold(stockHold);
+		}
 
 		// Actually delete the entity
 		getHibachiDAO().delete( arguments.orderItem );
@@ -3242,6 +4113,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.messageBean.addMessage(messageName="forcedItemQuantityAdjusted", message=errorMessage);
 			}
 		}
+	}
+	
+	public any function processOrder_reopenOrder(required any order, struct data={}) {
+		arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostProcessing") );
+		return arguments.order;
 	}
 
 	// ===================  END: Deprecated Functions =========================

@@ -6,6 +6,7 @@
 	<!--- Core settings --->
 	<cfparam name="attributes.type" type="string" default="" />
 	<cfparam name="attributes.object" type="any" default="" />
+	<cfparam name="attributes.collectionEntity" type="any" default="" />
 	<cfparam name="attributes.pageTitle" type="string" default="" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
 
@@ -43,7 +44,9 @@
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h1 class="actionbar-title">#attributes.pageTitle#</h1>
+						<cfset hasItemEntityName = structKeyExists(request,'context') AND structKeyExists(request.context,'entityactiondetails') AND structKeyExists(request.context.entityactiondetails,'itementityname')/>
+						<h1 class="actionbar-title">#attributes.pageTitle#<cfif hasItemEntityName AND structKeyExists(request.context.entityactiondetails,'itemname') AND left(request.context.entityactiondetails.itemname,4) EQ 'list' ><span ng-if="$root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['#request.context.entityactiondetails.itemname#']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['#request.context.entityactiondetails.itemname#'].collectionName"></span></cfif></h1>
+
 					</div>
 
 					<div class="col-md-6">
@@ -71,7 +74,45 @@
 										<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
 									</cfif>
 								</cfif>
+							<!--- ================ Report listing ===================== --->
+							<cfelseif attributes.type eq "reportlisting">
+							
+								<cfparam name="request.context.keywords" default="" />
+								<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 								
+								<cfif len( trim( thistag.generatedcontent ) ) gt 1>
+									<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+									<ul class="dropdown-menu pull-right">
+										<hb:HibachiDividerHider>
+											#thistag.generatedcontent#
+										</hb:HibachiDividerHider>
+									</ul>
+								</cfif>
+								<!--- Listing: Button Groups --->
+								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
+									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
+										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+											#buttonGroup.generatedContent#
+										</cfif>
+									</cfloop>
+								</cfif>
+								<!--- Detail: CRUD Buttons --->
+								
+								<div class="btn-group btn-group-sm">
+									<!--- Setup delete Details --->
+									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=attributes.collectionEntity, context="delete", setErrors=false) />
+									<cfset local.deleteDisabled = local.deleteErrors.hasErrors() />
+									<cfset local.deleteDisabledText = local.deleteErrors.getAllErrorsHTML() />
+
+									<cfif !attributes.collectionEntity.isNew()>
+										<!--- Delete --->
+										<cfif attributes.showdelete>
+											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.collectionEntity.getPrimaryIDPropertyName()#=#attributes.collectionEntity.getPrimaryIDValue()#", "&") />
+											<hb:HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-default s-remove" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+										</cfif>
+
+									</cfif>
+								</div>
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
 							
@@ -84,6 +125,10 @@
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
 											<hb:HibachiDividerHider>
+												<cfif attributes.object.hasCalculatedProperties()>
+											
+													<hb:HibachiActionCaller action="admin:entity.updateCalculatedProperties" queryString="entityName=#attributes.object.getClassName()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" type="list">
+												</cfif>
 												#thistag.generatedcontent#
 											</hb:HibachiDividerHider>
 										</ul>

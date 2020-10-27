@@ -1,4 +1,4 @@
-/*
+/* 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -44,6 +44,7 @@ Notes:
 component output="false" accessors="true" persistent="false" extends="Slatwall.org.Hibachi.HibachiEntity" {
 
 	property name="assignedAttributeSetSmartList" type="any" persistent="false";
+	property name="assignedAttributes" type="array" persistent="false";
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
 	property name="settingValueFormatted" type="any" persistent="false";
@@ -174,7 +175,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public array function getAttributeValuesForEntity() {
 		if(!structKeyExists(variables, "attributeValuesForEntity")) {
 			variables.attributeValuesForEntity = [];
-			if(hasProperty("attributeValues")) {
+			if(hasProperty("attributeValues") && !getNewFlag() && arrayLen(getAssignedAttributes())) {
 				var primaryIDPropertyIdentifier = "#replace(getEntityName(), '#getDao('hibachiDao').getApplicationValue('applicationKey')#', '')#.#getPrimaryIDPropertyName()#";
 				primaryIDPropertyIdentifier = lcase(left(primaryIDPropertyIdentifier, 1)) & right(primaryIDPropertyIdentifier, len(primaryIDPropertyIdentifier)-1);
 				variables.attributeValuesForEntity = getService("attributeService").getAttributeValuesForEntity(primaryIDPropertyIdentifier=primaryIDPropertyIdentifier, primaryIDValue=getPrimaryIDValue());
@@ -184,16 +185,20 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 
 	public any function getAttributeValue(required string attribute, returnEntity=false){
-		
 		//If custom property exists for this attribute, return the property value instead
-		if(len(arguments.attribute) eq 32) {
+		if(getService('HibachiUtilityService').isHibachiUUID(arguments.attribute)) {
 			//If the id is passed in, need to load the attribute in order to get the attribute code
 			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
 			
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode())){
-				if (!isNull(invokeMethod("get#attributeEntity.getAttributeCode()#"))){
-					return invokeMethod("get#attributeEntity.getAttributeCode()#");
+				var attributeValue = invokeMethod("get#attributeEntity.getAttributeCode()#");
+				if (!isNull(attributeValue)){
+					if(isSimpleValue(attributeValue)){
+						return attributeValue;
+					}else{
+						return attributeValue.getPrimaryIDValue();
+					}
 				}else{
 					return '';
 				}
@@ -201,8 +206,14 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}else{
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
-				if (!isNull(invokeMethod("get#arguments.attribute#"))){
-					return invokeMethod("get#arguments.attribute#");
+				var attributeValue = invokeMethod("get#arguments.attribute#");
+
+				if (!isNull(attributeValue)){
+					if(isSimpleValue(attributeValue) || arguments.returnEntity == true){
+						return attributeValue;
+					}else{
+						return attributeValue.getPrimaryIDValue();
+					}
 				}else{
 					return '';
 				}
@@ -212,7 +223,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		var attributeValueEntity = "";
 		
 		// If an ID was passed, and that value exists in the ID struct then use it
-		if(len(arguments.attribute) eq 32 && structKeyExists(getAttributeValuesByAttributeIDStruct(), arguments.attribute) ) {
+		if(getService('HibachiUtilityService').isHibachiUUID(arguments.attribute) && structKeyExists(getAttributeValuesByAttributeIDStruct(), arguments.attribute) ) {
 			attributeValueEntity = getAttributeValuesByAttributeIDStruct()[arguments.attribute];
 
 		// If some other string was passed check the attributeCode struct for it's existance
@@ -238,7 +249,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			var newAttributeValue = getService("attributeService").newAttributeValue();
 			newAttributeValue.setAttributeValueType( getClassName() );
 			var thisAttribute = getService("attributeService").getAttributeByAttributeCode( arguments.attribute );
-			if(isNull(thisAttribute) && len(arguments.attribute) eq 32) {
+			if(isNull(thisAttribute) && getService('HibachiUtilityService').isHibachiUUID(arguments.attribute)) {
 				thisAttribute = getService("attributeService").getAttributeByAttributeID( arguments.attribute );
 			}
 			if(!isNull(thisAttribute)) {
@@ -249,7 +260,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 
 		// If the attributeValueEntity wasn't found, then lets just go look at the actual attribute object by ID/CODE for a defaultValue
-		if(len(arguments.attribute) neq 32) {
+		if(!getService('HibachiUtilityService').isHibachiUUID(arguments.attribute)) {
 			var attributeEntity = getService("attributeService").getAttributeByAttributeCode(arguments.attribute);
 		}
 		if(!isNull(attributeEntity) && !isNull(attributeEntity.getDefaultValue()) && len(attributeEntity.getDefaultValue())) {
@@ -261,7 +272,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
 		//If custom property exists for this attribute, return the property value instead
-		if(len(arguments.attribute) eq 32) {
+		if(getService('HibachiUtilityService').isHibachiUUID(arguments.attribute)) {
 			//If the id is passed in, need to load the attribute in order to get the attribute code
 			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
 			
@@ -293,8 +304,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 				){
 
 					if(arguments.value != "") {
-
-						invokeMethod("set#arguments.attribute#", {1=arguments.value});
+						if(structkeyExists(propertyStruct, 'fieldtype') && lcase(propertyStruct.fieldtype) == 'many-to-one'){
+							var relatedObject = getService("hibachiService").invokeMethod("get#propertyStruct.cfc#", {1=arguments.value});
+							invokeMethod("set#arguments.attribute#", {1=relatedObject});
+						}else{
+							invokeMethod("set#arguments.attribute#", {1=arguments.value});
+						}
 
 					} else {
 						var thisMethod = this["set" & arguments.attribute];
@@ -366,6 +381,23 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		return variables.assignedAttributeSetSmartList;
 	}
+	
+	public array function getAssignedAttributes() {
+		 //cacheing structure of attribute code and type info
+		 var cacheKey = "attributes_getAssignedAttribtues"&getClassName();
+		 if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var assignedAttributesArray = [];
+		 	
+		 	var attributesDataQuery = getService("attributeDAO").getAttributesDataByEntityName(getClassName());
+		 	// Converts query to struct object
+		 	for (var attributeStruct in attributesDataQuery) {
+		 		arrayAppend(assignedAttributesArray, attributeStruct);
+		 	}
+		 	getService('HibachiCacheService').setCachedValue(cacheKey,assignedAttributesArray);
+		 }
+		 
+		 return getService('HibachiCacheService').getCachedValue(cacheKey);
+	}
 
 	public struct function getAttributeValuesByAttributeIDStruct() {
 		if(!structKeyExists(variables, "attributeValuesByAttributeIDStruct")) {
@@ -423,6 +455,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 
 		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+	}
+	
+	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
+		var propertyCollection = super.getPropertyCountCollectionList(argumentCollection=arguments);
+
+		// Skip record level permissions for these entities, otherwise infinite loop is possible
+		if (getClassName() == 'Account' && listFindNoCase('PermissionGroup,Permission', getPropertiesStruct()[arguments.propertyName].cfc)) {
+			propertyCollection.setPermissionAppliedFlag(true);
+		}
+
+		return propertyCollection;
 	}
 
 	public array function getPrintTemplates() {
@@ -487,8 +530,8 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		for(var attributeCode in attributesListArray){
 			var attribute = getService('attributeService').getAttributeByAttributeCode(attributeCode);
 			if(!isNull(attribute)){
-			ArrayAppend(attributes,attribute);
-		}
+				ArrayAppend(attributes,attribute);
+			}
 		}
 		return attributes;
 	}

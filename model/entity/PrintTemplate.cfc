@@ -51,7 +51,7 @@ component entityname="SlatwallPrintTemplate" table="SwPrintTemplate" persistent=
 	// Persistent Properties
 	property name="printTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="printTemplateName" ormtype="string";
-	property name="printTemplateObject" ormtype="string" hb_formFieldType="select";
+	property name="printTemplateObject" ormtype="string" hb_formFieldType="select" index="PI_PRINT_TEMPLATE_OBJECT";
 	property name="printTemplateFile" ormtype="string" hb_formFieldType="select";
 	property name="printContent" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	

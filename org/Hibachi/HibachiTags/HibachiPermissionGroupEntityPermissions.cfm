@@ -16,15 +16,16 @@
 					<cfset topPermissionFormIndex = request.context.permissionFormIndex />
 					<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='entity') />
 					
-					<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
-					<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="entity" />
+					<input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
+					<input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].accessType" value="entity" />
 					
 					<th class="primary" style="font-size:14px;">All Entities & Properties</th>
-					<th style="font-size:14px;"><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowCreateFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowCreateFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowCreateFlag()) and thisPermission.getAllowCreateFlag())>checked="checked"</cfif>> Create</th>
-					<th style="font-size:14px;"><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowReadFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowReadFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowReadFlag()) and thisPermission.getAllowReadFlag())>checked="checked"</cfif>> Read</th>
-					<th style="font-size:14px;"><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowUpdateFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowUpdateFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowUpdateFlag()) and thisPermission.getAllowUpdateFlag())>checked="checked"</cfif>> Update</th>
-					<th style="font-size:14px;"><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowDeleteFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowDeleteFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowDeleteFlag()) and thisPermission.getAllowDeleteFlag())>checked="checked"</cfif>> Delete</th>
-					<th style="font-size:14px;"><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowProcessFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowProcessFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowProcessFlag()) and thisPermission.getAllowProcessFlag())>checked="checked"</cfif>> Process</th>
+					<th style="font-size:14px;"><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowCreateFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowCreateFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowCreateFlag()) and thisPermission.getAllowCreateFlag())>checked="checked"</cfif>> Create</th>
+					<th style="font-size:14px;"><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowReadFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowReadFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowReadFlag()) and thisPermission.getAllowReadFlag())>checked="checked"</cfif>> Read</th>
+					<th style="font-size:14px;"><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowUpdateFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowUpdateFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowUpdateFlag()) and thisPermission.getAllowUpdateFlag())>checked="checked"</cfif>> Update</th>
+					<th style="font-size:14px;"><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowDeleteFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowDeleteFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowDeleteFlag()) and thisPermission.getAllowDeleteFlag())>checked="checked"</cfif>> Delete</th>
+					<th style="font-size:14px;"><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowProcessFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowProcessFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowProcessFlag()) and thisPermission.getAllowProcessFlag())>checked="checked"</cfif>> Process</th>
+					<th style="font-size:14px;"><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowReportFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowReportFlag" class="hibachi-permission-checkbox" value="1" <cfif !arrayLen(attributes.permissionGroup.getPermissions()) or (!isNull(thisPermission.getAllowReportFlag()) and thisPermission.getAllowReportFlag())>checked="checked"</cfif>> Report</th>
 					<th></th>
 				<cfelse>
 					<th class="primary" style="font-size:14px;">All Entities & Properties</th>
@@ -33,6 +34,7 @@
 					<th style="font-size:14px;">Update</th>
 					<th style="font-size:14px;">Delete</th>
 					<th style="font-size:14px;">Process</th>
+					<th style="font-size:14px;">Report</th>
 					<th></th>
 				</cfif>
 			</tr>
@@ -43,20 +45,22 @@
 			<cfloop array="#entities#" index="entityName">
 				<cfif not structKeyExists(attributes.entityPermissionDetails[entityName], "inheritPermissionEntityName")>
 					<tr>
-						<cfif attributes.edit and not len(attributes.editEntityName)>
 							<cfset request.context.permissionFormIndex++ />
 							<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='entity', entityClassName=entityName) />
+						<cfset hasProcessPermission  = attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('process', entityName, attributes.permissionGroup)/>	
+						<cfif attributes.edit and not len(attributes.editEntityName)>
 							
-							<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
-							<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="entity" />
-							<input type="hidden" name="permissions[#request.context.permissionFormIndex#].entityClassName" value="#entityName#" />
+							<input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
+							<input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].accessType" value="entity" />
+							<input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].entityClassName" value="#entityName#" />
 							
 							<td class="primary" onClick="$('.permission#lcase(entityName)#').toggleClass('hide');"><strong>#attributes.hibachiScope.rbKey('entity.#entityName#')#</strong></td>
-							<td><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowCreateFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowCreateFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#topPermissionFormIndex#].allowCreateFlag" value="1" <cfif not isNull(thisPermission.getAllowCreateFlag()) and thisPermission.getAllowCreateFlag()>checked="checked"</cfif>> Create</td>
-							<td><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowReadFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowReadFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#topPermissionFormIndex#].allowReadFlag" value="1" <cfif not isNull(thisPermission.getAllowReadFlag()) and thisPermission.getAllowReadFlag()>checked="checked"</cfif>> Read</td>
-							<td><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowUpdateFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowUpdateFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#topPermissionFormIndex#].allowUpdateFlag" value="1" <cfif not isNull(thisPermission.getAllowUpdateFlag()) and thisPermission.getAllowUpdateFlag()>checked="checked"</cfif>> Update</td>
-							<td><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowDeleteFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowDeleteFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#topPermissionFormIndex#].allowDeleteFlag" value="1" <cfif not isNull(thisPermission.getAllowDeleteFlag()) and thisPermission.getAllowDeleteFlag()>checked="checked"</cfif>> Delete</td>
-							<td><input type="hidden" name="permissions[#request.context.permissionFormIndex#].allowProcessFlag" value=""><input type="checkbox" name="permissions[#request.context.permissionFormIndex#].allowProcessFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="permissions[#topPermissionFormIndex#].allowProcessFlag" value="1" <cfif not isNull(thisPermission.getAllowProcessFlag()) and thisPermission.getAllowProcessFlag()>checked="checked"</cfif>> Process</td>
+							<td><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowCreateFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowCreateFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="entitypermission.permissions[#topPermissionFormIndex#].allowCreateFlag" value="1" <cfif not isNull(thisPermission.getAllowCreateFlag()) and thisPermission.getAllowCreateFlag()>checked="checked"</cfif>> Create</td>
+							<td><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowReadFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowReadFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="entitypermission.permissions[#topPermissionFormIndex#].allowReadFlag" value="1" <cfif not isNull(thisPermission.getAllowReadFlag()) and thisPermission.getAllowReadFlag()>checked="checked"</cfif>> Read</td>
+							<td><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowUpdateFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowUpdateFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="entitypermission.permissions[#topPermissionFormIndex#].allowUpdateFlag" value="1" <cfif not isNull(thisPermission.getAllowUpdateFlag()) and thisPermission.getAllowUpdateFlag()>checked="checked"</cfif>> Update</td>
+							<td><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowDeleteFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowDeleteFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="entitypermission.permissions[#topPermissionFormIndex#].allowDeleteFlag" value="1" <cfif not isNull(thisPermission.getAllowDeleteFlag()) and thisPermission.getAllowDeleteFlag()>checked="checked"</cfif>> Delete</td>
+							<td><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowProcessFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowProcessFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="entitypermission.permissions[#topPermissionFormIndex#].allowProcessFlag" value="1" <cfif not isNull(thisPermission.getAllowProcessFlag()) and thisPermission.getAllowProcessFlag()>checked="checked"</cfif>> Process</td>
+							<td><input type="hidden" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowReportFlag" value=""><input type="checkbox" name="entitypermission.permissions[#request.context.permissionFormIndex#].allowReportFlag" class="hibachi-permission-checkbox" data-hibachi-parentcheckbox="entitypermission.permissions[#topPermissionFormIndex#].allowReportFlag" value="1" <cfif not isNull(thisPermission.getAllowReportFlag()) and thisPermission.getAllowReportFlag()>checked="checked"</cfif>> Report</td>
 							<td>
 								<cfif not attributes.edit>
 									<cfif attributes.editEntityName eq entityName>
@@ -72,9 +76,18 @@
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('read', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('update', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('delete', entityName, attributes.permissionGroup), "yesno")#</td>
-							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('process', entityName, attributes.permissionGroup), "yesno")#</td>
+							
+							<td>#attributes.hibachiScope.formatValue(hasProcessPermission, "yesno")#</td>
+							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('report', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>
 								<cfif not attributes.edit><hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil"></cfif>
+								<cfif not attributes.edit && not isNull(thisPermission.getAllowReadFlag()) and thisPermission.getAllowReadFlag()>
+									<hb:HibachiActionCaller 
+										action="admin:entity.editPermission" 
+										queryString="permissionID=#thisPermission.getPermissionID()#" 
+										class="btn btn-xs" iconOnly="true" icon="plus"
+									/>
+								</cfif>
 							</td>
 						</cfif>
 					</tr>

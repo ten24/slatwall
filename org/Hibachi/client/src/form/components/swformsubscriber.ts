@@ -99,7 +99,7 @@ class SWFormSubscriber{
 	}
 	public controller=SWFormSubscriberController;
 	public controllerAs = "SWFormSubscriber";
-	//ngInject
+	//@ngInject
 	constructor(
 
 	){

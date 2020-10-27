@@ -163,15 +163,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
 				
 	            var selectedValue = jQuery(this).val() || '';
-				
-	            if(bindData.valueAttribute.length) {
-					var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute) || '';
-				}
 	
-				if( jQuery( '#' + bindData.id ).hasClass('hide') 
+	            if(bindData.valueAttribute.length) {
+					var selectedValue = jQuery(this).children(":selected").attr(bindData.valueAttribute) || '';
+				}
+					if( jQuery( '#' + bindData.id ).hasClass('hide') 
 	                && ( bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
 	                     || bindData.showValues === '*' && selectedValue.length) 
-	            ) {
+	            )
+				 {
 					
 	                jQuery( '#' + bindData.id ).removeClass('hide');
 	                
@@ -193,6 +193,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		});
 		
+		//When user adding payment method to account
+		var getPaymentMethodType = $(".j-custom-select option:selected").attr('paymentmethodtype');
+		jQuery.each( jQuery( scopeSelector ).find( jQuery('.hibachi-display-toggle.hide') ), function(index, value){
+			if($("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == getPaymentMethodType || (getPaymentMethodType != undefined && $("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == 'creditCard,termPayment')){
+				$("#"+jQuery(this).attr('id')).removeClass("hide");
+			}
+	    });
 		
 		// Form Empty value clear (IMPORTANT!!! KEEP THIS ABOVE THE VALIDATION ASIGNMENT)
 		jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
@@ -370,6 +377,16 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			e.preventDefault();
 			jQuery('#adminConfirm .modal-body').html( jQuery(this).data('confirm') );
 			jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
+			if(jQuery(this).is('a')){		
+	                jQuery('#adminConfirm .btn-primary').unbind('click');		
+	                jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );		
+            }else if(jQuery(this).attr('type') == 'submit'){		
+                var _that = this;		
+                jQuery('#adminConfirm .btn-primary').click(function() {		
+                    jQuery(this).attr("disabled", true);		
+                    jQuery(_that).closest("form").submit();		
+                });		
+            }
 			jQuery('#adminConfirm').modal();
 		});
 		jQuery('body').on('click', '.btn-disabled', function(e){	
@@ -394,23 +411,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				method:'get',
 				success: function(response){
 					jQuery('#adminModal').modal();
-					
-					var elem = angular.element(document.getElementById('ngApp'));
-				    var injector = elem.injector();
-				    var $compile = injector.get('$compile'); 
-				    var $rootScope = injector.get('$rootScope'); 
-				    
-				    jQuery('#adminModal').html($compile(response)($rootScope));
-					initUIElements('#adminModal');
-					
-					jQuery('#adminModal').css({
-						'width': 'auto'
-					});
-					
-					jQuery('#adminModal input').each(function(index,input){
-						//used to digest previous jquery value into the ng-model
-						jQuery(input).trigger('input');
-					});
+					renderModal(response);
 				},
 				error:function(response,status){
 					//returns 401 in the case of unauthorized access and boots to the appropriate login page
@@ -562,8 +563,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 			
 			data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
-			
-			listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
+
+			var tableID = jQuery(this).closest('.table').attr('id'); 
+ 
+			jQuery('#' + tableID).find("input[name='OrderBy']").val(data[ 'OrderBy' ]);
+
+			listingDisplayUpdate( tableID, data);
+
 		});
 	
 		// Listing Display - Filtering
@@ -833,26 +839,10 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 						if(("preProcessView" in r)) {
 							jQuery('#adminModal').modal();
-							
-							var elem = angular.element(document.getElementById('ngApp'));
-						    var injector = elem.injector();
-						    var $compile = injector.get('$compile'); 
-						    var $rootScope = injector.get('$rootScope'); 
-						    
-						    jQuery('#adminModal').html($compile(r.preProcessView)($rootScope));
-							initUIElements('#adminModal');
-							
-							jQuery('#adminModal').css({
-								'width': 'auto'
-							});
-							
-							jQuery('#adminModal input').each(function(index,input){
-								//used to digest previous jquery value into the ng-model
-								jQuery(input).trigger('input');
-							});
+							renderModal(r.preProcessView);
 						} else {
 							jQuery.each(r.messages, function(i, v){
-								jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');
+								jQuery('#' + thisTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + (v.MESSAGE || v.message) + '</div>');
 							});
 						}
 					}
@@ -869,6 +859,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		});
 		jQuery('.hibachi-permission-checkbox:checked').change();
 	
+		jQuery('body').on('lazyLoadComplete',function(){
+			jQuery('.hibachi-permission-checkbox').each(function() {
+				if(jQuery(this).attr('checked')=='checked'){
+					updatePermissionCheckboxDisplay( jQuery(this) );
+				}
+			});
+		});
 	
 		// Report Hooks ============================================
 	
@@ -1086,7 +1083,30 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		return modalLink;
 	}
-	
+	function renderModal( html ) {
+		var elem = document.getElementById('ngApp');
+		if (typeof(elem) != 'undefined' && elem != null){
+			elem = angular.element(elem);
+			var injector = elem.injector();
+		    var $compile = injector.get('$compile');
+		    var $rootScope = injector.get('$rootScope');
+		    jQuery('#adminModal').html($compile(html)($rootScope));
+		}else{
+			jQuery('#adminModal').html(html);
+		}
+
+		initUIElements('#adminModal');
+
+		jQuery('#adminModal').css({
+			'width': 'auto'
+		});
+
+		jQuery('#adminModal input').each(function(index,input){
+			//used to digest previous jquery value into the ng-model
+			jQuery(input).trigger('input');
+		});
+	}
+
 	function updatePermissionCheckboxDisplay( checkbox ) {
 		jQuery.each( jQuery('.hibachi-permission-checkbox[data-hibachi-parentcheckbox="' + jQuery( checkbox ).attr('name') + '"]'), function(i, v) {
 	
@@ -1148,6 +1168,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				keywords: jQuery(autocompleteField).val(),
 				fieldName: jQuery(autocompleteField).prop('name')
 			};
+			var filters = jQuery( autocompleteField ).data('acfilters').split(',');
+			for(var i in filters){
+				var filter = filters[i];
+				console.log(filter);
+				var filterValues = filter.split('=');
+				var filterKey = filterValues[0];
+				var filterValue = filterValues[1];
+				thisData[filterKey] = filterValue;
+			}
 			thisData[ hibachiConfig.action ] = 'admin:ajax.updatelistingdisplay';
 			thisData["f:activeFlag"] = 1;
 			thisData["p:current"] = 1;
@@ -1289,7 +1318,28 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			data[ 'adminAttributes' ] = JSON.stringify(jQuery('#' + tableID).find('th.admin').data());
 			data[ 'savedStateID' ] = jQuery('#' + tableID).data('savedstateid');
 			data[ 'entityName' ] = jQuery('#' + tableID).data('entityname');
+			data[ 'recordAlias' ] = jQuery('#' + tableID).data('recordalias');
 	
+			var tableHeadRowSelector = '#' + tableID + ' thead tr';
+					
+			// Loop over each column of the header to set data[ 'actionCallerAttributes' ]
+	 		data[ 'methodIdentifier' ] = {};
+	 	
+			if(data['OrderBy'] == null){
+				data[ 'OrderBy' ] =jQuery('#' + tableID).find("input[name='OrderBy']").val(); 
+			}
+
+	 		jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
+				if( jQuery(cv).hasClass('data') ) {
+					if( jQuery(cv).data('methodidentifier') !== undefined ) {
+						data[ 'methodIdentifier' ][ jQuery(cv).data('propertyidentifier') ] = jQuery(cv).data('methodidentifier');
+					}
+				}
+			});
+			
+			// convert data[ 'methodIdentifier' ] to string so we can pass it in ajax request
+			data[ 'methodIdentifier' ] = JSON.stringify(data[ 'methodIdentifier' ]) ;
+				 
 			var idProperty = jQuery('#' + tableID).data('idproperty');
 			var nextRowDepth = 0;
 	
@@ -1297,6 +1347,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				nextRowDepth = jQuery('#' + afterRowID).find('[data-depth]').attr('data-depth');
 				nextRowDepth++;
 			}
+
 			if(data['entityName']){
 				jQuery.ajax({
 					url: hibachiConfig.baseURL + '/',
@@ -1314,7 +1365,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						// Setup Selectors
 						var tableBodySelector = '#' + tableID + ' tbody';
 						var tableHeadRowSelector = '#' + tableID + ' thead tr';
-		
+						
 						// Clear out the old Body, if there is no afterRowID
 						if(!afterRowID) {
 							jQuery(tableBodySelector).html('');
@@ -1332,13 +1383,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 								jQuery(rowSelector).attr('data-parentid', afterRowID);
 								jQuery(rowSelector).data('parentid', afterRowID);
 							}
-		
+							
 							// Loop over each column of the header to pull the data out of the response and populate new td's
 							jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
 		
 								var newtd = '';
 								var link = '';
-		
+								
 								if( jQuery(cv).hasClass('data') ) {
 		
 									if( typeof rv[jQuery(cv).data('propertyidentifier')] === 'boolean' && rv[jQuery(cv).data('propertyidentifier')] ) {
@@ -1420,6 +1471,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						if(jQuery('#' + tableID).data('selectfield')) {
 							updateSelectTableUI( jQuery('#' + tableID).data('selectfield') );
 						}
+		
+						// Broadcast event on table element
+						jQuery("#" + tableID).trigger("listingDisplayUpdateComplete");
 		
 						// Unload the loading icon
 						removeLoadingDiv( tableID );
@@ -1729,74 +1783,125 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 	}
 	
+
+	
 	function updateReport( page ) {
-	
-		var data = {
-			slatAction: 'admin:report.default',
-			reportID: jQuery('input[name="reportID"]').val(),
-			reportName: jQuery('#hibachi-report').data('reportname'),
-			reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
-			reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
-			reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
-			reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
-			reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
-			reportDateTime: jQuery('select[name="reportDateTime"]').val(),
-			reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
-			dimensions: jQuery('input[name="dimensions"]').val(),
-			metrics: jQuery('input[name="metrics"]').val(),
-			reportType: jQuery('select[name="reporttype"]').val(), 
-			orderByType: jQuery('select[name="orderbytype"]').val()
-		};
-	
-		if(jQuery('input[name="showReport"]').is(':checked')){
-			data.showReport = true; 
-		} else { 
-			data.showReport = false; 
-		}
+		if(jQuery("#hibachi-report").length){
+			var data = {
+				slatAction: 'admin:report.default',
+				reportID: jQuery('input[name="reportID"]').val(),
+				reportName: jQuery('#hibachi-report').data('reportname'),
+				reportStartDateTime: jQuery('a.hibachi-report-date-group.active').data('start'),
+				reportEndDateTime: jQuery('a.hibachi-report-date-group.active').data('end'),
+				reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
+				reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
+				reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
+				reportDateTime: jQuery('select[name="reportDateTime"]').val(),
+				reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
+				dimensions: jQuery('input[name="dimensions"]').val(),
+				metrics: jQuery('input[name="metrics"]').val(),
+				reportType: jQuery('select[name="reporttype"]').val(), 
+				orderByType: jQuery('select[name="orderbytype"]').val(),
+				reportSite: jQuery('select[name="siteSelector"').val()
+			};
 		
-		if(jQuery('select[name="limitresults"]').val() != undefined){ 
-			data.limitResults = jQuery('select[name="limitresults"]').val();
-		}
-	
-		if(page != undefined) {
-			data.currentPage = page;
-		}
-	
-		jQuery.ajax({
-			url: hibachiConfig.baseURL + '/',
-			method: 'post',
-			data: data,
-			dataType: 'json',
-			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
-			error: function( r ) {
-				// Error
-				removeLoadingDiv( 'hibachi-report' );
-			},
-			success: function( r ) {
-				if(r.report.hideChart !== undefined){ 
-					jQuery("#hibachi-report-chart").remove();
-					jQuery("#hibachi-report-chart-wrapper").hide();
-				} else { 
-					if(r.report.chartData.series !== undefined){
-						var html = "<div id='hibachi-report-chart'></div>";
-						jQuery("#hibachi-report-chart-wrapper").html(html);
-						var chart = new Highcharts.Chart(r.report.chartData);	
-					}
-					jQuery("#hibachi-report-chart-wrapper").show();
-				}
-				
-				if(r.report.hideReport !== undefined){
-					jQuery("#reportDataTable").remove();
-				} else { 
-					jQuery('#hibachi-report-table').html(r.report.dataTable);
-					jQuery("#hibachi-report-table").show();
-				}
-					
-				jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
-				initUIElements('#hibachi-report');
-				removeLoadingDiv( 'hibachi-report' );
+			if(jQuery('input[name="showReport"]').is(':checked')){
+				data.showReport = true; 
+			} else { 
+				data.showReport = false; 
 			}
-		});
+			
+			if(jQuery('select[name="limitresults"]').val() != undefined){ 
+				data.limitResults = jQuery('select[name="limitresults"]').val();
+			}
+		
+			if(page != undefined) {
+				data.currentPage = page;
+			}
+		
+			jQuery.ajax({
+				url: hibachiConfig.baseURL + '/',
+				method: 'post',
+				data: data,
+				dataType: 'json',
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+				error: function( r ) {
+					// Error
+					removeLoadingDiv( 'hibachi-report' );
+				},
+				success: function( r ) {
+
+					if(r.report.hideChart !== undefined){ 
+						jQuery("#hibachi-report-chart").remove();
+						jQuery("#hibachi-report-chart-wrapper").hide();
+					} else { 
+						if(r.report.chartData.series !== undefined){
+
+							var html = "<canvas id='hibachi-report-chart' width='1800' height='600'></canvas>";
+							jQuery("#hibachi-report-chart-wrapper").html(html);
+							jQuery("#sales-revenue-this-period").html(r.report.salesRevenueThisPeriod);
+							jQuery("#order-count-this-period").html(r.report.orderCount);
+							jQuery("#average-order-total-this-period").html(r.report.averageOrderTotal);
+							jQuery("#accounts-created-this-period").html(r.report.accountCount);
+							jQuery(".time-period").html(r.report.period);
+
+							var ctx = jQuery("#hibachi-report-chart")[0].getContext("2d");
+							var chart = new Chart(ctx, {
+							    type: r.report.chartData.data.type,
+							    data: {
+							        datasets: [{
+							            label: r.report.chartData.series[0].label,
+							            data: r.report.chartData.series[0].data,
+							            borderColor: [
+							                '#f38631'
+							            ],
+							            pointBackgroundColor: "#f38631",
+							            pointBorderColor: "#f38631",
+							            fill: false,
+							            borderWidth: 3,
+							            lineTension: 0
+							        }]
+							    },
+							    options: {
+							        scales: {
+							            yAxes: [{
+							                ticks: {
+							                    beginAtZero: true
+							                }
+							            }],
+							            xAxes: [{
+							            	type: 'time',
+							            	ticks: {
+							            		source: 'data',
+							            	},
+							            	time: {
+							            		parser: 'string',
+							            		unit: r.report.reportDateTimeGroupBy,
+							            		stepSize: 1,
+							            	}
+							            }]
+							        },
+							        legend: {
+							        	display: false
+							        }
+							    }
+							});	
+						}
+						jQuery("#hibachi-report-chart-wrapper").show();
+					}
+					
+					if(r.report.hideReport !== undefined){
+						jQuery("#reportDataTable").remove();
+					} else { 
+						jQuery('#hibachi-report-table').html(r.report.dataTable);
+						jQuery("#hibachi-report-table").show();
+					}
+						
+					initUIElements('#hibachi-report');
+					removeLoadingDiv( 'hibachi-report' );
+				}
+			});
+		}
 	
 	}
 	
@@ -1822,6 +1927,56 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 		return timeFormat;
 	}
+	
+	function getTabHTMLForTabGroup( element, tab ){
+		
+		var tabID = tab.TABID || tab.tabid;
+		var view = tab.VIEW || tab.view;
+		
+		if($('#'+tabID).html().trim().length === 0){
+			//add loading spinner prior to loading
+			$('#'+tabID).html(''+
+				'<div class="text-center"> <i class="fa fa-spinner fa-spin"></i><div>'+
+			'');
+			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
+
+				//angular should work
+				AngularHelper.Compile($('#'+tabID),htmlToCompile);
+				//jquery should work
+				initUIElements($('#'+tabID));
+				$('body').trigger('lazyLoadComplete');
+			});
+		}
+	}
+	/**
+	 * AngularHelper : Contains methods that help using angular without being in the scope of an angular controller or directive
+	 */
+	var AngularHelper = (function () {
+	    var AngularHelper = function () { };
+
+	    /**
+	     * ApplicationName : Default application name for the helper
+	     */
+
+	    /**
+	         * Compile : Compile html with the rootScope of an application
+	         *  and replace the content of a target element with the compiled html
+	         * @$targetDom : The dom in which the compiled html should be placed
+	         * @htmlToCompile : The html to compile using angular
+	         */
+	    AngularHelper.Compile = function ($targetDom, htmlToCompile) {
+	        var $injector = angular.element(document).injector();
+
+	        $injector.invoke(["$compile", "$rootScope", function ($compile, $rootScope) {
+	                        //Get the scope of the target, use the rootScope if it does not exists
+	            var $scope = $targetDom.html(htmlToCompile).scope();
+	            $compile($targetDom)($scope || $rootScope);
+	            $rootScope.$digest();
+	        }]);
+	   }
+
+	    return AngularHelper;
+	})();
 	
 	// =========================  END: HELPER METHODS =================================
 	

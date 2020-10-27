@@ -105,7 +105,7 @@ component extends="HibachiService" accessors="true" {
 
 			var newSku = getSkuService().newSku();
 			newSku.setProduct( arguments.processObject.getProduct() );
-			newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
+			newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
 			newSku.setSkuName( arguments.processObject.getSkuName() );
 			newSku.setPrice( arguments.processObject.getPrice() );
 			newSku.setEventStartDateTime( arguments.startDateTime );
@@ -176,7 +176,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
-				newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
+				newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
 				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
@@ -220,6 +220,7 @@ component extends="HibachiService" accessors="true" {
 				this.saveSku(newSku);
 				
 				if( newSku.hasErrors() ){
+					newSku.getProduct().addErrors(newSku.getErrors());
 					break;
 				}
 			}
@@ -445,6 +446,84 @@ component extends="HibachiService" accessors="true" {
 		}
 		return result;
 	}
+	
+	public any function getAllRelatedProducts(required any productID) {
+		var relatedProducts = this.getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile, relatedProduct.calculatedSalePrice, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID, relatedProduct.defaultSku.skuID");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+
+	public any function getAllProductReviews(required any productID) {
+		var relatedProducts = this.getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, createdDateTime, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+	
+	/** Function append Images to existing product List
+	 * @param - array of products
+	 * @param - image property name
+	 * @param - addAltImage - boolean to ignore alt images
+	 * @return - updated array of products
+	 **/
+	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+		if(arrayLen(arguments.products)) {
+			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
+			var resizeSizes=['s','m','l','xl']; //add all sized images
+			
+			for(var product in arguments.products) {
+	            var imageFile = product[arguments.propertyName] ? : '';
+	            if( isEmpty(imageFile) ) {
+	            	continue;
+	            }
+	            var imageArray = [];
+	            for( var size in resizeSizes) {
+	            	var resizeImageData = {
+		                size=size, //Large Image
+		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
+		                missingImagePath = missingImageSetting
+		            };
+		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
+	            }
+	            
+	            product['images'] = imageArray;
+	        }
+	        
+	        //If there's only one product in response, add alternate images as well
+	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage ) {
+	        	//Modify image size to be used as size index
+	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
+	        }
+	        
+		}
+		return arguments.products;
+	}
+	
+	public any function appendCategoriesToProduct(required array products) {
+		if(arrayLen(arguments.products)) {
+			for(var product in arguments.products) {
+				
+				var currentProduct = this.getProduct(product.productID);
+				var categories = [];
+				if( arrayLen(currentProduct.getCategories()) ) {
+					var productCategories = currentProduct.getCategories();
+					for( var i=1; i<= arrayLen(productCategories); i++ ) {
+						categories[i]['categoryID'] = productCategories[i].getCategoryID();
+						categories[i]['categoryName'] = productCategories[i].getCategoryName();
+					}
+				}
+				
+				product['categories'] = categories;
+			}
+		}
+		
+		return arguments.products;
+	}
 
 
 	// =====================  END: Logical Methods ============================
@@ -462,7 +541,9 @@ component extends="HibachiService" accessors="true" {
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
 		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
-
+		for(var sku in arguments.product.getSkus()){
+			getHibachiScope().addModifiedEntity(sku);
+		}
 		return arguments.product;
 	}
 
@@ -562,7 +643,7 @@ component extends="HibachiService" accessors="true" {
 	
 					// Set up new bundle data
 					var newBundleData = {
-						skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
+						skuCode = product.getNextSkuCode(),
 						price = 0,
 						skus = skus
 					};
@@ -685,7 +766,7 @@ component extends="HibachiService" accessors="true" {
 		if( !isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
 			newSku.setListPrice( arguments.processObject.getListPrice() );
 		}
-		newSku.setSkuCode( arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+		newSku.setSkuCode( arguments.product.getNextSkuCode());
 		newSku.setSubscriptionTerm( newSubscriptionTerm );
 		for(var b=1; b <= listLen( arguments.processObject.getSubscriptionBenefits() ); b++) {
 			newSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
@@ -731,7 +812,7 @@ component extends="HibachiService" accessors="true" {
 
 		arguments.product = createSingleSku(arguments.product,arguments.processObject);
 		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
-		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
+		arguments.product.getDefaultSku().setBaseRedemptionAmount(arguments.processObject.getBaseRedemptionAmount());
 		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
 			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
 			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);
@@ -740,7 +821,6 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public any function processProduct_create(required any product, required any processObject) {
-
 		// GENERATE - CONTENT ACCESS SKUS
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 
@@ -779,7 +859,7 @@ component extends="HibachiService" accessors="true" {
 
 		// GENERATE - EVENT SKUS
 		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "event") {
-
+			arguments.product = this.saveProduct(arguments.product);
 			arguments.product = this.processProduct(arguments.product, arguments.data, 'addEventSchedule');
 
 
@@ -846,6 +926,8 @@ component extends="HibachiService" accessors="true" {
 							}
 						}
 					}
+					
+					
 				}
 
 			// If no options were passed in we will just create a single sku
@@ -893,7 +975,11 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
-
+		
+		if(!isNull(arguments.processObject.getBrand())){
+			arguments.product.setBrand(arguments.processObject.getBrand());
+		}
+		
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
 
@@ -922,9 +1008,16 @@ component extends="HibachiService" accessors="true" {
 
 	public any function processProduct_deleteDefaultImage(required any product, required struct data) {
 		if(structKeyExists(arguments.data, "imageFile")) {
-			if(fileExists(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#')) {
-				fileDelete(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#');
+			var imageBasePath = getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/';
+
+			if(getHibachiUtilityService().isS3Path(imageBasePath)){
+				imageBasePath = getHibachiUtilityService().formatS3Path(imageBasePath);
 			}
+
+			if(fileExists(imageBasePath&arguments.data.imageFile)) {
+				fileDelete(imageBasePath&arguments.data.imageFile);
+			}
+			getImageService().clearImageCache(imageBasePath, arguments.data.imageFile);
 		}
 
 		return arguments.product;
@@ -966,47 +1059,50 @@ component extends="HibachiService" accessors="true" {
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());
 				}
-
-				//Update currencies
-				for(var processSkuCurrency in processObject.getSkuCurrencies()){
-					skuCurrencyFound=false;
-					skuCurrenciesToRemove=[];
-
-					for(var skuCurrency in skus[i].getSkuCurrencies()){
-						if(processSkuCurrency.currencyCode eq skuCurrency.getCurrencyCode()){
-							if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
-								skuCurrency.setPrice(processSkuCurrency.price);
+				var skuCurrencies = processObject.getSkuCurrencies();
+				
+				if( !isNull(skuCurrencies)){
+					//Update currencies
+					for(var processSkuCurrency in skuCurrencies){
+						skuCurrencyFound=false;
+						skuCurrenciesToRemove=[];
+	
+						for(var skuPrice in skus[i].getSkuPrices()){
+							if(processSkuCurrency.currencyCode eq skuPrice.getCurrencyCode()){
+								if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+									skuPrice.setPrice(processSkuCurrency.price);
+								}
+								if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
+									skuPrice.setListPrice(processSkuCurrency.listPrice);
+								}
+	
+								if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+									arrayAppend(skuCurrenciesToRemove,skuPrice);
+								}
+	
+							 skuCurrencyFound=true;
 							}
-							if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
-								skuCurrency.setListPrice(processSkuCurrency.listPrice);
+						}
+						for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
+							skuCurrenciesToRemove[j].removeSku(skus[i]);
+						}
+						if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
+							var newSkuPrice=this.newSkuPrice();
+							newSkuPrice.setCurrencyCode(processSkuCurrency.currencyCode);
+							if(arguments.processObject.getUpdatePriceFlag()) {
+								newSkuPrice.setPrice(processSkuCurrency.price);
 							}
-
-							if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
-								arrayAppend(skuCurrenciesToRemove,skuCurrency);
+							if(arguments.processObject.getUpdateListPriceFlag()) {
+								newSkuPrice.setPrice(processSkuCurrency.listPrice);
 							}
-
-						 skuCurrencyFound=true;
+							newSkuPrice.setSku(skus[i]);
+							save(newSkuPrice);
+	
 						}
 					}
-					for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
-						skuCurrenciesToRemove[j].removeSku(skus[i]);
-					}
-					if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
-						var newSkuCurrency=this.newSkuCurrency();
-						newSkuCurrency.setCurrency(getService('currencyService').getCurrencyByCurrencyCode(processSkuCurrency.currencyCode));
-						if(arguments.processObject.getUpdatePriceFlag()) {
-							newSkuCurrency.setPrice(processSkuCurrency.price);
-						}
-						if(arguments.processObject.getUpdateListPriceFlag()) {
-							newSkuCurrency.setPrice(processSkuCurrency.listPrice);
-						}
-						newSkuCurrency.setSku(skus[i]);
-						save(newSkuCurrency);
-
-					}
+	
 				}
-
-			}
+			}	
 		}
 
 		return arguments.product;
@@ -1017,7 +1113,14 @@ component extends="HibachiService" accessors="true" {
 		try {
 
 			// Get the upload directory for the current property
+			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
+
+			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
+				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
+			}
+
 			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
 
 			// If the directory where this file is going doesn't exists, then create it
@@ -1027,7 +1130,21 @@ component extends="HibachiService" accessors="true" {
 
 			// Do the upload, and then move it to the new location
 			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
-			fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+			var fileSize = uploadData.fileSize;
+ 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+ 			} else {
+ 				getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 				if(getHibachiUtilityService().isS3Path(fullFilePath)){
+ 					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
+ 				}
+				
+				arguments.product.setModifiedDateTime(now());
+ 				arguments.product.setModifiedByAccount(getHibachiScope().getAccount());
+ 				arguments.product = saveProduct(arguments.product);
+
+ 			}
 
 		} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
@@ -1042,7 +1159,6 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
-
 		var previousActiveFlag = arguments.product.getActiveFlag();
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
@@ -1076,7 +1192,52 @@ component extends="HibachiService" accessors="true" {
 				newProductListingPage = this.saveProductListingPage(newProductListingPage);
 			}
 		}
+		
+		if(structKeyExists(data, "relatedProductIDList")){
+			var productExistingRelatedProducts = arguments.product.getRelatedProducts();
+			var productRelationshipsToDelete = [];
+			for(var ProductRelationship in productExistingRelatedProducts){
+				if(listFind(data.relatedProductIDList, ProductRelationship.getRelatedProduct().getProductID()) == 0){
+					ArrayAppend(ProductRelationshipsToDelete, ProductRelationship);
+				}
+			}
+
+			for(var productRelationship in productRelationshipsToDelete){
+				productRelationship.removeProduct();
+			}
+
+			var relatedProductIDArray = ListToArray(data.relatedProductIDList);
+
+			for(var relatedProductID in relatedProductIDArray){
+				if(!this.getProductDAO().getProductHasRelatedProduct(arguments.product.getProductID(),relatedProductID)){
+					var newProductRelationship = this.newProductRelationship();
+					if(structKeyExists(data, "relatedProductSortOrder") && structKeyExists(deserializeJSON(data.relatedProductSortOrder),relatedProductID)){
+						newProductRelationship.setSortOrder = deserializeJSON(data.relatedProductSortOrder)[relatedProductID];
+					}
+					newProductRelationship.setProduct(arguments.product);
+					newProductRelationship.setRelatedProduct(this.getProduct(relatedProductID));
+					this.saveProductRelationship(newProductRelationship);
+				}
+			}
+		}
+
+		if(structKeyExists(data, "relatedProductSortOrder")){
+			var relatedProductSortOrderStruct = deserializeJSON(data.relatedProductSortOrder);
+			for(var key in relatedProductSortOrderStruct){
+				var productRelationship = this.getProductRelationship(key);
+				if(!isNull(productRelationship)){
+					productRelationship.setSortOrder(relatedProductSortOrderStruct[key]);
+					this.saveProductRelationship(productRelationship);
+				}
+			}
+		}
+		//clear delivery Schedule Dates before adding again, ideally this should be checking which items are in the db that are not in the array and removing thoses specifically	
+		if(structKeyExists(data,'deliveryScheduleDates')){
+			arrayClear(arguments.product.getDeliveryScheduleDates());
+		}
+
 		arguments.product = super.save(arguments.product, arguments.data);
+		
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
@@ -1096,6 +1257,24 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 		return arguments.product;
+	}
+	
+	public void function createSubscriptionOrderDeliveries(){
+		getService('OrderService').createSubscriptionOrderDeliveries();
+	}
+	
+	
+	public any function getProductsScheduledForDeliveryCollectionList(required string dateTime){
+		var productCollectionList = getService('HibachiService').getProductCollectionList();
+		
+		productCollectionList.addFilter('deferredRevenueFlag',true);
+		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver',0,'>');
+		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
+		
+		productCollectionList.addFilter('nextDeliveryScheduleDate.deliveryScheduleDateValue',arguments.dateTime,'<','OR','','nextDeliveryScheduleDateFilterGroup');
+		productCollectionList.addFilter('nextDeliveryScheduleDate.deliveryScheduleDateValue','NULL','IS','OR','','nextDeliveryScheduleDateFilterGroup');
+		
+		return productCollectionList;
 	}
 
 	public any function saveProductType(required any productType, struct data={}) {
@@ -1129,7 +1308,11 @@ component extends="HibachiService" accessors="true" {
 		if(!arguments.productReview.hasErrors()){
 			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
 		}
-		
+		// setting up default status as Unapproved
+		if(isNull(arguments.productReview.getProductReviewsStatus()))
+		{
+			arguments.productReview.setProductReviewsStatus(getService('typeService').getTypeByTypeID('f0558da55e9f48f7bbd0eb4c95d6b378'));
+		}
 		return arguments.productReview;
 		
 	}
@@ -1208,4 +1391,3 @@ component extends="HibachiService" accessors="true" {
 	// ======================  END: Private Helper ============================
 
 }
-

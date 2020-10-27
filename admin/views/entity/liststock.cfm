@@ -56,19 +56,28 @@ Notes:
 
 	<hb:HibachiEntityActionBar type="listing" object="#rc.stockSmartList#" showCreate="false" />
 
-	<hb:HibachiListingDisplay smartList="#rc.stockSmartList#"
-			recordEditAction="admin:entity.editstock"
-			recorddetailaction="admin:entity.detailstock">
+	
+    <cfset stockCollectionList = getHibachiScope().getService('stockService').getStockCollectionList()>
+	<cfset serchableDisplayProperties = "sku.skuCode,sku.product.productName,sku.product.productCode,sku.product.productType.productTypeName,sku.product.brand.brandName,location.locationName,calculatedQOH,calculatedQNC,calculatedQATS,calculatedCurrentSkuPrice,averageCost,averageLandedCost,location.currencyCode"/>
+	<cfset stockCollectionList.setDisplayProperties( serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset stockCollectionList.addDisplayProperty( displayProperty='stockID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
-		<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQOH" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-	</hb:HibachiListingDisplay>
+    <hb:HibachiListingDisplay 
+    		collectionList="#stockCollectionList#"
+    		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+    		recordEditAction="admin:entity.edit#lcase(stockCollectionList.getCollectionObject())#"
+    		recordDetailAction="admin:entity.detail#lcase(stockCollectionList.getCollectionObject())#"
+    	>
+    </hb:HibachiListingDisplay>
 
 </cfoutput>

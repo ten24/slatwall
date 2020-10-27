@@ -82,6 +82,24 @@ component entityname="SlatwallStockAdjustmentDelivery" table="SwStockAdjustmentD
 	   arguments.stockAdjustmentDeliveryItem.removeStockAdjustmentDelivery(this);
 	}
     
+	// Stock Adjustment (many-to-one)    
+	public void function setStockAdjustment(required any stockAdjustment) {    
+		variables.stockAdjustment = arguments.stockAdjustment;    
+		if(isNew() or !arguments.stockAdjustment.hasStockAdjustmentDelivery( this )) {    
+			arrayAppend(arguments.stockAdjustment.getStockAdjustmentDeliveries(), this);    
+		}    
+	}    
+	public void function removeStockAdjustment(any stockAdjustment) {    
+		if(!structKeyExists(arguments, "stockAdjustment")) {    
+			arguments.stockAdjustment = variables.stockAdjustment;    
+		}    
+		var index = arrayFind(arguments.stockAdjustment.getStockAdjustmentDeliveries(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.stockAdjustment.getStockAdjustmentDeliveries(), index);    
+		}    
+		structDelete(variables, "stockAdjustment");    
+	}
+	
     
     // ============ START: Non-Persistent Property Methods =================
 	
@@ -99,4 +117,3 @@ component entityname="SlatwallStockAdjustmentDelivery" table="SwStockAdjustmentD
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
-

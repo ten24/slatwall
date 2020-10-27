@@ -53,14 +53,6 @@ Notes:
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<!--- Set up the order / carts smart lists --->
-<cfset rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList() />
-<cfset rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList() />
-
-<cfif !isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 >
-	<cfset rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' ) />
-</cfif>
-
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.account#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">
@@ -69,6 +61,12 @@ Notes:
 			<!--- If the logged in user is a super user, or they own this account then allow api token generation. --->
 			<cfif getHibachiScope().getAccount().getSuperUserFlag() || getHibachiScope().getAccount().getAccountID() eq rc.account.getAccountID()>
 				<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAPIAccessKey"  type="list" modal="true" />
+			</cfif>
+			<cfif !isNull(getHibachiScope().getService("integrationService").getIntegrationByIntegrationPackage("slatwallpos")) AND 
+				  getHibachiScope().getService("integrationService").getIntegrationByIntegrationPackage("slatwallpos").getActiveFlag() >
+				
+				<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePosPin"  type="list" modal="true" />
+			
 			</cfif>
 			<li class="divider"></li>
 			<hb:HibachiActionCaller action="admin:entity.createaccountaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
@@ -79,17 +77,21 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" modal="true" type="list" />
 			<li class="divider"></li>
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="clone" queryString="sRedirectAction=admin:entity.detailAccount" type="list" modal="true" hideDisabled="false" />
+			<!--- Allow the user to merge any two accounts into one. --->
+			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="mergeAccount" queryString="sRedirectAction=admin:entity.detailAccount" type="list" modal="true" hideDisabled="false" />
+			
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.account#">
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/termpaymentdetails" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/contactdetails" />
-			<hb:HibachiEntityDetailItem property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="accountPaymentMethods" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/giftcards" count="#rc.account.getGiftCardsCount()#" />
 			<hb:HibachiEntityDetailItem property="priceGroups" />
 			<hb:HibachiEntityDetailItem property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
-			<hb:HibachiEntityDetailItem property="accountPayments" />
+			<hb:HibachiEntityDetailItem property="accountPayments" count="#rc.account.getAccountPaymentsSmartList().getRecordsCount()#"/>
 			<hb:HibachiEntityDetailItem property="accountLoyalties" count="#rc.account.getAccountLoyaltiesSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="productReviews" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />

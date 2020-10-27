@@ -9,7 +9,7 @@
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.productType#" property="activeFlag" edit="#rc.edit#">
 			<cfif isNull(rc.productType.getSystemCode()) or !len(rc.productType.getSystemCode())>
-				<hb:HibachiPropertyDisplay object="#rc.productType#" property="parentProductType" edit="#rc.edit#" valueOptions="#rc.productType.getParentProductTypeOptions(rc.baseProductType)#">
+				<hb:HibachiPropertyDisplay object="#rc.productType#" property="parentProductType" edit="#rc.edit#" valueOptions="#rc.productType.getParentProductTypeOptions(rc.baseProductType)#" value="#rc.parentProductTypeID#">
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.productType#" property="productTypeName" edit="#rc.edit#">
 			<cfif not rc.productType.isNew()>

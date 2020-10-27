@@ -52,15 +52,26 @@ Notes:
 
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.ordersNotPlacedSmartList" type="any" />
+<cfparam name="rc.ordersNotPlacedCollectionList" type="any" />
 
-<hb:HibachiListingDisplay smartList="#rc.ordersNotPlacedSmartList#"
-						  recordDetailAction="admin:entity.detailorder"
-						  recordEditAction="admin:entity.editorder">
+<cfset rc.ordersNotPlacedCollectionList.setDisplayProperties()/>
 
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-	<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" />
-	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="modifiedDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
+<cfset rc.ordersNotPlacedCollectionList.addDisplayProperty(displayProperty='orderType.typeName', title="Order Type", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.ordersNotPlacedCollectionList.addDisplayProperty(displayProperty='orderStatusType.typeName', title="Order Status", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.ordersNotPlacedCollectionList.addDisplayProperty(displayProperty='createdDateTime', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+<cfset rc.ordersNotPlacedCollectionList.addDisplayProperty(displayProperty='calculatedTotal', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+
+<cfset rc.ordersNotPlacedCollectionList.addDisplayProperty(displayProperty='orderID',columnConfig={
+	isVisible=false,
+	isSearchable=false,
+	isDeletable=false
+	})
+/>
+
+
+<hb:HibachiListingDisplay collectionList="#rc.ordersNotPlacedCollectionList#"
+	recordEditAction="admin:entity.editorder"
+	recordDetailAction="admin:entity.detailorder" 
+	usingPersonalCollection="false"
+>
 </hb:HibachiListingDisplay>
-<hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />

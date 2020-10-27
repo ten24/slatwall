@@ -20,6 +20,7 @@ class ObserverService extends BaseService{
         private historyService, 
         private utilityService
     ){
+        
         /**
          * @ngdoc property
          * @name ObserverService#observers
@@ -28,6 +29,7 @@ class ObserverService extends BaseService{
          * @returns {object} object
          */
         super();
+        console.log('init obeserver');
         this.observers = {};
     }
     /* Declare methods */
@@ -132,6 +134,7 @@ class ObserverService extends BaseService{
      * @description notifies observers of a specific event by id
      */
     notifyById = (event:string, eventId:string ,parameters:any):any => {
+        console.warn(event,eventId, parameters);
         event = event.toLowerCase();
         eventId = eventId.toLowerCase();
         return this.$timeout(()=>{

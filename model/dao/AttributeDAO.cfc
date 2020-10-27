@@ -51,8 +51,11 @@ Notes:
 	<cffunction name="getAttributeValuesForEntity" returntype="array" access="public">
 		<cfargument name="primaryIDPropertyIdentifier">
 		<cfargument name="primaryIDValue" />
-		
+		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier("attributeValue",primaryIDPropertyIdentifier)>
 		<cfreturn ormExecuteQuery("SELECT av FROM SlatwallAttributeValue av INNER JOIN FETCH av.attribute att INNER JOIN FETCH att.attributeSet ats WHERE av.#primaryIDPropertyIdentifier# = ?", [arguments.primaryIDValue], false, {ignoreCase="true"}) />
+		<cfelse>
+		<cfthrow message = "UnKnown Property Identifier" /> 
+		</cfif>
 	</cffunction>
 	
 	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public">
@@ -87,4 +90,38 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name = "getAttributeDataQueryByCustomPropertyFlag" returnType = "query">
+		<cfquery name = "local.attributeDataQuery">
+				SELECT
+					att.attributeID,att.attributeCode, att.attributeName, att.attributeInputType, att.relatedObject, att.typeSetID, attset.attributeSetObject,att.isMigratedFlag, att.defaultValue
+				FROM
+					SwAttribute att
+				INNER JOIN
+					SwAttributeSet attset ON att.attributeSetID = attset.attributeSetID
+				WHERE
+					att.customPropertyFlag = 1 AND att.activeFlag = 1 AND attset.activeFlag = 1
+		
+		</cfquery>
+		<cfreturn local.attributeDataQuery/>
+	</cffunction>
+	
+	<cffunction name = "getAttributesDataByEntityName">
+		<cfargument name="entityName" type="string" required="true" >
+		
+		<cfquery name = "local.attributesDataQuery">
+				SELECT attributeCode, attributeInputType 
+				FROM swAttribute
+				INNER JOIN swAttributeSet on swAttribute.attributeSetID = swAttributeSet.attributeSetID
+				WHERE
+					( swAttribute.customPropertyFlag is null OR swAttribute.customPropertyFlag = 0 )
+				AND
+					swAttributeSet.activeFlag = 1
+				AND 
+					swAttributeSet.globalFlag = 1
+				AND 
+					swAttributeSet.attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.entityName#"/>
+		</cfquery>
+		<cfreturn local.attributesDataQuery />
+	</cffunction>
+
 </cfcomponent>

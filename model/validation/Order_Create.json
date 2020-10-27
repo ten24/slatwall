@@ -18,6 +18,7 @@
 		"emailAddress":			[{"conditions":"savePasswordSelected","required":true},{"dataType":"email"},{"conditions":"newAccountSelected","eqProperty":"emailAddressConfirm"}],
 		"emailAddressConfirm":	[{"conditions":"savePasswordSelected","required":true}],
 		"password":				[{"conditions":"savePasswordSelected","required":true,"minLength":6,"eqProperty":"passwordConfirm"}],
-		"passwordConfirm":		[{"conditions":"savePasswordSelected","required":true}]
+		"passwordConfirm":		[{"conditions":"savePasswordSelected","required":true}],
+		"currencyCode":			[{"required":true}]
 	}
 }

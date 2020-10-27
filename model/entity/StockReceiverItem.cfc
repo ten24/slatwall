@@ -50,8 +50,8 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	
 	// Persistent Properties
 	property name="stockReceiverItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantity" ormtype="integer";
-	property name="cost" ormtype="big_decimal";
+	property name="quantity" ormtype="float";
+	property name="cost" ormtype="big_decimal" hb_formatType="currency";
 	property name="currencyCode" ormtype="string" length="3";
 	
 	// Related Object Properties (many-to-one)
@@ -60,10 +60,59 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="vendorOrderItem" cfc="VendorOrderItem" fieldtype="many-to-one" fkcolumn="vendorOrderItemID";
 	property name="stockAdjustmentItem" cfc="StockAdjustmentItem" fieldtype="many-to-one" fkcolumn="stockAdjustmentItemID";
+
+	// Remote Properties
+	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	//nonpersistent properties
+	
+	
+	public any function getLandedCost(){
+		if(!isNull(getVendorOrderItem())){
+			var cost = 0;
+			if(!isNull(getCost())){
+				cost = getCost();
+			}
+			return cost + getLandingAmount();	
+		}
+		return 0;
+	}
+	
+	public any function getLandingAmount(){
+		
+		if(
+			!isNull(getVendorOrderItem()) 
+			&& !isNull(getVendorOrderItem().getVendorOrder())
+			&& !isNull(getVendorOrderItem().getVendorOrder().getCostDistributionType())
+		){
+			switch(getVendorOrderItem().getVendorOrder().getCostDistributionType()){
+				case "quantity":
+					return getLandingAmountByQuantity();
+				case "cost":
+					return getLandingAmountByCost();
+				case "weight":
+					return getLandingAmountByWeight();
+			}
+		}
+		
+		return 0;
+	}
+	
+	public numeric function getLandingAmountByQuantity(){
+		return getVendorOrderItem().getLandingAmountByQuantity();
+	}
+	
+	public numeric function getLandingAmountByCost(){
+		return getVendorOrderItem().getLandingAmountByCost();
+	}
+	
+	public numeric function getLandingAmountByWeight(){
+		return getVendorOrderItem().getLandingAmountByWeight();
+	}
 	
 	private boolean function hasOneAndOnlyOneRelatedItem() {
     	var relationshipCount = 0;
@@ -77,6 +126,13 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
     		relationshipCount++;
     	}
     	return relationshipCount == 1;
+    }
+    
+    public boolean function stockHasLeafLocation(){
+    	if(isNull(getStock())){
+    		return false;
+    	}
+    	return getService('stockService').stockHasLeafLocation(getStock());
     }
     
 	// ============ START: Non-Persistent Property Methods =================
@@ -167,6 +223,9 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 		}
 		super.preInsert();
 		getService("inventoryService").createInventory( this );
+
+		//logHibachi('Add Stock to Modified Entity: #getStock().getStockID()# - QOH: #getStock().getQuantity("qoh",true)#',true);
+		getHibachiScope().addModifiedEntity(getStock());
 	}
 	
 	public void function preUpdate(Struct oldData){

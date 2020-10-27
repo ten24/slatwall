@@ -54,11 +54,56 @@ Notes:
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
 <cfparam name="rc.edit" type="boolean">
 
+<cfset collectionAllBrands = $.slatwall.getService('BrandService').getBrandCollectionList()  >
+<cfset collectionAllBrands.setDisplayProperties("brandName",{
+    isVisible=true
+}) >
+<cfset collectionAllBrands.addDisplayProperty(displayProperty='brandID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+})/>
+
+<cfset collectionIncludedBrands = $.slatwall.getService('BrandService').getBrandCollectionList() >
+<cfset collectionIncludedBrands.setDisplayProperties("brandName",{
+    isVisible=true,
+    isSearchable=true,
+    isDeletable=false
+}) >
+<cfset collectionIncludedBrands.addFilter("promotionRewards.promotionRewardID","#rc.promotionReward.getPromotionRewardID()#") >
+<cfset collectionIncludedBrands.addDisplayProperty(displayProperty='brandID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+})/>
+
+<cfset collectionExcludedBrands = $.slatwall.getService('BrandService').getBrandCollectionList() >
+<cfset collectionExcludedBrands.setDisplayProperties("brandName",{
+    isVisible=true,
+    isSearchable=true,
+    isDeletable=false
+}) >
+<cfset collectionExcludedBrands.addFilter("promotionRewardExclusions.promotionRewardID","#rc.promotionReward.getPromotionRewardID()#") >
+<cfset collectionExcludedBrands.addDisplayProperty(displayProperty='brandID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+})/>
+
 <cfoutput>
-	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="brands" edit="#rc.edit#" displaytype="plainTitle" />
-	</div>
-	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedBrands" edit="#rc.edit#" displaytype="plainTitle" />
-	</div>
+    <cfif rc.edit>
+    	<div class="col-md-6">
+    		<hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllBrands#" value="#collectionIncludedBrands.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Brands" fieldName="brands" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    	<div class="col-md-6">
+    	    <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllBrands#" value="#collectionExcludedBrands.getPrimaryIDList()#" fieldType="listingMultiselect" title="Excluded Brands" fieldName="excludedBrands" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    <cfelse>
+        <div class="col-md-6">
+            <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionIncludedBrands#" value="#collectionIncludedBrands.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Brands" fieldName="brands" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    	<div class="col-md-6">
+    	    <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionExcludedBrands#" value="#collectionExcludedBrands.getPrimaryIDList()#" fieldType="listingMultiselect" title="Excluded Brands" fieldName="excludedBrands" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    </cfif>
 </cfoutput>

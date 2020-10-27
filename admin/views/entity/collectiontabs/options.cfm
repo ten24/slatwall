@@ -1,9 +1,16 @@
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	<span sw-collection
-		  ng-controller="collections"
-		  toggleoption="true"
-		  >
-		
-	</span>
+
+<hb:HibachiListingDisplay
+	collectionList="#rc.collection#"
+	collectionConfigJson="#rc.collection.getCollectionConfig()#"
+	showSimpleListingControls="false"
+	recordEditAction="admin:entity.edit#lcase(rc.collection.getCollectionObject())#"
+	recordDetailAction="admin:entity.detail#lcase(rc.collection.getCollectionObject())#"
+	collectionConfigFieldName="collectionConfig"
+	showToggleDisplayOptions="#rc.edit#"
+	showFilters="#rc.edit#"
+>
+</hb:HibachiListingDisplay>
+

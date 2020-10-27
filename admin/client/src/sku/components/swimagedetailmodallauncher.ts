@@ -20,6 +20,9 @@ class SWImageDetailModalLauncherController{
     public imageOptions=[];
     public skusAffectedCount:number;
     public numberOfSkusWithImageFile:number=0;
+    
+    public swPricingManager;
+    public swListingDisplay;
 
     //@ngInject
     constructor(
@@ -29,16 +32,18 @@ class SWImageDetailModalLauncherController{
         private collectionConfigService,
         private utilityService,
         private $hibachi,
-        private $http
+        private $http,
+        private $element
     ){
+        this.$element = $element;
         this.name = this.baseName + this.utilityService.createID(18);
-        
+        this.imagePath;
         fileService.imageExists(this.imagePath).then(
             ()=>{
-                this.imagePathToUse = this.imagePath; 
+                this.imagePathToUse = this.imagePath + "?version="+Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5); 
             },
             ()=>{
-                this.imagePathToUse = '/assets/images/image-placeholder.jpg';
+                this.imagePathToUse = 'assets/images/image-placeholder.jpg';
             }
         ).finally(
             ()=>{
@@ -90,7 +95,7 @@ class SWImageDetailModalLauncherController{
     }
 
     public updateImage = (rawImage) => {
-
+        console.log('update');
     }
 
     public saveAction = () => {
@@ -102,22 +107,35 @@ class SWImageDetailModalLauncherController{
         data.append('preprocessDisplayedFlag',"1");
         data.append('ajaxRequest', "1");
 
-        data.append('productID', this.sku.data.product_productID);
-
-        if(this.customImageNameFlag){
-            data.append('imageFile', this.imageFileName);
-        } else {
+        data.append('productID', this.swPricingManager.productId);
+        
+        if(this.sku.data.imageFile){
             data.append('imageFile', this.sku.data.imageFile);
+        } else if(this.imageFileName){
+            data.append('imageFile', this.imageFileName);
+        } 
+       
+        const inputs = $('input[type=file]');
+        for(var input of <any>inputs){
+            var classes = $(input).attr('class').split(' ');
+            if(input.files[0] && classes.indexOf(this.skuCode) > -1){
+                data.append('uploadFile', input.files[0]);
+                break;
+            }
         }
-        data.append('uploadFile', this.sku.data.uploadFile);
-
+        
         var savePromise = this.$http.post(
-                "/?s=1",
-                data,
-                {
-                    transformRequest: angular.identity,
-                    headers: {'Content-Type': undefined}
-                });
+            "/?s=1",
+            data,
+            {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }
+        ).then(()=>{
+            this.sku.data.imagePath = this.imageFileName.split('?')[0] + "?version="+Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+            this.observerService.notifyById('swPaginationAction',this.swListingDisplay.tableID,{type:'setCurrentPage',payload:this.swListingDisplay.collectionConfig.currentPage});
+
+        });
 
         return savePromise;
     }
@@ -131,6 +149,7 @@ class SWImageDetailModalLauncher implements ng.IDirective{
     public templateUrl;
     public restrict = 'EA';
     public scope = {};
+    public require = {swPricingManager:'?^swPricingManager',swListingDisplay:"?^swListingDisplay"};
     public bindToController = {
         skuId:"@",
         skuCode:"@",

@@ -69,6 +69,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	// Reference Objects
 	property name="account" type="any";
 	property name="order" type="any";
+	property name="orderDelivery" type="any";
+	property name="orderReturn" type="any";
+
+	property name="commitTaxDocFlag" type="boolean" default="false";
 	
 	public any function init() {
 		// Set defaults
@@ -102,10 +106,14 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 	}
 	
-	public void function addTaxRateItemRequestBean(required any orderItem, required any taxCategoryRate, any taxAddress) {
-		
+	public void function addTaxRateItemRequestBean(required any referenceObject, required any taxCategoryRate, any taxAddress) {
 		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
-		
+
+		// Check reference object type. Value should either be 'orderFulfillment' or 'orderItem' or 'OrderDeliveryItem'
+		if (!listFindNoCase('OrderItem,OrderFulfillment,OrderDeliveryItem', arguments.referenceObject.getClassName())) {
+			throw("#getClassName()# does not support objects of type '#arguments.referenceObject.getClassName()#' as the tax rate item's reference object.");
+		}
+
 		// Setup taxCategoryRateCode and taxCategoryCode
 		if(!isNull(arguments.taxCategoryRate.getTaxCategory().getTaxCategoryCode())) {
 			taxRateItemRequestBean.setTaxCategoryCode( arguments.taxCategoryRate.getTaxCategory().getTaxCategoryCode() );
@@ -113,28 +121,21 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		if(!isNull(arguments.taxCategoryRate.getTaxCategoryRateCode())) {
 			taxRateItemRequestBean.setTaxCategoryRateCode( arguments.taxCategoryRate.getTaxCategoryRateCode() );
 		}
-		
-		// Set the reference object for orderItem & taxCategoryRate
-		taxRateItemRequestBean.setOrderItem( arguments.orderItem );
+
+		// Set the taxCategoryRate
 		taxRateItemRequestBean.setTaxCategoryRate( arguments.taxCategoryRate );
 		
-		// Populate with orderItem quantities, price, and orderItemID fields
-		taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
-		taxRateItemRequestBean.setQuantity(arguments.orderItem.getQuantity());
-		taxRateItemRequestBean.setCurrencyCode(arguments.orderItem.getCurrencyCode());
-		if(!isNull(arguments.orderItem.getPrice())) {
-			taxRateItemRequestBean.setPrice(arguments.orderItem.getPrice());
+
+		if (arguments.referenceObject.getClassName() == 'OrderItem') {
+			taxRateItemRequestBean.populateWithOrderItem(arguments.referenceObject);
+		} else if (arguments.referenceObject.getClassName() == 'OrderFulfillment') {
+			taxRateItemRequestBean.populateWithOrderFulfillment(arguments.referenceObject);
+		} else if (arguments.referenceObject.getClassName() == 'OrderDeliveryItem' ){
+			taxRateItemRequestBean.populateWithOrderDeliveryItem(arguments.referenceObject);
+		} else if (arguments.referenceObject.getClassName() == 'OrderReturn' ){
+			taxRateItemRequestBean.populateWithOrderReturn(arguments.referenceObject);
 		}
-		if(!isNull(arguments.orderItem.getExtendedPrice())) {
-			taxRateItemRequestBean.setExtendedPrice(arguments.orderItem.getExtendedPrice());
-		}
-		if(!isNull(arguments.orderItem.getDiscountAmount())) {
-			taxRateItemRequestBean.setDiscountAmount(arguments.orderItem.getDiscountAmount());
-		}
-		if(!isNull(arguments.orderItem.getExtendedPriceAfterDiscount())) {
-			taxRateItemRequestBean.setExtendedPriceAfterDiscount(arguments.orderItem.getExtendedPriceAfterDiscount());
-		}
-		
+
 		if(!isNull(taxAddress)) {
 			
 			// Set the reference object for taxAddress

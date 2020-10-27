@@ -55,30 +55,38 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function isAddressInZone(required any address, required any addressZone) {
-		var addressInZone = false;
-		
-		for(var i=1; i <= arrayLen(arguments.addressZone.getAddressZoneLocations()); i++) {
-			var location = arguments.addressZone.getAddressZoneLocations()[i];
-			var inLocation = true;
-			if(!isNull(location.getPostalCode()) && location.getPostalCode() != arguments.address.getPostalCode()) {
-				inLocation = false;
-			}
-			if(!isNull(location.getCity()) && location.getCity() != arguments.address.getCity()) {
-				inLocation = false;
-			}
-			if(!isNull(location.getStateCode()) && location.getStateCode() != arguments.address.getStateCode()) {
-				inLocation = false;
-			}
-			if(!isNull(location.getCountryCode()) && location.getCountryCode() != arguments.address.getCountryCode()) {
-				inLocation = false;
-			}
-			if(inLocation) {
-				addressInZone = true;
-				break;
-			}
+		return isAddressInZoneByZoneID(arguments.address,arguments.addressZone.getAddressZoneID());
+	}
+	
+	public boolean function isAddressInZoneByZoneID(required any address, required string addressZoneID) {
+		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZoneID
+			&arguments.address.getPostalCode()&arguments.address.getCity()&arguments.address.getStateCode()
+			&arguments.address.getCountryCode();
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+
+			var isAddressInZone = ORMExecuteQuery("
+				Select COUNT(azl) FROM SlatwallAddressZone az 
+				LEFT JOIN az.addressZoneLocations azl
+				where az.addressZoneID = :addressZoneID
+				and (azl.postalCode = :postalCode OR azl.postalCode is NULL)
+				and (azl.city = :city OR azl.city is NULL)
+				and (azl.stateCode = :stateCode OR azl.stateCode is NULL)
+				and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
+				",
+				{
+					addressZoneID=arguments.addressZoneID,
+					postalCode=arguments.address.getPostalCode(),
+					city=arguments.address.getCity(),
+					stateCode=arguments.address.getStateCode(),
+					countryCode=arguments.address.getCountryCode()
+				},
+				true
+			);
+			//cache Address verification for 5 min
+			getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
 		}
 		
-		return addressInZone;
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	public any function copyAddress(required any address, saveNewAddress=false) {
@@ -146,6 +154,88 @@ component extends="HibachiService" accessors="true" output="false" {
 		getHibachiCacheService().resetCachedKey("addressService_getCountryCodeOptions");
 		
 		return arguments.country;
+	}
+	
+	public any function verifyAddressStruct(required any addressStruct){
+		 			
+		var address = this.getAddress(arguments.addressStruct['addressID']);
+		 			
+		var cacheKey = hash(serializeJSON(arguments.addressStruct),'md5');
+		
+		var addressVerificationStruct = {};
+		
+		if( 
+			isNull(address.getVerificationCacheKey()) || 
+			!len(address.getVerificationCacheKey()) || 
+			compare(address.getVerificationCacheKey(),cacheKey) != 0
+		){
+		
+			var shippingIntegrationID = getHibachiScope().setting('globalShippingIntegrationForAddressVerification');
+			
+			if(!isNull(shippingIntegrationID) && len(shippingIntegrationID) && shippingIntegrationID != 'internal' ){
+				
+				var shippingIntegration = getService("IntegrationService").getIntegrationByIntegrationPackage(shippingIntegrationID).getIntegrationCFC("Shipping");
+				
+				addressVerificationStruct = shippingIntegration.verifyAddress(arguments.addressStruct);
+				
+				address.setVerificationJson(serializeJSON(addressVerificationStruct));
+				
+				address.setVerificationCacheKey(cacheKey);
+			}
+			
+		} else {
+			
+			addressVerificationStruct = deserializeJson(address.getVerificationJson());
+			
+		}
+		
+		if (structKeyExists(addressVerificationStruct, 'success')){
+			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
+			
+			if(!addressVerificationStruct['success']){
+				address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
+			}
+		}
+		
+		this.saveAddress(address);
+		
+		logHibachi(serializeJSON(addressVerificationStruct),true);
+
+		return addressVerificationStruct;
+		
+	}
+	
+	public any function verifyAccountAddressWithShippingIntegration(required string accountAddressID){
+		
+		
+			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
+			
+			if(len(data)){
+				return this.verifyAddressStruct(data[1]);
+			} 
+	}
+	
+	public any function verifyAddressWithShippingIntegration(required string addressID){
+		
+			var data = getDAO("AddressDAO").getAddressStruct(addressID);
+		
+			if(len(data)){
+				return this.verifyAddressStruct(data[1]);
+			}
+	}
+	
+	public any function getAddressName(required any addressStruct){
+			var name = "";
+			var fields = [ 'StreetAddress',  'Street2Address',  'City',  'StateCode',  'PostalCode','CountryCode'];
+			
+			for(var field in fields){
+				if( structKeyExists(arguments.addressStruct,field) ) {
+					name = listAppend(name, " #arguments.addressStruct[field]#" );
+				}
+			}
+			
+			return name;
+		
 	}
 	
 	// ======================  END: Save Overrides ============================

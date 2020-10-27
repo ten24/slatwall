@@ -47,7 +47,11 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiDAO">
-
+	<cfscript>
+		public any function getSessionBySessionCookieNPSID(any cookie){
+			return ORMExecuteQuery('FROM SlatwallSession where sessionCookieNPSID = :cookievar',{cookievar=cookie["#getApplicationValue('applicationKey')#-NPSID"]},true,{maxresults=1});
+		}
+	</cfscript>
 	<cffunction name="getPrimaryEmailAddressNotInUseFlag" returntype="boolean" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		<cfargument name="accountID" type="string" />
@@ -89,7 +93,7 @@ Notes:
 		<cfreturn getAccountIDByPrimaryEmailAddress.accountID />
 
 	</cffunction>
-
+	
 	<cffunction name="removeAccountAuthenticationFromSessions">
 		<cfargument name="accountAuthenticationID" type="string" required="true" >
 
@@ -103,6 +107,51 @@ Notes:
 				accountID = null
 			WHERE
 				accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" />
+		</cfquery>
+	</cffunction>
+	
+	<cffunction name="removeAccountPaymentMethodsFromOrderPaymentsByAccountID">
+		<cfargument name="accountID" type="string" required="true" >
+ 		<cfset var rs = "" />
+ 		<cfquery name="rs">
+			UPDATE
+				SwOrderPayment op
+			LEFT JOIN swAccountPaymentMethod apm
+				ON apm.accountPaymentMethodID = op.accountPaymentMethodID
+			SET
+				op.accountPaymentMethodID = null
+			WHERE
+				apm.accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
+	
+	<cffunction name="removePrimaryAddress">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				primaryAddressID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
+	
+		<cffunction name="removeOwnerAccount">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				ownerAccountID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
 		</cfquery>
 	</cffunction>
 
@@ -129,6 +178,20 @@ Notes:
 		<cfquery name="rs">
 			UPDATE
 				SwOrderPayment
+			SET
+				billingAccountAddressID = null
+			WHERE
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+	</cffunction>
+		<cffunction name="removeAccountAddressFromAccountPaymentMethods">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccountPaymentMethod
 			SET
 				billingAccountAddressID = null
 			WHERE
@@ -191,7 +254,21 @@ Notes:
 				accountPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="removeAccountPaymentMethodFromAccount">
+		<cfargument name="accountPaymentMethodID" type="string" required="true" >
 
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				swAccount
+			SET
+				primaryPaymentMethodID = null
+			WHERE
+				primaryPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" />
+		</cfquery>
+	</cffunction>
 	<cffunction name="removeAccountAuthenticationFromAllSessions" returntype="void" access="public">
 		<cfargument name="accountAuthenticationID" required="true"  />
 
@@ -295,6 +372,21 @@ Notes:
 			<cfreturn accountAuthentication />
 		</cfif>
 	</cffunction>
+	
+	<cffunction name="removeAccountFromAccountAddress">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccountAddress
+			SET
+				accountID = null
+			WHERE
+				accountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="removeAccountFromAuditProperties" returntype="void" access="public">
 		<cfargument name="accountID" type="string" required="true" />
@@ -381,4 +473,3 @@ Notes:
 	</cffunction>
 
 </cfcomponent>
-

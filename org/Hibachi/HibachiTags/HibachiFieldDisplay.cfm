@@ -1,4 +1,4 @@
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 <cfif thisTag.executionMode is "start">
 
 	<cfparam name="attributes.edit" type="boolean" default="false" />					<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
@@ -34,14 +34,15 @@
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />	<!--- hint: use at own risk. Recommended only if value is not directly from db --->
-	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="true" /> 		<!--- If set to false, will hide select box if no options are available --->
-
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
+ 
 	<cfif !attributes.ignoreHTMLEditFormat>
 		<cfset attributes.value = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(attributes.value)/>
 	</cfif>
 	<cfif attributes.requiredFlag>
 		<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, "required", " ")>
 	</cfif>
+	
 	<cfswitch expression="#attributes.displaytype#">
 		<!--- DL Case --->
 		<cfcase value="dl">
@@ -70,7 +71,7 @@
 						<div class="col-sm-8">
 							<cfif attributes.fieldType eq "listingMultiselect">
 								<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist)) >
-								<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></p>
+									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></p>
 								<cfelseif structKeyExists(attributes,'valueOptionsCollectionList') >
 									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
 										<cfset scopeVariableID = 'valueOptionsCollectionList#rereplace(createUUID(),'-','','all')#'/>
@@ -97,7 +98,11 @@
 										</div>
 									</cfif>										
 								<cfelse>
-									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+									<cfif attributes.fieldType EQ "password" AND len(attributes.value) GT 0 >
+									    <p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">****</p>
+										<cfelse>
+											<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+									</cfif>
 								</cfif>
 							</cfif>
 						</div>
@@ -165,7 +170,7 @@
 					<cfelse>
 						<cfif attributes.fieldType eq "listingMultiselect">
 							<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist))>
-							<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay>
+								<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay>
 							<cfelseif structKeyExists(attributes,'valueOptionsCollectionList')>
 							</cfif>
 						<cfelse>
@@ -179,8 +184,12 @@
 		<cfcase value="plainTitle">
 			<cfif attributes.edit>
 				<cfoutput>
-					<hb:HibachiFormField attributecollection="#attributes#" />
-					<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+					<cfif structKeyExists(attributes,'valueOptionsCollectionList') AND isObject(attributes.valueOptionsCollectionList)>
+						<hb:HibachiListingDisplay edit="true" collectionList="#attributes.valueOptionsCollectionList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#"></hb:HibachiListingDisplay>
+					<cfelse>	
+						<hb:HibachiFormField attributecollection="#attributes#" />
+						<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+					</cfif>
 				</cfoutput>
 			<cfelse>
 				<cfoutput>
@@ -189,8 +198,9 @@
 					<cfelse>
 						<cfif attributes.fieldType eq "listingMultiselect">
 							<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist))>
-							<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="false"></hb:HibachiListingDisplay>
+								<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="false"></hb:HibachiListingDisplay>
 							<cfelseif structKeyExists(attributes,'valueOptionsCollectionList')>
+								<hb:HibachiListingDisplay collectionList="#attributes.valueOptionsCollectionList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="false"></hb:HibachiListingDisplay>
 							</cfif>
 						<cfelse>
 							#attributes.value#

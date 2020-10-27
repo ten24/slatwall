@@ -70,7 +70,7 @@ Notes:
 		<cfset local.hiddenKeyFields = listAppend(local.hiddenKeyFields, '<input type="hidden" name="#left(local.key, len(local.key)-2)#.#local.key#" value="#rc[local.key]#" />', chr(13)) />
 		<cfset local.hiddenKeyFields = listAppend(local.hiddenKeyFields, '<input type="hidden" name="#local.key#" value="#rc[local.key]#" />', chr(13)) />
 		
-		<cfif rc.setting.hasProperty(local.settingObjectName)>
+		<cfif structKeyExists(rc.setting,'set#local.settingObjectName#') && structKeyExists(rc,local.settingObjectName)>
 			<cfset rc.setting.invokeMethod("set#local.settingObjectName#", {1=rc[ local.settingObjectName ]}) />
 		</cfif>
 	</cfif>

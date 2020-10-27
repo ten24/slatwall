@@ -1,12 +1,15 @@
 <div class="s-table-inner-nav s-detail-hidden-content">
     <div class="s-search-wrapper">
-        <span sw-listing-search data-collection-config="swListingControls.collectionConfig"
-                               data-paginator="swListingControls.paginator"
-                               data-toggle-filters="swListingControls.toggleFilters()"
-                               data-toggle-display-options="swListingControls.toggleDisplayOptions()"
-                               data-show-toggle-filters="swListingControls.showToggleFilters"
-                               data-show-toggle-display-options="swListingControls.showToggleDisplayOptions"
+        <span sw-listing-search  data-collection-config="swListingControls.collectionConfig"
+              data-paginator="swListingControls.paginator"
+              data-listing-id="{{ swListingControls.tableId }}"
+              data-search-filter-property-identifier="{{swListingControls.swListingDisplay.searchFilterPropertyIdentifier}}"
+              data-show-search-filter-drop-down="swListingControls.swListingDisplay.showSearchFilterDropDown"
          ></span>
+        <!-- PERSONAL COLLECTIONS -->
+        <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.personalCollectionsClosed" id="j-personal-collections">
+            personal collections
+        </div>
         <!-- DISPLAY OPTIONS -->
         <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
             <div class="s-display-options">
@@ -40,6 +43,7 @@
         </div>
         <!-- //DISPLAY OPTIONS -->
         <!-- ADD FILTER -->
+
         <div data-collapse="swListingControls.filtersClosed" id="j-advanced-filter">
             <span>&nbsp;</span>
             <div
@@ -59,14 +63,12 @@
 							<div class="row">
 								<!--filterGroups gets taken apart here -->
 								<ul class="s-filter-list list-unstyled"
-                sw-filter-groups
-                data-collection-config="swListingControls.collectionConfig"
-                data-filter-group="swListingControls.collectionConfig.filterGroups[0]"
-                data-filter-group-item="swListingControls.collectionConfig.filterGroups[0].filterGroup"
-                data-filter-properties-list="swListingControls.filterPropertiesList"
+                                    sw-filter-groups
+                                    data-collection-config="swListingControls.collectionConfig"
+                                    data-filter-group="swListingControls.collectionConfig.filterGroups[0]"
+                                    data-filter-group-item="swListingControls.collectionConfig.filterGroups[0].filterGroup"
+                                    data-filter-properties-list="swListingControls.filterPropertiesList"
 	                                data-simple="swListingControls.simple"
-
-
 									>
 								</ul>
 							</div>
@@ -79,7 +81,7 @@
         </div>
         <!--  //ADD FILTER -->
     </div>
-    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters">
+    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters || swListingControls.simple">
         <div class="s-filters">
             <!-- Filter -->
             <div class="btn-group"
@@ -87,6 +89,7 @@
                  data-ng-if="filter.hasOwnProperty('filterGroup') == false && filter.propertyIdentifier && !filter.hidden">
 
                 <button
+                        type="button"
                         class="btn btn-primary btn-sm"
                         data-ng-click="swListingControls.selectFilterItem(filter)"
                         data-ng-disabled="!filter.conditionDisplay"

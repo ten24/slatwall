@@ -57,7 +57,7 @@ Notes:
 </cfloop>
 
 
-<hb:HibachiListingDisplay smartList="#rc.promotionReward.getEligiblePriceGroupsOptionsSmartList()#" multiselectFieldName="priceGroups" multiselectPropertyIdentifier="priceGroupID" multiselectValues="#selectedPriceGroupIDs#" edit="#rc.edit#">
+<hb:HibachiListingDisplay smartList="#rc.promotionReward.getEligiblePriceGroupsOptionsSmartList()#" multiselectFieldName="eligiblePriceGroups" multiselectPropertyIdentifier="priceGroupID" multiselectValues="#selectedPriceGroupIDs#" edit="#rc.edit#">
     <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
 </hb:HibachiListingDisplay>
 

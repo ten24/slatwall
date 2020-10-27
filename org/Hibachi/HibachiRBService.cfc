@@ -85,9 +85,18 @@ component output="false" accessors="true" extends="HibachiService" {
 				// No RB File Found
 			}
 			
+			
+			
 			// Get whatever resource bundle is in the custom config directory
 			try {
 				structAppend(thisRB, javaRB.getResourceBundle(expandPath("/#getApplicationValue('applicationKey')#/custom/config/resourceBundles/#arguments.locale#.properties")), true);
+			} catch (any e) {
+				// No RB File Found
+			}
+			
+			// Get the resource bundle from the custom directory
+			try {
+				structAppend(thisRB, javaRB.getResourceBundle(expandPath("/#getApplicationValue('applicationKey')#/custom/resourceBundles/#arguments.locale#.properties")), true);
 			} catch (any e) {
 				// No RB File Found
 			}

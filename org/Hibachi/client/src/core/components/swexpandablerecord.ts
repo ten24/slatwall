@@ -2,11 +2,11 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWExpandableRecordController{
-    
+
     public childrenLoaded = false;
     public childrenOpen = false;
     public children = [];
-    public pageRecord; 
+    public pageRecord;
     public expandable:boolean;
     public recordDepth:number;
     public records:any;
@@ -17,32 +17,35 @@ class SWExpandableRecordController{
     public collectionConfig:any;
     public childCollectionConfig:any;
     public parentId:string;
-    public parentIDName:string; 
+    public parentIDName:string;
     public entity:any
-    public listingId:string; 
+    public listingId:string;
     public refreshChildrenEvent
-    public expandableRules; 
-    
+    public expandableRules;
+
     //@ngInject
-    constructor(private $timeout:ng.ITimeoutService, 
-                private $hibachi, 
-                private utilityService, 
-                private collectionConfigService, 
+    constructor(private $timeout:ng.ITimeoutService,
+                private $hibachi,
+                private utilityService,
+                private collectionConfigService,
                 private expandableService,
                 private listingService,
                 private observerService){
+
         this.recordID = this.parentId; //this is what parent is initalized to in the listing display
         expandableService.addRecord(this.recordID);
         if(angular.isDefined(this.refreshChildrenEvent) && this.refreshChildrenEvent.length){
             this.observerService.attach(this.refreshChildren, this.refreshChildrenEvent)
         }
+
     }
 
     public refreshChildren = () =>{
         this.getEntity();
     }
-    
+
     public setupChildCollectionConfig = () =>{
+
         this.childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
         //set up parent
         var parentName = this.entity.metaData.hb_parentPropertyName;
@@ -64,6 +67,7 @@ class SWExpandableRecordController{
         angular.forEach(this.collectionConfig.joins,(join)=>{
             this.childCollectionConfig.addJoin(join);
         });
+        this.childCollectionConfig.orderBy = this.collectionConfig.orderBy;
         this.childCollectionConfig.groupBys = this.collectionConfig.groupBys;
     }
 
@@ -72,31 +76,39 @@ class SWExpandableRecordController{
             this.collectionData = data;
             this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
             if(this.collectionData.pageRecords.length){
-                angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
+                
+                angular.forEach(
+                    // reversing here so the child records are in order
+                    this.collectionData.pageRecords.slice().reverse(),  (pageRecord) => {
+                    
                     this.expandableService.addRecord(pageRecord[this.parentIDName],true);
                     pageRecord.dataparentID = this.recordID;
                     pageRecord.depth = this.recordDepth || 0;
                     pageRecord.depth++;
+                    
                     //push the children into the listing display
                     this.children.push(pageRecord);
+                    
+                    // adding all of the childrens JUST-NEXT to the parent ont bu one
                     this.records.splice(this.recordIndex+1,0,pageRecord);
+                    
                 });
             }
             this.childrenLoaded = true;
         });
     }
-    
+
     public toggleChild = ()=>{
         this.$timeout(()=>{
             this.childrenOpen = !this.childrenOpen;
             this.expandableService.updateState(this.recordID,{isOpen:this.childrenOpen});
             if(!this.childrenLoaded){
                     if(this.childCollectionConfig == null){
-                        this.setupChildCollectionConfig(); 
+                        this.setupChildCollectionConfig();
                     }
                     if(angular.isFunction(this.childCollectionConfig.getEntity)){
                         this.collectionPromise = this.childCollectionConfig.getEntity();
-                    } 
+                    }
                     this.getEntity();
             }
             angular.forEach(this.children,(child)=>{
@@ -106,22 +118,22 @@ class SWExpandableRecordController{
                 idsToCheck.push(child[entityPrimaryIDName]);
                 this.expandableService.updateState(child[entityPrimaryIDName], {isOpen:this.childrenOpen})
                 //close all children of the child if we are closing
-                var childrenTraversed = false; 
-                var recordLength = this.records.length; 
+                var childrenTraversed = false;
+                var recordLength = this.records.length;
                 while(!childrenTraversed && idsToCheck.length > 0){
-                    var found = false; 
+                    var found = false;
                     var idToCheck = idsToCheck.pop();
                     for(var i=0; i < recordLength; i++){
-                        var record = this.records[i]; 
+                        var record = this.records[i];
                         if(record['dataparentID'] == idToCheck ){
                             idsToCheck.push(record[entityPrimaryIDName]);
                             this.expandableService.updateState(record[entityPrimaryIDName], {isOpen:this.childrenOpen})
                             record.dataIsVisible=this.childrenOpen;
-                            found=true; 
+                            found=true;
                         }
                     }
                     if(!found){
-                        childrenTraversed = true; 
+                        childrenTraversed = true;
                     }
                 }
             });
@@ -212,17 +224,17 @@ class SWExpandableRecord implements ng.IDirective{
                     if(!scope.swExpandableRecord.childrenLoaded){
                         angular.forEach(multiselectIdPathsArray,(multiselectIdPath)=>{
                             var position = this.utilityService.listFind(multiselectIdPath,id,'/');
-                            var multiSelectIDs =  multiselectIdPath.split('/'); 
+                            var multiSelectIDs =  multiselectIdPath.split('/');
                             var multiselectPathLength = multiSelectIDs.length;
-                            if(position !== -1 && position < multiselectPathLength - 1 && !this.expandableService.getState(id,"isOpen")){                            
-                                this.expandableService.updateState(id,{isOpen:true});                       
+                            if(position !== -1 && position < multiselectPathLength - 1 && !this.expandableService.getState(id,"isOpen")){
+                                this.expandableService.updateState(id,{isOpen:true});
                                 scope.swExpandableRecord.toggleChild();
                             }
                         });
                     }
                 }
             }
-           
+
 
             this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
                 var template = angular.element(html);

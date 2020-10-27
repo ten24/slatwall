@@ -55,6 +55,7 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 	property name="emailAddress" ormtype="string" hb_populateEnabled="public";
 	property name="quantity" ormtype="integer" hb_populateEnabled="public";
 	property name="giftMessage" ormtype="string" length="4000" hb_populateEnabled="public";
+	property name="manualGiftCardCode" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";

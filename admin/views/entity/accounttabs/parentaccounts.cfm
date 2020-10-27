@@ -54,7 +54,13 @@ Notes:
 
 <hb:HibachiListingDisplay smartList="#rc.account.getParentAccountRelationshipsSmartList()#"
 						  recordDetailAction="admin:entity.detailaccount"
-						  recordEditAction="admin:entity.editaccount">
+						  recordEditAction="admin:entity.editaccount"
+						  recordEditActionProperty="parentAccount.accountID"
+						  recordDetailActionProperty="parentAccount.accountID"
+						  recordDeleteAction="admin:entity.deleteaccountrelationship"
+						  recordDeleteQueryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
+
+						  >
 
 	<hb:HibachiListingColumn propertyIdentifier="parentAccount.firstName" />
 	<hb:HibachiListingColumn propertyIdentifier="parentAccount.lastName" />
@@ -65,4 +71,4 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="parentAccount.guestAccountFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="parentAccount.organizationFlag" />
 </hb:HibachiListingDisplay>
-
+<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&childAccountID=#rc.account.getAccountID()#&processcontext=addaccountrelationship" modal=true />

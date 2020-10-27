@@ -48,32 +48,42 @@ Notes:
 */
 component extends="HibachiDAO" {
 	
-	public boolean function isLocalIPAddress(required serverInstanceIPAddress){
+	public boolean function isLocalIPAddress(required string serverInstanceIPAddress){
 		return left(arguments.serverInstanceIPAddress,4) == '192.' || left(arguments.serverInstanceIPAddress,4) == '127.';
 	}
 	
-	public any function isServerInstanceCacheExpired(required serverInstanceIPAddress){
+	public any function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
 		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
 			return false;
 		}
 		
-		var isExpired = ORMExecuteQuery('
+		return ORMExecuteQuery('
 			SELECT si.serverInstanceExpired 
 			FROM #getApplicationKey()#ServerInstance si 
-			WHERE si.serverInstanceIPAddress=:serverInstanceIPAddress',
-			{serverInstanceIPAddress=arguments.serverInstanceIPAddress},
+			WHERE si.serverInstanceKey=:serverInstanceKey',
+			{serverInstanceKey=arguments.serverInstanceKey},
 			true
 		);
-		if(isNull(isExpired)){
-			return;
-		}
-		return isExpired;
 	}
-	
+
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
 		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{maxresults=1});
 	}
 	
+	public any function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
+		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
+			return false;
+		}
+
+		return  ORMExecuteQuery('
+			SELECT si.settingsExpired 
+			FROM #getApplicationKey()#ServerInstance si 
+			WHERE si.serverInstanceKey=:serverInstanceKey',
+			{serverInstanceKey=arguments.serverInstanceKey},
+			true
+		); 
+	}
+
 	public void function updateServerInstanceCache(required any serverInstance){
 		if(!isNull(arguments.serverInstance) && isLocalIPAddress(arguments.serverInstance.getserverInstanceIPAddress())){
 			return;
@@ -86,22 +96,7 @@ component extends="HibachiDAO" {
 			{serverInstance=arguments.serverInstance}
 		);
 	}
-	
-	public boolean function isServerInstanceSettingsCacheExpired(required serverInstanceIPAddress){
-		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
-			return false;
-		}
-		var isExpired = ORMExecuteQuery("
-			SELECT si.settingsExpired 
-			FROM #getApplicationKey()#ServerInstance si 
-			WHERE si.serverInstanceIPAddress=:serverInstanceIPAddress",
-			{serverInstanceIPAddress=arguments.serverInstanceIPAddress},true);
-		if(isNull(isExpired)){
-			isExpired = true;
-		}
-		return isExpired;
-	}
-	
+
 	public void function updateServerInstanceSettingsCache(required any serverInstance){
 		if(!isNull(arguments.serverInstance) && isLocalIPAddress(arguments.serverInstance.getserverInstanceIPAddress())){
 			return;
@@ -109,4 +104,11 @@ component extends="HibachiDAO" {
 		ORMExecuteQuery("
 			UPDATE #getApplicationKey()#ServerInstance si SET si.settingsExpired=1 where si<>:serverInstance",{serverInstance=arguments.serverInstance});
 	}
+	
+	public void function setAllServerInstancesExpired(){
+		ORMExecuteQuery("
+			UPDATE #getApplicationKey()#ServerInstance si 
+			SET si.serverInstanceExpired=1 
+		");	
+	}  
 }

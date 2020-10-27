@@ -53,9 +53,11 @@ Notes:
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
 		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
+        <swa:SlatwallSetting settingName="globalWhiteListedEmailDomains" />
+        <swa:SlatwallSetting settingName="globalTestingEmailDomain" />
 		<swa:SlatwallSetting settingName="globalAPIDirtyRead" />
-		<swa:SlatwallSetting settingName="globalAPIPageShowLimit" />
 		<swa:SlatwallSetting settingName="globalClientSecret" />
+		<swa:SlatwallSetting settingName="globalDeploySitesAndApplicationsOnUpdate" />
 		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
 		<swa:SlatwallSetting settingName="globalEncryptionEncoding" />
 		<swa:SlatwallSetting settingName="globalEncryptionKeySize" />
@@ -70,8 +72,14 @@ Notes:
 		<swa:SlatwallSetting settingName="globalFileTypeWhiteList" />
 		<swa:SlatwallSetting settingName="globalMIMETypeWhiteList" />
 		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
+		<swa:SlatwallSetting settingName="globalShippingIntegrationForAddressVerification" />
 		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
 		<swa:SlatwallSetting settingName="globalAllowCustomBranchUpdates"/>
+		<swa:SlatwallSetting settingName="globalDisableSearchSettings"/>
+		<swa:SlatwallSetting settingName="globalS3Bucket"/>
+		<swa:SlatwallSetting settingName="globalS3AccessKey"/>
+		<swa:SlatwallSetting settingName="globalS3SecretAccessKey"/>
+		<swa:SlatwallSetting settingName="globalEntityQueueDataProcessCount"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

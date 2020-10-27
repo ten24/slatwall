@@ -83,6 +83,10 @@ class ValidationService{
     public validateEq=(value,expectedValue):boolean=>{
         return (value === expectedValue);
     }
+    
+    public validateEqProperty=(value,expectedValue):boolean=>{
+        return (value === expectedValue);
+    }
 
     public validateNeq=(value,expectedValue):boolean=>{
         return (value !== expectedValue);

@@ -1,0 +1,1 @@
+cd admin/client && webpack

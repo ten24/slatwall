@@ -64,308 +64,64 @@ Notes:
 	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
 																				
 --->
-
 <cfoutput>
-	<div class="container">
-		
-		<!--- START SHOPPING CART EXAMPLE 1 --->
-		<div class="row">
-			<div class="span12">
-				<h3>Shopping Cart Example 1</h3>
-			</div>
-		</div>
-		
-		<!--- Verify that there are items in the cart --->
-		<cfif arrayLen($.slatwall.cart().getOrderItems())>
-			<div class="row">
-				<!--- START: CART DETAIL --->
-				<div class="span8">
-					<h5>Shopping Cart Details</h5>
-					
-					<!--- Update Cart Form --->
-					<form action="?s=1" method="post">
-						<!--- This slatAction is what tells the form submit to process an update to the cart --->
-						<input type="hidden" name="slatAction" value="public:cart.update" />
-						
-						<!--- Cart Data --->
-						<table class="table">
-							
-							<!--- Header --->
-							<tr>
-								<th>Product</td>
-								<th>Details</th>
-								<th>Price</th>
-								<th>QTY</th>
-								<th>Ext. Price</th>
-								<th>Discount</th>
-								<th>Total</th>
-								<th>&nbsp;</th>
-							</tr>
-							
-							<!--- Order Items --->
-							<cfset loopIndex=0 />
-							<cfloop array="#$.slatwall.cart().getOrderItems()#" index="orderItem">
-								<cfset loopIndex++ />
-								<!--- This hidden field ties any other form elements below to this orderItem by defining the orderItemID allong with this loopIndex that is included on all other form elements --->
-								<input type="hidden" class="span1" name="orderItems[#loopIndex#].orderItemID" value="#orderItem.getOrderItemID()#" />
-								
-								<tr>
-									<!--- Display Product Name --->
-									<td><a href="#orderItem.getSku().getProduct().getProductURL()#">#orderItem.getSku().getProduct().getTitle()#</a></td>
-									
-									<!--- This is a list of whatever options are there for this product --->
-									<td>#orderItem.getSku().displayOptions()#</td>
-									
-									<!--- This displays the price of the item in the cart --->
-									<td>#orderItem.getFormattedValue('price')#</td>
-									
-									<!--- Allows for quantity to be updated.  Note if this gets set to 0 the quantity will automatically be removed --->
-									<td>
-										<input type="text" class="span1" name="orderItems[#loopIndex#].quantity" value="#htmlEditFormat( orderItem.getQuantity() )#" />
-										<sw:ErrorDisplay object="#orderItem#" errorName="quantity" />
-									</td>
-									
-									<!--- Display the Price X Quantity --->
-									<td>#orderItem.getFormattedValue('extendedPrice')#</td>
-									
-									<!--- Show any discounts that have been applied --->
-									<td>#orderItem.getFormattedValue('discountAmount')#</td>
-									
-									<!--- Show the Price X Quantity - Discounts, basically this is what the end user is going to be charged for this item --->
-									<td>#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</td>
-									
-									<!--- Remove action to clear this line item from the cart --->
-									<td><a href="?slatAction=public:cart.removeOrderItem&orderItemID=#orderItem.getOrderItemID()#" class="btn" title="Remove Item"><i class="icon-remove" /></a></td>
-								</tr>
-							</cfloop>
-							
-						</table>
-						
-						<!--- START: Custom "Order" Attribute Sets --->
-						<cfset orderAttributeSets = $.slatwall.cart().getAssignedAttributeSetSmartList().getRecords() />
-						
-						<!--- Only display if there are attribute sets assigned --->
-						<cfif arrayLen(orderAttributeSets)>
-							
-							<hr />
-							
-							<!--- Loop over all of the attribute sets --->
-							<cfloop array="#orderAttributeSets#" index="attributeSet">
-								
-								<!--- display the attribute set name --->
-								<h5>#attributeSet.getAttributeSetName()#</h5>
-								
-								<!--- Loop over all of the attributes --->
-								<cfloop array="#attributeSet.getAttributes()#" index="attribute">
-									
-									<!--- Pull this attribute value object out of the order entity ---> 
-									<cfset thisAttributeValueObject = $.slatwall.cart().getAttributeValue(attribute.getAttributeCode(), true) />
-									
-									<cfif isObject(thisAttributeValueObject)>
-										<!--- Display the attribute value --->
-										<div class="control-group">
-											
-					    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
-					    					<div class="controls">
-					    						
-												<sw:FormField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#thisAttributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#thisAttributeValueObject.getAttributeValueOptions()#" class="span4" />
-												<sw:ErrorDisplay object="#thisAttributeValueObject#" errorName="password" />
-												
-					    					</div>
-					  					</div>
-					  				<cfelse>
-					  					<!--- Display the custom property --->
-					  					<div class="control-group">
-											
-					    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
-					    					<div class="controls">
-					    						
-						  						<sw:FormField type="#attribute.getFormFieldType()#" valueObject="#$.slatwall.cart()#" valueObjectProperty="#attribute.getAttributeCode()#" valueOptions="#attribute.getAttributeOptionsOptions()#" class="span4" />
-												<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="#attribute.getAttributeCode()#" />
-												
-					    					</div>
-					  					</div>
-					  				</cfif>
-									
-								</cfloop>
-								
-								<hr />
-								
-							</cfloop>
-						</cfif>	
-						<!--- END: Custom "Order" Attribute Sets --->
-						
-						<!--- Action Buttons --->
-						<div class="control-group pull-right">
-							<div class="controls">
-								<!--- Update Cart Button, just submits the form --->
-								<button type="submit" class="btn">Update Cart</button>
-								
-								<!--- Clear Cart Button, links to a slatAction that clears the cart --->
-								<a href="?slatAction=public:cart.clear" class="btn">Clear Cart</a>
-								
-								<!--- Checkout, is just a simple link to the checkout page --->
-								<a href="checkout.cfm" class="btn">Checkout</a>
-							</div>
-						</div>
-						
-					</form>
-					<!--- End: Update Cart Form --->
-						
-				</div>
-				<!--- END: CART DETAIL --->
-				
-				<!--- START: ORDER SUMMARY --->
-				<div class="span4">
-					<h5>Order Summary</h5>
-					
-					<table class="table table-condensed">
-						<!--- The Subtotal is all of the orderItems before any discounts are applied --->
-						<tr>
-							<td>Subtotal</td>
-							<td>#$.slatwall.cart().getFormattedValue('subtotal')#</td>
-						</tr>
-						
-						<!--- Item Discounts --->
-						<cfif $.slatwall.cart().getItemDiscountAmountTotal() gt 0>
-							<tr>
-								<td>Item Discounts</td>
-								<td>#$.slatwall.cart().getFormattedValue('itemDiscountAmountTotal')#</td>
-							</tr>
-							<!--- Subtotal After Discounts --->
-							<tr>
-								<td>Subtotal After Discounts</td>
-								<td>#$.slatwall.cart().getFormattedValue('subTotalAfterItemDiscounts')#</td>
-							</tr>
-						</cfif>
-						
-						<!--- This displays a delivery cost, some times it might make sense to do a conditional here and check if the amount is > 0, then display otherwise show something like TBD --->
-						<tr>
-							<td>Delivery Costs</td>
-							<td>#$.slatwall.cart().getFormattedValue('fulfillmentTotal')#</td>
-						</tr>
-						
-						<!--- Delivery Discounts --->
-						<cfif $.slatwall.cart().getFulfillmentDiscountAmountTotal() gt 0>
-							
-							<tr>
-								<td>Delivery Discounts</td>
-								<td>#$.slatwall.cart().getFormattedValue('fulfillmentDiscountAmountTotal')#</td>
-							</tr>
-							<!--- Delivery after Discounts --->
-							<tr>
-								<td>Delivery After Discounts</td>
-								<td>#$.slatwall.cart().getFormattedValue('fulfillmentChargeAfterDiscountTotal')#</td>
-							</tr>
-						</cfif>
-						
-						<!--- Displays the total tax that was calculated for this order --->
-						<tr>
-							<td>Tax</td>
-							<td>#$.slatwall.cart().getFormattedValue('taxTotal')#</td>
-						</tr>
-						
-						<!--- Displays any order discounts --->
-						<cfif $.slatwall.cart().getOrderDiscountAmountTotal() gt 0>
-							<tr>
-								<td>Additional Order Discounts</td>
-								<td>#$.slatwall.cart().getFormattedValue('orderDiscountAmountTotal')#</td>
-							</tr>
-						</cfif>
-						
-						<!--- If there were discounts they would be displayed here --->
-						<cfif $.slatwall.cart().getDiscountTotal() gt 0>
-							<tr>
-								<td>Total Discounts</td>
-								<td>#$.slatwall.cart().getFormattedValue('discountTotal')#</td>
-							</tr>
-						</cfif>
-						<!--- The total is the finished amount that the customer can expect to pay --->
-						<tr>
-							<td><strong>Total</strong></td>
-							<td><strong>#$.slatwall.cart().getFormattedValue('total')#</strong></td>
-						</tr>
-					</table>
-				</div>
-				<!--- END: ORDER SUMMARY --->
-					
-			</div>
-			
-			<div class="row">
-				<!--- START: PROMO CODES --->
-				<div class="span4">
-					<div class="well">
-						<h5>Promo Codes</h5>
-						
-						<!--- Start: Existing promo codes --->
-						
-						<cfif arrayLen($.slatwall.cart().getPromotionCodes())><!--- Check to see if there are any existing promotion codes, before we display anything --->
-							
-							<table class="table">
-								
-								<!--- Loop over the existing promotion codes. --->
-								<cfloop array="#$.slatwall.cart().getPromotionCodes()#" index="promotionCode">
-									<!---[ DEVELOPER NOTES ]														
-										 																			
-										The 'promotionCode' index of this loop is the full entity with ID, ect...	
-										Not to be confused with the string value of the promotion code iteself,		
-										for that call promotionCode.getPromotionCode() as seen below				
-																													
-									--->
-									<tr>
-										<td>#promotionCode.getPromotionCode()#</td>
-										<td><a href="?slatAction=public:cart.removePromotionCode&promotionCodeID=#promotionCode.getPromotionCodeID()#" class="btn" title="Remove Promotion Code"><i class="icon-remove" /></a></td>
-									</tr>
-								</cfloop>
-								
-							</table>
-							
-						</cfif>
-						<!--- End: Existing promo codes --->
-								
-						<!--- Start: Add Promo Code Form --->
-						<form action="?s=1" method="post">
-							<!--- This hidden field tells Slatwall to add the promotionCode entered to the cart --->
-							<input type="hidden" name="slatAction" value="public:cart.addPromotionCode" />
-							
-							<cfset addPromotionCodeObj = $.slatwall.getCart().getProcessObject('addPromotionCode') />
-							
-							<!--- Promotion Code Input Field --->
-							<div class="control-group">
-								<div class="controls">
-									
-									<sw:FormField type="text" name="promotionCode" valueObject="#addPromotionCodeObj#" valueObjectProperty="promotionCode" fieldAttributes=' placeholder="Enter Promo Code Here."' />
-									<sw:ErrorDisplay object="#addPromotionCodeObj#" errorName="promotionCode" />
-									
-								</div>
-							</div>
-							
-							<!--- Add Promo Code Button --->
-							<div class="control-group">
-								<div class="controls">
-									<button type="submit" class="btn">Add Promo Code</button>
-								</div>
-							</div>
-						</form>
-						<!--- End: Add Promo Code Form --->
-					</div>
-				</div>
-				<!--- END: PROMO CODES --->
-			</div>
-		<!--- No Items In Cart --->
-		<cfelse>
-			<div class="row">
-				<div class="span12">
-					<p>There are no items in your cart.</p>
-				</div>
-			</div>
-		</cfif>
-			
-		
-		<!--- END SHOPPING CART EXAMPLE 1 --->
-		
-		<hr />
-		
-	</div>
+<div class="container">
+    <!--- Page Title --->
+    <h1 class="my-4">#$.Slatwall.content('title')#</h1>
+    <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success" data-message="Cart Cleared" data-duration="3"></swf-alert>
+    <!--- Show cart if order items exist --->
+    <div ng-if="slatwall.cart.orderItems.length" ng-cloak>
+        <div class="card mb-5">
+            <div class="card-header bg-dark text-light">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h5 class="mb-0 pt-2 pb-2"><span ng-bind="slatwall.cart.orderItems.length"></span> cart item(s)</h5>
+                    </div>
+                    <div class="col-sm-3">
+                        <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
+                        <input type="button" class="btn-block btn btn-info float-right" ng-click="slatwall.doAction('clearOrder', {})" value="Clear Cart">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <cfinclude template="inc/cartItems.cfm" />
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-sm-9 pull-left">
+    
+                    </div>
+                    <div class="col-sm-3">
+                        <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
+                        <input type="button" class="btn-block btn btn-info float-right" ng-click="slatwall.doAction('clearOrder', {})" value="Clear Cart">
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="col-md-5">
+                <!--- Optional Promotion code --->
+                <cfinclude template="inc/promoBox.cfm" />
+            </div>
+            <div class="col-md-5 offset-md-2">
+                <!--- Order Summary --->
+                <cfinclude template="inc/orderSummary.cfm" />
+            </div>
+        </div>
+    
+        <div class="text-center m-4">
+            <a href="/checkout/" class="btn btn-lg btn-success">Continue to Checkout</a>
+        </div>
+    </div>
+
+    <!--- No items in cart --->
+    <div ng-if="!slatwall.getRequestByAction('getCart').loading && !slatwall.cart.orderItems.length" class="alert alert-danger mt-5">There are no items in your cart.</div>
+
+    <!--- Cart loader --->
+    <div ng-if="slatwall.getRequestByAction('getCart').loading" class="text-center mt-5">
+        <i class="center fa fa-5x fa-refresh fa-spin fa-fw"></i>
+    </div>
+</div>
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />

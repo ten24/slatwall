@@ -95,24 +95,38 @@ class SWAddOptionGroupController {
     private validateSelection = () => {
 
         var optionList = this.getOptionList();
-
         var validateSkuCollectionConfig = this.collectionConfigService.newCollectionConfig("Sku");
-        validateSkuCollectionConfig.addDisplayProperty("calculatedOptionsHash");
-        validateSkuCollectionConfig.addFilter("product.productID", this.productId);
-        validateSkuCollectionConfig.addFilter("skuID",this.skuId,"!=")
-        validateSkuCollectionConfig.addFilter("calculatedOptionsHash",md5(optionList));
-        validateSkuCollectionConfig.setAllRecords(true);
-        validateSkuCollectionConfig.getEntity().then((response)=>{
-            if(response.records && response.records.length == 0){
-                this.selectedOptionList = this.getOptionList();
-                this.showValidFlag = true;
-                this.showInvalidFlag = false;
-            } else {
-                this.showValidFlag = false;
-                this.showInvalidFlag = true;
-            }
-        });
-
+        if(this.optionGroupIds.length > 1){
+            validateSkuCollectionConfig.addDisplayProperty("calculatedOptionsHash");
+            validateSkuCollectionConfig.addFilter("product.productID", this.productId);
+            validateSkuCollectionConfig.addFilter("skuID",this.skuId,"!=")
+            validateSkuCollectionConfig.addFilter("calculatedOptionsHash",md5(optionList));
+            validateSkuCollectionConfig.setAllRecords(true);
+            validateSkuCollectionConfig.getEntity().then((response)=>{
+                if(response.records && response.records.length == 0){
+                    this.selectedOptionList = this.getOptionList();
+                    this.showValidFlag = true;
+                    this.showInvalidFlag = false;
+                } else {
+                    this.showValidFlag = false;
+                    this.showInvalidFlag = true;
+                }
+            });
+        }else{
+            validateSkuCollectionConfig.addFilter("product.productID", this.productId);
+            validateSkuCollectionConfig.addFilter("options.optionID",optionList);
+            validateSkuCollectionConfig.setAllRecords(true);
+            validateSkuCollectionConfig.getEntity().then((response)=>{
+                if(response.records && response.records.length == 0){
+                    this.selectedOptionList = this.getOptionList();
+                    this.showValidFlag = true;
+                    this.showInvalidFlag = false;
+                } else {
+                    this.showValidFlag = false;
+                    this.showInvalidFlag = true;
+                }
+            });
+        }
     }
 
     private hasCompleteSelection = () =>{
@@ -186,12 +200,16 @@ class SWAddOptionGroup implements ng.IDirective{
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(optionGroupPartialsPath) + "addoptiongroup.html";
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+        // element used for when jquery is deleting DOM instead of angular such as a jQuery('#adminModal').html(html);
+        element.on('$destroy', ()=> {
+            this.observerService.detachByEvent('validateOptions');
+        });
+        scope.$on('$destroy', ()=> {
+            this.observerService.detachByEvent('validateOptions');
+        });
     }
 }
-
-
-
 
 export {
     optionWithGroup,

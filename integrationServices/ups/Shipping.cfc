@@ -59,32 +59,81 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		variables.trackingURL = "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
 
 		variables.shippingMethods = {
-			01="Next Day Air",
-			02="2nd Day Air",
-			03="Ground",
-			07="Worldwide Express",
-			08="Worldwide Express Expedited",
-			11="Standard",
-			12="3 Day Select",
-			13="Next Day Air Saver",
-			14="Next Day Air Early A.M.",
-			54="Worldwide Express Plus",
-			59="2nd Day Air A.M.",
-			65="Saver"
+			"01"="Next Day Air",
+			"02"="2nd Day Air",
+			"03"="Ground",
+			"07"="Worldwide Express",
+			"08"="Worldwide Express Expedited",
+			"11"="Standard",
+			"12"="3 Day Select",
+			"13"="Next Day Air Saver",
+			"14"="Next Day Air Early A.M.",
+			"54"="Worldwide Express Plus",
+			"59"="2nd Day Air A.M.",
+			"65"="Saver"
 		};
 		
 		return this;
 	}
 	
 	public any function processShipmentRequest(required any requestBean){
-		// Build Request XML
+		// Build Request JSON
 		var jsonPacket = getProcessShipmentRequestJsonPacket(arguments.requestBean);
         
-        var jsonResponse = getJsonResponse(jsonPacket);
-        
-        var responseBean = getShippingProcessShipmentResponseBean(jsonResponse);
+        var prefix = getPrefix(jsonPacket,"Ship");
+		var jsonResponse = deserializeJson(prefix.fileContent);
+        var responseBean = getShippingProcessShipmentResponseBean(jsonResponse,prefix.Statuscode);
         
         return responseBean;
+	}
+	
+	public any function processShipmentRequestWithOrderDelivery_generateShippingLabel(required any processObject){
+		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderDelivery().getOrderFulfillment());
+		processShipmentRequestBean.populateShippingItemsWithOrderDelivery_GenerateShippingLabel(arguments.processObject, true);
+		var containers = arguments.processObject.getContainers();
+		if(!isNull(containers) && arrayLen(containers)){
+			for(var container in containers){
+				processShipmentRequestBean.addContainer(container);
+			}
+		}
+		var responseBean = processShipmentRequest(processShipmentRequestBean);
+		//save message
+		if(structKeyExists(responseBean.getData(),'ShipmentResponse')){
+			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['ShipmentResponse']['Response']['ResponseStatus']));
+			arguments.processObject.getOrderDelivery().getOrderFulfillment().setLastStatusCode(responseBean.getStatusCode());
+			arguments.processObject.getOrderDelivery().setTrackingNumber(responseBean.getTrackingNumber());
+			arguments.processObject.getOrderDelivery().setContainerLabel(responseBean.getContainerLabel());
+		}else if(structKeyExists(responseBean.getData(),'Fault')){
+			arguments.processObject.getOrderDelivery().addError('containerLabel',serializeJSON(responseBean.getData()['Fault']['detail']['Errors']));
+		}else{
+			arguments.processObject.getOrderDelivery().addError('containerLabel',serializeJSON(responseBean.getData()));
+		}
+		 
+	}
+	
+	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
+		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
+		processShipmentRequestBean.populateShippingItemsWithOrderDelivery_Create(arguments.processObject, true);
+		var containers = arguments.processObject.getContainers();
+		if(!isNull(containers) && arrayLen(containers)){
+			for(var container in containers){
+				processShipmentRequestBean.addContainer(container);
+			}
+		}
+		var responseBean = processShipmentRequest(processShipmentRequestBean);
+		//save message
+		if(structKeyExists(responseBean.getData(),'ShipmentResponse')){
+			arguments.processObject.getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['ShipmentResponse']['Response']['ResponseStatus']));
+		}else if(structKeyExists(responseBean.getData(),'Fault')){
+			arguments.processObject.getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()['Fault']['detail']['Errors']));
+		}else{
+			arguments.processObject.getOrderFulfillment().setLastMessage(serializeJSON(responseBean.getData()));
+		}
+		arguments.processObject.getOrderFulfillment().setLastStatusCode(responseBean.getStatusCode());
+		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
+		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
 	}
 
 	
@@ -96,27 +145,31 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		savecontent variable="jsonPacket" {
 			include "RatesRequestTemplate.cfm";
         }
-        var JsonResponse = getJsonResponse(jsonPacket);
-        
-        var responseBean = getShippingRatesResponseBean(JsonResponse);
+        var prefix = getPrefix(jsonPacket,"Rate");
+        var JsonResponse = deserializeJson(prefix.fileContent);
+        var responseBean = getShippingRatesResponseBean(JsonResponse,prefix.Statuscode);
 		
 		return responseBean;
 	}
 	
-	public struct function getJsonResponse(required any jsonPacket){
+	public struct function getPrefix(required any jsonPacket,string service = "Rate"){
 		var urlString = "";
-		var service = "Rate";
 		if(setting('testingFlag')) {
-			urlString = variables.testUrl & service;
+			urlString = variables.testUrl & arguments.service;
 		} else {
-			urlString = variables.productionUrl & service;
+			urlString = variables.productionUrl & arguments.service;
 		}
+
 		return getResponse(requestPacket=arguments.jsonPacket,urlString=urlString,format="json");
 	}
 	
-	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){
+	private any function getShippingProcessShipmentResponseBean(struct jsonResponse, string statusCode){
 		var responseBean = getTransient('ShippingProcessShipmentResponseBean');
 		responseBean.setData(arguments.jsonResponse);
+		if(structKeyExists(arguments,'statusCode')){
+			responseBean.setStatusCode(arguments.statusCode);
+		}
+
 		if(
 			isNull(responseBean.getData()) || 
 			(
@@ -145,10 +198,27 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			//if no errors then we should convert data to properties
 			if(!responseBean.hasErrors()) {
 				var PackageResults = responseBean.getData().ShipmentResponse.ShipmentResults.PackageResults;
-				responseBean.setTrackingNumber(PackageResults.trackingNumber);
+				if(structKeyExists(responseBean.getData().ShipmentResponse.ShipmentResults,'ShipmentIdentificationNumber')){
+					responseBean.setTrackingNumber(responseBean.getData().ShipmentResponse.ShipmentResults.ShipmentIdentificationNumber);
+				} else {
+					responseBean.setTrackingNumber(PackageResults.trackingNumber);
+				}
 				//convert gif to pdf
-				var base64pdf = getHibachiScope().getService('hibachiUtilityService').convertBase64GIFToBase64PDF(PackageResults.ShippingLabel.GraphicImage);
-				responseBean.setContainerLabel(base64pdf);
+				
+				//if we have multiple labels, we'll concatenate them
+				
+				if(isArray(packageResults)){
+					var packageLabelList = "";
+					for(var packageResult in packageResults){
+						packageLabelList = listAppend(packageLabelList,packageResult.shippingLabel.graphicImage);
+					}
+					responseBean.setContainerLabel(packageLabelList);
+				} else {
+					responseBean.setContainerLabel(PackageResults.ShippingLabel.GraphicImage);
+				}
+				
+			} else {
+				responseBean.showErrorsAndMessages();
 			}
 		}
 		
@@ -157,10 +227,12 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	
 	
 	
-	public any function getShippingRatesResponseBean(required any JsonResponse){
+	public any function getShippingRatesResponseBean(required any JsonResponse, string statusCode){
 		var responseBean = getTransient('ShippingRatesResponseBean');
 		responseBean.setData(arguments.JsonResponse);
-			
+		if(structKeyExists(arguments,'statusCode')){
+			responseBean.setStatusCode(arguments.statusCode);
+		}
 		if(isNull(responseBean.getData()) || 
 			(
 				!isNull(responseBean.getData()) && structKeyExists(responseBean.getData(),'Fault')
@@ -191,8 +263,8 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		savecontent variable="jsonPacket" {
 			include "ProcessShipmentRequestTemplate.cfm";
         }
+        
         return jsonPacket;
 	}
 	
 }
-

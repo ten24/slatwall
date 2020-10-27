@@ -55,20 +55,20 @@ component extends="HibachiService" output="false" accessors="true"  {
 			return arguments.weight;
 		}
 		
-		return convertWeight(arguments.weight, arguments.measurementUnitCode, getHibachiScope().setting('globalWeightUnitCode'));
+		return convertUnits(arguments.weight, arguments.measurementUnitCode, getHibachiScope().setting('globalWeightUnitCode'));
 	}
 	
-	public numeric function convertWeight(required numeric weight, required originalUnitCode, required convertToUnitCode) {
+	public numeric function convertUnits(required numeric amount, required originalUnitCode, required convertToUnitCode) {
 		var omu = this.getMeasurementUnit(arguments.originalUnitCode);
 		var nmu = this.getMeasurementUnit(arguments.convertToUnitCode);
 		
-		// As long as both of the measurement units exist, then we can return the conversion 
-		if(!isNull(omu) && !isNUll(nmu) && !isNull(omu.getConversionRatio()) && !isNull(nmu.getConversionRatio()) ) {
-			return (arguments.weight / omu.getConversionRatio()) * nmu.getConversionRatio();	
+		// As long as both of the measurement units exist and are of the same type, then we can return the conversion 
+		if(!isNull(omu) && !isNUll(nmu) && !isNull(omu.getConversionRatio()) && !isNull(nmu.getConversionRatio()) && omu.getMeasurementType() == nmu.getMeasurementType()) {
+			return getService('hibachiUtilityService').precisionCalculate(arguments.amount * nmu.getConversionRatio() / omu.getConversionRatio(),20);
 		}
 		
 		// Otherwise just return the original weight
-		return arguments.weight;
+		return arguments.amount;
 	}
 	
 	// =====================  END: Logical Methods ============================

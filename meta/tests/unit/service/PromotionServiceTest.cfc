@@ -117,6 +117,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var promotionData2 = {
 			promotionid = '',
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodid = ''
@@ -411,6 +412,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var promotionData = {
 			promotionid = '',
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodid = '',
@@ -466,6 +468,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var promotionData = {
 			promotionid = '',
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodid = '',
@@ -527,6 +530,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
 
 		var promotionData = {
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodid = '',
@@ -571,6 +575,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var promotionData = {
 			promotionid = '',
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodid = '',
@@ -607,6 +612,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//data setup begin
 		var promotionData = {
 			promotionid = '',
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodid = '',

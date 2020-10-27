@@ -9,6 +9,7 @@
 	<cfparam name="attributes.count" type="string" default="" />
 	<cfparam name="attributes.open" type="boolean" default="false" />
 	<cfparam name="attributes.showOnCreateFlag" type="boolean" default="false" />
+	<cfparam name="attributes.lazyLoad" type="boolean" default="true"/>
 	
 	<cfassociate basetag="cf_HibachiEntityDetailGroup" datacollection="tabs">
 </cfif>

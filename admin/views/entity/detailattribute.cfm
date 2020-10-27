@@ -66,7 +66,9 @@ Notes:
 									   backQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"
 									   cancelAction="admin:entity.detailAttributeSet"
 									   cancelQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"
-									   deleteQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#&redirectAction=admin:entity.detailAttributeSet" />
+									   deleteQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#&redirectAction=admin:entity.detailAttributeSet">
+		    <hb:HibachiProcessCaller entity="#rc.attribute#" action="admin:entity.preprocessAttribute" queryString="RedirectAction=admin:entity.detailattribute" modal="true" processContext="migrateToCustomProperty" type="list" />
+			</hb:HibachiEntityActionBar>
 
 			<cfif rc.edit>
 
@@ -77,12 +79,13 @@ Notes:
 			<hb:HibachiEntityDetailGroup object="#rc.attribute#">
 				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 				<cfif not rc.attribute.getNewFlag() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
-					<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/attributeoptions" />
+					<hb:HibachiEntityDetailItem count="#rc.attribute.getAttributeOptionsCount()#" view="admin:entity/attributetabs/attributeoptions" />
 				</cfif>
 				<cfif not rc.attribute.getNewFlag() and listFindNoCase( "relatedObjectSelect,relatedObjectMultiselect", rc.attribute.getAttributeInputType() )>
 					<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/relatedobjectcollection"/>
 				</cfif>
 				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
+				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/settings" />
 			</hb:HibachiEntityDetailGroup>
 
 		</hb:HibachiEntityDetailForm>

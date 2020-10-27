@@ -48,9 +48,10 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-<cfoutput>
 
-	<div class="row s-body-nav" style="margin-bottom: 30px;">
+<cfoutput>
+	
+	<div class="row s-body-nav">
 	    <nav class="navbar navbar-default" role="navigation">
 	      	<div class="col-md-4 s-header-info">
 				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.report')#</h1>
@@ -63,40 +64,9 @@ Notes:
 	</div>
 
 	<div class="row">
-		<div class="col-md-2">
-			<ul class="nav">
-				<hb:HibachiDividerHider>
-					<cfif listLen(rc.builtInReportsList)>
-						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('admin.report.default.builtInReports')#</strong></h5></li>
-						<cfloop list="#rc.builtInReportsList#" index="reportName">
-							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
-						</cfloop>
-					</cfif>
-					<cfif arrayLen(rc.savedReports)>
-						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('entity.report_plural')#</strong></h5></li>
-						<cfloop array="#rc.savedReports#" index="report">
-							<hb:HibachiActionCaller action="admin:report.default" queryString="reportID=#report.getReportID()#" text="#report.getReportTitle()#" type="list" />
-						</cfloop>
-					</cfif>
-					<cfif listLen(rc.customReportsList)>
-						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('admin.report.default.customReports')#</strong></h5></li>
-						<cfloop list="#rc.customReportsList#" index="reportName">
-							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
-						</cfloop>
-					</cfif>
-					<cfif listLen(rc.integrationReportsList)>
-						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('admin.report.default.integrationReports')#</strong></h5></li>
-						<cfloop list="#rc.integrationReportsList#" index="reportName">
-							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
-						</cfloop>
-					</cfif>
-				</hb:HibachiDividerHider>
-			</ul>
-		</div>
-		<div class="col-md-10">
-			<hb:HibachiMessageDisplay />
-			<hb:HibachiReportViewer report="#rc.report#" />
-		</div>
+		<hb:HibachiMessageDisplay />
+		<hb:HibachiReportViewer report="#rc.report#" collectionList="#rc.orderCollectionList#" />
+	</div>
 		
 	</div>
 </cfoutput>

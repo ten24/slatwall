@@ -43,6 +43,43 @@ component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="tru
 		arguments.accountCollection = this.saveAccountCollection(arguments.processObject.getAccountCollection());	
 		return arguments.accountCollection; 
 	}
+	
+    public any function processCollection_Rename(required any collection, any processObject, struct data={}) {
+        arguments.collection.setCollectionName(arguments.data.collectionName);
+        
+        this.saveCollection(arguments.collection);
+        
+        return arguments.collection;
+    }
+    
+    public any function processCollection_SoftDelete(required any collection, any processObject, struct data={}) {
+        arguments.collection.setSoftDeleteFlag(true);
+        
+        this.saveCollection(arguments.collection);
+        
+        return arguments.collection;
+    }
+    
+    
+    public any function processCollection_Restore(required any collection, any processObject, struct data={}) {
+        arguments.collection.setSoftDeleteFlag(false);
+        
+        this.saveCollection(arguments.collection);
+        
+        return arguments.collection;
+    }
+    
+    public any function processCollection_Configure(required any collection, any processObject, struct data={}) {
+        arguments.collection.setPublicFlag(arguments.data.publicFlag);
+        
+        if(!arguments.collection.getPublicFlag()){
+            arguments.collection.setAccountOwner(getHibachiScope().getAccount());
+        }
+        
+        this.saveCollection(arguments.collection);
+        
+        return arguments.collection;
+    }
 
     public any function processCollection_Clone(required any collection, required any processObject, struct data={}) {
 

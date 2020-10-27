@@ -9,31 +9,101 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="persistableErrors" type="array" persistent="false";
 	property name="processObjects" type="struct" persistent="false";
 	property name="auditSmartList" type="any" persistent="false";
+	property name="dataCacheProperties" type="array" persistent="false";
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
 
+	public void function postLoad(){
+		if( !setting("globalDisableRecordLevelPermissions")
+			&& !this.getNewFlag() 
+			&& getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getClassName())
+			&& !getHibachiScope().getAccount().getSuperUserFlag()
+		){
+			try{
+				var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
+				var entityService = this.getEntityService();
+				var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
+				entityCollectionList.setDisplayProperties(primaryIDName);
+				entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
+				entityCollectionList.setCheckDORPermissions(true);
+
+				var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
+				//if the collection returns a record then 
+				if(!entityCollectionRecordsCount){
+					throwNoAccess();				
+				}
+			}catch(any e){
+				writedump(var=e);abort;
+ 			}
+		}
+	}
+	
+	private void function throwNoAccess(){
+		var context = getPageContext();
+		status = 403;
+		context.getResponse().setStatus(status, "no access");
+		throw(type="Application",message='no access to #getClassName()#');
+	}
+	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
-
-		var properties = getProperties();
-
-		// Loop over all properties
-		for(var i=1; i<=arrayLen(properties); i++) {
+		setDataCacheProperties([]);
+		
+		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")){
+			var properties = getService('HibachiService').getToManyPropertiesByEntityName(getClassName());
+			var propertyCount = arrayLen(properties);
 			// Set any one-to-many or many-to-many properties with a blank array as the default value
-			if(structKeyExists(properties[i], "fieldtype") && listFindNoCase("many-to-many,one-to-many", properties[i].fieldtype) && !structKeyExists(variables, properties[i].name) ) {
-				variables[ properties[i].name ] = [];
+			for(var i=1; i<=propertyCount; i++) {
+				variables[ properties[i] ] = [];
 			}
-			// set any activeFlag's to true by default
-			if( properties[i].name == "activeFlag" && isNull(getActiveFlag()) ) {
-				variables.activeFlag = 1;
+		}else{
+			var properties = getProperties();
+			var propertyCount = arrayLen(properties);
+			// Loop over all properties
+			for(var i=1; i<=propertyCount; i++) {
+				// Set any one-to-many or many-to-many properties with a blank array as the default value
+				if(structKeyExists(properties[i], "fieldtype") && listFindNoCase("many-to-many,one-to-many", properties[i].fieldtype) && !structKeyExists(variables, properties[i].name) ) {
+					variables[ properties[i].name ] = [];
+				}
 			}
+		}
+		if(structKeyExists(this,'getActiveFlag') && isNull(getActiveFlag())){
+			setActiveFlag(1);
 		}
 
 		return super.init();
 	}
+
+	public any function getEntityService(){ 
+		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
+	} 
+
+	public struct function getStructRepresentation(string properties){
+		if(structKeyExists(arguments, 'properties')){
+			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue(), 2=arguments.properties});
+		} else {
+			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+		} 
+	}
+
+	public string function getJsonRepresentation(string properties){
+		if(structKeyExists(arguments, 'properties')){
+			return serializeJson(this.getStructRepresentation(arguments.properties)); 
+		} else {
+			return serializeJson(this.getStructRepresentation()); 
+		}
+	} 
+
+	public string function getEncodedJsonRepresentation(string properties){ 
+		if(structKeyExists(arguments, 'properties')){
+			return getService('HibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation(arguments.properties)); 
+		} else {
+			return getService('HibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation()); 
+		}
+	} 
 
 	public string function getTableName(){
 		return getService('hibachiService').getTableNameByEntityName(getClassName());
@@ -54,9 +124,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public string function getFileUrlByPropertyName(required string propertyName){
 		return getURLFromPath(invokeMethod('get#arguments.propertyName#UploadDirectory')) & invokeMethod('get#arguments.propertyName#');
 	}
-
+	
+	public boolean function getCalculatedUpdateRunFlag(){
+		if(structKeyExists(variables,'calculatedUpdateRunFlag')){
+			return variables.calculatedUpdateRunFlag;	
+		}
+		return false;
+	}
+	
+	public void function setCalculatedUpdateRunFlag(boolean calculatedUpdateRunFlagValue){
+		variables.calculatedUpdateRunFlag = arguments.calculatedUpdateRunFlagValue;
+	}
+	
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
-	public void function updateCalculatedProperties(any runAgain=false) {
+	public void function updateCalculatedProperties(boolean runAgain=false) {
         if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
             // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
             variables.calculatedUpdateRunFlag = true;
@@ -67,7 +148,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
 					//prior to invoking we should remove any first level caching that would cause a stale calculation
 					var nonPersistentProperty = right(property.name, len(property.name)-10);
-					if(listFindNoCase('Product,Sku,Stock',this.getClassName())){
+					if(listFindNoCase('Product,Sku,Stock,SkuLocationQuantity',this.getClassName())){
 						var inventoryProperties = listToArray('QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QC,QE,QNC,QATS,QIATS');
 						for(var inventoryProperty in inventoryProperties){
 							if(structKeyExists(variables,inventoryProperty)){
@@ -83,18 +164,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                     }
 
                 } else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
-
-                    variables[ property.name ].updateCalculatedProperties();
-
+                	
+                	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
+                	if (verifyPerformCascadeCalculateForProperty(property)) {
+                    	variables[ property.name ].updateCalculatedProperties();
+					}
                 }
             }
-
         }
     }
 
     public string function getParentPropertyName(){
-    	getService('hibachiService').getParentPropertyByEntityName(getClassName());
+    	return getService('hibachiService').getParentPropertyByEntityName(getClassName());
     }
+
 
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
@@ -331,6 +414,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return variables.auditSmartList;
 	}
+	
+	public any function getAuditCollectionList(){
+		if(!structKeyExists(variables,'auditCollectionList')){
+			variables.auditCollectionList = getService('hibachiAuditService').getAuditCollectionListForEntity(entity=this);
+		}	variables.auditCollectionList.setOrderBy('auditDateTime|DESC');
+		return variables.auditCollectionList;
+	}
 
 	// @hint public method that returns the value from the primary ID of this entity
 	public string function getPrimaryIDValue() {
@@ -367,12 +457,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// Set any one-to-many or many-to-many properties with a blank array as the default value
 			if(structKeyExists(getProperties()[i], "fieldtype") && getProperties()[i].fieldtype == "many-to-many" && ( !structKeyExists(getProperties()[i], "cascade") || !listFindNoCase("all-delete-orphan,delete,delete-orphan", getProperties()[i].cascade) ) ) {
 				var relatedEntities = variables[ getProperties()[i].name ];
-				for(var e = arrayLen(relatedEntities); e >= 1; e--) {
-					this.invokeMethod("remove#getProperties()[i].singularname#", {1=relatedEntities[e]});
-				}
+				if (!isNull(relatedEntities) && isArray(relatedEntities) && arrayLen(relatedEntities)){
+ 					for(var e = arrayLen(relatedEntities); e >= 1; e--) {
+ 						 this.invokeMethod("remove#getProperties()[i].singularname#", {1=relatedEntities[e]});
+ 					}
+  				}
 			}
 		}
-
 	}
 
 	// @hint public method that returns the full entityName
@@ -539,10 +630,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 
 	// @hint returns a collection list or records that can be used as options for a many-to-one property
-	public any function getPropertyOptionsCollectionList( required string propertyName ) {
+	public any function getPropertyOptionsCollectionList( required string propertyName, refresh=false ) {
 		var cacheKey = "#arguments.propertyName#OptionsCollectionList";
 
-		if(!structKeyExists(variables, cacheKey)) {
+		if(!structKeyExists(variables, cacheKey) || arguments.refresh) {
 
 			var propertyMeta = getPropertyMetaData( arguments.propertyName );
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMeta.cfc,'.') );
@@ -603,6 +694,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheKey = "#arguments.propertyName#CollectionList";
 
 		if(!structKeyExists(variables, cacheKey) || ((structKeyExists(arguments, 'isNew') && !isNull(arguments.isNew) && arguments.isNew))) {
+			var propertyMetaData = getPropertyMetaData(arguments.propertyName); 
 
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
 			var collectionList = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#CollectionList");
@@ -611,14 +703,23 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
 
 			// If its a one-to-many, then add filter
-			if(getPropertyMetaData( arguments.propertyName ).fieldtype == "one-to-many") {
+			if(propertyMetaData.fieldtype == "one-to-many") {
 				// Loop over the properties in the example entity to
 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
-					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == getPropertyMetaData( arguments.propertyName ).fkcolumn ) {
+					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fieldType == 'many-to-one' && exampleEntity.getProperties()[i].fkcolumn == propertyMetaData.fkcolumn ) {
 						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+						break; 
 					}
-				}
-			}
+ 				}	
+ 			} else if(propertyMetaData.fieldtype == "many-to-many"){
+ 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
+ 					if( structKeyExists(exampleEntity.getProperties()[i], "inversejoincolumn") && exampleEntity.getProperties()[i].inversejoincolumn == propertyMetaData.fkcolumn ) {
+ 						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+ 						break; 
+ 					}
+ 				}
+ 			}
+
 
 			variables[ cacheKey ] = collectionList;
 		}
@@ -646,18 +747,29 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
-		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
-		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
-		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		
+		if(isNew()){
+			return 0;
+		}
 		var propertyCountName = '#arguments.propertyName#Count';
-		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',propertyCountName);
+		
+		var propertyCollection = getPropertyCountCollectionList(arguments.propertyName, propertyCountName);
 		var records = propertyCollection.getRecords();
 		if(arraylen(records)){
 			return records[1][propertyCountName];
 		}else{
 			return 0;
 		}
+	}
+	
+	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
+	
+		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
+		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
+		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
+		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',arguments.propertyCountName);
+		return propertyCollection;
 	}
 
 	// @hint handles encrypting a property based on conventions
@@ -764,8 +876,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
 	}
-
-
+	
+	public boolean function verifyPerformCascadeCalculateForProperty(required any property) {
+		// NOTE: Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
+        
+    	// Implies calculation should cascade in any state
+    	var performCascadeCalculateFlag = true;
+    	
+    	// Entity has defined method for this property to handle determining whether calculation should cascade in the current state
+		if (structKeyExists(this, 'get#arguments.property.name#PerformCascadeCalculateFlag')) {
+			performCascadeCalculateFlag = this.invokeMethod('get#arguments.property.name#PerformCascadeCalculateFlag');
+		}
+		
+		return performCascadeCalculateFlag;
+	}
 
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
 	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
@@ -816,7 +940,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					return getPropertySmartList( propertyName=propertyName );
 				}
 			}
-			// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
+			// getXXXTypeAheadCollectionList similar to Options but instead of returning data it will return a collectionlist to get data lazily
+			if ( len(arguments.missingMethodName) > 23 && right(arguments.missingMethodName, 23) == "TypeAheadCollectionList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-26);
+				return getPropertyOptionsCollectionList(propertyName,true);
+			}
 			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
 				if(hasProperty(propertyName)){
@@ -957,152 +1085,209 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preInsert(){
-		if(!this.isPersistable()) {
-			for(var errorName in getErrors()) {
-				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
-					logHibachi("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
+		try{
+			if(!this.isPersistable()) {
+				for(var errorName in getErrors()) {
+					for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
+						logHibachi("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
+					}
 				}
+				throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors.  The specific errors will be shown in the Slatwall log.");
 			}
-			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors.  The specific errors will be shown in the Slatwall log.");
-		}
-
-		var timestamp = now();
-
-		// Setup The First Created Date Time
-		if(structKeyExists(this,"setCreatedDateTime")){
-			this.setCreatedDateTime(timestamp);
-		}
-
-		// Setup The First Modified Date Time
-		if(structKeyExists(this,"setModifiedDateTime")){
-			this.setModifiedDateTime(timestamp);
-		}
-
-		// These are more complicated options that should not be called during application setup
-		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-
-			// Setup the first sortOrder
-			if(structKeyExists(this,"setSortOrder")) {
-				var metaData = getPropertyMetaData("sortOrder");
-				var topSortOrder = 0;
-				if(structKeyExists(metaData, "sortContext") && structKeyExists(variables, metaData.sortContext)) {
-					topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table, contextIDColumn=variables[ metaData.sortContext ].getPrimaryIDPropertyName(), contextIDValue=variables[ metaData.sortContext ].getPrimaryIDValue() );
-				} else {
-					topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table );
+			
+			var timestamp = now();
+		
+				// Setup The First Created Date Time
+				if(structKeyExists(this,"setCreatedDateTime")){
+					this.setCreatedDateTime(timestamp);
 				}
-				setSortOrder( topSortOrder + 1 );
-			}
-
-			// Set createdByAccount
-			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() ){
-				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );
-			}
-
-			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() ){
-				setModifiedByAccountID( getHibachiScope().getAccount().getAccountID() );
-			}
-
-			// Log audit only if admin user
-			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
-				getService("hibachiAuditService").logEntityModify(entity=this);
-			}
-
+		
+				// Setup The First Modified Date Time
+				if(structKeyExists(this,"setModifiedDateTime")){
+					this.setModifiedDateTime(timestamp);
+				}
+		
+				// These are more complicated options that should not be called during application setup
+				if(!isNull(getHibachiScope()) && getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
+		
+					// Setup the first sortOrder
+					if(structKeyExists(this,"setSortOrder")) {
+						var metaData = getPropertyMetaData("sortOrder");
+						var topSortOrder = 0;
+						if(structKeyExists(metaData, "sortContext") && structKeyExists(variables, metaData.sortContext)) {
+							topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table, contextIDColumn=variables[ metaData.sortContext ].getPrimaryIDPropertyName(), contextIDValue=variables[ metaData.sortContext ].getPrimaryIDValue() );
+						} else {
+							topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table );
+						}
+						setSortOrder( topSortOrder + 1 );
+					}
+		
+					// Set createdByAccount
+					if(structKeyExists(this,"setCreatedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
+						setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );
+					}
+		
+					// Set modifiedByAccount
+					if(structKeyExists(this,"setModifiedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
+						setModifiedByAccountID( getHibachiScope().getAccount().getAccountID() );
+					}
+		
+					// Log audit only if admin user
+					if(!isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+						getService("hibachiAuditService").logEntityModify(entity=this);
+					}
+		
+				}
+			
 			// Add to the modifiedEntities
 			getHibachiScope().addModifiedEntity( this );
+		}catch(any e){
+			logHibachi('preInsert fail:'&serializeJson(e),false);
+			writedump(e);abort;
 		}
-
+	}
+	
+	public void function postInsert(){
+		clearDataCache();
+	}
+	
+	public void function postUpdate(){
+		clearDataCache();
+	}
+	
+	public void function clearDataCache(){
+		var dataCacheProperties = getDataCacheProperties();
+		var dataCachePropertiesCount = arrayLen(dataCacheProperties);
+		for(var i=dataCachePropertiesCount; i!=0;i--){
+			var dataCacheProperty = dataCacheProperties[i];
+			structDelete(variables,dataCacheProperty);
+			arrayDeleteAt(dataCacheProperties,i);
+		}
+	}
+	
+	public void function setDataCache(required string cacheKey,any value){
+		
+		variables[arguments.cacheKey]= arguments.value;
+		addDataCacheProperty((arguments.cacheKey));
+	}
+	
+	public void function addDataCacheProperty(required string cacheKey){
+		arrayAppend(getDataCacheProperties(),arguments.cacheKey);
+	}
+		
+	public void function runCalculatedProperties(){
+		getService("hibachiService").updateCalculatedPropertiesByEntityName(this);
+	}
+	
+	public boolean function hasCalculatedProperties(){
+		return getService("hibachiService").getEntityHasCalculatedPropertiesByEntityName(this.getEntityName());
 	}
 
 	public void function preUpdate(struct oldData){
-		if(!this.isPersistable()) {
-			for(var errorName in getErrors()) {
-				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
-					logHibachi("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
+		try{
+			if(!this.isPersistable()) {
+				for(var errorName in getErrors()) {
+					for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
+						logHibachi("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
+					}
 				}
+				throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors - #serializeJSON(getErrors())#");
 			}
-			writeDump(getErrors());
-			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors");
-		}
-
-		var timestamp = now();
-
-		// Update the Modified datetime if one exists
-		if(structKeyExists(this,"setModifiedDateTime")){
-			this.setModifiedDateTime(timestamp);
-		}
-
-		// These are more complicated options that should not be called during application setup
-		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-
-			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() ){
-				setModifiedByAccountID(getHibachiScope().getAccount().getAccountID());
+			var timestamp = now();
+		
+			// Update the Modified datetime if one exists
+			if(structKeyExists(this,"setModifiedDateTime")){
+				this.setModifiedDateTime(timestamp);
 			}
-
-			// Log audit only if admin user or there are prevous audit recods
-			if(getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 || !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
-
-				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+	
+			// These are more complicated options that should not be called during application setup
+			if(!isNull(getHibachiScope()) && getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
+	
+				// Set modifiedByAccount
+				if(structKeyExists(this,"setModifiedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
+					setModifiedByAccountID(getHibachiScope().getAccount().getAccountID());
+				}
+	
+				// Log audit only if admin user or there are prevous audit recods
+				if(
+					getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 
+					|| !isNull(getHibachiScope()) && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() 
+				) {
+	
+					getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+				}
+	
 			}
-
 			// Add to the modifiedEntities
 			getHibachiScope().addModifiedEntity( this );
+		}catch(any e){
+			logHibachi('Preupdate Faile:'&serializeJson(e),false);
+			writedump(e);abort;
 		}
 
 	}
-
+	
 	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
-		var properties = getProperties();
+		var cacheKey = 'getDefaultCollectionProperties#hash(this.getClassName()&arguments.includesList&arguments.excludesList,'md5')#';
+		if(!getService('hibachiCacheService').hasCachedValue(cacheKey)){
+			var properties = getProperties();
 
-		var defaultProperties = [];
-
-		//Check if there is any include column
-		if(len(arguments.includesList)){
-			var includesArray = ListToArray(arguments.includesList);
-			for(var i = 1; i <= arraylen(includesArray); i++) {
-				//Loop through IncludeList looking for relational
-				includesArray[i] = trim(includesArray[i]);
-				if(Find('.', includesArray[i]) != 0){
-					var parts = listToArray(includesArray[i], '.');
-
-					var current_object = this.getClassName();
-					var current_properties = getService('hibachiService').getPropertiesStructByEntityName(this.getClassName());
-					for(var p = 1; p <= arraylen(parts); p++ ){
-						if(structKeyExists(current_properties, parts[p]) && structKeyExists(current_properties[parts[p]], 'cfc')){
-							current_object = current_properties[parts[p]]['cfc'];
-							current_properties = getService('hibachiService').getPropertiesStructByEntityName(current_properties[parts[p]]['cfc']);
-						}else{
-							var newProperty = {};
-							structAppend(newProperty,current_properties[parts[p]]);
-							newProperty["name"] = includesArray[i];
-							newProperty["title"] = rbKey('entity.#current_object#.#listLast(includesArray[i],'.')#');
-							//append the Column struct with relational name.
-							arrayAppend(defaultProperties, newProperty);
-
+			var defaultProperties = [];
+	
+			//Check if there is any include column
+			if(len(arguments.includesList)){
+				var includesArray = ListToArray(arguments.includesList);
+				for(var i = 1; i <= arraylen(includesArray); i++) {
+					//Loop through IncludeList looking for relational
+					includesArray[i] = trim(includesArray[i]);
+					if(Find('.', includesArray[i]) != 0){
+						var parts = listToArray(includesArray[i], '.');
+	
+						var current_object = this.getClassName();
+						var current_properties = getService('hibachiService').getPropertiesStructByEntityName(this.getClassName());
+						for(var p = 1; p <= arraylen(parts); p++ ){
+							if(structKeyExists(current_properties, parts[p]) && structKeyExists(current_properties[parts[p]], 'cfc')){
+								current_object = current_properties[parts[p]]['cfc'];
+								current_properties = getService('hibachiService').getPropertiesStructByEntityName(current_properties[parts[p]]['cfc']);
+							}else{
+								var newProperty = {};
+								structAppend(newProperty,current_properties[parts[p]]);
+								newProperty["name"] = includesArray[i];
+								newProperty["title"] = rbKey('entity.#current_object#.#listLast(includesArray[i],'.')#');
+								//append the Column struct with relational name.
+								arrayAppend(defaultProperties, newProperty);
+	
+							}
 						}
-					}
-
-				}else{
-					//If its not relational, just use the current entity struct
-					for(var x = 1; x <= arraylen(properties); x++){
-						if(properties[x].name == includesArray[i]){
-							arrayAppend(defaultProperties, properties[x]);
+	
+					}else{
+						//If its not relational, just use the current entity struct
+						for(var x = 1; x <= arraylen(properties); x++){
+							if(properties[x].name == includesArray[i]){
+								arrayAppend(defaultProperties, properties[x]);
+							}
 						}
 					}
 				}
-			}
-		}else{
-			//Remove all non Persistent, Relational and Excluded columns
-			for(var x = 1; x <= arraylen(properties); x++){
-				if(!ListContains(excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
-				(!structKeyExists(properties[x], "persistent") || properties[x].persistent)){
-					arrayAppend(defaultProperties, properties[x]);
+			}else{
+				//Remove all non Persistent, Relational and Excluded columns
+				for(var x = 1; x <= arraylen(properties); x++){
+					if(!ListContains(excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
+					(!structKeyExists(properties[x], "persistent") || properties[x].persistent)){
+						arrayAppend(defaultProperties, properties[x]);
+					}
 				}
 			}
+			getService('hibachiCacheService').setCachedValue(cacheKey,defaultProperties);
 		}
 
+		return getService('hibachiCacheService').getCachedValue(cacheKey);
+	}
+	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
+	public any function getDefaultCollectionReportProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
+		arguments.includesList = "#getSimpleRepresentationPropertyName()#";
+		var defaultProperties = getDefaultCollectionProperties(argumentCollection=arguments);
 		return defaultProperties;
 	}
 
@@ -1126,10 +1311,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return defaultProperties;
 	}
 
+	public void function preDelete(any entity){
+		// Loop over all properties
+        for(var property in getProperties()) {
+            if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
+            	
+            	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
+                if (verifyPerformCascadeCalculateForProperty(property)) {
+                	getHibachiScope().addModifiedEntity(variables[ property.name ]);
+				}
+            }
+        }
+	}
 
 	/*
-	public void function preDelete(any entity){
-	}
 
 	public void function preLoad(any entity){
 	}

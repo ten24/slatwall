@@ -1,5 +1,6 @@
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 <cfif thisTag.executionMode is "start">
+	<cfparam name="attributes.hibachiScope" default="#request.context.fw.getHibachiScope()#" type="any"/>
 	<cfparam name="attributes.fieldType" type="string" />
 	<cfparam name="attributes.fieldName" type="string" />
 	<cfparam name="attributes.fieldClass" type="string" default="" />
@@ -14,27 +15,32 @@
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
+	<cfparam name="attributes.autocompleteDataEntity" type="string" default="" />
+	<cfparam name="attributes.showActiveFlag" type="boolean" default="false" />
+	<cfparam name="attributes.maxrecords" type="string" default="25" />
 	<cfparam name="attributes.removeLink" type="string" default=""/>
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
-	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#true#" />
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" />
 	<!---
-		attributes.fieldType have the following options:
+	attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
 		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		date				|	This is still just a textbox, but it adds the jQuery date picker
 		dateTime			|	This is still just a textbox, but it adds the jQuery date & time picker
 		file				|	No value can be passed in
+		hidden				|	This is used mostly for processing
 		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		password			|	No Value can be passed in
 		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+		readOnly			|	No value can be passed in
 		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		text				|	Simple Text Field
 		textarea			|	Simple Textarea
 		time				|	This is still just a textbox, but it adds the jQuery time picker
+		typeahead			|	This is used for working with the angular typeahead functionality
 		wysiwyg				|	Value needs to be a string
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
-		hidden				|	This is used mostly for processing
 	--->
 
 	<cfsilent>
@@ -103,7 +109,7 @@
 		<cfcase value="listingMultiselect">
 			<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist)) >
 				
-			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="true"></hb:HibachiListingDisplay>
+				<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="true"></hb:HibachiListingDisplay>
 			<cfelseif structKeyExists(attributes,'valueOptionsCollectionList') >
 				<cfoutput>
 					<cfset scopeVariableID = 'valueOptionsCollectionList#rereplace(createUUID(),'-','','all')#'/>
@@ -127,7 +133,7 @@
 		</cfcase>
 		<cfcase value="listingSelect">
 			<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist)) >
-			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" selectFieldName="#attributes.fieldName#" selectvalue="#attributes.value#" edit="true"></hb:HibachiListingDisplay>
+				<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" selectFieldName="#attributes.fieldName#" selectvalue="#attributes.value#" edit="true"></hb:HibachiListingDisplay>
 			<cfelseif structKeyExists(attributes,'valueOptionsCollectionList') >
 				<cfoutput>
 					<cfset scopeVariableID = 'valueOptionsCollectionList#rereplace(createUUID(),'-','','all')#'/>
@@ -210,71 +216,91 @@
 				</cfloop>
 			</cfoutput>
 		</cfcase>
+		<cfcase value="readOnly">
+			<cfoutput>
+				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+			</cfoutput>
+		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
 				<cfif arrayLen(attributes.valueOptions) || attributes.showEmptySelectBox >
-				<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass# j-custom-select" #attributes.fieldAttributes#>
-					<cfloop array="#attributes.valueOptions#" index="option">
-						<cfset thisOptionName = "" />
-						<cfset thisOptionValue = "" />
-						<cfset thisOptionData = "" />
-						<cfif isSimpleValue(option)>
-							<cfset thisOptionName = option />
-							<cfset thisOptionValue = option />
-						<cfelse>
-							<cfloop collection="#option#" item="key">
-								<cfif structkeyExists(option,key)>
-									<cfif key eq "name">
-										<cfset thisOptionName = option[ key ] />
-									<cfelseif key eq "value">
-										<cfset thisOptionValue = option[ key ] />
-									<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-										<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+					<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass# j-custom-select" #attributes.fieldAttributes#>
+						<cfloop array="#attributes.valueOptions#" index="option">
+							<cfset thisOptionName = "" />
+							<cfset thisOptionValue = "" />
+							<cfset thisOptionData = "" />
+							<cfif isSimpleValue(option)>
+								<cfset thisOptionName = option />
+								<cfset thisOptionValue = option />
+							<cfelse>
+								<cfloop collection="#option#" item="key">
+									<cfif structkeyExists(option,key)>
+										<cfif key eq "name">
+											<cfset thisOptionName = option[ key ] />
+										<cfelseif key eq "value">
+											<cfset thisOptionValue = option[ key ] />
+										<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
+											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#request.context.fw.getHibachiScope().hibachiHtmlEditFormat(option[key])#"', ' ') />
+										</cfif>
 									</cfif>
-								</cfif>
-							</cfloop>
-						</cfif>
-						<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
-					</cfloop>
-				</select>
+								</cfloop>
+							</cfif>
+							<cfset thisOptionValue = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionValue)>
+							<cfset thisOptionName = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(thisOptionName)>
+							<cfset thisOptionData = thisOptionData>
+
+							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
+						</cfloop>
+					</select>
 				</cfif>
 			</cfoutput>
 		</cfcase>
-		<cfcase value="text">
+		<cfcase value="text,email">
 			<cfoutput>
 				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
-		<cfcase value="textautocomplete">
+		<cfcase value="textautocomplete,typeahead">
+			<cfscript>
+				if(attributes.object.isPersistent()){
+					lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
+					propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
+				}else{
+					lastEntityName = attributes.object.getClassName();
+					propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
+				}
+				
+				relatedEntity = listLast(attributes.property,'.');
+				propertyMetaData = propsStruct[relatedEntity];
+				if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
+					primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+					simpleRepresentationName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+				}else{
+				}
+				propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
+			</cfscript>
+			<cfset typeAheadCollectionListMethodName = 'get#attributes.property#TypeAheadCollectionList'/>
+			<cfif attributes.object.isPersistent() OR (
+				!attributes.object.isPersistent() 
+				AND structKeyExists(attributes.object,typeAheadCollectionListMethodName)
+			)>
+				<cfset entityCollectionList=attributes.object.invokeMethod(typeAheadCollectionListMethodName)/>
+			<cfelse>
+				<cfset entityCollectionList=attributes.hibachiScope.getService('hibachiService').invokeMethod('get#propertyMetaData.cfc#CollectionList')/>
+			</cfif>
+			<cfset entityCollectionList.setDisplayProperties('#primaryIDName#',{isVisible=false,isSearchable=false})/>
+			<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
 			<cfoutput>
-				<cfset suggestionsID = reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all') & "-suggestions" />
-				<div class="autoselect-container">
-					<input type="hidden" name="#attributes.fieldName#" value="#attributes.value#" />
-					<input type="text" name="#reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all')#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
-					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="glyphicon glyphicon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
-					<div class="autocomplete-options" style="display:none;">
-						<ul class="#listLast(lcase(attributes.fieldName),".")#" id="#suggestionsID#">
-							<cfif len(attributes.value)>
-								<li>
-									<a href="##" class="textautocompleteadd" data-acvalue="#attributes.value#" data-acname="#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#">
-									<cfset thisTag.counter = 0 />
-									<cfloop list="#attributes.autocompletePropertyIdentifiers#" index="pi">
-										<cfset thisTag.counter++ />
-										<cfif thisTag.counter lte 2 and pi neq "adminIcon">
-											<span class="#listLast(pi,".")# first">
-										<cfelse>
-											<span class="#listLast(pi,".")#">
-										</cfif>
-										#attributes.autocompleteSelectedValueDetails[ pi ]#</span>
-									</cfloop>
-									</a>
-								</li>
-							</cfif>
-						</ul>
-					</div>
-					<cfif len(attributes.modalCreateAction)>
-						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
-					</cfif>
+				<div ng-cloak class="form-group #attributes.fieldClass#" #attributes.fieldAttributes#>
+					<hb:HibachiTypeahead 
+						edit="#attributes.edit#" 
+						collectionList="#entityCollectionList#"
+						fieldName="#attributes.fieldName#"
+						labelText=""
+						placeholder="Search #propertynamerbkey#"
+						initialEntityID="#attributes.value#"
+						data-max-records="20"
+					></hb:HibachiTypeahead>
 				</div>
 			</cfoutput>
 		</cfcase>

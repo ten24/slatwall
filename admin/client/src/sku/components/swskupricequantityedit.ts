@@ -19,6 +19,8 @@ class SWSkuPriceQuantityEditController{
     public savePromise:any;
     public showSave:boolean=true; 
     public relatedSkuPriceCollectionConfig:any;
+    public priceGroupPriceGroupId:string;
+    public priceGroup:any;
 
     //@ngInject
     constructor(
@@ -27,8 +29,11 @@ class SWSkuPriceQuantityEditController{
         private collectionConfigService,
         private listingService, 
         private observerService,
-        private skuPriceService
+        private skuPriceService,
+        public $scope
     ){ 
+        
+        
         if(angular.isDefined(this.pageRecord)){
             this.pageRecord.edited = false; 
         }
@@ -41,7 +46,11 @@ class SWSkuPriceQuantityEditController{
                 price:this.price
             }
             this.skuPrice = this.$hibachi.populateEntity("SkuPrice",skuPriceData);
+            this.priceGroup = this.$hibachi.populateEntity('PriceGroup',{priceGroupID:this.priceGroupPriceGroupId});
+            this.skuPrice.$$setPriceGroup(this.priceGroup);
+            
             this.skuPriceService.setSkuPrices(this.skuSkuId,[this.skuPrice]);
+            
             this.refreshSkuPrices();
             this.observerService.attach(this.refreshSkuPrices, "skuPricesUpdate");
         }
@@ -54,7 +63,6 @@ class SWSkuPriceQuantityEditController{
     }
 
     public updateSkuPrices = () =>{ 
-        
         angular.forEach(this.skuPrices,(value,key)=>{
             if(key > 0){
                 var formName = this.columnPropertyIdentifier + value.data.skuPriceID;
@@ -72,8 +80,10 @@ class SWSkuPriceQuantityEditController{
     public saveSkuPrices = () =>{
         var savePromises = [];
         angular.forEach(this.skuPrices,(value,key)=>{
-            if(key > 0){
-                savePromises.push(value.$$save()); 
+            if(value.skuPriceID.length){
+                if(key > 0){
+                    savePromises.push(value.$$save()); 
+                }    
             }
         });
         this.savePromise = this.$q.all(savePromises)
@@ -89,7 +99,7 @@ class SWSkuPriceQuantityEditController{
     }
 
     public getSkuPrices = () =>{
-        var promise = this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity)
+        var promise = this.skuPriceService.getSkuPricesForQuantityRange(this.skuSkuId,this.minQuantity,this.maxQuantity,undefined,this.priceGroupPriceGroupId)
         promise.then((data)=>{
             this.skuPrices = data;
         });
@@ -113,7 +123,8 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
         maxQuantity:"@",
         price:"@",
         showSave:"=?", 
-        listingDisplayId:"@?"
+        listingDisplayId:"@?",
+        priceGroupPriceGroupId:"@?"
     };
     public controller = SWSkuPriceQuantityEditController;
     public controllerAs="swSkuPriceQuantityEdit";

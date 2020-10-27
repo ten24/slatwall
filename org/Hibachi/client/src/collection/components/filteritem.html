@@ -1,5 +1,5 @@
 
-<li data-ng-class="{'s\-disabled':filterItem.$$disabled}" data-ng-if="filterPropertiesList">
+<li data-ng-class="{'s\-disabled':filterItem.$$disabled}" data-ng-if="filterPropertiesList" ng-show="filterItem.hidden !== true">
   <!-- Filter display -->
   <div class="s-filter-item" data-ng-if="!filterItem.$$isNew && !simple">
   	<div data-ng-if="filterItem.logicalOperator" class="btn-group-vertical btn-toggle">

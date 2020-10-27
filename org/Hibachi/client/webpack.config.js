@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
+var CompressionPlugin = require("compression-webpack-plugin");
 
 var path = require('path');
 var PATHS = {
@@ -10,75 +11,30 @@ var PATHS = {
 var appConfig = {
     context:PATHS.app,
     entry: {
-        app:['./bootstrap.ts']
+        app:['./bootstrap.ts'],
+         vendor: ["../lib/vendor.ts"],
     },
     watch:true,
     output: {
         path: PATHS.app,
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        library: 'hibachi'
     },
-    // Turn on sourcemaps
-    //devtool: 'source-map',
+    
     resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js'],
-        alias:{}
+        extensions: ['.webpack.js', '.web.js', '.ts', '.js']
     },
     module: {
-        noParse: [ /bower_components/ ],
-        loaders: [
-            {
-                test: /\.ts$/, loader: 'ts-loader',
-                exclude: /node_modules/
-            }
-        ]
-    },
+    	noParse: [ /bower_components/ ],
+	    rules: [
+	      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
+	      { test: /\.tsx?$/, loader: 'ts-loader' }
+	    ]
+	},
     plugins: [
-        new ForceCaseSensitivityPlugin()
-    ],
-    setupApp: function(customPath, bootstrap){
-        PATHS = {
-            app: path.join(customPath, '/src'),
-            lib: path.join(customPath, '/lib')
-        };
-        if(typeof bootstrap !== 'undefined'){
-            this.entry.app[this.entry.app.length - 1] = bootstrap;
-        }
-        this.output.path = PATHS.app;
-        this.context = PATHS.app;
-        return this;
-    },
-    setOutputName: function(outputName){
-        this.output.filename = outputName;
-        return this;
-    },
-    addVendor: function (name, vendorPath) {
-        this.resolve.alias[name] =  path.join(PATHS.lib, vendorPath);
-        this.entry.app.splice(this.entry.app.length - 1, 0, name);
-        return this;
-    },
-    addPlugin: function(plugin){
-        this.plugins.push(plugin);
-        return this;
-    },
-    addLoader: function(loader){
-        this.module.loaders.push(loader);
-        return this;
-    }
+        new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"})
+    ]
 
 };
-appConfig
-    .addVendor('date','date/date.min.js')
-    .addVendor('angular','angular/angular.min.js')
-    .addVendor('angular-lazy-bootstrap','angular-lazy-bootstrap/bootstrap.js')
-    .addVendor('ui.bootstrap','angular-ui-bootstrap/ui.bootstrap.min.js')
-    .addVendor('angular-resource','angular/angular-resource.min.js')
-    .addVendor('angular-cookies','angular/angular-cookies.min.js')
-    .addVendor('angular-route','angular/angular-route.min.js')
-    .addVendor('angular-animate','angular/angular-animate.min.js')
-    .addVendor('angular-sanitize','angular/angular-sanitize.min.js')
-    .addVendor('metismenu','metismenu/metismenu.js')
-    .addVendor('angularjs-datetime-picker','angularjs-datetime-picker/angularjs-datetime-picker.js')
-    
-    
-; 
+
 module.exports = appConfig;

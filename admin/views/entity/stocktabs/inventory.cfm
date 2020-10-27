@@ -49,7 +49,9 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.stock" type="any" />
-<cfparam name="rc.sku" type="any">
+
+
+<cfset activeCurrencies=listToArray(getHibachiScope().getService('currencyService').getAllActiveCurrencyIDList())>
 
 <cfoutput>
 	<table id="inventory-table" class="table table-striped table-bordered table-condensed">
@@ -66,24 +68,36 @@ Notes:
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qc.full')#">#$.slatwall.rbKey('define.qc')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qe.full')#">#$.slatwall.rbKey('define.qe')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnc.full')#">#$.slatwall.rbKey('define.qnc')#</div></th>
+			<cfif rc.stock.getSku().getBundleFlag()>
+				<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.mqatsbom.full')#">#$.slatwall.rbKey('define.mqatsbom')#</div></th>
+			</cfif>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qats.full')#">#$.slatwall.rbKey('define.qats')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qiats.full')#">#$.slatwall.rbKey('define.qiats')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageCost')#">#$.slatwall.rbKey('define.averageCost')# - #rc.stock.getLocation().getCurrencyCode()#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageLandedCost')#">#$.slatwall.rbKey('define.averageLandedCost')#- #rc.stock.getLocation().getCurrencyCode()#</div></th>
 		</tr>
+		<cfset scale = (rc.stock.getSku().getInventoryTrackBy() eq 'Quantity') ? 0 : 2 />
 		<tr class="sku">
 			<td><a href="##" class="update-inventory-plus depth0" data-depth="0" data-locationid="" data-locationidpath="path" data-skuid="#rc.stock.getskuID()#"><i class="glyphicon glyphicon-plus"></i></a> <strong>All Locations</strong></td>
-			<td>#rc.stock.getQuantity('QOH')#</td>
-			<td>#rc.stock.getQuantity('QOSH')#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QOH'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QOSH'),scale)#</td>
 			<td><a href="?slatAction=entity.listorderitem&F:stock.stockid=#rc.stock.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitSale">#rc.stock.getQuantity('QNDOO')#</a></td>
-			<td>#rc.stock.getQuantity('QNDORVO')#</td>
-			<td>#rc.stock.getQuantity('QNDOSA')#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QNDORVO'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QNDOSA'),scale)#</td>
 			<td><a href="?slatAction=entity.listorderitem&F:stock.stockid=#rc.stock.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitReturn">#rc.stock.getQuantity('QNRORO')#</a></td>
 			<td><a href="?slatAction=entity.listvendororderitem&F:stock.stockid=#rc.stock.getskuID()#&F:vendorOrderStatusType.systemCode=vostNew,vostPartiallyReceived&F:vendorOrderItemType.systemCode=voitPurchase">#rc.stock.getQuantity('QNROVO')#</a></td>
 			<td><a href="?slatAction=entity.liststockadjustmentitem&F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.stock.stockid=#rc.stock.getskuID()#">#rc.stock.getQuantity('QNROSA')#</a></td>
-			<td>#rc.stock.getQuantity('QC')#</td>
-			<td>#rc.stock.getQuantity('QE')#</td>
-			<td>#rc.stock.getQuantity('QNC')#</td>
-			<td>#rc.stock.getQuantity('QATS')#</td>
-			<td>#rc.stock.getQuantity('QIATS')#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QC'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QE'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QNC'),scale)#</td>
+			<cfif rc.stock.getSku().getBundleFlag()>
+				<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('MQATSBOM'),scale)#</td>
+			</cfif>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QATS'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.stock.getQuantity('QIATS'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(val(rc.stock.getAverageCost()))#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(val(rc.stock.getAverageLandedCost()))#</td>
+			
 		</tr>
 	</table>
 

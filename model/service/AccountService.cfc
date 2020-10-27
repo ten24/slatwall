@@ -49,11 +49,13 @@ Notes:
 component extends="HibachiService" accessors="true" output="false" {
 
 	property name="accountDAO" type="any";
+	property name="permissionGroupDAO" type="any";
 
 	property name="addressService" type="any";
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
-	property name="hibachiAuditService" type="any";
+	property name="giftCardService" type="any";
+	property name="hibachiAuditService" type="any";	
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
@@ -61,6 +63,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
+	property name="totpAuthenticator" type="any";
 	property name="typeService" type="any";
 	property name="validationService" type="any";
 
@@ -68,23 +71,33 @@ component extends="HibachiService" accessors="true" output="false" {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
 	}
 
-	public string function getPasswordResetID(required any account) {
+	public string function getPasswordResetID(required any account, boolean createNewResetID = true) {
 		var passwordResetID = "";
 		var accountAuthentication = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 
-		if(isNull(accountAuthentication)) {
+		if(isNull(accountAuthentication) && arguments.createNewResetID) {
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setExpirationDateTime(now() + 7);
 			accountAuthentication.setAccount( arguments.account );
 
 			accountAuthentication = this.saveAccountAuthentication( accountAuthentication );
 		}
-
-		return lcase("#arguments.account.getAccountID()##hash(accountAuthentication.getAccountAuthenticationID() & arguments.account.getAccountID())#");
+		
+		if(!isNull(accountAuthentication)) {
+			return lcase("#arguments.account.getAccountID()##hash(accountAuthentication.getAccountAuthenticationID() & arguments.account.getAccountID())#");
+		} else {
+			return "";
+		}
+		
 	}
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddress) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddress);
+		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
@@ -132,6 +145,89 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: DAO Passthrough ============================
 
 	// ===================== START: Process Methods ===========================
+	
+	public any function getAllOrdersOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        param name="arguments.data.orderID" default= "";
+        
+		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
+
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			calculatedTotal,
+			createdDateTime,
+			orderStatusType.typeName,
+			orderFulfillments.shippingAddress.streetAddress,
+			orderFulfillments.shippingAddress.street2Address,
+			orderFulfillments.shippingAddress.city,
+			orderFulfillments.shippingAddress.stateCode,
+			orderFulfillments.shippingAddress.postalCode
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		
+		if( len(arguments.data.orderID) ){
+		    ordersList.addFilter( 'orderID', arguments.data.orderID );
+		}
+		ordersList.addGroupBy('orderID');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecord = false), "records": ordersList.getRecordsCount()}
+	}
+	
+	/**
+	 * Function to get All Parents on Account
+	 * */
+	public any function getAllParentsOnAccount(required any account) {
+		var parentAccountCollectionList = this.getAccountRelationshipCollectionList();
+		parentAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												parentAccount.emailAddress, 
+												parentAccount.firstName, 
+												parentAccount.lastName, 
+												parentAccount.username, 
+												parentAccount.accountID');
+		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.account.getAccountID() );
+		parentAccountCollectionList.addFilter( 'activeFlag', 1);
+		return parentAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	/**
+	 * Function to get All Childs on Account
+	 * */
+	public any function getAllChildsOnAccount(required any account) {
+		
+		var childAccountCollectionList = this.getAccountRelationshipCollectionList();
+		childAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												childAccount.emailAddress, 
+												childAccount.firstName, 
+												childAccount.lastName, 
+												childAccount.username, 
+												childAccount.accountID');
+		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.account.getAccountID() );
+		childAccountCollectionList.addFilter( 'activeFlag', 1 );
+		return childAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	public any function getAvailablePaymentMethods(required any account, struct data = {}) {
+		
+		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
+		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
+		accountPaymentMethodList.addFilter("account.accountID", arguments.account.getAccountID() );
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
+		accountPaymentMethodList.addFilter('activeFlag', 1);
+		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
+
+		return accountPaymentMethodList;
+	}
+	
 	
 	public struct function getAccountPaymentTransactionData(required any accountPayment){
 		var transactionData = {
@@ -207,12 +303,23 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		}
 		
+		//if unassigned amount must be greater than or equal to 0 
+		if(processObject.getAppliedOrderPayments()[arraylen(processObject.getAppliedOrderPayments())].amount < 0){
+			newAccountPayment.addError('amount','unassigned amount must be 0 or greater');
+		}
+	
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
 			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
-				
-				if(structKeyExists(appliedOrderPayment,'amount') && IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
-					var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+				if(
+					structKeyExists(appliedOrderPayment,'amount') 
+					&& IsNumeric(appliedOrderPayment.amount) 
+					&& appliedOrderPayment.amount > 0 
+
+				) {
+					var orderPayment = getOrderService().getOrderPayment( 
+						appliedOrderPayment.orderPaymentID 
+					);
 					
 					var newAccountPaymentApplied = this.newAccountPaymentApplied();
 					newAccountPaymentApplied.setAccountPayment( newAccountPayment );
@@ -238,7 +345,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there are errors in the newAccountPayment after save, then add them to the account
 		if(newAccountPayment.hasErrors()) {
-			
+		
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
 		// If no errors, then we can process a transaction
 		} else {
@@ -302,26 +409,48 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
-	
-	public any function saveAccount(required any account, struct data={}, string context="save"){
+	public any function processAccount_changePosPin(required any account, required any processObject) {
+
+		var existingPosPin = arguments.account.getPosPin();
+
+		// Set the password
+		var newPosPin = getHashedAndSaltedPassword(arguments.processObject.getPosPin(), arguments.account.getAccountID());
 		
-		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
-			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
-				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
-				arguments.account.setAccountCode(accountCode);
-			}
+		if(!isNull(existingPosPin) && existingPosPin == newPosPin)
+		{
+			arguments.account.addError("samePosPin",rbKey('admin.entity.account.samePosPin'));
+		} else {
+			arguments.account.setPosPin(newPosPin);
 		}
-		return super.save(entity=arguments.account,data=arguments.data);
+		return arguments.account;
 	}
 	
 	public any function processAccountRelationship_Approval(required accountRelationship){
 		
 	}
+	
+	public any function processAccount_addAccountRelationship(required any account, required any processObject, struct data={}){
+		arguments.account = arguments.processObject.getAccount();
+		if(arguments.account.getNewFlag()){
+			arguments.data.skipAccountRelationship = true;
+			arguments.account = this.processAccount_create(argumentCollection=arguments);
+		}
+		
+		var accountRelationship = this.newAccountRelationship();
+		accountRelationship.setChildAccount(arguments.processObject.getChildAccount());
+		accountRelationship.setParentAccount(arguments.processObject.getParentAccount());
+		this.saveAccountRelationship(accountRelationship);
+		if(accountRelationship.hasErrors()){
+			arguments.account.addErrors(accountRelationship.getErrors());
+		}
+		
+		return arguments.account;
+	}
 
 	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 
 		if(arguments.account.getNewFlag()){
-		
+			arguments.account.setAccountCreateIPAddress( getRemoteAddress() );
 			// Populate the account with the correct values that have been previously validated
 			arguments.account.setFirstName( processObject.getFirstName() );
 			arguments.account.setLastName( processObject.getLastName() );
@@ -329,34 +458,34 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(!isNull(arguments.processObject.getOrganizationFlag())){
 				arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
 			}
-			if(!isNull(arguments.processObject.getParentAccount())){
+			if(!structKeyExists(arguments.data,'skipAccountRelationship')){
+				if(!isNull(arguments.processObject.getParentAccount())){
 				
-				var parentAccountRelationship = this.newAccountRelationship();
-				parentAccountRelationship.setChildAccount(arguments.account);
-				parentAccountRelationship.setParentAccount(arguments.processObject.getParentAccount());
-				arguments.account.addParentAccountRelationship(parentAccountRelationship);	
-				parentAccountRelationship.getParentAccount().addChildAccountRelationship(parentAccountRelationship);
+					var parentAccountRelationship = this.newAccountRelationship();
+					parentAccountRelationship.setChildAccount(arguments.account);
+					parentAccountRelationship.setParentAccount(arguments.processObject.getParentAccount());
+					
+					arguments.account.setOwnerAccount(arguments.processObject.getParentAccount());
+					this.saveAccount(arguments.processObject.getParentAccount());
+					this.saveAccountRelationship(parentAccountRelationship);
+				}
 				
-				arguments.account.setOwnerAccount(arguments.processObject.getParentAccount());
-				this.saveAccount(arguments.processObject.getParentAccount());
-				this.saveAccountRelationship(parentAccountRelationship);
+				//if we went through the ui of the parent account tab it will submit a childAccount as we are adding a parent to the existing account
+				if(!isNull(arguments.processObject.getChildAccount())){
+					//make relationship for new account that will have a child
+					var childAccountRelationship = this.newAccountRelationship();
+					childAccountRelationship.setParentAccount(arguments.account);
+					if(!isNull(childAccountRelationship.getChildAccount())){
+						childAccountRelationship.getChildAccount().setOwnerAccount(arguments.account);
+					}
+					this.saveAccount(arguments.processObject.getChildAccount());
+					this.saveAccountRelationship(childAccountRelationship);
+				}
 			}
 			if(isNull(arguments.account.getOwnerAccount())){
 				arguments.account.setOwnerAccount(getHibachiScope().getAccount());
 			}
 			
-			if(!isNull(arguments.processObject.getChildAccount())){
-				var childAccountRelationship = this.newAccountRelationship();
-				childAccountRelationship.setParentAccount(arguments.account);
-				childAccountRelationship.setChildAccount(arguments.processObject.getChildAccount());
-				arguments.account.addChildAccountRelationship(childAccountRelationship);
-				childAccountRelationship.getChildAccount().addParentAccountRelationship(childAccountRelationship);
-				
-				childAccountRelationship.getChildAccount().setOwnerAccount(arguments.account);
-				this.saveAccount(arguments.processObject.getChildAccount());
-				this.saveAccountRelationship(childAccountRelationship);
-			}
-	
 			// If company was passed in then set that up
 			if(!isNull(processObject.getCompany())) {
 				arguments.account.setCompany( processObject.getCompany() );
@@ -388,6 +517,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 			
+			var currentSite = getHibachiScope().getCurrentRequestSite();
+			if(!isNull(currentSite)){
+				arguments.account.setAccountCreatedSite(currentSite);
+			}
+			
 			// Save & Populate the account so that custom attributes get set
 			arguments.account = this.saveAccount(arguments.account, arguments.data);
 			
@@ -413,6 +547,38 @@ component extends="HibachiService" accessors="true" output="false" {
 				subscriptionUsageBenefitAccountCreated = getService("subscriptionService").createSubscriptionUsageBenefitAccountByAccess(access, arguments.account);
 			}
 		}
+		return arguments.account;
+	}
+	
+	public any function processAccount_updatePrimaryEmailAddress(required any account, required any processObject, struct data={}) {
+
+		var primaryEmailAddressObject = arguments.account.getPrimaryEmailAddress();
+		primaryEmailAddressObject.setEmailAddress(arguments.processObject.getEmailAddress());
+		primaryEmailAddressObject = this.saveAccountEmailAddress(primaryEmailAddressObject);
+		arguments.account = this.saveAccount(arguments.account);
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_addAccountEmailAddress(required any account, required any processObject, struct data={}) {
+		
+		var accountEmailAddress = this.newAccountEmailAddress();
+		accountEmailAddress.setAccount(arguments.account);
+		accountEmailAddress.setEmailAddress(arguments.processObject.getEmailAddress());
+		this.saveAccountEmailAddress(accountEmailAddress);
+		arguments.account = this.saveAccount(arguments.account);
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_addAccountPhoneNumber(required any account, required any processObject, struct data={}) {
+		
+		var accountPhoneNumber = this.newAccountPhoneNumber();
+		accountPhoneNumber.setAccount(arguments.account);
+		accountPhoneNumber.setPhoneNumber(arguments.processObject.getPhoneNumber());
+		this.saveAccountPhoneNumber(accountPhoneNumber);
+		arguments.account = this.saveAccount(arguments.account);
+		
 		return arguments.account;
 	}
 
@@ -575,61 +741,119 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
-
+	
+	public any function processAccount_addTwoFactorAuthentication(required any account, required any processObject, struct data={}) {
+		// Verify authenticationCode matches with TOTP secret key
+		if (!getHibachiAuthenticationService().verifyTOTPToken(arguments.processObject.getTotpSecretKey(), arguments.processObject.getAuthenticationCode())) {
+			arguments.processObject.addError('authenticationCodeIncorrect', rbKey('validate.account_authorizeAccount.authenticationCode.incorrect'));
+		} else {
+			arguments.account.setTOTPSecretKey(arguments.processObject.getTotpSecretKey());
+			arguments.account.setTotpSecretKeyCreatedDateTime(now());
+			
+			// Create account setting
+			this.saveAccount(arguments.account);
+		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_removeTwoFactorAuthentication(required any account, struct data={}) {
+		// Clear TOTP values
+		arguments.account.setTotpSecretKey(javacast('null', 0));
+		arguments.account.setTotpSecretKeyCreatedDateTime(javacast('null', 0));
+		
+		this.saveAccount(account);
+		
+		return arguments.account;
+	}
+	
 	public any function processAccount_login(required any account, required any processObject) {
-		// Take the email address and get all of the user accounts by primary e-mail address
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
-		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
-
-		if(!isNull(accountAuthentication)) {
-			//Make sure that the account is not locked
+		var emailAddress = arguments.processObject.getEmailAddress();;
+		var password = arguments.processObject.getPassword();
+		var authenticationCode = arguments.processObject.getAuthenticationCode();
+		
+		// Attempt to load the account authentication by emailAddress
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
+		
+		// Account exists
+		if (!isNull(accountAuthentication)) {
+			// Hash password
+			var hashedAndSaltedPassword = getHashedAndSaltedPassword(password=password, salt=accountAuthentication.getAccountAuthenticationID());
+			
+			// Verify basic authentication first
+			// Make sure that the account is not locked
 			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and
-				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {
-
-					//Check to see if a password reset is required
+				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == hashedAndSaltedPassword) {
+					// Check to see if a password reset is required
 					if(checkPasswordResetRequired(accountAuthentication, arguments.processObject)){
 						arguments.processObject.addError('passwordUpdateRequired',  rbKey('validate.newPassword.duplicatePassword'));
-					}else{
-						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
 					}
-
-					accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
-					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
-
-					return arguments.account;
+				// Invalid Password
+				} else {
+					// No password specific error message, as that would provide a malicious attacker with useful information
+					arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
 				}
-
-				arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+				
+				// Verify two-factor authentication as long as login process has not already failed before this point
+				if (!arguments.processObject.hasErrors() && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag()) {
+					// If authenticationCode populated
+					if (!isNull(authenticationCode)&& len(authenticationCode)) {
+						if (len(accountAuthentication.getAccount().getTOTPSecretKey())) {
+							// Authentication code is incorrect
+							if (!getHibachiAuthenticationService().verifyTOTPToken(accountAuthentication.getAccount().getTOTPSecretKey(), authenticationCode)) {
+								arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.incorrect'));
+							}
+						// No "totp" secret key has been generated for account
+						} else {
+							arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.nosecretkey'));
+						}
+					// Authentication code is required for account
+					} else {
+						arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.required'));
+					}
+				}
+			// Account has been locked
+			} else{
+				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
+			}
+		// Invalid email, no account authentication exists
+		} else {
+			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+		}
+		
+		// Login the account
+		if (!arguments.processObject.hasErrors()) {
+			getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+			accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
+			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+		// Login was invalid
+		} else {
+			var invalidLoginData = {emailAddress=emailAddress};
+			
+			if (!isNull(accountAuthentication)) {
 				invalidLoginData.account = accountAuthentication.getAccount();
-
-
+						
 				//Log the failed attempt to account.failedLoginAttemptCount
 				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
 				invalidLoginData.account.setFailedLoginAttemptCount(failedLogins);
-
+			
 				//Get the max number of failed attempts before the account is locked based on account type
 				if(accountAuthentication.getAccount().getAdminAccountFlag()){
 					var maxLoginAttempts = arguments.account.setting('accountFailedAdminLoginAttemptCount');
 				}else{
 					var maxLoginAttempts = arguments.account.setting('accountFailedPublicLoginAttemptCount');
 				}
-
+				
 				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
 				if (!isNull(maxLoginAttempts) && maxLoginAttempts > 0 && failedLogins >= maxLoginAttempts){
 					this.processAccount(invalidLoginData.account, 'lock');
 				}
-
-			} else{
-				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
 			}
-		} else {
-			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+			
+			getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
 		}
-
-		// Login was invalid
-		getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
-
+		
 		return arguments.account;
 	}
 
@@ -641,7 +865,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function processAccount_forgotPassword( required any account, required any processObject ) {
 		var forgotPasswordAccount = getAccountWithAuthenticationByEmailAddress( processObject.getEmailAddress() );
-
+		
 		if(!isNull(forgotPasswordAccount)) {
 			//check to see if the account is locked
 			if(isNull(forgotPasswordAccount.getLoginLockExpiresDateTime()) || DateCompare(Now(), forgotPasswordAccount.getLoginLockExpiresDateTime()) == 1 ){
@@ -698,15 +922,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!arguments.account.hasErrors()) {
 
 			arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
-
-			// Get the temporary accountAuth
-			var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
-
-			// Delete the temporary auth
-			this.deleteAccountAuthentication( tempAA );
-
-			// Then flush the ORM session so that an account can be logged in right away
-			getHibachiDAO().flushORMSession();
+			
+			if(!arguments.processObject.hasErrors()){
+				// Get the temporary accountAuth
+				var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
+	
+				// Delete the temporary auth
+				this.deleteAccountAuthentication( tempAA );
+	
+				// Then flush the ORM session so that an account can be logged in right away
+				getHibachiDAO().flushORMSession();
+			}
 		}
 
 		return arguments.account;
@@ -1253,7 +1479,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 
 				// If the paymentTransaction has errors, then add those errors to the accountPayment itself
-				if(paymentTransaction.hasError('runTransaction')) {
+				if(paymentTransaction.hasError('runTransaction') ) {
 					arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
 					getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived());
@@ -1282,9 +1508,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 
 			// If the paymentTransaction has errors, then add those errors to the accountPayment itself
-			if(paymentTransaction.hasError('runTransaction')) {
+			if(paymentTransaction.hasError('runTransaction') || paymentTransaction.getTransactionSuccessFlag() == false) {
 				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			}
+		
 		}
 
 		return arguments.accountPayment;
@@ -1312,27 +1539,192 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If the paymentTransaction has errors, then add those errors to the accountPayment itself
 		if(paymentTransaction.hasError('runTransaction')) {
 			arguments.accountPaymentMethod.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+		}else if(paymentTransaction.hasErrors()){
+			arguments.accountPaymentMethod.addErrors(paymentTransaction.getErrors());
 		}
 
 		return arguments.accountPaymentMethod;
+	}
+	
+	public any function processAccount_mergeAccount(required any account, struct data={}){ 
+		getService("hibachiTagService").cfsetting(requesttimeout=1200);	
+	
+		if(structKeyExists(arguments.data, "toAccountID") && structKeyExists(arguments.data, "fromAccountID")){
+			var toAccount = this.getAccount(arguments.data.toAccountID);
+			var fromAccount = this.getAccount(arguments.data.fromAccountID);  
+			
+			ormExecuteQuery("Update SlatwallAccountPhoneNumber set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallAccountAddress set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallAccountEmailAddress set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallOrder set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallAccount set ownerAccount.accountID=:toAccountID where ownerAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});	
+			ormExecuteQuery("Update SlatwallAccountRelationship set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
+			ormExecuteQuery("Update SlatwallAccountRelationship set parentAccount.accountID=:toAccountID where parentAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
+			ormExecuteQuery("Update SlatwallAccountRelationship set childAccount.accountID=:toAccountID where childAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
+	
+			//making accountPaymentMethod null in orderPayments that use it
+			getDAO("accountDAO").removeAccountPaymentMethodsFromOrderPaymentsByAccountID(fromAccount.getAccountID());
+	
+			var success = this.deleteAccount(fromAccount);
+			
+			// Dedupe the toAccount.
+			var phoneNumberList = "";
+			var accountPhoneNumbers = toAccount.getAccountPhoneNumbers();
+			for (var i = arrayLen(accountPhoneNumbers); i >= 1; i--){
+				if (listFind(phoneNumberList, accountPhoneNumbers[i].getPhoneNumber())){
+					//So add to list and delete it.
+					ormExecuteQuery("Update SlatwallAccountPhoneNumber set account.accountID=null where accountPhoneNumberID = :accountPhoneNumberID",{accountPhoneNumberID=accountPhoneNumbers[i].getAccountPhoneNumberID()});	
+			
+				}else{
+					phoneNumberList = listAppend(phoneNumberList,  accountPhoneNumbers[i].getPhoneNumber());
+				}
+			}
+			
+			// Dedupe the email addresses
+			var emailAddressList = "";
+			var accountEmailAddresses = toAccount.getAccountEmailAddresses();
+			for (var i = arrayLen(accountEmailAddresses); i >= 1; i--){
+				if (listFind(emailAddressList, accountEmailAddresses[i].getEmailAddress())){
+					//So add to list and delete it.
+					ormExecuteQuery("Update SlatwallAccountEmailAddress set account.accountID=null where accountEmailAddressID = :accountEmailAddressID",{accountEmailAddressID=accountEmailAddresses[i].getAccountEmailAddressID()});	
+			
+				}else{
+					//Have not seen it so add it to the list.
+					emailAddressList = listAppend(emailAddressList, accountEmailAddresses[i].getEmailAddress());
+				}
+			}
+			
+			// Dedupe the account addresses when they have the same name
+			var accountAddressList = "";
+			var accountAddresses = toAccount.getAccountAddresses();
+			for (var i = arrayLen(accountAddresses); i >= 1; i--){
+				if (listFind(accountAddressList, accountAddresses[i].getAccountAddressName())){
+					//So add to list and delete it.
+					ormExecuteQuery("Update SlatwallAccountAddress set account.accountID=null where accountAddressID = :accountAddressID",{accountAddressID=accountAddresses[i].getAccountAddressID()});	
+				}else{
+					//Have not seen it so add it to the list.
+					accountAddressList = listAppend(accountAddressList, accountAddresses[i].getAccountAddressName());
+				}
+			}
+			
+			
+			if(success){
+				return toAccount; 
+			} else {
+				arguments.account.addError("accountID", "Unable to complete the merge and delete the to Account.");
+				return arguments.account; 
+			}
+		} else {
+			arguments.account.addError("accountID","Cannot merge account please specify destination.");
+		} 
+
+		return arguments.account;  
+	}
+
+	public any function processPermission_addPermissionRecordRestriction(required any permission, required any processObject){
+		
+		arguments.processObject.getPermissionRecordRestriction().setPermissionRecordRestrictionName(arguments.processObject.getPermissionRecordRestrictionName());
+		arguments.processObject.getPermissionRecordRestriction().setEnforceOnDirectobjectReference(arguments.processObject.getEnforceOnDirectobjectReference());
+		arguments.permission.addPermissionRecordRestriction(arguments.processObject.getPermissionRecordRestriction());
+		arguments.permission = this.savePermission(arguments.permission);
+		
+		return arguments.permission;
+	}
+	
+	public any function processPermissionGroup_clonePermission(required any permissionGroup, required any processObject, struct data = {}) {
+
+		var permissionType = '';
+		if(arguments.processObject.getActionPermissionFlag()){
+			permissionType = listAppend(permissionType, 'action');
+		}
+		if(arguments.processObject.getDataPermissionFlag()){
+			permissionType = listAppend(permissionType, 'entity');
+		}
+
+		if(listLen(permissionType)){
+			getPermissionGroupDAO().clonePermissions(
+				permissionType,
+				arguments.processObject.getFromPermissionGroupID(),
+				arguments.permissionGroup.getPermissionGroupID()
+			);
+			getService("HibachiCacheService").resetCachedKey(arguments.permissionGroup.getPermissionGroupID() & 'permissionByDetails');
+		}
+
+		return arguments.permissionGroup;
 	}
 
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
 	
+	public any function saveAccount(required any account, struct data={}, string context="save"){
+		
+		if (StructKeyExists(arguments.data, 'primaryEmailAddress.accountEmailAddressID') && len(arguments.data.primaryEmailAddress.accountEmailAddressID)) {
+			var currentPrimaryEmailAddress = arguments.account.getPrimaryEmailAddress();
+			var newPrimaryEmailAddress = this.getAccountEmailAddress(arguments.data.primaryEmailAddress.accountEmailAddressID);
+			
+			// send email if primary address is different
+			if (!isNull(newPrimaryEmailAddress) && currentPrimaryEmailAddress.getEmailAddress() != newPrimaryEmailAddress.getEmailAddress()) {
+				arguments.account.setPrimaryEmailAddress(newPrimaryEmailAddress);
+				getService('emailService').generateAndSendFromEntityAndEmailTemplateID(newPrimaryEmailAddress, "2c928084690cc18d01690ce5f0d4003e");
+			}
+		}
+
+		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
+			if(!isNull(arguments.account.getCompany()) && isNull(arguments.account.getAccountCode())){
+				var accountCode = getService('hibachiutilityService').createUniqueProperty(arguments.account.getCompany(),getApplicationValue('applicationKey')&arguments.account.getClassName(),'accountCode');
+				arguments.account.setAccountCode(accountCode);
+			}
+		}
+				
+		return super.save(entity=arguments.account,data=arguments.data);
+	}
+	
+	public any function saveAccountEmailAddress(required accountEmailAddress, struct data={}, string context="save"){
+		
+		if (StructKeyExists(arguments.data,'emailAddress') && len(arguments.data.emailAddress) ) {
+
+			// save
+			arguments.accountEmailAddress = super.save(entity=arguments.accountEmailAddress, data=arguments.data);
+			
+			if(!arguments.accountEmailAddress.hasErrors()){
+				if(arguments.accountEmailAddress.getPrimaryEmailChangedFlag()){
+					
+					//send email because the primary changed
+					getService('emailService').generateAndSendFromEntityAndEmailTemplateID(arguments.accountEmailAddress, "2c928084690cc18d01690ce5f0d4003e");
+				}
+			}
+			
+		}
+		
+		return arguments.accountEmailAddress;
+		
+	}
+	
+	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
+		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);
+		if(!arguments.permissionRecordRestriction.hasErrors()){
+			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions');
+			getService("HibachiCacheService").resetCachedKeyByPrefix("Collection.getPermissionRecordRestrictions");
+		}
+		
+		return arguments.permissionRecordRestriction;
+		
+	}
+	
 	public any function saveAccountPaymentMethod(required any accountPaymentMethod, struct data={}, string context="save") {
 		param name="arguments.data.runSaveAccountPaymentMethodTransactionFlag" default="true";
-
+		
 		// See if the accountPaymentMethod was new
 		var wasNew = arguments.accountPaymentMethod.getNewFlag();
 
 		// Call the generic save method to populate and validate
 		arguments.accountPaymentMethod = save(arguments.accountPaymentMethod, arguments.data, arguments.context);
-
+		
+		
+		
 		// If the order payment does not have errors, then we can check the payment method for a saveTransaction
 		if(wasNew && !arguments.accountPaymentMethod.hasErrors() && arguments.data.runSaveAccountPaymentMethodTransactionFlag && !isNull(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && len(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType() neq "none") {
-
 			// Setup transaction data
 			var transactionData = {
 				amount = 0,
@@ -1343,8 +1735,16 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.accountPaymentMethod.clearProcessObject( 'createTransaction' );
 
 			arguments.accountPaymentMethod = this.processAccountPaymentMethod(arguments.accountPaymentMethod, transactionData, 'createTransaction');
+			if (arguments.accountPaymentMethod.hasErrors()){
+				var errors = arguments.accountPaymentMethod.getErrors();
+				arguments.accountPaymentMethod.getHibachiErrors().setErrors(structnew());
+				arguments.accountPaymentMethod.setActiveFlag(false);
+				this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+			}
 		}
-
+		if(structKeyExists(local,'errors')){
+			arguments.accountPaymentMethod.addErrors(errors);
+		}
 		return arguments.accountPaymentMethod;
 
 	}
@@ -1352,13 +1752,58 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function savePermissionGroup(required any permissionGroup, struct data={}, string context="save") {
 
 		arguments.permissionGroup.setPermissionGroupName( arguments.data.permissionGroupName );
+		//transform namespaced permissions into a single array
+		if(!structKeyExists(arguments.data,'permissions')){
+			arguments.data.permissions=[];
+		}
+		if(structKeyExists(arguments.data,'entitypermission')){
+			for(var entityPermission in arguments.data.entitypermission.permissions){
+				arrayAppend(arguments.data.permissions,entityPermission);
+			}
+		}
 
+		if(structKeyExists(arguments.data,'actionpermission')){
+			for(var actionPermission in arguments.data.actionpermission.permissions){
+				arrayAppend(arguments.data.permissions,actionPermission);
+			}
+		}
+		if(structKeyExists(arguments.data,'propertypermission')){
+			//property permission array starts at index 2 which causes issues with lucee if it isn't removed first
+			arguments.data.propertypermission.permissions=arrayFilter(arguments.data.propertypermission.permissions,function(value){
+				return !isNull(value);
+			});
+			for(var propertyPermission in arguments.data.propertypermission.permissions){
+				
+				arrayAppend(arguments.data.permissions,propertyPermission);
+			}
+		}
+		
+		if(structKeyExists(arguments.data,'processpermission')){
+			arguments.data.processpermission.permissions=arrayFilter(arguments.data.processpermission.permissions,function(value){
+				return !isNull(value);
+			});
+			for(var processPermission in arguments.data.processpermission.permissions){
+				arrayAppend(arguments.data.permissions,processPermission);
+			}
+		}
 		// As long as permissions were passed in we can set those up
 		if(structKeyExists(arguments.data, "permissions")) {
+			
+			arguments.data.permissions = arrayFilter(arguments.data.permissions,function(value){
+				return !isNull(value);
+			});
 			// Loop over all of the permissions that were passed in.
 			for(var i=1; i<=arrayLen(arguments.data.permissions); i++) {
 
 				var pData = arguments.data.permissions[i];
+				if(structKeyExists(pData,'propertyName')){
+					if(!structKeyExists(pData,'allowReadFlag')){
+						pData['allowReadFlag']=0;
+					}
+					if(!structKeyExists(pData,'allowUpdateFlag')){
+						pData['allowUpdateFlag']=0;
+					}
+				}
 				var pEntity = this.getPermission(arguments.data.permissions[i].permissionID, true);
 				pEntity.populate( pData );
 
@@ -1380,6 +1825,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
+			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
+			//clears cache keys on the permissiongroup Object
+			getService('HibachiCacheService').resetCachedKeyByPrefix('PermissionGroup.');
+			
+			//reset permission cache
+			getService('HibachiCacheService').resetPermissionCache();
+			
+			//reset server instance settings cache
+			getService('HibachiCacheService').updateServerInstanceSettingsCache();
 		}
 
 		return arguments.permissionGroup;
@@ -1456,7 +1910,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Delete Overrides ==========================
 
 	public boolean function deleteAccount(required any account) {
-
+		
+		getService("HibachiTagService").cfsetting(requesttimeout="120");
+		
 		// Check delete validation
 		if(arguments.account.isDeletable()) {
 
@@ -1464,7 +1920,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryEmailAddress(javaCast("null", ""));
 			arguments.account.setPrimaryPhoneNumber(javaCast("null", ""));
 			arguments.account.setPrimaryAddress(javaCast("null", ""));
-
+			arguments.account.setOwnerAccount(javaCast("null", ""));
+			arguments.account.setPrimaryPaymentMethod(javaCast("null", ""));
+			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 
@@ -1524,7 +1982,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			// If the primary address is this address then set the primary to null
 			if(arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
-				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
+				getAccountDAO().removePrimaryAddress(arguments.accountAddress.getAccount().getAccountID());
 			}
 			// If the primary address is this address then set the primary to null
 			if(!isNull(arguments.accountAddress.getAccount()) && !isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress())&&!isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID()) && arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
@@ -1540,9 +1998,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromSubscriptionUsages( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+			getAccountDAO().removeAccountAddressFromAccountPaymentMethods(accountAddressID = arguments.accountAddress.getAccountAddressID());
 		   
-		    arguments.accountAddress.removeAccount();
-            arguments.accountAddress.setAddress(javaCast("null","")); 
+		    getAccountDAO().removeAccountFromAccountAddress(arguments.accountAddress.getAccountAddressID());
+            arguments.accountAddress.setAddress(javaCast("null",""));  
 
 		}
 
@@ -1555,17 +2014,19 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.accountPaymentMethod.isDeletable()) {
 
 			var account = arguments.accountPaymentMethod.getAccount();
-
+			
 			arguments.accountPaymentMethod.setOrderPayments([]);
 
 			arguments.accountPaymentMethod.removeAccount();
 
-			// If the primary payment method is this payment method then set the primary to null
-			if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
-				account.setPrimaryPaymentMethod(javaCast("null",""));
-			}
+			// // If the primary payment method is this payment method then set the primary to null
+			// if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
+			// 	account.setPrimaryPaymentMethod(javaCast("null",""));
+			// }
 
 			getAccountDAO().removeAccountPaymentMethodFromOrderPayments( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
+			getAccountDAO().removeAccountPaymentMethodFromAccount( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
+			
 		}
 
 		return delete(arguments.accountPaymentMethod);
@@ -1620,6 +2081,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//Save the new password
 		var accountAuthentication = this.newAccountAuthentication();
 		accountAuthentication.setAccount( arguments.account );
+		accountAuthentication.setActiveFlag( true );
 
 		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
 		getHibachiDAO().save(accountAuthentication);
@@ -1702,6 +2164,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return false;
 	}
+	
 	// =====================  END:  Private Helper Functions ==================
 
 }

@@ -6,6 +6,7 @@ import {SWValidate} from "./components/swvalidate";
 import {SWValidationMinLength} from "./components/swvalidationminlength";
 import {SWValidationDataType} from "./components/swvalidationdatatype";
 import {SWValidationEq} from "./components/swvalidationeq";
+import {SWValidationEqProperty} from "./components/swvalidationeqproperty";
 import {SWValidationGte} from "./components/swvalidationgte";
 import {SWValidationLte} from "./components/swvalidationlte";
 import {SWValidationMaxLength} from "./components/swvalidationmaxlength";
@@ -39,6 +40,7 @@ var validationmodule = angular.module('hibachi.validation', [coremodule.name])
 .directive("swvalidationrequired",SWValidationRequired.Factory())
 .directive("swvalidationunique",SWValidationUnique.Factory())
 .directive("swvalidationuniqueornull",SWValidationUniqueOrNull.Factory())
+.directive("swvalidationeqproperty",SWValidationEqProperty.Factory())
 //services
 .service("validationService",ValidationService)
 ;

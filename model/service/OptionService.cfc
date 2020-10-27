@@ -62,8 +62,22 @@ component extends="HibachiService" accessors="true" output="false" {
 		return sortedOptions;
 	}
 
-
+	public void function removeDefaultImageFromOption(required string optionID){
+		var option = this.getOptionByOptionID(arguments.optionID);
+		option.setDefaultImage(javacast("null",""));
+	}
+	
 	// ===================== START: Logical Methods ===========================
+	
+	public array function getOptionsByOptionGroup(required any productID, required string optionGroupID) {
+		var optionRecords = this.getOptionCollectionList();
+		optionRecords.setDisplayProperties("optionID,optionCode,optionName");
+		optionRecords.addFilter("optionGroup.optionGroupID",arguments.optionGroupID);
+		optionRecords.addFilter("skus.product.productID",arguments.productID);
+		optionRecords.addOrderBy("sortOrder|ASC");
+		optionRecords.addGroupBy("optionID");
+		return optionRecords.getRecords(formatRecords=false);
+	}
 
 	// =====================  END: Logical Methods ============================
 

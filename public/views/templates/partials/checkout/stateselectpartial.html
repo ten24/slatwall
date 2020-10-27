@@ -1,9 +1,0 @@
-<!--- state --->   
-<span ng-init="$.slatwall = $root.slatwall"></span>
-<div class="state">                                    
-    
-    <sw-property-display type="select" required="true" name="states" class="form-control" ng-model="selectedState" ng-options="state as state.name for state in $.slatwall.states.stateCodeOptions" ng-change="$parent.OrderAddShippingObj.stateCode = selectedState.value">
-             
-    </sw-property-display>
-    
-</div>

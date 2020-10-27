@@ -96,6 +96,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="deferredRevenue" hb_formatType="currency" persistent="false";
 	property name="order" persistent="false";
 	property name="currentStatus" persistent="false";
 	property name="currentStatusCode" persistent="false";
@@ -117,6 +118,16 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		} else {
 			return false;
 		}
+	}
+	
+	public numeric function getDeferredRevenue(){
+		var deferredRevenue = 0;
+		for(var subscriptionOrderItem in getSubscriptionOrderItems()){
+			deferredRevenue += subscriptionOrderItem.getDeferredRevenue();
+			
+		}
+		
+		return deferredRevenue;
 	}
 
 	public void function setFirstReminderEmailDateBasedOnNextBillDate() {
@@ -224,19 +235,12 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public any function getSubscriptionOrderItemName() {
-		if( hasSubscriptionOrderItems() ) {
+		if( hasSubscriptionOrderItem() ) {
 			if( !isnull( getInitialProduct() ) ){
 				return getInitialProduct().getProductName();
 			}
 		}
 		return "";
-	}
-
-	public any function hasSubscriptionOrderItems(){
-		if ( arrayLen( getSubscriptionOrderItems() ) ) {
-			return true;
-		}
-		return false;
 	}
 
 	public any function getInitialSku(){
@@ -256,7 +260,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public any function getInitialProduct(){
-		if( hasSubscriptionOrderItems() ){
+		if( hasSubscriptionOrderItem() ){
 			var initialSku = getInitialSku();
 
 			if(!isNull(initialSku)){
@@ -266,28 +270,29 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public any function getInitialOrder(){
-		if( hasSubscriptionOrderItems() ){
+		if( hasSubscriptionOrderItem() ){
 			return getInitialOrderItem().getOrder();
 		}
 
 	}
 
 	public any function getMostRecentSubscriptionOrderItem(){
-		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = this.getSubscriptionOrderItemSmartList();
-			subscriptionSmartList.addOrder("createdDateTime|DESC");
-			return subscriptionSmartList.getFirstRecord();
+		if( hasSubscriptionOrderItem() ){
+			var subscriptionOrderItemSmartList = getService("subscriptionService").getSubscriptionOrderItemSmartList();
+			subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
+			subscriptionOrderItemSmartList.addOrder("createdDateTime|DESC");
+			return subscriptionOrderItemSmartList.getFirstRecord();
 		}
 	}
 
 	public any function getMostRecentOrderItem(){
-		if( hasSubscriptionOrderItems() && getSubscriptionOrderItemsCount() > 1){
+		if( hasSubscriptionOrderItem() ){
 			return getMostRecentSubscriptionOrderItem().getOrderItem();
 		}
 	}
 
 	public any function getMostRecentOrder(){
-		if( hasSubscriptionOrderItems() && getSubscriptionOrderItemsCount() > 1){
+		if( hasSubscriptionOrderItem() ){
 			return getMostRecentOrderItem().getOrder();
 		}
 	}

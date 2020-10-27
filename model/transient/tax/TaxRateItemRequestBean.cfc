@@ -59,6 +59,10 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="taxPostalCode" type="string";
 	property name="taxCountryCode" type="string";  
 	
+	// Order Fulfillment Properties
+	property name="orderFulfillmentID" type="string" default="";
+	property name="orderReturnID" type="string" default="";
+
 	// Order Item Price and Quantity Properies
 	property name="orderItemID" type="string" default="";
 	property name="price" type="string" default="";
@@ -73,8 +77,106 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="taxCategoryRateCode" type="string" default="";
 	
 	// Reference Objects
+	property name="referenceObjectType" type="string" default=""; // value should either be 'orderFulfillment' or 'orderItem'
+	property name="orderFulfillment" type="any" default="";
+	property name="orderReturn" type="any" default="";
 	property name="orderItem" type="any" default="";
+	property name="orderDeliveryItem" type="any" default="";
 	property name="taxAddress" type="any" default="";
 	property name="taxCategoryRate" type="any" default="";
 	
+	public void function populateWithOrderItem(required any orderItem) {
+		// Set reference object and type
+		setOrderItem(arguments.orderItem);
+		setReferenceObjectType('OrderItem');
+		
+		// Populate with orderItem quantities, price, and orderItemID fields
+		setOrderItemID(arguments.orderItem.getOrderItemID());
+		setQuantity(arguments.orderItem.getQuantity());
+		setCurrencyCode(arguments.orderItem.getCurrencyCode());
+		
+		if(!isNull(arguments.orderItem.getPrice())) {
+			setPrice(arguments.orderItem.getPrice());
+		}
+		
+		if(!isNull(arguments.orderItem.getExtendedPrice())) {
+			setExtendedPrice(arguments.orderItem.getExtendedPrice());
+		}
+
+		if(!isNull(arguments.orderItem.getDiscountAmount())) {
+			setDiscountAmount(arguments.orderItem.getDiscountAmount(forceCalculationFlag=true));
+		}
+
+		if(!isNull(arguments.orderItem.getExtendedPriceAfterDiscount())) {
+			setExtendedPriceAfterDiscount(arguments.orderItem.getExtendedPriceAfterDiscount(forceCalculationFlag=true));
+		}
+	}
+
+	public void function populateWithOrderFulfillment(required any orderFulfillment) {
+		// Set reference object and type
+		setOrderFulfillment(arguments.orderFulfillment);
+		setReferenceObjectType('OrderFulfillment');
+		
+		setOrderFulfillmentID(arguments.orderFulfillment.getOrderFulfillmentID());
+		setCurrencyCode(arguments.orderFulfillment.getOrder().getCurrencyCode());
+
+		if (!isNull(arguments.orderFulfillment.getFulfillmentCharge())) {
+			setPrice(arguments.orderFulfillment.getFulfillmentCharge());
+			setExtendedPrice(arguments.orderFulfillment.getFulfillmentCharge());
+		}
+
+		if (!isNull(arguments.orderFulfillment.getDiscountAmount())) {
+			setDiscountAmount(arguments.orderFulfillment.getDiscountAmount());
+		}
+
+		if (!isNull(arguments.orderFulfillment.getFulfillmentCharge()) && !isNull(arguments.orderFulfillment.getDiscountAmount())) {
+			setExtendedPriceAfterDiscount(getService('HibachiUtilityService').precisionCalculate(arguments.orderFulfillment.getFulfillmentCharge() - arguments.orderFulfillment.getDiscountAmount()));
+		}
+	}
+	
+	public void function populateWithOrderDeliveryItem(required any orderDeliveryItem) {
+		// Set reference object and type
+
+		setOrderDeliveryItem(arguments.orderDeliveryItem);
+		setOrderItem(arguments.orderDeliveryItem.getOrderItem());
+
+		//Though we're passing in an orderDeliveryItem we still want to treat it as a normal order item for tax purposes
+		setReferenceObjectType('OrderItem');
+
+		// Populate with orderItem quantities, price, and orderItemID fields
+		setOrderItemID(arguments.orderDeliveryItem.getOrderItem().getOrderItemID());
+		setQuantity(arguments.orderDeliveryItem.getQuantity());
+		setCurrencyCode(arguments.orderDeliveryItem.getOrderItem().getCurrencyCode());
+
+		if(!isNull(arguments.orderDeliveryItem.getPrice())) {
+			setPrice(arguments.orderDeliveryItem.getPrice());
+		}
+
+		if(!isNull(arguments.orderDeliveryItem.getExtendedPrice())) {
+			setExtendedPrice(arguments.orderDeliveryItem.getExtendedPrice());
+		}
+
+		if(!isNull(arguments.orderDeliveryItem.getDiscountAmount())) {
+			setDiscountAmount(arguments.orderDeliveryItem.getDiscountAmount(forceCalculationFlag=true));
+		}
+
+		if(!isNull(arguments.orderDeliveryItem.getExtendedPriceAfterDiscount())) {
+			setExtendedPriceAfterDiscount(arguments.orderDeliveryItem.getExtendedPriceAfterDiscount(forceCalculationFlag=true));
+		}
+	}
+	
+	public void function populateWithOrderReturn(required any orderReturn) {
+		// Set reference object and type
+		setOrderReturn(arguments.orderReturn);
+		setReferenceObjectType('OrderReturn');
+
+		setOrderReturnID(arguments.orderReturn.getOrderReturnID());
+		setCurrencyCode(arguments.orderReturn.getOrder().getCurrencyCode());
+
+		setPrice(arguments.orderReturn.getFulfillmentRefundAmount());
+		setExtendedPrice(arguments.orderReturn.getFulfillmentRefundAmount());
+		setDiscountAmount(0);
+		setExtendedPriceAfterDiscount(arguments.orderReturn.getFulfillmentRefundAmount());
+
+	}
 }

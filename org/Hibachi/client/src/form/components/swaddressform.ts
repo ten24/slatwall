@@ -19,6 +19,7 @@ class SWAddressFormController {
     public showAlerts:string = "true";
     public eventListeners:any;
     public submitOnEnter:boolean;
+    public stateOptions:any;
 
     //@ngInject
     constructor(
@@ -30,7 +31,6 @@ class SWAddressFormController {
         if (angular.isDefined(this.slatwallScope)){
             this.slatwall = this.slatwallScope;
         }
-
         if (this.fieldList == undefined) {
             this.fieldList = "countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode";
         }
@@ -46,11 +46,9 @@ class SWAddressFormController {
         if($rootScope.slatwall && !$scope.slatwall){
             $scope.slatwall = $rootScope.slatwall;
         }
-
         let addressName = this.addressName;
         if(this.address){
             this.address.getData = () => {
-
                 let formData = this.address || {};
                 let form = this.address.forms[addressName];
                 for(let key in form){
@@ -147,7 +145,8 @@ class SWAddressForm implements ng.IComponentOptions {
         showCloseButton: "@",
         showAlerts: "@",
         eventListeners:"=?",
-        submitOnEnter:"@"
+        submitOnEnter:"@",
+        stateOptions:"=?"
     };
     public scope={};
     /**

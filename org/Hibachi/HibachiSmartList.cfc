@@ -186,30 +186,42 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	private struct function getPropertiesStructFromEntityMeta(required struct meta) {
-		var propertyStruct = {};
-		var hasExtendedComponent = true;
-		var currentEntityMeta = arguments.meta;
-		
-		do {
-			if(structKeyExists(currentEntityMeta, "properties")) {
-				for(var i=1; i<=arrayLen(currentEntityMeta.properties); i++) {
-					if(!structKeyExists(propertyStruct, currentEntityMeta.properties[i].name)) {
-						propertyStruct[currentEntityMeta.properties[i].name] = duplicate(currentEntityMeta.properties[i]);	
+		var cacheKey = "HibachiSmartList_getPropertiesStructFromEntityMeta_#meta.entityName#";
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var propertyStruct = {};
+			var hasExtendedComponent = true;
+			var currentEntityMeta = arguments.meta;
+			
+			do {
+				if(structKeyExists(currentEntityMeta, "properties")) {
+					for(var i=1; i<=arrayLen(currentEntityMeta.properties); i++) {
+						if(!structKeyExists(propertyStruct, currentEntityMeta.properties[i].name)) {
+							propertyStruct[currentEntityMeta.properties[i].name] = duplicate(currentEntityMeta.properties[i]);	
+						}
 					}
 				}
-			}
-			
-			hasExtendedComponent = false;
-			
-			if(structKeyExists(currentEntityMeta, "extends")) {
-				currentEntityMeta = currentEntityMeta.extends;
-				if(structKeyExists(currentEntityMeta, "persistent") && currentEntityMeta.persistent) {
-					hasExtendedComponent = true;	
+				
+				hasExtendedComponent = false;
+				
+				if(structKeyExists(currentEntityMeta, "extends")) {
+					currentEntityMeta = currentEntityMeta.extends;
+					if(structKeyExists(currentEntityMeta, "persistent") && currentEntityMeta.persistent) {
+						hasExtendedComponent = true;	
+					}
 				}
-			}
-		} while (hasExtendedComponent);
+			} while (hasExtendedComponent);
+			getService('HibachiCacheService').setCachedValue(cacheKey,propertyStruct);
+		}
 		
-		return propertyStruct;
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
+	}
+	
+	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=getORMSession()) {
+		if( !structKeyExists(variables, "scrollableRecords") || arguments.refresh == true) {
+			variables.scrollableRecords = getService('ORMService').getScrollableRecordsBySmartList(smartList=this,ormSession=arguments.ormSession);
+		}
+
+		return variables.scrollableRecords;
 	}
 	
 	public string function joinRelatedProperty(required string parentEntityName, required string relatedProperty, string joinType="", boolean fetch=false, boolean isAttribute=false) {
@@ -606,7 +618,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 						
 		// Add formatter based on dbtype
  		var formatter = '';
- 		if(getHibachiScope().getApplicationValue("databaseType")=="Oracle10g"){
+ 		if(getHibachiScope().hasApplicationValue("databaseType") && getHibachiScope().getApplicationValue("databaseType")=="Oracle10g"){
  			formatter = "LOWER";
  		}
  
@@ -930,8 +942,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 					} else if(arguments.appendValues) {
 						for(var i=1; i<=listLen(newQueryKeys[key], variables.valueDelimiter); i++) {
 							var thisVal = listGetAt(newQueryKeys[key], i, variables.valueDelimiter);
-							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, variables.valueDelimiter);
-							if(findCount) {
+							//when comparing, let's make sure we decode the old value
+							var findCount = listFindNoCase(urlDecode(oldQueryKeys[key]), thisVal, variables.valueDelimiter);							if(findCount) {
 								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, variables.valueDelimiter);
 								if(arguments.toggleKeys) {
 									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount);
@@ -983,7 +995,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		}
 		
 		// Always return lower case
-		return lcase(modifiedURL);
+		return getService('HibachiUtilityService').hibachiHTMLEditFormat(lcase(modifiedURL));
 	}
 	
 	public boolean function isFilterApplied(required string filter, required string value){

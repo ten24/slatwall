@@ -125,7 +125,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function removeTaxesFromAllOrderItems_iterates_over_orderItems_in_order_and_removes_taxes(){
+	public void function removeTaxesFromAllOrderItemsAndOrderFulfillments_iterates_over_orderItems_in_order_and_removes_taxes(){
 		var data = {
 			orderItems = [
 				{
@@ -148,8 +148,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(4, newOrder.getTaxTotal());
 
 		//Passes in the new order to remove taxes and asserts taxes were removed
-		variables.service.removeTaxesFromAllOrderItems( newOrder );
-
+		variables.service.removeTaxesFromAllOrderItemsAndOrderFulfillments( newOrder );
 		// Assert that the taxTotal is now 0
 		assertEquals(0, newOrder.getTaxTotal());
 
@@ -159,7 +158,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function removeTaxesFromAllOrderItems_removes_relationship_from_both_sides(){
+	public void function removeTaxesFromAllOrderItemsAndOrderFulfillments_removes_relationship_from_both_sides(){
 		var data = {
 			orderItems = [
 				{
@@ -182,7 +181,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!isNull(firstAppTax.getOrderItem()));
 		assertEquals(firstOrderItem, firstAppTax.getOrderItem());
 
-		variables.service.removeTaxesFromAllOrderItems( newOrder );
+		variables.service.removeTaxesFromAllOrderItemsAndOrderFulfillments( newOrder );
 
 		assertEquals(0, arrayLen(firstOrderItem.getAppliedTaxes()));
 		assert(isNull(firstAppTax.getOrderItem()));

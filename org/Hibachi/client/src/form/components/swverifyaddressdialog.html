@@ -1,0 +1,35 @@
+<div class="modal fade" id="VerifyAddressDialog" ng-cloak>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!--- TODO add padding to title --->
+                <h4 ng-bind="SWVerifyAddressDialog.copy">
+                </h4><br>
+                <a
+                    class="list-group-item list-group-item-action" 
+                    href="##"
+                    data-dismiss="modal"
+                    ng-if="SWVerifyAddressDialog.suggestedAddress"
+                    data-ng-click="SWVerifyAddressDialog.selectSuggestedAddress(SWVerifyAddressDialog.suggestedAddress)"
+                    >Suggested Address: {{SWVerifyAddressDialog.suggestedAddress.streetAddress}}, {{SWVerifyAddressDialog.suggestedAddress.city}}, {{SWVerifyAddressDialog.suggestedAddress.stateCode}}, {{SWVerifyAddressDialog.suggestedAddress.postalCode}}
+                </a>
+
+                <a
+                    class="list-group-item list-group-item-action" 
+                    href="##"
+                    data-dismiss="modal" 
+                    >Continue With Unverified Address
+                </a>
+
+                <a
+                    class="list-group-item list-group-item-action" 
+                    href="##"
+                    data-dismiss="modal" 
+                    data-ng-click="SWVerifyAddressDialog.cancel()"
+                    >Remove Unverified Address
+                </a>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

@@ -56,7 +56,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#" sRedirectAction="admin:entity.listcurrency">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-
+		
 		<hb:HibachiEntityDetailGroup object="#rc.currency#">
 			<hb:HibachiEntityDetailItem view="admin:entity/currencytabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
 			<hb:HibachiEntityDetailItem property="currencyrates" />

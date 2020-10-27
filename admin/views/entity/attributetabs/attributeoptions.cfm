@@ -53,6 +53,7 @@ Notes:
 <cfparam name="rc.attribute" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+
 <cfoutput>
 	<cfif rc.attribute.getAttributeInputType() eq "text">
 		<hb:HibachiPropertyList>
@@ -64,8 +65,12 @@ Notes:
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="decryptValueInAdminFlag" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	<cfelseif listFindNoCase( "checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
-		
-		<hb:HibachiListingDisplay smartList="#rc.attribute.getAttributeOptionsSmartList()#"
+		<cfif !isNull(rc.attribute.getAttributeOptionSource())>
+			<cfset attributeOptionSmartList = rc.attribute.getAttributeOptionSource().getAttributeOptionsSmartList()>
+		<cfelse>
+			<cfset attributeOptionSmartlist = rc.attribute.getAttributeOptionsSmartList()>
+		</cfif>
+		<hb:HibachiListingDisplay smartList="#attributeOptionSmartList#"
 								   recordEditAction="admin:entity.editattributeoption" 
 								   recordEditQueryString="redirectAction=admin:entity.detailAttribute&attributeID=#rc.attribute.getAttributeID()#"
 								   recordDeleteAction="admin:entity.deleteattributeoption"
@@ -76,8 +81,11 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="attributeOptionValue" /> 
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeOptionLabel" /> 
 		</hb:HibachiListingDisplay>
-		
-		<hb:HibachiActionCaller action="admin:entity.createattributeoption" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeID()#" />
+		<cfif isNull(rc.attribute.getAttributeOptionSource())>
+			<hb:HibachiActionCaller action="admin:entity.createattributeoption" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeID()#" />
+		<cfelse>
+			<hb:HibachiActionCaller action="admin:entity.editattribute" text="#$.slatwall.rbkey('entity.attribute.attributeOptionSource')#" class="btn btn-default" icon="arrow-left" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeOptionSource().getAttributeID()#" />
+		</cfif>
 	</cfif>
 	
 </cfoutput>

@@ -54,19 +54,23 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingValue" ormtype="string" length="4000";
 	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="settingValueEncryptDT";
 	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false" column="settingValueEncryptGen";
-
+	property name="baseObject" ormtype="string" index="EI_SETTINGBASEOBJECT";
+	
 	// Non-Constrained related entity
 	property name="cmsContentID" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
+	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID";
 	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
 	property name="email" cfc="Email" fieldtype="many-to-one" fkcolumn="emailID";
 	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID";
 	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
+	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID"; 
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";

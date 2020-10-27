@@ -201,7 +201,6 @@ class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
     }
     public link=(scope,element,attrs)=>{
         scope.$watch('swStockAdjustmentModalLauncherController.calculatedQoh',(newValue)=>{
-            console.log('newvalue',newValue);
             scope.swSkuStockAdjustmentModalLauncher.newQuantity = newValue;
         });
     }

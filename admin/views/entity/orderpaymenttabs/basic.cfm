@@ -16,7 +16,14 @@
 				<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="termPaymentAccount" edit="false" />
 				<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="paymentTerm" edit="false" />
 			<cfelseif rc.orderPayment.getPaymentMethodType() eq "giftCard">
-				<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="giftCardNumberEncrypted" valueLink="#$.slatwall.buildUrl(action="admin:entity.detailgiftcard", querystring='giftCardID=' & rc.orderPayment.getGiftCard().getGiftCardID())#" edit="false">
+				<cfif not isNull(rc.orderPayment.getGiftCard())>
+					<cfset local.giftcardID = rc.orderPayment.getGiftCard().getGiftCardID() />
+				<cfelse>
+					<cfset local.giftcardID = '' />
+				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="giftCardNumberEncrypted" valueLink="#$.slatwall.buildUrl(action="admin:entity.detailgiftcard", querystring='giftCardID=' & local.giftcardID)#" edit="false">
+			<cfelseif rc.orderPayment.getPaymentMethodType() eq "external">
+				<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="creditCardLastFour" edit="#rc.edit#" />
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="companyPaymentMethodFlag" edit="#rc.edit#"/>
 			<cfif ( listFindNoCase("creditCard,termPayment", rc.orderPayment.getPaymentMethodType()) or not isNull(rc.orderPayment.getBillingAddress()) ) and rc.orderPayment.getPaymentMethodType() neq "giftCard">

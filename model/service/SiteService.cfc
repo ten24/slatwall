@@ -71,6 +71,34 @@ component  extends="HibachiService" accessors="true" {
 	public void function createSlatwallTemplatesChildren(required any slatwallTemplatesContent, required any site){
 		var slatwallTemplatesChildren = [
 			{
+				title='Attribute Template Page',
+				urlTitle="attribute-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAttribute"),
+				settingName='attribute',
+				contentTemplateFile='slatwall-attribute-page.cfm'
+			},
+			{
+				title='Address Template Page',
+				urlTitle="address-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAddress"),
+				settingName='address',
+				contentTemplateFile='slatwall-address-page.cfm'
+			},
+			{
+				title='Account Template Page',
+				urlTitle="account-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttAccount"),
+				settingName='account',
+				contentTemplateFile='slatwall-account-page.cfm'
+			},
+			{
+				title='Category Template Page',
+				urlTitle="category-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttCategory"),
+				settingName='category',
+				contentTemplateFile='slatwall-category.cfm'
+			},
+			{
 				title='Barrier Template Page',
 				urlTitle="barrier-template-page",
 				contentTemplateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
@@ -107,7 +135,7 @@ component  extends="HibachiService" accessors="true" {
 				activeFlag=true,
 				title=slatwallTemplatesChild.title,
 				urlTitle=slatwallTemplatesChild.urlTitle,
-				contentTemplateType=slatwallTemplatesChild.contentTemplateType,
+				contentTemplateTypeID=slatwallTemplatesChild.contentTemplateType.getTypeID(),
 				siteID=arguments.site.getSiteID(),
 				parentContentID=arguments.slatwallTemplatesContent.getContentID(),
 				allowPurchaseFlag=false,
@@ -162,6 +190,11 @@ component  extends="HibachiService" accessors="true" {
 				name='404',
 				urlTitle="404",
 				contentTemplateFile="default.cfm"
+			},
+			{
+				name='Missing Partial',
+				urlTitle="missing-partial",
+				contentTemplateFile="slatwall-missing-partial.cfm"
 			}
 		];
 
@@ -234,7 +267,7 @@ component  extends="HibachiService" accessors="true" {
 		createSlatwallTemplatesChildren(slatwallTemplatesContent,arguments.site);
 	}
 
-	public void function deploySite(required any site, boolean createContent=true) {
+	public void function deploySite(required any site, boolean createContent=true, boolean createTemplates=true) {
 		// copy skeletonsite to /apps/{applicationCodeOrID}/{siteCodeOrID}/
 		if(!directoryExists(arguments.site.getSitePath())){
 			directoryCreate(arguments.site.getSitePath());
@@ -249,7 +282,16 @@ component  extends="HibachiService" accessors="true" {
 		if(arguments.createContent){
 			createDefaultContentPages(arguments.site);
 		}
-
+		if(!arguments.createTemplates){
+			var siteTemplatesPath = arguments.site.getSitePath()&'templates/'; 
+			if(DirectoryExists(siteTemplatesPath)){ 
+				DirectoryDelete(siteTemplatesPath,true); 
+			}
+			var siteTagsPath = arguments.site.getSitePath()&'tags/'; 
+			if(DirectoryExists(siteTagsPath)){ 
+				DirectoryDelete(siteTagsPath,true); 
+			}
+		} 
 
 		// create 6 content nodes for this site, and map to the appropriate templates
 			// home (urlTitle == '') -> /custom/apps/slatwallcms/site1/templates/home.cfm
@@ -270,6 +312,15 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: DAO Passthrough ===========================
 
+	public string function getSiteCodes(string delimiter=','){
+		var cacheKey = 'getSiteCodes_'&ToBase64(arguments.delimiter);
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)) {
+			getService('HibachiCacheService').setCachedValue(cacheKey,getDao('siteDao').getSiteCodes(arguments.delimiter));
+		}
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
+	}
+
+
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
@@ -287,6 +338,7 @@ component  extends="HibachiService" accessors="true" {
 	}
 
 	public any function saveSite(required any site, struct data={}){
+		getService('HibachiCacheService').resetCachedKeyByPrefix('getSiteCodes');
 		//get new flag before persisting
 		var newFlag = arguments.site.getNewFlag();
 
@@ -310,14 +362,26 @@ component  extends="HibachiService" accessors="true" {
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
-
+			var createTemplatesFlag = true; 
+			if(structKeyExists(data, "useAppTemplatesFlag") && arguments.data.useAppTemplatesFlag){
+				createTemplatesFlag = !arguments.data.useAppTemplatesFlag;
+			}
 			//deploy skeletonSite
-			deploySite(arguments.site);
+			deploySite(site=arguments.site,createContent=true,createTemplates=createTemplatesFlag);
 			arguments.site = super.save(arguments.site, arguments.data);
 			getDao('siteDao').flushOrmSession();
 
 		}
 		return arguments.site;
+	}
+	
+	public boolean function deleteSite(required any site) {
+        // Check delete validation for site
+		if(arguments.site.isDeletable()) {
+		  var data = getDAO("SiteDAO").removeSite(arguments.site.getSiteID());
+		}
+		return delete( arguments.site );
+
 	}
 
 	// ======================  END: Save Overrides ============================
@@ -333,5 +397,4 @@ component  extends="HibachiService" accessors="true" {
 	// ===================== START: Delete Overrides ==========================
 
 	// =====================  END: Delete Overrides ===========================
-
 }

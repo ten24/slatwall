@@ -65,9 +65,41 @@ component entityname="SlatwallStockHold" table="SwStockHold" persistent=true acc
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	property name="isExpired" persistent="false" type="boolean";
+	
+	
+	public boolean function getIsExpired(){
+		return isExpired();
+	}
+	
+	public boolean function isExpired(){
+		if(isNull(getStockHoldExpirationDateTime())){
+			return false;
+		}
+		return getStockHoldExpirationDateTime() < now();
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	public void function removeOrderItem(any orderItem) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItem.getStockHolds(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItem.getStockHolds(), index);
+		}
+		structDelete(variables, "orderItem");
+	}
+	
+	public void function setOrderItem(required any orderItem) {
+		variables.orderItem = arguments.orderItem;
+		if(isNew() or !arguments.orderItem.hasStockHold( this )) {
+			arrayAppend(arguments.orderItem.getStockHolds(), this);
+		}
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 	

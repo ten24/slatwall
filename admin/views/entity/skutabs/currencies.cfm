@@ -87,11 +87,11 @@ Notes:
 				<td>#local.currencyCode#</td>
 				<td>
 					<cfif local.currency.getCurrencyCode() eq rc.sku.setting('skuCurrency')>
-						<hb:HibachiActionCaller action="admin:entity.editSkuCurrency" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" disabled="true" />
+						<hb:HibachiActionCaller action="admin:entity.editSkuPrice" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" disabled="true" />
 					<cfelseif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
-						<hb:HibachiActionCaller action="admin:entity.createSkuCurrency" querystring="currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
+						<hb:HibachiActionCaller action="admin:entity.createSkuPrice" querystring="currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
 					<cfelse>
-						<hb:HibachiActionCaller action="admin:entity.editSkuCurrency" querystring="skuCurrencyID=#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].skuCurrencyID#&currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
+						<hb:HibachiActionCaller action="admin:entity.editSkuPrice" querystring="skuPriceID=#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].skuPriceID#&currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
 					</cfif>
 				</td>
 			</tr>

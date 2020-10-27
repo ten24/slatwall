@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
 	property name="venderOrderDAO" type="any";
+	property name="skuPriceDAO" type="any";
 	
 	property name="addressService" type="any";
 	property name="locationService" type="any";
@@ -58,6 +59,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService" type="any";
 	property name="taxService" type="any";
 	property name="typeService" type="any";
+	property name="vendorService" type="any";
+	
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
 	
 	public any function getVendorOrderSmartList(struct data={}) {
 		arguments.entityName = "SlatwallVendorOrder";
@@ -101,35 +109,145 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getVenderOrderDAO().getSkusOrdered(arguments.vendorOrderId);
 	}
 	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
+	public any function getVendorSkuByVendorSkuCode(required string vendorSkuCode){
+		return getDao('vendorOrderDao').getVendorSkuByVendorSkuCode(arguments.vendorSkuCode);
+	}
 	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
 	
-	public any function processVendorOrder_addVendorOrderItem(required any vendorOrder, required any processObject){
+	public any function processVendorOrder_fulfill(required any vendorOrder, required processObject){
+		var vendorOrderDelivery = this.newVendorOrderDelivery();
+		vendorOrderDelivery.setVendorOrder(arguments.vendorOrder);
+		vendorOrderDelivery.setLocation(arguments.processObject.getLocation());
 		
-		var vendorOrderItemType = getTypeService().getTypeBySystemCode( arguments.processObject.getVendorOrderItemTypeSystemCode() );
-		var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
+		//add items to vendorOrderDelivery
+		addVendorOrderItemsToVendorOrderDelivery(vendorOrderDelivery,arguments.processObject);
 		
-		var newVendorOrderItem = this.newVendorOrderItem();
-		newVendorOrderItem.setVendorOrderItemType( vendorOrderItemType );
-		newVendorOrderItem.setVendorOrder( arguments.vendorOrder );
-		newVendorOrderItem.setCurrencyCode( arguments.vendorOrder.getCurrencyCode() );
-		newVendorOrderItem.setStock( deliverToLocation );
-		newVendorOrderItem.setSku( arguments.processObject.getSku() );
-		newVendorOrderItem.setQuantity( arguments.processObject.getQuantity() );
-		newVendorOrderItem.setCost( arguments.processObject.getCost() );
+		vendorOrderDelivery = this.saveVendorOrderDelivery(vendorOrderDelivery);
+		
+		if(!vendorOrderDelivery.hasErrors()){
+			// Update the orderStatus
+			this.processVendorOrder(arguments.vendorOrder, {updateItems=true}, 'updateStatus');
+		}else{
+			arguments.vendorOrder.addErrors(vendorOrderDelivery.getErrors());
+		}
 		
 		return arguments.vendorOrder;
 	}
 	
+	public any function processVendorOrder_updateStatus(required any vendorOrder, struct data) {
+		param name="arguments.data.updateItems" default="false";
+
+		// Get the original order status code
+		var originalVendorOrderStatus = arguments.vendorOrder.getVendorOrderStatusType().getSystemCode();
+
+		// First we make sure that this order status is not 'closed' because we cannot automatically update those statuses
+		if(!listFindNoCase("vostClosed", arguments.vendorOrder.getVendorOrderStatusType().getSystemCode())) {
+
+			if(
+				arguments.vendorOrder.getQuantityUndelivered() == 0
+			){
+				arguments.vendorOrder.setVendorOrderStatusType(  getTypeService().getTypeBySystemCode("vostClosed") );
+			//if some of the items are not delivered then set the status
+			} else if(arguments.vendorOrder.getQuantityUndelivered() >= 1){
+				arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyDelivered") );
+			}
+
+		}
+		arguments.vendorOrder = this.saveVendorOrder(arguments.vendorOrder);
+
+		return arguments.vendorOrder;
+	}
+	
+	public any function addVendorOrderItemsToVendorOrderDelivery(required vendorOrderDelivery, required any processObject){
+		for(var vendorOrderItemData in arguments.processObject.getVendorOrderItems()){
+			
+			var vendorOrderItem = this.getVendorOrderItem(vendorOrderItemData.vendorOrderItem.vendorOrderItemID);
+			
+			if(vendorOrderItem.getQuantityUndelivered()) {
+				if(isNumeric(vendorOrderItemData['quantity']) && vendorOrderItemData['quantity'] > 0){
+					var vendorOrderDeliveryItem = this.newVendorOrderDeliveryItem();
+					vendorOrderDeliveryItem.setQuantity(vendorOrderItemData['quantity']);
+					vendorOrderDeliveryItem.setVendorOrderItem(vendorOrderItem);
+					vendorOrderDeliveryItem.setVendorOrderDelivery(arguments.vendorOrderDelivery);
+					vendorOrderDeliveryItem.setStock(getStockService().getStockBySkuAndLocation(sku=vendorOrderDeliveryItem.getVendorOrderItem().getStock().getSku(), location=arguments.vendorOrderDelivery.getLocation()));
+					this.saveVendorOrderDeliveryItem(vendorOrderDeliveryItem);
+				}
+			}
+		}
+		return vendorOrderDelivery;
+	}
+	
+	public any function processVendorOrder_addVendorOrderItem(required any vendorOrder, required any processObject){
+		
+		var vendorOrderItemType = getTypeService().getTypeBySystemCode( arguments.processObject.getVendorOrderItemTypeSystemCode() );
+		var newVendorOrderItem = this.newVendorOrderItem();
+		newVendorOrderItem.setVendorOrderItemType( vendorOrderItemType );
+		newVendorOrderItem.setVendorOrder( arguments.vendorOrder );
+		newVendorOrderItem.setCurrencyCode( arguments.vendorOrder.getCurrencyCode() );
+		
+		if(arguments.processObject.getVendorOrderItemTypeSystemCode() == 'voitReturn'){
+			var deliverFromLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverFromLocationID()));
+			newVendorOrderItem.setStock( deliverFromLocation );
+		}
+		
+		if(arguments.processObject.getVendorOrderItemTypeSystemCode() == 'voitPurchase'){
+			var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
+			newVendorOrderItem.setStock( deliverToLocation );
+		}
+		newVendorOrderItem.setSku( arguments.processObject.getSku() );
+		newVendorOrderItem.setSkuPrice( arguments.processObject.getSku().getLivePriceByCurrencyCode( arguments.vendorOrder.getCurrencyCode() ) );
+		if(isNumeric(arguments.processObject.getPrice())){
+		newVendorOrderItem.setPrice( arguments.processObject.getPrice());
+		}
+		newVendorOrderItem.setCost( arguments.processObject.getCost() );
+			
+		//if vendor sku code was provided then find existing Vendor Sku or create one
+		if(!isNull(arguments.processObject.getVendorSkuCode()) && len(arguments.processObject.getVendorSkuCode())){
+			var vendorSku = getVendorSkuByVendorSkuCode(arguments.processObject.getVendorSkuCode());
+			if(isNull(vendorSku)){
+				vendorSku = this.newVendorSku();
+				vendorSku.setVendor(arguments.vendorOrder.getVendor());
+				vendorSku.setSku(arguments.processObject.getSku());
+				
+				//get alternateSkuCode and if it's new then set it up
+				var alternateSkuCode = getService('skuService').getAlternateSkuCodeByAlternateSkuCode(arguments.processObject.getVendorSkuCode(),true);
+				if(alternateSkuCode.getNewFlag()){
+					alternateSkuCode.setSku(arguments.processObject.getSku());
+					//type of vendor sku
+					var vendorSkuType = getService('TypeService').getType('444df2cad53c6edae52df82f27efe892');
+					alternateSkuCode.setAlternateSkuCodeType(vendorSkuType);
+					alternateSkuCode.setAlternateSkuCode(arguments.processObject.getVendorSkuCode());
+					getService('skuService').saveAlternateSkuCode(alternateSkuCode);
+				}
+				vendorSku.setAlternateSkuCode(alternateSkuCode);
+				
+			}
+			//set last vendorOrderItem on the vendorSku
+			vendorSku.setLastVendorOrderItem(newVendorOrderItem);
+			newVendorOrderItem.setVendorAlternateSkuCode(vendorSku.getAlternateSkuCode());
+			this.saveVendorSku(vendorSku);
+		}
+		
+		newVendorOrderItem.setQuantity( arguments.processObject.getQuantity() );
+		getHibachiScope().addModifiedEntity(arguments.vendorOrder);
+		this.saveVendorOrderItem(newVendorOrderItem);
+		return arguments.vendorOrder;
+	}
+	
+	public boolean function deleteVendorOrderItem(required any vendorOrderItem){
+		var deleteOK = super.delete(arguments.vendorOrderItem);
+		if(deleteOK){
+			getHibachiScope().addModifiedEntity(arguments.vendorOrderItem.getVendorOrder());	
+		}
+		return deleteOK;
+	}
+	
 	public any function processVendorOrder_receive(required any vendorOrder, required any processObject){
 		
+
 		var stockReceiver = getStockService().newStockReceiver();
 		stockReceiver.setReceiverType( "vendorOrder" );
 		stockReceiver.setVendorOrder( arguments.vendorOrder );
@@ -140,8 +258,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(processObject.getBoxCount())) {
 			stockReceiver.setBoxCount( processObject.getBoxCount() );
 		}
+
+		var locationEntity = getLocationService().getLocation( arguments.processObject.getLocationID() );
+
+		// Automatically keep preference history of vendor and product/sku for future convenience
+		var newVendorProductPreferenceFlag = false;
 		
-		var location = getLocationService().getLocation( arguments.processObject.getLocationID() );
+		
 		
 		for(var thisRecord in arguments.data.vendorOrderItems) {
 			
@@ -149,20 +272,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				var foundItem = false;
 				var vendorOrderItem = this.getVendorOrderItem( thisRecord.vendorOrderItem.vendorOrderItemID );
-				var stock = getStockService().getStockBySkuAndLocation( vendorOrderItem.getStock().getSku(), location );
-				
-				var stockReceiverItem = getStockService().newStockReceiverItem();
+				var stock = getStockService().getStockBySkuAndLocation( vendorOrderItem.getStock().getSku(), locationEntity );
 			
+				var stockReceiverItem = getStockService().newStockReceiverItem();
+
 				stockreceiverItem.setQuantity( thisRecord.quantity );
 				stockreceiverItem.setStock( stock );
+				stockreceiveritem.setCost( vendorOrderItem.getCost() );
 				stockreceiverItem.setVendorOrderItem( vendorOrderItem );
+				stockreceiverItem.setCurrencyCode(vendorOrderItem.getCurrencyCode());
 				stockreceiverItem.setStockReceiver( stockReceiver );
+				
+				stockReceiverItem.validate(context="save");
+				if(stockReceiverItem.hasErrors()){
+					arguments.vendorOrder.addErrors(stockReceiverItem.getErrors());
+					return arguments.vendorOrder;
+				}
+
+
+				// Adding vendor to product/sku if no existing relationship
+				if(!isNull(vendorOrderItem.getSku()) && !isNull(vendorOrderItem.getSku().getProduct())){
+					var sku = vendorOrderItem.getSku();
+					var product = sku.getProduct();
+					if (!arguments.vendorOrder.getVendor().hasProduct(product)) {
+						// Add vendor product relationship
+						arguments.vendorOrder.getVendor().addProduct(product);
+						newVendorProductPreferenceFlag = true;
+					}
+					
+					//Update Sku price with vendor order item price.
+					if(len(vendorOrderItem.getPrice())){
+						if(arguments.vendorOrder.getCurrencyCode() == getSettingService().getSettingValue("skuCurrency")){
+							if(vendorOrderItem.getPrice() != sku.getPrice()){
+								sku.setPrice(vendorOrderItem.getPrice());
+							}
+						}else{
+							var skuPrice = getSkuPriceDAO().getSkuPricesForSkuByCurrencyCode(sku.getSkuID(),arguments.vendorOrder.getCurrencyCode());
+							if(!isNull(skuPrice) && vendorOrderItem.getPrice() != skuPrice.getPrice()){
+								skuPrice.setPrice(vendorOrderItem.getPrice());
+							}
+							
+						}
+					}
+					
+				}
+				
 				
 			}
 		}
-		
-		getStockService().saveStockReceiver( stockReceiver );
-		
 		var closedFlag = true;
 		var partiallyReceivedFlag = false;
 		
@@ -181,8 +338,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
 
 		}
+		arguments.vendorOrder = this.saveVendorOrder(arguments.vendorOrder);
 		
-		
+		// Persist and update vendor products if necessary
+		if (newVendorProductPreferenceFlag) {
+			getVendorService().saveVendor(arguments.vendorOrder.getVendor());
+
+			if (arguments.vendorOrder.getVendor().hasErrors()) {
+				vendorOrder.addErrors(arguments.vendorOrder.getVendor().getErrors());
+			}
+		}
+
 		return arguments.vendorOrder;
 	}
 	

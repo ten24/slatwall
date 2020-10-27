@@ -50,17 +50,21 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 
 	// Persistent Properties
 	property name="stockAdjustmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="referenceNumber" ormtype="integer" generator="increment";
 	
 	// Related Object Properties (many-to-one)
-	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
-	property name="toLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="toLocationID";
+	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID" hb_formFieldType="typeahead";
+	property name="toLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="toLocationID" hb_formFieldType="typeahead";
 	property name="stockAdjustmentType" cfc="Type" fieldtype="many-to-one" fkcolumn="stockAdjustmentTypeID" hb_optionsSmartListData="f:parentType.systemCode=stockAdjustmentType";
 	property name="stockAdjustmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="stockAdjustmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=stockAdjustmentStatusType";
 	property name="physical" cfc="Physical" fieldtype="many-to-one" fkcolumn="physicalID";
+	property name="minMaxStockTransfer" cfc="MinMaxStockTransfer" fieldtype="many-to-one" fkcolumn="minMaxStockTransferID";
+	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
 	
 	// Related Object Properties (one-to-many)
 	property name="stockAdjustmentItems" singularname="stockAdjustmentItem" cfc="StockAdjustmentItem" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" inverse="true" cascade="all-delete-orphan";
 	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" cascade="all" inverse="true";
+	property name="stockAdjustmentDeliveries" singularname="stockAdjustmentDelivery" cfc="StockAdjustmentDelivery" type="array" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" cascade="all" inverse="true";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -80,12 +84,17 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	property name="statusCode" persistent="false";		// Use getStockAdjustmentStatusTypeSystemCode()
 	
 	// For use with Adjustment Items interface, get one location that we will use for stock lookup. 
+	
 	public any function getOneLocation() {
 		if(getStockAdjustmentType().getSystemCode() == "satLocationTransfer" || getStockAdjustmentType().getSystemCode() == "satManualIn") {
 			return getToLocation();
 		} else {
 			return getFromLocation();
 		}
+	}
+	
+	public boolean function isNotClosed(){
+		return variables.stockAdjustmentStatusType.getSystemCode() != "sastClosed";
 	}
 	
 	public any function getStockAdjustmentItemForSku(required any sku) {
@@ -215,6 +224,14 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 		arguments.stockReceiver.removeStockAdjustment( this );
 	}
 	
+	// Stock Adjustment Delivery (one-to-many)
+	public void function addStockAdjustmentDelivery(required any stockAdjustmentDelivery) {
+		arguments.stockReceiver.setStockAdjustmentDelivery( this );
+	}
+	public void function removeStockAdjustmentDelivery(required any stockAdjustmentDelivery) {
+		arguments.stockReceiver.removeStockAdjustmentDelivery( this );
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
@@ -233,13 +250,20 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 		return variables.stockAdjustmentStatusType;
 	}
 
+	public string function getSimpleRepresentation() {
+    		return "#getStockAdjustmentType().getTypeName()#";
+    }
 	
 	// ==============  END: Overridden Implicet Getters ====================
 	
 	// =================== START: ORM Event Hooks  =========================
 	
 	public void function preInsert(){
-		super.preInsert();
+		lock scope="Application" timeout="30" {
+	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber()['maxReferenceNumber'];
+	 		variables.ReferenceNumber = maxReferenceNumber + 1;
+ 		}
+ 		super.preInsert(argumentcollection=arguments);
 		
 		// Verify Defaults are Set
 		getStockAdjustmentType();
@@ -255,4 +279,6 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	}
 	
 	// ===================  END:  Deprecated Methods  =========================
+
+	
 }

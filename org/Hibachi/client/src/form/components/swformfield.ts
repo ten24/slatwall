@@ -107,6 +107,17 @@ class SWFormFieldController {
 				}
 			}
 		}
+		let tempObject = [];
+		if(typeof(this.optionValues) == "string"){
+			let temp = this.optionValues.split(',');
+			for(let value of temp){
+				tempObject.push({
+					"name":value,
+					"value":value
+				});
+			}
+			this.optionValues = tempObject;
+		}
 
 		this.edit = this.edit || true;
 		this.fieldType = this.fieldType || "text";
@@ -116,7 +127,6 @@ class SWFormFieldController {
 		}
 
 		if(this.fieldType === 'select'){
-
 			this.selectStrategy();
 		}
 
@@ -125,12 +135,10 @@ class SWFormFieldController {
                 this.observerService.attach(this.eventListeners[key], key)
             }
         }
-
 	}
 
 	public selectStrategy = ()=>{
 		//this is specific to the admin because it implies loading of options via api
-
         if(angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData[this.propertyIdentifier]) && angular.isDefined(this.object.metaData[this.propertyIdentifier].fieldtype)){
             this.selectType = 'object';
             this.$log.debug('selectType:object');
@@ -142,8 +150,6 @@ class SWFormFieldController {
 	}
 
 	public getOptions = ()=>{
-
-
 		if(angular.isUndefined(this.options)){
 			if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('propertyIdentifier')){
 				this.optionsArguments={
@@ -199,7 +205,6 @@ class SWFormFieldController {
 
 					}
 				}else if(this.selectType === 'string'){
-
 					if(this.object.data[this.propertyIdentifier] !== null){
 						for(var i in this.options){
 							if(this.options[i].value === this.object.data[this.propertyIdentifier]){
@@ -357,5 +362,4 @@ export{
 	SWFormField,
 	SWFormFieldController
 }
-
 

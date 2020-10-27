@@ -64,13 +64,13 @@ class RbKeyService{
 
 				return keyValue;
 			}
-
-			var bundle = this.resourceBundles[locale];
-			if(angular.isDefined(bundle[key])) {
-				//$log.debug('rbkeyfound:'+bundle[key]);
-				return bundle[key];
+			if(this.resourceBundles[locale]){
+				var bundle = this.resourceBundles[locale];
+				if(angular.isDefined(bundle[key])) {
+					//$log.debug('rbkeyfound:'+bundle[key]);
+					return bundle[key];
+				}
 			}
-
 
 			var checkedKeysListArray = checkedKeys.split(',');
 			checkedKeysListArray.push(key+'_'+locale+'_missing');

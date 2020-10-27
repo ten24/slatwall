@@ -49,21 +49,33 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.emailSmartList" type="any" />
+<cfparam name="rc.emailSmartList" type="any" />	
 
 <cfoutput>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" showCreate="false" />
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" createModal="true" />
-
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.emailSmartList#"
-						   recordDetailAction="admin:entity.detailemail"
-						   recordEditAction="admin:entity.editemail"
-						   recordEditQueryString="redirectAction=admin:entity.listemail">
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailSubject" search="true" />
-	<hb:HibachiListingColumn propertyIdentifier="emailTo" search="true" />
-	<hb:HibachiListingColumn propertyIdentifier="createdDateTime">
-</hb:HibachiListingDisplay>
+    <cfset emailCollectionList = getHibachiScope().getService('emailService').getEmailCollectionList()>
+	<cfset serchableDisplayProperties = "emailSubject,emailTo,createdDateTime"/>
+	<cfset emailCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset emailCollectionList.addDisplayProperty(displayProperty='emailID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#emailCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(emailCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(emailCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

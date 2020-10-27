@@ -3,23 +3,19 @@
 class SWCriteriaNumber{
 	public static Factory(){
 		var directive = (
-			$log,
 			collectionPartialsPath,
 			hibachiPathBuilder
-		)=>new SWCriteriaNumber(
-			$log,
+		)=> new SWCriteriaNumber(
 			collectionPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$log',
 			'collectionPartialsPath',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
-		$log,
 		collectionPartialsPath,
 		hibachiPathBuilder
 	){
@@ -127,60 +123,129 @@ class SWCriteriaNumber{
 				 	}
 			    	return numberOptions;
 			    };
+			    //initialize values
 
-    			 scope.$watch('selectedFilterProperty.criteriaValue',function(criteriaValue){
- 		    		if(angular.isDefined(criteriaValue)){
- 		    			scope.selectedFilterProperty.criteriaValue = criteriaValue;
- 		    			$log.debug(scope.selectedFilterProperty);
- 		    		}
- 		    	});
+			    scope.conditionOptions = getNumberOptions(scope.comparisonType);
 
-    				scope.conditionOptions = getNumberOptions(scope.comparisonType);
-	    			scope.criteriaRangeChanged = function(selectedFilterProperty){
-					  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
-	    			};
-	    			scope.selectedConditionChanged = function(selectedFilterProperty){
-	    				selectedFilterProperty.showCriteriaValue = true;
-	    				//check whether the type is a range
-	    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)){
-	    					selectedFilterProperty.showCriteriaValue = false;
-	    					selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
-	    					selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
-	    				}
-	    				//is null or is not null
-	    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-	    					selectedFilterProperty.showCriteriaValue = false;
-	    				}
-	    			};
+			    scope.inListArray = [];
+    			if(angular.isDefined(scope.filterItem.value)){
+    				scope.inListArray = scope.filterItem.value.toString().split(',');
+    			}
 
-	    			angular.forEach(scope.conditionOptions, function(conditionOption){
-	    				$log.debug('populate');
+    			scope.newListItem = '';
 
-						if(conditionOption.display == scope.filterItem.conditionDisplay ){
-							scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-							$log.debug(scope.filterItem);
-		    				if(scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between'){
-		    					var criteriaRangeArray = scope.filterItem.value.split('-');
-		    					$log.debug(criteriaRangeArray);
-		    					scope.selectedFilterProperty.criteriaRangeStart = parseInt(criteriaRangeArray[0]);
-		    					scope.selectedFilterProperty.criteriaRangeEnd = parseInt(criteriaRangeArray[1]);
-		    				}else{
-		    					scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-		    				}
+			    //declare functions
+			    scope.addToValueInListFormat = function(inListItem){
+					// Adds item into array
+					scope.inListArray.push(inListItem);
+
+					//set value field to the user generated list
+					scope.filterItem.value = scope.inListArray.toString();
+					scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
+					scope.newListItem = '';
+				};
+
+				scope.removelistItem = function(argListIndex){
+					scope.inListArray.splice(argListIndex,1);
+					scope.filterItem.value = scope.inListArray.toString();
+					scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
+				};
 
 
-							if(angular.isDefined(scope.filterItem.criteriaNumberOf)){
-								scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
-							}
+				scope.clearField = function(){
+					scope.newListItem = '';
+				};
 
-							if(angular.isDefined(scope.selectedConditionChanged)){
-								scope.selectedConditionChanged(scope.selectedFilterProperty);
-							}
+				scope.selectedConditionChanged = function(selectedFilterProperty){
+    				//scope.selectedFilterProperty.criteriaValue = '';
+
+    				// selectedFilterProperty.showCriteriaStart is the default input, if the criteria is not of range type
+    			
+    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+    					selectedFilterProperty.selectedCriteriaType.showCriteriaStart = false;
+    				} else {
+    					if(selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in'){
+    						selectedFilterProperty.selectedCriteriaType.showCriteriaStart = false;
+    						scope.comparisonOperatorInAndNotInFlag = true;
+    					}else{
+    						scope.clearField();
+    						scope.comparisonOperatorInAndNotInFlag = false; 
+    						selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+    					}
+    				}
+    				
+    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range'){
+    					//enabling the end-range input 
+    					selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
+    					scope.selectedFilterProperty.criteriaRangeStart = "";
+    					scope.selectedFilterProperty.criteriaRangeEnd = "";
+
+    				}else { 
+    					//disabling the end-range input 
+    					selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = false;	
+    				}
+    				
+    				scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+    				
+    			};
+
+    			scope.criteriaRangeChanged = function(selectedFilterProperty) {
+    				scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
+    			}
+		    	
+		    	scope.calculateCriteriaFilterPropertyValue = function(selectedFilterProperty) {
+		    		
+		    	    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+		    	    	
+						selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+
+		    		} else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
+						
+						if( !isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
+
+							selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart + "-" + selectedFilterProperty.criteriaRangeEnd;
+							selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = null;
+
+						} else if(!isNaN(parseInt(selectedFilterProperty.criteriaRangeStart))) {
+							
+							selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
+							selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = ">";
+							
+						} else if(!isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
+							
+							selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeEnd;
+							selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = "<";
+							
+						} else {
+							
+							selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated = null;
+							selectedFilterProperty.criteriaValue = "";
 						}
-					});
+
+		    		} else {
+						selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
+					}
+					
+					scope.filterItem.value = selectedFilterProperty.criteriaValue;
+		    	}
 
 
-
+			    scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
+					if(angular.isDefined(selectedFilterProperty)){
+						
+		    			angular.forEach(scope.conditionOptions, function(conditionOption){
+							if(conditionOption.display == scope.filterItem.conditionDisplay ){
+								scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+								
+								scope.calculateCriteriaFilterPropertyValue(scope.selectedFilterProperty);
+								
+								if(angular.isDefined(scope.selectedConditionChanged)){
+									scope.selectedConditionChanged(scope.selectedFilterProperty);
+								}
+							}
+						});
+					}
+			    });
 			}
 		};
 	}
@@ -188,3 +253,4 @@ class SWCriteriaNumber{
 export{
 	SWCriteriaNumber
 }
+

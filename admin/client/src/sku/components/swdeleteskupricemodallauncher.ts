@@ -16,18 +16,25 @@ class SWDeleteSkuPriceModalLauncherController{
         private $hibachi,
         private listingService, 
         private skuPriceService, 
-        private utilityService
+        private utilityService,
+        private observerService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
     }    
-    
+
     public delete = () => {
-        var skuPricesToDelete = this.skuPriceService.getSkuPricesForQuantityRange(this.skuId, this.skuPrice.data.minQuantity, this.skuPrice.data.maxQuantity);
+        var priceGroupID = undefined;
+        if(this.skuPrice.data.priceGroup){
+            priceGroupID = this.skuPrice.data.priceGroup.data.priceGroupID;
+        }
+        var skuPricesToDelete = this.skuPriceService.getSkuPricesForQuantityRange(this.skuId, this.skuPrice.data.minQuantity, this.skuPrice.data.maxQuantity,undefined, priceGroupID);
         var deletePromises = [];
         skuPricesToDelete.then(
             (skuPrices)=>{  
                 for(var i = 0; i < skuPrices.length; i++){
-                    deletePromises.push(skuPrices[i].$$delete());
+                    if(skuPrices[i].data.skuPriceID.length){
+                        deletePromises.push(skuPrices[i].$$delete());
+                    }
                 }
             },
             (reason)=>{
@@ -113,6 +120,8 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
                             price:currentScope.pageRecord.price
                         }
                         $scope.swDeleteSkuPriceModalLauncher.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
+                        var priceGroup = this.$hibachi.populateEntity('PriceGroup',{priceGroupID:currentScope.pageRecord.priceGroup_priceGroupID});
+                        $scope.swDeleteSkuPriceModalLauncher.skuPrice.$$setPriceGroup(priceGroup);
                     }
                 } else{ 
                     throw("swDeleteSkuPriceModalLauncher was unable to find the pageRecord that it needs!");

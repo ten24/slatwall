@@ -54,6 +54,10 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<cfset local.skuEligibleCurrencies = rc.product.setting('skuEligibleCurrencies') />
+<cfset local.skuCurrency = rc.product.setting('skuCurrency') />
+
+
 <hb:HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
 	
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.product#">
@@ -61,66 +65,72 @@ Notes:
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
+			
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="updatePriceFlag" fieldType="yesno" edit="#rc.edit#">
 			<hb:HibachiDisplayToggle selector="input[name='updatePriceFlag']">
 				<hb:HibachiPropertyDisplay object="#rc.product#" property="currencyCode" edit="false">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
-
-					<cfoutput>
-					<table class="table table-striped table-bordered table-condensed">
-						<tr>
-							<th>#$.slatwall.rbKey('entity.currency')#</th>
-							<th>#$.slatwall.rbKey('entity.sku.price')#</th>
-						</tr>
-					<cfset skuCurrencyIndex = 0 />
-					<cfloop list="#rc.product.setting('skuEligibleCurrencies')#" index="local.currencyCode">
+					<cfif skuEligibleCurrencies NEQ local.skuCurrency>
+						<cfoutput>
 					
-						<cfset local.currency = $.slatwall.getService("currencyService").getCurrency( local.currencyCode ) />
-						<cfif local.currency.getCurrencyCode() neq rc.product.setting('skuCurrency')>
-							<cfset skuCurrencyIndex++ />
+						<table class="table table-striped table-bordered table-condensed">
 							<tr>
-								<td class="primary">
-								<input type="hidden" name="skuCurrencies[#skuCurrencyIndex#].currencyCode" value="#local.currencyCode#" />
-									#local.currency.getCurrencyName()#
-								</td>
-								<td>
-									<input type="text" name="skuCurrencies[#skuCurrencyIndex#].price" value="" />
-								</td>
+								<th>#$.slatwall.rbKey('entity.currency')#</th>
+								<th>#$.slatwall.rbKey('entity.sku.price')#</th>
 							</tr>
-						</cfif>
-					</cfloop>
-				</table>
-				</cfoutput>
+						<cfset skuCurrencyIndex = 0 />
+						<cfloop list="#skuEligibleCurrencies#" index="local.currencyCode">
+						
+							<cfset local.currency = $.slatwall.getService("currencyService").getCurrency( local.currencyCode ) />
+							<cfif local.currency.getCurrencyCode() neq local.skuCurrency>
+								<cfset skuCurrencyIndex++ />
+								<tr>
+									<td class="primary">
+									<input type="hidden" name="skuCurrencies[#skuCurrencyIndex#].currencyCode" value="#local.currencyCode#" />
+										#local.currency.getCurrencyName()#
+									</td>
+									<td>
+										<input type="text" name="skuCurrencies[#skuCurrencyIndex#].price" value="" />
+									</td>
+								</tr>
+							</cfif>
+						</cfloop>
+					</table>
+					</cfoutput>
+				</cfif>
 			</hb:HibachiDisplayToggle>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="updateListPriceFlag" fieldType="yesno" edit="#rc.edit#">
 			<hb:HibachiDisplayToggle selector="input[name='updateListPriceFlag']">
 				<hb:HibachiPropertyDisplay object="#rc.product#" property="currencyCode" edit="false">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="#rc.edit#">
-					<cfoutput>
-					<table class="table table-striped table-bordered table-condensed">
-						<tr>
-							<th>#$.slatwall.rbKey('entity.currency')#</th>
-							<th>#$.slatwall.rbKey('entity.sku.listprice')#</th>
-						</tr>
-					<cfset skuCurrencyIndex = 0 />
-					<cfloop list="#rc.product.setting('skuEligibleCurrencies')#" index="local.currencyCode">
 					
-						<cfset local.currency = $.slatwall.getService("currencyService").getCurrency( local.currencyCode ) />
-						<cfif local.currency.getCurrencyCode() neq rc.product.setting('skuCurrency')>
-							<cfset skuCurrencyIndex++ />
+					<cfif skuEligibleCurrencies NEQ local.skuCurrency>
+						<cfoutput>
+						<table class="table table-striped table-bordered table-condensed">
 							<tr>
-								<td class="primary">
-								
-									#local.currency.getCurrencyName()#
-								</td>
-								<td>
-									<input type="text" name="skuCurrencies[#skuCurrencyIndex#].listprice" value="" />
-								</td>
+								<th>#$.slatwall.rbKey('entity.currency')#</th>
+								<th>#$.slatwall.rbKey('entity.sku.listprice')#</th>
 							</tr>
-						</cfif>
-					</cfloop>
-				</table>
-				</cfoutput>
+						<cfset skuCurrencyIndex = 0 />
+						<cfloop list="#skuEligibleCurrencies#" index="local.currencyCode">
+						
+							<cfset local.currency = $.slatwall.getService("currencyService").getCurrency( local.currencyCode ) />
+							<cfif local.currency.getCurrencyCode() neq local.skuCurrency>
+								<cfset skuCurrencyIndex++ />
+								<tr>
+									<td class="primary">
+									
+										#local.currency.getCurrencyName()#
+									</td>
+									<td>
+										<input type="text" name="skuCurrencies[#skuCurrencyIndex#].listprice" value="" />
+									</td>
+								</tr>
+							</cfif>
+						</cfloop>
+					</table>
+					</cfoutput>
+				</cfif>
 			</hb:HibachiDisplayToggle>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

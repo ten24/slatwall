@@ -11,6 +11,7 @@ class SWListingColumnController{
     public action:string;
     public queryString:string;
     public isVisible:boolean;
+    public isExportable:boolean; 
     public swListingDisplay:any;
     public fallbackPropertyIdentifiers:string;
     public processObjectProperty:any;
@@ -25,6 +26,7 @@ class SWListingColumnController{
     public persistent:boolean;
     public isDeletable:boolean;
     public column:any;
+    public formatType:string;
 
     //@ngInject
     constructor(
@@ -45,7 +47,9 @@ class SWListingColumnController{
         if(angular.isUndefined(this.isVisible)){
              this.isVisible = true;
         }
-
+        if(angular.isUndefined(this.isExportable)){
+            this.isExportable = true; 
+        }
         if(angular.isUndefined(this.isDeletable)){
              this.isDeletable = true;
         }
@@ -71,6 +75,7 @@ class SWListingColumnController{
             }
         }
 
+
         this.column = {
             columnID: "C" + this.utilityService.createID(31),
             propertyIdentifier:this.propertyIdentifier,
@@ -89,10 +94,13 @@ class SWListingColumnController{
             isVisible:this.isVisible,
             isDeletable:this.isDeletable,
             isSearchable:this.search,
+            isExportable:this.isExportable,
             action:this.action,
             queryString:this.queryString,
             persistent:this.persistent
         };
+
+
 
         if(this.hasCellView){
             this.column.cellView = this.cellView;
@@ -126,6 +134,7 @@ class SWListingColumn implements ng.IDirective{
         filter:"=?",
         isVisible:"=?",
         isDeletable:"=?",
+        isExportable:"=?",
         range:"=?",
         editable:"=?",
         buttonGroup:"=?",
@@ -163,21 +172,29 @@ class SWListingColumn implements ng.IDirective{
             && scope.swListingDisplay.tableID.length
         ){
             var listingDisplayID = scope.swListingDisplay.tableID;
+            if(
+                scope.swListingDisplay.usePersonalCollection !=true
+                && scope.swListingDisplay.columns
+            ){
+                this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
+                this.listingService.setupColumn(listingDisplayID,scope.swListingColumn.column);
+            }
 
-            this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
-            this.listingService.setupColumn(listingDisplayID,scope.swListingColumn.column);
         }else if(
             angular.isDefined(scope.swListingColumn.swListingDisplay)
             && scope.swListingColumn.swListingDisplay.tableID
             && scope.swListingColumn.swListingDisplay.tableID.length
+            && scope.swListingColumn.swListingDisplay.usePersonalCollection !=true
+            && scope.swListingColumn.swListingDisplay.columns
         ){
             var listingDisplayID = scope.swListingColumn.swListingDisplay.tableID;
 
             this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
-            
+
         }else {
             throw("listing display scope not available to sw-listing-column or there is no table id")
         }
+
     }
 }
 export{

@@ -15,6 +15,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 		return variables.hibachiErrors;
 	}
+	
+	public any function setHibachiErrors(any errors){
+		if(structKeyExists(arguments,'errors')){
+			variables.hibachiErrors = arguments.errors;
+		}
+	}
+
+	public void function clearHibachiErrors(){
+		structDelete(variables,'hibachiErrors');
+	}
 
 	// @hint Returns the messageBean object, if one hasn't been setup yet it returns a new one
 	public any function getHibachiMessages() {
@@ -167,7 +177,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	// @hint Public populate method to utilize a struct of data that follows the standard property form format
-	public any function populate( required struct data={} ) {
+	public any function populate( required struct data={}, formUploadDottedPath="" ) {
 
 		// Call beforePopulate
 		beforePopulate(data=arguments.data);
@@ -255,7 +265,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							_setProperty(currentProperty.name, thisEntity );
 
 							// Populate the sub property
-							thisEntity.populate(manyToOneStructData);
+							thisEntity.populate(manyToOneStructData, '#arguments.formUploadDottedPath##currentProperty.name#.');
 
 							// Tell the variables scope that we populated this sub-property
 							addPopulatedSubProperty(currentProperty.name, thisEntity);
@@ -314,7 +324,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							if(structCount(oneToManyArrayData[a]) gt 1) {
 
 								// Populate the sub property
-								thisEntity.populate(oneToManyArrayData[a]);
+								thisEntity.populate(oneToManyArrayData[a], '#arguments.formUploadDottedPath##currentProperty.name#[#a#].');
 
 								addPopulatedSubProperty(currentProperty.name, thisEntity);
 							}
@@ -377,12 +387,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		// Do any file upload properties
 		for( var p=1; p <= arrayLen(properties); p++ ) {
-
+			
 			// Setup the current property
 			currentProperty = properties[p];
 			
-			
 			// Check to see if we should upload this property
+			// Prepend the provided formUploadDottedPath if this file is being uploaded as a subpopulated property to determine absolute path reference for form scope retrieval
 			if( 
 				structKeyExists(arguments.data, currentProperty.name) 
 				&& (
@@ -393,8 +403,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				&& currentProperty.hb_fileUpload 
 				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
 				&& len(arguments.data[ currentProperty.name ]) 
-				&& structKeyExists(form, currentProperty.name) 
-				&& len(form[currentProperty.name])
+				&& structKeyExists(form, "#arguments.formUploadDottedPath##currentProperty.name#") 
+				&& len(form["#arguments.formUploadDottedPath##currentProperty.name#"])
 			) {
 				// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 				try {
@@ -402,16 +412,57 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					// Get the upload directory for the current property
 					var uploadDirectory = this.invokeMethod("get#currentProperty.name#UploadDirectory");
 
-					// If the directory where this file is going doesn't exists, then create it
-					if(!directoryExists(uploadDirectory)) {
-						directoryCreate(uploadDirectory);
+					// Handle s3 upload
+					if(left(uploadDirectory, 5) == 's3://'){
+
+						var uploadData = fileUpload(getVirtualFileSystemPath(), '#arguments.formUploadDottedPath##currentProperty.name#', currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+
+						uploadDirectory = replace(uploadDirectory,'s3://','');
+
+						var newFileName = createUUID() & '.' & uploadData.clientFileExt;
+
+						var uploadResult = getService("hibachiUtilityService").uploadToS3(
+ 							bucketName=uploadDirectory,
+							fileName=uploadData.serverfile,
+							keyName=newFileName,
+ 							contentType='#uploadData.contentType#/#uploadData.contentSubType#',
+ 							awsAccessKeyId=getHibachiScope().setting("globalS3AccessKey"),
+ 							awsSecretAccessKey=getHibachiScope().setting("globalS3SecretAccessKey"),
+							uploadDir=uploadData.serverdirectory
+						);
+
+						if(!uploadResult){
+ 							throw;
+ 						}
+
+						_setProperty(currentProperty.name, newFileName);
+					}else{
+						// If the directory where this file is going doesn't exists, then create it
+						if(!directoryExists(uploadDirectory)) {
+							directoryCreate(uploadDirectory);
+						}
+
+						// Do the upload
+						var uploadData = fileUpload( uploadDirectory, '#arguments.formUploadDottedPath##currentProperty.name#', currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+
+						// Update the property with the serverFile name
+						_setProperty(currentProperty.name, uploadData.serverFile);
+						
+						// Attempt to invoke setXXXUploadStatus() method naming convention if exists to store reference to the file upload status data
+						// If file upload property name already has xxxUpload suffix, only add 'Status' so we can reference 'setXXXUploadStatus' instead of 'setXXXUploadUploadStatus'
+						var uploadStatusMethodName = 'set#currentProperty.name#';
+						if (right(currentProperty.name, len('upload')) == 'upload') {
+							uploadStatusMethodName &= 'Status';
+						} else {
+							uploadStatusMethodName &= 'UploadStatus';
+						}
+						
+						// Invoke if a method matches the appropriate naming convention
+						if (structKeyExists(this, uploadStatusMethodName)) {
+							invokeMethod(uploadStatusMethodName, {1=uploadData});
+						}
 					}
 
-					// Do the upload
-					var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
-					
-					// Update the property with the serverFile name
-					_setProperty(currentProperty.name, uploadData.serverFile);
 				} catch(any e) {
 					this.addError(currentProperty.name, rbKey('validate.fileUpload'));
 				}
@@ -455,7 +506,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// @hint pubic method to validate this object
 	public any function validate( string context="" ) {
-
 		getService("hibachiValidationService").validate(object=this, context=arguments.context);
 
 		// If there were sub properties that have been populated, then we should validate each of those
@@ -463,14 +513,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Loop ove each property that was populated
 			for(var propertyName in variables.populatedSubProperties) {
-
+				
 				// setup the correct validation context for this property
 				var propertyContext = getService("hibachiValidationService").getPopulatedPropertyValidationContext( object=this, propertyName=propertyName, originalContext=arguments.context );
+				
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( listLast(getPropertyMetaData(propertyName).cfc,'.') );
-
+				
 				// Make sure that the context is a valid context
 				if( len(propertyContext) && (!isBoolean(propertyContext) || propertyContext) ) {
-
 					// If this was a one-to-many than validate each
 					if(isArray(variables.populatedSubProperties[ propertyName ])) {
 
@@ -488,7 +538,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 					// If this was a many-to-one, then just validate it
 					} else if (!isNull(variables[ propertyName ])) {
-
 						// Validate the property
 						variables[ propertyName ].validate( propertyContext );
 
@@ -539,18 +588,30 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		return "";
 	}
 
-	public string function getOrmTypeByPropertyIdentifier( required string propertyIdentifier ) {
+	public string function getOrmTypeByPropertyIdentifier( required string propertyIdentifier ) {		
+		return getService('HibachiService').getOrmTypeByEntityNameAndPropertyIdentifier(this.getClassName(), arguments.propertyIdentifier);
+	}
+	
+	public string function getSingularNameByPropertyIdentifier( required string propertyIdentifier ) {
 		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
 		var object = getService('HibachiService').getEntityObject(entityName);
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
 		if(
 			!isNull(object) 
 			&& !isSimpleValue(object)
-			&& structKeyExists(object.getPropertyMetaData( propertyName ),'ormtype')
+			&& structKeyExists(object.getPropertyMetaData( propertyName ),'fieldtype')
+			&& object.getPropertyMetaData( propertyName ).fieldtype == 'one-to-many'
 		) {
-			return object.getPropertyMetaData( propertyName ).ormtype;
+			return object.getPropertyMetaData( propertyName ).singularName;
 		}
 		return "";
+	}
+	
+	public string function getFormatTypeByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		return object.getPropertyFormatType(propertyName);
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
@@ -609,8 +670,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		var propertyMeta = getPropertyMetaData( arguments.propertyName );
 
+		if(structKeyExists(propertyMeta, "hb_displayType")) {
+			return propertyMeta.hb_displayType;
+
 		// First check to see if formatType was explicitly set for this property
-		if(structKeyExists(propertyMeta, "hb_formatType")) {
+		} else if(structKeyExists(propertyMeta, "hb_formatType")) {
 			return propertyMeta.hb_formatType;
 
 		// If it wasn't set, but this is a simple value field then inspect the dataTypes and naming convention to try an figure it out
@@ -653,7 +717,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			for(var i=1; i<=arrayLen(validations[ arguments.propertyName ]); i++) {
 				var constraintDetails = validations[ arguments.propertyName ][i];
 				if(!structKeyExists(constraintDetails, "conditions")) {
-					if(constraintDetails.constraintType == "required") {
+					if(constraintDetails.constraintType == "required" && constraintDetails.constraintValue) {
 						validationClass = listAppend(validationClass, "required", " ");
 					} else if (constraintDetails.constraintType == "dataType") {
 						if(constraintDetails.constraintValue == "numeric") {
@@ -934,6 +998,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// ====================  END: APPLICATION CACHED META VALUES ====================================
 	// ========================= START: DELIGATION HELPERS ==========================================
+	
+	public void function addCheckpoint(string description="", string tags, string blockName, any object) {
+		
+		// If no object provided, use this component
+		if (!structKeyExists(arguments, 'object')) {
+			arguments.object = this;
+		}
+		
+		// If no blockName provided, use the component filename by default
+		if (!structKeyExists(arguments, 'blockName')) {
+			arguments.blockName = listLast(getThisMetaData().path, '/') & '###getIdentityHashCode()#';
+		}
+		
+		super.addCheckpoint(argumentCollection=arguments);
+	}
 
 	// @hint helper function to pass this entity along with a template to the string replace function
 	public string function stringReplace( required string templateString, boolean formatValues=false, boolean removeMissingKeys=false ) {

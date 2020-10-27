@@ -75,6 +75,7 @@ class SWCollectionColumn implements ng.IDirective{
                 isKeywordColumn:scope.swCollectionColumn.isKeywordColumn, 
                 isOnlyKeywordColumn:scope.swCollectionColumn.isOnlyKeywordColumn
         };
+
         
         var currentScope = this.scopeService.getRootParentScope(scope,"swCollectionConfig"); 
         

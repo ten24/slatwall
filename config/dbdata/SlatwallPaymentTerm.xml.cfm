@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwPaymentTerm">
+<Table tableName="SwPaymentTerm" dependencies="/config/dbdata/SlatwallTerm.xml.cfm">
 	<Columns>
 		<column name="paymentTermID" fieldtype="id" />
 		<column name="activeFlag" datatype="bit" update="false" />

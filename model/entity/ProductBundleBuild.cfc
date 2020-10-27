@@ -59,6 +59,7 @@ component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" p
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	
 	// Related Object Properties (one-to-many)
+	property name="productBundleBuildItems" cfc="ProductBundleBuildItem" fkcolumn="productBundleBuildID" fieldtype="one-to-many" singularname="productBundleBuildItem" type="array";
 	
 	// Related Object Properties (many-to-many - owner)
 

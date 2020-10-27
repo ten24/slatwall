@@ -59,8 +59,11 @@ Notes:
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledSku" edit="#rc.edit#">
+                		<hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledSku" autocompleteNameProperty="skuName" autocompletePropertyIdentifiers="skuID,skuName,activeFlag,skuCode" fieldType="typeahead" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledQuantity" edit="#rc.edit#">
+				<cfif !isNull(rc.skuBundle.getBundledSku()) AND rc.skuBundle.getBundledSku().getInventoryTrackBy() neq "Quantity">
+				    <hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="measurementUnit" edit="#rc.edit#">
+				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

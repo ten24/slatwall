@@ -60,6 +60,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function executeScheduledWorkflows() {
 		getWorkflowService().runAllWorkflowsByScheduleTrigger();
 		getFW().setView("public:main.blank");
+		request.layout = false;
 	}
 
 	public void function executeScheduleWorkflowTrigger(required any rc){
@@ -67,6 +68,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getWorkflowService().runWorkflowTriggerById(arguments.rc.workflowTriggerID);
 		}
 		getFW().setView("public:main.blank");
+		request.layout = false;
 	}
 
 }

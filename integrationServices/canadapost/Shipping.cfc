@@ -70,6 +70,29 @@ component accessors="true" output="false" displayname="CanadaPost" implements="S
 		return this;
 	}
 	
+	private any function getResponse(required string requestPacket, required string urlString, required string format="xml"){
+		// Setup Request to push to FedEx
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+		httpRequest.setPort("443");
+		httpRequest.setTimeout(45);
+		httpRequest.setUrl(arguments.urlString);
+		httpRequest.setResolveurl(false);
+		if(arguments.format == 'xml'){
+			httpRequest.addParam(type="XML", name="name",value=trim(arguments.requestPacket));
+			var result = httpRequest.send().getPrefix();
+			if (!isNull(result) && structKeyExists(result, "fileContent")){
+				return XmlParse(REReplace(result.fileContent, "^[^<]*", "", "one"));	
+			}
+		}else{
+			httpRequest.addParam(type="header",name="Content-Type",value="application/json");
+			httpRequest.addParam(type="body", value=trim(arguments.requestPacket));
+			return deserializeJson(httpRequest.send().getPrefix().fileContent);
+		}
+
+	}
+
+	
 	public struct function getShippingMethods() {
 		return variables.shippingMethods;
 	}

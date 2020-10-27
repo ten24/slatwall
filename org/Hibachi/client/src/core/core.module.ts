@@ -9,6 +9,7 @@ import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
+import {AccountAddressService} from "./services/accountaddressservice";
 import {CartService} from "./services/cartservice";
 import {DraggableService} from "./services/draggableservice";
 import {UtilityService} from "./services/utilityservice";
@@ -19,6 +20,7 @@ import {OrderPaymentService} from "./services/orderpaymentservice";
 import {FormService} from "./services/formservice";
 import {FilterService} from "./services/filterservice";
 import {ExpandableService} from "./services/expandableservice";
+import {HibachiAuthenticationService} from "./services/hibachiauthenticationservice";
 
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
@@ -42,6 +44,7 @@ import {EntityRBKey} from "./filters/entityrbkey";
 import {SWTrim} from "./filters/swtrim";
 import {SWUnique} from "./filters/swunique";
 import {DateFilter} from "./filters/datefilter";
+import {DateReporting} from "./filters/datereporting";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
@@ -62,6 +65,7 @@ import {SWDraggableContainer} from "./components/swdraggablecontainer";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
+import {SWExpiringSessionNotifier} from "./components/swexpiringsessionnotifier";
 import {SWGravatar} from "./components/swgravatar";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
@@ -170,9 +174,14 @@ var coremodule = angular.module('hibachi.core',[
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
    // $provide.decorator('$hibachi',
    $httpProvider.interceptors.push('hibachiInterceptor');
+   
+   //Pulls seperate http requests into a single digest cycle.
+   $httpProvider.useApplyAsync(true);
+
 }])
-.run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
+.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService',($rootScope,$hibachi, $route, $location,rbkeyService)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
+    $rootScope.rbKey = rbkeyService.rbKey;
     var original = $location.path;
     $location.path = function (path, reload) {
         if (reload === false) {
@@ -187,6 +196,7 @@ var coremodule = angular.module('hibachi.core',[
 }])
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
+.constant('isAdmin',false)
 //services
 .service('cacheService', CacheService)
 .service('publicService',PublicService)
@@ -203,6 +213,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('typeaheadService', TypeaheadService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
+.service('hibachiAuthenticationService',HibachiAuthenticationService)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
@@ -210,15 +221,18 @@ var coremodule = angular.module('hibachi.core',[
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
+.service('accountAddressService',AccountAddressService)
 .service('orderService',OrderService)
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',CartService)
 .service('hibachiValidationService',HibachiValidationService)
 .service('entityService',EntityService)
+
 //controllers
 .controller('globalSearch',GlobalSearchController)
-//filters
+//filters 
 .filter('dateFilter',['$filter',DateFilter.Factory])
+.filter('swdatereporting',['$filter',DateReporting.Factory])
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
@@ -241,6 +255,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swEntityActionBar',SWEntityActionBar.Factory())
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
+.directive('swExpiringSessionNotifier',SWExpiringSessionNotifier.Factory())
 .directive('swGravatar', SWGravatar.Factory())
 .directive('swDraggable',SWDraggable.Factory())
 .directive('swDraggableContainer', SWDraggableContainer.Factory())

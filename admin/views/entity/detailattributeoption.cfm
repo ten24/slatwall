@@ -55,36 +55,27 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.attributeOption#" edit="#rc.edit#"
-								saveActionQueryString="attributeID=#rc.attribute.getAttributeID()#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.attributeOption#" edit="#rc.edit#"
-									backAction="admin:entity.detailAttribute"
-								    backQueryString="attributeID=#rc.attribute.getAttributeID()#"
-								    cancelAction="admin:entity.detailAttribute"
-									cancelQueryString="attributeID=#rc.attribute.getAttributeID()#" />
-
-
-
-		<hb:HibachiEntityDetailGroup object="#rc.attributeOption#">
-			<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
-
-	<cfif not rc.attributeOption.getNewFlag()>
-		<hb:HibachiListingDisplay smartList="#rc.attributeOption.getEntityWithOptionSmartList()#">
-	        <cfswitch expression="#rc.attribute.getAttributeSet().getAttributeSetObject()#">
-				<cfcase value="Sku">
-	                <hb:HibachiListingColumn propertyIdentifier="SkuCode" />
-	                <hb:HibachiListingColumn propertyIdentifier="product.productName" />
-	            </cfcase>
-				<cfdefaultcase>
-					<hb:HibachiListingColumn propertyIdentifier="simpleRepresentation" title="#$.slatwall.rbKey('entity.' & rc.attribute.getAttributeSet().getAttributeSetObject())#"/>"
-				</cfdefaultcase>
-	        </cfswitch>
-	    </hb:HibachiListingDisplay>
-	</cfif>
+	<div class="form-horizontal">
+		<hb:HibachiEntityDetailForm object="#rc.attributeOption#" edit="#rc.edit#"
+									saveActionQueryString="attributeID=#rc.attribute.getAttributeID()#">
+			<hb:HibachiEntityActionBar type="detail" object="#rc.attributeOption#" edit="#rc.edit#"
+										backAction="admin:entity.detailAttribute"
+									    backQueryString="attributeID=#rc.attribute.getAttributeID()#"
+									    cancelAction="admin:entity.detailAttribute"
+										cancelQueryString="attributeID=#rc.attribute.getAttributeID()#" />
+	
+	
+	
+			<hb:HibachiEntityDetailGroup object="#rc.attributeOption#">
+				<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+				<!--- Custom Attributes --->
+				<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+					<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
+				</cfloop>
+				<cfif not rc.attributeOption.getNewFlag()>
+					<hb:HibachiEntityDetailItem count="#rc.attributeOption.getEntityWithOptionSmartList().getRecordsCount()#" view="admin:entity/attributeoptiontabs/entitycollection" open="false" text="#$.slatwall.rbKey('entity.' & rc.attribute.getAttributeSet().getAttributeSetObject())#" showOnCreateFlag=false />
+				</cfif>
+			</hb:HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailForm>
+	</div>
 </cfoutput>

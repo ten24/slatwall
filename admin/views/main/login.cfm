@@ -51,12 +51,12 @@ Notes:
 <cfparam name="rc.accountAuthenticationExists" type="boolean" />
 <cfparam name="rc.swprid" type="string" default="" />
 <cfparam name="rc.integrationLoginHTMLArray" type="array" />
+<cfparam name="rc.twoFactorAuthenticationRequiredFlag" type="boolean" default="false" />
 
 <cfoutput>
 	<div class="container s-login-container">
 
-		<div class="s-login-wrapper col-xs-6 col-xs-offset-3">
-
+		<div class="s-login-wrapper col-xs-6 col-xs-offset-3">			
 			<div class="s-logo">
 
 				<img src="#request.slatwallScope.getBaseURL()#/assets/images/logo-1x.png" alt="Slatwall"
@@ -89,7 +89,7 @@ Notes:
 			<cfelseif rc.accountAuthenticationExists>
 				<cfset authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login") />
 				<cfset updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword") />
-
+				
 				<!--- UPDATE PASSWORD BECAUSE OF FORCE RESET --->
 				<cfif (authorizeProcessObject.hasError('passwordUpdateRequired') OR updateProcessObject.hasErrors())>
 
@@ -102,7 +102,8 @@ Notes:
 						<hb:HibachiPropertyDisplay object="#updateProcessObject#" property="passwordConfirm" edit="true" fieldAttributes="placeholder='Confirm Password'"/>
 						<button type="submit" class="btn btn-lg s-btn-ten24 pull-right">#$.slatwall.rbKey('define.login')#</button>
 					</form>
-				<!--- LOGIN & FORGOT PASSWORD --->
+					
+				<!--- LOGIN & FORGOT PASSWORD --->					
 				<cfelse>
 
 					<!--- LOGIN --->
@@ -113,12 +114,18 @@ Notes:
 						<cfif structKeyExists(rc, "sRedirectURL")>
 							<input type="hidden" name="sRedirectURL" value="#rc.fw.getHibachiScope().hibachiHtmlEditFormat(rc.sRedirectURL)#" />
 						</cfif>
-						<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off' placeholder='Email Address' required" />
-						<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" fieldAttributes="autocomplete='off' placeholder='Password' required" />
-						<a href="##" id="j-forgot-password" class="s-forgot-password-link s-login-link" tabindex="-1">Forgot Password</a>
+						<cfif rc.twoFactorAuthenticationRequiredFlag>
+							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="authenticationCode" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.authenticationCode')#" fieldAttributes="autocomplete='off' placeholder='#rc.fw.getHibachiScope().rbKey('entity.account.authenticationCode')#' required" />
+						<cfelse>
+							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off' placeholder='Email Address' required" />
+							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" fieldAttributes="autocomplete='off' placeholder='Password' required" />
+							<hb:HibachiErrorDisplay object="#authorizeProcessObject#" errorName="authenticationCode" />
+							<a href="##" id="j-forgot-password" class="s-forgot-password-link s-login-link" tabindex="-1">Forgot Password</a>
+						</cfif>
+				
 						<button type="submit" class="btn btn-lg btn-primary">#$.slatwall.rbKey('define.login')#</button>
 					</form>
-
+					
 					<!--- FORGOT PASSWORD --->
 					<cfset forgotPasswordProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("forgotPassword") />
 					<form class="s-form-signin" action="?s=1"  method="post" id="j-forgot-password-wrapper" novalidate="novalidate">

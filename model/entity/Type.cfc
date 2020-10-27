@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallType" table="SwType" persistent="true" accessors="true" output="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="typeService" hb_permission="this" hb_parentPropertyName="parentType" {
+component entityname="SlatwallType" table="SwType" persistent="true" accessors="true" output="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="typeService" hb_permission="this" hb_childPropertyName="childTypes" hb_parentPropertyName="parentType" {
 	
 	// Persistent Properties
 	property name="typeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

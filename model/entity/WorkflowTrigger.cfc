@@ -36,7 +36,7 @@
 Notes:
 
 */
-component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="workflow.workflowTriggers" {
+component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="workflow.workflowTriggers" hb_auditable="false" {
 	
 	// Persistent Properties
 	property name="workflowTriggerID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -50,7 +50,9 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="startDateTime" ormtype="timestamp";
 	property name="endDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
 	property name="collectionFetchSize" ormtype="integer";
+	property name="collectionPassthrough" ormType="boolean" hb_formatType="yesno" default="false";
 	property name="timeout" ormtype="integer" default="90"; 
+	property name="scheduleCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hint="json object used to construct the base collection HQL query";
 	
 	// Calculated Properties
 

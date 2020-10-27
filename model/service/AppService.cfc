@@ -47,10 +47,13 @@ Notes:
 
 */
 component extends="HibachiService" accessors="true" output="false" {
-	variables.appsPath = expandPath('/#getApplicationValue('applicationKey')#') & '/apps';
 	variables.skeletonAppPath = expandPath('/#getApplicationValue('applicationKey')#') & '/integrationServices/slatwallcms/skeletonapp';
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public string function getAppsPath(){
+		return expandPath('/#getApplicationValue('applicationKey')#') & '/apps';
+	}
 	
 	public void function deployApplication(required any app) {
 		// copy skeletonapp to /apps/{applicationCodeOrID} 
@@ -64,6 +67,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			recurse=false, 
 			copyContentExclusionList=".svn,.git"
 		);
+		
 	}
 	
 	public void function updateCMSApp(required app){
@@ -93,17 +97,20 @@ component extends="HibachiService" accessors="true" output="false" {
 		//deploy the app if the application is new	
 		if(arguments.app.isNew()){
 			//create directory for app
-			if(!directoryExists(variables.appsPath)){
-				directoryCreate(variables.appsPath);
+			if(!directoryExists(getAppsPath())){
+				directoryCreate(getAppsPath());
 			}
 			//need to set the appcode to create the app path 
 			arguments.app.setAppCode(arguments.data.appCode);
 			if(!directoryExists(arguments.app.getAppPath())){
 				directoryCreate(arguments.app.getAppPath());
 			}
-			
+			var createAppTemplatesFlag = false; 
+			if(structKeyExists(data, "createAppTemplatesFlag") && arguments.data.createAppTemplatesFlag){
+				createAppTemplatesFlag = arguments.data.createAppTemplatesFlag;
+			}		
 			//deploy skeletonApp
-			deployApplication(arguments.app);
+			deployApplication(arguments.app, createAppTemplatesFlag);
 		}
 		arguments.app = super.save(arguments.app, arguments.data);	
 		return arguments.app;

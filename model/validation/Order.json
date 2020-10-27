@@ -11,6 +11,7 @@
 		"statusCode":						[
 		    									{"contexts":"placeOrder","inList":"ostNotPlaced"},
 												{"conditions":"isNotTestOrder","contexts":"delete","inList":"ostNotPlaced"},
+												{"contexts":"delete","inList":"ostNotPlaced,ostCanceled"},
 												{"contexts":"addSaleOrderItem,addOrderPayment,addPromotionCode,updateStatus","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 												{"contexts":"cancelOrder,closeOrder","inList":"ostNew,ostProcessing,ostOnHold"},
 												{"contexts":"createReturn","inList":"ostNew,ostProcessing,ostOnHold,ostClosed"},
@@ -18,6 +19,7 @@
 												{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"},
 												{"contexts":"auditRollback","inList":"ostNotPlaced"}
 		],
+		"orderStatusType":[{"contexts":"edit","method":"isNotClosed"}],
 		"quantityDelivered":				[
 												{"contexts":"cancelOrder","maxValue":0},
 												{"contexts":"createReturn","minValue":1}

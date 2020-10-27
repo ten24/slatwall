@@ -68,7 +68,8 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
-
+	property name="locations" singularname="location" cfc="Location" type="array" fieldtype="many-to-many" linktable="SwLocationSite" fkcolumn="siteID" inversejoincolumn="locationID" inverse="true";
+	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
@@ -155,6 +156,52 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
+	
+	//Function to validate unique domain name
+	public boolean function validateDomainName()
+	{
+		if( isNull( this.getdomainNames() ) )
+		{
+			return false;
+		}
+		else{
+			var currentdomain = lcase(this.getdomainNames()); //converted to lower case
+			var dbtype = lcase(getApplicationValue('databaseType'));
+			
+			if(dbtype eq "mysql")
+			{
+				var input_domains = ListToArray(currentdomain,",");
+				for(var domain in input_domains)
+				{
+					if(getDao('siteDao').validateDomainName(domain, this.getsiteId()))
+					{
+						return false;
+					}
+				}
+				
+				return true;
+				
+			}
+			else{
+				var allrecords = getService('siteService').getSiteCollectionList();
+				for( var domain in allrecords.getRecords())
+				{
+					//using OR condition so this method can work for create / edit both while creating new site without app
+					if(isNull(this.getsiteId()) || domain.siteId != this.getsiteId())
+					{
+						var domain_check = listFind(domain.domainNames,currentdomain,",");
+						if(domain_check)
+						{
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+			
+		}
+		
+	}
 
 	// ===============  END: Custom Validation Methods =====================
 

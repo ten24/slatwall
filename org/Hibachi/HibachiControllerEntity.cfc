@@ -40,7 +40,9 @@ component output="false" accessors="true" extends="HibachiController" {
 		arguments.rc.entityActionDetails.saveAction = arguments.rc.entityActionDetails.thisAction;
 
 		// Setup EntityActionDetails with the correct itemEntityName
-		if(left(arguments.rc.entityActionDetails.itemName, 4) == "list") {
+		if(left(arguments.rc.entityActionDetails.itemName, 10) == "reportlist") {
+			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-10);
+		} else if(left(arguments.rc.entityActionDetails.itemName, 4) == "list") {
 			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 4) == "edit") {
 			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
@@ -127,6 +129,8 @@ component output="false" accessors="true" extends="HibachiController" {
 
 			if(left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 4) eq "list") {
 				arguments.rc.pageTitle = getHibachiScope().rbKey('admin.define.list', replaceData);
+			} else if(left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 10) eq "reportlist"){
+				arguments.rc.pageTitle = getHibachiScope().rbKey('admin.define.list', replaceData) & " " & getHibachiScope().rbKey('admin.define.report');
 			} else if (left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 4) eq "edit") {
 				arguments.rc.pageTitle = getHibachiScope().rbKey('admin.define.edit', replaceData);
 			} else if (left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 6) eq "create") {
@@ -136,12 +140,38 @@ component output="false" accessors="true" extends="HibachiController" {
 			}
 		}
 	}
+	
+	public void function after(required struct rc){
+		if(structKeyExists(rc,'viewPath')){
+			request.layout = false;
+			getFW().setView("#getFW().getSubsystem()#:#getFW().getSection()#.ajax");
+
+			rc.templatePath = "./#rc.viewPath#.cfm";
+
+		}
+	}
 
 	// Implicit onMissingMethod() to handle standard CRUD
 	public void function onMissingMethod(string missingMethodName, struct missingMethodArguments) {
 
 		if(structKeyExists(arguments, "missingMethodName")) {
-			if( left(arguments.missingMethodName, 4) == "list" ) {
+		
+			if ( structKeyExists(arguments.missingMethodArguments, 'rc') ) {
+				var entityName = arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName;
+				if (!hasBean(entityName)) {
+					if(!structKeyExists(arguments.missingMethodArguments.rc,'viewPath')){
+						getFW().onMissingView();
+					}
+					return;
+				}
+			}
+		
+			if( left(arguments.missingMethodName, 10) == "reportlist" ) {
+				//use a configured version of listing
+				genericListMethod(entityName=arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName, rc=arguments.missingMethodArguments.rc);
+				//use generic view because updating all listings would be overkill
+				getFW().setView("#lcase(arguments.missingMethodArguments.rc.entityActionDetails.subsystemName)#:#lcase(arguments.missingMethodArguments.rc.entityActionDetails.sectionName)#.reportlist");
+			}else if( left(arguments.missingMethodName, 4) == "list" ) {
 				genericListMethod(entityName=arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName, rc=arguments.missingMethodArguments.rc);
 			} else if ( left(arguments.missingMethodName, 4) == "edit" ) {
 				genericEditMethod(entityName=arguments.missingMethodArguments.rc.entityActionDetails.itemEntityName, rc=arguments.missingMethodArguments.rc);
@@ -170,6 +200,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		// Place the standard smartList in the rc
 		arguments.rc["#arguments.entityName#SmartList"] = entityService.invokeMethod( "get#arguments.entityName#SmartList", {1=arguments.rc} );
+		arguments.rc["#arguments.entityName#CollectionList"] = entityService.invokeMethod( "get#arguments.entityName#CollectionList", {1=arguments.rc} );
 	}
 
 	// CREATE
@@ -362,7 +393,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				url[ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
 
 				// Render or Redirect a faluire
-				renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.editAction, maintainQueryString=true, rc=arguments.rc);
+				renderOrRedirectFailure( defaultAction="edit#arguments.rc.entityActionDetails.itemEntityName#", maintainQueryString=true, rc=arguments.rc);
 			}
 		}
 	}
@@ -416,7 +447,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 	// PROCESS
 	public void function genericProcessMethod(required string entityName, required struct rc) {
-
+		
 		// Find the correct service and this object PrimaryID
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.entityName );
 		var entityPrimaryID = getHibachiService().getPrimaryIDPropertyNameByEntityName( entityName=arguments.entityName );
@@ -434,7 +465,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 			// Populate the processObject
 			rc.processObject.populate( arguments.rc );
-			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.data[arguments.entityName])) {
+			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.rc[arguments.entityName])) {
 				entity.populate( arguments.rc[arguments.entityName] );
 				rc.processObject.addPopulatedSubProperty( arguments.entityName, entity );
 			}
@@ -485,13 +516,14 @@ component output="false" accessors="true" extends="HibachiController" {
 
 			// Call the process method on the entity, and then populate it back into the RC
 			arguments.rc[ arguments.entityName ] = entityService.invokeMethod( "process#arguments.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.processContext} );
-
+			
 			// SUCCESS
 			if(!arguments.rc[ arguments.entityName ].hasErrors()) {
-
+				
 				// Show the Generic Action Success Message
+				if(isEmpty(arguments.rc.messages)){
 				getHibachiScope().showMessage( getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.#arguments.rc.entityActionDetails.itemName#.#arguments.rc.processContext#_success" ), "success");
-
+				}
 				// Show all of the specific messages & error messages for the entity
 				arguments.rc[ arguments.entityName ].showErrorsAndMessages();
 
@@ -509,7 +541,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 				// Otherwise do the standard render / redirect
 				} else {
-
+					
 					// Place the id in the URL for redirects in case this was a new entity before
 					var isSPrimaryIDOverridden = false;
 					if(structKeyExists(arguments.rc,'sRedirectQS')){
@@ -524,14 +556,14 @@ component output="false" accessors="true" extends="HibachiController" {
 					if(!isSPrimaryIDOverridden){
 						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
 					}
-
+					
 					// Render or Redirect a Success
 					renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 				}
 
 			// FAILURE
 			} else {
-
+				
 				// Show all of the specific messages & error messages for the entity
 				arguments.rc[ arguments.entityName ].showErrorsAndMessages();
 
@@ -572,7 +604,7 @@ component output="false" accessors="true" extends="HibachiController" {
 					if(!isFPrimaryIDOverridden){
 						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
 					}
-
+					
 					// Render or Redirect a faluire
 					renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 
@@ -588,7 +620,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.entityName );
 
-		entityService.invokeMethod("export#arguments.entityName#");
+		entityService.invokeMethod( "export#arguments.entityName#" , arguments.rc );
 	}
 
 	// ============================= PRIVATE HELPER METHODS
@@ -596,7 +628,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	private void function loadEntitiesFromRCIDs(required struct rc) {
 		try{
 			for(var key in arguments.rc) {
-				if(!find('.',key) && right(key, 2) == "ID" && len(arguments.rc[key]) == "32") {
+				if(!find('.',key) && right(key, 2) == "ID" && getService('HibachiUtilityService').isHibachiUUID(arguments.rc[key])) {
 					var entityName = left(key, len(key)-2);
 					if( getHibachiService().getEntityNameIsValidFlag(entityName) && ( !structKeyExists(arguments.rc, entityName) || !isObject(arguments.rc[entityName]) ) ) {
 						var entityService = getHibachiService().getServiceByEntityName( entityName=entityName );
@@ -659,14 +691,17 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 		// First look for a sRedirectURL in the rc, and do a redirectExact on that
 		if(structKeyExists(arguments.rc, "sRedirectURL")) {
+			
 			getFW().redirectExact( redirectlocation=arguments.rc.sRedirectURL );
 
 		// Next look for a sRedirectAction in the rc, and do a redirect on that
 		} else if (structKeyExists(arguments.rc, "sRedirectAction")) {
+			
 			getFW().redirect( action=arguments.rc.sRedirectAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
 
 		// Next look for a sRenderItem in the rc, set the view to that, and then call the controller for that action
 		} else if (structKeyExists(arguments.rc, "sRenderItem")) {
+			
 			if(!getHibachiScope().getORMHasErrors()) {
 				getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 			}
@@ -677,6 +712,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		// If nothing was defined then we just do a redirect to the defaultAction, if it is just a single value then render otherwise do a redirect
 		} else if (listLen(arguments.defaultAction, ".") eq 1) {
+			
 			if(!getHibachiScope().getORMHasErrors()) {
 				getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 			}
@@ -686,6 +722,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			this.invokeMethod(arguments.defaultAction, {rc=arguments.rc});
 
 		} else {
+			
 			getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
 		}
 	}

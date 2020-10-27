@@ -1,6 +1,7 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
+	<cfparam name="attributes.csrf" type="string" default="#request.context.csrf#" />
 	<cfparam name="attributes.entity" type="any" />
 	<cfparam name="attributes.disableProcess" type="boolean" default="false" />
 	<cfparam name="attributes.disableProcessText" type="string" default="" />
@@ -18,6 +19,11 @@
 	<cfparam name="attributes.sRedirectQS" type="string" default="#request.context.entityActionDetails.sRedirectQS#">
 	<cfparam name="attributes.fRedirectQS" type="string" default="#request.context.entityActionDetails.fRedirectQS#">
 	<cfparam name="attributes.forceSSLFlag" type="boolean" default="false" />
+	
+	<!--- Make sure we don't have a stale token (this will happen when validation fails) --->
+	<cfif not attributes.hibachiScope.verifyCSRFToken(attributes.csrf)>
+		<cfset attributes.csrf = attributes.hibachiScope.generateCSRFToken() />
+	</cfif> 
 	
 	<cfset formAction ="">
 	
@@ -39,6 +45,7 @@
 		<form method="post" action="#formAction#" class="form-horizontal" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.processAction),':','','all'),'.','','all')#_#lcase(attributes.processContext)#">
 			<input type="hidden" name="#request.context.fw.getAction()#" value="#attributes.processAction#" />
 			<input type="hidden" name="processContext" value="#attributes.processContext#" />
+			<input type="hidden" name="csrf" value="#attributes.csrf#" />
 			<input type="hidden" name="#attributes.entity.getPrimaryIDPropertyName()#" value="#attributes.entity.getPrimaryIDValue()#" />
 			<input type="hidden" name="preProcessDisplayedFlag" value="1" />
 			<cfif len(attributes.sRedirectURL)><input type="hidden" name="sRedirectURL" value="#attributes.sRedirectURL#" /></cfif>
@@ -72,7 +79,7 @@
 					<div class="modal-footer">
 						<cfif attributes.edit>
 							<a href="##" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> #attributes.hibachiScope.rbKey('define.cancel')#</a>
-							<hb:HibachiActionCaller type="button" action="##" class="btn btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
+							<hb:HibachiActionCaller type="button" submit="true" action="##" class="btn btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
 						</cfif>
 					</div>
 				</div>

@@ -78,7 +78,7 @@ Notes:
 
 					<!--- MERCHANDISE --->
 					<cfif rc.processObject.getBaseProductType() eq "merchandise">
-						<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" edit="true" labelText="#$.slatwall.rbkey('entity.brand_plural')#">
 					</cfif>
 
 					<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
@@ -232,8 +232,11 @@ Notes:
 
 			<cfelseif rc.baseProductType eq "subscription">
 
-			<hb:HibachiPropertyList divClass="col-md-6">
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
+			<hb:HibachiPropertyList divClass="col-md-12">
+					<div class="col-md-6">
+						<h1 class="actionbar-title">Renewal Settings</h1>
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
+					</div> 
 			</hb:HibachiPropertyList>
 
 			<hb:HibachiPropertyList divClass="col-md-12">
@@ -269,7 +272,7 @@ Notes:
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardExpirationTermID" edit="true">
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmountType" edit="true" fieldAttributes="ng-model='redemptionAmountType' ng-init='redemptionAmountType=""""'">
 						<div ng-hide="redemptionAmountType == 'sameAsPrice' || redemptionAmountType == ''">
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmount" edit="true" value="0">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="baseRedemptionAmount" edit="true" value="0">
 						</div>
 
 					</hb:HibachiPropertyList>
@@ -278,5 +281,4 @@ Notes:
 		</hb:HibachiEntityProcessForm>
 	</span>
 </cfoutput>
-
 

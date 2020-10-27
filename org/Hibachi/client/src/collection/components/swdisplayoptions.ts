@@ -7,21 +7,24 @@ class SWDisplayOptions{
             $hibachi,
             hibachiPathBuilder,
             collectionPartialsPath,
-            rbkeyService
+            rbkeyService,
+            observerService
 
         ) => new SWDisplayOptions(
             $log,
             $hibachi,
             hibachiPathBuilder,
             collectionPartialsPath,
-            rbkeyService
+            rbkeyService,
+            observerService
         );
         directive.$inject = [
             '$log',
             '$hibachi',
             'hibachiPathBuilder',
             'collectionPartialsPath',
-            'rbkeyService'
+            'rbkeyService',
+            'observerService'
         ];
         return directive;
     }
@@ -34,7 +37,8 @@ class SWDisplayOptions{
         $hibachi,
         hibachiPathBuilder,
         collectionPartialsPath,
-        rbkeyService
+        rbkeyService,
+        observerService
     ){
 
         return{
@@ -46,7 +50,7 @@ class SWDisplayOptions{
             transclude:true,
             scope:{
                 orderBy:"<",
-                columns:'<',
+                columns:'=',
                 joins:"<",
                 groupBys:"<",
                 propertiesList:"<",
@@ -58,17 +62,25 @@ class SWDisplayOptions{
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
             controller:['$scope','$element','$attrs',function($scope,$element,$attrs){
 
-
                 this.removeColumn = function(columnIndex){
-
-                    if($scope.columns.length){
-                        $scope.columns.splice(columnIndex, 1);
-                    }
-
-                };
+                    $scope.removeColumn(columnIndex);
+                }
+                
+                this.selectedPropertyChanged = function(selectedProperty, aggregate?){
+                    $scope.selectedPropertyChanged(selectedProperty,aggregate);
+                }
             }],
-            link: (scope,element,$attrs,controllers,observerService)=>{
+            link: (scope,element,$attrs,controllers)=>{
+            
+                scope.removeColumn = function(columnIndex){
 
+                    if(scope.columns.length){
+                        scope.columns.splice(columnIndex, 1);
+                    }
+                    
+                    observerService.notifyById('displayOptionsAction',controllers.swListingDisplay.tableID, {action: 'removeColumn',collectionConfig:controllers.swListingControls.collectionConfig});
+                };
+            
                 scope.breadCrumbs = [ {
                     entityAlias : scope.baseEntityAlias,
                     cfc : scope.baseEntityAlias,
@@ -94,12 +106,25 @@ class SWDisplayOptions{
                     var propertyIdentifier = selectedProperty.propertyIdentifier;
                     var title = '';
                     var propertyIdentifierArray = propertyIdentifier.replace(/^_/,'').split(/[._]+/);
+                    var actualPropertyIdentifier = propertyIdentifierArray.slice(1,propertyIdentifierArray.length).join('.');
                     var currentEntity;
                     var currentEntityInstance;
                     var prefix = 'entity.';
-
                     if(selectedProperty.$$group == "attribute"){
                         return selectedProperty.displayPropertyIdentifier;
+                    }
+                    //if is aggregate of an object
+                    if(selectedProperty.aggregate && selectedProperty.cfc){
+                        var lastEntityName = $hibachi.getLastEntityNameInPropertyIdentifier(scope.baseEntityName.replace('Slatwall',''),actualPropertyIdentifier);
+                        var pidArray = actualPropertyIdentifier.split('.');
+                        var lastProperty = pidArray[pidArray.length-1];
+                        if($hibachi.getPropertyIsObjectByEntityNameAndPropertyIdentifier(lastEntityName,lastProperty)){
+                            var propertyMetaData = $hibachi.getPropertyByEntityNameAndPropertyName(lastEntityName,lastProperty);
+                            lastEntityName = propertyMetaData.cfc;
+                        
+                        }
+                        title = rbkeyService.getRBKey(prefix+lastEntityName+'_plural');
+                        return title;
                     }
 
                     angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key:number){
@@ -120,12 +145,15 @@ class SWDisplayOptions{
                         }
                     });
 
-
                     return title;
                 };
+                
+                scope.hasToMany=function(propertyIdentifier){
+                    return $hibachi.hasToManyByEntityNameAndPropertyIdentifier(scope.baseEntityName,scope.baseEntityAlias,propertyIdentifier);
+                }
 
-                scope.addColumn = function(closeDialog){
-                    var selectedProperty = scope.selectedProperty;
+                scope.addColumn = (closeDialog)=>{
+                    var selectedProperty:any = scope.selectedProperty;
                     if(angular.isDefined(scope.selectedAggregate)){
                         selectedProperty = scope.selectedAggregate;
                     }
@@ -151,12 +179,13 @@ class SWDisplayOptions{
                             if(angular.isDefined(selectedProperty.ormtype)){
                                 column['ormtype'] = selectedProperty.ormtype;
                             }
-                            if(selectedProperty.hb_formattype){
+                            if((!column['type'] || column['type'] == 'none' ) && selectedProperty.hb_formattype){
                                 column['type'] = selectedProperty.hb_formattype;
                             }else{
                                 column['type'] = 'none';
                             }
-                            if(angular.isDefined(selectedProperty.aggregate)){
+                            if(angular.isDefined(selectedProperty.aggregate) && selectedProperty.aggregate.length){
+                                
                                 column['ormtype'] = 'string';
                                 column['aggregate']={
                                     aggregateFunction : selectedProperty.aggregate.toUpperCase(),
@@ -228,8 +257,11 @@ class SWDisplayOptions{
                                 scope.addDisplayDialog.toggleDisplayDialog();
                                 scope.selectBreadCrumb(0);
                             }
+                            
+                            observerService.notifyById('displayOptionsAction',controllers.swListingDisplay.tableID, {action: 'addColumn',collectionConfig:controllers.swListingControls.collectionConfig,column:column});
                         }
                     }
+                    
                 };
 
                 scope.selectBreadCrumb = function(breadCrumbIndex){
@@ -253,7 +285,6 @@ class SWDisplayOptions{
 
                 scope.selectedPropertyChanged = function(selectedProperty, aggregate?){
                     // drill down or select field?
-
 
                     if(!aggregate){
                         scope.selectedProperty = selectedProperty;

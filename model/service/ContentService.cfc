@@ -59,6 +59,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 
+	public any function getAppTemplates(required any content){
+		var templateDirectory = arguments.content.getSite().getApp().getAppPath()& '/templates/';
+		var directoryList = directoryList(templateDirectory,false,"query","*.cfm|*.html");
+		var templates =[];
+		for(var directory in directoryList){
+			var template ={};
+			template['name'] = directory.name;
+			template['value'] = directory.name;
+			arrayAppend(templates,template);
+		}
+		return templates;
+	}
+	
 	public any function getCMSTemplateOptions(required any content){
 		var templateDirectory = arguments.content.getSite().getTemplatesPath();
 		
@@ -69,13 +82,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(directoryExists(templateDirectory)) {
 			var directoryList = directoryList(templateDirectory,false,"query","*.cfm|*.html");
 			var templates = [];
+			
 			for(var directory in directoryList){
 				var template ={};
 				template['name'] = directory.name;
 				template['value'] = directory.name;
 				arrayAppend(templates,template);
 			}
-			return templates;
+			
+			var appTemplates = getAppTemplates(arguments.content);
+			for(var appTemplate in appTemplates){
+				if(!ArrayFind(templates, function(arrayElement) {return arrayElement.name == appTemplate.name;})){
+					arrayAppend(templates,appTemplate);
+				}	
+			}
+			
+			return getService('HibachiUtilityService').structArraySort(arrayOfStructs=templates, key='value', sortType='text');
 		}
 	}
 
@@ -147,6 +169,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.content;
 	}
 
+	public any function saveCategory(required any category, struct data={}){
+		if(!arguments.category.hasErrors()){
+			if(structKeyExists(arguments.data,'urlTitle') && len(arguments.data.urlTitle)){
+				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
+			}else{
+				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.categoryName);
+			}
+		}
+		
+		arguments.category = super.save(arguments.category,arguments.data);
+		return arguments.category;
+		
+	}
+
 	public any function getDefaultContentBySIte(required any site){
 		return getContentDAO().getDefaultContentBySIte(arguments.site);
 	}
@@ -191,6 +227,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Call save on the content
 		arguments.content.setSite(arguments.processObject.getSite());
 		arguments.content.setParentContent(arguments.processObject.getParentContent());
+
+		if(!isNull(arguments.processObject.getContentTemplateType())){
+			arguments.content.setContentTemplateType(arguments.processObject.getContentTemplateType());
+		}
+		
 		if(
 			(isNull(arguments.data.urlTitle) || (!isNull(arguments.data.urlTitle) && !len(arguments.data.urlTitle)))
 			&& !isNull(arguments.content.getParentContent())

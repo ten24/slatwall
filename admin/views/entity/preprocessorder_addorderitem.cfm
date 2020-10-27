@@ -79,7 +79,7 @@ Notes:
 							<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
 
 							<!--- Order Item Details --->
-							<cfif rc.processObject.getSku().isGiftCardSku()>
+							<cfif rc.processObject.getSku().isGiftCardSku() && rc.processObject.getSku().getGiftCardRecipientRequiredFlag() >
 								<div ng-form="giftRecipientControl.quantityForm">
 									<div class="alert alert-error" ng-show="giftRecipientControl.quantityForm.$invalid"
 										 sw-rbkey="'admin.processorder_addorderitem.quantity.invalid'"></div>
@@ -91,10 +91,77 @@ Notes:
 										</div>
 									</div>
 								</div>
+							<cfelseif rc.processObject.getSku().isGiftCardSku() && !rc.processObject.getSku().getGiftCardAutoGenerateCodeFlag() >
+								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 							<cfelse>
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 							</cfif>
+							<input type="hidden" name="oldQuantity" value="#rc.processObject.getQuantity()#">
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+
+							<!--- Manual Gift Card Code Entry --->
+							<cfif rc.processObject.getSku().isGiftCardSku() && !rc.processObject.getSku().getGiftCardRecipientRequiredFlag() && !rc.processObject.getSku().getGiftCardAutoGenerateCodeFlag()>
+								<script type="text/javascript">
+									(function($) {
+										var selectorQuantity = "form##adminentityprocessorder_addorderitem input[name=quantity]";
+										var selectorGiftCardCodes = "##gift-card-code-fields";
+										$(selectorQuantity).ready(function() {
+											var giftCardCodeTitle = '#$.slatwall.rbKey('entity.GiftCard.giftCardCode')#';
+
+											// init
+											updateGiftCardInputFields();
+	
+											// setup change handler
+											$(selectorQuantity).change(function() {
+												updateGiftCardInputFields();
+											});
+	
+											function updateGiftCardInputFields() {
+												var quantity = $(selectorQuantity).val();
+												if (quantity < 1) {
+													$(selectorQuantity).val(1);
+													quantity = 1;
+												} else if (quantity > #rc.processObject.getSku().setting('skuOrderMaximumQuantity')#) {
+													$(selectorQuantity).val(#rc.processObject.getSku().setting('skuOrderMaximumQuantity')#);
+													quantity = #rc.processObject.getSku().setting('skuOrderMaximumQuantity')#;
+												}
+
+												var existingInputs = $(selectorGiftCardCodes).children();
+	
+												if (quantity > existingInputs.length) {
+													for (var i = existingInputs.length; i < existingInputs.length + (quantity - existingInputs.length); i++) {
+														addGiftCardCodeInputField(i+1);
+													}
+												} else if (quantity < existingInputs.length) {
+													for (var i = existingInputs.length - 1; i > quantity - 1; i--) {
+														removeGiftCardCodeInputField(i+1);
+													}
+												}
+											}
+	
+											function addGiftCardCodeInputField(fieldIndex) {
+												var fieldNamePrefix = 'recipients[' + fieldIndex + ']';
+												var inputFieldTemplate = '<div class="form-group s-required">';
+												inputFieldTemplate += '<label for="a" class="control-label col-sm-4">';
+												inputFieldTemplate += '<span class="s-title">' + fieldIndex + '. ' + giftCardCodeTitle + '</span>';
+												inputFieldTemplate += '</label>';
+												inputFieldTemplate += '<div class="col-sm-8">';
+												inputFieldTemplate += '<input type="hidden" name="' + fieldNamePrefix + '.quantity" value="1" class="form-control" />';
+												inputFieldTemplate += '<input type="text" name="' + fieldNamePrefix + '.manualGiftCardCode" value="" class="form-control" />';
+												inputFieldTemplate += '</div>';
+												inputFieldTemplate += '</div>';
+	
+												$(selectorGiftCardCodes).append(inputFieldTemplate);
+											}
+	
+											function removeGiftCardCodeInputField(fieldIndex) {
+												$(selectorGiftCardCodes).children().last().remove();
+											}
+										});
+									})(jQuery);
+								</script>
+								<div id="gift-card-code-fields"></div>
+							</cfif>
 
 							<!--- Add form fields to add registrant accounts --->
 							<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
@@ -119,19 +186,20 @@ Notes:
 										<!--- Existing Account --->
 										<hb:HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
 											<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
-											<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+											<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"  object="#rc.order#" property="account"/>
 										</hb:HibachiDisplayToggle>
 									</fieldset>
 									<br>
 								</cfloop>
 							</cfif>
-
 							<!--- Order Item Custom Attributes --->
 							<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
-								<hr />
-								<h5>#attributeSet.getAttributeSetName()#</h5>
-								<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
-							</cfloop>
+								<cfif not isNull(attributeSet.getAttributeSetName())>
+									<hr />
+									<h5>#attributeSet.getAttributeSetName()#</h5>
+									<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
+								</cfif>
+							</cfloop> 
 
 							<!--- Order Fulfillment --->
 							<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
@@ -160,35 +228,82 @@ Notes:
 										</cfif>
 									</hb:HibachiDisplayToggle>
 
+									<!--- Attribute values for location typeahead used by shipping and pickup fulfillment methods --->
+									<cfset topLevelLocationID = "" />
+									<cfset selectedLocationID = "" />
+
+									<!--- Apply additional location filtering to typeahead if non-leaf order defaultStockLocation exists --->
+									<cfif not isNull(rc.processObject.getOrder().getDefaultStockLocation())>
+										<cfset topLevelLocationID = rc.processObject.getOrder().getDefaultStockLocation().getLocationID() />
+										
+										<!--- use defaultStockLocation as default if it is the only option --->
+										<cfif not rc.order.getDefaultStockLocation().hasChildren()>
+											<cfset selectedLocationID = topLevelLocationID />
+										</cfif>
+									</cfif>
+
 									<!--- Pickup Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
-										<swa:SlatwallLocationTypeahead locationPropertyName="pickupLocationID" locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="true" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
-										
+
+										<!--- Select default location if pickupLocationID provided --->
+										<cfif not isNull(rc.processObject.getPickupLocationID())>
+											<cfset selectedLocationID = rc.processObject.getPickupLocationID() />
+										</cfif>
+										<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#">
 										
 									</hb:HibachiDisplayToggle>
 
 									<!--- Shipping Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
+										
+										<!--- Display fulfillment location typeahead if non-leaf order defaultStockLocation exists --->
+										<cfif not isNull(rc.order.getDefaultStockLocation()) and not rc.order.getDefaultStockLocation().hasChildren()>
+
+											<!--- Implicitly set locationID to that of defaultStockLocation --->
+											<input type="hidden" name="locationID" value="#selectedLocationID#">
+
+										<cfelse>
+											<!--- Select default fulfillment location based on locationID --->
+											<cfif not isNull(rc.processObject.getLocationID())>
+												<cfset selectedLocationID = rc.processObject.getLocationID() />
+											</cfif>
+
+											<!--- Display typeahead if options exist --->
+											<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" object="#rc.processObject#" property="locationID" edit="#rc.edit#">
+											<!---
+											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" title="#$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" />  
+											--->
+										</cfif>
 
 										<!--- Setup the primary address as the default account address --->
 										<cfset defaultValue = "" />
 
-									<cfif !isNull(rc.order.getAccount())>
+										<cfif !isNull(rc.order.getAccount())>
 										<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
 											<cfset defaultValue = rc.order.getAccount().getPrimaryAddress().getAccountAddressID() />
 										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
 											<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
 										</cfif>
-
+										<cfset fieldAttributes = "ng-model=""shippingAccountAddressID"" ng-init=""shippingAccountAddressID = '#defaultValue#'""" />
 										<!--- Account Address --->
-										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
-									</cfif>
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" fieldAttributes="#fieldAttributes#"  />
+											
+										</cfif>
+										<!---Existing Addresses--->
+										<cfloop array="#rc.processObject.getShippingAccountAddresses()#" index="accountAddress">
+											<span ng-if="shippingAccountAddressID == '#accountAddress.getAccountAddressID()#'">
+												<!--- Address Display --->
+												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
+											</span>
+										</cfloop>
+										
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
-
+											<span ng-if="shippingAccountAddressID == ''">
 											<!--- Address Display --->
 											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+											</span>
 
 										<cfif !isNull(rc.order.getAccount())>
 											<!--- Save New Address --->
@@ -201,11 +316,11 @@ Notes:
 										</cfif>
 
 										</hb:HibachiDisplayToggle>
-
+										
 									</hb:HibachiDisplayToggle>
-
-
-
+									<cfif $.slatwall.setting('globalAllowThirdPartyShippingAccount')>
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="thirdPartyShippingAccountIdentifier" edit="#rc.edit#">
+									</cfif>
 								</hb:HibachiDisplayToggle>
 							<cfelse>
 								<!--- Order Return --->
@@ -228,7 +343,7 @@ Notes:
 
 					</hb:HibachiPropertyRow>
 
-					<cfif rc.processObject.getSku().isGiftCardSku()>
+					<cfif rc.processObject.getSku().isGiftCardSku() && rc.processObject.getSku().getGiftCardRecipientRequiredFlag()>
 						<div sw-add-order-item-gift-recipient quantity="giftRecipientControl.quantity" order-item-gift-recipients="giftRecipientControl.orderItemGiftRecipients"></div>
 					</cfif>
 			</span>

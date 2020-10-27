@@ -46,9 +46,9 @@
 Notes:
 
 --->
+
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
-
 <cfoutput>
 <!DOCTYPE html>
 <html lang="en" id="ngApp" ng-strict-di>
@@ -81,24 +81,25 @@ Notes:
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
 
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></script>
-
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></hb:HibachiScript>
 		#request.slatwallScope.renderJSObject()#
 		<script type="text/javascript">
 			var hibachiConfig = $.slatwall.getConfig();
 		</script>
-
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/qrcode.min.js"></hb:HibachiScript>
 		<!--- Trigger Print Window --->
-		<cfif listLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
+		<cfif $.slatwall.getLoggedInFlag() and listLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
 				var printWindow = window.open('#request.slatwallScope.getBaseURL()#?slatAction=admin:print.default', '_blank');
 			</script>
 		</cfif>
 		<script src='https://www.google.com/recaptcha/api.js'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
 	</head>
 
 	<body <cfif !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
@@ -145,8 +146,10 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
+									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listfulfillmentbatch" type="list">	
+									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
@@ -165,15 +168,25 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listloyalty" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
 									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listledgeraccount" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendor" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.warehouse_nav')#" icon="barcode icon-white" type="nav">
-								<hb:HibachiActionCaller action="admin:entity.liststock" type="list">
-								<hb:HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
-								<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
-								<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
-								<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
+								<hb:HibachiDividerHider>
+									<hb:HibachiActionCaller action="admin:entity.liststock" type="list">
+									<hb:HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
+									<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
+									<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcontainerpreset" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcyclecountgroup" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcyclecountbatch" type="list">
+									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listminmaxsetup" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listminmaxstocktransfer" type="list">
+								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<cfset local.integrationSubsystems = $.slatwall.getService('integrationService').getActiveFW1Subsystems() />
 							<cfif arrayLen(local.integrationSubsystems)>
@@ -228,6 +241,12 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
+									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
+									<!---deprecated--->
+									<!---<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
+									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">--->
+									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
@@ -244,6 +263,7 @@ Notes:
 										<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
 										<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
 										<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">
+											<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#&#getHibachiScope().getApplicationValue('applicationUpdateKey')#=#getHibachiScope().getApplicationValue('applicationUpdatePassword')#&#getHibachiScope().getApplicationValue('applicationCreateJsonKey')#=#getHibachiScope().getApplicationValue('applicationCreateJsonPassword')#" type="list" text="Create Json">
 									</cfif>
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
@@ -252,7 +272,10 @@ Notes:
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
 								<li ng-controller="globalSearch">
+									
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
+										<cfif $.slatwall.setting('globalDisableSearchSettings') eq 0>
+										
 										<!--- Start of Search --->
 										<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
 											<div class="form-group">
@@ -281,6 +304,9 @@ Notes:
 											</div>
 										</form>
 										<!--- End of Search --->
+										
+										</cfif>
+										
 									</cfif>
 								</li>
 								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">
@@ -394,12 +420,17 @@ Notes:
 			(structKeyExists(request,'isWysiwygPage') AND request.isWysiwygPage)
 			|| (structKeyExists(rc,'edit'))
 		>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
+			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></hb:HibachiScript>
+			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></hb:HibachiScript>
+			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></hb:HibachiScript>
 		</cfif>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+
+		<!-- code split vendor bundle before the other bundles because its common among them. -->
+ 		
+ 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
+ 		
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
+
 	</body>
 </html>
 </cfoutput>

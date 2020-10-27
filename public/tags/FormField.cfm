@@ -72,6 +72,7 @@ Notes:
 		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		text				|	Simple Text Field
+		email				|	Checks that input value passed in is in valid email format
 		textarea			|	Simple Textarea
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
 	--->
@@ -175,6 +176,11 @@ Notes:
 		<cfcase value="text">
 			<cfoutput>
 				<input type="text" name="#attributes.name#" value="#attributes.value#" class="#attributes.class#" #attributes.fieldAttributes# />
+			</cfoutput>
+		</cfcase>
+		<cfcase value="email">
+			<cfoutput>
+				<input type="email" name="#attributes.name#" value="#attributes.value#" class="#attributes.class#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textarea">

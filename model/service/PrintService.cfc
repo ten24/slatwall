@@ -47,7 +47,8 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiService" persistent="false" accessors="true" output="false">
-	
+
+	<cfproperty name="hibachiCollectionService" />	
 	<cfproperty name="templateService" />
 	
 	<!--- ===================== START: Logical Methods =========================== --->
@@ -78,18 +79,33 @@ Notes:
 				var templateObject = arguments.data[ printTemplate.getPrintTemplateObject() ];
 			} else if(structKeyExists(arguments.data, templateObjectIDProperty)) {
 				var templateObject = getServiceByEntityName( printTemplate.getPrintTemplateObject() ).invokeMethod("get#printTemplate.getPrintTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
-			}
+			} else if(structKeyExists(arguments.data, "collectionConfig")){ 
+				var templateObject = getHibachiCollectionService().newCollection(printTemplate.getPrintTemplateObject()); 
+
+				templateObject.setCollectionObject(printTemplate.getPrintTemplateObject());
+				var collectionConfigStruct = deserializeJson(arguments.data.collectionConfig);  	
+				templateObject.setCollectionConfigStruct(collectionConfigStruct);
+				if(structKeyExists(collectionConfigStruct, "keywords")){
+					templateObject.setKeywords(collectionConfigStruct.keywords); 
+				}
+				if(structKeyExists(collectionConfigStruct, "currentPage")){
+					templateObject.setCurrentPageDeclaration(collectionConfigStruct.currentPage); 
+				}
+			} 
 			
 			if(!isNull(templateObject)) {
 				
 				// Setup the print content
-				if(!isNull(printTemplate.getPrintContent())) {
+				if(!isNull(printTemplate.getPrintContent()) && templateObject.getClassName() != 'Collection') {
 					arguments.print.setPrintContent( templateObject.stringReplace( printTemplate.getPrintContent() ) );	
+				} else if(templateObject.getClassName() == 'Collection'){
+					arguments.print.setPrintContent( printTemplate.getPrintContent() );	
 				}
 				
 				var templateFileResponse = "";
 				var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="print", objectName=printTemplate.getPrintTemplateObject(), fileName=printTemplate.getPrintTemplateFile());
-				
+			
+	
 				local.print = arguments.print;
 				local.printData = {};
 				local[ printTemplate.getPrintTemplateObject() ] = templateObject;
@@ -99,7 +115,6 @@ Notes:
 						include '#templatePath#';
 					}
 				}
-				
 				if(len(templateFileResponse) && !structKeyExists(local.printData, "printContent")) {
 					local.printData.printContent = templateFileResponse;
 				}
@@ -112,10 +127,8 @@ Notes:
 				
 				//Now add it to the print queue.
 				getHibachiScope().addToPrintQueue(arguments.print.getPrintID());
-			}
-			
-		}
-		
+			} 
+		} 		
 		
 		return arguments.print;
 	}

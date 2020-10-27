@@ -63,6 +63,8 @@ Notes:
 <cfparam name="attributes.previous" type="string" default="&lsaquo; "/>
 <cfparam name="attributes.next" type="string" default="&rsaquo;"/>
 <cfparam name="attributes.last" type="string"default="&raquo;" />
+<cfparam name="attributes.showFirstAndLast" type="boolean" default="true" />
+
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
 		<cfset lastPage = attributes.collection.getTotalPages()>

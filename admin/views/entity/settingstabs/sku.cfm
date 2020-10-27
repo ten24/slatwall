@@ -69,6 +69,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuGiftCardAutoGenerateCode" />
 		<swa:SlatwallSetting settingName="skuGiftCardCodeLength" />
         <swa:SlatwallSetting settingName="skuGiftCardEnforceExpirationTerm" />
+		<swa:SlatwallSetting settingName="skuGiftCardRecipientRequired" />
 		<swa:SlatwallSetting settingName="skuHoldBackQuantity" />
 		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" />
 		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" />
@@ -79,8 +80,18 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesMQATSBOMFlag" />
 		<swa:SlatwallSetting settingName="skuTaxCategory" />
 		<swa:SlatwallSetting settingName="skuShippingCostExempt" />
+		<swa:SlatwallSetting settingName="skuExpenseLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuRevenueLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuCogsLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuAssetLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuLiabilityLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuStockHold"/>
+		<swa:SlatwallSetting settingName="skuStockHoldTime"/>
+
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

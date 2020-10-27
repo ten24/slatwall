@@ -53,11 +53,20 @@ Notes:
 <cfparam name="rc.integration" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<cfset integrationCFC = rc.integration.getIntegrationCFC()/>
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
 		
 		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false">
 			<hb:HibachiProcessCaller action="admin:entity.processIntegration" entity="#rc.integration#" processContext="test" type="list" hideDisabled="false" />
+			<cfloop array="#integrationCFC.getDetailActions()#" index="detailAction">
+			    <hb:HibachiActionCaller 
+			        action="#detailAction.action#" 
+			        type="list" 
+			        modal="#structKeyExists(detailAction,'modal')?detailAction.modal:false#"
+			    />
+			</cfloop>
 		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiEntityDetailGroup object="#rc.integration#">

@@ -76,6 +76,151 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		settingPrefix = variables.service.getSettingPrefix(settingName);
 		assertEquals('',settingPrefix);
 	}
+	/**
+	* @test
+	*/
+	public void function saveSettingProductDisplayTemplateTest(){
+		var siteData = {
+			siteID=""
+		};
+		var site = createPersistedTestEntity('site',siteData);
+		
+		var contentData = {
+			contentID="",
+			site={
+				siteID=site.getSiteID()
+			},
+			//Product template
+			contentTemplateType="444df331c2c2c3b093212519e8c1ae8b"
+		};
+		var contentEntity = createPersistedTestEntity('Content',contentData);
+		
+		var otherContentData = {
+			contentID="",
+			site={
+				siteID=site.getSiteID()
+			},
+			//Product template
+			contentTemplateType="444df331c2c2c3b093212519e8c1ae8b"
+		};
+		var otherContentEntity = createPersistedTestEntity('Content',otherContentData);
+		
+		var productData = {
+			productID=""
+		};
+		var product = createPersistedTestEntity("Product",productData);
+		
+		var productData2 = {
+			productID=""
+		};
+		var product2 = createPersistedTestEntity("Product",productData2);
+		
+		var settingData = {
+			settingID="",
+			settingName="productDisplayTemplate",
+			settingValue=contentEntity.getContentID(),
+			product={
+				productID=product.getProductID()				
+			},
+			site={
+				siteID=site.getSiteID()
+			}
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		
+		var settingData2 = {
+			settingID="",
+			settingName="productDisplayTemplate",
+			settingValue=otherContentEntity.getContentID(),
+			product={
+				productID=product2.getProductID()				
+			},
+			site={
+				siteID=site.getSiteID()
+			}
+		};
+		var settingEntity2 = createPersistedTestEntity('Setting',settingData2);
+		
+		assertEquals(settingEntity.getSettingValue(),product.setting('productDisplayTemplate',[site]));
+		assertEquals(settingEntity2.getSettingValue(),product2.setting('productDisplayTemplate',[site]));
+		
+		
+	}
+	/**
+	* @test
+	*/
+	public void function saveSettingCategoryDisplayTemplateTest(){
+		var siteData = {
+			siteID=""
+		};
+		var site = createPersistedTestEntity('site',siteData);
+		
+		var contentData = {
+			contentID="",
+			site={
+				siteID=site.getSiteID()
+			},
+			//Category template
+			contentTemplateType="447df331c2c2c3b093212519e8c1ae8g"
+		};
+		var contentEntity = createPersistedTestEntity('Content',contentData);
+		
+		var otherContentData = {
+			contentID="",
+			site={
+				siteID=site.getSiteID()
+			},
+			//Category template
+			contentTemplateType="447df331c2c2c3b093212519e8c1ae8g"
+		};
+		var otherContentEntity = createPersistedTestEntity('Content',otherContentData);
+		
+		var categoryData = {
+			categoryID=""
+		};
+		var category = createPersistedTestEntity("category",categoryData);
+		
+		var categoryData2 = {
+			categoryID=""
+		};
+		var category2 = createPersistedTestEntity("category",categoryData2);
+		
+		var settingData = {
+			settingID="",
+			settingName="categoryDisplayTemplate",
+			settingValue=contentEntity.getContentID(),
+			category={
+				categoryID=category.getcategoryID()				
+			},
+			site={
+				siteID=site.getSiteID()
+			}
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		
+		var settingData2 = {
+			settingID="",
+			settingName="categoryDisplayTemplate",
+			settingValue=otherContentEntity.getContentID(),
+			category={
+				categoryID=category2.getcategoryID()				
+			},
+			site={
+				siteID=site.getSiteID()
+			}
+		};
+		var settingEntity2 = createPersistedTestEntity('Setting',settingData2);
+		
+		assertEquals(settingEntity.getSettingValue(),category.setting('categoryDisplayTemplate',[site]));
+		assertEquals(settingEntity2.getSettingValue(),category2.setting('categoryDisplayTemplate',[site]));
+		
+		
+	}
+
+
 }
+
 
 

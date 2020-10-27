@@ -57,12 +57,12 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 
 	public any function init(){
 		variables.transactionCodes = {
-			authorize="AUTH_ONLY",
-			authorizeAndCharge="AUTH_CAPTURE",
-			chargePreAuthorization="PRIOR_AUTH_CAPTURE",
-			credit="CREDIT",
-			void="VOID",
-			inquiry="INQUIRY"
+			authorize="authOnlyTransaction",
+			authorizeAndCharge="authCaptureTransaction",
+			chargePreAuthorization="priorAuthCaptureTransaction",
+			credit="refundTransaction",
+			void="voidTransaction",
+			generateToken="generateToken"
 		};
 
 		return this;
@@ -73,71 +73,93 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 	}
 
 	public any function processCreditCard(required any requestBean){
-		var rawResponse = "";
+		if(requestBean.getTransactionType() == variables.transactionCodes.generateToken){
+			return getCustomerProfile(requestBean);
+		}
+
 		var requestData = getRequestData(requestBean);
-		rawResponse = postRequest(requestData);
+		var rawResponse = postRequest(requestData);
 		return getResponseBean(rawResponse, requestData, requestBean);
 	}
 
-	private struct function getRequestData(required any requestBean){
-		var requestData = {};
-		requestData["x_version"] = "3.1";
-		requestData["x_login"] = setting('loginID');
-		requestData["x_tran_key"] = setting('transKey');
-		var testModeFlag = getTestModeFlag(arguments.requestBean,'testModeFlag');
-		requestData["x_test_request"] = testModeFlag;
-		requestData["x_duplicate_window"] = setting('duplicateWindow');
-		requestData["x_method"] = "CC";
-		requestData["x_type"] = variables.transactionCodes[requestBean.getTransactionType()];
-
-		requestData["x_amount"] = requestBean.getTransactionAmount();
+	private string function getRequestData(required any requestBean){
+		var requestData = getTransient('AuthorizeNetTransactionRequest');
+		requestData.addSetting('duplicateWindow', true);
+		requestData.setTransactionType(variables.transactionCodes[requestBean.getTransactionType()]);
+		requestData.setAmount(requestBean.getTransactionAmount());
 
 		if(!isNull(requestBean.getCreditCardNumber())) {
-			requestData["x_card_num"] = requestBean.getCreditCardNumber();
+			requestData.setCardNumber(requestBean.getCreditCardNumber());
 		} else {
- 			requestData["x_card_num"] = requestBean.getCreditCardLastFour();
+ 			requestData.setCardNumber(requestBean.getCreditCardLastFour());
   		}
-		if(!isNull(requestBean.getSecurityCode())) {
-			requestData["x_card_code"] = requestBean.getSecurityCode();
-		}
-		if(!isNull(requestBean.getExpirationMonth()) && !isNull(requestBean.getExpirationYear())) {
-			requestData["x_exp_date"] = left(requestBean.getExpirationMonth(),2) & "" & right(requestBean.getExpirationYear(),2);
-		}
-		requestData["x_invoice_num"] = requestBean.getOrder().getShortReferenceID( true );
-		requestData["x_description"] = "";
 
-		requestData["x_cust_id"] = requestBean.getAccountID();
-		requestData["x_first_name"] = requestBean.getAccountFirstName();
-		requestData["x_last_name"] = requestBean.getAccountLastName();
-		requestData["x_address"] = isNull(requestBean.getBillingStreetAddress()) ? "":requestBean.getBillingStreetAddress();
-		requestData["x_city"] = isNull(requestBean.getBillingCity()) ? "":requestBean.getBillingCity();
-		requestData["x_state"] = isNull(requestBean.getBillingStateCode()) ? "xx":requestBean.getBillingStateCode();
-		requestData["x_zip"] = isNull(requestBean.getBillingPostalCode()) ? "":requestBean.getBillingPostalCode();
+  		requestData.setProviderToken(requestBean.getProviderToken());
+
+  		if(!isNull(requestBean.getSecurityCode())) {
+			requestData.setCardCode(requestBean.getSecurityCode());
+		}
+
+		if(!isNull(requestBean.getExpirationMonth()) && !isNull(requestBean.getExpirationYear())) {
+			requestData.setExpirationDate(left(requestBean.getExpirationMonth(),2) & "" & right(requestBean.getExpirationYear(),2));
+			if(len(requestData.getExpirationDate()) == 3){
+				requestData.setExpirationDate('0' & requestData.getExpirationDate());
+			}
+		}
+
+		if(listLen(setting('invoiceUserFileOneTemplate'), ' ') == 2){
+			requestData.addUserField(listFirst(setting('invoiceUserFileOneTemplate'), ' '), getService('HibachiUtilityService').replaceStringTemplate(listLast(setting('invoiceUserFileOneTemplate'), ' '), requestBean.getOrder()));
+		}
+		if(listLen(setting('invoiceUserFileTwoTemplate'), ' ') == 2){
+			requestData.addUserField(listFirst(setting('invoiceUserFileTwoTemplate'), ' '), getService('HibachiUtilityService').replaceStringTemplate(listLast(setting('invoiceUserFileTwoTemplate'), ' '), requestBean.getOrder()));
+		}
+		if(listLen(setting('invoiceUserFileThreeTemplate'), ' ') == 2){
+			requestData.addUserField(listFirst(setting('invoiceUserFileThreeTemplate'), ' '), getService('HibachiUtilityService').replaceStringTemplate(listLast(setting('invoiceUserFileThreeTemplate'), ' '), requestBean.getOrder()));
+		}
+		if(!isNull(requestBean.getOrder())){
+		requestData.setInvoiceNumber(requestBean.getOrder().getShortReferenceID( true ));
+		}
+
+		requestData.setCustomerId(getService('AccountService').getAccount(requestBean.getAccountID()).getShortReferenceID(true));
+
+		if(len(requestBean.getAccountFirstName())){
+			requestData.setFirstName(requestBean.getAccountFirstName());
+		}else{
+			requestData.setFirstName(listFirst(requestBean.getOrderPayment().getNameOnCreditCard(), ' '));
+		}
+
+		if(len(requestBean.getAccountLastName())){
+			requestData.setLastName(requestBean.getAccountLastName());
+		}else if(listLen(requestBean.getOrderPayment().getNameOnCreditCard(), ' ') > 1){
+			requestData.setLastName(listLast(requestBean.getOrderPayment().getNameOnCreditCard(), ' '));
+		}else{
+			requestData.setLastName("");
+		}
+
+		requestData.setAddress(isNull(requestBean.getBillingStreetAddress()) ? "":requestBean.getBillingStreetAddress());
+		requestData.setCity(isNull(requestBean.getBillingCity()) ? "":requestBean.getBillingCity());
+		requestData.setState(isNull(requestBean.getBillingStateCode()) ? "":requestBean.getBillingStateCode());
+		requestData.setZip(isNull(requestBean.getBillingPostalCode()) ? "":requestBean.getBillingPostalCode());
 
 		if(!isNull(requestBean.getAccountPrimaryPhoneNumber())) {
-			requestData["x_phone"] = requestBean.getAccountPrimaryPhoneNumber();
-		} else {
-			requestData["x_phone"] = "";
+			requestData.setPhoneNumber(requestBean.getAccountPrimaryPhoneNumber());
 		}
 
 		if(!isNull(requestBean.getAccountPrimaryEmailAddress())) {
-			requestData["x_email"] = requestBean.getAccountPrimaryEmailAddress();
-		} else {
-			requestData["x_email"] = "";
+			requestData.setEmail(requestBean.getAccountPrimaryEmailAddress());
 		}
 
-		requestData["x_customer_ip"] = getRemoteAddress();
+		requestData.setCustomerIP(CGI.REMOTE_ADDR);
 		if(!isNull(requestBean.getOriginalProviderTransactionID()) && len(requestBean.getOriginalProviderTransactionID())) {
-			requestData["x_trans_id"] = requestBean.getOriginalProviderTransactionID();
+			requestData.setRefTransID(requestBean.getOriginalProviderTransactionID());
 		}
-		requestData["x_delim_data"] = "TRUE";
-		requestData["x_delim_char"] = variables.responseDelimiter;
-		requestData["x_relay_response"] = "FALSE";
 
-		return requestData;
+		var createTransactionRequest = getTransient('AuthorizeNetCreateTransactionRequest', {loginID=setting('loginID'), transKey=setting('transKey')});
+		createTransactionRequest.setTransactionRequest(requestData);
+		return createTransactionRequest.getData();
 	}
 
-	private any function postRequest(required struct requestData){
+	private any function postRequest(required string requestData){
 		var httpRequest = new http();
 		httpRequest.setMethod("POST");
 		if( setting('testServerFlag') ) {
@@ -147,9 +169,8 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		}
 		httpRequest.setTimeout(variables.timeout);
 		httpRequest.setResolveurl(false);
-		for(var key in requestData){
-			httpRequest.addParam(type="formfield",name="#key#",value="#requestData[key]#");
-		}
+		httpRequest.addParam(type="header", name="Content-Type", value="application/json");
+		httpRequest.addParam(type="body",value=requestData);
 
 		var response = httpRequest.send().getPrefix();
 
@@ -157,56 +178,134 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 	}
 
 	private any function getResponseBean(required struct rawResponse, required any requestData, required any requestBean){
-		var response = new Slatwall.model.transient.payment.CreditCardTransactionResponseBean();
 
-		// Parse The Raw Response Data Into a Struct
-		var responseDataArray = listToArray(rawResponse.fileContent,variables.responseDelimiter,true);
+		var response = getTransient('CreditCardTransactionResponseBean');
+		arguments.requestData = deserializeJSON(REReplace(trim(arguments.requestData), '[^\x00-\x7F]', '', "ALL"));
 
-		var responseData = {};
-		responseData.responseCode = responseDataArray[1];
-		responseData.responseSubCode = responseDataArray[2];
-		responseData.responseReasonCode = responseDataArray[3];
-		responseData.responseReasonText = responseDataArray[4];
-		responseData.authorizationCode = responseDataArray[5];
-		responseData.avsResponse = responseDataArray[6];
-		responseData.transactionID = responseDataArray[7];
-		responseData.invoiceNumber = responseDataArray[8];
-		responseData.description = responseDataArray[9];
-		responseData.amount = responseDataArray[10];
-		responseData.method = responseDataArray[11];
-		responseData.transactionType = responseDataArray[12];
-		responseData.customerID = responseDataArray[13];
-		responseData.firstName = responseDataArray[14];
-		responseData.lastName = responseDataArray[15];
-		responseData.company = responseDataArray[16];
-		responseData.address = responseDataArray[17];
-		responseData.city = responseDataArray[18];
-		responseData.state = responseDataArray[19];
-		responseData.zipCode = responseDataArray[20];
-		responseData.country = responseDataArray[21];
-		responseData.phone = responseDataArray[22];
-		responseData.fax = responseDataArray[23];
-		responseData.emailAddress = responseDataArray[24];
-		responseData.shipToFirstName = responseDataArray[25];
-		responseData.shipToLastName = responseDataArray[26];
-		responseData.shipToCompany = responseDataArray[27];
-		responseData.shipToAddress = responseDataArray[28];
-		responseData.shipToCity = responseDataArray[29];
-		responseData.shipToState = responseDataArray[30];
-		responseData.shipToZipCode = responseDataArray[31];
-		responseData.shipToCountry = responseDataArray[32];
-		responseData.tax = responseDataArray[33];
-		responseData.duty = responseDataArray[34];
-		responseData.freight = responseDataArray[35];
-		responseData.taxExempt = responseDataArray[36];
-		responseData.purchaseOrderNumber = responseDataArray[37];
-		responseData.md5Hash = responseDataArray[38];
-		responseData.cardCodeResponse = responseDataArray[39];
-		responseData.cardholderAuthenticationVerification = responseDataArray[40];
-		// Gap in array here is intential per Authroize.net Spec... they send back blank values in array
-		responseData.response = responseDataArray[51];
-		responseData.accountNumber = responseDataArray[52];
-		// Again array is actually 68 index's long, but they only use the first 52
+		var responseData = deserializeJSON(REReplace(trim(arguments.rawResponse.fileContent), '[^\x00-\x7F]', '', "ALL"));
+		if(structKeyExists(responseData,'transactionResponse')){
+			responseData=responseData.transactionResponse;
+		}
+			// Populate the data with the raw response & request
+		var data = {
+			responseData = arguments.rawResponse,
+			requestData = arguments.requestData
+		};
+
+		response.setData(data);
+
+		// Set the response Code
+
+		if(structKeyExists(responseData, 'responseCode')){
+			response.setStatusCode(responseData.responseCode);
+		}
+		// Check to see if it was successful
+		if(response.getStatusCode() != 1) {
+			// Transaction did not go through
+			if(structKeyExists(responseData, 'errors')){
+				response.addError(responseData.errors[1].errorCode, responseData.errors[1].errorText);
+			}else if (structKeyExists(responseData, 'messages')){
+				response.addError(responseData.messages.message[1].code, responseData.messages.message[1].text);
+			}else{
+				var allresponse = deserializeJSON(REReplace(trim(arguments.rawResponse.fileContent), '[^\x00-\x7F]', '', "ALL"));
+				if(structKeyExists(allresponse, 'messages')) {
+					response.addError(allresponse.messages.message[1].code, allresponse.messages.message[1].text);
+				}else{
+					response.addError('000', 'Internal Error');
+				}
+			}
+		} else {
+			// Add message for what happened
+			response.addMessage(messageName=responseData.messages[1].code, message=responseData.messages[1].description);
+
+			if(requestBean.getTransactionType() == "authorize") {
+				response.setAmountAuthorized( requestData.createTransactionRequest.transactionRequest.amount );
+			} else if(requestBean.getTransactionType() == "authorizeAndCharge") {
+				response.setAmountAuthorized(  requestData.createTransactionRequest.transactionRequest.amount );
+				response.setAmountCharged(  requestData.createTransactionRequest.transactionRequest.amount  );
+			} else if(requestBean.getTransactionType() == "chargePreAuthorization") {
+				response.setAmountCharged(  requestData.createTransactionRequest.transactionRequest.amount  );
+			} else if(requestBean.getTransactionType() == "credit") {
+				response.setAmountCredited(  requestData.createTransactionRequest.transactionRequest.amount  );
+			}
+		}
+
+		response.setTransactionID( responseData.transID );
+		response.setAuthorizationCode( responseData.authCode );
+
+		if( responseData.avsResultCode == "B" || responseData.avsResultCode == "P" ) {
+			response.setAVSCode( "U" );
+		} else {
+			response.setAVSCode( responseData.avsResultCode );
+		}
+
+		if( responseData.cvvResultCode == 'M') {
+			response.setSecurityCodeMatch(true);
+		} else {
+			response.setSecurityCodeMatch(false);
+		}
+
+		return response;
+	}
+
+	public any function getCustomerProfile(required any requestBean){
+		var rawResponse = "";
+		var requestData = getProfileRequestData(requestBean);
+		rawResponse = postRequest(requestData);
+		return getProfileResponseBean(rawResponse, requestData, requestBean);
+	}
+
+	public string function getProfileRequestData(required any requestBean){
+		var requestData = getTransient('AuthorizeNetCustomerProfile');
+		
+		if(!isNull(requestBean.getOrderPayment())){
+			requestData.setMerchantCustomerID(requestBean.getOrderPayment().getShortReferenceID(true));
+		} else {
+			requestData.setMerchantCustomerID(requestBean.getAccountPaymentMethod().getShortReferenceID(true));
+		}		
+		requestData.setCardNumber(requestBean.getCreditCardNumber());
+
+  		if(!isNull(requestBean.getSecurityCode())) {
+			requestData.setCardCode(requestBean.getSecurityCode());
+		}else{
+			requestData.setCardCode('444');
+		}
+
+		if(!isNull(requestBean.getExpirationMonth()) && !isNull(requestBean.getExpirationYear())) {
+			requestData.setExpirationDate(left(requestBean.getExpirationMonth(),2) & "" & right(requestBean.getExpirationYear(),2));
+			if(len(requestData.getExpirationDate()) == 3){
+				requestData.setExpirationDate('0' & requestData.getExpirationDate());
+			}
+		}
+
+		requestData.setFirstName(requestBean.getAccountFirstName());
+		requestData.setLastName(requestBean.getAccountLastName());
+		requestData.setAddress(isNull(requestBean.getBillingStreetAddress()) ? "":requestBean.getBillingStreetAddress());
+		requestData.setCity(isNull(requestBean.getBillingCity()) ? "":requestBean.getBillingCity());
+		requestData.setState(isNull(requestBean.getBillingStateCode()) ? "":requestBean.getBillingStateCode());
+		requestData.setZip(isNull(requestBean.getBillingPostalCode()) ? "":requestBean.getBillingPostalCode());
+
+		if(!isNull(requestBean.getAccountPrimaryPhoneNumber())) {
+			requestData.setPhoneNumber(requestBean.getAccountPrimaryPhoneNumber());
+		}
+
+		if(!isNull(requestBean.getAccountPrimaryEmailAddress())) {
+			requestData.setEmail(requestBean.getAccountPrimaryEmailAddress());
+		}
+
+		var createCustomerProfileRequest = getTransient('AuthorizeNetCreateCustomerProfileRequest', {loginID=setting('loginID'), transKey=setting('transKey')});
+		createCustomerProfileRequest.setCustomerProfile(requestData);
+
+		return createCustomerProfileRequest.getData();
+
+	}
+
+	private any function getProfileResponseBean(required struct rawResponse, required any requestData, required any requestBean){
+
+		var response = getTransient('CreditCardTransactionResponseBean');
+		requestData = deserializeJSON(requestData);
+
+		var responseData = deserializeJSON( REReplace(trim(rawResponse.filecontent), '[^\x00-\x7F]', '', "ALL"));
 
 		// Populate the data with the raw response & request
 		var data = {
@@ -216,46 +315,32 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 
 		response.setData(data);
 
-		// Add message for what happened
-		response.addMessage(messageName=responseData.responseReasonCode, message=responseData.responseReasonText);
-
 		// Set the response Code
-		response.setStatusCode( responseData.responseCode );
+		response.setStatusCode(responseData.messages.message[1].code);
 
 		// Check to see if it was successful
-		if(responseData.responseCode != 1) {
+		if(right(response.getStatusCode(),1) != 1) {
 			// Transaction did not go through
-			response.addError(responseData.responseReasonCode, responseData.responseReasonText);
-		} else {
-			if(requestBean.getTransactionType() == "authorize") {
-				response.setAmountAuthorized( responseData.amount );
-			} else if(requestBean.getTransactionType() == "authorizeAndCharge") {
-				response.setAmountAuthorized(  responseData.amount );
-				response.setAmountCharged(  responseData.amount  );
-			} else if(requestBean.getTransactionType() == "chargePreAuthorization") {
-				response.setAmountCharged(  responseData.amount  );
-			} else if(requestBean.getTransactionType() == "credit") {
-				response.setAmountCredited(  responseData.amount  );
+			if(structKeyExists(responseData,'errors')){
+				response.addError(responseData.errors.error[1].errorCode, responseData.errors.error[1].errorText);
+			}else{
+				try{
+					response.addError(responseData.messages.message[1].code, responseData.messages.message[1].description);
+				}catch(any e){
+					response.addError(responseData.messages.message[1].code, responseData.messages.message[1].text);
+				}
 			}
-		}
-
-		response.setTransactionID( responseData.transactionID );
-		response.setAuthorizationCode( responseData.authorizationCode );
-
-		if( responseData.avsResponse == "B" || responseData.avsResponse == "P" ) {
-			response.setAVSCode( "U" );
 		} else {
-			response.setAVSCode( responseData.avsResponse );
-		}
+			// Add message for what happened
+			
+			response.addMessage(messageName=responseData.messages.message[1].code, message=responseData.messages.message[1].text);
+			if(structKeyExists(responseData, 'customerProfileId') && structKeyExists(responseData, 'customerPaymentProfileIdList')){
+				response.setProviderToken(responseData.customerProfileId & '|' & responseData.customerPaymentProfileIdList[1]);
+			}
 
-		if( responseData.cardCodeResponse == 'M') {
-			response.setSecurityCodeMatch(true);
-		} else {
-			response.setSecurityCodeMatch(false);
 		}
 
 		return response;
 	}
 
 }
-

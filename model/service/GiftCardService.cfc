@@ -47,9 +47,28 @@ Notes:
 
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
-
+	property name="settingService" type="any";
 	// ===================== START: Logical Methods ===========================
-
+	
+	/**
+     * Function to get list of gift cards for user
+     * @param accountID optional
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of giftCards and total count
+     **/
+	public any function getAllGiftCardsOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var giftCardList = this.getGiftCardCollectionList();
+		giftCardList.addFilter( 'ownerAccount.accountID', arguments.account.getAccountID() );
+		giftCardList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		giftCardList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "giftCardsOnAccount":  giftCardList.getPageRecords(), "recordsCount": giftCardList.getRecordsCount()}
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================

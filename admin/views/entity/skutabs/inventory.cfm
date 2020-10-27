@@ -49,8 +49,9 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.sku" type="any" />
-<cfparam name="rc.product" type="any">
+<cfparam name="rc.product" type="any" default="#rc.sku.getProduct()#">
 
+<cfset activeCurrencies=listToArray(getHibachiScope().getService('currencyService').getAllActiveCurrencyIDList())>
 <cfoutput>
 	<table id="inventory-table" class="table table-bordered table-hover">
 		<tr>
@@ -66,24 +67,39 @@ Notes:
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qc.full')#">#$.slatwall.rbKey('define.qc')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qe.full')#">#$.slatwall.rbKey('define.qe')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnc.full')#">#$.slatwall.rbKey('define.qnc')#</div></th>
+			<cfif rc.sku.getBundleFlag()>
+				<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.mqatsbom.full')#">#$.slatwall.rbKey('define.mqatsbom')#</div></th>
+			</cfif>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qats.full')#">#$.slatwall.rbKey('define.qats')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qiats.full')#">#$.slatwall.rbKey('define.qiats')#</div></th>
+			<cfloop array="#activeCurrencies#" index="currencyCode" >
+				<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageCost')#">#$.slatwall.rbKey('define.averageCost')# - #currencyCode#</div></th>
+				<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageLandedCost')#">#$.slatwall.rbKey('define.averageLandedCost')# - #currencyCode#</div></th>
+			</cfloop>
 		</tr>
+		<cfset scale = (rc.sku.getInventoryTrackBy() eq 'Quantity') ? 0 : 2 />
 		<tr class="sku">
 			<td><a href="##" class="update-inventory-plus depth0" data-depth="0" data-locationid="" data-locationidpath="path" data-skuid="#rc.sku.getskuID()#"><i class="glyphicon glyphicon-plus"></i></a> <strong>All Locations</strong></td>
-			<td>#rc.sku.getQuantity('QOH')#</td>
-			<td>#rc.sku.getQuantity('QOSH')#</td>
-			<td><a href="#$.slatwall.buildURL(action='entity.listorderitem', querystring='F:sku.skuid=#rc.sku.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitSale')#">#rc.sku.getQuantity('QNDOO')#</a></td>
-			<td>#rc.sku.getQuantity('QNDORVO')#</td>
-			<td>#rc.sku.getQuantity('QNDOSA')#</td>
-			<td><a href="#$.slatwall.buildURL(action='entity.listorderitem', querystring='F:sku.skuid=#rc.sku.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitReturn')#">#rc.sku.getQuantity('QNRORO')#</a></td>
-			<td><a href="#$.slatwall.buildURL(action='entity.listvendororderitem', querystring='F:stock.sku.skuid=#rc.sku.getskuID()#&F:vendorOrder.vendorOrderStatusType.systemCode=vostNew,vostPartiallyReceived&F:vendorOrderItemType.systemCode=voitPurchase')#">#rc.sku.getQuantity('QNROVO')#</a></td>
-			<td><a href="#$.slatwall.buildURL(action='entity.liststockadjustmentitem', querystring='F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.sku.skuID=#rc.sku.getskuID()#')#">#rc.sku.getQuantity('QNROSA')#</a></td>
-			<td>#rc.sku.getQuantity('QC')#</td>
-			<td>#rc.sku.getQuantity('QE')#</td>
-			<td>#rc.sku.getQuantity('QNC')#</td>
-			<td>#rc.sku.getQuantity('QATS')#</td>
-			<td>#rc.sku.getQuantity('QIATS')#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QOH'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QOSH'),scale)#</td>
+			<td><a href="#$.slatwall.buildURL(action='entity.listorderitem', querystring='F:sku.skuid=#rc.sku.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitSale')#">#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QNDOO'),scale)#</a></td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QNDORVO'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QNDOSA'),scale)#</td>
+			<td><a href="#$.slatwall.buildURL(action='entity.listorderitem', querystring='F:sku.skuid=#rc.sku.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitReturn')#">#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QNRORO'),scale)#</a></td>
+			<td><a href="#$.slatwall.buildURL(action='entity.listvendororderitem', querystring='F:stock.sku.skuid=#rc.sku.getskuID()#&F:vendorOrder.vendorOrderStatusType.systemCode=vostNew,vostPartiallyReceived&F:vendorOrderItemType.systemCode=voitPurchase')#">#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QNROVO'),scale)#</a></td>
+			<td><a href="#$.slatwall.buildURL(action='entity.liststockadjustmentitem', querystring='F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.sku.skuID=#rc.sku.getskuID()#')#">#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QNROSA'),scale)#</a></td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QC'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QE'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QNC'),scale)#</td>
+			<cfif rc.sku.getBundleFlag()>
+				<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('MQATSBOM'),scale)#</td>
+			</cfif>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QATS'),scale)#</td>
+			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QIATS'),scale)#</td>
+			<cfloop array="#activeCurrencies#" index="currencyCode" >
+				<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getAverageCost(currencyCode))#</td>
+				<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getAverageLandedCost(currencyCode))#</td>
+			</cfloop>
 		</tr>
 	</table>
 

@@ -20,7 +20,7 @@
 	<cfparam name="attributes.valueDefault" type="string" default="" />						<!--- hint: This can be used to set a default value for the property IF it hasn't been defined  NOTE: right now this only works for select boxes--->
 	<cfparam name="attributes.valueLink" type="string" default="" />						<!--- hint: if specified, will wrap property value with an achor tag using the attribute as the href value --->
 	<cfparam name="attributes.valueFormatType" type="string" default="" />					<!--- hint: This can be used to defined the format of this property wehn it is displayed --->
-
+	
 	<cfparam name="attributes.fieldName" type="string" default="" />						<!--- hint: This can be used to override the default field name" --->
 	<cfparam name="attributes.fieldType" type="string" default="" />						<!--- hint: When in edit mode you can override the default type of form object to use" --->
 	
@@ -38,12 +38,17 @@
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />				<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
 	
 	<cfparam name="attributes.autocompletePropertyIdentifiers" type="string" default="" />	<!--- hint: This describes the list of properties that we want to get from an entity --->
+	<cfparam name="attributes.autocompleteFilters" type="string" default="" />
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />			<!--- hint: This is the value property that will get assigned to the hidden field when selected --->
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" /> 		<!--- hint: This is the single name property that shows once an option is selected --->
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
-	
+	<cfparam name="attributes.autocompleteDataEntity" type="string" default="" />
+	<cfparam name="attributes.showActiveFlag" type="boolean" default="false" />
+	<cfparam name="attributes.maxrecords" type="string" default="25" />
+
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -62,7 +67,7 @@
 		wysiwyg				|	Value needs to be a string
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
 		textautocomplete	|	This fieldtype will query an entity to get specific values
-		
+		typeahead			|	This is the new typeahead search functionality but seperated form textautocomplete to prevent issues
 	--->
 	
 	<!---
@@ -110,13 +115,14 @@
 						<cfset attributes.multiselectPropertyIdentifier = "#attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( propertyMD.cfc )#" />
 					</cfif>
 					<cfset attributes.valueOptionsSmartList = attributes.object.invokeMethod( "get#attributes.property#OptionsSmartList" ) />
-					
 				</cfif>
 			</cfif>
 			
 			<!--- Setup textautocomplete values if they wern't passed in --->
-			<cfif attributes.fieldType eq "textautocomplete">
+			<cfif attributes.fieldType eq "textautocomplete" OR attributes.fieldType eq "typeahead">
+				<cfset attributes.autocompleteDataEntity = attributes.object.getPropertyMetaData(attributes.property)['cfc'] />
 				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-acpropertyidentifiers="#attributes.autocompletePropertyIdentifiers#"', ' ') />
+				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-acfilters="#attributes.autocompleteFilters#"', ' ') />
 				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-entityName="#listLast(attributes.object.getPropertyMetaData(attributes.property).cfc,'.')#"', ' ') />
 				<cfif not len(attributes.autocompleteValueProperty)>
 					<cfset attributes.autocompleteValueProperty = listLast(attributes.fieldName, '.') />
@@ -148,7 +154,7 @@
 				<cfif isObject(attributes.value) && attributes.object.isPersistent()>
 					<cfif attributes.edit>
 						<!--- If this is a textautocomplete then we need to setup all of the propertyIdentifiers --->
-						<cfif attributes.fieldType eq "textautocomplete">
+						<cfif attributes.fieldType eq "textautocomplete" OR attributes.fieldType eq "typeahead">
 							<cfloop list="#attributes.autocompletePropertyIdentifiers#" index="pi">
 								<cfset attributes.autocompleteSelectedValueDetails[ pi ] = attributes.value.getValueByPropertyIdentifier( pi ) />
 							</cfloop>

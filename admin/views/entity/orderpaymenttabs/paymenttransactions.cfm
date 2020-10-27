@@ -54,7 +54,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#rc.orderPayment.getPaymentTransactionsSmartList()#"
 			recordDetailAction="admin:entity.detailpaymenttransaction"
-			recordDetailModal="true">
+			recordDetailModal="false">
 		
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />		
 		<hb:HibachiListingColumn propertyIdentifier="transactionType" />

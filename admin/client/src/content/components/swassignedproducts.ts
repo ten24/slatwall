@@ -3,44 +3,44 @@
 
 class SWAssignedProductsController {
 
-    public alreadySelectedProductsCollectionConfig:any; 
-    public collectionConfig:any; 
-    public contentId:string; 
-    public typeaheadDataKey:string; 
-    public edit:boolean; 
-    public productSortProperty:string; 
+    public alreadySelectedProductsCollectionConfig:any;
+    public collectionConfig:any;
+    public contentId:string;
+    public typeaheadDataKey:string;
+    public edit:boolean;
+    public productSortProperty:string;
     public productSortDefaultDirection:string;
-    
+
     //@ngInject
     constructor(
         private collectionConfigService,
         private utilityService
     ){
-        this.collectionConfig = collectionConfigService.newCollectionConfig("Product"); 
-        this.collectionConfig.addDisplayProperty("productID,productName,productCode,productDescription,activeFlag,publishedFlag,productType.productTypeNamePath,productType.productTypeName,defaultSku.price");
-        this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage"); 
-        this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,sortOrder,product.productID,product.productName,product.productCode,product.productDescription,product.activeFlag,product.publishedFlag");
+        this.collectionConfig = collectionConfigService.newCollectionConfig("Product");
+        this.collectionConfig.addDisplayProperty("productID,productName,productCode,calculatedSalePrice,activeFlag,publishedFlag,productType.productTypeNamePath,productType.productTypeName,defaultSku.price");
+        this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage");
+        this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,sortOrder,product.productID,product.productName,product.productCode,product.calculatedSalePrice,product.activeFlag,product.publishedFlag");
         this.alreadySelectedProductsCollectionConfig.addFilter("content.contentID", this.contentId, "=");
-        this.typeaheadDataKey = utilityService.createID(32); 
+        this.typeaheadDataKey = utilityService.createID(32);
     }
 }
 
 class SWAssignedProducts implements ng.IDirective{
 
-    public templateUrl; 
+    public templateUrl;
     public restrict = "EA";
-    public scope = {};  
-    
+    public scope = {};
+
     public bindToController = {
         contentId:"@?",
         edit:"=?",
-        productSortProperty:"@?", 
+        productSortProperty:"@?",
         productSortDefaultDirection:"@?"
     };
-    
+
     public controller=SWAssignedProductsController;
     public controllerAs="swAssignedProducts";
-    
+
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
             $http,
@@ -64,7 +64,7 @@ class SWAssignedProducts implements ng.IDirective{
         ];
         return directive;
     }
-    
+
     //@ngInject
 	constructor(
 		private $http,

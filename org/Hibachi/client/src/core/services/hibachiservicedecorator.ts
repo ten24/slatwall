@@ -40,7 +40,7 @@ class HibachiServiceDecorator{
                             var attribute = attributeSet.attributes[attributeCode];
                             attribute.attributeSet = attributeSet;
                             attribute.isAttribute = true;
-                            entity[attributeCode] = attribute;
+                            $.extend(entity[attributeCode],attribute);
                         }
                     }
                 }

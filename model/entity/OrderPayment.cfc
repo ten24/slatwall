@@ -50,7 +50,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="amount" hb_populateEnabled="public" ormtype="big_decimal";
+	property name="amount" hb_populateEnabled="public" ormtype="big_decimal" hb_formatType="currency";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
@@ -69,8 +69,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="providerToken" ormType="string";
 	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
     property name="giftCardPaymentProcessedFlag" hb_populateEnabled="public" ormType="boolean" default="false";
-
-
+	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
@@ -351,7 +350,17 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		return uncaptured;
 	}
+	
+	public numeric function getAmountCaptured() {
+		var captured = 0;
 
+		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
+			captured = getService('HibachiUtilityService').precisionCalculate(getAmountReceived());
+		}
+
+		return captured;
+	}
+	
 	public numeric function getAmountUnreceived() {
 		var unreceived = 0;
 

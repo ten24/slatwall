@@ -1,5 +1,5 @@
 /*
-
+ 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -48,11 +48,62 @@ Notes:
 */
 component extends="HibachiDAO" persistent="false" accessors="true" output="false" {
 
-	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, required any integration, required string entityQueueData){
-		return ORMExecuteQuery('SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType AND integration=:integration AND entityQueueData=:entityQueueData',
-			{baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType,integration=arguments.integration,entityQueueData=arguments.entityQueueData}
+	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, any integration, string entityQueueData){
+		var hql = 'SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType ';
+		var params = {baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType};
+		if(structKeyExists(arguments,'integration')){
+			hql &= ' AND integration=:integration ';
+			params.integration = arguments.integration;
+		}	
+		if(structKeyExists(arguments,'entityQueueData')){
+			hql &= ' AND entityQueueData=:entityQueueData ';
+			params.entityQueueData = arguments.entityQueueData;
+		}	
 			
+		return ORMExecuteQuery(
+			hql,
+			params
 		);
+	}
+	
+	public void function insertEntityQueue(required string baseID, required string baseObject, string processMethod='', string entityQueueID = createHibachiUUID(), entityQueueType=''){
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='entityQueueType',value='#arguments.entityQueueType#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='baseObject',value='#arguments.baseObject#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='baseID',value='#arguments.baseID#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='processMethod',value='#arguments.processMethod#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='dateTimeNow',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='accountID',value='#getHibachiScope().getAccount().getAccountID()#',CFSQLTYPE="CF_SQL_STRING");
+		
+		var sql =	"INSERT INTO 
+						SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,processMethod,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
+					VALUES 
+						(:entityQueueID,:entityQueueType,:baseObject,:baseID,:processMethod,:dateTimeNow,:accountID,:accountID,:dateTimeNow)";
+						
+		queryService.execute(sql=sql);
+	}
+	
+	public void function deleteEntityQueues(required string entityQueueIDs){
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID IN ( :entityQueueID )";
+						
+		queryService.execute(sql=sql);
+	}
+
+	public void function updateModifiedDateTime(required string entityQueueIDs){
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_DATE", list="true");
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount= COALESCE(tryCount, 0) + 1  WHERE entityQueueID IN ( :entityQueueID )";
+						
+		queryService.execute(sql=sql);
+	}
+
+	
+	public void function addEntityToQueue(required any entity,required entityQueueType){
+		
 	}
 	
 	// ===================== START: Logical Methods ===========================

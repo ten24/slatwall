@@ -5,6 +5,7 @@ class SWOrderByControlsController {
 
     public id:string;
     public eventString:string;
+    public swListingDisplay:any;
 
     public collectionConfig:any;//used for getting the properties
     public selectedPropertyIdentifier:any;
@@ -59,7 +60,7 @@ class SWOrderByControlsController {
                 this.disabled = false;
                 if(propertyIdentifier != null){
                     if(angular.isDefined(this.collectionConfig)){
-                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
+                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true,true);//single column mode true, format propIdentifier true
                     }
                     if(this.inListingDisplay){
                         this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "ASC");
@@ -69,20 +70,23 @@ class SWOrderByControlsController {
                 break;
             case "DESC":
                 this.disabled = false;
+
                 if(propertyIdentifier != null){
                     if(angular.isDefined(this.collectionConfig)){
-                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true);//single column mode true
+                        this.collectionConfig.toggleOrderBy(propertyIdentifier,true, true);//single column mode true, format propIdentifier true
                     }
                     if(this.inListingDisplay){
                         this.listingService.setSingleColumnOrderBy(this.listingId, propertyIdentifier, "DESC");
                     }
                     if(this.inListingDisplay) this.listingService.setManualSort(this.listingId, false);
+
                 }
                 break;
             case "MANUAL":
                 //flip listing
                 this.disabled = true;
                 if(this.inListingDisplay){
+                    //this.swListingDisplay.sortable = true;
                     this.listingService.setManualSort(this.listingId, true);
                 }
                 break;
@@ -124,6 +128,7 @@ class SWOrderByControls implements ng.IDirective{
         sortDefaultDirectionFieldName:"@?",
         edit:"=?"
     };
+    public require = {swListingDisplay:'?^swListingDisplay'};
     public controller=SWOrderByControlsController;
     public controllerAs="swOrderByControls";
 

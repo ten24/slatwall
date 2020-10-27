@@ -55,6 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
+
 	<hb:HibachiEntityDetailForm object="#rc.accountPaymentMethod#" edit="#rc.edit#"
 								saveActionQueryString="accountID=#rc.account.getAccountID()#"
 								forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
@@ -113,20 +114,56 @@ Notes:
 					<hr />
 					<h5>#$.slatwall.rbKey('admin.define.termPaymentDetails')#</h5>
 					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentTerm" edit="#rc.edit#" />
+					
 				</hb:HibachiDisplayToggle>
 				<!--- Just uses Billing Address --->
 			</hb:HibachiPropertyList>
 			<hb:HibachiPropertyList divClass="col-md-6">
-				<!--- Billing Address Details --->
-				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment">
-					<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
-					<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
-				</hb:HibachiDisplayToggle>
+				<cfif rc.accountPaymentMethod.isNew()>
+					<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment">
+					
+							<span ng-init="$root.slatwall.billingAccountAddress = ($root.slatwall.billingAccountAddress) ? $root.slatwall.billingAccountAddress : 'new' ">
+								<cfif not isNull(url.accountID)>
+									<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(url.accountID)#" edit="#rc.edit#" fieldAttributes="ng-model='$root.slatwall.billingAccountAddress'" />
+			
+								<cfelseif not isNull(rc.accountID)>
+									<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(rc.accountID)#" edit="#rc.edit#" fieldAttributes="ng-model='$root.slatwall.billingAccountAddress'" />
+				
+								<cfelseif not isNull(rc.accountPaymentMethod.getAccount()) && !isNull(rc.accountPaymentMethod.getAccount().getAccountID())>
+									<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(rc.accountPaymentMethod.getAccount().getAccountID())#" edit="#rc.edit#" fieldAttributes="ng-model='$root.slatwall.billingAccountAddress'" />
+								</cfif>
+							</span>
+							
+					</hb:HibachiDisplayToggle>
+					
+					<!--- Billing Address Details --->
+					<span ng-if="$root.slatwall.billingAccountAddress === 'new'">
+						<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
+						<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
+						<a href="##" ng-click="$root.slatwall.billingAccountAddress = false">Use an address from your address book?</a>
+					</span>
+						
+						
+				
+				<cfelse>
+					<cfif isNull(url.accountID) and not isNull(rc.accountPaymentMethod.getAccount())>
+						<cfset url.accountID = rc.accountPaymentMethod.getAccount().getAccountID()>
+					</cfif>
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(url.accountID)#" edit="#rc.edit#"/>
+					
+					<!--- Credit Card Details --->
+					<hb:HibachiDisplayToggle selector="select[name='billingAccountAddress.accountAddressID']" showValues="new" >
+						<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
+						<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
+					
+
+				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 
-		<hb:HibachiTabGroup object="#rc.accountPaymentMethod#">
-			<hb:HibachiTab property="paymentTransactions" />
-		</hb:HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.accountPaymentMethod#">
+			<hb:HibachiEntityDetailItem property="paymentTransactions" />
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

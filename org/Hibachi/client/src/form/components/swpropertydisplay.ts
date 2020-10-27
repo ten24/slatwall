@@ -59,10 +59,9 @@ class SWPropertyDisplayController {
 	public valueObjectProperty;
     public valueOptions;
 	public processObject;
-	public optionValues:Array<string> = [];
+	public optionValues:any;
 	public propertyDisplay;
     public edit:boolean;
-
 	public value;
 	public submit;
 	public labelText;
@@ -95,11 +94,8 @@ class SWPropertyDisplayController {
 				this[i] = this.swForm[i];
 			}
 		}
-
-
         this.errors = {};
         this.edited = false;
-
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;
 
@@ -272,6 +268,7 @@ class SWPropertyDisplayController {
     }
 
     public save = () =>{
+        this.observerService.notify('updateBindings');
         //do this eagerly to hide save will reverse if theres an error
         this.edited = false;
         this.saved = true;
