@@ -1595,7 +1595,6 @@ component  accessors="true" output="false"
             return;
         }
 
-       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {
