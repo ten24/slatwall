@@ -253,7 +253,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			}
 			
 			var skus = getService('productService').getSkus(  ); //need to get suggestion for getting particular Sku ID
-			var skuDateTime = "89000";//skus.getDefaultSKuModifiedDateTime();
+			var skuDateTime = skus.getDefaultSKuModifiedDateTime();
 			imageNameSuffix &= skuDateTime;
 			var resizedImagePath = replaceNoCase(replaceNoCase(arguments.imagePath, listLast(arguments.imagePath, "/\"), "cache/#listLast(arguments.imagePath, "/\")#"),".#imageExt#","#imageNameSuffix#.#imageExt#");
 			
