@@ -1,5 +1,6 @@
 {
     "entityName": "AccountEmailAddress",
+   
     "properties": {
         "email": {
             "propertyIdentifier": "emailAddress",
@@ -9,6 +10,7 @@
             }
         }
     },
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
@@ -16,5 +18,15 @@
             "remoteAccountID",
             "email"
         ]
-    }
+    },
+    
+      
+    "dependencies" : [
+        {
+            "key"                : "remoteAccountID",
+            "entityName"         : "Account",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "account"
+        }
+    ]
 }

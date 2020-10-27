@@ -214,6 +214,32 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
 	
 	
+	 /**
+     * @test
+    */
+    public void function getEntityMapping_should_call_extention_point_when_declared(){
+        
+        // declare a mock finction on the target-service
+        function getAccountMapping_spy(){
+            this['getAccountMapping_spy_called'] = "it works";
+            return {};
+        }
+        
+        variables.service['getAccountMapping'] = getAccountMapping_spy;
+        
+        this.getService().getEntityMapping( "Account" );
+        
+        expect( variables.service ).toHaveKey('getAccountMapping_spy_called');
+        expect( variables.service.getAccountMapping_spy_called ).toBe('it works');
+        
+        debug(variables.service.getAccountMapping_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'getAccountMapping_spy_called');
+        structDelete( variables.service, 'getAccountMapping');
+    }
+
+	
 	/*****************************.  Validation.  .******************************/
 	
 	/**
@@ -544,7 +570,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_should_call_generator_function_when_proviced(){
+    public void function transformAccountDataTest_should_use_generator_function_for_properties_when_declared_in_mapping(){
         
         var sampleAccountData = getSampleAccountData();
         
@@ -554,7 +580,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "generatorFunction":  "generateAccountActiveFlag_spy"
         };
 
-        function generateAccountActiveFlag_spy(any propertyValue, any constraintValue){
+        function generateAccountActiveFlag_spy(struct data, struct mapping, struct propertyMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             variables.this['generateAccountActiveFlag_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
             return true;
@@ -585,30 +611,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'generateAccountActiveFlag_spy_called');
     }
     
-    
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_generator_functions_should_provide_value(){
-        
-        var sampleAccountData = getSampleAccountData();
-        
-        var data = this.getService().transformEntityData("Account", sampleAccountData);
-        debug(data);
-
-	    expect( data )
-	        .toHaveKey('activeFlag', "key activeFlag should exist in transformed data");
-	        
-	    expect( data.activeFlag )
-	        .toBe( true, "the defaule value for activeFlag should get generated and should be true");
-	        
-    }
-    
-    
-    /** 
-	 * @test
-	*/
-    public void function transformAccountDataTest_should_use_conventional_generator_function_when_declared(){
+    public void function transformAccountDataTest_should_use_conventional_generator_function_for_properties_when_declared_in_service(){
         
         var sampleAccountData = getSampleAccountData();
         
@@ -617,7 +623,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "propertyIdentifier": "examplePropertyIdentifier",
         };
 
-        function generateAccountExamplePropertyIdentifier_spy(any propertyValue, any constraintValue){
+        function generateAccountExamplePropertyIdentifier_spy(struct data, struct mapping, struct propertyMetaData){
             // puting something in the THIS scope of the SERVICE so it can be verified later
             this['generateAccountExamplePropertyIdentifier_spy_called'] = 'it-does-not-matter'; 
             return 'example_value';
@@ -650,6 +656,87 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'generateAccountExamplePropertyIdentifier_spy_called');
         structDelete( variables.service, 'generateAccountExamplePropertyIdentifier');
     }
+    
+    
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_use_generator_function_for_relations_when_declared_in_mapping(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations = [{
+            "entityName": "Account",
+            "propertyIdentifier": "exampleRelationProperty",
+            "generatorFunction":  "getAccountExampleRelationProperty_spy"
+        }];
+
+        function getAccountExampleRelationProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
+            // puting something in the THIS scope of the SERVICE so it can be verified later
+            variables.this['getAccountExampleRelationProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
+            return {"keyxx": 'valuexx', 'accountID': '12345'};
+        }
+        // declare a mock generator-finction on the target-service
+        variables.service['getAccountExampleRelationProperty_spy'] = getAccountExampleRelationProperty_spy;
+
+
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+        expect( variables.service ).toHaveKey('getAccountExampleRelationProperty_spy_called');
+        expect( variables.service.getAccountExampleRelationProperty_spy_called ).toBe('xxxxx-yyyyy-does-not-matter');
+            
+	    expect( data ).toHaveKey( 'exampleRelationProperty' );
+	    expect( data.exampleRelationProperty ).toHaveKey( 'keyxx' );
+	    expect( data.exampleRelationProperty.keyxx ).toBe( 'valuexx' );
+       
+        // cleanup
+        structDelete( variables.service, 'getAccountExampleRelationProperty_spy');
+        structDelete( variables.service, 'getAccountExampleRelationProperty_spy_called');
+    }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_use_conventional_generator_function_for_relations_when_declared_in_service(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations = [{
+            "entityName": "Account",
+            "propertyIdentifier": "exampleRelationXXXYYYProperty",
+        }];
+
+        function getAccountExampleRelationXXXYYYProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
+            // puting something in the THIS scope of the SERVICE so it can be verified later
+            variables.this['getAccountExampleRelationXXXYYYProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
+            return {"keyxx": 'valuexx', 'accountID': '12345'};
+        }
+        // declare a mock generator-finction on the target-service
+        variables.service['generateAccountExampleRelationXXXYYYProperty'] = getAccountExampleRelationXXXYYYProperty_spy;
+
+
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+        expect( variables.service ).toHaveKey('getAccountExampleRelationXXXYYYProperty_spy_called');
+        expect( variables.service.getAccountExampleRelationXXXYYYProperty_spy_called ).toBe('xxxxx-yyyyy-does-not-matter');
+            
+	    expect( data ).toHaveKey( 'exampleRelationXXXYYYProperty' );
+	    expect( data.exampleRelationXXXYYYProperty ).toHaveKey( 'keyxx' );
+	    expect( data.exampleRelationXXXYYYProperty.keyxx ).toBe( 'valuexx' );
+       
+        // cleanup
+        structDelete( variables.service, 'getAccountExampleRelationXXXYYYProperty_spy');
+        structDelete( variables.service, 'getAccountExampleRelationXXXYYYProperty_spy_called');
+    }
+    
+    
     
     
     
@@ -760,7 +847,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformAccountData_should_call_extention_point_when_declared(){
+    public void function transformEntityData_should_call_extention_point_when_declared(){
         
         var sampleAccountData = getSampleAccountData();
 
@@ -1025,11 +1112,161 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         debug(variables.service.processAccount_import_spy_called);
         
         // cleanup
-        structDelete( variables.service, 'processAccountImport_spy_called');
-        structDelete( variables.service, 'processAccountImport');
+        structDelete( variables.service, 'processAccount_import_spy_called');
+        structDelete( variables.service, 'processAccount_import');
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function resolveAccountDependencies_spy(required any entity, required struct entityQueueData, ){
+            this['resolveAccountDependencies_spy_called'] = "it works";
+        }
+        
+        variables.service['resolveAccountDependencies'] = resolveAccountDependencies_spy;
+        
+        var data = this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        
+        var tempAccount = this.getService().getHibachiService().newAccount();
+	    tempAccount = this.getService().resolveEntityDependencies( tempAccount, data );
+
+        
+        expect( variables.service ).toHaveKey('resolveAccountDependencies_spy_called');
+        expect( variables.service.resolveAccountDependencies_spy_called ).toBe('it works');
+        
+        debug(variables.service.resolveAccountDependencies_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'resolveAccountDependencies_spy_called');
+        structDelete( variables.service, 'resolveAccountDependencies');
     }
     
     
     
-}
+    
+    
+    private struct function getAccountEmailAddressMapping(){
+        return {
+            "entityName": "AccountEmailAddress",
+            "properties": {
+                "email": {
+                    "propertyIdentifier": "emailAddress",
+                    "validations": { "required": true, "dataType": "email" }
+                }
+            },
+            "importIdentifier": {
+                "propertyIdentifier": "importRemoteID",
+                "type": "composite",
+                "keys": [
+                    "remoteAccountID",
+                    "email"
+                ]
+            },
+            "dependencies" : [{
+                "key"                : "remoteAccountID",
+                "entityName"         : "Account",
+                "lookupKey"          : "remoteID",
+                "propertyIdentifier" : "account"
+            }]
+        };
+    }
+    
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_add_errors_when_dependancy_is_not_resolve(){
+        var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
+        
+        var data = {
+            'remoteAccountID' : '12345465',
+            'email': "abc@xyz.com"
+        };
+        
 
+        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+        debug(transformedData);
+        
+        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        
+        debug( emailAddress.getErrors() );
+        
+        expect( emailAddress.getErrors() ).toBeStruct();
+        expect( emailAddress.getErrors() ).toHaveKey( 'account' );
+        
+        expect( emailAddress.getErrors().account[1] )
+        .toBe('Depandancy for propertyIdentifier [account] on Entity [Account] could not be resolved yet');
+        
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_not_add_errors_when_dependancy_is_resolve(){
+        var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
+        
+        var data = {
+            'remoteAccountID' : '12345465',
+            'email': "abc@xyz.com"
+        };
+        
+        var accountID = hash("123xxxunittest"&now(), 'MD5');
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        
+        
+        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+
+        debug(transformedData);
+        
+        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        
+        debug( emailAddress.getErrors() );
+        expect( emailAddress.getErrors() ).toBeEmpty();
+        
+        deleteRow('swAccount', 'accountID', accountID );
+    }
+    
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_add_dependancy_data_when_resolved(){
+        var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
+        
+        var data = {
+            'remoteAccountID' : '12345465',
+            'email': "abc@xyz.com"
+        };
+        
+        var accountID = hash("123xxxunittest"&now(), 'MD5');
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        
+        
+        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+
+        debug(transformedData);
+        
+        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        
+        debug( transformedData );
+        
+        expect( transformedData ).toHaveKey('account');
+        expect( transformedData.account ).toBeStruct();
+        expect( transformedData.account ).toHaveKey('accountID');
+        expect( transformedData.account.accountID ).toBe( accountID );
+        
+        deleteRow('swAccount', 'accountID', accountID );
+    }
+
+
+    
+}
