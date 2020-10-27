@@ -99,7 +99,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 
   	public struct function createEntityCSVHeaderMetaDataRecursively( required string entityName ){
-  	 //   dump(entityName);
   	    
         var headers = {};
         var mapping = this.getEntityMapping( arguments.entityName );
@@ -114,8 +113,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	        
   	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
   	        for(var related in mapping.relations){
-  	            // FIXME later
-  	            if( !structKeyExists(related, 'ignored') || !related.ignored){
+  	            // includeInCSVTemplate is a flag in related mappings; 
+  	            // being used to handle recursive-relations, like productType and parentProductType
+  	            if( !structKeyExists(related, 'includeInCSVTemplate') || !related.includeInCSVTemplate){
   	                headers.append( this.createEntityCSVHeaderMetaDataRecursively(related.entityName) );
   	            }
 	        }
@@ -835,7 +835,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }  
         
         if( structKeyExists(arguments, 'sourcePropertyName') && structKeyExists(arguments.data, arguments.sourcePropertyName) ){
-            return arguments.data[ arguments.sourcePropertyName ];
+            var value = arguments.data[ arguments.sourcePropertyName ];
+            
+            // if the source value has length then we're returning that, otherwise we're treating empty as NULL
+            // so in case of when source value is empty, it can return a default from the next if statement if available otherwise it will be null
+            if( len(trim(arguments.data[ arguments.sourcePropertyName ])) ){
+                return value;
+            }
         }  
         
         if( structKeyExists(arguments.propertyMetaData, 'defaultValue') ){

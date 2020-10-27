@@ -56,10 +56,10 @@
     
     "relations" : [
         {
-            "type": "manyToOne",
-            "ignored": true,
-            "entityName": "ProductType",
-            "propertyIdentifier": "parentProductType",
+            "type" : "manyToOne",
+            "entityName" : "ProductType",
+            "propertyIdentifier" : "parentProductType",
+            "includeInCSVTemplate" : false,
             "generatorFunction" : "generateProductTypeParentProductType"
         }   
     ],
