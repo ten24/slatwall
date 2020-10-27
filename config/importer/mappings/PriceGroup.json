@@ -15,7 +15,7 @@
             "propertyIdentifier": "priceGroupName",
             "validations": {
                 "required": true,
-                "dataType": "numeric"
+                "dataType": "string"
             }
         },
         

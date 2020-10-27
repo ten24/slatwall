@@ -57,6 +57,7 @@
     "relations" : [
         {
             "type": "manyToOne",
+            "ignored": true,
             "entityName": "ProductType",
             "propertyIdentifier": "parentProductType",
             "generatorFunction" : "generateProductTypeParentProductType"

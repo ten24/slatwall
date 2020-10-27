@@ -99,6 +99,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 
   	public struct function createEntityCSVHeaderMetaDataRecursively( required string entityName ){
+  	 //   dump(entityName);
+  	    
         var headers = {};
         var mapping = this.getEntityMapping( arguments.entityName );
     
@@ -111,10 +113,22 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	    if( structKeyExists(mapping, 'relations') ){
   	        
   	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
-  	        for(var related in mapping.relations ){
-  	            headers.append( this.createEntityCSVHeaderMetaDataRecursively(related.entityName) );
+  	        for(var related in mapping.relations){
+  	            // FIXME later
+  	            if( !structKeyExists(related, 'ignored') || !related.ignored){
+  	                headers.append( this.createEntityCSVHeaderMetaDataRecursively(related.entityName) );
+  	            }
 	        }
   	    }
+  	    
+  	    if( structKeyExists(mapping, 'dependencies') ){
+  	        
+  	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
+  	        for(var dependancy in mapping.dependencies ){
+  	            headers.append({ "#ucFirst(dependancy.key, true)#" : 'VarChar' });
+	        }
+  	    }
+  	    
   	    
   	    return headers;
     }
