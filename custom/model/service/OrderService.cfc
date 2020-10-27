@@ -2160,14 +2160,15 @@ component extends="Slatwall.model.service.OrderService" {
 						WHERE ro.orderTypeID = :returnOrderTypeID
 							AND o.orderTypeID = :salesOrderTypeID
 							AND ro.orderStatusTypeID = :receivedStatusTypeID
-							AND o.calculatedSubtotal = -1 * ro.calculatedSubtotal
+							AND o.calcSubTotalAfterItemDiscounts = -1 * ro.calcSubTotalAfterItemDiscounts
 						ORDER BY ro.orderID";
 		var fullRmaParams = {
 			'salesOrderTypeID':salesOrderTypeID,
 			'returnOrderTypeID':returnOrderTypeID,
 			'receivedStatusTypeID':receivedStatusTypeID
 		};
-			
+		
+		queryExecute(fullRmaSql,fullRmaParams);
 
 		return arguments.order;
 	}
