@@ -251,8 +251,15 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			if(!directoryExists(cacheDirectory)) {
 				directoryCreate(cacheDirectory);
 			}
-
+			
+			var skus = getService('productService').getSkus(  ); //need to get suggestion for getting particular Sku ID
+			var skuDateTime = "89000";//skus.getDefaultSKuModifiedDateTime();
+			imageNameSuffix &= skuDateTime;
 			var resizedImagePath = replaceNoCase(replaceNoCase(arguments.imagePath, listLast(arguments.imagePath, "/\"), "cache/#listLast(arguments.imagePath, "/\")#"),".#imageExt#","#imageNameSuffix#.#imageExt#");
+			
+			writeDump(resizedImagePath);
+			writeDump(skus);
+			abort;
 
 			// Make sure that if a cached images exists that it is newer than the original
 			if(fileExists(getHibachiUtilityService().hibachiExpandPath(resizedImagePath))) {

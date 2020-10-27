@@ -78,6 +78,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
 	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
+	property name="DefaultSKuModifiedDateTime" ormtype="timestamp" description="This field can be set to for image cache.";
+
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
@@ -238,7 +240,9 @@ property name="sapItemCode" ormtype="string";
 
  property name="displayOnlyFlag" ormtype="boolean" hb_formatType="yesno" default="0";
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
- property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
+ property name="backorderDate" ormtype="timestamp" hb_formatType="date";
+ property name="cbdFlag" ormtype="boolean" hb_formatType="yesno";
+ property name="dangerousGoodsFlag" ormtype="boolean" hb_formatType="yesno";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
