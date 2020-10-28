@@ -1061,6 +1061,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     account.setOwnerAccount(sponsor5);
                 }
                 account.setActiveFlag(false);
+                
+                var activationEmailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Employee Account Activation');
+                getService('EmailService').generateAndSendFromEntityAndEmailTemplate( account, activationEmailTemplate );
+                
                 arguments.data.messages = [getHibachiScope().getRbKey('monat.employeeAccount.enrollmentMessage')];
             }
         }
