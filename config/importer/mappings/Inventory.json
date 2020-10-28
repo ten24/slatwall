@@ -1,9 +1,9 @@
 {
     "entityName": "Inventory",
-    
+
     "properties": {
-        
-        "inventoryID": {
+
+        "remoteInventoryID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -13,13 +13,13 @@
         "quantityIn": {
             "propertyIdentifier": "quantityIn",
             "validations": {
-                "dataType": "float"
+                "dataType": "numeric"
             }
         },
         "quantityOut": {
             "propertyIdentifier": "quantityOut", 
             "validations": {
-                "dataType": "float"
+                "dataType": "numeric"
             }
         },
         "cost": {
@@ -58,13 +58,47 @@
                 "dataType": "date"
             }
         }
-        
+
     },
+
+
+    "relaions" : [
+        {
+            "type": "many-to-one",
+            "entityName": "Stock",
+            "propertyIdentifier": "stock",
+            "generatorFunction": "generateInventoryStock"
+        },
+        {
+            "type": "oneToMany",
+            "entityName": "Location",
+            "propertyIdentifier": "location",
+            "generatorFunction": "generateInventoryLocation"
+        }
+        
+    ],
+
+    "dependancies" : [
+        
+        {
+            "key"                : "remoteSkuID",
+            "entityName"         : "Sku",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "sku"
+        }, 
+        {
+            "key"                : "remoteLocationID",
+            "entityName"         : "Location",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "location"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "inventoryID"
+            "remoteInventoryID"
         ]
     }
 }

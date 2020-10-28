@@ -66,9 +66,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
   	        
             //creating struct for fast-lookups
             variables.sampleCSVFilesOptions = {
-                "Account" : "account",
-                "Product" : "product",
-                "Sku"     : "sku",
+                "Account"		: "account",
+                "Product"		: "product",
+                "Sku"   		: "sku",
+                "Inventory"     : "inventory"
                 
             };
             // TODO, need a way to figureout which entity-mappings are allowed to be import, 

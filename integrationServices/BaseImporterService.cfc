@@ -1054,6 +1054,36 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         );
 	}
 	
+	/////////////////.                  INVENTORY
+	
+	
+	public any function generateInventoryStock( struct data, struct mapping, struct propertyMetaData ){
+
+	    var priceGroupImportRemoteID = this.createEntityImportRemoteID( 'Stock', arguments.data, arguments.mapping);
+	    
+	    var priceGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  : 'Stock',
+	        "uniqueKey"   : 'importRemoteID',
+	        "uniqueValue" : stockImportRemoteID
+	    );
+    	    
+    	if( !isNull(stockID) && !this.hibachiIsEmpty(stockID) ){
+    	    return { "stockID" : stockID }
+    	}
+    	
+    	// create a new price-group
+    	return this.transformEntityData( 
+            entityName  = "Stock", 
+            data        = arguments.data,
+            mapping     = arguments.mapping,
+            nested      = true
+        );
+	}
+	
+	public any function generateInventoryLocation( struct data, struct mapping, struct propertyMetaData ){
+	  return this.getHibachiUtilityService().getEncryptionKeyLocation();
+	}
+	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 
 }
