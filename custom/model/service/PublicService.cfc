@@ -2795,5 +2795,5 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data.ajaxResponse['hairCategories'] = hairProductCategoryCollection.getRecordOptions();
         
     }
-    
+
 }
