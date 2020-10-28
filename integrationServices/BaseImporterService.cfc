@@ -728,7 +728,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            
 	            // SKIP if it's a create-only relation, and we're upserting
     	        if( structKeyExists(relation, 'allowUpdate') && !relation.allowUpdate ){
-    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	            // primaryIdProperty value Is Not Empty, skipping this property
+    	            if( !this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
     	                continue;
     	            }
     	        }
@@ -985,25 +986,27 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	   
 	}
 
-	public any function generateProductProductType( struct data, struct mapping, struct propertyMetaData ){
-	    
-	    var productTypeImportRemoteID = this.createEntityImportRemoteID( 'ProductType', arguments.data, arguments.mapping);
-	    
+	public any function generateProductProductType( 
+	    required struct data, 
+        required struct parentEntityMapping,
+        required struct relationMetaData 
+    ){
+	   	var productTypeImportRemoteID = this.createEntityImportRemoteID( 'ProductType', arguments.data );
+	    	    
 	    var productTypeID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
 	        "entityName"  = 'ProductType',
 	        "uniqueKey"   = 'importRemoteID',
 	        "uniqueValue" = productTypeImportRemoteID
 	    );
-    	    
-    	if( !isNull(priceGroupID) && !this.hibachiIsEmpty(productTypeID) ){
+	    
+    	if( !isNull(productTypeID) && !this.hibachiIsEmpty(productTypeID) ){
     	    return { "productTypeID" : productTypeID }
-    	}
+    	} 
     	
     	// create new product-type
     	return this.transformEntityData( 
             entityName  = "ProductType", 
             data        = arguments.data,
-            mapping     = arguments.mapping,
             nested      = true
         );
 	}
@@ -1049,10 +1052,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	          hash( trim( formattedData.remotePriceGroupID ), 'MD5' );
 	}
 	
-	public any function generateSkuPricePriceGroup( struct data, struct mapping, struct propertyMetaData ){
-
-	    var priceGroupImportRemoteID = this.createEntityImportRemoteID( 'PriceGroup', arguments.data, arguments.mapping);
-	    
+	public any function generateSkuPricePriceGroup( 
+	    required struct data, 
+        required struct parentEntityMapping,
+        required struct relationMetaData 	
+    ){
+        
+	    var priceGroupImportRemoteID = this.createEntityImportRemoteID( 'PriceGroup', arguments.data );
+	   
 	    var priceGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
 	        "entityName"  = 'PriceGroup',
 	        "uniqueKey"   = 'importRemoteID',
@@ -1067,7 +1074,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	return this.transformEntityData( 
             entityName  = "PriceGroup", 
             data        = arguments.data,
-            mapping     = arguments.mapping,
             nested      = true
         );
 	}

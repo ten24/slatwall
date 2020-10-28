@@ -902,76 +902,45 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         // var sampleProductData = getSampleProductData();
         
         var sampleProductData = {
-                "productType": {
-                    "parentProductType": {
-                        "productTypeID": "444df2f7ea9c87e60051f3cd87b435a1"
-                    },
-                    "productTypeDescription": "Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.",
-                    "productTypeID": "",
-                    "systemCode": "١٢٣",
-                    "remoteID": "71580",
-                    "importRemoteID": "9A177BF0543ED8157A0E9903295F01FA",
-                    "productTypeName": "Product type 22245",
-                    "urlTitle": "Product-type-22245"
-                },
-                "brand": {
-                    "brandWebsite": "https://www.SENSAICELLULARPERFORMANCEPOWDERFOUNDATION.com",
-                    "brandName": "SENSAI CELLULAR PERFORMANCE POWDER FOUNDATION",
-                    "brandID": "",
-                    "remoteID": "73002",
-                    "urlTitle": "SENSAI-CELLULAR-PERFORMANCE-POWDER-FOUNDATION",
-                    "importRemoteID": "83159AC34DAF800DC96FA00DFD44BD52"
-                },
-                "productDescription": "Sed ante. Vivamus tortor. Duis mattis egestas metus.",
-                "defaultSku": {
-                    "skuDescription": "Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.\n\nVestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.",
-                    "imageFile": "SKU_30443-.jpeg",
-                    "skuName": "Pecan Raisin - Tarts sku 5",
-                    "skuID": "",
-                    "remoteID": "30443",
-                    "skuCode": "SKU_30443",
-                    "urlTitle": "SKU_30443_1234",
-                    "importRemoteID": "1BA4D572A08BABFE8C7D9C9717EC1599",
-                    "skuPrices": [
-                        {
-                            "skuPriceID": "",
-                            "price": "622.8",
-                            "maxQuantity": "5",
-                            "listPrice": "513.83",
-                            "minQuantity": "1",
-                            "priceGroup": {
-                                "priceGroupName": "Price group two",
-                                "priceGroupID": "",
-                                "priceGroupCode": "pgtTwo",
-                                "remoteID": "60850",
-                                "importRemoteID": "366BB8CABA334AB2D8CAC7E2AAFA7302"
-                            },
-                            "remoteID": "55627",
-                            "currencyCode": "RUB",
-                            "importRemoteID": "1BA4D572A08BABFE8C7D9C9717EC1599_67654743CC32DFEEBF2D2D154DB69CD8_C4CA4238A0B923820DCC509A6F75849B_CFCD208495D565EF66E7DFF9F98764DA_366BB8CABA334AB2D8CAC7E2AAFA7302"
-                        }
-                    ]
-                },
-                "remoteID": "24036",
-                "productName": "Pecan Raisin - Tarts",
-                "importRemoteID": "251713B2559F797B13EC939AB7550AC6",
-                "productID": "",
-                "productCode": "product_1234",
-                "urlTitle": "product-1234-2344",
-            };
+    		"PriceGroupActiveFlag": "false",
+    		"ProductPublishedFlag": "true",
+    		"BrandWebsite": "https://www.alendronate-sodium.com",
+    		"ProductTypeActiveFlag": "false",
+    		"ProductTypeDescription": "In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
+    		"BrandName": "Alendronate Sodium",
+    		"SkuName": "Bacon Strip Precooked sku 4",
+    		"RemoteSkuID": "34875",
+    		"SkuActiveFlag": "false",
+    		"PriceGroupCode": "pgtTwo",
+    		"ProductDescription": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.",
+    		"ProductTypePublishedFlag": "",
+    		"RemoteSkuPriceID": "71097",
+    		"CurrencyCode": "PHP",
+    		"BrandActiveFlag": "true",
+    		"ProductTypeName": "Product type 333",
+    		"ProductCode": "product_aaa_bbb_xxx",
+    		"PriceGroupName": "Price group two",
+    		"SkuDescription": "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
+    		"RemoteProductID": "13463",
+    		"RemoteProductTypeID": "70845",
+    		"Price": "594.47",
+    		"MaxQuantity": "93",
+    		"ListPrice": "594.47",
+    		"RemoteBrandID": "52319",
+    		"ProductActiveFlag": "false",
+    		"SkuPublishedFlag": "false",
+    		"BrandPublishedFlag": "true",
+    		"SkuPriceActiveFlag": "true",
+    		"MinQuantity": "1",
+    		"RemotePriceGroupID": "88698",
+    		"ProductName": "Bacon Strip Precooked",
+    		"SkuCode": "SKU_34875",
+    		"ProductTypeCode": "product_type_3296"
+    	};
              
-        debug(sampleProductData);
-       
-// 		var product = createPersistedTestEntity( 'product' );
-		var product = request.slatwallScope.getBean('Product');
-        product.populate( data=sampleProductData, objectPopulateMode='private' );
-        debug(product.getErrors());
-        
-        product.validate('save');
-        
-        debug(product.getErrors());
-        // var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
-
+             
+        var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
+        debug(data);
         
     }
     

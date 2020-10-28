@@ -70,12 +70,6 @@
     "relations": [
         {
             "type": "oneToMany",
-            "entityName": "Stock",
-            "propertyIdentifier": "stocks",
-            "generatorFunction": "generateSkuStocks"
-        },
-        {
-            "type": "oneToMany",
             "entityName": "SkuPrice",
             "propertyIdentifier": "skuPrices"
         }
