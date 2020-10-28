@@ -1095,7 +1095,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint public method that returns if this entity has had entitySave() called on it yet or not.
 	public boolean function getNewFlag() {
-		if(getPrimaryIDValue() == "") {
+		if( this.hibachiIsEmpty( this.getPrimaryIDValue() ) ){
 			return true;
 		}
 		return false;

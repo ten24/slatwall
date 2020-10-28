@@ -642,6 +642,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							// If it had errors, add an error to this entity
 							if(variables.populatedSubProperties[ propertyName ][i].hasErrors()) {
 								getHibachiErrors().addError('populate', propertyName);
+								this.addErrors(variables.populatedSubProperties[ propertyName ][i].getErrors());
 							}
 						}
 
@@ -653,6 +654,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 						// If it had errors, add an error to this entity
 						if(variables[ propertyName ].hasErrors()) {
 							getHibachiErrors().addError('populate', propertyName);
+							this.addErrors(variables[ propertyName ].getErrors());
 						}
 					}
 				}

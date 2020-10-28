@@ -1,0 +1,100 @@
+{
+    "entityName": "Inventory",
+    
+    "properties": {
+        
+        "remoteInventoryID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "quantityIn": {
+            "propertyIdentifier": "quantityIn",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "quantityOut": {
+            "propertyIdentifier": "quantityOut", 
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "cost": {
+            "propertyIdentifier": "cost",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "cogs": {
+            "propertyIdentifier": "cogs",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "landedCost": {
+            "propertyIdentifier": "landedCost",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "landedAmount": {
+            "propertyIdentifier": "landedAmount",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "createdDateTime": {
+            "propertyIdentifier": "createdDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        }
+        
+    },
+    
+    
+    "relaions" : [
+        {
+            // stock
+            // generator function
+        }
+    ] 
+    
+    "dependancies" : [
+    
+        "remoteSkuID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        
+        "remoteLocationID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "dataType": "string"
+            }
+        },  
+        
+        
+    ]
+    
+    // remoteSkuID
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "inventoryID"
+        ]
+    }
+}

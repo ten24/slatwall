@@ -121,6 +121,7 @@
 	    }
 
 	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
+	        this.logHibachi("flushORMSession called with runCalculatedPropertiesAgain = #runCalculatedPropertiesAgain#" );
 	    	// Initate the first flush
 	    	ormFlush();
 	    	// flush again to persist any changes done during ORM Event handler

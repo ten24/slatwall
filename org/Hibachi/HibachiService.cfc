@@ -192,6 +192,36 @@
 			return arguments.entity;
 		}
 		
+		
+		public any function savePopulatedSubPrpertiesRecursively(required any entity, required string context){
+		    this.logHibachi("Called savePopulatedSubPrpertiesRecursively for entity=#arguments.entity.getClassName()#");
+		    
+		    var subPropertiesStruct = arguments.entity.getPopulatedSubProperties();
+		    if( !isStruct(subPropertiesStruct) ){
+		        return;
+		    }
+		    
+			// Loop ove each property that was populated
+			for(var propertyName in subPropertiesStruct ){
+				
+				// if sub-property was a `*.to-many` then it will be an array
+				var entityOrArray = subPropertiesStruct[ propertyName ]; 
+				
+				if( !IsArray(entityOrArray) ){
+				    entityOrArray = [ entityOrArray ];
+				} 
+				
+    		    var entityService = this.getServiceByEntityName( entityOrArray[1].getClassName() );
+	
+				for( var entity in entityOrArray){
+				    // we're not worried about the validation errors as populated sub-properties should have been be validated already, 
+				    // and errors should have been bubbled to the root entity
+				    entityService.invokeMethod('save'&entity.getClassName(), { 1=entity, 2={}, 3=arguments.context } );    
+				}
+			}
+			
+		}
+		
 		// @hint the default save method will populate, validate, and if not errors delegate to the DAO where entitySave() is called.
 	    public any function save(required any entity, struct data, string context="save") {
 
@@ -217,8 +247,25 @@
 			//check if this is new before save - announcements will need this information later.
 	        var isNew = arguments.entity.isNew();
 	        
+	        
+	        
+	        // so the event-handler-functions can declare required-argument as entity-name 
+	        // Example `after[Account]CreateSuccess(required any account, struct data, string context )`
+	        arguments[ arguments.entity.getClassName() ] = arguments.entity;
+
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
+	            
+	            // save populated sub-properties first; if any
+	            // because if we're creating new nested entities, like sku-with product, 
+	            // and not calling save on sku, 
+	            //   the SKU-validation will run [ NOTE: check `validate()`` function in HibachiTransient ), 
+	            //   but the events will not get fired
+	            if( !isNull(arguments.entity.getPopulatedSubProperties()) ){
+	 
+	                this.savePopulatedSubPrpertiesRecursively( arguments.entity, arguments.context );
+	            }
+	            
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
