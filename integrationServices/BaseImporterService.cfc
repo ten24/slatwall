@@ -187,20 +187,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( !validation.isValid ){
 	        
 	        var entityQueueData = {
-	            'data':  arguments.data,
-	            'batchID': arguments.batchID,
-	            'entityName': arguments.entityName
+	            'data'          :  arguments.data,
+	            'batchID'       : arguments.batchID,
+	            'entityName'    : arguments.entityName
 	        }
 	        
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
 	        this.getHibachiEntityQueueDAO().insertEntityQueueFailure(
-        	    baseID = '', //not needed
-        	    baseObject = arguments.entityName, 
-        	    processMethod = 'reQueueImportFailure',
-        	    entityQueueData = entityQueueData, 
-        	    integrationID = this.getIntegration().getIntegrationID(), 
-        	    batchID = arguments.batchID,
-        	    mostRecentError = serializeJson( validation.errors )
+        	    baseID              = '', //not needed
+        	    baseObject          = arguments.entityName, 
+        	    processMethod       = 'reQueueImportFailure',
+        	    entityQueueData     = entityQueueData, 
+        	    integrationID       = this.getIntegration().getIntegrationID(), 
+        	    batchID             = arguments.batchID,
+        	    mostRecentError     = serializeJson( validation.errors )
         	);
         	
 	    } else {
@@ -209,12 +209,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
-        	    baseID = transformedData[ primaryIDPropertyName ], 
-        	    baseObject = arguments.entityName, 
-        	    processMethod ='processEntityImport',
-        	    entityQueueData = transformedData, 
-        	    integrationID = this.getIntegration().getIntegrationID(), 
-            	batchID = arguments.batchID
+        	    baseID              = transformedData[ primaryIDPropertyName ], 
+        	    baseObject          = arguments.entityName, 
+        	    processMethod       = 'processEntityImport',
+        	    entityQueueData     = transformedData, 
+        	    integrationID       = this.getIntegration().getIntegrationID(), 
+            	batchID             = arguments.batchID
         	);
 	        
 	    }
@@ -249,10 +249,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         for( var dependency in arguments.entityQueueData.__dependancies ){
              
             var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-                                        "entityName"  : dependency.entityName,
-                            	        "uniqueKey"   : dependency.lookupKey,
-                            	        "uniqueValue" : dependency.lookupValue
-                                    );
+                "entityName"    = dependency.entityName,
+    	        "uniqueKey"     = dependency.lookupKey,
+    	        "uniqueValue"   = dependency.lookupValue
+            );
                 
                                     
             if( this.hibachiIsEmpty(primaryIDValue) ){
@@ -285,9 +285,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             if( relation.isVolatile ){
                 
                 var relationPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-                        "entityName"  : relation.entityName,
-            	        "uniqueKey"   : 'importRemoteID',
-            	        "uniqueValue" : relationData.importRemoteID
+                        "entityName"  = relation.entityName,
+            	        "uniqueKey"   = 'importRemoteID',
+            	        "uniqueValue" = relationData.importRemoteID
                     );
                 
                 if( !isNull(relationPrimaryIDValue) && !this.hibachiIsEmpty(relationPrimaryIDValue) ){
@@ -469,15 +469,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	                if( structKeyExists(this, validationFunctionName) ){
     	                    
                             isValid = this.invokeMethod( validationFunctionName, { 
-                               propertyValue    :  data[propertyName] ?: javaCast('null', 0),
-                               constraintValue  :  constraintValue
+                               propertyValue    =  data[propertyName] ?: javaCast('null', 0),
+                               constraintValue  =  constraintValue
                             });
                             
     	                } else if( structKeyExists(validationService, validationFunctionName) ){
     	                    
                                 isValid = validationService.invokeMethod( validationFunctionName, { 
-                                   propertyValue    :  data[propertyName] ?: javaCast('null', 0),
-                                   constraintValue  :  constraintValue
+                                   propertyValue    =  data[propertyName] ?: javaCast('null', 0),
+                                   constraintValue  =  constraintValue
                                 });
             	                    
     	                } else {
@@ -497,9 +497,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                         		}
                         		
                         		errorMessage = utilityService.replaceStringTemplate( errorMessage, {
-                        		    "className":        entityName,
-                        		    "propertyName":     propertyName,
-                        		    "constraintValue":  constraintValue 
+                        		    "className"         : entityName,
+                        		    "propertyName"      : propertyName,
+                        		    "constraintValue"   : constraintValue 
                         		});
                         		
                         		// collecting the error
@@ -533,9 +533,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	           	if( !structKeyExists(related, 'excludeFromCSVTemplate') || !related.excludeFromCSVTemplate){
 	           	    
                     var validation = this.validateEntityData(
-                        data =  arguments.data,  
-                        entityName = related.entityName, 
-                        collectErrors = arguments.collectErrors 
+                        data            =  arguments.data,  
+                        entityName      = related.entityName, 
+                        collectErrors   = arguments.collectErrors 
                     );
                     
                     isValid = validation.isValid;
@@ -644,9 +644,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	     * 
     	    */
 	        var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-    	        "entityName"  : entityName,
-    	        "uniqueKey"   : 'importRemoteID',
-    	        "uniqueValue" : importRemoteIDValue
+    	        "entityName"  = entityName,
+    	        "uniqueKey"   = 'importRemoteID',
+    	        "uniqueValue" = importRemoteIDValue
     	    );
 
 	        arguments.data[ primaryIDPropertyName ] =  primaryIDValue ?: '';
@@ -671,10 +671,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        }
     	        
     	        var propertyValue = this.getOrGeneratePropertyValue(
-    	            data               : arguments.data, 
-        	        mapping            : arguments.mapping,
-        	        propertyMetaData   : propertyMetaData,
-        	        sourcePropertyName : sourcePropertyName
+    	            data               = arguments.data, 
+        	        mapping            = arguments.mapping,
+        	        propertyMetaData   = propertyMetaData,
+        	        sourcePropertyName = sourcePropertyName
     	        );
                 
     	        if( !isNull(propertyValue) ){
@@ -698,9 +698,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        }
 	            
     	        var propertyValue = this.getOrGeneratePropertyValue(
-    	            data               : arguments.data, 
-        	        mapping            : arguments.mapping,
-        	        propertyMetaData   : propertyMetaData
+    	            data               = arguments.data, 
+        	        mapping            = arguments.mapping,
+        	        propertyMetaData   = propertyMetaData
         	    );
         	   
     	        if( !isNull(propertyValue) ){
@@ -990,9 +990,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var productTypeImportRemoteID = this.createEntityImportRemoteID( 'ProductType', arguments.data, arguments.mapping);
 	    
 	    var productTypeID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-	        "entityName"  : 'ProductType',
-	        "uniqueKey"   : 'importRemoteID',
-	        "uniqueValue" : productTypeImportRemoteID
+	        "entityName"  = 'ProductType',
+	        "uniqueKey"   = 'importRemoteID',
+	        "uniqueValue" = productTypeImportRemoteID
 	    );
     	    
     	if( !isNull(priceGroupID) && !this.hibachiIsEmpty(productTypeID) ){
@@ -1054,9 +1054,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var priceGroupImportRemoteID = this.createEntityImportRemoteID( 'PriceGroup', arguments.data, arguments.mapping);
 	    
 	    var priceGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-	        "entityName"  : 'PriceGroup',
-	        "uniqueKey"   : 'importRemoteID',
-	        "uniqueValue" : priceGroupImportRemoteID
+	        "entityName"  = 'PriceGroup',
+	        "uniqueKey"   = 'importRemoteID',
+	        "uniqueValue" = priceGroupImportRemoteID
 	    );
     	    
     	if( !isNull(priceGroupID) && !this.hibachiIsEmpty(priceGroupID) ){

@@ -16,7 +16,7 @@
                 "dataType": "string"
             }
         },
-        "typeCode": {
+        "productTypeCode": {
             "propertyIdentifier": "systemCode",
             "validations": {
                 "dataType": "string"
