@@ -89,8 +89,8 @@ class PublicService {
         public appConfig,
         public $timeout,
         public hibachiAuthenticationService,
-    	public sessionStorageCache: Cache,
-    	public inMemoryCache: Cache
+    	private sessionStorageCache: Cache,
+    	private inMemoryCache: Cache
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -150,9 +150,8 @@ class PublicService {
         }
     }
     /** accessors for account */
-    public getAccount=(refresh=false): ng.IPromise<any> =>  {
+    public getAccount=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getAccount/';
-        
         if(!this.accountDataPromise || refresh){
             this.accountDataPromise = this.getData(urlBase, "account", "");
         }
