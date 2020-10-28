@@ -158,6 +158,11 @@ component accessors="true" output="false" extends="HibachiService" {
 					}
 					deleteEntityQueueItem(entityQueue['entityQueueID'], true);
 				}catch(any e){
+					
+					if(!structKeyExists(entityQueue,'tryCount') || isNull(entityQueue.tryCount)){
+						entityQueue['tryCount'] = 1; 
+					}
+					
 					if(val(entityQueue['tryCount']) >= maxTryCount){
 						getHibachiEntityQueueDAO().archiveEntityQueue(entityQueue['entityQueueID'], e.message);
 					}else{
