@@ -349,9 +349,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				return true;
 			}
 		}
-		if(propertyName == 'accountPaymentMethods'){
-			dd(pgOK)
-		}
+
 		// If for some reason not of the above were meet then just return false
 			getService('HibachiCacheService').setCachedValue(cacheKey,false);
 		return false;
