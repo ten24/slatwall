@@ -76,7 +76,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public struct function getEntityMapping( required string entityName ){
 	    
 	    var extentionFunctionName = 'get#arguments.entityName#Mapping';
-	   // dump(extentionFunctionName);
 	    if( structKeyExists(this, extentionFunctionName) ){
 	        return this.invokeMethod( extentionFunctionName, arguments );
 	    }
