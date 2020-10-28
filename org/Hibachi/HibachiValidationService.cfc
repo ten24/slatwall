@@ -390,7 +390,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Standard Validation DataTypes
 		if( listFindNoCase("any,array,binary,boolean,component,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode", arguments.constraintValue) ){
 			
-			if( isNull(arguments.propertyValue) || isValid(arguments.constraintValue, arguments.propertyValue) ){
+			if( isNull(arguments.propertyValue) || !len(trim(arguments.propertyValue)) || isValid(arguments.constraintValue, arguments.propertyValue) ){
 				return true;
 			}
 		} 

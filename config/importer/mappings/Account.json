@@ -43,15 +43,15 @@
                 "dataType": "boolean"
             }
         },
-        "activeFlag": {
-            "propertyIdentifier": "activeFlag",
+        "accountActiveFlag": {
+            "propertyIdentifier": "activeFlag"
         }
     },
     
     "generatedProperties": [
         {
             "propertyIdentifier": "urtTitle",
-            "allowUpdate": false,
+            "allowUpdate": false
         }    
     ],
     

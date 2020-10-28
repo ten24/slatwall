@@ -50,6 +50,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	property name="integrationServices";
 	property name="hibachiDataService";
+	property name="hibachiUtilityService";
 	
 	public any function getIntegration(){
 	    
@@ -64,10 +65,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
   	    
   	    if( !structKeyExists(variables, 'availableSampleCsvFilesIndex') ){
   	        
-            // creating struct for fast-lookups
+            //creating struct for fast-lookups
             variables.sampleCSVFilesOptions = {
                 "Account" : "account",
-                "Order" : "account"
+                "Product" : "product",
+                "Sku"     : "sku",
+                
             };
             // TODO, need a way to figureout which entity-mappings are allowed to be import, 
             // account vs account-phone-number
@@ -135,6 +138,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 		} 
 		catch ( any e ){
+		    this.getHibachiUtilityService().logException( e );
     		this.getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
 		}
 		

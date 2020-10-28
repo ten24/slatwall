@@ -1,0 +1,85 @@
+{
+    "entityName": "OrderItem",
+    
+    "properties": {
+        
+        "orderItemID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "price": {
+            "propertyIdentifier": "price",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
+        "skuPrice": {
+            "propertyIdentifier": "skuPrice",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "quantity": {
+            "propertyIdentifier": "quantity",
+            "validations": {
+                "dataType": "integer"
+            }
+        },
+        "estimatedDeliveryDateTime": {
+            "propertyIdentifier": "estimatedDeliveryDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "estimatedFulfillmentDateTime": {
+            "propertyIdentifier": "estimatedFulfillmentDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "userDefinedPriceFlag": {
+            "propertyIdentifier": "userDefinedPriceFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "orderItemID"
+        ]
+    },
+    
+    "relations": [
+        {
+            "entityName": "sku",
+            "propertyIdentifier": "Sku"
+        },
+        {
+            "entityName": "stock",
+            "propertyIdentifier": "Stock"
+        },
+        {
+            "entityName": "order",
+            "propertyIdentifier": "Order"
+        },
+        {
+            "entityName": "orderFulfillment",
+            "propertyIdentifier": "OrderFulfillment"
+        }
+    ]
+}
