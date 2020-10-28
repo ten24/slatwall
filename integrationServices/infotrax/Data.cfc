@@ -373,12 +373,12 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 
 	public void function retryBatch(required string baseObject, required array data){
 		for(var item in arguments.data){
-			if ( !getService('infoTraxService').isEntityQualified(arguments.baseObject, item['#arguments.baseObject#ID'], 'after#arguments.baseObject#SaveSuccess') ) {
+			if ( !getService('infoTraxService').isEntityQualified(arguments.baseObject, item['#lCase(arguments.baseObject)#ID'], 'after#arguments.baseObject#SaveSuccess') ) {
 				continue;
 			}
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
-				entityQueueID   = hash(arguments.baseObject & '_' & item['#arguments.baseObject#ID'] & '_push_' & getIntegration().getIntegrationID(), 'MD5'), //Custom ID to ignore EntityQueueData
-				baseID          = item['#arguments.baseObject#ID'],
+				entityQueueID   = hash(arguments.baseObject & '_' & item['#lCase(arguments.baseObject)#ID'] & '_push_' & getIntegration().getIntegrationID(), 'MD5'), //Custom ID to ignore EntityQueueData
+				baseID          = item['#lCase(arguments.baseObject)#ID'],
 				baseObject      = baseObject,
 				processMethod   = 'push',
 				entityQueueData = { 'event' = 'after#baseObject#SaveSuccess' },
