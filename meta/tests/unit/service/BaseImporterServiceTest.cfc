@@ -92,6 +92,118 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
+	
+
+	
+	private struct function getSampleProductData(){
+
+	    var productData =  {
+	        
+	        remoteProductID        : randRange(100, 1000000), 
+	        productName            : "Test Product " & randRange(1, 100),  
+	        
+	        //Brand
+	        brandName              : "Test Brand " & randRange(1, 10),
+	        
+	        //ProductType
+            productTypeName            : "Test Product Type " & randRange(1, 100)
+
+	    };
+	    
+	    //  optional product fields
+	    if( rand() > rand() ){
+	        productData.append({
+	            productCode            : "testProduct" & randRange(1, 100),
+    	        productDescription     : "Testing transform data for product", 
+    	        productPublishedFlag   : rand() > 0.5,
+    	        productActiveFlag      : rand() > 0.5
+	        });
+	    }
+	    
+	    // optional brand fields
+	    if( rand() > rand() ){
+	        productData.append({
+    	        brandWebsite        : "testBrand"& randRange(1, 10) &".com", 
+                brandPublishedFlag  : rand() > 0.5, 
+                brandActiveFlag     : rand() > 0.5 
+	        });
+	    }
+	    
+	    // optional product-type fields
+	    if( rand() > rand() ){
+	        productData.append({
+	            remoteProductTypeID        : randRange(100, 1000000),
+    	        systemCode                 : "test_product_type_" & randRange(1, 100), 
+                productTypeDescription     : "Testing transform data for product type",
+                productTypePublishedFlag              : rand() > 0.5,
+    	        productTypeActiveFlag                 : rand() > 0.5, 
+	        });
+	    }
+	    
+	    productData.append( getSampleSkuData() );
+	    
+	    return productData;
+	    
+	}
+	
+	private struct function getSampleSkuData(){
+
+	    var skuData = {
+	        
+            //Sku
+            remoteSkuID         : randRange(100, 1000000),
+            skuName             : "TestSku " & randRange(1, 100),
+            skuCode             : "testSku" & randRange(1, 100), 
+            
+            //SkuPrice
+            currencyCode        : "USD",
+            price               : rand() * randRange(1,1000), 
+            listPrice           : rand() * randRange(1,1000), 
+        
+            remotePriceGroupID  : randRange(100, 1000000),
+            priceGroupName      : "Test price group " & randRange(1,10)
+	    };
+	    
+	    
+	    // optional sku fields
+	    if( rand() > rand() ){
+	        skuData.append({
+                skuPublishedFlag    : rand() > 0.5,
+    	        skuActiveFlag       : rand() > 0.5, 
+	        });
+	    }
+	    
+	     // optional sku-price
+	    if( rand() > rand() ){
+	        skuData.append({
+                skuPricePublishedFlag    : rand() > 0.5,
+    	        skuPriceActiveFlag       : rand() > 0.5, 
+	        });
+	    }
+	     // optional sku-price
+	    if( rand() > rand() ){
+	        skuData.append({
+                maxQuantity              : randRange(0, 10)
+	        });
+	    }
+	     // optional sku-price
+	    if( rand() > rand() ){
+	        skuData.append({
+                minQuantity              : randRange(0, 10)
+	        });
+	    }
+	    
+	    // optional sku fields
+	    if( rand() > rand() ){
+	        skuData.append({
+                priceGroupActiveFlag    : rand() > 0.5,
+                priceGroupCode    : "priceGroup" & randRange(0, 10)
+	        });
+	    }
+
+	    return skuData;
+	}
+	
 	private any function insertRow( required string tableName, required struct keyValuePairs ){
 	    var sql = "INSERT INTO #arguments.tableName#";
 	    var qry = new query();
@@ -210,7 +322,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var header = this.getService().getEntityCSVHeaderMetaData( 'Account' );
         debug( header );
         
-        $assert.isEqual("ActiveFlag,CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,RemoteAccountID,Username", header.columns );
+        $assert.isEqual("AccountActiveFlag,CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,RemoteAccountID,Username", header.columns );
     }
 	
 	
@@ -1177,6 +1289,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         };
     }
     
+    /**
+     * @test
+    */
+    public void function processEntityImport_check_transform_data(){
+        
+        var sampleProductData = getSampleProductData();
+        
+        var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
+
+        
+        debug(data);
+    }
     
     
     /**

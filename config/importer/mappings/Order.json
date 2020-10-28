@@ -1,0 +1,79 @@
+{
+    "entityName": "Order",
+    
+    "properties": {
+        
+        "orderID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "orderNumber": {
+            "propertyIdentifier": "orderNumber",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "orderOpenDateTime": {
+            "propertyIdentifier": "orderOpenDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "orderCloseDateTime": {
+            "propertyIdentifier": "orderCloseDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "estimatedDeliveryDateTime": {
+            "propertyIdentifier": "estimatedDeliveryDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "quoteFlag": {
+            "propertyIdentifier": "quoteFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+        
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "orderID"
+        ]
+    },
+    
+    "relations": [
+        {
+            "entityName": "account",
+            "propertyIdentifier": "Account"
+        },
+        {
+            "entityName": "billingAccountAddress",
+            "propertyIdentifier": "AccountAddress"
+        },
+        {
+            "entityName": "defaultStockLocation",
+            "propertyIdentifier": "Location"
+        },
+        {
+            "entityName": "shippingAccountAddress",
+            "propertyIdentifier": "AccountAddress"
+        }
+    ]
+}

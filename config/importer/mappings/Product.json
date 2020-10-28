@@ -1,0 +1,87 @@
+{
+    "entityName": "Product",
+    
+    "properties": {
+        
+        "remoteProductID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "productName": {
+            "propertyIdentifier": "productName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "productCode": {
+            "propertyIdentifier": "productCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "productDescription": {
+            "propertyIdentifier": "productDescription",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "productPublishedFlag": {
+            "propertyIdentifier": "publishedFlag",
+            "defaultValue": true,
+            "allowUpdate": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "productActiveFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "allowUpdate": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    
+    "generatedProperties" : [
+        {
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductUrlTitle",
+            "allowUpdate"        : false
+        }
+    ],
+    
+    "relations": [
+        {
+            "type": "manyToOne",
+            "volatile": "true",
+            "entityName": "Brand",
+            "propertyIdentifier": "brand"
+        },
+        {
+            "type": "manyToOne",
+            "volatile": "true",
+            "entityName": "ProductType",
+            "propertyIdentifier": "productType",
+            "generatorFunction"  : "generateProductProductType"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Sku",
+            "propertyIdentifier": "defaultSku"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteProductID"
+        ]
+    }
+}
+    

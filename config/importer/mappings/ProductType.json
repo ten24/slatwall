@@ -1,0 +1,76 @@
+{
+    "entityName": "ProductType",
+
+    "properties": {
+
+        "remoteProductTypeID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "productTypeName": {
+            "propertyIdentifier": "productTypeName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "typeCode": {
+            "propertyIdentifier": "systemCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "productTypeDescription": {
+            "propertyIdentifier": "productTypeDescription",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "productTypePublishedFlag": {
+            "propertyIdentifier": "publishedFlag",
+            "defaultValue": true,
+            "allowUpdate": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "productTypeActiveFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "allowUpdate": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    
+    "generatedProperties" : [
+        {
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductTypeUrlTitle",
+            "allowUpdate": false
+        }
+    ],
+    
+    "relations" : [
+        {
+            "type" : "manyToOne",
+            "entityName" : "ProductType",
+            "propertyIdentifier" : "parentProductType",
+            "excludeFromCSVTemplate" : false,
+            "generatorFunction" : "generateProductTypeParentProductType"
+        }   
+    ],
+    
+    "postPopulateMethods": ["createProductTypeNamePath"],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "productTypeName"
+        ]
+    }
+} 

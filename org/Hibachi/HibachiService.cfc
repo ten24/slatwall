@@ -217,6 +217,12 @@
 			//check if this is new before save - announcements will need this information later.
 	        var isNew = arguments.entity.isNew();
 	        
+	        
+	        
+	        // so the event-handler-functions can declare required-argument as entity-name 
+	        // Example `after[Account]CreateSuccess(required any account, struct data, string context )`
+	        arguments[ arguments.entity.getClassName() ] = arguments.entity;
+
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
