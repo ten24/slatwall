@@ -76,6 +76,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public struct function getEntityMapping( required string entityName ){
 	    
 	    var extentionFunctionName = 'get#arguments.entityName#Mapping';
+	   // dump(extentionFunctionName);
 	    if( structKeyExists(this, extentionFunctionName) ){
 	        return this.invokeMethod( extentionFunctionName, arguments );
 	    }
@@ -115,7 +116,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	        for(var related in mapping.relations){
   	            // includeInCSVTemplate is a flag in related mappings; 
   	            // being used to handle recursive-relations, like productType and parentProductType
-  	            if( !structKeyExists(related, 'excludeFromCSVTemplate') || related.excludeFromCSVTemplate){
+  	            if( !structKeyExists(related, 'excludeFromCSVTemplate') || !related.excludeFromCSVTemplate){
   	                headers.append( this.createEntityCSVHeaderMetaDataRecursively(related.entityName) );
   	            }
 	        }
@@ -259,7 +260,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 
                 arguments.entity.addError( 
                     dependency.propertyIdentifier, 
-                    "Depandancy for propertyIdentifier [#dependency.propertyIdentifier#] on Entity [#dependency.entityName#] could not be resolved yet"    
+                    "Depandancy for propertyIdentifier [#dependency.propertyIdentifier#] on Entity [#arguments.entity.getClassName()#] could not be resolved yet"    
                 );
                 
                 break;
@@ -293,8 +294,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 if( !isNull(relationPrimaryIDValue) && !this.hibachiIsEmpty(relationPrimaryIDValue) ){
                     var relationPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( relation.entityName );
                         
-                    // mutates the nested struct in arguments.entityData
-                    relationData = { "#relationPrimaryIDProperty#" : relationPrimaryIDValue }; 
+                    // replaces the nested struct in arguments.entityData
+                    arguments.entityData[ relation.propertyIdentifier ] = { "#relationPrimaryIDProperty#" : relationPrimaryIDValue }; 
                 }
                 
             } else if(relation.hasVolatiles) {
@@ -400,7 +401,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
 	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
-
 	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
 	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
 	    
@@ -531,22 +531,24 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if(  (isValid || arguments.collectErrors) && structKeyExists(arguments.mapping, 'relations' ) ){
 	        
 	        for(var related in arguments.mapping.relations ){
-	         
-                var validation = this.validateEntityData(
-                    data =  arguments.data,  
-                    entityName = related.entityName, 
-                    collectErrors = arguments.collectErrors 
-                );
-                
-                isValid = validation.isValid;
-                
-                if(arguments.collectErrors){
-                    errors = this.mergeErrors( errors, validation.errors );
-                }
-                
-                if( !isValid && !arguments.collectErrors){
-                    break;
-                } 
+	           	if( !structKeyExists(related, 'excludeFromCSVTemplate') || !related.excludeFromCSVTemplate){
+	           	    
+                    var validation = this.validateEntityData(
+                        data =  arguments.data,  
+                        entityName = related.entityName, 
+                        collectErrors = arguments.collectErrors 
+                    );
+                    
+                    isValid = validation.isValid;
+                    
+                    if(arguments.collectErrors){
+                        errors = this.mergeErrors( errors, validation.errors );
+                    }
+                    
+                    if( !isValid && !arguments.collectErrors){
+                        break;
+                    } 
+	           	}
 	        }
 	    }
 	    
@@ -663,7 +665,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        
     	        // SKIP if it's a create-only property, and we're upserting
     	        if(structKeyExists(propertyMetaData, 'allowUpdate') && !propertyMetaData.allowUpdate ){
-    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	            // primaryIdProperty value Is Not Empty, skipping this property
+    	            if( !this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
     	                continue;
     	            }
     	        }
@@ -686,10 +689,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( structKeyExists(arguments.mapping, 'generatedProperties') ){
 	        
 	        for(var propertyMetaData in arguments.mapping.generatedProperties ){
-	            
+
 	            // SKIP if it's a create-only property, and we're upserting
     	        if(structKeyExists(propertyMetaData, 'allowUpdate') && !propertyMetaData.allowUpdate ){
-    	            if( this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
+    	            // primaryIdProperty value Is Not Empty, skipping this property
+    	            if( !this.hibachiIsEmpty( transformedData[primaryIDPropertyName] ) ){
     	                continue;
     	            }
     	        }
@@ -962,14 +966,26 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	/////////////////.                  Product 
 	
 	
-	public any function generateProductUrlTitle( struct data, struct mapping, struct propertyMetaData){
-	   return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productName);
-	}
-
-	public any function generateBrandUrlTitle( struct data, struct mapping, struct propertyMetaData ){
-	   return this.getHibachiUtilityService().createUniqueProperty(arguments.data.brandName);
+	public any function generateProductUrlTitle( required struct data, required struct mapping, required struct propertyMetaData){
+	   
+	   return this.getHibachiUtilityService().createUniqueProperty(
+	        entityName    = arguments.mapping.entityName, 
+	        propertyName  = arguments.propertyMetaData.propertyIdentifier,
+	        propertyValue = arguments.data.productName
+	   );
+	   
 	}
 	
+	public any function generateBrandUrlTitle( required struct data, required struct mapping, required struct propertyMetaData){
+	   
+	   return this.getHibachiUtilityService().createUniqueProperty(
+	        entityName    = arguments.mapping.entityName, 
+	        propertyName  = arguments.propertyMetaData.propertyIdentifier,
+	        propertyValue = arguments.data.brandName
+	   );
+	   
+	}
+
 	public any function generateProductProductType( struct data, struct mapping, struct propertyMetaData ){
 	    
 	    var productTypeImportRemoteID = this.createEntityImportRemoteID( 'ProductType', arguments.data, arguments.mapping);
@@ -999,13 +1015,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
 	}
 	
-	public any function generateProductTypeUrlTitle( struct data, struct mapping, struct propertyMetaData ){
-	    return this.getHibachiUtilityService().createUniqueProperty(arguments.data.productTypeName);
+	
+	public any function generateProductTypeUrlTitle( required struct data, required struct mapping, required struct propertyMetaData){
+	   
+	   return this.getHibachiUtilityService().createUniqueProperty(
+	        entityName    = arguments.mapping.entityName, 
+	        propertyName  = arguments.propertyMetaData.propertyIdentifier,
+	        propertyValue = arguments.data.productTypeName
+	   );
+	   
 	}
-	
-	
-	
-	
 	
 	/////////////////.                  SKU
 	

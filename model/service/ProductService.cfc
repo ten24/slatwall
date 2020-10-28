@@ -772,6 +772,9 @@ component extends="HibachiService" accessors="true" {
 				newSku.setProduct(arguments.product);
 				newSku.setImageFile(newSku.generateImageFileName());
 
+
+// TODO: call saveSKU with context `create`
+
 				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
 				}
@@ -789,6 +792,8 @@ component extends="HibachiService" accessors="true" {
 					newSku.setImageFile(newSku.generateImageFileName());
 
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
+    // TODO: call saveSKU with context `create`
+
 					if(c==1) {
 						arguments.product.setDefaultSku(newSku);
 					}
@@ -838,6 +843,8 @@ component extends="HibachiService" accessors="true" {
 					newSku.setPrice(arguments.processObject.getPrice());
                     setListPriceOnSkuByProductAndProcessObject(newSku, arguments.product, arguments.processObject);
 					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+
+                // TODO: call saveSKU with context `create`
 
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
 					arguments.product.addSku(newSku);
@@ -900,6 +907,9 @@ component extends="HibachiService" accessors="true" {
 					arguments.product.setRenewalSku( arguments.processObject.getRenewalSku() );
 
 				}
+				
+				// TODO: call saveSKU with context `create`
+				
 				thisSku.setImageFile(thisSku.generateImageFileName());
 			}
 		//GENERATE - GIFT SKUS

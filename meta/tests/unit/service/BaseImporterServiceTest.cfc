@@ -92,116 +92,96 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
+	private struct function getAccountEmailAddressMapping(){
+        return {
+            "entityName": "AccountEmailAddress",
+            "properties": {
+                "email": {
+                    "propertyIdentifier": "emailAddress",
+                    "validations": { "required": true, "dataType": "email" }
+                }
+            },
+            "importIdentifier": {
+                "propertyIdentifier": "importRemoteID",
+                "type": "composite",
+                "keys": [
+                    "remoteAccountID",
+                    "email"
+                ]
+            },
+            "dependencies" : [{
+                "key"                : "remoteAccountID",
+                "entityName"         : "Account",
+                "lookupKey"          : "remoteID",
+                "propertyIdentifier" : "account"
+            }]
+        };
+    }
+	
 	
 
 	
 	private struct function getSampleProductData(){
-
-	    var productData =  {
-	        
-	        remoteProductID        : randRange(100, 1000000), 
-	        productName            : "Test Product " & randRange(1, 100),  
-	        
-	        //Brand
-	        brandName              : "Test Brand " & randRange(1, 10),
-	        
-	        //ProductType
-            productTypeName            : "Test Product Type " & randRange(1, 100)
-
-	    };
-	    
-	    //  optional product fields
-	    if( rand() > rand() ){
-	        productData.append({
-	            productCode            : "testProduct" & randRange(1, 100),
-    	        productDescription     : "Testing transform data for product", 
-    	        productPublishedFlag   : rand() > 0.5,
-    	        productActiveFlag      : rand() > 0.5
-	        });
-	    }
-	    
-	    // optional brand fields
-	    if( rand() > rand() ){
-	        productData.append({
-    	        brandWebsite        : "testBrand"& randRange(1, 10) &".com", 
-                brandPublishedFlag  : rand() > 0.5, 
-                brandActiveFlag     : rand() > 0.5 
-	        });
-	    }
-	    
-	    // optional product-type fields
-	    if( rand() > rand() ){
-	        productData.append({
-	            remoteProductTypeID        : randRange(100, 1000000),
-    	        systemCode                 : "test_product_type_" & randRange(1, 100), 
-                productTypeDescription     : "Testing transform data for product type",
-                productTypePublishedFlag              : rand() > 0.5,
-    	        productTypeActiveFlag                 : rand() > 0.5, 
-	        });
-	    }
-	    
-	    productData.append( getSampleSkuData() );
-	    
-	    return productData;
-	    
+        return {
+            "PriceGroupActiveFlag": "false",
+            "ProductPublishedFlag": "true",
+            "BrandWebsite": "www.Valsartan and Hydrochlorothiazide.com",
+            "TypeCode": "abcdefgdilkl",
+            "ProductTypeActiveFlag": "false",
+            "ProductTypeDescription": "",
+            "BrandName": "Valsartan and Hydrochlorothiazide",
+            "SkuName": "Water - Spring Water 500ml sku 4",
+            "RemoteSkuID": "8919",
+            "SkuActiveFlag": "false",
+            "PriceGroupCode": "pgtOne",
+            "ProductDescription": "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
+            "ProductTypePublishedFlag": "",
+            "RemoteSkuPriceID": "81957",
+            "CurrencyCode": "CAD",
+            "BrandActiveFlag": "true",
+            "ProductTypeName": "Product type 111",
+            "ProductCode": "",
+            "PriceGroupName": "Price group one",
+            "SkuDescription": "Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.\n\nIn quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
+            "RemoteProductID": "65584",
+            "RemoteProductTypeID": "37890",
+            "Price": "397.03",
+            "MaxQuantity": "0",
+            "ListPrice": "",
+            "RemoteBrandID": "93326",
+            "ProductActiveFlag": "true",
+            "SkuPublishedFlag": "true",
+            "BrandPublishedFlag": "false",
+            "SkuPriceActiveFlag": "true",
+            "MinQuantity": "4",
+            "RemotePriceGroupID": "79978",
+            "ProductName": "Water - Spring Water 500ml",
+            "SkuCode": "SKU_8919"
+        };
 	}
 	
 	private struct function getSampleSkuData(){
 
-	    var skuData = {
-	        
-            //Sku
-            remoteSkuID         : randRange(100, 1000000),
-            skuName             : "TestSku " & randRange(1, 100),
-            skuCode             : "testSku" & randRange(1, 100), 
-            
-            //SkuPrice
-            currencyCode        : "USD",
-            price               : rand() * randRange(1,1000), 
-            listPrice           : rand() * randRange(1,1000), 
-        
-            remotePriceGroupID  : randRange(100, 1000000),
-            priceGroupName      : "Test price group " & randRange(1,10)
-	    };
-	    
-	    
-	    // optional sku fields
-	    if( rand() > rand() ){
-	        skuData.append({
-                skuPublishedFlag    : rand() > 0.5,
-    	        skuActiveFlag       : rand() > 0.5, 
-	        });
-	    }
-	    
-	     // optional sku-price
-	    if( rand() > rand() ){
-	        skuData.append({
-                skuPricePublishedFlag    : rand() > 0.5,
-    	        skuPriceActiveFlag       : rand() > 0.5, 
-	        });
-	    }
-	     // optional sku-price
-	    if( rand() > rand() ){
-	        skuData.append({
-                maxQuantity              : randRange(0, 10)
-	        });
-	    }
-	     // optional sku-price
-	    if( rand() > rand() ){
-	        skuData.append({
-                minQuantity              : randRange(0, 10)
-	        });
-	    }
-	    
-	    // optional sku fields
-	    if( rand() > rand() ){
-	        skuData.append({
-                priceGroupActiveFlag    : rand() > 0.5,
-                priceGroupCode    : "priceGroup" & randRange(0, 10)
-	        });
-	    }
-
-	    return skuData;
+	    return {
+            "PriceGroupName": "Price Group AAA",
+            "PriceGroupActiveFlag": "",
+            "SkuDescription": "",
+            "RemoteProductID": "9828535",
+            "Price": "67",
+            "MaxQuantity": "",
+            "ListPrice": "93",
+            "SkuPublishedFlag": "true",
+            "SkuName": "",
+            "RemoteSkuID": "116037",
+            "SkuActiveFlag": "",
+            "PriceGroupCode": "",
+            "SkuPriceActiveFlag": "true",
+            "MinQuantity": "",
+            "RemotePriceGroupID": "8",
+            "RemoteSkuPriceID": "",
+            "CurrencyCode": "CZK",
+            "SkuCode": ""
+        };
 	}
 	
 	private any function insertRow( required string tableName, required struct keyValuePairs ){
@@ -849,6 +829,153 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
     
     
+     /**
+     * @test
+    */
+    public void function transformEntityData_should_resolve__generated__properties(){
+        var sampleProductData = getSampleProductData();
+        
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping['generatedProperties'] = [{
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductUrlTitle"
+        }];
+        
+        mapping.delete('relations');
+        
+        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        debug(data);
+        expect( data ).toHaveKey( 'urlTitle' );
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_resolve__create_only__properties__when_creating_new_entity(){
+        var sampleProductData = getSampleProductData();
+        
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping['generatedProperties'] = [{
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductUrlTitle",
+            "allowUpdate"        : false
+        }];
+        
+        mapping.delete('relations');
+        
+        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        debug(data);
+        expect( data ).toHaveKey( 'urlTitle' );
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_resolve__create_only__properties__when_updating_existing_entity(){
+        var sampleProductData = getSampleProductData();
+        
+        // simulates updating existing product
+        sampleProductData['productID'] = '123456789078765';
+        
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping['generatedProperties'] = [{
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductUrlTitle",
+            "allowUpdate"        : false
+        }];
+        
+        mapping.delete('relations');
+        
+        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        debug(data);
+        
+        expect( structKeyExists(data, 'urlTitle') ).toBeFalse();
+    }
+
+    
+    /**
+     * @test
+    */
+    public void function processEntityImport_check_transform_data(){
+        
+        // var sampleProductData = getSampleProductData();
+        
+        var sampleProductData = {
+                "productType": {
+                    "parentProductType": {
+                        "productTypeID": "444df2f7ea9c87e60051f3cd87b435a1"
+                    },
+                    "productTypeDescription": "Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.",
+                    "productTypeID": "",
+                    "systemCode": "١٢٣",
+                    "remoteID": "71580",
+                    "importRemoteID": "9A177BF0543ED8157A0E9903295F01FA",
+                    "productTypeName": "Product type 22245",
+                    "urlTitle": "Product-type-22245"
+                },
+                "brand": {
+                    "brandWebsite": "https://www.SENSAICELLULARPERFORMANCEPOWDERFOUNDATION.com",
+                    "brandName": "SENSAI CELLULAR PERFORMANCE POWDER FOUNDATION",
+                    "brandID": "",
+                    "remoteID": "73002",
+                    "urlTitle": "SENSAI-CELLULAR-PERFORMANCE-POWDER-FOUNDATION",
+                    "importRemoteID": "83159AC34DAF800DC96FA00DFD44BD52"
+                },
+                "productDescription": "Sed ante. Vivamus tortor. Duis mattis egestas metus.",
+                "defaultSku": {
+                    "skuDescription": "Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.\n\nVestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.",
+                    "imageFile": "SKU_30443-.jpeg",
+                    "skuName": "Pecan Raisin - Tarts sku 5",
+                    "skuID": "",
+                    "remoteID": "30443",
+                    "skuCode": "SKU_30443",
+                    "urlTitle": "SKU_30443_1234",
+                    "importRemoteID": "1BA4D572A08BABFE8C7D9C9717EC1599",
+                    "skuPrices": [
+                        {
+                            "skuPriceID": "",
+                            "price": "622.8",
+                            "maxQuantity": "5",
+                            "listPrice": "513.83",
+                            "minQuantity": "1",
+                            "priceGroup": {
+                                "priceGroupName": "Price group two",
+                                "priceGroupID": "",
+                                "priceGroupCode": "pgtTwo",
+                                "remoteID": "60850",
+                                "importRemoteID": "366BB8CABA334AB2D8CAC7E2AAFA7302"
+                            },
+                            "remoteID": "55627",
+                            "currencyCode": "RUB",
+                            "importRemoteID": "1BA4D572A08BABFE8C7D9C9717EC1599_67654743CC32DFEEBF2D2D154DB69CD8_C4CA4238A0B923820DCC509A6F75849B_CFCD208495D565EF66E7DFF9F98764DA_366BB8CABA334AB2D8CAC7E2AAFA7302"
+                        }
+                    ]
+                },
+                "remoteID": "24036",
+                "productName": "Pecan Raisin - Tarts",
+                "importRemoteID": "251713B2559F797B13EC939AB7550AC6",
+                "productID": "",
+                "productCode": "product_1234",
+                "urlTitle": "product-1234-2344",
+            };
+             
+        debug(sampleProductData);
+       
+// 		var product = createPersistedTestEntity( 'product' );
+		var product = request.slatwallScope.getBean('Product');
+        product.populate( data=sampleProductData, objectPopulateMode='private' );
+        debug(product.getErrors());
+        
+        product.validate('save');
+        
+        debug(product.getErrors());
+        // var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
+
+        
+    }
+    
+    
     
     
     
@@ -982,9 +1109,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'transformAccountData_spy_called');
         structDelete( variables.service, 'transformAccountData');
     }
-
-    
-
     
     /** ***************************.  EntityQueue and FailureQueue .***************************** */
 
@@ -1259,50 +1383,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'resolveAccountDependencies');
     }
     
-    
-    
-    
-    
-    private struct function getAccountEmailAddressMapping(){
-        return {
-            "entityName": "AccountEmailAddress",
-            "properties": {
-                "email": {
-                    "propertyIdentifier": "emailAddress",
-                    "validations": { "required": true, "dataType": "email" }
-                }
-            },
-            "importIdentifier": {
-                "propertyIdentifier": "importRemoteID",
-                "type": "composite",
-                "keys": [
-                    "remoteAccountID",
-                    "email"
-                ]
-            },
-            "dependencies" : [{
-                "key"                : "remoteAccountID",
-                "entityName"         : "Account",
-                "lookupKey"          : "remoteID",
-                "propertyIdentifier" : "account"
-            }]
-        };
-    }
-    
-    /**
-     * @test
-    */
-    public void function processEntityImport_check_transform_data(){
-        
-        var sampleProductData = getSampleProductData();
-        
-        var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
-
-        
-        debug(data);
-    }
-    
-    
     /**
      * @test
     */
@@ -1326,7 +1406,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         expect( emailAddress.getErrors() ).toHaveKey( 'account' );
         
         expect( emailAddress.getErrors().account[1] )
-        .toBe('Depandancy for propertyIdentifier [account] on Entity [Account] could not be resolved yet');
+        .toBe('Depandancy for propertyIdentifier [account] on Entity [AccountEmailAddress] could not be resolved yet');
         
     }
     
