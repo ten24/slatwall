@@ -3,7 +3,7 @@
     
     "properties": {
         
-        "inventoryID": {
+        "remoteInventoryID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -13,13 +13,13 @@
         "quantityIn": {
             "propertyIdentifier": "quantityIn",
             "validations": {
-                "dataType": "float"
+                "dataType": "numeric"
             }
         },
         "quantityOut": {
             "propertyIdentifier": "quantityOut", 
             "validations": {
-                "dataType": "float"
+                "dataType": "numeric"
             }
         },
         "cost": {
@@ -60,6 +60,36 @@
         }
         
     },
+    
+    
+    "relaions" : [
+        {
+            // stock
+            // generator function
+        }
+    ] 
+    
+    "dependancies" : [
+    
+        "remoteSkuID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        
+        "remoteLocationID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "dataType": "string"
+            }
+        },  
+        
+        
+    ]
+    
+    // remoteSkuID
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
