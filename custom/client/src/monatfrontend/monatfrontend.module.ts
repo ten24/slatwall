@@ -240,6 +240,7 @@ var monatfrontendmodule = angular
 			let logoutSuccessCallback = () => {
 				console.log("on logoutSuccessCallback");
 				hibachiConfig.accountID = undefined;
+				publicService.removeFromSessionCache("cachedAccount");
 			};
 
 			let loginSuccessCallback = () => {
@@ -262,7 +263,6 @@ var monatfrontendmodule = angular
 			}
 		},
 	]);
-	
 	// the __DEBUG_MODE__ is driven by webpack-config and only enabled in debug-builds
 	if(__DEBUG_MODE__){
 	    // added here for debugging angular-bootstrapping, and other similar errors
@@ -278,6 +278,7 @@ var monatfrontendmodule = angular
             };
         })
     }
+	
 
 export { 
     monatfrontendmodule, 
