@@ -95,6 +95,10 @@ class SWFPaginationController {
 
         this.argumentsObject['pageRecordsShow'] = this.itemsPerPage;
         this.argumentsObject['currentPage'] = pageNumber;
+        
+        if(this.publicService.account?.priceGroups?.length){
+        	this.argumentsObject['priceGroupCode'] = this.publicService.account.priceGroups[0].priceGroupCode;
+		}
         this.publicService.paginationIsLoading = true;
         this.parentController.loading = true;
         
