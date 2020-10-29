@@ -28,7 +28,7 @@
 		public any function get( required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
 			// Adds the Applicatoin Prefix to the entityName when needed.
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
-				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
+				arguments.entityName = "#Slatwall##arguments.entityName#";
 			}
 
 			if ( isSimpleValue( arguments.idOrFilter ) && len( arguments.idOrFilter ) ) {
@@ -71,19 +71,6 @@
 
 			// Save this entity
 			entitySave( arguments.target );
-
-			// Digg Deeper into any populatedSubProperties and save those as well.
-			if(!isNull(arguments.target.getPopulatedSubProperties())) {
-				for(var p in arguments.target.getPopulatedSubProperties()) {
-            		if(isArray(arguments.target.getPopulatedSubProperties()[p])) {
-            			for(var e=1; e<=arrayLen(arguments.target.getPopulatedSubProperties()[p]); e++) {
-            				this.save(target=arguments.target.getPopulatedSubProperties()[p][e]);
-            			}
-            		} else {
-            			this.save(target=arguments.target.getPopulatedSubProperties()[p]);
-            		}
-            	}
-            }
 
 			return arguments.target;
 		}
