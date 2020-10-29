@@ -408,6 +408,9 @@ component extends="framework.one" {
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 		} else {
 			getHibachiScope().setPersistSessionFlag(false);
+			if(structKeyExists(request,'context')){
+				request.context.headers["Cache-Control"] = 'no-cache="Set-Cookie"';
+			}
 		}
 		
 		// CSRF / Duplicate Request Handling
