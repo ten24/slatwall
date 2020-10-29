@@ -138,6 +138,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 		} 
 		catch ( any e ){
+			throw(e)
     		this.getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
 		}
 		

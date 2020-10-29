@@ -1294,12 +1294,41 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     */
     public void function processEntityImport_check_transform_data(){
         
-        var sampleProductData = getSampleProductData();
-        
-        var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
+        var sampleProductData = {
+            	"__dependancies": [{
+            		"key": "remoteSkuID",
+            		"entityName": "Sku",
+            		"lookupKey": "remoteID",
+            		"propertyIdentifier": "sku",
+            		"lookupValue": "1"
+            	}, {
+            		"key": "remoteLocationID",
+            		"entityName": "Location",
+            		"lookupKey": "remoteID",
+            		"propertyIdentifier": "location",
+            		"lookupValue": "87090B80C8D31B4CDB500112B16C720B"
+            	}],
+            	"createdDateTime": "27",
+            	"inventoryID": "",
+            	"landedAmount": "100",
+            	"landedCost": "98",
+            	"cost": "54",
+            	"stock": {
+            		"stockID": "4028c08475735ffa01757360ead40006"
+            	},
+            	"cogs": "22",
+            	"remoteID": "1",
+            	"currencyCode": "IDR",
+            	"quantityOut": "14",
+            	"quantityIn": "53",
+            	"importRemoteID": "C4CA4238A0B923820DCC509A6F75849B"
+            };
+        var tempInventory = this.getService().getHibachiService().newInventory();
+	    tempAccountData = this.getService().processEntityImport( tempInventory, sampleProductData );
+        //var data = this.getService().transformEntityData( entityName="Inventory", data=sampleProductData );
 
-        
-        debug(data);
+        debug(tempInventory);
+        debug(tempAccountData);
     }
     
     

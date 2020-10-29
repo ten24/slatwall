@@ -50,6 +50,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	property name = "locationService";
+	property name="stockService";
 	
 	property name = "hibachiService";
 	property name = "hibachiUtilityService";
@@ -266,7 +267,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             }
                          
             var primaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
-            
             arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#primaryIDProperty#" : primaryIDValue }
         }
 	}
@@ -1058,26 +1058,42 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	public any function generateInventoryStock( struct data, struct mapping, struct propertyMetaData ){
-
-	    var priceGroupImportRemoteID = this.createEntityImportRemoteID( 'Stock', arguments.data, arguments.mapping);
-	    
-	    var priceGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-	        "entityName"  : 'Stock',
-	        "uniqueKey"   : 'importRemoteID',
-	        "uniqueValue" : stockImportRemoteID
-	    );
-    	    
-    	if( !isNull(stockID) && !this.hibachiIsEmpty(stockID) ){
-    	    return { "stockID" : stockID }
-    	}
-    	
-    	// create a new price-group
-    	return this.transformEntityData( 
-            entityName  = "Stock", 
-            data        = arguments.data,
-            mapping     = arguments.mapping,
-            nested      = true
-        );
+	    var skuID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+            	        "entityName"  : 'Sku',
+            	        "uniqueKey"   : 'remoteID',
+            	        "uniqueValue" : arguments.data.remoteSkuID
+            	    );
+        var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+            	        "entityName"  : 'Location',
+            	        "uniqueKey"   : 'remoteID',
+            	        "uniqueValue" : arguments.data.remoteLocationID
+            	    ); 
+        if(!isNull(skuID) && !this.hibachiIsEmpty(skuID)){
+            
+            if(isNull(locationID) || this.hibachiIsEmpty(locationID)){
+                //default location id
+                locationID="88e6d435d3ac2e5947c81ab3da60eba2";
+            }
+    	    //Find if we have a stock for this sku and location.
+		    var stock = getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
+		    
+		    
+		    if (!isNull(stock)){
+		    	return { "stockID" : stock.getstockID() };
+		    }
+		    //create new stock
+		    return {
+	            "stockID" : "",
+	            "sku": {
+	                    "skuID": skuID
+	           },
+	            "location" :{
+	                "locationID" : locationID
+	            }
+	        };
+        }
+        
+        //dont create stock if there is no locationID / skuID
 	}
 	
 	public any function generateInventoryLocation( struct data, struct mapping, struct propertyMetaData ){

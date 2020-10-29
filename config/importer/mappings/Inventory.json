@@ -62,23 +62,17 @@
     },
 
 
-    "relaions" : [
+    "relations" : [
         {
-            "type": "many-to-one",
+            "type": "manyToOne",
             "entityName": "Stock",
             "propertyIdentifier": "stock",
             "generatorFunction": "generateInventoryStock"
-        },
-        {
-            "type": "oneToMany",
-            "entityName": "Location",
-            "propertyIdentifier": "location",
-            "generatorFunction": "generateInventoryLocation"
         }
         
     ],
 
-    "dependancies" : [
+    "dependencies" : [
         
         {
             "key"                : "remoteSkuID",
