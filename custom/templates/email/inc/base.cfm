@@ -11,8 +11,11 @@
 		}
 	}
 </cfscript>
-
-<cfset local.accountType = account.getAccountType() />  
+<cfif NOT isNull(account) >
+	<cfset local.accountType = account.getAccountType() /> 
+<cfelse>
+	<cfset local.accountType = 'customer' />
+</cfif>
 
 <cfif local.accountType EQ 'Unassigned' OR local.accountType EQ 'retail'>
 	<cfset local.accountType = 'customer' />

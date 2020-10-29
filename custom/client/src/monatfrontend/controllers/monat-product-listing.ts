@@ -35,7 +35,8 @@ class MonatProductListingController {
 		public $timeout,
         private monatService        : MonatService,
 		private monatAlertService   : MonatAlertService,
-		private orderTemplateService: OrderTemplateService
+		private orderTemplateService: OrderTemplateService,
+		private rbkeyService
 	) {}
 
     
@@ -154,13 +155,18 @@ class MonatProductListingController {
 			quantity
 		)
 		.then((data) => {
-			this.loadingAddToCart = false;
-			this.monatAlertService.success("Product added to cart successfully");
+			if(data.hasErrors){
+				this.monatAlertService.showErrorsFromResponse(data);
+			}else{
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful'));
+			}
 		})
 		.catch( (error) => {
-			this.loadingAddToCart = false;
 			console.error(error);
             this.monatAlertService.showErrorsFromResponse(error);
+		})
+		.finally(()=>{
+			this.loadingAddToCart = false;
 		});
 	};
 }

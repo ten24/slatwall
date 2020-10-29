@@ -95,6 +95,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuStockHoldTime"/>
 		<swa:SlatwallSetting settingName="skuDisableAverageCostCalculation"/>
 		<swa:SlatwallSetting settingName="skuDisableQoQCalculation"/>
+		<swa:SlatwallSetting settingName="skuAllowableRefundPercentages"/>
 
 	</swa:SlatwallSettingTable>
 </cfoutput>

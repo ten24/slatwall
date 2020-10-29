@@ -73,21 +73,23 @@ Notes:
 		isDeletable=true
 	})/>
 	
+	
 	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='primaryEmailAddress.emailAddress',
+	displayProperty='calculatedEmailAddress',
+	columnConfig={
+		isVisible=true,
+		isSearchable=false,
+		isDeletable=true
+	})/>
+	
+	<!---
+	<cfset accountCollectionList.addDisplayProperty(
+	displayProperty='calculatedPhoneNumber',
 	columnConfig={
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
-	})/>
-	
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='primaryPhoneNumber.phoneNumber',
-	columnConfig={
-		isVisible=false,
-		isSearchable=true,
-		isDeletable=true
-	})/>
+	})/>--->
 	
 	<cfset accountCollectionList.addDisplayProperty(
 	displayProperty='ownerAccount.firstName',

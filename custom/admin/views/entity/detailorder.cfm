@@ -108,6 +108,14 @@ Notes:
 						<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="approveReturn" type="list"/>
 					</cfif>
 				</cfif>
+				
+				<cfif rc.order.getOrderType().getSystemCode() eq "otReturnOrder" >
+					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="changeReturnPercentage"  type="list" modal="true"/>
+				</cfif>
+				
+				
+				
+				
 				<cfif 
 					( rc.order.getOrderType().getSystemCode() eq 'otReturnOrder'
 						AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaApproved'

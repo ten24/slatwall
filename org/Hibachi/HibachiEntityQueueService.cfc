@@ -156,7 +156,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						ORMClearSession();
 						getHibachiScope().setORMHasErrors(false);
 					}
-					deleteEntityQueueItem(entityQueue['entityQueueID']);
+					deleteEntityQueueItem(entityQueue['entityQueueID'], true);
 				}catch(any e){
 					if(val(entityQueue['tryCount']) >= maxTryCount){
 						getHibachiEntityQueueDAO().archiveEntityQueue(entityQueue['entityQueueID'], e.message);

@@ -1,6 +1,6 @@
 component extends="Slatwall.model.service.AccountService" accessors="true" output="false" {
 	public string function getCustomAvailableProperties() {
-		return 'priceGroups.priceGroupCode,profileImage,createdDateTime,canCreateFlexshipFlag,accountCode,accountNumber,accountType,allowCorporateEmailsFlag';
+		return 'priceGroups.priceGroupCode,profileImage,createdDateTime,canCreateFlexshipFlag,accountCode,accountNumber,accountType,allowCorporateEmailsFlag,ownerAccount.accountID';
 	}
 	
 	public any function processAccountLoyalty_referAFriend(required any accountLoyalty, required struct data) {
@@ -409,7 +409,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return getHibachiScope().getService('integrationService')
 			.getIntegrationByIntegrationPackage('infotrax')
 			.getIntegrationCFC("data")
-			.retrySyncPendingOrders(argumentCollection=arguments);
+			.retrySyncPendingAccounts(argumentCollection=arguments);
 	}
 	
 	public any function processAccount_importAccountUpdates(struct data={}) {
@@ -468,6 +468,13 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			var allowCorporateEmailsFlag = getService('mailchimpService').getSubscribedFlagByEmailAddress( arguments.account.getPrimaryEmailAddress().getEmailAddress() ); 
 			arguments.account.setAllowCorporateEmailsFlag( allowCorporateEmailsFlag );
 		}
+		return arguments.account;
+	}
+	
+	public any function processAccount_syncInfotrax(required any account, struct data={}) {
+
+		getService('infotraxService').push(arguments.account, { event: 'afterAccountSaveSuccess' });
+
 		return arguments.account;
 	}
 	

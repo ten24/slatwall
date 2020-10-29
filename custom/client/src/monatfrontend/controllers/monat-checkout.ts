@@ -418,16 +418,24 @@ class MonatCheckoutController {
 	}
 	
 	public handleAccountResponse = (data: {account:{[key:string]:any}, [key:string]:any})=>{
+		let existingAccountID = this.account?.accountID;
+		
 		this.account = data.account;
 		let setDefault = true;
-		let hardRefresh = true;
-	
-		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
-			this.hasSponsor = false;
-			setDefault = false;
+		let hardRefresh = false;
+		
+		if(this.account.accountID != existingAccountID){
 			hardRefresh = true;
 		}
 	
+		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
+			this.hasSponsor = this.account.ownerAccount?.accountID?.length;
+			setDefault = false;
+			hardRefresh = true;
+		}
+		if(data.messages){
+			this.publicService.messages = data.messages;
+		}
 		if(!this.account.accountID.length) return;
 		this.getCurrentCheckoutScreen(setDefault, hardRefresh);
 

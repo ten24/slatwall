@@ -68,6 +68,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderNotes" ormtype="text";
 	property name="addToEntityQueueFlag" ormtype="boolean";
 	property name="taxCommitDateTime" ormtype="timestamp";
+	property name="taxTransactionReferenceNumber" ormtype="string";
 	
 	//used to check whether tax calculations should be run again
 	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
@@ -221,6 +222,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
      property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
     property name="dropSkuRemovedFlag" ormtype="boolean" default=0;
 	property name="incompleteReturnFlag" ormtype="boolean";
+	property name="sharedByAccount" cfc="Account" fieldType="many-to-one" fkcolumn="sharedByAccountID";
 	
     property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
