@@ -1068,11 +1068,11 @@ component extends="HibachiService" accessors="true" {
 			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
 			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
-		
-			var skus = 	arguments.product.getSkus(); ////need to get suggestion for getting particular Sku ID
-			skus.setDefaultSKuModifiedDateTime(Now());
-			save(skus);
-			writeDump("Done");abort;
+			
+			var skuID = product.getDefaultSku().getSkuID();
+			var updateSku = getService('skuService').getSku( skuID );
+			updateSku.setDefaultImageModifiedDateTime(Now());
+			getService("skuService").saveSku( updateSku );
 
 			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
 				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
