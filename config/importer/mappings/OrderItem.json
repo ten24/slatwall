@@ -1,9 +1,7 @@
 {
     "entityName": "OrderItem",
-    
     "properties": {
-        
-        "orderItemID": {
+        "remoteOrderItemID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -36,50 +34,87 @@
                 "dataType": "integer"
             }
         },
-        "estimatedDeliveryDateTime": {
-            "propertyIdentifier": "estimatedDeliveryDateTime",
+        "bundleItemQuantity": {
+            "propertyIdentifier": "bundleItemQuantity",
             "validations": {
-                "dataType": "date"
+                "dataType": "integer"
             }
         },
-        "estimatedFulfillmentDateTime": {
-            "propertyIdentifier": "estimatedFulfillmentDateTime",
+        "allocatedOrderDiscountAmount": {
+            "propertyIdentifier": "bundleItemQuantity",
             "validations": {
-                "dataType": "date"
+                "dataType": "integer"
             }
         },
-        "userDefinedPriceFlag": {
-            "propertyIdentifier": "userDefinedPriceFlag",
-            "defaultValue": false,
-            "validations": {
-                "dataType": "boolean"
-            }
-        }
+        
     },
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "orderItemID"
+            "remoteOrderItemID"
         ]
     },
     
     "relations": [
         {
-            "entityName": "sku",
-            "propertyIdentifier": "Sku"
+            "type": "manyToOne",
+            "entityName": "Type",
+            "propertyIdentifier": "orderItemType",
+            "generatorFunction": "resolveOrderItemType"
         },
         {
-            "entityName": "stock",
-            "propertyIdentifier": "Stock"
-        },
-        {
-            "entityName": "order",
-            "propertyIdentifier": "Order"
-        },
-        {
-            "entityName": "orderFulfillment",
-            "propertyIdentifier": "OrderFulfillment"
+            "type": "manyToOne",
+            "entityName": "Type",
+            "propertyIdentifier": "orderItemStatusType",
+            "generatorFunction": "resolveOrderItemStatusType"
         }
+    ],
+    
+    // TODO: OPTIONAL_DEPENDENCY
+    // TODO: DEFAULT_VALUE for dependency
+    // TODO: DEPENDENCY_RESOLVER_FUNCTIONS
+    "dependencies": [
+        {
+            "key": "remotePriceGroupID",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey": "remoteID",
+            "entityName": "PriceGroup",
+            "propertyIdentifier": "appliedPriceGroup"
+        },
+        {
+            "key": "remoteSkuID",
+            "lookupKey": "remoteID",
+            "entityName": "Sku",
+            "propertyIdentifier": "sku"
+        },
+        {
+            "key": "remoteOrderID",
+            "lookupKey": "remoteID",
+            "entityName": "Order",
+            "propertyIdentifier": "order"
+        },
+        {
+            "OPTIONAL_DEPENDENCY": true,
+            "key": "remoteParentOrderItemID",
+            "lookupKey": "remoteID",
+            "entityName": "OrderItem",
+            "propertyIdentifier": "parentOrderItem"
+        },
+        {
+            "key": "remoteOrderFulfillmentID",
+            "lookupKey": "remoteID",
+            "entityName": "OrderFulfillment",
+            "propertyIdentifier": "prderFulfillment"
+        },
+        {
+            "OPTIONAL_DEPENDENCY": true,
+            "key": "remoteOrderReturnID",
+            "lookupKey": "remoteID",
+            "entityName": "OrderReturn",
+            "propertyIdentifier": "orderReturn"
+        },
+        
     ]
 }
