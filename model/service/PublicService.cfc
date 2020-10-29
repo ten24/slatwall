@@ -2411,4 +2411,18 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
+    public void function getQualifiedPromotionRewardSkusForOrder(required struct data){
+        param name="arguments.data.orderID";
+        /*
+            OrderID is required, data can also include promotionRewardID to return skus for a particular reward.
+            Other optional arguments: pageRecordsShow (default 25), formatRecords (default false)
+        */
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        if( !isNull(order) ){
+            arguments.data.order = order;
+            var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
+        }
+    }
+    
 }

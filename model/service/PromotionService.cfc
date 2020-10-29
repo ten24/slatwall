@@ -1678,14 +1678,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return canPlaceOrderDetails; 
 	}
 	
-	public array function getQualifiedPromotionRewardsForOrder( required any order ){
+	public array function getQualifiedPromotionRewardsForOrder( required any order, string promotionRewardID ){
 		var qualifiedPromotionRewards = [];
 		var promotionEffectiveDateTime = now();
 		if(arguments.order.getOrderStatusType().getSystemCode() != "ostNotPlaced" && !isNull(arguments.order.getOrderOpenDateTime())) {
 			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
 		}
+		
+		var rewardArgs = {
+			rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment,rewardSku",
+			promotionCodeList=arguments.order.getPromotionCodeList(),
+			qualificationRequired=true,
+			promotionEffectiveDateTime=promotionEffectiveDateTime,
+			site=arguments.order.getOrderCreatedSite()
+		};
+		
+		if( !isNull(arguments.promotionRewardID) ){
+			rewardArgs.promotionRewardID = arguments.promotionRewardID;
+		}
+		
 		// Loop over all Potential Discounts that require qualifications
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment,rewardSku", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(argumentCollection = rewardArgs);
 		for(var promoReward in promotionRewards){
 			var promoPeriod = promoReward.getPromotionPeriod();
 			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
@@ -1696,9 +1709,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return qualifiedPromotionRewards;
 	}
 	
-	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
+	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false, string promotionRewardID){
+
 		var rewardSkus = [];
-		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		var qualifiedPromotionRewardArguments = {
+			order:arguments.order
+		};
+		if( !isNull(arguments.promotionRewardID) ){
+			qualifiedPromotionRewardArguments.promotionRewardID = arguments.promotionRewardID;
+		}
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( argumentCollection=qualifiedPromotionRewardArguments );
+
 		for(var promotionReward in qualifiedPromotionRewards){
 			var skuCollection = promotionReward.getSkuCollection();
 			if(!isNull(skuCollection)){
