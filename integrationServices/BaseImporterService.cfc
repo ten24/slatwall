@@ -124,8 +124,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	    if( structKeyExists(mapping, 'dependencies') ){
   	        
   	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
-  	        for(var dependancy in mapping.dependencies ){
-  	            headers.append({ "#ucFirst(dependancy.key, true)#" : 'VarChar' });
+  	        for(var dependency in mapping.dependencies ){
+  	            headers.append({ "#ucFirst(dependency.key, true)#" : 'VarChar' });
 	        }
   	    }
   	    
@@ -436,10 +436,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         var validatorFunctionName = 'validate#arguments.entityName#Data';
         
         if( structKeyExists( this, validatorFunctionName) ){
-            
             return this.invokeMethod( validatorFunctionName, arguments );
         } else {
-            
     	    return this.genericValidateEntityData( argumentCollection = arguments);
         }
     }
@@ -447,8 +445,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public struct function genericValidateEntityData( required struct data, required struct mapping, boolean collectErrors = false ){
 	    
 	    var validationService = this.getHibachiValidationService();
-	    var utilityService = this.getHibachiUtilityService();
-	   
+
 	    var entityName = arguments.mapping.entityName;
 	    var isValid = true;
 	    var errors = {};
@@ -457,106 +454,180 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( structKeyExists(arguments.mapping, 'properties') ){
 	        
     	    for( var propertyName in arguments.mapping.properties ){
-    	        
     	        var propertyMeta = arguments.mapping.properties[propertyName];
     	        
     	        if( structKeyExists(propertyMeta, 'validations') ){
-    	            
     	            for( var constraintType in propertyMeta.validations ){
     	                var constraintValue = propertyMeta.validations[constraintType];
-    	                var validationFunctionName = 'validate_#constraintType#_value';
     	                
-    	                if( structKeyExists(this, validationFunctionName) ){
-    	                    
-                            isValid = this.invokeMethod( validationFunctionName, { 
-                               propertyValue    =  data[propertyName] ?: javaCast('null', 0),
-                               constraintValue  =  constraintValue
-                            });
-                            
-    	                } else if( structKeyExists(validationService, validationFunctionName) ){
-    	                    
-                                isValid = validationService.invokeMethod( validationFunctionName, { 
-                                   propertyValue    =  data[propertyName] ?: javaCast('null', 0),
-                                   constraintValue  =  constraintValue
-                                });
-            	                    
-    	                } else {
-    	                    throw("invalid validation constraint type : #constraintType#, function #validationFunctionName# does not exist");
-    	                }
+                        isValid = this.validateConstraintType(
+                            constraintType  = constraintType, 
+                            constraintValue = constraintValue, 
+                            propertyValue   = arguments.data[propertyName] ?: javaCast('null', 0)
+                        );
     	               
                         if( !isValid ){
-                           
                             // if we're instructed to collecth the errors.
                             if( arguments.collectErrors ){
-                                
-                                if( constraintType eq "dataType" ){
-                        	        var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#.#constraintValue#');
-                        		} 
-                        		else {
-                        			var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#');
-                        		}
-                        		
-                        		errorMessage = utilityService.replaceStringTemplate( errorMessage, {
-                        		    "className"         : entityName,
-                        		    "propertyName"      : propertyName,
-                        		    "constraintValue"   : constraintValue 
-                        		});
-                        		
+                                var errorMessage = this.createErrorMessageForFailedConstraint(
+                                    entityName      = entityName,
+                                    propertyName    = propertyName,
+                                    constraintType  = constraintType,
+                                    constraintValue = constraintValue
+                                );
                         		// collecting the error
                         		if( !structKeyExists(errors, propertyName) ){
                         		    errors[propertyName] = [];
                         		}
-                        		
-                                ArrayAppend( errors[propertyName] ,  errorMessage );  
-                        		
+                                ArrayAppend( errors[propertyName],  errorMessage );  
                         		//resetting the flag to continue validating;
                                 isValid = true;
-                            } 
-                            else { 
+                            } else { 
                                 break;
                             }
                         }
-    
+                        
     	            }
     	        }
     	        
-    	        if( !isValid && !arguments.collectErrors){
+    	        if( !isValid && !arguments.collectErrors ){
     	            break;
     	        }
     	    }
 	    }
 	    
 	    // validate related sub-entities as well
-	    if(  (isValid || arguments.collectErrors) && structKeyExists(arguments.mapping, 'relations' ) ){
-	        
+	    if( (isValid || arguments.collectErrors) && structKeyExists(arguments.mapping, 'relations') ){
 	        for(var related in arguments.mapping.relations ){
-	           	if( !structKeyExists(related, 'excludeFromCSVTemplate') || !related.excludeFromCSVTemplate){
-	           	    
+	           	if( !structKeyExists(related, 'excludeFromValidation') || !related.excludeFromValidation){
                     var validation = this.validateEntityData(
                         data            =  arguments.data,  
                         entityName      = related.entityName, 
                         collectErrors   = arguments.collectErrors 
                     );
-                    
                     isValid = validation.isValid;
-                    
                     if(arguments.collectErrors){
                         errors = this.mergeErrors( errors, validation.errors );
                     }
-                    
-                    if( !isValid && !arguments.collectErrors){
+                    if( !isValid && !arguments.collectErrors ){
                         break;
                     } 
 	           	}
 	        }
 	    }
 	    
+	    // validate that the source properties exist for dependencies
+	    if( structKeyExists(mapping, 'dependencies') ){
+  	        for(var dependency in mapping.dependencies ){
+  	            // skip nullble dependencies
+  	            if(structKeyExists(dependency, 'isNullable') &&  dependency.isNullable ){
+  	                continue;
+  	            }
+  	            // validate that the dependancy key exist in the source data
+  	            isValid = this.validateConstraintType(
+  	                constraintType  = 'required', 
+  	                constraintValue = 'true',
+  	                propertyValue   = arguments.data[ dependency.key ] ?: javaCast('null', 0)
+  	            )
+  	            
+  	            if(!isValid){
+      	            if( arguments.collectErrors ){
+                        var errorMessage = this.createErrorMessageForFailedConstraint(
+                            entityName      = entityName,
+                            propertyName    = dependency.key,
+                            constraintType  = 'required',
+                            constraintValue = 'true'
+                        );
+                		// collecting the error
+                		if( !structKeyExists(errors, dependency.key) ){
+                		    errors[dependency.key] = [];
+                		}
+                        ArrayAppend( errors[dependency.key],  errorMessage );  
+                		//resetting the flag to continue validating;
+                        isValid = true;
+                        
+                    } else {
+                        break;
+                    } 
+  	            }
+	        }
+  	    }
 	    
 	    // validate that importIdentifier exists
+	    for(var key in mapping.importIdentifier.keys ){
+            // validate that the dependancy key exist in the source data
+            isValid = this.validateConstraintType(
+              constraintType  = 'required', 
+              constraintValue = 'true',
+              propertyValue   = arguments.data[key] ?: javaCast('null', 0)
+            )
+            if( !isValid ){
+                if( arguments.collectErrors ){
+                    var errorMessage = this.createErrorMessageForFailedConstraint(
+                        entityName      = entityName,
+                        propertyName    = key,
+                        constraintType  = 'required',
+                        constraintValue = 'true'
+                    );
+            		// collecting the error
+            		if( !structKeyExists(errors, key) ){
+            		    errors[key] = [];
+            		}
+                    ArrayAppend( errors[key],  errorMessage );  
+            		//resetting the flag to continue validating;
+                    isValid = true;
+                    
+                } else {
+                    break;
+                } 
+            }
+	    }
+	    
 	    return { 
 	        isValid: arguments.collectErrors ?  StructIsEmpty( errors ) : isValid, 
 	        errors: errors 
 	    };
+	}
+	
+	public boolean function validateConstraintType(required string constraintType, required string constraintValue, any propertyValue){
+	    
+	    var validationFunctionName = 'validate_#arguments.constraintType#_value';
+        var validationService = this.getHibachiValidationService();
+        
+        if( structKeyExists(this, validationFunctionName) ){
+            return this.invokeMethod( validationFunctionName, { 
+               propertyValue    =  arguments.propertyValue ?: javaCast('null', 0),
+               constraintValue  =  arguments.constraintValue
+            });
+        }  
+        
+        if( structKeyExists( validationService, validationFunctionName) ){
+            return validationService.invokeMethod( validationFunctionName, { 
+               propertyValue    =  arguments.propertyValue ?: javaCast('null', 0),
+               constraintValue  =  arguments.constraintValue
+            });
+        } 
+        
+        throw("invalid validation constraint type : #constraintType#, function #validationFunctionName# does not exist");
+	}
+	
+	public string function createErrorMessageForFailedConstraint(
+	    required string entityName,
+	    required string propertyName,
+	    required string constraintType,
+	    required string constraintValue
+	){
+	    
+	    var rbKey = "validate.import.#arguments.entityName#.#arguments.propertyName#.#arguments.constraintType#";
+	    if( arguments.constraintType eq "dataType" ){
+            rbKey &= ".#arguments.constraintValue#";
+		}
+		
+		return this.getHibachiUtilityService().replaceStringTemplate( this.getHibachiScope().rbKey( rbKey ), {
+		    "className"         : entityName,
+		    "propertyName"      : propertyName,
+		    "constraintValue"   : constraintValue 
+	    });
 	}
 	
 	/**
