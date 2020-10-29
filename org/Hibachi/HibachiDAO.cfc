@@ -28,7 +28,7 @@
 		public any function get( required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
 			// Adds the Applicatoin Prefix to the entityName when needed.
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
-				arguments.entityName = "#Slatwall##arguments.entityName#";
+				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
 			if ( isSimpleValue( arguments.idOrFilter ) && len( arguments.idOrFilter ) ) {
