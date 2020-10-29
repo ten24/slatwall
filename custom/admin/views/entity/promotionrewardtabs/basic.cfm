@@ -21,6 +21,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="currencyCode" fieldType="select" edit="#rc.edit#" />
 				</hb:HibachiDisplayToggle>
 				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
+					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="publishedFlag" edit="#rc.edit#" />
 					<cfif rc.rewardType eq "subscription">
 						<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="applicableTerm" edit="#rc.edit#" />
 					</cfif>

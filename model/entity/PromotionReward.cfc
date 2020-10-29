@@ -69,6 +69,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="includedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
 	property name="excludedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
 	property name="rewardSkuQuantity" ormtype="integer" default=0;
+	property name="publishedFlag" ormtype="boolean" default=0;
 
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
@@ -200,6 +201,13 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		}
 		return variables.amount;
 	}
+	
+	public boolean function getPublishedFlag(){
+		if(!structKeyExists(variables,'publishedFlag')){
+			variables.publishedFlag = false;
+		}
+		return variables.publishedFlag;
+ 	}
 
 	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity, any account){
 		var daoArguments = {
