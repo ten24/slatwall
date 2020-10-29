@@ -67,6 +67,8 @@
             "type": "manyToOne",
             "entityName": "Stock",
             "propertyIdentifier": "stock",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
             "generatorFunction": "generateInventoryStock"
         }
         
