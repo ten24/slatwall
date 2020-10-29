@@ -5,6 +5,7 @@ class SWFPaginationController {
     public pageTracker:number = 1;
     public pageItems:any;
     public action:string;
+    public httpMethod:string = 'GET';
     public itemsPerPage:number = 10;
     public recordsCount:number;
     public totalPageArray:Array<any>;
@@ -110,7 +111,7 @@ class SWFPaginationController {
             let result = this.pageCache[pageCacheKey];
             this.handlePageResponse(deferred, result, pageNumber);
         }else{
-            this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
+            this.publicService.doAction(this.action, this.argumentsObject, this.httpMethod).then(result=>{
                 this.handlePageResponse(deferred, result, pageNumber, pageCacheKey);
             });
         }
@@ -146,6 +147,7 @@ class SWFPagination {
 	public bindToController = {
 		recordsCount: '<?', //total amount of records available from getRecordsCount call on backend
 		action: '@?', //endpoint to be called
+		httpMethod: '@?',
 		itemsPerPage:'@?', //Number of items to display in a page
 		recordList:'=', //Sets up two way binding so succeeding API responses overwrite the records with updated data
 		argumentsObject:'<?', //optional object of arguments to pass in to the api call
