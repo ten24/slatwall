@@ -2796,7 +2796,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
             var ownerAccountNumber = getHibachiScope().getSessionValue('ownerAccountNumber');
         }else{
-            addError(arguments.data,{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')});
+            this.addErrors(arguments.data,[{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')}]);
             getHibachiScope().addActionResult('public:account.saveEnrollment',true);
             return;
         }
