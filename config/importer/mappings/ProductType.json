@@ -16,7 +16,7 @@
                 "dataType": "string"
             }
         },
-        "typeCode": {
+        "productTypeCode": {
             "propertyIdentifier": "systemCode",
             "validations": {
                 "dataType": "string"
@@ -59,7 +59,8 @@
             "type" : "manyToOne",
             "entityName" : "ProductType",
             "propertyIdentifier" : "parentProductType",
-            "excludeFromCSVTemplate" : false,
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
             "generatorFunction" : "generateProductTypeParentProductType"
         }   
     ],

@@ -22,6 +22,20 @@
                 "dataType": "string"
             }
         },
+        "price": {
+            "propertyIdentifier": "price",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
+        "listPrice": {
+            "propertyIdentifier": "listPrice",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
         "skuDescription": {
             "propertyIdentifier": "skuDescription",
             "validations": {

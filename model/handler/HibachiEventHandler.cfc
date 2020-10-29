@@ -1,4 +1,4 @@
-component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
+component accessors=true output=false extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
     property name="stockService";
     property name="locationService";
@@ -28,6 +28,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	}
 	
 	public void function afterSkuCreateSuccess(required any sku) {
+	    this.logHibachi("called afterSkuCreateSuccess");
+
 	    //TODO add a global-setting, 
 	    // create-sku-stocks-for-locations-after-creating-new-skus = [ "All", "Parent", "None" ];
 	    
@@ -35,9 +37,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
     
     	for( var location in smartList.getRecords() ){
-	    
+	        
+	        this.logHibachi("creating stock for sku-location, #location.getLocationName()#");
+	        
 	        var newStock = this.getStockService().newStock();
-	        newStock.setSku( arguments.skus );
+	        newStock.setSku( arguments.sku );
 	        newStock.setLocation( location );
 	    
 	        this.getStockService().saveStock( newStock );

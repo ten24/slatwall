@@ -50,6 +50,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	property name="integrationServices";
 	property name="hibachiDataService";
+	property name="hibachiUtilityService";
 	
 	public any function getIntegration(){
 	    

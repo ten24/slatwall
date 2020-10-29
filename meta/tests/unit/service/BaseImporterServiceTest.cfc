@@ -92,116 +92,96 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
+	private struct function getAccountEmailAddressMapping(){
+        return {
+            "entityName": "AccountEmailAddress",
+            "properties": {
+                "email": {
+                    "propertyIdentifier": "emailAddress",
+                    "validations": { "required": true, "dataType": "email" }
+                }
+            },
+            "importIdentifier": {
+                "propertyIdentifier": "importRemoteID",
+                "type": "composite",
+                "keys": [
+                    "remoteAccountID",
+                    "email"
+                ]
+            },
+            "dependencies" : [{
+                "key"                : "remoteAccountID",
+                "entityName"         : "Account",
+                "lookupKey"          : "remoteID",
+                "propertyIdentifier" : "account"
+            }]
+        };
+    }
+	
 	
 
 	
 	private struct function getSampleProductData(){
-
-	    var productData =  {
-	        
-	        remoteProductID        : randRange(100, 1000000), 
-	        productName            : "Test Product " & randRange(1, 100),  
-	        
-	        //Brand
-	        brandName              : "Test Brand " & randRange(1, 10),
-	        
-	        //ProductType
-            productTypeName            : "Test Product Type " & randRange(1, 100)
-
-	    };
-	    
-	    //  optional product fields
-	    if( rand() > rand() ){
-	        productData.append({
-	            productCode            : "testProduct" & randRange(1, 100),
-    	        productDescription     : "Testing transform data for product", 
-    	        productPublishedFlag   : rand() > 0.5,
-    	        productActiveFlag      : rand() > 0.5
-	        });
-	    }
-	    
-	    // optional brand fields
-	    if( rand() > rand() ){
-	        productData.append({
-    	        brandWebsite        : "testBrand"& randRange(1, 10) &".com", 
-                brandPublishedFlag  : rand() > 0.5, 
-                brandActiveFlag     : rand() > 0.5 
-	        });
-	    }
-	    
-	    // optional product-type fields
-	    if( rand() > rand() ){
-	        productData.append({
-	            remoteProductTypeID        : randRange(100, 1000000),
-    	        systemCode                 : "test_product_type_" & randRange(1, 100), 
-                productTypeDescription     : "Testing transform data for product type",
-                productTypePublishedFlag              : rand() > 0.5,
-    	        productTypeActiveFlag                 : rand() > 0.5, 
-	        });
-	    }
-	    
-	    productData.append( getSampleSkuData() );
-	    
-	    return productData;
-	    
+        return {
+            "PriceGroupActiveFlag": "false",
+            "ProductPublishedFlag": "true",
+            "BrandWebsite": "www.Valsartan and Hydrochlorothiazide.com",
+            "TypeCode": "abcdefgdilkl",
+            "ProductTypeActiveFlag": "false",
+            "ProductTypeDescription": "",
+            "BrandName": "Valsartan and Hydrochlorothiazide",
+            "SkuName": "Water - Spring Water 500ml sku 4",
+            "RemoteSkuID": "8919",
+            "SkuActiveFlag": "false",
+            "PriceGroupCode": "pgtOne",
+            "ProductDescription": "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
+            "ProductTypePublishedFlag": "",
+            "RemoteSkuPriceID": "81957",
+            "CurrencyCode": "CAD",
+            "BrandActiveFlag": "true",
+            "ProductTypeName": "Product type 111",
+            "ProductCode": "",
+            "PriceGroupName": "Price group one",
+            "SkuDescription": "Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.\n\nIn quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
+            "RemoteProductID": "65584",
+            "RemoteProductTypeID": "37890",
+            "Price": "397.03",
+            "MaxQuantity": "0",
+            "ListPrice": "",
+            "RemoteBrandID": "93326",
+            "ProductActiveFlag": "true",
+            "SkuPublishedFlag": "true",
+            "BrandPublishedFlag": "false",
+            "SkuPriceActiveFlag": "true",
+            "MinQuantity": "4",
+            "RemotePriceGroupID": "79978",
+            "ProductName": "Water - Spring Water 500ml",
+            "SkuCode": "SKU_8919"
+        };
 	}
 	
 	private struct function getSampleSkuData(){
 
-	    var skuData = {
-	        
-            //Sku
-            remoteSkuID         : randRange(100, 1000000),
-            skuName             : "TestSku " & randRange(1, 100),
-            skuCode             : "testSku" & randRange(1, 100), 
-            
-            //SkuPrice
-            currencyCode        : "USD",
-            price               : rand() * randRange(1,1000), 
-            listPrice           : rand() * randRange(1,1000), 
-        
-            remotePriceGroupID  : randRange(100, 1000000),
-            priceGroupName      : "Test price group " & randRange(1,10)
-	    };
-	    
-	    
-	    // optional sku fields
-	    if( rand() > rand() ){
-	        skuData.append({
-                skuPublishedFlag    : rand() > 0.5,
-    	        skuActiveFlag       : rand() > 0.5, 
-	        });
-	    }
-	    
-	     // optional sku-price
-	    if( rand() > rand() ){
-	        skuData.append({
-                skuPricePublishedFlag    : rand() > 0.5,
-    	        skuPriceActiveFlag       : rand() > 0.5, 
-	        });
-	    }
-	     // optional sku-price
-	    if( rand() > rand() ){
-	        skuData.append({
-                maxQuantity              : randRange(0, 10)
-	        });
-	    }
-	     // optional sku-price
-	    if( rand() > rand() ){
-	        skuData.append({
-                minQuantity              : randRange(0, 10)
-	        });
-	    }
-	    
-	    // optional sku fields
-	    if( rand() > rand() ){
-	        skuData.append({
-                priceGroupActiveFlag    : rand() > 0.5,
-                priceGroupCode    : "priceGroup" & randRange(0, 10)
-	        });
-	    }
-
-	    return skuData;
+	    return {
+            "PriceGroupName": "Price Group AAA",
+            "PriceGroupActiveFlag": "",
+            "SkuDescription": "",
+            "RemoteProductID": "9828535",
+            "Price": "67",
+            "MaxQuantity": "",
+            "ListPrice": "93",
+            "SkuPublishedFlag": "true",
+            "SkuName": "",
+            "RemoteSkuID": "116037",
+            "SkuActiveFlag": "",
+            "PriceGroupCode": "",
+            "SkuPriceActiveFlag": "true",
+            "MinQuantity": "",
+            "RemotePriceGroupID": "8",
+            "RemoteSkuPriceID": "",
+            "CurrencyCode": "CZK",
+            "SkuCode": ""
+        };
 	}
 	
 	private any function insertRow( required string tableName, required struct keyValuePairs ){
@@ -849,6 +829,122 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
     
     
+     /**
+     * @test
+    */
+    public void function transformEntityData_should_resolve__generated__properties(){
+        var sampleProductData = getSampleProductData();
+        
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping['generatedProperties'] = [{
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductUrlTitle"
+        }];
+        
+        mapping.delete('relations');
+        
+        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        debug(data);
+        expect( data ).toHaveKey( 'urlTitle' );
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_resolve__create_only__properties__when_creating_new_entity(){
+        var sampleProductData = getSampleProductData();
+        
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping['generatedProperties'] = [{
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductUrlTitle",
+            "allowUpdate"        : false
+        }];
+        
+        mapping.delete('relations');
+        
+        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        debug(data);
+        expect( data ).toHaveKey( 'urlTitle' );
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_resolve__create_only__properties__when_updating_existing_entity(){
+        var sampleProductData = getSampleProductData();
+        
+        // simulates updating existing product
+        sampleProductData['productID'] = '123456789078765';
+        
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping['generatedProperties'] = [{
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductUrlTitle",
+            "allowUpdate"        : false
+        }];
+        
+        mapping.delete('relations');
+        
+        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        debug(data);
+        
+        expect( structKeyExists(data, 'urlTitle') ).toBeFalse();
+    }
+
+    
+    /**
+     * @test
+    */
+    public void function processEntityImport_check_transform_data(){
+        
+        // var sampleProductData = getSampleProductData();
+        
+        var sampleProductData = {
+    		"PriceGroupActiveFlag": "false",
+    		"ProductPublishedFlag": "true",
+    		"BrandWebsite": "https://www.alendronate-sodium.com",
+    		"ProductTypeActiveFlag": "false",
+    		"ProductTypeDescription": "In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
+    		"BrandName": "Alendronate Sodium",
+    		"SkuName": "Bacon Strip Precooked sku 4",
+    		"RemoteSkuID": "34875",
+    		"SkuActiveFlag": "false",
+    		"PriceGroupCode": "pgtTwo",
+    		"ProductDescription": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.",
+    		"ProductTypePublishedFlag": "",
+    		"RemoteSkuPriceID": "71097",
+    		"CurrencyCode": "PHP",
+    		"BrandActiveFlag": "true",
+    		"ProductTypeName": "Product type 333",
+    		"ProductCode": "product_aaa_bbb_xxx",
+    		"PriceGroupName": "Price group two",
+    		"SkuDescription": "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
+    		"RemoteProductID": "13463",
+    		"RemoteProductTypeID": "70845",
+    		"Price": "594.47",
+    		"MaxQuantity": "93",
+    		"ListPrice": "594.47",
+    		"RemoteBrandID": "52319",
+    		"ProductActiveFlag": "false",
+    		"SkuPublishedFlag": "false",
+    		"BrandPublishedFlag": "true",
+    		"SkuPriceActiveFlag": "true",
+    		"MinQuantity": "1",
+    		"RemotePriceGroupID": "88698",
+    		"ProductName": "Bacon Strip Precooked",
+    		"SkuCode": "SKU_34875",
+    		"ProductTypeCode": "product_type_3296"
+    	};
+             
+             
+        var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
+        debug(data);
+        
+    }
+    
+    
     
     
     
@@ -982,9 +1078,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'transformAccountData_spy_called');
         structDelete( variables.service, 'transformAccountData');
     }
-
-    
-
     
     /** ***************************.  EntityQueue and FailureQueue .***************************** */
 
@@ -1355,7 +1448,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         expect( emailAddress.getErrors() ).toHaveKey( 'account' );
         
         expect( emailAddress.getErrors().account[1] )
-        .toBe('Depandancy for propertyIdentifier [account] on Entity [Account] could not be resolved yet');
+        .toBe('Depandancy for propertyIdentifier [account] on Entity [AccountEmailAddress] could not be resolved yet');
         
     }
     

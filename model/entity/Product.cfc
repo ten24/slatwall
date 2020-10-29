@@ -1306,6 +1306,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeRelatedProduct(required any relatedProduct) {
 		arguments.relatedProduct.removeProduct( this );
 	}
+	
+	// Default-Sku (many-to-one)
+	public void function setDefaultSku(required any sku) {
+		arguments.sku.setProduct( this );
+	}
 
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
