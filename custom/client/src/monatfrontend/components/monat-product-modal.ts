@@ -49,7 +49,13 @@ class MonatProductModalController {
 	};
 	
 	private getModalInfo = () => {
-		this.publicService.doAction( 'getQuickShopModalBySkuID', { skuID: this.product.skuID } ).then( data => {
+		
+		var argumentsObject = { skuID: this.product.skuID };
+		if(this.publicService.account?.priceGroups?.length){
+        	argumentsObject['priceGroupCode'] = this.publicService.account.priceGroups[0].priceGroupCode;
+		}
+         
+		this.publicService.doAction( 'getQuickShopModalBySkuID', argumentsObject, 'GET' ).then( data => {
 			this.skuBundles = data.skuBundles;
 			this.productRating = data.productRating.product_calculatedProductRating;
 			this.reviewsCount = data.reviewsCount;
