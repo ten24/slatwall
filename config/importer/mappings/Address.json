@@ -1,0 +1,113 @@
+{
+    "entityName": "Address",
+    
+    "properties": {
+        
+        "remoteAddressID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "name": {
+            "propertyIdentifier": "name",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "company": {
+            "propertyIdentifier": "company",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "streetAddress": {
+            "propertyIdentifier": "streetAddress",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "street2Address": {
+            "propertyIdentifier": "street2Address",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "locality": {
+            "propertyIdentifier": "locality",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "city": {
+            "propertyIdentifier": "city",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "stateCode": {
+            "propertyIdentifier": "stateCode",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "postalCode": {
+            "propertyIdentifier": "postalCode",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "countryCode": {
+            "propertyIdentifier": "countryCode",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+    },
+    
+    "generatedProperties": [
+        {
+            "propertyIdentifier": "urtTitle",
+            "allowUpdate": false
+        }    
+    ],
+    
+    "relations": [
+        {
+            "type": "oneToOne",
+            "entityName": "AccountEmailAddress",
+            "propertyIdentifier": "primaryEmailAddress"
+        },
+        {
+            "type": "oneToOne",
+            "entityName": "AccountPhoneNumber",
+            "propertyIdentifier": "primaryPhoneNumber"
+        },
+        {
+            "type": "oneToMany",
+            "entityName": "AccountAuthentication",
+            "propertyIdentifier": "accountAuthentications",
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteAccountID"
+        ]
+    },
+    
+    "validationContext": "save",
+    
+    "postPopulateMethods": [ "updateCalculatedProperties" ]
+    
+}

@@ -1,0 +1,55 @@
+{
+    "entityName": "AccountAddress",
+   
+   
+    "properties": {
+        
+        "remoteAccountAddressID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "addressNickName": {
+            "propertyIdentifier": "accountAddressName",
+            "validations": {
+                "dataType": "string"
+            }
+        }
+    },
+    
+    "relations": [
+        {
+            "type": "manyToOne",
+            "entityName": "Account",
+            "propertyIdentifier": "accountID",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Address",
+            "propertyIdentifier": "addressID",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderOrderOrigin"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Type",
+            "propertyIdentifier": "accountAddressType",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderOrderStatusType"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteOrderID"
+        ]
+    }
+}
