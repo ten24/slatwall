@@ -49,7 +49,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "remoteOrderID"
+            "remoteAccountAddressID"
         ]
     }
 }

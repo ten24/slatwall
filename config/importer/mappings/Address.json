@@ -102,12 +102,8 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "remoteAccountID"
+            "remoteAddressID"
         ]
-    },
-    
-    "validationContext": "save",
-    
-    "postPopulateMethods": [ "updateCalculatedProperties" ]
+    }
     
 }
