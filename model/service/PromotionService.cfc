@@ -1699,6 +1699,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		if(arguments.apiFlag){
+			rewardArgs.publishedFlag = true;
 			var propertyIdentifierList = getPromotionRewardPropertyIdentifierList();
 		}
 		

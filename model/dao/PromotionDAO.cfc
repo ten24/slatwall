@@ -137,7 +137,11 @@ Notes:
 		</cfif>
 		
 		<cfif NOT isNull(arguments.promotionRewardID) >
-			<cfset hql &= 'AND (spr.promotionRewardID = :promotionRewardID)'>
+			<cfset hql &= 'AND spr.promotionRewardID = :promotionRewardID '>
+		</cfif>
+		
+		<cfif NOT isNull(arguments.publishedFlag) >
+			<cfset hql &= 'AND spr.publishedFlag = :publishedFlag '>
 		</cfif>
 
 		<cfset var params = {
@@ -159,6 +163,10 @@ Notes:
 		
 		<cfif NOT isNull(arguments.promotionRewardID) >
 			<cfset params.promotionRewardID = arguments.promotionRewardID />
+		</cfif>
+		
+		<cfif NOT isNull(arguments.publishedFlag) >
+			<cfset params.publishedFlag = arguments.publishedFlag />
 		</cfif>
 
 		<cfset params.rewardTypeList = listToArray(arguments.rewardTypeList) />
