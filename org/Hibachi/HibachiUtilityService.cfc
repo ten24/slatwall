@@ -446,9 +446,13 @@
 			return encoder.decodeForHTML(arguments.stringValue);
 		}
 
-		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
+		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, string availablePropertyIdentifierList) {
 			var responseData = {};
-
+			
+			if(!structKeyExists(arguments,'availablePropertyIdentifierList')){
+				arguments.availablePropertyIdentifierList = arguments.propertyIdentifierList;
+			}
+			
 			var propertyIdentifierArray = listToArray(arguments.propertyIdentifierList);
 			for(var i=1; i <= arraylen(propertyIdentifierArray);i++) {
 				var propertyIdentifier = propertyIdentifierArray[i];

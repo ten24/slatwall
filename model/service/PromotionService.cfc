@@ -1678,15 +1678,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return canPlaceOrderDetails; 
 	}
 	
-	public array function getQualifiedPromotionRewardsForOrder( required any order, string promotionRewardID ){
+	public array function getQualifiedPromotionRewardsForOrder( required any order, string promotionRewardID, boolean apiFlag=false, string rewardTypeList = "merchandise,subscription,contentAccess,order,fulfillment,rewardSku" ){
 		var qualifiedPromotionRewards = [];
 		var promotionEffectiveDateTime = now();
+		
 		if(arguments.order.getOrderStatusType().getSystemCode() != "ostNotPlaced" && !isNull(arguments.order.getOrderOpenDateTime())) {
 			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
 		}
 		
 		var rewardArgs = {
-			rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment,rewardSku",
+			rewardTypeList=arguments.rewardTypeList,
 			promotionCodeList=arguments.order.getPromotionCodeList(),
 			qualificationRequired=true,
 			promotionEffectiveDateTime=promotionEffectiveDateTime,
@@ -1697,16 +1698,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			rewardArgs.promotionRewardID = arguments.promotionRewardID;
 		}
 		
+		if(arguments.apiFlag){
+			var propertyIdentifierList = getPromotionRewardPropertyIdentifierList();
+		}
+		
 		// Loop over all Potential Discounts that require qualifications
 		var promotionRewards = getPromotionDAO().getActivePromotionRewards(argumentCollection = rewardArgs);
 		for(var promoReward in promotionRewards){
 			var promoPeriod = promoReward.getPromotionPeriod();
 			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
 			if(qualificationDetails.qualificationsMeet){
-				arrayAppend(qualifiedPromotionRewards,promoReward);
+				if(!arguments.apiFlag){
+					arrayAppend(qualifiedPromotionRewards,promoReward);
+				}else{
+					var promoRewardStruct = getService('HibachiUtilityService').buildPropertyIdentifierListDataStruct(promoReward,propertyIdentifierList);
+					arrayAppend(qualifiedPromotionRewards,promoRewardStruct);
+				}
 			}
 		}
 		return qualifiedPromotionRewards;
+	}
+	
+	public string function getPromotionRewardPropertyIdentifierList(){
+		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName';
 	}
 	
 	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false, string promotionRewardID){

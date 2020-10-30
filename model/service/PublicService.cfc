@@ -2411,6 +2411,22 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
+    public void function getQualifiedMerchandiseRewardsForOrder(required struct data){
+        param name="arguments.data.orderID";
+        
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        
+        if( !isNull(order) ){
+            var rewardArgs = {
+                order:order,
+                apiFlag:true,
+                rewardTypeList:'merchandise'
+            };
+            var rewards = getService('PromotionService').getQualifiedPromotionRewardsForOrder(argumentCollection=rewardArgs);
+            arguments.data['ajaxResponse']['rewards'] = rewards;
+        }
+    }
+    
     public void function getQualifiedPromotionRewardSkusForOrder(required struct data){
         param name="arguments.data.orderID";
         /*
