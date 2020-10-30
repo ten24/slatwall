@@ -3,7 +3,7 @@
     
     "properties": {
         
-        "orderID": {
+        "remoteOrderID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -14,11 +14,12 @@
             "propertyIdentifier": "orderNumber",
             "validations": {
                 "required": true,
-                "dataType": "string"
+                "dataType": "numeric"
             }
         },
         "currencyCode": {
             "propertyIdentifier": "currencyCode",
+            "defaultValue": "USD",
             "validations": {
                 "dataType": "string"
             }
@@ -27,6 +28,12 @@
             "propertyIdentifier": "orderOpenDateTime",
             "validations": {
                 "dataType": "date"
+            }
+        },
+        "orderIPAddress": {
+            "propertyIdentifier": "orderOpenIPAddress",
+            "validations": {
+                "dataType": "string"
             }
         },
         "orderCloseDateTime": {
@@ -41,39 +48,102 @@
                 "dataType": "date"
             }
         },
-        "quoteFlag": {
-            "propertyIdentifier": "quoteFlag",
-            "defaultValue": false,
+        "canceledDateTime": {
+            "propertyIdentifier": "orderCanceledDateTime",
             "validations": {
-                "dataType": "boolean"
+                "dataType": "date"
+            }
+        },
+        "orderNotes": {
+            "propertyIdentifier": "orderNotes",
+            "validations": {
+                "dataType": "string"
             }
         }
         
     },
+    
+    "relations": [
+        {
+            "type": "manyToOne",
+            "entityName": "Type",
+            "propertyIdentifier": "orderType",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderOrderType"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "OrderOrigin",
+            "propertyIdentifier": "orderOrigin",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderOrderOrigin"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Type",
+            "propertyIdentifier": "orderStatusType",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderOrderStatusType"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Site",
+            "propertyIdentifier": "orderCreatedSite",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderOrderCreatedSite"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Address",
+            "propertyIdentifier": "billingAddress",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderBillingAddress"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Address",
+            "propertyIdentifier": "shippingAddress",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderShippingAddress"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "AccountAddress",
+            "propertyIdentifier": "billingAccountAddress",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderBillingAccountAddress"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "AccountAddress",
+            "propertyIdentifier": "shippingAccountAddress",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderShippingAccountAddress"
+        }
+    ],
+    
+     "dependencies" : [
+        {
+            "key"                : "remoteAccountID",
+            "entityName"         : "Account",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "account"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "orderID"
+            "remoteOrderID"
         ]
-    },
-    
-    "relations": [
-        {
-            "entityName": "account",
-            "propertyIdentifier": "Account"
-        },
-        {
-            "entityName": "billingAccountAddress",
-            "propertyIdentifier": "AccountAddress"
-        },
-        {
-            "entityName": "defaultStockLocation",
-            "propertyIdentifier": "Location"
-        },
-        {
-            "entityName": "shippingAccountAddress",
-            "propertyIdentifier": "AccountAddress"
-        }
-    ]
+    }
 }
