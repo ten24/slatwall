@@ -1,0 +1,93 @@
+{
+    "entityName": "OrderPayment",
+    
+    "properties": {
+        
+        "remoteOrderPaymentID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "orderAmount": {
+            "propertyIdentifier": "amount",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "isCompany": {
+            "propertyIdentifier": "companyPaymentMethodFlag",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "ccNumberEncrypted": {
+            "propertyIdentifier": "creditCardNumberEncrypted",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "giftCardNumberEncrypted": {
+            "propertyIdentifier": "giftCardNumberEncrypted",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "purchaseOrderNumber": {
+            "propertyIdentifier": "purchaseOrderNumber",
+            "validations": {
+                "dataType": "string"
+            }
+        }
+        
+    },
+    
+    "relations": [
+        {
+            "type": "manyToOne",
+            "entityName": "AccountPaymentMethod",
+            "propertyIdentifier": "accountPaymentMethod",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Address",
+            "propertyIdentifier": "billingAddress",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "AccountAddress",
+            "propertyIdentifier": "billingAccountAddress",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true
+        }
+    ],
+    
+     "dependencies" : [
+        {
+            "key"                : "remoteOrderID",
+            "entityName"         : "Order",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "order"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteOrderPaymentID"
+        ]
+    }
+}
