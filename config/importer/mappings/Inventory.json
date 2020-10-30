@@ -80,16 +80,12 @@
             "key"                : "remoteSkuID",
             "entityName"         : "Sku",
             "lookupKey"          : "remoteID",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
             "propertyIdentifier" : "sku"
         }, 
         {
             "key"                : "remoteLocationID",
             "entityName"         : "Location",
             "lookupKey"          : "remoteID",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
             "propertyIdentifier" : "location"
         }
     ],
