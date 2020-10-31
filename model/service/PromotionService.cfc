@@ -1856,6 +1856,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processObject.setMaximumUseCount( promotionPeriod.getMaximumUseCount() );
 			processObject.setMaximumAccountUseCount( promotionPeriod.getMaximumAccountUseCount() );
 			processObject.setPromotion( newPromotion );
+			processObject.setQualifierLogicalOperatorType( promotionPeriod.getQualifierLogicalOperatorType() );
 			
 			var newPromotionPeriod = this.processPromotionPeriod_duplicatePromotionPeriod(promotionPeriod,processObject);
 		}
@@ -1882,7 +1883,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newPromotionPeriod.setMaximumAccountUseCount(arguments.processObject.getMaximumAccountUseCount());
 		}
 		newPromotionPeriod.setPromotion(arguments.processObject.getPromotion());
-		
+		newPromotionPeriod.setQualifierLogicalOperatorType(arguments.processObject.getQualifierLogicalOperatorType());
 		var newPromotionPeriod = this.savePromotionPeriod(newPromotionPeriod);
 
 		// Duplicate promotionRewards

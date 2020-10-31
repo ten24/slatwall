@@ -6,8 +6,14 @@
 			</div>
 			<a href="#" class="logo">
 				<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
-			</a>			
+			</a>
 			<div class="right-nav">
+				<div>
+					<button 
+						class="btn btn-secondary" 
+						ng-click="monatEnrollment.saveEnrollment()"
+						ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">Save Enrollment</button>
+				</div>
 				<div class="header-cart">
 					<hybrid-cart type="monatEnrollment.type" is-enrollment="true"></hybrid-cart>
 				</div>			
