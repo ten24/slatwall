@@ -497,8 +497,16 @@ component extends="HibachiService" accessors="true" output="false" {
 						'emailTemplateID' : arguments.workflowTaskAction.getEmailTemplate().getEmailTemplateID()
 					} 
 				}; 
-	
-				actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+
+				if(arguments.type == 'Event'){
+					arguments.baseObject = arguments.entity.getClassName();
+					arguments.baseID = arguments.entity.getPrimaryIDValue();
+					getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
+					actionSuccess = true; 
+				} else {
+					actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+				}
+				
 				break; 
 
 			//IMPORT
