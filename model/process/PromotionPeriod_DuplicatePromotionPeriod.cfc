@@ -60,6 +60,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="endDateTime" hb_formFieldType="datetime" hb_rbKey="entity.promotionPeriod.endDateTime" hb_nullRBKey="define.forever";
 	property name="maximumUseCount" hb_rbKey="entity.promotionPeriod.maximumUseCount";
 	property name="maximumAccountUseCount" hb_rbKey="entity.promotionPeriod.maximumAccountUseCount";
+	property name="qualifierLogicalOperatorType" hb_rbKey="entity.promotionPeriod.qualifierLogicalOperatorType";
 	property name="promotion";
 	
 	public function getPromotionPeriodName() {

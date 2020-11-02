@@ -497,11 +497,20 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
 			    }
 			};	
-
+			
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-	
-			// Response Data
-			if (!responseBean.hasErrors()) {
+			
+			if(structKeyExists(responseData, 'Error')){
+					var getNexioError = arguments.responseBean.getErrors();
+					if(structKeyExists(getNexioError, 'serverCommunicationFault')){
+						var defaultMessage = getNexioError['serverCommunicationFault']['1'];
+					}else{
+						var defaultMessage = "Nexio server communication fault";
+					}
+					var getErroMessage = getHibachiScope().getService('HibachiUtilityService').getFormattedErrorMessage("Nexio","#responseData['Error']#",defaultMessage);
+					arguments.responseBean.clearHibachiErrors();
+					arguments.responseBean.addError("Nexio error",getErroMessage);
+			}else if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
 				arguments.responseBean.setProviderTransactionID(responseData.id);
 				if(structKeyExists(responseData, 'authCode')){
