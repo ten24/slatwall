@@ -1189,6 +1189,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrder_cancelOrder(required any order, struct data={}) {
 
+        // if already in the same status, retun
+        if(arguments.order.getOrderStatusType().getSystemCode() == 'ostCanceled'){
+        	return arguments.order;
+        }
+		
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
