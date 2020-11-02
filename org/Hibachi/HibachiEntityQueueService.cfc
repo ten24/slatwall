@@ -160,7 +160,8 @@ component accessors="true" output="false" extends="HibachiService" {
 				}catch(any e){
 					
 					if(!structKeyExists(entityQueue,'tryCount') || isNull(entityQueue.tryCount)){
-						logHibachiException(getHibachiScope().getValue('debug_collection_config'));
+						
+						this.logHibachi("TryCount Undefined: #serializeJson(entityQueue)# - Config: #getHibachiScope().getValue('debug_collection_config')#",true);
 						entityQueue['tryCount'] = 1; 
 					}
 					
