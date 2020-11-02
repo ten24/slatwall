@@ -1081,22 +1081,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 /////////////////.                  ORDER
 
-    public any function generateOrderOrderType( struct data, struct mapping, struct propertyMetaData ){
-	    
-	}
-	
-	public any function generateOrderOrderOrigin( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-	
-	public any function generateOrderOrderStatusType( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-	
-	public any function generateOrderOrderCreatedSite( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-	
 	public any function generateOrderBillingAddress( struct data, struct mapping, struct propertyMetaData ){
 		
 	}
