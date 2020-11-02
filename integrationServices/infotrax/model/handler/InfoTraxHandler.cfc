@@ -19,7 +19,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 			
 			// Sync any pending order after account creation
 			if( arguments.eventName == 'afterInfotraxAccountCreateSuccess' ) {
-				ormFlush();
+
 				var orders = getService('infoTraxService').pendingPushOrders(arguments.entity.getPrimaryIDValue());
 				for(var order in orders){
 					getDAO('HibachiEntityQueueDAO').insertEntityQueue(
