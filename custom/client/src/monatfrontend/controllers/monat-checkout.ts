@@ -12,10 +12,62 @@ enum Screen {
 	EDIT,
 	ACCOUNT,
 	SHIPPING, 
+	SHIPPING_METHOD,
 	PAYMENT,
 	SPONSOR, 
 	REVIEW
 }
+
+class PaymentStepState {
+	showParagraph = true;
+	active = false;
+	constructor(){}
+	
+	set isActive(val:boolean){
+		this.showParagraph = !val;
+		this.active = val;
+	}
+	
+	get isActive(){
+		return this.active;
+	}
+}
+
+class CheckoutState{
+	shipping = new PaymentStepState();
+	shippingMethod = new PaymentStepState();
+	payment = new PaymentStepState(); 
+	_currentStep = Screen.ACCOUNT;
+	maximumStep:Screen;
+	shouldToggle = true;
+	
+	set currentStep(val:Screen){
+		let strings = [	'edit','account','shipping','shippingMethod', 'payment','sponsor','review'];
+		let key = strings[val];
+		if(val > this.maximumStep || !this[key]) return;
+
+		//if we pass in the same step we are already on, 
+		//toggle the show paragraph value to keep in harmony with bootstrap collapse toggling and return;
+		if(this.currentStep == val && this.shouldToggle){
+			this[key].showParagraph = !this[key].showParagraph;
+			return;
+		}
+		
+		this[key].isActive = true;
+		
+		for(let val of strings){
+			if(val == key || !this[val]) continue;
+			this[val].isActive = false;
+
+		}
+		this._currentStep = val;
+	}
+	
+	get currentStep(){
+		return this._currentStep;
+	}
+}
+
 
 type Fulfillment = { orderFulfillmentID: string, [key: string]: any };
 
@@ -24,7 +76,7 @@ class MonatCheckoutController {
 	public loading = {
 		selectShippingMethod: false
 	};
-	public screen = Screen.ACCOUNT;
+
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account:any;
 	public hasSponsor = true;
@@ -45,6 +97,7 @@ class MonatCheckoutController {
 	public isLoading:boolean;
 	public addingSavedPaymentMethod = false;
 	public formHasBeenPosted = false;
+	public state = new CheckoutState();
 
 	// @ngInject
 	constructor(
@@ -144,6 +197,8 @@ class MonatCheckoutController {
 			
 			if(this.cart.orderFulfillments?.length && this.cart.orderFulfillments[0].shippingAddress.addressID?.length){
 				this.currentShippingAddress = this.cart.orderFulfillments[0].shippingAddress;
+			}else{
+				this.currentShippingAddress = null;
 			}
 			
 			//sets default order information
@@ -156,18 +211,25 @@ class MonatCheckoutController {
 			
 			if(reqList.indexOf('fulfillment') === -1 && reqList.indexOf('account') === -1){ 
 				screen = Screen.PAYMENT;
+			}else if(reqList.indexOf('account') === -1 && this.currentShippingAddress){
+				screen = Screen.SHIPPING_METHOD;
 			}else if(reqList.indexOf('account') === -1){
 				screen = Screen.SHIPPING;
 			}
 			
 			this.isLoading = false;
-			this.screen = screen;
+			
+			//this is the only time the setters and getters should not be used on state
+			this.state.shouldToggle = false;
+			this.state.maximumStep = screen; 
+			this.state._currentStep = screen;
+			this.state.shouldToggle = true;
 			return screen;
 		});
 	}
 	
 	public closeNewAddressForm = () => {
-		if(this.screen == Screen.PAYMENT) document.getElementById('payment-method-form-anchor').scrollIntoView();
+		if(this.state.currentStep == Screen.PAYMENT) document.getElementById('payment-method-form-anchor').scrollIntoView();
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
@@ -324,17 +386,17 @@ class MonatCheckoutController {
 	}
 	
 	public back():Screen{
-		return this.screen = 
-			(this.screen == Screen.REVIEW && !this.hasSponsor) 
-			? this.screen = Screen.SPONSOR	// If they are on review and DONT originally have a sponsor, send back to sponsor selector
-			: this.screen = Screen.PAYMENT	// Else: Send back to shipping/billing			
+		return this.state.currentStep = 
+			(this.state.currentStep == Screen.REVIEW && !this.hasSponsor) 
+			? this.state.currentStep = Screen.SPONSOR	// If they are on review and DONT originally have a sponsor, send back to sponsor selector
+			: this.state.currentStep = Screen.PAYMENT	// Else: Send back to shipping/billing			
 	}
 	
 	public next():Screen{
-		return this.screen = 
-			((this.screen === Screen.SHIPPING || this.screen === Screen.PAYMENT) && !this.hasSponsor) // if they are reviewing shipping/billing and dont have a sponsor, send to selector
-			? this.screen = Screen.SPONSOR	
-			: this.screen = Screen.REVIEW //else send to review
+		return this.state.currentStep = 
+			((this.state.currentStep === Screen.SHIPPING || this.state.currentStep === Screen.PAYMENT) && !this.hasSponsor) // if they are reviewing shipping/billing and dont have a sponsor, send to selector
+			? this.state.currentStep = Screen.SPONSOR	
+			: this.state.currentStep = Screen.REVIEW //else send to review
 	}
 	
 	public submitSponsor():Screen | void{
