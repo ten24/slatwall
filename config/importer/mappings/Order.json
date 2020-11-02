@@ -66,38 +66,6 @@
     "relations": [
         {
             "type": "manyToOne",
-            "entityName": "Type",
-            "propertyIdentifier": "orderType",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateOrderOrderType"
-        },
-        {
-            "type": "manyToOne",
-            "entityName": "OrderOrigin",
-            "propertyIdentifier": "orderOrigin",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateOrderOrderOrigin"
-        },
-        {
-            "type": "manyToOne",
-            "entityName": "Type",
-            "propertyIdentifier": "orderStatusType",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateOrderOrderStatusType"
-        },
-        {
-            "type": "manyToOne",
-            "entityName": "Site",
-            "propertyIdentifier": "orderCreatedSite",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateOrderOrderCreatedSite"
-        },
-        {
-            "type": "manyToOne",
             "entityName": "Address",
             "propertyIdentifier": "billingAddress",
             "excludeFromCSVTemplate" : true,
@@ -136,7 +104,35 @@
             "entityName"         : "Account",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "account"
-        }
+        },
+        {
+            "key": "orderTypeCode",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey": "systemCode",
+            "entityName": "Type",
+            "propertyIdentifier": "orderType"
+        },
+        {
+            "key": "orderStatusTypeCode",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey": "systemCode",
+            "entityName": "Type",
+            "propertyIdentifier": "orderStatusType"
+        },
+        {
+            "key": "orderOriginCode",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey": "remoteID",
+            "entityName": "PriceGroup",
+            "propertyIdentifier": "orderOrigin"
+        },
+        {
+            "key": "orderSiteCode",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey": "siteCode",
+            "entityName": "Site",
+            "propertyIdentifier": "orderCreatedSite"
+        },
     ],
     
     "importIdentifier": {
