@@ -143,7 +143,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				
 					var entityService = getServiceForEntityQueue(arguments.entityQueue);
 	
-					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= arguments.entityQueue['baseID'] });
+					var entity = entityService.invokeMethod( "get#arguments.entityQueue['baseObject']#", { 1 = arguments.entityQueue['baseID'] });
 					if(isNull(entity)){
 						deleteEntityQueueItem(arguments.entityQueue['entityQueueID']);
 						return;
@@ -167,6 +167,8 @@ component accessors="true" output="false" extends="HibachiService" {
 				
 			
 				if(!success){
+					this.logHibachi("EntityQueue item #arguments.entityQueue['entityQueueID']# Failed: increasing TryCount",true);
+					
 					if(!structKeyExists(arguments.entityQueue,'tryCount') || isNull(arguments.entityQueue.tryCount)){
 						this.logHibachi("TryCount Undefined: #serializeJson(arguments.entityQueue)#",true);
 						arguments.entityQueue['tryCount'] = 1; 
