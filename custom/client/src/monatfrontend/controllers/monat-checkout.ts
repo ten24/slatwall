@@ -18,7 +18,7 @@ enum Screen {
 	REVIEW
 }
 
-class PaymentStepState {
+class StepState {
 	showParagraph = true;
 	active = false;
 	constructor(){}
@@ -35,11 +35,11 @@ class PaymentStepState {
 
 class CheckoutState{
 	cart;
-	shipping = new PaymentStepState();
-	shippingMethod = new PaymentStepState();
-	payment = new PaymentStepState(); 
-	review = new PaymentStepState();
-	sponsor = new PaymentStepState();
+	shipping = new StepState();
+	shippingMethod = new StepState();
+	payment = new StepState(); 
+	review = new StepState();
+	sponsor = new StepState();
 	_currentStep = Screen.ACCOUNT;
 	maximumStep:Screen;
 	shouldToggle = true;
