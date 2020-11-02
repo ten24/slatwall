@@ -645,4 +645,15 @@ component {
 	public boolean function isOrderPartiallyDelivered(){
 		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
 	}
+	
+	public boolean function hasCBDProduct(){
+	 	if(!structKeyExists(variables,'CBDProduct')){
+	 		variables.CBDProduct = false;
+			var cbdcollectionList = getService('orderService').getOrderItemCollectionList();
+    		cbdcollectionList.addFilter('order.orderID',this.getOrderID() );
+    		cbdcollectionList.addFilter('sku.cbdFlag', true);
+			variables.CBDProduct = cbdcollectionList.getRecordsCount() > 0;
+	 	}
+	 	return variables.CBDProduct
+	}
 }
