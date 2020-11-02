@@ -29,8 +29,26 @@
                 "dataType": "boolean"
             }
         },
-        "ccNumberEncrypted": {
-            "propertyIdentifier": "creditCardNumberEncrypted",
+        "ccNumberLastFour": {
+            "propertyIdentifier": "creditCardLastFour",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ccType": {
+            "propertyIdentifier": "creditCardType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ccExpirationMonth": {
+            "propertyIdentifier": "expirationMonth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ccExpirationYear": {
+            "propertyIdentifier": "expirationYear",
             "validations": {
                 "dataType": "string"
             }
@@ -53,13 +71,6 @@
     "relations": [
         {
             "type": "manyToOne",
-            "entityName": "AccountPaymentMethod",
-            "propertyIdentifier": "accountPaymentMethod",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true
-        },
-        {
-            "type": "manyToOne",
             "entityName": "Address",
             "propertyIdentifier": "billingAddress",
             "excludeFromCSVTemplate" : true,
@@ -76,11 +87,44 @@
     
      "dependencies" : [
         {
+            "key"                : "remoteAccountPaymentMethodID",
+            "entityName"         : "AccountPaymentMethod",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "accountPaymentMethod"
+        },
+        {
+            "key"                : "remoteTermPaymentAccountID",
+            "entityName"         : "Account",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "termPaymentAccount"
+        },
+        {
             "key"                : "remoteOrderID",
             "entityName"         : "Order",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "order"
-        }
+        },
+        {
+            "key": "orderTypeCode",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey": "systemCode",
+            "entityName": "Type",
+            "propertyIdentifier": "orderPaymentType"
+        },
+        {
+            "key": "orderPaymentStatusTypeCode",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey": "systemCode",
+            "entityName": "Type",
+            "propertyIdentifier": "orderPaymentStatusType"
+        },
+        {
+            "key": "orderSiteCode",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey": "remoteID",
+            "entityName": "Site",
+            "propertyIdentifier": "orderCreatedSite"
+        },
     ],
     
     "importIdentifier": {
