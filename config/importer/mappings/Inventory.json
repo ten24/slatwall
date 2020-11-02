@@ -51,14 +51,7 @@
             "validations": {
                 "dataType": "string"
             }
-        },
-        "createdDateTime": {
-            "propertyIdentifier": "createdDateTime",
-            "validations": {
-                "dataType": "date"
-            }
         }
-
     },
 
 

@@ -1082,6 +1082,28 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	public any function generateInventoryStock( struct data, struct mapping, struct propertyMetaData ){
+		
+		//expecting remoteSkuID to genrate stock
+		//expecting remoteLocationId to generate the stock
+		
+		
+	   /** "dependencies" : [
+	        
+	        {
+	            "key"                : "remoteSkuID",
+	            "entityName"         : "Sku",
+	            "lookupKey"          : "remoteID",
+	            "propertyIdentifier" : "sku"
+	        }, 
+	        {
+	            "key"                : "remoteLocationID",
+	            "entityName"         : "Location",
+	            "lookupKey"          : "remoteID",
+	            "propertyIdentifier" : "location"
+	        }
+	    ],**/
+    
+		
 	    var skuID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
             	        "entityName"  : 'Sku',
             	        "uniqueKey"   : 'remoteID',
