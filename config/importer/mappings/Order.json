@@ -123,13 +123,13 @@
             "key": "orderOriginCode",
             "OPTIONAL_DEPENDENCY": true,
             "lookupKey": "remoteID",
-            "entityName": "PriceGroup",
+            "entityName": "OrderOrigin",
             "propertyIdentifier": "orderOrigin"
         },
         {
             "key": "orderSiteCode",
             "OPTIONAL_DEPENDENCY": true,
-            "lookupKey": "siteCode",
+            "lookupKey": "remoteID",
             "entityName": "Site",
             "propertyIdentifier": "orderCreatedSite"
         },

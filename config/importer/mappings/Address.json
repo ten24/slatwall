@@ -71,6 +71,18 @@
                 "dataType": "string"
             }
         },
+        "phoneNumber": {
+            "propertyIdentifier": "phoneNumber",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "emailAddress": {
+            "propertyIdentifier": "emailAddress",
+            "validations": {
+                "dataType": "string"
+            }
+        },
     },
     
     "generatedProperties": [
@@ -78,24 +90,6 @@
             "propertyIdentifier": "urtTitle",
             "allowUpdate": false
         }    
-    ],
-    
-    "relations": [
-        {
-            "type": "oneToOne",
-            "entityName": "AccountEmailAddress",
-            "propertyIdentifier": "primaryEmailAddress"
-        },
-        {
-            "type": "oneToOne",
-            "entityName": "AccountPhoneNumber",
-            "propertyIdentifier": "primaryPhoneNumber"
-        },
-        {
-            "type": "oneToMany",
-            "entityName": "AccountAuthentication",
-            "propertyIdentifier": "accountAuthentications",
-        }
     ],
     
     "importIdentifier": {
