@@ -865,7 +865,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			sku.product.defaultSku.imageFile,
 			sku.skuPrices.price,
 			sku.skuPrices.personalVolume,
-			sku.product.listingPages.sortOrder
+			sku.product.listingPages.sortOrder,
+			sku.listPrice
 		');
 
 		var visibleColumnConfigWithArguments = {
@@ -910,8 +911,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode'],
 					'sortOrder': skuBundle.sku_product_listingPages_sortOrder,
 					'sortDirection': content.getProductSortDefaultDirection() ?: 'ASC',
-					'recordSort': recordCount
-				}
+					'recordSort': recordCount,
+					'listPrice' : skuBundle.sku_listPrice
+					}
 			}
 			
 			// If this is the first product type of it's kind, setup the product type.
