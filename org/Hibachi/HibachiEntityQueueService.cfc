@@ -160,6 +160,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				}catch(any e){
 					
 					if(!structKeyExists(entityQueue,'tryCount') || isNull(entityQueue.tryCount)){
+						logHibachiException(getHibachiScope().getValue('debug_collection_config'));
 						entityQueue['tryCount'] = 1; 
 					}
 					
