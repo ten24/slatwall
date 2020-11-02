@@ -34,18 +34,23 @@ class PaymentStepState {
 }
 
 class CheckoutState{
+	cart;
 	shipping = new PaymentStepState();
 	shippingMethod = new PaymentStepState();
 	payment = new PaymentStepState(); 
+	review = new PaymentStepState();
+	sponsor = new PaymentStepState();
 	_currentStep = Screen.ACCOUNT;
 	maximumStep:Screen;
 	shouldToggle = true;
+	constructor(cartPointer){
+		this.cart = cartPointer;
+	}
 	
 	set currentStep(val:Screen){
 		let strings = [	'edit','account','shipping','shippingMethod', 'payment','sponsor','review'];
 		let key = strings[val];
 		if(val > this.maximumStep || !this[key]) return;
-
 		//if we pass in the same step we are already on, 
 		//toggle the show paragraph value to keep in harmony with bootstrap collapse toggling and return;
 		if(this.currentStep == val && this.shouldToggle){
@@ -58,8 +63,8 @@ class CheckoutState{
 		for(let val of strings){
 			if(val == key || !this[val]) continue;
 			this[val].isActive = false;
-
 		}
+		
 		this._currentStep = val;
 	}
 	
@@ -97,7 +102,7 @@ class MonatCheckoutController {
 	public isLoading:boolean;
 	public addingSavedPaymentMethod = false;
 	public formHasBeenPosted = false;
-	public state = new CheckoutState();
+	public state; 
 
 	// @ngInject
 	constructor(
@@ -111,7 +116,7 @@ class MonatCheckoutController {
 	) {}
 
 	public $onInit = () => {
-		this.cart = this.publicService.cart;
+		this.state = new CheckoutState(this.publicService.cart);
 		this.getCurrentCheckoutScreen(false,false);
 		this.observerService.attach((account)=>{
 		    if (this.$scope.Account_CreateAccount){
@@ -160,7 +165,12 @@ class MonatCheckoutController {
 		this.observerService.attach(()=>{
 			this.getCurrentCheckoutScreen(false, false);
 		}, 'addShippingMethodUsingShippingMethodIDSuccess' ); 
-
+		
+		this.observerService.attach((data)=>{
+			this.state.cart = data;
+		}, 'updatedCart' ); 
+		
+		
 		this.observerService.attach(this.submitSponsor.bind(this), 'autoAssignSponsor' ); 
 		this.isLoading = true;
 		
@@ -178,25 +188,25 @@ class MonatCheckoutController {
         this.handleAccountResponse({account:this.publicService.account});
 	}
 	
-	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
-		if("undefined" == typeof this.cart){
+	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false, next = false):Screen | void => {
+		if("undefined" == typeof this.state.cart){
 			hardRefresh = true;
 		}
 		return this.publicService.getCart(hardRefresh).then(data => {
 			
 			if(hardRefresh){
-				this.cart = this.publicService.cart;
+				this.state.cart = this.publicService.cart; 
 			}
 			
 			let screen = Screen.ACCOUNT;
 			this.calculateListPrice();
 			
-			if(this.cart.orderPayments?.length && this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod){
-				this.currentPaymentMethodID = this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod?.accountPaymentMethodID;
+			if(this.state.cart.orderPayments?.length && this.state.cart.orderPayments[this.state.cart.orderPayments.length-1].accountPaymentMethod){
+				this.currentPaymentMethodID = this.state.cart.orderPayments[this.state.cart.orderPayments.length-1].accountPaymentMethod?.accountPaymentMethodID;
 			}
 			
-			if(this.cart.orderFulfillments?.length && this.cart.orderFulfillments[0].shippingAddress.addressID?.length){
-				this.currentShippingAddress = this.cart.orderFulfillments[0].shippingAddress;
+			if(this.state.cart.orderFulfillments?.length && this.state.cart.orderFulfillments[0].shippingAddress.addressID?.length){
+				this.currentShippingAddress = this.state.cart.orderFulfillments[0].shippingAddress;
 			}else{
 				this.currentShippingAddress = null;
 			}
@@ -207,22 +217,26 @@ class MonatCheckoutController {
 				return;
 			} 
 			
-			let reqList = this.cart.orderRequirementsList;
+			let reqList = this.state.cart.orderRequirementsList;
 			
-			if(reqList.indexOf('fulfillment') === -1 && reqList.indexOf('account') === -1){ 
+			if(!reqList.length && next && !this.hasSponsor){
+				screen = Screen.SPONSOR;
+			}else if(!reqList.length && next && this.hasSponsor){
+				screen = Screen.REVIEW;
+			}else if(reqList.indexOf('fulfillment') === -1 && reqList.indexOf('account') === -1){ 
 				screen = Screen.PAYMENT;
 			}else if(reqList.indexOf('account') === -1 && this.currentShippingAddress){
 				screen = Screen.SHIPPING_METHOD;
 			}else if(reqList.indexOf('account') === -1){
 				screen = Screen.SHIPPING;
 			}
-			
+		
 			this.isLoading = false;
 			
 			//this is the only time the setters and getters should not be used on state
 			this.state.shouldToggle = false;
 			this.state.maximumStep = screen; 
-			this.state._currentStep = screen;
+			this.state.currentStep = screen;
 			this.state.shouldToggle = true;
 			return screen;
 		});
@@ -386,17 +400,15 @@ class MonatCheckoutController {
 	}
 	
 	public back():Screen{
+		this.state.cart = this.publicService.cart;
 		return this.state.currentStep = 
-			(this.state.currentStep == Screen.REVIEW && !this.hasSponsor) 
-			? this.state.currentStep = Screen.SPONSOR	// If they are on review and DONT originally have a sponsor, send back to sponsor selector
-			: this.state.currentStep = Screen.PAYMENT	// Else: Send back to shipping/billing			
+			(this.state.currentStep == Screen.REVIEW && this.account.accountStatusType.systemCode == 'astEnrollmentPending') 
+			? this.state.currentStep = Screen.SPONSOR	// If they are on review and DONT originally have a sponsor (astEnrollmentPending), send back to sponsor selector
+			:  this.state.currentStep = Screen.PAYMENT	// Else: Send back to shipping/billing			
 	}
 	
-	public next():Screen{
-		return this.state.currentStep = 
-			((this.state.currentStep === Screen.SHIPPING || this.state.currentStep === Screen.PAYMENT) && !this.hasSponsor) // if they are reviewing shipping/billing and dont have a sponsor, send to selector
-			? this.state.currentStep = Screen.SPONSOR	
-			: this.state.currentStep = Screen.REVIEW //else send to review
+	public next():Screen | void {
+		return this.getCurrentCheckoutScreen(false, false, true);
 	}
 	
 	public submitSponsor():Screen | void{
@@ -406,6 +418,7 @@ class MonatCheckoutController {
 		    returnJsonObjects: 'account'
 		}).then(res=>{
 			if(res.successfulActions.length) {
+				this.hasSponsor = true;
 				this.next();
 			}else if(res.errors){
 				this.monatAlertService.error(res.errors);
@@ -450,8 +463,8 @@ class MonatCheckoutController {
 	
 	public calculateListPrice(){
 		this.listPrice = 0;
-		if(this.cart){
-			for(let item of this.cart.orderItems){
+		if(this.state.cart){
+			for(let item of this.state.cart.orderItems){
 				this.listPrice += (item.calculatedListPrice * item.quantity);
 			}
 		}
@@ -495,9 +508,11 @@ class MonatCheckoutController {
 			setDefault = false;
 			hardRefresh = true;
 		}
+		
 		if(data.messages){
 			this.publicService.messages = data.messages;
 		}
+		
 		if(!this.account.accountID.length) return;
 		this.getCurrentCheckoutScreen(setDefault, hardRefresh);
 
