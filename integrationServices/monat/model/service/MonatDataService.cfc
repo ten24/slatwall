@@ -985,11 +985,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 		if(arguments.rc.minutes > 0){
 		    
-		    logHibachi("importMonatProducts - Getting data for #arguments.rc.days# days", true);
+		    logHibachi("importMonatProducts - Getting data from the last #arguments.rc.minutes# minutes", true);
 		    
 			extraBody = {
 				"Filters": {
-				    "StartDate": DateTimeFormat( DateAdd('m', arguments.rc.days * -1, now()), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
+				    "StartDate": DateTimeFormat( DateAdd('n', arguments.rc.minutes * -1, now()), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
 		            "EndDate": DateTimeFormat( now(), "yyyy-mm-dd'T'23:59:59'.693Z'" )
 				}
 			};
