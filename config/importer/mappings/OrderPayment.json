@@ -88,42 +88,45 @@
      "dependencies" : [
         {
             "key"                : "remoteAccountPaymentMethodID",
+            "OPTIONAL_DEPENDENCY": true,
             "entityName"         : "AccountPaymentMethod",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "accountPaymentMethod"
         },
         {
             "key"                : "remoteTermPaymentAccountID",
+            "OPTIONAL_DEPENDENCY": true,
             "entityName"         : "Account",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "termPaymentAccount"
         },
         {
             "key"                : "remoteOrderID",
+            "OPTIONAL_DEPENDENCY": true,
             "entityName"         : "Order",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "order"
         },
         {
-            "key": "orderTypeCode",
+            "key"                : "orderTypeCode",
             "OPTIONAL_DEPENDENCY": true,
-            "lookupKey": "systemCode",
-            "entityName": "Type",
-            "propertyIdentifier": "orderPaymentType"
+            "lookupKey"          : "systemCode",
+            "entityName"         : "Type",
+            "propertyIdentifier" : "orderPaymentType"
         },
         {
-            "key": "orderPaymentStatusTypeCode",
+            "key"                : "orderPaymentStatusTypeCode",
             "OPTIONAL_DEPENDENCY": true,
-            "lookupKey": "systemCode",
-            "entityName": "Type",
-            "propertyIdentifier": "orderPaymentStatusType"
+            "lookupKey"          : "systemCode",
+            "entityName"         : "Type",
+            "propertyIdentifier" : "orderPaymentStatusType"
         },
         {
-            "key": "orderSiteCode",
+            "key"                : "orderSiteCode",
             "OPTIONAL_DEPENDENCY": true,
-            "lookupKey": "remoteID",
-            "entityName": "Site",
-            "propertyIdentifier": "orderCreatedSite"
+            "lookupKey"          : "remoteID",
+            "entityName"         : "Site",
+            "propertyIdentifier" : "orderCreatedSite"
         },
     ],
     
