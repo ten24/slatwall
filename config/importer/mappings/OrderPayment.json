@@ -69,20 +69,22 @@
     },
     
     "relations": [
-        {
+         {
             "type": "manyToOne",
             "entityName": "Address",
             "propertyIdentifier": "billingAddress",
             "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderBillingAddress"
         },
         {
             "type": "manyToOne",
             "entityName": "AccountAddress",
             "propertyIdentifier": "billingAccountAddress",
             "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true
-        }
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateOrderBillingAccountAddress"
+        },
     ],
     
      "dependencies" : [
