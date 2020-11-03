@@ -1,0 +1,109 @@
+{
+    "entityName": "OrderFulfillment",
+    
+    "properties": {
+        
+        "remoteOrderFulfillmentID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "email": {
+            "propertyIdentifier": "emailAddress",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "isVerifiedShippingAddress": {
+            "propertyIdentifier": "verifiedShippingAddressFlag",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "handlingFee": {
+            "propertyIdentifier": "handlingFee",
+            "validations": {
+                "dataType": "numeric"
+            }
+        } 
+    },
+    
+    "relations": [
+        {
+            "type": "manyToOne",
+            "entityName": "Address",
+            "propertyIdentifier": "billingAddress",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "AccountAddress",
+            "propertyIdentifier": "billingAccountAddress",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true
+        }
+    ],
+    
+     "dependencies" : [
+        {
+            "key"                : "remoteFulfillmentMethodID",
+            "OPTIONAL_DEPENDENCY": true,
+            "entityName"         : "FulfillmentMethod",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "fulfillmentMethod"
+        },
+        {
+            "key"                : "remoteAccountEmailAddress",
+            "OPTIONAL_DEPENDENCY": true,
+            "entityName"         : "AccountEmailAddress",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "accountEmailAddress"
+        },
+        {
+            "key"                : "remoteOrderID",
+            "OPTIONAL_DEPENDENCY": true,
+            "entityName"         : "Order",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "order"
+        },
+        {
+            "key"                : "orderTypeCode",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey"          : "systemCode",
+            "entityName"         : "Type",
+            "propertyIdentifier" : "orderPaymentType"
+        },
+        {
+            "key"                : "orderFulfillmentStatusTypeID",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey"          : "systemCode",
+            "entityName"         : "Type",
+            "propertyIdentifier" : "orderFulfillmentStatusType"
+        },
+        {
+            "key"                : "orderFulfillmentInvStatTypeID",
+            "OPTIONAL_DEPENDENCY": true,
+            "lookupKey"          : "systemCode",
+            "entityName"         : "Type",
+            "propertyIdentifier" : "orderFulfillmentInvStatType"
+        },
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteOrderFulfillmentID"
+        ]
+    }
+}

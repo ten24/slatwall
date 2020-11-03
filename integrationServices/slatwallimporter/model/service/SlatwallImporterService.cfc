@@ -69,6 +69,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             variables.sampleCSVFilesOptions = {
                 "Account" : "account",
                 "Product" : "product",
+                "OrderFulfillment" : "OrderFulfillment",
                 "Sku"     : "sku",
                 
             };
