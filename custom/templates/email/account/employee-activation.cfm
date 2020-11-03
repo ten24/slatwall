@@ -1,10 +1,11 @@
-<cfif FindNoCase('ten24dev', CGI.SERVER_NAME )>
-	<cfset local.siteLink = "http://monat.ten24dev.com/" />
+<cfif LEFT(cgi['request_url'],5) == 'https'>
+    <cfset local.siteLink = 'https://' />
 <cfelse>
-	<cfset local.siteLink = "https://monatglobal.com/" />
+    <cfset local.siteLink = 'http://' />
 </cfif>
+<cfset local.siteLink &= cgi['http_host'] />
+<cfset local.activationCode = getHibachiScope().getService('MonatUtilityService').getAccountActivationCode(account) />
+<cfset local.accountActivationLink = '#local.siteLink#/my-account/?activationCode=#local.activationCode#'>
 <cfoutput>
-    <cfset local.activationCode = getHibachiScope().getService('MonatUtilityService').getAccountActivationCode(account) />
-    <cfset local.accountActivationLink = '#local.siteLink#?slatAction=monat:entity.activateAccount&code=#local.activationCode#'>
-    <a href="#local.accountActivationLink#">#local.accountActivationLink#</a>
+    #local.accountActivationLink#
 </cfoutput>

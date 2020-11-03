@@ -222,6 +222,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
      property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
     property name="dropSkuRemovedFlag" ormtype="boolean" default=0;
 	property name="incompleteReturnFlag" ormtype="boolean";
+	property name="sharedByAccount" cfc="Account" fieldType="many-to-one" fkcolumn="sharedByAccountID";
 	
     property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
@@ -2578,5 +2579,16 @@ public numeric function getPersonalVolumeSubtotal(){
 	
 	public boolean function isOrderPartiallyDelivered(){
 		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
+	}
+	
+	public boolean function hasCBDProduct(){
+	 	if(!structKeyExists(variables,'CBDProduct')){
+	 		variables.CBDProduct = false;
+			var cbdcollectionList = getService('orderService').getOrderItemCollectionList();
+    		cbdcollectionList.addFilter('order.orderID',this.getOrderID() );
+    		cbdcollectionList.addFilter('sku.cbdFlag', true);
+			variables.CBDProduct = cbdcollectionList.getRecordsCount() > 0;
+	 	}
+	 	return variables.CBDProduct
 	}//CUSTOM FUNCTIONS END
 }

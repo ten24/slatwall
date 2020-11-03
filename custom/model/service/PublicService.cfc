@@ -865,7 +865,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			sku.product.defaultSku.imageFile,
 			sku.skuPrices.price,
 			sku.skuPrices.personalVolume,
-			sku.product.listingPages.sortOrder
+			sku.product.listingPages.sortOrder,
+			sku.listPrice
 		');
 
 		var visibleColumnConfigWithArguments = {
@@ -910,8 +911,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode'],
 					'sortOrder': skuBundle.sku_product_listingPages_sortOrder,
 					'sortDirection': content.getProductSortDefaultDirection() ?: 'ASC',
-					'recordSort': recordCount
-				}
+					'recordSort': recordCount,
+					'listPrice' : skuBundle.sku_listPrice
+					}
 			}
 			
 			// If this is the first product type of it's kind, setup the product type.
@@ -1061,6 +1063,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     account.setOwnerAccount(sponsor5);
                 }
                 account.setActiveFlag(false);
+                
+                var activationEmailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Employee Account Activation');
+                getService('EmailService').generateAndSendFromEntityAndEmailTemplate( account, activationEmailTemplate );
+                
                 arguments.data.messages = [getHibachiScope().getRbKey('monat.employeeAccount.enrollmentMessage')];
             }
         }
@@ -2789,7 +2795,43 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         arguments.data.ajaxResponse['skinCategories'] = skinProductCategoryCollection.getRecordOptions();
         arguments.data.ajaxResponse['hairCategories'] = hairProductCategoryCollection.getRecordOptions();
-        
     }
-    
+        
+    public void function saveEnrollment(required struct data){
+        param name="arguments.data.emailAddress";
+        if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
+            var ownerAccountNumber = getHibachiScope().getSessionValue('ownerAccountNumber');
+        }else{
+            this.addErrors(arguments.data,[{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')}]);
+            getHibachiScope().addActionResult('public:account.saveEnrollment',true);
+            return;
+        }
+        var cart = getHibachiScope().getCart();
+        var emailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Share Enrollment');
+        var email = getService('EmailService').newEmail();
+        var newOrder = getService('OrderService').processOrder(cart,{referencedOrderFlag:false},'duplicateOrder');
+        
+        newOrder.setAccountType(cart.getAccountType());
+        newOrder.setPriceGroup(cart.getPriceGroup());
+        newOrder.setMonatOrderType(cart.getMonatOrderType());
+        newOrder = getService('OrderService').saveOrder(newOrder);
+        
+        var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
+        newOrder.setSharedByAccount( ownerAccount );
+        newOrder.setAccount(ownerAccount);
+        
+        var emailData = {
+            order:newOrder,
+            emailTemplate:emailTemplate
+        };
+        
+        var email = getService('emailService').processEmail(email,emailData,'createFromTemplate');
+        newOrder.removeAccount();
+        
+        email.setEmailTo(arguments.data.emailAddress);
+        email = getService('EmailService').processEmail(email, arguments, 'addToQueue');
+        arguments.data.messages = [getHibachiScope().getRBKey('frontend.saveEnrollmentSuccess')];
+        getHibachiScope().addActionResult('public:account.saveEnrollment',email.hasErrors());
+    }
+
 }

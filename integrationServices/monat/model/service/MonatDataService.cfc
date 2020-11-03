@@ -886,7 +886,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,SKUItemID,ProductName,ProductCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
+		return "SKUItemCode,SKUItemID,ProductName,ProductCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle,DangerousGoodsFlag";
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -1055,6 +1055,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					'CategoryNameAccounting' : trim(skuData['ItemCategoryName']),
 					'EntryDate' : skuData['EntryDate'],
 					'SAPItemCode' : skuData['ItemCode'],
+					'DangerousGoodsFlag': skuData['DangerousGoodsFlag'],
 					'Amount' : 0
 				};
 				
