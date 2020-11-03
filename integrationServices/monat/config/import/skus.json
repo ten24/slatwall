@@ -76,6 +76,11 @@
           "updateFlag":false
         },
         {
+          "sourceColumn":"DangerousGoodsFlag",
+          "propertyIdentifier":"dangerousGoodsFlag",
+          "updateFlag":false
+        },
+        {
           "sourceColumn":"EntryDate",
           "propertyIdentifier":"product.createdDateTime",
           "updateFlag":false

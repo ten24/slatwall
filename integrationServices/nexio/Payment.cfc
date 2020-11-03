@@ -278,7 +278,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		return arguments.base64String;
 	}
 	
-	private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
+	private any function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			
@@ -304,7 +304,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				'processingOptions' = {
 					'checkFraud' = checkFraud,
 					'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean) ? true : false,
-					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean))
+					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
+					"paymentOptionTag": arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 				},
 				'data' = this.getExtraData(arguments.requestBean)
 			};
@@ -445,7 +446,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "processingOptions" = {
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
+				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
+					"paymentOptionTag": arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 			    }
 			};	
 			
@@ -494,7 +496,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "processingOptions" = {
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
+				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
+					"paymentOptionTag": arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 			    }
 			};	
 			

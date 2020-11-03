@@ -38,7 +38,13 @@
 			</div>
 		</div>
 	</div>
-			<toaster-container></toaster-container>
+
+	<div 
+		ng-if="
+			monatEnrollment.currentStepName == 'orderListing' 
+			&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal <= 0" 
+			class="notifications"
+	><span sw-rbKey="'frontend.enrollment.threshold'"></span></div> 
 	<div 
 		ng-if="
 			monatEnrollment.currentStepName == 'orderListing' 

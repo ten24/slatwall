@@ -5774,7 +5774,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
 			}
 			thisOption['publishedFlag'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getPublishedFlag();
-			thisOption['shippingMethodDescription'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodDescription();
+			thisOption['shippingMethodDescription'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getFormattedValue('shippingMethodDescription');
 			
 			var inserted = false;
 
