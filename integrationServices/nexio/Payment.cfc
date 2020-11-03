@@ -305,7 +305,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					'checkFraud' = checkFraud,
 					'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean) ? true : false,
 					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-					"paymentOptionTag": arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
+				//	"paymentOptionTag": !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 				},
 				'data' = this.getExtraData(arguments.requestBean)
 			};
@@ -429,7 +429,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
 			
 			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean);
-			
+
 			var requestData = {
 				"isAuthOnly" = true,
 				"tokenex" = {
@@ -447,7 +447,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-					"paymentOptionTag": arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
+				//	"paymentOptionTag": !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 			    }
 			};	
 			
@@ -479,7 +479,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
 			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean);
-			
+
 			var requestData = {
 				"isAuthOnly" = false,
 				"tokenex" = {
@@ -497,7 +497,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-					"paymentOptionTag": arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
+				//	"paymentOptionTag": !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 			    }
 			};	
 			
