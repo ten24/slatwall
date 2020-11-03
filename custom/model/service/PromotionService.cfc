@@ -4,7 +4,7 @@ component extends="Slatwall.model.service.PromotionService" {
     	super.init(argumentCollection=arguments);
     	variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     }
-	
+    
 	private boolean function applyPromotionToOrderItemIfValid( required any orderItem, required struct rewardStruct ){
 		var appliedPromotions = arguments.orderItem.getAppliedPromotions();
 		var order = arguments.orderItem.getOrder();
@@ -227,6 +227,8 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	public void function updateOrderAmountsWithPromotions(required any order){
+		var promoCacheKey = arguments.order.getPromotionCacheKey();
+		
 		super.updateOrderAmountsWithPromotions(arguments.order);
 		
 		var personalVolumeTotal = arguments.order.getPersonalVolumeTotal();
@@ -245,6 +247,9 @@ component extends="Slatwall.model.service.PromotionService" {
 				this.allocatePersonalVolumeDiscountToOrderItems(arguments.order, difference);
 			}
 		}
+		if(isNull(promoCacheKey) || arguments.order.getPromotionCacheKey() != promoCacheKey){
+    		arguments.order.updateQualifiedMerchandiseRewardsArray();
+    	}
 	}
 	
 	public void function allocatePersonalVolumeDiscountToOrderItems(required any order, required amountToDistribute){

@@ -6,6 +6,7 @@ component {
     property name="dropSkuRemovedFlag" ormtype="boolean" default=0;
 	property name="incompleteReturnFlag" ormtype="boolean";
 	property name="sharedByAccount" cfc="Account" fieldType="many-to-one" fkcolumn="sharedByAccountID";
+	property name="qualifiedMerchandiseRewardsArray" ormtype="text" default="[]";
 	
     property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
@@ -644,5 +645,22 @@ component {
 	
 	public boolean function isOrderPartiallyDelivered(){
 		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
+	}
+	
+	public void function updateQualifiedMerchandiseRewardsArray(){
+		var rewardArgs = {
+            order:this,
+            apiFlag:true,
+            rewardTypeList:'merchandise'
+        };
+        var rewards = getService('PromotionService').getQualifiedPromotionRewardsForOrder(argumentCollection=rewardArgs);
+        variables.qualifiedMerchandiseRewardsArray = serializeJson(rewards);
+	}
+	
+	public array function getQualifiedMerchandiseRewardsArray(){
+		if(!structKeyExists(variables, 'qualifiedMerchandiseRewardsArray')){
+			this.updateQualifiedMerchandiseRewardsArray();
+		}
+		return deserializeJson(variables.qualifiedMerchandiseRewardsArray);
 	}
 }

@@ -31,6 +31,7 @@ export class MonatService {
 	public skinFilters = [{}];
 	public totalItemQuantityAfterDiscount = 0;
 	public ofyItems;
+	public qualifiedPromos = [];
 	
 	//@ngInject
 	constructor(
@@ -73,7 +74,14 @@ export class MonatService {
 		}
 		return deferred.promise;
 	}
-
+	
+	public getQualifiedPromotionsForCart = (cart) =>{
+		this.publicService.doAction('getQualifiedMerchandiseRewardsForOrder',{orderID:cart.orderID}).then(result=>{
+			this.qualifiedPromos = result.rewards;
+			return result.rewards;
+		})
+	}
+	
 	/**
 	 * actions => addOrderItem, removeOrderItem, updateOrderItemQuantity, ....
 	 *

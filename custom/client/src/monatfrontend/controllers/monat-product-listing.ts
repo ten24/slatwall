@@ -26,6 +26,7 @@ class MonatProductListingController {
 	public skinProductFilter:any;
 	public loadingAddToCart;
 	public flexshipFlag:boolean;
+	public qualifiedPromos;
 	
 	// @ngInject
 	constructor(
