@@ -66,7 +66,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public function getQualifierLogicalOperatorType(){
 		if(!structKeyExists(variables,'qualifierLogicalOperatorType')){
 			variables.qualifierLogicalOperatorType = getPromotionPeriod().getQualifierLogicalOperatorType();
-		};
+		}
 		return variables.qualifierLogicalOperatorType;
 	}
 	
