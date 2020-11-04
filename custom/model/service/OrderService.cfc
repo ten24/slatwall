@@ -579,12 +579,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
-        
-        // if already in the same status, return
-        if(currentOrderStatusType.getSystemCode() == arguments.systemCode && currentOrderStatusType.getTypeCode() == arguments.typeCode){
-        	return;
-        }
-		
+        		
 		if( orderType.getSystemCode() == 'otSalesOrder'
 			&& arguments.systemCode == 'ostProcessing'
 			&& !len(arguments.typeCode)
