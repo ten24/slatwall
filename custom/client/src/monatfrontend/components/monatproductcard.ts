@@ -166,9 +166,8 @@ class MonatProductCardController {
 			this.monatService.addToCart(skuID, 1).then((result) => {
 				if(!result.hasErrors) {	
 			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
-				}
-				else{
-				    throw(result);
+				}else{
+				    this.monatAlertService.showErrorsFromResponse(result);
 				}
 			})
 			.catch((error)=>{

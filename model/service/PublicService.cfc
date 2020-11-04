@@ -1595,7 +1595,6 @@ component  accessors="true" output="false"
             return;
         }
 
-       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {
@@ -1712,6 +1711,18 @@ component  accessors="true" output="false"
             arguments.data.ajaxResponse["errors"] = {};
         }
         arguments.data.ajaxResponse["errors"] = errors;
+    }
+    
+    public any function addMessages( required struct data , messages){
+
+        if (!structKeyExists(arguments.data, "ajaxResponse")){
+            arguments.data["ajaxResponse"] = {};
+        }
+        
+        if (!structKeyExists(arguments.data.ajaxResponse, "messages")){
+            arguments.data.ajaxResponse["messages"] = {};
+        }
+        arguments.data.ajaxResponse["messages"] = messages;
     } 
     
     /** returns a list of state code options either for us (default) or by the passed in countryCode */

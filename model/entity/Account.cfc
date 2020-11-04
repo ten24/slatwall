@@ -43,7 +43,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="superUserFlag" ormtype="boolean";
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
-	property name="company" hb_populateEnabled="false" ormtype="string";
+	property name="company" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
 	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
@@ -167,6 +167,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="calculatedPhoneNumber" ormtype="string";
+	property name="calculatedEmailAddress" ormtype="string";
 	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";

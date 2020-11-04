@@ -333,15 +333,22 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		httpRequest.setTimeout(60);
 	
 		var responseData = httpRequest.send().getPrefix();
-
+		
 		if (IsJSON(responseData.FileContent)){
 			// a valid response was retrieved
 			// health check passed
 			responseBean.healthcheckFlag = true;
-			
 			var fileContent = DeserializeJSON(responseData.FileContent);
-			
 			if (structKeyExists(fileContent, 'resultCode') && fileContent.resultCode == 'Error'){
+				var getAvalaraError = fileContent.messages['1']['Summary'];
+				if(!len(trim(getAvalaraError))){
+					var defaultMessage = getAvalaraError;
+				}else{
+					var defaultMessage = "Avalara server communication fault";
+				}
+				var getErroMessage = getHibachiScope().getService('HibachiUtilityService').getFormattedErrorMessage("Avalara",fileContent.resultCode,defaultMessage);
+				responseBean.clearHibachiErrors();
+				responseBean.addError("Avalara error",getErroMessage);
 				responseBean.setData(fileContent.messages);
 				for(var message in fileContent.messages){
 					responseBean.addError(message['RefersTo'],message['Summary']);
@@ -476,7 +483,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		if (IsJSON(responseData.FileContent)){
 			var fileContent = DeserializeJSON(responseData.FileContent);
 
-			if (fileContent.resultCode == 'Error'){
+			if (!isNull(fileContent.resultCode) && !isNull(fileContent.messages) && fileContent.resultCode == 'Error'){
 				responseBean.setData(fileContent.messages);
 			}
 				

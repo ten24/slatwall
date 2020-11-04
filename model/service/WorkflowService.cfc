@@ -272,6 +272,7 @@ component extends="HibachiService" accessors="true" output="false" {
 								
 								if(isNumeric(arguments.workflowTrigger.getCollectionFetchSize()) && arguments.workflowTrigger.getCollectionFetchSize() > 0){
 									scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
+									getHibachiScope().setValue('debug_collection_config', scheduleCollection.getCollectionConfig());
 									processData['collectionData'] = scheduleCollection.getPageRecords(formatRecords=false);
 								}else{
 									processData['collectionData'] = scheduleCollection.getRecords(formatRecords=false);
@@ -497,8 +498,16 @@ component extends="HibachiService" accessors="true" output="false" {
 						'emailTemplateID' : arguments.workflowTaskAction.getEmailTemplate().getEmailTemplateID()
 					} 
 				}; 
-	
-				actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+
+				if(arguments.type == 'Event'){
+					arguments.baseObject = arguments.entity.getClassName();
+					arguments.baseID = arguments.entity.getPrimaryIDValue();
+					getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
+					actionSuccess = true; 
+				} else {
+					actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+				}
+				
 				break; 
 
 			//IMPORT

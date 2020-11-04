@@ -11,6 +11,8 @@ component {
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
 	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="calculatedPhoneNumber" ormtype="string";
+	property name="calculatedEmailAddress" ormtype="string";
 	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";

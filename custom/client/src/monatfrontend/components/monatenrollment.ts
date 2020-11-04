@@ -35,7 +35,7 @@ class MonatEnrollmentController {
 	public loading:boolean;
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache, public monatAlertService, public rbkeyService) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache, public monatAlertService, public rbkeyService, private ModalService) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
@@ -97,6 +97,9 @@ class MonatEnrollmentController {
 					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && !this.upgradeFlow){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
+					}else if(cart.orderItems && cart.orderItems.length && this.currentStepName == 'starterPack'){
+						this.goToStep('todaysOrder');
+						this.reviewContext = false;
 					}
 				 }else if(cart.monatOrderType?.typeCode.length){
 				 	this.handleUpgradeSteps(cart);
@@ -291,6 +294,25 @@ class MonatEnrollmentController {
 	public warn = (warningRbKey:string):void =>{
 		this.monatAlertService.error(this.rbkeyService.rbKey(warningRbKey));
 	}
+	
+	public saveEnrollment = ()=>{
+		this.ModalService.showModal({
+		      component: 'saveEnrollmentModal',
+		      bodyClass: 'angular-modal-service-active',
+			  bindings: {
+			    title: this.rbkeyService.rbKey('frontend.enrollment.saveEnrollment'),
+			  },
+			  preClose: (modal) => {
+				modal.element.modal('hide');
+			},
+		}).then( (modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+		    modal.close.then( (confirm) => {
+		    });
+		}).catch((error) => {
+			console.error("unable to open saveEnrollmentModal :",error);	
+		});
+    }
 }
 
 class MonatEnrollment {
