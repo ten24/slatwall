@@ -2017,7 +2017,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 
 	// ===================  END:  ORM Event Hooks  =========================
 			//CUSTOM FUNCTIONS BEGIN
-	public numeric function getPersonalVolumeSubtotal(){
+
+public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
     public numeric function getTaxableAmountSubtotal(){
@@ -2596,6 +2597,5 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			this.updateQualifiedMerchandiseRewardsArray();
 		}
 		return deserializeJson(variables.qualifiedMerchandiseRewardsArray);
-	}
-	//CUSTOM FUNCTIONS END
+	}//CUSTOM FUNCTIONS END
 }

@@ -1,0 +1,30 @@
+<div id="qualifiedPromoBanner" class="modal using-modal-service" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+		<img src="/themes/monat/assets/images/icon-promo.png">
+      	<div class="unlocked">You've Unlocked</div>
+        <h5 class="modal-title" ng-bind="promoModal.selectedPromotion.title"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&ndash;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p ng-bind="promoModal.selectedPromotion.description"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn bg-white">
+        	<span>Take Offer</span>
+        	<i class="fa fa-chevron-right"></i>
+        </button>
+        <div class="promo-options">
+            <ul>
+                <li ng-repeat="promotion in promoModal.promotions track by $index"
+                    ng-click="promoModal.selectPromotion(promotion)"
+                    ng-bind="$index"></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
