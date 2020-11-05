@@ -237,37 +237,45 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return arguments.entity;
 	}
 	
-	
 	public void function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
 	    
 	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies"
 	    if( structKeyExists(this, extentionFunctionName) ){
-	        return this.invokeMethod( extentionFunctionName, arguments );
+            this.invokeMethod( extentionFunctionName, arguments );
+	    } else {
+	        this.genericResolveEntityDependencies( argumentCollection=arguments );
 	    }
-	      
-	      
-        for( var dependency in arguments.entityQueueData.__dependancies ){
-             
-            var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	}
+	
+	public void function genericResolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
+	    
+	    for( var dependency in arguments.entityQueueData.__dependencies ){
+            
+            var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
                 "entityName"    = dependency.entityName,
     	        "uniqueKey"     = dependency.lookupKey,
     	        "uniqueValue"   = dependency.lookupValue
             );
                 
-                                    
-            if( this.hibachiIsEmpty(primaryIDValue) ){
+            if( !structKeyExists(dependency, 'isNullable') ){
+                // by default every dependency is treated as required [ not-nullable ]
+                dependency.isNullable = false; 
+            }
+            
+            if( !isNull(dependencyPrimaryIDValue) && !this.hibachiIsEmpty(dependencyPrimaryIDValue) ){
                 
+                var dependencyPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
+                arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependencyPrimaryIDValue }
+                
+            } else if( !dependency.isNullable ){
+                // if any required dependency is not resolved then we can't continue with the import 
                 arguments.entity.addError( 
                     dependency.propertyIdentifier, 
-                    "Depandancy for propertyIdentifier [#dependency.propertyIdentifier#] on Entity [#arguments.entity.getClassName()#] could not be resolved yet"    
+                    "Depandancy for propertyIdentifier [#dependency.propertyIdentifier#] on Entity [#arguments.entity.getClassName()#] could not be resolved."    
                 );
-                
                 break;
             }
-                         
-            var primaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
-            
-            arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#primaryIDProperty#" : primaryIDValue }
+            // else we're ignoreing if the dependency is not resolved, as it's nullable
         }
 	}
 
@@ -282,17 +290,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         for( var relation in arguments.entityData.__volatiles ){
              
             var relationData = arguments.entityData[ relation.propertyIdentifier ];
+            
             if( relation.isVolatile ){
                 
                 var relationPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-                        "entityName"  = relation.entityName,
-            	        "uniqueKey"   = 'importRemoteID',
-            	        "uniqueValue" = relationData.importRemoteID
-                    );
+                    "entityName"  = relation.entityName,
+        	        "uniqueKey"   = 'importRemoteID',
+        	        "uniqueValue" = relationData.importRemoteID
+                );
                 
                 if( !isNull(relationPrimaryIDValue) && !this.hibachiIsEmpty(relationPrimaryIDValue) ){
                     var relationPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( relation.entityName );
-                        
                     // replaces the nested struct in arguments.entityData
                     arguments.entityData[ relation.propertyIdentifier ] = { "#relationPrimaryIDProperty#" : relationPrimaryIDValue }; 
                 }
@@ -380,9 +388,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             arguments.mapping = this.getEntityMapping( entityName );
         }
         
-        // make-sure all of the dependancies had been resolved, 
+        // make-sure all of the dependencies had been resolved, 
         // like Product is required before SKU can be created for that Product	    
-	    if( structKeyExists(arguments.entityQueueData, '__dependancies') ){
+	    if( structKeyExists(arguments.entityQueueData, '__dependencies') ){
             this.resolveEntityDependencies(argumentCollection = arguments);
     	    if(arguments.entity.hasErrors()){
     	        return arguments.entity;
@@ -449,6 +457,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var entityName = arguments.mapping.entityName;
 	    var isValid = true;
 	    var errors = {};
+	    
+	    //FIXME : now that this function has grown and we're vlidation for, 'dependencies', and `importIdentifier` keys
+	    // which might cause redundent validation, for `required` constraint if the property already exist in previous validations ['properties', 'relations']
+	    // this is not too big of a deal, but a better approach will be to compile an array of validations+constraints and loop over that;
 	    
 	    // validate entity properties
 	    if( structKeyExists(arguments.mapping, 'properties') ){
@@ -518,12 +530,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    // validate that the source properties exist for dependencies
 	    if( structKeyExists(mapping, 'dependencies') ){
-  	        for(var dependency in mapping.dependencies ){
+	    
+  	        for( var dependency in mapping.dependencies ){
   	            // skip nullble dependencies
   	            if(structKeyExists(dependency, 'isNullable') &&  dependency.isNullable ){
   	                continue;
   	            }
-  	            // validate that the dependancy key exist in the source data
+  	            // validate that the dependency key exist in the source data
   	            isValid = this.validateConstraintType(
   	                constraintType  = 'required', 
   	                constraintValue = 'true',
@@ -555,12 +568,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    // validate that importIdentifier exists
 	    for(var key in mapping.importIdentifier.keys ){
-            // validate that the dependancy key exist in the source data
+
             isValid = this.validateConstraintType(
-              constraintType  = 'required', 
-              constraintValue = 'true',
-              propertyValue   = arguments.data[key] ?: javaCast('null', 0)
+                constraintType  = 'required', 
+                constraintValue = 'true',
+                propertyValue   = arguments.data[key] ?: javaCast('null', 0)
             )
+            
             if( !isValid ){
                 if( arguments.collectErrors ){
                     var errorMessage = this.createErrorMessageForFailedConstraint(
@@ -781,14 +795,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    
-	    // relational dependancies[ entities which should be present bofore this record can be processed],
+	    // relational dependencies[ entities which should be present bofore this record can be processed],
 	    // like `Product` should be present before SKU can be imported 
 	    if( !arguments.nested && structKeyExists(arguments.mapping, 'dependencies') ){
 	        
-	        transformedData['__dependancies'] = [];
+	        transformedData['__dependencies'] = [];
 	        for( var dependency in arguments.mapping.dependencies ){
 	            dependency['lookupValue'] = arguments.data[ dependency.key ];
-	            transformedData['__dependancies'].append( dependency );
+	            transformedData['__dependencies'].append( dependency );
 	        }
 	    }
 	    
@@ -1149,6 +1163,23 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         );
 	}
 	
+	
+	public any function generateOrderItemType( 
+	    required struct data, 
+        required struct parentEntityMapping,
+        required struct relationMetaData 	
+    ){
+        // TODO
+    }
+    
+    public any function generateOrderItemStatusType( 
+	    required struct data, 
+        required struct parentEntityMapping,
+        required struct relationMetaData 	
+    ){
+        // TODO
+    }
+    
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 
 }

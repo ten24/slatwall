@@ -45,8 +45,7 @@
             "validations": {
                 "dataType": "integer"
             }
-        },
-        
+        }
     },
     
     "importIdentifier": {
@@ -61,27 +60,28 @@
         {
             "type": "manyToOne",
             "entityName": "Type",
+            "excludeFromTemplate" : true,
+            "excludeFromValidation"  : true,
             "propertyIdentifier": "orderItemType",
-            "generatorFunction": "resolveOrderItemType"
+            "generatorFunction": "generateOrderItemType"
         },
         {
             "type": "manyToOne",
             "entityName": "Type",
+            "excludeFromTemplate" : true,
+            "excludeFromValidation"  : true,
             "propertyIdentifier": "orderItemStatusType",
-            "generatorFunction": "resolveOrderItemStatusType"
+            "generatorFunction": "generateOrderItemStatusType"
         }
     ],
     
-    // TODO: OPTIONAL_DEPENDENCY
-    // TODO: DEFAULT_VALUE for dependency
-    // TODO: DEPENDENCY_RESOLVER_FUNCTIONS
     "dependencies": [
         {
             "key": "remotePriceGroupID",
-            "OPTIONAL_DEPENDENCY": true,
+            "isNullable": true,
             "lookupKey": "remoteID",
             "entityName": "PriceGroup",
-            "propertyIdentifier": "appliedPriceGroup"
+            "propertyIdentifier": "appliedPriceGroup" 
         },
         {
             "key": "remoteSkuID",
@@ -96,7 +96,7 @@
             "propertyIdentifier": "order"
         },
         {
-            "OPTIONAL_DEPENDENCY": true,
+            "isNullable": true,
             "key": "remoteParentOrderItemID",
             "lookupKey": "remoteID",
             "entityName": "OrderItem",
@@ -109,7 +109,7 @@
             "propertyIdentifier": "prderFulfillment"
         },
         {
-            "OPTIONAL_DEPENDENCY": true,
+            "isNullable": true,
             "key": "remoteOrderReturnID",
             "lookupKey": "remoteID",
             "entityName": "OrderReturn",

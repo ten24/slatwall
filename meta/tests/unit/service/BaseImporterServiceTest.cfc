@@ -1355,11 +1355,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_add_errors_when_dependancy_is_not_resolve(){
+    public void function resolveEntityDependencies_should_add_errors_when_dependency_is_not_resolve(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
@@ -1373,26 +1374,23 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         expect( emailAddress.getErrors() ).toBeStruct();
         expect( emailAddress.getErrors() ).toHaveKey( 'account' );
-        
-        expect( emailAddress.getErrors().account[1] )
-        .toBe('Depandancy for propertyIdentifier [account] on Entity [AccountEmailAddress] could not be resolved yet');
-        
     }
     
     
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_not_add_errors_when_dependancy_is_resolve(){
+    public void function resolveEntityDependencies_should_not_add_errors_when_dependency_is_resolve(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
         var accountID = hash("123xxxunittest"&now(), 'MD5');
-        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': remoteAccountID });
         
         
         var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
@@ -1412,16 +1410,17 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_add_dependancy_data_when_resolved(){
+    public void function resolveEntityDependencies_should_add_dependency_data_when_resolved(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
         var accountID = hash("123xxxunittest"&now(), 'MD5');
-        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': remoteAccountID });
         
         
         var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
