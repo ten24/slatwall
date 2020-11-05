@@ -2582,7 +2582,17 @@ public numeric function getPersonalVolumeSubtotal(){
 		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
 	}
 	
-<<<<<<< HEAD
+	public boolean function hasCBDProduct(){
+	 	if(!structKeyExists(variables,'CBDProduct')){
+	 		variables.CBDProduct = false;
+			var cbdcollectionList = getService('orderService').getOrderItemCollectionList();
+    		cbdcollectionList.addFilter('order.orderID',this.getOrderID() );
+    		cbdcollectionList.addFilter('sku.cbdFlag', true);
+			variables.CBDProduct = cbdcollectionList.getRecordsCount() > 0;
+	 	}
+	 	return variables.CBDProduct;
+	}
+	
 	public void function updateQualifiedMerchandiseRewardsArray(){
 		var rewardArgs = {
             order:this,
@@ -2598,16 +2608,5 @@ public numeric function getPersonalVolumeSubtotal(){
 			this.updateQualifiedMerchandiseRewardsArray();
 		}
 		return deserializeJson(variables.qualifiedMerchandiseRewardsArray);
-=======
-	public boolean function hasCBDProduct(){
-	 	if(!structKeyExists(variables,'CBDProduct')){
-	 		variables.CBDProduct = false;
-			var cbdcollectionList = getService('orderService').getOrderItemCollectionList();
-    		cbdcollectionList.addFilter('order.orderID',this.getOrderID() );
-    		cbdcollectionList.addFilter('sku.cbdFlag', true);
-			variables.CBDProduct = cbdcollectionList.getRecordsCount() > 0;
-	 	}
-	 	return variables.CBDProduct
->>>>>>> a1a02fb181047b8973b53ac395a333612d56ccb6
 	}//CUSTOM FUNCTIONS END
 }

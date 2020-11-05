@@ -52,6 +52,7 @@ import { ImageManager } from "./components/image-manager";
 import { AddressDeleteModal } from "./components/address-delete-modal";
 import { SaveEnrollmentModal } from "./components/save-enrollment-modal";
 import { PromoModal } from "./components/promo-modal";
+import { PromoRewardModal } from "./components/promo-reward-modal";
 import { MonatConfirmMessageModel } from "./components/monat-modal-confirm-message";
 import { MonatBirthday } from "./components/monatBirthday";
 import { HybridCart } from "./components/hybridCart";
@@ -134,6 +135,7 @@ var monatfrontendmodule = angular
 	.directive("addressDeleteModal", AddressDeleteModal.Factory())
 	.directive("saveEnrollmentModal", SaveEnrollmentModal.Factory())
 	.directive("promoModal", PromoModal.Factory())
+	.directive("promoRewardModal", PromoRewardModal.Factory())
 
 	.directive("swfReviewListing", SWFReviewListing.Factory())
 	.directive("swfWishlist", SWFWishlist.Factory())

@@ -1713,7 +1713,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!arguments.apiFlag){
 					arrayAppend(qualifiedPromotionRewards,promoReward);
 				}else{
+					var qualifications = 0;
+					for(var qualifierDetail in qualificationDetails.qualifierDetails){
+						qualifications += qualifierDetail.qualificationCount;
+					}
 					var promoRewardStruct = getService('HibachiUtilityService').buildPropertyIdentifierListDataStruct(promoReward,propertyIdentifierList);
+					promoRewardStruct.qualifications = qualifications;
 					arrayAppend(qualifiedPromotionRewards,promoRewardStruct);
 				}
 			}
@@ -1722,7 +1727,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public string function getPromotionRewardPropertyIdentifierList(){
-		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName';
+		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName,maxUsePerQualification,maxUsePerOrder,maxUsePerItem';
 	}
 	
 	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false, string promotionRewardID){
