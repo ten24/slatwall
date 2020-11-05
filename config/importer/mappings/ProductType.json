@@ -59,7 +59,7 @@
             "type" : "manyToOne",
             "entityName" : "ProductType",
             "propertyIdentifier" : "parentProductType",
-            "excludeFromCSVTemplate" : true,
+            "excludeFromTemplate" : true,
             "excludeFromValidation"  : true,
             "generatorFunction" : "generateProductTypeParentProductType"
         }   

@@ -115,7 +115,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	        for(var related in mapping.relations){
   	            // includeInCSVTemplate is a flag in related mappings; 
   	            // being used to handle recursive-relations, like productType and parentProductType
-  	            if( !structKeyExists(related, 'excludeFromCSVTemplate') || !related.excludeFromCSVTemplate){
+  	            if( !structKeyExists(related, 'excludeFromTemplate') || !related.excludeFromTemplate){
   	                headers.append( this.createEntityCSVHeaderMetaDataRecursively(related.entityName) );
   	            }
 	        }
