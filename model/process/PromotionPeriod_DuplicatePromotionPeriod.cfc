@@ -63,6 +63,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="qualifierLogicalOperatorType" hb_rbKey="entity.promotionPeriod.qualifierLogicalOperatorType";
 	property name="promotion";
 	
+	public function getQualifierLogicalOperatorType(){
+		if(!structKeyExists(variables,'qualifierLogicalOperatorType')){
+			variables.qualifierLogicalOperatorType = getPromotionPeriod().getQualifierLogicalOperatorType();
+		}
+		return variables.qualifierLogicalOperatorType;
+	}
+	
 	public function getPromotionPeriodName() {
 		if(!structKeyExists(variables, "promotionPeriodName")) {
 			if(len(getPromotionPeriod().getPromotionPeriodName())) {
