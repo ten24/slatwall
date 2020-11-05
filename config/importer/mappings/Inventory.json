@@ -10,6 +10,16 @@
                 "dataType": "string"
             }
         },
+        "remoteSkuID": {
+            "validations": {
+                "required": true,
+            }
+        },
+        "remoteLocationID": {
+            "validations": {
+                "required": true,
+            }
+        },
         "quantityIn": {
             "propertyIdentifier": "quantityIn",
             "validations": {
@@ -60,27 +70,11 @@
             "type": "manyToOne",
             "entityName": "Stock",
             "propertyIdentifier": "stock",
-            "excludeFromCSVTemplate" : true,
+            "excludeFromTemplate" : true,
             "excludeFromValidation"  : true,
             "generatorFunction": "generateInventoryStock"
         }
         
-    ],
-
-    "dependencies" : [
-        
-        {
-            "key"                : "remoteSkuID",
-            "entityName"         : "Sku",
-            "lookupKey"          : "remoteID",
-            "propertyIdentifier" : "sku"
-        }, 
-        {
-            "key"                : "remoteLocationID",
-            "entityName"         : "Location",
-            "lookupKey"          : "remoteID",
-            "propertyIdentifier" : "location"
-        }
     ],
     
     "importIdentifier": {

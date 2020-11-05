@@ -908,7 +908,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * 
          * 4. default value from the propertyMetadata
         */
-
+        
+        // if the property is only for validation, it will not have a property identifier.
+        if( !structKeyExists(arguments.propertyMeta, 'propertyIdentifier') ){
+            return;
+        }
+        
         var entityName = arguments.mapping.entityName;
         
         if( !structKeyExists(arguments, 'mapping')){
