@@ -7,7 +7,7 @@ class PromoModalController {
 	public selectedPromotion;
 	
     //@ngInject
-    constructor(public rbkeyService, public observerService, public publicService, public monatService) {
+    constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService) {
         // this.observerService.attach(this.closeModal,'saveEnrollmentSuccess')
         this.cart = monatService.cart;
         this.promotions = this.cart.qualifiedMerchandiseRewardsArray;
@@ -22,6 +22,28 @@ class PromoModalController {
             promotion.description = promotion.promotionPeriod.promotion.promotionName;
         }
         this.selectedPromotion = promotion;
+    }
+    
+    public launchPromoRewardModal = ()=>{
+        if(this.selectedPromotion){
+            this.ModalService.showModal({
+                component: 'promoRewardModal',
+                bodyClass: 'angular-modal-service-active',
+                bindings: {
+                    title: this.rbkeyService.rbKey('frontend.enrollment.promoRewardModal'),
+                },
+                preClose: (modal) => {
+                    modal.element.modal('hide');
+    			},
+    		}).then( (modal) => {
+    			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+    		    modal.close.then( (confirm) => {
+    		    });
+    		}).catch((error) => {
+    			console.error("unable to open promoRewardModal :",error);	
+    		});
+    		this.closeModal();
+        }
     }
     
     public closeModal = () => {
