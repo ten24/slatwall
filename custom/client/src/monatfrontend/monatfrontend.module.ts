@@ -50,6 +50,7 @@ import { MonatUpgradeStep } from "./components/upgradeFlow/monatupgradestep";
 import { MonatUpgradeMP } from "./components/upgradeFlow/monatupgrademp";
 import { ImageManager } from "./components/image-manager";
 import { AddressDeleteModal } from "./components/address-delete-modal";
+import { SaveEnrollmentModal } from "./components/save-enrollment-modal";
 import { MonatConfirmMessageModel } from "./components/monat-modal-confirm-message";
 import { MonatBirthday } from "./components/monatBirthday";
 import { HybridCart } from "./components/hybridCart";
@@ -130,6 +131,7 @@ var monatfrontendmodule = angular
 	.directive("wishlistShareModal", WishlistShareModal.Factory())
 	.directive("wishlistDeleteModal", WishlistDeleteModal.Factory())
 	.directive("addressDeleteModal", AddressDeleteModal.Factory())
+	.directive("saveEnrollmentModal", SaveEnrollmentModal.Factory())
 
 	.directive("swfReviewListing", SWFReviewListing.Factory())
 	.directive("swfWishlist", SWFWishlist.Factory())
@@ -240,6 +242,7 @@ var monatfrontendmodule = angular
 			let logoutSuccessCallback = () => {
 				console.log("on logoutSuccessCallback");
 				hibachiConfig.accountID = undefined;
+				publicService.removeFromSessionCache("cachedAccount");
 			};
 
 			let loginSuccessCallback = () => {
@@ -262,7 +265,6 @@ var monatfrontendmodule = angular
 			}
 		},
 	]);
-	
 	// the __DEBUG_MODE__ is driven by webpack-config and only enabled in debug-builds
 	if(__DEBUG_MODE__){
 	    // added here for debugging angular-bootstrapping, and other similar errors
@@ -278,6 +280,7 @@ var monatfrontendmodule = angular
             };
         })
     }
+	
 
 export { 
     monatfrontendmodule, 

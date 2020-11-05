@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     public void function afterInfotraxAccountCreateSuccess(any slatwallScope, any entity, any eventData) {
 
 		//Clear the encrypted govt-id-NUMBER 
-		if( arguments.entity.getAccountGovernmentIdentificationsCount() ){
+		if( arguments.entity.getAccountGovernmentIdentificationsCount() && arguments.entity.getAccountCreatedSite().getCmsSiteID() != 'uk'){
 			//in current specs, there can be only one govt-ID per account
 			arguments.entity.getAccountGovernmentIdentifications()[1]
 				.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
@@ -347,5 +347,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		insertSQL &= "SELECT REPLACE(CAST(UUID() as char character set utf8), '-', ''), #now()#, #now()#, bundledSkuID, '#orderItem.getOrderItemID()#', bundledQuantity FROM SwSkuBundle where skuID = '#arguments.orderItem.getSkuID()#'";
 		
  		QueryExecute(insertSQL);
+	}
+	
+	
+	public void function onSessionAccountLogin(){
+		if(!isNull(getHibachiScope().getAccount().getAccountType())){
+			getService('HibachiTagService').cfcookie(name="accountType", value=getHibachiScope().getAccount().getAccountType(), httpOnly=true);
+		}
+	}
+	
+	public void function onSessionAccountLogout(){
+		getService('HibachiTagService').cfcookie(name="accountType", value='', expires=now(), httpOnly=true);
 	}
 }

@@ -175,6 +175,7 @@
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/promotions" open="false" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/giftcard" open="false" />
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/orderhistory" open="false" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertemplatetabs/entityqueue" />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

@@ -241,13 +241,19 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	}
 	
-	public void function deleteEntityQueueItem(required string entityQueueID){
+	public void function deleteEntityQueueItem(required string entityQueueID, boolean deleteArchivedItem = false){
 		var queryService = new query();
 		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING");
 		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID = :entityQueueID";
 
-
 		queryService.execute(sql=sql);
+		
+		if(arguments.deleteArchivedItem){
+			var deleteArchivedItemQuery = new query();
+			deleteArchivedItemQuery.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING");
+			sql = "DELETE FROM swentityqueuefailure WHERE remoteID = :entityQueueID";
+			deleteArchivedItemQuery.execute(sql=sql);
+		}
 	}
 	
 	public void function updateNextRetryDateAndMostRecentError(required string entityQueueID, required string errorMessage, numeric retryDelay = 0){

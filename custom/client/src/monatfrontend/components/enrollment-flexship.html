@@ -8,6 +8,7 @@
 							ng-if="!enrollmentFlexship.isLoading" 
 							ng-bind-html=" ' - ' + enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedTotal - enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal : 0 | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"
 						></span>
+						<i class="fas fa-chevron-down"></i>
 					</div>					
 				</a>
 			</div>
@@ -17,25 +18,25 @@
 				<flexship-purchase-plus messages="enrollmentFlexship.messages"></flexship-purchase-plus>
 			</div>
 			<div class="card-body p-0 hybrid-cart-body">
-				<div class="px-3 scroll-body">
-					<ul class="list-group list-group-flush">
-						<li ng-repeat="item in enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.orderTemplateItems" class="bg-transparent list-group-item d-flex justify-content-between align-items-center p-0">
-							<div class="row align-items-center">
-								<div class="p-1">
-									<a class="py-0" ng-href="{{item.skuProductURL}}">
-										<img 
-											image-manager 
-											height="75px" 
-											ng-src="{{item.sku_imagePath}}" 
-											alt="{{item.sku_product_productName}}"
-										>
-									</a>
-								</div>
-								<div class="col">
-									<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
-										<p class="d-inline" ng-bind="item.sku_product_productName"></p>
-									</a>
-									<div class="qty">
+				<ul class="list-group list-group-flush">
+					<li ng-repeat="item in enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.orderTemplateItems" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
+						<div class="row align-items-center">
+							<div class="p-1">
+								<a class="py-0" ng-href="{{item.skuProductURL}}">
+									<img 
+										image-manager 
+										height="75px" 
+										ng-src="{{item.sku_imagePath}}" 
+										alt="{{item.sku_product_productName}}"
+									>
+								</a>
+							</div>
+							<div class="col">
+								<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
+									<p class="title" ng-bind="item.sku_product_productName"></p>
+								</a>
+								<div class="qty">
+									<div>
 										<button
 											type="button"
 											class="minus p-0"
@@ -57,65 +58,46 @@
 										>
 											+
 										</button>
-										
-										<span class="ml-2" ng-bind-html="item.total | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
 									</div>
+
+									<span class="ml-2 text-right" ng-bind-html="item.total | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
 								</div>
 							</div>
-							<span class="badge badge-pill delete">
-								<a ng-click="enrollmentFlexship.removeOrderTemplateItem(item)" href="#">
-									x
-								</a>
-							</span>
-						</li>
-					</ul>							
-				</div>
+						</div>
+						<span class="badge badge-pill delete">
+							<a ng-click="enrollmentFlexship.removeOrderTemplateItem(item)" href="#">
+								<i class="fal fa-times"></i>
+							</a>
+						</span>
+					</li>
+				</ul>							
 			</div>
 			<div class="card-footer">
-				<div ng-if="enrollmentFlexship.cartThreshold && enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal < enrollmentFlexship.cartThreshold" class="px-3">
-					<p>
-						<i class="fal fa-exclamation-circle text-danger"></i> 
+				<div ng-if="enrollmentFlexship.cartThreshold && enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal < enrollmentFlexship.cartThreshold" class="flexship-alert px-3 py-2">
+					<i class="fal fa-exclamation-circle text-danger"></i>
+					<p class="my-1">
 						<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP1'"></span>
 						<span ng-bind-html="enrollmentFlexship.cartThreshold | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span> 
 						<span sw-rbkey="'frontend.enrollmentFlexship.toQualify'"></span>
 					</p>
 				</div>
-				<div ng-if="enrollmentFlexship.suggestedRetailPrice > 0" class="row justify-content-between px-3">
-					<div>
-						<small> <span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span> </small>
+				<div ng-if="enrollmentFlexship.suggestedRetailPrice > 0" class="row justify-content-between suggested">
+					<span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span>
+					<span ng-bind-html="enrollmentFlexship.suggestedRetailPrice | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
+				</div>
+				<div class="summary">
+					<div class="row justify-content-between">
+						<span sw-rbKey="'frontend.hybridCart.yourPrice'"></span>
+						<span ng-bind-html="(enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal : 0 )| swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
 					</div>
-					<div>
-						<small ng-bind-html="enrollmentFlexship.suggestedRetailPrice | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"> </small>
+					<div class="row justify-content-between">
+						<span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span>
+						<span ng-bind-html="(enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal : 0) | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
 					</div>
 				</div>
-				<div class="row justify-content-between px-3">
-					<div>
-						<small> <span sw-rbKey="'frontend.hybridCart.yourPrice'"></span> </small>
-					</div>
-					<div>
-						<small ng-bind-html="(enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal : 0 )| swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></small>
-					</div>
-				</div>
-				<div class="row justify-content-between px-3">
-					<div>
-						<small> <span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span> </small>
-					</div>
-					<div>
-						<small ng-bind-html="(enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal : 0) | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></small>
-					</div>
-				</div>
-				<hr class="my-0">
-				<div class="row justify-content-between px-3 my-1 mb-3">
-					<div>
-						<small> 
-							<b><span sw-rbKey="'frontend.hybridCart.yourFlexship'"></span></b> 
-						</small>
-					</div>
-					<div>
-						<small> 
-							<b ng-bind-html="(enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedTotal - enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal : 0) | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></b>
-						</small>
-					</div>
+				<div class="row justify-content-between total">
+					<span sw-rbKey="'frontend.hybridCart.yourFlexship'"></span>
+					<span ng-bind-html="(enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedTotal - enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal : 0) | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
 				</div>
 			</div>
 		</div>

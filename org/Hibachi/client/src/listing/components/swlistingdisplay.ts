@@ -207,7 +207,8 @@ class SWListingDisplayController{
         this.$timeout( ()=> {
             // @ts-ignore from hibachiAssets/js/global.js
             window?.removeLoadingDiv?.(this.tableID);
-        },100); // to avoide flickring of ng-repeat
+            this.loading = false;
+        },50); // to avoide flickring of ng-repeat
     }
     
    /**

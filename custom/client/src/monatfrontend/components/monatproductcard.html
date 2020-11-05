@@ -1,4 +1,4 @@
-<div>
+<div class="pr-box-wrapper">
    <div class="pr-box">
     <!-- Product Card -->
     
@@ -61,7 +61,7 @@
       
         <h3 class="pb-0 mb-0"><a ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined  }}">{{monatProductCard.product.productName}}</a></h3>
         <div ng-if="monatProductCard.product.skuAllowBackorderFlag == '1' && monatProductCard.product.backorderedMessaging != null && monatProductCard.product.backorderedMessaging != ''">
-            <h5 style="color:red;">{{monatProductCard.product.backorderedMessaging}}</h5>
+            <small class="text-danger">{{monatProductCard.product.backorderedMessaging}}</small>
         </div>
             
         <div ng-if="monatProductCard.product.displayOnlyFlag != true" class="price">
@@ -95,16 +95,17 @@
    <!-- Add To Cart -->
    <div ng-if="monatProductCard.product.displayOnlyFlag != true && (monatProductCard.product.qats > 0)" class="product-actions">
          <button 
-            ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode); 
-                        hybridCart.toggleCartOnAdd();" 
+            ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode);" 
             class="btn bg-primary add-to-cart" 
             ng-class="{
                 'bg-primary': monatProductCard.type == 'enrollment',
-                loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
+                loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID,
+                loaded: monatProductCard.loaded
             }"
         >
-             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment'" sw-rbkey="'frontend.global.addToCart'"></span>
-             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'" sw-rbkey="'frontend.global.addToFlexship'"></span>
+             <span ng-if="monatProductCard.loaded" sw-rbkey="'frontend.global.addedToCart'"></span>
+             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment' && !monatProductCard.loaded" sw-rbkey="'frontend.global.addToCart'"></span>
+             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment' && !monatProductCard.loaded" sw-rbkey="'frontend.global.addToFlexship'"></span>
          </button>
    </div>
    

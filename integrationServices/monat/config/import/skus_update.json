@@ -17,6 +17,10 @@
         {
           "sourceColumn":"SalesCategoryCode",
           "propertyIdentifier":"salesCategoryCode"
+        },
+        {
+          "sourceColumn":"DangerousGoodsFlag",
+          "propertyIdentifier":"dangerousGoodsFlag",
         }
     ]
 }

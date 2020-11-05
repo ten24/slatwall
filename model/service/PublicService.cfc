@@ -714,7 +714,7 @@ component  accessors="true" output="false"
                 for(var fulfillment in order.getOrderFulfillments()){
                     fulfillment.setShippingAddress(accountAddress.getAddress());
                     fulfillment.setAccountAddress(accountAddress);
-                    getService("OrderService").saveOrderFulfillment(orderFulfillment = orderFulfillment, updateOrderAmounts = false);
+                    getService("OrderService").saveOrderFulfillment(orderFulfillment = fulfillment, updateOrderAmounts = false);
                 }
             }
             getService("OrderService").saveOrder(order = order, updateOrderAmounts = false);
@@ -1595,7 +1595,6 @@ component  accessors="true" output="false"
             return;
         }
 
-       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {

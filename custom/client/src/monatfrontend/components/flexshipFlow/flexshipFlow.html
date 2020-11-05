@@ -14,7 +14,6 @@
 	</div>
 </header>
 
-<toaster-container></toaster-container>
 
 <!--FLEXSHIP FLOW STEPS--->
 <div class="wrapper">
@@ -150,8 +149,7 @@
 				style="z-index: 1" 
 				class="btn btn-secondary forward-btn forward" 
 				ng-click="flexshipFlow.next();"
-				ng-class="{  'loading,disabled': flexshipFlow.loading }"
-				ng-disabled="flexshipFlow.loading "
+				ng-class="{  'loading': flexshipFlow.loading }"
 			>
 
 				<span sw-rbkey="'frontend.global.next'"></span>

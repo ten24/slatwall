@@ -352,31 +352,38 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	
 	public any function retrySyncPendingOrders(required any order, any processObject, required struct data={}){
 		if(structKeyExists(arguments.data, 'collectionData')){
-			this.retryBatch('order', arguments.data.collectionData)
+			this.retryBatch('Order', arguments.data.collectionData)
 		} 
 		return arguments.order;
 	}
 	
 	public any function retrySyncPendingAccounts(required any account, any processObject, required struct data={}){
 		if(structKeyExists(arguments.data, 'collectionData')){
-			this.retryBatch('account', arguments.data.collectionData)
+			this.retryBatch('Account', arguments.data.collectionData)
 		} 
 		return arguments.account;
 	}
 	
 	public any function retrySyncPendingOrderTemplates(required any orderTemplate, any processObject, required struct data={}){
 		if(structKeyExists(arguments.data, 'collectionData')){
-			this.retryBatch('orderTemplate', arguments.data.collectionData)
+			this.retryBatch('OrderTemplate', arguments.data.collectionData)
 		} 
 		return arguments.orderTemplate;
 	}
 
 	public void function retryBatch(required string baseObject, required array data){
 		for(var item in arguments.data){
-			if ( !getService('infoTraxService').isEntityQualified(arguments.baseObject, item['#baseObject#ID'], 'after#baseObject#SaveSuccess') ) {
+			if ( !getService('infoTraxService').isEntityQualified(arguments.baseObject, item['#lCase(arguments.baseObject)#ID'], 'after#arguments.baseObject#SaveSuccess') ) {
 				continue;
 			}
-			getService('hibachiService').invokeMethod('get#baseObject#', { 1 : item['#baseObject#ID'] });
+			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+				entityQueueID   = hash(arguments.baseObject & '_' & item['#lCase(arguments.baseObject)#ID'] & '_push_' & getIntegration().getIntegrationID(), 'MD5'), //Custom ID to ignore EntityQueueData
+				baseID          = item['#lCase(arguments.baseObject)#ID'],
+				baseObject      = baseObject,
+				processMethod   = 'push',
+				entityQueueData = { 'event' = 'after#baseObject#SaveSuccess' },
+				integrationID   = getIntegration().getIntegrationID()
+			);
 		}
 	}
 
