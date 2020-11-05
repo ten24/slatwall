@@ -1,8 +1,8 @@
 {
     "entityName": "Inventory",
-    
+
     "properties": {
-        
+
         "remoteInventoryID": {
             "propertyIdentifier": "remoteID",
             "validations": {
@@ -51,50 +51,43 @@
             "validations": {
                 "dataType": "string"
             }
-        },
-        "createdDateTime": {
-            "propertyIdentifier": "createdDateTime",
-            "validations": {
-                "dataType": "date"
-            }
         }
-        
     },
-    
-    
-    "relaions" : [
+
+
+    "relations" : [
         {
-            // stock
-            // generator function
+            "type": "manyToOne",
+            "entityName": "Stock",
+            "propertyIdentifier": "stock",
+            "excludeFromCSVTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateInventoryStock"
         }
-    ] 
-    
-    "dependancies" : [
-    
-        "remoteSkuID": {
-            "propertyIdentifier": "remoteID",
-            "validations": {
-                "required": true,
-                "dataType": "string"
-            }
-        },
         
-        "remoteLocationID": {
-            "propertyIdentifier": "remoteID",
-            "validations": {
-                "dataType": "string"
-            }
-        },  
+    ],
+
+    "dependencies" : [
         
-        
-    ]
+        {
+            "key"                : "remoteSkuID",
+            "entityName"         : "Sku",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "sku"
+        }, 
+        {
+            "key"                : "remoteLocationID",
+            "entityName"         : "Location",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "location"
+        }
+    ],
     
-    // remoteSkuID
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "inventoryID"
+            "remoteInventoryID"
         ]
     }
 }
