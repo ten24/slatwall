@@ -1,0 +1,102 @@
+<!---
+
+    Slatwall - An Open Source eCommerce Platform
+    Copyright (C) ten24, LLC
+	
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+	
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+	
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
+    conditions of the GNU General Public License cover the whole
+    combination.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
+
+Notes:
+
+--->
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
+
+<cfparam name="rc.orderTemplate" type="any" />
+<cfparam name="rc.edit" type="boolean" /> 
+
+<cfset local.collectionEntityQueue = $.slatwall.getService('hibachiEntityQueueService').getEntityQueueCollectionList()  >
+<cfset local.collectionEntityQueue.setDisplayProperties('modifiedDateTime,processMethod,integration.integrationName,mostRecentError,tryCount',{
+    isVisible=true,
+    isDeletable=true
+}) >
+<cfset local.collectionEntityQueue.addDisplayProperty(displayProperty='baseID',columnConfig={isVisible=false})>
+<cfset local.collectionEntityQueue.addFilter('baseID',rc.orderTemplate.getOrderTemplateID())>
+<cfset local.collectionEntityQueue.addFilter('baseObject','OrderTemplate')>
+
+
+<cfset local.collectionEntityQueueFailure = $.slatwall.getService('hibachiEntityQueueService').getEntityQueueFailureCollectionList()  >
+<cfset local.collectionEntityQueueFailure.setDisplayProperties('modifiedDateTime,processMethod,integration.integrationName,mostRecentError,tryCount',{
+    isVisible=true,
+    isDeletable=true
+}) >
+<cfset local.collectionEntityQueueFailure.addDisplayProperty(displayProperty='baseID',columnConfig={isVisible=false})>
+<cfset local.collectionEntityQueueFailure.addFilter('baseID',rc.orderTemplate.getOrderTemplateID())>
+<cfset local.collectionEntityQueueFailure.addFilter('baseObject','OrderTemplate')>
+
+<cfoutput>
+    
+    <div>
+	    <span class="h5">Pending processing</span>
+	</div>
+    
+	<hb:HibachiListingDisplay collectionList="#local.collectionEntityQueue#">
+		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="modifiedDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="processMethod" />
+		<hb:HibachiListingColumn propertyIdentifier="integration.integrationName" />
+		<hb:HibachiListingColumn propertyIdentifier="mostRecentError" />
+		<hb:HibachiListingColumn propertyIdentifier="tryCount" />
+	</hb:HibachiListingDisplay>
+	
+	<div>
+	    <span class="h5">Failures</span>
+	    <hb:HibachiActionCaller action="admin:entity.retryEntityQueueFailures" queryString="entityName=OrderTemplate&orderTemplateID=#rc.orderTemplate.getPrimaryIDValue()#" class="btn btn-primary pull-right" type="link">
+	</div>
+	
+	
+	<hb:HibachiListingDisplay collectionList="#local.collectionEntityQueueFailure#">
+		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="modifiedDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="processMethod" />
+		<hb:HibachiListingColumn propertyIdentifier="integration.integrationName" />
+		<hb:HibachiListingColumn propertyIdentifier="mostRecentError" />
+		<hb:HibachiListingColumn propertyIdentifier="tryCount" />
+	</hb:HibachiListingDisplay>
+	
+</cfoutput>

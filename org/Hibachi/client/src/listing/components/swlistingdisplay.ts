@@ -816,32 +816,22 @@ class SWListingDisplayController{
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
-        if(this.collectionId){
-            $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionExport" method="post" id="formExport"></form>');
-            $('#formExport')
-                .append("<input type='hidden' name='collectionExportID' value='" + this.collectionId + "' />")
-                .submit()
-                .remove();
-        }else{
-            if(this.collectionConfigs.length == 0){
-                var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
-                if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
-                    && (this.selectionService.getSelections(this.tableID).length > 0)) {
-                    exportCollectionConfig.filterGroups[0].filterGroup = [
-                        {
-                            "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
-                            "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
-                            "comparisonOperator": (this.allSelected) ? "not in":"in",
-                            "value": this.selectionService.getSelections(this.tableID).join(),
-                            "displayValue": this.selectionService.getSelections(this.tableID).join(),
-                            "ormtype": "string",
-                            "fieldtype": "id",
-                            "conditionDisplay": "In List"
-                        }
-                    ];
-                }
-            } else {
-                //multiCollectionConfig logic
+        if(this.collectionConfigs.length == 0){
+            var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+            if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
+                && (this.selectionService.getSelections(this.tableID).length > 0)) {
+                exportCollectionConfig.filterGroups[0].filterGroup = [
+                    {
+                        "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
+                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
+                        "comparisonOperator": (this.allSelected) ? "not in":"in",
+                        "value": this.selectionService.getSelections(this.tableID).join(),
+                        "displayValue": this.selectionService.getSelections(this.tableID).join(),
+                        "ormtype": "string",
+                        "fieldtype": "id",
+                        "conditionDisplay": "In List"
+                    }
+                ];
             }
             $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
             $('#formExport')

@@ -46,6 +46,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService" type="any";
 	property name="roundingRuleService" type="any";
 	property name="skuService" type="any";
+	property name="orderService" type="any";
 
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
 		
@@ -62,8 +63,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					&& !isNull(orderItem.getOrder())
 					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
 				){	
-					order = orderItem.getOrder();
-					order.removeOrderItem(orderItem);
+					getOrderService().deleteOrderItem(orderItem,false);
 				}
 			}
 			ArrayClear(orderItem.getAppliedPromotions());	
@@ -1893,6 +1893,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processObject.setMaximumUseCount( promotionPeriod.getMaximumUseCount() );
 			processObject.setMaximumAccountUseCount( promotionPeriod.getMaximumAccountUseCount() );
 			processObject.setPromotion( newPromotion );
+			processObject.setQualifierLogicalOperatorType( promotionPeriod.getQualifierLogicalOperatorType() );
 			
 			var newPromotionPeriod = this.processPromotionPeriod_duplicatePromotionPeriod(promotionPeriod,processObject);
 		}
@@ -1919,7 +1920,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newPromotionPeriod.setMaximumAccountUseCount(arguments.processObject.getMaximumAccountUseCount());
 		}
 		newPromotionPeriod.setPromotion(arguments.processObject.getPromotion());
-		
+		newPromotionPeriod.setQualifierLogicalOperatorType(arguments.processObject.getQualifierLogicalOperatorType());
 		var newPromotionPeriod = this.savePromotionPeriod(newPromotionPeriod);
 
 		// Duplicate promotionRewards

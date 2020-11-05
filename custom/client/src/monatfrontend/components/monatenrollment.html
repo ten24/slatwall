@@ -10,9 +10,11 @@
 			<div class="right-nav">
 				<div>
 					<button 
-						class="btn btn-secondary" 
+						class="send-order"
 						ng-click="monatEnrollment.saveEnrollment()"
-						ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">Save Enrollment</button>
+						ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">
+							<img src="/themes/monat/assets/images/send-icon.png"  alt="Save Enrollment" width="25px" height="auto">
+					</button>
 				</div>
 				<div class="header-cart">
 					<hybrid-cart type="monatEnrollment.type" is-enrollment="true"></hybrid-cart>
@@ -36,7 +38,13 @@
 			</div>
 		</div>
 	</div>
-			<toaster-container></toaster-container>
+
+	<div 
+		ng-if="
+			monatEnrollment.currentStepName == 'orderListing' 
+			&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal <= 0" 
+			class="notifications"
+	><span sw-rbKey="'frontend.enrollment.threshold'"></span></div> 
 	<div 
 		ng-if="
 			monatEnrollment.currentStepName == 'orderListing' 
@@ -273,7 +281,6 @@
 			|| (monatEnrollment.monatService.canPlaceOrder && monatEnrollment.orderTemplateService.mostRecentOrderTemplate.canPlaceOrderFlag)
 		">
 			<button 
-				style="z-index: 1" 
 				data-ng-click="monatEnrollment.next(); monatEnrollment.showCanPlaceOrderAlert = false" 
 				class="btn btn-secondary forward-btn forward" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false"
