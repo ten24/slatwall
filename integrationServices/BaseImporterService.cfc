@@ -1232,23 +1232,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	  return this.getHibachiUtilityService().getEncryptionKeyLocation();
 	}
 	
-	/////////////////.                  OrderItem
-	
-	public any function generateOrderItemType( 
-	    required struct data, 
-        required struct parentEntityMapping,
-        required struct relationMetaData 	
-    ){
-        // TODO
-    }
-    
-    public any function generateOrderItemStatusType( 
-	    required struct data, 
-        required struct parentEntityMapping,
-        required struct relationMetaData 	
-    ){
-        // TODO
-    }
 	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 

@@ -56,26 +56,23 @@
         ]
     },
     
-    "relations": [
+    "dependencies": [
         {
-            "type": "manyToOne",
+            "key": "remoteOrderItemTypeID",
+            "lookupKey": "remoteID",
             "entityName": "Type",
-            "excludeFromTemplate" : true,
+            "defaultValue": ".....",//TODO // skip the required validation
             "excludeFromValidation"  : true,
-            "propertyIdentifier": "orderItemType",
-            "generatorFunction": "generateOrderItemType"
+            "propertyIdentifier": "orderItemType"
         },
         {
-            "type": "manyToOne",
+            "key": "remoteOrderItemStatusTypeID",
+            "lookupKey": "remoteID",
             "entityName": "Type",
-            "excludeFromTemplate" : true,
+            "defaultValue": ".....", // skip the required validation
             "excludeFromValidation"  : true,
-            "propertyIdentifier": "orderItemStatusType",
-            "generatorFunction": "generateOrderItemStatusType"
-        }
-    ],
-    
-    "dependencies": [
+            "propertyIdentifier": "orderItemStatusType"
+        },
         {
             "key": "remotePriceGroupID",
             "isNullable": true,
