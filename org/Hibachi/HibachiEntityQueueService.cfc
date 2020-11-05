@@ -159,14 +159,6 @@ component accessors="true" output="false" extends="HibachiService" {
 					}
 					deleteEntityQueueItem(arguments.entityQueue['entityQueueID'], true);
 				}catch(any e){
-					success = false;
-					if(getHibachiScope().setting("globalLogMessages") == "detail"){
-						logHibachiException(e);
-					}
-				}
-				
-			
-				if(!success){
 					
 					if(!structKeyExists(arguments.entityQueue,'tryCount') || isNull(arguments.entityQueue['tryCount'])){
 						arguments.entityQueue['tryCount'] = 1; 
@@ -177,8 +169,14 @@ component accessors="true" output="false" extends="HibachiService" {
 					}else{
 						getHibachiEntityQueueDAO().updateNextRetryDateAndMostRecentError(arguments.entityQueue['entityQueueID'], e.message);
 					}
+					
+					if(getHibachiScope().setting("globalLogMessages") == "detail"){
+						logHibachiException(e);
+					}
 				}
 				
+	
+			
 			}, true, maxThreads);
 		}
 	}
