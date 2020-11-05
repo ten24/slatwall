@@ -1167,7 +1167,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountGovernmentIdentification = '';
         var account = getHibachiScope().getAccount();
         if('uk' ==  account.getAccountCreatedSite().getCmsSiteID() ){
-            var govIdentifications = account.getAccountGovernmentIdentifications()
+            var govIdentifications = account.getAccountGovernmentIdentifications();
             accountGovernmentIdentification =  arrayLen(govIdentifications) > 0 ? govIdentifications[1].getGovernmentIdentificationNumber() : '';
         }
 		arguments.data['ajaxResponse']['GovernmentIdentification'] = accountGovernmentIdentification;
