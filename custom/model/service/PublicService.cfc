@@ -1169,6 +1169,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
     }
     
+    public any function getGovernmentIdentificationNumber(){
+        var accountGovernmentIdentification = '';
+        var account = getHibachiScope().getAccount();
+        if('uk' ==  account.getAccountCreatedSite().getCmsSiteID() ){
+            var govIdentifications = account.getAccountGovernmentIdentifications();
+            accountGovernmentIdentification =  arrayLen(govIdentifications) > 0 ? govIdentifications[1].getGovernmentIdentificationNumber() : '';
+        }
+		arguments.data['ajaxResponse']['GovernmentIdentification'] = accountGovernmentIdentification;
+
+    }
+    
     public void function submitSponsor(required struct data){
         param name="arguments.data.sponsorID" default="";
         

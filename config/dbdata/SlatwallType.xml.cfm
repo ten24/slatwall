@@ -14,6 +14,7 @@
 		<Record typeID="443df29db643e69a26c071dabe619e8a" typeIDPath="443df29db643e69a26c071dabe619e8a" parentTypeID="NULL" typeName="Account Government Identification" systemCode="accountGovernmentIdType" />
 		<Record typeID="443df29eaef3cfd1af021d4d31205328" typeIDPath="443df29db643e69a26c071dabe619e8a,443df29eaef3cfd1af021d4d31205328" parentTypeID="443df29db643e69a26c071dabe619e8a" typeName="Social Security" systemCode="agitSSN" sortOrder="1" />
 		<Record typeID="443df29ff763bac292f9aba2d3debafb" typeIDPath="443df29db643e69a26c071dabe619e8a,443df29ff763bac292f9aba2d3debafb" parentTypeID="443df29db643e69a26c071dabe619e8a" typeName="Drivers License" systemCode="agitDriversLicense" sortOrder="2" />
+		<Record typeID="443df29ff763bac292f9aba2d3debafc" typeIDPath="443df29db643e69a26c071dabe619e8a,443df29ff763bac292f9aba2d3debafc" parentTypeID="443df29db643e69a26c071dabe619e8a" typeName="VAT" systemCode="agitVat" sortOrder="3" />
 
 		<Record typeID="444df32cee42886828d43a685445e6a0" typeIDPath="444df32cee42886828d43a685445e6a0" parentTypeID="NULL" typeName="Account Payment Types" systemCode="accountPaymentType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df32dd2b0583d59a19f1b77869025" typeIDPath="444df32cee42886828d43a685445e6a0,444df32dd2b0583d59a19f1b77869025" parentTypeID="444df32cee42886828d43a685445e6a0" typeName="Charge" systemCode="aptCharge" sortOrder="1" />
