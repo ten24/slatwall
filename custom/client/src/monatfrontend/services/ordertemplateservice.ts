@@ -23,7 +23,7 @@ export class OrderTemplateService {
 	public cartTotalThresholdForOFYAndFreeShipping;
 	public appliedPromotionCodeList = [];
 	public cartTotalThresholdForOFYAndFreeShippingLoaded: boolean = false;
-
+	public wishlistsRefreshed = false;
 	
 	//@ngInject
 	constructor(
@@ -674,7 +674,10 @@ export class OrderTemplateService {
     
     private addWishlistIntoSessionCache = ( wishlist: OrderTemplateLight) => {
         //update-cache, put new product into wishlist-items
-        let cachedWishlists = this.publicService.getFromSessionCache('cachedWishlists') || [];
+        let cachedWishlists = this.publicService.getFromSessionCache('cachedWishlists');
+        if( cachedWishlists == null ){
+        	cachedWishlists = [];
+        }
         cachedWishlists.push(wishlist);
         this.publicService.putIntoSessionCache("cachedWishlists", cachedWishlists);
     }
@@ -684,7 +687,9 @@ export class OrderTemplateService {
 	 * This function gets the wishlists `{ namd, ID }` and cache them on session-cache
 	*/
 	public getWishLists = ( refresh = false ) => {
-	    
+	    if(!this.wishlistsRefreshed){
+	    	refresh = true;
+	    }
 	    var deferred = this.$q.defer<OrderTemplateLight[]>();
 		let cachedWishlists = this.publicService.getFromSessionCache("cachedWishlists");
 		
@@ -700,6 +705,7 @@ export class OrderTemplateService {
 				console.log("getWishLists, success, putting in session-cache");
 				this.publicService.putIntoSessionCache("cachedWishlists", data.orderTemplates);
 				deferred.resolve(data.orderTemplates);
+				this.wishlistsRefreshed = true;
 			})
 			.catch( (e) => {
 				console.log("getWishLists, exception, removing from session-cache", e);
