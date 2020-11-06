@@ -539,7 +539,11 @@ class swfAccountController {
 		.then((modal) => {
 			//it's a bootstrap element, use 'modal' to show it
 			modal.element.modal();
-			modal.close.then((result) => {});
+			modal.close.then((result) => {
+			    if(result){
+			        this.holdingWishlist.name = result;
+			    }
+			});
 		})
 		.catch((error) => {
 			console.error('unable to open model :', error);
