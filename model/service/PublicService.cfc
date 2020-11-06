@@ -2341,7 +2341,7 @@ component  accessors="true" output="false"
     }
     
     public void function deleteOrderTemplate(required any data){
-        param name="data.orderTemplateItemID" default="";
+        param name="data.orderTemplateID" default="";
 
         var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
         
@@ -2356,6 +2356,20 @@ component  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
+    }
+
+    public void function deleteWishlist(required any data){
+        param name="data.orderTemplateID" default="";
+        
+        var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
+        
+        if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            orderTemplate.setOrderTemplateStatusType(getService('TypeService').getTypeBySystemCode('otstCancelled'));
+            getHibachiScope().addActionResult( "public:order.deleteWishlist", false);
+            return;
+        }
+        
+        getHibachiScope().addActionResult( "public:order.deleteWishlist", true );  
     }
     
     

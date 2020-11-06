@@ -836,6 +836,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name");
 		list.addFilter("account.accountID",arguments.accountID);
 		list.addFilter("orderTemplateType.typeID","2c9280846b712d47016b75464e800014");
+		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
 		return list.getRecords();
 	}
 	

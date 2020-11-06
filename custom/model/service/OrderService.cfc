@@ -1172,6 +1172,7 @@ component extends="Slatwall.model.service.OrderService" {
 		if( getHibachiSCope().getCurrentFlexshipID() == arguments.orderTemplate.getOrderTemplateID() ){
 			getHibachiScope().clearCurrentFlexship();
 		}
+
 		return super.delete( arguments.orderTemplate );
 	}
 
