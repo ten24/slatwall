@@ -473,8 +473,11 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	public any function processAccount_syncInfotrax(required any account, struct data={}) {
 
-		getService('infotraxService').push(arguments.account, { event: 'afterAccountSaveSuccess' });
-
+        try{
+		    getService('infotraxService').push(arguments.account, { event: 'afterAccountSaveSuccess' });
+        }catch(any e){
+            
+        }
 		return arguments.account;
 	}
 	
