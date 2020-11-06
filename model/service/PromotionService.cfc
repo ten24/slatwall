@@ -1718,7 +1718,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						qualifications += qualifierDetail.qualificationCount;
 					}
 					var promoRewardStruct = getService('HibachiUtilityService').buildPropertyIdentifierListDataStruct(promoReward,propertyIdentifierList);
-					promoRewardStruct.qualifications = qualifications;
+					promoRewardStruct['qualifications'] = qualifications;
 					arrayAppend(qualifiedPromotionRewards,promoRewardStruct);
 				}
 			}
@@ -1727,10 +1727,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public string function getPromotionRewardPropertyIdentifierList(){
-		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName,maxUsePerQualification,maxUsePerOrder,maxUsePerItem';
+		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName,maximumUsePerQualification,maximumUsePerOrder,maximumUsePerItem';
 	}
 	
-	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false, string promotionRewardID){
+	public array function getQualifiedPromotionRewardSkusForOrder( required any order,
+																	numeric pageRecordsShow=25,
+																	boolean formatRecords=false,
+																	string promotionRewardID
+																	string additionalCollectionConfig){
 
 		var rewardSkus = [];
 		var qualifiedPromotionRewardArguments = {
@@ -1744,7 +1748,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var promotionReward in qualifiedPromotionRewards){
 			var skuCollection = promotionReward.getSkuCollection();
 			if(!isNull(skuCollection)){
+				
 				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
+				
+				if(structKeyExists(arguments, 'additionalCollectionConfig')){
+					
+					if(structKeyExists(arguments.additionalCollectionConfig,'displayProperties')){
+						for(var displayProperty in arguments.additionalCollectionConfig.displayProperties){
+							skuCollection.addDisplayProperty(displayProperty);
+						}
+					}
+					
+					if(structKeyExists(arguments.additionalCollectionConfig,'filters')){
+						for(var filter in arguments.additionalCollectionConfig.filters){
+							skuCollection.addFilter(argumentCollection=filter);
+						}
+					}
+					
+				}
+				
 				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
 				var promoRewardStruct = {
 					promotionRewardID=promotionReward.getPromotionRewardID(),

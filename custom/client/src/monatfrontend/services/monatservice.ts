@@ -32,6 +32,7 @@ export class MonatService {
 	public totalItemQuantityAfterDiscount = 0;
 	public ofyItems;
 	public qualifiedPromos = [];
+	public promotionRewardSkus = {};
 	
 	//@ngInject
 	constructor(
@@ -553,7 +554,26 @@ export class MonatService {
 		return hasShippingMethodOption;
 	}
 	
-	
+	public getPromotionRewardSkus = (promotionRewardID)=>{
+		var deferred = this.$q.defer();
+		if(this.promotionRewardSkus[promotionRewardID]){
+			deferred.resolve(this.promotionRewardSkus[promotionRewardID]);
+		}else{
+			let data = {
+				orderID:this.cart.orderID,
+				promotionRewardID:promotionRewardID
+			};
+			this.publicService.doAction('getQualifiedPromotionRewardSkusForOrder',data).then((result:any)=>{
+				if(result.rewardSkus){
+					this.promotionRewardSkus[promotionRewardID] = result.rewardSkus;
+					deferred.resolve(result.rewardSkus);
+				}else{
+					throw result;
+				}
+			});
+		}
+		return deferred.promise;
+	}
 	
 	
 	// common-modals

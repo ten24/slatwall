@@ -37,12 +37,12 @@
           <div class="row">
             <div class="col-9 pt-2" ng-bind="promoModal.selectedPromotion.title">
             </div>
-            <div class="col-3 d-flex flex-column header-right">
+            <div ng-if="promoModal.maxUseCount" class="col-3 d-flex flex-column header-right">
                 <span class="small">
                     Qualify
                 </span>
                 <span>
-                    X 3
+                    X {{promoModal.maxUseCount}}
                 </span>
             </div>
           </div> 
@@ -54,27 +54,21 @@
       <div class="modal-body">
          <ul class="list-group">
              <!---- start repeat for products ---->
-             <li class="list-item">
+             <li class="list-item" ng-repeat="rewardSku in promoModal.rewardSkus">
                  <div class="col-2 product-image">
                      Pro img
                  </div>
                  <div class="col-4 d-flex flex-column justify-content-around align-items-center">
-                     <span class="product-title pl-1">
-                        Product title 
-                     </span>
+                     <span class="product-title pl-1" ng-bind="rewardSku.title"></span>
                     <div class="d-flex justify-content-between price border-bottom-0">
-                        <span class="price-1 mr-1">
-                            $35.00
-                        </span>
-                        <span class="price-2">
-                            $10.00
-                        </span>
+                        <span class="price-1 mr-1" ng-bind="rewardSku.listPrice | swcurrency:promoModal.cart.currencyCode"></span>
+                        <span class="price-2" ng-bind="rewardSku.price | swcurrency:promoModal.cart.currencyCode"></span>
                     </div>
                  </div>
                  <div class="col-6 d-flex justify-content-end align-items-center">
-                    <div class="adjust-quantity">-</div>
-                    <span>0</span>
-                    <div class="adjust-quantity">+</div>
+                    <div class="adjust-quantity" ng-click="promoModal.updateQuantity(rewardSku,-1)">-</div>
+                    <span ng-bind="rewardSku.addToCartQuantity || 0"></span>
+                    <div class="adjust-quantity" ng-click="promoModal.updateQuantity(rewardSku,1)">+</div>
                  </div>
              </li>
              <!---- end repeat for products ---->

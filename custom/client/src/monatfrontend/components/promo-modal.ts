@@ -6,6 +6,7 @@ class PromoModalController {
 	public promotions;
 	public selectedPromotion;
 	public currentPage;
+	public rewardSkus;
 	
     //@ngInject
     constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService) {
@@ -27,7 +28,64 @@ class PromoModalController {
     }
     
     public viewSelectedPromotion = ()=>{
-        this.currentPage = 'reward';
+        this.loading = true;
+        this.monatService.getPromotionRewardSkus(this.selectedPromotion.promotionRewardID).then(skuArray=>{
+            this.rewardSkus = this.formatRewardSkus(skuArray);
+            this.selectedPromotion.currentUseCount = 0;
+            this.currentPage = 'reward';
+            this.loading=false;
+        });
+        this.setCurrentQualificationLimits(this.selectedPromotion);
+    }
+    
+    public formatRewardSkus = (skuArray)=>{
+        for(let sku of skuArray){
+            sku.title = sku.product_productName;
+            sku.listPrice = parseFloat(sku.listPrice);
+            sku.listPrice = isNaN(sku.listPrice) ? sku.skuPrices_price : sku.listPrice;
+            sku.addToCartQuantity = 0;
+            
+            var adjustmentAmount = this.selectedPromotion.amount;
+            var adjustmentType = this.selectedPromotion.amountType;
+            
+            switch(adjustmentType){
+                case 'amountOff':
+                    sku.price = sku.skuPrices_price - adjustmentAmount;
+                    break;
+                case 'percentageOff':
+                    sku.price = sku.skuPrices_price * (100-adjustmentAmount)/100;
+                    break;
+                case 'amount':
+                    sku.price = adjustmentAmount;
+                    break;
+            }
+        }
+        return skuArray;
+    }
+    
+    public updateQuantity = (sku,delta){
+        sku.addToCartQuantity += delta;
+        this.selectedPromotion.currentUseCount = 
+        if(sku.addToCartQuantity < 0){
+            sku.addToCartQuantity = 0;
+        }
+    }
+    
+    public setCurrentQualificationLimits(promotion){
+        let maxUseCount;
+        const qualifications = parseInt(promotion.qualifications);
+        const maxUsePerQualification = parseInt(promotion.maximumUsePerQualification);
+        const maxUsePerOrder = parseInt(promotion.maximumUsePerOrder);
+        const maxUsePerItem = parseInt(promotion.maximumUsePerItem);
+        
+        if(!isNaN(maxUsePerQualification)){
+            maxUseCount = qualifications * maxUsePerQualification;
+        }
+        if(!isNaN(maxUsePerOrder)){
+            maxUseCount = Math.min(maxUseCount,maxUsePerOrder);
+        }
+        this.maxUseCount = maxUseCount;
+        this.maxUsePerItem = maxUsePerItem;
     }
     
     public closeModal = () => {

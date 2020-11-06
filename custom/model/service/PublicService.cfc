@@ -2845,4 +2845,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         getHibachiScope().addActionResult('public:account.saveEnrollment',email.hasErrors());
     }
 
+    public void function getQualifiedPromotionRewardSkusForOrder(required struct data){
+        param name="arguments.data.orderID";
+        /*
+            OrderID is required, data can also include promotionRewardID to return skus for a particular reward.
+            Other optional arguments: pageRecordsShow (default 25), formatRecords (default false)
+        */
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        if( !isNull(order) ){
+            arguments.data.order = order;
+            var additionalPropertyIdentifiers = 'product.productName,listPrice,skuPrices.price';
+            var additionalFilters = [
+                {
+                    propertyIdentifier='skuPrices.currencyCode',
+                    value=order.getCurrencyCode()
+                },
+                {
+                    propertyIdentifier="skuPrices.priceGroup.priceGroupID",
+                    value=order.getPriceGroup().getPriceGroupID()
+                }
+            ];
+            arguments.data.additionalCollectionConfig = {
+                'displayProperties':additionalPropertyIdentifiers,
+                'filters':additionalFilters
+            };
+            var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
+        }
+    }
 }
