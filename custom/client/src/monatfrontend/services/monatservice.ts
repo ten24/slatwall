@@ -131,6 +131,10 @@ export class MonatService {
 
 		return this.updateCart("addOrderItem", payload);
 	}
+	
+	public addMultipleToCart(data:any){
+		return this.updateCart("addOrderItems",data);
+	}
 
 	public removeFromCart(orderItemID: string) {
 		let payload = {

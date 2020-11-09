@@ -7,19 +7,26 @@ class PromoModalController {
 	public selectedPromotion;
 	public currentPage;
 	public rewardSkus;
+    private maxUseCount: number;
+    private maxUsePerItem: number;
 	
     //@ngInject
-    constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService) {
+    constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService, private monatAlertService) {
         // this.observerService.attach(this.closeModal,'saveEnrollmentSuccess')
         this.cart = monatService.cart;
         this.promotions = this.cart.qualifiedMerchandiseRewardsArray;
         this.selectPromotion(this.promotions[0]);
         this.currentPage = 'promoList';
+        
+        this.observerService.attach(this.closeModal,'addOrderItemSuccess');
     }
     
     public selectPromotion = (promotion)=>{
         if(!promotion.title){
             promotion.title = promotion.promotionPeriod.promotion.promotionName;
+        }
+        if(!promotion.rewardHeader){
+            promotion.rewardHeader = promotion.title
         }
         if(!promotion.description){
             promotion.description = promotion.promotionPeriod.promotion.promotionName;
@@ -63,11 +70,43 @@ class PromoModalController {
         return skuArray;
     }
     
-    public updateQuantity = (sku,delta){
+    public updateQuantity = (sku,delta)=>{
         sku.addToCartQuantity += delta;
-        this.selectedPromotion.currentUseCount = 
-        if(sku.addToCartQuantity < 0){
-            sku.addToCartQuantity = 0;
+        this.selectedPromotion.currentUseCount += delta;
+        if( ( this.maxUseCount && this.selectedPromotion.currentUseCount > this.maxUseCount )
+            || ( this.maxUsePerItem && sku.addToCartQuantity > this.maxUsePerItem )
+            || sku.addToCartQuantity > sku.stocks_calculatedQATS
+            || sku.addToCartQuantity < 0){
+            this.updateQuantity(sku,-delta);
+        }
+    }
+    
+    public addToCart = () =>{
+        let skuIds=[], quantities=[]
+        for(let sku of this.rewardSkus){
+            if(sku.addToCartQuantity > 0){
+                skuIds.push(sku.skuID);
+                quantities.push(sku.addToCartQuantity);
+            }
+        }
+        if(skuIds.length){
+            this.loading=true;
+            let data = {
+                skuIds: skuIds.join(','),
+                quantities: quantities.join(',')
+            };
+            this.monatService.addMultipleToCart(data).then(result=>{
+                if(result.hasErrors){
+    				this.monatAlertService.showErrorsFromResponse(result);
+    			}else{
+    				this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful'));
+    			}
+            }).catch(err=>{
+                console.error(err);
+                this.monatAlertService.showErrorsFromResponse(err);
+            }).finally(()=>{
+                this.loading=false;
+            });
         }
     }
     
@@ -84,8 +123,12 @@ class PromoModalController {
         if(!isNaN(maxUsePerOrder)){
             maxUseCount = Math.min(maxUseCount,maxUsePerOrder);
         }
+        
         this.maxUseCount = maxUseCount;
-        this.maxUsePerItem = maxUsePerItem;
+        
+        if(!isNaN(maxUsePerItem)){
+            this.maxUsePerItem = maxUsePerItem;
+        }
     }
     
     public closeModal = () => {

@@ -1727,7 +1727,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public string function getPromotionRewardPropertyIdentifierList(){
-		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName,maximumUsePerQualification,maximumUsePerOrder,maximumUsePerItem';
+		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName,maximumUsePerQualification,maximumUsePerOrder,maximumUsePerItem,title,rewardHeader,description';
 	}
 	
 	public array function getQualifiedPromotionRewardSkusForOrder( required any order,

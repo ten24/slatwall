@@ -2423,6 +2423,7 @@ component  accessors="true" output="false"
                 rewardTypeList:'merchandise'
             };
             var rewards = getService('PromotionService').getQualifiedPromotionRewardsForOrder(argumentCollection=rewardArgs);
+            
             arguments.data['ajaxResponse']['rewards'] = rewards;
         }
     }

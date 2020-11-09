@@ -2854,7 +2854,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var order = getOrderService().getOrder(arguments.data.orderID);
         if( !isNull(order) ){
             arguments.data.order = order;
-            var additionalPropertyIdentifiers = 'product.productName,listPrice,skuPrices.price';
+            var additionalPropertyIdentifiers = 'product.productName,listPrice,skuPrices.price,stocks.calculatedQATS';
+            
+            var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+            
             var additionalFilters = [
                 {
                     propertyIdentifier='skuPrices.currencyCode',
@@ -2863,6 +2866,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 {
                     propertyIdentifier="skuPrices.priceGroup.priceGroupID",
                     value=order.getPriceGroup().getPriceGroupID()
+                },
+                {
+                    propertyIdentifier="activeFlag",
+                    value=true
+                },
+                {
+                    propertyIdentifier="publishedFlag",
+                    value=true
+                },
+                {
+                    propertyIdentifier="stocks.calculatedQATS",
+                    value=0,
+                    comparisonOperator=">"
+                },
+                {
+                    propertyIdentifier="stocks.location.locationID",
+                    value=currentRequestSite.getLocations()[1].getLocationID()
                 }
             ];
             arguments.data.additionalCollectionConfig = {

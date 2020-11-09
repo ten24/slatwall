@@ -70,6 +70,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
 	property name="rewardSkuQuantity" ormtype="integer" default=0;
 	property name="publishedFlag" ormtype="boolean" default=0;
+	property name="title" ormtype="string";
+	property name="rewardHeader" ormtype="string";
+	property name="description" ormtype="string" length="1000";
 
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";

@@ -35,7 +35,7 @@
       <div class="modal-header">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-9 pt-2" ng-bind="promoModal.selectedPromotion.title">
+            <div class="col-9 pt-2" ng-bind="promoModal.selectedPromotion.rewardHeader">
             </div>
             <div ng-if="promoModal.maxUseCount" class="col-3 d-flex flex-column header-right">
                 <span class="small">
@@ -75,7 +75,7 @@
          </ul> 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn">Add to Cart</button>
+        <button type="button" class="btn" ng-class="{ loading: promoModal.loading }" ng-click="promoModal.addToCart()">Add to Cart</button>
       </div>
     </div>
   </div>
