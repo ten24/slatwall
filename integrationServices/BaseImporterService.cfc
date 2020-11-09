@@ -263,12 +263,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 dependency.isNullable = false; 
             }
             
+            var dependencyPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
+            
             if( !isNull(dependencyPrimaryIDValue) && !this.hibachiIsEmpty(dependencyPrimaryIDValue) ){
                 
-                var dependencyPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
                 arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependencyPrimaryIDValue }
                 
             } else if( !dependency.isNullable ){
+                
+                // if the pependency cintains a default-value, use that
+                if( structKeyExists(dependency, 'defaultValue') ){
+                    arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependency.defaultValue }
+                    continue;
+                }
+            
                 // if any required dependency is not resolved then we can't continue with the import 
                 arguments.entity.addError( 
                     dependency.propertyIdentifier, 
@@ -1174,50 +1182,32 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function generateInventoryStock( struct data, struct mapping, struct propertyMetaData ){
 		
-		//expecting remoteSkuID to genrate stock
-		//expecting remoteLocationId to generate the stock
-		
-		
-	   /** "dependencies" : [
-	        
-	        {
-	            "key"                : "remoteSkuID",
-	            "entityName"         : "Sku",
-	            "lookupKey"          : "remoteID",
-	            "propertyIdentifier" : "sku"
-	        }, 
-	        {
-	            "key"                : "remoteLocationID",
-	            "entityName"         : "Location",
-	            "lookupKey"          : "remoteID",
-	            "propertyIdentifier" : "location"
-	        }
-	    ],**/
-    
-		
 	    var skuID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
             	        "entityName"  : 'Sku',
             	        "uniqueKey"   : 'remoteID',
             	        "uniqueValue" : arguments.data.remoteSkuID
             	    );
+            	    
         var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
             	        "entityName"  : 'Location',
             	        "uniqueKey"   : 'remoteID',
             	        "uniqueValue" : arguments.data.remoteLocationID
             	    ); 
-        if(!isNull(skuID) && !this.hibachiIsEmpty(skuID)){
+            	    
+        if (!isNull(skuID) && !this.hibachiIsEmpty(skuID) ){
             
-            if(isNull(locationID) || this.hibachiIsEmpty(locationID)){
-                //default location id
-                locationID="88e6d435d3ac2e5947c81ab3da60eba2";
+            if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
+                // fallback to `Default Location` 
+                locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
             }
+            
     	    //Find if we have a stock for this sku and location.
 		    var stock = getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
 		    
-		    
-		    if (!isNull(stock)){
+		    if( !isNull(stock) ){
 		    	return { "stockID" : stock.getstockID() };
 		    }
+		    
 		    //create new stock
 		    return {
 	            "stockID" : "",

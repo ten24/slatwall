@@ -61,7 +61,7 @@
             "key": "remoteOrderItemTypeID",
             "lookupKey": "remoteID",
             "entityName": "Type",
-            "defaultValue": ".....",//TODO // skip the required validation
+            "defaultValue": ".....",
             "excludeFromValidation"  : true,
             "propertyIdentifier": "orderItemType"
         },
@@ -69,7 +69,7 @@
             "key": "remoteOrderItemStatusTypeID",
             "lookupKey": "remoteID",
             "entityName": "Type",
-            "defaultValue": ".....", // skip the required validation
+            "defaultValue": ".....",
             "excludeFromValidation"  : true,
             "propertyIdentifier": "orderItemStatusType"
         },
