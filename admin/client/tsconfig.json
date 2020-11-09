@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target":"es5",
     "module": "commonjs",
-    "sourceMap": true,
-    "types": ["node"]
+    "sourceMap": true
   },
   "files": [
     "typings/slatwallTypescript.d.ts",
