@@ -234,13 +234,11 @@ property name="sapItemCode" ormtype="string";
     property name="personalVolumeByCurrencyCode" persistent="false";
 	property name="commissionableVolumeByCurrencyCode" persistent="false";
 	property name="AllowBackorderFlag" persistent="false";
-
+	
 
  property name="displayOnlyFlag" ormtype="boolean" hb_formatType="yesno" default="0";
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
- property name="backorderDate" ormtype="timestamp" hb_formatType="date";
- property name="cbdFlag" ormtype="boolean" hb_formatType="yesno";
- property name="dangerousGoodsFlag" ormtype="boolean" hb_formatType="yesno";//CUSTOM PROPERTIES END
+ property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
  
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
@@ -2080,7 +2078,14 @@ property name="sapItemCode" ormtype="string";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-public boolean function canBePurchased(required any account, any order){
+public string function getBackOrderedMessaging(){
+		if(!StructKeyExists(variables, "backOrderedMessaging") || isNull(variables.backOrderedMessaging)) {
+			return '';
+		}
+		return variables.backOrderedMessaging;
+	}
+	
+	public boolean function canBePurchased(required any account, any order){
 		
 		var accountType = 'customer';
 		

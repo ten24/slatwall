@@ -130,25 +130,26 @@ component accessors="true" output="false" extends="HibachiService" {
 			var entityQueueIDsToBeDeleted = '';
 			var maxThreads = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
 			var entityQueueIDsToBeDeletedArray = arguments.entityQueueArray.each( function( entityQueue ){
+				var success = true;
 				try{
-					var noMethod = !structKeyExists(entityQueue, 'processMethod') || 
-									isNull(entityQueue['processMethod']) || 
-								    !len(entityQueue['processMethod']);  
+					var noMethod = !structKeyExists(arguments.entityQueue, 'processMethod') || 
+									isNull(arguments.entityQueue['processMethod']) || 
+								    !len(arguments.entityQueue['processMethod']);  
 	
 					if(noMethod) { 
-						deleteEntityQueueItem(entityQueue['entityQueueID']);
+						deleteEntityQueueItem(arguments.entityQueue['entityQueueID']);
 						return;
 					}
-				
-					var entityService = getServiceForEntityQueue(entityQueue);
+					
+					var entityService = getServiceForEntityQueue(arguments.entityQueue);
 	
-					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
+					var entity = entityService.invokeMethod( "get#arguments.entityQueue['baseObject']#", { 1 = arguments.entityQueue['baseID'] });
 					if(isNull(entity)){
-						deleteEntityQueueItem(entityQueue['entityQueueID']);
+						deleteEntityQueueItem(arguments.entityQueue['entityQueueID']);
 						return;
 					}
 	
-					var entityMethodInvoked = invokeMethodOrProcessOnService(entityQueue, entity, entityService);  
+					var entityMethodInvoked = invokeMethodOrProcessOnService(arguments.entityQueue, entity, entityService);  
 					
 					if(entityMethodInvoked){
 						ormflush();
@@ -156,18 +157,26 @@ component accessors="true" output="false" extends="HibachiService" {
 						ORMClearSession();
 						getHibachiScope().setORMHasErrors(false);
 					}
-					deleteEntityQueueItem(entityQueue['entityQueueID'], true);
+					deleteEntityQueueItem(arguments.entityQueue['entityQueueID'], true);
 				}catch(any e){
-					if(val(entityQueue['tryCount']) >= maxTryCount){
-						getHibachiEntityQueueDAO().archiveEntityQueue(entityQueue['entityQueueID'], e.message);
+					
+					if(!structKeyExists(arguments.entityQueue,'tryCount') || isNull(arguments.entityQueue['tryCount'])){
+						arguments.entityQueue['tryCount'] = 1; 
+					}
+					
+					if(val(arguments.entityQueue['tryCount']) >= maxTryCount){
+						getHibachiEntityQueueDAO().archiveEntityQueue(arguments.entityQueue['entityQueueID'], e.message);
 					}else{
-						getHibachiEntityQueueDAO().updateNextRetryDateAndMostRecentError(entityQueue['entityQueueID'], e.message);
+						getHibachiEntityQueueDAO().updateNextRetryDateAndMostRecentError(arguments.entityQueue['entityQueueID'], e.message);
 					}
 					
 					if(getHibachiScope().setting("globalLogMessages") == "detail"){
 						logHibachiException(e);
 					}
 				}
+				
+	
+			
 			}, true, maxThreads);
 		}
 	}
