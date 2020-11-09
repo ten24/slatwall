@@ -26,7 +26,6 @@
         "username": {
             "propertyIdentifier": "username",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },

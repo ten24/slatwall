@@ -8,6 +8,9 @@
 		},
 		"isNotOrganizationAccount": {
 			"organizationFlag": { "neq": true }
+		},
+		"doesNotHasRemoteID": {
+			"remoteID": {"eq" : "NULL" }
 		}
 	},
 	"properties": {
@@ -40,10 +43,12 @@
 		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
 		"emailAddress": [
 			{
+				"conditions":"doesNotHasRemoteID",
 				"contexts": "save",
 				"dataType": "email"
 			},
 			{
+				"conditions":"doesNotHasRemoteID",
 				"contexts": "createPassword",
 				"required": true
 			}
@@ -59,7 +64,7 @@
 		"primaryEmailAddress": [
 			{
 				"contexts": "save",
-				"conditions": "nonIntegrationAuthenticatedAccount",
+				"conditions": "nonIntegrationAuthenticatedAccount,doesNotHasRemoteID",
 				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			}
 		],

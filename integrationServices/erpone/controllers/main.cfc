@@ -6,7 +6,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	
 	// Get GarntToken and AccessToken
     public any function getAuthToken(){
-	    getService('erpOneService').createAndSetGrantToken();
+	    getService('erpOneService').getTokens();
 	}
 	// Get GarntToken from cache
 	public any function getGrant(){
@@ -15,5 +15,9 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	// Get AccessToken from cache
 	public any function getAccess(){
 	    getService('erpOneService').getAccessToken();
+	}
+	// Get Customer Data
+	public any function getAccountData(){
+	    getService('erpOneService').getAccountData();
 	}
 }

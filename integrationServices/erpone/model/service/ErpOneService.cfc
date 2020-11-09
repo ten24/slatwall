@@ -58,6 +58,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    }
         return variables.integration;
     }
+    public any function getTokens(){
+		writeDump(getHibachiCacheService().getCachedValue('grantToken'));
+		writeDump(getHibachiCacheService().getCachedValue('accessToken'));abort;
+    }
     
     public any function getGrantToken(){
 		if( !this.getHibachiCacheService().hasCachedValue('grantToken') ){
@@ -68,7 +72,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     public any function getAccessToken(){
 		if(!getHibachiCacheService().hasCachedValue('accessToken')){
-			createAndSetAccessToken(grantToken);
+			createAndSetAccessToken();
 		}
 		return getHibachiCacheService().getCachedValue('accessToken');
     }
@@ -94,7 +98,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			if(IsJson(rawRequest.fileContent)) {
 			response = DeSerializeJson(rawRequest.fileContent);
 			getHibachiCacheService().setCachedValue('grantToken',response.grant_token,DateAdd("n",60,now()));
-			this.createAndSetAccessToken();
 			} 
 		}
 		catch ( any e ){
@@ -105,7 +108,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     public any function createAndSetAccessToken(){
     	var grantToken = this.getGrantToken();
     	var httpRequest = this.createHttpRequest('distone/rest/service/authorize/access');
-		
 		// Authentication headers
 		if(!this.setting("devMode")){
     		httpRequest.addParam( type='formfield', name='client', value= this.setting('prodClient'));
@@ -117,7 +119,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	httpRequest.addParam( type='formfield', name='company', value= this.setting("devCompany"));
 	    	httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
 		}
-		
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
 		try{
@@ -129,6 +130,22 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		catch ( any e ){
 			throw("Invalid Grant Token" & e.Message);
 		}
+    }
+    
+    public any function getAccountData(){
+    	var authorizeToken = this.getAccessToken();
+    	var httpRequest = this.createHttpRequest('distone/rest/service/data/read');
+		
+		// Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=authorizeToken);
+		httpRequest.addParam( type='formfield', name='query', value= "FOR EACH customer WHERE customer.active = YES");
+		httpRequest.addParam( type='formfield', name='take', value= "2");
+		httpRequest.addParam( type='formfield', name='columns', value= "name,country_code,email_address,phone,Active,company_cu");
+		
+		var rawRequest = httpRequest.send().getPrefix();
+		var response = {};
+		response = DeSerializeJson(rawRequest.fileContent); 
+		payload = this.transformAccountData(arrayToStruct(response));
     }
     public any function createHttpRequest(required string endPointUrl, string requestType="POST"){
     	if(!this.setting("devMode")){
@@ -146,5 +163,29 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
     	return this.getErpOneIntegrationCFC().setting( argumentCollection=arguments );
+	}
+	public any function transformAccountData( required struct accountData){
+	    var mapping = {
+	        "__rowids" : "remoteAccountID",
+	        "name" : "firstName",
+	        "country_code" : "countryCallingCode",
+	        "email_address" : "emailAddress",
+	        "phone" : "phoneNumber",
+	        "Active" : "activeFlag",
+	        "company_cu" : "company"
+	    };
+	    
+	    return this.transformedData( arguments.accountData, mapping);
+	}
+	public struct function transformedData(required struct data, required struct mapping){
+	    
+		var transformedData = {};
+	    var count = 1;
+	    var maxLength = arguments.data.len();
+	    for( var sourceKey in arguments.mapping ){
+	        transformedData[ arguments.mapping[ sourceKey] ] = arguments.data[count][ sourceKey ];
+	        count ++;
+	    }
+	    writeDump(transformedData);abort;
 	}
 }
