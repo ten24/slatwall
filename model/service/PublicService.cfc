@@ -2416,7 +2416,9 @@ component  accessors="true" output="false"
         
         var order = getOrderService().getOrder(arguments.data.orderID);
         
-        if( !isNull(order) ){
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
             var rewardArgs = {
                 order:order,
                 apiFlag:true,
@@ -2435,7 +2437,9 @@ component  accessors="true" output="false"
             Other optional arguments: pageRecordsShow (default 25), formatRecords (default false)
         */
         var order = getOrderService().getOrder(arguments.data.orderID);
-        if( !isNull(order) ){
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
             arguments.data.order = order;
             var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
             arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
