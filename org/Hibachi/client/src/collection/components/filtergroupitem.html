@@ -1,0 +1,54 @@
+<li class="s-filter-group" ng-class="{'s\-disabled':filterGroupItem.$$disabled}">
+  <!--- Filter display --->
+  <div ng-show="filterGroupItem.filterGroup.length > 0 && filterGroupItem.filterGroup[0].$$isNew !== true" class="s-filter-item">
+  
+   	<div ng-if="filterGroupItem.logicalOperator" class="btn-group-vertical btn-toggle">
+      <button 	class="btn btn-xs btn-default" 
+      			type="button"
+      			ng-class="{active:filterGroupItem.logicalOperator === 'AND'}"
+      			ng-click="logicalOperatorChanged('AND')"
+      			>AND
+      </button>
+      <button 	class="btn btn-xs btn-default" 
+      			type="button"
+      			ng-class="{active:filterGroupItem.logicalOperator === 'OR'}"
+      			ng-click="logicalOperatorChanged('OR')"
+      			>OR
+      </button>
+    </div>
+    <div class="panel panel-default s-filter-group-style" ng-class="{'s\-focus':!filterGroupItem.$$isClosed}" >
+      <div class="panel-heading">Filter Group 
+      	<a class="j-tool-tip-item"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+      		<i class="fa fa-times"
+      			ng-click="removeFilterGroupItem()"
+      		>
+      		</i>
+      	</a>
+      </div>
+      <div ng-click="selectFilterGroupItem(filterGroupItem)" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+        <span ng-show="filterGroupItem.$$isClosed">(<span ng-bind="filterGroupItem.filterGroup.length"></span>) Filters <a href="##" ><i class="fa fa-inbox"></i></a></span>
+        <span ng-show="!filterGroupItem.$$isClosed">Close Group</span>
+      </div>
+    </div>
+  </div>
+  <!--- //Filter display --->
+
+  <!---Nested Filter Box --->
+  <div class="col-xs-12" ng-class="{collapse:filterGroupItem.$$isClosed}" ng-if="!simple">
+    <div class="row">
+      <span sw-filter-groups 
+      		
+      		data-collection-config="collectionConfig"
+      		data-filter-group="filterGroupItem"
+		    data-filter-group-item="filterGroupItem.filterGroup"
+		    data-filter-properties-list="filterPropertiesList"
+		    data-save-collection="saveCollection()"
+		    data-comparison-type="comparisonType"
+      >
+
+      </span>
+    </div>
+  </div>
+  <!---//Nested Filter Box --->
+
+</li>

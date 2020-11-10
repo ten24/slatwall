@@ -1,0 +1,81 @@
+<!--Expandable Check-->
+<td
+        data-ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns"
+        class="column.tdclass"
+        data-ng-cloak
+        data-ng-if="column.isVisible"
+        sw-expandable-record
+        data-action="column.action"
+        data-query-string="column.queryString"
+        data-expandable="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
+        data-auto-open="swListingDisplay.expandableOpenRoot"
+        data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}"
+        data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+        data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
+        data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"
+        data-entity="swListingDisplay.exampleEntity"
+        data-collection-config="swListingDisplay.collectionConfig"
+        data-records="swListingDisplay.collectionData.pageRecords || swListingDisplay.collectionData.records"
+        data-record-index="pageRecordKey"
+        data-record-depth="pageRecord.depth"
+        data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
+        >
+
+    <!-- TODO: REFACTOR THIS LOGIC TO APPLY FILTERS -->
+    <!--indent the primary for expandable-->
+    <a 	ng-if="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" class="s-contents-page-title s-no-arrow"
+          href="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}">
+        <span style="margin-left:{{(pageRecord.depth*40)||0}}px;padding-left: 12px;"
+              ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+              popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+              popover-trigger="mouseenter"
+              popover-placement="bottom"
+              popover-popup-delay="50"
+              popover-append-to-body="true">
+        </span>
+    </a>
+
+    <span ng-if="!swListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'">
+        <span ng-if="(!column.action || !column.queryString) && (!column.type || column.type==='none')"
+              ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+              popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+              popover-trigger="mouseenter"
+              popover-placement="bottom"
+              popover-popup-delay="50"
+              popover-append-to-body="true">
+        </span>
+        <span ng-if="(!column.action || !column.queryString) && column.type==='date'"
+              ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)] | swdate:'MM/dd/yyyy'"
+              popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+              popover-trigger="mouseenter"
+              popover-placement="bottom"
+              popover-popup-delay="50"
+              popover-append-to-body="true">
+        </span>
+        <span ng-if="(!column.action || !column.queryString) && column.type==='currency'"
+              ng-bind-html="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)] | swcurrency"
+              popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+              popover-trigger="mouseenter"
+              popover-placement="bottom"
+              popover-popup-delay="50"
+              popover-append-to-body="true">
+        </span><!--Hardcoded to USD for phia-->
+        <span ng-if="column.aggregate"
+              ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"
+              popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+              popover-trigger="mouseenter"
+              popover-placement="bottom"
+              popover-popup-delay="50"
+              popover-append-to-body="true">
+        </span>
+        <sw-action-caller ng-if="column.action && column.queryString"
+                          data-action="{{column.action}}"
+                          data-query-string="{{swListingDisplay.replaceStringWithProperties(column.queryString,pageRecord)}}"
+                          data-text="{{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}"
+                          data-tooltip-text="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+        				  
+        >
+        </sw-action-caller>
+    </span>
+</td>
+

@@ -1,0 +1,9 @@
+{
+	"properties":{
+		"containerName":[{"contexts":"save","required":true}],
+		"height":[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"width":[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"depth":[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"dimensionUnit":[{"contexts":"save","required":true}]
+	}
+} 

@@ -1,0 +1,58 @@
+<div class="s-select-list-wrapper s-search" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
+        <div class="input-group">
+             <div class="input-group-btn s-left" ng-class="{'open':swTypeaheadSearch.dropdownOpen}">
+                <button type="button"
+                        class="btn btn-default"
+                        data-ng-disabled="swTypeaheadSearch.disabled"
+                        ng-click="swTypeaheadSearch.toggleDropdown()"
+                        aria-expanded="true">
+                        <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <i class="fa" data-ng-class="(swTypeaheadSearch.dropdownOpen) ? 'fa-caret-up' : 'fa-caret-down'" ></i>
+                </button>
+                <ul ng-if="swTypeaheadSearch.dropdownOpen" class="dropdown-menu" role="menu">
+                    <li>
+                        <a ng-click="swTypeaheadSearch.updateSearchableProperties('all')">
+                            <span sw-rbkey="'define.all'"></span>
+                        </a>
+                    </li>
+                    <li ng-repeat="column in swTypeaheadSearch.searchableColumns">
+                        <a ng-click="swTypeaheadSearch.updateSearchableProperties(column)">{{column.title}}</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="s-input-btn" ng-class="{ 's-add' : swTypeaheadSearch.multiselectMode, 's-search' : !swTypeaheadSearch.multiselectMode}">
+                <input  data-ng-if="swTypeaheadSearch.placeholderText"
+                        id="searchinput"
+                        placeholder="{{swTypeaheadSearch.placeholderText}}"
+                        ng-model="swTypeaheadSearch.searchText"
+                        ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
+                        type="search"
+                        title="{{swTypeaheadSearch.titleText}}"
+                        class="form-control"
+                        style="max-width:100%;"
+                        autocomplete="off"
+                        data-ng-required="swTypeaheadSearch.validateRequired"
+                        data-ng-disabled="swTypeaheadSearch.disabled"/>
+                </div>
+            <div class="input-group-btn">
+                <button class="btn btn-default" type='button' ng-click="swTypeaheadSearch.toggleOptions()" data-ng-disabled="swTypeaheadSearch.disabled" style="border-radius:0;height: 31px;">
+                    <i class="fa" data-ng-class="(swTypeaheadSearch.hideSearch) ? 'fa-caret-down': 'fa-caret-up'" ></i>
+                </button>
+                <button class="btn btn-sm btn-primary" type='button' ng-if="swTypeaheadSearch.showAddButton" ng-click="swTypeaheadSearch.addButtonItem()" data-ng-disabled="swTypeaheadSearch.disabled">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    <div class="dropdown s-search-results-wrapper" ng-class="{'open btn-group':!swTypeaheadSearch.hideSearch}">
+        <ul ng-show="swTypeaheadSearch.loading" class="dropdown-menu">
+            <li class="dropdown-item text-center">
+                <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+            </li>
+        </ul>
+        <ul ng-show="!swTypeaheadSearch.loading && !swTypeaheadSearch.hideSearch" class="dropdown-menu">
+         <!-- populated by the directives link function -->
+            <li ng-show="swTypeaheadSearch.loading" class="dropdown-item text-center">
+                <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+            </li>
+         </ul>
+    </div>
+</div>

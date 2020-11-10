@@ -1,0 +1,76 @@
+<sw-form ng-if="swSkuPriceEdit.sku"
+        data-object="swSkuPriceEdit.sku"
+        data-name="{{swSkuPriceEdit.formName}}">
+        <span ng-show="swSkuPriceEdit.showPriceEdit">
+            <sw-property-display
+                    data-object="swSkuPriceEdit.sku"
+                    data-property-identifier="price"
+                    data-in-listing-display="true"
+                    data-editing="true"
+                    data-editable="true"
+                    data-event-announcers="change"
+                >
+
+            </sw-property-display>
+            <a href="##"
+            class="s-indicator-icon"
+            ng-click="swSkuPriceEdit.switchTabContext()"
+            ng-if="swSkuPriceEdit.showSwitchTabContextButton">
+                    <i class="fa fa-list"></i>
+            </a>
+        </span>
+</sw-form>
+<sw-form ng-if="swSkuPriceEdit.skuPrice"
+        data-object="swSkuPriceEdit.skuPrice"
+        data-name="{{swSkuPriceEdit.formName}}">
+        <span ng-show="swSkuPriceEdit.showPriceEdit">
+            <sw-property-display
+                    ng-if="!swSkuPriceEdit.skuPrice.data.inferred"
+                    data-object="swSkuPriceEdit.skuPrice"
+                    data-property-identifier="price"
+                    data-in-listing-display="true"
+                    data-show-save="swSkuPriceEdit.showSave"
+                    data-on-change="swSkuPriceEdit.updateSkuPrices()"
+                    data-save-callback="swSkuPriceEdit.save"
+                    data-editing="true"
+                    data-editable="true"
+                    data-revert-to-value="swSkuPriceEdit.revertToValue"
+                    data-event-announcers="change"
+                >
+            </sw-property-display>
+            <sw-add-sku-price-modal-launcher
+                    data-sku="swSkuPriceEdit.skuPrice.data.sku"
+                    data-min-quantity="{{swSkuPriceEdit.skuPrice.data.minQuantity}}"
+                    data-max-quantity="{{swSkuPriceEdit.skuPrice.data.maxQuantity}}"
+                    data-price-group-id="{{swSkuPriceEdit.skuPrice.data.priceGroup.data.priceGroupID}}"
+                    data-currency-code="{{swSkuPriceEdit.skuPrice.data.currencyCode}}"
+                    data-eligible-currency-code-list="{{swSkuPriceEdit.eligibleCurrencyCodeList}}"
+                    data-disable-all-fields-but-price="true"
+                >
+                <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred && swSkuPriceEdit.skuPrice.data.price != 'NaN'">
+                    <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
+                    <input readonly type="text" ng-model="swSkuPriceEdit.skuPrice.data.price" class="form-control input-xs s-inherited">
+                </div>
+             </sw-add-sku-price-modal-launcher>
+             <sw-add-sku-price-modal-launcher
+                data-sku="swSkuPriceEdit.skuPrice.data.sku"
+                data-min-quantity="{{swSkuPriceEdit.skuPrice.data.minQuantity}}"
+                data-max-quantity="{{swSkuPriceEdit.skuPrice.data.maxQuantity}}"
+                data-currency-code="{{swSkuPriceEdit.skuPrice.data.currencyCode}}"
+                data-eligible-currency-code-list="{{swSkuPriceEdit.eligibleCurrencyCodeList}}"
+                data-disable-all-fields-but-price="true"
+                >
+                <div class="s-input-group" ng-if="swSkuPriceEdit.skuPrice.data.inferred && swSkuPriceEdit.skuPrice.data.price == 'NaN'">
+                    <span class="s-title" data-content="" data-original-title="" title="">{{swSkuPriceEdit.skuPrice.data.currencyCode}}</span>
+                    <input readonly type="text" value="No Rate Available" class="form-control input-xs s-inherited">
+                </div>
+            </sw-add-sku-price-modal-launcher>
+
+            <a href="##"
+                class="s-indicator-icon"
+                ng-click="swSkuPriceEdit.switchTabContext()"
+                ng-if="swSkuPriceEdit.showSwitchTabContextButton">
+                    <i class="fa fa-list"></i>
+            </a>
+        </span>
+</sw-form>

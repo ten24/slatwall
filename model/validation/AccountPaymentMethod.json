@@ -1,0 +1,28 @@
+{
+	"conditions":{
+		"paymentTypeCreditCard":{
+		    "paymentMethod.paymentMethodType":{"eq":"creditCard"}
+		},
+		"paymentTypeCreditCardAndNew":{
+			"paymentMethod.paymentMethodType":{"eq":"creditCard"},
+			"newFlag":{"eq":true}
+		},
+		"editExistingCreditCardNumber":{
+			"paymentMethod.paymentMethodType":{"eq":"creditCard"},
+			"newFlag":{"eq":false},
+			"creditCardNumber":{"minLength": 1}
+		}
+	},
+	"properties":{
+	  "paymentMethod":		[{"contexts":"save","required":true}],
+		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
+		"creditCardNumber":		[{"contexts":"save","conditions":"paymentTypeCreditCardAndNew,editExistingCreditCardNumber","required":true,"dataType":"creditCard"}],
+		"expirationMonth":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
+		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
+		"subscriptionUsages":	[{"contexts":"delete","maxCollection":0}],
+		"paymentTransactions":	[{"contexts":"delete","method":"hasOnlyGenerateTokenTransactions"}]
+	},
+	"populatedPropertyValidation":{
+	    "billingAddress":[{"validate":"full"}]
+	}
+}

@@ -1,0 +1,10 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 1,
+  "steps": [
+    {
+      "type": "meow"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+<sw-modal-launcher ng-if="swEditSkuPriceModalLauncher.skuPrice"
+                   data-modal-name="{{swEditSkuPriceModalLauncher.uniqueName}}" 
+                   data-title="Edit Sku Price Detail" 
+                   data-save-action="swEditSkuPriceModalLauncher.save">
+    <sw-modal-button>
+        <ng-transclude></ng-transclude>
+    </sw-modal-button>
+    
+    <sw-modal-content> 
+        
+        <sw-form ng-if="swEditSkuPriceModalLauncher.skuPrice"
+                 name="{{swEditSkuPriceModalLauncher.formName}}" 
+                 data-object="swEditSkuPriceModalLauncher.skuPrice"    
+                 data-context="save"
+                 >
+            <div ng-show="!swEditSkuPriceModalLauncher.saveSuccess" class="alert alert-error" role="alert" sw-rbkey="'admin.entity.addskuprice.invalid'"></div>
+            <div class="row">
+                    <div class="col-sm-4">
+                        <sw-sku-thumbnail data-sku-data="swEditSkuPriceModalLauncher.sku.data">
+                        </sw-sku-thumbnail>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <sw-property-display data-object="swEditSkuPriceModalLauncher.skuPrice" 
+                                                     data-property-identifier="price"
+                                                     data-editing="true"
+                                                     data-editable="true"
+                                                     data-is-dirty="true" 
+                                                     >
+                                </sw-property-display>
+                            </div> 
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Currency Code</label>
+                                    <select class="form-control" 
+                                            name="currencyCode"
+                                            ng-model="swEditSkuPriceModalLauncher.skuPrice.data.currencyCode"
+                                            ng-options="item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item"
+                                            ng-disabled="(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable"
+                                            >
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-6">
+                               <sw-property-display data-object="swEditSkuPriceModalLauncher.skuPrice" 
+                                                    data-property-identifier="minQuantity"
+                                                    data-editing="true"
+                                                    data-editable="!swEditSkuPriceModalLauncher.disableAllFieldsButPrice"
+                                                    data-is-dirty="true" 
+                                                    >
+                                </sw-property-display>
+                            </div>
+                            <div class="col-sm-6">
+                                <sw-property-display data-object="swEditSkuPriceModalLauncher.skuPrice" 
+                                                    data-property-identifier="maxQuantity"
+                                                    data-editing="true"
+                                                    data-editable="!swEditSkuPriceModalLauncher.disableAllFieldsButPrice"
+                                                    data-is-dirty="true" 
+                                                    >
+                                </sw-property-display>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <sw-property-display data-object="swEditSkuPriceModalLauncher.skuPrice" 
+                                                    data-property-identifier="priceGroup"
+                                                    data-editing="true"
+                                                    data-editable="!swEditSkuPriceModalLauncher.disableAllFieldsButPrice"
+                                                    data-is-dirty="true"
+                                                    >
+                                </sw-property-display>
+                            </div>
+                        </div>
+                        <!-- BEGIN HIDDEN FIELDS -->
+                         <sw-property-display data-object="swEditSkuPriceModalLauncher.sku"
+                                data-property-identifier="skuID"
+                                data-is-dirty="true"
+                                data-is-hidden="true"
+                                data-editing="true"   
+                                data-editable="true"
+                        >
+                        </sw-property-display>
+                        <!-- END HIDDEN FIELDS -->
+                    </div>
+                </div>
+            </sw-form>
+    </sw-modal-content> 
+</sw-modal-launcher>

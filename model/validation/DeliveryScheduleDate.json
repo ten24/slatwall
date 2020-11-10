@@ -1,0 +1,5 @@
+{
+	"properties":{
+		"deliveryScheduleDateValue":								[{"contexts":"save","required":true}]
+	}
+}
