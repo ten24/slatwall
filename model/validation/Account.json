@@ -15,7 +15,6 @@
 	},
 	"properties": {
 		"firstName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true }],
-		"lastName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true }],
 		"company": [{ "conditions": "isOrganizationAccount", "contexts": "save", "required": true }],
 		"accountCode": [
 			{
@@ -41,18 +40,6 @@
 			}
 		],
 		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
-		"emailAddress": [
-			{
-				"conditions":"doesNotHasRemoteID",
-				"contexts": "save",
-				"dataType": "email"
-			},
-			{
-				"conditions":"doesNotHasRemoteID",
-				"contexts": "createPassword",
-				"required": true
-			}
-		],
 		"orders": [{ "contexts": "delete", "maxCollection": 0 }],
 		"productReviews": [{ "contexts": "delete", "maxCollection": 0 }],
 		"cmsAccountID": [{ "contexts": "save", "uniqueOrNull": true }],
@@ -76,10 +63,6 @@
 		],
 		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minCollection": 1 }],
 		"ownerAccount": [{ "contexts": "delete", "method": "canDeleteByOwner" }],
-		"childAccountRelationships": [{ "contexts": "delete", "maxCollection": 0 }],
-		"username": [
-			{ "contexts": "save", "required": true, "method": "getUsernameNotInUseFlag" },
-			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount" }
-		]
+		"childAccountRelationships": [{ "contexts": "delete", "maxCollection": 0 }]
 	}
 }
