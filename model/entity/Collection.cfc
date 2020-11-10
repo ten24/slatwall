@@ -588,7 +588,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		boolean hidden=true,
  		boolean ignoredWhenSearch=false,
  		string displayPropertyIdentifier="",
-		string displayValue = "",
+		string displayValue = ""
 	){
 		
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
