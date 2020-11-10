@@ -11,6 +11,7 @@ class MonatProductCardController {
 	public product;
 	public type: string;
 	public loading: boolean;
+	public loaded: boolean = false;
 	public lastAddedSkuID: string; 
 	public orderTemplates: Array<any>;
 	public pageRecordsShow: number = 5;
@@ -31,6 +32,7 @@ class MonatProductCardController {
 	constructor(
         public $scope               : ng.IScope,
         public $location            : ng.ILocationService,
+        public $timeout				: ng.ITimeoutService,
         public ModalService,
         public monatService         : MonatService, 
         public rbkeyService         : RbKeyService,
@@ -161,6 +163,7 @@ class MonatProductCardController {
 			})
 			.finally(()=>{
 			     this.loading=false;
+			     this.addToCartToggle();
 			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
@@ -175,10 +178,17 @@ class MonatProductCardController {
 			})
 			.finally(()=>{
 				this.loading=false;
+				this.addToCartToggle();
 			});
 		}
 	};
-
+	
+	public addToCartToggle(){
+		this.loaded = true;
+		this.$timeout(()=>{
+			this.loaded = false;	
+			}, 3000);
+	}
 	
     public closeModals = () =>{
         $('.modal').modal('hide');

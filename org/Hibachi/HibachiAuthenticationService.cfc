@@ -337,7 +337,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if( arguments.account.getSuperUserFlag() ) {
 			return true;
 		}
-		
+
 		var cacheKey = "authenticateEntityProperty_#arguments.crudType##arguments.entityName##arguments.propertyName##arguments.account.getPermissionGroupCacheKey()#";
 		// Loop over each permission group for this account, and ckeck if it has access
 		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
@@ -349,7 +349,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				return true;
 			}
 		}
-		
+
 		// If for some reason not of the above were meet then just return false
 			getService('HibachiCacheService').setCachedValue(cacheKey,false);
 		return false;
@@ -644,20 +644,30 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function authenticateEntityPropertyByPermissionGroup(required string crudType, required string entityName, required string propertyName, required any permissionGroup) {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
-		
+
+
 
 		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
 			return true;
 		}
-		
-		// Check first to see if this entity was defined
+
+
+				// Check first to see if this entity was defined
 		if(structKeyExists(permissions.entity.entities, arguments.entityName) && structKeyExists(permissions.entity.entities[arguments.entityName].properties, arguments.propertyName) && !isNull(permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag"))) {
 			if( permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag") ) {
 				return true;
 			} else {
+
 				return false;
 			}
 		}
+		
+		var permissionDetails = getEntityPermissionDetails();
+		//  check other locations for propertyName
+		if(structKeyExists(permissionDetails, arguments.entityName) && 	( structKeyExists(permissionDetails[arguments.entityName].otmproperties, arguments.propertyName) ||	structKeyExists(permissionDetails[arguments.entityName].mtoproperties, arguments.propertyName) || structKeyExists(permissionDetails[arguments.entityName].mtmproperties, arguments.propertyName))
+		) {
+			return authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, permissionGroup=arguments.permissionGroup);
+		}	
 		
 		// If there was an entity defined, and special property values have been defined then we need to return false
 		if (structKeyExists(permissions.entity.entities, arguments.entityName) && structCount(permissions.entity.entities[arguments.entityName].properties)) {

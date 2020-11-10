@@ -95,16 +95,17 @@
    <!-- Add To Cart -->
    <div ng-if="monatProductCard.product.displayOnlyFlag != true && (monatProductCard.product.qats > 0)" class="product-actions">
          <button 
-            ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode); 
-                        hybridCart.toggleCartOnAdd();" 
+            ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode);" 
             class="btn bg-primary add-to-cart" 
             ng-class="{
                 'bg-primary': monatProductCard.type == 'enrollment',
-                loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
+                loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID,
+                loaded: monatProductCard.loaded
             }"
         >
-             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment'" sw-rbkey="'frontend.global.addToCart'"></span>
-             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment'" sw-rbkey="'frontend.global.addToFlexship'"></span>
+             <span ng-if="monatProductCard.loaded" sw-rbkey="'frontend.global.addedToCart'"></span>
+             <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment' && !monatProductCard.loaded" sw-rbkey="'frontend.global.addToCart'"></span>
+             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment' && !monatProductCard.loaded" sw-rbkey="'frontend.global.addToFlexship'"></span>
          </button>
    </div>
    

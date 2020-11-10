@@ -52,8 +52,8 @@ component displayname="Shipping Method" entityname="SlatwallShippingMethod" tabl
 	property name="shippingMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="publishedFlag" ormtype="boolean";
-	property name="shippingMethodName" ormtype="string";
-	property name="shippingMethodCode" ormtype="string";
+	property name="shippingMethodName" hb_translate="false" ormtype="string";
+	property name="shippingMethodCode" hb_translate="false" ormtype="string";
 	property name="sortOrder" ormtype="integer" sortContext="fulfillmentMethod";
 	property name="shippingMethodDescription" ormtype="string";
 	

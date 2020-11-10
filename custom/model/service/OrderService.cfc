@@ -1,7 +1,7 @@
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal';
+        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal,qualifiedMerchandiseRewardsArray';
     }
    
 	public array function getOrderEventOptions(){
@@ -579,7 +579,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
-		
+
 		if( orderType.getSystemCode() == 'otSalesOrder'
 			&& arguments.systemCode == 'ostProcessing'
 			&& !len(arguments.typeCode)

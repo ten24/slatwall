@@ -26,6 +26,7 @@ class MonatProductListingController {
 	public skinProductFilter:any;
 	public loadingAddToCart;
 	public flexshipFlag:boolean;
+	public qualifiedPromos;
 	
 	// @ngInject
 	constructor(
@@ -36,7 +37,8 @@ class MonatProductListingController {
         private monatService        : MonatService,
 		private monatAlertService   : MonatAlertService,
 		private orderTemplateService: OrderTemplateService,
-		private rbkeyService
+		private rbkeyService,
+		private ModalService
 	) {}
 
     
@@ -169,6 +171,25 @@ class MonatProductListingController {
 			this.loadingAddToCart = false;
 		});
 	};
+	
+	public launchPromoModal = () =>{
+		this.ModalService.showModal({
+		      component: 'promoModal',
+		      bodyClass: 'angular-modal-service-active',
+			  bindings: {
+			    title: this.rbkeyService.rbKey('frontend.enrollment.promoModal'),
+			  },
+			  preClose: (modal) => {
+				modal.element.modal('hide');
+			},
+		}).then( (modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+		    modal.close.then( (confirm) => {
+		    });
+		}).catch((error) => {
+			console.error("unable to open promoModal :",error);	
+		});
+	}
 }
 
 

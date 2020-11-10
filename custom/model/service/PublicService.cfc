@@ -865,7 +865,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			sku.product.defaultSku.imageFile,
 			sku.skuPrices.price,
 			sku.skuPrices.personalVolume,
-			sku.product.listingPages.sortOrder
+			sku.product.listingPages.sortOrder,
+			sku.listPrice
 		');
 
 		var visibleColumnConfigWithArguments = {
@@ -910,8 +911,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode'],
 					'sortOrder': skuBundle.sku_product_listingPages_sortOrder,
 					'sortDirection': content.getProductSortDefaultDirection() ?: 'ASC',
-					'recordSort': recordCount
-				}
+					'recordSort': recordCount,
+					'listPrice' : skuBundle.sku_listPrice
+					}
 			}
 			
 			// If this is the first product type of it's kind, setup the product type.
@@ -1061,6 +1063,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     account.setOwnerAccount(sponsor5);
                 }
                 account.setActiveFlag(false);
+                
+                var activationEmailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Employee Account Activation');
+                getService('EmailService').generateAndSendFromEntityAndEmailTemplate( account, activationEmailTemplate );
+                
                 arguments.data.messages = [getHibachiScope().getRbKey('monat.employeeAccount.enrollmentMessage')];
             }
         }
@@ -1161,6 +1167,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getDaysToEditOrderTemplateSetting(){
 		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
+    }
+    
+    public any function getGovernmentIdentificationNumber(){
+        var accountGovernmentIdentification = '';
+        var account = getHibachiScope().getAccount();
+        if('uk' ==  account.getAccountCreatedSite().getCmsSiteID() ){
+            var govIdentifications = account.getAccountGovernmentIdentifications();
+            accountGovernmentIdentification =  arrayLen(govIdentifications) > 0 ? govIdentifications[1].getGovernmentIdentificationNumber() : '';
+        }
+		arguments.data['ajaxResponse']['GovernmentIdentification'] = accountGovernmentIdentification;
+
     }
     
     public void function submitSponsor(required struct data){
@@ -2796,7 +2813,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
             var ownerAccountNumber = getHibachiScope().getSessionValue('ownerAccountNumber');
         }else{
-            addError(arguments.data,{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')});
+            this.addErrors(arguments.data,[{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')}]);
             getHibachiScope().addActionResult('public:account.saveEnrollment',true);
             return;
         }
@@ -2827,5 +2844,56 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data.messages = [getHibachiScope().getRBKey('frontend.saveEnrollmentSuccess')];
         getHibachiScope().addActionResult('public:account.saveEnrollment',email.hasErrors());
     }
-    
+
+    public void function getQualifiedPromotionRewardSkusForOrder(required struct data){
+        param name="arguments.data.orderID";
+        /*
+            OrderID is required, data can also include promotionRewardID to return skus for a particular reward.
+            Other optional arguments: pageRecordsShow (default 25), formatRecords (default false)
+        */
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
+            arguments.data.order = order;
+            var additionalPropertyIdentifiers = 'product.productName,listPrice,skuPrices.price,stocks.calculatedQATS';
+            
+            var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+            
+            var additionalFilters = [
+                {
+                    propertyIdentifier='skuPrices.currencyCode',
+                    value=order.getCurrencyCode()
+                },
+                {
+                    propertyIdentifier="skuPrices.priceGroup.priceGroupID",
+                    value=order.getPriceGroup().getPriceGroupID()
+                },
+                {
+                    propertyIdentifier="activeFlag",
+                    value=true
+                },
+                {
+                    propertyIdentifier="publishedFlag",
+                    value=true
+                },
+                {
+                    propertyIdentifier="stocks.calculatedQATS",
+                    value=0,
+                    comparisonOperator=">"
+                },
+                {
+                    propertyIdentifier="stocks.location.locationID",
+                    value=currentRequestSite.getLocations()[1].getLocationID()
+                }
+            ];
+            arguments.data.additionalCollectionConfig = {
+                'displayProperties':additionalPropertyIdentifiers,
+                'filters':additionalFilters
+            };
+            var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
+        }
+    }
 }
