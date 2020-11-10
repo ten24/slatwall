@@ -120,7 +120,6 @@ component  accessors="true" output="false"
                        'minimumQuantity':  bundle.getMinimumQuantity(),
                        'maximumQuantity': bundle.getMaximumQuantity(),
                        'bundleType': bundle.getProductBundleGroupType().getTypeName(),
-                       'skuCollectionConfig': bundle.getSkuCollectionConfig(),
                        'amount': bundle.getAmount(),
                        'amountType': bundle.getAmountType(),
                        'skuList': bundleSkuList,
