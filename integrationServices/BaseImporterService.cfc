@@ -183,7 +183,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
 	    
-	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true);
+	    var entityMapping = this.getEntityMapping( arguments.entityName );
+
+	    var validation = this.validateEntityData( 
+	        entityName    = arguments.entityName, 
+	        data          = arguments.data, 
+	        mapping       = entityMapping,
+	        collectErrors = true
+	    );
 	    
 	    if( !validation.isValid ){
 	        
@@ -206,7 +213,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	
 	    } else {
 	    
-    	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
+    	    var transformedData = this.transformEntityData( 
+    	        entityName     = arguments.entityName, 
+    	        data           = arguments.data,
+    	        mapping        = entityMapping,
+    	        emptyRelations = validation.emptyRelations
+    	    );
+    	    
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
@@ -462,12 +475,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public struct function genericValidateEntityData( required struct data, required struct mapping, boolean collectErrors = false ){
 	    
 	    var validationService = this.getHibachiValidationService();
-
 	    var entityName = arguments.mapping.entityName;
+	    
 	    var isValid = true;
 	    var errors = {};
+	    var emptyRelations={};
 	    
-	    //FIXME : now that this function has grown and we're vlidation for, 'dependencies', and `importIdentifier` keys
+	    // FIXME : now that this function has grown and we're vlidation for, 'dependencies', and `importIdentifier` keys
 	    // which might cause redundent validation, for `required` constraint if the property already exist in previous validations ['properties', 'relations']
 	    // this is not too big of a deal, but a better approach will be to compile an array of validations+constraints and loop over that;
 	    
@@ -517,23 +531,50 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    }
 	    }
 	    
+
 	    // validate related sub-entities as well
 	    if( (isValid || arguments.collectErrors) && structKeyExists(arguments.mapping, 'relations') ){
-	        for(var related in arguments.mapping.relations ){
-	           	if( !structKeyExists(related, 'excludeFromValidation') || !related.excludeFromValidation){
-                    var validation = this.validateEntityData(
-                        data            =  arguments.data,  
-                        entityName      = related.entityName, 
-                        collectErrors   = arguments.collectErrors 
-                    );
-                    isValid = validation.isValid;
-                    if(arguments.collectErrors){
-                        errors = this.mergeErrors( errors, validation.errors );
-                    }
-                    if( !isValid && !arguments.collectErrors ){
-                        break;
-                    } 
+	       
+	        for(var thisRelation in arguments.mapping.relations ){
+	        
+	           	if( structKeyExists(thisRelation, 'excludeFromValidation') && thisRelation.excludeFromValidation){
+	           	    continue;
 	           	}
+	           	
+           	    if( !structKeyExists(thisRelation, 'isNullable') ){
+                    // by default every relation is treated as required [ not-nullable ]
+                    thisRelation.isNullable = false; 
+                }
+                
+                var relationValidation = this.validateEntityData(
+                    data            = arguments.data,  
+                    entityName      = relation.entityName, 
+                    collectErrors   = arguments.collectErrors 
+                );
+                
+                if( !relationValidation.emptyRelations.isEmpty() ){
+                    thisRelation['hasEmptyRelations'] = true;
+                    thisRelation['emptyRelations'] = relationValidation.emptyRelations;
+                }
+                
+                if( !relationValidation.isValid ){
+                    if( thisRelation.isNullable ){
+                        // if the relation is-not-valid and it's nullable than we can carry forward this info into 
+                        // transform-entity-data function, so it can ignore this relation properties;
+                        thisRelation['isEmptyRelation'] = true;
+                        continue; // nullable relations can be ignored
+                    } else if( arguments.collectErrors ){
+                            errors = this.mergeErrors( errors, relationValidation.errors );
+                    } else {
+                        // else if the validation has failed and the relations is not nullable 
+                        // and we're not collecting errors than we can break the loop;
+                        break;
+                    }
+                }
+                
+                if( thisRelation.isEmptyRelation || thisRelation.hasEmptyRelations ){
+                    emptyRelations[ thisRelation.propertyIdentifier ] = thisRelation;
+                }
 	        }
 	    }
 	    
@@ -608,7 +649,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    return { 
 	        isValid: arguments.collectErrors ?  StructIsEmpty( errors ) : isValid, 
-	        errors: errors 
+	        errors: errors,
+	        emptyRelations: emptyRelations
 	    };
 	}
 	
@@ -695,7 +737,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	/*****************                      TRANSFORM                 ******************/
 
-    public struct function transformEntityData(required string entityName, required struct data, struct mapping, boolean nested=false ){
+    public struct function transformEntityData(required string entityName, required struct data, struct mapping, struct emptyRelations={}, boolean nested=false ){
         
         if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( arguments.entityName );
@@ -709,7 +751,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
     }
     
-	public struct function genericTransformEntityData( required struct data, required struct mapping, boolean nested=false){
+	public struct function genericTransformEntityData( required struct data, required struct mapping, struct emptyRelations={}, boolean nested=false){
 	    var entityName = arguments.mapping.entityName;
 	    var transformedData = {};
 	    
@@ -820,9 +862,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        for(var relation in arguments.mapping.relations ){
 	            
+	            if( structKeyExists(arguments.emptyRelations, relation.propertyIdentifier) ){
+	                // if we have this relation in empty-relations that let's use that, so we have additional info down the line
+	                relation = arguments.emptyRelations[ relation.propertyIdentifier ];
+	            }
+	            
 	            // SKIP if it's a create-only relation, and we're upserting
     	        if( structKeyExists(relation, 'allowUpdate') && !relation.allowUpdate ){
-    	            // primaryIdProperty value Is Not Empty, skipping this property
+    	            // if primaryId-value Is Not Empty, then we're upsearting an existing record,
+    	            // hence skip create-only relations
     	            if( !this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
     	                continue;
     	            }
@@ -964,6 +1012,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         required struct relationMetaData
     ){
         
+        if( arguments.relationMetaData.isEmptyRelation ){
+            // if the validation failed for this relation and its nullable relation
+            // then we need to skip it, as transform-data function won't have valid & enough data to process;
+            return; 
+        }
+        
         /**
          * Fallback order 
          * 1. generator-function provided in the relationMetaData
@@ -992,9 +1046,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
         
         var transformedRelationData = this.transformEntityData( 
-            entityName  = arguments.relationMetaData.entityName, 
-            data        = arguments.data,
-            nested      = true
+            entityName     = arguments.relationMetaData.entityName, 
+            data           = arguments.data,
+            emptyRelations = arguments.relationMetaData.emptyRelations ?: {}
+            nested         = true
         );
         
         if( listFindNoCase('oneToOne,manyToOne', arguments.relationMetaData.type) ){
