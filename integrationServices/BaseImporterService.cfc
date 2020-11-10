@@ -546,9 +546,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                     thisRelation.isNullable = false; 
                 }
                 
+                thisRelation['isEmptyRelation'] = false;
+                thisRelation['hasEmptyRelations'] = false;
+                
                 var relationValidation = this.validateEntityData(
                     data            = arguments.data,  
-                    entityName      = relation.entityName, 
+                    entityName      = thisRelation.entityName, 
                     collectErrors   = arguments.collectErrors 
                 );
                 
@@ -966,7 +969,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         */
         
         // if the property is only for validation, it will not have a property identifier.
-        if( !structKeyExists(arguments.propertyMeta, 'propertyIdentifier') ){
+        if( !structKeyExists(arguments.propertyMetaData, 'propertyIdentifier') ){
             return;
         }
         
@@ -1012,7 +1015,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         required struct relationMetaData
     ){
         
-        if( arguments.relationMetaData.isEmptyRelation ){
+        if( structKeyExists(arguments.relationMetaData, 'isEmptyRelation') && arguments.relationMetaData.isEmptyRelation ){
             // if the validation failed for this relation and its nullable relation
             // then we need to skip it, as transform-data function won't have valid & enough data to process;
             return; 
@@ -1048,7 +1051,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         var transformedRelationData = this.transformEntityData( 
             entityName     = arguments.relationMetaData.entityName, 
             data           = arguments.data,
-            emptyRelations = arguments.relationMetaData.emptyRelations ?: {}
+            emptyRelations = arguments.relationMetaData.emptyRelations ?: {},
             nested         = true
         );
         

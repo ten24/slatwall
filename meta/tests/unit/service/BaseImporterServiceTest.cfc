@@ -523,6 +523,61 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'validateAccountData_spy_called');
         structDelete( variables.service, 'validateAccountData');
     }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_ignre_validation_errors_for_nullabe_relation(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address";
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_ignre_validation_errors_for_relations_having_excludeFromValidation_flag(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address";
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['excludeFromValidation'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    
+    
+    
+
 
 
 
