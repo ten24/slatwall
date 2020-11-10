@@ -133,6 +133,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function getAccountData(){
+    	logHibachi("ERPONE - Start fetching data - Account");
     	var authorizeToken = this.getAccessToken();
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/read');
 		
@@ -146,6 +147,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var response = {};
 		response = DeSerializeJson(rawRequest.fileContent); 
 		payload = this.transformAccountData(arrayToStruct(response));
+		logHibachi("ERPONE - Start pushData - Account into batch");
+		 var batch = this.pushRecordsIntoImportQueue( "Account", payload );
+		    if( batch.getEntityQueueItemsCount() == batch.getInitialEntityQueueItemsCount() ){
+			    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");
+		    } 
+		    else {
+		        this.getHibachiScope().showMessage("#batch.getEntityQueueItemsCount()# out of #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue", "warning");
+		    }
     }
     public any function createHttpRequest(required string endPointUrl, string requestType="POST"){
     	if(!this.setting("devMode")){
@@ -178,14 +187,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return this.transformedData( arguments.accountData, mapping);
 	}
 	public struct function transformedData(required struct data, required struct mapping){
-	    
+		logHibachi("ERPONE - Start transform data - Account");
 		var transformedData = {};
-	    var count = 1;
-	    var maxLength = arguments.data.len();
-	    for( var sourceKey in arguments.mapping ){
-	        transformedData[ arguments.mapping[ sourceKey] ] = arguments.data[count][ sourceKey ];
-	        count ++;
+	    for( var counter in arguments.data ){
+	    	for( var sourceKey in arguments.mapping ){
+	        	transformedData[counter][ arguments.mapping[ sourceKey] ] =arguments.data[counter][ sourceKey ];
+	    	}
 	    }
-	    writeDump(transformedData);abort;
+	    return transformedData;
 	}
 }
