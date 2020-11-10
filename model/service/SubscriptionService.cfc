@@ -201,10 +201,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return { 
-			"subscriptionsUsageOnAccount":  subscriptionUsageList.getPageRecords(), 
-			"recordsCount": subscriptionUsageList.getRecordsCount() 
-		};
+		return { "subscriptionsUsageOnAccount":  subscriptionUsageList.getPageRecords(), "recordsCount": subscriptionUsageList.getRecordsCount() }
 	}
 	
 	public any function getSubscriptionOrderItemByOrderItem(required any orderItem){

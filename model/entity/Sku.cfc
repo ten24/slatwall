@@ -1031,7 +1031,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public array function getEligibleFulfillmentMethodsWithShippingMethods() {
 		if(!structKeyExists(variables, "eligibleFulfillmentMethodsWithShippingMethods")) {
 			var fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethodCollectionList();
-			fulfillmentMethod.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType");
+			fulfillmentMethod.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType")
 			fulfillmentMethod.addFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'), "IN");
 			fulfillmentMethod.addOrderBy('sortOrder');
 			variables.eligibleFulfillmentMethodsWithShippingMethods = fulfillmentMethod.getRecords(formatRecord = false);
