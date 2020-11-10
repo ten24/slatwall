@@ -151,11 +151,8 @@ class MonatProductCardController {
 	
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID, 1, false, data)
 			.then( (result: any) =>{
-			    if(!result.hasErrors) {	
-			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
-				}
-				else{
-				    throw(result);
+			    if(result.hasErrors) {	
+					this.monatAlertService.showErrorsFromResponse(result);
 				}
 			} )
 			.catch((error)=>{
@@ -167,11 +164,7 @@ class MonatProductCardController {
 			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
-				if(!result.hasErrors) {	
-			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
-				}else{
-				    this.monatAlertService.showErrorsFromResponse(result);
-				}
+				this.monatAlertService.showErrorsFromResponse(result);
 			})
 			.catch((error)=>{
 			    this.monatAlertService.showErrorsFromResponse(error);

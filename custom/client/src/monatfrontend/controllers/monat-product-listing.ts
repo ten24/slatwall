@@ -159,8 +159,6 @@ class MonatProductListingController {
 		.then((data) => {
 			if(data.hasErrors){
 				this.monatAlertService.showErrorsFromResponse(data);
-			}else{
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful'));
 			}
 		})
 		.catch( (error) => {
