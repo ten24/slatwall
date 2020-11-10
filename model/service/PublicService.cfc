@@ -89,6 +89,52 @@ component  accessors="true" output="false"
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
 	
+	
+	/***
+	 * Method to return list of bundle groups and sku list for product
+	 * 
+	 * @param - productID
+	 * @return - bundleResponse - custom array of keys
+	 **/
+	public void function getProductBundles( required struct data ) {
+	    param name="arguments.data.productID";
+	    
+	    var product = getProductService().getProduct( arguments.data.productID );
+        
+        //TODO: check if product is valid bundle
+        
+        if( !isNull(product) ) {
+            //get product bundles
+            var bundleProducts = product.getDefaultSku().getProductBundleGroups();
+            var bundleResponse = [];
+            
+            //populate bundle response
+            for( var bundle in bundleProducts) {
+                if( bundle.getActiveFlag() ){
+                    //get sku list form collection config
+                    var skuCollections = getSkuService().getSkuCollectionList();
+                    skuCollections.setCollectionConfig( bundle.getSkuCollectionConfig() );
+                    var bundleSkuList = skuCollections.getRecords();
+                    
+                    ArrayAppend(bundleResponse, {
+                       'minimumQuantity':  bundle.getMinimumQuantity(),
+                       'maximumQuantity': bundle.getMaximumQuantity(),
+                       'bundleType': bundle.getProductBundleGroupType().getTypeName(),
+                       'skuCollectionConfig': bundle.getSkuCollectionConfig(),
+                       'amount': bundle.getAmount(),
+                       'amountType': bundle.getAmountType(),
+                       'skuList': bundleSkuList,
+                    });
+                }
+            }
+            
+            arguments.data.ajaxResponse['data'] = bundleResponse;
+            getHibachiScope().addActionResult("public:account.getProductBundles",false);
+        } else {
+            getHibachiScope().addActionResult("public:account.getProductBundles",true);
+        }   
+	}
+	
 	/**
 	 * Get Order Details with Order Invoice
 	 * @param orderID
@@ -1660,7 +1706,6 @@ component  accessors="true" output="false"
             if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             }
-            
             
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
