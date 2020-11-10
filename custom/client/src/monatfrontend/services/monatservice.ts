@@ -30,6 +30,8 @@ export class MonatService {
 	public productFilters:any = {};
 	public totalItemQuantityAfterDiscount = 0;
 	public ofyItems;
+	public qualifiedPromos = [];
+	public promotionRewardSkus = {};
 	public productFilterCategories = ['Hair','Skin','Wellness','Promotion'];
 	
 	//@ngInject
@@ -73,7 +75,7 @@ export class MonatService {
 		}
 		return deferred.promise;
 	}
-
+	
 	/**
 	 * actions => addOrderItem, removeOrderItem, updateOrderItemQuantity, ....
 	 *
@@ -121,6 +123,10 @@ export class MonatService {
 		this.lastAddedSkuID = skuID;
 
 		return this.updateCart("addOrderItem", payload);
+	}
+	
+	public addMultipleToCart(data:any){
+		return this.updateCart("addOrderItems",data);
 	}
 
 	public removeFromCart(orderItemID: string) {
@@ -541,7 +547,26 @@ export class MonatService {
 		return hasShippingMethodOption;
 	}
 	
-	
+	public getPromotionRewardSkus = (promotionRewardID)=>{
+		var deferred = this.$q.defer();
+		if(this.promotionRewardSkus[promotionRewardID]){
+			deferred.resolve(this.promotionRewardSkus[promotionRewardID]);
+		}else{
+			let data = {
+				orderID:this.cart.orderID,
+				promotionRewardID:promotionRewardID
+			};
+			this.publicService.doAction('getQualifiedPromotionRewardSkusForOrder',data).then((result:any)=>{
+				if(result.rewardSkus){
+					this.promotionRewardSkus[promotionRewardID] = result.rewardSkus;
+					deferred.resolve(result.rewardSkus);
+				}else{
+					throw result;
+				}
+			});
+		}
+		return deferred.promise;
+	}
 	
 	
 	// common-modals

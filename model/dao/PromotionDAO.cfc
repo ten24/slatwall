@@ -55,6 +55,7 @@ Notes:
 		<cfargument name="promotionEffectiveDateTime" type="date" default="#now()#" />
 		<cfargument name="excludeRewardsWithQualifiers" type="boolean" default="true">
 		<cfargument name="site" type="any" />
+		<cfargument name="promotionRewardID" type="string" />
 		
 		<cfif arguments.qualificationRequired >
 			<cfset arguments.excludeRewardsWithQualifiers = false />
@@ -129,10 +130,18 @@ Notes:
 		</cfif>
 
 		<!--- End additional where --->
-		<cfset hql &= " )" />
+		<cfset hql &= " ) " />
 		
 		<cfif NOT isNull(arguments.site) >
-			<cfset hql &= 'AND (s.siteID IS NULL OR s.siteID = :siteID)'>
+			<cfset hql &= 'AND (s.siteID IS NULL OR s.siteID = :siteID) '>
+		</cfif>
+		
+		<cfif NOT isNull(arguments.promotionRewardID) >
+			<cfset hql &= 'AND spr.promotionRewardID = :promotionRewardID '>
+		</cfif>
+		
+		<cfif NOT isNull(arguments.publishedFlag) >
+			<cfset hql &= 'AND spr.publishedFlag = :publishedFlag '>
 		</cfif>
 
 		<cfset var params = {
@@ -150,6 +159,14 @@ Notes:
 		
 		<cfif NOT isNull(arguments.site) >
 			<cfset params.siteID = arguments.site.getSiteID() />
+		</cfif>
+		
+		<cfif NOT isNull(arguments.promotionRewardID) >
+			<cfset params.promotionRewardID = arguments.promotionRewardID />
+		</cfif>
+		
+		<cfif NOT isNull(arguments.publishedFlag) >
+			<cfset params.publishedFlag = arguments.publishedFlag />
 		</cfif>
 
 		<cfset params.rewardTypeList = listToArray(arguments.rewardTypeList) />

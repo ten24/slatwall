@@ -11,6 +11,7 @@ class MonatProductCardController {
 	public product;
 	public type: string;
 	public loading: boolean;
+	public loaded: boolean = false;
 	public lastAddedSkuID: string; 
 	public orderTemplates: Array<any>;
 	public pageRecordsShow: number = 5;
@@ -31,6 +32,7 @@ class MonatProductCardController {
 	constructor(
         public $scope               : ng.IScope,
         public $location            : ng.ILocationService,
+        public $timeout				: ng.ITimeoutService,
         public ModalService,
         public monatService         : MonatService, 
         public rbkeyService         : RbKeyService,
@@ -149,11 +151,8 @@ class MonatProductCardController {
 	
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID, 1, false, data)
 			.then( (result: any) =>{
-			    if(!result.hasErrors) {	
-			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
-				}
-				else{
-				    throw(result);
+			    if(result.hasErrors) {	
+					this.monatAlertService.showErrorsFromResponse(result);
 				}
 			} )
 			.catch((error)=>{
@@ -161,24 +160,28 @@ class MonatProductCardController {
 			})
 			.finally(()=>{
 			     this.loading=false;
+			     this.addToCartToggle();
 			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
-				if(!result.hasErrors) {	
-			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
-				}else{
-				    this.monatAlertService.showErrorsFromResponse(result);
-				}
+				this.monatAlertService.showErrorsFromResponse(result);
 			})
 			.catch((error)=>{
 			    this.monatAlertService.showErrorsFromResponse(error);
 			})
 			.finally(()=>{
 				this.loading=false;
+				this.addToCartToggle();
 			});
 		}
 	};
-
+	
+	public addToCartToggle(){
+		this.loaded = true;
+		this.$timeout(()=>{
+			this.loaded = false;	
+			}, 3000);
+	}
 	
     public closeModals = () =>{
         $('.modal').modal('hide');

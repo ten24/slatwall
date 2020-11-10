@@ -6,15 +6,46 @@
 			</div>
 			<a href="#" class="logo">
 				<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
-			</a>			
+			</a>
 			<div class="right-nav">
+				<div>
+					<button 
+						class="send-order"
+						ng-click="monatEnrollment.saveEnrollment()"
+						ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">
+							<img src="/themes/monat/assets/images/send-icon.png"  alt="Save Enrollment" width="25px" height="auto">
+					</button>
+				</div>
 				<div class="header-cart">
 					<hybrid-cart type="monatEnrollment.type" is-enrollment="true"></hybrid-cart>
 				</div>			
 			</div>			
 		</div>
+		<toaster-container></toaster-container>
+			<!-- threshold has been met for today's order--->
+		<div ng-cloak
+		class="notifications" 	
+		ng-show=
+				"monatEnrollment.currentStepName == 'todaysOrder'
+				&& monatEnrollment.type == 'vip'
+				&& monatEnrollment.monatService.canPlaceOrder">
+			<div class="alert-message">
+					<span sw-rbkey="'frontend.enrollment.threshold'"></span>
+					<i class="fal fa-check-circle"></i>
+			</div>
+		</div>
 	</div>
-			<toaster-container></toaster-container>
+			<!-- threshold has been met for flexship--->
+	<div ng-cloak
+		class="notifications"
+		ng-if="
+			monatEnrollment.currentStepName == 'orderListing' 
+			&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal <= 0">
+		<div class="alert-message">
+			<span sw-rbKey="'frontend.enrollment.threshold'"></span>
+			<i class="fal fa-check-circle"></i>
+		</div> 
+	</div>
 	<div 
 		ng-if="
 			monatEnrollment.currentStepName == 'orderListing' 
@@ -81,13 +112,7 @@
     <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
 </div>
 <footer ng-if="monatEnrollment.currentStepName !== 'checkout'" class="steps-footer d-flex flex-column">
-	<div
-		ng-show=
-		"monatEnrollment.currentStepName == 'todaysOrder'
-		&& monatEnrollment.type == 'vip'
-		&& monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping > 0"
-		class="text-white align-items-center"><span ng-hide="!monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShippingLoaded" sw-rbkey="'frontend.enrollment.threshold'"></span>
-	</div>
+	
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		<!-- Back button --->
 		<div class="d-flex align-items-center">
@@ -182,6 +207,7 @@
 				<i class="far fa-user-friends"></i>
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
+			
 		</div>
 
 		<!----MP Step icon indicators --->
@@ -256,13 +282,14 @@
 			|| (monatEnrollment.monatService.canPlaceOrder && monatEnrollment.orderTemplateService.mostRecentOrderTemplate.canPlaceOrderFlag)
 		">
 			<button 
-				style="z-index: 1" 
 				data-ng-click="monatEnrollment.next(); monatEnrollment.showCanPlaceOrderAlert = false" 
 				class="btn btn-secondary forward-btn forward" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false"
 			>
-				<span sw-rbkey="'frontend.global.next'"></span>
-				<i class="fas fa-chevron-right"></i>
+				<div class="btn-text">
+					<span sw-rbkey="'frontend.global.next'"></span>
+					<i class="fas fa-chevron-right"></i>
+				</div>
 			</button>
 			<button 
 				style="z-index: 1" 
@@ -270,8 +297,10 @@
 				class="btn btn-secondary forward-btn forward" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext"
 			>
-				<span sw-rbkey="'frontend.global.next'"></span>
-				<i class="fas fa-chevron-right"></i>
+				<div class="btn-text">
+					<span sw-rbkey="'frontend.global.next'"></span>
+					<i class="fas fa-chevron-right"></i>
+				</div>
 			</button>			
 		</div>
 		
@@ -285,8 +314,10 @@
 				class="btn btn-secondary forward-btn forward disabled" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false"
 			>
-				<span sw-rbkey="'frontend.global.next'"></span>
-				<i class="fas fa-chevron-right"></i>
+				<div class="btn-text">
+					<span sw-rbkey="'frontend.global.next'"></span>
+					<i class="fas fa-chevron-right"></i>
+				</div>
 			</button>
 		</div>
 
@@ -294,3 +325,4 @@
 	</div>
 
 </footer>
+

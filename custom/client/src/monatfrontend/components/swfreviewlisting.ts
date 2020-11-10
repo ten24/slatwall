@@ -38,7 +38,7 @@ class SWFReviewListingController{
 	    if(data.currentPage && this.pageCache[data.currentPage]){
 	        this.reviewList = this.pageCache[data.currentPage];
 	    }
-		var productReviewRequest = this.requestService.newPublicRequest('?slatAction=monat:public.getProductReviews',data);
+		var productReviewRequest = this.requestService.newPublicRequest('getProductReviews', data, 'GET');
 	    productReviewRequest.promise.then(result=>{
 	    	if(result['pageRecords']){
 	    		for(let i=0; i<result['pageRecords'].length;i++){

@@ -1,0 +1,82 @@
+<div ng-if="promoModal.currentPage == 'promoList'" id="qualifiedPromoBanner" class="modal using-modal-service" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+		<img src="/themes/monat/assets/images/icon-promo.png">
+      	<div class="unlocked">You've Unlocked</div>
+        <h5 class="modal-title" ng-bind="promoModal.selectedPromotion.title"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&ndash;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p ng-bind="promoModal.selectedPromotion.description"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn bg-white" ng-click="promoModal.viewSelectedPromotion()">
+        	<span>Take Offer</span>
+        	<i class="fa fa-chevron-right"></i>
+        </button>
+        <div class="promo-options">
+            <ul>
+                <li ng-repeat="promotion in promoModal.promotions track by $index"
+                    ng-click="promoModal.selectPromotion(promotion)"
+                    ng-bind="$index"></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-if="promoModal.currentPage == 'reward'" id="rewards-modal" class="modal using-modal-service" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-9 pt-2" ng-bind="promoModal.selectedPromotion.rewardHeader">
+            </div>
+            <div ng-if="promoModal.maxUseCount" class="col-3 d-flex flex-column header-right">
+                <span class="small">
+                    Qualify
+                </span>
+                <span>
+                    X {{promoModal.maxUseCount}}
+                </span>
+            </div>
+          </div> 
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+         <ul class="list-group">
+             <!---- start repeat for products ---->
+             <li class="list-item" ng-repeat="rewardSku in promoModal.rewardSkus">
+                 <div class="col-2 product-image">
+                     Pro img
+                 </div>
+                 <div class="col-4 d-flex flex-column justify-content-around align-items-center">
+                     <span class="product-title pl-1" ng-bind="rewardSku.title"></span>
+                    <div class="d-flex justify-content-between price border-bottom-0">
+                        <span class="price-1 mr-1" ng-bind="rewardSku.listPrice | swcurrency:promoModal.cart.currencyCode"></span>
+                        <span class="price-2" ng-bind="rewardSku.price | swcurrency:promoModal.cart.currencyCode"></span>
+                    </div>
+                 </div>
+                 <div class="col-6 d-flex justify-content-end align-items-center">
+                    <div class="adjust-quantity" ng-click="promoModal.updateQuantity(rewardSku,-1)">-</div>
+                    <span ng-bind="rewardSku.addToCartQuantity || 0"></span>
+                    <div class="adjust-quantity" ng-click="promoModal.updateQuantity(rewardSku,1)">+</div>
+                 </div>
+             </li>
+             <!---- end repeat for products ---->
+         </ul> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" ng-disabled="promoModal.loading " ng-class="{ loading: promoModal.loading }" ng-click="promoModal.addToCart()">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -80,6 +80,7 @@ Notes:
 			<!--- Allow the user to merge any two accounts into one. --->
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="mergeAccount" queryString="sRedirectAction=admin:entity.detailAccount" type="list" modal="true" hideDisabled="false" />
 			
+			<hb:HibachiProcessCaller action="admin:entity.processaccount" entity="#rc.account#" processContext="syncInfotrax" type="list" queryString="sRedirectAction=admin:entity.detailAccount"  />
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.account#">

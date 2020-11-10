@@ -1191,6 +1191,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrder_cancelOrder(required any order, struct data={}) {
 
+        // if already in the same status, retun
+        if(arguments.order.getOrderStatusType().getSystemCode() == 'ostCanceled'){
+        	return arguments.order;
+        }
+		
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -5651,9 +5656,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Check delete validation
 		if(arguments.order.isDeletable()) {
-
+			var sessionOrder = getHibachiScope().getSession().getOrder(false);
 			// If the order is the order in this session, then set this sessions order to null
-			if(arguments.order.getOrderID() eq getHibachiScope().getSession().getOrder().getOrderID()) {
+			if(!isNull(sessionOrder) && arguments.order.getOrderID() == sessionOrder.getOrderID()) {
 				getHibachiScope().getSession().setOrder( javaCast("null", "") );
 			}
 
@@ -5774,7 +5779,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
 			}
 			thisOption['publishedFlag'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getPublishedFlag();
-			thisOption['shippingMethodDescription'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodDescription();
+			thisOption['shippingMethodDescription'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getFormattedValue('shippingMethodDescription');
 			
 			var inserted = false;
 

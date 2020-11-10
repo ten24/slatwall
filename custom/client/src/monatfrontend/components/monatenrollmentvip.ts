@@ -115,17 +115,13 @@ class VIPController {
 	};
 
 	public getMpResults = (model) => {
-		this.publicService['marketPartnerResults'] = this.publicService.doAction(
-			'/?slatAction=monat:public.getmarketpartners' +
-				'&search=' +
-				model.mpSearchText +
-				'&currentPage=' +
-				this.currentMpPage +
-				'&accountSearchType=VIP' +
-				'&countryCode=' +
-				model.currentCountryCode +
-				'&stateCode=' +
-				model.currentStateCode,
+		this.publicService['marketPartnerResults'] = this.publicService.doAction('getmarketpartners', {
+				'search' : model.mpSearchText,
+				'currentPage' : this.currentMpPage,
+				'accountSearchType':'VIP',
+				'countryCode' : model.currentCountryCode,
+				'stateCode' : model.currentStateCode
+			}, 'GET'
 		);
 	};
 	
