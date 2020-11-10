@@ -140,22 +140,22 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		// Authentication headers
 		httpRequest.addParam( type='header', name='authorization', value=authorizeToken);
 		httpRequest.addParam( type='formfield', name='query', value= "FOR EACH customer WHERE customer.active = YES");
-		httpRequest.addParam( type='formfield', name='take', value= "2");
+		httpRequest.addParam( type='formfield', name='take', value= "10");
 		httpRequest.addParam( type='formfield', name='columns', value= "name,country_code,email_address,phone,Active,company_cu");
 		
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
 		response = DeSerializeJson(rawRequest.fileContent); 
-		payload = this.transformAccountData(arrayToStruct(response));
+		var payload = this.transformErponeAccountData(response);
+		
 		logHibachi("ERPONE - Start pushData - Account into batch");
-		 var batch = this.pushRecordsIntoImportQueue( "Account", payload );
-		    if( batch.getEntityQueueItemsCount() == batch.getInitialEntityQueueItemsCount() ){
-			    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");
-		    } 
-		    else {
-		        this.getHibachiScope().showMessage("#batch.getEntityQueueItemsCount()# out of #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue", "warning");
-		    }
+		
+		var batch = this.pushRecordsIntoImportQueue( "Account", payload );
+		
+		logHibachi("ERPONE - Start pushData - Account into batch");
     }
+    
+    
     public any function createHttpRequest(required string endPointUrl, string requestType="POST"){
     	if(!this.setting("devMode")){
 			var requestURL = this.setting("prodGatewayURL") & arguments.endPointUrl;
@@ -170,29 +170,38 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
     	return httpRequest;
     }
+    
+    
     public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
     	return this.getErpOneIntegrationCFC().setting( argumentCollection=arguments );
 	}
-	public any function transformAccountData( required struct accountData){
-	    var mapping = {
+	
+	
+	public any function transformErponeAccountData( required array accountDataArray){
+	    var erponeMapping = {
 	        "__rowids" : "remoteAccountID",
 	        "name" : "firstName",
-	        "country_code" : "countryCallingCode",
-	        "email_address" : "emailAddress",
-	        "phone" : "phoneNumber",
+	        "country_code" : "countryCode",
+	        "email_address" : "email",
+	        "phone" : "phone",
 	        "Active" : "activeFlag",
 	        "company_cu" : "company"
 	    };
 	    
-	    return this.transformedData( arguments.accountData, mapping);
+	    return this.transformedErponeData( arguments.accountDataArray, erponeMapping);
 	}
-	public struct function transformedData(required struct data, required struct mapping){
+	
+	
+	public array function transformedErponeData(required array data, required struct erponeMapping){
 		logHibachi("ERPONE - Start transform data - Account");
-		var transformedData = {};
+		var transformedData = [];
 	    for( var counter in arguments.data ){
-	    	for( var sourceKey in arguments.mapping ){
-	        	transformedData[counter][ arguments.mapping[ sourceKey] ] =arguments.data[counter][ sourceKey ];
+	    	var partialTransformData={};
+	    	for( var sourceKey in arguments.erponeMapping ){
+	    		var destinationKey = arguments.erponeMapping[ sourceKey];
+	        	partialTransformData[ destinationKey ] =counter[ sourceKey ];
 	    	}
+	    	transformedData.append(partialTransformData);
 	    }
 	    return transformedData;
 	}
