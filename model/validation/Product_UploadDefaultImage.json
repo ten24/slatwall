@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"imageFile":				[{"required":true}],
+		"uploadFile":				[{"required":true}]
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"properties":{
+		"vendor":		[{"contexts":"save","required":true}]
+	},
+	"populatedPropertyValidation":{
+	    "address":[{"validate":"full"}]
+	}
+}

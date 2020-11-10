@@ -1,0 +1,6 @@
+{
+  "properties":{
+    "subscriptionBenefitID":			[{"contexts":"save","required":true}],
+    "accountID":			            [{"contexts":"save","required":true}]
+  }
+}

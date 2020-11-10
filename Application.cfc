@@ -1,112 +1,202 @@
-<!--- This file is part of Mura CMS.
-
-Mura CMS is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, Version 2 of the License.
-
-Mura CMS is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Mura CMS. If not, see <http://www.gnu.org/licenses/>.
-
-Linking Mura CMS statically or dynamically with other modules constitutes the preparation of a derivative work based on 
-Mura CMS. Thus, the terms and conditions of the GNU General Public License version 2 ("GPL") cover the entire combined work.
-
-However, as a special exception, the copyright holders of Mura CMS grant you permission to combine Mura CMS with programs
-or libraries that are released under the GNU Lesser General Public License version 2.1.
-
-In addition, as a special exception, the copyright holders of Mura CMS grant you permission to combine Mura CMS with 
-independent software modules (plugins, themes and bundles), and to distribute these plugins, themes and bundles without 
-Mura CMS under the license of your choice, provided that you follow these specific guidelines: 
-
-Your custom code 
-
-• Must not alter any default objects in the Mura CMS database and
-• May not alter the default display of the Mura CMS logo within Mura CMS and
-• Must not alter any files in the following directories.
-
- /admin/
- /tasks/
- /config/
- /requirements/mura/
- /Application.cfc
- /index.cfm
- /MuraProxy.cfc
-
-You may copy and distribute Mura CMS with a plug-in, theme or bundle that meets the above guidelines as a combined work 
-under the terms of GPL for Mura CMS, provided that you include the source code of that other code when and as the GNU GPL 
-requires distribution of source code.
-
-For clarity, if you create a modified version of Mura CMS, you are not obligated to grant this special exception for your 
-modified version; it is your choice whether to do so, or to make such modified version available under the GNU General Public License 
-version 2 without this exception.  You may, if you choose, apply this exception to your own modified versions of Mura CMS.
---->
-<cfcomponent output="false">
-	<cfinclude template="config/applicationSettings.cfm">
+/*
 	
-	<cfif not hasMainMappings>
-		<!--- Try and include global mappings --->
-		<cfset canWriteMode=true>
-		<cfset canWriteMappings=true>
-		<cfset hasMappings=true>
-		
-		<cftry>
-			<cfinclude template="config/mappings.cfm">
-			<cfcatch type="missingInclude">
-				<cfset hasMappings=false>
-			</cfcatch>
-		</cftry>
-		
-		<cfif not hasMappings>
-			<cfinclude template="config/buildMainMappings.cfm">
-		</cfif>
-		
-	</cfif>
+    Slatwall - An Open Source eCommerce Platform
+    Copyright (C) ten24, LLC
+	 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+	 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 	
-	<cfif not hasPluginMappings>
-		<!--- Try and include plugin mappings --->
-		<cfset canWriteMode=true>
-		<cfset hasMappings=true>
-		<cfset canWriteMappings=true>
-		<cftry>
-			<cfinclude template="plugins/mappings.cfm">
-			<cfcatch type="missingInclude">
-				<cfset hasMappings=false>
-			</cfcatch>
-		</cftry>
-		
-		<cfif not hasMappings>
-			<cfinclude template="config/buildPluginMappings.cfm">
-		</cfif>
-		
-	</cfif>
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
+    conditions of the GNU General Public License cover the whole
+    combination.
 	
-	<cfif not hasPluginCFApplication>
-		<!--- Try and include plugin mappings --->
-		<cfset canWriteMode=true>
-		<cfset hasMappings=true>
-		<cfset canWriteMappings=true>
-		<cftry>
-			<cfinclude template="plugins/cfapplication.cfm">
-			<cfcatch type="missingInclude">
-				<cfset hasMappings=false>
-			</cfcatch>
-		</cftry>
-		
-		<cfif not hasMappings>
-			<cfinclude template="config/buildPluginCFApplication.cfm">
-		</cfif>
-		
-	</cfif>
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 	
-	<cfinclude template="config/appcfc/onApplicationStart_method.cfm">
-	<cfinclude template="config/appcfc/onRequestStart_scriptProtect_method.cfm">
-	<cfinclude template="config/appcfc/onRequestEnd_method.cfm">
-	<cfinclude template="config/appcfc/onSessionStart_method.cfm">
-	<cfinclude template="config/appcfc/onSessionEnd_method.cfm">
-	<cfinclude template="config/appcfc/onError_method.cfm">
-	<cfinclude template="config/appcfc/onMissingTemplate_method.cfm">
-</cfcomponent>
+Notes: 
+	
+*/
+component extends="org.Hibachi.Hibachi" output="false" {
+
+	// ===================================== HIBACHI HOOKS
+	
+	// @hint this method always fires one time, even if the request is coming from an outside application.
+	public void function onEveryRequest() {
+		
+		
+	}
+	
+	// @hint this will fire 1 time if you are running the application.  If the application is bootstraped then it won't run
+	public void function onInternalRequest() {
+		if(listFindNoCase("public", getSubsystem(request.context.slatAction))) {
+			getHibachiScope().setPublicPopulateFlag( true );
+		}
+	}
+	
+	public void function onFirstRequest() {
+		// Version
+		var versionFile = getDirectoryFromPath(getCurrentTemplatePath()) & "version.txt.cfm";
+		if( fileExists( versionFile ) ) {
+			request.slatwallScope.setApplicationValue("version", trim(fileRead(versionFile)));
+		} else {
+			request.slatwallScope.setApplicationValue("version", "unknown");
+		}
+		
+		// Slatwall Root URL
+		request.slatwallScope.setApplicationValue("slatwallRootURL", variables.framework.baseURL);
+		
+		// Set Datasource
+		request.slatwallScope.setApplicationValue("datasource", this.datasource.name);
+		
+		// Set Datasource Username
+		request.slatwallScope.setApplicationValue("datasourceUsername", this.datasource.username);
+		
+		// Set Datasource Password
+		request.slatwallScope.setApplicationValue("datasourcePassword", this.datasource.password);
+		
+		// SET Database Type
+		request.slatwallScope.setApplicationValue("databaseType", this.ormSettings.dialect);
+		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
+		
+		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
+		writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
+	}
+	
+	public void function onUpdateRequest() {
+		if(!getHibachiScope().getApplicationValue('skipDbData')){
+			// Setup Default Data... Not called on soft reloads.
+			getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
+			getBeanFactory().getBean('integrationService').loadDataFromIntegrations();
+			writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
+			
+			// Setup Default Data from custom folder... Not called on soft reloads.
+			var customdbPath = ExpandPath("/custom/dbdata");
+			if ( !directoryExists(customdbPath) )
+			{
+				writeLog(file="Slatwall", text="General Log - custom/dbdata is not found.");
+			}
+			else{
+				getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = customdbPath);
+				writeLog(file="Slatwall", text="General Log - Default Data from custom/dbdata Has Been Confirmed");
+			}
+		}
+		
+		// Clear the setting cache so that it can be reloaded
+		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
+		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
+		
+		// Clear the setting meta cache so that it can be reloaded
+        	getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('settingService_');
+        	writeLog(file="Slatwall", text="General Log - Setting Meta cache has been cleared because of updated request");
+		
+		// Run Scripts
+		if( !getHibachiScope().getApplicationValue('skipDbData')){
+			getBeanFactory().getBean("updateService").runScripts();
+			writeLog(file="Slatwall", text="General Log - Update Service Scripts Have been Run");
+		}
+		
+	}
+	
+	public void function onFirstRequestPostUpdate() {
+	}
+	
+	// Allows EncryptionService to setup encryption key during application initialization
+	public void function onBeanFactoryLoadComplete() {
+		getBeanFactory().getBean('encryptionService').verifyEncryptionKeyExists();
+	}
+	
+	// ===================================== END: HIBACHI HOOKS
+	// ===================================== Hibachi HOOKS
+	
+	public void function endHibachiLifecycle() {
+		
+		if(getHibachiScope().getORMHasErrors()) {
+			getHibachiScope().clearEmailAndPrintQueue();
+		} else {
+			getHibachiScope().getService("emailService").sendEmailQueue();
+		}
+		
+		// Call the super lifecycle end
+		super.endHibachiLifecycle();
+	}
+	
+	// ===================================== END: Hibachi HOOKS
+	// ===================================== FW1 HOOKS
+	
+	// Allows for integration services to have a seperate directory structure
+	public any function getSubsystemDirPrefix( string subsystem ) {
+		if ( arguments.subsystem eq '' ) {
+			return '';
+		}
+		if ( !listFindNoCase('admin,api,public', arguments.subsystem) ) {
+			return 'integrationServices/' & arguments.subsystem & '/';
+		}
+		return arguments.subsystem & '/';
+	}
+	
+	// Allows for custom views to be created for the admin or public subsystems
+	public string function customizeViewOrLayoutPath( struct pathInfo, string type, string fullPath ) {
+		
+		arguments.fullPath = super.customizeViewOrLayoutPath(argumentcollection=arguments);
+		
+		if(listFindNoCase("admin,public", arguments.pathInfo.subsystem)){
+			var customFullPath = replace(replace(arguments.fullPath, "/admin/", "/custom/admin/"), "/public/", "/custom/public/");
+			if(fileExists(expandPath(customFullPath))) {
+				arguments.fullPath = customFullPath;
+			}
+			
+		} else if(arguments.type eq "layout" && arguments.pathInfo.subsystem neq "common") {
+			if(arguments.pathInfo.path eq "default" && !fileExists(expandPath(arguments.fullPath))) {
+				var rootPath = left(arguments.fullPath, findNoCase("/integrationServices/", arguments.fullPath));
+				if(fileExists(expandPath(rootPath) & "/custom/admin/layouts/default.cfm")) {
+					arguments.fullPath = rootPath & '/custom/admin/layouts/default.cfm';
+				} else {
+					arguments.fullPath = rootPath & 'admin/layouts/default.cfm';
+				}
+			}
+		}
+		
+		return arguments.fullPath;
+	}
+	
+	// ===================================== END: FW1 HOOKS
+	// ===================================== SLATWALL FUNCTIONS
+	
+	// Additional redirect function that allows us to redirect to a setting.  This can be defined in an integration as well
+	public void function redirectSetting(required string settingName, string queryString="") {
+		endHibachiLifecycle();
+		location(request.muraScope.createHREF(filename=request.slatwallScope.setting(arguments.settingName), queryString=arguments.queryString), false);
+	}
+	
+}
+

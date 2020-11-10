@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"location":			[{"contexts":"save","method":"getLocationIsLeafNode"}],
+		"averageCost":		[{"contexts":"save","dataType":"numeric"}]
+	}
+}

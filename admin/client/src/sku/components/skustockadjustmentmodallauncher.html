@@ -1,0 +1,98 @@
+<sw-modal-launcher data-modal-name="{{swSkuStockAdjustmentModalLauncher.name}}"
+                   data-save-action="swSkuStockAdjustmentModalLauncher.save"
+                   data-cancel-action="swSkuStockAdjustmentModalLauncher.initData"
+                   data-title="Stock Adjustment"><!-- Change this to rb -->
+    <sw-modal-static-button>
+        <sw-form data-name="{{swSkuStockAdjustmentModalLauncher.name}}"
+                 data-object="swSkuStockAdjustmentModalLauncher.sku"
+                 ng-if="swSkuStockAdjustmentModalLauncher.sku">
+            <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.sku"
+                                 data-name="newQuantity"
+                                 data-property-identifier="newQOH"
+                                 data-editable="true"
+                                 data-editing="true"
+                                 data-field-type="number"
+                                 data-in-listing-display="true"
+                                 data-row-save-enabled="false"
+                                 data-in-modal="true"
+                                 data-event-announcers="change"
+            >
+            </sw-property-display>
+        </sw-form>
+    </sw-modal-static-button>
+    <sw-modal-content>
+        <sw-form data-name="{{swSkuStockAdjustmentModalLauncher.name}}"
+                 data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"
+                 data-context="save"
+                 ng-if="swSkuStockAdjustmentModalLauncher.stockAdjustment != null">
+            <div class="row">
+
+                <div class="col-sm-4">
+                    <sw-sku-thumbnail data-sku-data="swSkuStockAdjustmentModalLauncher.sku.data"></sw-sku-thumbnail>
+                </div>
+
+                <div class="col-sm-8">
+                    <div class="row s-modal-module-wrapper">
+
+                        <div class="col-md-4">
+                            <div class="s-modal-module s-original-value">
+                                <div class="s-title">Original Qty</div>
+                                <div class="s-value">
+                                    <span ng-bind="swSkuStockAdjustmentModalLauncher.sku.data.calculatedQOH"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="s-modal-module">
+                                <div class="s-title">Adjustment</div>
+                                <div ng-class="{'s-positive':swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity > 0,
+                                                's-negative':swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity < 0}" class="s-value"><!-- s-positive class will turn green for positive number -->
+                                    <span>{{ swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.data.quantity }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-4">
+                            <div class="s-modal-module">
+                                <div class="s-title">New Qty</div>
+                                <div class="s-value">
+                                    <input type="number"
+                                           ng-model="swSkuStockAdjustmentModalLauncher.newQuantity"
+                                           ng-change="swSkuStockAdjustmentModalLauncher.updateStockAdjustmentQuantity()"
+                                           class="form-control input-xs" />
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                    <sw-typeahead-search
+                        data-placeholder-text="Search Locations..."
+                        data-entity="Location"
+                        data-property-to-show="'locationName'"
+                        data-add-function="swSkuStockAdjustmentModalLauncher.addSelectedLocation"
+                        data-validate-required="true"
+                        data-typeahead-data-key="{{swSkuStockAdjustmentModalLauncher.selectedLocationTypeaheadDataKey}}"
+                        >
+                        <span sw-typeahead-search-line-item data-property-identifier="locationName">
+                        </span>
+                    </sw-typeahead-search>
+                    <!-- Temporary Omitting this field, not sure if we have the js capability to simple add comments
+                         without manually creating a comment entity and commentRelationship
+                    <div class="form-group">
+                        <label for="" class="control-label">Comment:</label>
+                        <textarea class="form-control"></textarea>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </sw-form>
+        <sw-form
+                 data-name="stockAdjustmentItemForm"
+                 data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
+                 data-context="save">
+                 <input style="display:none" type="number" name="quantity" ng-model="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.quantity" />
+        </sw-form>
+    </sw-modal-content>
+</sw-modal-launcher>
