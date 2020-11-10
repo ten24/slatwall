@@ -178,10 +178,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return { 
-			"ordersOnAccount":  ordersList.getPageRecords(formatRecord = false), 
-			"records": ordersList.getRecordsCount()
-		};
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecord = false), "records": ordersList.getRecordsCount()}
 	}
 	
 	/**
