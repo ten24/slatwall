@@ -75,7 +75,7 @@
          </ul> 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn" ng-class="{ loading: promoModal.loading }" ng-click="promoModal.addToCart()">Add to Cart</button>
+        <button type="button" class="btn" ng-disabled="promoModal.loading " ng-class="{ loading: promoModal.loading }" ng-click="promoModal.addToCart()">Add to Cart</button>
       </div>
     </div>
   </div>

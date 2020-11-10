@@ -149,6 +149,7 @@
 				style="z-index: 1" 
 				class="btn btn-secondary forward-btn forward" 
 				ng-click="flexshipFlow.next();"
+				ng-disabled="flexshipFlow.loading" 
 				ng-class="{'loading': flexshipFlow.loading }"
 			>
 

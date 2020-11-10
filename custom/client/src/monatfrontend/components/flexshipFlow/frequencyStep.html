@@ -32,6 +32,7 @@
 <button 
 	ng-click="frequencyStep.setOrderTemplateFrequency()"
 	class="btn btn-secondary forward-btn forward" 
+	ng-disabled=" frequencyStep.loading"
 	ng-class="{loading: frequencyStep.loading}"
 >	
 	<span sw-rbkey="'frontend.global.next'"></span> <i class="fas fa-chevron-right"></i>

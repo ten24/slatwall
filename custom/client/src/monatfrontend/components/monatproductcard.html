@@ -97,6 +97,7 @@
          <button 
             ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode);" 
             class="btn bg-primary add-to-cart" 
+            ng-disabled="monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID"
             ng-class="{
                 'bg-primary': monatProductCard.type == 'enrollment',
                 loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID,
@@ -160,7 +161,7 @@
 							ng-click="monatProductCard.deleteWishlistItem(slatwall.currentProductCardIndex)"
 							sw-rbKey="'define.yes'"
 							ng-class="{loading: monatProductCard.loading}"
-							ng-disabled="monatProductCard.product.displayOnlyFlag"
+							ng-disabled="monatProductCard.product.displayOnlyFlag || monatProductCard.loading"
 						></button>
 					</div>
 				</div>

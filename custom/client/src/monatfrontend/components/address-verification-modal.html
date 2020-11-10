@@ -44,7 +44,6 @@
 			<div class="footer">
 				<button
 					class="btn btn-block bg-primary"
-					ng-class="{ loading: addressVerification.loading }"
 					ng-disabled = "addressVerification.loading || addressVerification.selectedAddressIndex == undefined"
 					sw-rbkey="'frontend.checkout.okay'"
 					ng-click="addressVerification.submit()"

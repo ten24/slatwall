@@ -29,7 +29,7 @@
 	                    </div>
 					</div>
 					<div class="modal-footer">
-						<button ng-class="{loading: swfForm.loading}" type="submit" value="{{wishlistEditModal.translations.save}}" class="btn bg-primary save-btn px-5 py-3">{{wishlistEditModal.translations.save}}</buton>
+						<button ng-disabled="swfForm.loading" ng-class="{loading: swfForm.loading}" type="submit" value="{{wishlistEditModal.translations.save}}" class="btn bg-primary save-btn px-5 py-3">{{wishlistEditModal.translations.save}}</buton>
 						<button ng-click="wishlistEditModal.close()" type="button" class="btn bg-primary py-3">{{wishlistEditModal.translations.cancel}}</button>
 					</div>
 				</form>
