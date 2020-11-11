@@ -386,26 +386,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	 * @test
 	*/
-	public void function validateAccountData_should_fail_for_username(){
-	    
-	    var sampleAccountData = getSampleAccountData();
-	    sampleAccountData.delete('username');
-	    sampleAccountData['usernameeee'] = "nitin.yadav";
-	    
-	    var validation = this.getService().validateEntityData(
-	        entityName="Account", 
-	        data = sampleAccountData, 
-	        collectErrors = true 
-	    );
-	    
-	    debug(validation);
-	    assertFalse(validation.isValid);
-	    expect(validation.errors).toHaveKey('username', "the validation should fail for username");
-	}
-	
-	/**
-	 * @test
-	*/
 	public void function validateAccountData_should_pass_for_valida_data(){
 	    
 	    var sampleAccountData = getSampleAccountData();
@@ -1164,32 +1144,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'emailAddress' ");
     }
-    
-    
-    /** 
-	 * @test
-	*/
-    public void function transformAccountDataTest_should_contain_accountAuthentication_properties(){
-	    
-	    var sampleAccountData = getSampleAccountData();
-	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
-	    debug(data);
-	    
-	    expect(data).toHaveKey('accountAuthentications', "transformed data should have key 'accountAuthentications' ");
-	    expect(data.accountAuthentications).toBeTypeOf('array',  "accountAuthentications should be an struct ");
-	    
-	    var accountAuthentication = data.accountAuthentications[1];
-	    expect(accountAuthentication).toBeTypeOf('struct',  "accountAuthentication should be an struct ");
-	   
-	    expect(accountAuthentication).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
-	    expect(accountAuthentication).toHaveKey('accountAuthenticationID',  "transformed data should have key 'accountAuthenticationID' ");
-	    
-	    expect(accountAuthentication).toHaveKey('password',  "transformed data should have key 'password' ");
-	    expect(accountAuthentication).toHaveKey('activeFlag',  "primaryEmailAddress should have key 'activeFlag' ");
-	    expect(accountAuthentication).toHaveKey('updatePasswordOnNextLoginFlag',  "primaryEmailAddress should have key 'updatePasswordOnNextLoginFlag' ");
-    }
-    
     
     /**
      * @test
