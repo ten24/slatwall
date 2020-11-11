@@ -67,9 +67,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
   	        
             //creating struct for fast-lookups
             variables.sampleCSVFilesOptions = {
-                "Account" : "account",
-                "Product" : "product",
-                "Sku"     : "sku",
+                "Account"		: "account",
+                "Product"		: "product",
+                "Sku"   		: "sku",
+                "Inventory"     : "inventory"
                 
             };
             // TODO, need a way to figureout which entity-mappings are allowed to be import, 
@@ -137,9 +138,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			    return batch;
 			}
 		} 
-		catch ( any e ){
-		    this.getHibachiUtilityService().logException( e );
-    		this.getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
+		catch ( any e ){ 
+			this.getHibachiUtilityService().logException( e );
+    		this.getHibachiScope().showMessage("An error occurred while uploading your file - " & e.Message, "error");
 		}
 		
   	}

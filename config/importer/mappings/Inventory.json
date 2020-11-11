@@ -1,13 +1,23 @@
 {
     "entityName": "Inventory",
-    
+
     "properties": {
-        
+
         "remoteInventoryID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
                 "dataType": "string"
+            }
+        },
+        "remoteSkuID": {
+            "validations": {
+                "required": true,
+            }
+        },
+        "remoteLocationID": {
+            "validations": {
+                "required": true,
             }
         },
         "quantityIn": {
@@ -51,50 +61,27 @@
             "validations": {
                 "dataType": "string"
             }
-        },
-        "createdDateTime": {
-            "propertyIdentifier": "createdDateTime",
-            "validations": {
-                "dataType": "date"
-            }
         }
-        
     },
-    
-    
-    "relaions" : [
+
+
+    "relations" : [
         {
-            // stock
-            // generator function
+            "type": "manyToOne",
+            "entityName": "Stock",
+            "propertyIdentifier": "stock",
+            "excludeFromTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateInventoryStock"
         }
-    ] 
-    
-    "dependancies" : [
-    
-        "remoteSkuID": {
-            "propertyIdentifier": "remoteID",
-            "validations": {
-                "required": true,
-                "dataType": "string"
-            }
-        },
         
-        "remoteLocationID": {
-            "propertyIdentifier": "remoteID",
-            "validations": {
-                "dataType": "string"
-            }
-        },  
-        
-        
-    ]
+    ],
     
-    // remoteSkuID
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "inventoryID"
+            "remoteInventoryID"
         ]
     }
 }
