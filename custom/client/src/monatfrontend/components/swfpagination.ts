@@ -6,6 +6,7 @@ class SWFPaginationController {
     public pageItems:any;
     public action:string;
     public httpMethod:string = 'GET';
+    public showPageNumber:boolean;
     public itemsPerPage:number = 10;
     public recordsCount:number;
     public totalPageArray:Array<any>;
@@ -18,7 +19,7 @@ class SWFPaginationController {
     public parentController;
     private scrollTo:string;
     private pageCache = {};
-    
+    public displayPagination = true;
 	// @ngInject
 	constructor(public observerService, public $scope, public publicService, private $q) { 
         this.observerService.attach(this.init,"PromiseComplete"); 
@@ -31,10 +32,13 @@ class SWFPaginationController {
 	}
 	
 	public init = () => {
+	    console.log('INIT');
 	    this.pageTracker = 1;
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
+        
+        console.log('INIT');
 
         //create two arrays, one for the entire page list, and one for the display (ie: 1-10...)
         for(var i = 1; i <= this.totalPages; i++){
@@ -47,7 +51,12 @@ class SWFPaginationController {
         this.totalPageArray = holdingArray;
 	}
 	
-    public getNextPage = ( pageNumber = 1, direction:any = false, newPages = false) => {
+    public paginate = ( pageNumber = 1, direction:any = false, newPages = false) => {
+        
+        if(this.pageTracker == pageNumber){
+            return;
+        }
+        
 		let newPage = newPages;
 		let lastDisplayPage = this.displayPages[this.displayPages.length -1];
 		
@@ -157,7 +166,8 @@ class SWFPagination {
 		argumentsObject:'<?', //optional object of arguments to pass in to the api call
 		beginPaginationAt:'@?', //this is unneeded unless the user wants the ellipsis to begin following a number other than 11
 	    parentController:'=?',
-	    scrollTo:'@?'
+	    scrollTo:'@?',
+	    showPageNumber:'=?' // Display page numbers or just the arrows [<] [>]
 	};
 
 	public controller = SWFPaginationController;
