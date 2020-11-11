@@ -1,15 +1,15 @@
 import React from "react"
 import { connect } from "react-redux"
-import { Product } from ".."
+import { Layout, Product } from "../../components"
 
 const ProductListing = props => {
   return (
-    <div>
+    <Layout>
       {props.products.map(product => {
         return <Product key={product.id} product={product} />
       })}
       <h1>Product Listing </h1>
-    </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => {

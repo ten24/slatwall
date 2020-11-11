@@ -2,6 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import { addProductToCart } from "../../actions"
 import { withRouter } from "react-router"
+import { Layout } from "../../components"
 
 class ProductDetail extends React.Component {
   addToCart = () => {
@@ -10,11 +11,11 @@ class ProductDetail extends React.Component {
   render() {
     const { id, title, description } = this.props.product
     return (
-      <div>
+      <Layout>
         <h1>Book name {title}</h1>
         <p>{description}</p>
         <button onClick={this.addToCart}>Add to Cart</button>
-      </div>
+      </Layout>
     )
   }
 }

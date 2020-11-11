@@ -1,6 +1,6 @@
 import React from "react"
 import { Route, Switch } from "react-router-dom"
-import { NotFound, Home, ProductDetail, ProductListing, Cart } from "."
+import { ProductDetail, Home, NotFound, Cart, ProductListing } from "../pages"
 
 const Routes = () => {
   return (
@@ -12,9 +12,8 @@ const Routes = () => {
         <Route path="/product/:id">
           <ProductDetail />
         </Route>
-        <Route path="/products" children={<ProductListing />} />
-        <Route path="/about">
-          <h1>About</h1>
+        <Route path="/products">
+          <ProductListing />
         </Route>
         <Route path="/cart">
           <Cart />

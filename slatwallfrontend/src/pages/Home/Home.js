@@ -1,14 +1,14 @@
 import React from "react"
-const { SWSlider } = require("..")
+import { Layout } from "../../components"
+import { SWSlider } from "../../components"
 
 class Home extends React.Component {
   render() {
     return (
-      <>
+      <Layout>
         <h1>Home</h1>
-
         <SWSlider />
-      </>
+      </Layout>
     )
   }
 }

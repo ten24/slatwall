@@ -31,11 +31,6 @@ function Navigation(props) {
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/about">
-              about
-            </Link>
-          </li>
-          <li className="nav-item">
             <Link className="nav-link" to="/products">
               All Products
             </Link>
