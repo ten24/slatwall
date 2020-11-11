@@ -251,7 +251,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			if(!directoryExists(cacheDirectory)) {
 				directoryCreate(cacheDirectory);
 			}
-
+			
 			var resizedImagePath = replaceNoCase(replaceNoCase(arguments.imagePath, listLast(arguments.imagePath, "/\"), "cache/#listLast(arguments.imagePath, "/\")#"),".#imageExt#","#imageNameSuffix#.#imageExt#");
 
 			// Make sure that if a cached images exists that it is newer than the original
