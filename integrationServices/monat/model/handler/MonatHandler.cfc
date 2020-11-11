@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     public void function afterInfotraxAccountCreateSuccess(any slatwallScope, any entity, any eventData) {
 
 		//Clear the encrypted govt-id-NUMBER 
-		if( arguments.entity.getAccountGovernmentIdentificationsCount() ){
+		if( arguments.entity.getAccountGovernmentIdentificationsCount() && arguments.entity.getAccountCreatedSite().getCmsSiteID() != 'uk'){
 			//in current specs, there can be only one govt-ID per account
 			arguments.entity.getAccountGovernmentIdentifications()[1]
 				.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));

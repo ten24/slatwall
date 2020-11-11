@@ -1,0 +1,48 @@
+<!---- Send Enrollment modal --->
+<div class="modal using-modal-service slide-out-modal" id="save-enrollment" tabindex="-1" role="dialog" aria-labelledby="save-enrollment" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<i class="far fa-chevron-left"></i> <span sw-rbKey="'frontend.global.back'"></span>
+			</button>
+			<div class="modal-body">
+				<img src="/themes/monat/assets/images/send-icon.png"  alt="Save Enrollment" width="45px" height="auto">
+				<h3 class="text-center mb-2 mb-md-4" sw-rbKey="'frontend.enrollment.sendEnrollmentTitle'"></h3>
+
+				<div class="material-field">
+					<input 
+						id="receiverName" 
+						type="text" 
+						name="name" 
+						class="form-control success" 
+						ng-model="saveEnrollmentModal.name" 
+						swvalidationrequired="false"
+					>
+					<label for="receiverName">
+						<span sw-rbkey="'frontend.enrollment.firstLastName'"></span>
+					</label>
+					<sw:SwfErrorDisplay propertyIdentifier="receiverName" />
+                </div>
+				
+				<div class="material-field">
+					<input 
+						id="receiverEmailAddress" 
+						type="email" 
+						name="emailAddress" 
+						class="form-control success" 
+						ng-model="saveEnrollmentModal.emailAddress" 
+						swvalidationdatatype="email" 
+						swvalidationrequired="true"
+					>
+					<label for="receiverEmailAddress">
+						<span sw-rbkey="'frontend.newAddress.emailAddress'"></span>
+					</label>
+					<sw:SwfErrorDisplay propertyIdentifier="receiverEmailAddress" />
+                </div>
+                
+                <button ng-disabled="saveEnrollmentModal.loading" ng-class="{loading: saveEnrollmentModal.loading}" ng-click="saveEnrollmentModal.saveEnrollment()" value="{{frontend.wishlist.send}}" class="btn bg-primary save-btn px-5 py-3 mt-3 mt-md-5"><span sw-rbKey="'frontend.wishlist.send'"></span></buton>
+			</div>
+		</div>
+	</div>
+</div>
+<!---- END: Send Enrollment modal --->

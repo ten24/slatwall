@@ -40,7 +40,7 @@
 	                    </div>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" sw-rbkey="'frontend.wishlist.send'" ng-class="{loading: swfForm.loading}" class="btn bg-primary save-btn px-5 py-3"></button>
+						<button type="submit" sw-rbkey="'frontend.wishlist.send'" ng-disabled="swfForm.loading" ng-class="{loading: swfForm.loading}" class="btn bg-primary save-btn px-5 py-3"></button>
 						<button type="button" class="btn bg-primary py-3" sw-rbkey="'frontend.wishlist.cancel'" ng-click="monatProductReview.closeModal()"></button>
 					</div>
 				</form>

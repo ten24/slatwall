@@ -1,7 +1,7 @@
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal';
+        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal,qualifiedMerchandiseRewardsArray';
     }
    
 	public array function getOrderEventOptions(){
@@ -579,7 +579,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
-		
+
 		if( orderType.getSystemCode() == 'otSalesOrder'
 			&& arguments.systemCode == 'ostProcessing'
 			&& !len(arguments.typeCode)
@@ -2160,14 +2160,15 @@ component extends="Slatwall.model.service.OrderService" {
 						WHERE ro.orderTypeID = :returnOrderTypeID
 							AND o.orderTypeID = :salesOrderTypeID
 							AND ro.orderStatusTypeID = :receivedStatusTypeID
-							AND o.calculatedSubtotal = -1 * ro.calculatedSubtotal
+							AND o.calcSubTotalAfterItemDiscounts = -1 * ro.calcSubTotalAfterItemDiscounts
 						ORDER BY ro.orderID";
 		var fullRmaParams = {
 			'salesOrderTypeID':salesOrderTypeID,
 			'returnOrderTypeID':returnOrderTypeID,
 			'receivedStatusTypeID':receivedStatusTypeID
 		};
-			
+		
+		queryExecute(fullRmaSql,fullRmaParams);
 
 		return arguments.order;
 	}

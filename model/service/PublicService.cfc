@@ -1595,7 +1595,6 @@ component  accessors="true" output="false"
             return;
         }
 
-       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {
@@ -2410,6 +2409,41 @@ component  accessors="true" output="false"
      public void function getExpirationYearOptions(required any data) {
        	var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
+    }
+    
+    public void function getQualifiedMerchandiseRewardsForOrder(required struct data){
+        param name="arguments.data.orderID";
+        
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
+            var rewardArgs = {
+                order:order,
+                apiFlag:true,
+                rewardTypeList:'merchandise'
+            };
+            var rewards = getService('PromotionService').getQualifiedPromotionRewardsForOrder(argumentCollection=rewardArgs);
+            
+            arguments.data['ajaxResponse']['rewards'] = rewards;
+        }
+    }
+    
+    public void function getQualifiedPromotionRewardSkusForOrder(required struct data){
+        param name="arguments.data.orderID";
+        /*
+            OrderID is required, data can also include promotionRewardID to return skus for a particular reward.
+            Other optional arguments: pageRecordsShow (default 25), formatRecords (default false)
+        */
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
+            arguments.data.order = order;
+            var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
+        }
     }
     
 }
