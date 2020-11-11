@@ -527,7 +527,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function validateEntityData_should_ignre_validation_errors_for_nullabe_relation(){
+    public void function validateEntityData_should_not_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_exist_in_source_data(){
 
         var sampleAccountData = getSampleAccountData();
 	    sampleAccountData['email'] = "Invalid Email Address";
@@ -545,7 +545,91 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         );
 	    
 	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('email');
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_not_exist_in_source_data(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
 	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_not_return_empty_relations_for_failed_validation_when_data_does_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address"; // the validation will fail for email type
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('email');
+	    
+	    expect(validation.emptyRelations).toBeEmpty();
+    }
+    
+     /**
+     * @test
+    */
+    public void function validateEntityData_should_return_empty_relations_when_data_doesnot_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+
+	    assertTrue( isStruct(validation.emptyRelations) );
+	    expect(validation.emptyRelations).toHaveKey('primaryEmailAddress');
+	    assert(validation.emptyRelations.primaryEmailAddress.isEmptyRelation);
+
 	    expect(validation.errors).toBeEmpty();
     }
     
@@ -1133,6 +1217,75 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'transformAccountData_spy_called');
         structDelete( variables.service, 'transformAccountData');
     }
+    
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_data_for_relation_when_source_data_doesnot_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+        
+        var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+        
+        debug(validation);
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping, 
+            emptyRelations = validation.emptyRelations
+        );
+	    
+	    debug(transformedData);
+	    
+	    assertFalse(structKeyExists(transformedData, 'primaryEmailAddress'));
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_for_relation_when_source_data_does_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+        
+        var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+        
+        debug(validation);
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping, 
+            emptyRelations = validation.emptyRelations
+        );
+	    
+	    debug(transformedData);
+	    
+	    assertTrue(structKeyExists(transformedData, 'primaryEmailAddress'));
+    }
+    
     
     /** ***************************.  EntityQueue and FailureQueue .***************************** */
 

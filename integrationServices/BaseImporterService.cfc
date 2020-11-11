@@ -59,11 +59,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiEntityQueueDAO";
 
 	property name = "cachedEntityMappings" type="struct";
+	property name = "cachedMappingPropertiesValidations" type="struct";
 	
 	
 	public any function init() {
 	    super.init(argumentCollection = arguments);
 	    this.setCachedEntityMappings( {} );
+	    this.setCachedMappingPropertiesValidations( {} );
 	}
 	
 	
@@ -471,6 +473,59 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    return this.genericValidateEntityData( argumentCollection = arguments);
         }
     }
+    
+    public struct function getEntityPropertiesValidations( required struct mapping ){
+        
+        var cachedMappingPropertiesValidations = this.getCachedMappingPropertiesValidations();
+        var cacheKey = hash(serializeJson(arguments.mapping), 'md5');
+        
+        if(structKeyExists(cachedMappingPropertiesValidations, cacheKey) ){
+            return cachedMappingPropertiesValidations[ cacheKey ];
+        }
+        
+        var propertiesValidations = {};
+        // loop over all of the properties and grab all of the properties having validation rules
+	    if( structKeyExists(arguments.mapping, 'properties') ){
+    	    for( var sourcePropertyName in arguments.mapping.properties ){
+    	        var propertyMetaData = arguments.mapping.properties[sourcePropertyName];
+    	        if( structKeyExists(propertyMetaData, 'validations') ){
+    	            propertiesValidations[ sourcePropertyName ] = propertyMetaData.validations;
+    	        }
+    	    }
+	    }
+	    
+	    // loop over all of the entity dependancies and make sure the dependancy-key prop is required in the validations
+	    if( structKeyExists(arguments.mapping, 'dependencies') ){
+	        for( var dependency in arguments.mapping.dependencies ){
+	            // skip nullble dependencies
+  	            if(structKeyExists(dependency, 'isNullable') &&  dependency.isNullable ){
+  	                continue;
+  	            }
+  	            
+  	            if( !structKeyExists(propertiesValidations, dependency.key) ){
+  	                propertiesValidations[ dependency.key ] = {};
+  	            }
+  	            // make sure dependancy-key[sourcePropertyName] is required
+  	            propertiesValidations[ dependency.key ]['required'] = true;
+	        }
+	    }
+        
+	    // loop over all of the keys in importIdentifier and make sure these are required in the validations
+	    for(var sourcePropertyName in mapping.importIdentifier.keys ){
+
+            if( !structKeyExists(propertiesValidations, sourcePropertyName) ){
+                propertiesValidations[ sourcePropertyName ] = {};
+            }
+            // make sure dependancy sourcePropertyName is required
+            propertiesValidations[ sourcePropertyName ]['required'] = true;
+	    }
+        
+        
+        // put it into cache
+        cachedMappingPropertiesValidations[ cacheKey ] = propertiesValidations;
+        
+	    return propertiesValidations;
+    }
 
 	public struct function genericValidateEntityData( required struct data, required struct mapping, boolean collectErrors = false ){
 	    
@@ -479,57 +534,54 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var isValid = true;
 	    var errors = {};
-	    var emptyRelations={};
+	    var emptyRelations = {};
+	    var hasAllRequiredProperties = true;
 	    
-	    // FIXME : now that this function has grown and we're vlidation for, 'dependencies', and `importIdentifier` keys
-	    // which might cause redundent validation, for `required` constraint if the property already exist in previous validations ['properties', 'relations']
-	    // this is not too big of a deal, but a better approach will be to compile an array of validations+constraints and loop over that;
-	    
-	    // validate entity properties
-	    if( structKeyExists(arguments.mapping, 'properties') ){
+	    var entityPropertiesValidations = this.getEntityPropertiesValidations( arguments.mapping );
+	    for( var propertyName in entityPropertiesValidations ){
+	        var propertyValidations = entityPropertiesValidations[propertyName];
 	        
-    	    for( var propertyName in arguments.mapping.properties ){
-    	        var propertyMeta = arguments.mapping.properties[propertyName];
-    	        
-    	        if( structKeyExists(propertyMeta, 'validations') ){
-    	            for( var constraintType in propertyMeta.validations ){
-    	                var constraintValue = propertyMeta.validations[constraintType];
-    	                
-                        isValid = this.validateConstraintType(
-                            constraintType  = constraintType, 
-                            constraintValue = constraintValue, 
-                            propertyValue   = arguments.data[propertyName] ?: javaCast('null', 0)
+            for( var constraintType in propertyValidations ){
+                var constraintValue = propertyValidations[constraintType];
+                
+                isValid = this.validateConstraintType(
+                    constraintType  = constraintType, 
+                    constraintValue = constraintValue, 
+                    propertyValue   = arguments.data[propertyName] ?: javaCast('null', 0)
+                );
+               
+                if( !isValid ){
+                
+                    if( constraintType == 'required' && constraintValue == true ){
+                        hasAllRequiredProperties = false;
+                    }
+                
+                    // if we're instructed to collecth the errors.
+                    if( arguments.collectErrors ){
+                        var errorMessage = this.createErrorMessageForFailedConstraint(
+                            entityName      = entityName,
+                            propertyName    = propertyName,
+                            constraintType  = constraintType,
+                            constraintValue = constraintValue
                         );
-    	               
-                        if( !isValid ){
-                            // if we're instructed to collecth the errors.
-                            if( arguments.collectErrors ){
-                                var errorMessage = this.createErrorMessageForFailedConstraint(
-                                    entityName      = entityName,
-                                    propertyName    = propertyName,
-                                    constraintType  = constraintType,
-                                    constraintValue = constraintValue
-                                );
-                        		// collecting the error
-                        		if( !structKeyExists(errors, propertyName) ){
-                        		    errors[propertyName] = [];
-                        		}
-                                ArrayAppend( errors[propertyName],  errorMessage );  
-                        		//resetting the flag to continue validating;
-                                isValid = true;
-                            } else { 
-                                break;
-                            }
-                        }
-                        
-    	            }
-    	        }
-    	        
-    	        if( !isValid && !arguments.collectErrors ){
-    	            break;
-    	        }
-    	    }
+                		// collecting the error
+                		if( !structKeyExists(errors, propertyName) ){
+                		    errors[propertyName] = [];
+                		}
+                        ArrayAppend( errors[propertyName],  errorMessage );  
+                		//resetting the flag to continue validating;
+                        isValid = true;
+                    } else { 
+                        break;
+                    }
+                }
+            }
+        
+	        if( !isValid && !arguments.collectErrors ){
+	            break;
+	        }
 	    }
+	    
 	    
 
 	    // validate related sub-entities as well
@@ -561,99 +613,45 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 }
                 
                 if( !relationValidation.isValid ){
-                    if( thisRelation.isNullable ){
-                        // if the relation is-not-valid and it's nullable than we can carry forward this info into 
-                        // transform-entity-data function, so it can ignore this relation properties;
-                        thisRelation['isEmptyRelation'] = true;
-                        continue; // nullable relations can be ignored
+                
+                    if( !relationValidation.hasAllRequiredProperties && thisRelation.isNullable ){
+                        /*
+                         if all of the required fields for the relation are not available in the source-data 
+                         and it's nullable relation; 
+                         than we carry-forward this info into transform-entity-data function, 
+                         so that it can ignore createing data for this relation;
+                         
+                         if the relation is not-nullable then the validation will still errors-out;
+                         
+                        */
+                        
+                        thisRelation.isEmptyRelation = true;
+                        
+                        // NOTE: validation errors for nullable-relations are ignored
+                        
                     } else if( arguments.collectErrors ){
+                    
                             errors = this.mergeErrors( errors, relationValidation.errors );
+                            
                     } else {
                         // else if the validation has failed and the relations is not nullable 
                         // and we're not collecting errors than we can break the loop;
                         break;
                     }
                 }
-                
+
                 if( thisRelation.isEmptyRelation || thisRelation.hasEmptyRelations ){
                     emptyRelations[ thisRelation.propertyIdentifier ] = thisRelation;
                 }
 	        }
 	    }
 	    
-	    // validate that the source properties exist for dependencies
-	    if( structKeyExists(mapping, 'dependencies') ){
-	    
-  	        for( var dependency in mapping.dependencies ){
-  	            // skip nullble dependencies
-  	            if(structKeyExists(dependency, 'isNullable') &&  dependency.isNullable ){
-  	                continue;
-  	            }
-  	            // validate that the dependency key exist in the source data
-  	            isValid = this.validateConstraintType(
-  	                constraintType  = 'required', 
-  	                constraintValue = 'true',
-  	                propertyValue   = arguments.data[ dependency.key ] ?: javaCast('null', 0)
-  	            )
-  	            
-  	            if(!isValid){
-      	            if( arguments.collectErrors ){
-                        var errorMessage = this.createErrorMessageForFailedConstraint(
-                            entityName      = entityName,
-                            propertyName    = dependency.key,
-                            constraintType  = 'required',
-                            constraintValue = 'true'
-                        );
-                		// collecting the error
-                		if( !structKeyExists(errors, dependency.key) ){
-                		    errors[dependency.key] = [];
-                		}
-                        ArrayAppend( errors[dependency.key],  errorMessage );  
-                		//resetting the flag to continue validating;
-                        isValid = true;
-                        
-                    } else {
-                        break;
-                    } 
-  	            }
-	        }
-  	    }
-	    
-	    // validate that importIdentifier exists
-	    for(var key in mapping.importIdentifier.keys ){
-
-            isValid = this.validateConstraintType(
-                constraintType  = 'required', 
-                constraintValue = 'true',
-                propertyValue   = arguments.data[key] ?: javaCast('null', 0)
-            )
-            
-            if( !isValid ){
-                if( arguments.collectErrors ){
-                    var errorMessage = this.createErrorMessageForFailedConstraint(
-                        entityName      = entityName,
-                        propertyName    = key,
-                        constraintType  = 'required',
-                        constraintValue = 'true'
-                    );
-            		// collecting the error
-            		if( !structKeyExists(errors, key) ){
-            		    errors[key] = [];
-            		}
-                    ArrayAppend( errors[key],  errorMessage );  
-            		//resetting the flag to continue validating;
-                    isValid = true;
-                    
-                } else {
-                    break;
-                } 
-            }
-	    }
 	    
 	    return { 
-	        isValid: arguments.collectErrors ?  StructIsEmpty( errors ) : isValid, 
-	        errors: errors,
-	        emptyRelations: emptyRelations
+	        'isValid'                     : arguments.collectErrors ? StructIsEmpty( errors ) : isValid, 
+	        'errors'                      : errors,
+	        'emptyRelations'              : emptyRelations,
+	        'hasAllRequiredProperties'    : hasAllRequiredProperties
 	    };
 	}
 	
