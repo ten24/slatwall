@@ -483,7 +483,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		if (IsJSON(responseData.FileContent)){
 			var fileContent = DeserializeJSON(responseData.FileContent);
 
-			if (structKeyExists(fileContent,'resultCode') && fileContent.resultCode == 'Error' && !isNull(fileContent.messages)){
+			if (structKeyExists(fileContent,'resultCode') && fileContent.resultCode == 'Error' && structKeyExists(fileContent,'messages')){
 				responseBean.setData(fileContent.messages);
 			}
 				
