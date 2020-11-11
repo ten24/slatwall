@@ -78,6 +78,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
 	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
+	property name="defaultImageModifiedDateTime" ormtype="timestamp" description="This field can be set to for image cache.";
+
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
