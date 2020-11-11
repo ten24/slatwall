@@ -58,6 +58,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    }
         return variables.integration;
     }
+    
+    
     public any function getTokens(){
 		writeDump(getHibachiCacheService().getCachedValue('grantToken'));
 		writeDump(getHibachiCacheService().getCachedValue('accessToken'));abort;
@@ -132,7 +134,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
     }
     
-    public any function getAccountData(){
+    public any function getAccountData(pageNumber,pageSize){
     	logHibachi("ERPONE - Start fetching data - Account");
     	var authorizeToken = this.getAccessToken();
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/read');
@@ -140,19 +142,21 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		// Authentication headers
 		httpRequest.addParam( type='header', name='authorization', value=authorizeToken);
 		httpRequest.addParam( type='formfield', name='query', value= "FOR EACH customer WHERE customer.active = YES");
-		httpRequest.addParam( type='formfield', name='take', value= "10");
+		httpRequest.addParam( type='formfield', name='skip', value= pageNumber);
+		httpRequest.addParam( type='formfield', name='take', value= pageSize);
 		httpRequest.addParam( type='formfield', name='columns', value= "name,country_code,email_address,phone,Active,company_cu");
 		
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
-		response = DeSerializeJson(rawRequest.fileContent); 
-		var payload = this.transformErponeAccountData(response);
+		response = DeSerializeJson(rawRequest.fileContent);
+		return response;
+		// var payload = this.transformErponeAccountData(response);
 		
-		logHibachi("ERPONE - Start pushData - Account into batch");
+		// logHibachi("ERPONE - Start pushData - Account into batch");
 		
-		var batch = this.pushRecordsIntoImportQueue( "Account", payload );
+		// var batch = this.pushRecordsIntoImportQueue( "Account", payload );
 		
-		logHibachi("ERPONE - Start pushData - Account into batch");
+		// logHibachi("ERPONE - Start pushData - Account into batch");
     }
     
     
@@ -205,4 +209,34 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    }
 	    return transformedData;
 	}
+	
+	public any function getAccountPagination(){
+		
+		logHibachi("ERPONE - Start fetching pagination for Account");
+		
+    	var authorizeToken = this.getAccessToken();
+    	var httpRequest = this.createHttpRequest('distone/rest/service/data/count');
+		
+		// Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=authorizeToken);
+		httpRequest.addParam( type='formfield', name='table', value= "customer");
+		
+		var rawRequest = httpRequest.send().getPrefix();
+		var response = {};
+		response = DeSerializeJson(rawRequest.fileContent);
+		var pageNumber = 1;
+		var pageSize = 50;
+		var pageMax = response.count;
+		
+		while (pageNumber < pageMax){
+			try{
+				logHibachi("ERPONE - Calling API to fetch records for Account");
+				this.getAccountData(pageNumber,pageSize	
+			}catch(e){
+				logHibachi("Failed #e# @ PageSize: #pageSize# PageNumber: #pageNumber#");
+			}
+			pageNumber=pageNumber+pageSize;
+		}
+	}
+	
 }

@@ -20,4 +20,8 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	public any function getAccountData(){
 	    getService('erpOneService').getAccountData();
 	}
+	// Get Pagination
+	public any function getPagination(){
+	    getService('erpOneService').getAccountPagination();
+	}
 }

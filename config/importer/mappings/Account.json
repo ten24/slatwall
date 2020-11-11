@@ -57,11 +57,6 @@
     "relations": [
         {
             "type": "oneToOne",
-            "entityName": "AccountEmailAddress",
-            "propertyIdentifier": "primaryEmailAddress"
-        },
-        {
-            "type": "oneToOne",
             "entityName": "AccountPhoneNumber",
             "propertyIdentifier": "primaryPhoneNumber"
         },
