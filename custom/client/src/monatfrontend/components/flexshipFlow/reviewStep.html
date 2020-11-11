@@ -181,6 +181,7 @@
 								ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.statusCode != 'otstActive' "
 								ng-click="reviewStep.activateFlexship()"
 								class="btn bg-secondary btn-block" 
+								ng-disabled="reviewStep.loading" 
 								ng-class="{loading:reviewStep.loading}"
 							>
 								<span sw-rbKey="'frontend.flexship.activate'"></span>
@@ -190,6 +191,7 @@
 								ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.statusCode == 'otstActive' "
 								ng-click="reviewStep.backToListing()"
 								class="btn bg-secondary btn-block" 
+								ng-disabled="reviewStep.loading" 
 								ng-class="{loading:reviewStep.loading}"
 							>
 								<span sw-rbKey="'frontend.flexship.finalize'"></span>

@@ -21,7 +21,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button ng-class="{loading: addressDeleteModal.loading}" ng-click="addressDeleteModal.deleteAccountAddress()" value="{{addressDeleteModal.translations.save}}" class="btn bg-primary save-btn px-5 py-3"><span sw-rbKey="'frontend.myaccount.delete'"></span></buton>
+					<button ng-disabled="addressDeleteModal.loading" ng-class="{loading: addressDeleteModal.loading}" ng-click="addressDeleteModal.deleteAccountAddress()" value="{{addressDeleteModal.translations.save}}" class="btn bg-primary save-btn px-5 py-3"><span sw-rbKey="'frontend.myaccount.delete'"></span></buton>
 					<button ng-click="addressDeleteModal.close()" type="button" class="btn bg-primary py-3"><span sw-rbKey="'frontend.wishlist.cancel'"></span></button>
 				</div>
 			</div>

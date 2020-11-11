@@ -78,6 +78,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
 	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
+	property name="defaultImageModifiedDateTime" ormtype="timestamp" description="This field can be set to for image cache.";
+
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
@@ -234,12 +236,12 @@ property name="sapItemCode" ormtype="string";
     property name="personalVolumeByCurrencyCode" persistent="false";
 	property name="commissionableVolumeByCurrencyCode" persistent="false";
 	property name="AllowBackorderFlag" persistent="false";
-
+	
 
  property name="displayOnlyFlag" ormtype="boolean" hb_formatType="yesno" default="0";
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
- property name="backorderDate" ormtype="timestamp" hb_formatType="date";
- property name="dangerousGoodsFlag" ormtype="boolean" hb_formatType="yesno";//CUSTOM PROPERTIES END
+ property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
+ 
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -2078,7 +2080,14 @@ property name="sapItemCode" ormtype="string";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-public boolean function canBePurchased(required any account, any order){
+public string function getBackOrderedMessaging(){
+		if(!StructKeyExists(variables, "backOrderedMessaging") || isNull(variables.backOrderedMessaging)) {
+			return '';
+		}
+		return variables.backOrderedMessaging;
+	}
+	
+	public boolean function canBePurchased(required any account, any order){
 		
 		var accountType = 'customer';
 		

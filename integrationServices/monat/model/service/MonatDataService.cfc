@@ -886,7 +886,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,SKUItemID,ProductName,ProductCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
+		return "SKUItemCode,SKUItemID,ProductName,ProductCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle,DangerousGoodsFlag";
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -972,7 +972,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	public void function importMonatProducts(required struct rc){
 		param name="arguments.rc.pageNumber" default="1";
 		param name="arguments.rc.pageSize" default="100";
-		param name="arguments.rc.days" default=0;
+		param name="arguments.rc.minutes" default=30;
 		param name="arguments.rc.dryRun" default="false";
 
 
@@ -983,13 +983,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var extraBody = {};
 		
 
-		if(arguments.rc.days > 0){
+		if(arguments.rc.minutes > 0){
 		    
-		    logHibachi("importMonatProducts - Getting data for #arguments.rc.days# days", true);
+		    logHibachi("importMonatProducts - Getting data from the last #arguments.rc.minutes# minutes", true);
 		    
 			extraBody = {
 				"Filters": {
-				    "StartDate": DateTimeFormat( DateAdd('d', arguments.rc.days * -1, now()), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
+				    "StartDate": DateTimeFormat( DateAdd('n', arguments.rc.minutes * -1, now()), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
 		            "EndDate": DateTimeFormat( now(), "yyyy-mm-dd'T'23:59:59'.693Z'" )
 				}
 			};
@@ -1055,6 +1055,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					'CategoryNameAccounting' : trim(skuData['ItemCategoryName']),
 					'EntryDate' : skuData['EntryDate'],
 					'SAPItemCode' : skuData['ItemCode'],
+					'DangerousGoodsFlag': skuData['DangerousGoodsFlag'],
 					'Amount' : 0
 				};
 				
@@ -1098,6 +1099,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		
 		
 		logHibachi("importMonatProducts - Importing Products/Sku Count #skuQuery.recordCount#", true); 
+		
 		if(skuQuery.recordCount){
 
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');

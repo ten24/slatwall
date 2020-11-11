@@ -147,7 +147,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		
 		var tableName = '';
 		var filter = '';
-		var params = {};
+		var baseID = '';
 		
 		switch ( arguments.data.event ) {
 			
@@ -158,7 +158,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				relatedToAccount = true;
 				tableName ='swAccount';
 				filter = 'accountID = :baseID';
-				params['baseID'] = { value=arguments.entity.getAccount().getAccountID(), cfsqltype='cf_sql_varchar'};
+				baseID = arguments.entity.getAccount().getAccountID();
 				
 				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
@@ -171,7 +171,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterAccountSaveSuccess':
 				tableName ='swAccount';
 				filter = 'accountID = :baseID';
-				params['baseID'] = { value=arguments.entity.getAccountID(), cfsqltype='cf_sql_varchar'};
+				baseID = arguments.entity.getAccountID();
 				
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
@@ -188,7 +188,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_releaseCreditsSuccess':
 				tableName ='swOrder';
 				filter = 'orderID = :baseID';
-				params['baseID'] = { value=arguments.entity.getOrderID(), cfsqltype='cf_sql_varchar'};
+				baseID = arguments.entity.getOrderID();
 				
 				if(arguments.entity.getOrderStatusType().getSystemCode() == 'ostCanceled'){
 					if(len(arguments.entity.getIceRecordNumber())){
@@ -204,7 +204,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_cancelOrderSuccess':
 				tableName ='swOrder';
 				filter = 'orderID = :baseID';
-				params['baseID'] = { value=arguments.entity.getOrderID(), cfsqltype='cf_sql_varchar'};
+				baseID = arguments.entity.getOrderID();
 				
 				if(len(arguments.entity.getIceRecordNumber())){
 					iceResponse = deleteTransaction(arguments.data.DTSArguments);
@@ -214,7 +214,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderTemplateSaveSuccess':
 				tableName ='swOrderTemplate';
 				filter = 'orderTemplateID = :baseID';
-				params['baseID'] = { value=arguments.entity.getOrderTemplateID(), cfsqltype='cf_sql_varchar'};
+				baseID = arguments.entity.getOrderTemplateID();
 				
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createAutoship(arguments.data.DTSArguments);
@@ -226,7 +226,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderTemplateProcess_cancelSuccess':
 				tableName ='swOrderTemplate';
 				filter = 'orderTemplateID = :baseID';
-				params['baseID'] = { value=arguments.entity.getOrderTemplateID(), cfsqltype='cf_sql_varchar'};
+				baseID = arguments.entity.getOrderTemplateID();
 				
 				iceResponse = cancelAutoship(arguments.data.DTSArguments);
 				break;
@@ -241,6 +241,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			
 			logHibachi('InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#');
 			
+			var entityUpdateQuery = new Query();
 			var query = 'UPDATE #tableName# SET lastSyncedDateTime = NOW()';
 
 			if( tableName == 'swAccount' ){
@@ -267,10 +268,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				if( structKeyExists(iceResponse, 'diststatus') && iceResponse.diststatus != getInfoTraxService().formatDistributorType(account.getAccountType()) ){
 					query &= ', accountType = :accountType';
-					params['accountType'] = { 
-						value = getInfoTraxService().distributorTypeToAccountType(iceResponse.diststatus), 
-						cfsqltype = 'cf_sql_varchar'
-					};
+					entityUpdateQuery.addParam(name="accountType",value=getInfoTraxService().distributorTypeToAccountType(iceResponse.diststatus),CFSQLTYPE="cf_sql_varchar");
 				}
 				
 				if( structKeyExists(iceResponse, 'sponsorid') && iceResponse.sponsorid != account.getOwnerAccount().getAccountNumber() ){
@@ -281,23 +279,26 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				if( structKeyExists(iceResponse, 'recordNumber') ){
 					query &= ', iceRecordNumber = :iceRecordNumber';
-					params['iceRecordNumber'] = { 
-						value=iceResponse['recordNumber'], 
-						cfsqltype='cf_sql_varchar'
-					};
+					entityUpdateQuery.addParam(name="iceRecordNumber",value=iceResponse['recordNumber'],CFSQLTYPE="cf_sql_varchar");
 				}else{
 					logHibachi('InfoTrax - NO recordNumber for #filter# - Response: #serializeJson(iceResponse)#');
 				}
 			}
 			
+			if(len(baseID)){
+				entityUpdateQuery.addParam(name="baseID",value=baseID,CFSQLTYPE="cf_sql_varchar");
+			}
 			
 			query &=' WHERE #filter#';
-			 
-			QueryExecute(query, params);
+   
+    		entityUpdateQuery.setSQL(query);
+    		
+    		entityUpdateQuery.execute(); 
 
 			if(hasErrors){
-				//make sure the record updates happened before we throw, for the next time call UPDATE instead of CREATE
-				throw('Record out of sync, force retry by Slatwall');
+				// add to queue once again
+				logHibachi('InfoTrax - Record Out of sync adding it back to queue | #arguments.entity.getClassName()# : #baseID#');
+				getService('HibachiEventService').announceEvent('after#arguments.entity.getClassName()#SaveSuccess',{ entity : arguments.entity });
 			}
 			
 			if( !isNull(account) && isNull(account.getLastSyncedDateTime()) ){

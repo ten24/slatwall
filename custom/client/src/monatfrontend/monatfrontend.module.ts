@@ -50,6 +50,8 @@ import { MonatUpgradeStep } from "./components/upgradeFlow/monatupgradestep";
 import { MonatUpgradeMP } from "./components/upgradeFlow/monatupgrademp";
 import { ImageManager } from "./components/image-manager";
 import { AddressDeleteModal } from "./components/address-delete-modal";
+import { SaveEnrollmentModal } from "./components/save-enrollment-modal";
+import { PromoModal } from "./components/promo-modal";
 import { MonatConfirmMessageModel } from "./components/monat-modal-confirm-message";
 import { MonatBirthday } from "./components/monatBirthday";
 import { HybridCart } from "./components/hybridCart";
@@ -130,6 +132,8 @@ var monatfrontendmodule = angular
 	.directive("wishlistShareModal", WishlistShareModal.Factory())
 	.directive("wishlistDeleteModal", WishlistDeleteModal.Factory())
 	.directive("addressDeleteModal", AddressDeleteModal.Factory())
+	.directive("saveEnrollmentModal", SaveEnrollmentModal.Factory())
+	.directive("promoModal", PromoModal.Factory())
 
 	.directive("swfReviewListing", SWFReviewListing.Factory())
 	.directive("swfWishlist", SWFWishlist.Factory())
@@ -272,9 +276,11 @@ var monatfrontendmodule = angular
 	    //   this will effect all modules, as $exceptionHandler is part of angular-core
         monatfrontendmodule.factory('$exceptionHandler', () => {
             return (exception, cause) => {
-                exception.message += ` caused by '${cause || "no cause given"}' `;
+            	if(exception){
+                	exception.message += ` caused by '${cause || "no cause given"}' `;
                 // can log to sentry from here as well 
                 throw exception;
+            	}
             };
         })
     }

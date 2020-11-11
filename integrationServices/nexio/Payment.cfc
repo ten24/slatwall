@@ -278,7 +278,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		return arguments.base64String;
 	}
 	
-	private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
+	private any function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
 			
@@ -304,7 +304,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				'processingOptions' = {
 					'checkFraud' = checkFraud,
 					'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean) ? true : false,
-					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean))
+					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
+				//	"paymentOptionTag": !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 				},
 				'data' = this.getExtraData(arguments.requestBean)
 			};
@@ -428,7 +429,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
 			
 			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean);
-			
+
 			var requestData = {
 				"isAuthOnly" = true,
 				"tokenex" = {
@@ -445,7 +446,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "processingOptions" = {
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
+				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
+				//	"paymentOptionTag": !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 			    }
 			};	
 			
@@ -477,7 +479,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
 			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean);
-			
+
 			var requestData = {
 				"isAuthOnly" = false,
 				"tokenex" = {
@@ -494,14 +496,24 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "processingOptions" = {
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
+				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
+				//	"paymentOptionTag": !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 			    }
 			};	
-
+			
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-	
-			// Response Data
-			if (!responseBean.hasErrors()) {
+			
+			if(structKeyExists(responseData, 'Error')){
+					var getNexioError = arguments.responseBean.getErrors();
+					if(structKeyExists(getNexioError, 'serverCommunicationFault')){
+						var defaultMessage = getNexioError['serverCommunicationFault']['1'];
+					}else{
+						var defaultMessage = "Nexio server communication fault";
+					}
+					var getErroMessage = getHibachiScope().getService('HibachiUtilityService').getFormattedErrorMessage("Nexio","#responseData['Error']#",defaultMessage);
+					arguments.responseBean.clearHibachiErrors();
+					arguments.responseBean.addError("Nexio error",getErroMessage);
+			}else if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
 				arguments.responseBean.setProviderTransactionID(responseData.id);
 				if(structKeyExists(responseData, 'authCode')){

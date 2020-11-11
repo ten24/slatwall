@@ -1,7 +1,7 @@
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal';
+        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal,qualifiedMerchandiseRewardsArray';
     }
    
 	public array function getOrderEventOptions(){
@@ -545,7 +545,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'calculatedListPrice,total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,temporaryFlag,sku.skuID';  
+		var displayProperties = 'calculatedListPrice,calculatedTotal,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,temporaryFlag,sku.skuID';  
 
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
@@ -579,7 +579,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
-		
+
 		if( orderType.getSystemCode() == 'otSalesOrder'
 			&& arguments.systemCode == 'ostProcessing'
 			&& !len(arguments.typeCode)
@@ -963,6 +963,37 @@ component extends="Slatwall.model.service.OrderService" {
 		order.setIncompleteReturnFlag(incompleteReturnFlag);
 		this.saveOrder(order);
 		return orderReturn;
+	}
+	
+	public any function processOrder_changeReturnPercentage(required any order, struct data={}){
+			getHibachiScope().addExcludedModifiedEntityName('TaxApplied');
+			getHibachiScope().addExcludedModifiedEntityName('PromotionApplied');
+		if (structKeyExists(arguments.data, "returnPercentage") &&  Len(arguments.data.returnPercentage) > 1){
+			var orderItems = order.getOrderItems();
+			for(var returnOrderItem in orderItems){
+					returnOrderItem.setPrice(getService('HibachiUtilityService').precisionCalculate(returnOrderItem.getReferencedOrderItem().getExtendedUnitPriceAfterDiscount()  * (arguments.data.returnPercentage /100)));
+					returnOrderItem.setSkuPrice(getService('HibachiUtilityService').precisionCalculate(returnOrderItem.getReferencedOrderItem().getExtendedUnitPriceAfterDiscount()  * (arguments.data.returnPercentage /100)   ));
+
+					for(var priceField in variables.customPriceFields){
+	            		var price = returnOrderItem.getReferencedOrderItem().invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
+	            		if(!isNull(price)){
+			            	if(returnOrderItem.getReferencedOrderItem().getExtendedPriceAfterDiscount() != 0){
+			                	price = price * returnOrderItem.getPrice() / returnOrderItem.getReferencedOrderItem().getExtendedPriceAfterDiscount();
+			            	}else{
+			            		price = 0;
+			            	}
+	            			returnOrderItem.invokeMethod('set#priceField#',{1=price})
+	            		}
+					}
+
+				 returnOrderItem = this.saveOrderItem( orderItem=returnOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
+			}
+			
+			this.saveOrderReturn( arguments.order);
+			getHibachiScope().flushORMSession(); 
+
+		}
+	    return arguments.order;
 	}
 	
 	public any function processOrder_approveReturn(required any order, struct data={}){
@@ -1357,7 +1388,8 @@ component extends="Slatwall.model.service.OrderService" {
 					){
 						foundItem = true;
 						var foundOrderItem = orderItem;
-						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						var oldQuantity = orderItem.getQuantity();
+						foundOrderItem.setQuantity(oldQuantity + arguments.processObject.getQuantity());
 						if(!isNull(arguments.processObject.getSellOnBackOrderFlag()) && arguments.processObject.getSellOnBackorderFlag()){
 							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
 						}
@@ -1380,6 +1412,7 @@ component extends="Slatwall.model.service.OrderService" {
 								}
 
 							}
+							foundOrderItem.setQuantity(oldQuantity);
 						}
 						break;
 					}
@@ -1493,10 +1526,10 @@ component extends="Slatwall.model.service.OrderService" {
 						var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
 						message = newOrderItem.stringReplace(message);
 					
-						arguments.order.addError('addOrderItem', message, true);
-						newOrderItem.addError("addOrderItem", message, true);
+						arguments.order.addError('addOrderItem', message);
 					}
 				}
+				newOrderItem.removeOrder(order);
 			}else{
 				//begin stock hold logic
 				if(arguments.processObject.getSku().setting('skuStockHold')){
@@ -2090,6 +2123,53 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 		}
 	
+		return arguments.order;
+	}
+	
+	public any function processOrder_batchApproveFullRmas( required any order, struct data = {} ){
+
+		var salesOrderTypeID = getService('TypeService').getTypeBySystemCode('otSalesOrder').getTypeID();
+		var returnOrderTypeID = getService('TypeService').getTypeBySystemCode('otReturnOrder').getTypeID();
+		var receivedStatusTypeID = getService('TypeService').getTypeByTypeCode('rmaReceived').getTypeID();
+		
+		var fullRmaSql = "INSERT IGNORE INTO swentityqueue (
+							entityQueueID, 
+							baseObject, 
+							baseID, 
+							processMethod, 
+							entityQueueDateTime, 
+							createdDateTime, 
+							createdByAccountID, 
+							modifiedDateTime, 
+							modifiedByAccountID, 
+							tryCount
+						)
+						SELECT 
+							LOWER(MD5(CONCAT('Order_',ro.orderID ,'_processOrder_approveReturn_{}'))) as entityQueueID,
+							'Order' as baseObject,
+							ro.orderID as baseID,
+							'processOrder_approveReturn' as processMethod,
+							NOW() as entityQueueDateTime,
+							NOW() as createdDateTime,
+							'#getHibachiScope().getAccount().getAccountID()#' as createdByAccountID,
+							NOW() as modifiedDateTime,
+							'#getHibachiScope().getAccount().getAccountID()#' as modifiedByAccountID,
+							1 as tryCount
+						FROM sworder ro
+							JOIN sworder o on o.orderID = ro.referencedOrderID
+						WHERE ro.orderTypeID = :returnOrderTypeID
+							AND o.orderTypeID = :salesOrderTypeID
+							AND ro.orderStatusTypeID = :receivedStatusTypeID
+							AND o.calcSubTotalAfterItemDiscounts = -1 * ro.calcSubTotalAfterItemDiscounts
+						ORDER BY ro.orderID";
+		var fullRmaParams = {
+			'salesOrderTypeID':salesOrderTypeID,
+			'returnOrderTypeID':returnOrderTypeID,
+			'receivedStatusTypeID':receivedStatusTypeID
+		};
+		
+		queryExecute(fullRmaSql,fullRmaParams);
+
 		return arguments.order;
 	}
 	

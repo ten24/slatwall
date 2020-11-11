@@ -17,17 +17,57 @@
 	</a> 
 </div>
 
-<div sw-click-outside="hybridCart.showCart = false" ng-show="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
+<div sw-click-outside="hybridCart.showCart = false" ng-show="hybridCart.showCart" class="position-fixed hybrid-cart-wrapper">
 	<div class="cart-container">
+		<div class="cart-header">
+			<a href="#" ng-click="hybridCart.showCart = false" class="close">
+				<i class="far fa-chevron-right"></i>
+			</a>
+			<div class="cart-header-content">
+				<button 
+					class="send-order"
+					ng-click="monatEnrollment.saveEnrollment()"
+					ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">
+						<img src="/themes/monat/assets/images/send-icon.png"  alt="Save Enrollment" width="25px" height="auto">
+				</button>
+				<div class="header-cart">
+					<i class="fal fa-shopping-cart"></i>
+					<span ng-if="hybridCart.cart.totalItemQuantity > 0 && hybridCart.type != 'vipFlexshipFlow' && monatEnrollment.currentStepName != 'orderListing' " class="cart-count">
+						{{hybridCart.cart.totalItemQuantity}}
+					</span>	
+					<span 
+						ng-if="
+							hybridCart.orderTemplateService.mostRecentOrderTemplate.calculatedOrderTemplateItemsCount > 0 
+							&& (hybridCart.type == 'vipFlexshipFlow' || monatEnrollment.currentStepName == 'orderListing') " 
+						class="cart-count"
+					>
+						{{hybridCart.orderTemplateService.mostRecentOrderTemplate.calculatedOrderTemplateItemsCount}}
+					</span>	
+				</div>
+			</div>
+		</div>
 		<div class="accordion-group">
 			<div id="accordion">
 				<div ng-if="hybridCart.type != 'vipFlexshipFlow' " class="card w-100">
 					<div class="card-header p-0">
-						<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
+						<a class="py-0 text-white" 
+							ng-if="monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'"
+							data-toggle="collapse" 
+							href="#hybridCartBody"
+						>
 							<div class="py-3 px-3">
-								<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - <p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>
-							</div>							
+								<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - 
+								<p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>
+							</div>	
+							<i class="fas fa-chevron-down"></i>
 						</a>
+						<div 
+							ng-if="monatEnrollment.type!='vip' && monatEnrollment.type!='vipUpgrade'"
+							class="py-3 px-3 text-white"
+						>
+							<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - 
+							<p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>
+						</div>	
 					</div>
 					<div class="collapse show multi-collapse" id="hybridCartBody" data-parent="#accordion">
 						
@@ -35,29 +75,29 @@
 							<purchase-plus-bar show-messages="true" extra-class="purchase-plus-bar--dark"></purchase-plus-bar>
 						</div>
 						
-						<div class="card-body p-0 hybrid-cart-body">
-							<div class="px-3 scroll-body">
-								<ul class="list-group list-group-flush">
-									<li ng-repeat="item in hybridCart.cart.orderItems track by item.orderItemID" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
-										<div class="row align-items-center">
-											<div class="p-1">
-												<a class="py-0" ng-click="hybridCart.redirect(item.skuProductURL)" href="#">
-													<img 
-														image-manager
-														height="75px" 
-														ng-src="{{item.sku.imagePath}}" 
-														alt="{{item.sku.skuDefinition}}"
-													>
-												</a>
-											</div>
-											<div class="col">
-												<a class="w-100 pb-1 pt-0" href="#" ng-click="hybridCart.redirect(item.skuProductURL)">
-													<p class="d-inline title" ng-bind="item.sku.skuDefinition"></p>
-												</a>
-												<div ng-if="item.sku.backorderedMessaging != null && item.sku.backorderedMessaging != '' && item.sku.AllowBackorderFlag == '1'">
-									                <h7 style="color:red;">{{item.sku.backorderedMessaging}}</h7>
-									            </div>
-												<div class="qty">
+						<div class="card-body p-0 hybrid-cart-body" ng-class="{loading: hybridCart.loading}">
+							<ul class="list-group list-group-flush">
+								<li ng-repeat="item in hybridCart.cart.orderItems track by item.orderItemID" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
+									<div class="row align-items-center">
+										<div class="p-1">
+											<a class="py-0" ng-click="hybridCart.redirect(item.skuProductURL)" href="#">
+												<img 
+													image-manager
+													height="75px" 
+													ng-src="{{item.sku.imagePath}}" 
+													alt="{{item.sku.skuDefinition}}"
+												>
+											</a>
+										</div>
+										<div class="col">
+											<a class="w-100 pb-1 pt-0" href="#" ng-click="hybridCart.redirect(item.skuProductURL)">
+												<p class="title" ng-bind="item.sku.skuDefinition"></p>
+											</a>
+											<div ng-if="item.sku.backorderedMessaging != null && item.sku.backorderedMessaging != '' && item.sku.AllowBackorderFlag == '1'">
+								                <h7 style="color:red;">{{item.sku.backorderedMessaging}}</h7>
+								            </div>
+											<div class="qty">
+												<div>
 													<button
 														ng-if="!item.freezeQuantity"
 														type="button"
@@ -82,61 +122,43 @@
 													>
 														+
 													</button>
-													
-													<span class="ml-2" ng-bind-html="item.extendedPrice | swcurrency:hybridCart.cart.currencyCode"></span>
 												</div>
+												
+												<span class="ml-2 text-right" ng-bind-html="item.extendedPrice | swcurrency:hybridCart.cart.currencyCode"></span>
 											</div>
 										</div>
-										<span ng-if="!item.freezeQuantity" class="badge badge-pill delete">
-											<a ng-click="hybridCart.removeItem(item)" href="#">
-												<i class="fal fa-times"></i>
-											</a>
-										</span>
-									</li>
-								</ul>							
-							</div>
+									</div>
+									<span ng-if="!item.freezeQuantity" class="badge badge-pill delete">
+										<a ng-click="hybridCart.removeItem(item)" href="#">
+											<i class="fal fa-times"></i>
+										</a>
+									</span>
+								</li>
+							</ul>
 						</div>
 						<div class="card-footer">
-							<div ng-if="hybridCart.listPrice && hybridCart.listPrice > 0" class="row justify-content-between px-3">
-								<div>
-									<span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span>
-								</div>
-								<div>
-									<span class="ml-2" ng-bind-html="hybridCart.listPrice | swcurrency:hybridCart.cart.currencyCode"></span>
-								</div>
+							<div ng-if="hybridCart.listPrice && hybridCart.listPrice > 0" class="row justify-content-between suggested">
+								<span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span>
+								<span class="ml-2" ng-bind-html="hybridCart.listPrice | swcurrency:hybridCart.cart.currencyCode"></span>
 							</div>
-							<div class="row justify-content-between px-3">
-								<div>
+							<div class="summary">
+								<div class="row justify-content-between">
 									<span sw-rbKey="'frontend.hybridCart.yourPrice'"></span>
-								</div>
-								<div>
 									<span ng-bind-html="hybridCart.subtotal | swcurrency:hybridCart.cart.currencyCode"></span> 
 								</div>
-							</div>
-							<div class="row justify-content-between px-3">
-								<div>
+								<div class="row justify-content-between">
 									<span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span>
-								</div>
-								<div>
 									<span ng-bind-html="hybridCart.cart.purchasePlusTotal | swcurrency:hybridCart.cart.currencyCode"></span> 
 								</div>
-							</div>
-							<div class="row justify-content-between px-3">
-								<div>
+								<div class="row justify-content-between">
 									<span sw-rbKey="'frontend.hybridCart.otherDiscounts'"></span>
-								</div>
-								<div>
 									<span ng-bind-html="(hybridCart.otherDiscounts ? hybridCart.otherDiscounts : 0) | swcurrency:hybridCart.cart.currencyCode"></span> 
 								</div>
 							</div>
-							<hr class="my-0">
-							<div class="row justify-content-between px-3 my-1 mb-3">
-								<div>
-									<b> <span sw-rbKey="'frontend.hybridCart.todaysOrderTotal'"></span> </b>
-								</div>
-								<div>
-									<b ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
-								</div>
+							
+							<div class="row justify-content-between total">
+								<span sw-rbKey="'frontend.hybridCart.todaysOrderTotal'"></span>
+								<span ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></span> 
 							</div>
 							<div class="row">
 								<div ng-if="hybridCart.isEnrollment != true" class="btn-group w-100">
@@ -147,7 +169,7 @@
 						</div>
 					</div>
 				</div>	
-				<div ng-if="hybridCart.type.indexOf('vip') > -1">
+				<div ng-if="hybridCart.type.indexOf('vip') > -1" id="flexshipCartBody">
 					<enrollment-flexship type="hybridCart.type" order-template="hybridCart.orderTemplate"></enrollment-flexship>
 				</div>
 			</div>

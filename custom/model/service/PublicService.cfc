@@ -865,7 +865,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			sku.product.defaultSku.imageFile,
 			sku.skuPrices.price,
 			sku.skuPrices.personalVolume,
-			sku.product.listingPages.sortOrder
+			sku.product.listingPages.sortOrder,
+			sku.listPrice
 		');
 
 		var visibleColumnConfigWithArguments = {
@@ -910,8 +911,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode'],
 					'sortOrder': skuBundle.sku_product_listingPages_sortOrder,
 					'sortDirection': content.getProductSortDefaultDirection() ?: 'ASC',
-					'recordSort': recordCount
-				}
+					'recordSort': recordCount,
+					'listPrice' : skuBundle.sku_listPrice
+					}
 			}
 			
 			// If this is the first product type of it's kind, setup the product type.
@@ -1032,6 +1034,43 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.addPriceGroup(priceGroup);
         }
         
+        if(arguments.accountType == 'customer'){
+            var employeeDomains = getService('SettingService').getSettingValue('globalEmployeeEmailDomains');
+            var emailDomain = reReplace(arguments.data.emailAddress,'^.+@(.+)$','\1');
+            if(listFindNoCase(employeeDomains,emailDomain)){
+                //Add Employee price group
+                var employeePriceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('15');
+                if(!isNull(employeePriceGroup)){
+                    account.addPriceGroup(employeePriceGroup);
+                }
+                
+                //Set employee sponsor
+                var sponsor5 = getService('AccountService').getAccountByAccountNumber('5');
+                if(!isNull(sponsor5)){
+                    if(account.hasParentAccountRelationship()){
+                        for(var accountRelationship in account.getParentAccountRelationships()){
+                            if(accountRelationship.getParentAccountID() != sponsor5.getAccountID()){
+                                getService('accountService').deleteAccountRelationship(accountRelationship);
+                            }
+                        }
+                    }
+                    if(!account.hasParentAccountRelationship()){
+                        var accountRelationship = getService('accountService').newAccountRelationship();
+                        accountRelationship.setParentAccount(sponsor5);
+                        accountRelationship.setChildAccount(account);
+                        accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
+                    }
+                    account.setOwnerAccount(sponsor5);
+                }
+                account.setActiveFlag(false);
+                
+                var activationEmailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Employee Account Activation');
+                getService('EmailService').generateAndSendFromEntityAndEmailTemplate( account, activationEmailTemplate );
+                
+                arguments.data.messages = [getHibachiScope().getRbKey('monat.employeeAccount.enrollmentMessage')];
+            }
+        }
+        
         var accountStatusType = getService('TypeService').getTypeBySystemCodeOnly(accountTypeInfo[arguments.accountType].statusSystemCode);
         
         account.setAccountStatusType(accountStatusType);
@@ -1128,6 +1167,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getDaysToEditOrderTemplateSetting(){
 		arguments.data['ajaxResponse']['orderTemplateSettings'] = getService('SettingService').getSettingValue('orderTemplateDaysAllowedToEditNextOrderTemplate');
+    }
+    
+    public any function getGovernmentIdentificationNumber(){
+        var accountGovernmentIdentification = '';
+        var account = getHibachiScope().getAccount();
+        if('uk' ==  account.getAccountCreatedSite().getCmsSiteID() ){
+            var govIdentifications = account.getAccountGovernmentIdentifications();
+            accountGovernmentIdentification =  arrayLen(govIdentifications) > 0 ? govIdentifications[1].getGovernmentIdentificationNumber() : '';
+        }
+		arguments.data['ajaxResponse']['GovernmentIdentification'] = accountGovernmentIdentification;
+
     }
     
     public void function submitSponsor(required struct data){
@@ -2071,22 +2121,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getOrderItemsByOrderID(required any data){
-        var orderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
+        var orderItems = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
         
         var skuService = getService('skuService');
-        var count = 1;
-        if(structKeyExists(orderItemsByOrderID,'orderItems')){
-        	for (var getOrderItems in orderItemsByOrderID.orderItems){
-        		var skuScope = skuService.getSkuByskuID(getOrderItems.sku_skuID);
-            	var skuAllowBackOrderFlag = skuScope.getAllowBackOrderFlag();
-            	var backOrderedMessaging = skuScope.getBackOrderedMessaging();
-            	orderItemsByOrderID['orderItems'][count]['skuAllowBackorderFlag'] = skuAllowBackOrderFlag;
-            	orderItemsByOrderID['orderItems'][count]['backorderedMessaging'] = backOrderedMessaging;
-            	count++;
+
+        if(structKeyExists(orderItems,'orderItems')){
+        	for (var orderItemStruct in orderItems.orderItems){
+        		var sku = skuService.getSku(orderItemStruct.sku_skuID);
+            	orderItemStruct['skuAllowBackorderFlag'] = sku.getAllowBackOrderFlag();
+            	orderItemStruct['backorderedMessaging'] = sku.getBackOrderedMessaging();
         	}
         }
         
-        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = orderItemsByOrderID;
+        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = orderItems;
     }
     
     public void function getMarketPartners(required struct data){
@@ -2143,7 +2190,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getOrderTemplates(required any data){ 
-		param name="arguments.data.optionalProperties" default="qualifiesForOFYProducts"; 
+		param name="arguments.data.optionalProperties" default=""; 
 		
 		super.getOrderTemplates(argumentCollection = arguments);
 		
@@ -2151,7 +2198,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		for(var ot in arguments.data['ajaxResponse']['orderTemplates'] ){
 		  
 		    //this is some add-on optimization, as if flexship qualifies, or is-canceled, it definately can't have an OFY on it
-		    if(!ot.qualifiesForOFYProducts && ot.statusCode != "otstCanceled"){ 
+		    if(ot['orderTemplateStatusType_systemCode'] != "otstCanceled"){ 
 		        ot['associatedOFYProduct'] = this.getService('orderService').getAssociatedOFYProductForFlexship(ot.orderTemplateID);
 		    }
 		}
@@ -2759,7 +2806,94 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         arguments.data.ajaxResponse['skinCategories'] = skinProductCategoryCollection.getRecordOptions();
         arguments.data.ajaxResponse['hairCategories'] = hairProductCategoryCollection.getRecordOptions();
-        
     }
-    
+        
+    public void function saveEnrollment(required struct data){
+        param name="arguments.data.emailAddress";
+        if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
+            var ownerAccountNumber = getHibachiScope().getSessionValue('ownerAccountNumber');
+        }else{
+            this.addErrors(arguments.data,[{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')}]);
+            getHibachiScope().addActionResult('public:account.saveEnrollment',true);
+            return;
+        }
+        var cart = getHibachiScope().getCart();
+        var emailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Share Enrollment');
+        var email = getService('EmailService').newEmail();
+        var newOrder = getService('OrderService').processOrder(cart,{referencedOrderFlag:false},'duplicateOrder');
+        
+        newOrder.setAccountType(cart.getAccountType());
+        newOrder.setPriceGroup(cart.getPriceGroup());
+        newOrder.setMonatOrderType(cart.getMonatOrderType());
+        newOrder = getService('OrderService').saveOrder(newOrder);
+        
+        var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
+        newOrder.setSharedByAccount( ownerAccount );
+        newOrder.setAccount(ownerAccount);
+        
+        var emailData = {
+            order:newOrder,
+            emailTemplate:emailTemplate
+        };
+        
+        var email = getService('emailService').processEmail(email,emailData,'createFromTemplate');
+        newOrder.removeAccount();
+        
+        email.setEmailTo(arguments.data.emailAddress);
+        email = getService('EmailService').processEmail(email, arguments, 'addToQueue');
+        arguments.data.messages = [getHibachiScope().getRBKey('frontend.saveEnrollmentSuccess')];
+        getHibachiScope().addActionResult('public:account.saveEnrollment',email.hasErrors());
+    }
+
+    public void function getQualifiedPromotionRewardSkusForOrder(required struct data){
+        param name="arguments.data.orderID";
+        /*
+            OrderID is required, data can also include promotionRewardID to return skus for a particular reward.
+            Other optional arguments: pageRecordsShow (default 25), formatRecords (default false)
+        */
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
+            arguments.data.order = order;
+            var additionalPropertyIdentifiers = 'product.productName,listPrice,skuPrices.price,stocks.calculatedQATS';
+            
+            var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+            
+            var additionalFilters = [
+                {
+                    propertyIdentifier='skuPrices.currencyCode',
+                    value=order.getCurrencyCode()
+                },
+                {
+                    propertyIdentifier="skuPrices.priceGroup.priceGroupID",
+                    value=order.getPriceGroup().getPriceGroupID()
+                },
+                {
+                    propertyIdentifier="activeFlag",
+                    value=true
+                },
+                {
+                    propertyIdentifier="publishedFlag",
+                    value=true
+                },
+                {
+                    propertyIdentifier="stocks.calculatedQATS",
+                    value=0,
+                    comparisonOperator=">"
+                },
+                {
+                    propertyIdentifier="stocks.location.locationID",
+                    value=currentRequestSite.getLocations()[1].getLocationID()
+                }
+            ];
+            arguments.data.additionalCollectionConfig = {
+                'displayProperties':additionalPropertyIdentifiers,
+                'filters':additionalFilters
+            };
+            var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
+        }
+    }
 }
