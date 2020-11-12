@@ -243,10 +243,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	
 		this.logHibachi("ERPONE - Start pushing accounts to import-queue ");
 		
-		var batch = this.pushRecordsIntoImportQueue( "Account", this.transformErpOneAccounts( accountsArray ) );
+		if( !len(accountsArray) == 0 ){
+			
+			var batch = this.pushRecordsIntoImportQueue( "Account", this.transformErpOneAccounts( accountsArray ) );
+			
+			this.logHibachi("ERPONE - Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
+			this.logHibachi("ERPONE - Finish pushing accounts to import-queue ");
+		}
 		
-		this.logHibachi("ERPONE - Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
-		this.logHibachi("ERPONE - Finish pushing accounts to import-queue ");
+		this.logHibachi("ERPONE - No data recieve from API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
     }
 
 	
@@ -283,7 +288,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 			try {
 				
-				this.getAccountData( currentPage, pageSize	);
+				writeDump(this.getAccountData( currentPage, pageSize	));
 				this.logHibachi("Successfully called getAccountData for CurrentPage: #currentPage# and PageSize: #pageSize#");
 				
 			} catch(e){
