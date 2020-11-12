@@ -77,9 +77,6 @@ component accessors="true" output="false" extends="HibachiService" {
 			    retryDelay = retryDelay
 			);
 			
-		} else {
-		    this.logHibachi("EntityQueue - processEntityQueue_processQueue - can't process");
-
 		}
 		
 		return arguments.entityQueue;
