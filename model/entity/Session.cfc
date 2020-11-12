@@ -151,11 +151,11 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	
 	
 	
-	public any function getOrder() {
+	public any function getOrder(boolean createIfNotFound=true) {
 		if(structKeyExists(variables, "order") && (isNull(getHibachiScope().getCurrentRequestSite()) || variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID())) {
 			
 			return variables.order;
-		} else if (!structKeyExists(variables, "requestOrder")) {
+		} else if (!structKeyExists(variables, "requestOrder") && arguments.createIfNotFound) {
 			
 			variables.requestOrder = getService("orderService").newOrder();
 			
@@ -180,7 +180,9 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 			}
 			
 		}
-		return variables.requestOrder;
+		if(structKeyExists(variables,'requestOrder')){
+			return variables.requestOrder;
+		}
 	}
 	
 	public void function removeAccount() {

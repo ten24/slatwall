@@ -44,8 +44,9 @@ class VIPController {
 	public upgradeFlow:boolean;
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
 	public showUpgradeErrorMessage:boolean;
-	public hairProductFilter:any;
-	public skinProductFilter:any;
+	public productFilters:any = {};
+	public flexshipProductFilters:any = {};
+	public showProductFilter:any = {};
 	public pageRecordsShow:number = 40;
 	
 	// @ngInject
@@ -185,9 +186,10 @@ class VIPController {
 		if(category){
 			data.categoryFilterFlag = true;
 			data.categoryID = category.value;
-			this.hairProductFilter = null;
-			this.skinProductFilter = null;
-			this[`${categoryType}ProductFilter`] = category;
+			for(var key in this.flexshipProductFilters){
+				this.flexshipProductFilters[key] = null;
+			}
+			this.flexshipProductFilters[categoryType] = category;
 			this.paginationObject['categoryID'] = category.value;
 		}
 		
@@ -197,6 +199,15 @@ class VIPController {
 			this.flexshipProductRecordsCount = result.recordsCount
 			this.loading = false;
 		});
+	}
+	
+	public toggleShowFilterCategory = (categoryName)=>{
+		for(let category of this.monatService.productFilterCategories){
+			if(category != categoryName){
+				this.showProductFilter[category] = false;
+			}
+		}
+		this.showProductFilter[categoryName] = !this.showProductFilter[categoryName];
 	}
 
 	public getProductList = ( category?:any, categoryType?:string ) => {
@@ -211,9 +222,10 @@ class VIPController {
 		if(category){
 			data.categoryFilterFlag = true;
 			data.categoryID = category.value;
-			this.hairProductFilter = null;
-			this.skinProductFilter = null;
-			this[`${categoryType}ProductFilter`] = category;
+			for(var key in this.productFilters){
+				this.productFilters[key] = null;
+			}
+			this.productFilters[categoryType] = category;
 			this.paginationObject['categoryID'] = category.value;
 		}
 		

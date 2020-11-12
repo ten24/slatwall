@@ -12,7 +12,14 @@ component {
     property name="personalVolumeByCurrencyCode" persistent="false";
 	property name="commissionableVolumeByCurrencyCode" persistent="false";
 	property name="AllowBackorderFlag" persistent="false";
-
+	
+	public string function getBackOrderedMessaging(){
+		if(!StructKeyExists(variables, "backOrderedMessaging") || isNull(variables.backOrderedMessaging)) {
+			return '';
+		}
+		return variables.backOrderedMessaging;
+	}
+	
 	public boolean function canBePurchased(required any account, any order){
 		
 		var accountType = 'customer';

@@ -188,6 +188,12 @@ class swfAccountController {
         this.userIsLoggedIn = this.accountData.accountID?.trim();
         
         if(this.accountData.accountID?.trim()){
+            
+            if('astEnrollmentPending' == this.accountData.accountStatusType?.systemCode){
+                window.location.href="/";
+                return;
+            }
+            
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
             const url = window.location.pathname;
             

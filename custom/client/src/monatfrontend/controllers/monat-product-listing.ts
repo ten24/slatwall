@@ -22,10 +22,11 @@ class MonatProductListingController {
     public paginationMethod = 'getProductsByCategoryOrContentID';
     public searchTerm:string;
     public wishlistItems : string[];
-	public hairProductFilter:any;
-	public skinProductFilter:any;
+	public productFilters:any = {};
+	public showProductFilter:any = {};
 	public loadingAddToCart;
 	public flexshipFlag:boolean;
+	public qualifiedPromos;
 	
 	// @ngInject
 	constructor(
@@ -36,7 +37,8 @@ class MonatProductListingController {
         private monatService        : MonatService,
 		private monatAlertService   : MonatAlertService,
 		private orderTemplateService: OrderTemplateService,
-		private rbkeyService
+		private rbkeyService,
+		private ModalService
 	) {}
 
     
@@ -89,14 +91,16 @@ class MonatProductListingController {
 			if(category != 'none'){
 				this.argumentsObject['categoryFilterFlag'] = true;
 				this.argumentsObject['categoryID'] = category.value;
-				this.hairProductFilter = null;
-				this.skinProductFilter = null;
-				this[`${categoryType}ProductFilter`] = category;
+				for(var key in this.productFilters){
+					this.productFilters[key] = null;
+				}
+				this.productFilters[categoryType] = category;
 			}else{
 				this.argumentsObject['categoryFilterFlag'] = false;
 				this.argumentsObject['categoryID'] = null;
-				this.hairProductFilter = null;
-				this.skinProductFilter = null;
+				for(var key in this.productFilters){
+					this.productFilters[key] = null;
+				}
 			}
 			this.argumentsObject['currentPage'] = 1;
 		}
@@ -129,6 +133,15 @@ class MonatProductListingController {
 	    this.monatService.launchWishlistsModal(skuID, productID, productName);
 	}
 	
+	public toggleShowFilterCategory = (categoryName)=>{
+		for(let category of this.monatService.productFilterCategories){
+			if(category != categoryName){
+				this.showProductFilter[category] = false;
+			}
+		}
+		this.showProductFilter[categoryName] = !this.showProductFilter[categoryName];
+	}
+	
 	public searchByKeyword = ():void =>{
 	    this.loading = true;
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
@@ -157,8 +170,6 @@ class MonatProductListingController {
 		.then((data) => {
 			if(data.hasErrors){
 				this.monatAlertService.showErrorsFromResponse(data);
-			}else{
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful'));
 			}
 		})
 		.catch( (error) => {
@@ -169,6 +180,25 @@ class MonatProductListingController {
 			this.loadingAddToCart = false;
 		});
 	};
+	
+	public launchPromoModal = () =>{
+		this.ModalService.showModal({
+		      component: 'promoModal',
+		      bodyClass: 'angular-modal-service-active',
+			  bindings: {
+			    title: this.rbkeyService.rbKey('frontend.enrollment.promoModal'),
+			  },
+			  preClose: (modal) => {
+				modal.element.modal('hide');
+			},
+		}).then( (modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+		    modal.close.then( (confirm) => {
+		    });
+		}).catch((error) => {
+			console.error("unable to open promoModal :",error);	
+		});
+	}
 }
 
 

@@ -83,6 +83,7 @@
 							type="button"
 							class="bg-primary btn btn-block" 
 							ng-click="sponsorSearchSelector.getSearchResults()"
+							ng-disabled="sponsorSearchSelector.loadingResults || sponsorSearchSelector.publicService.paginationIsLoading"
 							ng-class="{ loading: sponsorSearchSelector.loadingResults || sponsorSearchSelector.publicService.paginationIsLoading }"
 							sw-rbkey="'frontend.global.search'"
 					></button>
@@ -94,6 +95,7 @@
 					<a href
 						class="text-link mt-1"
 						ng-click="sponsorSearchSelector.autoAssignSponsor()"
+						ng-disabled="checkout.sponsorLoading" 
 						ng-class="{ loading: checkout.sponsorLoading }"
 						sw-rbkey="'frontend.enrollment.sponsorAssignment'"
 					></a>	

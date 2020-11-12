@@ -21,30 +21,31 @@
 				</div>			
 			</div>			
 		</div>
-		
-		<div class="notifications">
-			<!-- threshold has been met --->
-			<div
-				ng-hide=
-				"monatEnrollment.currentStepName != 'todaysOrder' 
-				|| monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping <= 0"
-				ng-show=
+		<toaster-container></toaster-container>
+			<!-- threshold has been met for today's order--->
+		<div ng-cloak
+		class="notifications" 	
+		ng-show=
 				"monatEnrollment.currentStepName == 'todaysOrder'
-				&& monatEnrollment.type = 'vip'
-				&& monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping > 0"
-				class="alert-message">
-					<span ng-hide="!monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShippingLoaded" sw-rbkey="'frontend.enrollment.threshold'"></span>
-					<i ng-hide="!monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShippingLoaded" class="fal fa-check-circle"></i>
+				&& monatEnrollment.type == 'vip'
+				&& monatEnrollment.monatService.canPlaceOrder">
+			<div class="alert-message">
+					<span sw-rbkey="'frontend.enrollment.threshold'"></span>
+					<i class="fal fa-check-circle"></i>
 			</div>
 		</div>
 	</div>
-
-	<div 
+			<!-- threshold has been met for flexship--->
+	<div ng-cloak
+		class="notifications"
 		ng-if="
 			monatEnrollment.currentStepName == 'orderListing' 
-			&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal <= 0" 
-			class="notifications"
-	><span sw-rbKey="'frontend.enrollment.threshold'"></span></div> 
+			&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal <= 0">
+		<div class="alert-message">
+			<span sw-rbKey="'frontend.enrollment.threshold'"></span>
+			<i class="fal fa-check-circle"></i>
+		</div> 
+	</div>
 	<div 
 		ng-if="
 			monatEnrollment.currentStepName == 'orderListing' 

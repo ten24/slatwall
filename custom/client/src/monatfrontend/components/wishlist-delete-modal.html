@@ -32,7 +32,7 @@
 							</div>
 							<div class="col-md-6">
 								<input id="orderTemplateID" type="hidden" name="orderTemplateID"  class="form-control success" ng-model="wishlistDeleteModal.wishlist.value">
-								<button ng-class="{loading: swfForm.loading}" class="btn bg-primary w-100" type="submit">
+								<button ng-disabled="swfForm.loading" ng-class="{loading: swfForm.loading}" class="btn bg-primary w-100" type="submit">
 									{{wishlistDeleteModal.translations.continue}}
 								</button>
 							</div>						

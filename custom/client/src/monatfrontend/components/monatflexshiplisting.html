@@ -9,6 +9,7 @@
         role="button"
         ng-click="monatFlexshipListing.createNewFlexship()" 
         class="btn bg-primary btn-add"
+        ng-disabled="monatFlexshipListing.loading" 
         ng-class="{loading: monatFlexshipListing.loading}"
         ng-if="
             monatFlexshipListing.account.priceGroups.length 

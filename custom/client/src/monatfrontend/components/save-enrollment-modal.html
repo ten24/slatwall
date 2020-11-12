@@ -40,7 +40,7 @@
 					<sw:SwfErrorDisplay propertyIdentifier="receiverEmailAddress" />
                 </div>
                 
-                <button ng-class="{loading: saveEnrollmentModal.loading}" ng-click="saveEnrollmentModal.saveEnrollment()" value="{{frontend.wishlist.send}}" class="btn bg-primary save-btn px-5 py-3 mt-3 mt-md-5"><span sw-rbKey="'frontend.wishlist.send'"></span></buton>
+                <button ng-disabled="saveEnrollmentModal.loading" ng-class="{loading: saveEnrollmentModal.loading}" ng-click="saveEnrollmentModal.saveEnrollment()" value="{{frontend.wishlist.send}}" class="btn bg-primary save-btn px-5 py-3 mt-3 mt-md-5"><span sw-rbKey="'frontend.wishlist.send'"></span></buton>
 			</div>
 		</div>
 	</div>
