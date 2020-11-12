@@ -188,12 +188,6 @@ class swfAccountController {
         this.userIsLoggedIn = this.accountData.accountID?.trim();
         
         if(this.accountData.accountID?.trim()){
-            
-            if('astEnrollmentPending' == this.accountData.accountStatusType?.systemCode){
-                window.location.href="/";
-                return;
-            }
-            
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
             const url = window.location.pathname;
             
@@ -545,11 +539,7 @@ class swfAccountController {
 		.then((modal) => {
 			//it's a bootstrap element, use 'modal' to show it
 			modal.element.modal();
-			modal.close.then((result) => {
-			    if(result){
-			        this.holdingWishlist.name = result;
-			    }
-			});
+			modal.close.then((result) => {});
 		})
 		.catch((error) => {
 			console.error('unable to open model :', error);
