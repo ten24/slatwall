@@ -106,7 +106,7 @@
         >
              <span ng-if="monatProductCard.loaded" sw-rbkey="'frontend.global.addedToCart'"></span>
              <span ng-if="monatProductCard.type != 'flexship' && monatProductCard.type != 'VIPenrollment' && !monatProductCard.loaded" sw-rbkey="'frontend.global.addToCart'"></span>
-             <span ng-if="monatProductCard.type == 'flexship' || monatProductCard.type == 'VIPenrollment' && !monatProductCard.loaded" sw-rbkey="'frontend.global.addToFlexship'"></span>
+             <span ng-if="monatProductCard.type == 'flexship' && !monatProductCard.loaded || monatProductCard.type == 'VIPenrollment' && !monatProductCard.loaded" sw-rbkey="'frontend.global.addToFlexship'"></span>
          </button>
    </div>
    

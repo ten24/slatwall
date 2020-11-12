@@ -126,16 +126,24 @@
 						</div>
 					</div>
 	
-					<button 
-						ng-if="monatProductModal.product.displayOnlyFlag != true && monatProductModal.product.qats > 0"
-						class="btn bg-primary"
-						ng-click="monatProductModal.onAddButtonClick()" 
-						ng-class="{ loading: monatProductModal.loading }"
-						ng-disabled="monatProductModal.loading"
-						ng-if="monatProductModal.product.qats > 1 || monatProductModal.type =='ofy'"
-					>
-						{{ monatProductModal.translations.addButtonText }}
-					</button>
+					<div ng-if="!monatProductModal.loaded">
+						<button 
+							ng-if="monatProductModal.product.displayOnlyFlag != true && monatProductModal.product.qats > 0 ||
+							monatProductModal.product.qats > 1 || monatProductModal.type =='ofy'"
+							class="btn bg-primary"
+							ng-click="monatProductModal.onAddButtonClick()" 
+							ng-class="{ loading: monatProductModal.loading }"
+							ng-disabled="monatProductModal.loading"
+						>
+							{{ monatProductModal.translations.addButtonText }}
+						</button>
+					</div>
+					<div ng-if="monatProductModal.loaded">
+						<button
+							class="btn loaded">
+							<span  sw-rbkey="'frontend.global.addedToCart'"></span>
+						</button>
+					</div>
 					<button 
 						class="btn bg-primary disabled"
 						ng-if="monatProductModal.product.qats <= 0"
