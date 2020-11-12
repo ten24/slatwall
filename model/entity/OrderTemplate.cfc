@@ -127,6 +127,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
+	property name="processingReminderEmailEntityQueueFlag" ormtype="boolean";
 	
 	//calculated properties
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
