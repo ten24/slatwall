@@ -50,13 +50,24 @@
 			<div id="accordion">
 				<div ng-if="hybridCart.type != 'vipFlexshipFlow' " class="card w-100">
 					<div class="card-header p-0">
-						<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
+						<a class="py-0 text-white"
+							ng-if="monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'"	
+							data-toggle="collapse" 	
+							href="#hybridCartBody"	
+						>
 							<div class="py-3 px-3">
 								<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - 
 								<p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>
 							</div>	
 							<i class="fas fa-chevron-down"></i>
 						</a>
+						<div 	
+							ng-if="monatEnrollment.type!='vip' && monatEnrollment.type!='vipUpgrade'"	
+							class="py-3 px-3 text-white"	
+						>	
+							<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - 	
+							<p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>	
+						</div>
 					</div>
 					<div class="collapse show multi-collapse" id="hybridCartBody" data-parent="#accordion">
 						
