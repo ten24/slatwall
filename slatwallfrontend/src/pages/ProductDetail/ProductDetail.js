@@ -12,9 +12,25 @@ class ProductDetail extends React.Component {
     const { id, title, description } = this.props.product
     return (
       <Layout>
-        <h1>Book name {title}</h1>
-        <p>{description}</p>
-        <button onClick={this.addToCart}>Add to Cart</button>
+        <div className="layout">
+          <div className="container">
+            <div className="row">
+              <div className="col-sm-4">
+                <div>
+                  <img
+                    src="https://dummyimage.com/600x400/000/fff"
+                    className="img-thumbnail"
+                  />
+                </div>
+              </div>
+              <div className="col-sm-8">
+                <h1>Book name {title}</h1>
+                <p>{description}</p>
+                <button onClick={this.addToCart}>Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </Layout>
     )
   }

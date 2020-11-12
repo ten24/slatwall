@@ -4,7 +4,7 @@ export const books = [
     title: "Dolores Illo Voluptate Officiis Ipsam",
     description:
       "Nemo Accusantium Quibusdam Est Provident Maiores Mollitia Ullam Repellendus Cupiditate Fugiat Unde Dicta Aspernatur Deleniti Dolor Assumenda Veniam Vero Numquam Explicabo A Natus Blanditiis Eum Nisi Rem Minima Doloribus Tempora Qui Harum Ex Veritatis Neque Optio.",
-    author: "@rWalton",
+    author: "Tom",
     datePublished: "11/21/2015",
     yearPublished: 2015,
     price: "$5.99",
@@ -16,7 +16,7 @@ export const books = [
     title: "Nulla Repellat Vero",
     description:
       "Similique Odit Iusto Blanditiis Facere Error Provident Neque Fugit Ad Saepe Iure Nam Repudiandae Enim Repellendus Sunt Officia Quam Eum Quia Numquam Non Distinctio Consectetur Dignissimos Quae.",
-    author: "@mRice",
+    author: "Miguel",
     datePublished: "07/28/2016",
     yearPublished: 2016,
     price: "$6.99",
@@ -28,7 +28,7 @@ export const books = [
     title: "Labore",
     description:
       "Quidem Assumenda Dolores Rerum Officia Iusto Commodi Eaque Aut Repellat Nemo Laborum Quasi Architecto Numquam Voluptate Autem Magni Necessitatibus Aspernatur Ullam Eius Ea Veniam Saepe Molestias Quas Facere Velit Ut Tenetur Esse.",
-    author: "@jMiles",
+    author: "Miguel",
     datePublished: "04/18/2012",
     yearPublished: 2012,
     price: "$14.99",
@@ -40,7 +40,7 @@ export const books = [
     title: "Quasi Aliquam",
     description:
       "Provident At Distinctio Earum Deleniti Odit Ipsam Id Consequatur Repellendus Aperiam Quae Labore Quos Explicabo Asperiores Est Veritatis Libero Culpa Quaerat Neque Iste Praesentium Eos Laborum Sequi.",
-    author: "@lMcLaughlin",
+    author: "Miguel",
     datePublished: "07/15/2010",
     yearPublished: 2010,
     price: "$20.99",
@@ -52,7 +52,7 @@ export const books = [
     title: "Fuga Deserunt Corporis",
     description:
       "Natus Quidem Atque Placeat Rerum Debitis Ea Maiores Temporibus Assumenda Ad Reiciendis Aut Sint Consectetur Iste Nostrum Maxime Suscipit Adipisci Libero.",
-    author: "@fAdkins",
+    author: "Tom",
     datePublished: "04/09/2015",
     yearPublished: 2015,
     price: "$14.99",
@@ -64,7 +64,7 @@ export const books = [
     title: "Qui",
     description:
       "Esse Veniam Maxime Voluptates Temporibus Ducimus Quis Dolorem Impedit Reprehenderit Blanditiis Enim At Totam Ratione Minima Optio Suscipit Odio Sunt Amet Nam Aliquam Voluptatibus Obcaecati Laudantium Ipsam Illo Nesciunt Inventore Sit.",
-    author: "@pBlake",
+    author: "Tom",
     datePublished: "03/13/2002",
     yearPublished: 2002,
     price: "$19.99",
@@ -76,7 +76,7 @@ export const books = [
     title: "Optio Odio Ipsum Recusandae",
     description:
       "Nostrum Possimus Autem Voluptatibus A Blanditiis Laboriosam Reiciendis Facilis Praesentium Culpa Minus Dolorum Dignissimos Omnis Dolore Suscipit Soluta Atque Inventore.",
-    author: "@lCurry",
+    author: "Tom",
     datePublished: "06/05/2005",
     yearPublished: 2005,
     price: "$4.99",
@@ -88,7 +88,7 @@ export const books = [
     title: "Dolorem Necessitatibus Vero Non",
     description:
       "Quo Sint Quasi Vel Provident Distinctio Pariatur Ab Quidem Odit Dolorum Totam Adipisci Expedita Exercitationem Aperiam Et Magni Tenetur Eaque Dignissimos Corporis Necessitatibus Ipsa Corrupti.",
-    author: "@jReeves",
+    author: "Tom",
     datePublished: "02/25/2012",
     yearPublished: 2012,
     price: "$23.99",
@@ -100,7 +100,7 @@ export const books = [
     title: "Omnis Laboriosam Eligendi",
     description:
       "Voluptatem Maiores Nemo Quia Saepe Delectus Ducimus Veniam Laudantium Molestias Nisi Fugiat Fugit Sequi Velit Cum Dolorum Corporis Repudiandae Tenetur Minima Ad Sit Veritatis Mollitia Sapiente Et Ipsum Expedita Nostrum Amet Blanditiis Dolorem Exercitationem.",
-    author: "@jFrazier",
+    author: "Sumit",
     datePublished: "02/27/2016",
     yearPublished: 2016,
     price: "$21.99",
@@ -112,7 +112,7 @@ export const books = [
     title: "Explicabo Quibusdam Ut",
     description:
       "Harum Corporis Libero Impedit Quas Eligendi Omnis Vitae Totam Dicta Ducimus Voluptas Error Ipsa Commodi Quod Ratione Adipisci Consectetur Qui Officiis Illo Enim.",
-    author: "@tRuiz",
+    author: "Sumit",
     datePublished: "10/02/2004",
     yearPublished: 2004,
     price: "$4.99",
@@ -124,7 +124,7 @@ export const books = [
     title: "Explicabo",
     description:
       "Recusandae Illum In Blanditiis Quasi Impedit Nulla Odio Perferendis Provident Velit Laborum Delectus Harum Ullam Eum Beatae Quia Facilis At Aliquam Omnis Quis Dignissimos Ut Minima Magnam Ad Distinctio Deserunt Quidem Deleniti Explicabo Obcaecati Saepe Nostrum Ea Quos.",
-    author: "@jBarber",
+    author: "Sumit",
     datePublished: "03/15/2008",
     yearPublished: 2008,
     price: "$14.99",
@@ -136,7 +136,7 @@ export const books = [
     title: "Ullam",
     description:
       "Libero Itaque Quos Consequatur Totam Modi Obcaecati Quas Ducimus Ab Tempore Soluta Voluptas Minus Fugiat Blanditiis Veniam Dolorum Quod Temporibus Quis Commodi.",
-    author: "@mMoran",
+    author: "Kevin",
     datePublished: "11/19/2007",
     yearPublished: 2007,
     price: "$9.99",
@@ -148,7 +148,7 @@ export const books = [
     title: "Minima",
     description:
       "Veniam Beatae Modi Consequuntur Nisi Reiciendis Error Inventore Deserunt Facilis Dignissimos Omnis Qui Doloribus Quos Totam Debitis Deleniti Consequatur Architecto Sapiente Illum At Repudiandae Rem Quas Ipsum Necessitatibus Voluptates Quam Quisquam Quod Enim Similique Eveniet.",
-    author: "@mWarner",
+    author: "Kevin",
     datePublished: "02/26/2012",
     yearPublished: 2012,
     price: "$10.99",
@@ -160,7 +160,7 @@ export const books = [
     title: "At Fugiat Magnam Vitae Repellendus",
     description:
       "Vitae Labore Odit Iure Dolores A Porro Animi Adipisci Odio Aperiam Iusto Recusandae Aspernatur Ea Esse Consectetur Incidunt Sit Dolor Quia Nemo.",
-    author: "@mSaunders",
+    author: "Kevin",
     datePublished: "03/07/2015",
     yearPublished: 2015,
     price: "$21.99",
@@ -172,7 +172,7 @@ export const books = [
     title: "Inventore",
     description:
       "Commodi Amet Harum Officia Excepturi Accusamus Earum Reiciendis Itaque Maiores Repellat Libero Aliquid Est Natus Sed Dicta Qui Consectetur Repellendus Vel Dolorum Veniam Consequuntur Ea Nostrum.",
-    author: "@jPotter",
+    author: "Tom",
     datePublished: "09/19/2009",
     yearPublished: 2009,
     price: "$21.99",

@@ -30,3 +30,20 @@ export const decrementCartQuantity = productId => {
     payload: productId,
   }
 }
+
+export const ADD_AUTHOR_TO_FILTER = "ADD_AUTHOR_TO_FILTER"
+export const REMOVE_AUTHOR_FROM_FILTER = "REMOVE_AUTHOR_FROM_FILTER"
+
+export const addAuthorToFilter = author => {
+  return {
+    type: ADD_AUTHOR_TO_FILTER,
+    author,
+  }
+}
+
+export const removeAuthorFromFilter = author => {
+  return {
+    type: REMOVE_AUTHOR_FROM_FILTER,
+    author,
+  }
+}
