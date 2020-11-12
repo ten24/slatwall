@@ -1,6 +1,15 @@
 {
     "entityName": "AccountAuthentication",
     
+    "properties": {
+        "email": {
+            "validations": {
+                "required": true,
+                "dataType": "email"
+            }
+        }
+    },
+    
     "generatedProperties" : [
         {
             "propertyIdentifier" : "password",

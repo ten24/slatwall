@@ -51,6 +51,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="integrationService";
 	property name="erpOneIntegrationCFC";
 	property name="hibachiCacheService";
+	property name="hibachiUtilityService";
 	
 	public any function getIntegration(){
 	    if( !structKeyExists( variables, 'integration') ){
@@ -58,13 +59,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    }
         return variables.integration;
     }
-    
-    
-    public any function getTokens(){
-		writeDump(getHibachiCacheService().getCachedValue('grantToken'));
-		writeDump(getHibachiCacheService().getCachedValue('accessToken'));abort;
-    }
-    
+
+    public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+    	return this.getErpOneIntegrationCFC().setting( argumentCollection=arguments );
+	}
+	
     public any function getGrantToken(){
 		if( !this.getHibachiCacheService().hasCachedValue('grantToken') ){
 			createAndSetGrantToken();
@@ -80,13 +79,16 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function createAndSetGrantToken(){
+        this.logHibachi("ERPONE - called createAndSetGrantToken");
+
 		var httpRequest = this.createHttpRequest('distone/rest/service/authorize/grant');
+		
 		// Authentication headers
     	if(!this.setting("devMode")){
-    		httpRequest.addParam( type='formfield', name='client', value= this.setting('prodClient'));
+    		httpRequest.addParam( type='formfield', name='client',  value= this.setting('prodClient'));
     		httpRequest.addParam( type='formfield', name='company', value= this.setting("prodCompany"));
-			httpRequest.addParam( type='formfield', name='username', value=this.setting("prodUsername"));
-    		httpRequest.addParam( type='formfield', name='password', value=this.setting("prodPassword"));
+			httpRequest.addParam( type='formfield', name='username', value= this.setting("prodUsername"));
+    		httpRequest.addParam( type='formfield', name='password', value= this.setting("prodPassword"));
 		}
 		else{
 			httpRequest.addParam( type='formfield', name='client', value= this.setting('devClient'));
@@ -94,72 +96,83 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	httpRequest.addParam( type='formfield', name='username', value=this.setting("devUsername"));
 	    	httpRequest.addParam( type='formfield', name='password', value=this.setting("devPassword"));
 		}
+		
 		var rawRequest = httpRequest.send().getPrefix();
-		var response = {};
+		
 		try{
-			if(IsJson(rawRequest.fileContent)) {
-			response = DeSerializeJson(rawRequest.fileContent);
-			getHibachiCacheService().setCachedValue('grantToken',response.grant_token,DateAdd("n",60,now()));
-			} 
-		}
-		catch ( any e ){
-			throw("Invalid Grant Token" & e.Message);
+		
+			if( !IsJson(rawRequest.fileContent) ){
+			    throw("createAndSetGrantToken: API responde is not valid json");
+			}
+			
+		    var response = DeSerializeJson(rawRequest.fileContent);
+	        
+	        if(!structKeyExists(response, 'grant_token') ){
+	            throw("createAndSetGrantToken: No grant token exist in the API response");   
+	        }
+	        
+		    this.getHibachiCacheService().setCachedValue( 
+		        'grantToken', 
+		        response.grant_token, 
+		        DateAdd("n",60,now()) 
+		    );
+		    
+		    this.logHibachi("ERPONE - created and saves GrantToken: #response.grant_token#");
+		    
+		} catch ( any e ){
+		    this.getHibachiUtilityService().logException(e);
+			rethrow;
 		}
     }
     
     public any function createAndSetAccessToken(){
+        this.logHibachi("ERPONE - called createAndSetAccessToken");
+
     	var grantToken = this.getGrantToken();
     	var httpRequest = this.createHttpRequest('distone/rest/service/authorize/access');
+		
 		// Authentication headers
-		if(!this.setting("devMode")){
+		if( !this.setting("devMode") ){
     		httpRequest.addParam( type='formfield', name='client', value= this.setting('prodClient'));
     		httpRequest.addParam( type='formfield', name='company', value= this.setting("prodCompany"));
-    		httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
-		}
-		else{
+		} else {
 			httpRequest.addParam( type='formfield', name='client', value= this.setting('devClient'));
 	    	httpRequest.addParam( type='formfield', name='company', value= this.setting("devCompany"));
-	    	httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
 		}
+		
+    	httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
+    	
 		var rawRequest = httpRequest.send().getPrefix();
-		var response = {};
+		
 		try{
-			if( IsJson(rawRequest.fileContent) ) {
-			response = DeSerializeJson(rawRequest.fileContent);
-			getHibachiCacheService().setCachedValue('accessToken',response.access_token,DateAdd("n",60,now()));
+		    
+		    if( !IsJson(rawRequest.fileContent) ){
+			    throw("createAndSetAccessToken: API responde is not valid json");
 			}
-		} 
-		catch ( any e ){
-			throw("Invalid Grant Token" & e.Message);
+			
+		    var response = DeSerializeJson(rawRequest.fileContent);
+	        
+	        if(!structKeyExists(response, 'access_token') ){
+	            throw("createAndSetAccessToken: No access token exist in the API response");   
+	        }
+	        
+		    this.getHibachiCacheService().setCachedValue( 
+		        'accessToken', 
+		        response.access_token, 
+		        DateAdd("n",60,now()) 
+		    );
+		    
+		    this.logHibachi("ERPONE - created and saves AccessToken: #response.access_token#");
+
+		} catch ( any e ){
+			this.getHibachiUtilityService().logException(e);
+            rethrow;
 		}
     }
     
-    public any function getAccountData(pageNumber,pageSize){
-    	logHibachi("ERPONE - Start fetching data - Account");
-    	var authorizeToken = this.getAccessToken();
-    	var httpRequest = this.createHttpRequest('distone/rest/service/data/read');
-		
-		// Authentication headers
-		httpRequest.addParam( type='header', name='authorization', value=authorizeToken);
-		httpRequest.addParam( type='formfield', name='query', value= "FOR EACH customer WHERE customer.active = YES");
-		httpRequest.addParam( type='formfield', name='skip', value= pageNumber);
-		httpRequest.addParam( type='formfield', name='take', value= pageSize);
-		httpRequest.addParam( type='formfield', name='columns', value= "name,country_code,email_address,phone,Active,company_cu");
-		
-		var rawRequest = httpRequest.send().getPrefix();
-		var response = {};
-		response = DeSerializeJson(rawRequest.fileContent);
-		return response;
-		// var payload = this.transformErponeAccountData(response);
-		
-		// logHibachi("ERPONE - Start pushData - Account into batch");
-		
-		// var batch = this.pushRecordsIntoImportQueue( "Account", payload );
-		
-		// logHibachi("ERPONE - Start pushData - Account into batch");
-    }
     
     
+        
     public any function createHttpRequest(required string endPointUrl, string requestType="POST"){
     	if(!this.setting("devMode")){
 			var requestURL = this.setting("prodGatewayURL") & arguments.endPointUrl;
@@ -175,68 +188,116 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	return httpRequest;
     }
     
+    public any function getErpOneData( required struct requestData, string endpoint="read" ){
+        
+    	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint);
+		
+		// Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
+		
+		for( var key in arguments.requestData ){
+		    httpRequest.addParam( type='formfield', name= key, value = arguments.requestData[key] );
+		}
     
-    public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-    	return this.getErpOneIntegrationCFC().setting( argumentCollection=arguments );
+        var rawRequest = httpRequest.send().getPrefix();
+
+        if( !IsJson(rawRequest.fileContent) ){
+		    throw("ERPONE - getErpOneData: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		}
+			
+	    return DeSerializeJson(rawRequest.fileContent);
+    }
+    
+    	
+	public array function transformedErpOneItems(required array items, required struct erponeMapping ){
+		var transformedData = [];
+		
+	    for( var thisItem in arguments.items ){
+	    	
+	    	var transformedItem = {};
+	    	
+	    	for( var sourceKey in arguments.erponeMapping ){
+	    		var destinationKey = arguments.erponeMapping[ sourceKey ];
+	    		
+	    		if( structKeyExists(thisItem, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = thisItem[ sourceKey ];
+	    		}
+	    		
+	    	}
+	    	
+	    	transformedData.append(transformedItem);
+	    }
+	    
+	    return transformedData;
 	}
+    
+    public any function getAccountData(numeric pageNumber = 1, numeric pageSize = 50 ){
+    	logHibachi("ERPONE - called getAccountData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
+
+    	var accountsArray = this.getErpOneData({
+    	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
+    	    "take" : arguments.pageSize,
+    	    "query": "FOR EACH customer WHERE customer.active = YES",
+    	    "columns" : "name,country_code,email_address,phone,Active,company_cu"
+    	})
+    	
+		this.logHibachi("ERPONE - Start pushing accounts to import-queue ");
+		
+		var batch = this.pushRecordsIntoImportQueue( "Account", this.transformErpOneAccounts( accountsArray ) );
+		
+		this.logHibachi("ERPONE - Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
+		this.logHibachi("ERPONE - Finish pushing accounts to import-queue ");
+    }
+
 	
-	
-	public any function transformErponeAccountData( required array accountDataArray){
+	public any function transformErpOneAccounts( required array accountDataArray ){
 	    var erponeMapping = {
 	        "__rowids" : "remoteAccountID",
 	        "name" : "firstName",
 	        "country_code" : "countryCode",
 	        "email_address" : "email",
 	        "phone" : "phone",
-	        "Active" : "activeFlag",
-	        "company_cu" : "company"
+	        "Active" : "accountActiveFlag",
+	        "company_cu" : "companyName"
 	    };
 	    
-	    return this.transformedErponeData( arguments.accountDataArray, erponeMapping);
+	    return this.transformedErponeItems( arguments.accountDataArray, erponeMapping);
 	}
 	
 	
-	public array function transformedErponeData(required array data, required struct erponeMapping){
-		logHibachi("ERPONE - Start transform data - Account");
-		var transformedData = [];
-	    for( var counter in arguments.data ){
-	    	var partialTransformData={};
-	    	for( var sourceKey in arguments.erponeMapping ){
-	    		var destinationKey = arguments.erponeMapping[ sourceKey];
-	        	partialTransformData[ destinationKey ] =counter[ sourceKey ];
-	    	}
-	    	transformedData.append(partialTransformData);
-	    }
-	    return transformedData;
-	}
-	
-	public any function getAccountPagination(){
+	public any function importErpOneAccounts(){
 		
-		logHibachi("ERPONE - Start fetching pagination for Account");
+		logHibachi("ERPONE - Starting importing importErpOneAccounts");
 		
-    	var authorizeToken = this.getAccessToken();
-    	var httpRequest = this.createHttpRequest('distone/rest/service/data/count');
-		
-		// Authentication headers
-		httpRequest.addParam( type='header', name='authorization', value=authorizeToken);
-		httpRequest.addParam( type='formfield', name='table', value= "customer");
-		
-		var rawRequest = httpRequest.send().getPrefix();
-		var response = {};
-		response = DeSerializeJson(rawRequest.fileContent);
-		var pageNumber = 1;
+		var response = this.getErpOneData({
+    	    "table" : "customer"
+    	}, "count");
+    	
+		var totalRecordsCount = response.count;
+		var currentPage = 1;
 		var pageSize = 50;
-		var pageMax = response.count;
+
+		var recordsFetched = 0;
 		
-		while (pageNumber < pageMax){
-			try{
-				logHibachi("ERPONE - Calling API to fetch records for Account");
-				this.getAccountData(pageNumber,pageSize	
-			}catch(e){
-				logHibachi("Failed #e# @ PageSize: #pageSize# PageNumber: #pageNumber#");
+		while ( recordsFetched < totalRecordsCount ){
+			
+			try {
+				
+				this.getAccountData( currentPage, pageSize	);
+				this.logHibachi("Successfully called getAccountData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+				
+			} catch(e){
+			
+				this.logHibachi("Got error while trying to call getAccountData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+				this.getHibachiUtilityService().logException(e);
 			}
-			pageNumber=pageNumber+pageSize;
+			
+			// increment rgardless of success or failure;
+			recordsFetched += pageSize;
+			currentPage += 1;
 		}
+		
+	    this.logHibachi("ERPONE - Finish importing importErpOneAccounts for totalRecordsCount : #totalRecordsCount#");
 	}
 	
 }
