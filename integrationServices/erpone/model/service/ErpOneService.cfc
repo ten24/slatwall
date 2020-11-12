@@ -241,17 +241,17 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    "columns" : "name,country_code,email_address,phone,Active,company_cu"
     	})
     	
-		this.logHibachi("ERPONE - Start pushing accounts to import-queue ");
 		
-		if( !len(accountsArray) == 0 ){
-			
+		if( accountsArray.len() > 0 ){
+		
+		    this.logHibachi("ERPONE - Start pushing accounts to import-queue ");
 			var batch = this.pushRecordsIntoImportQueue( "Account", this.transformErpOneAccounts( accountsArray ) );
-			
-			this.logHibachi("ERPONE - Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
-			this.logHibachi("ERPONE - Finish pushing accounts to import-queue ");
+			this.logHibachi("ERPONE - Finish pushing accounts to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
+
+		} else {
+		    this.logHibachi("ERPONE - No data recieve from getAccountData API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
 		}
 		
-		this.logHibachi("ERPONE - No data recieve from API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
     }
 
 	
