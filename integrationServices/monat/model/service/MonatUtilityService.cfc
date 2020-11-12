@@ -85,6 +85,7 @@ component extends="Slatwall.model.service.HibachiService" {
         }
         account.setAccountStatusType(getService('TypeService').getTypeBySystemCode('astGoodStanding'));
         account.getAccountNumber();
+
         return accountUpdated;
     }
     public void function resumeEnrollment(required string enrollmentCode){
