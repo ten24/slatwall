@@ -72,19 +72,6 @@
 			// Save this entity
 			entitySave( arguments.target );
 
-			// Digg Deeper into any populatedSubProperties and save those as well.
-			if(!isNull(arguments.target.getPopulatedSubProperties())) {
-				for(var p in arguments.target.getPopulatedSubProperties()) {
-            		if(isArray(arguments.target.getPopulatedSubProperties()[p])) {
-            			for(var e=1; e<=arrayLen(arguments.target.getPopulatedSubProperties()[p]); e++) {
-            				this.save(target=arguments.target.getPopulatedSubProperties()[p][e]);
-            			}
-            		} else {
-            			this.save(target=arguments.target.getPopulatedSubProperties()[p]);
-            		}
-            	}
-            }
-
 			return arguments.target;
 		}
 
@@ -121,7 +108,7 @@
 	    }
 
 	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
-	        this.logHibachi("flushORMSession called with runCalculatedPropertiesAgain = #runCalculatedPropertiesAgain#" );
+
 	    	// Initate the first flush
 	    	ormFlush();
 	    	// flush again to persist any changes done during ORM Event handler
