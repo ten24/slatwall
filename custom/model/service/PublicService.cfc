@@ -2797,15 +2797,29 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var skinProductCategoryIDs = integration.setting('SiteSkinProductListingCategoryFilters');
         var hairProductCategoryIDs = integration.setting('SiteHairProductListingCategoryFilters');
+
+        var wellnessProductCategoryIDs = integration.setting('SiteWellnessProductListingCategoryFilters');
+        var promotionProductCategoryIDs = integration.setting('SitePromotionProductListingCategoryFilters');
         
-        var skinProductCategoryCollection = getService('ContentService').getCategoryCollectionList();
-        var hairProductCategoryCollection = getService('ContentService').getCategoryCollectionList();
+        var skinProductCategoryCollection = getContentService().getCategoryCollectionList();
+        var hairProductCategoryCollection = getContentService().getCategoryCollectionList();
+        var wellnessProductCategoryCollection = getContentService().getCategoryCollectionList();
+        var promotionProductCategoryCollection = getContentService().getCategoryCollectionList();
         
         skinProductCategoryCollection.addFilter( 'categoryID', skinProductCategoryIDs, 'IN' );
         hairProductCategoryCollection.addFilter( 'categoryID', hairProductCategoryIDs, 'IN' );
+        wellnessProductCategoryCollection.addFilter( 'categoryID', wellnessProductCategoryIDs, 'IN' );
+        promotionProductCategoryCollection.addFilter( 'categoryID', promotionProductCategoryIDs, 'IN' );
         
-        arguments.data.ajaxResponse['skinCategories'] = skinProductCategoryCollection.getRecordOptions();
-        arguments.data.ajaxResponse['hairCategories'] = hairProductCategoryCollection.getRecordOptions();
+        var categories = {
+            'Skin':skinProductCategoryCollection.getRecordOptions(),
+            'Hair':hairProductCategoryCollection.getRecordOptions(),
+            'Wellness':wellnessProductCategoryCollection.getRecordOptions(),
+            'Promotion':promotionProductCategoryCollection.getRecordOptions()
+        };
+        
+        arguments.data.ajaxResponse['categories'] = categories;
+        
     }
         
     public void function saveEnrollment(required struct data){
