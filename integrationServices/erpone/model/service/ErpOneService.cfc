@@ -302,7 +302,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			currentPage += 1;
 		}
 		
-	    this.logHibachi("ERPONE - Finish importing importErpOneAccounts for totalRecordsCount : #totalRecordsCount#");
+	    this.logHibachi("ERPONE - Finish importing importErpOneAccounts for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
 	
 }
