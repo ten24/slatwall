@@ -2824,12 +2824,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     public void function saveEnrollment(required struct data){
         param name="arguments.data.emailAddress";
+        
+        var ownerAccountNumber = '';
         if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
             var ownerAccountNumber = getHibachiScope().getSessionValue('ownerAccountNumber');
-        }else{
-            this.addErrors(arguments.data,[{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')}]);
-            getHibachiScope().addActionResult('public:account.saveEnrollment',true);
-            return;
         }
         var cart = getHibachiScope().getCart();
         var emailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Share Enrollment');
@@ -2840,9 +2838,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         newOrder.setPriceGroup(cart.getPriceGroup());
         newOrder.setMonatOrderType(cart.getMonatOrderType());
         newOrder = getService('OrderService').saveOrder(newOrder);
-        
-        var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
-        newOrder.setSharedByAccount( ownerAccount );
+        if(len(ownerAccountNumber)){
+            var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
+            newOrder.setSharedByAccount( ownerAccount );
+        }else{
+            var ownerAccount = getService('AccountService').newAccount();
+        }
         newOrder.setAccount(ownerAccount);
         
         var emailData = {
