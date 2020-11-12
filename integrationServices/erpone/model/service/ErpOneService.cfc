@@ -117,8 +117,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		        DateAdd("n",60,now()) 
 		    );
 		    
-		    this.logHibachi("ERPONE - created and saved GrantToken: #response.grant_token#");
-		    
 		} catch ( any e ){
 		    this.getHibachiUtilityService().logException(e);
 			rethrow;
@@ -162,8 +160,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		        DateAdd("n",60,now()) 
 		    );
 		    
-		    this.logHibachi("ERPONE - created and saved AccessToken: #response.access_token#");
-
 		} catch ( any e ){
 			this.getHibachiUtilityService().logException(e);
             rethrow;
