@@ -19,11 +19,11 @@
         </li>
         
 		<!-- Forward 1 Page --->
-		<li class="page-item" ng-class="{'disabled': paginationController.pageTracker == paginationController.totalPages}">
+		<li class="page-item" ng-class="{'disabled': !paginationController.hasNextPageSet }">
 			<button ng-click="paginationController.paginate(1, 'next')" class="page-link">
 				<i class="fas fa-chevron-right"></i>
 			</button>				
 		</li>
 		
-	</ul>
+	</ul> 
 </nav>

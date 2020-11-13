@@ -2143,9 +2143,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             data['search'] = getHibachiScope().getSessionValue('ownerAccountNumber');
         }
         
-        var marketPartners = getService('MonatDataService').getMarketPartners(data);
-        arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
-        arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
+        arguments.data.ajaxResponse['pageRecords'] = getService('MonatDataService').getMarketPartners(data);
     }
 	
     public any function getOrderTemplatePromotionProducts( required any data ) {
@@ -2782,14 +2780,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data.ajaxResponse['recordsCount'] = getService('MonatDataService').getProductReviewCount(data=arguments.data);
         }
         
-    }
-    
-    public void function getMarketPartners(required struct data){
-        
-        var marketPartners = getService('MonatDataService').getMarketPartners(data=arguments.data);
-        arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
-        arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
-
     }
     
     public void function getProductListingFilters( required struct data ){

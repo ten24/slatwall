@@ -50,7 +50,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         return productReviewCollection.getPageRecords();
     }
     
-    public struct function getMarketPartners(required struct data){
+    public array function getMarketPartners(required struct data){
         param name="arguments.data.pageRecordsShow" default=9;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
@@ -127,17 +127,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         accountCollection.addOrderBy('accountType|ASC');
         
         var pageRecords = accountCollection.getPageRecords(formatRecords=false);
-        var recordsCount = arrayLen(pageRecords);
         
-        if(recordsCount == arguments.data.pageRecordsShow){
-            recordsCount = accountCollection.getRecordsCount();
-        }
-        
-        var returnObject = {
-            accountCollection: pageRecords,
-            recordsCount: recordsCount
-        }
-        return returnObject; 
+        return pageRecords; 
     }
     
     public numeric function getProductReviewCount(required struct data){

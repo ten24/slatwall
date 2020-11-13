@@ -15,7 +15,7 @@ class SWFPaginationController {
     public beginPaginationAt:number;
     public displayPages:any;
     public elipsesNum;
-    public hasNextPageSet:boolean = true;
+    public hasNextPageSet:boolean;
     public parentController;
     private scrollTo:string;
     private pageCache = {};
@@ -38,7 +38,7 @@ class SWFPaginationController {
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
         
-        console.log('INIT');
+        this.hasNextPageSet = this.pageTracker != this.totalPages;
 
         //create two arrays, one for the entire page list, and one for the display (ie: 1-10...)
         for(var i = 1; i <= this.totalPages; i++){
@@ -52,10 +52,6 @@ class SWFPaginationController {
 	}
 	
     public paginate = ( pageNumber = 1, direction:any = false, newPages = false) => {
-        
-        if(this.pageTracker == pageNumber){
-            return;
-        }
         
 		let newPage = newPages;
 		let lastDisplayPage = this.displayPages[this.displayPages.length -1];
@@ -72,11 +68,11 @@ class SWFPaginationController {
                 pageNumber = this.pageTracker -1;
             }
         }else if(direction === 'next'){
-            if(this.pageTracker >= lastDisplayPage){
-                newPage = true;
-            }else{
+            // if(this.pageTracker >= lastDisplayPage){
+            //     newPage = true;
+            // }else{
                 pageNumber = this.pageTracker +1;
-            }
+            //}
         }
         //END: direction logic
 
@@ -138,6 +134,13 @@ class SWFPaginationController {
             :(result.pageRecords) 
             ? result.pageRecords 
             :result.ordersOnAccount.ordersOnAccount;
+        
+        if(this.totalPages){
+            this.hasNextPageSet = pageNumber < this.totalPages
+        }else{
+            console.log(( Array.isArray(this.recordList) ? this.recordList.length : Object.keys(this.recordList).length), this.itemsPerPage); 
+            this.hasNextPageSet = ( Array.isArray(this.recordList) ? this.recordList.length : Object.keys(this.recordList).length)  == this.itemsPerPage;
+        }
         
         this.pageTracker = pageNumber;
         this.publicService.paginationIsLoading = false;
