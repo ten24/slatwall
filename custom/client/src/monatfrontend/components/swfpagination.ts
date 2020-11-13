@@ -32,13 +32,13 @@ class SWFPaginationController {
 	}
 	
 	public init = () => {
-	    console.log('INIT');
 	    this.pageTracker = 1;
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
         
         this.hasNextPageSet = this.pageTracker != this.totalPages;
+        this.displayPagination = this.hasNextPageSet;
 
         //create two arrays, one for the entire page list, and one for the display (ie: 1-10...)
         for(var i = 1; i <= this.totalPages; i++){
