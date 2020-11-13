@@ -239,4 +239,17 @@ component {
 		variables.allowCorporateEmailsFlag = arguments.allowCorporateEmailsFlag;
 		
 	}
+	
+	public boolean function canViewProductPacks(){
+		if(isNull(this.getAccountCreatedSite())){
+			return true;
+		}
+		
+		var maxDaysAfterAccountCreate = this.getAccountCreatedSite().setting("siteMaxDaysAfterAccountCreate");
+		
+		return  !this.getProductPackPurchasedFlag() 
+				&& !isNull(maxDaysAfterAccountCreate) 
+				&& !isNull(this.getEnrollmentDate()) 
+				&& dateDiff("d", this.getEnrollmentDate(), now()) < maxDaysAfterAccountCreate;
+	}
 } 

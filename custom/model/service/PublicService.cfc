@@ -1362,6 +1362,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var priceGroupCode =  2;
         var flexshipFlag = false;
         
+        
         if( structKeyExists(arguments.data, 'flexshipFlag') && arguments.data.flexshipFlag == true ){
             flexshipFlag = true;
         }
@@ -1416,11 +1417,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
         productCollectionList.addFilter('skus.skuPrices.promotionReward.promotionRewardID','NULL','IS')
         productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=");
         productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode);
+        
+        if(!account.canViewProductPacks()){
+            productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
+            productCollectionList.addFilter('productType.urlTitle','productPack','!=');
+        }
         
         if(isNull(accountType) || accountType == 'customer'){
            productCollectionList.addFilter('skus.retailFlag', 1);
