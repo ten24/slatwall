@@ -645,14 +645,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 
-
-
 		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
 			return true;
 		}
-
-
-				// Check first to see if this entity was defined
+		
+		// Check first to see if this entity was defined
 		if(structKeyExists(permissions.entity.entities, arguments.entityName) && structKeyExists(permissions.entity.entities[arguments.entityName].properties, arguments.propertyName) && !isNull(permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag"))) {
 			if( permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag") ) {
 				return true;
@@ -662,11 +659,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 		}
 		
-		var permissionDetails = getEntityPermissionDetails();
+		var entityPropertiesStruct = getPropertiesStructByEntityName(arguments.entityName);
 		//  check other locations for propertyName
-		if(structKeyExists(permissionDetails, arguments.entityName) && 	( structKeyExists(permissionDetails[arguments.entityName].otmproperties, arguments.propertyName) ||	structKeyExists(permissionDetails[arguments.entityName].mtoproperties, arguments.propertyName) || structKeyExists(permissionDetails[arguments.entityName].mtmproperties, arguments.propertyName))
-		) {
-			return authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, permissionGroup=arguments.permissionGroup);
+		if(structKeyExists(entityPropertiesStruct, arguments.propertyName) && structKeyExists(entityPropertiesStruct[arguments.propertyName],'cfc')) {
+			return authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=entityPropertiesStruct[arguments.propertyName].cfc, permissionGroup=arguments.permissionGroup);
 		}	
 		
 		// If there was an entity defined, and special property values have been defined then we need to return false
