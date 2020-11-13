@@ -19,7 +19,8 @@ class SWFPaginationController {
     public parentController;
     private scrollTo:string;
     private pageCache = {};
-    public displayPagination = true;
+    public displayPagination;
+    
 	// @ngInject
 	constructor(public observerService, public $scope, public publicService, private $q) { 
         this.observerService.attach(this.init,"PromiseComplete"); 
@@ -169,8 +170,7 @@ class SWFPagination {
 		argumentsObject:'<?', //optional object of arguments to pass in to the api call
 		beginPaginationAt:'@?', //this is unneeded unless the user wants the ellipsis to begin following a number other than 11
 	    parentController:'=?',
-	    scrollTo:'@?',
-	    showPageNumber:'=?' // Display page numbers or just the arrows [<] [>]
+	    scrollTo:'@?'
 	};
 
 	public controller = SWFPaginationController;
