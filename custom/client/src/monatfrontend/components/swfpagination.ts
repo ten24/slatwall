@@ -139,7 +139,6 @@ class SWFPaginationController {
         if(this.totalPages){
             this.hasNextPageSet = pageNumber < this.totalPages
         }else{
-            console.log(( Array.isArray(this.recordList) ? this.recordList.length : Object.keys(this.recordList).length), this.itemsPerPage); 
             this.hasNextPageSet = ( Array.isArray(this.recordList) ? this.recordList.length : Object.keys(this.recordList).length)  == this.itemsPerPage;
         }
         
