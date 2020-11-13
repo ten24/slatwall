@@ -422,7 +422,7 @@ component extends="Slatwall.model.service.OrderService" {
 	 */ 
 	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		
-		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+		var orderTemplateOrderDetailsKey = arguments.orderTemplate.getOrderTemplateOrderDetailsKey();
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
 			return request[orderTemplateOrderDetailsKey];

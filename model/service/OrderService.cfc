@@ -1334,7 +1334,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 * 
 	 */ 
 	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
-		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+		var orderTemplateOrderDetailsKey = arguments.orderTemplate.getOrderTemplateOrderDetailsKey();
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
 			return request[orderTemplateOrderDetailsKey];
