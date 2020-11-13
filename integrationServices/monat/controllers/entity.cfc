@@ -89,21 +89,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			//Set Price Groups
 			var employeePriceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('15');
-			var customerPriceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('2');
 			
 			var priceGroupDeleteSQL = 'DELETE FROM swaccountpricegroup
 											WHERE accountID in (:accountIDs)';
 											
 			queryExecute(priceGroupDeleteSQL,accountIDParams);
-			
-			var customerPriceGroupCreateSQL = 'INSERT INTO swaccountpricegroup(priceGroupID,accountID)
-												SELECT 
-													"#customerPriceGroup.getPriceGroupID()#" as priceGroupID,
-													accountID
-												FROM swaccount
-												WHERE accountID in (:accountIDs)';
-												
-			queryExecute(customerPriceGroupCreateSQL,accountIDParams);
 			
 			var employeePriceGroupCreateSQL = 'INSERT INTO swaccountpricegroup(priceGroupID,accountID)
 												SELECT 
@@ -113,6 +103,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 												WHERE accountID in (:accountIDs)';
 												
 			queryExecute(employeePriceGroupCreateSQL,accountIDParams);
+			
+			var accountNumberInsertSQL = 'insert into swaccountnumber (accountID,createdDateTime) 
+											SELECT 
+												accountID,
+												now() as createdDateTime
+											FROM swaccount
+											WHERE accountID in (:accountIDs) 
+												AND accountNumber IS NULL';
+			queryExecute(accountNumberInsertSQL,accountIDParams);
+			
+			var accountNumberUpdateSQL = 'UPDATE swaccount a
+											JOIN swaccountnumber an ON a.accountID = an.accountID
+											SET a.accountNumber = an.accountNumber
+											WHERE a.accountID in (:accountIDs)';
+			queryExecute(accountNumberUpdateSQL,accountIDParams);
 			
 			//Push to ICE
 			var iceIntegration = getService('IntegrationService').getIntegrationByIntegrationPackage('infotrax');

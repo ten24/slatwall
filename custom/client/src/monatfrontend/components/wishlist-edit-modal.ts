@@ -3,6 +3,7 @@ class WishlistEditModalConroller {
     public wishlist; 
     public translations = {};
 	public close; // injected from angularModalService
+	public wishlistName;
 
     //@ngInject
     constructor(public rbkeyService, public observerService) {
@@ -11,6 +12,7 @@ class WishlistEditModalConroller {
     
     public $onInit = () => {
     	this.makeTranslations();
+    	this.wishlistName = this.wishlist.name;
     };
     
     private makeTranslations = () => {
@@ -21,7 +23,7 @@ class WishlistEditModalConroller {
     }
     
     public closeModal = () => {
-     	this.close(null);
+     	this.close(this.wishlistName);
     }
     
 }

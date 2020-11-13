@@ -27,12 +27,12 @@ export class MonatService {
 	public showAddToCartMessage: boolean;
 	public lastAddedProduct: cartOrderItem;
 	public muraContent = {};
-	public hairFilters = [{}];
-	public skinFilters = [{}];
+	public productFilters:any = {};
 	public totalItemQuantityAfterDiscount = 0;
 	public ofyItems;
 	public qualifiedPromos = [];
 	public promotionRewardSkus = {};
+	public productFilterCategories = ['Hair','Skin','Wellness','Promotion'];
 	
 	//@ngInject
 	constructor(
@@ -490,14 +490,10 @@ export class MonatService {
 		return this.publicService
 			.doAction("getProductListingFilters", null, "GET")
 			.then((response) => {
-				if (response.hairCategories) {
-					this.hairFilters = response.hairCategories;
-					this.skinFilters = response.skinCategories;
+				if (response.categories) {
+					this.productFilters = response.categories
 				}
-				return {
-					hairFilters: this.hairFilters,
-					skinFilters: this.skinFilters,
-				};
+				return this.productFilters;
 			});
 	}
 	

@@ -44,6 +44,22 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 					propertyIdentifier="parentCategory.categoryID",
 					value="f66d77f60a6b4911a36cb00b11b89a14"
 				}]
+			},
+			siteWellnessProductListingCategoryFilters = {
+			    fieldType="listingMultiselect", 
+			    listingMultiselectEntityName="Category",
+			    listingMultiselectFilters=[{
+					propertyIdentifier="parentCategory.categoryID",
+					value="a35f8e9813ae11ebb474124c3404f941"
+				}]
+			},
+			sitePromotionProductListingCategoryFilters = {
+			    fieldType="listingMultiselect", 
+			    listingMultiselectEntityName="Category",
+			    listingMultiselectFilters=[{
+					propertyIdentifier="parentCategory.categoryID",
+					value="c75db30913ae11ebb474124c3404f941"
+				}]
 			}
 
 		};
@@ -63,7 +79,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 
 	// @hint comma-delimitd list of settings to display that allow site specific overrides (without 'integration{packageName}' prefix)
 	public string function getAllowedSiteSettingNames() {
-		return "siteHairProductListingCategoryFilters,siteSkinProductListingCategoryFilters";
+		return "siteHairProductListingCategoryFilters,siteSkinProductListingCategoryFilters,siteWellnessProductListingCategoryFilters,sitePromotionProductListingCategoryFilters";
 	}
     
     public array function getMenuItems(){

@@ -22,8 +22,8 @@ class MonatProductListingController {
     public paginationMethod = 'getProductsByCategoryOrContentID';
     public searchTerm:string;
     public wishlistItems : string[];
-	public hairProductFilter:any;
-	public skinProductFilter:any;
+	public productFilters:any = {};
+	public showProductFilter:any = {};
 	public loadingAddToCart;
 	public flexshipFlag:boolean;
 	public qualifiedPromos;
@@ -91,14 +91,16 @@ class MonatProductListingController {
 			if(category != 'none'){
 				this.argumentsObject['categoryFilterFlag'] = true;
 				this.argumentsObject['categoryID'] = category.value;
-				this.hairProductFilter = null;
-				this.skinProductFilter = null;
-				this[`${categoryType}ProductFilter`] = category;
+				for(var key in this.productFilters){
+					this.productFilters[key] = null;
+				}
+				this.productFilters[categoryType] = category;
 			}else{
 				this.argumentsObject['categoryFilterFlag'] = false;
 				this.argumentsObject['categoryID'] = null;
-				this.hairProductFilter = null;
-				this.skinProductFilter = null;
+				for(var key in this.productFilters){
+					this.productFilters[key] = null;
+				}
 			}
 			this.argumentsObject['currentPage'] = 1;
 		}
@@ -129,6 +131,15 @@ class MonatProductListingController {
     
 	public launchWishlistsModal = (skuID, productID, productName) => {
 	    this.monatService.launchWishlistsModal(skuID, productID, productName);
+	}
+	
+	public toggleShowFilterCategory = (categoryName)=>{
+		for(let category of this.monatService.productFilterCategories){
+			if(category != categoryName){
+				this.showProductFilter[category] = false;
+			}
+		}
+		this.showProductFilter[categoryName] = !this.showProductFilter[categoryName];
 	}
 	
 	public searchByKeyword = ():void =>{
