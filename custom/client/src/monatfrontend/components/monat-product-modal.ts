@@ -9,6 +9,7 @@ class MonatProductModalController {
 	public quantityToAdd: number = 1;
 	public showFullIngredients = false;
 	public loading=false;
+	public loaded= false;
 	public skuBundles: Array<any> = [];
 	public productRating: Number;
 	public reviewsCount: number = 0;
@@ -40,7 +41,8 @@ class MonatProductModalController {
 		private orderTemplateService, 
 		private monatAlertService,
 		private publicService,
-		private $sce
+		private $sce,
+		public $timeout
 	) {}
 
 	public $onInit = () => {
@@ -155,12 +157,19 @@ class MonatProductModalController {
 			this.quantityToAdd
 		)
 		.then((result) => {
-			if(!result.hasErrors) {	
-			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
+			if(!result.hasErrors) {
+				let origText = this.translations['addButtonText'];
+				this.translations['addButtonText'] = this.rbkeyService.rbKey("alert.flexship.addedToCart");
+				this.loaded = true;
+				this.$timeout(()=>{
+					this.closeModal();
+					this.loaded = false;
+					this.translations['addButtonText'] = origText;
+				}, 3000)
 			}else{
 			    this.monatAlertService.showErrorsFromResponse(result);
+			    this.closeModal();
 			}
-			this.closeModal();
 		})
 		.catch( (error) => {
 			console.error(error);

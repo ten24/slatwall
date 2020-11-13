@@ -34,9 +34,10 @@ class EnrollmentMPController {
 	public productFilters:any = {};
 	public showProductFilter:any = {};
 	public sortedBundles = [];
+	public slickInitialized;
 	
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService, private rbkeyService, private monatAlertService) {}
+	constructor(public publicService, public observerService, public monatService, private rbkeyService, private monatAlertService, private $timeout) {}
 	
 	public $onInit = () => {
 		this.getDateOptions();
@@ -131,6 +132,20 @@ class EnrollmentMPController {
 			newDayOptions.push( ( '0' + i ).slice(-2) );
 		}
 		this.dayOptions = newDayOptions;
+	}
+	
+	public openBundle = (bundle) =>{
+		this.openedBundle = bundle;
+		if(this.openedBundle == null){
+			this.slickInitialized = false;
+			return;
+		}
+		const slickContainer = $('.starter-pack-slick');
+		this.$timeout(()=>{
+			let slickOptions = JSON.parse(slickContainer[0].dataset.slickOptions);	
+			slickContainer.slick(slickOptions);
+			this.slickInitialized = true;
+		});
 	}
 	
 	public showAddToCartMessage = () => {
