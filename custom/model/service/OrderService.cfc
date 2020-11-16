@@ -453,11 +453,11 @@ component extends="Slatwall.model.service.OrderService" {
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
 
-		thread 
-			name="#threadName#" 
-			action="run" 
-			orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
-		{	
+		// thread 
+		// 	name="#threadName#" 
+		// 	action="run" 
+		// 	orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
+		// {	
 			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
@@ -514,20 +514,29 @@ component extends="Slatwall.model.service.OrderService" {
 				this.logHibachi('there as an error in serializing Promotion Messages at line 397 in custom order service',true);
 				request[orderTemplateOrderDetailsKey]['appliedPromotionMessagesJson'] = '[]'; // keeping return value uniform in case of error
 			}
-			var deleteOk = this.deleteOrder(transientOrder); 
-			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 			ormFlush();
+			var deleteOk = this.deleteOrder(transientOrder); 
+			for(var orderItem in transientOrder.getOrderItems()){
+				writeDump(orderItem.getOrderItemID());
+				writeDump(var=orderItem.getAppliedPromotions(),top=3);
+			}
+			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+			try{
+				ormFlush();
+			}catch(any e){
+				writeDump(e);abort;
+			}
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
 			
-		}
+		// }
 		
 		//join thread so we can return synchronously
-		threadJoin(threadName);
+		// threadJoin(threadName);
 		
 		//if we have any error we probably don't have the required data for returning the total
-		if(structKeyExists(evaluate(threadName), "ERROR")){
-			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
+		// if(structKeyExists(evaluate(threadName), "ERROR")){
+		// 	this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+		// } 
 
 		return request[orderTemplateOrderDetailsKey];
 	}

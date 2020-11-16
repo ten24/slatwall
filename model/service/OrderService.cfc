@@ -1401,6 +1401,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
+			
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
 			ormFlush();	
@@ -5662,7 +5663,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!isNull(sessionOrder) && arguments.order.getOrderID() == sessionOrder.getOrderID()) {
 				getHibachiScope().getSession().setOrder( javaCast("null", "") );
 			}
-
+			var orderItems = arguments.order.getOrderItems();
+			for(var orderItem in orderItems){
+				var appliedPromotions = orderItem.getAppliedPromotions();
+				for(var appliedPromotion in appliedPromotions){
+					appliedPromotion.removeOrderItem(orderItem,false);
+				}
+				deleteOrderItem(orderItem,false);	
+			}
+			ORMFlush();
 			getOrderDAO().removeOrderFromAllSessions( orderID=arguments.order.getOrderID() );
 
 			return delete( arguments.order );
@@ -5924,6 +5933,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderItem.getOrderReturn())) {
 			arguments.orderItem.removeOrderReturn();
 		}
+		var appliedPromotions = arguments.orderItem.getAppliedPromotions();
+		for(var appliedPromotion in appliedPromotions){
+			appliedPromotion.removeOrderItem(arguments.orderItem,false);
+		}
+		arrayClear(arguments.orderItem.getAppliedPromotions());
 		
 		for(var stockHold in arguments.orderItem.getStockHolds()){
 			getService('stockService').deleteStockHold(stockHold);

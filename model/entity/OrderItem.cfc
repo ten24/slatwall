@@ -1266,6 +1266,7 @@ property name="personalVolume" ormtype="big_decimal";
 
 	}
 
+
 	// ===================  END:  ORM Event Hooks  =========================	
 		//CUSTOM FUNCTIONS BEGIN
 

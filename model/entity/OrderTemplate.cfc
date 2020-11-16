@@ -343,6 +343,10 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 		return variables.total; 
 	} 
+	
+	public string function getOrderTemplateOrderDetailsKey(){
+		return "orderTemplateOrderDetails#getOrderTemplateID()#";
+	}
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.accountID,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
