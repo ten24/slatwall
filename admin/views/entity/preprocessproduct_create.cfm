@@ -272,7 +272,7 @@ Notes:
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardExpirationTermID" edit="true">
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmountType" edit="true" fieldAttributes="ng-model='redemptionAmountType' ng-init='redemptionAmountType=""""'">
 						<div ng-hide="redemptionAmountType == 'sameAsPrice' || redemptionAmountType == ''">
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="baseRedemptionAmount" edit="true" value="0">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmount" edit="true" value="0">
 						</div>
 
 					</hb:HibachiPropertyList>

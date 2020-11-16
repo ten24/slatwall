@@ -54,6 +54,8 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	// Persistent Properties
 	property name="taxAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="taxAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="VATPrice" ormtype="big_decimal" hb_formatType="currency"; //price before tax for VAT countries
+	property name="VATAmount" ormtype="big_decimal" hb_formatType="currency"; // actual tax amount for VAT countries
 	property name="taxLiabilityAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="taxRate" ormtype="big_decimal" scale="5" hb_formatType="percentage";
 	property name="appliedType" ormtype="string";
@@ -66,6 +68,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="taxPostalCode" hb_populateEnabled="public" ormtype="string";
 	property name="taxCountryCode" hb_populateEnabled="public" ormtype="string";
 	property name="manualTaxAmountFlag" ormtype="boolean" default="false";
+	property name="feeType" ormtype="string"; // Used to distinguish Shipping and Handling taxes on Order Fulfillments
 	property name="message" ormtype="string" length="4000"; // @hint this is a pipe and tilda delimited list of any messages that came back in the response.
 	
 	//Persitent Integration Properties
@@ -129,6 +132,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 		variables.orderItem = arguments.orderItem;
 		if(isNew() or !arguments.orderItem.hasAppliedTax( this )) {
 			arrayAppend(arguments.orderItem.getAppliedTaxes(), this);
+			arguments.orderItem.clearVariablesKey('taxAmount');
 		}
 	}
 	public void function removeOrderItem(any orderItem) {
@@ -140,6 +144,21 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 			arrayDeleteAt(arguments.orderItem.getAppliedTaxes(), index);
 		}
 		structDelete(variables, "orderItem");
+	}
+	
+	public boolean function getExcludeFromModifiedEntitiesFlag(){
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			if( !isNull(getOrderItem()) ){
+				variables.excludeFromModifiedEntitiesFlag = getOrderItem().getExcludeFromModifiedEntitiesFlag();
+			}
+			if(!isNull(getOrderFulfillment())){
+				variables.excludeFromModifiedEntitiesFlag = getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
+			}
+		}
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

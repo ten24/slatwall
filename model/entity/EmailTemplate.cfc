@@ -53,13 +53,14 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	property name="emailTemplateName" ormtype="string";
 	property name="emailTemplateObject" ormtype="string" hb_formFieldType="select" index="PI_EMAIL_TEMPLATE_OBJECT";
 	property name="emailTemplateFile" ormtype="string" hb_formFieldType="select";
-	property name="emailBodyHTML" ormtype="string" length="4000";
+	property name="emailBodyHTML" ormtype="string" length="4000" hb_translate="true" hb_formFieldType="wysiwyg";
 	property name="emailBodyText" ormtype="string" length="4000";
 	property name="logEmailFlag" ormtype="boolean";
 
 	// Related Object Properties (many-to-one)
 
 	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all" inverse="true" lazy="extra";
 	property name="eventTriggers" singularname="eventTrigger" cfc="EventTrigger" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all" inverse="true" lazy="extra";
 	property name="forms" singularname="form" cfc="Form" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all";
 	// Related Object Properties (many-to-many)
@@ -76,10 +77,11 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	// Non-Persistent Properties
 	property name="emailTemplateObjectOptions" persistent="false";
 	property name="emailTemplateFileOptions" persistent="false";
+	property name="emailTemplateContextPathList" persistent="false"; 
 
 
 	// ============ START: Non-Persistent Property Methods =================
-
+	
 	public array function getEmailTemplateObjectOptions() {
 		if(!structKeyExists(variables, "emailTemplateObjectOptions")) {
 			var emd = getService("hibachiService").getEntitiesMetaData();
@@ -101,6 +103,10 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 		return variables.emailTemplateFileOptions;
 	}
 
+	public string function getTemplateContextPathList() { 
+		return getService("templateService").getTemplateContextPathList( templateType="email", objectName=getEmailTemplateObject(), includesFlag=true );  	
+	}  
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -109,8 +115,16 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	public void function addForm(required any form) {
 		arguments.form.setEmailTemplate( this );
 	}
+	
 	public void function removeForm(required any form) {
 		arguments.form.removeEmailTemplate( this );
+	}
+	
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setEmailTemplate( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeEmailTemplate( this );
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

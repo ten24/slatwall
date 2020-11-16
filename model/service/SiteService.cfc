@@ -48,6 +48,10 @@ Notes:
 */
 
 component  extends="HibachiService" accessors="true" {
+
+	property name="siteDAO"; 
+	property name="hibachiCacheService"; 
+	
 	variables.skeletonSitePath = expandPath('/#getApplicationValue('applicationKey')#')&'/integrationServices/slatwallcms/skeletonsite';
 	variables.sharedAssetsPath = expandPath('/#getApplicationValue('applicationKey')#')&'/custom/assets';
 
@@ -63,6 +67,27 @@ component  extends="HibachiService" accessors="true" {
 	public any function getCurrentDomain() {
 		return getHibachiScope().getCurrentDomain();
 	}
+
+	public any function getSiteByDomainName(required string siteName) {
+		var cacheKey = 'site' & replaceNoCase(arguments.siteName,' ','','all') & 'ID'; 
+		if(!getHibachiCacheService().hasCachedValue(cacheKey)){
+			var site = getSiteDAO().getSiteByDomainName(arguments.siteName);
+			
+			if(isNull(site)){
+				getHibachiCacheService().setCachedValue(cacheKey, '');  
+			} else { 
+				getHibachiCacheService().setCachedValue(cacheKey, site.getSiteID());  
+			} 	
+
+		} 
+		var cachedSiteID = getHibachiCacheService().getCachedValue(cacheKey);
+
+		if(len(cachedSiteID) == 0){
+			return; 
+		}   
+
+		return this.getSite(cachedSiteID);  
+	}  
 
 	public string function getSkeletonSitePath(){
 		return variables.skeletonSitePath;
@@ -397,4 +422,5 @@ component  extends="HibachiService" accessors="true" {
 	// ===================== START: Delete Overrides ==========================
 
 	// =====================  END: Delete Overrides ===========================
+
 }

@@ -1,10 +1,31 @@
 {
-	"properties":{
-		"amountType":					[{"contexts":"save","required":true}],
-		"amount":						[{"contexts":"save","required":true,"dataType":"numeric"}],
-		"maximumUsePerOrder":			[{"contexts":"save","dataType":"numeric"}],
-		"maximumUsePerItem":			[{"contexts":"save","dataType":"numeric"}],
-		"maximumUsePerQualification":	[{"contexts":"save","dataType":"numeric"}],
-		"promotionRewardID":			[{"contexts":"delete","method":"getIsDeletableFlag"}]
+	"conditions": {
+		"rewardTypeNotCanPlaceOrder": {
+			"rewardType": { "neq": "canPlaceOrder" }
+		},
+		"rewardTypeNotRewardSkuOrCanPlaceOrder": {
+			"rewardType": { "notInList": "canPlaceOrder,rewardSku" }
+		}
+	},
+	"properties": {
+		"amountType": [{ "conditions": "rewardTypeNotRewardSkuOrCanPlaceOrder", "contexts": "save", "required": true }],
+		"amount": [
+			{
+				"conditions": "rewardTypeNotRewardSkuOrCanPlaceOrder",
+				"contexts": "save",
+				"required": true,
+				"dataType": "numeric"
+			}
+		],
+		"maximumUsePerOrder": [
+			{ "conditions": "rewardTypeNotRewardSkuOrCanPlaceOrder", "contexts": "save", "dataType": "numeric" }
+		],
+		"maximumUsePerItem": [
+			{ "conditions": "rewardTypeNotRewardSkuOrCanPlaceOrder", "contexts": "save", "dataType": "numeric" }
+		],
+		"maximumUsePerQualification": [
+			{ "conditions": "rewardTypeNotRewardSkuOrCanPlaceOrder", "contexts": "save", "dataType": "numeric" }
+		],
+		"promotionRewardID": [{ "contexts": "delete", "method": "getIsDeletableFlag" }]
 	}
 }

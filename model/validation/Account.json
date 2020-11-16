@@ -1,56 +1,81 @@
 {
-	"conditions":{
-	    "nonIntegrationAuthenticatedAccount":{
-	        "nonIntegrationAuthenticationExistsFlag":{"eq":true}
-	    },
-		"isOrganizationAccount":{
-			"organizationFlag":{"eq":true}
+	"conditions": {
+		"nonIntegrationAuthenticatedAccount": {
+			"nonIntegrationAuthenticationExistsFlag": { "eq": true }
 		},
-		"isNotOrganizationAccount":{
-			"organizationFlag":{"neq":true}
+		"isOrganizationAccount": {
+			"organizationFlag": { "eq": true }
+		},
+		"isNotOrganizationAccount": {
+			"organizationFlag": { "neq": true }
 		}
 	},
-	"properties":{
-		"firstName":							[{"conditions":"isNotOrganizationAccount","contexts":"save","required":true}],
-		"lastName":								[{"conditions":"isNotOrganizationAccount","contexts":"save","required":true}],
-		"company":								[{"conditions":"isOrganizationAccount","contexts":"save","required":true}], 
-		"accountCode":	    [
+	"properties": {
+		"firstName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true }],
+		"lastName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true }],
+		"company": [{ "conditions": "isNotOrganizationAccount", "contexts": "save"}],
+		"accountCode": [
 			{
-				"conditions":"isOrganizationAccount",
-				"contexts":"save",
-				"unique":true,
-				"required":true
+				"conditions": "isOrganizationAccount",
+				"contexts": "save",
+				"unique": true,
+				"required": true
 			},
 			{
-				"conditions":"isNotOrganizationAccount",
-				"contexts":"save",
-				"uniqueOrNull":true
+				"conditions": "isNotOrganizationAccount",
+				"contexts": "save",
+				"uniqueOrNull": true
 			},
 			{
-				"contexts":"save",
-				"regex":"^[a-zA-Z0-9-_.|:~^]+$"
+				"contexts": "save",
+				"regex": "^[a-zA-Z0-9_-]+$",
+				"maxLength": 35,
+				"minLength": 3
+			},
+			{
+				"contexts": "save",
+				"method": "isRestrictedKeyword"
 			}
 		],
-		"superUserFlag":						[{"contexts":"generateAPIAccessKey","eq":false}],
-		"emailAddress":							[
+		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
+		"emailAddress": [
 			{
-				"contexts":"save","dataType":"email"
+				"contexts": "save,updateAccount",
+				"dataType": "email",
+				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			},
 			{
-				"contexts":"createPassword","required":true
+				"contexts": "createPassword",
+				"required": true
 			}
 		],
-		"orders":								[{"contexts":"delete","maxCollection":0}],
-		"productReviews":						[{"contexts":"delete","maxCollection":0}],
-		"cmsAccountID":							[{"contexts":"save","uniqueOrNull":true}],
-		"nonIntegrationAuthenticationExistsFlag":		[
-			{"contexts":"createPassword","eq":false},
-			{"contexts":"changePassword","eq":true}
+		"orders": [{ "contexts": "delete", "maxCollection": 0 }],
+		"productReviews": [{ "contexts": "delete", "maxCollection": 0 }],
+		"cmsAccountID": [{ "contexts": "save", "uniqueOrNull": true }],
+		"nonIntegrationAuthenticationExistsFlag": [
+			{ "contexts": "createPassword", "eq": false },
+			{ "contexts": "changePassword", "eq": true }
 		],
-		"accountEmailAddressesNotInUseFlag":	[{"contexts":"createPassword","eq":true}],
-		"primaryEmailAddress":					[{"contexts":"save","conditions":"nonIntegrationAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}],
-		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}],
-		"ownerAccount":							[{"contexts":"delete","method":"canDeleteByOwner"}],
-		"childAccountRelationships":			[{"contexts":"delete","maxCollection":0}]
+		"accountEmailAddressesNotInUseFlag": [{ "contexts": "createPassword", "eq": true }],
+		"primaryEmailAddress": [
+			{
+				"contexts": "save",
+				"conditions": "nonIntegrationAuthenticatedAccount",
+				"method": "getPrimaryEmailAddressesNotInUseFlag"
+			}
+		],
+		"primaryPaymentMethod": [
+			{
+				"contexts": "updatePrimaryPaymentMethod",
+				"method": "isPrimaryMethodExpired"
+			}
+		],
+		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minCollection": 1 }],
+		"ownerAccount": [{ "contexts": "delete", "method": "canDeleteByOwner" }],
+		"childAccountRelationships": [{ "contexts": "delete", "maxCollection": 0 }],
+		"username": [
+			{ "contexts": "save", "required": true, "method": "getUsernameNotInUseFlag" },
+			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount" }
+		]
 	}
 }

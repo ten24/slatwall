@@ -49,11 +49,50 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.orderSmartList" type="any" />
-<cfparam name="rc.report" type="any" />
+<cfparam name="rc.productReviewSmartList" type="any" />
 
 <cfoutput>
-	<div class="col-md-12">
-		<hb:HibachiMessageDisplay />
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      <div class="col-md-4 s-header-info">
+
+				<!--- Page Title --->
+				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.default')#</h1>
+			</div>
+		 </div>
+	   </nav>
+	 </div>
+	
+	<div class="col-md-12"><hb:HibachiMessageDisplay /></div>
+
+	<div class="col-md-6">
+		<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='currencyCode',columnConfig={
+			isVisible=false,
+			isSearchable=false,
+			isDeletable=false
+		})/>
+		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" 
+			collectionList="#rc.orderCollectionList#"
+			recordDetailAction="admin:entity.detailorder">
+			
+		</hb:HibachiListingDisplay>
+		<br />
+		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" 
+				recordDetailAction="admin:entity.detailproductreview"
+			collectionList="#rc.productReviewCollectionList#"
+			>
+			
+		</hb:HibachiListingDisplay>
 	</div>
-	<hb:HibachiReportViewer report="#rc.report#" collectionList="#rc.orderCollectionList#" />
+	
+	<div class="col-md-6">
+		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.newaccounts")#" 
+				recordDetailAction="admin:entity.detailaccount"
+			collectionList="#rc.accountCollectionList#"
+			>
+			
+		</hb:HibachiListingDisplay>
+	</div>
+	
+
 </cfoutput>

@@ -62,6 +62,10 @@ Notes:
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<cfif isnull(rc.processObject.getAccountID())>
+			
+			<!--- Sets a default --->
+			<cfset rc.processObject.setNewAccountFlag("false")>
+			
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="newAccountFlag" edit="#rc.edit#" fieldType="yesno">
 			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="#rc.processObject.getNewAccountFlag()#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="firstName" edit="#rc.edit#">
@@ -78,7 +82,7 @@ Notes:
 				</hb:HibachiDisplayToggle>
 			</hb:HibachiDisplayToggle>
 			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,primaryAddress.simpleRepresentation" edit="true">
+				<swa:SlatwallAccountTypeahead /> 	
 			</hb:HibachiDisplayToggle>
 			<hr />
 			<cfelse>

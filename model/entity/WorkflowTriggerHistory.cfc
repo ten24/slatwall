@@ -48,33 +48,34 @@ Notes:
 */
 component entityname="SlatwallWorkflowTriggerHistory" table="SwWorkflowTriggerHistory" hb_auditable="false" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" {
 
-// Persistent Properties
+	// Persistent Properties
 	property name="workflowTriggerHistoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="successFlag" ormtype="boolean";
 	property name="response" ormtype="string" length="8000";
-	property name="startTime" ormtype="timestamp";
-	property name="endTime" ormtype="timestamp";
+	property name="startTime" ormtype="timestamp" hb_displayType="datetime";
+	property name="endTime" ormtype="timestamp" hb_displayType="datetime";
+	property name="serverInstanceKey" ormtype="string";
 
-// Related Object Properties (many-to-one)
+	// Related Object Properties (many-to-one)
 	property name="workflowTrigger" cfc="WorkflowTrigger" fieldtype="many-to-one" fkcolumn="workflowTriggerID";
 
-// Related Object Properties (one-to-many)
+	// Related Object Properties (one-to-many)
 
-// Related Object Properties (many-to-many)
+	// Related Object Properties (many-to-many)
 
-// Remote Properties
+	// Remote Properties
 	property name="remoteID" ormtype="string";
 
-// Audit Properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-// Non-Persistent Properties
+	// Non-Persistent Properties
 	property name="duration" persistent="false" hb_formatType="second";
 
-// ============ START: Non-Persistent Property Methods =================
+	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getDuration() {
 		if(!structKeyExists(variables, "duration")) {
@@ -89,35 +90,17 @@ component entityname="SlatwallWorkflowTriggerHistory" table="SwWorkflowTriggerHi
 	}
 
 
-// ============  END:  Non-Persistent Property Methods =================
+	// ============  END:  Non-Persistent Property Methods =================
+	
+	// ============= START: Bidirectional Helper Methods ===================
 
-// ============= START: Bidirectional Helper Methods ===================
-
-	// workflowTrigger (many-to-one)
-	public void function setWorkflowTrigger(required any workflowTrigger) {
-		variables.workflowTrigger = arguments.workflowTrigger;
-		if(isNew() or !arguments.workflowTrigger.hasWorkflowTriggerHistory( this )) {
-			arrayAppend(arguments.workflowTrigger.getWorkflowTriggerHistories(), this);
-		}
-	}
-	public void function removeWorkflowTrigger(any workflowTrigger) {
-		if(!structKeyExists(arguments, "workflowTrigger")) {
-			arguments.workflowTrigger = variables.workflowTrigger;
-		}
-		var index = arrayFind(arguments.workflowTrigger.getWorkflowTriggerHistories(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.workflowTrigger.getWorkflowTriggerHistories(), index);
-		}
-		structDelete(variables, "workflowTrigger");
-	}
-
-// =============  END:  Bidirectional Helper Methods ===================
-
-// ================== START: Overridden Methods ========================
-
-// ==================  END:  Overridden Methods ========================
-
-// =================== START: ORM Event Hooks  =========================
-
-// ===================  END:  ORM Event Hooks  =========================
+	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// ================== START: Overridden Methods ========================
+	
+	// ==================  END:  Overridden Methods ========================
+	
+	// =================== START: ORM Event Hooks  =========================
+	
+	// ===================  END:  ORM Event Hooks  =========================
 }

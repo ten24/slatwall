@@ -1,59 +1,40 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowConditionGroups{
+    
+    public template = require("./workflowconditiongroups.html");
+    public restrict = 'E';
+	public scope = {
+		workflowConditionGroupItem: "=",
+		workflowConditionGroup:"=",
+		workflow:"=",
+		filterPropertiesList:"="
+	};
+	
 	public static Factory(){
-		var directive = (
-			$log,
-			workflowConditionService,
-			workflowPartialsPath,
-			hibachiPathBuilder
-		)=> new SWWorkflowConditionGroups(
-			$log,
-			workflowConditionService,
-			workflowPartialsPath,
-			hibachiPathBuilder
-		);
-		directive.$inject = [
-			'$log',
-			'workflowConditionService',
-			'workflowPartialsPath',
-			'hibachiPathBuilder'
-		];
-		return directive;
+		return /** @ngInject */ ($log,workflowConditionService)=> new this($log,workflowConditionService);
 	}
-	constructor(
-		$log,
-		workflowConditionService,
-		workflowPartialsPath,
-		hibachiPathBuilder
-	){
-		return {
-			restrict: 'E',
-			scope:{
-				workflowConditionGroupItem: "=",
-				workflowConditionGroup:"=",
-				workflow:"=",
-				filterPropertiesList:"="
-			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowconditiongroups.html",
-			link: function(scope, element,attrs){
-				$log.debug('workflowconditiongroups init');
+	
+	// @ngInject
+	constructor(private $log, private workflowConditionService){}
+	
+	public link: ng.IDirectiveLinkFn = (scope, element,attrs) => {
+        this.$log.debug('workflowconditiongroups init');
 
-				scope.addWorkflowCondition = function(){
-					$log.debug('addWorkflowCondition');
-					var workflowCondition = workflowConditionService.newWorkflowCondition();
+		scope.addWorkflowCondition = () => {
+			this.$log.debug('addWorkflowCondition');
+			var workflowCondition = this.workflowConditionService.newWorkflowCondition();
 
-					workflowConditionService.addWorkflowCondition(scope.workflowConditionGroupItem,workflowCondition);
-				};
+			this.workflowConditionService.addWorkflowCondition(scope.workflowConditionGroupItem,workflowCondition);
+		};
 
-				scope.addWorkflowGroupItem = function(){
-					$log.debug('addWorkflowGrouptItem');
-					var workflowConditionGroupItem = workflowConditionService.newWorkflowConditionGroupItem();
-					workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem,workflowConditionGroupItem);
-				};
-			}
+		scope.addWorkflowGroupItem = () => {
+			this.$log.debug('addWorkflowGrouptItem');
+			var workflowConditionGroupItem = this.workflowConditionService.newWorkflowConditionGroupItem();
+			this.workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem,workflowConditionGroupItem);
 		};
 	}
+
 }
 export{
 	SWWorkflowConditionGroups

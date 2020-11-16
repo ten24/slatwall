@@ -72,6 +72,12 @@ Notes:
 		isDeletable=true
 	})/>
 	
+	<cfset promotionCollectionList.addDisplayProperty(displayProperty='priority', columnConfig={
+		isVisible=true,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
 	<cfset promotionCollectionList.addDisplayProperty(displayProperty='promotionID', columnConfig={
 		isVisible=false,
 		isSearchable=false,

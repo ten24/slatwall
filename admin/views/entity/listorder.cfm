@@ -88,9 +88,10 @@ Notes:
 	<cfif rc.slatAction eq "admin:entity.listorder">
 		<cfset displayPropertyList &= "orderOpenDateTime,"/>
 		<cfset searchFilterPropertyIdentifier = "orderOpenDateTime"/>
-		
-	<cfelse>
 	</cfif>
+	<cfset rc.orderCollectionList.setCollectionObjectListingSearchConfig({
+		searchFilterPropertyIdentifier="#searchFilterPropertyIdentifier#"
+	})/>
 	<cfset displayPropertyList &= 'createdDateTime,calculatedTotal'/>
 
 	<cfset rc.orderCollectionList.setDisplayProperties(
@@ -104,6 +105,11 @@ Notes:
 	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderType.typeName",title="#getHibachiScope().rbkey('entity.order.orderType')#",columnConfig={isVisible=true,isSearchable=false,isDeletable=true} ) />
 	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderStatusType.typeName",title="#getHibachiScope().rbkey('entity.order.orderStatusType')#",columnConfig={isVisible=true,isSearchable=false,isDeletable=true} ) />
 	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='orderID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>	
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='currencyCode',columnConfig={
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
@@ -139,8 +145,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderCollectionlist#"
 		usingPersonalCollection="true"
-		showSearchFilterDropDown="true"
-		searchFilterPropertyIdentifier="#searchFilterPropertyIdentifier#"
+
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(rc.orderCollectionlist.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.orderCollectionlist.getCollectionObject())#"

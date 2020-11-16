@@ -62,7 +62,8 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	// Order Fulfillment Properties
 	property name="orderFulfillmentID" type="string" default="";
 	property name="orderReturnID" type="string" default="";
-
+	property name="feeType" type="string" default="";
+	
 	// Order Item Price and Quantity Properies
 	property name="orderItemID" type="string" default="";
 	property name="price" type="string" default="";
@@ -85,6 +86,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="taxAddress" type="any" default="";
 	property name="taxCategoryRate" type="any" default="";
 	
+
 	public void function populateWithOrderItem(required any orderItem) {
 		// Set reference object and type
 		setOrderItem(arguments.orderItem);
@@ -112,26 +114,35 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 		}
 	}
 
-	public void function populateWithOrderFulfillment(required any orderFulfillment) {
+	public void function populateWithOrderFulfillment(required any orderFulfillment, required string feeType) {
 		// Set reference object and type
 		setOrderFulfillment(arguments.orderFulfillment);
 		setReferenceObjectType('OrderFulfillment');
 		
 		setOrderFulfillmentID(arguments.orderFulfillment.getOrderFulfillmentID());
 		setCurrencyCode(arguments.orderFulfillment.getOrder().getCurrencyCode());
-
-		if (!isNull(arguments.orderFulfillment.getFulfillmentCharge())) {
-			setPrice(arguments.orderFulfillment.getFulfillmentCharge());
-			setExtendedPrice(arguments.orderFulfillment.getFulfillmentCharge());
+		if(arguments.feeType == 'shipping'){
+			if (!isNull(arguments.orderFulfillment.getFulfillmentCharge())) {
+				setPrice(arguments.orderFulfillment.getFulfillmentCharge());
+				setExtendedPrice(arguments.orderFulfillment.getFulfillmentCharge());
+			}
+	
+			if (!isNull(arguments.orderFulfillment.getDiscountAmount())) {
+				setDiscountAmount(arguments.orderFulfillment.getDiscountAmount());
+			}
+	
+			if (!isNull(arguments.orderFulfillment.getFulfillmentCharge()) && !isNull(arguments.orderFulfillment.getDiscountAmount())) {
+				setExtendedPriceAfterDiscount(getService('HibachiUtilityService').precisionCalculate(arguments.orderFulfillment.getFulfillmentCharge() - arguments.orderFulfillment.getDiscountAmount()));
+			}
+		}else if(arguments.feeType == 'handling'){
+			if (!isNull(arguments.orderFulfillment.getHandlingFee())) {
+				setPrice(arguments.orderFulfillment.getHandlingFee());
+				setExtendedPrice(arguments.orderFulfillment.getHandlingFee());
+				setExtendedPriceAfterDiscount(arguments.orderFulfillment.getHandlingFee());
+			}
+			setDiscountAmount(0)
 		}
-
-		if (!isNull(arguments.orderFulfillment.getDiscountAmount())) {
-			setDiscountAmount(arguments.orderFulfillment.getDiscountAmount());
-		}
-
-		if (!isNull(arguments.orderFulfillment.getFulfillmentCharge()) && !isNull(arguments.orderFulfillment.getDiscountAmount())) {
-			setExtendedPriceAfterDiscount(getService('HibachiUtilityService').precisionCalculate(arguments.orderFulfillment.getFulfillmentCharge() - arguments.orderFulfillment.getDiscountAmount()));
-		}
+		setFeeType(arguments.feeType);
 	}
 	
 	public void function populateWithOrderDeliveryItem(required any orderDeliveryItem) {

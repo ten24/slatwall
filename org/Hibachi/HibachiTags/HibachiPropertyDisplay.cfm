@@ -10,6 +10,7 @@
 	<!--- These are optional Attributes --->
 	<cfparam name="attributes.edit" type="boolean" default="false" />						<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
 	<cfparam name="attributes.requiredFlag" type="boolean" default="false" />				<!--- Determines whether property is required or not in edit mode --->
+	<cfparam name="attributes.notRequiredClass" type="string" default="false" />			<!--- If set to s-not-required, will override any default validation. We can't reuse the requiredFlag because using requiredFlag false will break other fields.  --->
 	
 	<cfparam name="attributes.title" type="string" default="" />							<!--- hint: This can be used to override the displayName of a property" --->
 	<cfparam name="attributes.hint" type="string" default="" />								<!--- hint: If specified, then this will produce a tooltip around the title --->
@@ -49,6 +50,8 @@
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
+	<cfparam name="attributes.attributeFlag" type="boolean" default="false" />				<!--- Set to true when property is a custom property linked to an attribute in order to display the attribute value label rather than the value --->
+	
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -80,7 +83,7 @@
 	
 	<!--- First Make sure that we have the ability to actually display this property --->
 	<cfif !attributes.object.isPersistent() || attributes.hibachiScope.authenticateEntityProperty('read', attributes.object.getClassName(), attributes.property)>
-		
+
 		<cfsilent>
 			
 			<!--- If this was originally set to edit... make sure that they have edit ability for this property --->
@@ -133,7 +136,7 @@
 				</cfif>
 				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-acnameproperty="#attributes.autocompleteNameProperty#"', ' ') />
 			</cfif>
-			
+
 			<!--- Set Up The Value --->
 			<cfif attributes.value eq "">
 	
@@ -149,7 +152,7 @@
 				>
 					<cfset attributes.value = attributes.object.getFormattedValue(attributes.property,'decimal') />
 				</cfif>
-				
+
 				<!--- If the value was an object, typically a MANY-TO-ONE, then we get either the identifierValue or for display a simpleRepresentation --->
 				<cfif isObject(attributes.value) && attributes.object.isPersistent()>
 					<cfif attributes.edit>
@@ -185,8 +188,11 @@
 						<cfif isNumeric(attributes.value) and attributes.value lt 0>
 							<cfset attributes.valueClass &= " negative" />
 						</cfif>
-						
-						<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						<cfif attributes.attributeFlag AND attributes.object.hasAttributeCode(attributes.property)>
+							<cfset attributes.value = attributes.object.getAttributeValueLabel(attributes.property)>
+						<cfelse>
+							<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						</cfif>
 						
 					</cfif>
 				</cfif>
@@ -209,6 +215,25 @@
 			
 			<cfif attributes.hint eq "">
 				<cfset attributes.hint = attributes.object.getPropertyHint( attributes.property ) />
+			</cfif>
+			
+			<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif 
+				attributes.object.isPersistent() 
+				and listFindNoCase('text,textarea,wysiwyg', attributes.fieldType) 
+				and structKeyExists(attributes.object.getPropertyMetaData(attributes.property), 'ormtype')
+				and attributes.object.getPropertyMetaData(attributes.property).ormtype eq 'string'
+				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.object.getClassName())
+				and (
+					not structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_translate") 
+					or attributes.object.getPropertyMetaData(attributes.property).hb_translate
+				)
+			>
+				<cfset attributes.translateAttributes = {} />
+				<cfset attributes.translateAttributes.queryString = '' />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseObject=#attributes.object.getClassName()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseID=#attributes.object.getPrimaryIDValue()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "basePropertyName=#attributes.property#", "&") />
 			</cfif>
 				
 			<!--- Add the error class to the form field if it didn't pass validation --->

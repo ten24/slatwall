@@ -1,0 +1,24 @@
+<sw-modal-launcher data-modal-name="swOrderTemplatePromotions" 
+                   data-title="{{swOrderTemplatePromotions.title}}" 
+                   data-save-action="swOrderTemplatePromotions.save">
+    
+    <sw-modal-button>
+        <a class="btn btn-default" ng-bind="swOrderTemplatePromotions.modalButtonText"></a>
+    </sw-modal-button>
+    
+    <sw-modal-content> 
+        <div class="form-group">
+            <label class="form-label" 
+                    for="promotionCode" 
+                    sw-rbkey="'entity.PromotionCode.promotionCode'">
+            </label>
+            
+            <input type="text"
+                    class="form-control" 
+                    name="promotionCode" 
+                    required 
+                    ng-model="swOrderTemplatePromotions.promotionCode">
+        </div>
+                
+    </sw-modal-content>
+</sw-modal-launcher>

@@ -121,7 +121,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.fulf
 		} 
 		var orderDeliveryItems = arguments.processObject.getOrderDelivery().getOrderDeliveryItems();
 		for(var i=1; i <= arrayLen(orderDeliveryItems); i++) {
-
+		    
 		    var sku = orderDeliveryItems[i].getOrderItem().getSku();
 			addShippingItem(
 				value=sku.getPrice(),

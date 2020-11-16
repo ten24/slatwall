@@ -7,6 +7,7 @@ import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes
 class ListingService{
 
     private listingDisplays = {};
+    private pageRecordKeys = {};
     private state = {};
     public listingDisplayStore: Store.IStore;
 
@@ -33,7 +34,7 @@ class ListingService{
     /**
      * The reducer is responsible for modifying the state of the state object into a new state for listeners.
      */
-    public listingDisplayStateReducer:Store.Reducer = (state:any, action:Store.Action<number>):Object => {
+    public listingDisplayStateReducer:Store.Reducer = (state:any, action:Store.Action<string>):Object => {
         switch(action.type) {
             case 'LISTING_PAGE_RECORDS_UPDATE':
                 return {
@@ -106,9 +107,7 @@ class ListingService{
     }
 
     public getListingCollectionConfigColumns = (listingID:string) =>{
-        if(this.getListing(listingID).collectionConfig != null){
-            return this.getListing(listingID).collectionConfig.columns;
-        }
+        return this.getListing(listingID)?.collectionConfig?.columns;
     }
 
     public getListingExampleEntity = (listingID:string) =>{
@@ -129,13 +128,16 @@ class ListingService{
         return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
     }
 
-    public getListingBaseEntityName = (listingID:string) =>{
-        var baseEntityName = this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject
-        if(baseEntityName == null &&  this.getListing(listingID).collectionConfig != null){
-            baseEntityName = this.getListing(listingID).collectionConfig.baseEntityName;
+    public getListingBaseEntityName = (listingID:string) => {
+        let currentListing = this.getListing(listingID);
+        var baseEntityName = currentListing.baseEntityName || currentListing.collectionObject
+        
+        if( baseEntityName == null &&  currentListing.collectionConfig != null){
+            baseEntityName = currentListing.collectionConfig.baseEntityName;
         }
-        if(baseEntityName == null && this.getListing(listingID).collectionData != null){
-            baseEntityName = this.getListing(listingID).collectionData.collectionObject;
+        
+        if(baseEntityName == null && currentListing.collectionData != null){
+            baseEntityName = currentListing.collectionData.collectionObject;
         }
         return baseEntityName;
     }
@@ -157,52 +159,46 @@ class ListingService{
     }
 
     public getListingPageRecords = (listingID:string) =>{
-        if( angular.isDefined(this.getListing(listingID)) &&
-            angular.isDefined(this.getListing(listingID).collectionData) &&
-            angular.isDefined(this.getListing(listingID).collectionData.pageRecords)
-        ){
-            return this.getListing(listingID).collectionData.pageRecords;
-        }
+        return this.getListing(listingID)?.collectionData?.pageRecords;
     }
 
     public getCollection = (listingID:string) =>{
         return this.getListing(listingID).getCollection();
     }
 
-    public getPageRecordsWithManualSortOrder = (listingID:string) =>{
-        if( angular.isDefined(this.getListing(listingID)) && this.getListingPageRecords(listingID) != null ){
-            var pageRecords = this.getListingPageRecords(listingID);
-            var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID);
-            var primaryIDWithBaseAlias = this.getListing(listingID).collectionConfig.baseEntityAlias + '.' + primaryIDPropertyName;
-            var pageRecordsWithManualSortOrder = {};
-            this.$timeout(
-                ()=>{
-                    for(var j = 0; j < pageRecords.length; j++){
-                        var pageRecord = pageRecords[j];
-                        var primaryID = pageRecords[j][primaryIDPropertyName];
-                        var sortOrder =  j + 1;
-                        var primaryIDColumnIndex = this.getListingCollectionConfigColumnIndexByPropertyIdentifier(listingID, primaryIDWithBaseAlias);
-                        if(angular.isDefined(primaryID)){
-                            pageRecordsWithManualSortOrder[primaryID] = sortOrder;
-                        } else if(primaryIDColumnIndex !== -1){
-                            var column = this.getListingCollectionConfigColumns(listingID)[primaryIDColumnIndex];
-                            if(angular.isDefined(column.fallbackPropertyIdentifiers)){
-                                var fallbackPropertyArray = column.fallbackPropertyIdentifiers.split(",");
-                                for(var i = 0; i < fallbackPropertyArray.length; i++ ){
-                                    if(angular.isDefined(pageRecord[fallbackPropertyArray[i]])){
-                                        pageRecordsWithManualSortOrder[pageRecord[fallbackPropertyArray[i]]] = sortOrder;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    this.getListing(listingID).pageRecordsWithManualSortOrder = angular.toJson(pageRecordsWithManualSortOrder);
-                    return this.getListing(listingID).pageRecordsWithManualSortOrders;
-                },
-                0
-            )
+    public getPageRecordsWithManualSortOrder = (listingID:string) => {
+        let currentListing = this.getListing(listingID);
+        let pageRecords = this.getListingPageRecords(listingID);
+        
+        if(pageRecords) {
+            let primaryIDPropertyName  = this.getListingEntityPrimaryIDPropertyName(listingID);
+            let primaryIDWithBaseAlias = currentListing.collectionConfig.baseEntityAlias + '.' + primaryIDPropertyName;
+            let primaryIDColumnIndex   = this.getListingCollectionConfigColumnIndexByPropertyIdentifier(listingID, primaryIDWithBaseAlias);
 
-        } else {
+            let pageRecordsWithManualSortOrder = {};
+
+            this.$timeout( () => {
+                pageRecords.forEach( (record, index) => {
+                    let primaryID = record[primaryIDPropertyName];
+                    if(primaryID){
+                        pageRecordsWithManualSortOrder[primaryID] = index + 1;
+                    } 
+                    else if(primaryIDColumnIndex !== -1){
+                        let column = this.getListingCollectionConfigColumns(listingID)[primaryIDColumnIndex];
+                        column?.fallbackPropertyIdentifiers?.split(",").forEach( propertyIdentifier => {
+                            if( record[propertyIdentifier] ){
+                               pageRecordsWithManualSortOrder[ record[propertyIdentifier] ] = index + 1;
+                            }
+                        });
+                    }
+                });
+                
+                currentListing.pageRecordsWithManualSortOrder = angular.toJson(pageRecordsWithManualSortOrder);
+                return currentListing.pageRecordsWithManualSortOrders;
+                
+            }, 0);
+        } 
+        else {
             return angular.toJson({});
         }
     }
@@ -237,6 +233,9 @@ class ListingService{
     }
 
     public getPageRecordKey = (propertyIdentifier)=>{
+        if(this.pageRecordKeys[propertyIdentifier] != null){
+            return this.pageRecordKeys[propertyIdentifier];
+        }
         if(propertyIdentifier){
             var propertyIdentifierWithoutAlias = '';
             if(propertyIdentifier.indexOf('_') === 0){
@@ -250,7 +249,8 @@ class ListingService{
             }else{
                 propertyIdentifierWithoutAlias = propertyIdentifier;
             }
-            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
+           this.pageRecordKeys[propertyIdentifier] = this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_');
+           return this.pageRecordKeys[propertyIdentifier];
         }
         return '';
     };
@@ -285,17 +285,17 @@ class ListingService{
         return pageRecordValue;
     }
 
-    public selectCurrentPageRecords=(listingID)=>{
-        if(!this.getListing(listingID).collectionData.pageRecords) return;
+    public selectCurrentPageRecords = (listingID) => {
+        let currentListing = this.getListing(listingID);
+        let primatyIdPropertyName = this.getListingBaseEntityPrimaryIDPropertyName(listingID);
 
-        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
-            if( this.getListing(listingID).isCurrentPageRecordsSelected == true ){
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID,
-                                                                         this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+        currentListing?.collectionData?.pageRecords?.forEach( (record, index) => {
+            if( currentListing.isCurrentPageRecordsSelected == true ) {
+                this.selectionService.addSelection( currentListing.tableID, record[primatyIdPropertyName]);
             } else {
-                this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+                this.selectionService.removeSelection(currentListing.tableID, record[primatyIdPropertyName] );
             }
-        }
+        });
     };
 
     /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
@@ -325,23 +325,27 @@ class ListingService{
     }
     
      public updatePageRecords = (listingID,data) =>{
-        this.getListing(listingID).collectionData = data;
+         
+        let currentListing = this.getListing(listingID);
+
+        currentListing.setCollectionData(data);
         this.setupDefaultCollectionInfo(listingID);
-        if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
-            this.setupColumns(listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
+        
+        if(currentListing.collectionConfig != null && currentListing.collectionConfig.hasColumns()){
+            this.setupColumns(listingID, currentListing.collectionConfig, currentListing.collectionObject);
         }else{
-            this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
+            currentListing.collectionConfig.loadJson(data.collectionConfig);
         }
         this.notifyListingPageRecordsUpdate(listingID);
-        this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords ||
-                                                                this.getListing(listingID).collectionData.records;
+        currentListing.collectionData.pageRecords = currentListing.collectionData.pageRecords ||
+                                                                currentListing.collectionData.records;
 
-        this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
-        this.getListing(listingID).searching = false;
+        currentListing.paginator.setPageRecordsInfo( currentListing.collectionData );
+        currentListing.searching = false;
 
-        this.getListing(listingID).columnCount = this.getListing(listingID).columns.length + 1; 
-        if(this.getListing(listingID).selectable || this.getListing(listingID).multiselectable || this.getListing(listingID).sortable){
-            this.getListing(listingID).columnCount++; 
+        currentListing.columnCount = currentListing.columns.length + 1; 
+        if(currentListing.selectable || currentListing.multiselectable || currentListing.sortable){
+            currentListing.columnCount++; 
         }
     }
 
@@ -419,37 +423,43 @@ class ListingService{
 
     //Setup Functions
     public setupInSingleCollectionConfigMode = (listingID:string, listingDisplayScope) =>{
+        
+        let currentListing = this.getListing(listingID);
 
-        if( this.getListing(listingID).collectionObject != null &&
-            this.getListing(listingID).collectionConfig != null
-        ){
-            this.getListing(listingID).collectionObject = this.getListing(listingID).collectionConfig.baseEntityName;
+        if( currentListing.collectionObject != null && currentListing.collectionConfig != null ){
+            currentListing.collectionObject = currentListing.collectionConfig.baseEntityName;
         }
 
-        this.initCollectionConfigData( listingID, this.getListing(listingID).collectionConfig );
-
-        this.setupColumns( listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject );
+        this.initCollectionConfigData( listingID, currentListing.collectionConfig );
+        
+        this.setupColumns( listingID, currentListing.collectionConfig, currentListing.collectionObject );
 
         listingDisplayScope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
-                this.$q.when(this.getListing(listingID).collectionPromise).then((data)=>{
-                    this.getListing(listingID).collectionData = data;
+                
+                this.$q.when(currentListing.collectionPromise).then((data)=>{
+                    
+                    currentListing.setCollectionData(data);
+                    
                     this.setupDefaultCollectionInfo(listingID);
-                    if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
-                        this.setupColumns(listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
-                    }else{
-                        this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
+                    
+                    if(currentListing.collectionConfig != null && currentListing.collectionConfig.hasColumns()){
+                        this.setupColumns(listingID, currentListing.collectionConfig, currentListing.collectionObject);
                     }
+                    else{
+                        currentListing.collectionConfig.loadJson(data.collectionConfig);
+                    }
+                    
                     this.notifyListingPageRecordsUpdate(listingID);
-                    this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords ||
-                                                                            this.getListing(listingID).collectionData.records;
+                    currentListing.collectionData.pageRecords = currentListing.collectionData.pageRecords ||
+                                                                            currentListing.collectionData.records;
 
-                    this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
-                    this.getListing(listingID).searching = false;
+                    currentListing.paginator.setPageRecordsInfo( currentListing.collectionData );
+                    currentListing.searching = false;
 
-                    this.getListing(listingID).columnCount = this.getListing(listingID).columns.length + 1; 
-                    if(this.getListing(listingID).selectable || this.getListing(listingID).multiselectable || this.getListing(listingID).sortable){
-                        this.getListing(listingID).columnCount++; 
+                    currentListing.columnCount = currentListing.columns.length + 1; 
+                    if(currentListing.selectable || currentListing.multiselectable || currentListing.sortable){
+                        currentListing.columnCount++; 
                     }   
                 });
             }
@@ -457,103 +467,104 @@ class ListingService{
     };
 
     public setupInMultiCollectionConfigMode = (listingID:string) => {
-        angular.forEach(this.getListing(listingID).collectionConfigs,(value,key)=>{
-            this.getListing(listingID).collectionObjects[key] = value.baseEntityName;
+        let currentListing = this.getListing(listingID);
+        angular.forEach(currentListing.collectionConfigs,(value,key)=>{
+            currentListing.collectionObjects[key] = value.baseEntityName;
         });
     };
 
     private setupDefaultCollectionInfo = (listingID:string) =>{
-        if(this.getListing(listingID).hasCollectionPromise
-            && angular.isDefined(this.getListing(listingID).collection)
-            && this.getListing(listingID).collectionConfig == null
-        ){
-            this.getListing(listingID).collectionObject = this.getListing(listingID).collection.collectionObject;
-            this.getListing(listingID).collectionConfig = this.collectionConfigService.newCollectionConfig(this.getListing(listingID).collectionObject);
-            this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collection.collectionConfig);
+        let currentListing = this.getListing(listingID);
 
+        if(currentListing.hasCollectionPromise
+            && angular.isDefined(currentListing.collection)
+            && currentListing.collectionConfig == null
+        ){
+            currentListing.collectionObject = currentListing.collection.collectionObject;
+            currentListing.collectionConfig = this.collectionConfigService.newCollectionConfig(currentListing.collectionObject);
+            currentListing.collectionConfig.loadJson(currentListing.collection.collectionConfig);
         }
-        if(this.getListing(listingID).multiSlot == false){
+        
+        if(currentListing.multiSlot == false){
         	this.$timeout(()=>{
-            this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collectionData.collectionConfig);
-            this.getListing(listingID).columns = this.getListing(listingID).collectionConfig.columns;
+            currentListing.collectionConfig.loadJson(currentListing.collectionData.collectionConfig);
+                //only override columns if they were not specified programmatically (editable listing displays, with non-persistent columns)
+                if(currentListing.listingColumns == null){
+                    currentListing.columns = currentListing.collectionConfig.columns;
+                }
         	});
         }
 
-        if( this.getListing(listingID).paginator != null
-            && this.getListing(listingID).collectionConfig != null
+        if( currentListing.paginator != null
+            && currentListing.collectionConfig != null
         ){
-            this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
-            this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
+            currentListing.collectionConfig.setPageShow(currentListing.paginator.getPageShow());
+            currentListing.collectionConfig.setCurrentPage(currentListing.paginator.getCurrentPage());
         }
     };
 
 
-
     public addColumn = (listingID:string, column) =>{
-        if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
-            column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
+        let currentListing = this.getListing(listingID);
+
+        if(currentListing.collectionConfig != null && currentListing.collectionConfig.baseEntityAlias != null){
+            column.propertyIdentifier = currentListing.collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
         } else if (this.getListingBaseEntityName(listingID) != null) {
             column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID).toLowerCase() + '.' + column.propertyIdentifier;
         }
+        
         if(this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){
-                this.getListing(listingID).aggregates.push(column.aggregate);
+                currentListing.aggregates.push(column.aggregate);
             } else {
-                this.getListing(listingID).columns.push(column);
+                currentListing.columns.push(column);
             }
         }
     }
 
-    public setupColumns = (listingID:string, collectionConfig, collectionObject) =>{
+    public setupColumns = (listingID:string, collectionConfig, collectionObject) => {
         //assumes no alias formatting
+        let currentListing = this.getListing(listingID);
+        
+        if( currentListing.columns.length == 0 && collectionConfig != null ){
 
-        if( this.getListing(listingID).columns.length == 0 &&
-            collectionConfig != null
-        ){
-            if(collectionConfig.columns == null){
-                collectionConfig.getEntity().then(
-                    ()=>{
-                        for(var j=0; j < collectionConfig.columns.length; j++){
-                            var column = collectionConfig.columns[j];
-                            if(column.isVisible){
-                                this.getListing(listingID).columns.push(column);
-                            }
-                        }
-                    },
-                    ()=>{
-                        throw("listing display couldn't initiate no columns");
-                    }
-                );
-            } else {
-                for(var j=0; j < collectionConfig.columns.length; j++){
-                    var column = collectionConfig.columns[j];
+            let pushVisibleColumnsToCurrentListing = () => {
+                collectionConfig.columns.forEach( column => {
                     if(column.isVisible){
-                        this.getListing(listingID).columns.push(column);
+                        currentListing.columns.push(column);
+                        this.setupColumn(listingID, column, collectionConfig, collectionObject);
                     }
-                }
+                });
             }
-
+            
+            if(collectionConfig.columns == null){
+                collectionConfig.getEntity().then(  
+                    () => pushVisibleColumnsToCurrentListing(),
+                    () => { throw("listing display couldn't initiate no columns") }
+                );
+            } 
+            else {
+                pushVisibleColumnsToCurrentListing();
+            }
+        } 
+        else {
+            currentListing.columns.forEach( column => {
+                this.setupColumn(listingID, column, collectionConfig, collectionObject);
+            });
         }
-        
-        let length = this.getListing(listingID).columns.length;
-        
-        for(var i=0; i < length; i++){
-
-            var column = this.getListing(listingID).columns[i];
-
-            this.setupColumn(listingID,column,collectionConfig,collectionObject);
-        }
-
-        
     };
 
-    public setupColumn=(listingID:string,column:any, collectionConfig, collectionObject)=>{
-        if(this.getListing(listingID).collectionConfig != null && !column.hasCellView){
-            this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier,undefined,column);
-        }
+    public setupColumn = (listingID:string,column:any, collectionConfig, collectionObject) => {
+        
+        let currentListing = this.getListing(listingID);
+        
+        // if(currentListing.collectionConfig != null && !column.hasCellView){
+        //     //Q: doesn't make sense
+        //     currentListing.collectionConfig.addColumn(column.propertyIdentifier, undefined, column);
+        // }
 
-        if(!collectionConfig && this.getListing(listingID).collectionConfig != null){
-            collectionConfig = this.getListing(listingID).collectionConfig != null;
+        if( !collectionConfig && currentListing.collectionConfig != null ){
+            collectionConfig = currentListing.collectionConfig;
         }
 
         var baseEntityName =  this.getListingBaseEntityName(listingID);
@@ -589,17 +600,17 @@ class ListingService{
             }
 
             if(column.propertyIdentifier){
-                this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,column.propertyIdentifier);
+                currentListing.allpropertyidentifiers = this.utilityService.listAppend(currentListing.allpropertyidentifiers,column.propertyIdentifier);
             }else if(column.processObjectProperty){
                 column.searchable = false;
                 column.sort = false;
-                this.getListing(listingID).allprocessobjectproperties = this.utilityService.listAppend(this.getListing(listingID).allprocessobjectproperties, column.processObjectProperty);
+                currentListing.allprocessobjectproperties = this.utilityService.listAppend(currentListing.allprocessobjectproperties, column.processObjectProperty);
             }
 
             if(column.tdclass){
                 var tdclassArray = column.tdclass.split(' ');
-                if(tdclassArray.indexOf("primary") >= 0 && this.getListing(listingID).expandable){
-                    this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes,'data-expandsortproperty='+column.propertyIdentifier, " ")
+                if(tdclassArray.indexOf("primary") >= 0 && currentListing.expandable){
+                    currentListing.tableattributes = this.utilityService.listAppend(currentListing.tableattributes,'data-expandsortproperty='+column.propertyIdentifier, " ")
                     column.sort = false;
                 }
             }
@@ -616,16 +627,16 @@ class ListingService{
 
         if(angular.isDefined(column.queryString)){
             var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
-            if(parsedProperties && parsedProperties.length){
+            if( parsedProperties && parsedProperties.length ){
                 collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
             }
         }
 
         //if the passed in collection has columns perform some formatting
-        if(this.getListing(listingID).hasCollectionPromise){
+        if(currentListing.hasCollectionPromise){
             var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
             column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
-            if(angular.isUndefined(column.isVisible)){
+            if( angular.isUndefined(column.isVisible) ){
                 column.isVisible = true;
             }
         }
@@ -638,70 +649,82 @@ class ListingService{
         this.setupSelect(listingID);
         this.setupMultiselect(listingID);
         this.setupExampleEntity(listingID);
+        
+        let currentListing = this.getListing(listingID);
 
-        if(collectionConfig != null){
-            angular.forEach(this.getListing(listingID).filterGroups, (filterGroup)=>{
+        if( collectionConfig != null ){
+            
+            currentListing.filterGroups.forEach( (filterGroup) => {
                 collectionConfig.addFilterGroup(filterGroup);
             });
 
-            angular.forEach(this.getListing(listingID).filters, (filter)=>{
-                collectionConfig.addFilter( filter.propertyIdentifier,
-                                            filter.comparisonValue,
-                                            filter.comparisonOperator,
-                                            filter.logicalOperator,
-                                            filter.hidden
-                                        );
+            currentListing.filters.forEach( (filter) => {
+                collectionConfig.addFilter( 
+                    filter.propertyIdentifier,
+                    filter.comparisonValue,
+                    filter.comparisonOperator,
+                    filter.logicalOperator,
+                    filter.hidden
+                );
             });
 
-            angular.forEach(this.getListing(listingID).orderBys, (orderBy)=>{
+            currentListing.orderBys.forEach( (orderBy) => {
                 collectionConfig.addOrderBy(orderBy.orderBy);
             });
 
-            angular.forEach(this.getListing(listingID).aggregates, (aggregate)=>{
-                collectionConfig.addDisplayAggregate( aggregate.propertyIdentifier,
-                                                      aggregate.aggregateFunction,
-                                                      aggregate.aggregateAlias
-                                                    );
+            currentListing.aggregates.forEach( (aggregate) => {
+                collectionConfig.addDisplayAggregate( 
+                    aggregate.propertyIdentifier,
+                    aggregate.aggregateFunction,
+                    aggregate.aggregateAlias
+                );
             });
 
             //make sure we have necessary properties to make the actions
-            angular.forEach(this.getListing(listingID).actions, (action)=>{
-                if(angular.isDefined(action.queryString)){
+            currentListing.actions.forEach( (action) => {
+                
+                if( angular.isDefined(action.queryString) ){
                     var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
-                    if(parsedProperties && parsedProperties.length){
-                        collectionConfig.addDisplayProperty( this.utilityService.arrayToList(parsedProperties),
-                                                             "",
-                                                             { isVisible : false }
-                                                        );
+                    
+                    if( parsedProperties?.length){
+                        collectionConfig.addDisplayProperty( 
+                            this.utilityService.arrayToList(parsedProperties),
+                            "",
+                            { isVisible : false }
+                        );
                     }
                 }
             });
 
             //also make sure we have necessary color filter properties
-            angular.forEach(this.getListing(listingID).colorFilters,(colorFilter)=>{
-                if(angular.isDefined(colorFilter.propertyToCompare)){
-                    collectionConfig.addDisplayProperty( colorFilter.propertyToCompare,
-                                                         "",
-                                                         { isVisible : false }
-                                                    );
+            currentListing.colorFilters.forEach( (colorFilter) => {
+                
+                if( angular.isDefined(colorFilter.propertyToCompare) ){
+                    collectionConfig.addDisplayProperty( 
+                        colorFilter.propertyToCompare,
+                        "",
+                        { isVisible : false }
+                    );
                 }
             });
 
 
-            if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
-                collectionConfig.addDisplayProperty( this.getListingExampleEntity(listingID).$$getIDName(),
-                                                     undefined,
-                                                     { isVisible : false }
-                                                );
+            if( currentListing.collectionConfig?.hasColumns() ){
+                
+                collectionConfig.addDisplayProperty( 
+                    this.getListingExampleEntity(listingID).$$getIDName(),
+                    undefined,
+                    { isVisible : false }
+                );
             }
 
-            collectionConfig.setPageShow(this.getListing(listingID).paginator.pageShow);
-            collectionConfig.setCurrentPage(this.getListing(listingID).paginator.currentPage);
+            collectionConfig.setPageShow(currentListing.paginator.pageShow);
+            collectionConfig.setCurrentPage(currentListing.paginator.currentPage);
 
-            if(this.getListing(listingID).multiselectable && (!this.getListing(listingID).columns || !this.getListing(listingID).columns.length)){
+            if(currentListing.multiselectable && currentListing.columns?.length ){
                 //check if it has an active flag and if so then add the active flag
-                if(this.getListing(listingID).exampleEntity.metaData.activeProperty && !this.getListing(listingID).hasCollectionPromise){
-                    collectionConfig.addFilter('activeFlag',1,'=',undefined,true);
+                if(currentListing.exampleEntity.metaData?.activeProperty && !currentListing.hasCollectionPromise){
+                    collectionConfig.addFilter('activeFlag', 1, '=', undefined, true);
                 }
             }
 
@@ -716,167 +739,168 @@ class ListingService{
         this.attachToListingPageRecordsUpdate(listingID, this.getPageRecordsWithManualSortOrder, this.utilityService.createID(32));
     }
 
-    public setupSelect = (listingID:string) =>{
-        if(this.getListing(listingID).selectFieldName && this.getListing(listingID).selectFieldName.length){
-            this.getListing(listingID).selectable = true;
-            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass,'table-select',' ');
-            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-selectfield="'+this.getListing(listingID).selectFieldName+'"', ' ');
+     public setupSelect = (listingID:string) => {
+        let currentListing = this.getListing(listingID);
+
+        if(currentListing.selectFieldName?.length){
+            currentListing.selectable = true;
+            currentListing.tableclass = this.utilityService.listAppend(currentListing.tableclass, 'table-select', ' ');
+            currentListing.tableattributes = this.utilityService.listAppend(currentListing.tableattributes, 'data-selectfield="'+currentListing.selectFieldName+'"', ' ');
         }
     };
 
     public setupMultiselect = (listingID:string) =>{
-        if(this.getListing(listingID).multiselectFieldName && this.getListing(listingID).multiselectFieldName.length){
-            this.getListing(listingID).multiselectable = true;
-            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass, 'table-multiselect',' ');
-            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes,'data-multiselectpropertyidentifier="'+this.getListing(listingID).multiselectPropertyIdentifier+'"',' ');
+        let currentListing = this.getListing(listingID);
 
+        if(currentListing.multiselectFieldName?.length){
+            currentListing.multiselectable = true;
+            currentListing.tableclass = this.utilityService.listAppend(currentListing.tableclass, 'table-multiselect',' ');
+            currentListing.tableattributes = this.utilityService.listAppend(currentListing.tableattributes,'data-multiselectpropertyidentifier="'+currentListing.multiselectPropertyIdentifier+'"',' ');
 
             //attach observer so we know when a selection occurs
-            this.getListing(listingID).observerService.attach(this.getListing(listingID).updateMultiselectValues,this.getListing(listingID).defaultSelectEvent,this.getListing(listingID).collectionObject);
-
+            currentListing.observerService.attach(currentListing.updateMultiselectValues, currentListing.defaultSelectEvent, currentListing.collectionObject);
             //attach observer so we know when a pagination change occurs
-            this.getListing(listingID).observerService.attach(this.getListing(listingID).paginationPageChange,'swPaginationAction');
+            currentListing.observerService.attach(currentListing.paginationPageChange,'swPaginationAction');
         }
 
-        if(this.getListing(listingID).multiselectValues && this.getListing(listingID).multiselectValues.length){
-            //select all owned ids
-            var multiSelectValuesArray = this.getListing(listingID).multiselectValues.split(',');
-            angular.forEach(multiSelectValuesArray,(value)=>{
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID,value);
-            });
-        }
+        //select all owned ids
+        currentListing.multiselectValues?.split(',').forEach( value => {
+            if(value.trim().length){
+                currentListing.selectionService.addSelection(currentListing.tableID,value);
+            }
+        });
 
-        if(this.getListing(listingID).multiselectIdPaths && this.getListing(listingID).multiselectIdPaths.length){
-
-            angular.forEach(this.getListing(listingID).multiselectIdPaths.split(','),(value)=>{
-                var id = this.getListing(listingID).utilityService.listLast(value,'/');
-                this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID,id);
-            });
-        }
+        currentListing.multiselectIdPaths?.split(',').forEach( value => {
+            var id = currentListing.utilityService.listLast(value,'/');
+            currentListing.selectionService.addSelection(currentListing.tableID,id);
+        });
     };
 
-    public setupExampleEntity = (listingID:string) =>{
-        this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListingBaseEntityName(listingID));
-        if(this.getListing(listingID).exampleEntity != null){
+    public setupExampleEntity = (listingID:string) => {
+        let currentListing = this.getListing(listingID);
+
+        currentListing.exampleEntity = this.$hibachi.getEntityExample(this.getListingBaseEntityName(listingID));
+        if(currentListing.exampleEntity != null){
             //Look for Hierarchy in example entity
-            if(!this.getListing(listingID).parentPropertyName || (this.getListing(listingID).parentPropertyName && !this.getListing(listingID).parentPropertyName.length) ){
-                if(this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName){
-                    this.getListing(listingID).parentPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_parentPropertyName;
+            if( !currentListing.parentPropertyName?.length ){
+                if(currentListing.exampleEntity.metaData.hb_parentPropertyName){
+                    currentListing.parentPropertyName = currentListing.exampleEntity.metaData.hb_parentPropertyName;
                 }
             }
-            if(!this.getListing(listingID).childPropertyName || (this.getListing(listingID).childPropertyName && !this.getListing(listingID).childPropertyName.length) ){
-                if(this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName){
-                    this.getListing(listingID).childPropertyName = this.getListing(listingID).exampleEntity.metaData.hb_childPropertyName;
+            if( !currentListing.childPropertyName?.length ){
+                if(currentListing.exampleEntity.metaData.hb_childPropertyName){
+                    currentListing.childPropertyName = currentListing.exampleEntity.metaData.hb_childPropertyName;
                 }
             }
         }
     };
-
+    
     public setupHierarchicalExpandable = (listingID:string, collectionConfig) =>{
+        let currentListing = this.getListing(listingID);
+        
         //Setup Hierachy Expandable
-        if(this.getListing(listingID).parentPropertyName && this.getListing(listingID).parentPropertyName.length && this.getListing(listingID).expandable !=false){
-            if(angular.isUndefined(this.getListing(listingID).expandable)){
-                this.getListing(listingID).expandable = true;
-            }
-
-            this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass,'table-expandable',' ');
+        if(currentListing.parentPropertyName?.length && currentListing.expandable != false){
+            
+            currentListing.tableclass = this.utilityService.listAppend(currentListing.tableclass,'table-expandable',' ');
 
             //add parent property root filter
-            if(!this.getListing(listingID).hasCollectionPromise){
-                collectionConfig.addFilter(this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),'NULL','IS', undefined, true, false, false);
+            if(!currentListing.hasCollectionPromise){
+                collectionConfig.addFilter(currentListing.parentPropertyName+'.'+currentListing.exampleEntity.$$getIDName(),'NULL','IS', undefined, true, false, false);
             }
             //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
             //add children column
-            if(this.getListing(listingID).childPropertyName && this.getListing(listingID).childPropertyName.length) {
-                if(this.getListing(listingID).getChildCount || !this.getListing(listingID).hasCollectionPromise){
+            if(currentListing.childPropertyName?.length) {
+                if(currentListing.getChildCount || !currentListing.hasCollectionPromise){
                     collectionConfig.addDisplayAggregate(
-                        this.getListing(listingID).childPropertyName,
+                        currentListing.childPropertyName,
                         'COUNT',
-                        this.getListing(listingID).childPropertyName+'Count',
+                        currentListing.childPropertyName+'Count',
                         {isVisible:false, isSearchable:false}
                     );
                 }
             }
 
-            this.getListing(listingID).allpropertyidentifiers = this.utilityService.listAppend(this.getListing(listingID).allpropertyidentifiers,this.getListing(listingID).exampleEntity.$$getIDName()+'Path');
-            this.getListing(listingID).tableattributes = this.utilityService.listAppend(this.getListing(listingID).tableattributes, 'data-parentidproperty='+this.getListing(listingID).parentPropertyName+'.'+this.getListing(listingID).exampleEntity.$$getIDName(),' ');
+            currentListing.allpropertyidentifiers = this.utilityService.listAppend(currentListing.allpropertyidentifiers,currentListing.exampleEntity.$$getIDName()+'Path');
+            currentListing.tableattributes = this.utilityService.listAppend(currentListing.tableattributes, 'data-parentidproperty='+currentListing.parentPropertyName+'.'+currentListing.exampleEntity.$$getIDName(),' ');
         }
-    };
+    }
 
     public updateColumnAndAdministrativeCount = (listingID:string) =>{
-        //Setup a variable for the number of columns so that the none can have a proper colspan
-        this.getListing(listingID).columnCount = (this.getListing(listingID).columns) ? this.getListing(listingID).columns.length : 0;
+        let currentListing = this.getListing(listingID);
 
-        if(this.getListing(listingID).selectable){
-            this.getListing(listingID).columnCount++;
+        //Setup a variable for the number of columns so that the none can have a proper colspan
+        currentListing.columnCount = (currentListing.columns) ? currentListing.columns.length : 0;
+
+        if(currentListing.selectable){
+            currentListing.columnCount++;
         }
-        if(this.getListing(listingID).multiselectable){
-            this.getListing(listingID).columnCount++;
+        if(currentListing.multiselectable){
+            currentListing.columnCount++;
         }
-        if(this.getListing(listingID).sortable){
-            this.getListing(listingID).columnCount++;
+        if(currentListing.sortable){
+            currentListing.columnCount++;
         }
-        if(this.getListing(listingID).administrativeCount){
-            this.getListing(listingID).administrativeCount++;
+        if(currentListing.administrativeCount){
+            currentListing.administrativeCount++;
         }
     };
 
     public setupDefaultGetCollection = (listingID:string) =>{
+        let currentListing = this.getListing(listingID);
 
-        if(this.getListing(listingID).collectionConfigs.length == 0){
-            if(this.getListing(listingID).collectionId){
+        if(currentListing.collectionConfigs.length == 0){
             
-                this.getListing(listingID).collectionConfig.baseEntityNameType = 'Collection';
-                this.getListing(listingID).collectionConfig.id = this.getListing(listingID).collectionId;
+            if(currentListing.collectionId){
+                currentListing.collectionConfig.baseEntityNameType = 'Collection';
+                currentListing.collectionConfig.id = currentListing.collectionId;
             }
-            this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
+            currentListing.collectionPromise = currentListing.collectionConfig.getEntity();
 
-            return () =>{
-                this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
-                this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
-                if(this.getListing(listingID).multiSlot){
-                	this.getListing(listingID).collectionConfig.getEntity().then(
-                    (data)=>{
-                        this.getListing(listingID).collectionData = data;
-                        this.setupDefaultCollectionInfo(listingID);
-                        this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
-                        this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
-                    },
-                    (reason)=>{
-                        throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
-                    }
-                );
-                }else{
-                	this.getListing(listingID).collectionPromise.then(
-                    (data)=>{
-                        this.getListing(listingID).collectionData = data;
-                        this.setupDefaultCollectionInfo(listingID);
-                        this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
-                        this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
-                    },
-                    (reason)=>{
-                        throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
-                    }
-                );
+            return () => {
+                currentListing.collectionConfig.setCurrentPage(currentListing.paginator.getCurrentPage());
+                currentListing.collectionConfig.setPageShow(currentListing.paginator.getPageShow());
+                
+                let setCollectionData = (data) => {
+                    currentListing.setCollectionData(data);
+                    this.setupDefaultCollectionInfo(listingID);
+                    currentListing.collectionData.pageRecords = data.pageRecords || data.records;
+                    currentListing.paginator.setPageRecordsInfo(currentListing.collectionData);
                 }
-
+                
+                if(currentListing.multiSlot){
+                	currentListing.collectionConfig.getEntity().then(
+                        (data) => { setCollectionData(data) },
+                        (reason) => { throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason) }
+                    );
+                }
+                else {
+                	currentListing.collectionPromise.then(
+                        (data) => { setCollectionData(data) },
+                        (reason) => { throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason) }
+                    );
+                }
             };
 
         } else {
-
-            return () =>{
-                this.getListing(listingID).collectionData = {};
-                this.getListing(listingID).collectionData.pageRecords = [];
+            return () => {
+                currentListing.collectionData = {};
+                currentListing.collectionData.pageRecords = [];
                 var allGetEntityPromises = [];
-                angular.forEach(this.getListing(listingID).collectionConfigs,(collectionConfig,key)=>{
+                
+                angular.forEach(currentListing.collectionConfigs,(collectionConfig,key)=>{
                     allGetEntityPromises.push(collectionConfig.getEntity());
                 });
+                
                 if(allGetEntityPromises.length){
                     this.$q.all(allGetEntityPromises).then(
-                        (results)=>{
-                            angular.forEach(results,(result,key)=>{
-                                this.getListing(listingID).listingService.setupColumns(listingID,this.getListing(listingID).collectionConfigs[key], this.getListing(listingID).collectionObjects[key]);
-                                this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords.concat(result.records);
+                        (results) => {
+                            angular.forEach(results,(result,key) => {
+                                currentListing.listingService.setupColumns(
+                                    listingID,
+                                    currentListing.collectionConfigs[key], 
+                                    currentListing.collectionObjects[key]
+                                );
+                                currentListing.collectionData.pageRecords = currentListing.collectionData.pageRecords.concat(result.records);
                             });
                         },
                         (reason)=>{
@@ -892,53 +916,62 @@ class ListingService{
     //Order By Functions
     //for multi order by
     public columnOrderBy = (listingID:string, column) => {
+        let currentListing = this.getListing(listingID);
         var isfound = false;
-        if(this.getListing(listingID).collectionConfigs != null){
-            angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
+        if(currentListing.collectionConfigs != null){
+            angular.forEach(currentListing.collectionConfig.orderBy, (orderBy, index)=>{
                 if(column.propertyIdentifier == orderBy.propertyIdentifier){
                     isfound = true;
-                    this.getListing(listingID).orderByStates[column.propertyIdentifier] = orderBy.direction;
+                    currentListing.orderByStates[column.propertyIdentifier] = orderBy.direction;
                 }
             });
         }
         if(!isfound){
-            this.getListing(listingID).orderByStates[column.propertyIdentifier] = '';
+            currentListing.orderByStates[column.propertyIdentifier] = '';
         }
-        return this.getListing(listingID).orderByStates[column.propertyIdentifier];
+        return currentListing.orderByStates[column.propertyIdentifier];
     };
 
     //for multi order by
     public columnOrderByIndex = (listingID:string, column) =>{
+        let currentListing = this.getListing(listingID);
+        
         var isfound = false;
+        
         if(column.sorting && column.sorting.active && column.sorting.sortOrder){
             return column.sorting.sortOrder.toUpperCase();
         }
-        if(this.getListing(listingID).collectionConfig != null){
-            angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
+        
+        if(currentListing.collectionConfig != null){
+            angular.forEach(currentListing.collectionConfig.orderBy, (orderBy, index)=>{
                 if(column.propertyIdentifier == orderBy.propertyIdentifier){
                     isfound = true;
-                    this.getListing(listingID).orderByIndices[column.propertyIdentifier] = index + 1;
+                    currentListing.orderByIndices[column.propertyIdentifier] = index + 1;
                 }
             });
         }
+        
         if(!isfound){
-            this.getListing(listingID).orderByIndices[column.propertyIdentifier] = '';
+            currentListing.orderByIndices[column.propertyIdentifier] = '';
         }
 
-        return this.getListing(listingID).orderByIndices[column.propertyIdentifier];
+        return currentListing.orderByIndices[column.propertyIdentifier];
     };
 
     //for single column order by
     public setSingleColumnOrderBy = (listingID:string, propertyIdentifier:string, direction:string, notify=true) =>{
+        let currentListing = this.getListing(listingID);
+        
         if(direction.toUpperCase() === "ASC"){
             var oppositeDirection = "DESC";
         } else {
             var oppositeDirection = "ASC";
         }
-        if(this.getListing(listingID).collectionConfig != null){
+        
+        if(currentListing.collectionConfig != null){
             var found = false;
-            let _formattedPropertyIdentifier = this.getListing(listingID).collectionConfig.formatPropertyIdentifier(propertyIdentifier);
-            angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
+            let _formattedPropertyIdentifier = currentListing.collectionConfig.formatPropertyIdentifier(propertyIdentifier);
+            angular.forEach(currentListing.collectionConfig.orderBy, (orderBy, index)=>{
                 if( _formattedPropertyIdentifier == orderBy.propertyIdentifier){
                     orderBy.direction = direction;
                     found = true;
@@ -947,7 +980,7 @@ class ListingService{
                 }
             });
             if(!found){
-                this.getListing(listingID).collectionConfig.addOrderBy(propertyIdentifier + "|" + direction, true, true);
+                currentListing.collectionConfig.addOrderBy(propertyIdentifier + "|" + direction, true, true);
             }
             if(notify){
                 this.observerService.notify(this.getListingOrderByChangedEventString(listingID));
@@ -971,7 +1004,7 @@ class ListingService{
             if(column.aggregate && column.aggregate.aggregateFunction){
                 orderByPropertyIdentifier = column.aggregate.aggregateFunction + '('+column.propertyIdentifier+')';
             }
-            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true, true); //single column mode true, format propIdentifier true
+            this.getListing(listingID).collectionConfig.toggleOrderBy(orderByPropertyIdentifier, true); //single column mode true, format propIdentifier false
         }
 
     };
