@@ -509,12 +509,9 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		var cacheKey = '';
 		cacheKey &= this.getOrderTemplateID();
 		
-		var orderTemplateItemCollection = this.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollection.setDisplayProperties('sku.skuID,quantity');
-		
-		var orderTemplateItems = orderTemplateItemCollection.getRecords();
+		var orderTemplateItems = this.getOrderTemplateItems();
 		for(var orderTemplateItem in orderTemplateItems){
-			cacheKey &= orderTemplateItem['sku_skuID'] & orderTemplateItem['quantity'];
+			cacheKey &= orderTemplateItem.getOrderTemplateItemID() & orderTemplateItem.getQuantity();
 		}
 		
 		cacheKey &= this.getOrderTemplateStatusType().getTypeID();
@@ -721,7 +718,7 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		return !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
 	
-	public any function getappliedPromotionMessagesJson(){
+	public any function getAppliedPromotionMessagesJson(){
 		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'appliedPromotionMessagesJson')){
 			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){

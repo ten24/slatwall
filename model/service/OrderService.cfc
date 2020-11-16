@@ -1415,7 +1415,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
+		}
 		
 		return request[orderTemplateOrderDetailsKey];
 	} 
@@ -2186,8 +2186,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 		}
 		return arguments.orderTemplateItem;
-	}  
-
+	} 
 
 	public any function processOrderTemplate_addWishlistItem(required any orderTemplate, required any processObject, required struct data={}){
 
@@ -5663,19 +5662,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!isNull(sessionOrder) && arguments.order.getOrderID() == sessionOrder.getOrderID()) {
 				getHibachiScope().getSession().setOrder( javaCast("null", "") );
 			}
-			// var orderItems = arguments.order.getOrderItems();
-			// for(var orderItem in orderItems){
-			// 	writeDump(var=orderItem,top=3,label="OrderItem");
-			// 	var appliedPromotions = orderItem.getAppliedPromotions();
-			// 	for(var appliedPromotion in appliedPromotions){
-			// 		appliedPromotion.removeOrderItem(orderItem,false);
-			// 		// writeDump(var=appliedPromotion,label="appliedPromotionAfterRemoveDakine",top=3);
-			// 	}
-			// 	arrayClear(orderItem.getAppliedPromotions());
-			// 	deleteOrderItem(orderItem,false);
-			// 	// writeDump(var=orderItem.getAppliedPromotions(),label="appliedPromotionsAfterDakine",top=3);
-			// }
-			// abort;
 			ORMFlush();
 			getOrderDAO().removeOrderFromAllSessions( orderID=arguments.order.getOrderID() );
 
@@ -5938,11 +5924,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderItem.getOrderReturn())) {
 			arguments.orderItem.removeOrderReturn();
 		}
-		var appliedPromotions = arguments.orderItem.getAppliedPromotions();
-		for(var appliedPromotion in appliedPromotions){
-			appliedPromotion.removeOrderItem(arguments.orderItem,false);
-		}
-		arrayClear(arguments.orderItem.getAppliedPromotions());
 		
 		for(var stockHold in arguments.orderItem.getStockHolds()){
 			getService('stockService').deleteStockHold(stockHold);

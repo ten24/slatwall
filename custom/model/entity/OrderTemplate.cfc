@@ -237,7 +237,7 @@ component {
 		return !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
 	
-	public any function getappliedPromotionMessagesJson(){
+	public any function getAppliedPromotionMessagesJson(){
 		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'appliedPromotionMessagesJson')){
 			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
