@@ -51,6 +51,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	// Persistent Properties
 	property name="addressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="name" hb_populateEnabled="public" ormtype="string";
+	property name="addressName" hb_populateEnabled="public" ormtype="string" length="1024"; 
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="streetAddress" hb_populateEnabled="public" ormtype="string";
 	property name="street2Address" hb_populateEnabled="public" ormtype="string";
@@ -73,10 +74,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="verifiedByIntegrationFlag" hb_populateEnabled="false" ormtype="boolean";
 	property name="IntegrationVerificationErrorMessage" hb_populateEnabled="public" ormtype="string";
 	property name="verificationCacheKey" ormtype="string" hb_auditable="false";
-	property name="verificationJson" ormtype="string" hb_auditable="false";
-	
-	//Calculated Properties
-	property name="calculatedAddressName" ormtype="string" length="1024"; 
+	property name="verificationJson" ormtype="string" length="8000" hb_formFieldType="json" hb_auditable="false"; //Avalara returns a big json
 	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
@@ -95,10 +93,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="countryCodeOptions" persistent="false" type="array";
 	property name="salutationOptions" persistent="false" type="array";
 	property name="stateCodeOptions" persistent="false" type="array";
-	property name="addressName" persistent="false" type="string";
 	
 	// ==================== START: Logical Methods =========================
-	
+		
 	public boolean function getAddressMatchFlag( required any address ) {
 		if(
 			nullReplace(getCountryCode(),"") != nullReplace(arguments.address.getCountryCode(),"")
@@ -171,6 +168,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	public any function getCountry() {
 		if(!structKeyExists(variables, "country") && !isNull(getCountryCode())) {
 			variables.country = getService("addressService").getCountry(getCountryCode());
+			if(isNull(variables.country)){
+				variables.country = getService('addressService').getCountryByCountryCode3Digit(getCountryCode());
+			}
 		}
 		if(structKeyExists(variables, "country")) {
 			return variables.country;	
@@ -206,17 +206,16 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	public array function getStateCodeOptions() {
 		if(!structKeyExists(variables, "stateCodeOptions")) {
-			var smartList = getService("addressService").getStateSmartList();
-			smartList.addSelect(propertyIdentifier="stateName", alias="name");
-			smartList.addSelect(propertyIdentifier="stateCode", alias="value");
+			var collectionList = getService("addressService").getStateCollectionList();
+			collectionList.setDisplayProperties('stateName|name, stateCode|value');
 			if(!isNull(getCountryCode())) {
-				smartList.addFilter("countryCode", getCountryCode());	
+				collectionList.addFilter("countryCode", getCountryCode());	
 			} else {
-				smartList.addFilter("countryCode", 'US');
+				collectionList.addFilter("countryCode", 'US');
 			}
-			smartList.addOrder("stateName|ASC");
-			variables.stateCodeOptions = smartList.getRecords();
-			arrayPrepend(variables.stateCodeOptions, {value="", name=rbKey('define.select')});
+			collectionList.addOrderBy("stateName|ASC");
+			variables.stateCodeOptions = collectionList.getRecords();
+			arrayPrepend(variables.stateCodeOptions, {'value'="", 'name'=rbKey('define.select')});
 		}
 		return variables.stateCodeOptions;
 	}
@@ -304,12 +303,21 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentationPropertyName() {
-		return 'calculatedAddressName';
+		return 'addressName';
 	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
+	
+	public void function preInsert(){
+		getAddressName();
+	}
+	
+	public void function preUpdate(){
+		structDelete(variables,'addressName');
+		getAddressName();
+	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
 	

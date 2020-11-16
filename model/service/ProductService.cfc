@@ -67,6 +67,34 @@ component extends="HibachiService" accessors="true" {
 	property name="typeService" type="any";
 
 	// ===================== START: Logical Methods ===========================
+	
+	public any function getApprovedProductReviewCollectionList(required any productID){
+		var approvedProductReviewCollectionList = this.getProductReviewCollectionList();
+		approvedProductReviewCollectionList.setDisplayProperties("reviewerName,review,reviewTitle,rating,activeFlag");
+		approvedProductReviewCollectionList.addFilter("product.productID",arguments.productID);
+		approvedProductReviewCollectionList.addFilter("product.activeFlag",1);
+		approvedProductReviewCollectionList.addFilter("productReviewStatusType.systemCode","prstApproved");
+		return approvedProductReviewCollectionList;
+	}
+	
+	public any function getAllRelatedProducts(required any productID) {
+		var relatedProducts = this.getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+
+	public any function getAllProductReviews(required any productID) {
+		var relatedProducts = this.getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+	
 
 	public numeric function getProductRating(required any product){
 		return getDao('productDao').getProductRating(arguments.product);
@@ -446,84 +474,6 @@ component extends="HibachiService" accessors="true" {
 		}
 		return result;
 	}
-	
-	public any function getAllRelatedProducts(required any productID) {
-		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile, relatedProduct.calculatedSalePrice, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID, relatedProduct.defaultSku.skuID");
-		relatedProducts.addFilter("product.productID",arguments.productID);
-		relatedProducts.addFilter("product.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=false);
-		return relatedProducts;
-	}
-
-	public any function getAllProductReviews(required any productID) {
-		var relatedProducts = this.getProductReviewCollectionList();
-		relatedProducts.setDisplayProperties("reviewerName, createdDateTime, review, reviewTitle, rating, activeFlag");
-		relatedProducts.addFilter("product.productID",arguments.productID);
-		relatedProducts.addFilter("product.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=false);
-		return relatedProducts;
-	}
-	
-	/** Function append Images to existing product List
-	 * @param - array of products
-	 * @param - image property name
-	 * @param - addAltImage - boolean to ignore alt images
-	 * @return - updated array of products
-	 **/
-	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
-		if(arrayLen(arguments.products)) {
-			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
-			var resizeSizes=['s','m','l','xl']; //add all sized images
-			
-			for(var product in arguments.products) {
-	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( isEmpty(imageFile) ) {
-	            	continue;
-	            }
-	            var imageArray = [];
-	            for( var size in resizeSizes) {
-	            	var resizeImageData = {
-		                size=size, //Large Image
-		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
-		                missingImagePath = missingImageSetting
-		            };
-		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
-	            }
-	            
-	            product['images'] = imageArray;
-	        }
-	        
-	        //If there's only one product in response, add alternate images as well
-	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage ) {
-	        	//Modify image size to be used as size index
-	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
-	        }
-	        
-		}
-		return arguments.products;
-	}
-	
-	public any function appendCategoriesToProduct(required array products) {
-		if(arrayLen(arguments.products)) {
-			for(var product in arguments.products) {
-				
-				var currentProduct = this.getProduct(product.productID);
-				var categories = [];
-				if( arrayLen(currentProduct.getCategories()) ) {
-					var productCategories = currentProduct.getCategories();
-					for( var i=1; i<= arrayLen(productCategories); i++ ) {
-						categories[i]['categoryID'] = productCategories[i].getCategoryID();
-						categories[i]['categoryName'] = productCategories[i].getCategoryName();
-					}
-				}
-				
-				product['categories'] = categories;
-			}
-		}
-		
-		return arguments.products;
-	}
 
 
 	// =====================  END: Logical Methods ============================
@@ -541,9 +491,7 @@ component extends="HibachiService" accessors="true" {
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
 		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
-		for(var sku in arguments.product.getSkus()){
-			getHibachiScope().addModifiedEntity(sku);
-		}
+
 		return arguments.product;
 	}
 
@@ -812,7 +760,7 @@ component extends="HibachiService" accessors="true" {
 
 		arguments.product = createSingleSku(arguments.product,arguments.processObject);
 		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
-		arguments.product.getDefaultSku().setBaseRedemptionAmount(arguments.processObject.getBaseRedemptionAmount());
+		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
 		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
 			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
 			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);
@@ -966,6 +914,10 @@ component extends="HibachiService" accessors="true" {
 		//GENERATE - GIFT SKUS
 		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
 			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
+			
+		// GENERATE - FEE fi fo fum SKUS smell the blood of an englishman
+		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "miscFee") {
+			arguments.product = createSingleSku(arguments.product, arguments.processObject);
 		}
 
 		// Generate the URL Title
@@ -1139,11 +1091,6 @@ component extends="HibachiService" accessors="true" {
  				if(getHibachiUtilityService().isS3Path(fullFilePath)){
  					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
  				}
-				
-				arguments.product.setModifiedDateTime(now());
- 				arguments.product.setModifiedByAccount(getHibachiScope().getAccount());
- 				arguments.product = saveProduct(arguments.product);
-
  			}
 
 		} catch(any e) {
@@ -1309,9 +1256,9 @@ component extends="HibachiService" accessors="true" {
 			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
 		}
 		// setting up default status as Unapproved
-		if(isNull(arguments.productReview.getProductReviewsStatus()))
+		if(isNull(arguments.productReview.getProductReviewStatusType()))
 		{
-			arguments.productReview.setProductReviewsStatus(getService('typeService').getTypeByTypeID('f0558da55e9f48f7bbd0eb4c95d6b378'));
+			arguments.productReview.setProductReviewStatusType(getService('typeService').getTypeByTypeID('f0558da55e9f48f7bbd0eb4c95d6b378'));
 		}
 		return arguments.productReview;
 		
@@ -1379,6 +1326,7 @@ component extends="HibachiService" accessors="true" {
 	public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
 		return this.getImageService().getResizedImageByProfileName(arguments.skuIDList,arguments.profileName);
 	}
+	
 
 	//  ====================  END: Wrapper Methods ========================
 

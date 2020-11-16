@@ -4,10 +4,9 @@ class DateReporting{
     //@ngInject
     public static Factory($filter){
         return (date,periodInterval)=>{
-            if(date.trim && date.trim().length===0){
+            if( !date?.trim?.()?.length ){
                 return '';
             }
-            periodInterval = periodInterval.toLowerCase(); //to avoid case sensitivity
             switch(periodInterval){
                 case 'hour':
                     var dateArray = date.split('-');

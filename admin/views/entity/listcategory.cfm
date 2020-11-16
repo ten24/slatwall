@@ -83,6 +83,7 @@ Notes:
 		isDeletable=false
 	})/>
 	<cfset rc.categoryCollectionList.addDisplayAggregate('childCategories','COUNT','childCategoriesCount')/>
+	
 	<hb:HibachiListingDisplay collectionList="#rc.categoryCollectionList#"
 		recordEditAction="admin:entity.edit#lcase(rc.categoryCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.categoryCollectionList.getCollectionObject())#"

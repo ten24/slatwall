@@ -147,23 +147,13 @@ class SWListingColumn implements ng.IDirective{
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-            listingService
-        )=>new SWListingColumn(
-            listingService
-        );
-        directive.$inject = [
-            'listingService'
-        ];
-        return directive;
-    }
-    //@ngInject
-    constructor(
-        public listingService
-    ){
 
+    public static Factory(){
+        return /** @ngInject */ (listingService) => new this(listingService);
     }
+
+    //@ngInject
+    constructor(public listingService){}
 
     public link=(scope,elem,attr,listingService)=>{
 

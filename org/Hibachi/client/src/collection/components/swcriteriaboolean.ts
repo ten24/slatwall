@@ -21,7 +21,8 @@ class SWCriteriaBoolean{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriaboolean.html',
+			template: require('./criteriaboolean.html'),
+			
 			link: function(scope, element, attrs){
 				 var getBooleanOptions = function(type){
 				 	if(angular.isUndefined(type)){
@@ -92,19 +93,6 @@ class SWCriteriaBoolean{
 						}
 					}
 				});
-				scope.booleanfilterPropertyChanged = function(selectedFilterProperty) {
-    				scope.calculateCriteriaFilterPropertyValue(selectedFilterProperty);
-    			}
-		    	
-		    	scope.calculateCriteriaFilterPropertyValue = function(selectedFilterProperty) {
-		    		
-		    	    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
-		    	    	
-						selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
-
-		    		}
-					scope.filterItem.value = selectedFilterProperty.criteriaValue;
-		    	}
 			}
 		};
 	}

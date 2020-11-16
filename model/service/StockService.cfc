@@ -58,14 +58,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	// Inject DAO's
 	property name="stockDAO" type="any";
 	
-	
 	public any function getCurrentStockBySkuAndLocation(required any skuID, required any locationID) {
 		var relatedProducts = this.getStockCollectionList();
-		relatedProducts.setDisplayProperties("stockID,minQuantity,maxQuantity,averageCost,averageLandedCost,calculatedQATS,calculatedQOH,calculatedQNC,calculatedQOQ");
+		relatedProducts.setDisplayProperties("stockID, minQuantity, maxQuantity, averageCost, averageLandedCost, calculatedQATS, calculatedQOH, calculatedQNC, calculatedQOQ");
 		relatedProducts.addFilter("sku.skuID",arguments.skuID);
 		relatedProducts.addFilter("location.locationID",arguments.locationID);
 		relatedProducts.addFilter("sku.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
 		return relatedProducts;
 	}
 	
@@ -133,6 +132,10 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function getEstimatedReceivalDetails(required string productID) {
 		return createEstimatedReceivalDataStruct( getStockDAO().getEstimatedReceival(arguments.productID) );
+	}
+	
+	public any function updateStockCalculatedProperties(string skuID) {
+		return getStockDAO().updateStockCalculatedProperties(argumentCollection=arguments);
 	}
 
 	private struct function createEstimatedReceivalDataStruct(required array receivalArray) {

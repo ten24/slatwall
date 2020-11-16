@@ -1,9 +1,9 @@
 {
-	"properties":{
-		"location":		[{"contexts":"save","required":true}],
-		"locationAddressID":	[{"contexts":"delete","method":"hasNoAssociatedOrders"}]
+	"properties": {
+		"location": [{ "contexts": "save", "required": true }],
+		"locationAddressID": [{ "contexts": "delete", "method": "hasNoAssociatedOrders" }]
 	},
-	"populatedPropertyValidation":{
-	    "address":[{"validate":"location"}]
+	"populatedPropertyValidation": {
+		"address": [{ "validate": "location" }]
 	}
 }

@@ -8,79 +8,79 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		// Setup a Private structure in the RC that can't be overridden by the form scope
 		arguments.rc.entityActionDetails = {};
-		arguments.rc.entityActionDetails.thisAction = arguments.rc[ getFW().getAction() ];
-		arguments.rc.entityActionDetails.subsystemName = getFW().getSubsystem( arguments.rc.entityActionDetails.thisAction );
-		arguments.rc.entityActionDetails.sectionName = getFW().getSection( arguments.rc.entityActionDetails.thisAction );
-		arguments.rc.entityActionDetails.itemName = getFW().getItem( arguments.rc.entityActionDetails.thisAction );
+		arguments.rc.entityActionDetails['thisAction'] = arguments.rc[ getFW().getAction() ];
+		arguments.rc.entityActionDetails['subsystemName'] = getFW().getSubsystem( arguments.rc.entityActionDetails.thisAction );
+		arguments.rc.entityActionDetails['sectionName'] = getFW().getSection( arguments.rc.entityActionDetails.thisAction );
+		arguments.rc.entityActionDetails['itemName'] = getFW().getItem( arguments.rc.entityActionDetails.thisAction );
 
 		// Setup EntityActionDetails with default redirect / render values
-		arguments.rc.entityActionDetails.sRedirectURL = "";
-		arguments.rc.entityActionDetails.sRedirectAction = "";
-		arguments.rc.entityActionDetails.sRenderItem = "";
-		arguments.rc.entityActionDetails.sRedirectQS = "";
-		arguments.rc.entityActionDetails.fRedirectURL = "";
-		arguments.rc.entityActionDetails.fRedirectAction = "";
-		arguments.rc.entityActionDetails.fRenderItem = "";
-		arguments.rc.entityActionDetails.fRedirectQS = "";
+		arguments.rc.entityActionDetails['sRedirectURL'] = "";
+		arguments.rc.entityActionDetails['sRedirectAction'] = "";
+		arguments.rc.entityActionDetails['sRenderItem'] = "";
+		arguments.rc.entityActionDetails['sRedirectQS'] = "";
+		arguments.rc.entityActionDetails['fRedirectURL'] = "";
+		arguments.rc.entityActionDetails['fRedirectAction'] = "";
+		arguments.rc.entityActionDetails['fRenderItem'] = "";
+		arguments.rc.entityActionDetails['fRedirectQS'] = "";
 
 		// Setup EntityActionDetails with all next actions set to this action
-		arguments.rc.entityActionDetails.itemEntityName = "";
-		arguments.rc.entityActionDetails.backAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.cancelAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.createAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.deleteAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.detailAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.editAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.exportAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.listAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.multiPreProcessAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.multiProcessAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.preProcessAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.processAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.saveAction = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['itemEntityName'] = "";
+		arguments.rc.entityActionDetails['backAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['cancelAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['createAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['deleteAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['detailAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['editAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['exportAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['listAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['multiPreProcessAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['multiProcessAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['preProcessAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['processAction'] = arguments.rc.entityActionDetails.thisAction;
+		arguments.rc.entityActionDetails['saveAction'] = arguments.rc.entityActionDetails.thisAction;
 
 		// Setup EntityActionDetails with the correct itemEntityName
 		if(left(arguments.rc.entityActionDetails.itemName, 10) == "reportlist") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-10);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-10);
 		} else if(left(arguments.rc.entityActionDetails.itemName, 4) == "list") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 4) == "edit") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 4) == "save") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 6) == "detail") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 6) == "delete") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 6) == "create") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 7) == "process") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-7);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-7);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 10) == "preprocess") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-10);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-10);
 		} else if (left(arguments.rc.entityActionDetails.itemName, 6) == "export") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
+			arguments.rc.entityActionDetails['itemEntityName'] = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
 		}
 
 		// Setup EntityActionDetails with correct actions
-		if(arguments.rc.entityActionDetails.itemEntityName != "") {
-			arguments.rc.entityActionDetails.backAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails.itemEntityName#";
+		if(arguments.rc.entityActionDetails['itemEntityName'] != "") {
+			arguments.rc.entityActionDetails['backAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails['itemEntityName']#";
 			if(left(arguments.rc.entityActionDetails.itemName, 6) == "create") {
-				arguments.rc.entityActionDetails.cancelAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails.itemEntityName#";
+				arguments.rc.entityActionDetails['cancelAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails['itemEntityName']#";
 			} else {
-				arguments.rc.entityActionDetails.cancelAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails.itemEntityName#";
+				arguments.rc.entityActionDetails['cancelAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails['itemEntityName']#";
 			}
-			arguments.rc.entityActionDetails.createAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.create#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.detailAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.deleteAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.delete#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.editAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.edit#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.exportAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.export#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.listAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.multiPreProcessAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.multipreprocess#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.multiProcessAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.multiprocess#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.preProcessAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.preprocess#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.processAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.process#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.saveAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.save#arguments.rc.entityActionDetails.itemEntityName#";
+			arguments.rc.entityActionDetails['createAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.create#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['detailAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['deleteAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.delete#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['editAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.edit#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['exportAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.export#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['listAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['multiPreProcessAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.multipreprocess#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['multiProcessAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.multiprocess#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['preProcessAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.preprocess#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['processAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.process#arguments.rc.entityActionDetails['itemEntityName']#";
+			arguments.rc.entityActionDetails['saveAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.save#arguments.rc.entityActionDetails['itemEntityName']#";
 		}
 
 		// Setup RC with generic redirect/render info
@@ -114,7 +114,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 		// backAction
 		if(structKeyExists(arguments.rc, "backAction")) {
-			arguments.rc.entityActionDetails.backAction = arguments.rc.backAction;
+			arguments.rc.entityActionDetails['backAction'] = arguments.rc.backAction;
 		}
 
 		// Setup the page Title in the RC
@@ -122,9 +122,9 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		if(right(arguments.rc.pageTitle, 8) eq "_missing") {
 			var replaceData = {
-				entityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'),
-				itemEntityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'),
-				itemEntityNamePlural=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#_plural')
+				entityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails['itemEntityName']#'),
+				itemEntityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails['itemEntityName']#'),
+				itemEntityNamePlural=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails['itemEntityName']#_plural')
 			};
 
 			if(left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 4) eq "list") {
@@ -138,16 +138,6 @@ component output="false" accessors="true" extends="HibachiController" {
 			} else if (left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 6) eq "detail") {
 				arguments.rc.pageTitle = getHibachiScope().rbKey('admin.define.detail', replaceData);
 			}
-		}
-	}
-	
-	public void function after(required struct rc){
-		if(structKeyExists(rc,'viewPath')){
-			request.layout = false;
-			getFW().setView("#getFW().getSubsystem()#:#getFW().getSection()#.ajax");
-
-			rc.templatePath = "./#rc.viewPath#.cfm";
-
 		}
 	}
 
@@ -208,11 +198,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		// Check for any redirect / render values that were passed in to be used by the create form, otherwise set them to a default
 		var hasSuccess = populateRenderAndRedirectSuccessValues( arguments.rc );
 		if(!hasSuccess) {
-			arguments.rc.entityActionDetails.sRedirectAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails.itemEntityName#";
+			arguments.rc.entityActionDetails['sRedirectAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails['itemEntityName']#";
 		}
 		var hasFaliure = populateRenderAndRedirectFailureValues( arguments.rc );
 		if(!hasFaliure) {
-			arguments.rc.entityActionDetails.fRenderItem = "create#arguments.rc.entityActionDetails.itemEntityName#";
+			arguments.rc.entityActionDetails['fRenderItem'] = "create#arguments.rc.entityActionDetails['itemEntityName']#";
 		}
 		populateRedirectQS( arguments.rc );
 
@@ -225,6 +215,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		// Call the new method on that service to inject an object into the RC
 		if(!structKeyExists(rc, arguments.entityName)) {
 			arguments.rc[ arguments.entityName ] = entityService.invokeMethod( "new#arguments.entityName#" );
+			arguments.rc[ arguments.entityName ].populate(arguments.rc);
 		}
 
 		// Set the edit to true
@@ -236,11 +227,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		// Check for any redirect / render values that were passed in to be used by the create form, otherwise set them to a default
 		var hasSuccess = populateRenderAndRedirectSuccessValues( arguments.rc );
 		if(!hasSuccess) {
-			arguments.rc.entityActionDetails.sRedirectAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails.itemEntityName#";
+			arguments.rc.entityActionDetails['sRedirectAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails['itemEntityName']#";
 		}
 		var hasFaliure = populateRenderAndRedirectFailureValues( arguments.rc );
 		if(!hasFaliure) {
-			arguments.rc.entityActionDetails.fRenderItem = "create#arguments.rc.entityActionDetails.itemEntityName#";
+			arguments.rc.entityActionDetails['fRenderItem'] = "create#arguments.rc.entityActionDetails['itemEntityName']#";
 		}
 		populateRedirectQS( arguments.rc );
 
@@ -250,21 +241,21 @@ component output="false" accessors="true" extends="HibachiController" {
 		// Make sure that the object we are trying to request was set in the RC
 		if(!structKeyExists(arguments.rc, arguments.entityName) || !isObject(arguments.rc[arguments.entityName])){
 			getHibachiScope().showMessage( getHibachiScope().rbKey( "#replace(arguments.rc.entityActionDetails.thisAction, ":", ".", "all")#.notfound" ) , "error");
-			getFW().redirect(action=arguments.rc.entityActionDetails.listAction, preserve="messages");
+			getFW().redirect(action=arguments.rc.entityActionDetails['listAction'], preserve="messages");
 		}
 
 		// Check for any redirect / render values that were passed in to be used by the edit form, otherwise set them to a default
 		var hasSuccess = populateRenderAndRedirectSuccessValues( arguments.rc );
 		if(!hasSuccess) {
 			if(structKeyExists(arguments.rc, "modal") && arguments.rc.modal) {
-				arguments.rc.entityActionDetails.sRenderItem = listLast(arguments.rc.entityActionDetails.listAction,".");
+				arguments.rc.entityActionDetails['sRenderItem'] = listLast(arguments.rc.entityActionDetails['listAction'],".");
 			} else {
-				arguments.rc.entityActionDetails.sRenderItem = listLast(arguments.rc.entityActionDetails.detailAction,".");
+				arguments.rc.entityActionDetails['sRenderItem'] = listLast(arguments.rc.entityActionDetails['detailAction'],".");
 			}
 		}
 		var hasFaliure = populateRenderAndRedirectFailureValues( arguments.rc );
 		if(!hasFaliure) {
-			arguments.rc.entityActionDetails.fRenderItem = listLast(arguments.rc.entityActionDetails.editAction,".");
+			arguments.rc.entityActionDetails['fRenderItem'] = listLast(arguments.rc.entityActionDetails['editAction'],".");
 		}
 
 		// Setup the values needed for this type of layout
@@ -280,7 +271,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		// Make sure that the object was actually defined
 		if(!structKeyExists(arguments.rc, arguments.entityName) || !isObject(arguments.rc[arguments.entityName])){
 			getHibachiScope().showMessage( getHibachiScope().rbKey( "#replace(arguments.rc.entityActionDetails.thisAction, ":", ".", "all")#.notfound" ) , "error");
-			getFW().redirect(action=arguments.rc.entityActionDetails.listAction, preserve="messages");
+			getFW().redirect(action=arguments.rc.entityActionDetails['listAction'], preserve="messages");
 		}
 
 		// Setup the values needed for this type of layout
@@ -296,24 +287,27 @@ component output="false" accessors="true" extends="HibachiController" {
 		var entityPrimaryID = getHibachiService().getPrimaryIDPropertyNameByEntityName( entityName=arguments.entityName );
 
 		// Attempt to find the entity
-		var entity = entityService.invokeMethod( "get#arguments.rc.entityActionDetails.itemEntityName#", {1=arguments.rc[ entityPrimaryID ]} );
+		var entity = entityService.invokeMethod( "get#arguments.rc.entityActionDetails['itemEntityName']#", {1=arguments.rc[ entityPrimaryID ]} );
 
 		// If the entity was null, then redirect to the falureAction
 		if(isNull(entity)) {
 			getHibachiScope().showMessage( getHibachiScope().rbKey( "#replace(arguments.rc.entityActionDetails.thisAction, ":", ".", "all")#.notfound" ) , "error");
-			getFW().redirect(action=arguments.rc.entityActionDetails.listAction, preserve="messages");
+			getFW().redirect(action=arguments.rc.entityActionDetails['listAction'], preserve="messages");
 		}
 
 		// Check how the delete went
-		var deleteOK = entityService.invokeMethod("delete#arguments.entityName#", {1=entity});
+		var success = entityService.invokeMethod("delete#arguments.entityName#", {1=entity});
 
-		// SUCCESS
-		if (deleteOK) {
+		if(isNull(success)){
+			throw('You have created a delete function for entity #arguments.entityName# that does not return a boolean, this does not follow convention.');
+		}
+		
+		if (success) {
 			// Show the Generica Action Success Message
-			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.delete_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'), "all" ), "success");
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.delete_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails['itemEntityName']#'), "all" ), "success");
 
 			// Render or Redirect a Success
-			renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.listAction, maintainQueryString=true, rc=arguments.rc, keysToRemoveOnRedirect=entityPrimaryID);
+			renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails['listAction'], maintainQueryString=true, rc=arguments.rc, keysToRemoveOnRedirect=entityPrimaryID);
 
 		// FAILURE
 		} else {
@@ -322,7 +316,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			entity.showErrorsAndMessages();
 
 			// Render or Redirect a faluire
-			renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
+			renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails['detailAction'], maintainQueryString=true, rc=arguments.rc);
 		}
 
 	}
@@ -348,7 +342,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		// SUCCESS
 		if(!arguments.rc[ arguments.entityName ].hasErrors()) {
 			// Show the Generica Action Success Message
-			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.save_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'), "all" ) , "success");
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.save_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails['itemEntityName']#'), "all" ) , "success");
 
 			// Show all of the specific messages & error messages for the entity
 			entity.showErrorsAndMessages();
@@ -367,7 +361,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				url[ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
 
 				// Render or Redirect a Success
-				renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
+				renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails['detailAction'], maintainQueryString=true, rc=arguments.rc);
 			}
 
 
@@ -393,7 +387,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				url[ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
 
 				// Render or Redirect a faluire
-				renderOrRedirectFailure( defaultAction="edit#arguments.rc.entityActionDetails.itemEntityName#", maintainQueryString=true, rc=arguments.rc);
+				renderOrRedirectFailure( defaultAction="edit#arguments.rc.entityActionDetails['itemEntityName']#", maintainQueryString=true, rc=arguments.rc);
 			}
 		}
 	}
@@ -403,11 +397,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		// Check for any redirect / render values that were passed in to be used by the create form, otherwise set them to a default
 		var hasSuccess = populateRenderAndRedirectSuccessValues( arguments.rc );
 		if(!hasSuccess) {
-			arguments.rc.entityActionDetails.sRedirectAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails.itemEntityName#";
+			arguments.rc.entityActionDetails['sRedirectAction'] = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails['itemEntityName']#";
 		}
 		var hasFaliure = populateRenderAndRedirectFailureValues( arguments.rc );
 		if(!hasFaliure) {
-			arguments.rc.entityActionDetails.fRenderItem = "preprocess#arguments.rc.entityActionDetails.itemEntityName#";
+			arguments.rc.entityActionDetails['fRenderItem'] = "preprocess#arguments.rc.entityActionDetails['itemEntityName']#";
 		}
 		populateRedirectQS( arguments.rc );
 
@@ -439,7 +433,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		rc.edit = true;
 
 		// Set the page title to the correct rbKey
-		rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails.itemEntityName#.process.#rc.processContext#" );
+		if(structKeyExists(arguments.rc, 'processObject')){
+			arguments.rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#", arguments.rc.processObject );
+		} else {
+			arguments.rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#");
+		}
 
 		// Set the view correctly to use the context specific preProcess view
 		getFW().setView("#lcase(arguments.rc.entityActionDetails.subsystemName)#:#lcase(arguments.rc.entityActionDetails.sectionName)#.#lcase(arguments.rc.entityActionDetails.itemName)#_#lcase(arguments.rc.processContext)#");
@@ -488,7 +486,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				arguments.rc.edit = true;
 
 				// Set the page title to the correct rbKey
-				rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails.itemEntityName#.process.#rc.processContext#" );
+				rc.pageTitle = rbKey( "entity.#arguments.rc.entityActionDetails['itemEntityName']#.process.#rc.processContext#" );
 
 				// Load up any ID's that were passed in
 				loadEntitiesFromRCIDs( arguments.rc );
@@ -496,16 +494,16 @@ component output="false" accessors="true" extends="HibachiController" {
 				// Check for any redirect / render values that were passed in to be used by the create form, otherwise set them to a default
 				var hasSuccess = populateRenderAndRedirectSuccessValues( arguments.rc );
 				if(!hasSuccess) {
-					arguments.rc.entityActionDetails.sRenderItem = "detail#arguments.rc.entityActionDetails.itemEntityName#";
+					arguments.rc.entityActionDetails['sRenderItem'] = "detail#arguments.rc.entityActionDetails['itemEntityName']#";
 				}
 				var hasFaliure = populateRenderAndRedirectFailureValues( arguments.rc );
 				if(!hasFaliure) {
-					arguments.rc.entityActionDetails.fRenderItem = "preprocess#arguments.rc.entityActionDetails.itemEntityName#";
+					arguments.rc.entityActionDetails['fRenderItem'] = "preprocess#arguments.rc.entityActionDetails['itemEntityName']#";
 				}
 				populateRedirectQS( arguments.rc );
 
 				// Setup the response
-				arguments.rc.ajaxResponse["preProcessView"] = getFW().view( "#replace(arguments.rc.entityActionDetails.preProcessAction,'.','/')#_#arguments.rc.processContext#" );
+				arguments.rc.ajaxResponse["preProcessView"] = getFW().view( "#replace(arguments.rc.entityActionDetails['preProcessAction'],'.','/')#_#arguments.rc.processContext#" );
 
 				// Setup the errorBean errors in the response
 				arguments.rc.ajaxResponse["processObjectErrors"] = errorBean.getErrors();
@@ -521,9 +519,8 @@ component output="false" accessors="true" extends="HibachiController" {
 			if(!arguments.rc[ arguments.entityName ].hasErrors()) {
 				
 				// Show the Generic Action Success Message
-				if(isEmpty(arguments.rc.messages)){
 				getHibachiScope().showMessage( getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.#arguments.rc.entityActionDetails.itemName#.#arguments.rc.processContext#_success" ), "success");
-				}
+
 				// Show all of the specific messages & error messages for the entity
 				arguments.rc[ arguments.entityName ].showErrorsAndMessages();
 
@@ -558,7 +555,7 @@ component output="false" accessors="true" extends="HibachiController" {
 					}
 					
 					// Render or Redirect a Success
-					renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
+					renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails['detailAction'], maintainQueryString=true, rc=arguments.rc);
 				}
 
 			// FAILURE
@@ -606,7 +603,7 @@ component output="false" accessors="true" extends="HibachiController" {
 					}
 					
 					// Render or Redirect a faluire
-					renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
+					renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails['detailAction'], maintainQueryString=true, rc=arguments.rc);
 
 				}
 
@@ -640,18 +637,18 @@ component output="false" accessors="true" extends="HibachiController" {
 				}
 			}
 		}catch(any e){
-			writedump(e);abort;
+			rethrow;
 		}
 	}
 
 	public boolean function populateRedirectQS(required struct rc) {
 		var hasValue = false;
 		if(structKeyExists(arguments.rc, "sRedirectQS")) {
-			arguments.rc.entityActionDetails.sRedirectQS = arguments.rc.sRedirectQS;
+			arguments.rc.entityActionDetails['sRedirectQS'] = arguments.rc.sRedirectQS;
 			hasValue = true;
 		}
 		if(structKeyExists(arguments.rc, "fRedirectQS")) {
-			arguments.rc.entityActionDetails.fRedirectQS = arguments.rc.fRedirectQS;
+			arguments.rc.entityActionDetails['fRedirectQS'] = arguments.rc.fRedirectQS;
 			hasValue = true;
 		}
 		return hasValue;
@@ -660,13 +657,13 @@ component output="false" accessors="true" extends="HibachiController" {
 	private boolean function populateRenderAndRedirectSuccessValues(required struct rc) {
 		var hasValue = false;
 		if(structKeyExists(arguments.rc, "sRedirectURL")) {
-			arguments.rc.entityActionDetails.sRedirectURL = arguments.rc.sRedirectURL;
+			arguments.rc.entityActionDetails['sRedirectURL'] = arguments.rc.sRedirectURL;
 			hasValue = true;
 		} else if(structKeyExists(arguments.rc, "sRedirectAction")) {
-			arguments.rc.entityActionDetails.sRedirectAction = arguments.rc.sRedirectAction;
+			arguments.rc.entityActionDetails['sRedirectAction'] = arguments.rc.sRedirectAction;
 			hasValue = true;
 		} else if(structKeyExists(arguments.rc, "sRenderItem")) {
-			arguments.rc.entityActionDetails.sRenderItem = arguments.rc.sRenderItem;
+			arguments.rc.entityActionDetails['sRenderItem'] = arguments.rc.sRenderItem;
 			hasValue = true;
 		}
 		return hasValue;
@@ -674,13 +671,13 @@ component output="false" accessors="true" extends="HibachiController" {
 	private boolean function populateRenderAndRedirectFailureValues(required struct rc) {
 		var hasValue = false;
 		if(structKeyExists(arguments.rc, "fRedirectURL")) {
-			arguments.rc.entityActionDetails.fRedirectURL = arguments.rc.fRedirectURL;
+			arguments.rc.entityActionDetails['fRedirectURL'] = arguments.rc.fRedirectURL;
 			hasValue = true;
 		} else if(structKeyExists(arguments.rc, "fRedirectAction")) {
-			arguments.rc.entityActionDetails.fRedirectAction = arguments.rc.fRedirectAction;
+			arguments.rc.entityActionDetails['fRedirectAction'] = arguments.rc.fRedirectAction;
 			hasValue = true;
 		} else if(structKeyExists(arguments.rc, "fRenderItem")) {
-			arguments.rc.entityActionDetails.fRenderItem = arguments.rc.fRenderItem;
+			arguments.rc.entityActionDetails['fRenderItem'] = arguments.rc.fRenderItem;
 			hasValue = true;
 		}
 		return hasValue;

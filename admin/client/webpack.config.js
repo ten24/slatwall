@@ -15,6 +15,12 @@ delete devConfig.entry.vendor; //remove the vendor info from this version.
 devConfig.output.path = PATHS.app;
 devConfig.context = PATHS.app;
 //don't need the vendor bundle generated here because we include the vendor bundle already.
-devConfig.plugins =  [
-];   
+devConfig.plugins =  [];
+devConfig.resolve.modules=[
+    path.resolve(path.join(customPath, '../../custom/admin/client'), 'src/'),
+    path.resolve(path.join(customPath, '../../custom/client'), 'src/'),
+    path.resolve(__dirname, 'src/'),
+    'node_modules'
+];
+
 module.exports = devConfig;

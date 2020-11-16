@@ -54,39 +54,70 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public boolean function isAddressInZone(required any address, required any addressZone) {
-		return isAddressInZoneByZoneID(arguments.address,arguments.addressZone.getAddressZoneID());
-	}
-	
-	public boolean function isAddressInZoneByZoneID(required any address, required string addressZoneID) {
-		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZoneID
-			&arguments.address.getPostalCode()&arguments.address.getCity()&arguments.address.getStateCode()
-			&arguments.address.getCountryCode();
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
-
-			var isAddressInZone = ORMExecuteQuery("
-				Select COUNT(azl) FROM SlatwallAddressZone az 
-				LEFT JOIN az.addressZoneLocations azl
-				where az.addressZoneID = :addressZoneID
-				and (azl.postalCode = :postalCode OR azl.postalCode is NULL)
-				and (azl.city = :city OR azl.city is NULL)
-				and (azl.stateCode = :stateCode OR azl.stateCode is NULL)
-				and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
-				",
-				{
-					addressZoneID=arguments.addressZoneID,
-					postalCode=arguments.address.getPostalCode(),
-					city=arguments.address.getCity(),
-					stateCode=arguments.address.getStateCode(),
-					countryCode=arguments.address.getCountryCode()
-				},
-				true
-			);
-			//cache Address verification for 5 min
-			getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
+	public any function saveAddress(required any address, struct data={}, string context="save", boolean verifyAddressFlag=false){
+		
+		arguments.address = super.saveAddress(address,data,context);
+		if(structKeyExists(arguments.data, 'verifyAddressFlag') && arguments.data.verifyAddressFlag == true){
+			arguments.verifyAddressFlag = true;
 		}
 		
-		return getService('HibachiCacheService').getCachedValue(cacheKey);
+		if(!arguments.address.hasErrors() && arguments.verifyAddressFlag){
+			//Have to flush in order to get address struct
+			getHibachiScope().flushORMSession();
+			verifyAddressByID(arguments.address.getAddressID());
+		}
+		return arguments.address;
+	}
+	
+	public boolean function isAddressInZoneByZoneID(required any addressZoneID, required any address) {
+		var addressZone = this.getAddressZoneByAddressZoneID(addressZoneID);
+		return this.isAddressInZone(arguments.address, addressZone);
+	}
+	
+	public boolean function isAddressInZoneByZoneID(required any address, required any addressZoneID){
+		return isAddressInZone(address=arguments.address,addressZone=this.getAddressZoneByAddressZoneID(arguments.addressZoneID));
+	}
+	
+	public boolean function isAddressInZone(required any address, required any addressZone) {
+		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZone.getAddressZoneID();
+		if(!isNull(arguments.address.getPostalCode())){
+			cacheKey &= arguments.address.getPostalCode();
+		}
+		if(!isNull(arguments.address.getCity())){
+			cacheKey &= arguments.address.getCity();
+		}
+		if(!isNull(arguments.address.getStateCode())){
+			cacheKey &= arguments.address.getStateCode();
+		} 
+		if(!isNull(arguments.address.getCountryCode())){
+			cacheKey &= arguments.address.getCountryCode();
+		}
+		if(getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			return getService('HibachiCacheService').getCachedValue(cacheKey);
+		}
+		
+		var isAddressInZone = ORMExecuteQuery("
+			Select COUNT(azl) FROM SlatwallAddressZone az 
+			LEFT JOIN az.addressZoneLocations azl
+			where az.addressZoneID = :addressZoneID
+			and (azl.postalCode = :postalCode OR azl.postalCode is NULL)
+			and (azl.city = :city OR azl.city is NULL)
+			and (azl.stateCode = :stateCode OR azl.stateCode is NULL)
+			and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
+			",
+			{
+				addressZoneID=arguments.addressZone.getAddressZoneID(),
+				postalCode=arguments.address.getPostalCode(),
+				city=arguments.address.getCity(),
+				stateCode=arguments.address.getStateCode(),
+				countryCode=arguments.address.getCountryCode()
+			},
+			true
+		);
+			//cache Address verification for 5 min
+		getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
+	
+		return isAddressInZone;
 	}
 	
 	public any function copyAddress(required any address, saveNewAddress=false) {
@@ -156,66 +187,82 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.country;
 	}
 	
-	public any function verifyAddressStruct(required any addressStruct){
-		 			
-		var address = this.getAddress(arguments.addressStruct['addressID']);
-		 			
+	public any function verifyAddressStruct(required struct addressStruct){
+		
+		var integrationID = getHibachiScope().setting('globalIntegrationForAddressVerification');
+		
 		var cacheKey = hash(serializeJSON(arguments.addressStruct),'md5');
 		
 		var addressVerificationStruct = {};
 		
-		if( 
-			isNull(address.getVerificationCacheKey()) || 
-			!len(address.getVerificationCacheKey()) || 
-			compare(address.getVerificationCacheKey(),cacheKey) != 0
+		if(structKeyExists(arguments.addressStruct,'addressID')){
+			var address = this.getAddress(arguments.addressStruct['addressID']);
+			
+			if( !isNull(address) && 
+				!isNull(address.getVerificationCacheKey()) &&
+				len(address.getVerificationCacheKey()) && 
+				compare(address.getVerificationCacheKey(),cacheKey) == 0
+			) {
+				addressVerificationStruct = deserializeJson(address.getVerificationJson());
+			} 
+		}
+		 			
+		if( StructIsEmpty(addressVerificationStruct) &&
+			!isNull(integrationID) && 
+			len(integrationID) && 
+			integrationID != 'internal' 
 		){
-		
-			var shippingIntegrationID = getHibachiScope().setting('globalShippingIntegrationForAddressVerification');
-			
-			if(!isNull(shippingIntegrationID) && len(shippingIntegrationID) && shippingIntegrationID != 'internal' ){
-				
-				var shippingIntegration = getService("IntegrationService").getIntegrationByIntegrationPackage(shippingIntegrationID).getIntegrationCFC("Shipping");
-				
-				addressVerificationStruct = shippingIntegration.verifyAddress(arguments.addressStruct);
-				
-				address.setVerificationJson(serializeJSON(addressVerificationStruct));
-				
-				address.setVerificationCacheKey(cacheKey);
-			}
-			
-		} else {
-			
-			addressVerificationStruct = deserializeJson(address.getVerificationJson());
-			
+			addressVerificationStruct = getService("IntegrationService")
+											.getIntegrationByIntegrationPackage(integrationID)
+												.getIntegrationCFC("Address")
+													.verifyAddress(arguments.addressStruct);
+			addressVerificationStruct['address'] = arguments.addressStruct;
 		}
 		
-		if (structKeyExists(addressVerificationStruct, 'success')){
-			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
+		if(!isNull(address)){
 			
-			if(!addressVerificationStruct['success']){
-				address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
+			address.setVerificationJson(serializeJSON(addressVerificationStruct));
+			address.setVerificationCacheKey(cacheKey);
+			
+			if (structKeyExists(addressVerificationStruct, 'success')) {
+				address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
+			
+				if(!addressVerificationStruct['success']){
+					address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
+				}
 			}
+			this.saveAddress(address);
 		}
 		
-		this.saveAddress(address);
-		
-		logHibachi(serializeJSON(addressVerificationStruct),true);
-
 		return addressVerificationStruct;
 		
 	}
 	
+	/**
+	 * @Deprecated this function is deprecated in favor of *verifyAccountAddressByID()*.
+	 * left here for compatibility with other projects, should be removed
+	 * 
+	*/ 
 	public any function verifyAccountAddressWithShippingIntegration(required string accountAddressID){
-		
-		
-			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
-			
-			if(len(data)){
-				return this.verifyAddressStruct(data[1]);
-			} 
+		return verifyAccountAddressByID(arguments.accountAddressID);
 	}
 	
+	/**
+	 * @Deprecated this function is deprecated in favor of *verifyAddressByID()*.
+	 * left here for compatibility with other projects, should be removed
+	 * 
+	*/ 
 	public any function verifyAddressWithShippingIntegration(required string addressID){
+		return verifyAddressByID(arguments.addressID);
+	}
+	
+	/**
+	 * Function to verify Address by an addressID using an AddressIntegration 
+	 * Note: the integration is driven by a @setting globalIntegrationForAddressVerification
+	 *  
+	 * @addressID id, of the Address to verify
+	*/ 
+	public any function verifyAddressByID(required string addressID){
 		
 			var data = getDAO("AddressDAO").getAddressStruct(addressID);
 		
@@ -223,6 +270,22 @@ component extends="HibachiService" accessors="true" output="false" {
 				return this.verifyAddressStruct(data[1]);
 			}
 	}
+	
+	/**
+	 * Function to verify AccountAddress by an accountAddressID using an AddressIntegration 
+	 * Note: the integration is driven by a @setting globalIntegrationForAddressVerification
+	 *  
+	 * @accountAddressID id, of the AccountAddress to verify
+	 */ 
+	public any function verifyAccountAddressByID(required string accountAddressID){
+
+			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
+			
+			if(len(data)){
+				return this.verifyAddressStruct(data[1]);
+			} 
+	}
+
 	
 	public any function getAddressName(required any addressStruct){
 			var name = "";

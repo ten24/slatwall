@@ -121,7 +121,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	// entity will be one of StockReceiverItem, StockPhysicalItem, StrockAdjustmentDeliveryItem, VendorOrderDeliveryItem, OrderDeliveryItem
-	public void function createInventory(required any entity) {
+	public void function createInventory(required any entity, boolean validateQuantityFlag=true) {
 		
 		switch(arguments.entity.getEntityName()) {
 			case "SlatwallStockReceiverItem": {
@@ -139,7 +139,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 						var processData = {
 							locationID=arguments.entity.getStock().getLocation().getLocationID(),
-							quantity=arguments.entity.getQuantity() - arguments.entity.getStock().getQuantity("QOH")
+							quantity=arguments.entity.getQuantity() - arguments.entity.getStock().getQuantity("QOH"),
+							validateQuantityFlag=arguments.validateQuantityFlag
 						};
 
 						if(arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').getPopulatedFlag()){
@@ -360,26 +361,35 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.entity.getEntityName() eq "SlatwallStock") {
 			var trackInventoryFlag = arguments.entity.getSku().setting('skuTrackInventoryFlag');
 			var allowBackorderFlag = arguments.entity.getSku().setting('skuAllowBackorderFlag');
+			var backorderLimit = arguments.entity.getSku().setting('skuBackorderLimit');
 			var orderMaximumQuantity = arguments.entity.getSku().setting('skuOrderMaximumQuantity'); 
 			var qatsIncludesQNROROFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROROFlag');
 			var qatsIncludesQNROVOFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROVOFlag');
 			var qatsIncludesQNROSAFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.getSku().setting('skuHoldBackQuantity');
 			var qatsIncludesMQATSBOMFlag = arguments.entity.getSku().setting('skuQATSIncludesMQATSBOMFlag');
+			var skuTrackQATSBelowThreshold = val(arguments.entity.getSku().setting('skuTrackQATSBelowThreshold'));
 		} else {
 			var trackInventoryFlag = arguments.entity.setting('skuTrackInventoryFlag');
 			var allowBackorderFlag = arguments.entity.setting('skuAllowBackorderFlag');
+			var backorderLimit = arguments.entity.setting('skuBackorderLimit');
 			var orderMaximumQuantity = arguments.entity.setting('skuOrderMaximumQuantity'); 
 			var qatsIncludesQNROROFlag = arguments.entity.setting('skuQATSIncludesQNROROFlag');
 			var qatsIncludesQNROVOFlag = arguments.entity.setting('skuQATSIncludesQNROVOFlag');
 			var qatsIncludesQNROSAFlag = arguments.entity.setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.setting('skuHoldBackQuantity');
 			var qatsIncludesMQATSBOMFlag = arguments.entity.setting('skuQATSIncludesMQATSBOMFlag');
+			var skuTrackQATSBelowThreshold = val(arguments.entity.setting('skuTrackQATSBelowThreshold'));
 		}
 
 		// If trackInventory is not turned on, or backorder is true then we can set the qats to the max orderQuantity
-		if( !trackInventoryFlag || allowBackorderFlag ) {
+		if( !trackInventoryFlag || (allowBackorderFlag && backOrderLimit == 0) ) {
 			return orderMaximumQuantity;
+		}
+		
+		// if current calculated QATS is more the skuTrackQATSBelowThreshold then return calculatedQATS, unless updating calculated property
+		if( !arguments.entity.getCalculatedUpdateRunFlag() && skuTrackQATSBelowThreshold != 0 && val(arguments.entity.getCalculatedQATS()) > skuTrackQATSBelowThreshold ) {
+			return arguments.entity.getCalculatedQATS();
 		}
 		
 		// Otherwise we will do a normal bit of calculation logic
@@ -400,6 +410,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		if(isNumeric(holdBackQuantity)) {
 			ats -= holdBackQuantity;
+		}
+		
+		if(allowBackorderFlag && backorderLimit > 0){
+			ats += backorderLimit;
 		}
 		
 		return ats;
@@ -442,7 +456,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Increment Product value
 			if(structKeyExists(arguments.inventoryArray[i],arguments.inventoryType)){
 				returnStruct[ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
-				
+			
 				
 				// Setup the location
 				if( structKeyExists(arguments.inventoryArray[i], "locationIDPath") ) {
@@ -457,7 +471,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
 					}
 				}
-				
+			
 				// Setup the stock
 				if( structKeyExists(arguments.inventoryArray[i], "stockID") ) {
 					var stockID = arguments.inventoryArray[i]["stockID"];	

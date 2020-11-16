@@ -101,7 +101,8 @@ Notes:
 	
 	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.charges')#" collectionList="#local.collectionChargeList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
-			recordEditAction="admin:entity.editorderpayment">
+			recordEditAction="admin:entity.editorderpayment"
+			currencyCode="#rc.order.getCurrencyCode()#">
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
 		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="dynamicAmountFlag" />
@@ -112,7 +113,8 @@ Notes:
 	
 	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.credits')#" collectionList="#local.collectionCreditList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
-			recordEditAction="admin:entity.editorderpayment">
+			recordEditAction="admin:entity.editorderpayment"
+			currencyCode="#rc.order.getCurrencyCode()#">
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
 		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="dynamicAmountFlag" />
@@ -123,7 +125,8 @@ Notes:
 	
 	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.nonActive')#" collectionList="#local.collectionNonActiveList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
-			recordEditAction="admin:entity.editorderpayment">
+			recordEditAction="admin:entity.editorderpayment"
+			currencyCode="#rc.order.getCurrencyCode()#">
 		<hb:HibachiListingColumn propertyIdentifier="orderPaymentStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
 		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />

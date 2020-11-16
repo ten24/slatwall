@@ -53,12 +53,15 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 	property name="discountAmount" ormtype="big_decimal";
 	property name="appliedType" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="manualDiscountAmountFlag" ormtype="boolean" default="false";
 	
 	// Related Entities
 	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
+	property name="promotionReward" cfc="PromotionReward" fieldType="many-to-one" fkcolumn="promotionRewardID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderfulfillmentID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
+	property name="rewardSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -75,7 +78,7 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Promotion (many-to-one)
+	// Promotion (many-to-one)	
 	public void function setPromotion(required any promotion) {
 		variables.promotion = arguments.promotion;
 		if(isNew() or !arguments.promotion.hasAppliedPromotion( this )) {
@@ -100,13 +103,15 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 			arrayAppend(arguments.orderItem.getAppliedPromotions(), this);
 		}
 	}
-	public void function removeOrderItem(any orderItem) {
+	public void function removeOrderItem(any orderItem, boolean reciprocateFlag=true) {
 		if(!structKeyExists(arguments, "orderItem")) {
 			arguments.orderItem = variables.orderItem;
 		}
-		var index = arrayFind(arguments.orderItem.getAppliedPromotions(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.orderItem.getAppliedPromotions(), index);
+		if(arguments.reciprocateFlag == true){
+			var index = arrayFind(arguments.orderItem.getAppliedPromotions(), this);
+			if(index > 0) {
+				arrayDeleteAt(arguments.orderItem.getAppliedPromotions(), index);
+			}
 		}
 		structDelete(variables, "orderItem");
 	}
@@ -141,15 +146,46 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 			arguments.order = variables.order;
 		}
 		var index = arrayFind(arguments.order.getAppliedPromotions(), this);
+		
 		if(index > 0) {
 			arrayDeleteAt(arguments.order.getAppliedPromotions(), index);
 		}
 		structDelete(variables, "order");
 	}
 
+	public boolean function getExcludeFromModifiedEntitiesFlag(){
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			if( !isNull(getOrderItem()) ){
+				variables.excludeFromModifiedEntitiesFlag = getOrderItem().getExcludeFromModifiedEntitiesFlag();
+			}
+			if(!isNull(getOrderFulfillment())){
+				variables.excludeFromModifiedEntitiesFlag = getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
+			}
+			if(!isNull(getOrder())){
+				variables.excludeFromModifiedEntitiesFlag = getOrder().getExcludeFromModifiedEntitiesFlag();
+			}
+		}
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
+
+public numeric function getCustomDiscountAmount(required string customPriceField){
+        return this.invokeMethod('get#customPriceField#DiscountAmount');
+    }
+    
+    public boolean function getEnrollmentFeeRefundFlag(){
+        if(!structKeyExists(variables,'enrollmentFeeRefundFlag')){
+            variables.enrollmentFeeRefundFlag = false;
+        }
+        return variables.enrollmentFeeRefundFlag;
+    }
+    //CUSTOM FUNCTIONS END
 }

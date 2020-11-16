@@ -347,13 +347,7 @@ class OrderFulfillmentService {
             this.emitUpdateToClient();
             return;
         }
-        
-        if(!state.orderItem || angular.equals( state.orderItem, {})){
-            this.state.loading = false;
-            alert(this.$rootScope.rbKey('define.invalidDeliveryQuantities'));
-            this.emitUpdateToClient();
-            return;
-        }
+
          
         let data:any = {};
         //Add the order information
@@ -454,35 +448,19 @@ class OrderFulfillmentService {
             if (selectedRowIndex != -1){
                 //Set the next one.
                 selectedRowIndex = selectedRowIndex+1;
+                this.listingService
+                    .getListing("fulfillmentBatchItemTable1").selectionService
+                        .addSelection(this.listingService.getListing("fulfillmentBatchItemTable1").tableID, 
+                            this.listingService.getListingPageRecords("fulfillmentBatchItemTable1")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
+           
                 
-                var pageRecords1 = this.listingService.getListingPageRecords("fulfillmentBatchItemTable1");
+                let args = {
+                    selection:this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")],
+                    selectionid:"fulfillmentBatchItemTable2",
+                    action:"check"
+                };
                 
-                if(selectedRowIndex < pageRecords1.length){
-                    
-                    var primaryIDPropertyName1 = this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1");
-                    
-                    var listing1 = this.listingService.getListing("fulfillmentBatchItemTable1");
-                    
-                    var nextRecord = pageRecords1[selectedRowIndex];
-                    
-                    listing1.selectionService.addSelection( listing1.tableID,  nextRecord[ primaryIDPropertyName1 ] );
-                }
-                
-                
-                var pageRecords2 = this.listingService.getListingPageRecords("fulfillmentBatchItemTable2");
-                var primaryIDPropertyName2 = this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2");
-
-                if( selectedRowIndex < pageRecords2.length ){
-                   
-                    let args = {
-                        selection: pageRecords2[selectedRowIndex][ primaryIDPropertyName2 ],
-                        selectionid:"fulfillmentBatchItemTable2",
-                        action:"check"
-                    };
-
-                    this.swSelectionToggleSelectionfulfillmentBatchItemTable2(args);
-                }
-                
+                this.swSelectionToggleSelectionfulfillmentBatchItemTable2(args);
             }
             //refresh.
             //Scroll to the quantity div.

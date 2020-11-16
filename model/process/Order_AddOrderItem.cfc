@@ -53,11 +53,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Lazy / Injected Objects
 	property name="stock" hb_rbKey="entity.stock";
-	property name="sku" hb_rbKey="entity.sku";
+	property name="sku" hb_rbKey="entity.sku" cfc="Sku";
 	property name="product" hb_rbKey="entity.product";
 	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 	property name="location" hb_rbKey="entity.location" cfc="Location";
-	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment";
+	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment" cfc="OrderFulfillment";
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
 
@@ -95,8 +95,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedGiftRecipientQuantity";
 	property name="sellOnBackOrderFlag";
 	property name="thirdPartyShippingAccountIdentifier";
-
+	property name="userDefinedPriceFlag" hb_populateEnabled="false";
+	
 	// Data Properties (Related Entity Populate)
+	property name="priceGroup" cfc="PriceGroup" fieldType="many-to-one" persistent="false" fkcolumn="priceGroupID";
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
 	// Data Properties (Object / Array Populate)
 	property name="attributeValuesByCodeStruct";
@@ -114,6 +116,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
 	property name="shippingAccountAddresses" type="array";
+	property name="updateOrderAmountFlag" default="1";
 
 	public any function init(){
 		super.init();
@@ -130,6 +133,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.childOrderItems;
 	}
 	
+	
 	public any function getPickupLocationIDTypeAheadCollectionList(){
 		var locationCollectionList = getService('locationService').getLocationCollectionList();
 		locationCollectionList.addFilter('activeFlag',1);
@@ -138,7 +142,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return locationCollectionList;
 	}
-	
+
 	public any function getLocationIDTypeAheadCollectionList(){
 		var locationCollectionList = getService('locationService').getLocationCollectionList();
 		locationCollectionList.addFilter('activeFlag',1);
@@ -181,30 +185,80 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 		return variables.orderItemTypeSystemCode;
 	}
+	
+	public any function getAccount(){
+		if ( !StructKeyExists(variables, 'account') || IsNull(variables.account) ) {
+			variables.account = getOrder().getAccount() ?: getHibachiScope().getAccount();
+		}
+		return variables.account;
+	}
+	
 
 	public any function getPrice() {
-		var account = getHibachiScope().getAccount();
-		if ( !isNull(getOrder().getAccount()) ){
-			account = getOrder().getAccount();
-		}
+		
 		if(
-			!structKeyExists(variables, "price") 
-			|| ( !isNull(getSku()) && isNull(getOldQuantity()) && variables.price == getSku().getPriceByCurrencyCodeAndAccount(currencyCode=getCurrencyCode(),account=account) )
-			|| ( !isNull(getSku()) && !isNull(getOldQuantity()) && getOldQuantity() != getQuantity() && variables.price == getSku().getLivePriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),account=account) )
-		){
-			variables.price = 0;
-			if(!isNull(getSku())) {
-				
-				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( currencyCode=getCurrencyCode() , quantity=getQuantity(), account=account);
-				if(!isNull(priceByCurrencyCode)) {
-					variables.price = priceByCurrencyCode;
-				} else {
-					variables.price = "N/A";
-				}
-			}
+			IsNull(variables.price)  
+			||
+			(   // 1 is the fallback QTY, so the price will be same for QTY == 1 or null
+				this.getQuantity() != this.getOldQuantity()
+				&& 
+				variables.price == this.getCurrentSkuPriceForQuantityAndCurrency( this.getOldQuantity()  ) 
+			)
+		) {
+			
+			variables.price = this.getCurrentSkuPriceForQuantityAndCurrency( this.getQuantity() );
 		}
-		return variables.price;
+		
+		if(!IsNull(variables.price) ){
+			return variables.price;
+		}
 	}
+	
+	
+	//helper function to reduce duplicate-code
+	public any function getCurrentSkuPriceForQuantityAndCurrency(numeric quantity= 1, string currencyCode = this.getCurrencyCode()){
+		
+		if(!isNull(this.getPriceGroup())){
+			var priceGroup = this.getPriceGroup();
+		}else{
+			var priceGroup = getService("orderService").getBestApplicablePriceGroup();
+		}
+		
+		
+		if( IsNull(this.getSku()) ) {
+			return;
+		}
+		
+		if(!IsNull(this.getAccount()) && !getAccount().getNewFlag()){
+			
+			return this.getSku().getPriceByCurrencyCode( 
+				currencyCode= arguments.currencyCode, 
+				quantity= arguments.quantity, 
+				accountID= this.getAccount().getAccountID(),
+				priceGroups = [priceGroup]
+			);
+			
+		} else {
+			
+			return this.getSku().getPriceByCurrencyCode( 
+				currencyCode= this.getCurrencyCode(), 
+				quantity= arguments.quantity,
+				priceGroups = [priceGroup]
+			);
+			
+		}
+		
+	}
+	
+	public numeric function getOldQuantity(){
+		
+		if(!StructKeyExists(variables, "oldQuantity")){
+			variables.oldQuantity = 1;
+		}
+		
+		return variables.oldQuantity;
+	}
+	
 	/*
 
 	//Need to also check child order items for child order items.
@@ -603,10 +657,28 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return "";
 	}
+	
+	public any function getUserDefinedPriceFlag() {
+		
+		//if there's no sku we have nothing to check against 
+		if(IsNull(this.getSku()) ) {
+			return false;
+		}
 
+		if(this.getSku().getUserDefinedPriceFlag() ?: false ){
+			return true;
+		}
+		
+		//check if the price doesn't match with SKU's price-ByCurrencyCode
+		if( this.getPrice() != this.getCurrentSkuPriceForQuantityAndCurrency( this.getQuantity() ) ) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	// funciton to compare two orderItems based on certain properties.
 	public boolean function matchesOrderItem(required any orderItem){
-
 		//check if the sku is a bundle
 		if(!isnull(this.getSku()) && !isnull(this.getSku().getBaseProductType()) && this.getSku().getBaseProductType() == 'productBundle') {
 			return false;
@@ -616,8 +688,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
 			return false;
 		}
-		//check if the price is the same if and only if we are using a custom price
-		if(arguments.orderItem.getPrice() != this.getPrice() && (!isNull(arguments.orderItem.getSku().getUserDefinedPriceFlag()) && arguments.orderItem.getSku().getUserDefinedPriceFlag())){
+
+		//check if the price is the same if and only if we have a custom price (either orderItem or processObject)
+		if( 
+			arguments.orderItem.getPrice() != this.getPrice() 
+			&&  
+			( this.getUserDefinedPriceFlag() || arguments.orderItem.getUserDefinedPriceFlag() )
+		){
 			return false;
 		}
 		
@@ -778,20 +855,26 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var assignedOrderItemAttributeSetRecords = assignedOrderItemAttributeSetCollectionList.getRecords();
 		
 		var attributeSetIDArray = [];
+		
 		for(var assignedOrderItemAttributeSetRecord in assignedOrderItemAttributeSetRecords){
 			arrayAppend(attributeSetIDArray,assignedOrderItemAttributeSetRecord['attributeSetID']);
-				}
+		}
 		var cacheKey = "Order_AddOrderItem_populate#arrayToList(attributeSetIDArray)#";
 		
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
-			attributeCollectionList.setDisplayProperties('attributeCode');
-			attributeCollectionList.addFilter('attributeSet.attributeSetID',arrayToList(attributeSetIDArray),'IN');
-			
-			getService('HibachiCacheService').setCachedValue(cacheKey,attributeCollectionList.getRecords());
-		}
-		attributeCollectionListRecords = getService('HibachiCacheService').getCachedValue(cacheKey);
+		var attributeCollectionListRecords = [];
 		
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			if(arrayLen(attributeSetIDArray)){
+				var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
+				attributeCollectionList.setDisplayProperties('attributeCode');
+				attributeCollectionList.addFilter('attributeSet.attributeSetID',arrayToList(attributeSetIDArray),'IN');
+				attributeCollectionListRecords = attributeCollectionList.getRecords();
+			}
+			
+			getService('HibachiCacheService').setCachedValue(cacheKey, attributeCollectionListRecords);
+		}else{
+			attributeCollectionListRecords = getService('HibachiCacheService').getCachedValue(cacheKey);
+		}
 		
 		for(var attributeCollectionListRecord in attributeCollectionListRecords){
 			if(len(trim(attributeCollectionListRecord['attributeCode']))){
