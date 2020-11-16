@@ -5663,14 +5663,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!isNull(sessionOrder) && arguments.order.getOrderID() == sessionOrder.getOrderID()) {
 				getHibachiScope().getSession().setOrder( javaCast("null", "") );
 			}
-			var orderItems = arguments.order.getOrderItems();
-			for(var orderItem in orderItems){
-				var appliedPromotions = orderItem.getAppliedPromotions();
-				for(var appliedPromotion in appliedPromotions){
-					appliedPromotion.removeOrderItem(orderItem,false);
-				}
-				deleteOrderItem(orderItem,false);	
-			}
+			// var orderItems = arguments.order.getOrderItems();
+			// for(var orderItem in orderItems){
+			// 	writeDump(var=orderItem,top=3,label="OrderItem");
+			// 	var appliedPromotions = orderItem.getAppliedPromotions();
+			// 	for(var appliedPromotion in appliedPromotions){
+			// 		appliedPromotion.removeOrderItem(orderItem,false);
+			// 		// writeDump(var=appliedPromotion,label="appliedPromotionAfterRemoveDakine",top=3);
+			// 	}
+			// 	arrayClear(orderItem.getAppliedPromotions());
+			// 	deleteOrderItem(orderItem,false);
+			// 	// writeDump(var=orderItem.getAppliedPromotions(),label="appliedPromotionsAfterDakine",top=3);
+			// }
+			// abort;
 			ORMFlush();
 			getOrderDAO().removeOrderFromAllSessions( orderID=arguments.order.getOrderID() );
 
