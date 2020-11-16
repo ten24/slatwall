@@ -46,7 +46,7 @@ Notes:
 
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
-    
+    property name="ContentService";
     
      public any function login( required struct data ){
          
