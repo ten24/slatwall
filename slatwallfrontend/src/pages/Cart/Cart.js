@@ -1,6 +1,6 @@
-import React from "react"
-import { connect } from "react-redux"
-import { CartLineItem, Layout } from "../../components"
+import React from 'react'
+import { connect } from 'react-redux'
+import { CartLineItem, Layout } from '../../components'
 
 class Cart extends React.Component {
   render() {

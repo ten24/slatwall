@@ -3,8 +3,8 @@ import {
   DECREMENT_CART_ITEM_QUANTITY,
   INCREMENT_CART_ITEM_QUANTITY,
   REMOVE_PRODUCT_FROM_CART,
-} from "../actions"
-import { books } from "../data/books"
+} from '../actions'
+import { books } from '../data/books'
 
 const initialState = {
   products: books,
@@ -16,13 +16,13 @@ const shopReducer = (state = initialState, action) => {
   let updatedItemIndex
 
   switch (action.type) {
-    case INCREMENT_CART_ITEM_QUANTITY:
+    case INCREMENT_CART_ITEM_QUANTITY: {
       updatedCart = [...state.cart]
       updatedItemIndex = updatedCart.findIndex(
         item => item.id === action.payload
       )
 
-      const incrementedItem = {
+      let incrementedItem = {
         ...updatedCart[updatedItemIndex],
       }
 
@@ -31,14 +31,14 @@ const shopReducer = (state = initialState, action) => {
       updatedCart[updatedItemIndex] = incrementedItem
 
       return { ...state, cart: updatedCart }
-
-    case DECREMENT_CART_ITEM_QUANTITY:
+    }
+    case DECREMENT_CART_ITEM_QUANTITY: {
       updatedCart = [...state.cart]
       updatedItemIndex = updatedCart.findIndex(
         item => item.id === action.payload
       )
 
-      const decrementedItem = {
+      let decrementedItem = {
         ...updatedCart[updatedItemIndex],
       }
 
@@ -47,8 +47,8 @@ const shopReducer = (state = initialState, action) => {
       updatedCart[updatedItemIndex] = decrementedItem
 
       return { ...state, cart: updatedCart }
-
-    case ADD_PRODUCT_TO_CART:
+    }
+    case ADD_PRODUCT_TO_CART: {
       updatedCart = [...state.cart]
       updatedItemIndex = updatedCart.findIndex(
         item => item.id === action.payload.id
@@ -66,7 +66,8 @@ const shopReducer = (state = initialState, action) => {
       }
 
       return { ...state, cart: updatedCart }
-    case REMOVE_PRODUCT_FROM_CART:
+    }
+    case REMOVE_PRODUCT_FROM_CART: {
       updatedCart = [...state.cart]
       updatedItemIndex = updatedCart.findIndex(
         item => item.id === action.payload
@@ -75,6 +76,7 @@ const shopReducer = (state = initialState, action) => {
       updatedCart.splice(updatedItemIndex, 1)
 
       return { ...state, cart: updatedCart }
+    }
     default:
       return state
   }

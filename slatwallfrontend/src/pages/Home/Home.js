@@ -1,6 +1,6 @@
-import React from "react"
-import { Layout } from "../../components"
-import { SWSlider } from "../../components"
+import React from 'react'
+import { Layout } from '../../components'
+import { SWSlider } from '../../components'
 
 class Home extends React.Component {
   render() {

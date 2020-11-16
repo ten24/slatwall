@@ -1,6 +1,6 @@
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import { connect } from "react-redux"
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 function Navigation(props) {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true)
@@ -21,7 +21,7 @@ function Navigation(props) {
         <span className="navbar-toggler-icon"></span>
       </button>
       <div
-        className={`${isNavCollapsed ? "collapse" : ""} navbar-collapse`}
+        className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`}
         id="navbarNav"
       >
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">

@@ -1,6 +1,6 @@
-import React from "react"
-import { connect } from "react-redux"
-import { AuthorFilter, Layout, Product } from "../../components"
+import React from 'react'
+import { connect } from 'react-redux'
+import { AuthorFilter, Layout, Product } from '../../components'
 
 const ProductListing = props => {
   return (
@@ -28,7 +28,7 @@ const mapStateToProps = state => {
   let filteredProducts = state.shop.products.filter(product =>
     state.filter.includes(product.author)
   )
-  if (state.filter === "") filteredProducts = state.shop.products
+  if (state.filter === '') filteredProducts = state.shop.products
   return { products: filteredProducts }
 }
 

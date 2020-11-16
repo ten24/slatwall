@@ -1,7 +1,7 @@
-import React from "react"
-import { connect } from "react-redux"
-import { withRouter } from "react-router"
-import { addAuthorToFilter, removeAuthorFromFilter } from "../../actions"
+import React from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
+import { addAuthorToFilter, removeAuthorFromFilter } from '../../actions'
 
 class AuthorFilter extends React.Component {
   handleSelectBox = e => {
@@ -12,7 +12,7 @@ class AuthorFilter extends React.Component {
     }
   }
   isChecked = (author, filters) => {
-    if (author === "") return false
+    if (author === '') return false
     return filters.includes(author)
   }
   render() {
@@ -45,8 +45,8 @@ class AuthorFilter extends React.Component {
     )
   }
 }
-const mapStateToProps = (state, props) => {
-  let list = ["Tom", "Sumit", "Miguel", "Kevin"]
+const mapStateToProps = state => {
+  let list = ['Tom', 'Sumit', 'Miguel', 'Kevin']
   //     state.shop.products.forEach(element => {
 
   //   });

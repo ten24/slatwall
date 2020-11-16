@@ -1,6 +1,6 @@
-import React from "react"
-import { Route, Switch } from "react-router-dom"
-import { ProductDetail, Home, NotFound, Cart, ProductListing } from "../pages"
+import React from 'react'
+import { Route, Switch } from 'react-router-dom'
+import { ProductDetail, Home, NotFound, Cart, ProductListing } from '../pages'
 
 const Routes = () => {
   return (

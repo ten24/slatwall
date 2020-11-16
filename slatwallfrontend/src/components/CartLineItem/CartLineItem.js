@@ -1,11 +1,11 @@
-import React from "react"
-import { connect } from "react-redux"
+import React from 'react'
+import { connect } from 'react-redux'
 
 import {
   removeProductToCart,
   incrementCartQuantity,
   decrementCartQuantity,
-} from "../../actions"
+} from '../../actions'
 
 class CartLineItem extends React.Component {
   decriment = () => {

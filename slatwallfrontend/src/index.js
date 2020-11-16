@@ -1,13 +1,13 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import "./index.css"
-import { App, HookSample, SWSlider } from "./components/index"
-import reportWebVitals from "./reportWebVitals"
-import "./styles/slatwall.scss"
-import { Provider } from "react-redux"
-import { store, persistor } from "./store"
-import { PersistGate } from "redux-persist/integration/react"
-import "./i18n"
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.css'
+import { App, HookSample, SWSlider } from './components/index'
+import reportWebVitals from './reportWebVitals'
+import './styles/slatwall.scss'
+import { Provider } from 'react-redux'
+import { store, persistor } from './store'
+import { PersistGate } from 'redux-persist/integration/react'
+import './i18n'
 
 const isMulti = true
 
@@ -20,7 +20,7 @@ if (isMulti) {
         </PersistGate>
       </Provider>
     </React.StrictMode>,
-    document.getElementById("root")
+    document.getElementById('root')
   )
 
   ReactDOM.render(
@@ -34,7 +34,7 @@ if (isMulti) {
         </PersistGate>
       </Provider>
     </React.StrictMode>,
-    document.getElementById("multi2")
+    document.getElementById('multi2')
   )
 } else {
   ReactDOM.render(
@@ -45,7 +45,7 @@ if (isMulti) {
         </PersistGate>
       </Provider>
     </React.StrictMode>,
-    document.getElementById("root")
+    document.getElementById('root')
   )
 }
 

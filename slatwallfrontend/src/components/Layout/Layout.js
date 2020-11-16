@@ -1,10 +1,10 @@
-import React from "react"
-import { Navigation } from ".."
+import React from 'react'
+import { Navigation } from '..'
 
 class Layout extends React.Component {
   render() {
-    const { style = "full" } = this.props
-    if (style === "full") {
+    const { style = 'full' } = this.props
+    if (style === 'full') {
       return (
         <div className="layout">
           <Navigation />
@@ -15,7 +15,7 @@ class Layout extends React.Component {
           </div>
         </div>
       )
-    } else if (style === "sidbar") {
+    } else if (style === 'sidbar') {
       return (
         <div className="layout">
           <Navigation />

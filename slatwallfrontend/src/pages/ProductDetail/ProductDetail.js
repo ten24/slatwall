@@ -1,15 +1,15 @@
-import React from "react"
-import { connect } from "react-redux"
-import { addProductToCart } from "../../actions"
-import { withRouter } from "react-router"
-import { Layout } from "../../components"
+import React from 'react'
+import { connect } from 'react-redux'
+import { addProductToCart } from '../../actions'
+import { withRouter } from 'react-router'
+import { Layout } from '../../components'
 
 class ProductDetail extends React.Component {
   addToCart = () => {
     this.props.dispatch(addProductToCart(this.props.product))
   }
   render() {
-    const { id, title, description } = this.props.product
+    const { title, description } = this.props.product
     return (
       <Layout>
         <div className="layout">

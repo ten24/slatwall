@@ -1,5 +1,5 @@
-import React from "react"
-import Slider from "react-slick"
+import React from 'react'
+import Slider from 'react-slick'
 
 class SWSlider extends React.Component {
   render() {
