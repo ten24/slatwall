@@ -6,7 +6,7 @@ class WishlistDeleteModalConroller {
 
     //@ngInject
     constructor(public rbkeyService, public observerService) {
-        this.observerService.attach(this.closeModal,'deleteWishlistSuccess')
+        this.observerService.attach(this.closeModal,'deleteOrderTemplateSuccess')
     }
     
     public $onInit = () => {
