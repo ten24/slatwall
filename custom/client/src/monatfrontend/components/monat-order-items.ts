@@ -13,6 +13,9 @@ class MonatOrderItemsController {
 	//@ngInject
 	constructor(public monatService, public orderTemplateService, public publicService, public observerService, private $scope, private $timeout, private sessionStorageCache: Cache) {
 		this.observerService.attach(this.getOrderItems,'ownerAccountSelected');
+		this.observerService.attach((data)=>{
+			this.updateOrderItems(data)
+		}, 'updatedCart' ); 
 	}
 
 	public $onInit = () => {
