@@ -1,12 +1,14 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
-import { App, SWSlider } from "./components/index"
+import { App, HookSample, SWSlider } from "./components/index"
 import reportWebVitals from "./reportWebVitals"
 import "./styles/slatwall.scss"
 import { Provider } from "react-redux"
 import { store, persistor } from "./store"
 import { PersistGate } from "redux-persist/integration/react"
+import "./i18n"
+
 const isMulti = true
 
 if (isMulti) {
@@ -14,14 +16,11 @@ if (isMulti) {
     <React.StrictMode>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <div>
-            <h1>Home 1 </h1>
-            <SWSlider />
-          </div>
+          <HookSample dillprop="Example" />
         </PersistGate>
       </Provider>
     </React.StrictMode>,
-    document.getElementById("multi1")
+    document.getElementById("root")
   )
 
   ReactDOM.render(
