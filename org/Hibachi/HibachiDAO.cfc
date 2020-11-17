@@ -5,18 +5,6 @@
 
 	<cfscript>
 		
-		public void function checkDirtyRead(boolean reset = false){
-			if(arguments.reset && getHibachiScope().hasValue('originalTransactionIsolation')) {
-				var ormconnection = ormGetSession().connection();
-				ormconnection.setTransactionIsolation(getHibachiScope().getValue('originalTransactionIsolation'));
-				return;
-			} else if(!arguments.reset && getHibachiScope().hasValue('dirtyReadAllowed') && getHibachiScope().getValue('dirtyReadAllowed')) {
-				var ormconnection = ormGetSession().connection();
-				getHibachiScope().setValue('originalTransactionIsolation',ormconnection.getTransactionIsolation());
-				ormconnection.setTransactionIsolation(ormconnection.TRANSACTION_READ_UNCOMMITTED);
-			}
-		}
-		
 		public string function getTablesWithDefaultData(){
 			var dbdataDirPath = expandPath('/Slatwall') & '/config/dbdata';
 		
@@ -43,14 +31,12 @@
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
-			checkDirtyRead();
 			if ( isSimpleValue( arguments.idOrFilter ) && len( arguments.idOrFilter ) ) {
 				var entity = entityLoadByPK( arguments.entityName, arguments.idOrFilter );
 			} else if ( isStruct( arguments.idOrFilter ) ){
 				var entity = entityLoad( arguments.entityName, arguments.idOrFilter, true );
 			}
-			checkDirtyRead(reset=true);
-			
+
 			if ( !isNull( entity ) ) {
 				return entity;
 			}
@@ -66,11 +52,8 @@
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
-			checkDirtyRead(reset=true);
-			var result = entityLoad( arguments.entityName, arguments.filterCriteria, arguments.sortOrder, arguments.options );
-			checkDirtyRead(reset=true);
-			
-			return result;
+
+			return entityLoad( arguments.entityName, arguments.filterCriteria, arguments.sortOrder, arguments.options );
 		}
 
 
