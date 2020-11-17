@@ -89,6 +89,7 @@
 	<!--- Settings --->
 	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
 	<cfparam name="attributes.hideUnfilteredResults" type="boolean" default="false" /> <!--- If true, collection will only show records when filtered or searched --->
+	<cfparam name="attributes.hideAllResults" type="boolean" default="false" />	<!--- If true, collection will never show records --->
 
 	<!--- ThisTag Variables used just inside --->
 	<cfparam name="thistag.columns" type="array" default="#arrayNew(1)#" />
@@ -236,8 +237,11 @@
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
 			    </cfif>
-			    <cfif attributes.hideUnfilteredResults >
+			    <cfif attributes.hideUnfilteredResults AND NOT attributes.hideAllResults>
 			    	hide-unfiltered-results="true"
+			    </cfif>
+			    <cfif attributes.hideAllResults >
+			    	hide-all-results="true"
 			    </cfif>
 			    <cfif !isNull(attributes.currencyCode) && len(attributes.currencyCode)>
 			    	data-currency-code="#attributes.currencyCode#"
