@@ -270,6 +270,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 						'isVisible':true,
 						'isSearchable':false,
 						'isExportable':true
+						
 					});
 				}
 				variables.rateRequirementsCollection.addDisplayProperty(displayProperty='orderFulfillmentID',columnConfig={
