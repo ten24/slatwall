@@ -145,6 +145,7 @@ class SWListingDisplayController{
     public persistedReportCollections:any;
     public customEndpoint: string;
     public hideUnfilteredResults:boolean;
+    public hideAllResults:boolean;
     public refreshEvent: string;
     public loading: boolean;
     
@@ -408,7 +409,9 @@ class SWListingDisplayController{
     
     public getCollectionByPagination = (state) =>{
         
-        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+        if( !this.hideAllResults 
+            && (!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) )
+        ){
             if(state.type){
                 
                 //Q: It doesn't make sense Here.
@@ -445,7 +448,9 @@ class SWListingDisplayController{
 
         // var getCollectionEventID = this.tableID;
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
-        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+        if(!this.hideAllResults 
+            && (!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) )
+        ){
             this.listingService.getCollection(this.tableID);
         }else{
             this.setCollectionData(null);
@@ -461,7 +466,9 @@ class SWListingDisplayController{
         
         this.collectionData = undefined;
         
-        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+        if(!this.hideAllResults 
+            && (!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) )
+        ){
             this.$timeout(
                 ()=>{
                     this.getCollection();
@@ -1070,6 +1077,7 @@ class SWListingDisplay implements ng.IDirective{
             multiSlot:"=?",
             customListingControls:"<?",
             hideUnfilteredResults:"<?",
+            hideAllResults:"<?",
             refreshEvent:"@?"
     };
     public controller:any=SWListingDisplayController;
