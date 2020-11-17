@@ -215,7 +215,6 @@ class EnrollmentMPController {
 			var accountID = (<HTMLInputElement>selectedSponsor).value;
 			
 			this.monatService.submitSponsor( accountID ).then(data=> {
-				console.log("WE GOT THAT SPONSOR DATA",data);
 				if(data.successfulActions && data.successfulActions.length){
 					this.observerService.notify('onNext');
 					this.sponsorErrors = {};
