@@ -27,6 +27,12 @@ class MonatProductListingController {
 	public loadingAddToCart;
 	public flexshipFlag:boolean;
 	public qualifiedPromos;
+	public showFilterMenu = false;
+	public showMainFilterMenu = true;
+	public filterCategory:string;
+	public filterSubCategory:string;
+	public productFilterTitle:string = "";
+	public filterSelected = false;
 	
 	// @ngInject
 	constructor(
@@ -127,19 +133,25 @@ class MonatProductListingController {
             
             this.$timeout(()=>this.loading = false);
         });
-    }
+       }
     
 	public launchWishlistsModal = (skuID, productID, productName) => {
 	    this.monatService.launchWishlistsModal(skuID, productID, productName);
 	}
 	
-	public toggleShowFilterCategory = (categoryName)=>{
-		for(let category of this.monatService.productFilterCategories){
-			if(category != categoryName){
-				this.showProductFilter[category] = false;
-			}
-		}
-		this.showProductFilter[categoryName] = !this.showProductFilter[categoryName];
+	public toggleFilterMenu = () => {
+			
+			this.showFilterMenu = !this.showFilterMenu;
+	}
+	
+	public toggleFilterSubCategory = (category) => {
+		this.showMainFilterMenu = false;
+		this.filterCategory = category;
+	}
+	
+	public clearFilter = () => {
+		this.productFilterTitle="";
+		this.filterSelected = false;
 	}
 	
 	public searchByKeyword = ():void =>{
