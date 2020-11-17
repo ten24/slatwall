@@ -183,6 +183,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 	            sku['options'] = options;
+	            
+	            sku['imagePath'] = currentSku.getImagePath();
 	        }
 		}
 		return arguments.skus;
