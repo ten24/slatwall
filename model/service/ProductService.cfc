@@ -504,7 +504,10 @@ component extends="HibachiService" accessors="true" {
 		return arguments.products;
 	}
 	
-	public any function appendCategoriesToProduct(required array products) {
+	/**
+	 * Method to append categories and options to Product repsonse using get method
+	 * */
+	public any function appendCategoriesAndOptionsToProduct(required array products) {
 		if(arrayLen(arguments.products)) {
 			for(var product in arguments.products) {
 				
@@ -515,10 +518,23 @@ component extends="HibachiService" accessors="true" {
 					for( var i=1; i<= arrayLen(productCategories); i++ ) {
 						categories[i]['categoryID'] = productCategories[i].getCategoryID();
 						categories[i]['categoryName'] = productCategories[i].getCategoryName();
+						categories[i]['urlTitle'] = productCategories[i].getUrlTitle();
 					}
 				}
 				
 				product['categories'] = categories;
+				
+				//Append Option Groups
+				var optionGroups = [];
+				if( arrayLen(currentProduct.getOptionGroups()) ) {
+					for(var optionGroup in currentProduct.getOptionGroups()){
+						ArrayAppend( optionGroups, {
+							"optionGroupdID" : optionGroup.getOptionGroupID(),
+							"optionGroupName" : optionGroup.getOptionGroupName(),
+						} )
+					}
+				}
+				product['optionGroups'] =  optionGroups;
 			}
 		}
 		
