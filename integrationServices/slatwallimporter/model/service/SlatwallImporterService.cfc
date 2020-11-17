@@ -70,8 +70,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
                 "Account"		: "account",
                 "Product"		: "product",
                 "Sku"   		: "sku",
-                "Inventory"     : "inventory"
-                
+                "Inventory"     : "inventory",
+                "OrderItem"     : "oderItem"
             };
             // TODO, need a way to figureout which entity-mappings are allowed to be import, 
             // account vs account-phone-number
