@@ -518,6 +518,7 @@ component extends="HibachiService" accessors="true" {
 					for( var i=1; i<= arrayLen(productCategories); i++ ) {
 						categories[i]['categoryID'] = productCategories[i].getCategoryID();
 						categories[i]['categoryName'] = productCategories[i].getCategoryName();
+						categories[i]['urlTitle'] = productCategories[i].getUrlTitle();
 					}
 				}
 				
