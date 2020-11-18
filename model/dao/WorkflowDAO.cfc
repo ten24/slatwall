@@ -108,8 +108,6 @@ Notes:
 									AND
 										triggerType = :triggerType
 									AND
-										(runningFlag is NULL or runningFlag = false)
-									AND
 										(nextRunDateTime is null or nextRunDateTime <= CURRENT_TIMESTAMP())
 								',{triggerType='Schedule'})/>
 

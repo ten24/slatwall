@@ -183,8 +183,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		// update timestamp on server instance
 		getDao('hibachiCacheDAO').updateServerInstanceLastRequestDateTime();
 		
-		getWorkflowDAO().resetExpiredWorkflows(); 
-		
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		var exclusiveInvocationClusters = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationClusters();
 		for(var workflowTrigger in workflowTriggers) {
@@ -196,6 +194,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			if( findNoCase(getHibachiScope().getApplicationValue('applicationCluster'), exclusiveInvocationClusters) && (isNull(workflowTrigger.getAllowedInvocationCluster()) || !findNoCase(workflowTrigger.getAllowedInvocationCluster(), exclusiveInvocationClusters)) ) {
 				continue;
 			}
+			
+			if(arguments.workflowTrigger.getLockLevel() == 'database' && arguments.runningFlag){
+				//timed out
+				if( DateAdd("n",val(arguments.workflowTrigger.getTimeout()),arguments.workflowTrigger.getNextRunDateTime()) < now() ){
+					arguments.workflowTrigger.setRunningFlag(false);
+				}else{
+					// not timed out yet, skip
+					continue;
+				}
+			}
+			
 			runWorkflowsByScheduleTrigger(workflowTrigger);
 		}
 	}
