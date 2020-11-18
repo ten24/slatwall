@@ -10,101 +10,88 @@
 			<div class="right-nav">
 				<div>
 					<button 
-						class="send-order"
+						class="btn btn-secondary" 
 						ng-click="monatEnrollment.saveEnrollment()"
-						ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">
-							<img src="/themes/monat/assets/images/send-icon.png"  alt="Save Enrollment" width="25px" height="auto">
-					</button>
+						ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">Save Enrollment</button>
 				</div>
 				<div class="header-cart">
 					<hybrid-cart type="monatEnrollment.type" is-enrollment="true"></hybrid-cart>
 				</div>			
 			</div>			
 		</div>
-		<toaster-container></toaster-container>
 		
+		<div class="notifications">
+			<!-- threshold has been met --->
+			<div
+				ng-hide=
+				"monatEnrollment.currentStepName != 'todaysOrder' 
+				|| monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping <= 0"
+				ng-show=
+				"monatEnrollment.currentStepName == 'todaysOrder'
+				&& monatEnrollment.type = 'vip'
+				&& monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping > 0"
+				class="alert-message">
+					<span ng-hide="!monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShippingLoaded" sw-rbkey="'frontend.enrollment.threshold'"></span>
+					<i ng-hide="!monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShippingLoaded" class="fal fa-check-circle"></i>
+			</div>
+		</div>
+	</div>
+			<toaster-container></toaster-container>
+	<div 
+		ng-if="
+			monatEnrollment.currentStepName == 'orderListing' 
+			&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal > 0" 
+			class="alert discount-block text-white promotion-bar-block"
+	>
+		<button 
+			id="close-promo" 
+			type="button" 
+			class="close" 
+			data-dismiss="alert"
+			aria-label="Close"
+		><i class="far fa-times"></i></button>
+
+		<span sw-rbKey="'frontend.flexship.yourFlexshipIs'"></span> 
+		{{
+			+monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal 
+			| swcurrency: monatEnrollment.orderTemplateService.mostRecentOrderTemplate.currencyCode
+		}} 
+	
+		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
 	</div>
 	
-	<div class="container">
+	<div 
+		ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.cart.canPlaceOrderMessage.message.length" 
+		class="alert discount-block text-white promotion-bar-block"
+	>
+		<button 
+			id="close-promo" 
+			type="button" 
+			class="close" 
+			data-dismiss="alert"
+			aria-label="Close"
+		><i class="far fa-times"></i></button>
+		{{monatEnrollment.monatService.cart.canPlaceOrderMessage.message}} 
+	</div>
+	<div 
+		ng-if="
+			(monatEnrollment.currentStepName == 'orderListing' &&  monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message.length) 
+			|| ( monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.cart.purchasePlusMessage.message.length)" 
+		class="alert discount-block text-white promotion-bar-block"
+	>
+		<button 
+			id="close-promo" 
+			type="button" 
+			class="close" 
+			data-dismiss="alert"
+			aria-label="Close"
+		><i class="far fa-times"></i></button>
+		{{
+			monatEnrollment.currentStepName == 'orderListing' 
+			? monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message
+			:monatEnrollment.monatService.cart.purchasePlusMessage.message
+		}}
 		
-		<div ng-cloak
-			class="notifications"
-		>
-			<!-- threshold has been met for today's order--->
-			<div ng-cloak
-				class="alert-message" 	
-				ng-show=
-					"monatEnrollment.currentStepName == 'todaysOrder'
-					&& monatEnrollment.type == 'vip'
-					&& monatEnrollment.monatService.canPlaceOrder"
-			>
-				<div class="messaging">
-					<span sw-rbkey="'frontend.enrollment.threshold'"></span>
-				</div>
-				<i class="fal fa-check-circle"></i>
-			</div>
-		
-			<!--- you have reached the threshold --->
-			<div ng-cloak
-				class="alert-message"
-				ng-if="
-				monatEnrollment.currentStepName == 'orderListing' 
-				&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal <= 0"
-			>	
-				<div class="messaging">
-					<span sw-rbKey="'frontend.enrollment.threshold'"></span>
-				</div>
-				<i class="fal fa-check-circle"></i>
-			</div> 
-			
-			<!--- xx away from being able to enroll (flexship) --->
-			<div ng-cloak
-				class="alert-message"
-				ng-if="
-				monatEnrollment.currentStepName == 'orderListing' 
-				&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal > 0"
-			>
-				<div class="messaging">
-					<span sw-rbKey="'frontend.flexship.yourFlexshipIs'"></span> 
-					{{
-						+monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal 
-						| swcurrency: monatEnrollment.orderTemplateService.mostRecentOrderTemplate.currencyCode
-					}} 
-					<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
-				</div>
-				<i class="fal fa-exclamation-circle"></i>
-			</div>
-			
-			<!--- xx away from being able to enroll (today's order) --->
-			<div ng-cloak
-				class="alert-message"
-				ng-if="
-				monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.cart.canPlaceOrderMessage.message.length"
-			>
-				<div class="messaging">
-					{{monatEnrollment.monatService.cart.canPlaceOrderMessage.message}}  
-				</div>
-				<i class="fal fa-exclamation-circle"></i>
-			</div>
-			
-			<!--- purchase plus messaging --->
-			<div ng-cloak
-				class="alert-message promo"
-				ng-if="
-				(monatEnrollment.currentStepName == 'orderListing' &&  monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message.length) 
-				|| ( monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.cart.purchasePlusMessage.message.length)"
-			>
-				<div class="messaging">
-					{{
-						monatEnrollment.currentStepName == 'orderListing' 
-						? monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message
-						:monatEnrollment.monatService.cart.purchasePlusMessage.message
-					}}
-				</div>
-				<img src="/themes/monat/assets/images/icon-promo.svg" alt="Promotion" width="30px" height="30px">
-			</div>
-			
-		</div><!--- end .notifications --->
 	</div>
 	
 </header>
@@ -286,6 +273,7 @@
 			|| (monatEnrollment.monatService.canPlaceOrder && monatEnrollment.orderTemplateService.mostRecentOrderTemplate.canPlaceOrderFlag)
 		">
 			<button 
+				style="z-index: 1" 
 				data-ng-click="monatEnrollment.next(); monatEnrollment.showCanPlaceOrderAlert = false" 
 				class="btn btn-secondary forward-btn forward" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false"
