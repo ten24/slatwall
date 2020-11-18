@@ -37,27 +37,6 @@
                 "dataType": "boolean"
             }
         },
-        "Category": {
-            "propertyIdentifier": "productKeyMachineType",
-            "allowUpdate": false,
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "CutByCode": {
-            "propertyIdentifier": "productKeyMachineCutByCode",
-            "allowUpdate": true,
-            "validations": {
-                "dataType": "boolean"
-            }
-        },
-        "Duplicate": {
-            "propertyIdentifier": "productKeyMachineDuplicate",
-            "allowUpdate": true,
-            "validations": {
-                "dataType": "boolean"
-            }
-        },
         "productActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true,
@@ -65,14 +44,7 @@
             "validations": {
                 "dataType": "boolean"
             }
-        },
-        "KitType": {
-            "propertyIdentifier": "productPinKitType",
-            "allowUpdate": false,
-            "validations": {
-                "dataType": "string"
-            }
-        },
+        }
     },
     
     "generatedProperties" : [

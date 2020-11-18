@@ -51,6 +51,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="integrationService";
 	property name="erpOneIntegrationCFC";
 	property name="hibachiCacheService";
+	property name="hibachiDataService";
 	property name="hibachiUtilityService";
 	
 	public any function getIntegration(){
@@ -59,7 +60,90 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    }
         return variables.integration;
     }
+	
+	public struct function getAvailableSampleCsvFilesIndex(){
+  	    
+  	    if( !structKeyExists(variables, 'availableSampleCsvFilesIndex') ){
+  	        
+            //creating struct for fast-lookups
+            variables.sampleCSVFilesOptions = {
+                "Product"		: "product"
+                
+            };
+            // TODO, need a way to figureout which entity-mappings are allowed to be import, 
+            // account vs account-phone-number
+  	    }
+  	    
+  	    return variables.sampleCSVFilesOptions;
+  	}
+  	
+  	public any function uploadCSVFile( required any data ){
+  	    
+		var importFilesUploadDirectory = this.getVirtualFileSystemPath() & '/importcsv/'; 
 
+		try{
+			var uploadData = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "makeunique");
+		
+			if ( !listFindNoCase("csv", uploadData.serverFileExt) ){
+    		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
+    	    }
+    	    
+    	    var header = this.getEntityCSVHeaderMetaData( data.entityName );
+    	    var uploadedFilePath = uploadData.serverdirectory & '/' & uploadData.serverfile;
+    	    
+	    	var result = this.getHibachiDataService().csvFileToQuery(
+				'csvFilePath'           = uploadedFilePath, 
+				'columnTypes'           = header.columnTypes, 
+				'columns'               = header.columns,
+				'useHeaderRowAsColumns' = false
+			);
+			 // Adding this check so it doesn't mess with the UI
+		    if( result.errors.len() <= 10 ){
+			    
+			    for( var error in result.errors ){
+    				this.getHibachiScope().addError( "line-#error.line#", "Invalid data at Line-#error.line#, #ArrayToList(error.record)#" );
+    			}
+    			
+		    } else {
+		        
+		        this.getHibachiScope().addError( "Errors in CSV", "CSV has invalid data at #result.errors.len()# lines" );
+		    }
+			
+			
+			if( result.query.recordCount ){
+
+    		    var transformProductData = this.preProcessProductData( result.query );
+
+			    var batch = this.pushRecordsIntoImportQueue( data.entityName, transformProductData );
+			    
+			    if( batch.getEntityQueueItemsCount() == batch.getInitialEntityQueueItemsCount() ){
+				    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");
+			    } 
+			    else {
+			        this.getHibachiScope().showMessage("#batch.getEntityQueueItemsCount()# out of #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue", "warning");
+			    }
+			} 
+			// if there's no record count in the query, then there were some issues in the parsing 
+			else {
+			    this.getHibachiScope().showMessage("Nothing got imported", "warning");
+			    this.getHibachiScope().showErrorsAndMessages();
+			}
+		    
+			//delete uploaded file
+			fileDelete( uploadedFilePath );
+			
+			if( !isNull(batch) ){
+			    return batch;
+			}
+		} 
+		catch ( any e ){ 
+			this.getHibachiUtilityService().logException( e );
+    		this.getHibachiScope().showMessage("An error occurred while uploading your file - " & e.Message, "error");
+		}
+		
+  	}
+	
+	
     public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
     	return this.getErpOneIntegrationCFC().setting( argumentCollection=arguments );
 	}
@@ -299,6 +383,28 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneAccounts for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
+	}
+	
+	public any function preProcessProductData(required any productData ){
+		
+		var preProcessedData = [];
+		
+		for( var productItem in productData ){
+			if( structKeyExists(productItem, 'Price') and len(trim(productItem.Price)) == 0) {
+				productItem.Price=productItem.ListPrice;
+			}
+			if( structKeyExists(productItem, 'RemoteProductID') and len(trim(productItem.RemoteProductID)) == 0 ){
+				productItem.RemoteProductID=productItem.ProductCode;
+			}
+			if( structKeyExists(productItem, 'SkuCode') and len(trim(productItem.SkuCode)) == 0 ){
+				productItem.SkuCode=productItem.ProductCode&"-1";
+			}
+			if( structKeyExists(productItem, 'RemoteSkuID') and len(trim(productItem.RemoteSkuID)) == 0 ){
+				productItem.RemoteSkuID=productItem.SkuCode&"-1";
+			}
+			preProcessedData.append(productItem);
+		}
+	    return preProcessedData;
 	}
 	
 }
