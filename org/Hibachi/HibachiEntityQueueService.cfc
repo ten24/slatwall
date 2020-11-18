@@ -227,7 +227,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					
 				} catch(any e){
 				
-					if( val(entityQueue['tryCount']) >= maxTryCount ){
+					if( val( entityQueue['tryCount'] ?: 0 ) >= maxTryCount ){
 						this.getHibachiEntityQueueDAO().archiveEntityQueue( entityQueue['entityQueueID'], e.message);
 					} else {
 						this.getHibachiEntityQueueDAO().updateNextRetryDateAndMostRecentError( entityQueue['entityQueueID'], e.message);
