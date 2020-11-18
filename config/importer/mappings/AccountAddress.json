@@ -19,29 +19,20 @@
         }
     },
     
+    "dependencies": [
+        {
+            "key": "remoteAccountID",
+            "lookupKey": "remoteID",
+            "entityName": "Account",
+            "propertyIdentifier": "account"
+        }
+    ]
+    
     "relations": [
         {
             "type": "manyToOne",
-            "entityName": "Account",
-            "propertyIdentifier": "accountID",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true
-        },
-        {
-            "type": "manyToOne",
             "entityName": "Address",
-            "propertyIdentifier": "addressID",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateOrderOrderOrigin"
-        },
-        {
-            "type": "manyToOne",
-            "entityName": "Type",
-            "propertyIdentifier": "accountAddressType",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateOrderOrderStatusType"
+            "propertyIdentifier": "address"
         }
     ],
     
