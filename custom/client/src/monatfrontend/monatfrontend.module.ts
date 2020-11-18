@@ -68,6 +68,7 @@ import { FlexshipCheckoutStep } from "./components/flexshipFlow/checkout-step";
 import { FlexshipCheckoutShippingAddress } from "./components/flexshipFlow/checkout-components/shipping-address";
 import { FlexshipCheckoutShippingMethod } from "./components/flexshipFlow/checkout-components/shipping-method";
 import { ReviewStep } from "./components/flexshipFlow/reviewStep";
+import { MonatFilterMenu } from './components/monat-filter-menu';
 
 import { AccountAddressForm } from "./components/account-address-form";
 
@@ -168,6 +169,7 @@ var monatfrontendmodule = angular
 	.directive("flexshipCheckoutShippingMethod", FlexshipCheckoutShippingMethod.Factory())
 	.directive("accountAddressForm", AccountAddressForm.Factory())
 	.directive("reviewStep", ReviewStep.Factory())
+	.directive("filterMenu", MonatFilterMenu.Factory())
 	
 	// Controllers
 	.controller("searchController", MonatSearchController)

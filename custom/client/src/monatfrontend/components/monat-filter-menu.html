@@ -1,0 +1,60 @@
+							<div ng-click="monatFilterMenu.toggleFilterMenu()">
+								<h6>Filter by <i class="fa fa-sliders-h"></i></h6>
+							</div>
+
+						<div class="filter-container" 
+							ng-class="{
+							'show-filter-menu' : monatFilterMenu.showFilterMenu,
+							'hide-filter-menu' : !monatFilterMenu.showFilterMenu,
+							'show-main-menu' : monatFilterMenu.showMainFilterMenu,
+							'show-sub-menu' : !monatFilterMenu.showMainFilterMenu
+							}">
+							<div class="filter-menu main-filter-menu" style="padding-top: {{monatFilterMenu.headerHeight}}px">
+							<div class="filter-title-row flex-row-reverse"> 
+								<i class="far fa-times" ng-click="monatFilterMenu.showFilterMenu = false"></i>
+							</div>
+								<div class="filter-title-row">
+									<span>Shop by</span>{{monatFilterMenu.parentController.name}}
+									<span ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.parentController.getProducts('none', 'none');">Clear</span>
+								</div>
+							<div>
+							<ul class="filter-col">
+								<li ng-repeat="categoryName in monatFilterMenu.monatService.productFilterCategories" ng-click="monatFilterMenu.toggleFilterSubCategory(categoryName); monatFilterMenu.clearFilter();">
+									<span>{{categoryName}}</span>
+									<i class="far fa-angle-right"></i>
+								</li>
+							</ul>					
+
+							<div class="promotion-box text-white" style="background-color: ##7E70C5">
+								<div class="promotion-header">$22 + 3</div>
+								<div class="promotion-summary">Purchase a new Product for $22 MP/$27 VIP,
+								Get a Shampoo, Styling, and Finishing Item, plus a Free Hairbrush for $47 MP/$57 VIP
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="filter-menu sub-filter-menu" style="padding-top: {{monatFilterMenu.headerHeight}}px">
+						<div class="filter-title-row"> 
+							<i class="far fa-angle-left" ng-click="monatFilterMenu.showMainFilterMenu = true;"></i> 
+							<i class="far fa-times" ng-click="monatFilterMenu.showFilterMenu = false"></i>
+						</div>
+							<div class="filter-title-row">
+								<span>Shop by {{monatFilterMenu.filterCategory}}</span>
+								<span ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.parentController.getProducts('none', 'none')">Clear</span>
+							</div>
+						<div>
+							<ul class="filter-col" >
+								<li ng-repeat="filter in monatFilterMenu.monatService.productFilters[monatFilterMenu.filterCategory]" ng-if="!$first">
+										<span>{{filter.name}}</span>{{monatFilterMenu.productFunction}}
+												<input type="radio" id="{{monatFilterMenu.filterCategory}}-{{filter.name}}" 
+														name="{{monatFilterMenu.filterCategory}}-filterOptionButton" 
+														ng-click=
+															"monatFilterMenu.parentController.getProducts(filter,categoryName); 
+															monatFilterMenu.setParentTitle(filter.name);">
+								</li>
+							</ul>
+							</div>
+						</div>
+					</div>
+					
+					

@@ -48,7 +48,7 @@ class VIPController {
 	public flexshipProductFilters:any = {};
 	public showProductFilter:any = {};
 	public pageRecordsShow:number = 40;
-	
+
 	// @ngInject
 	constructor(
 	    public monatService         : MonatService, 
@@ -211,6 +211,34 @@ class VIPController {
 	}
 
 	public getProductList = ( category?:any, categoryType?:string ) => {
+		this.loading = true;
+		
+		let data:any = {
+			priceGroupCode: 3,
+			hideProductPacksAndDisplayOnly: true,
+			pageRecordsShow:this.pageRecordsShow
+		};
+		
+		if(category){
+			data.categoryFilterFlag = true;
+			data.categoryID = category.value;
+			for(var key in this.productFilters){
+				this.productFilters[key] = null;
+			}
+			this.productFilters[categoryType] = category;
+			this.paginationObject['categoryID'] = category.value;
+		}
+		
+		this.publicService.doAction('getproductsByCategoryOrContentID', data, 'GET').then((result) => {
+			this.observerService.notify("PromiseComplete");
+			this.productList = result.productList;
+			this.productRecordsCount = result.recordsCount
+			this.loading = false;
+		});
+	}
+	
+	//function same as above but needed it to be getProducts to work in filter
+	public getProducts = ( category?:any, categoryType?:string ) => {
 		this.loading = true;
 		
 		let data:any = {
