@@ -2836,10 +2836,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(len(ownerAccountNumber)){
             var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
             newOrder.setSharedByAccount( ownerAccount );
-        }else{
-            var ownerAccount = getService('AccountService').newAccount();
+            newOrder.setAccount(ownerAccount);
         }
-        newOrder.setAccount(ownerAccount);
         
         var emailData = {
             order:newOrder,
@@ -2847,7 +2845,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         };
         
         var email = getService('emailService').processEmail(email,emailData,'createFromTemplate');
-        newOrder.removeAccount();
+        if( !isNull(newOrder.getAccount()) ){
+            newOrder.removeAccount();
+        }
         
         email.setEmailTo(arguments.data.emailAddress);
         email = getService('EmailService').processEmail(email, arguments, 'addToQueue');
