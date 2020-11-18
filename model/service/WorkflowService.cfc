@@ -195,10 +195,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				continue;
 			}
 			
-			if(arguments.workflowTrigger.getLockLevel() == 'database' && arguments.runningFlag){
+			if(workflowTrigger.getLockLevel() == 'database' && !isNull(workflowTrigger.getRunningFlag()) && workflowTrigger.getRunningFlag()){
 				//timed out
-				if( DateAdd("n",val(arguments.workflowTrigger.getTimeout()),arguments.workflowTrigger.getNextRunDateTime()) < now() ){
-					getWorkflowDAO().resetExpiredWorkflow(arguments.workflowTrigger.getWorkflowTriggerID());
+				if( DateAdd("n",val(workflowTrigger.getTimeout()),workflowTrigger.getNextRunDateTime()) < now() ){
+					getWorkflowDAO().resetExpiredWorkflow(workflowTrigger.getWorkflowTriggerID());
 				}else{
 				// not timed out yet, skip
 					continue;
