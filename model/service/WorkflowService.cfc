@@ -154,10 +154,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowOnAllServers() {
+		getDao('HibachiCacheDAO').deleteStaleServerInstance();
+		if(getHibachiScope().getApplicationValue('applicationCluster') == ''){
+			return;
+		}
 		// get all active instances in the current cluster
 		var serverInstanceCollectionList = getService('HibachiService').getServerInstanceCollectionList();
 		serverInstanceCollectionList.addFilter('serverInstanceClusterName',getHibachiScope().getApplicationValue('applicationCluster'));
-		
+
 		var serverInstances = serverInstanceCollectionList.getRecords();
 		for (var serverInstance in serverInstances) {
 			
