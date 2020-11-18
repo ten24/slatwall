@@ -386,26 +386,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	 * @test
 	*/
-	public void function validateAccountData_should_fail_for_username(){
-	    
-	    var sampleAccountData = getSampleAccountData();
-	    sampleAccountData.delete('username');
-	    sampleAccountData['usernameeee'] = "nitin.yadav";
-	    
-	    var validation = this.getService().validateEntityData(
-	        entityName="Account", 
-	        data = sampleAccountData, 
-	        collectErrors = true 
-	    );
-	    
-	    debug(validation);
-	    assertFalse(validation.isValid);
-	    expect(validation.errors).toHaveKey('username', "the validation should fail for username");
-	}
-	
-	/**
-	 * @test
-	*/
 	public void function validateAccountData_should_pass_for_valida_data(){
 	    
 	    var sampleAccountData = getSampleAccountData();
@@ -523,6 +503,145 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'validateAccountData_spy_called');
         structDelete( variables.service, 'validateAccountData');
     }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_not_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_exist_in_source_data(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address";
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('email');
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_not_exist_in_source_data(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_not_return_empty_relations_for_failed_validation_when_data_does_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address"; // the validation will fail for email type
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('email');
+	    
+	    expect(validation.emptyRelations).toBeEmpty();
+    }
+    
+     /**
+     * @test
+    */
+    public void function validateEntityData_should_return_empty_relations_when_data_doesnot_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+
+	    assertTrue( isStruct(validation.emptyRelations) );
+	    expect(validation.emptyRelations).toHaveKey('primaryEmailAddress');
+	    assert(validation.emptyRelations.primaryEmailAddress.isEmptyRelation);
+
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_ignre_validation_errors_for_relations_having_excludeFromValidation_flag(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address";
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['excludeFromValidation'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    
+    
+    
+
 
 
 
@@ -1026,32 +1145,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'emailAddress' ");
     }
     
-    
-    /** 
-	 * @test
-	*/
-    public void function transformAccountDataTest_should_contain_accountAuthentication_properties(){
-	    
-	    var sampleAccountData = getSampleAccountData();
-	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
-	    debug(data);
-	    
-	    expect(data).toHaveKey('accountAuthentications', "transformed data should have key 'accountAuthentications' ");
-	    expect(data.accountAuthentications).toBeTypeOf('array',  "accountAuthentications should be an struct ");
-	    
-	    var accountAuthentication = data.accountAuthentications[1];
-	    expect(accountAuthentication).toBeTypeOf('struct',  "accountAuthentication should be an struct ");
-	   
-	    expect(accountAuthentication).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
-	    expect(accountAuthentication).toHaveKey('accountAuthenticationID',  "transformed data should have key 'accountAuthenticationID' ");
-	    
-	    expect(accountAuthentication).toHaveKey('password',  "transformed data should have key 'password' ");
-	    expect(accountAuthentication).toHaveKey('activeFlag',  "primaryEmailAddress should have key 'activeFlag' ");
-	    expect(accountAuthentication).toHaveKey('updatePasswordOnNextLoginFlag',  "primaryEmailAddress should have key 'updatePasswordOnNextLoginFlag' ");
-    }
-    
-    
     /**
      * @test
     */
@@ -1078,6 +1171,75 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'transformAccountData_spy_called');
         structDelete( variables.service, 'transformAccountData');
     }
+    
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_data_for_relation_when_source_data_doesnot_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+        
+        var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+        
+        debug(validation);
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping, 
+            emptyRelations = validation.emptyRelations
+        );
+	    
+	    debug(transformedData);
+	    
+	    assertFalse(structKeyExists(transformedData, 'primaryEmailAddress'));
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_for_relation_when_source_data_does_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+        
+        var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+        
+        debug(validation);
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping, 
+            emptyRelations = validation.emptyRelations
+        );
+	    
+	    debug(transformedData);
+	    
+	    assertTrue(structKeyExists(transformedData, 'primaryEmailAddress'));
+    }
+    
     
     /** ***************************.  EntityQueue and FailureQueue .***************************** */
 
@@ -1352,14 +1514,88 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'resolveAccountDependencies');
     }
     
+    
+    
+    
+    
+    private struct function getAccountEmailAddressMapping(){
+        return {
+            "entityName": "AccountEmailAddress",
+            "properties": {
+                "email": {
+                    "propertyIdentifier": "emailAddress",
+                    "validations": { "required": true, "dataType": "email" }
+                }
+            },
+            "importIdentifier": {
+                "propertyIdentifier": "importRemoteID",
+                "type": "composite",
+                "keys": [
+                    "remoteAccountID",
+                    "email"
+                ]
+            },
+            "dependencies" : [{
+                "key"                : "remoteAccountID",
+                "entityName"         : "Account",
+                "lookupKey"          : "remoteID",
+                "propertyIdentifier" : "account"
+            }]
+        };
+    }
+    
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_add_errors_when_dependancy_is_not_resolve(){
+    public void function processEntityImport_check_transform_data(){
+        
+        var sampleProductData = {
+            	"__dependancies": [{
+            		"key": "remoteSkuID",
+            		"entityName": "Sku",
+            		"lookupKey": "remoteID",
+            		"propertyIdentifier": "sku",
+            		"lookupValue": "1"
+            	}, {
+            		"key": "remoteLocationID",
+            		"entityName": "Location",
+            		"lookupKey": "remoteID",
+            		"propertyIdentifier": "location",
+            		"lookupValue": "87090B80C8D31B4CDB500112B16C720B"
+            	}],
+            	"createdDateTime": "27",
+            	"inventoryID": "",
+            	"landedAmount": "100",
+            	"landedCost": "98",
+            	"cost": "54",
+            	"stock": {
+            		"stockID": "4028c08475735ffa01757360ead40006"
+            	},
+            	"cogs": "22",
+            	"remoteID": "1",
+            	"currencyCode": "IDR",
+            	"quantityOut": "14",
+            	"quantityIn": "53",
+            	"importRemoteID": "C4CA4238A0B923820DCC509A6F75849B"
+            };
+        var tempInventory = this.getService().getHibachiService().newInventory();
+	    tempAccountData = this.getService().processEntityImport( tempInventory, sampleProductData );
+        //var data = this.getService().transformEntityData( entityName="Inventory", data=sampleProductData );
+
+        debug(tempInventory);
+        debug(tempAccountData);
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_add_errors_when_dependency_is_not_resolve(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
@@ -1373,26 +1609,23 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         expect( emailAddress.getErrors() ).toBeStruct();
         expect( emailAddress.getErrors() ).toHaveKey( 'account' );
-        
-        expect( emailAddress.getErrors().account[1] )
-        .toBe('Depandancy for propertyIdentifier [account] on Entity [AccountEmailAddress] could not be resolved yet');
-        
     }
     
     
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_not_add_errors_when_dependancy_is_resolve(){
+    public void function resolveEntityDependencies_should_not_add_errors_when_dependency_is_resolve(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
         var accountID = hash("123xxxunittest"&now(), 'MD5');
-        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': remoteAccountID });
         
         
         var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
@@ -1412,16 +1645,17 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_add_dependancy_data_when_resolved(){
+    public void function resolveEntityDependencies_should_add_dependency_data_when_resolved(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
         var accountID = hash("123xxxunittest"&now(), 'MD5');
-        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': remoteAccountID });
         
         
         var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());

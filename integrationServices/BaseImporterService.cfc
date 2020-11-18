@@ -50,6 +50,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	property name = "locationService";
+	property name="stockService";
 	
 	property name = "hibachiService";
 	property name = "hibachiUtilityService";
@@ -58,11 +59,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiEntityQueueDAO";
 
 	property name = "cachedEntityMappings" type="struct";
+	property name = "cachedMappingPropertiesValidations" type="struct";
 	
 	
 	public any function init() {
 	    super.init(argumentCollection = arguments);
 	    this.setCachedEntityMappings( {} );
+	    this.setCachedMappingPropertiesValidations( {} );
 	}
 	
 	
@@ -115,7 +118,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	        for(var related in mapping.relations){
   	            // includeInCSVTemplate is a flag in related mappings; 
   	            // being used to handle recursive-relations, like productType and parentProductType
-  	            if( !structKeyExists(related, 'excludeFromCSVTemplate') || !related.excludeFromCSVTemplate){
+  	            if( !structKeyExists(related, 'excludeFromTemplate') || !related.excludeFromTemplate){
   	                headers.append( this.createEntityCSVHeaderMetaDataRecursively(related.entityName) );
   	            }
 	        }
@@ -124,8 +127,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	    if( structKeyExists(mapping, 'dependencies') ){
   	        
   	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
-  	        for(var dependancy in mapping.dependencies ){
-  	            headers.append({ "#ucFirst(dependancy.key, true)#" : 'VarChar' });
+  	        for(var dependency in mapping.dependencies ){
+  	            headers.append({ "#ucFirst(dependency.key, true)#" : 'VarChar' });
 	        }
   	    }
   	    
@@ -182,7 +185,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
 	    
-	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true);
+	    var entityMapping = this.getEntityMapping( arguments.entityName );
+
+	    var validation = this.validateEntityData( 
+	        entityName    = arguments.entityName, 
+	        data          = arguments.data, 
+	        mapping       = entityMapping,
+	        collectErrors = true
+	    );
 	    
 	    if( !validation.isValid ){
 	        
@@ -205,7 +215,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	
 	    } else {
 	    
-    	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
+    	    var transformedData = this.transformEntityData( 
+    	        entityName     = arguments.entityName, 
+    	        data           = arguments.data,
+    	        mapping        = entityMapping,
+    	        emptyRelations = validation.emptyRelations
+    	    );
+    	    
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
@@ -237,37 +253,53 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return arguments.entity;
 	}
 	
-	
 	public void function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
 	    
 	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies"
 	    if( structKeyExists(this, extentionFunctionName) ){
-	        return this.invokeMethod( extentionFunctionName, arguments );
+            this.invokeMethod( extentionFunctionName, arguments );
+	    } else {
+	        this.genericResolveEntityDependencies( argumentCollection=arguments );
 	    }
-	      
-	      
-        for( var dependency in arguments.entityQueueData.__dependancies ){
-             
-            var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	}
+	
+	public void function genericResolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
+	    
+	    for( var dependency in arguments.entityQueueData.__dependencies ){
+            
+            var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
                 "entityName"    = dependency.entityName,
     	        "uniqueKey"     = dependency.lookupKey,
     	        "uniqueValue"   = dependency.lookupValue
             );
                 
-                                    
-            if( this.hibachiIsEmpty(primaryIDValue) ){
+            if( !structKeyExists(dependency, 'isNullable') ){
+                // by default every dependency is treated as required [ not-nullable ]
+                dependency.isNullable = false; 
+            }
+            
+            var dependencyPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
+            
+            if( !isNull(dependencyPrimaryIDValue) && !this.hibachiIsEmpty(dependencyPrimaryIDValue) ){
                 
+                arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependencyPrimaryIDValue }
+                
+            } else if( !dependency.isNullable ){
+                
+                // if the pependency cintains a default-value, use that
+                if( structKeyExists(dependency, 'defaultValue') ){
+                    arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependency.defaultValue }
+                    continue;
+                }
+            
+                // if any required dependency is not resolved then we can't continue with the import 
                 arguments.entity.addError( 
                     dependency.propertyIdentifier, 
-                    "Depandancy for propertyIdentifier [#dependency.propertyIdentifier#] on Entity [#arguments.entity.getClassName()#] could not be resolved yet"    
+                    "Depandancy for propertyIdentifier [#dependency.propertyIdentifier#] on Entity [#arguments.entity.getClassName()#] could not be resolved."    
                 );
-                
                 break;
             }
-                         
-            var primaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
-            
-            arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#primaryIDProperty#" : primaryIDValue }
+            // else we're ignoreing if the dependency is not resolved, as it's nullable
         }
 	}
 
@@ -282,17 +314,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         for( var relation in arguments.entityData.__volatiles ){
              
             var relationData = arguments.entityData[ relation.propertyIdentifier ];
+            
             if( relation.isVolatile ){
                 
                 var relationPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-                        "entityName"  = relation.entityName,
-            	        "uniqueKey"   = 'importRemoteID',
-            	        "uniqueValue" = relationData.importRemoteID
-                    );
+                    "entityName"  = relation.entityName,
+        	        "uniqueKey"   = 'importRemoteID',
+        	        "uniqueValue" = relationData.importRemoteID
+                );
                 
                 if( !isNull(relationPrimaryIDValue) && !this.hibachiIsEmpty(relationPrimaryIDValue) ){
                     var relationPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( relation.entityName );
-                        
                     // replaces the nested struct in arguments.entityData
                     arguments.entityData[ relation.propertyIdentifier ] = { "#relationPrimaryIDProperty#" : relationPrimaryIDValue }; 
                 }
@@ -380,9 +412,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             arguments.mapping = this.getEntityMapping( entityName );
         }
         
-        // make-sure all of the dependancies had been resolved, 
+        // make-sure all of the dependencies had been resolved, 
         // like Product is required before SKU can be created for that Product	    
-	    if( structKeyExists(arguments.entityQueueData, '__dependancies') ){
+	    if( structKeyExists(arguments.entityQueueData, '__dependencies') ){
             this.resolveEntityDependencies(argumentCollection = arguments);
     	    if(arguments.entity.hasErrors()){
     	        return arguments.entity;
@@ -436,127 +468,232 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         var validatorFunctionName = 'validate#arguments.entityName#Data';
         
         if( structKeyExists( this, validatorFunctionName) ){
-            
             return this.invokeMethod( validatorFunctionName, arguments );
         } else {
-            
     	    return this.genericValidateEntityData( argumentCollection = arguments);
         }
+    }
+    
+    public struct function getEntityPropertiesValidations( required struct mapping ){
+        
+        var cachedMappingPropertiesValidations = this.getCachedMappingPropertiesValidations();
+        var cacheKey = hash(serializeJson(arguments.mapping), 'md5');
+        
+        if(structKeyExists(cachedMappingPropertiesValidations, cacheKey) ){
+            return cachedMappingPropertiesValidations[ cacheKey ];
+        }
+        
+        var propertiesValidations = {};
+        // loop over all of the properties and grab all of the properties having validation rules
+	    if( structKeyExists(arguments.mapping, 'properties') ){
+    	    for( var sourcePropertyName in arguments.mapping.properties ){
+    	        var propertyMetaData = arguments.mapping.properties[sourcePropertyName];
+    	        if( structKeyExists(propertyMetaData, 'validations') ){
+    	            propertiesValidations[ sourcePropertyName ] = propertyMetaData.validations;
+    	        }
+    	    }
+	    }
+	    
+	    // loop over all of the entity dependancies and make sure the dependancy-key prop is required in the validations
+	    if( structKeyExists(arguments.mapping, 'dependencies') ){
+	        for( var dependency in arguments.mapping.dependencies ){
+	            // skip nullble dependencies
+  	            if(structKeyExists(dependency, 'isNullable') &&  dependency.isNullable ){
+  	                continue;
+  	            }
+  	            
+  	            if( !structKeyExists(propertiesValidations, dependency.key) ){
+  	                propertiesValidations[ dependency.key ] = {};
+  	            }
+  	            // make sure dependancy-key[sourcePropertyName] is required
+  	            propertiesValidations[ dependency.key ]['required'] = true;
+	        }
+	    }
+        
+	    // loop over all of the keys in importIdentifier and make sure these are required in the validations
+	    for(var sourcePropertyName in mapping.importIdentifier.keys ){
+
+            if( !structKeyExists(propertiesValidations, sourcePropertyName) ){
+                propertiesValidations[ sourcePropertyName ] = {};
+            }
+            // make sure dependancy sourcePropertyName is required
+            propertiesValidations[ sourcePropertyName ]['required'] = true;
+	    }
+        
+        
+        // put it into cache
+        cachedMappingPropertiesValidations[ cacheKey ] = propertiesValidations;
+        
+	    return propertiesValidations;
     }
 
 	public struct function genericValidateEntityData( required struct data, required struct mapping, boolean collectErrors = false ){
 	    
 	    var validationService = this.getHibachiValidationService();
-	    var utilityService = this.getHibachiUtilityService();
-	   
 	    var entityName = arguments.mapping.entityName;
+	    
 	    var isValid = true;
 	    var errors = {};
+	    var emptyRelations = {};
+	    var hasAllRequiredProperties = true;
 	    
-	    // validate entity properties
-	    if( structKeyExists(arguments.mapping, 'properties') ){
+	    var entityPropertiesValidations = this.getEntityPropertiesValidations( arguments.mapping );
+	    for( var propertyName in entityPropertiesValidations ){
+	        var propertyValidations = entityPropertiesValidations[propertyName];
 	        
-    	    for( var propertyName in arguments.mapping.properties ){
-    	        
-    	        var propertyMeta = arguments.mapping.properties[propertyName];
-    	        
-    	        if( structKeyExists(propertyMeta, 'validations') ){
-    	            
-    	            for( var constraintType in propertyMeta.validations ){
-    	                var constraintValue = propertyMeta.validations[constraintType];
-    	                var validationFunctionName = 'validate_#constraintType#_value';
-    	                
-    	                if( structKeyExists(this, validationFunctionName) ){
-    	                    
-                            isValid = this.invokeMethod( validationFunctionName, { 
-                               propertyValue    =  data[propertyName] ?: javaCast('null', 0),
-                               constraintValue  =  constraintValue
-                            });
-                            
-    	                } else if( structKeyExists(validationService, validationFunctionName) ){
-    	                    
-                                isValid = validationService.invokeMethod( validationFunctionName, { 
-                                   propertyValue    =  data[propertyName] ?: javaCast('null', 0),
-                                   constraintValue  =  constraintValue
-                                });
-            	                    
-    	                } else {
-    	                    throw("invalid validation constraint type : #constraintType#, function #validationFunctionName# does not exist");
-    	                }
-    	               
-                        if( !isValid ){
-                           
-                            // if we're instructed to collecth the errors.
-                            if( arguments.collectErrors ){
-                                
-                                if( constraintType eq "dataType" ){
-                        	        var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#.#constraintValue#');
-                        		} 
-                        		else {
-                        			var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#');
-                        		}
-                        		
-                        		errorMessage = utilityService.replaceStringTemplate( errorMessage, {
-                        		    "className"         : entityName,
-                        		    "propertyName"      : propertyName,
-                        		    "constraintValue"   : constraintValue 
-                        		});
-                        		
-                        		// collecting the error
-                        		if( !structKeyExists(errors, propertyName) ){
-                        		    errors[propertyName] = [];
-                        		}
-                        		
-                                ArrayAppend( errors[propertyName] ,  errorMessage );  
-                        		
-                        		//resetting the flag to continue validating;
-                                isValid = true;
-                            } 
-                            else { 
-                                break;
-                            }
-                        }
-    
-    	            }
-    	        }
-    	        
-    	        if( !isValid && !arguments.collectErrors){
-    	            break;
-    	        }
-    	    }
-	    }
-	    
-	    // validate related sub-entities as well
-	    if(  (isValid || arguments.collectErrors) && structKeyExists(arguments.mapping, 'relations' ) ){
-	        
-	        for(var related in arguments.mapping.relations ){
-	           	if( !structKeyExists(related, 'excludeFromCSVTemplate') || !related.excludeFromCSVTemplate){
-	           	    
-                    var validation = this.validateEntityData(
-                        data            =  arguments.data,  
-                        entityName      = related.entityName, 
-                        collectErrors   = arguments.collectErrors 
-                    );
-                    
-                    isValid = validation.isValid;
-                    
-                    if(arguments.collectErrors){
-                        errors = this.mergeErrors( errors, validation.errors );
+            for( var constraintType in propertyValidations ){
+                var constraintValue = propertyValidations[constraintType];
+                
+                isValid = this.validateConstraintType(
+                    constraintType  = constraintType, 
+                    constraintValue = constraintValue, 
+                    propertyValue   = arguments.data[propertyName] ?: javaCast('null', 0)
+                );
+               
+                if( !isValid ){
+                
+                    if( constraintType == 'required' && constraintValue == true ){
+                        hasAllRequiredProperties = false;
                     }
-                    
-                    if( !isValid && !arguments.collectErrors){
+                
+                    // if we're instructed to collecth the errors.
+                    if( arguments.collectErrors ){
+                        var errorMessage = this.createErrorMessageForFailedConstraint(
+                            entityName      = entityName,
+                            propertyName    = propertyName,
+                            constraintType  = constraintType,
+                            constraintValue = constraintValue
+                        );
+                		// collecting the error
+                		if( !structKeyExists(errors, propertyName) ){
+                		    errors[propertyName] = [];
+                		}
+                        ArrayAppend( errors[propertyName],  errorMessage );  
+                		//resetting the flag to continue validating;
+                        isValid = true;
+                    } else { 
                         break;
-                    } 
-	           	}
+                    }
+                }
+            }
+        
+	        if( !isValid && !arguments.collectErrors ){
+	            break;
 	        }
 	    }
 	    
 	    
-	    // validate that importIdentifier exists
+
+	    // validate related sub-entities as well
+	    if( (isValid || arguments.collectErrors) && structKeyExists(arguments.mapping, 'relations') ){
+	       
+	        for(var thisRelation in arguments.mapping.relations ){
+	        
+	           	if( structKeyExists(thisRelation, 'excludeFromValidation') && thisRelation.excludeFromValidation){
+	           	    continue;
+	           	}
+	           	
+           	    if( !structKeyExists(thisRelation, 'isNullable') ){
+                    // by default every relation is treated as required [ not-nullable ]
+                    thisRelation.isNullable = false; 
+                }
+                
+                thisRelation['isEmptyRelation'] = false;
+                thisRelation['hasEmptyRelations'] = false;
+                
+                var relationValidation = this.validateEntityData(
+                    data            = arguments.data,  
+                    entityName      = thisRelation.entityName, 
+                    collectErrors   = arguments.collectErrors 
+                );
+                
+                if( !relationValidation.emptyRelations.isEmpty() ){
+                    thisRelation['hasEmptyRelations'] = true;
+                    thisRelation['emptyRelations'] = relationValidation.emptyRelations;
+                }
+                
+                if( !relationValidation.isValid ){
+                
+                    if( !relationValidation.hasAllRequiredProperties && thisRelation.isNullable ){
+                        /*
+                         if all of the required fields for the relation are not available in the source-data 
+                         and it's nullable relation; 
+                         than we carry-forward this info into transform-entity-data function, 
+                         so that it can ignore createing data for this relation;
+                         
+                         if the relation is not-nullable then the validation will still errors-out;
+                         
+                        */
+                        
+                        thisRelation.isEmptyRelation = true;
+                        
+                        // NOTE: validation errors for nullable-relations are ignored
+                        
+                    } else if( arguments.collectErrors ){
+                    
+                            errors = this.mergeErrors( errors, relationValidation.errors );
+                            
+                    } else {
+                        // else if the validation has failed and the relations is not nullable 
+                        // and we're not collecting errors than we can break the loop;
+                        break;
+                    }
+                }
+
+                if( thisRelation.isEmptyRelation || thisRelation.hasEmptyRelations ){
+                    emptyRelations[ thisRelation.propertyIdentifier ] = thisRelation;
+                }
+	        }
+	    }
+	    
+	    
 	    return { 
-	        isValid: arguments.collectErrors ?  StructIsEmpty( errors ) : isValid, 
-	        errors: errors 
+	        'isValid'                     : arguments.collectErrors ? StructIsEmpty( errors ) : isValid, 
+	        'errors'                      : errors,
+	        'emptyRelations'              : emptyRelations,
+	        'hasAllRequiredProperties'    : hasAllRequiredProperties
 	    };
+	}
+	
+	public boolean function validateConstraintType(required string constraintType, required string constraintValue, any propertyValue){
+	    
+	    var validationFunctionName = 'validate_#arguments.constraintType#_value';
+        var validationService = this.getHibachiValidationService();
+        
+        if( structKeyExists(this, validationFunctionName) ){
+            return this.invokeMethod( validationFunctionName, { 
+               propertyValue    =  arguments.propertyValue ?: javaCast('null', 0),
+               constraintValue  =  arguments.constraintValue
+            });
+        }  
+        
+        if( structKeyExists( validationService, validationFunctionName) ){
+            return validationService.invokeMethod( validationFunctionName, { 
+               propertyValue    =  arguments.propertyValue ?: javaCast('null', 0),
+               constraintValue  =  arguments.constraintValue
+            });
+        } 
+        
+        throw("invalid validation constraint type : #constraintType#, function #validationFunctionName# does not exist");
+	}
+	
+	public string function createErrorMessageForFailedConstraint(
+	    required string entityName,
+	    required string propertyName,
+	    required string constraintType,
+	    required string constraintValue
+	){
+	    
+	    var rbKey = "validate.import.#arguments.entityName#.#arguments.propertyName#.#arguments.constraintType#";
+	    if( arguments.constraintType eq "dataType" ){
+            rbKey &= ".#arguments.constraintValue#";
+		}
+		
+		return this.getHibachiUtilityService().replaceStringTemplate( this.getHibachiScope().rbKey( rbKey ), {
+		    "className"         : entityName,
+		    "propertyName"      : propertyName,
+		    "constraintValue"   : constraintValue 
+	    });
 	}
 	
 	/**
@@ -601,7 +738,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	/*****************                      TRANSFORM                 ******************/
 
-    public struct function transformEntityData(required string entityName, required struct data, struct mapping, boolean nested=false ){
+    public struct function transformEntityData(required string entityName, required struct data, struct mapping, struct emptyRelations={}, boolean nested=false ){
         
         if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( arguments.entityName );
@@ -615,7 +752,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
     }
     
-	public struct function genericTransformEntityData( required struct data, required struct mapping, boolean nested=false){
+	public struct function genericTransformEntityData( required struct data, required struct mapping, struct emptyRelations={}, boolean nested=false){
 	    var entityName = arguments.mapping.entityName;
 	    var transformedData = {};
 	    
@@ -710,14 +847,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    
-	    // relational dependancies[ entities which should be present bofore this record can be processed],
+	    // relational dependencies[ entities which should be present bofore this record can be processed],
 	    // like `Product` should be present before SKU can be imported 
 	    if( !arguments.nested && structKeyExists(arguments.mapping, 'dependencies') ){
 	        
-	        transformedData['__dependancies'] = [];
+	        transformedData['__dependencies'] = [];
 	        for( var dependency in arguments.mapping.dependencies ){
 	            dependency['lookupValue'] = arguments.data[ dependency.key ];
-	            transformedData['__dependancies'].append( dependency );
+	            transformedData['__dependencies'].append( dependency );
 	        }
 	    }
 	    
@@ -726,9 +863,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        for(var relation in arguments.mapping.relations ){
 	            
+	            if( structKeyExists(arguments.emptyRelations, relation.propertyIdentifier) ){
+	                // if we have this relation in empty-relations that let's use that, so we have additional info down the line
+	                relation = arguments.emptyRelations[ relation.propertyIdentifier ];
+	            }
+	            
 	            // SKIP if it's a create-only relation, and we're upserting
     	        if( structKeyExists(relation, 'allowUpdate') && !relation.allowUpdate ){
-    	            // primaryIdProperty value Is Not Empty, skipping this property
+    	            // if primaryId-value Is Not Empty, then we're upsearting an existing record,
+    	            // hence skip create-only relations
     	            if( !this.hibachiIsEmpty( transformedData[ primaryIDPropertyName ] ) ){
     	                continue;
     	            }
@@ -822,7 +965,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * 
          * 4. default value from the propertyMetadata
         */
-
+        
+        // if the property is only for validation, it will not have a property identifier.
+        if( !structKeyExists(arguments.propertyMetaData, 'propertyIdentifier') ){
+            return;
+        }
+        
         var entityName = arguments.mapping.entityName;
         
         if( !structKeyExists(arguments, 'mapping')){
@@ -865,6 +1013,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         required struct relationMetaData
     ){
         
+        if( structKeyExists(arguments.relationMetaData, 'isEmptyRelation') && arguments.relationMetaData.isEmptyRelation ){
+            // if the validation failed for this relation and its nullable relation
+            // then we need to skip it, as transform-data function won't have valid & enough data to process;
+            return; 
+        }
+        
         /**
          * Fallback order 
          * 1. generator-function provided in the relationMetaData
@@ -893,9 +1047,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
         
         var transformedRelationData = this.transformEntityData( 
-            entityName  = arguments.relationMetaData.entityName, 
-            data        = arguments.data,
-            nested      = true
+            entityName     = arguments.relationMetaData.entityName, 
+            data           = arguments.data,
+            emptyRelations = arguments.relationMetaData.emptyRelations ?: {},
+            nested         = true
         );
         
         if( listFindNoCase('oneToOne,manyToOne', arguments.relationMetaData.type) ){
@@ -1077,9 +1232,60 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             nested      = true
         );
 	}
+
+
+	/////////////////.                  INVENTORY
 	
 	
-/////////////////.                  ORDER
+	public any function generateInventoryStock( struct data, struct mapping, struct propertyMetaData ){
+		
+	    var skuID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+            	        "entityName"  : 'Sku',
+            	        "uniqueKey"   : 'remoteID',
+            	        "uniqueValue" : arguments.data.remoteSkuID
+            	    );
+            	    
+        var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+            	        "entityName"  : 'Location',
+            	        "uniqueKey"   : 'remoteID',
+            	        "uniqueValue" : arguments.data.remoteLocationID
+            	    ); 
+            	    
+        if (!isNull(skuID) && !this.hibachiIsEmpty(skuID) ){
+            
+            if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
+                // fallback to `Default Location` 
+                locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
+            }
+            
+    	    //Find if we have a stock for this sku and location.
+		    var stock = getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
+		    
+		    if( !isNull(stock) ){
+		    	return { "stockID" : stock.getstockID() };
+		    }
+		    
+		    //create new stock
+		    return {
+	            "stockID" : "",
+	            "sku": {
+	                    "skuID": skuID
+	           },
+	            "location" :{
+	                "locationID" : locationID
+	            }
+	        };
+        }
+        
+        //dont create stock if there is no locationID / skuID
+	}
+	
+	public any function generateInventoryLocation( struct data, struct mapping, struct propertyMetaData ){
+	  return this.getHibachiUtilityService().getEncryptionKeyLocation();
+	}
+	
+		
+    /////////////////.                  ORDER
 
 	public any function generateOrderBillingAddress( struct data, struct mapping, struct propertyMetaData ){
 		
@@ -1096,8 +1302,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     public any function generateOrderShippingAccountAddress( struct data, struct mapping, struct propertyMetaData ){
 		
 	}
-
-
+	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 
 }
