@@ -198,9 +198,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(arguments.workflowTrigger.getLockLevel() == 'database' && arguments.runningFlag){
 				//timed out
 				if( DateAdd("n",val(arguments.workflowTrigger.getTimeout()),arguments.workflowTrigger.getNextRunDateTime()) < now() ){
-					arguments.workflowTrigger.setRunningFlag(false);
+					getWorkflowDAO().resetExpiredWorkflow(arguments.workflowTrigger.getWorkflowTriggerID());
 				}else{
-					// not timed out yet, skip
+				// not timed out yet, skip
 					continue;
 				}
 			}
