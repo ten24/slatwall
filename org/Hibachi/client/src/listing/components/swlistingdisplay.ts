@@ -179,13 +179,18 @@ class SWListingDisplayController{
     }
     
     public refreshListingDisplay = () => {
-        this.startLoading();
-        
-        this.getCollection = this.collectionConfig.getEntity().then((data)=>{
-            this.setCollectionData(data);
-            this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
-        })
-        .finally( () => this.stopLoading() );
+        if(!this.hideAllResults 
+            && (!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) )
+        ){
+            this.startLoading();
+            this.getCollection = this.collectionConfig.getEntity().then((data)=>{
+                this.setCollectionData(data);
+                this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
+            })
+            .finally( () => this.stopLoading() );
+        }else{
+            this.setCollectionData(null);
+        }
     }
     
     public setCollectionData = ( collectionData) =>{
@@ -440,7 +445,7 @@ class SWListingDisplayController{
 
     private setupCollectionPromise=()=>{
 
-    	if(angular.isUndefined(this.getCollection)){
+    	if(!this.hideAllResults && angular.isUndefined(this.getCollection)){
             this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
         }
 
