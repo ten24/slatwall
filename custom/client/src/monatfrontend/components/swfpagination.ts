@@ -5,6 +5,8 @@ class SWFPaginationController {
     public pageTracker:number = 1;
     public pageItems:any;
     public action:string;
+    public httpMethod:string = 'GET';
+    public showPageNumber:boolean;
     public itemsPerPage:number = 10;
     public recordsCount:number;
     public totalPageArray:Array<any>;
@@ -13,10 +15,11 @@ class SWFPaginationController {
     public beginPaginationAt:number;
     public displayPages:any;
     public elipsesNum;
-    public hasNextPageSet:boolean = true;
+    public hasNextPageSet:boolean;
     public parentController;
     private scrollTo:string;
     private pageCache = {};
+    public displayPagination;
     
 	// @ngInject
 	constructor(public observerService, public $scope, public publicService, private $q) { 
@@ -34,6 +37,9 @@ class SWFPaginationController {
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
+        
+        this.hasNextPageSet = this.pageTracker != this.totalPages;
+        this.displayPagination = this.hasNextPageSet;
 
         //create two arrays, one for the entire page list, and one for the display (ie: 1-10...)
         for(var i = 1; i <= this.totalPages; i++){
@@ -46,7 +52,8 @@ class SWFPaginationController {
         this.totalPageArray = holdingArray;
 	}
 	
-    public getNextPage = ( pageNumber = 1, direction:any = false, newPages = false) => {
+    public paginate = ( pageNumber = 1, direction:any = false, newPages = false) => {
+        
 		let newPage = newPages;
 		let lastDisplayPage = this.displayPages[this.displayPages.length -1];
 		
@@ -62,11 +69,11 @@ class SWFPaginationController {
                 pageNumber = this.pageTracker -1;
             }
         }else if(direction === 'next'){
-            if(this.pageTracker >= lastDisplayPage){
-                newPage = true;
-            }else{
+            // if(this.pageTracker >= lastDisplayPage){
+            //     newPage = true;
+            // }else{
                 pageNumber = this.pageTracker +1;
-            }
+            //}
         }
         //END: direction logic
 
@@ -94,6 +101,10 @@ class SWFPaginationController {
 
         this.argumentsObject['pageRecordsShow'] = this.itemsPerPage;
         this.argumentsObject['currentPage'] = pageNumber;
+        
+        if(this.publicService.account?.priceGroups?.length){
+        	this.argumentsObject['priceGroupCode'] = this.publicService.account.priceGroups[0].priceGroupCode;
+		}
         this.publicService.paginationIsLoading = true;
         this.parentController.loading = true;
         
@@ -110,7 +121,7 @@ class SWFPaginationController {
             let result = this.pageCache[pageCacheKey];
             this.handlePageResponse(deferred, result, pageNumber);
         }else{
-            this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
+            this.publicService.doAction(this.action, this.argumentsObject, this.httpMethod).then(result=>{
                 this.handlePageResponse(deferred, result, pageNumber, pageCacheKey);
             });
         }
@@ -124,6 +135,12 @@ class SWFPaginationController {
             :(result.pageRecords) 
             ? result.pageRecords 
             :result.ordersOnAccount.ordersOnAccount;
+        
+        if(this.totalPages){
+            this.hasNextPageSet = pageNumber < this.totalPages
+        }else{
+            this.hasNextPageSet = ( Array.isArray(this.recordList) ? this.recordList.length : Object.keys(this.recordList).length)  == this.itemsPerPage;
+        }
         
         this.pageTracker = pageNumber;
         this.publicService.paginationIsLoading = false;
@@ -146,6 +163,7 @@ class SWFPagination {
 	public bindToController = {
 		recordsCount: '<?', //total amount of records available from getRecordsCount call on backend
 		action: '@?', //endpoint to be called
+		httpMethod: '@?',
 		itemsPerPage:'@?', //Number of items to display in a page
 		recordList:'=', //Sets up two way binding so succeeding API responses overwrite the records with updated data
 		argumentsObject:'<?', //optional object of arguments to pass in to the api call

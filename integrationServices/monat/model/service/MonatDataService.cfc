@@ -50,7 +50,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         return productReviewCollection.getPageRecords();
     }
     
-    public struct function getMarketPartners(required struct data){
+    public array function getMarketPartners(required struct data){
         param name="arguments.data.pageRecordsShow" default=9;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.search" default="";
@@ -127,17 +127,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         accountCollection.addOrderBy('accountType|ASC');
         
         var pageRecords = accountCollection.getPageRecords(formatRecords=false);
-        var recordsCount = arrayLen(pageRecords);
         
-        if(recordsCount == arguments.data.pageRecordsShow){
-            recordsCount = accountCollection.getRecordsCount();
-        }
-        
-        var returnObject = {
-            accountCollection: pageRecords,
-            recordsCount: recordsCount
-        }
-        return returnObject; 
+        return pageRecords; 
     }
     
     public numeric function getProductReviewCount(required struct data){
@@ -1211,6 +1202,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		QueryExecute("UPDATE swProductType SET parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' WHERE parentProductTypeID IS NULL AND productTypeNamePath LIKE 'Merchandise > %'");
 		QueryExecute("UPDATE swProductType SET productTypeIDPath = CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeIDPath) WHERE parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' AND productTypeIDPath NOT LIKE '444df2f7ea9c87e60051f3cd87b435a1,%'");
 
+		if(skuQuery.recordCount){
+			QueryExecute("insert into swstock (stockID,skuID,locationID) select LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')),skuID,locationID from swsku join swlocation where skuID not in (select distinct skuID from swstock)");
+		}
 // 		//this.addUrlTitlesToProducts();
 		if(arguments.rc.dryRun){
 		    abort;

@@ -21,8 +21,10 @@
 	<cfset local.accountType = 'customer' />
 </cfif>
 
-<cfset local.site = account.getAccountCreatedSite() />
-<cfif isNull(local.site) >
+<cfif NOT isNull(account)>
+	<cfset local.site = account.getAccountCreatedSite() />
+</cfif>
+<cfif NOT structKeyExists(local,'site') || isNull(local.site) >
 	<cfset local.site = getHibachiScope().getCurrentRequestSite() />
 </cfif>
 

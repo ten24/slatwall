@@ -1,40 +1,29 @@
-
-<!--- If display pages is greater than 1 OR if the 1st page isn't 1, show the pagination bar --->
-<nav 
-	ng-if="paginationController.displayPages.length > 1 
-		|| (
-			paginationController.displayPages.length == 1
-			&& paginationController.displayPages[0] != 1
-		)
-	" 
-	class="product-pagination" 
-	aria-label="Product Pagination"
->
+<nav ng-if="paginationController.displayPagination" class="product-pagination" >
 	<ul class="pagination justify-content-center">
 	    
 		<!-- Back 1 Page --->
-		<li class="page-item">
-			<a ng-show="paginationController.pageTracker != 1" ng-click="paginationController.getNextPage(1,'prev')" class="page-link" href="##" tabindex="-1" aria-disabled="true">
+		<li class="page-item" ng-class="{'disabled': paginationController.pageTracker == 1}">
+			<button ng-click="paginationController.paginate(1,'prev')" class="page-link" tabindex="-1" aria-disabled="true">
 				<i class="fas fa-chevron-left"></i>
-			</a>
+			</button>
 		</li>
 		
 		<!-- Go to specific page --->
-		<li ng-class="{active: this.number == paginationController.pageTracker}" ng-click="paginationController.getNextPage(number)" ng-repeat="number in paginationController.displayPages | limitTo: paginationController.elipsesNum" class="page-item">
-			<a class="page-link" href="##" >{{number}}</a>
+		<li class="page-item" ng-class="{active: this.number == paginationController.pageTracker}" ng-repeat="number in paginationController.displayPages | limitTo: paginationController.elipsesNum" >
+			<button class="page-link" ng-click="paginationController.paginate(number)">{{number}}</button>
 		</li>
 		
         <!--- Ellipsis to get next group of pages if total pages is greater than 10 --->
-        <li ng-show="paginationController.displayPages.length > paginationController.elipsesNum && paginationController.hasNextPageSet" ng-click="paginationController.getNextPage(1, false, true)" class="page-item">
-            <a class="page-link" href="##" >...</a>
+        <li class="page-item" ng-show="paginationController.displayPages.length > paginationController.elipsesNum && paginationController.hasNextPageSet" >
+            <button class="page-link" ng-click="paginationController.paginate(1, false, true)">...</button>
         </li>
         
 		<!-- Forward 1 Page --->
-		<li ng-show="paginationController.pageTracker != paginationController.totalPages" ng-click="paginationController.getNextPage(1, 'next')">
-			<a class="page-link" href="##">
+		<li class="page-item" ng-class="{'disabled': !paginationController.hasNextPageSet }">
+			<button ng-click="paginationController.paginate(1, 'next')" class="page-link">
 				<i class="fas fa-chevron-right"></i>
-			</a>				
+			</button>				
 		</li>
 		
-	</ul>
+	</ul> 
 </nav>
