@@ -64,7 +64,7 @@
 	<h6 ng-show="swfWishlist.loading">Loading...</h6> <!--- TODO: Implement pretty loader --->
 	
 	<div ng-if="swfWishlist.orderTemplateItems.length > 0" class="product_list wishlist-products row no-gutters">
-		<div class="col-md-6 col-lg-4" ng-repeat="item in swfWishlist.orderTemplateItems track by $index">
+		<div class="col-6 col-md-6 col-lg-4 product-box" ng-repeat="item in swfWishlist.orderTemplateItems track by $index">
 		  	<monat-product-card all-products="swfWishlist.orderTemplateItems" type="wishlist" product="item" index="{{$index}}" ></monat-product-card>
 		</div>		
 	</div>
