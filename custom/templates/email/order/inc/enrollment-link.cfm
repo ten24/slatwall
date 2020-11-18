@@ -2,7 +2,7 @@
 var accountType = local.order.getAccountType();
 if(accountType == 'marketPartner'){
     accountType = 'market-partner';
-};
+}
 
 if(listFindNoCase('market-partner,VIP',accountType)){
     var redirectURL = 'enrollment/' & accountType & '/enroll/';
