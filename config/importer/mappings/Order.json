@@ -68,17 +68,13 @@
             "type"                   : "manyToOne",
             "entityName"             : "Address",
             "propertyIdentifier"     : "billingAddress",
-            "sourceDataKeysPrefix"   : "Billing-"
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true
+            "sourceDataKeysPrefix"   : "Billing"
         },
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
             "propertyIdentifier"     : "shippingAddress",
-            "sourceDataKeysPrefix"   : "Shipping-"
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true
+            "sourceDataKeysPrefix"   : "Shipping"
         }
     ],
     
