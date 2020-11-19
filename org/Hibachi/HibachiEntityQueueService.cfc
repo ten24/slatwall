@@ -199,6 +199,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					if(noMethod) { 
 					    this.logHibachi("EntityQueue - processEntityQueueArray() did not find any processMethod in entityQueueData, deleting this record");
 						this.deleteEntityQueueItem( entityQueue['entityQueueID'] );
+						return;
 					}
 				
 					var entityService = getServiceForEntityQueue(entityQueue);
@@ -212,6 +213,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					if( isNull(entity) ){
 						this.logHibachi("EntityQueue - processEntityQueueArray() - entity is null, deleting this record #entityQueue['entityQueueID']#");
 						this.deleteEntityQueueItem( entityQueue['entityQueueID'] );
+						return;
 					}
 	
 					var entityMethodInvoked = invokeMethodOrProcessOnService( entityQueue, entity, entityService );  
@@ -227,7 +229,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					
 				} catch(any e){
 				
-					if( val(entityQueue['tryCount']) >= maxTryCount ){
+					if( val( entityQueue['tryCount'] ?: 0 ) >= maxTryCount ){
 						this.getHibachiEntityQueueDAO().archiveEntityQueue( entityQueue['entityQueueID'], e.message);
 					} else {
 						this.getHibachiEntityQueueDAO().updateNextRetryDateAndMostRecentError( entityQueue['entityQueueID'], e.message);

@@ -294,7 +294,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
     
     
-    
     /**
      * @test 
     */
@@ -303,6 +302,23 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         debug( header );
         
         $assert.isEqual("AccountActiveFlag,CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,RemoteAccountID,Username", header.columns );
+    }
+    
+    /**
+     * @test 
+    */
+    public void function getOrderCSVHeaderMetaData_should_include_address_prefixes(){
+        var header = this.getService().getEntityCSVHeaderMetaData( 'Order' );
+        debug( header );
+        
+        $assert.isTrue( ListFind(header.columns, "BillingAddress_city") );
+        $assert.isTrue( ListFind(header.columns, "BillingAddress_streetAddress") );
+        $assert.isTrue( ListFind(header.columns, "BillingAddress_street2Address") );
+        
+        $assert.isTrue( ListFind(header.columns, "ShippingAddress_city") );
+        $assert.isTrue( ListFind(header.columns, "ShippingAddress_streetAddress") );
+        $assert.isTrue( ListFind(header.columns, "ShippingAddress_street2Address") );
+        
     }
 	
 	
@@ -638,11 +654,69 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(validation.errors).toBeEmpty();
     }
     
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_fail_validate_for_sourceDataKeysPrefix_for_invalid_data(){
+
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping  = this.getService().getEntityMapping( "Account" );
+        mapping.relations = [{
+            "type"                  : "oneToOne",
+            "entityName"            : "AccountPhoneNumber",
+            "propertyIdentifier"    : "primaryPhoneNumber",
+            "sourceDataKeysPrefix"  : "testPrefix--"
+        }];
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey("testPrefix--phone");
+	    expect(validation.errors).toHaveKey("testPrefix--remoteAccountID");
+    }
     
     
-    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_pass_validate_for_sourceDataKeysPrefix_for_valid_data(){
+
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping  = this.getService().getEntityMapping( "Account" );
+        mapping.relations = [{
+            "type"                  : "oneToOne",
+            "entityName"            : "AccountPhoneNumber",
+            "propertyIdentifier"    : "primaryPhoneNumber",
+            "sourceDataKeysPrefix"  : "testPrefix--"
+        }];
 
 
+        sampleAccountData['testPrefix--phone'] = sampleAccountData['phone'];
+        sampleAccountData['testPrefix--remoteAccountID'] = sampleAccountData['remoteAccountID'];
+        
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    
+    
+    
 
 
 	/** ***************************.  Transform  .***************************** */
@@ -1239,6 +1313,39 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    assertTrue(structKeyExists(transformedData, 'primaryEmailAddress'));
     }
+    
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_be_able_to_use_prefixed_properties_for_relations(){
+
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping  = this.getService().getEntityMapping( "Account" );
+        mapping.relations = [{
+            "type"                  : "oneToOne",
+            "entityName"            : "AccountPhoneNumber",
+            "propertyIdentifier"    : "primaryPhoneNumber",
+            "sourceDataKeysPrefix"  : "testPrefix--"
+        }];
+
+
+        sampleAccountData['testPrefix--phone'] = sampleAccountData['phone'];
+        sampleAccountData['testPrefix--remoteAccountID'] = sampleAccountData['remoteAccountID'];
+        
+	    var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping
+        );
+        
+        debug(transformedData);
+        assertTrue( structKeyExists(transformedData, 'primaryPhoneNumber') );
+        assertTrue( structKeyExists(transformedData.primaryPhoneNumber, 'phoneNumber') );
+        assertTrue( transformedData.primaryPhoneNumber.phoneNumber == 9090909090 );
+    }
+    
     
     
     /** ***************************.  EntityQueue and FailureQueue .***************************** */
