@@ -7,6 +7,7 @@ class PromoModalController {
 	public selectedPromotion;
 	public currentPage;
 	public rewardSkus;
+	public slickInitialized:boolean = false;
     private maxUseCount: number;
     private maxUsePerItem: number;
 	
@@ -18,7 +19,9 @@ class PromoModalController {
         this.currentPage = 'promoList';
         
         this.observerService.attach(this.closeModal,'addOrderItemSuccess');
-        
+    }
+    
+    public $onInit = () =>{
         this.initSlickSlider();
     }
     
@@ -34,6 +37,7 @@ class PromoModalController {
                 promotion.description = promotion.promotionPeriod.promotion.promotionName;
             }
         }
+        return promotions;
     }
     
     public viewPromotion = (promotion)=>{
@@ -134,14 +138,13 @@ class PromoModalController {
         }
     }
     
-    private initSlickSlider = () =>{
+    public initSlickSlider = () =>{
         const slickContainer = $('#promo-modal-content');
-		const slickOptions = {
-		    
-		};	
+        const slickOptions = {};
 		this.$timeout(()=>{
 			slickContainer.slick(slickOptions);
-		});
+			this.slickInitialized=true;
+		},10);
     }
     
     public closeModal = () => {
