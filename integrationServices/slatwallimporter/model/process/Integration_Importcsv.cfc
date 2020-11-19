@@ -14,7 +14,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiP
 	    var options = [];
 	    
 	    for(var entityName in index){
-	        options.append( {"name": entityName, "value": entityName} );
+	        options.append({ 
+    	        "name"  : entityName, 
+    	        "value" : index[entityName] 
+	        });
 	    }
 	    
 	    return options;
