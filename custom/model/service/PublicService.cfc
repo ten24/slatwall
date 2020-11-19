@@ -2819,12 +2819,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     public void function saveEnrollment(required struct data){
         param name="arguments.data.emailAddress";
+        
+        var ownerAccountNumber = '';
         if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
             var ownerAccountNumber = getHibachiScope().getSessionValue('ownerAccountNumber');
-        }else{
-            this.addErrors(arguments.data,[{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')}]);
-            getHibachiScope().addActionResult('public:account.saveEnrollment',true);
-            return;
         }
         var cart = getHibachiScope().getCart();
         var emailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Share Enrollment');
@@ -2835,10 +2833,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         newOrder.setPriceGroup(cart.getPriceGroup());
         newOrder.setMonatOrderType(cart.getMonatOrderType());
         newOrder = getService('OrderService').saveOrder(newOrder);
-        
-        var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
-        newOrder.setSharedByAccount( ownerAccount );
-        newOrder.setAccount(ownerAccount);
+        if(len(ownerAccountNumber)){
+            var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
+            newOrder.setSharedByAccount( ownerAccount );
+            newOrder.setAccount(ownerAccount);
+        }
         
         var emailData = {
             order:newOrder,
@@ -2846,7 +2845,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         };
         
         var email = getService('emailService').processEmail(email,emailData,'createFromTemplate');
-        newOrder.removeAccount();
+        if( !isNull(newOrder.getAccount()) ){
+            newOrder.removeAccount();
+        }
         
         email.setEmailTo(arguments.data.emailAddress);
         email = getService('EmailService').processEmail(email, arguments, 'addToQueue');

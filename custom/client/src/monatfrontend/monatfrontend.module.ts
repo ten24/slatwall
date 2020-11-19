@@ -73,6 +73,7 @@ import { AccountAddressForm } from "./components/account-address-form";
 
 // controllers
 import { MonatForgotPasswordController } from "./controllers/monat-forgot-password";
+import { MonatNavbarController } from "./controllers/navbar";
 import { MonatSearchController } from "./controllers/monat-search";
 import { MonatCheckoutController } from "./controllers/monat-checkout";
 import { MonatProductListingController } from "./controllers/monat-product-listing";
@@ -172,6 +173,7 @@ var monatfrontendmodule = angular
 	// Controllers
 	.controller("searchController", MonatSearchController)
 	.controller("forgotPasswordController", MonatForgotPasswordController)
+	.controller("navbarController", MonatNavbarController)
 	.controller("checkoutController", MonatCheckoutController)
 	.controller("productListingController", MonatProductListingController)
 	.controller("onlyForYouController", OnlyForYouController)
