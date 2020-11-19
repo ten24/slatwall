@@ -12,7 +12,7 @@
       <div class="modal-body">
         <p ng-bind="promotion.description"></p>
       </div>
-        <button type="button" class="btn bg-white" ng-click="promoModal.viewPromotion(promotion)">
+        <button type="button" class="btn bg-white" ng-click="promoModal.viewPromotion(promotion)" ng-disabled="promoModal.takeOfferLoading" ng-class="{'loading':promoModal.takeOfferLoading}">
         	<span sw-rbkey="'frontend.global.takeOffer'"></span>
         	<i class="fa fa-chevron-right"></i>
         </button>
@@ -50,7 +50,7 @@
                     <!--- TODO: get product image --->
                     <img 
                         image-manager
-                        ng-src="https://monat.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/6000000206_300w_300h.jpg" 
+                        ng-src="{{rewardSku.imagePath}}" 
                         alt="Product Title"
                         width="70" 
                         height="70" 

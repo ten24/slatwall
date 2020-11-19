@@ -2903,6 +2903,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'filters':additionalFilters
             };
             var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            for(var rewardSku in rewardSkus){
+                rewardSku['imagePath'] = getService('ImageService').getResizedImageByProfileName(rewardSku['skuID'],'small')
+            }
             arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
         }
     }
