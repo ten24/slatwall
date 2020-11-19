@@ -587,7 +587,7 @@ component extends="Slatwall.model.service.OrderService" {
 				
 			arguments.typeCode = 'partiallyShipped';
 		}
-		
+
         /** 
          * if order is locked it can go back and forth b/w processsing1 and processing2 status 
          * but if that's not the case, we're checking further

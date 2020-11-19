@@ -104,14 +104,12 @@ component extends="Slatwall.model.service.HibachiService" {
             return;
         }
         
-        var ownerAccount = order.getSharedByAccount();
-        if( isNull( ownerAccount ) || isNull( ownerAccount.getAccountNumber() ) ){
-            getHibachiScope().addActionResult('monat:public.resumeEnrollment',true);
-            return;
-        }
+        getHibachiScope().getSession().setOrder(order);
         
-        getHibachiScope().getSession().setOrder(order)
-        getHibachiScope().setSessionValue('ownerAccountNumber',ownerAccount.getAccountNumber());
+        var ownerAccount = order.getSharedByAccount();
+        if(!isNull(ownerAccount)){
+            getHibachiScope().setSessionValue('ownerAccountNumber',ownerAccount.getAccountNumber());
+        }
 
         order.setPromotionCacheKey('');
         getService('OrderService').processOrder(order,'updateOrderAmounts');
