@@ -2011,8 +2011,18 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 
 	public void function preUpdate(Struct oldData){
+		var orderStatusType = getOrderStatusType();
+		if( orderStatusType.getSystemCode() == 'ostNotPlaced' 
+			&& structKeyExists(arguments.oldData, 'orderStatusType')
+			&& !isNull(arguments.oldData['orderStatusType'])){
+			//Log that this occurred in the Slatwall Log
+			logHibachi("Order: #this.getOrderID()# tried to update it's order status type to Not Placed. This change has been prevented. Old Order Status Type ID: #arguments.oldData.orderStatusType.getTypeID()#", true);
+			throw("Order: #this.getOrderID()# tried to update it's order status type to Not Placed. This change has been prevented. Old Order Status Type ID: #arguments.oldData.orderStatusType.getTypeID()#");
+			}
+
 		super.preUpdate(argumentCollection=arguments);
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
+
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================
