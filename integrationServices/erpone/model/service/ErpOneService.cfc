@@ -390,18 +390,25 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var preProcessedData = [];
 		
 		for( var productItem in productData ){
-			if( structKeyExists(productItem, 'Price') and len(trim(productItem.Price)) == 0) {
+			
+			if( structKeyExists(productItem, 'Price') && this.hibachiIsEmpty(productItem.Price) ) {
 				productItem.Price=productItem.ListPrice;
 			}
-			if( structKeyExists(productItem, 'RemoteProductID') and len(trim(productItem.RemoteProductID)) == 0 ){
-				productItem.RemoteProductID=productItem.ProductCode;
+			
+			if( structKeyExists(productItem, 'RemoteProductID') && this.hibachiIsEmpty(productItem.RemoteProductID) ){
+				var productCode = productItem.ProductCode;
+				var remoteProductIDArray = this.getErpOneData({
+		    	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
+		    	    "columns" : "__rowids"
+		    	})
+				productItem.RemoteProductID=remoteProductIDArray[1].__rowids;
 			}
-			if( structKeyExists(productItem, 'SkuCode') and len(trim(productItem.SkuCode)) == 0 ){
-				productItem.SkuCode=productItem.ProductCode&"-1";
+			
+			if( structKeyExists(productItem, 'ProductCode') && !this.hibachiIsEmpty(productItem.ProductCode) ){
+				var productCode = productItem.ProductCode;
+				productItem.ProductCode=Replace(productCode, " ", "");
 			}
-			if( structKeyExists(productItem, 'RemoteSkuID') and len(trim(productItem.RemoteSkuID)) == 0 ){
-				productItem.RemoteSkuID=productItem.SkuCode&"-1";
-			}
+			
 			preProcessedData.append(productItem);
 		}
 	    return preProcessedData;
