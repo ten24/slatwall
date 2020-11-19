@@ -100,11 +100,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listcollection');
 	this.secureMethods=listAppend(this.secureMethods, 'listcurrency');
 	this.secureMethods=listAppend(this.secureMethods, 'listattributeset');
-	this.secureMethods=listAppend(this.secureMethods,'createreport');
-	this.secureMethods=listAppend(this.secureMethods,'editreport');
-	this.secureMethods=listAppend(this.secureMethods,'deletereport');
-	this.secureMethods=listAppend(this.secureMethods,'editWishList');
-	this.secureMethods=listAppend(this.secureMethods,'saveWishList');
+	this.secureMethods=listAppend(this.secureMethods, 'createreport');
+	this.secureMethods=listAppend(this.secureMethods, 'editreport');
+	this.secureMethods=listAppend(this.secureMethods, 'deletereport');
+	this.secureMethods=listAppend(this.secureMethods, 'editWishList');
+	this.secureMethods=listAppend(this.secureMethods, 'saveWishList');
 	this.secureMethods=listAppend(this.secureMethods, 'listform');
 	this.secureMethods=listAppend(this.secureMethods, 'listaccountrelationshiprole');
 	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
@@ -115,6 +115,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessaccount_changepassword');
 	this.secureMethods=listAppend(this.secureMethods, 'processorder_changereturnpercentage');
+	this.secureMethods=listAppend(this.secureMethods, 'preprocessemail_addtoqueue');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
