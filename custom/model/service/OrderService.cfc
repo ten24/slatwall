@@ -587,11 +587,7 @@ component extends="Slatwall.model.service.OrderService" {
 				
 			arguments.typeCode = 'partiallyShipped';
 		}
-		
-		if(arguments.systemCode == 'ostNotPlaced' && !isNull(currentOrderStatusType.getSystemCode()){
-			return;
-		}
-		
+
         /** 
          * if order is locked it can go back and forth b/w processsing1 and processing2 status 
          * but if that's not the case, we're checking further
