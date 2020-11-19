@@ -11,30 +11,33 @@ class PromoModalController {
     private maxUsePerItem: number;
 	
     //@ngInject
-    constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService, private monatAlertService) {
+    constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService, private monatAlertService, private $timeout) {
         // this.observerService.attach(this.closeModal,'saveEnrollmentSuccess')
         this.cart = monatService.cart;
-        this.promotions = this.cart.qualifiedMerchandiseRewardsArray;
-        this.selectPromotion(this.promotions[0]);
+        this.promotions = this.formatPromotions(this.cart.qualifiedMerchandiseRewardsArray);
         this.currentPage = 'promoList';
         
         this.observerService.attach(this.closeModal,'addOrderItemSuccess');
+        
+        this.initSlickSlider();
     }
     
-    public selectPromotion = (promotion)=>{
-        if(!promotion.title){
-            promotion.title = promotion.promotionPeriod.promotion.promotionName;
+    public formatPromotions = (promotions)=>{
+        for(let promotion of promotions){
+            if(!promotion.title){
+                promotion.title = promotion.promotionPeriod.promotion.promotionName;
+            }
+            if(!promotion.rewardHeader){
+                promotion.rewardHeader = promotion.title
+            }
+            if(!promotion.description){
+                promotion.description = promotion.promotionPeriod.promotion.promotionName;
+            }
         }
-        if(!promotion.rewardHeader){
-            promotion.rewardHeader = promotion.title
-        }
-        if(!promotion.description){
-            promotion.description = promotion.promotionPeriod.promotion.promotionName;
-        }
+    }
+    
+    public viewPromotion = (promotion)=>{
         this.selectedPromotion = promotion;
-    }
-    
-    public viewSelectedPromotion = ()=>{
         this.loading = true;
         this.monatService.getPromotionRewardSkus(this.selectedPromotion.promotionRewardID).then(skuArray=>{
             this.rewardSkus = this.formatRewardSkus(skuArray);
@@ -129,6 +132,16 @@ class PromoModalController {
         if(!isNaN(maxUsePerItem)){
             this.maxUsePerItem = maxUsePerItem;
         }
+    }
+    
+    private initSlickSlider = () =>{
+        const slickContainer = $('#promo-modal-content');
+		const slickOptions = {
+		    
+		};	
+		this.$timeout(()=>{
+			slickContainer.slick(slickOptions);
+		});
     }
     
     public closeModal = () => {

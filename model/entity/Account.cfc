@@ -1474,7 +1474,7 @@ public boolean function getUpgradeSyncFlag(){
 		
 		var maxDaysAfterAccountCreate = this.getAccountCreatedSite().setting("siteMaxDaysAfterAccountCreate");
 		
-		return  !this.getProductPackPurchasedFlag() 
+		return  ( isNull(this.getProductPackPurchasedFlag()) || !this.getProductPackPurchasedFlag() )
 				&& !isNull(maxDaysAfterAccountCreate) 
 				&& !isNull(this.getEnrollmentDate()) 
 				&& dateDiff("d", this.getEnrollmentDate(), now()) < maxDaysAfterAccountCreate;
