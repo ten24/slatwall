@@ -1,5 +1,7 @@
 <cfscript>
     local.myDateTime = now();
+
+
 </cfscript>
 <cfoutput>
 
@@ -83,6 +85,9 @@
   <script src="#$.getThemePath()#/custom/client/assets/js/slick.min.js"></script>
   <script src="#$.getThemePath()#/custom/client/assets/js/theme.js"></script>
   <script src="#$.getThemePath()#/custom/client/assets/js/simplebar.min.js"></script>
+  <script src="#$.getThemePath()#/custom/react/build/static/js/runtime-main.e94490b6.js" ></script>
+  <script src="#$.getThemePath()#/custom/react/build/static/js/2.da7ab168.chunk.js" ></script>
+  <script src="#$.getThemePath()#/custom/react/build/static/js/main.6f3c36c9.chunk.js" ></script>
 </body>
 </html>
 

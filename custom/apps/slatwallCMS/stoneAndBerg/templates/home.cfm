@@ -2,7 +2,10 @@
 <cfinclude template="inc/header/header.cfm" />
 
 <cfoutput>
-  
+  <div class="container text-center">
+      <div id="root"></div>
+  </div>
+
   <!--- Hero slider --->
   <div class="hero mt-2" style="background-image: url(#$.getThemePath()#/custom/client/assets/images/main-bg-img.jpg);">
     <!--- Featured Products --->

@@ -154,7 +154,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
+	//CUSTOM PROPERTIES BEGIN
 
+ property name="productHingeMaterial" ormtype="string";
+ property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
+ property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
+ property name="productKeyApplication" ormtype="string";
+ property name="productKeyDesign" ormtype="string";
+ property name="productPackageQty" ormtype="string";
+ property name="productListingTitle" ormtype="string";
+ property name="productWeight" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();

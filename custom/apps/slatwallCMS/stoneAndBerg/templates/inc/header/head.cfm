@@ -18,6 +18,5 @@
 <meta name="theme-color" content="##ffffff">
 <!--- Main Theme Styles --->
 <link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/client/dist/app.bundle.css">
-    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+<link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/react/static/css/main.2cbd59c8.chunk.css">
 </cfoutput>
