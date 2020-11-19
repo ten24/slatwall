@@ -98,39 +98,48 @@ component  accessors="true" output="false"
 	 **/
 	public void function getProductBundles( required struct data ) {
 	    param name="arguments.data.productID";
-	    
+	    param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
 	    var product = getProductService().getProduct( arguments.data.productID );
         
         //TODO: check if product is valid bundle
         
         if( !isNull(product) ) {
             //get product bundles
-            var bundleProducts = product.getDefaultSku().getProductBundleGroups();
+            var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
+            bundleProductCollectionList.setDisplayProperties("skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
+            bundleProductCollectionList.addFilter("productBundleSku.skuID", product.getDefaultSku().getSkuID());
+            bundleProductCollectionList.addFilter("activeFlag", 1);
+            var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
+            
+            
+            //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
             var bundleResponse = [];
             
             //populate bundle response
             for( var bundle in bundleProducts) {
-                if( bundle.getActiveFlag() ){
-                    //get sku list form collection config
-                    var skuCollections = getSkuService().getSkuCollectionList();
-                    skuCollections.setCollectionConfig( bundle.getSkuCollectionConfig() );
-                    var bundleSkuList = skuCollections.getRecords();
-                    
-                    ArrayAppend(bundleResponse, {
-                       'minimumQuantity':  bundle.getMinimumQuantity(),
-                       'maximumQuantity': bundle.getMaximumQuantity(),
-                       'bundleType': bundle.getProductBundleGroupType().getTypeName(),
-                       'amount': bundle.getAmount(),
-                       'amountType': bundle.getAmountType(),
-                       'skuList': bundleSkuList,
-                    });
-                }
+                //get sku list form collection config
+                var skuCollections = getSkuService().getSkuCollectionList();
+                skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+                skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
+	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
+                var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
+                
+                ArrayAppend(bundleResponse, {
+                  'minimumQuantity':  bundle['minimumQuantity'],
+                  'maximumQuantity': bundle['maximumQuantity'],
+                  'bundleType': bundle['productBundleGroupType_typeName'],
+                  'amount': bundle['amount'],
+                  'amountType': bundle['amountType'],
+                  'skuList': bundleSkuList,
+                });
             }
             
             arguments.data.ajaxResponse['data'] = bundleResponse;
-            getHibachiScope().addActionResult("public:account.getProductBundles",false);
+            getHibachiScope().addActionResult("public:product.getProductBundles",false);
         } else {
-            getHibachiScope().addActionResult("public:account.getProductBundles",true);
+            getHibachiScope().addActionResult("public:product.getProductBundles",true);
         }   
 	}
 	
