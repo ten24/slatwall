@@ -277,7 +277,9 @@ Notes:
 		}
 
 		if(isNull(emailTemplate)) {
+		
 			arguments.email.addError('emailTemplate', 'No email template provided'); 
+			return arguments.email;
 		}
 
 		var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
