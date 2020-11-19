@@ -234,7 +234,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		var sql =	"INSERT IGNORE INTO
 						SwEntityQueue (entityQueueID,baseObject,baseID,processMethod,entityQueueData,integrationID,batchID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime,entityQueueDateTime,tryCount,entityQueueProcessingDateTime)
 					VALUES 
-						(:entityQueueID,:baseObject,:baseID,:processMethod,:entityQueueData,:integrationID,:batchID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,:entityQueueDateTime,1,:entityQueueProcessingDateTime)";
+						(:entityQueueID,:baseObject,:baseID,:processMethod,:entityQueueData,:integrationID,:batchID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,:entityQueueDateTime,0,:entityQueueProcessingDateTime)";
 						
 		queryService.execute(sql=sql);
 	}

@@ -1,0 +1,46 @@
+{
+    "entityName": "AccountAddress",
+   
+   
+    "properties": {
+        
+        "remoteAccountAddressID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "addressNickName": {
+            "propertyIdentifier": "accountAddressName",
+            "validations": {
+                "dataType": "string"
+            }
+        }
+    },
+    
+    "dependencies": [
+        {
+            "key": "remoteAccountID",
+            "lookupKey": "remoteID",
+            "entityName": "Account",
+            "propertyIdentifier": "account"
+        }
+    ],
+    
+    "relations": [
+        {
+            "type": "manyToOne",
+            "entityName": "Address",
+            "propertyIdentifier": "address"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteAccountAddressID"
+        ]
+    }
+}
