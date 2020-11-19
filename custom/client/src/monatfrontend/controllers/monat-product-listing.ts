@@ -27,13 +27,8 @@ class MonatProductListingController {
 	public loadingAddToCart;
 	public flexshipFlag:boolean;
 	public qualifiedPromos;
-	public showFilterMenu = false;
-	public showMainFilterMenu = true;
-	public filterCategory:string;
-	public filterSubCategory:string;
 	public productFilterTitle:string = "";
-	public filterSelected = false;
-	
+
 	// @ngInject
 	constructor(
 		public $rootScope           : ng.IRootScopeService,
@@ -139,20 +134,7 @@ class MonatProductListingController {
 	    this.monatService.launchWishlistsModal(skuID, productID, productName);
 	}
 	
-	public toggleFilterMenu = () => {
-			
-			this.showFilterMenu = !this.showFilterMenu;
-	}
-	
-	public toggleFilterSubCategory = (category) => {
-		this.showMainFilterMenu = false;
-		this.filterCategory = category;
-	}
-	
-	public clearFilter = () => {
-		this.productFilterTitle="";
-		this.filterSelected = false;
-	}
+
 	
 	public searchByKeyword = ():void =>{
 	    this.loading = true;
