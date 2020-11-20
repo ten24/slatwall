@@ -18,7 +18,14 @@ import "./i18n";
 // );
 ReactDOM.render(
   <React.StrictMode>
-    <Footer />
+    <Footer  
+  isContact={document.getElementById("reactFooter").getAttribute('data-isContact')}
+  contactUs={document.getElementById("reactFooter").getAttribute('data-contactUs')}
+  getInTouch={document.getElementById("reactFooter").getAttribute('data-getInTouch')}
+  siteLinks={document.getElementById("reactFooter").getAttribute('data-siteLinks')}
+  stayInformed={document.getElementById("reactFooter").getAttribute('data-stayInformed')}
+  copywriteDate={document.getElementById("reactFooter").getAttribute('data-copywriteDate')}
+    />
   </React.StrictMode>,
   document.getElementById("reactFooter")
 );

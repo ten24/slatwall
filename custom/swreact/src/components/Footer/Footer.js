@@ -9,7 +9,7 @@ function Footer(props) {
           <div className="container">
             <div className="row">
               <div className="col-0 col-md-2"></div>
-              <div className="col-md-8 text-center">{props.contactUs}</div>
+              <div className="col-md-8 text-center" dangerouslySetInnerHTML={{__html: props.contactUs}} />
               <div className="col-0 col-md-2"></div>
             </div>
           </div>
@@ -20,19 +20,15 @@ function Footer(props) {
         <div className="container">
           <div className="row pt-2">
             <div className="col-md-2 col-sm-6">
-              <div className="widget widget-links pb-2 mb-4">
-                {props.siteLinks}
-              </div>
+              <div className="widget widget-links pb-2 mb-4" dangerouslySetInnerHTML={{__html: props.siteLinks}} />
             </div>
             <div className="col-md-4 col-sm-6">
-              <div className="widget widget-links pb-2 mb-4">
-                {props.getInTouch}
-              </div>
+              <div className="widget widget-links pb-2 mb-4"  dangerouslySetInnerHTML={{__html: props.getInTouch}} />
             </div>
             <div className="col-md-6">
-              <div className="widget pb-2 mb-4">
-                {props.stayInformed}
-
+              <div className="widget pb-2 mb-4" >
+              
+              <div dangerouslySetInnerHTML={{__html: props.stayInformed}} />
                 <form
                   className="validate"
                   action="##"
