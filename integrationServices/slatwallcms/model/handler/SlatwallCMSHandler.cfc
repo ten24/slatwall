@@ -166,7 +166,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				prepareSiteForRendering(site=site, argumentsCollection=arguments);
 			}
        	}else{
-       		//check to see if we have admin restricted domains via global setting
+       		//if domain name is not a CMS site check to see if we have admin restricted domains via global setting
        		var adminDomanNamesSetting = arguments.slatwallScope.getService('SettingService').getSettingValue("globalAdminDomainNames");
        		//if a list of admin domains has been specified then check to see if the domain exists in the list. if none specified then pass through
        		if(!isNull(adminDomanNamesSetting) && len(adminDomanNamesSetting)){
