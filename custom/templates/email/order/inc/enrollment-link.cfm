@@ -1,13 +1,15 @@
 <cfscript>
-var accountType = local.order.getAccountType();
-if(accountType == 'marketPartner'){
-    accountType = 'market-partner';
-}
-
-if(listFindNoCase('market-partner,VIP',accountType)){
-    var redirectURL = 'enrollment/' & accountType & '/enroll/';
+var enrollmentType = local.order.getMonatOrderType();
+var redirectUrl = 'enrollment/';
+if( !isNull(enrollmentType) ){
+    enrollmentType = enrollmentType.getTypeCode();
+    if(enrollmentType == 'motMpEnrollment'){
+        redirectUrl &= 'market-partner/enroll/';
+    }else{
+        redirectUrl &= 'vip/enroll/';
+    }
 }else{
-    var redirectURL = 'shopping-cart/';
+    redirectUrl == 'shopping-cart/';
 }
 
 redirectURL &= '?enrollmentCode=#local.order.getOrderID()#';
