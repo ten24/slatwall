@@ -2,45 +2,53 @@
 class PromoModalController {
 	public close; // injected from angularModalService
 	public loading;
+	public takeOfferLoading;
 	public cart;
 	public promotions;
 	public selectedPromotion;
 	public currentPage;
 	public rewardSkus;
+	public slickInitialized:boolean = false;
     private maxUseCount: number;
     private maxUsePerItem: number;
 	
     //@ngInject
-    constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService, private monatAlertService) {
+    constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService, private monatAlertService, private $timeout) {
         // this.observerService.attach(this.closeModal,'saveEnrollmentSuccess')
         this.cart = monatService.cart;
-        this.promotions = this.cart.qualifiedMerchandiseRewardsArray;
-        this.selectPromotion(this.promotions[0]);
+        this.promotions = this.formatPromotions(this.cart.qualifiedMerchandiseRewardsArray);
         this.currentPage = 'promoList';
         
         this.observerService.attach(this.closeModal,'addOrderItemSuccess');
     }
     
-    public selectPromotion = (promotion)=>{
-        if(!promotion.title){
-            promotion.title = promotion.promotionPeriod.promotion.promotionName;
-        }
-        if(!promotion.rewardHeader){
-            promotion.rewardHeader = promotion.title
-        }
-        if(!promotion.description){
-            promotion.description = promotion.promotionPeriod.promotion.promotionName;
-        }
-        this.selectedPromotion = promotion;
+    public $onInit = () =>{
+        this.initSlickSlider();
     }
     
-    public viewSelectedPromotion = ()=>{
-        this.loading = true;
+    public formatPromotions = (promotions)=>{
+        for(let promotion of promotions){
+            if(!promotion.title){
+                promotion.title = promotion.promotionPeriod.promotion.promotionName;
+            }
+            if(!promotion.rewardHeader){
+                promotion.rewardHeader = promotion.title
+            }
+            if(!promotion.description){
+                promotion.description = promotion.promotionPeriod.promotion.promotionName;
+            }
+        }
+        return promotions;
+    }
+    
+    public viewPromotion = (promotion)=>{
+        this.selectedPromotion = promotion;
+        this.takeOfferLoading = true;
         this.monatService.getPromotionRewardSkus(this.selectedPromotion.promotionRewardID).then(skuArray=>{
             this.rewardSkus = this.formatRewardSkus(skuArray);
             this.selectedPromotion.currentUseCount = 0;
             this.currentPage = 'reward';
-            this.loading=false;
+            this.takeOfferLoading=false;
         });
         this.setCurrentQualificationLimits(this.selectedPromotion);
     }
@@ -51,6 +59,7 @@ class PromoModalController {
             sku.listPrice = parseFloat(sku.listPrice);
             sku.listPrice = isNaN(sku.listPrice) ? sku.skuPrices_price : sku.listPrice;
             sku.addToCartQuantity = 0;
+            sku.imagePath = sku.imagePath[0];
             
             var adjustmentAmount = this.selectedPromotion.amount;
             var adjustmentType = this.selectedPromotion.amountType;
@@ -99,7 +108,7 @@ class PromoModalController {
                 if(result.hasErrors){
     				this.monatAlertService.showErrorsFromResponse(result);
     			}else{
-    				this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful'));
+    				this.$timeout(()=>this.monatService.cart.rewardAddToCartMessage = this.rbkeyService.rbKey('alert.cart.addProductSuccessful'));
     			}
             }).catch(err=>{
                 console.error(err);
@@ -129,6 +138,15 @@ class PromoModalController {
         if(!isNaN(maxUsePerItem)){
             this.maxUsePerItem = maxUsePerItem;
         }
+    }
+    
+    public initSlickSlider = () =>{
+        const slickContainer = $('#promo-modal-content');
+        const slickOptions = {};
+		this.$timeout(()=>{
+			slickContainer.slick(slickOptions);
+			this.slickInitialized=true;
+		});
     }
     
     public closeModal = () => {
