@@ -511,7 +511,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		
 		var orderTemplateItems = this.getOrderTemplateItems();
 		for(var orderTemplateItem in orderTemplateItems){
-			cacheKey &= orderTemplateItem.getOrderTemplateItemID() & orderTemplateItem.getQuantity();
+			cacheKey &= orderTemplateItem.getSku().getSkuID() & orderTemplateItem.getQuantity();
 		}
 		
 		cacheKey &= this.getOrderTemplateStatusType().getTypeID();
