@@ -430,6 +430,30 @@ Notes:
 			var settingQuery = queryExecute(sql);
 			return settingQuery;
 		}
+		
+		public void function removeOrderTemplateSku(required string orderTemplateID, required string skuID){
+			var sql = "DELETE FROM swordertemplateitem
+						WHERE orderTemplateID = :orderTemplateID
+						AND skuID = :skuID";
+			var params = {
+				orderTemplateID: arguments.orderTemplateID,
+				skuID: arguments.skuID
+			};
+			queryExecute(sql,params);
+		}
+		
+		public void function replaceOrderTemplateSku(required string orderTemplateID, required string removalSkuID, required string replacementSkuID){
+			var sql = "UPDATE swordertemplateitem
+						SET skuID = :replacementSkuID,
+						WHERE orderTemplateID = :orderTemplateID
+						AND skuID = :removalSkuID";
+			var params = {
+				orderTemplateID: arguments.orderTemplateID,
+				removalSkuID: arguments.removalSkuID,
+				replacementSkuID: arguments.replacementSkuID
+			};
+			queryExecute(sql,params);
+		}
 	</cfscript>
 
 </cfcomponent>

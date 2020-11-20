@@ -904,14 +904,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !structKeyExists(arguments.data, 'removalSkuID') ){
 			arguments.orderTemplate.addError('removalSku',getHibachiScope().rbKey('validate.orderTemplate_removeSku.removalSkuID'));
 		}
-		var orderTemplateItemCollection = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
-		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID');
-		var itemRecords = orderTemplateItemCollection.getRecords();
-		for(var itemRecord in itemRecords){
-			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
-			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
-			this.saveOrderTemplate(arguments.orderTemplate);
+		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
+		getOrderDAO().removeOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID);
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			getService('HibachiEntityQueueService').insertEntityQueueItem(baseID=orderTemplateID, baseObject="OrderTemplate", processMethod='processOrderTemplate_updateCalculatedProperties');
 		}
 		return arguments.orderTemplate;
 	}
@@ -923,20 +919,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !structKeyExists(arguments.data, 'replacementSkuID') ){
 			arguments.orderTemplate.addError('replacementSku',getHibachiScope().rbKey('validate.orderTemplate_replaceSku.replacementSkuID'));
 		}
-		var orderTemplateItemCollection = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
-		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,quantity');
-		var itemRecords = orderTemplateItemCollection.getRecords();
-		for(var itemRecord in itemRecords){
-			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
-			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
-			
-			var addOrderTemplateItemProcessData = {
-				'skuID':arguments.data.replacementSkuID,
-				'quantity':itemRecord['quantity']
-			};
-			arguments.orderTemplate = this.processOrderTemplate(arguments.orderTemplate, addOrderTemplateItemProcessData, 'addOrderTemplateItem');
+		
+		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
+		getOrderDAO().replaceOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID, arguments.data.replacementSkuID);
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			getService('HibachiEntityQueueService').insertEntityQueueItem(baseID=orderTemplateID, baseObject="OrderTemplate", processMethod='processOrderTemplate_updateCalculatedProperties');
 		}
+		
 		return arguments.orderTemplate;
 	}
 
