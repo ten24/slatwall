@@ -26,7 +26,7 @@
   <script src="#$.getThemePath()#/custom/client/assets/js/simplebar.min.js"></script>
   <script src="#$.getThemePath()#/custom/swreact/build/static/js/runtime-main.7435c64e.js" ></script>
   <script src="#$.getThemePath()#/custom/swreact/build/static/js/2.7c32cb08.chunk.js" ></script>
-  <script src="#$.getThemePath()#/custom/swreact/build/static/js/main.fd0a0464.chunk.js" ></script>
+  <script src="#$.getThemePath()#/custom/swreact/build/static/js/main.c18b3505.chunk.js" ></script>
 
   </footer>
 </body>

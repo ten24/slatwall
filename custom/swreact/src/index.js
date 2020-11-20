@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
-import { Footer, HookSample } from "./components";
+import { Footer, Header } from "./components";
 import "./i18n";
 
 // ReactDOM.render(
@@ -16,6 +16,17 @@ import "./i18n";
 //   </React.StrictMode>,
 //   document.getElementById("HookSample2")
 // );
+ReactDOM.render(
+  <React.StrictMode>
+    <Header  
+  themePath={document.getElementById("reactHeader").getAttribute('data-themePath')}
+  mainNavigation={document.getElementById("reactHeader").getAttribute('data-mainNavigation')}
+  productCategories={document.getElementById("reactHeader").getAttribute('data-productCategories')}
+    />
+  </React.StrictMode>,
+  document.getElementById("reactHeader")
+);
+
 ReactDOM.render(
   <React.StrictMode>
     <Footer  
