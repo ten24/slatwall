@@ -1,15 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
 function Footer(props) {
   return (
     <footer className="pt-5">
-      {props.isContact && (
+      {props.isContact === 'true' && (
         <div className="bg-primary p-5">
           <div className="container">
             <div className="row">
               <div className="col-0 col-md-2"></div>
-              <div className="col-md-8 text-center" dangerouslySetInnerHTML={{__html: props.contactUs}} />
+              <div
+                className="col-md-8 text-center"
+                dangerouslySetInnerHTML={{ __html: props.contactUs }}
+              />
               <div className="col-0 col-md-2"></div>
             </div>
           </div>
@@ -20,15 +23,20 @@ function Footer(props) {
         <div className="container">
           <div className="row pt-2">
             <div className="col-md-2 col-sm-6">
-              <div className="widget widget-links pb-2 mb-4" dangerouslySetInnerHTML={{__html: props.siteLinks}} />
+              <div
+                className="widget widget-links pb-2 mb-4"
+                dangerouslySetInnerHTML={{ __html: props.siteLinks }}
+              />
             </div>
             <div className="col-md-4 col-sm-6">
-              <div className="widget widget-links pb-2 mb-4"  dangerouslySetInnerHTML={{__html: props.getInTouch}} />
+              <div
+                className="widget widget-links pb-2 mb-4"
+                dangerouslySetInnerHTML={{ __html: props.getInTouch }}
+              />
             </div>
             <div className="col-md-6">
-              <div className="widget pb-2 mb-4" >
-              
-              <div dangerouslySetInnerHTML={{__html: props.stayInformed}} />
+              <div className="widget pb-2 mb-4">
+                <div dangerouslySetInnerHTML={{ __html: props.stayInformed }} />
                 <form
                   className="validate"
                   action="##"
@@ -98,7 +106,7 @@ function Footer(props) {
                   </div>
                   {/* <!--- real people should not fill this in and expect good things - do not remove this or risk form bot signups---> */}
                   <div
-                    style={{ position: "absolute", left: "-5000px" }}
+                    style={{ position: 'absolute', left: '-5000px' }}
                     aria-hidden="true"
                   >
                     <input
@@ -139,15 +147,15 @@ function Footer(props) {
         </div>
       </div>
     </footer>
-  );
+  )
 }
 Footer.propTypes = {
-  isContact: PropTypes.bool,
+  isContact: PropTypes.string,
   contactUs: PropTypes.string,
   getInTouch: PropTypes.string,
   siteLinks: PropTypes.string,
   stayInformed: PropTypes.string,
   copywriteDate: PropTypes.string,
-};
+}
 
-export default Footer;
+export default Footer
