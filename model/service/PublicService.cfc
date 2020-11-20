@@ -161,7 +161,12 @@ component  accessors="true" output="false"
 	        return;
 	    }
 	    
-	    var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	    if( !account.isNew() ) {
+	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	    } else {
+	        var productBundleBuild = getProductService().getProductBundleBuildByProductBundleSkuANDSession( [sku, getHibachiScope().getSession()] );
+	    }
+	    
     
         if( isNull( productBundleBuild ) ) {
 	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
@@ -204,13 +209,25 @@ component  accessors="true" output="false"
 	        return;
 	    }
 	    
-	    var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, bundleSku] );
+	    if( !account.isNew() ) {
+	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	    } else {
+	        var productBundleBuild = getProductService().getProductBundleBuildBySessionANDProductBundleSku( [ getHibachiScope().getSession(), sku] );
+	    }
         
         if( isNull( productBundleBuild ) ) {
             
             productBundleBuild = getProductService().newProductBundleBuild();
             productBundleBuild.setProductBundleSku( bundleSku );
-            productBundleBuild.setAccount( account );
+            
+            if( !isNull( getHibachiScope().getSession() ) ) {
+                productBundleBuild.setSession( getHibachiScope().getSession() );
+            }
+            
+            if( !account.isNew() ) {
+                productBundleBuild.setAccount( account );
+            }
+            
             productBundleBuild = getProductService().saveProductBundleBuild( productBundleBuild );
             
             if( productBundleBuild.hasErrors() ) {
@@ -251,7 +268,7 @@ component  accessors="true" output="false"
 	    
 	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
         
-        if( isNull( productBundleBuild ) || productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) {
+        if( isNull( productBundleBuild ) || ( ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) || ( !isNull(productBundleBuild.getSession()) && productBundleBuild.getSession().getSessionID() != getHibachiScope().getSession().getSessionID() ) ) ) {
             getHibachiScope().addActionResult("public:product.removeProductBundleBuild",true);
             return;
         }
