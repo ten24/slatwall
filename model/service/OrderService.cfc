@@ -3576,17 +3576,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var n = ArrayLen(orderItemsToRemove); n >=1; n--)	{
 				var orderItem = this.getOrderItem(orderItemsToRemove[n]);
 
-				if(arraylen(orderItem.getStockHolds())){
-					//currently only supporting singular stockholds
-					var stockHold = orderItem.getStockHolds()[1];
-					if(stockHold.isExpired()){
-						getService('stockService').deleteStockHold(stockHold);
-						arguments.order.removeOrderItem(orderItem);
-						continue;
-					}
-				}
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(!isNull(orderItem) && arrayFindNoCase(orderItemsToRemove, orderItem.getOrderItemID())) {
+					if(arraylen(orderItem.getStockHolds())){
+						//currently only supporting singular stockholds
+						var stockHold = orderItem.getStockHolds()[1];
+						if(stockHold.isExpired()){
+							getService('stockService').deleteStockHold(stockHold);
+							arguments.order.removeOrderItem(orderItem);
+							continue;
+						}
+					}
 
 					var okToRemove = true;
 
