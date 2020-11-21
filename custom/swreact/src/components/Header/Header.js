@@ -1,8 +1,55 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+const MegaMenu = props => {
+  return (
+    <li className="nav-item dropdown">
+      <a
+        className="nav-link dropdown-toggle"
+        href={props.linkUrl}
+        data-toggle="dropdown"
+      >
+        {props.title}
+      </a>
+      <div className="dropdown-menu pt-0 pb-3">
+        <div className="nav-shop-all">
+          <a href={props.linkUrl}>
+            Shop All {props.title}
+            <i className="far fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+        <div className="d-flex flex-wrap flex-lg-nowrap px-2">
+          {props.subMenu.map((productCategory, index) => {
+            return (
+              <div key={index} className="mega-dropdown-column py-4 px-3">
+                <div
+                  className="widget widget-links mb-3"
+                  dangerouslySetInnerHTML={{
+                    __html: productCategory['customBody'],
+                  }}
+                />
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </li>
+  )
+}
+
 function Header(props) {
-  console.log(props)
+  const productCategories = JSON.parse(props.productCategories)
+  let menuItems = new Map()
+  productCategories.forEach(item => {
+    if (menuItems.has(item.parentContent_title)) {
+      let exisitingItems = menuItems.get(item.parentContent_title)
+      exisitingItems.push(item)
+      menuItems.set(item.parentContent_title, exisitingItems)
+    } else {
+      menuItems.set(item.parentContent_title, [item])
+    }
+  })
+
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -103,7 +150,16 @@ function Header(props) {
               </div>
 
               <ul className="navbar-nav nav-categories">
-                <h1>dfgdfgfg</h1>
+                {[...menuItems.values()].map((menuItem, index) => {
+                  return (
+                    <MegaMenu
+                      key={index}
+                      subMenu={menuItem}
+                      title={menuItem[0]['parentContent_title']}
+                      linkUrl={menuItem[0]['parentContent_linkUrl']}
+                    />
+                  )
+                })}
               </ul>
               <ul className="navbar-nav mega-nav ml-lg-2">
                 <li className="nav-item">
