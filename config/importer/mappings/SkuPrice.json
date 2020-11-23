@@ -52,18 +52,6 @@
         }
     },
     
-    "relations" : [
-        {
-            "type": "manyToOne",
-            "entityName": "PriceGroup",
-            "propertyIdentifier": "priceGroup",
-            "isNullable" : true,
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateSkuPricePriceGroup"
-        }
-    ],
-    
     "dependencies" : [
         {
             "key"                : "remoteSkuID",

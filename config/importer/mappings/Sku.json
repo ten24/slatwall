@@ -56,6 +56,60 @@
             "validations": {
                 "dataType": "boolean"
             }
+        },
+        "padlocksKeyway": {
+            "propertyIdentifier": "padlocksKeyway",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "padlocksKeying": {
+            "propertyIdentifier": "padlocksKeying",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "keyKeyway": {
+            "propertyIdentifier": "keyKeyway",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "doorKnobKeyway": {
+            "propertyIdentifier": "doorKnobKeyway",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "doorKnobBackset": {
+            "propertyIdentifier": "doorKnobBackset",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "productFinish": {
+            "propertyIdentifier": "productFinish",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "doorKnobStyle": {
+            "propertyIdentifier": "doorKnobStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "safesLockType": {
+            "propertyIdentifier": "safesLockType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "safesFinish": {
+            "propertyIdentifier": "safesFinish",
+            "validations": {
+                "dataType": "string"
+            }
         }
     },
     
@@ -71,6 +125,14 @@
             "type": "oneToMany",
             "entityName": "SkuPrice",
             "propertyIdentifier": "skuPrices"
+        },
+        {
+            "type": "manyToMany",
+            "entityName": "Options",
+            "propertyIdentifier": "Option",
+            "excludeFromTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateSkuOption"
         }
     ],
     

@@ -395,6 +395,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				productItem.Price=productItem.ListPrice;
 			}
 			
+			if( structKeyExists(productItem, 'ListPrice') && this.hibachiIsEmpty(productItem.ListPrice) ) {
+				productItem.ListPrice=productItem.Price;
+			}
+			
 			if( structKeyExists(productItem, 'RemoteProductID') && this.hibachiIsEmpty(productItem.RemoteProductID) ){
 				var productCode = productItem.ProductCode;
 				var remoteProductIDArray = this.getErpOneData({
@@ -402,6 +406,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    	    "columns" : "__rowids"
 		    	})
 				productItem.RemoteProductID=remoteProductIDArray[1].__rowids;
+			}
+			
+			if( structKeyExists(productItem, 'SkuCode') and len(trim(productItem.SkuCode)) == 0 ){
+				productItem.SkuCode=Replace(productItem.ProductCode, " ", "");
+			}
+			
+			if( structKeyExists(productItem, 'RemoteSkuID') and len(trim(productItem.RemoteSkuID)) == 0 ){
+				productItem.RemoteSkuID=productItem.SkuCode;
 			}
 			
 			if( structKeyExists(productItem, 'ProductCode') && !this.hibachiIsEmpty(productItem.ProductCode) ){
