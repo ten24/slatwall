@@ -38,64 +38,55 @@
     },
     
     "relations": [
-        {
-            "type": "manyToOne",
-            "entityName": "Address",
-            "propertyIdentifier": "billingAddress",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true
-        },
-        {
-            "type": "manyToOne",
-            "entityName": "AccountAddress",
-            "propertyIdentifier": "billingAccountAddress",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true
+         {
+            "type"               : "manyToOne",
+            "entityName"         : "Address",
+            "isNullable"         : true,
+            "propertyIdentifier" : "shippingAddress"
         }
     ],
     
      "dependencies" : [
         {
             "key"                : "remoteFulfillmentMethodID",
-            "OPTIONAL_DEPENDENCY": true,
             "entityName"         : "FulfillmentMethod",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "fulfillmentMethod"
         },
         {
-            "key"                : "remoteAccountEmailAddress",
-            "OPTIONAL_DEPENDENCY": true,
-            "entityName"         : "AccountEmailAddress",
-            "lookupKey"          : "remoteID",
-            "propertyIdentifier" : "accountEmailAddress"
-        },
-        {
             "key"                : "remoteOrderID",
-            "OPTIONAL_DEPENDENCY": true,
             "entityName"         : "Order",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "order"
         },
         {
-            "key"                : "orderTypeCode",
-            "OPTIONAL_DEPENDENCY": true,
-            "lookupKey"          : "systemCode",
-            "entityName"         : "Type",
-            "propertyIdentifier" : "orderPaymentType"
+            "key"                : "pickupLocationRemoteID",
+            "entityName"         : "Location",
+            "isNullable"         : true,
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "pickupLocation"
         },
         {
-            "key"                : "orderFulfillmentStatusTypeID",
-            "OPTIONAL_DEPENDENCY": true,
+            "key"                : "shippingMethodRemoteID",
+            "entityName"         : "ShippingMethod",
+            "isNullable"         : true,
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "shippingMethod"
+        },
+        {
+            "key"                : "shippingIntegration",
+            "entityName"         : "integration",
+            "isNullable"         : true,
+            "lookupKey"          : "packageName",
+            "propertyIdentifier" : "shippingIntegration"
+        },
+        {
+            "key"                : "statusCode",
             "lookupKey"          : "systemCode",
             "entityName"         : "Type",
+            "defaultValue"       : "...",
+            "__hint"             : "this defaultValue for status-code is `ofstNew`.",
             "propertyIdentifier" : "orderFulfillmentStatusType"
-        },
-        {
-            "key"                : "orderFulfillmentInvStatTypeID",
-            "OPTIONAL_DEPENDENCY": true,
-            "lookupKey"          : "systemCode",
-            "entityName"         : "Type",
-            "propertyIdentifier" : "orderFulfillmentInvStatType"
         },
     ],
     
