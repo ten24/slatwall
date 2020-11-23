@@ -400,12 +400,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 			
 			if( structKeyExists(productItem, 'RemoteProductID') && this.hibachiIsEmpty(productItem.RemoteProductID) ){
-				var productCode = productItem.ProductCode;
-				var remoteProductIDArray = this.getErpOneData({
-		    	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
-		    	    "columns" : "__rowids"
-		    	})
-				productItem.RemoteProductID=remoteProductIDArray[1].__rowids;
+				// var productCode = productItem.ProductCode;
+				// var remoteProductIDArray = this.getErpOneData({
+				//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
+				//  	    "columns" : "__rowids"
+				//  	})
+				// productItem.RemoteProductID=remoteProductIDArray[1].__rowids;
+				productItem.RemoteProductID=Replace(productItem.ProductCode, " ", "");
 			}
 			
 			if( structKeyExists(productItem, 'SkuCode') and len(trim(productItem.SkuCode)) == 0 ){

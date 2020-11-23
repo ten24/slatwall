@@ -129,10 +129,10 @@
         {
             "type": "manyToMany",
             "entityName": "Options",
-            "propertyIdentifier": "Option",
+            "propertyIdentifier": "options",
             "excludeFromTemplate" : true,
             "excludeFromValidation"  : true,
-            "generatorFunction": "generateSkuOption"
+            "generatorFunction": "generateSkuOptions"
         }
     ],
     

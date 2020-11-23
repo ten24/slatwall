@@ -1233,12 +1233,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         );
 	}
 	
-	public any function generateSkuOption( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-	
-	
-	
 	
 	/////////////////.                  INVENTORY
 	
