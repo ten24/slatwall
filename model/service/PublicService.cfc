@@ -89,6 +89,231 @@ component  accessors="true" output="false"
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
 	
+	
+	/***
+	 * Method to return list of bundle groups and sku list for product
+	 * 
+	 * @param - productID
+	 * @param - currentPage
+	 * @param - pageRecordsShow
+	 * @return - bundleResponse - custom array of keys
+	 **/
+	public void function getProductBundles( required struct data ) {
+	    param name="arguments.data.productID";
+	    param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+	    var product = getProductService().getProduct( arguments.data.productID );
+        
+        if( !isNull(product) && product.getBaseProductType() == "productBundle") {
+            //get product bundles
+            var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
+            bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
+            bundleProductCollectionList.addFilter("productBundleSku.skuID", product.getDefaultSku().getSkuID());
+            bundleProductCollectionList.addFilter("activeFlag", 1);
+            var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
+            
+            
+            //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
+            var bundleResponse = [];
+            
+            //populate bundle response
+            for( var bundle in bundleProducts) {
+                //get sku list form collection config
+                var skuCollections = getSkuService().getSkuCollectionList();
+                skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+                skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
+	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
+                var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
+                
+                ArrayAppend(bundleResponse, {
+                  'minimumQuantity':  bundle['minimumQuantity'],
+                  'maximumQuantity': bundle['maximumQuantity'],
+                  'bundleType': bundle['productBundleGroupType_typeName'],
+                  'amount': bundle['amount'],
+                  'amountType': bundle['amountType'],
+                  'skuList': bundleSkuList,
+                  'defaultSkuID': product.getDefaultSku().getSkuID(),
+                  'productBundleGroupID': bundle['productBundleGroupID'],
+                });
+            }
+            
+            arguments.data.ajaxResponse['data'] = bundleResponse;
+            getHibachiScope().addActionResult("public:product.getProductBundles",false);
+        } else {
+            getHibachiScope().addActionResult("public:product.getProductBundles",true);
+        }
+	}
+	
+	/**
+	 * Method to get existing product bundle builds
+	 * @param - skuID (default sku ID for bundle product)
+	 * @return bundleBuildResponse - custom array of product bundle builds
+	 * */
+	public void function getProductBundleBuild( required struct data ) {
+	    param name="arguments.data.skuID";
+	    
+	    var account = getHibachiScope().getAccount();
+	    var sku = getProductService().getSku( arguments.data.skuID );
+	    
+	    if( isNull( sku ) ) {
+	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
+	        return;
+	    }
+	    
+	    if( !account.isNew() ) {
+	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	    } else {
+	        var productBundleBuild = getProductService().getProductBundleBuildByProductBundleSkuANDSession( [sku, getHibachiScope().getSession()] );
+	    }
+	    
+    
+        if( isNull( productBundleBuild ) ) {
+	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
+	        return;
+	    }
+    
+        var productBundleBuildItemCollectionList = getProductService().getProductBundleBuildItemCollectionList();
+        productBundleBuildItemCollectionList.setDisplayProperties("quantity, productBundleBuildItemID, sku.skuID")
+        productBundleBuildItemCollectionList.addFilter( "productBundleBuild.productBundleBuildID",  productBundleBuild.getProductBundleBuildID() );
+        
+        var bundleBuildResponse = {
+            "productBundleBuildID" : productBundleBuild.getProductBundleBuildID(),
+            "productBundleSkuID" : productBundleBuild.getProductBundleSkuID(),
+            "bundleItems" : productBundleBuildItemCollectionList.getRecords( formatRecords = false )
+        };
+	    
+	    arguments.data.ajaxResponse['data'] = bundleBuildResponse;
+        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",false);
+	}
+	
+	/**
+	 * Method to create product bundle build
+	 * 
+	 * @param - skuID
+	 * @param - default skuID
+	 * @param - quantity
+	 * */
+	public void function createProductBundleBuild( required struct data ) {
+	    param name="arguments.data.skuID";
+	    param name="arguments.data.quantity";
+	    param name="arguments.data.productBundleGroupID";
+	    param name="arguments.data.defaultSkuID";
+	    
+	    var bundleSku = getProductService().getSku( arguments.data.defaultSkuID );
+	    var account = getHibachiScope().getAccount();
+	    var sku = getProductService().getSku( arguments.data.skuID );
+	    
+	    if( isNull( sku ) || isNull( bundleSku ) ) {
+	        getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+	        return;
+	    }
+	    
+	    if( !account.isNew() ) {
+	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	    } else {
+	        var productBundleBuild = getProductService().getProductBundleBuildBySessionANDProductBundleSku( [ getHibachiScope().getSession(), sku] );
+	    }
+        
+        if( isNull( productBundleBuild ) ) {
+            
+            productBundleBuild = getProductService().newProductBundleBuild();
+            productBundleBuild.setProductBundleSku( bundleSku );
+            
+            if( !isNull( getHibachiScope().getSession() ) ) {
+                productBundleBuild.setSession( getHibachiScope().getSession() );
+            }
+            
+            if( !account.isNew() ) {
+                productBundleBuild.setAccount( account );
+            }
+            
+            productBundleBuild = getProductService().saveProductBundleBuild( productBundleBuild );
+            
+            if( productBundleBuild.hasErrors() ) {
+                getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+	            return;
+            }
+            
+        }
+        
+        //Check & update bundle items
+        var productBundleBuildItem = getProductService().getProductBundleBuildItemBySkuANDProductBundleBuild( [sku, productBundleBuild] );
+        
+        if( isNull( productBundleBuildItem ) ) {
+            productBundleBuildItem = getProductService().newProductBundleBuildItem();
+        }
+        productBundleBuildItem.setQuantity( arguments.data.quantity );
+        productBundleBuildItem.setSku( sku );
+        productBundleBuildItem.setProductBundleBuild( productBundleBuild );
+        productBundleBuildItem.setProductBundleGroup( getProductService().getProductBundleGroup( arguments.data.productBundleGroupID ) );
+        productBundleBuildItem = getProductService().saveProductBundleBuildItem( productBundleBuildItem );
+        
+        if( productBundleBuildItem.hasErrors() ) {
+            getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+            return;
+        }
+        
+        getHibachiScope().addActionResult("public:product.createProductBundleBuild",false);
+	}
+	
+	 /**
+	 * Method to delete product bundle build
+	 * 
+	 * @param - productBundleBuildID
+	 * */
+	public void function removeProductBundleBuild( required struct data ) {
+	    param name="arguments.data.productBundleBuildID";
+	    var account = getHibachiScope().getAccount();
+	    
+	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
+        
+        if( isNull( productBundleBuild ) || ( ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) || ( !isNull(productBundleBuild.getSession()) && productBundleBuild.getSession().getSessionID() != getHibachiScope().getSession().getSessionID() ) ) ) {
+            getHibachiScope().addActionResult("public:product.removeProductBundleBuild",true);
+            return;
+        }
+        
+        var deleteBundle = getProductService().deleteProductBundleBuild( productBundleBuild );
+        getHibachiScope().addActionResult("public:product.removeProductBundleBuild", !deleteBundle );
+	}
+	
+	/**
+	 * Method to set product bundle build to cart
+	 * @param - productBundleBuildID
+	 * */
+	 public void function addProductBundleToCart( required struct data ) {
+	    param name="arguments.data.productBundleBuildID";
+	    var account = getHibachiScope().getAccount();
+	    
+	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
+        
+        if( isNull( productBundleBuild ) || productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) {
+            getHibachiScope().addActionResult("public:product.addProductBundleToCart",true);
+            return;
+        }
+        
+        //set bundle sku id
+        arguments.data['skuID'] = productBundleBuild.getProductBundleSku().getSkuID();
+        arguments.data['quantity'] = 1;
+        arguments.data['parentOrderItem']['orderItemID'] = productBundleBuild.getProductBundleSku().getSkuID();
+        arguments.data['productBundleGroups'] = [];
+        arguments.data['productBundleGroups'][1]['productBundleGroupID'] = productBundleBuild.getProductBundleSku().getProductBundleGroups()[1].getProductBundleGroupID();
+        arguments.data['childOrderItems'] = [];
+        //Populate child order items
+        var childCount = 0;
+        for( var bundleItem in productBundleBuild.getProductBundleBuildItems() ) {
+            childCount++;
+            arguments.data['childOrderItems'][childCount]['sku']['skuID'] = bundleItem.getSku().getSkuID();
+            arguments.data['childOrderItems'][childCount]['quantity'] = bundleItem.getQuantity();
+            arguments.data['childOrderItems'][childCount]['parentOrderItem']['orderItemID'] = bundleItem.getSku().getSkuID();
+            arguments.data['childOrderItems'][childCount]['productBundleGroup']['productBundleGroupID'] = bundleItem.getProductBundleGroup().getProductBundleGroupID();
+        }
+        
+        //Call Add Order Item
+        this.addOrderItem(data= arguments.data);
+	 }
+	
+	
 	/**
 	 * Get Order Details with Order Invoice
 	 * @param orderID
@@ -1660,7 +1885,6 @@ component  accessors="true" output="false"
             if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             }
-            
             
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());

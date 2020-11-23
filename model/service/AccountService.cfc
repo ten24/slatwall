@@ -193,7 +193,6 @@ component extends="HibachiService" accessors="true" output="false" {
 												parentAccount.emailAddress, 
 												parentAccount.firstName, 
 												parentAccount.lastName, 
-												parentAccount.username, 
 												parentAccount.accountID');
 		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.account.getAccountID() );
 		parentAccountCollectionList.addFilter( 'activeFlag', 1);
@@ -210,7 +209,6 @@ component extends="HibachiService" accessors="true" output="false" {
 												childAccount.emailAddress, 
 												childAccount.firstName, 
 												childAccount.lastName, 
-												childAccount.username, 
 												childAccount.accountID');
 		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.account.getAccountID() );
 		childAccountCollectionList.addFilter( 'activeFlag', 1 );
