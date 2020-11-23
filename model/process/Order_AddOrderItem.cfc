@@ -846,7 +846,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function populate( required struct data={} ) {
 		// Call the super populate to do all the standard logic
 		super.populate(argumentcollection=arguments);
-		if(!isNull(getSku()){
+		if(!isNull(getSku())){
 			//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
 			var assignedOrderItemAttributeSetCollectionList = getSku().getAssignedOrderItemAttributeSetCollectionList();
 			
