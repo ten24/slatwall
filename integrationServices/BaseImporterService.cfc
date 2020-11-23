@@ -89,7 +89,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( !structKeyExists( cachedMappings, arguments.entityName) ){
 	        
 	        //Can be overriden to Read from Files/DB/Function whatever 
-	        var mappingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#arguments.entityName#.json');
+	        var mappingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#ucFirst(arguments.entityName)#.json');
 	        
 	        if( isJson(mappingJson) ){
 	            cachedMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);

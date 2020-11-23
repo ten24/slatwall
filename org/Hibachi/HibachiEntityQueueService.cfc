@@ -45,8 +45,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	//delegates to processEntityQueueArray so we're not maintaining one function for object and one for hash map
 	//entry point will always be from workflow which should pass collectionData  
 	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
-		this.logHibachi("EntityQueue - called processEntityQueue_processQueue");
-
+	
 		var maxTryCount = 3;
 		var retryDelay = 0;
 		
@@ -103,7 +102,6 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	//handles process method case & validates for context otherwise calls method on service returns true if method was invoked
 	private boolean function invokeMethodOrProcessOnService(required struct entityQueue, required any entity, required any service){
-		this.logHibachi("EntityQueue - called invokeMethodOrProcessOnService");
 		var entityValidToInvoke = true; //it may not be a processContext
 
 		//not necessarily a processMethod
