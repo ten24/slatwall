@@ -917,6 +917,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        for(var relation in arguments.mapping.relations ){
 	            
+	            // we're creting a duplicate here, as we're maintainaing some state in this variable down the line and 
+	            // if we don't duplicate then it's polutes the global mapping, which means the functionality will not work as expected;
+	            relation = structCopy(relation); 
+	            
 	            if( structKeyExists(arguments.emptyRelations, relation.propertyIdentifier) ){
 	                // if we have this relation in empty-relations that let's use that, so we have additional info down the line
 	                relation = arguments.emptyRelations[ relation.propertyIdentifier ];
@@ -1268,11 +1272,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        'remotePriceGroupID' : data['remotePriceGroupID'] ?: ''
 	    };
 	    
-	   return hash( trim( formattedData.remoteSkuID  ),  'MD5' ) & '_' &
-	          hash( trim( formattedData.currencyCode ),  'MD5' ) & '_' &
-	          hash( trim( formattedData.minQuantity  ),  'MD5' ) & '_' &
-	          hash( trim( formattedData.maxQuantity  ),  'MD5' ) & '_' &
-	          hash( trim( formattedData.remotePriceGroupID ), 'MD5' );
+	   return lcase( hash( trim( formattedData.remoteSkuID  ),  'MD5' ) ) & '_' &
+	          lcase( hash( trim( formattedData.currencyCode ),  'MD5' ) )& '_' &
+	          lcase( hash( trim( formattedData.minQuantity  ),  'MD5' ) )& '_' &
+	          lcase( hash( trim( formattedData.maxQuantity  ),  'MD5' ) )& '_' &
+	          lcase( hash( trim( formattedData.remotePriceGroupID ), 'MD5' ) );
 	}
 	
 	public any function generateSkuPricePriceGroup( 
