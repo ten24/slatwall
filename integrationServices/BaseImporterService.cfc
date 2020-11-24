@@ -1158,7 +1158,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        "uniqueKey"   = 'importRemoteID',
 	        "uniqueValue" = productTypeImportRemoteID
 	    );
-	    this.logHibachi(" generateProductProductType : #productTypeID# ::: #productTypeImportRemoteID#");
+
     	if( !isNull(productTypeID) && !this.hibachiIsEmpty(productTypeID) ){
     	    return { "productTypeID" : productTypeID }
     	} 
@@ -1173,7 +1173,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
 	  return {
-            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1' // Product-type Merchandise 
+            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1' // Merchandise is the default Parent-Product-type
         }
 	}
 	
