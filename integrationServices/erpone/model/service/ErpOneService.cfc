@@ -422,6 +422,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			arguments.data.RemoteSkuID = arguments.data.SkuCode;
 		}
 		
+		if( !structKeyExists(arguments.data, 'skuName') || this.hibachiIsEmpty( arguments.data.skuName ) ){
+			arguments.data.skuName = arguments.data.productName;
+		}
+		
 	    return arguments.data;
 	}
 	
