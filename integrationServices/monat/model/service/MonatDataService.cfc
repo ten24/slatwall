@@ -264,9 +264,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var tx = ormStatelessSession.beginTransaction();
 
         var SHIPPED = getTypeService().getTypeByTypeName("Shipped");
+        var persist = false;
         
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
-			var persist = false;
+			persist = false;
 		    
 		    logHibachi("importOrderShipments - Current Page #index#", true); 
 			var shipmentResponse = getData(
@@ -311,7 +312,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     				var shippingMethod = getShippingMethod(shipment.ShipMethodCode);
     				var location = getLocation(order.getCurrencyCode());
 				}catch(any e){
-					logHibachi("importOrderShipments - OrderDelivery #shipment.shipmentId# error getting shipment: #shipment.ShipMethodCode# or location: #order.getCurrencyCode()#", true);
+					logHibachi("importOrderShipments - OrderDelivery #shipment.shipmentId# error getting shipment: #serializeJson(shipment)# or location: #order.getCurrencyCode()#", true);
 					continue;
 				}
 				
@@ -408,9 +409,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				orderDeliveryRemoteIDList = listAppend(orderDeliveryRemoteIDList, shipment.shipmentId)
 			}
 			if(persist){
-				tx.commit();
+				if (!tx.wasCommitted()){
+					tx.commit();
+				}
 			}
-		
 		}
 		ormStatelessSession.close();
 	
@@ -717,7 +719,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			    }
 			}
 			
-			tx.commit();
+			if (!tx.wasCommitted()){
+				tx.commit();
+			}
     		
     		
     		//echo("Clear session");
@@ -821,7 +825,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     ormStatelessSession.update("SlatwallOrder", foundOrder);
     			}
     			
-    			tx.commit();
+    			if (!tx.wasCommitted()){
+					tx.commit();
+				}
     		}catch(e){
     			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
