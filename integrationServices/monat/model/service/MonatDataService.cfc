@@ -311,7 +311,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     				var shippingMethod = getShippingMethod(shipment.ShipMethodCode);
     				var location = getLocation(order.getCurrencyCode());
 				}catch(any e){
-					logHibachi("importOrderShipments - OrderDelivery #shipment.shipmentId# error getting shipment: #shipment.ShipMethodCode# or location: #order.getCurrencyCode()#", true);
+					logHibachi("importOrderShipments - OrderDelivery #shipment.shipmentId# error getting shipment: #serializeJson(shipment)# or location: #order.getCurrencyCode()#", true);
 					continue;
 				}
 				
@@ -408,7 +408,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				orderDeliveryRemoteIDList = listAppend(orderDeliveryRemoteIDList, shipment.shipmentId)
 			}
 			if(persist){
-				tx.commit();
+				try{
+					tx.commit();
+				}catch(any e){
+					logHibachi("importOrderShipments - Error Commiting page number #index# : #e.message#",true);
+					tx = ormStatelessSession.beginTransaction();
+				}
+				
 			}
 		
 		}
