@@ -382,38 +382,43 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	public struct function preProcessProductData(required struct data ){
 
-		if( structKeyExists(arguments.data, 'Price') && this.hibachiIsEmpty(arguments.data.Price) ) {
+		if( !structKeyExists(arguments.data, 'Price') || this.hibachiIsEmpty(arguments.data.Price) ) {
 			
 			arguments.data.Price=arguments.data.ListPrice;
 		}
 		
-		if( structKeyExists(arguments.data, 'ListPrice') && this.hibachiIsEmpty(arguments.data.ListPrice) ) {
+		if( !structKeyExists(arguments.data, 'ListPrice') || this.hibachiIsEmpty(arguments.data.ListPrice) ) {
 			
 			arguments.data.ListPrice=arguments.data.Price;
 		}
 		
-		if( structKeyExists(arguments.data, 'ProductCode') && !this.hibachiIsEmpty(arguments.data.ProductCode) ){
+		// using -- so we can revert it when sending data back to erpone
+		
+		if( structKeyExists(arguments.data, 'ProductCode') ){
 
-			arguments.data.ProductCode=Replace(arguments.data.ProductCode, " ", "_");
+			arguments.data.ProductCode=Replace(arguments.data.ProductCode, " ", "--");
 		}
 		
-		if( structKeyExists(arguments.data, 'SkuCode') && len(trim(arguments.data.SkuCode)) == 0 ){
+		if( !structKeyExists(arguments.data, 'SkuCode') || this.hibachiIsEmpty( arguments.data.SkuCode ) ){
 			
-			arguments.data.SkuCode=Replace(arguments.data.ProductCode, " ", "_");
+			arguments.data.SkuCode = arguments.data.ProductCode;
+		}else{
+			
+			arguments.data.SkuCode = Replace(arguments.data.SkuCode, " " , "--");
 		}
 		
-		if( structKeyExists(arguments.data, 'RemoteProductID') && this.hibachiIsEmpty(arguments.data.RemoteProductID) ){
+		if( !structKeyExists(arguments.data, 'RemoteProductID') || this.hibachiIsEmpty(arguments.data.RemoteProductID) ){
 			// var productCode = arguments.data.ProductCode;
 			// var remoteProductIDArray = this.getErpOneData({
 			//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
 			//  	    "columns" : "__rowids"
 			//  	})
 			// arguments.data.RemoteProductID=remoteProductIDArray[1].__rowids;
-			arguments.data.RemoteProductID=Replace(arguments.data.ProductCode, " ", "_");
+			arguments.data.RemoteProductID = arguments.data.ProductCode;
 		}
 		
-		if( structKeyExists(arguments.data, 'RemoteSkuID') && len(trim(arguments.data.RemoteSkuID)) == 0 ){
-			arguments.data.RemoteSkuID=arguments.data.SkuCode;
+		if( !structKeyExists(arguments.data, 'RemoteSkuID') || this.hibachiIsEmpty( arguments.data.RemoteSkuID ) ){
+			arguments.data.RemoteSkuID = arguments.data.SkuCode;
 		}
 		
 	    return arguments.data;

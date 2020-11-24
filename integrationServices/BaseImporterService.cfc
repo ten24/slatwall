@@ -235,7 +235,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        mapping        = entityMapping,
     	        emptyRelations = validation.emptyRelations
     	    );
-    	   
+    	    
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
