@@ -185,6 +185,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
 	    
+	    var preProcessFunctionName = "preProcess#arguments.entityName#Data";
+	    if( structKeyExists(this, preProcessFunctionName) ){
+            arguments.data = this.invokeMethod( preProcessFunctionName, { "data" : arguments.data } );
+	    }
+	    
 	    var entityMapping = this.getEntityMapping( arguments.entityName );
 
 	    var validation = this.validateEntityData( 
@@ -221,7 +226,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        mapping        = entityMapping,
     	        emptyRelations = validation.emptyRelations
     	    );
-    	    
+    	   
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
@@ -255,7 +260,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public void function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
 	    
-	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies"
+	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies";
 	    if( structKeyExists(this, extentionFunctionName) ){
             this.invokeMethod( extentionFunctionName, arguments );
 	    } else {
@@ -1153,7 +1158,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        "uniqueKey"   = 'importRemoteID',
 	        "uniqueValue" = productTypeImportRemoteID
 	    );
-	    
+	    this.logHibachi(" generateProductProductType : #productTypeID# ::: #productTypeImportRemoteID#");
     	if( !isNull(productTypeID) && !this.hibachiIsEmpty(productTypeID) ){
     	    return { "productTypeID" : productTypeID }
     	} 

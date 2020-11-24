@@ -158,58 +158,37 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	//CUSTOM PROPERTIES BEGIN
 
- property name="productCover" ormtype="string";
- property name="productCoverStyle" ormtype="string";
- property name="productHanded" ormtype="string" hb_formFieldType="select";
- property name="productMaterial" ormtype="string";
- property name="productSpringSize" ormtype="string";
- property name="productMfgWarranty" ormtype="string";
- property name="productHoldOpen" ormtype="boolean" hb_formatType="yesno";
- property name="productParallelArm" ormtype="boolean" hb_formatType="yesno";
- property name="productRegularArm" ormtype="boolean" hb_formatType="yesno";
- property name="productExtraDutyArm" ormtype="boolean" hb_formatType="yesno";
- property name="productCushNStopArm" ormtype="boolean" hb_formatType="yesno";
- property name="productFastenerPack" ormtype="string";
- property name="productBackset" ormtype="string";
- property name="productDoorThickness" ormtype="string";
- property name="productHoleSize" ormtype="string";
- property name="productCTC" ormtype="string";
- property name="productLockType" ormtype="string";
- property name="productCutoutType" ormtype="string";
- property name="productDoorSwing" ormtype="string";
- property name="productDoorHand" ormtype="string";
- property name="productOffset" ormtype="string";
- property name="productProjection" ormtype="string";
- property name="productDoorAccessoryStyle" ormtype="string";
+ property name="productBoredLockGrade" ormtype="string" hb_formFieldType="select";
+ property name="productBoredLockStyle" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalHardwareFunction" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalHardwareBoltLatch" ormtype="string";
+ property name="merchanicalLockSeries" ormtype="string";
+ property name="mechanicalHardwareOverrideType" ormtype="string";
+ property name="mechanicalHardwareTrim" ormtype="string";
+ property name="mechanicalMaterialThickness" ormtype="string";
+ property name="mechanicalStyle" ormtype="string";
+ property name="mechanicalRekeyable" ormtype="boolean" hb_formatType="yesno";
+ property name="mechanicalBodyMaterial" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalShackleMaterial" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalShackleDiameter" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalShackleClearance" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalBodyWidth" ormtype="string";
+ property name="productElectronicAuditTrail" ormtype="boolean" hb_formatType="yesno";
+ property name="productElectronicPin" ormtype="boolean" hb_formatType="yesno";
+ property name="productElectronicUsers" ormtype="string";
  property name="productHingeMaterial" ormtype="string";
  property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
  property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
- property name="productKeyMachineType" ormtype="string" hb_formFieldType="select";
- property name="productKeyMachineCutByCode" ormtype="boolean" hb_formatType="yesno";
- property name="productKeyMachineDuplicate" ormtype="boolean" hb_formatType="yesno";
  property name="productKeyApplication" ormtype="string";
  property name="productKeyDesign" ormtype="string";
- property name="productKeyMaterial" ormtype="string" hb_formFieldType="select";
- property name="productKeySize" ormtype="string";
- property name="productKeyColor" ormtype="string";
- property name="productPinKitType" ormtype="string" hb_formFieldType="select";
- property name="productUM" ormtype="string";
- property name="productFinishCode" ormtype="string";
- property name="productSeries" ormtype="string";
- property name="productColor" ormtype="string";
+ property name="productTwinPack" ormtype="boolean" hb_formatType="yesno";
+ property name="productResidential" ormtype="boolean" hb_formatType="yesno";
+ property name="productBoxQuantity" ormtype="string";
+ property name="productFailSafe" ormtype="boolean" hb_formatType="yesno";
+ property name="productFailSecure" ormtype="boolean" hb_formatType="yesno";
  property name="productPackageQty" ormtype="string";
  property name="productListingTitle" ormtype="string";
- property name="productWeight" ormtype="string";
- property name="productLength" ormtype="string";
- property name="productHeight" ormtype="string";
- property name="productWidth" ormtype="string";
- property name="productBaseHeight" ormtype="string";
- property name="productClearance" ormtype="string";
- property name="productDiameter" ormtype="string";
- property name="productPackageType" ormtype="string" hb_formFieldType="select";
- property name="productDisplay" ormtype="boolean" hb_formatType="yesno" default="Yes";
- property name="searchKeywords" length="4000"  ormtype="string" hb_formFieldType="textarea";
- property name="productBuildable" ormtype="boolean" hb_formatType="yesno" default="No";//CUSTOM PROPERTIES END
+ property name="productWeight" ormtype="string";//CUSTOM PROPERTIES END
 	 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){

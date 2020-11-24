@@ -164,18 +164,35 @@
 
 
         public any function getAnyColumnValueByTableNameAndUniqueKeyValue(required string tableName, required string columnToFetch, required string uniqueKey, required any uniqueValue ){
-			
-			var qry = new query();
-			
-			qry.addParam( name='uniqueValue',    value=arguments.uniqueValue );
-			
-			qry = qry.execute(sql="
-    			    SELECT  #arguments.columnToFetch# 
+		
+		var sql = "SELECT  #arguments.columnToFetch# 
     			    FROM    #arguments.tableName# 
-    			    WHERE   #arguments.uniqueKey# = :uniqueValue 
-    			");
+    			    WHERE   #arguments.uniqueKey# = :uniqueValue";
+		
+		 var queryResult = queryExecute(
+	        sql = sql,
+	        params = {
+	            uniqueValue: {
+	                value: arguments.uniqueValue,
+	                type: "varchar"
+	            }
+	        }
+    	);
 			
-	    	return qry.getResult()[ arguments.columnToFetch ];
+			// var qry = new query();
+			
+			// qry.addParam( name='uniqueValue',    value=arguments.uniqueValue );
+			
+			// qry.setSql("
+   // 			    SELECT  #arguments.columnToFetch# 
+   // 			    FROM    #arguments.tableName# 
+   // 			    WHERE   #arguments.uniqueKey# = :uniqueValue 
+   // 			");
+			
+			// var result = qry.execute().getResult();
+			//writeDump(result);abort;
+	    	this.logHibachi("getAnyColumnValueByTableNameAndUniqueKeyValue :  #queryResult[arguments.columnToFetch]#");
+	    	//return qry[arguments.columnToFetch];
 		}
 
 	</cfscript>

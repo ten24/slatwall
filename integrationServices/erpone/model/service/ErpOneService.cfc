@@ -87,15 +87,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			if ( !listFindNoCase("csv", uploadData.serverFileExt) ){
     		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
     	    }
-    	    
-    	    var header = this.getEntityCSVHeaderMetaData( data.entityName );
+    	   
     	    var uploadedFilePath = uploadData.serverdirectory & '/' & uploadData.serverfile;
     	    
 	    	var result = this.getHibachiDataService().csvFileToQuery(
-				'csvFilePath'           = uploadedFilePath, 
-				'columnTypes'           = header.columnTypes, 
-				'columns'               = header.columns,
-				'useHeaderRowAsColumns' = false
+				'csvFilePath'           = uploadedFilePath,
+				'useHeaderRowAsColumns' = true
 			);
 			 // Adding this check so it doesn't mess with the UI
 		    if( result.errors.len() <= 10 ){
@@ -112,9 +109,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 			if( result.query.recordCount ){
 
-    		    var transformProductData = this.preProcessProductData( result.query );
-
-			    var batch = this.pushRecordsIntoImportQueue( data.entityName, transformProductData );
+			    var batch = this.pushRecordsIntoImportQueue( data.entityName, result.query );
 			    
 			    if( batch.getEntityQueueItemsCount() == batch.getInitialEntityQueueItemsCount() ){
 				    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");
@@ -385,46 +380,43 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    this.logHibachi("ERPONE - Finish importing importErpOneAccounts for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
 	
-	public any function preProcessProductData(required any productData ){
-		
-		var preProcessedData = [];
-		
-		for( var productItem in productData ){
+	public struct function preProcessProductData(required struct data ){
+
+		if( structKeyExists(arguments.data, 'Price') && this.hibachiIsEmpty(arguments.data.Price) ) {
 			
-			if( structKeyExists(productItem, 'Price') && this.hibachiIsEmpty(productItem.Price) ) {
-				productItem.Price=productItem.ListPrice;
-			}
-			
-			if( structKeyExists(productItem, 'ListPrice') && this.hibachiIsEmpty(productItem.ListPrice) ) {
-				productItem.ListPrice=productItem.Price;
-			}
-			
-			if( structKeyExists(productItem, 'RemoteProductID') && this.hibachiIsEmpty(productItem.RemoteProductID) ){
-				// var productCode = productItem.ProductCode;
-				// var remoteProductIDArray = this.getErpOneData({
-				//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
-				//  	    "columns" : "__rowids"
-				//  	})
-				// productItem.RemoteProductID=remoteProductIDArray[1].__rowids;
-				productItem.RemoteProductID=Replace(productItem.ProductCode, " ", "");
-			}
-			
-			if( structKeyExists(productItem, 'SkuCode') and len(trim(productItem.SkuCode)) == 0 ){
-				productItem.SkuCode=Replace(productItem.ProductCode, " ", "");
-			}
-			
-			if( structKeyExists(productItem, 'RemoteSkuID') and len(trim(productItem.RemoteSkuID)) == 0 ){
-				productItem.RemoteSkuID=productItem.SkuCode;
-			}
-			
-			if( structKeyExists(productItem, 'ProductCode') && !this.hibachiIsEmpty(productItem.ProductCode) ){
-				var productCode = productItem.ProductCode;
-				productItem.ProductCode=Replace(productCode, " ", "");
-			}
-			
-			preProcessedData.append(productItem);
+			arguments.data.Price=arguments.data.ListPrice;
 		}
-	    return preProcessedData;
+		
+		if( structKeyExists(arguments.data, 'ListPrice') && this.hibachiIsEmpty(arguments.data.ListPrice) ) {
+			
+			arguments.data.ListPrice=arguments.data.Price;
+		}
+		
+		if( structKeyExists(arguments.data, 'ProductCode') && !this.hibachiIsEmpty(arguments.data.ProductCode) ){
+
+			arguments.data.ProductCode=Replace(arguments.data.ProductCode, " ", "_");
+		}
+		
+		if( structKeyExists(arguments.data, 'SkuCode') && len(trim(arguments.data.SkuCode)) == 0 ){
+			
+			arguments.data.SkuCode=Replace(arguments.data.ProductCode, " ", "_");
+		}
+		
+		if( structKeyExists(arguments.data, 'RemoteProductID') && this.hibachiIsEmpty(arguments.data.RemoteProductID) ){
+			// var productCode = arguments.data.ProductCode;
+			// var remoteProductIDArray = this.getErpOneData({
+			//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
+			//  	    "columns" : "__rowids"
+			//  	})
+			// arguments.data.RemoteProductID=remoteProductIDArray[1].__rowids;
+			arguments.data.RemoteProductID=Replace(arguments.data.ProductCode, " ", "_");
+		}
+		
+		if( structKeyExists(arguments.data, 'RemoteSkuID') && len(trim(arguments.data.RemoteSkuID)) == 0 ){
+			arguments.data.RemoteSkuID=arguments.data.SkuCode;
+		}
+		
+	    return arguments.data;
 	}
 	
 }
