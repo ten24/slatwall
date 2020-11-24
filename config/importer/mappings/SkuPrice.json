@@ -52,6 +52,15 @@
         }
     },
     
+    "relations" : [
+        {
+            "type": "manyToOne",
+            "entityName": "PriceGroup",
+            "propertyIdentifier": "priceGroup",
+            "generatorFunction": "generateSkuPricePriceGroup"
+        }
+    ],
+    
     "dependencies" : [
         {
             "key"                : "remoteSkuID",
