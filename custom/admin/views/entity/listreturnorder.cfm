@@ -169,7 +169,7 @@ Notes:
 		<cfset local.releasedOrderCollectionList = $.slatwall.getService('OrderService').getOrderCollectionList() />
 		<cfset local.releasedOrderCollectionList.setCollectionConfig(local.allOrderCollectionConfig) />
 		<cfset local.releasedOrderCollectionList.addDisplayProperty(displayProperty='orderCloseDateTime',columnConfig={isVisible:true}) />
-		<!---<cfset local.releasedOrderCollectionList.removeOrderBy('orderNumber') >--->
+		<cfset local.releasedOrderCollectionList.removeOrderBy('createDateTime') >
 		<cfset local.releasedOrderCollectionList.addOrderBy('orderCloseDateTime|DESC') >
 		<cfset local.releasedOrderCollectionList.addFilter('orderStatusType.typeID','2c9180866b4d105e016b4e2666760029') />
 	
