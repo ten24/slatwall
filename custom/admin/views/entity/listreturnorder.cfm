@@ -98,6 +98,12 @@ Notes:
 				isDeletable=true
 			}
 		)/>
+		<!--- for sorting --->
+		<cfset local.allOrderCollectionList.addDisplayProperty(displayProperty='createdDateTime',columnConfig={
+			isVisible=false,
+			isSearchable=false,
+			isDeletable=false
+		}) />
 		
 		<!--- Searchables --->
 		<cfset local.allOrderCollectionList.addDisplayProperty(displayProperty='orderNumber',columnConfig={
@@ -138,34 +144,34 @@ Notes:
 			isSearchable=false,
 			isDeletable=false
 		})/>
-		<cfset local.allOrderCollectionList.addFilter('orderType.systemCode','otReturnOrder,otReplacementOrder,otExchangeOrder,otRefundOrder','IN') />
-		<cfset local.allOrderCollectionList.addOrderBy('orderOpenDateTime|DESC') />
+		<cfset local.allOrderCollectionList.addFilter('orderType.typeID','444df2e00b455a2bae38fb55f640c204,ce5f32ef5ead4abb81e68d76706b0aee,b3bdf58418894bf08e6e3c0e1cd882fe,444df2dd05a67eab0777ba14bef0aab1','IN') />
+		<cfset local.allOrderCollectionList.addOrderBy('createdDateTime|DESC') />
 		<cfset local.allOrderCollectionConfig = serializeJson(local.allOrderCollectionList.getCollectionConfigStruct()) />
 		
 		<!--- Incomplete orders collection setup --->
 		<cfset local.incompleteOrderCollectionList = $.slatwall.getService('OrderService').getOrderCollectionList() />
 		<cfset local.incompleteOrderCollectionList.setCollectionConfig(local.allOrderCollectionConfig) />
 		<cfset local.incompleteOrderCollectionList.addFilter('incompleteReturnFlag',true) />
-		<cfset local.incompleteOrderCollectionList.addFilter('orderStatusType.typeCode','rmaReceived') />
+		<cfset local.incompleteOrderCollectionList.addFilter('orderStatusType.typeID','2c9180866b4d105e016b4e23aee70027') />
 		
 		<!--- Ready orders collection setup --->
 		<cfset local.readyOrderCollectionList = $.slatwall.getService('OrderService').getOrderCollectionList() />
 		<cfset local.readyOrderCollectionList.setCollectionConfig(local.allOrderCollectionConfig) />
 		<cfset local.readyOrderCollectionList.addFilter('incompleteReturnFlag',true,'!=') />
-		<cfset local.readyOrderCollectionList.addFilter('orderStatusType.typeCode','rmaReceived') />
+		<cfset local.readyOrderCollectionList.addFilter('orderStatusType.typeID','2c9180866b4d105e016b4e23aee70027') />
 		
 		<!--- Approved orders collection setup --->
 		<cfset local.approvedOrderCollectionList = $.slatwall.getService('OrderService').getOrderCollectionList() />
 		<cfset local.approvedOrderCollectionList.setCollectionConfig(local.allOrderCollectionConfig) />
-		<cfset local.approvedOrderCollectionList.addFilter('orderStatusType.typeCode','rmaApproved') />
+		<cfset local.approvedOrderCollectionList.addFilter('orderStatusType.typeID','2c9180866b4d105e016b4e25bf350028') />
 		
 		<!--- Released orders collection setup --->
 		<cfset local.releasedOrderCollectionList = $.slatwall.getService('OrderService').getOrderCollectionList() />
 		<cfset local.releasedOrderCollectionList.setCollectionConfig(local.allOrderCollectionConfig) />
 		<cfset local.releasedOrderCollectionList.addDisplayProperty(displayProperty='orderCloseDateTime',columnConfig={isVisible:true}) />
-		<cfset local.releasedOrderCollectionList.removeOrderBy('orderOpenDateTime') >
+		<!---<cfset local.releasedOrderCollectionList.removeOrderBy('orderNumber') >--->
 		<cfset local.releasedOrderCollectionList.addOrderBy('orderCloseDateTime|DESC') >
-		<cfset local.releasedOrderCollectionList.addFilter('orderStatusType.typeCode','rmaReleased') />
+		<cfset local.releasedOrderCollectionList.addFilter('orderStatusType.typeID','2c9180866b4d105e016b4e2666760029') />
 	
 		<!--- Searchables --->
 		<div ng-show="returnOrders.currentSection == 'ALL'">
@@ -177,6 +183,7 @@ Notes:
 				recordDetailAction="admin:entity.detail#lcase(local.allOrderCollectionList.getCollectionObject())#"
 				multiselectPropertyIdentifier="orderID"
 	            multiselectFieldName="orderIDList"
+	            defaultSearchColumn="orderNumber"
 			>
 			</hb:HibachiListingDisplay>
 		</div>
@@ -193,6 +200,7 @@ Notes:
 				multiselectPropertyIdentifier="orderID"
 	            multiselectFieldName="orderIDList"
 				listActions="[{'name':'Approve Selected',action:'monat:entity.batchApproveReturnOrders',selectedRecords:true}]"
+				defaultSearchColumn="orderNumber"
 			>
 			</hb:HibachiListingDisplay>
 		</div>
@@ -209,6 +217,7 @@ Notes:
 				multiselectPropertyIdentifier="orderID"
 	            multiselectFieldName="orderIDList"
 				listActions="[{'name':'Approve Selected',action:'monat:entity.batchApproveReturnOrders',selectedRecords:true}]"
+				defaultSearchColumn="orderNumber"
 			>
 			</hb:HibachiListingDisplay>
 		</div>
@@ -225,6 +234,7 @@ Notes:
 				multiselectPropertyIdentifier="orderID"
 	            multiselectFieldName="orderIDList"
 				listActions="[{'name':'Release Selected',action:'admin:entity.batchReleaseReturnOrders',selectedRecords:true}]"
+				defaultSearchColumn="orderNumber"
 			>
 			</hb:HibachiListingDisplay>
 		</div>
@@ -235,6 +245,7 @@ Notes:
 				personalCollectionKey='#request.context.entityactiondetails.itemname#'
 				recordEditAction="admin:entity.edit#lcase(local.allOrderCollectionList.getCollectionObject())#"
 				recordDetailAction="admin:entity.detail#lcase(local.allOrderCollectionList.getCollectionObject())#"
+				defaultSearchColumn="orderNumber"
 			>
 			</hb:HibachiListingDisplay>
 		</div>
