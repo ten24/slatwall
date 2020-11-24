@@ -17,6 +17,7 @@
   },
   "scripts": {
     "buildsdk": "cd node_modules/@slatwall/slatwall-sdk; yarn install; yarn build",
+    "watch": "cra-build-watch",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -51,6 +52,7 @@
     "@storybook/preset-create-react-app": "^3.1.5",
     "@storybook/react": "^6.1.2",
     "babel-loader": "^8.2.1",
+    "cra-build-watch": "^3.4.0",
     "react-app-rewired": "^2.1.6"
   }
 }

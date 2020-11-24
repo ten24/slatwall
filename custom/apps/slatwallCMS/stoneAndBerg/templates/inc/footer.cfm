@@ -24,9 +24,12 @@
   <script src="#$.getThemePath()#/custom/client/assets/js/slick.min.js"></script>
   <script src="#$.getThemePath()#/custom/client/assets/js/theme.js"></script>
   <script src="#$.getThemePath()#/custom/client/assets/js/simplebar.min.js"></script>
-  <script src="#$.getThemePath()#/custom/swreact/build/static/js/runtime-main.034396e0.js" ></script>
-  <script src="#$.getThemePath()#/custom/swreact/build/static/js/2.5b433cb9.chunk.js" ></script>
-  <script src="#$.getThemePath()#/custom/swreact/build/static/js/main.a8ab5d08.chunk.js" ></script>
+  <script src="#$.getThemePath()#/custom/swreact/build/js/bundle.js" ></script>
+  <script src="#$.getThemePath()#/custom/swreact/build/js/0.chunk.js" ></script>
+  <script src="#$.getThemePath()#/custom/swreact/build/js/main.chunk.js" ></script>
+<!---   <script src="#$.getThemePath()#/custom/swreact/build/static/js/runtime-main.034396e0.js" ></script> --->
+<!---   <script src="#$.getThemePath()#/custom/swreact/build/static/js/2.5b433cb9.chunk.js" ></script> --->
+<!---   <script src="#$.getThemePath()#/custom/swreact/build/static/js/main.a8ab5d08.chunk.js" ></script> --->
 
   </footer>
 </body>
