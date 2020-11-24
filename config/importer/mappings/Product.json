@@ -339,6 +339,12 @@
                 "dataType": "string"
             }
         },
+        "Buildable": {
+            "propertyIdentifier": "productBuildable",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
         "ProductSeries": {
             "propertyIdentifier": "productSeries",
             "validations": {

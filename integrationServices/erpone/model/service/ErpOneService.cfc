@@ -397,6 +397,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		if( structKeyExists(arguments.data, 'ProductCode') ){
 
 			arguments.data.ProductCode=Replace(arguments.data.ProductCode, " ", "--");
+			arguments.data.ProductCode=Replace(arguments.data.ProductCode, "/", "__");
 		}
 		
 		if( !structKeyExists(arguments.data, 'SkuCode') || this.hibachiIsEmpty( arguments.data.SkuCode ) ){
