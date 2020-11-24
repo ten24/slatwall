@@ -270,7 +270,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		    
 		    logHibachi("importOrderShipments - Current Page #index#", true); 
 			var shipmentResponse = getData(
-				pageNumber = arguments.rc.pageNumber,
+				pageNumber = index,
 				pageSize = arguments.rc.pageSize,
 				dateFilterStart = DateTimeFormat( DateAdd('h', arguments.rc.hours * -1, now()), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
 				dateFilterEnd = DateTimeFormat( now(), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
