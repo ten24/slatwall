@@ -446,10 +446,11 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-					"paymentOptionTag": !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 			    }
 			};	
-			
+			if(setting(settingName='allowCBDFlag', requestBean=arguments.requestBean) ? true : false){
+				requestData.processingOptions.paymentOptionTag = !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD";
+			}
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
 			
 			// Response Data
@@ -496,10 +497,11 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-					"paymentOptionTag": !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD",
 			    }
 			};	
-			
+			if(setting(settingName='allowCBDFlag', requestBean=arguments.requestBean) ? true : false){
+				requestData.processingOptions.paymentOptionTag = !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD";
+			}
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
 			
 			if(structKeyExists(responseData, 'Error')){
