@@ -189,14 +189,10 @@ class MonatCheckoutController {
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false, next = false):Screen | void => {
-		if("undefined" == typeof this.state.cart){
-			hardRefresh = true;
-		}
-		return this.publicService.getCart(hardRefresh).then(data => {
+		
+		return this.monatService.getCart(hardRefresh).then(cart => {
 			
-			if(hardRefresh){
-				this.state.cart = this.publicService.cart; 
-			}
+			this.state.cart = cart;
 			
 			let screen = Screen.ACCOUNT;
 			this.calculateListPrice();
