@@ -131,7 +131,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// //Order Promotions Information
 		var orderPromotionCollectionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
-		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount');
+		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount')
 		orderPromotionCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			orderPromotionCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
@@ -249,10 +249,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return { 
-			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
-			"recordsCount": ordersList.getRecordsCount()
-		};
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
     /**
@@ -273,10 +270,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
 		
-		return { 
-			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
-			"recordsCount": ordersList.getRecordsCount()
-		};
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
 	
 	/**
@@ -297,10 +291,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
 		
-		return { 
-			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
-			"recordsCount": ordersList.getRecordsCount()
-		};
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
 	
 	

@@ -10,11 +10,7 @@
         <cfset siteCollectionList = attributes.hibachiScope.getService('siteService').getSiteCollectionList() />
         <cfset siteCollectionList.setDisplayProperties('siteID,siteName', { isVisible=true }) />
         <cfset siteCollectionList.setOrderBy('siteName|ASC') />
-		<cfset siteCollectionListRecords = siteCollectionList.getRecords()/>
-		<cfset siteID = '' />
-		<cfif not arrayIsEmpty(siteCollectionListRecords)>
-			<cfset siteID = siteCollectionListRecords[1]['siteID'] /> 
-		</cfif> 
+        <cfset siteCollectionListRecords = siteCollectionList.getRecords()/>
         <div id="hibachi-report">
             <!--- Configure --->
             <div id="hibachi-report-configure-bar">
@@ -27,7 +23,7 @@
                             metric-code="totalSales"
                             start-date-time="#local.lastTwoWeeks#"
                             end-date-time="#local.endOfToday#"
-                            site-id="#siteID#"
+                            site-id="#siteCollectionListRecords[1]['siteID']#"
                             title="Sales" 
                             img-src="/assets/images/piggy-bank-1.png"
                             img-alt="Piggy Bank"
@@ -41,7 +37,7 @@
                             metric-code="orderCount"
                             start-date-time="#local.lastTwoWeeks#"
                             end-date-time="#local.endOfToday#"
-                            site-id="#siteID#"
+                            site-id="#siteCollectionListRecords[1]['siteID']#"
                             title="Order Count" 
                             img-src="/assets/images/shopping-bag-gray.png"
                             img-alt="Shopping Bags"
@@ -55,7 +51,7 @@
                             title="Average Order Value" 
                             start-date-time="#local.lastTwoWeeks#"
                             end-date-time="#local.endOfToday#"
-                            site-id="#siteID#"
+                            site-id="#siteCollectionListRecords[1]['siteID']#"
                             metric-code="avgSales"
                             img-src="/assets/images/dollar-symbol-gray.png"
                             img-alt="Dollar Symbol Badge"
@@ -69,7 +65,7 @@
                             title="Accounts Created" 
                             start-date-time="#local.lastTwoWeeks#"
                             end-date-time="#local.endOfToday#"
-                            site-id="#siteID#"
+                            site-id="#siteCollectionListRecords[1]['siteID']#"
                             metric-code="accountCount"
                             img-src="/assets/images/user-2.png"
                             img-alt="User Icon"
@@ -82,7 +78,7 @@
                         name="tom" 
                         start-date-time="#local.lastTwoWeeks#"
                         end-date-time="#local.endOfToday#"
-                        site-id="#siteID#"
+                        site-id="#siteCollectionListRecords[1]['siteID']#"
                         chart-id="report-chart" 
                         report-title="Revenue"
                         collection-config=""
