@@ -165,7 +165,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			orderFulfillments.shippingAddress.street2Address,
 			orderFulfillments.shippingAddress.city,
 			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode
+			orderFulfillments.shippingAddress.postalCode	
 		');
 		
 		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
@@ -177,9 +177,21 @@ component extends="HibachiService" accessors="true" output="false" {
 		ordersList.addGroupBy('orderID');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		var orderRecords = ordersList.getPageRecords(formatRecord = false);
+		
+		var orderIDs = [];
+		for( var order in orderRecords) {
+			ArrayAppend( orderIDs, order['orderID']);
+		}
+		
+		//get orders with delivery tracking numbers
+		var orderDeliveriesCollectionList = getOrderService().getOrderDeliveryCollectionList();
+		orderDeliveriesCollectionList.setDisplayProperties('order.orderID, trackingNumber');
+		orderDeliveriesCollectionList.addFilter( 'order.orderID', ArrayToList(orderIDs), 'IN');
 		
 		return { 
-			"ordersOnAccount":  ordersList.getPageRecords(formatRecord = false), 
+			"ordersOnAccount": orderRecords, 
+			"orderDeliveries": orderDeliveriesCollectionList.getRecords(formatRecord = true),
 			"records": ordersList.getRecordsCount()
 		};
 	}
