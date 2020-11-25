@@ -14,6 +14,7 @@
     "react-dom": "^17.0.1",
     "react-i18next": "^11.7.3",
     "react-scripts": "4.0.0",
+    "react-slick": "^0.27.13",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

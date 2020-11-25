@@ -1,9 +1,14 @@
-import React from "react";
+import React from 'react'
+import { HomeBanner, HomeBrand, HomeDetails } from '../../components'
 
-class Home extends React.Component {
-  render() {
-    return <h1>Home</h1>;
-  }
+const Home = props => {
+  return (
+    <>
+      <HomeBanner />
+      <HomeDetails />
+      <HomeBrand />
+    </>
+  )
 }
 
-export default Home;
+export default Home

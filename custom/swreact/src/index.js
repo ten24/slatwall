@@ -5,6 +5,7 @@ import { Footer, Header } from './components'
 import './i18n'
 import '@slatwall/slatwallassetlibrary/dist/app.bundle.css'
 import '@slatwall/slatwallassetlibrary/dist/app.bundle.js'
+import { Home } from './pages'
 
 ReactDOM.render(
   <React.StrictMode>
@@ -23,6 +24,12 @@ ReactDOM.render(
   document.getElementById('reactHeader')
 )
 
+ReactDOM.render(
+  <React.StrictMode>
+    <Home />
+  </React.StrictMode>,
+  document.getElementById('reactHome')
+)
 ReactDOM.render(
   <React.StrictMode>
     <Footer
