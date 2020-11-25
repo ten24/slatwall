@@ -1710,6 +1710,12 @@ component  accessors="true" output="false"
             if(isBoolean(arguments.data.setAsCartFlag) && arguments.data.setAsCartFlag) {
                 getHibachiScope().getSession().setOrder( duplicateOrder );
             }
+            
+            //create new token with cart information
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && trim( getHibachiScope().getAccount().getAccountID()) != "")  {
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
+            }
+            
             getHibachiScope().addActionResult( "public:account.duplicateOrder", false );
         } else {
             getHibachiScope().addActionResult( "public:account.duplicateOrder", true );
