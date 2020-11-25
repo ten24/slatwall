@@ -164,18 +164,18 @@
 
 
         public any function getAnyColumnValueByTableNameAndUniqueKeyValue(required string tableName, required string columnToFetch, required string uniqueKey, required any uniqueValue ){
-			
+		
 			var qry = new query();
-			
 			qry.addParam( name='uniqueValue',    value=arguments.uniqueValue );
-			
-			qry = qry.execute(sql="
+			qry.setSql("
     			    SELECT  #arguments.columnToFetch# 
     			    FROM    #arguments.tableName# 
     			    WHERE   #arguments.uniqueKey# = :uniqueValue 
     			");
 			
-	    	return qry.getResult()[ arguments.columnToFetch ];
+			var result = qry.execute().getResult();
+
+	    	return result[arguments.columnToFetch];
 		}
 
 	</cfscript>

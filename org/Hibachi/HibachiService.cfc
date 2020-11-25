@@ -194,8 +194,7 @@
 		
 		
 		public any function savePopulatedSubPrpertiesRecursively(required any entity, required string context){
-		    this.logHibachi("Called savePopulatedSubPrpertiesRecursively for entity=#arguments.entity.getClassName()#");
-		    
+
 		    var subPropertiesStruct = arguments.entity.getPopulatedSubProperties();
 		    if( !isStruct(subPropertiesStruct) ){
 		        return;
