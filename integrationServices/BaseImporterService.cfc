@@ -1159,7 +1159,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return arguments.mapping.importIdentifier.keys.reduce( function(accumulated, key){ 
     	        // it is expected that each key exists in the data
     	        var value = trim(data[sourceDataKeysPrefix&key]);
-    	        value = lcase(hash(value, 'MD5')); // we're l-casing the hash-value, ad this's how all of the IDs are stored in the DB;
+    	        value = lcase(hash(value, 'MD5')); // we're l-casing the hash-value, as this's how all of the IDs are stored in the DB;
     	        return ListAppend( accumulated, value, '_'); 
 	    }, '');
 	}
