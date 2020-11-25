@@ -1712,7 +1712,7 @@ component  accessors="true" output="false"
             }
             
             //create new token with cart information
-            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && trim( getHibachiScope().getAccount().getAccountID()) != "")  {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             }
             
