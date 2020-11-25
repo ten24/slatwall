@@ -345,6 +345,168 @@
                 "dataType": "boolean"
             }
         },
+        "BodyWidth": {
+            "propertyIdentifier": "mechanicalBodyWidth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ShackleClearance": {
+            "propertyIdentifier": "mechanicalShackleClearance",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ShackleMaterial": {
+            "propertyIdentifier": "mechanicalShackleMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ShackleDiameter": {
+            "propertyIdentifier": "mechanicalShackleDiameter",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Rekeyable": {
+            "propertyIdentifier": "mechanicalRekeyable",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "BodyMaterial": {
+            "propertyIdentifier": "mechanicalBodyMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "LockSeries": {
+            "propertyIdentifier": "merchanicalLockSeries",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Bolt/LatchStyle": {
+            "propertyIdentifier": "mechanicalHardwareBoltLatch",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "FailSafe": {
+            "propertyIdentifier": "productFailSafe",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "MechStyle": {
+            "propertyIdentifier": "mechanicalStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "MechHardFunction": {
+            "propertyIdentifier": "mechanicalHardwareFunction",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Grade": {
+            "propertyIdentifier": "productBoredLockGrade",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DoorKnobFunction": {
+            "propertyIdentifier": "productDoorKnobFunction",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DoorKnobSeries": {
+            "propertyIdentifier": "productDoorKnobSeries",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "FailSecure": {
+            "propertyIdentifier": "productFailSecure",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "CylinderCam": {
+            "propertyIdentifier": "productCylinderCam",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "OverrideType": {
+            "propertyIdentifier": "mechanicalHardwareOverrideType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Trim": {
+            "propertyIdentifier": "mechanicalHardwareTrim",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "SafeTypeStyle": {
+            "propertyIdentifier": "productSafeTypeStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "SafeFireRated": {
+            "propertyIdentifier": "productSafeFireRated",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "SafeSafetyRating": {
+            "propertyIdentifier": "productSafeSafetyRating",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "BoredLockStyle": {
+            "propertyIdentifier": "productBoredLockStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderMaterial": {
+            "propertyIdentifier": "productCylinderMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Keying": {
+            "propertyIdentifier": "mechanicalKeying",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderPins": {
+            "propertyIdentifier": "productCylinderPins",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Residential": {
+            "propertyIdentifier": "productResidential",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "BoxQuantity": {
+            "propertyIdentifier": "productBoxQuantity",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "ProductSeries": {
             "propertyIdentifier": "productSeries",
             "validations": {
