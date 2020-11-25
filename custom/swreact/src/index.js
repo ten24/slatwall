@@ -3,19 +3,9 @@ import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
 import { Footer, Header } from './components'
 import './i18n'
+import '@slatwall/slatwallassetlibrary/dist/app.bundle.css'
+import '@slatwall/slatwallassetlibrary/dist/app.bundle.js'
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <HookSample />
-//   </React.StrictMode>,
-//   document.getElementById("HookSample1")
-// );
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <HookSample />
-//   </React.StrictMode>,
-//   document.getElementById("HookSample2")
-// );
 ReactDOM.render(
   <React.StrictMode>
     <Header

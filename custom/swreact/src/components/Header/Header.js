@@ -1,5 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import logo from '../../assets/images/sb-logo.png'
+import mobileLogo from '../../assets/images/sb-logo-mobile.png'
+import { cleanHTML } from '../../utils'
 
 const MegaMenu = props => {
   return (
@@ -38,6 +41,9 @@ const MegaMenu = props => {
 }
 
 function Header(props) {
+  console.log(props.productCategories)
+  console.log(typeof props.productCategories)
+
   const productCategories = JSON.parse(props.productCategories)
   let menuItems = new Map()
   productCategories.forEach(item => {
@@ -59,14 +65,11 @@ function Header(props) {
               className="navbar-brand d-none d-md-block mr-3 flex-shrink-0"
               href="/"
             >
-              <img
-                src="/custom/client/assets/images/sb-logo.png"
-                alt="Stone & Berg Logo"
-              />
+              <img src={logo} alt="Stone & Berg Logo" />
             </a>
             <a className="navbar-brand d-md-none mr-2" href="/">
               <img
-                src="/custom/client/assets/images/sb-logo-mobile.png"
+                src={mobileLogo}
                 style={{ minWidth: '90px' }}
                 alt="Stone & Berg Logo"
               />
@@ -127,7 +130,9 @@ function Header(props) {
 
               <div
                 className="navbar-main-links"
-                dangerouslySetInnerHTML={{ __html: props.mainNavigation }}
+                dangerouslySetInnerHTML={{
+                  __html: props.mainNavigation,
+                }}
               />
             </div>
           </div>

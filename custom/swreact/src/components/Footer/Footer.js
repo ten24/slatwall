@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import logo from '../../assets/images/sb-logo-white.png'
 
 function Footer(props) {
   return (
@@ -133,11 +134,7 @@ function Footer(props) {
         <div className="container">
           <div className="row">
             <div className="col-md-6 text-center text-md-left mb-4 text-light">
-              <img
-                className="w-50"
-                src="#$.getThemePath()#/custom/client/assets/images/sb-logo-white.png"
-                alt="Stone and Berg logo"
-              />
+              <img className="w-50" src={logo} alt="Stone and Berg logo" />
             </div>
             <div className="col-md-6 font-size-xs text-light text-center text-md-right mb-4">
               {`@${props.copywriteDate} `} All rights reserved. Stone and Berg

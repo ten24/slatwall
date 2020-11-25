@@ -1,10 +1,48 @@
 <cfimport prefix="swc" taglib="../tags" />
 <cfinclude template="inc/header/header.cfm" />
+<cfscript>
+    local.mainNavigation = EncodeForHTMLAttribute($.renderContent($.getContentByUrlTitlePath('header/main-navigation').getContentID(), 'customBody'));
+          
+           local.homeMainBanner = $.slatwall.getService('contentService').getContentCollectionList()
+           local.homeMainBanner.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,linkUrl,linkLabel')
+           local.homeMainBanner.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())
+           local.homeMainBanner.addFilter("activeFlag", true)
+           local.homeMainBanner.addFilter("urlTitlePath","%main-banner-slider/%","LIKE")
+           local.homeMainBanner.addOrderBy("sortOrder|ASC")
+           local.homeBanner = local.homeMainBanner.getPageRecords()
+
+      local.homeContentColumns = $.slatwall.getService('contentService').getContentCollectionList()
+       local.homeContentColumns.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,associatedImage')
+       local.homeContentColumns.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())
+       local.homeContentColumns.addFilter("activeFlag", true)
+       local.homeContentColumns.addFilter("urlTitlePath","%content-columns/%","LIKE")
+       local.homeContentColumns.addOrderBy("sortOrder|ASC")
+    local.homeContent = local.homeContentColumns.getPageRecords()
+
+
+       local.homeBrands = $.slatwall.getService('contentService').getContentCollectionList()
+       local.homeBrands.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,linkUrl,associatedImage')
+       local.homeBrands.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())
+       local.homeBrands.addFilter("activeFlag", true)
+       local.homeBrands.addFilter("urlTitlePath","%shop-by/%","LIKE")
+       local.homeBrands.addOrderBy("sortOrder|ASC")
+       local.homeBrand = local.homeBrands.getPageRecords()
+
+       local.shopBy = EncodeForHTMLAttribute($.renderContent($.getContentByUrlTitlePath('home/shop-by').getContentID(), 'linkUrl'));
+</cfscript>
 
 <cfoutput>
   <div class="container text-center">
       <div id="root"></div>
   </div>
+
+<div id="reactHome"
+
+ data-homeBanner="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(local.homeBanner))#"
+ data-homeContent="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(local.homeContent))#"
+ data-homeBrand="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(local.homeBrand))#"
+data-shopBy="#local.shopBy#"
+ ></div>
 
   <!--- Hero slider --->
   <div class="hero mt-2" style="background-image: url(#$.getThemePath()#/custom/client/assets/images/main-bg-img.jpg);">
@@ -163,13 +201,6 @@
     <div class="container">
       <div class="main-banner text-white text-center mr-5 ml-5">
         <div class="main-slider slider-dark">
-          <cfset local.homeMainBanner = $.slatwall.getService('contentService').getContentCollectionList()>
-          <cfset local.homeMainBanner.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,linkUrl,linkLabel')>
-          <cfset local.homeMainBanner.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())>
-          <cfset local.homeMainBanner.addFilter("activeFlag", true)>
-          <cfset local.homeMainBanner.addFilter("urlTitlePath","%main-banner-slider/%","LIKE")>
-          <cfset local.homeMainBanner.addOrderBy("sortOrder|ASC")>
-          <cfset local.homeBanner = local.homeMainBanner.getPageRecords()>
           
           <cfloop array="#local.homeBanner#" index="local.slide">
             <div class="repeater">
@@ -190,13 +221,7 @@
   <!--- Content Columns --->
   <div class="container">
     <div class="row text-center mt-5 mb-5">
-      <cfset local.homeContentColumns = $.slatwall.getService('contentService').getContentCollectionList()>
-      <cfset local.homeContentColumns.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,associatedImage')>
-      <cfset local.homeContentColumns.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())>
-      <cfset local.homeContentColumns.addFilter("activeFlag", true)>
-      <cfset local.homeContentColumns.addFilter("urlTitlePath","%content-columns/%","LIKE")>
-      <cfset local.homeContentColumns.addOrderBy("sortOrder|ASC")>
-      <cfset local.homeContent = local.homeContentColumns.getPageRecords()>
+
       
       <cfloop array="#local.homeContent#" index="local.contentColumn">
         <div class="col-md">
@@ -215,13 +240,7 @@
     <h3 class="h3">#$.renderContent($.getContentByUrlTitlePath('home/shop-by').getContentID(), 'title')#</h3>
     
     <div class="brand-slider">
-      <cfset local.homeBrands = $.slatwall.getService('contentService').getContentCollectionList()>
-      <cfset local.homeBrands.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,linkUrl,associatedImage')>
-      <cfset local.homeBrands.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())>
-      <cfset local.homeBrands.addFilter("activeFlag", true)>
-      <cfset local.homeBrands.addFilter("urlTitlePath","%shop-by/%","LIKE")>
-      <cfset local.homeBrands.addOrderBy("sortOrder|ASC")>
-      <cfset local.homeBrand = local.homeBrands.getPageRecords()>
+
       
       <cfloop array="#local.homeBrand#" index="local.brand">
         <div class="repeater">

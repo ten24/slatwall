@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@slatwall/slatwall-sdk": "git+ssh://git@github.com:ten24/SlatwallSDK.git#master-gs-initialupdates",
+    "@slatwall/slatwallassetlibrary": "git+ssh://git@github.com:ten24/SlatwallAssetLibrary.git#develop",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -12,8 +14,7 @@
     "react-dom": "^17.0.1",
     "react-i18next": "^11.7.3",
     "react-scripts": "4.0.0",
-    "web-vitals": "^0.2.4",
-    "@slatwall/slatwall-sdk": "git+ssh://git@github.com:ten24/SlatwallSDK.git#master-gs-initialupdates"
+    "web-vitals": "^0.2.4"
   },
   "scripts": {
     "buildsdk": "cd node_modules/@slatwall/slatwall-sdk; yarn install; yarn build",

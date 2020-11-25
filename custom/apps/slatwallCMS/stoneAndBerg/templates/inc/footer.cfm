@@ -19,11 +19,17 @@
  ></div>
   
   <!--- JavaScript libraries, plugins and custom scripts--->
-  <script src="#$.getThemePath()#/custom/client/assets/js/jquery.min.js"></script>
-  <script src="#$.getThemePath()#/custom/client/assets/js/bootstrap.min.js"></script>
-  <script src="#$.getThemePath()#/custom/client/assets/js/slick.min.js"></script>
-  <script src="#$.getThemePath()#/custom/client/assets/js/theme.js"></script>
-  <script src="#$.getThemePath()#/custom/client/assets/js/simplebar.min.js"></script>
+  <script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+  integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"
+  crossorigin="anonymous"
+></script>
+<script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@16.1.3/dist/smooth-scroll.polyfills.min.js"></script>
+
   <script src="#$.getThemePath()#/custom/swreact/build/js/bundle.js" ></script>
   <script src="#$.getThemePath()#/custom/swreact/build/js/0.chunk.js" ></script>
   <script src="#$.getThemePath()#/custom/swreact/build/js/main.chunk.js" ></script>
