@@ -6,7 +6,7 @@
   "repository": "https://github.com/ten24/Slatwall",
   "license": "MIT",
   "dependencies": {
-    "angular": "^1.8.0",
+    "angular": "^1.6.4",
     "angular-chart.js": "^1.1.1",
     "angular-mocks": "^1.6.4",
     "blueimp-md5": "^1.1.0",
@@ -39,7 +39,7 @@
     "webpack-stream": "*"
   },
   "devDependencies": {
-    "angular": "^1.8.0",
+    "angular": "^1.6.4",
     "angular-mocks": "^1.6.4",
     "bower": "^1.8.0",
     "chart.js": "^2.7.2",
