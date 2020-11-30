@@ -22,7 +22,7 @@
     "watch": "PUBLIC_URL=/custom/swreact cra-build-watch; npm run updateCFM dev",
     "updateCFM": "node buildtools/build.js",
     "start": "react-scripts start",
-    "build:c9": "PUBLIC_URL=/custom/swreact react-scripts build; npm run updateCFM",
+    "build:c9": "PUBLIC_URL=/custom/swreact/build react-scripts build; npm run updateCFM",
     "build": "react-scripts build; npm run updateCFM",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

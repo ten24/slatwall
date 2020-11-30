@@ -1,6 +1,6 @@
 const fs = require('fs')
 const manifest = require('../build/asset-manifest.json')
-const assetPrefix = '/custom/swreact/'
+const assetPrefix = '/custom/swreact/build/'
 const relativePath = `${__dirname}/../../apps/slatwallCMS/stoneAndBerg/templates/inc/`
 let cssFiles = ''
 let jsFiles = ''
