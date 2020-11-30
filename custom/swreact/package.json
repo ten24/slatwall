@@ -47,12 +47,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.7",
-    "@storybook/addon-actions": "^6.1.2",
-    "@storybook/addon-essentials": "^6.1.2",
-    "@storybook/addon-links": "^6.1.2",
-    "@storybook/node-logger": "^6.1.2",
+    "@storybook/addon-actions": "^6.1.9",
+    "@storybook/addon-essentials": "^6.1.9",
+    "@storybook/addon-links": "^6.1.9",
+    "@storybook/node-logger": "^6.1.9",
     "@storybook/preset-create-react-app": "^3.1.5",
-    "@storybook/react": "^6.1.2",
+    "@storybook/react": "^6.1.9",
     "cra-build-watch": "^3.4.0",
     "react-app-rewired": "^2.1.6"
   }

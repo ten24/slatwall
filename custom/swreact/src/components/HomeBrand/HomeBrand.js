@@ -31,77 +31,38 @@ function HomeBrand(props) {
       },
     ],
   }
+  const homeBrand = JSON.parse(props.homeBrand)
+
   return (
     <div className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
       <h3 className="h3">Shop by Manufacturer</h3>
       <Slider {...settings}>
-        <div index={1} className="repeater">
-          <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
-            <a className="d-block p-4" href="/shop/kidde">
-              <img
-                className="d-block mx-auto"
-                src="/custom/assets/files/associatedimage/kidde1.png"
-                alt="Kidde Logo"
-              />
-            </a>
-          </div>
-        </div>
-        <div index={2} className="repeater">
-          <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
-            <a className="d-block p-4" href="/shop/lenox">
-              <img
-                className="d-block mx-auto"
-                src="/custom/assets/files/associatedimage/lenox1.png"
-                alt="Lenox Logo"
-              />
-            </a>
-          </div>
-        </div>
-        <div index={3} className="repeater">
-          <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
-            <a className="d-block p-4" href="/shop/gms">
-              <img
-                className="d-block mx-auto"
-                src="/custom/assets/files/associatedimage/gms1.png"
-                alt="GMS Logo"
-              />
-            </a>
-          </div>
-        </div>
-        <div index={4} className="repeater">
-          <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
-            <a className="d-block p-4" href="/shop/master-lock">
-              <img
-                className="d-block mx-auto"
-                src="/custom/assets/files/associatedimage/master-lock1.png"
-                alt="Master Lock Logo"
-              />
-            </a>
-          </div>
-        </div>
-        <div index={5} className="repeater">
-          <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
-            <a className="d-block p-4" href="/shop/american">
-              <img
-                className="d-block mx-auto"
-                src="/custom/assets/files/associatedimage/american-lock1.png"
-                alt="American Lock Logo"
-              />
-            </a>
-          </div>
-        </div>
+        {homeBrand.map(({ associatedImage, linkUrl, title }, index) => {
+          return (
+            <div key={index} className="repeater">
+              <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
+                <a className="d-block p-4" href={linkUrl}>
+                  <img
+                    className="d-block mx-auto"
+                    src={`/custom/assets/files/associatedimage/${associatedImage}`}
+                    alt={title}
+                  />
+                </a>
+              </div>
+            </div>
+          )
+        })}
       </Slider>
-      <a
-        className="btn btn-primary mt-3 btn-long"
-        href="
-          /shop/"
-      >
+      <a className="btn btn-primary mt-3 btn-long" href={props.shopBy}>
         More Brands
       </a>
     </div>
   )
 }
 
-HomeBrand.propTypes = {}
+HomeBrand.propTypes = {
+  homeBrand: PropTypes.string,
+  shopBy: PropTypes.string,
+}
 
 export default HomeBrand

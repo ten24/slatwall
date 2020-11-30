@@ -26,7 +26,18 @@ ReactDOM.render(
 
 ReactDOM.render(
   <React.StrictMode>
-    <Home />
+    <Home
+      homeBanner={document
+        .getElementById('reactHome')
+        .getAttribute('data-homeBanner')}
+      homeContent={document
+        .getElementById('reactHome')
+        .getAttribute('data-homeContent')}
+      homeBrand={document
+        .getElementById('reactHome')
+        .getAttribute('data-homeBrand')}
+      shopBy={document.getElementById('reactHome').getAttribute('data-shopBy')}
+    />
   </React.StrictMode>,
   document.getElementById('reactHome')
 )

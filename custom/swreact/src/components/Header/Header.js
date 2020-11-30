@@ -41,9 +41,6 @@ const MegaMenu = props => {
 }
 
 function Header(props) {
-  console.log(props.productCategories)
-  console.log(typeof props.productCategories)
-
   const productCategories = JSON.parse(props.productCategories)
   let menuItems = new Map()
   productCategories.forEach(item => {
@@ -182,7 +179,6 @@ function Header(props) {
   )
 }
 Header.propTypes = {
-  themePath: PropTypes.string,
   mainNavigation: PropTypes.string,
   productCategories: PropTypes.string,
 }
