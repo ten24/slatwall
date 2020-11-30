@@ -37,12 +37,480 @@
                 "dataType": "boolean"
             }
         },
+        "Category": {
+            "propertyIdentifier": "productKeyMachineType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CutByCode": {
+            "propertyIdentifier": "productKeyMachineCutByCode",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "Duplicate": {
+            "propertyIdentifier": "productKeyMachineDuplicate",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
         "productActiveFlag": {
             "propertyIdentifier": "activeFlag",
             "defaultValue": true,
             "allowUpdate": false,
             "validations": {
                 "dataType": "boolean"
+            }
+        },
+        "KitType": {
+            "propertyIdentifier": "productPinKitType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Material": {
+            "propertyIdentifier": "productHingeMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Style": {
+            "propertyIdentifier": "productHingeStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "NonRemovablePin": {
+            "propertyIdentifier": "productHingePin",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "Width": {
+            "propertyIdentifier": "productWidth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Height": {
+            "propertyIdentifier": "productHeight",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Weight": {
+            "propertyIdentifier": "productWeight",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Finish": {
+            "propertyIdentifier": "productFinishCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Color": {
+            "propertyIdentifier": "productColor",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Backset": {
+            "propertyIdentifier": "productBackset",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DoorThickness": {
+            "propertyIdentifier": "productDoorThickness",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "HoleSize": {
+            "propertyIdentifier": "productHoleSize",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Ctc": {
+            "propertyIdentifier": "productCTC",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "LockType": {
+            "propertyIdentifier": "productLockType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CutoutType": {
+            "propertyIdentifier": "productCutoutType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DoorSwing": {
+            "propertyIdentifier": "productDoorSwing",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Offset": {
+            "propertyIdentifier": "productOffset",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "BaseHeight": {
+            "propertyIdentifier": "productBaseHeight",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Projection": {
+            "propertyIdentifier": "productProjection",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Clearance": {
+            "propertyIdentifier": "productClearance",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Diameter": {
+            "propertyIdentifier": "productDiameter",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DoorAccessoryStyle": {
+            "propertyIdentifier": "productDoorAccessoryStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Application": {
+            "propertyIdentifier": "productKeyApplication",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Package": {
+            "propertyIdentifier": "productPackageType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "PackageQty": {
+            "propertyIdentifier": "productPackageQty",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Display": {
+            "propertyIdentifier": "productDisplay",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "KeyMaterial": {
+            "propertyIdentifier": "productKeyMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Size": {
+            "propertyIdentifier": "productKeySize",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "KeyColor": {
+            "propertyIdentifier": "productKeyColor",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "KeyDesign": {
+            "propertyIdentifier": "productKeyDesign",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ListingTitle": {
+            "propertyIdentifier": "productListingTitle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "UM": {
+            "propertyIdentifier": "productUM",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Cover": {
+            "propertyIdentifier": "productCover",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CoverStyle": {
+            "propertyIdentifier": "productCoverStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Handed": {
+            "propertyIdentifier": "productHanded",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Material": {
+            "propertyIdentifier": "productMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "SpringSize": {
+            "propertyIdentifier": "productSpringSize",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "MfgWarranty": {
+            "propertyIdentifier": "productMfgWarranty",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "HoldOpen": {
+            "propertyIdentifier": "productHoldOpen",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "ParellelArm": {
+            "propertyIdentifier": "productParallelArm",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "RegularArm": {
+            "propertyIdentifier": "productRegularArm",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "ExtraDutyArm": {
+            "propertyIdentifier": "productExtraDutyArm",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "CushStopArm": {
+            "propertyIdentifier": "productCushNStopArm",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "FastenerPack": {
+            "propertyIdentifier": "productFastenerPack",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DoorHand": {
+            "propertyIdentifier": "productDoorHand",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Length": {
+            "propertyIdentifier": "productLength",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Buildable": {
+            "propertyIdentifier": "productBuildable",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "BodyWidth": {
+            "propertyIdentifier": "mechanicalBodyWidth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ShackleClearance": {
+            "propertyIdentifier": "mechanicalShackleClearance",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ShackleMaterial": {
+            "propertyIdentifier": "mechanicalShackleMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ShackleDiameter": {
+            "propertyIdentifier": "mechanicalShackleDiameter",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Rekeyable": {
+            "propertyIdentifier": "mechanicalRekeyable",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "BodyMaterial": {
+            "propertyIdentifier": "mechanicalBodyMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "LockSeries": {
+            "propertyIdentifier": "merchanicalLockSeries",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Bolt/LatchStyle": {
+            "propertyIdentifier": "mechanicalHardwareBoltLatch",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "FailSafe": {
+            "propertyIdentifier": "productFailSafe",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "MechStyle": {
+            "propertyIdentifier": "mechanicalStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "MechHardFunction": {
+            "propertyIdentifier": "mechanicalHardwareFunction",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Grade": {
+            "propertyIdentifier": "productBoredLockGrade",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DoorKnobFunction": {
+            "propertyIdentifier": "productDoorKnobFunction",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DoorKnobSeries": {
+            "propertyIdentifier": "productDoorKnobSeries",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "FailSecure": {
+            "propertyIdentifier": "productFailSecure",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "CylinderCam": {
+            "propertyIdentifier": "productCylinderCam",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "OverrideType": {
+            "propertyIdentifier": "mechanicalHardwareOverrideType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Trim": {
+            "propertyIdentifier": "mechanicalHardwareTrim",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "SafeTypeStyle": {
+            "propertyIdentifier": "productSafeTypeStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "SafeFireRated": {
+            "propertyIdentifier": "productSafeFireRated",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "SafeSafetyRating": {
+            "propertyIdentifier": "productSafeSafetyRating",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "BoredLockStyle": {
+            "propertyIdentifier": "productBoredLockStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderMaterial": {
+            "propertyIdentifier": "productCylinderMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Keying": {
+            "propertyIdentifier": "mechanicalKeying",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderPins": {
+            "propertyIdentifier": "productCylinderPins",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Residential": {
+            "propertyIdentifier": "productResidential",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "BoxQuantity": {
+            "propertyIdentifier": "productBoxQuantity",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ProductSeries": {
+            "propertyIdentifier": "productSeries",
+            "validations": {
+                "dataType": "string"
             }
         }
     },

@@ -21,7 +21,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	 *				] 
 	 *	}
 	*/
-	public any function csvFileToQuery(required string csvFilePath, required string columnTypes, boolean useHeaderRowAsColumns=true, string columns, string delimiter=",", boolean trimTrailingEmptyLine=true){
+	public any function csvFileToQuery(required string csvFilePath, string columnTypes, boolean useHeaderRowAsColumns=true, string columns, string delimiter=",", boolean trimTrailingEmptyLine=true){
 
 		//read-csv-file
 		var records = this.getHibachiUtilityService().csvStringToArray( FileRead(arguments.csvFilePath,"utf-8") );
@@ -29,14 +29,14 @@ component accessors="true" output="false" extends="HibachiService" {
 
 		if( arguments.useHeaderRowAsColumns ){
 			arguments.columns = ArrayToList( records[1] );
-		} 
+		}
 
 		arguments.columns = REReplace(arguments.columns, '[^a-zA-Z\d,]', '', 'ALL');
 
 		var numberOfColumns = Listlen(arguments.columns, ',', true);
 		var numberOfRecords = ArrayLen(records);
 
-		var csvQuery = QueryNew(arguments.columns, arguments.columnTypes);
+		var csvQuery = QueryNew(arguments.columns, arguments.columnTypes ?: javaCast( "Null" , "" ));
 		var errors = [];
 
 		// starting from 2, to skip the header

@@ -194,6 +194,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
 	    
+	    var preProcessFunctionName = "preProcess#arguments.entityName#Data";
+	    if( structKeyExists(this, preProcessFunctionName) ){
+            arguments.data = this.invokeMethod( preProcessFunctionName, { "data" : arguments.data } );
+	    }
+	    
 	    var entityMapping = this.getEntityMapping( arguments.entityName );
 
 	    var validation = this.validateEntityData( 
@@ -264,7 +269,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public void function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
 	    
-	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies"
+	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies";
 	    if( structKeyExists(this, extentionFunctionName) ){
             this.invokeMethod( extentionFunctionName, arguments );
 	    } else {
@@ -916,6 +921,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        for(var relation in arguments.mapping.relations ){
 	            
+	            // we're creting a duplicate here, as we're maintainaing some state in this variable down the line and 
+	            // if we don't duplicate then it's polutes the global mapping, which means the functionality will not work as expected;
+	            relation = structCopy(relation); 
+	            
 	            if( structKeyExists(arguments.emptyRelations, relation.propertyIdentifier) ){
 	                // if we have this relation in empty-relations that let's use that, so we have additional info down the line
 	                relation = arguments.emptyRelations[ relation.propertyIdentifier ];
@@ -1153,7 +1162,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public string function genericCreateEntityImportRemoteID( required struct data, required struct mapping, string sourceDataKeysPrefix = '' ){
 	    return arguments.mapping.importIdentifier.keys.reduce( function(accumulated, key){ 
     	        // it is expected that each key exists in the data
-    	        var value = hash( trim( data[ sourceDataKeysPrefix&key ] ), 'MD5' );
+    	        var value = trim(data[sourceDataKeysPrefix&key]);
+    	        value = lcase(hash(value, 'MD5')); // we're l-casing the hash-value, as this's how all of the IDs are stored in the DB;
     	        return ListAppend( accumulated, value, '_'); 
 	    }, '');
 	}
@@ -1219,7 +1229,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        "uniqueKey"   = 'importRemoteID',
 	        "uniqueValue" = productTypeImportRemoteID
 	    );
-	    
+
     	if( !isNull(productTypeID) && !this.hibachiIsEmpty(productTypeID) ){
     	    return { "productTypeID" : productTypeID }
     	} 
@@ -1234,7 +1244,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
 	  return {
-            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1' // Product-type Merchandise 
+            'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1' // Merchandise is the default Parent-Product-type
         }
 	}
 	
@@ -1266,11 +1276,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        'remotePriceGroupID' : data['remotePriceGroupID'] ?: ''
 	    };
 	    
-	   return hash( trim( formattedData.remoteSkuID  ),  'MD5' ) & '_' &
-	          hash( trim( formattedData.currencyCode ),  'MD5' ) & '_' &
-	          hash( trim( formattedData.minQuantity  ),  'MD5' ) & '_' &
-	          hash( trim( formattedData.maxQuantity  ),  'MD5' ) & '_' &
-	          hash( trim( formattedData.remotePriceGroupID ), 'MD5' );
+	   return lcase( hash( trim( formattedData.remoteSkuID  ),  'MD5' ) ) & '_' &
+	          lcase( hash( trim( formattedData.currencyCode ),  'MD5' ) )& '_' &
+	          lcase( hash( trim( formattedData.minQuantity  ),  'MD5' ) )& '_' &
+	          lcase( hash( trim( formattedData.maxQuantity  ),  'MD5' ) )& '_' &
+	          lcase( hash( trim( formattedData.remotePriceGroupID ), 'MD5' ) );
 	}
 	
 	public any function generateSkuPricePriceGroup( 
@@ -1298,7 +1308,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             nested      = true
         );
 	}
-
 
 	/////////////////.                  INVENTORY
 	
