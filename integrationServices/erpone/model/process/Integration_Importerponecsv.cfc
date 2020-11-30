@@ -10,14 +10,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiP
 	
 	public any function getEntityNameOptions(){
 	    
-	    var index = this.getService("slatwallImporterService").getAvailableSampleCsvFilesIndex();
+	    var index = this.getService("erpOneService").getAvailableSampleCsvFilesIndex();
 	    var options = [];
 	    
 	    for(var entityName in index){
-	        options.append({ 
-    	        "name"  : entityName, 
-    	        "value" : index[entityName] 
-	        });
+	        options.append( {"name": entityName, "value": entityName} );
 	    }
 	    
 	    return options;
