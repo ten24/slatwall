@@ -109,7 +109,6 @@ class MonatEnrollmentController {
 		});
 		
 		this.monatService.getProductFilters();
-		
 	}
 	
 	public handleCreateAccount = () => {
