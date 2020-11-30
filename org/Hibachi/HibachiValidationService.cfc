@@ -232,7 +232,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			for(var propertyIdentifier in contextValidations) {
 
 				// First make sure that the proerty exists
-				if(arguments.object.hasProperty( propertyIdentifier )) {
+				if(arguments.object.hasPropertyByPropertyIdentifier( propertyIdentifier )) {
 					// Loop over each of the constraints for this given property
 					for(var c=1; c<=arrayLen(contextValidations[ propertyIdentifier ]); c++) {
 
@@ -272,7 +272,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			var thisPropertyName = listLast(arguments.propertyIdentifier, '.');
 
 			var replaceTemplateStruct = {};
-			replaceTemplateStruct.propertyName = arguments.object.getPropertyTitle(thisPropertyName);
+			replaceTemplateStruct.propertyName = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).getPropertyTitle(thisPropertyName);
 
 			if(arguments.object.isPersistent()) {
 				var thisClassName = getLastEntityNameInPropertyIdentifier( arguments.object.getClassName(), arguments.propertyIdentifier);
