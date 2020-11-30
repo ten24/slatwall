@@ -11,7 +11,7 @@ function Footer(props) {
             <div className="row">
               <div className="col-0 col-md-2"></div>
               <div
-                className="col-md-8 text-center"
+                className="col-md-8 text-center tom2"
                 dangerouslySetInnerHTML={{ __html: props.contactUs }}
               />
               <div className="col-0 col-md-2"></div>

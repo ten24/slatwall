@@ -8,6 +8,7 @@ import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
 
 const FeaturedProducts = ({ sliderData }) => {
+  console.log(Background)
   const settings = {
     dots: false,
     infinite: true,

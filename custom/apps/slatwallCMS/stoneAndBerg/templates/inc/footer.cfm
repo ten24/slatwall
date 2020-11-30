@@ -34,12 +34,7 @@
   <script src="#$.getThemePath()#/custom/swreact/build/js/0.chunk.js" ></script>
   <script src="#$.getThemePath()#/custom/swreact/build/js/main.chunk.js" ></script>
   --->
-<!---    --->
-<script src="#$.getThemePath()#/custom/swreact/build/static/js/runtime-main.56087f0e.js" ></script> 
-<script src="#$.getThemePath()#/custom/swreact/build/static/js/2.4493743b.chunk.js" ></script> 
- <script src="#$.getThemePath()#/custom/swreact/build/static/js/main.befcf830.chunk.js" ></script> 
- <!--- --->
-
+<cfinclude template="reactFooterAssets.cfm" />
   </footer>
 </body>
 </html>
