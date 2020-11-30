@@ -426,7 +426,7 @@ function Footer(props) {
             lineNumber: 12,
             columnNumber: 15
           }, this), /*#__PURE__*/Object(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__["jsxDEV"])("div", {
-            className: "col-md-8 text-center tom2",
+            className: "col-md-8 text-center etyrty",
             dangerouslySetInnerHTML: {
               __html: props.contactUs
             }
