@@ -17,6 +17,7 @@
 <meta name="msapplication-TileColor" content="##ffffff">
 <meta name="theme-color" content="##ffffff">
 <!--- Main Theme Styles --->
-<link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/client/dist/app.bundle.css">
-<link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/react/static/css/main.2cbd59c8.chunk.css">
+<!--- <link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/client/dist/app.bundle.css"> --->
+<link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/react/static/css/2.87148efa.chunk.css">
+<link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/react/static/css/main.ac36a866.chunk.css">
 </cfoutput>

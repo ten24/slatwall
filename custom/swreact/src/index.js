@@ -27,9 +27,12 @@ ReactDOM.render(
 ReactDOM.render(
   <React.StrictMode>
     <Home
-      homeBanner={document
+      homeMainBanner={document
         .getElementById('reactHome')
-        .getAttribute('data-homeBanner')}
+        .getAttribute('data-homeMainBanner')}
+      featuredSlider={document
+        .getElementById('reactHome')
+        .getAttribute('data-featuredSlider')}
       homeContent={document
         .getElementById('reactHome')
         .getAttribute('data-homeContent')}

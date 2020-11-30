@@ -29,13 +29,16 @@
   crossorigin="anonymous"
 ></script>
 <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@16.1.3/dist/smooth-scroll.polyfills.min.js"></script>
-
+<!--- 
   <script src="#$.getThemePath()#/custom/swreact/build/js/bundle.js" ></script>
   <script src="#$.getThemePath()#/custom/swreact/build/js/0.chunk.js" ></script>
   <script src="#$.getThemePath()#/custom/swreact/build/js/main.chunk.js" ></script>
-<!---   <script src="#$.getThemePath()#/custom/swreact/build/static/js/runtime-main.034396e0.js" ></script> --->
-<!---   <script src="#$.getThemePath()#/custom/swreact/build/static/js/2.5b433cb9.chunk.js" ></script> --->
-<!---   <script src="#$.getThemePath()#/custom/swreact/build/static/js/main.a8ab5d08.chunk.js" ></script> --->
+  --->
+<!---    --->
+<script src="#$.getThemePath()#/custom/swreact/build/static/js/runtime-main.56087f0e.js" ></script> 
+<script src="#$.getThemePath()#/custom/swreact/build/static/js/2.4493743b.chunk.js" ></script> 
+ <script src="#$.getThemePath()#/custom/swreact/build/static/js/main.befcf830.chunk.js" ></script> 
+ <!--- --->
 
   </footer>
 </body>
