@@ -88,6 +88,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
+
 	
 	public any function copyAddress(required any address, saveNewAddress=false) {
 		var addressCopy = this.newAddress();
