@@ -332,7 +332,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	public any function transformErpOneAccounts( required array accountDataArray ){
 	    var erponeMapping = {
-	        "__rowids" : "remoteAccountID",
+	        "customer" : "remoteAccountID",
 	        "name" : "firstName",
 	        "country_code" : "countryCode",
 	        "email_address" : "email",
