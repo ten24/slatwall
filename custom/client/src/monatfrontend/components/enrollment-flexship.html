@@ -21,15 +21,14 @@
 				<ul class="list-group list-group-flush">
 					<li ng-repeat="item in enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.orderTemplateItems" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
 						<div class="row align-items-center">
-							<div class="p-1">
-								<a class="py-0" ng-href="{{item.skuProductURL}}">
-									<img 
-										image-manager 
-										height="75px" 
-										ng-src="{{item.sku_imagePath}}" 
-										alt="{{item.sku_product_productName}}"
-									>
-								</a>
+							<div class="cart-img">
+								<img 
+									image-manager 
+									height="75px" 
+									width="auto"
+									ng-src="{{item.sku_imagePath}}" 
+									alt="{{item.sku_product_productName}}"
+								>
 							</div>
 							<div class="col">
 								<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
