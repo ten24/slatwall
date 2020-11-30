@@ -71,8 +71,12 @@ export class MonatService {
 				});
 		} else {
 			this.updateCartPropertiesOnService({ cart: cachedCart });
+			if(this.cart?.orderID != this.publicService.cart?.orderID){
+				this.publicService.cart = this.cart;
+			}
 			deferred.resolve(cachedCart);
 		}
+		
 		return deferred.promise;
 	}
 	
