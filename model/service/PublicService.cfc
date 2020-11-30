@@ -1309,6 +1309,10 @@ component  accessors="true" output="false"
            }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
+	    
+	    if(!accountPaymentMethod.hasErrors()){
+                arguments.data.accountPaymentMethodID = accountPaymentMethod.getAccountPaymentMethodID();
+            }
             
             getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
             data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
