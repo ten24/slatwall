@@ -25,7 +25,7 @@
 		
 	</div>
 	
-	<div class="container">
+	<div class="container notifications-container">
 		
 		<div ng-cloak
 			class="notifications"
@@ -33,7 +33,7 @@
 			<!-- threshold has been met for today's order--->
 			<div ng-cloak
 				class="alert-message" 	
-				ng-show=
+				ng-if=
 					"monatEnrollment.currentStepName == 'todaysOrder'
 					&& monatEnrollment.type == 'vip'
 					&& monatEnrollment.monatService.canPlaceOrder"
