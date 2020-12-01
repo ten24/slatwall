@@ -18,7 +18,7 @@
 									<span sw-rbkey="'frontend.global.shopBy'"> {{monatFilterMenu.parentController.name}}</span>
 									<a href="" 
 										sw-rbkey="'frontend.global.clearAll'"
-										ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.parentController.getProducts('none', 'none');"
+										ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.callProductFunction('none', 'none');"
 									></a>
 								</div>
 							<div>
@@ -46,7 +46,7 @@
 								<span sw-rbkey="'frontend.global.shopBy'"> {{monatFilterMenu.filterCategory}}</span>
 								<a href=""
 									sw-rbkey="'frontend.global.clearAll'"
-									ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.parentController.getProducts('none', 'none')"
+									ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.callProductFunction('none', 'none')"
 								></a>
 							</div>
 						<div>
@@ -59,14 +59,14 @@
 											id="{{monatFilterMenu.filterCategory}}-{{filter.name}}"
 											name="{{monatFilterMenu.filterCategory}}-filterOptionButton" 
 											ng-click=
-											"monatFilterMenu.parentController.getProducts(filter,categoryName); 
+											"monatFilterMenu.callProductFunction(filter,categoryName); 
 											monatFilterMenu.setParentTitle(filter.name);"
 										>
 										<label 
 											class="custom-control-label" 
 											for="{{monatFilterMenu.filterCategory}}-{{filter.name}}"
 										>
-											{{filter.name}} {{monatFilterMenu.productFunction}}
+											{{filter.name}}
 										</label>
 									</div>
 								</li>
