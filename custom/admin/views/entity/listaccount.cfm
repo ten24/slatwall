@@ -78,7 +78,7 @@ Notes:
 	displayProperty='calculatedEmailAddress',
 	columnConfig={
 		isVisible=true,
-		isSearchable=false,
+		isSearchable=true,
 		isDeletable=true
 	})/>
 	
