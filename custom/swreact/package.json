@@ -19,9 +19,9 @@
   },
   "scripts": {
     "buildsdk": "cd node_modules/@slatwall/slatwall-sdk; yarn install; yarn build",
-    "watch": "PUBLIC_URL=/custom/swreact cra-build-watch; npm run updateCFM dev",
+    "watch": "PUBLIC_URL=/custom/swreact/build cra-build-watch; npm run updateCFM dev",
     "updateCFM": "node buildtools/build.js",
-    "start": "react-scripts start",
+    "start": "export PORT=3006; react-scripts start",
     "build:c9": "PUBLIC_URL=/custom/swreact/build react-scripts build; npm run updateCFM",
     "build": "react-scripts build; npm run updateCFM",
     "test": "react-scripts test",
