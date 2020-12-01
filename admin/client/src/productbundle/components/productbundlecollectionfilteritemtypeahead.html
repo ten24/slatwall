@@ -123,10 +123,10 @@
                     <!-- //Selected filters -->
                     <!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
                     <div class="s-load-more" ng-hide="swProductBundleCollectionFilteritemTypeahead.recordsCount <= swProductBundleCollectionFilteritemTypeahead.recordsPerPage" ng-click="swProductBundleCollectionFilteritemTypeahead.increaseCurrentCount(); swProductBundleCollectionFilteritemTypeahead.getFiltersByTerm(swProductBundleCollectionFilteritemTypeahead.productBundleGroupFilters.keyword,swProductBundleCollectionFilteritemTypeahead.searchOptions.selected);">
-                        <button class="{'btn btn-dgrey btn-sm disabled' : swProductBundleCollectionFilteritemTypeahead.loading === true, 'btn btn-dgrey btn-sm' : swProductBundleCollectionFilteritemTypeahead.loading}">
+                        <a class="{'btn btn-dgrey btn-sm disabled' : swProductBundleCollectionFilteritemTypeahead.loading === true, 'btn btn-dgrey btn-sm' : swProductBundleCollectionFilteritemTypeahead.loading}">
                             Load More <i class="fa fa-refresh fa-spin" ng-show="swProductBundleCollectionFilteritemTypeahead.loading"></i>
                             <span ng-if="!swProductBundleCollectionFilteritemTypeahead.showAll">(Showing {{swProductBundleCollectionFilteritemTypeahead.pageRecordsStart}} to {{swProductBundleCollectionFilteritemTypeahead.pageRecordsEnd}} of {{swProductBundleCollectionFilteritemTypeahead.recordsCount}})</span>
-                        </button>
+                        </a>
                     </div>
                     <!-- //Load more button -->
                 </div>
