@@ -117,6 +117,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'processorder_changereturnpercentage');
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessemail_addtoqueue');
 
+
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
 		editAddressZoneLocation(rc);
