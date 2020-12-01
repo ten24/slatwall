@@ -449,7 +449,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    }
 			};	
 			if(setting(settingName='allowCBDFlag', requestBean=arguments.requestBean) ? true : false){
-				requestData.processingOptions.paymentOptionTag = !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD";
+				requestData.processingOptions["paymentOptionTag"] = !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD";
 			}
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
 			
@@ -500,7 +500,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    }
 			};	
 			if(setting(settingName='allowCBDFlag', requestBean=arguments.requestBean) ? true : false){
-				requestData.processingOptions.paymentOptionTag = !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD";
+				requestData.processingOptions["paymentOptionTag"] = !isNull(arguments.requestBean.getOrder()) && arguments.requestBean.getOrder().hasCBDProduct() ? "CBD" : "NO CBD";
 			}
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
 			
