@@ -67,10 +67,10 @@
             "propertyIdentifier" : "pickupLocation"
         },
         {
-            "key"                : "shippingMethodRemoteID",
+            "key"                : "shippingMethod",
             "entityName"         : "ShippingMethod",
             "isNullable"         : true,
-            "lookupKey"          : "remoteID",
+            "lookupKey"          : "shippingMethodCode",
             "propertyIdentifier" : "shippingMethod"
         },
         {
@@ -84,8 +84,8 @@
             "key"                : "statusCode",
             "lookupKey"          : "systemCode",
             "entityName"         : "Type",
-            "defaultValue"       : "...",
-            "__hint"             : "this defaultValue for status-code is `ofstNew`.",
+            "defaultValue"       : "159118d67de3418d9951fc629688e194",
+            "__hint"             : "this defaultValue for status-code is `ofstFulfilled`.",
             "propertyIdentifier" : "orderFulfillmentStatusType"
         },
     ],
