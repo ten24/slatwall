@@ -33,6 +33,7 @@ export class MonatService {
 	public qualifiedPromos = [];
 	public promotionRewardSkus = {};
 	public productFilterCategories = ['Hair','Skin','Wellness','Promotion'];
+	public showPurchasePlusMessage = false;
 	
 	//@ngInject
 	constructor(
@@ -44,6 +45,7 @@ export class MonatService {
 		private utilityService: UtilityService,
 		private localStorageCache: Cache,
 		private ModalService,
+		private $timeout
 	) {}
 
 	public getCart(refresh = false, param = "") {
@@ -57,7 +59,7 @@ export class MonatService {
 					if (data?.cart) {
 						console.log("get-cart, putting it in session-cache");
 						this.publicService.putIntoSessionCache("cachedCart", data.cart);
-
+						
 						this.updateCartPropertiesOnService(data);
 						deferred.resolve(data.cart);
 					} else {
@@ -70,7 +72,10 @@ export class MonatService {
 					deferred.reject(e);
 				});
 		} else {
-			this.updateCartPropertiesOnService({ cart: cachedCart });
+			if(refresh){
+				this.updateCartPropertiesOnService({ cart: cachedCart });	
+			}
+			
 			if(this.cart?.orderID != this.publicService.cart?.orderID){
 				this.publicService.cart = this.cart;
 			}
@@ -431,9 +436,19 @@ export class MonatService {
 		this.cart['canPlaceOrderMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Can Place Order') > -1 )[0] : {};
 		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 		this.totalItemQuantityAfterDiscount = 0;
+		
 		for (let item of this.cart.orderItems) {
 			this.totalItemQuantityAfterDiscount += item.extendedPriceAfterDiscount;
 		}
+		
+		if( this.cart['purchasePlusMessage']?.message){
+			this.showPurchasePlusMessage = true;
+			this.$timeout(() => {
+				this.showPurchasePlusMessage = false;
+			},4000);
+			
+		}
+		
 	}
 
 	public handleCartResponseActions(data): void {

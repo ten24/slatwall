@@ -24,12 +24,14 @@ export class OrderTemplateService {
 	public appliedPromotionCodeList = [];
 	public cartTotalThresholdForOFYAndFreeShippingLoaded: boolean = false;
 	public wishlistsRefreshed = false;
+	public showPurchasePlusMessage = false;
 	
 	//@ngInject
 	constructor(
 		public $q: ng.IQService,
 		public monatService: MonatService,
 		public publicService: PublicService,
+		private $timeout
 	) {}
 
 	/**
@@ -521,6 +523,15 @@ export class OrderTemplateService {
         if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
             this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
             this.cartTotalThresholdForOFYAndFreeShippingLoaded = true;
+        }
+        
+        this.showPurchasePlusMessage = this.mostRecentOrderTemplate['purchasePlusMessage']?.message?.length || false;
+        if(this.showPurchasePlusMessage){
+        	console.log('show it', this.mostRecentOrderTemplate['purchasePlusMessage']);
+        	
+        	this.$timeout(() => {
+				this.showPurchasePlusMessage = false;
+			},4000);
         }
     }
     

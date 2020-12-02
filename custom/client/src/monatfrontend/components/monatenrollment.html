@@ -87,19 +87,24 @@
 				<i class="fal fa-exclamation-circle"></i>
 			</div>
 			
-			<!--- purchase plus messaging --->
+			<!--- purchase plus messaging for todays order --->
 			<div ng-cloak
 				class="alert-message promo"
-				ng-if="
-				(monatEnrollment.currentStepName == 'orderListing' &&  monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message.length) 
-				|| ( monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.cart.purchasePlusMessage.message.length)"
+				ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.showPurchasePlusMessage"
 			>
 				<div class="messaging">
-					{{
-						monatEnrollment.currentStepName == 'orderListing' 
-						? monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message
-						:monatEnrollment.monatService.cart.purchasePlusMessage.message
-					}}
+					{{ monatEnrollment.monatService.cart.purchasePlusMessage.message }}
+				</div>
+				<img src="/themes/monat/assets/images/icon-promo.svg" alt="Promotion" width="30px" height="30px">
+			</div>
+			
+			<!--- purchase plus messaging for flexship --->
+			<div ng-cloak
+				class="alert-message promo"
+				ng-if="monatEnrollment.currentStepName == 'orderListing' && monatEnrollment.orderTemplateService.showPurchasePlusMessage"
+			>
+				<div class="messaging">
+					{{ monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message }}
 				</div>
 				<img src="/themes/monat/assets/images/icon-promo.svg" alt="Promotion" width="30px" height="30px">
 			</div>
