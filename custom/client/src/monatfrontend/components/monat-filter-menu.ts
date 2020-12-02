@@ -16,6 +16,7 @@ class MonatFilterMenuController{
 	){};
 	
 	public $onInit = () => {
+		this.productFunction = this.productFunction || 'getProducts';
 	}
 	
 	public toggleFilterMenu = () => {
@@ -26,6 +27,10 @@ class MonatFilterMenuController{
 	public toggleFilterSubCategory = (category) => {
 		this.showMainFilterMenu = false;
 		this.filterCategory = category;
+	}
+	
+	public callProductFunction = (category, categoryType)=>{
+		return this.parentController[this.productFunction](category,categoryType);
 	}
 	
 	public clearFilter = () => {
@@ -45,7 +50,7 @@ class MonatFilterMenu {
 	public scope = {};
 		public bindToController = {
 	    	parentController:'=',
-	    	productFunction:'='
+	    	productFunction:'@'
 		}
 	public controller = MonatFilterMenuController;
 	public controllerAs = 'monatFilterMenu';
