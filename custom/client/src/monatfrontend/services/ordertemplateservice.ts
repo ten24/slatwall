@@ -527,8 +527,6 @@ export class OrderTemplateService {
         
         this.showPurchasePlusMessage = this.mostRecentOrderTemplate['purchasePlusMessage']?.message?.length || false;
         if(this.showPurchasePlusMessage){
-        	console.log('show it', this.mostRecentOrderTemplate['purchasePlusMessage']);
-        	
         	this.$timeout(() => {
 				this.showPurchasePlusMessage = false;
 			},4000);
