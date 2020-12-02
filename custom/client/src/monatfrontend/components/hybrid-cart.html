@@ -69,7 +69,7 @@
 							<p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>	
 						</div>
 					</div>
-					<div class="collapse show multi-collapse" id="hybridCartBody" data-parent="#accordion">
+					<div class="collapse multi-collapse" ng-class=" {'show': !hybridCart.expandFlexship} " id="hybridCartBody" data-parent="#accordion">
 						
 						<div class="cart-progress-bar">
 							<purchase-plus-bar show-messages="true" extra-class="purchase-plus-bar--dark"></purchase-plus-bar>
@@ -168,7 +168,7 @@
 					</div>
 				</div>	
 				<div ng-if="hybridCart.type.indexOf('vip') > -1" id="flexshipCartBody">
-					<enrollment-flexship type="hybridCart.type" order-template="hybridCart.orderTemplate"></enrollment-flexship>
+					<enrollment-flexship expand-flexship="hybridCart.expandFlexship" type="hybridCart.type" order-template="hybridCart.orderTemplate"></enrollment-flexship>
 				</div>
 			</div>
 		</div>

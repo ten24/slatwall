@@ -26,7 +26,8 @@ class HybridCartController {
 	public otherDiscounts:number;
 	public type:string;
 	public loading:boolean = false;
-
+	public expandFlexship:boolean;
+	
 	//@ngInject
 	constructor(public monatAlertService, public monatService, public observerService, public orderTemplateService, public publicService) {
 
@@ -134,6 +135,7 @@ class HybridCart {
 
 	public bindToController = {
 		isEnrollment: '<?',
+		expandFlexship: '<?',
 		type: '<?',
 	};
 	public controller = HybridCartController;
