@@ -187,6 +187,10 @@ class MonatProductListingController {
 			},
 		}).then( (modal) => {
 			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+			/// this event is fired by bootstrap
+			modal.element.on('hidden.bs.modal', function (e) {
+				modal.element.remove();
+			});
 		    modal.close.then( (confirm) => {
 		    });
 		}).catch((error) => {

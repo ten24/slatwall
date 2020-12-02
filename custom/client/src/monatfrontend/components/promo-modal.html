@@ -1,16 +1,18 @@
-<div ng-if="promoModal.currentPage == 'promoList'" id="qualifiedPromoBanner" class="modal using-modal-service" tabindex="-1" role="dialog">
+<div ng-if="promoModal.currentPage == 'promoList'" ng-show="promoModal.slickInitialized" id="qualifiedPromoBanner" class="modal using-modal-service" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document" id="promo-modal-content">
     <div class="modal-content" ng-repeat="promotion in promoModal.promotions" ng-init="$last && promoModal.initSlickSlider()">
       <div class="modal-header">
 		    <img src="/themes/monat/assets/images/icon-promo.png">
       	<div class="unlocked" sw-rbkey="'frontend.global.youveUnlocked'"></div>
         <h5 class="modal-title" ng-bind="promotion.title"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" ng-click="promoModal.close()" aria-label="Close">
           <span aria-hidden="true"><i class="fal fa-minus"></i></span>
         </button>
       </div>
       <div class="modal-body">
+        <button type="button" class="slick-prev" ng-click="promoModal.slickPrev()">Previous</button>
         <p ng-bind="promotion.description"></p>
+        <button type="button" class="slick-next" ng-click="promoModal.slickNext()">Next</button>
       </div>
         <button type="button" class="btn bg-white" ng-click="promoModal.viewPromotion(promotion)" ng-disabled="promoModal.takeOfferLoading" ng-class="{'loading':promoModal.takeOfferLoading}">
         	<span sw-rbkey="'frontend.global.takeOffer'"></span>
