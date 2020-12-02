@@ -50,6 +50,8 @@
         {
             "key"                : "remoteFulfillmentMethodID",
             "entityName"         : "FulfillmentMethod",
+            "defaultValue"       : "444df2fb93d5fa960ba2966ba2017953",
+            "__hint"             : "this defaultValue for FulfillmentMethod is `Shipping`.",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "fulfillmentMethod"
         },
@@ -77,7 +79,7 @@
             "key"                : "shippingIntegration",
             "entityName"         : "integration",
             "isNullable"         : true,
-            "lookupKey"          : "packageName",
+            "lookupKey"          : "integrationPackage",
             "propertyIdentifier" : "shippingIntegration"
         },
         {
