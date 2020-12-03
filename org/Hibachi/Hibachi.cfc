@@ -541,8 +541,8 @@ component extends="framework.one" {
 			var adminDomanNamesSetting = getHibachiScope().setting('globalAdminDomainNames');
 			//if a list of admin domains has been specified then check to see if the domain exists in the list. if none specified then pass through
 			if(!isNull(adminDomanNamesSetting) && len(adminDomanNamesSetting)){
-				if(!ListFind(adminDomanNamesSetting, getHibachiScope().getCurrentDomain())){
-					writeOutput('#getHibachiScope().getCurrentDomain()# is not an admin domain and therefore restricted.');
+				if(!ListFind(adminDomanNamesSetting, cgi.http_host)){
+					writeOutput('#cgi.http_host# is not an admin domain and therefore restricted.');
 					abort;
 				}
 			}
