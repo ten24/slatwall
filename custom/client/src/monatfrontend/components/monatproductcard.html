@@ -66,24 +66,20 @@
             
         <div ng-if="monatProductCard.product.displayOnlyFlag != true" class="price">
             <strong>
-                <span ng-bind-html="monatProductCard.product.price | swcurrency:monatProductCard.currencyCode "></span>
-                <span ng-if="
+                <span ng-bind-html="monatProductCard.product.price | swcurrency:monatProductCard.currencyCode "></span>&#160;<span ng-if="
                     (monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPricing.price > 0) || monatProductCard.product.personalVolume != null"
-                >   /
-                </span>
+                >/&#160;</span>
             </strong> 
              <span class="personal-volume" ng-if="monatProductCard.product.priceGroupCode == 1"> 
                 <strong>
                     <span sw-rbKey="'frontend.cart.pv'"></span> 
-                    {{monatProductCard.product.personalVolume}} 
-                    <span ng-if="monatProductCard.product.upgradedPricing.price">/</span>
+                    {{monatProductCard.product.personalVolume}}&#160;<span ng-if="monatProductCard.product.upgradedPricing.price">/&#160;</span>
                 </strong>
             </span>
             <span class="vip-price">
                 <span ng-if="monatProductCard.product.upgradedPricing.price != null && monatProductCard.product.upgradedPricing.price > 0">
                     <span ng-if="monatProductCard.product.upgradedPriceGroupCode == 3" sw-rbKey="'frontend.global.vip'"></span> 
-                    <span ng-if="monatProductCard.product.upgradedPriceGroupCode == 2" sw-rbKey="'frontend.global.retail'"></span>
-                    <span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span>
+                    <span ng-if="monatProductCard.product.upgradedPriceGroupCode == 2" sw-rbKey="'frontend.global.retail'"></span>&#160;<span ng-bind-html="monatProductCard.product.upgradedPricing.price | swcurrency:monatProductCard.currencyCode "></span>
                 </span> 
             </span>
         </div>
