@@ -19,8 +19,8 @@
       </div>
       <!--- TODO: only display this div if there is more than one promo available --->
       <div class="slickActions" ng-if="promoModal.promotions.length > 1">
-        <button type="button" class="slick-prev" ng-click="promoModal.slickPrev()">Previous</button>
-        <button type="button" class="slick-next" ng-click="promoModal.slickNext()">Next</button>
+        <button type="button" class="slick-prev" ng-click="promoModal.slickPrev()" sw-rbkey="'frontend.global.previous'"></button>
+        <button type="button" class="slick-next" ng-click="promoModal.slickNext()" sw-rbkey="'frontend.global.next'"></button>
       </div>
     </div>
   </div>
