@@ -10,15 +10,17 @@
         </button>
       </div>
       <div class="modal-body">
-        <button type="button" class="slick-prev" ng-click="promoModal.slickPrev()">Previous</button>
         <p ng-bind="promotion.description"></p>
-        <button type="button" class="slick-next" ng-click="promoModal.slickNext()">Next</button>
       </div>
+      <div class="modal-footer">
         <button type="button" class="btn bg-white" ng-click="promoModal.viewPromotion(promotion)" ng-disabled="promoModal.takeOfferLoading" ng-class="{'loading':promoModal.takeOfferLoading}">
         	<span sw-rbkey="'frontend.global.takeOffer'"></span>
-        	<i class="fa fa-chevron-right"></i>
         </button>
-      <div class="modal-footer">
+      </div>
+      <!--- TODO: only display this div if there is more than one promo available --->
+      <div class="slickActions" ng-if="promoModal.promotions.length > 1">
+        <button type="button" class="slick-prev" ng-click="promoModal.slickPrev()" sw-rbkey="'frontend.global.previous'"></button>
+        <button type="button" class="slick-next" ng-click="promoModal.slickNext()" sw-rbkey="'frontend.global.next'"></button>
       </div>
     </div>
   </div>
@@ -49,11 +51,10 @@
              <!---- start repeat for products ---->
              <li class="list-item" ng-repeat="rewardSku in promoModal.rewardSkus">
                  <div class="product-image mr-2">
-                    <!--- TODO: get product image --->
                     <img 
                         image-manager
                         ng-src="{{rewardSku.imagePath}}" 
-                        alt="Product Title"
+                        alt="{{rewardSku.title}}"
                         width="70" 
                         height="70" 
                     />

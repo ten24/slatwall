@@ -177,6 +177,16 @@
           "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"calculatedQOQ",
           "updateFlag":false
+        },
+        {
+          "sourcecolumn":"createdDateTime",
+          "sourceColumnDataGenerator":"NOW()",
+          "propertyidentifier":"createdDateTime",
+        },
+        {
+          "sourcecolumn":"modifiedDateTime",
+          "sourceColumnDataGenerator":"NOW()",
+          "propertyidentifier":"modifiedDateTime",
         }
     ]
 }
