@@ -1,10 +1,10 @@
-							<a href="" class="filter-btn" ng-click="monatFilterMenu.toggleFilterMenu()">
+							<a href="" class="filter-btn" ng-click="monatFilterMenu.toggleFilterMenu(); clickOutsideCancel = true">
 								<span sw-rbkey="'frontend.global.filterBy'"></span>
 								<img src="/themes/monat/assets/images/FilterBy.svg" alt="filter icon" />
 							</a>
 
 						<div 
-							sw-click-outside="monatFilterMenu.showFilterMenu = false"
+							sw-click-outside="monatFilterMenu.clickOutsideExit();"
 							ng-class="{
 							'show-filter-menu' : monatFilterMenu.showFilterMenu,
 							'hide-filter-menu' : !monatFilterMenu.showFilterMenu,

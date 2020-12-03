@@ -10,6 +10,7 @@ class MonatFilterMenuController{
 	public parentController;
 	public headerHeight;
 	public productFunction:string;
+	public clickOutsideCancel:boolean = false;
 	
 	public constructor(
 		private monatService : MonatService,
@@ -20,8 +21,9 @@ class MonatFilterMenuController{
 	}
 	
 	public toggleFilterMenu = () => {
-		this.setTopHeight();
 		this.showFilterMenu = !this.showFilterMenu;
+		this.setTopHeight();
+
 	}
 	
 	public toggleFilterSubCategory = (category) => {
@@ -39,6 +41,13 @@ class MonatFilterMenuController{
 	
 	public setTopHeight = () => {
 		this.headerHeight =	$('.site-header').outerHeight();
+	}
+	
+	public clickOutsideExit = () => {
+		if(this.clickOutsideCancel == false){
+			this.showFilterMenu = false;
+		};
+		this.clickOutsideCancel = false
 	}
 	
 }
