@@ -1252,6 +1252,15 @@ property name="personalVolume" ormtype="big_decimal";
 
 		return variables.assignedAttributeSetSmartList;
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 

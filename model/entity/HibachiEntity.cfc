@@ -105,15 +105,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		
 	}
 
-
-	public boolean function isQualifiedToAudit(){
-		var qualified = super.isQualifiedToAudit();
-		
-		if(!qualified && this.getClassName() == 'Order' && !isNull(this.getOrderNumber())){
-			qualified = true;
-		}
-		return qualified;
-	}
 	// @hint Returns an array of comments related to this entity
 	public array function getComments( boolean publicFlag ) {
 		if(!structKeyExists(variables, "comments")) {

@@ -1997,6 +1997,16 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 		return savedAccountPaymentMethod;
 	}
+	
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
 
 	// =================== START: ORM Event Hooks  =========================
 
