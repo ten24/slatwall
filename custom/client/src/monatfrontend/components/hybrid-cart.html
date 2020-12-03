@@ -25,7 +25,7 @@
 			</a>
 			<div class="cart-header-content">
 				<button 
-					class="send-order"
+					class="send-order mr-3"
 					ng-click="monatEnrollment.saveEnrollment()"
 					ng-if="monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrder">
 						<img src="/themes/monat/assets/images/send-icon.png"  alt="Save Enrollment" width="25px" height="auto">
@@ -69,7 +69,7 @@
 							<p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>	
 						</div>
 					</div>
-					<div class="collapse show multi-collapse" id="hybridCartBody" data-parent="#accordion">
+					<div class="collapse multi-collapse" ng-class=" {'show': !hybridCart.expandFlexship} " id="hybridCartBody" data-parent="#accordion">
 						
 						<div class="cart-progress-bar">
 							<purchase-plus-bar show-messages="true" extra-class="purchase-plus-bar--dark"></purchase-plus-bar>
@@ -79,16 +79,14 @@
 							<ul class="list-group list-group-flush">
 								<li ng-repeat="item in hybridCart.cart.orderItems track by item.orderItemID" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
 									<div class="row align-items-center">
-										<div class="p-1">
-											<a class="py-0" ng-click="hybridCart.redirect(item.skuProductURL)" href="#">
-												<img 
-													image-manager
-													width="75px"
-													height="auto" 
-													ng-src="{{item.sku.imagePath}}" 
-													alt="{{item.sku.skuDefinition}}"
-												>
-											</a>
+										<div class="cart-img">
+											<img 
+												image-manager
+												width="auto"
+												height="75px" 
+												ng-src="{{item.sku.imagePath}}" 
+												alt="{{item.sku.skuDefinition}}"
+											>
 										</div>
 										<div class="col pl-0">
 											<p class="w-100 pb-1 pt-0 title" ng-bind="item.sku.product.productName"></p>
@@ -148,11 +146,11 @@
 								</div>
 								<div class="row justify-content-between">
 									<span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span>
-									<span ng-bind-html="hybridCart.cart.purchasePlusTotal | swcurrency:hybridCart.cart.currencyCode"></span> 
+									<span ng-bind-html="'&minus;' + (hybridCart.cart.purchasePlusTotal | swcurrency:hybridCart.cart.currencyCode)"></span> 
 								</div>
-								<div class="row justify-content-between">
+								<div class="row justify-content-between"  ng-if="hybridCart.otherDiscounts > 0">
 									<span sw-rbKey="'frontend.hybridCart.otherDiscounts'"></span>
-									<span ng-bind-html="(hybridCart.otherDiscounts ? hybridCart.otherDiscounts : 0) | swcurrency:hybridCart.cart.currencyCode"></span> 
+									<span ng-bind-html="'&minus;' + ((hybridCart.otherDiscounts ? hybridCart.otherDiscounts : 0) | swcurrency:hybridCart.cart.currencyCode)"></span> 
 								</div>
 							</div>
 							
@@ -170,7 +168,7 @@
 					</div>
 				</div>	
 				<div ng-if="hybridCart.type.indexOf('vip') > -1" id="flexshipCartBody">
-					<enrollment-flexship type="hybridCart.type" order-template="hybridCart.orderTemplate"></enrollment-flexship>
+					<enrollment-flexship expand-flexship="hybridCart.expandFlexship" type="hybridCart.type" order-template="hybridCart.orderTemplate"></enrollment-flexship>
 				</div>
 			</div>
 		</div>

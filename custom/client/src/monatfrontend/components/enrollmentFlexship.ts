@@ -12,7 +12,7 @@ class EnrollmentFlexshipController {
 	public suggestedRetailPrice: 0; 
 	public messages:any;
 	public type:string;
-	
+	public expandFlexship:boolean;
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
 		this.observerService.attach(this.refreshFlexship.bind(this), 'addOrderTemplateItemSuccess');
@@ -105,7 +105,8 @@ class EnrollmentFlexship {
 	
 	public bindToController = {
 		orderTemplate: '=?',
-		type: '<?'
+		type: '<?',
+		expandFlexship:'<?',
 	}
 	
 	public require={

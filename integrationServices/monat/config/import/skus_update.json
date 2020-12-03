@@ -21,6 +21,11 @@
         {
           "sourceColumn":"DangerousGoodsFlag",
           "propertyIdentifier":"dangerousGoodsFlag",
+        },
+        {
+          "sourcecolumn":"modifiedDateTime",
+          "sourceColumnDataGenerator":"NOW()",
+          "propertyidentifier":"modifiedDateTime",
         }
     ]
 }

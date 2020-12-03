@@ -225,7 +225,7 @@ export class PublicService extends PublicServiceCore {
             if ( setter.indexOf('cart') == -1) {
                 if (result['cart']){delete result['cart'];}
             }
-
+            
             if((setter == 'cart'||setter=='account') && this[setter] && this[setter].populate){
                 //cart and account return cart and account info flat
                 this[setter].populate(result[setter]);
