@@ -78529,6 +78529,7 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         this.initialSearchableColumnsState = [];
         this.searchableColumnSelection = 'All';
         this.fallbackPropertyArray = [];
+        this.onClickSearch = false;
         this.clearSearch = function () {
             _this.searchText = "";
             _this.hideSearch = true;
@@ -78539,8 +78540,9 @@ var SWTypeaheadSearchController = /** @class */ (function () {
         this.toggleDropdown = function () {
             _this.dropdownOpen = !_this.dropdownOpen;
         };
-        this.toggleOptions = function () {
-            if (_this.hideSearch && (!_this.searchText || !_this.searchText.length)) {
+        this.toggleOptions = function (onClickSearch) {
+            _this.onClickSearch = onClickSearch;
+            if (_this.hideSearch && (!_this.searchText || !_this.searchText.length || _this.onClickSearch)) {
                 _this.search(_this.searchText, true);
             }
             _this.hideSearch = !_this.hideSearch;
