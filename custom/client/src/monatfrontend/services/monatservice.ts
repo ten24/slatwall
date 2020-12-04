@@ -34,6 +34,10 @@ export class MonatService {
 	public promotionRewardSkus = {};
 	public productFilterCategories = ['Hair','Skin','Wellness','Promotion'];
 	public showPurchasePlusMessage = false;
+	public currentCartDateTime: string;
+	public hasShownCanPlaceOrderAlert: boolean;
+	public showCanPlaceOrderAlert:boolean;
+	public canPlaceOrderMessage:boolean;
 	
 	//@ngInject
 	constructor(
@@ -431,8 +435,10 @@ export class MonatService {
 	}
 
 	public updateCartPropertiesOnService(data: { ["cart"]: any; [key: string]: any }) {
+		
 		data = this.hideNonPublicItems(data);
 		this.cart = data.cart;
+		
 		// prettier-ignore
 		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
 		this.cart['canPlaceOrderMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Can Place Order') > -1 )[0] : {};
@@ -443,14 +449,33 @@ export class MonatService {
 			this.totalItemQuantityAfterDiscount += item.extendedPriceAfterDiscount;
 		}
 		
-		if( this.cart['purchasePlusMessage']?.message){
+		if(!this.canPlaceOrder){
+			this.hasShownCanPlaceOrderAlert = false;
+		}
+		
+		if( this.cart['purchasePlusMessage']?.message && this.currentCartDateTime != this.cart.modifiedDateTime){
 			this.showPurchasePlusMessage = true;
 			this.$timeout(() => {
 				this.showPurchasePlusMessage = false;
-			},4000);
-			
+			},6000);
 		}
 		
+		if( this.cart['canPlaceOrderMessage']?.message && this.currentCartDateTime != this.cart.modifiedDateTime){
+			this.canPlaceOrderMessage = true;
+			this.$timeout(() => {
+				this.canPlaceOrderMessage = false;
+			},6000);
+		}
+		
+		if( this.canPlaceOrder && !this.hasShownCanPlaceOrderAlert){
+			this.showCanPlaceOrderAlert = true;
+			this.hasShownCanPlaceOrderAlert = true
+			this.$timeout(() => {
+				this.showCanPlaceOrderAlert = false;
+			},6000);
+		}
+		
+		this.currentCartDateTime = this.cart.modifiedDateTime;
 	}
 
 	public handleCartResponseActions(data): void {

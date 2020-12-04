@@ -16,7 +16,7 @@ class MonatFilterMenuController{
 	){};
 	
 	public $onInit = () => {
-		this.productFunction = this.productFunction || 'getProducts';
+		this.productFunction = this.productFunction || 'getProductList';
 	}
 	
 	public toggleFilterMenu = () => {

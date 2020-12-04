@@ -7,6 +7,7 @@ class OFYEnrollmentController {
 	public loading:boolean;
 	public endpoint: 'getOFYProductsForOrder' | 'getOrderTemplatePromotionSkus' = 'getOFYProductsForOrder';
 	public action: 'addOrderTemplateItem' | 'addOrderItem' = 'addOrderItem';
+	public selectedProductInCart:boolean = false;
 	
 	//@ngInject
 	constructor( public observerService, public publicService, public orderTemplateService: OrderTemplateService, public ModalService, public monatService) {
@@ -19,8 +20,19 @@ class OFYEnrollmentController {
 			this.getPromotionSkus()
 		}else{
 			this.monatService.getOFYItemsForOrder().then(res => {
-				console.log(res);
 				this.products = res;
+				if(this.monatService.cart){
+					for(let item of this.monatService.cart.orderItems){
+						if(item.price == 0){
+							for(let product of this.products){
+								if(item.sku.skuID == product.skuID){
+									this.stageProduct(product.skuID);
+									this.selectedProductInCart = true;
+								}
+							}
+						}
+					}
+				}
 			})
 		}
 	}
@@ -47,6 +59,10 @@ class OFYEnrollmentController {
 	
 	public addToCart():void{
 		this.loading = true;
+		if(this.selectedProductInCart){
+			this.observerService.notify('onNext');
+			return;
+		}
 
         if(this.action == 'addOrderItem'){
 
@@ -77,6 +93,7 @@ class OFYEnrollmentController {
 	
 	public stageProduct(skuID:string):void{
 		this.stagedProductID = skuID;
+		this.selectedProductInCart = false;
 	}
 	
 	public launchQuickShopModal = (product) => {
