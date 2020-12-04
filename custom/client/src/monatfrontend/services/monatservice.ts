@@ -21,7 +21,6 @@ export class MonatService {
 	public lastAddedSkuID: string = "";
 	public previouslySelectedStarterPackBundleSkuID: string;
 	public canPlaceOrder: boolean;
-	public userIsEighteen: boolean;
 	public hasOwnerAccountOnSession: boolean;
 	public successfulActions = [];
 	public showAddToCartMessage: boolean;
@@ -299,7 +298,8 @@ export class MonatService {
 		let years = Date.now() - birthDateObj.getTime();
 		let age = new Date(years);
 		let yearsOld = Math.abs(age.getUTCFullYear() - 1970);
-		this.userIsEighteen = yearsOld >= 18;
+		// @ts-ignore
+		this.publicService.userIsEighteen = yearsOld >= 18;
 		return yearsOld;
 	}
 
