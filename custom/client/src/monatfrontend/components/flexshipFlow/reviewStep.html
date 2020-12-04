@@ -55,7 +55,7 @@
 											</div>
 										</td>
 										<td class="item-price">
-											<span class="price">{{ item.total| swcurrency: reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode }}</span>
+											<span class="price">{{ item.calculatedTotal| swcurrency: reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode }}</span>
 										</td>
 									</tr>
 								</tbody>
@@ -178,7 +178,7 @@
 							</ul>
 	
 							<button 
-								ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.statusCode != 'otstActive' "
+								ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.orderTemplateStatusType_systemCode != 'otstActive' "
 								ng-click="reviewStep.activateFlexship()"
 								class="btn bg-secondary btn-block" 
 								ng-disabled="reviewStep.loading" 
@@ -188,7 +188,7 @@
 								<span ng-show="reviewStep.loading"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
 							</button>
 								<button 
-								ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.statusCode == 'otstActive' "
+								ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.orderTemplateStatusType_systemCode == 'otstActive' "
 								ng-click="reviewStep.backToListing()"
 								class="btn bg-secondary btn-block" 
 								ng-disabled="reviewStep.loading" 

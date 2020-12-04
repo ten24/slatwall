@@ -16,13 +16,28 @@ class FrequencyStepController {
     
     public $onInit = () => { 
     	this.getFrequencyTermOptions();
+    	this.orderTemplate = this.orderTemplateService.mostRecentOrderTemplate;
     }
     
 	public getFrequencyTermOptions = ():void =>{
 		this.monatService.getOptions({'frequencyTermOptions': false }).then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
-			this.term = this.frequencyTerms[0];
-			this.day = this.flexshipDaysOfMonth[0];
+			if(this.orderTemplate.frequencyTerm_termID){
+				for(let term of this.frequencyTerms){
+					if(term.value == this.orderTemplate.frequencyTerm_termID){
+						this.term = term;
+					}
+				}
+			}
+			
+			if(!this.term){
+				this.term = this.frequencyTerms[0];
+			} 
+			if(this.orderTemplate.scheduleOrderDayOfTheMonth){
+				this.day = this.orderTemplate.scheduleOrderDayOfTheMonth;
+			}else{
+				this.day = this.flexshipDaysOfMonth[0];
+			}
 		});
 	}
 	
