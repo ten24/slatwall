@@ -266,7 +266,7 @@ export class OrderTemplateService {
 			payload["scheduleOrderDayOfTheMonth"] = scheduleOrderDayOfTheMonth;
 		}
 		
-		 this.monatService.doPublicAction("updateOrderTemplateFrequency", payload).then(res => {
+		 this.publicService.d("updateOrderTemplateFrequency", payload).then(res => {
 		 	if(res.successfulActions && res.successfulActions.indexOf('public:order.deleteOrderTemplatePromoItem') > -1){
 		 		this.splicePromoItem();
 		 	}
