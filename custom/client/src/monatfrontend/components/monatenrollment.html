@@ -36,7 +36,7 @@
 				ng-if=
 					"monatEnrollment.currentStepName == 'todaysOrder'
 					&& monatEnrollment.type == 'vip'
-					&& monatEnrollment.monatService.canPlaceOrder"
+					&& monatEnrollment.monatService.showCanPlaceOrderAlert"
 			>
 				<div class="messaging">
 					<span sw-rbkey="'frontend.enrollment.threshold'"></span>
@@ -79,7 +79,7 @@
 			<div ng-cloak
 				class="alert-message"
 				ng-if="
-				monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.cart.canPlaceOrderMessage.message.length"
+				monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.canPlaceOrderMessage"
 			>
 				<div class="messaging">
 					{{monatEnrollment.monatService.cart.canPlaceOrderMessage.message}}  
