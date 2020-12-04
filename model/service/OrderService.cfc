@@ -1611,7 +1611,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//if the ScheduleOrderDayOfTheMonth has already passed this month, set it to next month
 		if(arguments.orderTemplate.getScheduleOrderDayOfTheMonth() <= day(now())){
-		    var month = month(now) + 1;
+		    var month = (month(now) + 1) MOD 12;
 		}else{
 			var month = month(now);
 		}
