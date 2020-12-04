@@ -478,7 +478,7 @@ component extends="HibachiService" accessors="true" {
 			
 			for(var product in arguments.products) {
 				
-				if( trim(product.productID) == "" ) {
+				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
 					continue;
 				}
 				
@@ -500,7 +500,7 @@ component extends="HibachiService" accessors="true" {
 	        }
 	        
 	        //If there's only one product in response, add alternate images as well
-	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && trim(arguments.products[1].productID) != "" ) {
+	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && StructKeyExists(arguments.products[1], 'productID') && trim(arguments.products[1].productID) != "" ) {
 	        	//Modify image size to be used as size index
 	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
 	        }
@@ -516,7 +516,7 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.products)) {
 			for(var product in arguments.products) {
 				
-				if( trim(product.productID) == "" ) {
+				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
 					continue;
 				}
 				
