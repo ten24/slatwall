@@ -130,9 +130,12 @@
 						<button 
 							ng-if="monatProductModal.product.displayOnlyFlag != true && monatProductModal.product.qats > 0 ||
 							monatProductModal.product.qats > 1 || monatProductModal.type =='ofy'"
-							class="btn bg-primary"
+							class="btn bg-primary add-to-cart"
 							ng-click="monatProductModal.onAddButtonClick()" 
-							ng-class="{ loading: monatProductModal.loading }"
+							ng-class="{ 
+								loading: monatProductModal.loading,
+                				loaded: monatProductModal.loaded
+							}"
 							ng-disabled="monatProductModal.loading"
 						>
 							{{ monatProductModal.translations.addButtonText }}
