@@ -33,7 +33,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				return;
 			}
 			
-			if ( !getService('infoTraxService').isEventQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.eventName) ) {
+			if ( !getService('infoTraxService').isEventQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.eventName, arguments.entity) ) {
 				return;
 			}
 			
