@@ -8,7 +8,6 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	}
 	
 	
-	
 	public void function onEvent(required any eventName, required struct eventData={}){
 		
 		 try {
@@ -33,8 +32,8 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				}
 				return;
 			}
-	
-			if ( !getService('infoTraxService').isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.eventName) ) {
+			
+			if ( !getService('infoTraxService').isEventQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.eventName) ) {
 				return;
 			}
 			
