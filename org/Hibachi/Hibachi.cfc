@@ -1118,7 +1118,7 @@ component extends="framework.one" {
 		param name="arguments.rc.ajaxRequest" default="false";
 
 		if(arguments.rc.ajaxRequest) {
-			setupResponse(rc);
+			setupResponse(arguments.rc);
 		}
 
 		if(structKeyExists(url, "modal") && url.modal) {

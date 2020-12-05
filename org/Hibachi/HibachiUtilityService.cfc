@@ -501,7 +501,7 @@
 					if(!structKeyExists(arguments.data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
-							if(structKeyExists(data[thisProperty][i],'hasErrors')){
+							if(structKeyExists(arguments.data[thisProperty][i],'hasErrors')){
 								arguments.data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
 								arguments.data[thisProperty][i]["errors"] = object[i].getErrors();
 							}else{
@@ -515,7 +515,7 @@
 						}
 					}
 
-					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
+					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), arguments.data[thisProperty][i]);
 				}
 			}
 		}

@@ -85,7 +85,7 @@ component  accessors="true" output="false"
         
 		if(structKeyExists(this, arguments.methodName)) {
 			var theMethod = this[ arguments.methodName ];
-			return theMethod(argumentCollection = methodArguments);
+			return theMethod(argumentCollection = arguments.methodArguments);
 		}
 		
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
