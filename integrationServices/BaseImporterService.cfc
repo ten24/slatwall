@@ -1198,7 +1198,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	   return this.getHibachiUtilityService().createUniqueProperty(
 	        entityName    = arguments.mapping.entityName, 
 	        propertyName  = arguments.propertyMetaData.propertyIdentifier,
-	        propertyValue = arguments.data.productName
+	        propertyValue = arguments.data.productName & arguments.data.productCode
 	   );
 	   
 	}
