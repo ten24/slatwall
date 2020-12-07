@@ -24,9 +24,16 @@ class OFYEnrollmentController {
 					return item.calculatedQATS > 0;
 				})
 				this.products = res;
+				if(this.monatService.ofyStagedProductID){
+					this.stageProduct(this.monatService.ofyStagedProductID);
+				}
 				if(this.monatService.cart){
 					for(let item of this.monatService.cart.orderItems){
-						if(item.price == 0){
+						if(this.stagedProductID){
+							if(item.sku.skuID == this.stagedProductID){
+								this.selectedProductInCart = true;
+							}
+						}else if(item.price == 0){
 							for(let product of this.products){
 								if(item.sku.skuID == product.skuID){
 									this.stageProduct(product.skuID);
@@ -101,6 +108,7 @@ class OFYEnrollmentController {
 	
 	public stageProduct(skuID:string):void{
 		this.stagedProductID = skuID;
+		this.monatService.ofyStagedProductID = skuID;
 		this.selectedProductInCart = false;
 	}
 	
