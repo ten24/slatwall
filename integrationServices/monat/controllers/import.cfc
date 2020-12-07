@@ -2898,8 +2898,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var orderTemplateType = getTypeService().getTypeBYSystemCode('ottSchedule');  
 		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
 		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
-		var termMonthly = getPaymentService().getTermByTermName('Monthly');
-		var termBiMonthly = getPaymentService().getTermByTermName('Bi-Monthly');
+		var termMonthly = getPaymentService().getTermByTermName('1 Month');
+		var termBiMonthly = getPaymentService().getTermByTermName('2 Months');
 		
 		while (pageNumber < pageMax){
            
@@ -3380,8 +3380,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var orderTemplateType = getTypeService().getTypeBYSystemCode('ottSchedule');  
 		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
 		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
-		var termMonthly = getPaymentService().getTermByTermName('Monthly');
-		var termBiMonthly = getPaymentService().getTermByTermName('Bi-Monthly');
+		var termMonthly = getPaymentService().getTermByTermName('1 Month');
+		var termBiMonthly = getPaymentService().getTermByTermName('2 Months');
 		
 		while (pageNumber < pageMax){
            

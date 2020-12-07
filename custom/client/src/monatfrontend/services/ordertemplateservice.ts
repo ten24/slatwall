@@ -24,12 +24,14 @@ export class OrderTemplateService {
 	public appliedPromotionCodeList = [];
 	public cartTotalThresholdForOFYAndFreeShippingLoaded: boolean = false;
 	public wishlistsRefreshed = false;
+	public showPurchasePlusMessage = false;
 	
 	//@ngInject
 	constructor(
 		public $q: ng.IQService,
 		public monatService: MonatService,
 		public publicService: PublicService,
+		private $timeout
 	) {}
 
 	/**
@@ -241,7 +243,7 @@ export class OrderTemplateService {
     */
 
 	public updateOrderTemplateSchedule = (data) => {
-		return this.monatService.doPublicAction("updateOrderTemplateSchedule", data);
+		return this.publicService.doAction("updateOrderTemplateSchedule", data);
 	};
 
 	public updateOrderTemplateFrequency = (
@@ -264,7 +266,7 @@ export class OrderTemplateService {
 			payload["scheduleOrderDayOfTheMonth"] = scheduleOrderDayOfTheMonth;
 		}
 		
-		 this.monatService.doPublicAction("updateOrderTemplateFrequency", payload).then(res => {
+		 this.publicService.doAction("updateOrderTemplateFrequency", payload).then(res => {
 		 	if(res.successfulActions && res.successfulActions.indexOf('public:order.deleteOrderTemplatePromoItem') > -1){
 		 		this.splicePromoItem();
 		 	}
@@ -521,6 +523,13 @@ export class OrderTemplateService {
         if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
             this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
             this.cartTotalThresholdForOFYAndFreeShippingLoaded = true;
+        }
+        
+        this.showPurchasePlusMessage = this.mostRecentOrderTemplate['purchasePlusMessage']?.message?.length || false;
+        if(this.showPurchasePlusMessage){
+        	this.$timeout(() => {
+				this.showPurchasePlusMessage = false;
+			},4000);
         }
     }
     

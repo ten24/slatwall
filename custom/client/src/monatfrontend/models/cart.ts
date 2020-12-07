@@ -56,6 +56,7 @@ export default interface cart {
     calculatedTotal: number,
     initialOrderFlag: string,
     orderOpenDateTime: string,
-    purchasePlusTotal:number
+    purchasePlusTotal:number,
+    modifiedDateTime:string
 }
 
