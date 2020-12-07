@@ -207,7 +207,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        mapping       = entityMapping,
 	        collectErrors = true
 	    );
-	    
+
 	    if( !validation.isValid ){
 	        
 	        var entityQueueData = {
@@ -235,7 +235,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        mapping        = entityMapping,
     	        emptyRelations = validation.emptyRelations
     	    );
-    	    
+
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
@@ -1257,7 +1257,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public string function createProductTypeImportRemoteID( required struct data, required struct mapping ){
 	    var formattedData = {
-	        'productTypeName' : reReplace(data['productTypeName'],"\s", "", "all");
+	        'productTypeName' : reReplace(data['productTypeName'],'>\s+','>','all')
 	    };
 	    
 	   return lcase( hash( trim( formattedData.remoteSkuID  ),  'MD5' ) );
