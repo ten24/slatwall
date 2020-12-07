@@ -197,7 +197,14 @@ class HibachiInterceptor implements IInterceptor{
     public responseError = (rejection): ng.IPromise<any> => {
     	
 		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
-			if(rejection.data && rejection.data.messages){
+			if (rejection.data && rejection.data.errors) {
+				var messages = {
+					msg: rejection.data.errors[Object.keys(rejection.data.errors)[0]],
+					type:'error'
+				};
+				var alerts = this.alertService.addAlert(messages);
+				this.alertService.addAlerts(alerts);
+			} else if(rejection.data && rejection.data.messages){
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
 				this.alertService.addAlerts(alerts);
 			}else{
