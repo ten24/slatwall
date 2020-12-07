@@ -303,7 +303,10 @@ component output="false" accessors="true" extends="HibachiController" {
 			getHibachiScope().showMessage( getHibachiScope().rbKey( "#replace(arguments.rc.entityActionDetails.thisAction, ":", ".", "all")#.notfound" ) , "error");
 			getFW().redirect(action=arguments.rc.entityActionDetails.listAction, preserve="messages");
 		}
-
+		
+		if(arguments.rc.entityActionDetails.listAction=="admin:entity.listcontent") {
+			arguments.rc.entityActionDetails.listAction = "";
+		}
 		// Check how the delete went
 		var deleteOK = entityService.invokeMethod("delete#arguments.entityName#", {1=entity});
 
