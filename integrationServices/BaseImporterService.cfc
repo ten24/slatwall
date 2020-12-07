@@ -1255,6 +1255,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	   
 	}
 	
+	public string function createProductTypeImportRemoteID( required struct data, required struct mapping ){
+	    var formattedData = {
+	        'productTypeName' : reReplace(data['productTypeName'],"\s", "", "all");
+	    };
+	    
+	   return lcase( hash( trim( formattedData.remoteSkuID  ),  'MD5' ) );
+	}
+	
+	
 	/////////////////.                  SKU
 	
 	

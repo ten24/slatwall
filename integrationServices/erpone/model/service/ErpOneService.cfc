@@ -395,9 +395,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		// using -- so we can revert it when sending data back to erpone
 		
 		if( structKeyExists(arguments.data, 'ProductCode') ){
-
-			arguments.data.ProductCode=Replace(arguments.data.ProductCode, " ", "--");
-			arguments.data.ProductCode=Replace(arguments.data.ProductCode, "/", "__");
+			
+			arguments.data.ProductCode=reReplace(reReplace(arguments.data.ProductCode, "(\\|/)", "--", "all" ),"\s", "__", "all");
 		}
 		
 		if( !structKeyExists(arguments.data, 'SkuCode') || this.hibachiIsEmpty( arguments.data.SkuCode ) ){
