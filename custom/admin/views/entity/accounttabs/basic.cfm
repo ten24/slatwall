@@ -15,6 +15,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="complianceStatus" edit="false" attributeFlag="true">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCreatedSite" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="activeFlag" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountStatusType" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCode" edit="false">	
 			<div class="form-group">
