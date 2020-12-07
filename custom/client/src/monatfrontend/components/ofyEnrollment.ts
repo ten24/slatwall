@@ -20,6 +20,9 @@ class OFYEnrollmentController {
 			this.getPromotionSkus()
 		}else{
 			this.monatService.getOFYItemsForOrder().then(res => {
+				res = res.filter(item=>{
+					return item.calculatedQATS > 0;
+				})
 				this.products = res;
 				if(this.monatService.cart){
 					for(let item of this.monatService.cart.orderItems){
@@ -46,6 +49,11 @@ class OFYEnrollmentController {
 		
 		if(!this.products){ 
 			this.publicService.doAction(this.endpoint, data).then( result => {
+				if(result.ofyProducts){
+					result.ofyProducts = result.ofyProducts.filter(item=>{
+						return item.calculatedQATS > 0;
+					})
+				}
 				this.products = result.ofyProducts ? result.ofyProducts : result.orderTemplatePromotionSkus;
 				this.loading = false;
 				if(!this.flexship && !this.products.length){
