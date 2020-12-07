@@ -514,11 +514,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    }
 	    }
 	    
-	    // loop over all of the entity dependancies and make sure the dependency-key prop is required in the validations
+	    // loop over all of the entity dependencies and make sure the dependency-key prop is required in the validations
 	    if( structKeyExists(arguments.mapping, 'dependencies') ){
 	        for( var dependency in arguments.mapping.dependencies ){
 	            // skip nullble dependencies
-  	            if(structKeyExists(dependency, 'isNullable') &&  dependency.isNullable ){
+  	            if(structKeyExists(dependency, 'isNullable') && dependency.isNullable ){
+  	                continue;
+  	            }
+  	            // skip dependencies having a default-value
+  	            if(structKeyExists(dependency, 'defaultValue') && !this.hibachiIsEmpty(dependency.defaultValue) ){
   	                continue;
   	            }
   	            

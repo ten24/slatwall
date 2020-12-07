@@ -1,0 +1,102 @@
+{
+    "entityName": "OrderFulfillment",
+    
+    "properties": {
+        
+        "remoteOrderFulfillmentID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "email": {
+            "propertyIdentifier": "emailAddress",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "isVerifiedShippingAddress": {
+            "propertyIdentifier": "verifiedShippingAddressFlag",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "handlingFee": {
+            "propertyIdentifier": "handlingFee",
+            "validations": {
+                "dataType": "numeric"
+            }
+        } 
+    },
+    
+    "relations": [
+         {
+            "type"               : "manyToOne",
+            "entityName"         : "Address",
+            "isNullable"         : true,
+            "propertyIdentifier" : "shippingAddress"
+        }
+    ],
+    
+     "dependencies" : [
+        {
+            "key"                : "remoteFulfillmentMethodID",
+            "entityName"         : "FulfillmentMethod",
+            "defaultValue"       : "444df2fb93d5fa960ba2966ba2017953",
+            "__hint"             : "this defaultValue for FulfillmentMethod is `Shipping`.",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "fulfillmentMethod"
+        },
+        {
+            "key"                : "remoteOrderID",
+            "entityName"         : "Order",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "order"
+        },
+        {
+            "key"                : "pickupLocationRemoteID",
+            "entityName"         : "Location",
+            "isNullable"         : true,
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "pickupLocation"
+        },
+        {
+            "key"                : "shippingMethod",
+            "entityName"         : "ShippingMethod",
+            "isNullable"         : true,
+            "lookupKey"          : "shippingMethodCode",
+            "propertyIdentifier" : "shippingMethod"
+        },
+        {
+            "key"                : "shippingIntegration",
+            "entityName"         : "integration",
+            "isNullable"         : true,
+            "lookupKey"          : "integrationPackage",
+            "propertyIdentifier" : "shippingIntegration"
+        },
+        {
+            "key"                : "statusCode",
+            "lookupKey"          : "systemCode",
+            "entityName"         : "Type",
+            "defaultValue"       : "159118d67de3418d9951fc629688e194",
+            "__hint"             : "this defaultValue for status-code is `ofstFulfilled`.",
+            "propertyIdentifier" : "orderFulfillmentStatusType"
+        },
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteOrderFulfillmentID"
+        ]
+    }
+}
