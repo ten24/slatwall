@@ -374,8 +374,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'commissionVolume'  = arguments.orderTemplate.getCalculatedCommissionableVolumeTotal()//Autoship Commission Volume
 		};
 		
+		if(isDate(arguments.orderTemplate.getLastOrderPlacedDateTime())){
+			autoshipData['lastRunDate'] = dateFormat(arguments.orderTemplate.getLastOrderPlacedDateTime(), 'yyyymmdd'); //Date the autoship last generated an order (YYYYMMDD)
+		}
+		
 		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
-			autoshipData['startDate'] = dateFormat(now(), 'yyyy-mm-dd');
+			autoshipData['startDate'] = dateFormat(arguments.orderTemplate.getActivationDateTime(), 'yyyy-mm-dd');
 		}else{
 			autoshipData['canceledDate'] = dateFormat(arguments.orderTemplate.getCanceledDateTime(), 'yyyy-mm-dd');
 		}

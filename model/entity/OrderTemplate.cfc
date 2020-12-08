@@ -57,6 +57,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="addToEntityQueueFlag" ormtype="boolean" default="false";
 	property name="scheduleOrderProcessingFlag" ormtype="boolean" default="false";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="activationDateTime" ormtype="timestamp";
 	property name="canceledDateTime" ormtype="timestamp";
 	property name="lastOrderPlacedDateTime" ormtype="timestamp";
 	
