@@ -397,7 +397,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						
 						// If for some reason this entities permissions are managed by a parent entity then define it as such
 						if(entityMetaData.hb_permission neq "this") {
-							entityPermissions[ entityName ]['inheritPermissionEntityName'] = getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
+							entityPermissions[ entityName ]['inheritPermissionEntityName'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
 							entityPermissions[ entityName ]['inheritPermissionPropertyName'] = listLast(entityMetaData.hb_permission, ".");	
 						}
 						
@@ -646,7 +646,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 
-		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
+		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == getService("HibachiService").getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
 			return true;
 		}
 		

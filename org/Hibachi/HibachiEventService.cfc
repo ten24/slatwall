@@ -190,7 +190,7 @@ component output="false" update="true" extends="HibachiService" {
 	
 	public any function getEntityEventNameOptions(string eventfilter=""){
 		var opArr = [];
-		var emd = getEntitiesMetaData();
+		var emd = getService("hibachiService").getEntitiesMetaData();
 		var entityNameArr = listToArray(structKeyList(emd));
 		arraySort(entityNameArr, "text");
 		for(var i=1; i<=arrayLen(entityNameArr); i++) {
