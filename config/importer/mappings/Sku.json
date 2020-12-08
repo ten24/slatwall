@@ -72,6 +72,14 @@
             "type": "oneToMany",
             "entityName": "SkuPrice",
             "propertyIdentifier": "skuPrices"
+        },
+        {
+            "type": "manyToMany",
+            "entityName": "Option",
+            "propertyIdentifier": "options",
+            "excludeFromTemplate" : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction": "generateSkuOptions"
         }
     ],
     

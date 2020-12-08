@@ -487,4 +487,21 @@ Notes:
 		
 	</cffunction>
 	
+	<cfscript>
+    
+    public any function getOptionNameByOptionIdAndOptionValue(required array skuOptionsNameList , required array skuOptionsGroupNameList){
+		var queryService = new query();
+		arguments.skuOptionsNameList = listQualify(arrayToList(arguments.skuOptionsNameList),"'",",");
+		arguments.skuOptionsGroupNameList = listQualify(arrayToList(arguments.skuOptionsGroupNameList),"'",",");
+		var sql = "SELECT optionID FROM swOption WHERE optionName IN (#arguments.skuOptionsNameList#) AND optionGroupID IN (SELECT optionGroupID FROM swoptiongroup WHERE optionGroupCode IN (#arguments.skuOptionsGroupNameList#))";
+		var records = queryService.execute(sql=sql).getResult();
+		var result = "";
+			for(var i=1;i<=records.recordCount;i++) {
+				 result &= records.optionID & ',';
+			}
+		return left(trim(result),len(trim(result))-1);
+    }
+        
+    </cfscript>
+	
 </cfcomponent>

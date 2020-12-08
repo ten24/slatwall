@@ -57,6 +57,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
 	property name = "hibachiEntityQueueDAO";
+	property name = "skuDAO";
 
 	property name = "cachedEntityMappings" type="struct";
 	property name = "cachedMappingPropertiesValidations" type="struct";
@@ -1304,7 +1305,24 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             nested      = true
         );
 	}
-
+	
+	public any function generateSkuOptions( struct data, struct mapping, struct propertyMetaData ){
+	    
+	    var skuOptionsName = [];
+	    var skuOptionsGroupName = [];
+	    
+	    skuOptionList = "PadlocksKeyway,PadlocksKeying,KeyKeyway,DoorKnobKeyway,DoorKnobBackset,ProductFinish,DoorKnobStyle,SafesLockType,SafesFinish";
+	    
+	     for (var skuOption in listToArray(skuOptionList, ",")) {
+	     	if( structKeyExists(data,"#skuOption#") and !this.hibachiIsEmpty(data['#skuOption#']) ){
+	     		skuOptionsName.append(data['#skuOption#']);
+	        	skuOptionsGroupName.append("#skuOption#");
+	     	}
+	     }
+	    return(this.getSkuDAO().getOptionNameByOptionIdAndOptionValue( skuOptionsName , skuOptionsGroupName ));
+	}
+	
+	
 	/////////////////.                  INVENTORY
 	
 	
