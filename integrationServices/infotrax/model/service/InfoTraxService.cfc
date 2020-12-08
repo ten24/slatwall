@@ -59,9 +59,32 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return variables.qualifiers;
 	}
 	
-	public boolean function isEntityQualified(required string entityName, required string baseID, required string event){
+	public boolean function isEntityQualified(required any entity) {
+
+		switch (arguments.entity.getClassName()) {
+			case 'Order':
+				return !isNull(arguments.entity.getOrderNumber());
+			case 'AccountAddress':
+			case 'AccountPhoneNumber':
+			case 'AccountGovernmentIdentification':
+			case 'AccountGovernmentIdentificationSaveSuccess':
+				return arguments.entity.getAccount().getActiveFlag() == true;
+			case 'Account':
+				return arguments.entity.getActiveFlag() == true;
+			case 'OrderTemplate':
+				return !isNull(arguments.entity.getOrderTemplateNumber());
+			default:
+				return true;
+		}
+	}
+	
+	public boolean function isEventQualified(required string entityName, required string baseID, required string event, any entity){
 		
-		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.entityName);
+		if(structKeyExists(arguments, 'entity') && !isEntityQualified(arguments.entity)){
+			return false;
+		}
+		
+		var primaryIDPropertyName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName(arguments.entityName);
 		var qualifiers = getQualifiers();
 		
 		if( !structKeyExists(qualifiers, arguments.event) ){
@@ -376,7 +399,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public void function push(required any entity, any data ={}){
 		
 		//Check if the object still valid to be pushed
-		if( !structKeyExists(arguments.data, 'event') || !isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.data.event)){
+		if( !structKeyExists(arguments.data, 'event') || !isEventQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.data.event)){
 			return;
 		}
 		
