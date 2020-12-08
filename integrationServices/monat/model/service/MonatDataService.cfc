@@ -1017,6 +1017,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
         var onTheFlySkuCodes = '';
+        var notOnTheFlySkuCodes = '';
         var skuCodes = [];
 
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
@@ -1082,11 +1083,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             			
             			QueryAddRow(skuBundleQuery, skuBundleData);
             			
-            			if(!onTheFlyKitAdded && skuBundleData['ontheflykit']){
-            			    
+            			if(skuBundleData['ontheflykit']){
             			    onTheFlyKitAdded = true;
-            			    onTheFlySkuCodes = listAppend(onTheFlySkuCodes, sku['SKUItemCode']);
             			}
+            		}
+            		if(onTheFlyKitAdded){
+            			onTheFlySkuCodes = listAppend(onTheFlySkuCodes, sku['SKUItemCode']);
+            		}else{
+            			notOnTheFlySkuCodes = listAppend(notOnTheFlySkuCodes, sku['SKUItemCode']);
             		}
 				}
 			}
@@ -1162,6 +1166,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 	skuCode in (:onTheFlySkuCodes) AND s.settingID is NULL",
 				{ 
 					'onTheFlySkuCodes' = { 'value' = onTheFlySkuCodes, 'list' = true }
+				}
+		    );
+	    }
+	    
+	    
+	    if(!arguments.rc.dryRun && len(notOnTheFlySkuCodes)){
+		    QueryExecute(
+				"DELETE s FROM swsetting s 
+                 INNER JOIN SwSku sku ON sku.skuID = s.skuID and ( s.settingName = 'skuBundleAutoMakeupInventoryOnSaleFlag' OR s.settingName = 'skuQATSIncludesMQATSBOMFlag')
+                 WHERE
+                	skuCode in (:notOnTheFlySkuCodes)",
+				{ 
+					'notOnTheFlySkuCodes' = { 'value' = notOnTheFlySkuCodes, 'list' = true }
 				}
 		    );
 	    }

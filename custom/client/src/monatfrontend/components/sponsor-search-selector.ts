@@ -112,7 +112,7 @@ class SponsorSearchSelectorController {
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
 	
-			if( data.recordsCount == 1 ){
+			if( data.pageRecords.length == 1 ){
 				this.selectedSponsor = data.pageRecords[0];
 				this.notifySelect(this.selectedSponsor);
 			}

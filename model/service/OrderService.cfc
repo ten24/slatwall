@@ -1617,6 +1617,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 	    var scheduleOrderNextPlaceDateTime = createDate(year, month, day);
+		arguments.orderTemplate.setActivationDateTime(now());
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(scheduleOrderNextPlaceDateTime);
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
 		if( isNull(arguments.data.context)){
