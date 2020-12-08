@@ -54,7 +54,7 @@ class ReturnOrderItem{
         this.pvTotal = this.calculatedExtendedPersonalVolumeAfterDiscount;
         this.cvTotal = this.calculatedExtendedCommissionableVolumeAfterDiscount;
         this.refundUnitPrice =  this.applyRefundPercentage(this.calculatedExtendedUnitPriceAfterDiscount);
-        this.taxTotal = this.calculatedTaxAmount;
+        this.taxTotal = this.applyRefundPercentage(this.calculatedTaxAmount);
         this.taxRefundAmount = 0;
         
         if(this.allocatedOrderDiscountAmount === " "){
