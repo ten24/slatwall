@@ -489,7 +489,7 @@ Notes:
 	
 	<cfscript>
     
-    public array function getOptionIDsByOptionGroupCodeAndOptionNames( required struct skuOptionsData ){
+    public string function getOptionIDsByOptionGroupCodeAndOptionNames( required struct skuOptionsData ){
     	
     	var sql = "";
     	for( var optionGroupCode in arguments.skuOptionsData ){
