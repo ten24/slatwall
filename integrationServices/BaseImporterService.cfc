@@ -1455,24 +1455,18 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function generateSkuOptions( struct data, struct mapping, struct propertyMetaData ){
 	    
-	    var skuOptionsName = [];
-	    var skuOptionsGroupName = [];
+	    var optionsData = {};
+
+        // TODO: get from DB
+	    var skuOptionGroupCodes = ["PadlocksKeyway","PadlocksKeying","KeyKeyway","DoorKnobKeyway","DoorKnobBackset","ProductFinish","DoorKnobStyle","SafesLockType","SafesFinish"];
 	    
-	    skuOptionList = "PadlocksKeyway,PadlocksKeying,KeyKeyway,DoorKnobKeyway,DoorKnobBackset,ProductFinish,DoorKnobStyle,SafesLockType,SafesFinish";
-	    
-	     for (var skuOption in listToArray(skuOptionList, ",")) {
-	     	if( structKeyExists(data, skuOption) and !this.hibachiIsEmpty(data[skuOption]) ){
-	     		skuOptionsName.append(data[skuOption]);
-	        	skuOptionsGroupName.append(skuOption);
+	     for( var optionGroupCode in skuOptionGroupCodes ){
+	     	if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
+	     		optionsData[ optionGroupCode ] = arguments.data[ optionGroupCode ];
 	     	}
 	     }
-	     var count = 1;
-	     var optionsData = structNew();
-	     for (var GroupName in skuOptionsGroupName ) {
-	     	StructInsert(optionsData,"#GroupName#","#skuOptionsName[count]#");
-		    count ++;
-	     }
-	    return(this.getSkuDAO().getOptionNameByOptionIdAndOptionValue( optionsData ));
+	     
+	    return this.getSkuDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData ).toList();
 	}
 	
 	
