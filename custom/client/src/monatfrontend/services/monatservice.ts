@@ -37,6 +37,7 @@ export class MonatService {
 	public hasShownCanPlaceOrderAlert: boolean;
 	public showCanPlaceOrderAlert:boolean;
 	public canPlaceOrderMessage:boolean;
+	public cartUpdated:boolean;
 	
 	//@ngInject
 	constructor(
@@ -106,7 +107,7 @@ export class MonatService {
 				if (data?.cart) {
 					console.log("update-cart, putting it in session-cache");
 					this.publicService.putIntoSessionCache("cachedCart", data.cart);
-
+					this.cartUpdated = true;
 					this.successfulActions = data.successfulActions;
 					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
 					this.updateCartPropertiesOnService(data);
@@ -444,8 +445,11 @@ export class MonatService {
 		this.cart['canPlaceOrderMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Can Place Order') > -1 )[0] : {};
 		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 		this.totalItemQuantityAfterDiscount = 0;
+	
+		let lastRequest = this.publicService.requests;
+
 		
-		for (let item of this.cart.orderItems) {
+		for (let item of this.cart.orderItems){ 
 			this.totalItemQuantityAfterDiscount += item.extendedPriceAfterDiscount;
 		}
 		
@@ -453,31 +457,33 @@ export class MonatService {
 			this.hasShownCanPlaceOrderAlert = false;
 		}
 		
-		if( this.cart['purchasePlusMessage']?.message && this.currentCartDateTime != this.cart.modifiedDateTime){
-			this.showPurchasePlusMessage = true;
-			this.$timeout(() => {
-				this.showPurchasePlusMessage = false;
-			},6000);
+		if( this.cartUpdated && this.cart['purchasePlusMessage']?.message && this.currentCartDateTime != this.cart.modifiedDateTime){
+			this.timeOutThisProperty('showPurchasePlusMessage', 6);
 		}
 		
-		if( this.cart['canPlaceOrderMessage']?.message && this.currentCartDateTime != this.cart.modifiedDateTime){
-			this.canPlaceOrderMessage = true;
-			this.$timeout(() => {
-				this.canPlaceOrderMessage = false;
-			},6000);
+		if( this.cartUpdated && this.cart['canPlaceOrderMessage']?.message && this.currentCartDateTime != this.cart.modifiedDateTime){
+			this.timeOutThisProperty('canPlaceOrderMessage', 6);
 		}
 		
-		if( this.canPlaceOrder && !this.hasShownCanPlaceOrderAlert){
-			this.showCanPlaceOrderAlert = true;
+		if( this.cartUpdated && this.canPlaceOrder && !this.hasShownCanPlaceOrderAlert){
 			this.hasShownCanPlaceOrderAlert = true
-			this.$timeout(() => {
-				this.showCanPlaceOrderAlert = false;
-			},6000);
+			this.timeOutThisProperty('showCanPlaceOrderAlert', 6);
 		}
 		
 		this.currentCartDateTime = this.cart.modifiedDateTime;
+		this.cartUpdated = false;
 	}
-
+	
+	
+	private timeOutThisProperty(thisKey:string, s:number, firstVal = true, lastVal = false){
+		if(!(thisKey in this)) return;
+		let ms = s * 1000;
+		this[thisKey] = firstVal;
+		this.$timeout(() => {
+			this[thisKey] = lastVal;
+		},ms);
+	}
+	
 	public handleCartResponseActions(data): void {
 		if (!this.successfulActions.length) return;
 

@@ -120,7 +120,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.productReviewCollectionList.addFilter('activeFlag',0);
 
 		rc.accountCollectionList = getAccountService().getAccountCollectionList();
-		rc.accountCollectionList.setDisplayProperties('firstName,lastName,primaryEmailAddress.emailAddress,createdDateTime',{isVisible:true, isSearchable:true});
+		rc.accountCollectionList.setDisplayProperties('firstName,lastName,calculatedEmailAddress,createdDateTime',{isVisible:true, isSearchable:true});
 		rc.accountCollectionList.addDisplayProperty('accountID',javacast('null',''),{hidden=true});
 		rc.accountCollectionList.addFilter('activeFlag','1','=');
 		rc.accountCollectionList.addFilter('createdDateTime',dateAdd('m','-1',now()),'>');

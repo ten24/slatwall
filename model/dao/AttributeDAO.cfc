@@ -58,7 +58,7 @@ Notes:
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public">
+	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public" localMode="true">
 		<cfargument name="attributeSetObject" required="true" type="string" />
 		
 		<cfset var rs = "" />

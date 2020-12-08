@@ -47,9 +47,7 @@
 			<!--- you have reached the threshold --->
 			<div ng-cloak
 				class="alert-message"
-				ng-if="
-				monatEnrollment.currentStepName == 'orderListing' 
-				&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal <= 0"
+				ng-if="monatEnrollment.orderTemplateService.showThresholdMessage"
 			>	
 				<div class="messaging">
 					<span sw-rbKey="'frontend.enrollment.threshold'"></span>
@@ -61,7 +59,8 @@
 			<div ng-cloak
 				class="alert-message"
 				ng-if="
-				monatEnrollment.currentStepName == 'orderListing' 
+				monatEnrollment.orderTemplateService.newOrderTemplateData
+				&& monatEnrollment.currentStepName == 'orderListing' 
 				&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal > 0"
 			>
 				<div class="messaging">
