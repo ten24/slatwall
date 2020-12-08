@@ -842,9 +842,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             if(orderByProp == '_productlistingpage.sortOrder') orderByProp = 'product.listingPages.sortOrder';
             bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
         }
-		
-		if(!isNull(getHibachiScope().getCurrentRequestSite())){
-		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
+		var site = getHibachiScope().getCurrentRequestSite();
+		if(!isNull(site)){
+		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',site.getSiteID());
+		    if(arrayLen(site.getLocations())){
+		        bundlePersistentCollectionList.addFilter('sku.stocks.location.locationID',site.getLocations()[1].getLocationID());
+		        bundlePersistentCollectionList.addFilter('sku.stocks.calculatedQATS',0,'>');
+		    }
 		}
 		var currencyCode = 
 		    !isNull(getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID)) 
@@ -2819,12 +2823,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
     public void function saveEnrollment(required struct data){
         param name="arguments.data.emailAddress";
+        
+        var ownerAccountNumber = '';
         if(getHibachiScope().hasSessionValue('ownerAccountNumber')){
             var ownerAccountNumber = getHibachiScope().getSessionValue('ownerAccountNumber');
-        }else{
-            this.addErrors(arguments.data,[{'ownerAccount':getHibachiScope().getRBKey('frontend.saveEnrollmentError.ownerAccount')}]);
-            getHibachiScope().addActionResult('public:account.saveEnrollment',true);
-            return;
         }
         var cart = getHibachiScope().getCart();
         var emailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Share Enrollment');
@@ -2835,10 +2837,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         newOrder.setPriceGroup(cart.getPriceGroup());
         newOrder.setMonatOrderType(cart.getMonatOrderType());
         newOrder = getService('OrderService').saveOrder(newOrder);
-        
-        var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
-        newOrder.setSharedByAccount( ownerAccount );
-        newOrder.setAccount(ownerAccount);
+        if(len(ownerAccountNumber)){
+            var ownerAccount = getService('AccountService').getAccountByAccountNumber(ownerAccountNumber);
+            newOrder.setSharedByAccount( ownerAccount );
+            newOrder.setAccount(ownerAccount);
+        }
         
         var emailData = {
             order:newOrder,
@@ -2846,7 +2849,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         };
         
         var email = getService('emailService').processEmail(email,emailData,'createFromTemplate');
-        newOrder.removeAccount();
+        if( !isNull(newOrder.getAccount()) ){
+            newOrder.removeAccount();
+        }
         
         email.setEmailTo(arguments.data.emailAddress);
         email = getService('EmailService').processEmail(email, arguments, 'addToQueue');
@@ -2902,6 +2907,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'filters':additionalFilters
             };
             var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            for(var rewardSku in rewardSkus){
+                rewardSku['imagePath'] = getService('ImageService').getResizedImageByProfileName(rewardSku['skuID'],'small')
+            }
             arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
         }
     }

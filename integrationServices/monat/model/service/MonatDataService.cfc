@@ -255,13 +255,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var tx = ormStatelessSession.beginTransaction();
 
         var SHIPPED = getTypeService().getTypeByTypeName("Shipped");
+        var persist = false;
         
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
-			var persist = false;
+			persist = false;
 		    
 		    logHibachi("importOrderShipments - Current Page #index#", true); 
 			var shipmentResponse = getData(
-				pageNumber = arguments.rc.pageNumber,
+				pageNumber = index,
 				pageSize = arguments.rc.pageSize,
 				dateFilterStart = DateTimeFormat( DateAdd('h', arguments.rc.hours * -1, now()), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
 				dateFilterEnd = DateTimeFormat( now(), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
@@ -302,7 +303,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     				var shippingMethod = getShippingMethod(shipment.ShipMethodCode);
     				var location = getLocation(order.getCurrencyCode());
 				}catch(any e){
-					logHibachi("importOrderShipments - OrderDelivery #shipment.shipmentId# error getting shipment: #shipment.ShipMethodCode# or location: #order.getCurrencyCode()#", true);
+					logHibachi("importOrderShipments - OrderDelivery #shipment.shipmentId# error getting shipment: #serializeJson(shipment)# or location: #order.getCurrencyCode()#", true);
 					continue;
 				}
 				
@@ -399,9 +400,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				orderDeliveryRemoteIDList = listAppend(orderDeliveryRemoteIDList, shipment.shipmentId)
 			}
 			if(persist){
-				tx.commit();
+				if (!tx.wasCommitted()){
+					tx.commit();
+				}
 			}
-		
 		}
 		ormStatelessSession.close();
 	
@@ -708,7 +710,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			    }
 			}
 			
-			tx.commit();
+			if (!tx.wasCommitted()){
+				tx.commit();
+			}
     		
     		
     		//echo("Clear session");
@@ -812,7 +816,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     ormStatelessSession.update("SlatwallOrder", foundOrder);
     			}
     			
-    			tx.commit();
+    			if (!tx.wasCommitted()){
+					tx.commit();
+				}
     		}catch(e){
     			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
@@ -1011,6 +1017,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
         var onTheFlySkuCodes = '';
+        var notOnTheFlySkuCodes = '';
         var skuCodes = [];
 
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
@@ -1076,11 +1083,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             			
             			QueryAddRow(skuBundleQuery, skuBundleData);
             			
-            			if(!onTheFlyKitAdded && skuBundleData['ontheflykit']){
-            			    
+            			if(skuBundleData['ontheflykit']){
             			    onTheFlyKitAdded = true;
-            			    onTheFlySkuCodes = listAppend(onTheFlySkuCodes, sku['SKUItemCode']);
             			}
+            		}
+            		if(onTheFlyKitAdded){
+            			onTheFlySkuCodes = listAppend(onTheFlySkuCodes, sku['SKUItemCode']);
+            		}else{
+            			notOnTheFlySkuCodes = listAppend(notOnTheFlySkuCodes, sku['SKUItemCode']);
             		}
 				}
 			}
@@ -1159,6 +1169,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				}
 		    );
 	    }
+	    
+	    
+	    if(!arguments.rc.dryRun && len(notOnTheFlySkuCodes)){
+		    QueryExecute(
+				"DELETE s FROM swsetting s 
+                 INNER JOIN SwSku sku ON sku.skuID = s.skuID and ( s.settingName = 'skuBundleAutoMakeupInventoryOnSaleFlag' OR s.settingName = 'skuQATSIncludesMQATSBOMFlag')
+                 WHERE
+                	skuCode in (:notOnTheFlySkuCodes)",
+				{ 
+					'notOnTheFlySkuCodes' = { 'value' = notOnTheFlySkuCodes, 'list' = true }
+				}
+		    );
+	    }
 		
 
 // 		if(skuPriceQuery.recordCount){
@@ -1202,6 +1225,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		QueryExecute("UPDATE swProductType SET parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' WHERE parentProductTypeID IS NULL AND productTypeNamePath LIKE 'Merchandise > %'");
 		QueryExecute("UPDATE swProductType SET productTypeIDPath = CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeIDPath) WHERE parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' AND productTypeIDPath NOT LIKE '444df2f7ea9c87e60051f3cd87b435a1,%'");
 
+		if(skuQuery.recordCount){
+			QueryExecute("insert into swstock (stockID,skuID,locationID) select LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')),skuID,locationID from swsku join swlocation where skuID not in (select distinct skuID from swstock)");
+		}
 // 		//this.addUrlTitlesToProducts();
 		if(arguments.rc.dryRun){
 		    abort;

@@ -27,7 +27,8 @@ class MonatProductListingController {
 	public loadingAddToCart;
 	public flexshipFlag:boolean;
 	public qualifiedPromos;
-	
+	public productFilterTitle:string = "";
+
 	// @ngInject
 	constructor(
 		public $rootScope           : ng.IRootScopeService,
@@ -127,20 +128,13 @@ class MonatProductListingController {
             
             this.$timeout(()=>this.loading = false);
         });
-    }
+       }
     
 	public launchWishlistsModal = (skuID, productID, productName) => {
 	    this.monatService.launchWishlistsModal(skuID, productID, productName);
 	}
 	
-	public toggleShowFilterCategory = (categoryName)=>{
-		for(let category of this.monatService.productFilterCategories){
-			if(category != categoryName){
-				this.showProductFilter[category] = false;
-			}
-		}
-		this.showProductFilter[categoryName] = !this.showProductFilter[categoryName];
-	}
+
 	
 	public searchByKeyword = ():void =>{
 	    this.loading = true;
@@ -193,6 +187,10 @@ class MonatProductListingController {
 			},
 		}).then( (modal) => {
 			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+			/// this event is fired by bootstrap
+			modal.element.on('hidden.bs.modal', function (e) {
+				modal.element.remove();
+			});
 		    modal.close.then( (confirm) => {
 		    });
 		}).catch((error) => {

@@ -162,16 +162,24 @@ class FlexshipFlowController {
 			this.publicService.doAction('getOrderTemplatePromotionSkus', data).then( result => {
 				this.ofyProducts = result.orderTemplatePromotionSkus;
 				this.loading = false;
+			}).then(()=>{
+				this.isOFYEligible = (
+					this.orderTemplate.scheduleOrderDayOfTheMonth 
+					&& this.orderTemplate.scheduleOrderDayOfTheMonth > today 
+					&& this.orderTemplate.qualifiesForOFYProducts 
+					&& this.ofyProducts?.length
+				);
+				return this.isOFYEligible;
 			});
+		}else{
+			this.isOFYEligible = (
+				this.orderTemplate.scheduleOrderDayOfTheMonth 
+				&& this.orderTemplate.scheduleOrderDayOfTheMonth > today 
+				&& this.orderTemplate.qualifiesForOFYProducts 
+				&& this.ofyProducts?.length
+			);
+			return this.isOFYEligible;
 		}
-		this.isOFYEligible = (
-			this.orderTemplate.scheduleOrderDayOfTheMonth 
-			&& this.orderTemplate.scheduleOrderDayOfTheMonth > today 
-			&& this.orderTemplate.qualifiesForOFYProducts 
-			&& this.ofyProducts?.length
-		);
-
-		return this.isOFYEligible;
     }
     
     

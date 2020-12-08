@@ -313,6 +313,7 @@ class MonatEnrollmentController {
 			console.error("unable to open saveEnrollmentModal :",error);	
 		});
     }
+	
 }
 
 class MonatEnrollment {

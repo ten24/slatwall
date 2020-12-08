@@ -904,14 +904,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !structKeyExists(arguments.data, 'removalSkuID') ){
 			arguments.orderTemplate.addError('removalSku',getHibachiScope().rbKey('validate.orderTemplate_removeSku.removalSkuID'));
 		}
-		var orderTemplateItemCollection = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
-		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID');
-		var itemRecords = orderTemplateItemCollection.getRecords();
-		for(var itemRecord in itemRecords){
-			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
-			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
-			this.saveOrderTemplate(arguments.orderTemplate);
+		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
+		getOrderDAO().removeOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID);
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			getService('HibachiEntityQueueService').insertEntityQueueItem(baseID=orderTemplateID, baseObject="OrderTemplate", processMethod='processOrderTemplate_updateCalculatedProperties');
 		}
 		return arguments.orderTemplate;
 	}
@@ -923,20 +919,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !structKeyExists(arguments.data, 'replacementSkuID') ){
 			arguments.orderTemplate.addError('replacementSku',getHibachiScope().rbKey('validate.orderTemplate_replaceSku.replacementSkuID'));
 		}
-		var orderTemplateItemCollection = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
-		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,quantity');
-		var itemRecords = orderTemplateItemCollection.getRecords();
-		for(var itemRecord in itemRecords){
-			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
-			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
-			
-			var addOrderTemplateItemProcessData = {
-				'skuID':arguments.data.replacementSkuID,
-				'quantity':itemRecord['quantity']
-			};
-			arguments.orderTemplate = this.processOrderTemplate(arguments.orderTemplate, addOrderTemplateItemProcessData, 'addOrderTemplateItem');
+		
+		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
+		getOrderDAO().replaceOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID, arguments.data.replacementSkuID);
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			getService('HibachiEntityQueueService').insertEntityQueueItem(baseID=orderTemplateID, baseObject="OrderTemplate", processMethod='processOrderTemplate_updateCalculatedProperties');
 		}
+		
 		return arguments.orderTemplate;
 	}
 
@@ -1623,12 +1612,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//if the ScheduleOrderDayOfTheMonth has already passed this month, set it to next month
 		if(arguments.orderTemplate.getScheduleOrderDayOfTheMonth() <= day(now())){
-		    var month = month(now) + 1;
+		    var month = (month(now) + 1) MOD 12;
 		}else{
 			var month = month(now);
 		}
 		
 	    var scheduleOrderNextPlaceDateTime = createDate(year, month, day);
+		arguments.orderTemplate.setActivationDateTime(now());
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(scheduleOrderNextPlaceDateTime);
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
 		if( isNull(arguments.data.context)){
@@ -3577,17 +3567,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var n = ArrayLen(orderItemsToRemove); n >=1; n--)	{
 				var orderItem = this.getOrderItem(orderItemsToRemove[n]);
 
-				if(arraylen(orderItem.getStockHolds())){
-					//currently only supporting singular stockholds
-					var stockHold = orderItem.getStockHolds()[1];
-					if(stockHold.isExpired()){
-						getService('stockService').deleteStockHold(stockHold);
-						arguments.order.removeOrderItem(orderItem);
-						continue;
-					}
-				}
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(!isNull(orderItem) && arrayFindNoCase(orderItemsToRemove, orderItem.getOrderItemID())) {
+					if(arraylen(orderItem.getStockHolds())){
+						//currently only supporting singular stockholds
+						var stockHold = orderItem.getStockHolds()[1];
+						if(stockHold.isExpired()){
+							getService('stockService').deleteStockHold(stockHold);
+							arguments.order.removeOrderItem(orderItem);
+							continue;
+						}
+					}
 
 					var okToRemove = true;
 

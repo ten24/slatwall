@@ -85,7 +85,7 @@ component  accessors="true" output="false"
         
 		if(structKeyExists(this, arguments.methodName)) {
 			var theMethod = this[ arguments.methodName ];
-			return theMethod(argumentCollection = methodArguments);
+			return theMethod(argumentCollection = arguments.methodArguments);
 		}
 		
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
@@ -2357,21 +2357,6 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
     }
-
-    public void function deleteWishlist(required any data){
-        param name="data.orderTemplateID" default="";
-        
-        var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
-        
-        if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
-            orderTemplate.setOrderTemplateStatusType(getService('TypeService').getTypeBySystemCode('otstCancelled'));
-            getHibachiScope().addActionResult( "public:order.deleteWishlist", false);
-            return;
-        }
-        
-        getHibachiScope().addActionResult( "public:order.deleteWishlist", true );  
-    }
-    
     
     ///    ############### .  getXXXOptions();  .  ###############   
     

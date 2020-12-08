@@ -134,19 +134,17 @@ class MonatProductModalController {
 			false,
 			data
 		)
-		.then((data) => {
-			
-			this.monatAlertService.success(
-				this.rbkeyService.rbKey("alert.flexship.addProductSuccessful")
-			);
-			this.closeModal();
-		})
 		.catch( (error) => {
 			console.error(error);
             this.monatAlertService.showErrorsFromResponse(error);
 		})
 		.finally(() => {
 			this.loading = false;
+			this.loaded = true;
+			this.$timeout(()=>{
+				this.loaded = false;
+				this.closeModal();
+			}, 3000)
 		});
 	};
 

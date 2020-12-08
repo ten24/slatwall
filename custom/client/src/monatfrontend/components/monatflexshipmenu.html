@@ -4,43 +4,43 @@
 		<li ng-if="
 				monatFlexshipMenu.orderTemplate.billingAccountAddress_accountAddressID.trim().length 
 	            && monatFlexshipMenu.orderTemplate.shippingAccountAddress_accountAddressID.trim().length
-	            && monatFlexshipMenu.orderTemplate.statusCode === 'otstDraft'
+	            && monatFlexshipMenu.orderTemplate.orderTemplateStatusType_systemCode === 'otstDraft'
 	       " 
 	    >
-		    <a href="##"  ng-click="monatFlexshipMenu.activateFlexship()"><span sw-rbkey="'frontend.flexshipCard.menu.activateFlexship'"></span></a>
+		    <a  ng-click="monatFlexshipMenu.activateFlexship()"><span sw-rbkey="'frontend.flexshipCard.menu.activateFlexship'"></span></a>
 		</li>
 		
 		<li>
-		    <a href="##" ng-click="monatFlexshipMenu.showAddGiftCardModal()"><span sw-rbkey="'frontend.flexshipCard.menu.applyGiftCard'"></span></a>
+		    <a ng-click="monatFlexshipMenu.showAddGiftCardModal()"><span sw-rbkey="'frontend.flexshipCard.menu.applyGiftCard'"></span></a>
 		</li>
 		
 		
 		<li>
-		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditShippingMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editDeliveryAddress'"></span></a>
+		    <a ng-click="monatFlexshipMenu.showFlexshipEditShippingMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editDeliveryAddress'"></span></a>
 		</li>
 		
 		<li>
-		    <a href="##" ng-click="monatFlexshipMenu.goToProductListingPage()"><span sw-rbkey="'frontend.flexshipCard.menu.addOrRemoveItems'"></span></a>
+		    <a ng-click="monatFlexshipMenu.goToProductListingPage()"><span sw-rbkey="'frontend.flexshipCard.menu.addOrRemoveItems'"></span></a>
 		</li>
 	
 		<li ng-if="monatFlexshipMenu.orderTemplate.qualifiesForOFYProducts">
-		    <a href="##" ng-click="monatFlexshipMenu.goToOFYProductListingPage()"><span sw-rbkey="'frontend.flexshipCard.menu.selectYourFreeProducts'"></span></a>
+		    <a ng-click="monatFlexshipMenu.goToOFYProductListingPage()"><span sw-rbkey="'frontend.flexshipCard.menu.selectYourFreeProducts'"></span></a>
 		</li>
 
 		<li>
-		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditPaymentMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></span></a>
+		    <a ng-click="monatFlexshipMenu.showFlexshipEditPaymentMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></span></a>
 		</li>
 
-		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" >
-		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipScheduleModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editSchedule'"></span></a>
+		<li ng-if="monatFlexshipMenu.orderTemplate.orderTemplateStatusType_systemCode === 'otstActive'" >
+		    <a ng-click="monatFlexshipMenu.showFlexshipScheduleModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editSchedule'"></span></a>
 		</li>
 
 		
-		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive' && monatFlexshipMenu.publicService.account.accountType.toLowerCase() != 'vip' ">
-		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.cancelFlexship'"></span></a>
+		<li ng-if="monatFlexshipMenu.orderTemplate.orderTemplateStatusType_systemCode === 'otstActive' && monatFlexshipMenu.publicService.account.accountType.toLowerCase() != 'vip' ">
+		    <a ng-click="monatFlexshipMenu.showCancelFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.cancelFlexship'"></span></a>
 		</li>
-		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode != 'otstActive'">
-		    <a href="##" ng-click="monatFlexshipMenu.showDeleteFlexshipModal()"><span sw-rbkey="'frontend.flexshipEdit.deleteFlexship'"></span></a>
+		<li ng-if="monatFlexshipMenu.orderTemplate.orderTemplateStatusType_systemCode === 'otstDraft'">
+		    <a ng-click="monatFlexshipMenu.showDeleteFlexshipModal()"><span sw-rbkey="'frontend.flexshipEdit.deleteFlexship'"></span></a>
 		</li>
 		
 	</ul>

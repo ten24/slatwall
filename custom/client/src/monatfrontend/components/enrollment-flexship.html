@@ -1,19 +1,20 @@
 	<div ng-cloak class="card mb-3 w-100">
 		<div class="card-header bg-transparent p-0">
 			<div class="bg-primary">
-				<a ng-click="enrollmentFlexship.refreshFlexship()" ng-class="{'collapsed': enrollmentFlexship.type != 'vipFlexshipFlow'}" class="py-0" data-toggle="collapse" href="#flexshipBody">
+				<a ng-click="enrollmentFlexship.refreshFlexship()" ng-class="{'collapsed': (enrollmentFlexship.type != 'vipFlexshipFlow' && !enrollmentFlexship.expandFlexship) }" class="py-0" data-toggle="collapse" href="#flexshipBody">
 					<div class="py-3 px-3 text-white">
 						<span sw-rbKey="'frontend.hybridCart.yourFlexship'"></span> 
 						<span 
 							ng-if="!enrollmentFlexship.isLoading" 
 							ng-bind-html=" ' - ' + enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.calculatedTotal - enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal : 0 | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"
 						></span>
+					
 						<i class="fas fa-chevron-down"></i>
 					</div>					
 				</a>
 			</div>
 		</div>
-		<div ng-class="{'collapse': enrollmentFlexship.type != 'vipFlexshipFlow', 'collapse show': enrollmentFlexship.type == 'vipFlexshipFlow'}" class="multi-collapse" data-parent="#accordion" id="flexshipBody">
+		<div ng-class="{'collapse': (enrollmentFlexship.type != 'vipFlexshipFlow' && !enrollmentFlexship.expandFlexship), 'collapse show': (enrollmentFlexship.type == 'vipFlexshipFlow' || enrollmentFlexship.expandFlexship) }" class="multi-collapse" data-parent="#accordion" id="flexshipBody">
 			<div class="cart-progress-bar">
 				<flexship-purchase-plus messages="enrollmentFlexship.messages"></flexship-purchase-plus>
 			</div>
@@ -21,15 +22,15 @@
 				<ul class="list-group list-group-flush">
 					<li ng-repeat="item in enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.orderTemplateItems" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
 						<div class="row align-items-center">
-							<div class="p-1">
-								<a class="py-0" ng-href="{{item.skuProductURL}}">
-									<img 
-										image-manager 
-										height="75px" 
-										ng-src="{{item.sku_imagePath}}" 
-										alt="{{item.sku_product_productName}}"
-									>
-								</a>
+							<div class="cart-img">
+								
+								<img 
+									image-manager 
+									height="75px" 
+									width="auto"
+									ng-src="{{item.sku_imagePath}}" 
+									alt="{{item.sku_product_productName}}"
+								>
 							</div>
 							<div class="col">
 								<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
@@ -60,7 +61,7 @@
 										</button>
 									</div>
 
-									<span class="ml-2 text-right" ng-bind-html="item.total | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
+									<span class="ml-2 text-right" ng-bind-html="item.calculatedTotal | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
 								</div>
 							</div>
 						</div>

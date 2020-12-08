@@ -335,7 +335,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	}
 	
 	public struct function createAutoship(required struct DTSArguments){
-		arguments.DTSArguments['Status'] = 1;
+		arguments.DTSArguments['type'] = 1;
 		return postRequest('ICEAutoship.create', arguments.DTSArguments, getSessionToken());
 	}
 	
@@ -374,7 +374,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 
 	public void function retryBatch(required string baseObject, required array data){
 		for(var item in arguments.data){
-			if ( !getService('infoTraxService').isEntityQualified(arguments.baseObject, item['#lCase(arguments.baseObject)#ID'], 'after#arguments.baseObject#SaveSuccess') ) {
+			if ( !getService('infoTraxService').isEventQualified(arguments.baseObject, item['#lCase(arguments.baseObject)#ID'], 'after#arguments.baseObject#SaveSuccess') ) {
 				continue;
 			}
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(

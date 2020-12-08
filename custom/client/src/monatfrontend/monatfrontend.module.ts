@@ -68,11 +68,13 @@ import { FlexshipCheckoutStep } from "./components/flexshipFlow/checkout-step";
 import { FlexshipCheckoutShippingAddress } from "./components/flexshipFlow/checkout-components/shipping-address";
 import { FlexshipCheckoutShippingMethod } from "./components/flexshipFlow/checkout-components/shipping-method";
 import { ReviewStep } from "./components/flexshipFlow/reviewStep";
+import { MonatFilterMenu } from './components/monat-filter-menu';
 
 import { AccountAddressForm } from "./components/account-address-form";
 
 // controllers
 import { MonatForgotPasswordController } from "./controllers/monat-forgot-password";
+import { MonatNavbarController } from "./controllers/navbar";
 import { MonatSearchController } from "./controllers/monat-search";
 import { MonatCheckoutController } from "./controllers/monat-checkout";
 import { MonatProductListingController } from "./controllers/monat-product-listing";
@@ -168,10 +170,12 @@ var monatfrontendmodule = angular
 	.directive("flexshipCheckoutShippingMethod", FlexshipCheckoutShippingMethod.Factory())
 	.directive("accountAddressForm", AccountAddressForm.Factory())
 	.directive("reviewStep", ReviewStep.Factory())
+	.directive("filterMenu", MonatFilterMenu.Factory())
 	
 	// Controllers
 	.controller("searchController", MonatSearchController)
 	.controller("forgotPasswordController", MonatForgotPasswordController)
+	.controller("navbarController", MonatNavbarController)
 	.controller("checkoutController", MonatCheckoutController)
 	.controller("productListingController", MonatProductListingController)
 	.controller("onlyForYouController", OnlyForYouController)

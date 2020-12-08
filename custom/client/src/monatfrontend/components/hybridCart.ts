@@ -26,13 +26,14 @@ class HybridCartController {
 	public otherDiscounts:number;
 	public type:string;
 	public loading:boolean = false;
-
+	public expandFlexship:boolean;
+	
 	//@ngInject
-	constructor(public monatAlertService, public monatService, public observerService, public orderTemplateService, public publicService) {
+	constructor(public monatAlertService, public monatService, public observerService, public orderTemplateService, public $timeout, public publicService) {
 
-		this.observerService.attach(this.getCart.bind(this,false),'removeOrderItemSuccess');
-		this.observerService.attach(this.getCart.bind(this,false),'addOrderItemSuccess');
-		this.observerService.attach(this.getCart.bind(this,false),'updateOrderItemSuccess');
+		this.observerService.attach(this.getCart.bind(this,false, true),'removeOrderItemSuccess');
+		this.observerService.attach(this.getCart.bind(this,false, true),'addOrderItemSuccess');
+		this.observerService.attach(this.getCart.bind(this,false, true),'updateOrderItemSuccess');
 		this.observerService.attach(()=> this.getCart(true),'downGradeOrderSuccess');
 		this.observerService.attach(()=> this.showCart = false,'closeCart');
 
@@ -53,11 +54,19 @@ class HybridCartController {
 		this.monatService.redirectToProperSite(destination);
 	}
 	
-	private getCart(refresh = false):void{
+	private getCart(refresh = false, toggleCart = false):void{
 		this.monatService.getCart(refresh).then((res:Cart | any) => {
 			this.cart = res.cart ? res.cart : res;
 			this.recalculatePrices();
 		});
+		
+		//only apply open and close animation if the cart is closed
+		if(toggleCart && !this.showCart){
+			this.showCart = true;
+			this.$timeout(() =>{
+				this.showCart = false;	
+			} , 6000)
+		}
 	}
 	
 	private recalculatePrices():void{
@@ -134,6 +143,7 @@ class HybridCart {
 
 	public bindToController = {
 		isEnrollment: '<?',
+		expandFlexship: '<?',
 		type: '<?',
 	};
 	public controller = HybridCartController;

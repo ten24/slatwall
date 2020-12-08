@@ -535,6 +535,18 @@ component extends="framework.one" {
 		}
 
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
+		
+		if(getSubsystem(request.context[ getAction() ]) == 'admin'){
+			//check to see if we have admin restricted domains via global setting
+			var adminDomanNamesSetting = getHibachiScope().setting('globalAdminDomainNames');
+			//if a list of admin domains has been specified then check to see if the domain exists in the list. if none specified then pass through
+			if(!isNull(adminDomanNamesSetting) && len(adminDomanNamesSetting)){
+				if(!ListFind(adminDomanNamesSetting, cgi.http_host)){
+					writeOutput('#cgi.http_host# is not an admin domain and therefore restricted.');
+					abort;
+				}
+			}
+		}
 
 		var restInfo = {};
 		//prepare restinfo
@@ -1118,7 +1130,7 @@ component extends="framework.one" {
 		param name="arguments.rc.ajaxRequest" default="false";
 
 		if(arguments.rc.ajaxRequest) {
-			setupResponse(rc);
+			setupResponse(arguments.rc);
 		}
 
 		if(structKeyExists(url, "modal") && url.modal) {

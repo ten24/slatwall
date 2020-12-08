@@ -72,6 +72,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if( (left(itemname,10) == 'preprocess'  || left(itemname,7) == 'process' )
 			&& structKeyExists(arguments, 'processContext') 
 			&& len(arguments.processContext)
+			&& right(itemName, len(arguments.processContext)) != arguments.processContext
 		){
 			itemName &= '_#arguments.processContext#';
 		}
