@@ -4,6 +4,6 @@
      
         <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/admin/client/dist/hibachiAdmin.a2d4ecd8fc3d8046d30d.bundle.js"></script>
      
-        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/admin/client/dist/monatAdmin.2c8d67cecc903e8d779a.bundle.js"></script>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/admin/client/dist/monatAdmin.62ae9bfc062f18018d14.bundle.js"></script>
     
 </cfoutput>
