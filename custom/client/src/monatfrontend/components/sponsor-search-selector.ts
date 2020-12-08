@@ -44,7 +44,9 @@ class SponsorSearchSelectorController {
 			this.getSearchResults();
 		//replicated site search
 		}else if(hibachiConfig.siteOwner.length){
-			this.getSearchResults(true);
+			this.getSearchResults(true).then(()=>{
+				
+			});
 		//session search 
 		}else if(this.monatService.hasOwnerAccountOnSession){
 			this.getSearchResults(false);
@@ -112,7 +114,7 @@ class SponsorSearchSelectorController {
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
 	
-			if( data.recordsCount == 1 ){
+			if( data.pageRecords.length == 1 ){
 				this.selectedSponsor = data.pageRecords[0];
 				this.notifySelect(this.selectedSponsor);
 			}
@@ -122,6 +124,8 @@ class SponsorSearchSelectorController {
 			this.recordsCount = data.recordsCount;
 			
 		});
+		
+		return this.publicService.marketPartnerResults;
 	}
 	
 	public notifySelect = (account) =>{
