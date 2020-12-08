@@ -383,7 +383,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 				autoshipData['startDate'] = dateFormat(arguments.orderTemplate.getActivationDateTime(), 'yyyy-mm-dd');
 			}
 		}else{
-			autoshipData['canceledDate'] = dateFormat(arguments.orderTemplate.getCanceledDateTime(), 'yyyy-mm-dd');
+			if(!isNull(arguments.orderTemplate.getCanceledDateTime())){
+				autoshipData['canceledDate'] = dateFormat(arguments.orderTemplate.getCanceledDateTime(), 'yyyy-mm-dd');
+			}
 		}
 		
 		return autoshipData;
