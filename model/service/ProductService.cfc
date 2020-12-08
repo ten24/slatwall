@@ -477,6 +477,11 @@ component extends="HibachiService" accessors="true" {
 			var resizeSizes=['s','m','l','xl']; //add all sized images
 			
 			for(var product in arguments.products) {
+				
+				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
+					continue;
+				}
+				
 	            var imageFile = product[arguments.propertyName] ? : '';
 	            if( isEmpty(imageFile) ) {
 	            	continue;
@@ -495,7 +500,7 @@ component extends="HibachiService" accessors="true" {
 	        }
 	        
 	        //If there's only one product in response, add alternate images as well
-	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage ) {
+	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && StructKeyExists(arguments.products[1], 'productID') && trim(arguments.products[1].productID) != "" ) {
 	        	//Modify image size to be used as size index
 	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
 	        }
@@ -505,13 +510,20 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	/**
-	 * Method to append categories and options to Product repsonse using get method
+	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
 	 * */
 	public any function appendCategoriesAndOptionsToProduct(required array products) {
 		if(arrayLen(arguments.products)) {
 			for(var product in arguments.products) {
 				
+				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
+					continue;
+				}
+				
 				var currentProduct = this.getProduct(product.productID);
+				if( isNull( currentProduct ) ) {
+					continue;
+				}
 				var categories = [];
 				if( arrayLen(currentProduct.getCategories()) ) {
 					var productCategories = currentProduct.getCategories();
@@ -535,6 +547,9 @@ component extends="HibachiService" accessors="true" {
 					}
 				}
 				product['optionGroups'] =  optionGroups;
+				
+				//Append base product type system code
+				product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
 			}
 		}
 		
