@@ -191,7 +191,7 @@ component  accessors="true" output="false"
 	 * Method to create product bundle build
 	 * 
 	 * @param - skuID
-	 * @param - default skuID
+	 * @param - default skuID (from bundle product)
 	 * @param - quantity
 	 * */
 	public void function createProductBundleBuild( required struct data ) {
@@ -210,9 +210,9 @@ component  accessors="true" output="false"
 	    }
 	    
 	    if( !account.isNew() ) {
-	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, bundleSku] );
 	    } else {
-	        var productBundleBuild = getProductService().getProductBundleBuildBySessionANDProductBundleSku( [ getHibachiScope().getSession(), sku] );
+	        var productBundleBuild = getProductService().getProductBundleBuildBySessionANDProductBundleSku( [ getHibachiScope().getSession(), bundleSku] );
 	    }
         
         if( isNull( productBundleBuild ) ) {
