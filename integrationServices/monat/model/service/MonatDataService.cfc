@@ -1178,7 +1178,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                  WHERE
                 	skuCode in (:notOnTheFlySkuCodes)",
 				{ 
-					'notOnTheFlySkuCodes' = { 'value' = onTheFlySkuCodes, 'list' = true }
+					'notOnTheFlySkuCodes' = { 'value' = notOnTheFlySkuCodes, 'list' = true }
 				}
 		    );
 	    }
