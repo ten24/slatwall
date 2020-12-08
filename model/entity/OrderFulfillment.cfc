@@ -949,6 +949,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		return variables.orderFulfillmentStatusType;
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
+
 
 	// ==================  END:  Overridden Methods ========================
 
