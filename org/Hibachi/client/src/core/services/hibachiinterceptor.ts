@@ -210,15 +210,14 @@ class HibachiInterceptor implements IInterceptor{
 				var messageList = rejection.data.messages;
 				if (messageList && messageList.length) {
                 	for (message in messageList) {
-                		msg += messageList[message].message;
+                		msg += messageList[message].message + " ";
                 	}
 				}
 				var messages = {
 						msg: msg,
 						type:'error'
 					};
-				var alerts = this.alertService.addAlert(messages);
-				this.alertService.addAlerts(alerts);
+				this.alertService.addAlert(messages);
 			} else if (rejection.data && rejection.data.messages) {
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
 				this.alertService.addAlerts(alerts);
