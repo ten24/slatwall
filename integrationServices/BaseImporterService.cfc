@@ -1326,12 +1326,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    skuOptionList = "PadlocksKeyway,PadlocksKeying,KeyKeyway,DoorKnobKeyway,DoorKnobBackset,ProductFinish,DoorKnobStyle,SafesLockType,SafesFinish";
 	    
 	     for (var skuOption in listToArray(skuOptionList, ",")) {
-	     	if( structKeyExists(data,"#skuOption#") and !this.hibachiIsEmpty(data['#skuOption#']) ){
-	     		skuOptionsName.append(data['#skuOption#']);
-	        	skuOptionsGroupName.append("#skuOption#");
+	     	if( structKeyExists(data, skuOption) and !this.hibachiIsEmpty(data[skuOption]) ){
+	     		skuOptionsName.append(data[skuOption]);
+	        	skuOptionsGroupName.append(skuOption);
 	     	}
 	     }
-	    return(this.getSkuDAO().getOptionNameByOptionIdAndOptionValue( skuOptionsName , skuOptionsGroupName ));
+	     var optionsData = {
+	        'optionGroupName'  : skuOptionsGroupName, 
+	        'optionName'       : skuOptionsName
+	    }
+	    return(this.getSkuDAO().getOptionNameByOptionIdAndOptionValue( optionsData ));
 	}
 	
 	

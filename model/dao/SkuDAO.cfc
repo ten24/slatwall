@@ -489,12 +489,18 @@ Notes:
 	
 	<cfscript>
     
-    public any function getOptionNameByOptionIdAndOptionValue(required array skuOptionsNameList , required array skuOptionsGroupNameList){
-		var queryService = new query();
-		arguments.skuOptionsNameList = listQualify(arrayToList(arguments.skuOptionsNameList),"'",",");
-		arguments.skuOptionsGroupNameList = listQualify(arrayToList(arguments.skuOptionsGroupNameList),"'",",");
-		var sql = "SELECT optionID FROM swOption WHERE optionName IN (#arguments.skuOptionsNameList#) AND optionGroupID IN (SELECT optionGroupID FROM swoptiongroup WHERE optionGroupCode IN (#arguments.skuOptionsGroupNameList#))";
-		var records = queryService.execute(sql=sql).getResult();
+    public any function getOptionNameByOptionIdAndOptionValue( required struct skuOptionsData ){
+    	var sql = "";
+    	var index = 1;
+    	var queryService = new query();
+		for (var skuOptionNames in skuOptionsData.optionName ) {
+		
+			var sql &= "SELECT so.optionID FROM swOption AS so INNER JOIN swoptiongroup AS sog ON so.optionGroupID=sog.optionGroupID AND so.optionName = '#skuOptionNames#' AND sog.optionGroupCode = '#skuOptionsData.optionGroupName[index]#'"&" UNION ";
+			
+			index++;
+		}
+		
+		var records = queryService.execute(sql=left(trim(sql),len(trim(sql))-6)).getResult();
 		var result = "";
 			for(var i=1;i<=records.recordCount;i++) {
 				 result &= records.optionID & ',';
