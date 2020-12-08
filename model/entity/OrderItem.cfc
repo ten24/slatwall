@@ -536,7 +536,7 @@ property name="personalVolume" ormtype="big_decimal";
 			var price = 0;
 		
 			//get bundle price
-			if(!isnull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(!isnull(getSku()) && getDAO('skuDAO').getProductTypeSystemCodeBySkuID(getSku().getSkuID()) == 'productBundle'){
 				price = getProductBundlePrice();
 			}else if(!isNull(getPrice())){
 				price = getPrice();
