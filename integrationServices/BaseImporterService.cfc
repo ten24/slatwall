@@ -267,7 +267,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return arguments.entity;
 	}
 	
-	public struct function resolveEntityLazyProperties(required string entityName, required struct entityData, struct mapping){
+	public struct function resolveEntityLazyProperties(
+	    required string entityName, 
+	    required struct transformedData, 
+	    struct sourceData, 
+	    struct mapping
+    ){
 	    
 	    var extentionFunctionName = "resolve#arguments.entityName#LazyProperties";
 	    if( structKeyExists(this, extentionFunctionName) ){
@@ -277,40 +282,62 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( arguments.entityName );
         }
+        
+        if(!structKeyExists(arguments, 'sourceData') || this.hibachiIsEmpty(arguments.sourceData)){
+            arguments.sourceData = arguments.transformedData['__sourceData'];
+        }
 	    
-	    if( structKeyExists(arguments.entityData.__lazy, 'properties') ){
-	        for(var sourcePropertyName in arguments.entityData.__lazy.properties ){
-	            // TODO : It will require source data to be available as well; 
-	            // we'll either add additional hidden field, or additional column in EntityQueue
+	    if( structKeyExists(arguments.transformedData.__lazy, 'properties') ){
+	        
+	        var properties = arguments.transformedData.__lazy.properties;
+	        
+	        for(var sourcePropertyName in properties){
+	            
+	            var propertyMetaData = properties[sourcePropertyName];
+	            
+	            var propertyValue = this.getOrGeneratePropertyValue(
+    	            data                 = arguments.sourceData, 
+        	        mapping              = arguments.mapping,
+        	        propertyMetaData     = propertyMetaData,
+        	        sourcePropertyName   = sourcePropertyName,
+        	        sourceDataKeysPrefix = arguments.transformedData['__sourceDataKeysPrefix']
+    	        );
+    	        
+    	        if( !isNull(propertyValue) ){
+            	    arguments.transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
+    	        }
 	        }
 	    }
 	    
-	    if( structKeyExists(arguments.entityData.__lazy, 'generatedProperties') ){
-	        for(var propertyMetaData in arguments.entityData.__lazy.generatedProperties ){
+	    if( structKeyExists(arguments.transformedData.__lazy, 'generatedProperties') ){
+	        for(var propertyMetaData in arguments.transformedData.__lazy.generatedProperties ){
 	            var propertyValue = this.getOrGeneratePropertyValue(
-    	            data               = arguments.entityData, 
+    	            data               = arguments.sourceData, 
         	        mapping            = arguments.mapping,
         	        propertyMetaData   = propertyMetaData
         	    );
         	   
     	        if( !isNull(propertyValue) ){
-            	    arguments.entityData[ propertyMetaData.propertyIdentifier ] = propertyValue;
+            	    arguments.transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
     	        }
 	        }
 	    }
 	    
-	    if( structKeyExists(arguments.entityData.__lazy, 'relations') ){
-	        for( var thisRelation in arguments.entityData.__lazy.relations ){
-	            var relationData = arguments.entityData[ thisRelation.propertyIdentifier ];
-	            relationData = this.resolveEntityLazyProperties( 
-	                entityName = thisRelation.entityName,
-	                entityData = relationData
+	    if( structKeyExists(arguments.transformedData.__lazy, 'relations') ){
+	        for( var thisRelation in arguments.transformedData.__lazy.relations ){
+	            var transformedRelationData = arguments.transformedData[ thisRelation.propertyIdentifier ];
+	            
+	            transformedRelationData = this.resolveEntityLazyProperties( 
+	                entityName      = thisRelation.entityName,
+	                sourceData      = arguments.sourceData,
+	                transformedData = transformedRelationData
 	            );
-	            arguments.entityData[ thisRelation.propertyIdentifier ] = relationData;
+	            
+	            arguments.transformedData[ thisRelation.propertyIdentifier ] = transformedRelationData;
 	        }    
 	    }
 	    
-	    return arguments.entityData;
+	    return arguments.transformedData;
 	}
 	
 	public void function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
@@ -858,6 +885,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var entityName = arguments.mapping.entityName;
 	    var transformedData = {};
 	    
+	    if(!arguments.nested){
+	        transformedData['__sourceData'] = arguments.data;
+	        // TODO : snapshot mapping-ID as well so that we can have multiple mapings per entity;
+	    }
+	    
+        transformedData['__sourceDataKeysPrefix'] = arguments.sourceDataKeysPrefix;
+	    
 	    // Inferd properties, importRemoteID and `primaryIDProperty`
 	    var importRemoteIDValue = this.createEntityImportRemoteID( 
 	        entityName           = entityName, 
@@ -920,8 +954,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                             transformedData['__lazy'] = {};
                         }
                         
-                        if( !structKeyExists(transformEntityData['__lazy'], 'properties') ){
-                            transformEntityData['__lazy']['properties'] = {}
+                        if( !structKeyExists(transformedData['__lazy'], 'properties') ){
+                            transformedData['__lazy']['properties'] = {}
                         }
                         
                         transformedData['__lazy']['properties'][ sourcePropertyName ] = propertyMetaData;
@@ -965,8 +999,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                             transformedData['__lazy'] = {};
                         }
                         
-                        if( !structKeyExists(transformEntityData['__lazy'], 'generatedProperties') ){
-                            transformEntityData['__lazy']['generatedProperties'] = []
+                        if( !structKeyExists(transformedData['__lazy'], 'generatedProperties') ){
+                            transformedData['__lazy']['generatedProperties'] = []
                         }
                         
                         // carry forward this info, so we that we can use it later.
@@ -1348,7 +1382,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	public any function generateProductTypeUrlTitle( required struct data, required struct mapping, required struct propertyMetaData){
-	   
 	   return this.getHibachiUtilityService().createUniqueProperty(
 	        entityName    = arguments.mapping.entityName, 
 	        propertyName  = arguments.propertyMetaData.propertyIdentifier,
