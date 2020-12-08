@@ -1331,10 +1331,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        	skuOptionsGroupName.append(skuOption);
 	     	}
 	     }
-	     var optionsData = {
-	        'optionGroupName'  : skuOptionsGroupName, 
-	        'optionName'       : skuOptionsName
-	    }
+	     var count = 1;
+	     var optionsData = structNew();
+	     for (var GroupName in skuOptionsGroupName ) {
+	     	StructInsert(optionsData,"#GroupName#","#skuOptionsName[count]#");
+		    count ++;
+	     }
 	    return(this.getSkuDAO().getOptionNameByOptionIdAndOptionValue( optionsData ));
 	}
 	

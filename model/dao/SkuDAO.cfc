@@ -493,13 +493,10 @@ Notes:
     	var sql = "";
     	var index = 1;
     	var queryService = new query();
-		for (var skuOptionNames in skuOptionsData.optionName ) {
-		
-			var sql &= "SELECT so.optionID FROM swOption AS so INNER JOIN swoptiongroup AS sog ON so.optionGroupID=sog.optionGroupID AND so.optionName = '#skuOptionNames#' AND sog.optionGroupCode = '#skuOptionsData.optionGroupName[index]#'"&" UNION ";
-			
+		for (var skuOptionNames in skuOptionsData ) {
+			var sql &= "SELECT so.optionID FROM swOption AS so INNER JOIN swoptiongroup AS sog ON so.optionGroupID=sog.optionGroupID AND so.optionName = '#skuOptionsData[skuOptionNames]#' AND sog.optionGroupCode = '#skuOptionNames#'"&" UNION ";
 			index++;
 		}
-		
 		var records = queryService.execute(sql=left(trim(sql),len(trim(sql))-6)).getResult();
 		var result = "";
 			for(var i=1;i<=records.recordCount;i++) {
