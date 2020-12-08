@@ -116,7 +116,9 @@ Notes:
 		    <!--- Tabs for Adding Sale Order Items Sku and Stock --->
     		<hb:HibachiTab tabid="soiaddsku" lazyLoad="true" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
     		<hb:HibachiTab tabid="soiaddpromotionsku" lazyLoad="true" view="admin:entity/ordertabs/addpromotionsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.promotionsku')#" />
-    		<hb:HibachiTab tabid="soiaddstock" lazyLoad="true" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
+    		<cfif $.slatwall.getService('HibachiAuthenticationService').authenticateEntityCrudByAccount(crudType='read', entityName='Stock', account=$.slatwall.getAccount())>
+    			<hb:HibachiTab tabid="soiaddstock" lazyLoad="true" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
+    		</cfif>
     		<!--- Tabs for Adding Return Order Items Sku and Stock --->
     		<!---<hb:HibachiTab tabid="soiaddreturnsku" lazyLoad="true" view="admin:entity/ordertabs/addreturnsku" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.sku')#" />
     		<hb:HibachiTab tabid="soiaddreturnstock" lazyLoad="true" view="admin:entity/ordertabs/addreturnstock" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.stock')#" />--->
