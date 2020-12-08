@@ -495,6 +495,8 @@ component extends="framework.one" {
 			structKeyExists(httpRequestData.headers,'Origin')
 			){
 			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
+			populateCORSHeader(httpRequestData.headers['Origin']);
+			return;
 		}
 
 		//Set an account before checking auth in case the user is trying to login via the REST API

@@ -69,31 +69,31 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.address;
 	}
 	
-	public boolean function isAddressInZoneByZoneID(required any addressZoneID, required any address) {
-		var addressZone = this.getAddressZoneByAddressZoneID(addressZoneID);
-		return this.isAddressInZone(arguments.address, addressZone);
-	}
-	
-	public boolean function isAddressInZoneByZoneID(required any address, required any addressZoneID){
-		return isAddressInZone(address=arguments.address,addressZone=this.getAddressZoneByAddressZoneID(arguments.addressZoneID));
-	}
-	
-	public boolean function isAddressInZone(required any address, required any addressZone) {
-		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZone.getAddressZoneID();
-		if(!isNull(arguments.address.getPostalCode())){
-			cacheKey &= arguments.address.getPostalCode();
-		}
-		if(!isNull(arguments.address.getCity())){
-			cacheKey &= arguments.address.getCity();
-		}
-		if(!isNull(arguments.address.getStateCode())){
-			cacheKey &= arguments.address.getStateCode();
-		} 
-		if(!isNull(arguments.address.getCountryCode())){
-			cacheKey &= arguments.address.getCountryCode();
-		}
-		if(getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			return getService('HibachiCacheService').getCachedValue(cacheKey);
+	public boolean function isAddressInZoneByZoneID(required any address, required string addressZoneID) {
+		var cacheKey = "isAddressInZoneByZoneID"&arguments.addressZoneID
+			&arguments.address.getPostalCode()&arguments.address.getCity()&arguments.address.getStateCode()
+			&arguments.address.getCountryCode();
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var isAddressInZone = ORMExecuteQuery("
+				Select COUNT(azl) FROM SlatwallAddressZone az 
+				LEFT JOIN az.addressZoneLocations azl
+				where az.addressZoneID = :addressZoneID
+				and (azl.postalCode = :postalCode OR azl.postalCode is NULL)
+				and (azl.city = :city OR azl.city is NULL)
+				and (azl.stateCode = :stateCode OR azl.stateCode is NULL)
+				and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
+				",
+				{
+					addressZoneID=arguments.addressZoneID,
+					postalCode=arguments.address.getPostalCode(),
+					city=arguments.address.getCity(),
+					stateCode=arguments.address.getStateCode(),
+					countryCode=arguments.address.getCountryCode()
+				},
+				true
+			);
+			//cache Address verification for 5 min
+			getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
 		}
 		
 		var isAddressInZone = ORMExecuteQuery("

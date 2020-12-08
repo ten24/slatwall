@@ -1066,6 +1066,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.eligibleFulfillmentMethods;
 	}
+	
+	/**
+	 * Helper method to populate Eligible Fulfillment methods for SKU
+	 * */
+	public array function getEligibleFulfillmentMethodsWithShippingMethods() {
+		if(!structKeyExists(variables, "eligibleFulfillmentMethodsWithShippingMethods")) {
+			var fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethodCollectionList();
+			fulfillmentMethod.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType")
+			fulfillmentMethod.addFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'), "IN");
+			fulfillmentMethod.addOrderBy('sortOrder');
+			variables.eligibleFulfillmentMethodsWithShippingMethods = fulfillmentMethod.getRecords(formatRecord = false);
+		}
+		return variables.eligibleFulfillmentMethodsWithShippingMethods;
+	}
 
 	public any function getBundledSkusCount() {
 		if(!structKeyExists(variables, "bundledSkusCount")){

@@ -66,7 +66,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		giftCardList.addFilter( 'ownerAccount.accountID', arguments.account.getAccountID() );
 		giftCardList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		giftCardList.setCurrentPageDeclaration(arguments.data.currentPage); 
-
+		
 		return { "giftCardsOnAccount":  giftCardList.getPageRecords(), "recordsCount": giftCardList.getRecordsCount()}
 	}
 	
