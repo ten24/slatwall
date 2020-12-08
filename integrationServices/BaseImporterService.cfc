@@ -207,7 +207,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        mapping       = entityMapping,
 	        collectErrors = true
 	    );
-	    
+
 	    if( !validation.isValid ){
 	        
 	        var entityQueueData = {
@@ -235,7 +235,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        mapping        = entityMapping,
     	        emptyRelations = validation.emptyRelations
     	    );
-    	    
+
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
@@ -1334,7 +1334,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	   return this.getHibachiUtilityService().createUniqueProperty(
 	        entityName    = arguments.mapping.entityName, 
 	        propertyName  = arguments.propertyMetaData.propertyIdentifier,
-	        propertyValue = arguments.data.productName
+	        propertyValue = arguments.data.productName & arguments.data.productCode
 	   );
 	   
 	}
@@ -1389,6 +1389,18 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	   );
 	   
 	}
+	
+	public string function createProductTypeImportRemoteID( required struct data, required struct mapping ){
+	   
+	   var formattedProductTypeName = reReplace(arguments.data['productTypeName'],"\s", " ", "all");
+	    
+	   formattedProductTypeName = lcase( trim( formattedProductTypeName ) );
+	    
+	   // this lcase used to lcase hash
+	   
+	   return lcase( hash( formattedProductTypeName,  'MD5' ) );
+	}
+	
 	
 	/////////////////.                  SKU
 	
