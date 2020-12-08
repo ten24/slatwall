@@ -44,9 +44,7 @@ class SponsorSearchSelectorController {
 			this.getSearchResults();
 		//replicated site search
 		}else if(hibachiConfig.siteOwner.length){
-			this.getSearchResults(true).then(()=>{
-				
-			});
+			this.getSearchResults(true);
 		//session search 
 		}else if(this.monatService.hasOwnerAccountOnSession){
 			this.getSearchResults(false);
@@ -124,8 +122,6 @@ class SponsorSearchSelectorController {
 			this.recordsCount = data.recordsCount;
 			
 		});
-		
-		return this.publicService.marketPartnerResults;
 	}
 	
 	public notifySelect = (account) =>{
