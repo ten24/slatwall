@@ -379,7 +379,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		}
 		
 		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
-			autoshipData['startDate'] = dateFormat(arguments.orderTemplate.getActivationDateTime(), 'yyyy-mm-dd');
+			if(!isNull(arguments.orderTemplate.getActivationDateTime())){
+				autoshipData['startDate'] = dateFormat(arguments.orderTemplate.getActivationDateTime(), 'yyyy-mm-dd');
+			}
 		}else{
 			autoshipData['canceledDate'] = dateFormat(arguments.orderTemplate.getCanceledDateTime(), 'yyyy-mm-dd');
 		}
