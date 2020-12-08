@@ -124,39 +124,39 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	private struct function getSampleProductData(){
         return {
             "PriceGroupActiveFlag": "false",
-            "ProductPublishedFlag": "true",
-            "BrandWebsite": "www.Valsartan and Hydrochlorothiazide.com",
-            "TypeCode": "abcdefgdilkl",
-            "ProductTypeActiveFlag": "false",
-            "ProductTypeDescription": "",
-            "BrandName": "Valsartan and Hydrochlorothiazide",
-            "SkuName": "Water - Spring Water 500ml sku 4",
-            "RemoteSkuID": "8919",
-            "SkuActiveFlag": "false",
-            "PriceGroupCode": "pgtOne",
-            "ProductDescription": "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
-            "ProductTypePublishedFlag": "",
-            "RemoteSkuPriceID": "81957",
-            "CurrencyCode": "CAD",
-            "BrandActiveFlag": "true",
-            "ProductTypeName": "Product type 111",
-            "ProductCode": "",
-            "PriceGroupName": "Price group one",
-            "SkuDescription": "Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.\n\nIn quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
-            "RemoteProductID": "65584",
-            "RemoteProductTypeID": "37890",
-            "Price": "397.03",
-            "MaxQuantity": "0",
-            "ListPrice": "",
-            "RemoteBrandID": "93326",
-            "ProductActiveFlag": "true",
-            "SkuPublishedFlag": "true",
-            "BrandPublishedFlag": "false",
-            "SkuPriceActiveFlag": "true",
-            "MinQuantity": "4",
-            "RemotePriceGroupID": "79978",
-            "ProductName": "Water - Spring Water 500ml",
-            "SkuCode": "SKU_8919"
+    		"ProductPublishedFlag": "true",
+    		"BrandWebsite": "https://www.alendronate-sodium.com",
+    		"ProductTypeActiveFlag": "false",
+    		"ProductTypeDescription": "In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
+    		"BrandName": "Alendronate Sodium",
+    		"SkuName": "Bacon Strip Precooked sku 4",
+    		"RemoteSkuID": "34875",
+    		"SkuActiveFlag": "false",
+    		"PriceGroupCode": "pgtTwo",
+    		"ProductDescription": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.",
+    		"ProductTypePublishedFlag": "",
+    		"RemoteSkuPriceID": "71097",
+    		"CurrencyCode": "PHP",
+    		"BrandActiveFlag": "true",
+    		"ProductTypeName": "Product type 333",
+    		"ProductCode": "product_aaa_bbb_xxx",
+    		"PriceGroupName": "Price group two",
+    		"SkuDescription": "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
+    		"RemoteProductID": "13463",
+    		"RemoteProductTypeID": "70845",
+    		"Price": "594.47",
+    		"MaxQuantity": "93",
+    		"ListPrice": "594.47",
+    		"RemoteBrandID": "52319",
+    		"ProductActiveFlag": "false",
+    		"SkuPublishedFlag": "false",
+    		"BrandPublishedFlag": "true",
+    		"SkuPriceActiveFlag": "true",
+    		"MinQuantity": "1",
+    		"RemotePriceGroupID": "88698",
+    		"ProductName": "Bacon Strip Precooked",
+    		"SkuCode": "SKU_34875",
+    		"ProductTypeCode": "product_type_3296"
         };
 	}
 	
@@ -1780,7 +1780,279 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         deleteRow('swAccount', 'accountID', accountID );
     }
-
+    
+    
+    
+    /***************. Lazy Evaluation *******************/
 
     
+    /***************. Lazy Evaluated properties *******************/
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_lazy_evaluated__properties(){
+
+        var sampleData = getSampleProductData();
+
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( StructKeyExists(transformedData, 'productCode') ).toBeFalse();
+        expect( StructKeyExists(transformedData, 'productDescription') ).toBeFalse();
+        expect( StructKeyExists(transformedData, 'productName') ).toBeFalse();
+        expect( StructKeyExists(transformedData, 'publishedFlag') ).toBeFalse();
+        // .....
+        // ....
+    }
+
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__properties(){
+
+         var sampleData = getSampleProductData();
+
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = mapping
+        );
+        
+        debug( transformedData );
+	    
+        expect( transformedData ).toHaveKey('__lazy');
+        expect( transformedData.__lazy ).toBeStruct();
+        expect( transformedData.__lazy ).toHaveKey('properties');
+        
+        expect( transformedData.__lazy.properties ).toHaveKey('productCode');
+        expect( transformedData.__lazy.properties ).toHaveKey('productDescription');
+        expect( transformedData.__lazy.properties ).toHaveKey('productName');
+        // .....
+        // ....
+    }
+
+    /**
+     * @test
+    */
+    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__properties(){
+
+        var sampleData = getSampleProductData();
+
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
+        
+        debug( resolvedData );
+	    
+        expect( StructKeyExists(resolvedData, 'urlTitle') ).toBeTrue();
+    }
+
+
+    /***************. Lazy Evaluated generated-properties *******************/
+
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_lazy_evaluated__generated_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping["generatedProperties"] = [{
+            "propertyIdentifier"    : "urtTitle",
+            "allowUpdate"           : false,
+            "evaluationMode"        : "lazy",
+        }];
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( StructKeyExists(transformedData, 'urlTitle') ).toBeFalse();
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__generated_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping["generatedProperties"] = [{
+            "propertyIdentifier"    : "urtTitle",
+            "allowUpdate"           : false,
+            "evaluationMode"        : "lazy",
+        }];
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( transformedData ).toHaveKey('__lazy');
+        expect( transformedData.__lazy ).toBeStruct();
+        expect( transformedData.__lazy ).toHaveKey('generatedProperties');
+    }
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__generated_properties(){
+
+        var sampleData = getSampleProductData();
+
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping["generatedProperties"] = [{
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductTypeUrlTitle",
+            "allowUpdate"        : false,
+            "evaluationMode"     : "lazy",
+            "__hint"             : "lazy evaluation means, the value for this property will get generted just before populating the object"
+        }];
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
+        
+        debug( resolvedData );
+	    
+        expect( StructKeyExists(resolvedData, 'urlTitle') ).toBeTrue();
+    }
+
+    
+    
+    /***************. Lazy Evaluated relation's properties *******************/
+
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_lazy_evaluated__relations_properties(){
+
+        var sampleData = getSampleProductData();
+
+        // modify brand mapping, temporarly
+        var mapping = this.getService().getEntityMapping( 'Brand' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = this.getService().getEntityMapping( 'Product' )
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( StructKeyExists(transformedData.brand, 'brandName') ).toBeFalse();
+        expect( StructKeyExists(transformedData.brand, 'brandWebsite') ).toBeFalse();
+        expect( StructKeyExists(transformedData.brand, 'brandPublishedFlag') ).toBeFalse();
+        expect( StructKeyExists(transformedData.brand, 'brandActiveFlag') ).toBeFalse();
+        // .....
+        // ....
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__relations_properties(){
+
+        var sampleData = getSampleProductData();
+
+        // modify brand mapping, temporarly
+        var mapping = this.getService().getEntityMapping( 'Brand' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = this.getService().getEntityMapping( 'Product' )
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( transformedData ).toHaveKey('__lazy');
+        expect( transformedData.__lazy ).toBeStruct();
+        expect( transformedData.__lazy ).toHaveKey('relations');
+        
+        
+        expext(transformedData.brand).toHaveKey('__lazy');
+        expext(transformedData.brand.__lazy).toHaveKey('properties');
+    }
+
+    /**
+     * @test
+    */
+    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__generated_properties(){
+
+        var sampleData = getSampleProductData();
+
+        // modify brand mapping, temporarly
+        var mapping = this.getService().getEntityMapping( 'Brand' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = this.getService().getEntityMapping( 'Product' )
+        );
+	    
+	    debug(transformedData);
+	    
+	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
+        
+        debug( resolvedData );
+	    
+        expect( StructKeyExists(resolvedData.brand, 'brandName') ).toBeTrue();
+    }
+
+
 }
