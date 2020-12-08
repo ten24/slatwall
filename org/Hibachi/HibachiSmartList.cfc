@@ -186,7 +186,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	private struct function getPropertiesStructFromEntityMeta(required struct meta) {
-		var cacheKey = "HibachiSmartList_getPropertiesStructFromEntityMeta_#arguments.meta.entityName#";
+		var cacheKey = "HibachiSmartList_getPropertiesStructFromEntityMeta_#meta.entityName#";
 		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 			var propertyStruct = {};
 			var hasExtendedComponent = true;
