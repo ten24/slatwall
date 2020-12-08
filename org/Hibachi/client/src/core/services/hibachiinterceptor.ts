@@ -197,18 +197,33 @@ class HibachiInterceptor implements IInterceptor{
     public responseError = (rejection): ng.IPromise<any> => {
     	
 		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
-			if (rejection.data && rejection.data.errors) {
+			var message;
+			
+			if (rejection.data && rejection.data.messages && rejection.data.errors) {
+				var msg = '';
+				var errorList = rejection.data.errors;
+				for (var errors in errorList) {
+					for (var i=0; i < errorList[errors].length; i++ ) {
+						msg += errorList[errors][i] + " ";
+					}
+				}
+				var messageList = rejection.data.messages;
+				if (messageList && messageList.length) {
+                	for (message in messageList) {
+                		msg += messageList[message].message;
+                	}
+				}
 				var messages = {
-					msg: rejection.data.errors[Object.keys(rejection.data.errors)[0]],
-					type:'error'
-				};
+						msg: msg,
+						type:'error'
+					};
 				var alerts = this.alertService.addAlert(messages);
 				this.alertService.addAlerts(alerts);
-			} else if(rejection.data && rejection.data.messages){
+			} else if (rejection.data && rejection.data.messages) {
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
 				this.alertService.addAlerts(alerts);
 			}else{
-				var message = {
+				message = {
 					msg:'there was error retrieving data',
 					type:'error'
 				};
