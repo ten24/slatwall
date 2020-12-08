@@ -369,26 +369,23 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var autoshipData = { 
 			'distId'            = arguments.orderTemplate.getAccount().getAccountNumber(), //Distributor ID
 			'autoshipNumber'    = arguments.orderTemplate.getOrderTemplateNumber(), //Autoship Number
-			//'marketingUnit'     = 0, //Source Marketing Unit, will default
 			'salesVolume'       = arguments.orderTemplate.getCalculatedPersonalVolumeTotal(),//Autoship SalesVolume
 			'qualifyingVolume'  = arguments.orderTemplate.getCalculatedPersonalVolumeTotal(),//Autoship Qualifying Volume
-		//	'taxableVolume'     = 0, //arguments.orderTemplate.getTaxableAmountTotal(),//Autoship Taxable Volume
-			'commissionVolume'  = arguments.orderTemplate.getCalculatedCommissionableVolumeTotal(),//Autoship Commission Volume
-			// 'volume5'           = 0,
-			// 'volume6'           = 0,//PRODUCT PACK?
-			// 'volume7'           = 0,
-			// 'volume8'           = 0,
-			// 'volume9'           = 0,
-			// 'invoiceAmount'     = arguments.orderTemplate.getTotal(),//Total Amount of Autoship (including taxes, shipping, etc)
-			// 'batchNumber'       = arguments.orderTemplate.getScheduleOrderDayOfTheMonth(),//Calendar day the autoship will generate an order
-			// 'frequency'         = arguments.orderTemplate.getFrequencyTerm().getTermMonths(),//How often during the month the autoship will generate an order (1 = once a month)
-			//'startDate'         = dateFormat(arguments.orderTemplate.getOrderOpenDateTime(), 'yyyymmdd'), //Date autoship will start being active (YYYYMMDD), default to todays date if not passed
-			//'endDate'           = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymm'), //Date autoship will stop being active (YYYYMMDD), this will default to 10 years from start date
-			//'nextRunDate'       = dateFormat(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyymmdd') //Date the next time the autoship will generate an order (YYYYMMDD)
+			'commissionVolume'  = arguments.orderTemplate.getCalculatedCommissionableVolumeTotal()//Autoship Commission Volume
 		};
 		
 		if(isDate(arguments.orderTemplate.getLastOrderPlacedDateTime())){
 			autoshipData['lastRunDate'] = dateFormat(arguments.orderTemplate.getLastOrderPlacedDateTime(), 'yyyymmdd'); //Date the autoship last generated an order (YYYYMMDD)
+		}
+		
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			if(!isNull(arguments.orderTemplate.getActivationDateTime())){
+				autoshipData['startDate'] = dateFormat(arguments.orderTemplate.getActivationDateTime(), 'yyyy-mm-dd');
+			}
+		}else{
+			if(!isNull(arguments.orderTemplate.getCanceledDateTime())){
+				autoshipData['canceledDate'] = dateFormat(arguments.orderTemplate.getCanceledDateTime(), 'yyyy-mm-dd');
+			}
 		}
 		
 		return autoshipData;

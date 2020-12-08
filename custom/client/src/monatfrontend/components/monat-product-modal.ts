@@ -140,6 +140,11 @@ class MonatProductModalController {
 		})
 		.finally(() => {
 			this.loading = false;
+			this.loaded = true;
+			this.$timeout(()=>{
+				this.loaded = false;
+				this.closeModal();
+			}, 3000)
 		});
 	};
 
