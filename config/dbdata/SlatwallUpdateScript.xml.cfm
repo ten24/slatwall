@@ -40,6 +40,7 @@
 		<Record updateScriptID="e562743b6c8d49b54a6764aa7af9d7af" scriptPath="database/ordertaxtransref.cfm" loadOrder="34" maxExecutionCount="1" />
 		<Record updateScriptID="a46279a96c8d6c554a67641f7a71d7bd" scriptPath="database/promorewardpublishedflag.cfm" loadOrder="35" maxExecutionCount="1" />
 		<Record updateScriptID="0ef73f3822b811ebb39212f40be05e23" scriptPath="database/promorewardextrafields.cfm" loadOrder="36" maxExecutionCount="1" />
+		<Record updateScriptID="7019f8a3398311ebb39212f40be05e23" scriptPath="database/ordertaxcommitresponse.cfm" loadOrder="37" maxExecutionCount="1" />
 		
 		
 		
