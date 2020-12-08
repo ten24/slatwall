@@ -267,6 +267,52 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return arguments.entity;
 	}
 	
+	public struct function resolveEntityLazyProperties(required string entityName, required struct entityData, struct mapping){
+	    
+	    var extentionFunctionName = "resolve#arguments.entityName#LazyProperties";
+	    if( structKeyExists(this, extentionFunctionName) ){
+	        return this.invokeMethod( extentionFunctionName, arguments );
+	    }
+	    
+	    if( !structKeyExists(arguments, 'mapping') ){
+            arguments.mapping = this.getEntityMapping( arguments.entityName );
+        }
+	    
+	    if( structKeyExists(arguments.entityData.__lazy, 'properties') ){
+	        for(var sourcePropertyName in arguments.entityData.__lazy.properties ){
+	            // TODO : It will require source data to be available as well; 
+	            // we'll either add additional hidden field, or additional column in EntityQueue
+	        }
+	    }
+	    
+	    if( structKeyExists(arguments.entityData.__lazy, 'generatedProperties') ){
+	        for(var propertyMetaData in arguments.entityData.__lazy.generatedProperties ){
+	            var propertyValue = this.getOrGeneratePropertyValue(
+    	            data               = arguments.entityData, 
+        	        mapping            = arguments.mapping,
+        	        propertyMetaData   = propertyMetaData
+        	    );
+        	   
+    	        if( !isNull(propertyValue) ){
+            	    arguments.entityData[ propertyMetaData.propertyIdentifier ] = propertyValue;
+    	        }
+	        }
+	    }
+	    
+	    if( structKeyExists(arguments.entityData.__lazy, 'relations') ){
+	        for( var thisRelation in arguments.entityData.__lazy.relations ){
+	            var relationData = arguments.entityData[ thisRelation.propertyIdentifier ];
+	            relationData = this.resolveEntityLazyProperties( 
+	                entityName = thisRelation.entityName,
+	                entityData = relationData
+	            );
+	            arguments.entityData[ thisRelation.propertyIdentifier ] = relationData;
+	        }    
+	    }
+	    
+	    return arguments.entityData;
+	}
+	
 	public void function resolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
 	    
 	    var extentionFunctionName = "resolve#arguments.entity.getClassName()#Dependencies";
@@ -317,10 +363,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
 	}
 
-
 	public void function resolveEntityVolatileRelations(required string entityName, required struct entityData ){
 	    
-	    var extentionFunctionName = "resolve#arguments.entityName#VolatileRelations"
+	    var extentionFunctionName = "resolve#arguments.entityName#VolatileRelations";
 	    if( structKeyExists(this, extentionFunctionName) ){
 	        return this.invokeMethod( extentionFunctionName, arguments );
 	    }
@@ -424,6 +469,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( entityName );
+        }
+        
+        if( structKeyExists(arguments.entityQueueData, '__lazy')){
+            this.resolveEntityLazyProperties( argumentCollection = arguments );
         }
         
         // make-sure all of the dependencies had been resolved, 
@@ -864,6 +913,23 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	            }
     	        }
     	        
+    	        if(structKeyExists(propertyMetaData, 'evaluationMode') ){
+                    if( propertyMetaData.evaluationMode == 'lazy'){
+                        
+                        if( !structKeyExists(transformedData, '__lazy') ){
+                            transformedData['__lazy'] = {};
+                        }
+                        
+                        if( !structKeyExists(transformEntityData['__lazy'], 'properties') ){
+                            transformEntityData['__lazy']['properties'] = {}
+                        }
+                        
+                        transformedData['__lazy']['properties'][ sourcePropertyName ] = propertyMetaData;
+                        
+                        continue;
+                    }
+                }
+    	        
     	        var propertyValue = this.getOrGeneratePropertyValue(
     	            data                 = arguments.data, 
         	        mapping              = arguments.mapping,
@@ -891,6 +957,24 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	                continue;
     	            }
     	        }
+    	        
+	            if(structKeyExists(propertyMetaData, 'evaluationMode') ){
+                    if( propertyMetaData.evaluationMode == 'lazy'){
+                        
+                        if( !structKeyExists(transformedData, '__lazy') ){
+                            transformedData['__lazy'] = {};
+                        }
+                        
+                        if( !structKeyExists(transformEntityData['__lazy'], 'generatedProperties') ){
+                            transformEntityData['__lazy']['generatedProperties'] = []
+                        }
+                        
+                        // carry forward this info, so we that we can use it later.
+                        transformedData['__lazy']['generatedProperties'].append(propertyMetaData);
+
+                        continue;
+                    }
+                }
 	            
     	        var propertyValue = this.getOrGeneratePropertyValue(
     	            data               = arguments.data, 
@@ -920,7 +1004,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
 	        
 	        for(var relation in arguments.mapping.relations ){
-	            
+	        
 	            // we're creting a duplicate here, as we're maintainaing some state in this variable down the line and 
 	            // if we don't duplicate then it's polutes the global mapping, which means the functionality will not work as expected;
 	            relation = structCopy(relation); 
@@ -949,9 +1033,24 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                     
                     transformedData[ relation.propertyIdentifier ] = transformedRelationData;
                     
+                    // ************* Volatile-Relations *********//
+                    
                     if( !isStruct(transformedRelationData) ){
                         continue;
-                        // we're only supporting struct as volatiles, [ many-to-one & one-to-one ] relations
+                        // currently we're only supporting struct as volatiles and __lazy, [ many-to-one & one-to-one ] relations
+                    }
+                    
+                    // collect and carry forward __lazy properties info for the relations. 
+                    if( structKeyExists(transformedRelationData, '__lazy') ){
+                        
+                        if( !structKeyExists(transformedData, '__lazy') ){
+                            transformedData['__lazy'] = {};
+                        }
+                        if( !structKeyExists(transformedData.__lazy, 'relations') ){
+                            transformedData['__lazy']['relations'] = [];
+                        }
+                    
+                        transformedData['__lazy']['relations'].append( relation );
                     }
                     
                     /**********************************************************************************************
@@ -982,7 +1081,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                     if( relation.isVolatile && !this.hibachiIsEmpty( relationPrimaryIdValue )  ){
                         relation['isVolatile'] = false;
                     }
-                    
                     
                     if( relation.isVolatile || relation.hasVolatiles ){
                         
