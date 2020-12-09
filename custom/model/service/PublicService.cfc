@@ -2271,18 +2271,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
 	
     //override core to also set the cheapest shippinng method as the default, and set shipping same as billing
-	public void function addShippingAddressUsingAccountAddress(data){
+	public void function addShippingAddressUsingAccountAddress(struct data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
 
-        this.setDefaultShippingMethod();
+        this.setDefaultShippingMethod(cart,false);
         // if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
         //     this.setShippingSameAsBilling();
         // }
 	}
 	
 	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
-	public void function addOrderShippingAddress(data){
+	public void function addOrderShippingAddress(struct data){
         var cart = getHibachiScope().getCart();
 	    super.addOrderShippingAddress(arguments.data);
 	    this.setDefaultShippingMethod();
@@ -2292,7 +2292,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
 	
 	//this method sets the cheapest shipping method on the order
-	public void function setDefaultShippingMethod(order = getHibachiScope().getCart()){
+	public void function setDefaultShippingMethod(any order = getHibachiScope().getCart(), boolean addSuccessAction=true){
 
         //Then we get the shipping fulfillment
         var orderFulfillments = arguments.order.getOrderFulfillments() ?: [];
@@ -2308,7 +2308,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                         'fulfillmentID':shippingFulfillment.getOrderFulfillmentID(),
                         'shippingMethodID': method.value
                     };
-                    super.addShippingMethodUsingShippingMethodID(data);       
+                    super.addShippingMethodUsingShippingMethodID(data,addSuccessAction);       
                     break;
                 }               
             }
