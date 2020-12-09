@@ -151,7 +151,7 @@ class MonatCheckoutController {
 		
 		//TODO: delete these event listeners and call within function
 		this.observerService.attach(()=>{
-			this.getCurrentCheckoutScreen(false, false);
+			this.getCurrentCheckoutScreen(false, false, false, Screen.SHIPPING_METHOD);
 		}, 'addShippingAddressSuccess' ); 
 		
 		this.observerService.attach(()=>{
@@ -159,7 +159,7 @@ class MonatCheckoutController {
 		}, 'addOrderPaymentSuccess' ); 
 		
 		this.observerService.attach(()=>{
-			this.getCurrentCheckoutScreen(false, false);
+			this.getCurrentCheckoutScreen(false, false, false, Screen.SHIPPING_METHOD);
 		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
 		
 		this.observerService.attach(()=>{
@@ -188,7 +188,7 @@ class MonatCheckoutController {
         this.handleAccountResponse({account:this.publicService.account});
 	}
 	
-	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false, next = false):Screen | void => {
+	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false, next = false, screenOverride?):Screen | void => {
 		
 		return this.monatService.getCart(hardRefresh).then(cart => {
 			
@@ -214,8 +214,9 @@ class MonatCheckoutController {
 			} 
 			
 			let reqList = this.state.cart.orderRequirementsList;
-			
-			if(!reqList.length && next && !this.hasSponsor){
+			if(screenOverride){
+				screen = screenOverride;
+			}else if(!reqList.length && next && !this.hasSponsor){
 				screen = Screen.SPONSOR;
 			}else if(!reqList.length && next && this.hasSponsor){
 				screen = Screen.REVIEW;

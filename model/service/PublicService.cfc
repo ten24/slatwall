@@ -803,7 +803,7 @@ component  accessors="true" output="false"
     }
     
    /** Sets the shipping method to an order shippingMethodID */
-    public void function addShippingMethodUsingShippingMethodID(required struct data){
+    public void function addShippingMethodUsingShippingMethodID(required struct data, boolean addSuccessAction=true){
         param name="arguments.data.shippingMethodID" default="";
         
         if(!len(arguments.data.shippingMethodID)){
@@ -842,8 +842,10 @@ component  accessors="true" output="false"
             }
             orderFulfillment.setShippingMethod(shippingMethod);
             getService("OrderService").saveOrder(order = order, updateOrderAmounts = false); 
-            getHibachiScope().flushOrmSession();   
-            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
+            getHibachiScope().flushOrmSession();
+            if(arguments.addSuccessAction || shippingMethod.hasErrors()){
+                getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
+            }
         }else{
              getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", true);
             return;
@@ -858,8 +860,9 @@ component  accessors="true" output="false"
         order = getService("OrderService").saveOrder(order = order, updateOrderAmounts = false); 
         if(!order.hasErrors()){
 			getDao('hibachiDao').flushOrmSession();
+        }else{
+		    getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", order.hasErrors());          
         }
-		getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", order.hasErrors());          
     }
     
     public any function addBillingAddressUsingAccountAddress(required data){

@@ -1483,8 +1483,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var productIDQuery = queryExecute(sql,params);
             var productIDs = ValueList(productIDQuery.baseID);
             
-            productCollectionList.addFilter(propertyIdentifier='productName',value='%#arguments.data.keyword#%', comparisonOperator='LIKE',filterGroup='keyword');
-            productCollectionList.addFilter(propertyIdentifier='productID',value=productIDs,comparisonOperator='IN',logicalOperator='OR',filterGroup='keyword');
+            productCollectionList.addFilter(propertyIdentifier='productName',value='%#arguments.data.keyword#%', comparisonOperator='LIKE',filterGroupAlias='keyword');
+            productCollectionList.addFilter(propertyIdentifier='productID',value=productIDs,comparisonOperator='IN',logicalOperator='OR',filterGroupAlias='keyword');
         }
         
         var recordsCount = productCollectionList.getRecordsCount();
@@ -2275,18 +2275,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
 	
     //override core to also set the cheapest shippinng method as the default, and set shipping same as billing
-	public void function addShippingAddressUsingAccountAddress(data){
+	public void function addShippingAddressUsingAccountAddress(struct data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
 
-        this.setDefaultShippingMethod();
+        this.setDefaultShippingMethod(cart,false);
         // if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
         //     this.setShippingSameAsBilling();
         // }
 	}
 	
 	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
-	public void function addOrderShippingAddress(data){
+	public void function addOrderShippingAddress(struct data){
         var cart = getHibachiScope().getCart();
 	    super.addOrderShippingAddress(arguments.data);
 	    this.setDefaultShippingMethod();
@@ -2296,7 +2296,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
 	
 	//this method sets the cheapest shipping method on the order
-	public void function setDefaultShippingMethod(order = getHibachiScope().getCart()){
+	public void function setDefaultShippingMethod(any order = getHibachiScope().getCart(), boolean addSuccessAction=true){
 
         //Then we get the shipping fulfillment
         var orderFulfillments = arguments.order.getOrderFulfillments() ?: [];
@@ -2312,7 +2312,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                         'fulfillmentID':shippingFulfillment.getOrderFulfillmentID(),
                         'shippingMethodID': method.value
                     };
-                    super.addShippingMethodUsingShippingMethodID(data);       
+                    super.addShippingMethodUsingShippingMethodID(data,addSuccessAction);       
                     break;
                 }               
             }
