@@ -1466,7 +1466,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	     	}
 	     }
 	     
-	    return this.getSkuDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData ).toList();
+	    return this.getSkuDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData );
 	}
 	
 	
