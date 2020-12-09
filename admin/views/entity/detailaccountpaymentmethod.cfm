@@ -122,7 +122,7 @@ Notes:
 				<cfif rc.accountPaymentMethod.isNew()>
 					<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment">
 					
-							<span ng-if="$root.slatwall.billingAccountAddress !== 'new'">
+							<span ng-init="$root.slatwall.billingAccountAddress = ($root.slatwall.billingAccountAddress) ? $root.slatwall.billingAccountAddress : 'new' ">
 								<cfif not isNull(url.accountID)>
 									<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(url.accountID)#" edit="#rc.edit#" fieldAttributes="ng-model='$root.slatwall.billingAccountAddress'" />
 			
@@ -149,15 +149,12 @@ Notes:
 					<cfif isNull(url.accountID) and not isNull(rc.accountPaymentMethod.getAccount())>
 						<cfset url.accountID = rc.accountPaymentMethod.getAccount().getAccountID()>
 					</cfif>
-					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(url.accountID)#" edit="#rc.edit#"/>
-					
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(url.accountID)#"/>
 					<!--- Credit Card Details --->
 					<hb:HibachiDisplayToggle selector="select[name='billingAccountAddress.accountAddressID']" showValues="new" >
 						<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
 						<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
 					</hb:HibachiDisplayToggle>
-					
-
 				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>

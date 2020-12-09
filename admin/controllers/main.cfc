@@ -61,6 +61,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	property name="hibachiSessionService" type="any";
 	property name="hibachiUtilityService" type="any";
+	property name="hibachiReportService" type="any";
 
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'login');
@@ -108,17 +109,76 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
 		rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
 
-		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
-		rc.productReviewSmartList.addFilter("activeFlag", 0);
-		rc.productReviewSmartList.setPageRecordsShow(10);
-		
-		rc.productReviewCollectionList = getProductService().getProductReviewCollectionList();
-		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle',{isVisible:true});
-		rc.productReviewCollectionList.addDisplayProperty('productReviewID',javacast('null',''),{hidden=true});
-		rc.productReviewCollectionList.addFilter('activeFlag',0);
-
 		if(getUpdateService().getMetaFolderExistsWithoutDismissalFlag()) {
 			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );
+		}
+		
+		param name="arguments.rc.reportID" default="";
+		
+		if(!arguments.rc.ajaxRequest) {
+			var savedReportsSmartList = getHibachiReportService().getReportSmartList();
+			savedReportsSmartList.addOrder('reportTitle');
+			
+			arguments.rc.savedReports = savedReportsSmartList.getRecords();	
+			arguments.rc.builtInReportsList = getHibachiReportService().getBuiltInReportsList();
+			arguments.rc.customReportsList = getHibachiReportService().getCustomReportsList();
+			arguments.rc.integrationReportsList = "";
+		}
+		
+		var reportEntity = getHibachiReportService().getReport(arguments.rc.reportID);
+		
+		if(isNull(reportEntity) && !structKeyExists(arguments.rc, "reportName") && arrayLen(arguments.rc.savedReports)) {
+			reportEntity = arguments.rc.savedReports[1];
+		}
+		
+		if(!isNull(reportEntity)) {
+			
+			arguments.rc.reportID = reportEntity.getReportID();
+			arguments.rc.reportName = reportEntity.getReportName();
+			
+			param name="arguments.rc.reportName" default="#reportEntity.getReportName()#";
+			param name="arguments.rc.reportStartDateTime" default="#reportEntity.getReportStartDateTime()#";
+			param name="arguments.rc.reportEndDateTime" default="#reportEntity.getReportEndDateTime()#";
+			param name="arguments.rc.reportDateTimeGroupBy" default="#reportEntity.getReportDateTimeGroupBy()#";
+			param name="arguments.rc.reportCompareFlag" type="any" default="#reportEntity.getReportCompareFlag()#";
+			param name="arguments.rc.reportDateTime" default="#reportEntity.getReportDateTime()#";
+			param name="arguments.rc.dimensions" type="any" default="#reportEntity.getDimensions()#";
+			param name="arguments.rc.metrics" type="any" default="#reportEntity.getMetrics()#";
+			param name="arguments.rc.orderByType" type="any" default="metric";
+			param name="arguments.rc.reportType" type="any" default="#reportEntity.getReportType()#";
+			param name="arguments.rc.limitResults" type="any" default="#reportEntity.getLimitResults()#";
+			param name="arguments.rc.showReport" type="any" default="#reportEntity.getShowReport()#";
+			
+		} else if (!structKeyExists(arguments.rc, "reportName")) {
+			
+			arguments.rc.reportName = listFirst(getHibachiReportService().getBuiltInReportsList());
+			
+		}
+		
+		arguments.rc.report = getHibachiReportService().getReportCFC(arguments.rc.reportName, arguments.rc);
+		
+		if(!isNull(reportEntity)) {
+			arguments.rc.report.setReportEntity( reportEntity );	
+		}
+		
+		if(arguments.rc.ajaxRequest && structKeyExists(arguments.rc, "reportName")) {
+			
+			arguments.rc.ajaxResponse["report"] = {};		
+			
+			if(arguments.rc.report.getReportType() NEQ "none"){
+				arguments.rc.ajaxResponse["report"]["chartData"] = arguments.rc.report.getChartData();
+			} else { 
+				arguments.rc.ajaxResponse["report"]["hideChart"] = true; 
+			}
+			
+			arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
+			
+			if(arguments.rc.report.getShowReport()){ 
+				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
+			} else { 
+				arguments.rc.ajaxResponse["report"]["hideReport"] = true; 	
+			}
+			
 		}
 		
 	}

@@ -95,6 +95,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				continue;
  			}
  			
+ 			for(var appliedPromotion in orderFulfillment.getAppliedPromotions()){
+ 				orderFulfillmentList = listAppend(orderFulfillmentList,appliedPromotion.getPromotion().getPromotionID());
+ 			}
+ 			
  			if(!isNull(orderFulfillment.getShippingAddress())){
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
  				if(!isNull(orderFulfillment.getSelectedShippingMethodOption())){
@@ -110,7 +114,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		var taxRateCacheKey = hash(taxAddressList&orderItemIDList&taxIntegrationIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getSubtotal(),'md5');
 		
 		if ( (isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey)
-			&& (len(orderFulfillmentList) || len(taxAddressList))
+			&& (len(orderFulfillmentList) || len(taxAddressList) || arguments.order.hasOrderReturn())
 		){
 
 			arguments.order.setTaxRateCacheKey(taxRateCacheKey);
@@ -559,8 +563,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderFulfillment( orderFulfillment );
 									newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
-									//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
-									newAppliedTax.setTaxLiabilityAmount( round(orderFulfillment.getFulfillmentCharge() * taxCategoryRate.getTaxRate()) / 100 );
+									newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
+									//newAppliedTax.setTaxLiabilityAmount( round(orderFulfillment.getFulfillmentCharge() * taxCategoryRate.getTaxRate()) / 100 );
 	
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );

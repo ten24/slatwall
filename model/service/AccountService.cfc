@@ -71,19 +71,24 @@ component extends="HibachiService" accessors="true" output="false" {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
 	}
 
-	public string function getPasswordResetID(required any account) {
+	public string function getPasswordResetID(required any account, boolean createNewResetID = true) {
 		var passwordResetID = "";
 		var accountAuthentication = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 
-		if(isNull(accountAuthentication)) {
+		if(isNull(accountAuthentication) && arguments.createNewResetID) {
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setExpirationDateTime(now() + 7);
 			accountAuthentication.setAccount( arguments.account );
 
 			accountAuthentication = this.saveAccountAuthentication( accountAuthentication );
 		}
-
-		return lcase("#arguments.account.getAccountID()##hash(accountAuthentication.getAccountAuthenticationID() & arguments.account.getAccountID())#");
+		
+		if(!isNull(accountAuthentication)) {
+			return lcase("#arguments.account.getAccountID()##hash(accountAuthentication.getAccountAuthenticationID() & arguments.account.getAccountID())#");
+		} else {
+			return "";
+		}
+		
 	}
 
 	// ===================== START: Logical Methods ===========================
@@ -153,12 +158,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			orderID,
 			calculatedTotalItemQuantity,
 			orderNumber,
+			calculatedTotal,
+			createdDateTime,
 			orderStatusType.typeName,
 			orderFulfillments.shippingAddress.streetAddress,
 			orderFulfillments.shippingAddress.street2Address,
 			orderFulfillments.shippingAddress.city,
 			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode
+			orderFulfillments.shippingAddress.postalCode	
 		');
 		
 		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
@@ -170,8 +177,23 @@ component extends="HibachiService" accessors="true" output="false" {
 		ordersList.addGroupBy('orderID');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		var orderRecords = ordersList.getPageRecords(formatRecord = false);
 		
-		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecord = false), "records": ordersList.getRecordsCount()}
+		var orderIDs = [];
+		for( var order in orderRecords) {
+			ArrayAppend( orderIDs, order['orderID']);
+		}
+		
+		//get orders with delivery tracking numbers
+		var orderDeliveriesCollectionList = getOrderService().getOrderDeliveryCollectionList();
+		orderDeliveriesCollectionList.setDisplayProperties('order.orderID, trackingNumber');
+		orderDeliveriesCollectionList.addFilter( 'order.orderID', ArrayToList(orderIDs), 'IN');
+		
+		return { 
+			"ordersOnAccount": orderRecords, 
+			"orderDeliveries": orderDeliveriesCollectionList.getRecords(formatRecord = true),
+			"records": ordersList.getRecordsCount()
+		};
 	}
 	
 	/**
@@ -183,7 +205,6 @@ component extends="HibachiService" accessors="true" output="false" {
 												parentAccount.emailAddress, 
 												parentAccount.firstName, 
 												parentAccount.lastName, 
-												parentAccount.username, 
 												parentAccount.accountID');
 		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.account.getAccountID() );
 		parentAccountCollectionList.addFilter( 'activeFlag', 1);
@@ -200,7 +221,6 @@ component extends="HibachiService" accessors="true" output="false" {
 												childAccount.emailAddress, 
 												childAccount.firstName, 
 												childAccount.lastName, 
-												childAccount.username, 
 												childAccount.accountID');
 		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.account.getAccountID() );
 		childAccountCollectionList.addFilter( 'activeFlag', 1 );
@@ -551,7 +571,29 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.account = this.saveAccount(arguments.account);
 		
 		return arguments.account;
-	} 
+	}
+	
+	public any function processAccount_addAccountEmailAddress(required any account, required any processObject, struct data={}) {
+		
+		var accountEmailAddress = this.newAccountEmailAddress();
+		accountEmailAddress.setAccount(arguments.account);
+		accountEmailAddress.setEmailAddress(arguments.processObject.getEmailAddress());
+		this.saveAccountEmailAddress(accountEmailAddress);
+		arguments.account = this.saveAccount(arguments.account);
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_addAccountPhoneNumber(required any account, required any processObject, struct data={}) {
+		
+		var accountPhoneNumber = this.newAccountPhoneNumber();
+		accountPhoneNumber.setAccount(arguments.account);
+		accountPhoneNumber.setPhoneNumber(arguments.processObject.getPhoneNumber());
+		this.saveAccountPhoneNumber(accountPhoneNumber);
+		arguments.account = this.saveAccount(arguments.account);
+		
+		return arguments.account;
+	}
 
 	public any function processAccount_clone(required any account, required any processObject, struct data={}) {
 
@@ -1482,10 +1524,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(paymentTransaction.hasError('runTransaction') || paymentTransaction.getTransactionSuccessFlag() == false) {
 				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			}
-			
-			if (paymentTransaction.getTransactionSuccessFlag() == false){
-				arguments.accountPayment.setActiveFlag(false);
-			}
+		
 		}
 
 		return arguments.accountPayment;
@@ -1799,10 +1838,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
-			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
 			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
 			//clears cache keys on the permissiongroup Object
 			getService('HibachiCacheService').resetCachedKeyByPrefix('PermissionGroup.');
+			
+			//reset permission cache
+			getService('HibachiCacheService').resetPermissionCache();
+			
+			//reset server instance settings cache
+			getService('HibachiCacheService').updateServerInstanceSettingsCache();
 		}
 
 		return arguments.permissionGroup;

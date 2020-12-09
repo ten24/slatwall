@@ -197,7 +197,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
 		var subscriptionUsageList = this.getSubscriptionUsageBenefitAccountCollectionList();
-		subscriptionList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		subscriptionUsageList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		

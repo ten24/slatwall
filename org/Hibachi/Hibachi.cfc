@@ -353,6 +353,9 @@ component extends="framework.one" {
 					}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 
 						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+						
+						//Reset Permission Cache
+						getBeanFactory().getBean('hibachiCacheService').resetPermissionCache();
 
 						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
 						serverInstance.setSettingsExpired(false);
@@ -401,19 +404,7 @@ component extends="framework.one" {
 
 		//check if we have the authorization header
 		if(len(AuthToken)){
-			var authorizationHeader = AuthToken;
-			var prefix = 'Bearer ';
-			//get token by stripping prefix
-			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
-			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-			
-			if(jwt.verify()){
-				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
-				if(!isNull(jwtAccount)){
-					jwtAccount.setJwtToken(jwt);
-					getHibachiScope().getSession().setAccount( jwtAccount );
-				}
-			}
+			getHibachiScope().getService("hibachiSessionService").setAccountSessionByAuthToken(AuthToken);
 		}
 		
 		// Call the onEveryRequest() Method for the parent Application.cfc
@@ -443,6 +434,8 @@ component extends="framework.one" {
 			structKeyExists(httpRequestData.headers,'Origin')
 			){
 			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
+			populateCORSHeader(httpRequestData.headers['Origin']);
+			return;
 		}
 
 		//Set an account before checking auth in case the user is trying to login via the REST API

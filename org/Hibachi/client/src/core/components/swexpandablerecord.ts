@@ -67,6 +67,7 @@ class SWExpandableRecordController{
         angular.forEach(this.collectionConfig.joins,(join)=>{
             this.childCollectionConfig.addJoin(join);
         });
+        this.childCollectionConfig.orderBy = this.collectionConfig.orderBy;
         this.childCollectionConfig.groupBys = this.collectionConfig.groupBys;
     }
 
@@ -75,14 +76,22 @@ class SWExpandableRecordController{
             this.collectionData = data;
             this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
             if(this.collectionData.pageRecords.length){
-                angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
+                
+                angular.forEach(
+                    // reversing here so the child records are in order
+                    this.collectionData.pageRecords.slice().reverse(),  (pageRecord) => {
+                    
                     this.expandableService.addRecord(pageRecord[this.parentIDName],true);
                     pageRecord.dataparentID = this.recordID;
                     pageRecord.depth = this.recordDepth || 0;
                     pageRecord.depth++;
+                    
                     //push the children into the listing display
                     this.children.push(pageRecord);
+                    
+                    // adding all of the childrens JUST-NEXT to the parent ont bu one
                     this.records.splice(this.recordIndex+1,0,pageRecord);
+                    
                 });
             }
             this.childrenLoaded = true;
