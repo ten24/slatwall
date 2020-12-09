@@ -1409,7 +1409,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public string function createProductTypeImportRemoteID( required struct data, required struct mapping ){
 	   
-	   var formattedProductTypeName = reReplace(arguments.data['productTypeName'],"\s", " ", "all");
+	   var formattedProductTypeName = reReplace(arguments.data['productTypeName'],"\s", "", "all");
 	    
 	   formattedProductTypeName = lcase( trim( formattedProductTypeName ) );
 	    
