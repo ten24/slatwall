@@ -63,6 +63,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			&arguments.address.getPostalCode()&arguments.address.getCity()&arguments.address.getStateCode()
 			&arguments.address.getCountryCode();
 		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+
 			var isAddressInZone = ORMExecuteQuery("
 				Select COUNT(azl) FROM SlatwallAddressZone az 
 				LEFT JOIN az.addressZoneLocations azl
