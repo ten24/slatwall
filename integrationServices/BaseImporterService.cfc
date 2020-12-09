@@ -512,7 +512,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
         
         if( structKeyExists(arguments.entityQueueData, '__lazy')){
-            this.resolveEntityLazyProperties( argumentCollection = arguments );
+            this.resolveEntityLazyProperties( 
+                entityName      = entityName,
+                transformedData = arguments.entityQueueData,
+                mapping = arguments.mapping
+            );
         }
         
         // make-sure all of the dependencies had been resolved, 
