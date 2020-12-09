@@ -35,6 +35,7 @@ class EnrollmentMPController {
 	public showProductFilter:any = {};
 	public sortedBundles = [];
 	public slickInitialized;
+	public selectedBundleInCart:boolean = false;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, private rbkeyService, private monatAlertService, private $timeout) {}
@@ -75,6 +76,12 @@ class EnrollmentMPController {
 				let str = this.stripHtml(this.bundles[bundle].description);
 				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
 				unsortedBundles.push(this.bundles[bundle]);
+				
+				let bundleInCart = this.checkIfBundleIsInCart(this.bundles[bundle]['ID']);
+				if(bundleInCart){
+					this.selectedBundleID = this.bundles[bundle]['ID'];
+					this.selectedBundleInCart = true;
+				}
 			}
 	
 			this.sortedBundles = unsortedBundles.sort(function(a, b) {
@@ -82,6 +89,18 @@ class EnrollmentMPController {
 			});
 
 		});
+	}
+	
+	private checkIfBundleIsInCart = (bundleID) =>{
+		let bundleInCart = false;
+		if(this.monatService.cart?.orderItems){
+			for(let item of this.monatService.cart.orderItems){
+				if(item.sku.skuID == bundleID){
+					bundleInCart = true;
+				}
+			}
+		}
+		return bundleInCart;
 	}
 	
 	public adjustInputFocuses = () => {
@@ -178,6 +197,11 @@ class EnrollmentMPController {
 				for(let bundle in this.bundles){
 					let str = this.stripHtml(this.bundles[bundle].description);
 					this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
+					let bundleInCart = this.checkIfBundleIsInCart(this.bundles[bundle]['ID']);
+					if(bundleInCart){
+						this.selectedBundleID = this.bundles[bundle]['ID'];
+						this.selectedBundleInCart = true;
+					}
 				}
 			});
 	};
@@ -185,6 +209,10 @@ class EnrollmentMPController {
 	public submitStarterPack = () => {
 		
 		this.bundleErrors = [];
+		if(this.selectedBundleInCart){
+			this.observerService.notify('onNext');
+			return;
+		}
 		
         if ( this.selectedBundleID.length ) {
 			this.loading = true;
@@ -194,6 +222,7 @@ class EnrollmentMPController {
 						this.bundleErrors = this.bundleErrors.concat( data.errors[ error ] );
 					}
 				} else {
+					this.selectedBundleInCart = true;
 					this.observerService.notify('onNext');
 				}
     		})
@@ -234,6 +263,8 @@ class EnrollmentMPController {
 		$event.preventDefault();
 		
 		this.selectedBundleID = bundleID;
+		this.selectedBundleInCart = this.checkIfBundleIsInCart(bundleID);
+		
 		this.bundleErrors = [];
 	};
 

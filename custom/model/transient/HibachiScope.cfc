@@ -45,7 +45,8 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 	
 	public any function getSubdomain() {
 		var domain = getCurrentDomain();
-		var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com)$';
+
+		var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com|ten24\.io)$';
 		var subdomain = '';
 		/*
 		Matches:
@@ -53,11 +54,11 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			username.monatglobal.com
 			username.mymonat.com
 			username.monat.ten24dev.com
+			username.monat.ten24.io
 		*/
 		if(reFindNoCase(regex, domain)){
 			var subdomain = reReplaceNoCase(domain, regex, '\1');
 		}
-		
 		return subdomain;
 	}
 	

@@ -3,76 +3,83 @@
 								<img src="/themes/monat/assets/images/FilterBy.svg" alt="filter icon" />
 							</a>
 
-						<div class="filter-container" 
+						<div 
+							sw-click-outside="monatFilterMenu.showFilterMenu = false"
 							ng-class="{
 							'show-filter-menu' : monatFilterMenu.showFilterMenu,
 							'hide-filter-menu' : !monatFilterMenu.showFilterMenu,
 							'show-main-menu' : monatFilterMenu.showMainFilterMenu,
 							'show-sub-menu' : !monatFilterMenu.showMainFilterMenu
-							}">
+							}"
+							ng-show="monatFilterMenu.showFilterMenu"
+							class="filter-container"
+						>
+							
 							<div class="filter-menu main-filter-menu" style="padding-top: {{monatFilterMenu.headerHeight}}px">
-							<div class="filter-title-row"> 
-								<i class="fal fa-angle-left" ng-click="monatFilterMenu.showFilterMenu = false"></i>
-							</div>
+								<div class="filter-title-row"> 
+									<i class="fal fa-angle-left" ng-click="monatFilterMenu.showFilterMenu = false"></i>
+								</div>
 								<div class="filter-title-row">
 									<span sw-rbkey="'frontend.global.shopBy'"> {{monatFilterMenu.parentController.name}}</span>
-									<a href="" 
+									<a
 										sw-rbkey="'frontend.global.clearAll'"
-										ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.parentController.getProducts('none', 'none');"
+										ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.callProductFunction('none', 'none');"
 									></a>
 								</div>
-							<div>
-							<ul class="filter-col">
-								<li ng-repeat="categoryName in monatFilterMenu.monatService.productFilterCategories" ng-click="monatFilterMenu.toggleFilterSubCategory(categoryName); monatFilterMenu.clearFilter();">
-									<span>{{categoryName}}</span>
-									<i class="far fa-angle-right"></i>
-								</li>
-							</ul>	
-							
-							<!--- 
-							<div class="promotion-box text-white" style="background-color: ##7E70C5">
-								<div class="promotion-header">$22 + 3</div>
-								<div class="promotion-summary">Purchase a new Product for $22 MP/$27 VIP,
-								Get a Shampoo, Styling, and Finishing Item, plus a Free Hairbrush for $47 MP/$57 VIP
+								<div>
+									<ul class="filter-col">
+										<li ng-repeat="categoryName in monatFilterMenu.monatService.productFilterCategories" ng-click="monatFilterMenu.toggleFilterSubCategory(categoryName); monatFilterMenu.clearFilter();">
+											<span>{{categoryName}}</span>
+											<i class="far fa-angle-right"></i>
+										</li>
+									</ul>
 								</div>
-							</div> --->
-						</div>
-					</div>
-					<div class="filter-menu sub-filter-menu" style="padding-top: {{monatFilterMenu.headerHeight}}px">
-						<div class="filter-title-row"> 
-							<i class="fal fa-angle-left" ng-click="monatFilterMenu.showFilterMenu = false; monatFilterMenu.showMainFilterMenu = true;"></i> 
-						</div>
-							<div class="filter-title-row">
-								<span sw-rbkey="'frontend.global.shopBy'"> {{monatFilterMenu.filterCategory}}</span>
-								<a href=""
-									sw-rbkey="'frontend.global.clearAll'"
-									ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.parentController.getProducts('none', 'none')"
-								></a>
-							</div>
-						<div>
-							<ul class="filter-col" >
-								<li ng-repeat="filter in monatFilterMenu.monatService.productFilters[monatFilterMenu.filterCategory]" ng-if="!$first">
-									<div class="custom-radio radio">
-										<input type="radio" 
-											class="custom-control-label" 
-											class="form-control" 
-											id="{{monatFilterMenu.filterCategory}}-{{filter.name}}"
-											name="{{monatFilterMenu.filterCategory}}-filterOptionButton" 
-											ng-click=
-											"monatFilterMenu.parentController.getProducts(filter,categoryName); 
-											monatFilterMenu.setParentTitle(filter.name);"
-										>
-										<label 
-											class="custom-control-label" 
-											for="{{monatFilterMenu.filterCategory}}-{{filter.name}}"
-										>
-											{{filter.name}} {{monatFilterMenu.productFunction}}
-										</label>
+									
+								<!--- 
+								<div class="promotion-box text-white" style="background-color: ##7E70C5">
+									<div class="promotion-header">$22 + 3</div>
+									<div class="promotion-summary">Purchase a new Product for $22 MP/$27 VIP,
+									Get a Shampoo, Styling, and Finishing Item, plus a Free Hairbrush for $47 MP/$57 VIP
 									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
+								</div> --->
+								
+							</div> <!--- end .main-filter-menu --->
+							
+							<div class="filter-menu sub-filter-menu" style="padding-top: {{monatFilterMenu.headerHeight}}px">
+								<div class="filter-title-row"> 
+									<i class="fal fa-angle-left" ng-click="monatFilterMenu.showMainFilterMenu = true;"></i> 
+								</div>
+								<div class="filter-title-row">
+									<span sw-rbkey="'frontend.global.shopBy'"> {{monatFilterMenu.filterCategory}}</span>
+									<a href=""
+										sw-rbkey="'frontend.global.clearAll'"
+										ng-click="monatFilterMenu.clearFilter(); monatFilterMenu.callProductFunction('none', 'none')"
+									></a>
+								</div>
+								<div>
+									<ul class="filter-col" >
+										<li ng-repeat="filter in monatFilterMenu.monatService.productFilters[monatFilterMenu.filterCategory]" ng-if="!$first">
+											<div class="custom-radio radio">
+												<input type="radio" 
+													class="custom-control-label" 
+													class="form-control" 
+													id="{{monatFilterMenu.filterCategory}}-{{filter.name}}"
+													name="{{monatFilterMenu.filterCategory}}-filterOptionButton" 
+													ng-click=
+													"monatFilterMenu.callProductFunction(filter,categoryName); 
+													monatFilterMenu.setParentTitle(filter.name);"
+												>
+												<label 
+													class="custom-control-label" 
+													for="{{monatFilterMenu.filterCategory}}-{{filter.name}}"
+												>
+													{{filter.name}}
+												</label>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div><!--- end .sub-filter-menu --->
+						</div><!--- end .filter-container --->
 				
 					

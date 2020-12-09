@@ -236,7 +236,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	// @hint facade method to set values in the session scope
-	public void function setSessionValue(required any key, required any value) {
+	public void function setSessionValue(required any key, required any value) localmode = "modern"{
 		var sessionKey = "";
 		if(structKeyExists(COOKIE, "JSESSIONID")) {
 			sessionKey = COOKIE.JSESSIONID;
@@ -245,11 +245,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		} else if (structKeyExists(COOKIE, "CFID")) {
 			sessionKey = COOKIE.CFID;
 		}
-		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_#arguments.key#" timeout="10" {
-			if(!structKeyExists(session, getHibachiInstanceApplicationScopeKey())) {
-				session[ getHibachiInstanceApplicationScopeKey() ] = {};
+		var instanceApplicationScopeKey = getHibachiInstanceApplicationScopeKey();
+		lock name="#sessionKey#_#instanceApplicationScopeKey#_#arguments.key#" timeout="10" {
+			if(!structKeyExists(session, instanceApplicationScopeKey)) {
+				session[ instanceApplicationScopeKey ] = {};
 			}
-			session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ] = arguments.value;
+			session[ instanceApplicationScopeKey ][ arguments.key ] = arguments.value;
 		}
 	}
 	

@@ -11,6 +11,7 @@ class PromoModalController {
 	public slickInitialized:boolean = false;
     private maxUseCount: number;
     private maxUsePerItem: number;
+    private slickContainerID:string =  '#promo-modal-content'
 	
     //@ngInject
     constructor(public rbkeyService, public observerService, public publicService, public monatService, private ModalService, private monatAlertService, private $timeout) {
@@ -140,9 +141,22 @@ class PromoModalController {
         }
     }
     
+    public slickPrev = ()=>{
+        const slickContainer = $(this.slickContainerID);
+        slickContainer.slick('slickPrev');
+    }
+    
+    public slickNext = ()=>{
+        const slickContainer = $(this.slickContainerID);
+        slickContainer.slick('slickNext');
+    }
+    
     public initSlickSlider = () =>{
-        const slickContainer = $('#promo-modal-content');
-        const slickOptions = {};
+        const slickContainer = $(this.slickContainerID);
+        const slickOptions = {
+            arrows:false,
+            dots:false
+        };
 		this.$timeout(()=>{
 			slickContainer.slick(slickOptions);
 			this.slickInitialized=true;

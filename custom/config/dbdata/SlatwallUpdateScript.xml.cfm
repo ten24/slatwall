@@ -24,5 +24,7 @@
 		<Record updateScriptID="ae3e9000a1806262a8980cc27c53f06e" scriptPath="database/workflowtaskmaxtrycount.cfm" loadOrder="121" maxExecutionCount="1" />
 		<Record updateScriptID="540b264b0f2411eb89220aca2b469e19" scriptPath="database/ordersharedbyaccount.cfm" loadOrder="122" maxExecutionCount="1" />
 		<Record updateScriptID="364ee952245d11ebb39212f40be05e23" scriptPath="database/ordertemplatereminderqueueflag.cfm" loadOrder="123" maxExecutionCount="1" />
+		<Record updateScriptID="364ee100245d11ebb39212f40be05e23" scriptPath="database/ordertemplateactivationdatetime.cfm" loadOrder="124" maxExecutionCount="1" />
+		<Record updateScriptID="0c7ccfba25e711ebb39212f40be05e23" scriptPath="database/ordertemplatecalculatedproperties2.cfm" loadOrder="125" maxExecutionCount="1" />
 	</Records> 
 </Table>

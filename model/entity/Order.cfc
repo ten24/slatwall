@@ -68,6 +68,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderNotes" ormtype="text";
 	property name="addToEntityQueueFlag" ormtype="boolean";
 	property name="taxCommitDateTime" ormtype="timestamp";
+	property name="taxCommitResponse" ormtype="string";
 	property name="taxTransactionReferenceNumber" ormtype="string";
 	
 	//used to check whether tax calculations should be run again
@@ -1996,6 +1997,16 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			}
 		}
 		return savedAccountPaymentMethod;
+	}
+	
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
 	}
 
 	// =================== START: ORM Event Hooks  =========================

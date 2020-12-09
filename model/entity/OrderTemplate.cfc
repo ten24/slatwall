@@ -57,6 +57,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="addToEntityQueueFlag" ormtype="boolean" default="false";
 	property name="scheduleOrderProcessingFlag" ormtype="boolean" default="false";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="activationDateTime" ormtype="timestamp";
 	property name="canceledDateTime" ormtype="timestamp";
 	property name="lastOrderPlacedDateTime" ormtype="timestamp";
 	
@@ -95,7 +96,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentDiscount" ormtype="big_decimal" hb_formatType="currency";
-
+	property name="calculatedRecalculationCacheKey" ormtype="string" length="32";
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -124,7 +126,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="statusCode" persistent="false";
 	property name="typeCode" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
-	
+	property name="recalculationCacheKey" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="processingReminderEmailEntityQueueFlag" ormtype="boolean";
@@ -136,7 +138,10 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedRetailCommissionTotal" ormtype="integer"; 
 	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency"; 
 	property name="calculatedVatTotal" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedFulfillmentHandlingFeeTotal" ormtype="big_decimal" hb_formatType="currency"; 
+	property name="calculatedFulfillmentHandlingFeeTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedPurchasePlusTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedOtherDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAppliedPromotionMessagesJson" ormtype="text";
 	
 	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
@@ -269,46 +274,80 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	}  
 
 	public numeric function getFulfillmentDiscount() {
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'fulfillmentDiscount')){
-			variables.fulfillmentDiscount = getService('OrderService').getFulfillmentDiscountForOrderTemplate(this); 
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.fulfillmentDiscount = getService('OrderService').getFulfillmentDiscountForOrderTemplate(this); 
+			}else{
+				variables.fulfillmentDiscount = getCalculatedFulfillmentDiscount();
+			}
 		}
 		return variables.fulfillmentDiscount;
 	}
 
 	public numeric function getFulfillmentTotal() {
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'fulfillmentTotal')){
-			variables.fulfillmentTotal = getService('OrderService').getFulfillmentTotalForOrderTemplate(this); 
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.fulfillmentTotal = getService('OrderService').getFulfillmentTotalForOrderTemplate(this); 
+			}else{
+				variables.fulfillmentTotal = getCalculatedFulfillmentTotal();
+			}
 		}
 		return variables.fulfillmentTotal;
 	}
 
 	public numeric function getSubtotal(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'subtotal')){
-			variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
+			}else{
+				variables.subtotal = getCalculatedSubtotal();
+			}
 		}
 		return variables.subtotal; 
 	}
 	
 	public numeric function getDiscountTotal(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'discountTotal')){
-			variables.discountTotal = getService('orderService').getOrderTemplateDiscountTotal(this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.discountTotal = getService('orderService').getOrderTemplateDiscountTotal(this);
+			}else{
+				variables.discountTotal = getCalculatedDiscountTotal();
+			}
 		}
 		return variables.discountTotal; 
 	}
 
 	public numeric function getTaxableAmountTotal() {
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'taxableAmountTotal')){
-			variables.taxableAmountTotal = getService('OrderService').getTaxableAmountTotalForOrderTemplate(this); 
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.taxableAmountTotal = getService('OrderService').getTaxableAmountTotalForOrderTemplate(this); 
+			}else{
+				variables.taxableAmountTotal = getCalculatedTaxableAmountTotal();
+			}
 		}
 		return variables.taxableAmountTotal;
 	}
 
-	public numeric function getTotal(){ 
+	public numeric function getTotal(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'total')){
-			variables.total = getService('orderService').getOrderTemplateTotal(this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.total = getService('orderService').getOrderTemplateTotal(this);
+			}else{
+				variables.total = getCalculatedTotal();
+			}
 		}
 		return variables.total; 
 	} 
+	
+	public string function getOrderTemplateOrderDetailsKey(){
+		return "orderTemplateOrderDetails#getOrderTemplateID()#";
+	}
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.accountID,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
@@ -462,6 +501,26 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.orderTemplateItemsCount;
 	}
 	
+	private boolean function matchRecalculationCacheKey(){
+		return getCalculatedRecalculationCacheKey() == getRecalculationCacheKey();
+		
+	}
+	
+	public string function getRecalculationCacheKey(){
+		var cacheKey = '';
+		cacheKey &= this.getOrderTemplateID();
+		
+		var orderTemplateItems = this.getOrderTemplateItems();
+		for(var orderTemplateItem in orderTemplateItems){
+			cacheKey &= orderTemplateItem.getSku().getSkuID() & orderTemplateItem.getQuantity();
+		}
+		
+		cacheKey &= this.getOrderTemplateStatusType().getTypeID();
+		cacheKey &= this.getLastOrderPlacedDateTime();
+		
+		return hash(cacheKey,'md5');
+	}
+	
 	//CUSTOM FUNCTIONS BEGIN
 
 public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
@@ -483,39 +542,61 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	}
 
 	public numeric function getPersonalVolumeTotal(){
-	
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
-			variables.personalVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('personalVolumeTotal', this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.personalVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('personalVolumeTotal', this);
+			}else{
+				variables.personalVolumeTotal = getCalculatedPersonalVolumeTotal();
+			}
 		}	
 		return variables.personalVolumeTotal; 	
 	}
 
 	public numeric function getCommissionableVolumeTotal(){
-		
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
-			variables.commissionableVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('commissionableVolumeTotal', this);	
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.commissionableVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('commissionableVolumeTotal', this);	
+			}else{
+				variables.commissionableVolumeTotal = getCalculatedCommissionableVolumeTotal();
+			}
 		}	
 		return variables.commissionableVolumeTotal;
 	} 
 	
 	public numeric function getPurchasePlusTotal(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'purchasePlusTotal')){
-			variables.purchasePlusTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('purchasePlusTotal', this);	
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.purchasePlusTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('purchasePlusTotal', this);	
+			}else{
+				variables.purchasePlusTotal = getCalculatedPurchasePlusTotal();
+			}
 		}	
 		return variables.purchasePlusTotal;
 	} 
 	
 	public numeric function getOtherDiscountTotal(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'otherDiscountTotal')){
-			variables.otherDiscountTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('otherDiscountTotal', this);	
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.otherDiscountTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('otherDiscountTotal', this);	
+			}else{
+				variables.otherDiscountTotal = getCalculatedOtherDiscountTotal();
+			}
 		}	
 		return variables.otherDiscountTotal;
 	} 
 
 	public numeric function getProductPackVolumeTotal(){
-		
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'productPackVolumeTotal')){
-			variables.productPackVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('productPackVolumeTotal', this);	
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.productPackVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('productPackVolumeTotal', this);	
+			}else{
+				variables.productPackVolumeTotal = getCalculatedProductPackVolumeTotal();
+			}
 		}	
 		return variables.productPackVolumeTotal;
 	} 
@@ -638,37 +719,53 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		return !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
 	
-	public any function getappliedPromotionMessagesJson(){
-	
+	public any function getAppliedPromotionMessagesJson(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'appliedPromotionMessagesJson')){
-			variables.appliedPromotionMessagesJson = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('appliedPromotionMessagesJson', this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.appliedPromotionMessagesJson = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('appliedPromotionMessagesJson', this);
+			}else{
+				variables.appliedPromotionMessagesJson = getCalculatedAppliedPromotionMessagesJson();
+			}
 		}	
 		
 		return variables.appliedPromotionMessagesJson; 	
 	}
 	
 	public numeric function getTaxTotal(){
-	
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'taxTotal')){
-			variables.taxTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('taxTotal', this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.taxTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('taxTotal', this);
+			}else{
+				variables.taxTotal = getCalculatedTaxTotal();	
+			}
 		}	
 		
 		return variables.taxTotal; 	
 	}
 	
 	public numeric function getVatTotal(){
-	
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'vatTotal')){
-			variables.vatTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('vatTotal', this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.vatTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('vatTotal', this);
+			}else{
+				variables.vatTotal = getCalculatedVatTotal();
+			}
 		}	
 		
 		return variables.vatTotal; 	
 	}
 	
 	public numeric function getFulfillmentHandlingFeeTotal(){
-	
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'fulfillmentHandlingFeeTotal')){
-			variables.fulfillmentHandlingFeeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('fulfillmentHandlingFeeTotal', this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.fulfillmentHandlingFeeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('fulfillmentHandlingFeeTotal', this);
+			}else{
+				variables.fulfillmentHandlingFeeTotal = getCalculatedFulfillmentHandlingFeeTotal();
+			}
 		}	
 		
 		return variables.fulfillmentHandlingFeeTotal; 	

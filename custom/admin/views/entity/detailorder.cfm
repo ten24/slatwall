@@ -85,8 +85,8 @@ Notes:
 				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="takeOffHold" type="list" modal="true" />
 				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="cancelOrder" type="list" modal="true" />
 				
-				<cfif rc.order.getOrderStatusType().getSystemCode() EQ 'ostClosed'>
-					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="resyncToAvalara" type="list" />
+				<cfif rc.order.getOrderStatusType().getSystemCode() EQ 'ostClosed' AND isNull(rc.order.getTaxTransactionReferenceNumber()) >
+					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="commitTax" type="list" />
 				</cfif>
 				
 				<cfif rc.order.getOrderType().getSystemCode() EQ 'otSalesOrder'>

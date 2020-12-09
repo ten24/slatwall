@@ -842,9 +842,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             if(orderByProp == '_productlistingpage.sortOrder') orderByProp = 'product.listingPages.sortOrder';
             bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
         }
-		
-		if(!isNull(getHibachiScope().getCurrentRequestSite())){
-		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
+		var site = getHibachiScope().getCurrentRequestSite();
+		if(!isNull(site)){
+		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',site.getSiteID());
+		    if(arrayLen(site.getLocations())){
+		        bundlePersistentCollectionList.addFilter('sku.stocks.location.locationID',site.getLocations()[1].getLocationID());
+		        bundlePersistentCollectionList.addFilter('sku.stocks.calculatedQATS',0,'>');
+		    }
 		}
 		var currencyCode = 
 		    !isNull(getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID)) 

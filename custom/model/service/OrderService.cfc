@@ -1,7 +1,7 @@
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal,qualifiedMerchandiseRewardsArray';
+        return 'orderItems.sku.backorderedMessaging,orderItems.sku.AllowBackorderFlag,orderItems.showInCartFlag,orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress.addressID,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType,monatOrderType.typeCode,calculatedPersonalVolumeTotal,qualifiedMerchandiseRewardsArray,modifiedDateTime';
     }
    
 	public array function getOrderEventOptions(){
@@ -422,7 +422,7 @@ component extends="Slatwall.model.service.OrderService" {
 	 */ 
 	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		
-		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+		var orderTemplateOrderDetailsKey = arguments.orderTemplate.getOrderTemplateOrderDetailsKey();
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
 			return request[orderTemplateOrderDetailsKey];
@@ -527,7 +527,7 @@ component extends="Slatwall.model.service.OrderService" {
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
+		}
 
 		return request[orderTemplateOrderDetailsKey];
 	}
@@ -2048,46 +2048,6 @@ component extends="Slatwall.model.service.OrderService" {
 		return newOrder();
 	}
 	
-	public any function processOrder_resyncToAvalara(required any order){
-		
-		//Only commit the tax document after the order has been closed
-		var orderStatusType = arguments.order.getOrderStatusType();
-		var orderType = arguments.order.getOrderType();
-		
-
-		var orderIsClosed = orderStatusType.getSystemCode() == 'ostClosed';
-		var orderIsClosedRMA = orderIsClosed && orderType.getSystemCode() != 'otSalesOrder';
-		
-		if(orderIsClosed && !orderIsClosedRMA){
-			var orderStatusHistory = arguments.order.getOrderStatusHistoryTypeCodeList();
-		}
-		var orderSkippedProcessingOne = !orderIsClosedRMA && orderIsClosed && !listContains(orderStatusHistory,'processing1');
-		
-		if ( orderIsClosedRMA || orderSkippedProcessingOne || orderStatusType.getTypeCode() == 'processing1'){
-			
-			//First get integration and make sure the commit tax document flag is set
-			var integration = arguments.slatwallScope.getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
-					
-			if (integration.setting('commitTaxDocumentFlag')){
-				//Create the request scope for the account
-				var taxRatesRequestBean = arguments.slatwallScope.getService('TaxService').generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
-				taxRatesRequestBean.setCommitTaxDocFlag(true);
-								
-				var integrationTaxAPI = integration.getIntegrationCFC("tax");
-				
-				// Call the API and store the responseBean by integrationID
-				try{
-					integrationTaxAPI.getTaxRates( taxRatesRequestBean );
-				}catch (any e){
-					logHibachi('An error occured with the Avatax integration when trying to call commitTaxDocument()', true);
-					logHibachiException(e);
-				}
-			}
-		}
-		return arguments.order;
-	}
-	
-	
 	public any function processOrder_commitTax(required any order, struct data={}) {
 		//Only commit the tax document after the order has been closed
 		//Only commit the tax document after the order has been closed
@@ -2110,12 +2070,16 @@ component extends="Slatwall.model.service.OrderService" {
 				// Call the API and store the responseBean by integrationID
 				try{
 					var responseBean = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
+					var data = responseBean.getData();
 					if(!responseBean.hasErrors()){
-						var data = responseBean.getData();
 						if(!isNull(data) && structKeyExists(data,'DocCode')){
 							arguments.order.setTaxCommitDateTime(now());
 							arguments.order.setTaxTransactionReferenceNumber(responseBean.getData()['DocCode']);
 						}
+					}else if(!isNull(data) && structKeyExists(data,'DocStatus')){
+						arguments.order.setTaxCommitDateTime(now());
+						arguments.order.setTaxTransactionReferenceNumber(arguments.order.getOrderNumber());
+						arguments.order.setTaxCommitResponse(data['DocStatus']);
 					}
 				}catch (any e){
 					logHibachi('An error occured with the Avatax integration when trying to call commitTaxDocument()', true);
