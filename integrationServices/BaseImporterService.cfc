@@ -1492,7 +1492,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    	        options.append({
 	    	            'optionID' : '',
 	    	            'optionName' : arguments.data[optionGroupCode],
-	    	            'optionGroupID' : skuOptionGroups[optionGroupCode],
+	    	            "optionGroup" : {
+	    	                'optionGroupID' : skuOptionGroups[optionGroupCode]
+	    	            }
 	    	        });
 	    	    }
 	    	}

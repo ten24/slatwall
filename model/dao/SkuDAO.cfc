@@ -508,14 +508,15 @@ Notes:
 	}
 	
 	public string function getOptionIDByOptionGroupIDAndOptionName(required string optionGroupID, required string optionName){
-	    var sql = "SELECT so.optionID 
-            	        FROM swOption AS so 
-            	    INNER JOIN swOptionGroup AS sog 
-            	        ON so.optionGroupID = sog.optionGroupID 
-            	        AND so.optionName = ':optionName' AND sog.optionGroupID = ':optionGroupID'";
+	   
+	    var sql = "SELECT optionID 
+            	   FROM SwOption 
+            	   WHERE optionGroupID = :optionGroupID AND optionName = :optionName
+            	  ";
+            	  
 	    var queryService = new query();
-	    queryService.addParam(name='optionGroupID', value=arguments.optionGroupID, CFSQLTYPE="CF_SQL_STRING");
-	    queryService.addParam(name='optionName', value=arguments.optionName, CFSQLTYPE="CF_SQL_STRING");
+	    queryService.addParam(name='optionGroupID', value=arguments.optionGroupID);
+	    queryService.addParam(name='optionName', value=arguments.optionName);
 
     	return queryService.execute(sql=sql).getResult()['optionID'];
 	}
