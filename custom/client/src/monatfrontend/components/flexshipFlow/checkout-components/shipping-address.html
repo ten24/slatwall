@@ -1,15 +1,49 @@
-<div class="new_address">
-    <section class="shipping-page">
-    	<div class="container">
-           	<div class="shipping_sec mb-5">
-        		<h2 class="checkout-heading"><span sw-rbKey="'frontend.flexshipCheckout.shippingAddressMessage'"></span></h2>
-    		    
-    		    <!---Existing shipping address --->
-				<div class="shipping-options"  ng-cloak>
+<div class="my-3 py-2 row w-75-scale mx-auto">
+	<div class="col-9 col-md-8">
+		<h2 class="h2-md-scale mb-0">
+			<i class="pr-4 fal fa-map-marker-alt"></i>
+			<a ng-click="checkout.state.currentStep = checkout.SCREEN.SHIPPING" data-toggle="collapse" data-target=".collapse-ship" aria-expanded="false" role="button" aria-expanded="false" aria-controls="shipping" sw-rbkey="'frontend.checkout.shippingDetails'">
+			</a>
+		</h2>
+		
+		<p 
+			ng-show="checkout.state.shipping.showParagraph && checkout.state.cart.orderFulfillments[0].shippingAddress.name.length"
+			class="sub-paragraph" 
+		>
+			{{flexshipCheckoutShippingAddress.currentState.name}} </br>
+			{{flexshipCheckoutShippingAddress.currentState.streetAddress}} </br>
+			{{flexshipCheckoutShippingAddress.currentState.city}}, {{flexshipCheckoutShippingAddress.currentState.stateCode}} {{flexshipCheckoutShippingAddress.currentState.postalCode}}
+		
+		</p>
+	</div>
+	
+	<div class="col-3 col-md-4">
+		<a ng-click="checkout.state.currentStep = checkout.SCREEN.SHIPPING" class="float-right edit-link" data-toggle="collapse" href="##shipping" role="button" aria-expanded="false" aria-controls="shipping">
+			<span class="d-none d-md-inline" sw-rbkey="'frontend.global.edit'"></span><i class="pl-3 fal fa-pen"></i>
+		</a>	
+	</div>
+</div>
+
+<div 
+	data-parent="##checkoutAccordion"
+	class="collapse collapse-ship b-none ml-0 pl-0 ml-md-4"
+	id="shipping" 
+	ng-class="{
+    	'show': checkout.state.currentStep === checkout.SCREEN.SHIPPING
+    }"
+	ng-show="checkout.state.currentStep === checkout.SCREEN.SHIPPING"
+>
+
+	<div class="new_address">
+        <section class="shipping-page">
+            	
+		    <!---Existing shipping address --->
+			<div class="shipping_sec w-75-scale mx-auto mt-0 mb-5" ng-cloak>
+				<div class="shipping-options px-3 px-md-4">
 					<ul ng-if="!flexshipCheckoutShippingAddress.currentState.showNewShippingAddressForm">
-						<li ng-repeat="accountAddress in flexshipCheckoutShippingAddress.currentState.accountAddresses">
+						<li class="mb-2" ng-repeat="accountAddress in flexshipCheckoutShippingAddress.currentState.accountAddresses">
 							<div
-								class="custom-radio form-group"
+								class="custom-radio"
 								ng-click="$parent.flexshipCheckoutShippingAddress.setSelectedShippingAddressID(accountAddress.accountAddressID)"
 							>
 								<input
@@ -38,19 +72,20 @@
 									name="accountAddressID"
 									id="new-account-address" 
 									ng-checked="flexshipCheckoutShippingAddress.currentState.showNewShippingAddressForm"
-	                            />
-	                            <label for="accountAddressID">
-	                                <span sw-rbKey="'frontend.checkout.newAccountAddress'"></span>
-	                            </label>
+			                    />
+			                    <label for="accountAddressID">
+			                        <span sw-rbKey="'frontend.checkout.newAccountAddress'"></span>
+			                    </label>
 							</div>
 						</li>
 					</ul>
 				</div>
-				
-				<!--  new Address form will get injected here, because data-attributes are hard to maintain :)-->
-				<div id="shipping-new-account-address-form" ></div>
-				
 			</div>
-		</div>
-    </section>
+			
+			<!--  new Address form will get injected here, because data-attributes are hard to maintain :)-->
+			<div id="shipping-new-account-address-form" class="new-shipping-address mx-auto w-75-scale px-2 px-md-5 mb-5"></div>
+		</section>
+	</div>
 </div>
+
+
