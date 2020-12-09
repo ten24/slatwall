@@ -1469,6 +1469,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         );
 	}
 	
+	// on hold, need to add volatile support for to-many relations
 	public array function generateSkuOptionsAndCreateNewOnes( struct data, struct mapping, struct propertyMetaData ){
 	    
 	    var skuOptionGroups = this.getSkuDAO().getOptionGroupCodeIndex();
@@ -1505,19 +1506,18 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function generateSkuOptions( struct data, struct mapping, struct propertyMetaData ){
 	    
-	    var optionsData = {};
-
-        // TODO: get from DB
-	    var skuOptionGroupCodes = ["PadlocksKeyway","PadlocksKeying","KeyKeyway","DoorKnobKeyway","DoorKnobBackset","ProductFinish","DoorKnobStyle","SafesLockType","SafesFinish"];
-	    
-	     for( var optionGroupCode in skuOptionGroupCodes ){
-	     	if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
-	     		optionsData[ optionGroupCode ] = arguments.data[ optionGroupCode ];
-	     	}
-	     }
-	     if(!structIsEmpty(optionsData)){
-	     	return this.getSkuDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData );
-	     }
+        var optionsData = {};
+        var skuOptionGroups = this.getSkuDAO().getOptionGroupCodeIndex();
+        
+        for(var optionGroupCode in skuOptionGroups ){
+            if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
+                optionsData[ optionGroupCode ] = arguments.data[ optionGroupCode ];
+            }
+        }
+        
+        if(!structIsEmpty(optionsData)){
+            return this.getSkuDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData );
+        }
 	}
 	
 	
