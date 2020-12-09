@@ -493,26 +493,20 @@ Notes:
     	
     	var sql = "";
     	for( var optionGroupCode in arguments.skuOptionsData ){
-    	    sql += "SELECT so.optionID 
+    	    sql &= "SELECT so.optionID 
             	        FROM swOption AS so 
             	    INNER JOIN swoptiongroup AS sog ON so.optionGroupID = sog.optionGroupID 
             	        AND so.optionName = '#arguments.skuOptionsData[optionGroupCode]#' AND sog.optionGroupCode = '#optionGroupCode#'";
-            sql += " UNION ";
+            sql &= " UNION ";
     	}
-        
-        dump(sql);
         
         sql = left(sql, len(sql) - 7 ); // remove last ` UNION `;
     	var queryService = new query();
     	var records = queryService.execute(sql=sql).getResult();
     
-        dump(records);
-    
 		var optionIDs =  records.reduce( function(accumulated, row){
 		    return accumulated & row.optionID & ',';
 		},'');
-
-        dump(optionIDs);
     
 		return left(optionIDs, len(optionIDs) - 1 ); //discard last comma
     }
