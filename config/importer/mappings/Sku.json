@@ -77,6 +77,8 @@
             "type": "manyToMany",
             "entityName": "Option",
             "propertyIdentifier": "option",
+            "excludeFromPostPopulateMethod" : true,
+            "excludeFromPostSaveMethod" : true,
             "excludeFromTemplate" : true,
             "excludeFromValidation"  : true,
             "generatorFunction": "generateSkuOptions"
