@@ -1323,7 +1323,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 * 
 	 */ 
 	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
-		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+		var orderTemplateOrderDetailsKey = arguments.orderTemplate.getOrderTemplateOrderDetailsKey();
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
 			return request[orderTemplateOrderDetailsKey];
@@ -1390,6 +1390,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
+			
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
 			ormFlush();	
@@ -1403,7 +1404,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
+		}
 		
 		return request[orderTemplateOrderDetailsKey];
 	} 
@@ -2175,8 +2176,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 		}
 		return arguments.orderTemplateItem;
-	}  
-
+	} 
 
 	public any function processOrderTemplate_addWishlistItem(required any orderTemplate, required any processObject, required struct data={}){
 
