@@ -1,7 +1,0 @@
-{
-	"properties": {
-		"pointQuantity": [{ "contexts": "save", "dataType": "numeric" }],
-		"giftCardValue": [{ "contexts": "save", "dataType": "numeric" }],
-		"currencyCode": [{ "contexts": "save", "method": "isCurrencyCodeUnique" }]
-	}
-}

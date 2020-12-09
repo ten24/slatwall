@@ -10,7 +10,6 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
     public scope=true;
     public bindToController={
         propertyIdentifier:"@",
-        bindHtml:"=?",
         isSearchable:"@?",
     };
     public controller=SWTypeaheadSearchLineItemController;
@@ -41,13 +40,7 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
 
                 var innerHTML = element[0].innerHTML;
                 element[0].innerHTML = '';
-                
-                if(!scope.swTypeaheadSearchLineItem.bindHtml){
-                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">'+' '+innerHTML+'</span> <span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
-                } else { 
-                    var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">'+' '+innerHTML+'</span> <span ng-bind-html="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
-                }
-                
+                var span = '<span ng-if="item.' + propertyIdentifier + '.toString().trim().length">'+' '+innerHTML+'</span> <span ng-bind="item.' + propertyIdentifier + '"></span>';
                 element.append(span);
             },
             post: (scope: any, element: JQuery, attrs: angular.IAttributes) => {}

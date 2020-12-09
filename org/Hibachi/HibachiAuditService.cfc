@@ -438,7 +438,6 @@ component extends="HibachiService" accessors="true" {
 			
 			if (!isNull(arguments.propertyValue)) {
 				standardizedValue['#entityPrimaryIDPropertyName#'] = arguments.propertyValue.getPrimaryIDValue();
-				
 				if (structKeyExists(arguments.propertyValue, "getSimpleRepresentation")) {
 					try {
 						standardizedValue['title'] = arguments.propertyValue.getSimpleRepresentation();
@@ -916,7 +915,7 @@ component extends="HibachiService" accessors="true" {
 			var baseObjectEntity = arguments.entity.invokeMethod("get#arguments.entity.getAttributeValueType()#");
 		}
 		try {
-			baseTitle = baseObjectEntity.getSimpleRepresentation(forAudit=true);
+			baseTitle = baseObjectEntity.getSimpleRepresentation();
 		} catch (any e) {
 			baseTitle = rbKey('entity.audit.nosummary');
 		}

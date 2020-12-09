@@ -58,7 +58,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="company" hb_rbkey="entity.account.company";
 	property name="emailAddress";
 	property name="emailAddressConfirm";
-	property name="username";
 	property name="password";
 	property name="passwordConfirm";
 	property name="slatwallAsCMSFlag" hb_formFieldType="yesno" default=0;

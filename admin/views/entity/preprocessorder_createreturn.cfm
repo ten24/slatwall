@@ -56,150 +56,63 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#">
 		
-		<div class="row s-body-nav">
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="col-md-6 s-header-info">
-					<h1 class="actionbar-title">Create Return Order</h1>
-				</div>
-				<div class="col-md-6">
-					<div class="btn-toolbar">
-						<div class="btn-group btn-group-sm">
-							<a title="Orders" class="adminentitylistorder btn btn-default" target="_self" href="/Slatwall/?slatAction=entity.listorder">
-								<i class="glyphicon glyphicon-arrow-left"></i> Orders
-							</a>
-						</div>
-						<div class="btn-group btn-group-sm">
-							<button ng-if="!slatwall.modifiedUnitPrices" type="submit" class="btn btn-primary">Create Return Order</button>
-							<a ng-cloak ng-if="slatwall.modifiedUnitPrices" title="Create Return Order" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
-								Create Return Order
-							</a>
-						</div>
-						<div class="modal" id="warningModal" tabindex="-1" role="dialog" aria-hidden="true">
-							<div class="modal-dialog">
-							   <div class="modal-content">
-							      <div class="modal-header">
-							         <a class="close" data-dismiss="modal">&times;</a>
-							         <h3>Create Return Order</h3>
-							      </div>
-							      <div class="modal-body">
-							         <p>The unit prices entered do not match the original order prices; please make sure all prices entered are correct before continuing.
-							      </div>
-							      <div class="modal-footer">
-							         <a class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
-							         <button class="btn btn-success" 
-							            title="Create Return Order"
-							            type="submit"
-							            >
-							        	<i class="glyphicon glyphicon-ok icon-white"></i> Create Return Order
-							         </button>
-							      </div>
-							   </div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</nav>
-		</div>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
+		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divclass="col-md-6">
-				<!--- Order Type --->
-				<input type="hidden" name="orderTypeCode" value="#rc.processObject.getOrderTypeCode()#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeName"  edit="false">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="true" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnReasonType" edit="true" />
-				<cfif rc.processObject.getOrderTypeCode() eq 'otReturnOrder'>
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="secondaryReturnReasonType" edit="true" />
-				</cfif>
-			</hb:HibachiPropertyList>
-
-			<hb:HibachiPropertyList divclass="col-md-6">
-				<h4 class="panel-title">Original Order Overview</h4>
-				<hb:HibachiPropertyRow>
-					<hb:HibachiPropertyList divclass="col-md-6">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="true" fieldAttributes="disabled">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="true" fieldAttributes="disabled">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="true" fieldAttributes="disabled">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="true" fieldAttributes="disabled">
-					</hb:HibachiPropertyList>
-
-					<hb:HibachiPropertyList divclass="col-md-6">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="orderNumber" edit="false" valuelink="#getHibachiScope().buildURL(action=rc.entityActionDetails.detailAction, queryString='orderID=#rc.order.getOrderID()#')#" title="#$.slatwall.rbKey('entity.order')#">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="true" fieldAttributes="disabled">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="true" fieldAttributes="disabled">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriodStartDateTime" edit="true" fieldAttributes="disabled">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriodEndDateTime" edit="true" fieldAttributes="disabled">
-					</hb:HibachiPropertyList>
-				</hb:HibachiPropertyRow>
-
-				<hr/>
-
-				<h4 class="panel-title">Customer Information</h4>
-				<hb:HibachiPropertyRow>
-					<hb:HibachiPropertyList divclass="col-md-6">
-						<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="fullName" edit="false" valuelink="#getHibachiScope().buildURL(action='entity.detailAccount', queryString='accountID=#rc.order.getAccount().getAccountID()#')#" title="#$.slatwall.rbKey('entity.account')#">
-						<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="company" edit="true" fieldAttributes="disabled">
-					</hb:HibachiPropertyList>
-					<hb:HibachiPropertyList divclass="col-md-6">
-						<!---<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="distributorID" edit="true" fieldAttributes="disabled">--->
-					</hb:HibachiPropertyList>
-				</hb:HibachiPropertyRow>
-			</hb:HibachiPropertyList>
-			
-			<!---
-			<hb:HibachiPropertyList divclass="col-md-6">
-				<hb:HibachiPropertyRow>
-					<hb:HibachiPropertyList divclass="col-md-6">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false" displayType="table">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false" displayType="table">
-					</hb:HibachiPropertyList>
-					<hb:HibachiPropertyList divclass="col-md-6" edit="false">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="orderNumber" edit="false" displayType="table" valuelink="#getHibachiScope().buildURL(action=rc.entityActionDetails.detailAction, queryString='orderID=#rc.order.getOrderID()#')#" title="#$.slatwall.rbKey('entity.order')#">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false" displayType="table">
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
-					</hb:HibachiPropertyList>
-				</hb:HibachiPropertyRow>
-
-				<hb:HibachiPropertyRow>
-					<hb:HibachiPropertyList divclass="col-md-6">
-						<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="fullName" edit="false" displayType="table" valuelink="#getHibachiScope().buildURL(action='entity.detailAccount', queryString='accountID=#rc.order.getAccount().getAccountID()#')#" title="#$.slatwall.rbKey('entity.account')#">
-						<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="company" edit="false" displayType="table">
-					</hb:HibachiPropertyList>
-
-					<hb:HibachiPropertyList divclass="col-md-6" edit="false">
-						<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="distributorID" edit="false" displayType="table">
-					</hb:HibachiPropertyList>
-				</hb:HibachiPropertyRow>
-			</hb:HibachiPropertyList>	
-			--->
-
-				<!--- <hb:HibachiPropertyTable>
-					<hb:HibachiPropertyTableBreak header="#getHibachiScope().rbKey('admin.entity.detailorder.overview')#" />
-					<hb:HibachiPropertyTableBreak header="Customer Information" />
-				</hb:HibachiPropertyTable> --->
-
-		</hb:HibachiPropertyRow>
-
-		<hb:HibachiPropertyRow>
-
 			<hb:HibachiPropertyList>
+				<!--- Order Type --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeCode"  edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />
+				<hb:HibachiDisplayToggle selector="input[name='receiveItemsFlag']" showValues="1" loadVisable="#rc.processObject.getReceiveItemsFlag()#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="stockLossFlag" edit="true" />
+				</hb:HibachiDisplayToggle>
 				<hr />
+				
 				<!--- Items Selector --->
-				<sw-return-order-items 
-					order-type="#rc.processObject.getOrderTypeCode()#"
-					order-id="#rc.order.getOrderID()#" 
-					currency-code="#rc.order.getCurrencyCode()#" 
-					initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
-					order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderPaymentIDOptions()))#"
-					fulfillment-tax-amount="#rc.processObject.getFulfillmentTaxAmountNotRefunded()#"
-					<cfif rc.processObject.getOrderTypeCode() EQ "otRefundOrder">
-						refund-order-items="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderItemList()))#"
-						order-total="#rc.order.getRefundableAmount()#"
-					<cfelse>
-						order-total="#rc.order.getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge()#"
-					</cfif>
-				></sw-return-order-items>
+				<table class="table table-bordered table-hover">
+					<tr>
+						<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
+						<th>#$.slatwall.rbKey('entity.product.title')#</th>
+						<th>#$.slatwall.rbKey('entity.sku.skuDefinition')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantity')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantityDelivered')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.price')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantity')#</th>
+					</tr>
+					<cfset orderItemIndex = 0 />
+					<cfloop array="#rc.order.getOrderItems()#" index="orderItem">
+						<tr>
+							<cfset orderItemIndex++ />
+							
+							<input type="hidden" name="orderItems[#orderItemIndex#].orderItemID" value="" />
+							<input type="hidden" name="orderItems[#orderItemIndex#].referencedOrderItem.orderItemID" value="#orderItem.getOrderItemID()#" />
+							
+							<td>#orderItem.getSku().getSkuCode()#</td>
+							<td>#orderItem.getSku().getProduct().getTitle()#</td>
+							<td>#orderItem.getSku().getSkuDefinition()#</td>
+							<td>#orderItem.getQuantity()#</td>
+							<td>#orderItem.getQuantityDelivered()#</td>
+							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#getHibachiScope().getService('HibachiUtilityService').precisionCalculate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity())#" class="span1 number" /></td>
+							<td><input type="text" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number" /></td>
+							<!--- IF THIS IS AN EVENT ORDER ITEM
+								ADD CHECKBOX THAT SAYS CANCEL REGISTRATION
+							--->
+						</tr>
+					</cfloop>
+				</table>
+				
+				<hr />
+				
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="refundOrderPaymentID" edit="true" />
+				
+				<hb:HibachiDisplayToggle selector="select[name='refundOrderPaymentID']" showValues="" loadVisable="#!len(rc.processObject.getRefundOrderPaymentID())#">
+					<cfset rc.addOrderPaymentProcessObject = rc.order.getProcessObject("addOrderPayment") />
+					<cfset rc.addOrderPaymentProcessObject.setOrderTypeCode('otReturnOrder') />
+					<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
+				</hb:HibachiDisplayToggle>
 				
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>

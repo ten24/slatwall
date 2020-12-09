@@ -3,7 +3,7 @@
 
 	<cfparam name="attributes.edit" type="boolean" default="false" />					<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
 	<cfparam name="attributes.requiredFlag" type="boolean" default="false" />			<!--- Determines whether property is required or not in edit mode --->
-	<cfparam name="attributes.notRequiredClass" type="string" default="false" />		<!--- If set to s-not-required, will override any default validation. We can't reuse the requiredFlag because using requiredFlag false will break other fields.  --->
+
 	<cfparam name="attributes.title" type="string" default="" />						<!--- hint: This can be used to override the displayName of a property" --->
 	<cfparam name="attributes.hint" type="string" default="" />							<!--- hint: This is the hint value associated with whatever field we are displaying.  If specified, you will get a tooltip popup --->
 
@@ -57,7 +57,7 @@
       							</span>
 							</cfif>
 						</label>
-						<div class="col-sm-8"><!--- Editable Form --->
+						<div class="col-sm-8">
 							<hb:HibachiFormField attributecollection="#attributes#" />
 							<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 						</div>
@@ -98,11 +98,10 @@
 										</div>
 									</cfif>										
 								<cfelse>
-								
 									<cfif attributes.fieldType EQ "password" AND len(attributes.value) GT 0 >
 									    <p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">****</p>
-									<cfelse>
-										<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+										<cfelse>
+											<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 									</cfif>
 								</cfif>
 							</cfif>

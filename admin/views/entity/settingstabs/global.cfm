@@ -52,9 +52,6 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="globalUsageStats" />
-		<swa:SlatwallSetting settingName="globalLocale" />
-		<swa:SlatwallSetting settingName="globalTranslateLocales" />
-		<swa:SlatwallSetting settingName="globalTranslateEntities" />
 		<swa:SlatwallSetting settingName="globalCurrencyLocale" />
 		<swa:SlatwallSetting settingName="globalCurrencyType" />
 		<swa:SlatwallSetting settingName="globalDateFormat" />
@@ -67,9 +64,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalAssetsImageBaseURL" />
 		<swa:SlatwallSetting settingName="globalAssetsFileFolderPath" />
 		<swa:SlatwallSetting settingName="globalMissingImagePath" />
-		<swa:SlatwallSetting settingName="globalMaximumPromotionMessages" />
 		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
-		<swa:SlatwallSetting settingName="globalOrderTemplateOrderOrigin" />
 		<swa:SlatwallSetting settingName="globalURLKeyAttribute" />
 		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
 		<swa:SlatwallSetting settingName="globalURLKeyCategory" />
@@ -78,19 +73,15 @@ Notes:
 		<swa:SlatwallSetting settingName="globalURLKeyAddress" />
 		<swa:SlatwallSetting settingName="globalURLKeyAccount" />
 		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
-		<swa:SlatwallSetting settingName="accountLoginEmailOrUserName" />
 		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalExtendedSessionAutoLogoutInDays" />
 		<swa:SlatwallSetting settingName="globalUseExtendedSession" />
 		<swa:SlatwallSetting settingName="globalCopyCartToNewSessionOnLogout" />
         <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
-        <swa:SlatwallSetting settingName="globalGiftCardAllowNegativeBalance" />
         <swa:SlatwallSetting settingName="globalDisableRecordLevelPermissions" />
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
         <swa:SlatwallSetting settingName="globalAllowThirdPartyShippingAccount" />
         <swa:SlatwallSetting settingName="globalHibachiCacheName" />
-		<swa:SlatwallSetting settingName="globalPromotionIgnorePriceGroupEligibility" />
-		<swa:SlatwallSetting settingName="globalCartResponseIncludeAttributeValues" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -51,9 +51,6 @@ component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwO
 	// Persistent Properties
 	property name="orderReturnID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="fulfillmentRefundAmount" ormtype="big_decimal";
-	property name="fulfillmentRefundPreTax" ormtype="big_decimal";
-	property name="fulfillmentTaxRefund" ormtype="big_decimal";
-	property name="fulfillmentVATRefund" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	
 	// Related Object Properties (many-to-one)
@@ -122,44 +119,6 @@ component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwO
 	public numeric function getFulfillmentRefundAmount() {
 		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
 			variables.fulfillmentRefundAmount = 0;
-			if(!isNull(getFulfillmentRefundPreTax())){
-				variables.fulfillmentRefundAmount += getFulfillmentRefundPreTax();
-			}
-			if(!isNull(getFulfillmentTaxRefund())){
-				variables.fulfillmentRefundAmount += getFulfillmentTaxRefund();
-			}
-		}
-		return variables.fulfillmentRefundAmount;
-	}
-	
-	public numeric function getFulfillmentRefundPreTax() {
-		if(!structKeyExists(variables, "fulfillmentRefundPreTax")) {
-			variables.fulfillmentRefundPreTax = 0;
-			if(structKeyExists(variables,'fulfillmentRefundAmount')){
-				variables.fulfillmentRefundPreTax += variables.fulfillmentRefundAmount;
-			}
-			variables.fulfillmentRefundPreTax -= getFulfillmentTaxRefund();
-		}
-		return variables.fulfillmentRefundPreTax;
-	}
-	
-	public numeric function getFulfillmentTaxRefund() {
-		if(!structKeyExists(variables, "fulfillmentTaxRefund")) {
-			variables.fulfillmentTaxRefund = 0;
-		}
-		return variables.fulfillmentTaxRefund;
-	}
-	
-	
-	public numeric function getFulfillmentRefundAmount() {
-		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
-			variables.fulfillmentRefundAmount = 0;
-			if(!isNull(getFulfillmentRefundPreTax())){
-				variables.fulfillmentRefundAmount += getFulfillmentRefundPreTax();
-			}
-			if(!isNull(getFulfillmentTaxRefund())){
-				variables.fulfillmentRefundAmount += getFulfillmentTaxRefund();
-			}
 		}
 		return variables.fulfillmentRefundAmount;
 	}

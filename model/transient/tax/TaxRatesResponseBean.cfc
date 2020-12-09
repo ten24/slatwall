@@ -59,7 +59,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		return super.init(argumentcollection=arguments);
 	}
 	
-	public void function addTaxRateItem(any orderItemID, any referenceObjectID="",any taxAmount,any taxRate, string referenceObjectType="OrderItem", any VATPrice, any VATAmout, string feeType) {
+	public void function addTaxRateItem(any orderItemID, any referenceObjectID="", required any taxAmount, required any taxRate, string referenceObjectType="OrderItem") {
     // set referenceObjectID in arguments so 'populate' can handle setting it
     if (structKeyExists(arguments, 'referenceObjectID') && len(arguments.referenceObjectID) && len(arguments.referenceObjectType)) {
       arguments['#arguments.referenceObjectType#ID'] = arguments.referenceObjectID;
@@ -68,7 +68,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		var taxRateItemResponseBean = getTransient('TaxRateItemResponseBean');
 		
 		taxRateItemResponseBean.populate(arguments);
-
+		
 		arrayAppend(getTaxRateItemResponseBeans(), taxRateItemResponseBean);
 	}
 	

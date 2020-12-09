@@ -146,7 +146,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
 	}
-
+	
 	// Account Email Address - Update
 	public void function updateAccountEmailAddress(required struct rc) {
 		var account = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.rc, 'updatePrimaryEmailAddress');

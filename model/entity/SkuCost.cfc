@@ -116,16 +116,10 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public numeric function getAveragePriceSoldAfterDiscount(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAveragePriceSoldAfterDiscount(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getAverageDiscountAmount(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAverageDiscountAmount(getCurrency().getCurrencyCode());
 	}
 	
@@ -134,79 +128,46 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	}
 	
 	public numeric function getAveragePriceSold(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAveragePriceSold(getCurrency().getCurrencyCode());
 	}
 
 	public numeric function getCurrentAssetValue(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getCurrentAssetValue(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getCurrentMargin(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getCurrentMargin(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getCurrentMarginBeforeDiscount(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getCurrentMarginBeforeDiscount(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getCurrentLandedMargin(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getCurrentLandedMargin(getCurrency().getCurrencyCode());
 	}
 
 	public numeric function getAverageProfit(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAverageProfit(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getAverageLandedProfit(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAverageLandedProfit(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getAverageMarkup(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAverageMarkup(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getAverageLandedMarkup(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAverageLandedMarkup(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getAverageCost(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAverageCost(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getAverageLandedCost(){
-		if(getSku().setting('skuDisableAverageCostCalculation') == true){
-			return 0;
-		}
 		return getSku().getAverageLandedCost(getCurrency().getCurrencyCode());
 	}
 	

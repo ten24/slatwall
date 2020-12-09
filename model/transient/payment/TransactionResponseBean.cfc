@@ -60,7 +60,6 @@ component displayname="Gateway Response"  accessors="true" output="false" extend
 	property name="avsCode" type="string";
 	property name="securityCodeMatchFlag" type="boolean";
 	property name="duplicateFlag" type="boolean";
-	property name="referenceNumber" type="string";
 	
 	// DEPRECATED
 	property name="transactionID" type="string";	// Use: ProviderTransactionID

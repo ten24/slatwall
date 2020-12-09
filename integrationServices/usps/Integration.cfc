@@ -53,7 +53,7 @@ component accessors="true" output="false" displayname="USPS" extends="Slatwall.i
 	}
 	
 	public string function getIntegrationTypes() {
-		return "shipping,address";
+		return "shipping";
 	}
 		
 	public string function getDisplayName() {

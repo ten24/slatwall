@@ -29,6 +29,7 @@ class SWTooltipController {
 
 class SWTooltip implements ng.IDirective{
 
+	public templateUrl;
     public transclude=true;
 	public restrict = "EA";
 	public scope = {}
@@ -41,15 +42,11 @@ class SWTooltip implements ng.IDirective{
 	}
 	public controller=SWTooltipController;
 	public controllerAs="swTooltip";
-	
-	public template = require("./tooltip.html");
 
-	public static Factory(){
-		return /** @ngInject; */ ($document) => new this($document);
-	}
-
-    // @ngInject;
-	constructor( public $document : ng.IDocumentService){ }
+    // @ngInject
+	constructor( public $document, private corePartialsPath, hibachiPathBuilder){
+	   this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tooltip.html";
+    }
 
 	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) => {
       var tooltip = element.find(".tooltip");
@@ -75,6 +72,12 @@ class SWTooltip implements ng.IDirective{
           }   
       }   
     }
+    
+	public static Factory(){
+		var directive:ng.IDirectiveFactory = ($document,corePartialsPath,hibachiPathBuilder) => new SWTooltip($document,corePartialsPath,hibachiPathBuilder);
+		directive.$inject = ["$document","corePartialsPath","hibachiPathBuilder"];
+		return directive;
+	}
 }
 export{
 	SWTooltip,

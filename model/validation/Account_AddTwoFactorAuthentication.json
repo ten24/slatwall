@@ -1,5 +1,5 @@
 {
-	"properties": {
-		"authenticationCode": [{ "required": true }]
+	"properties":{
+		"authenticationCode":	[{"required":true}]
 	}
 }

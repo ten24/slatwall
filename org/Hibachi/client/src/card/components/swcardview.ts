@@ -12,9 +12,8 @@ class SWCardViewController {
 
 class SWCardView implements ng.IDirective {
     public controller:any=SWCardViewController;
-    public controllerAs:string = 'SwCardViewController';
-   
     public scope = {};
+    public controllerAs:string = 'SwCardViewController';
     public bindToController = {
         cardTitle: "@?",
         cardBody: "@?",
@@ -29,10 +28,24 @@ class SWCardView implements ng.IDirective {
         progressBar: '?swCardProgressBar'
     }
 
-    public template:string = require('./cardview.html');
+    public templateUrl:string = "";
     
-    public static Factory(){
-        return () => new this();
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardview.html');
     }
+    
+    /**
+     * Handles injecting the partials path into this class
+     */
+    public static Factory(){
+		var directive:ng.IDirectiveFactory = (
+			cardPartialsPath, hibachiPathBuilder
+		)=> new SWCardView(
+            cardPartialsPath, hibachiPathBuilder
+		);
+		directive.$inject = ["cardPartialsPath",'hibachiPathBuilder'];
+		return directive;
+	}
 }
 export {SWCardViewController, SWCardView};

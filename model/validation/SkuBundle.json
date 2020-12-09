@@ -1,5 +1,5 @@
 {
-	"properties": {
-		"bundledQuantity": [{ "dataType": "numeric", "required": true }]
+	"properties":{
+		"bundledQuantity":				[{"dataType":"numeric","required":true}]
 	}
 }

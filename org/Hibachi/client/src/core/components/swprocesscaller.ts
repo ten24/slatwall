@@ -1,45 +1,34 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-const processCallerTemplateString = require("./processcaller.html");
 
 class SWProcessCallerController{
-
-    public action:string;
+	public utilityService;
     public title:string;
     public titleRbKey:string;
     public text:string; 
 	public type:string;
 	public queryString:string;
-	public processContext:string;
-	
 	//@ngInject
-	constructor( private rbkeyService, 
-				 public $compile:ng.ICompileService,
-				 public $scope,
-				 public $element,
-				 public $transclude : ng.ITranscludeFunction,
-				 public $templateRequest : ng.ITemplateRequestService,
-				 public utilityService
-	){
+	constructor(private rbkeyService, public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public corePartialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction,utilityService,
+			hibachiPathBuilder){
+		this.$templateRequest = $templateRequest;
+		this.$compile = $compile;
+		this.corePartialsPath = corePartialsPath;
+		this.utilityService = utilityService;
 		this.type = this.type || 'link';
 		this.queryString = this.queryString || '';
-		
-		this.$templateRequest('processCallerTemplateString').then((html)=>{
-    		var template = angular.element(html);
-    		this.$element.parent().append(template);
-    		$compile(template)(this.$scope);
-        });
-		
+		this.$scope = $scope;
+		this.$element = $element;
+		this.$transclude = this.$transclude;
+		this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"processcaller.html").then((html)=>{
+			var template = angular.element(html);
+			this.$element.parent().append(template);
+			$compile(template)(this.$scope);
+		});
         if(angular.isDefined(this.titleRbKey)){
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
         }
-        
-        if(angular.isUndefined(this.title) && angular.isDefined(this.processContext)){
-        	var entityName = this.action.split('.')[1].replace('process','');
-        	this.title = this.rbkeyService.getRBKey('entity.' + entityName + '.process.' + this.processContext);
-        }
-        
         if(angular.isUndefined(this.text)){
             this.text = this.title;
         }
@@ -49,7 +38,6 @@ class SWProcessCallerController{
 class SWProcessCaller implements ng.IDirective{
 
 	public restrict:string = 'E';
-
 	public scope = {};
 	public bindToController={
 		action:"@",
@@ -70,20 +58,27 @@ class SWProcessCaller implements ng.IDirective{
 		disabledText:"@",
 		modal:"="
 	};
-	
 	public controller=SWProcessCallerController
 	public controllerAs="swProcessCaller";
-	
-    // @ngInject;
-	constructor(private $templateCache: ng.ITemplateCacheService){}
+	public static $inject = ['corePartialsPath','utilityService'];
+	constructor(private corePartialsPath,private utilityService){
+		this.corePartialsPath = corePartialsPath;
+		this.utilityService = utilityService;
+	}
 
 	public static Factory(){
-		return /** @ngInject; */ ($templateCache) => {
-		    if( !$templateCache.get('processCallerTemplateString') ){
-		        $templateCache.put('processCallerTemplateString', processCallerTemplateString);
-		    }
-		    return new this($templateCache);
-		};
+		var directive = (
+			corePartialsPath,utilityService
+		)=> new SWProcessCaller(
+			corePartialsPath,utilityService
+		);
+		directive.$inject = [
+			'corePartialsPath','utilityService'
+		];
+		return directive;
+	}
+
+	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 	}
 }
  export{

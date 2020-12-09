@@ -1,5 +1,5 @@
 {
-	"properties": {
-		"points": [{ "contexts": "save", "required": true, "dataType": "numeric", "minValue": 0 }]
+	"properties":{
+		"points":						[{"contexts":"save","required":true,"dataType":"numeric","minValue":0}]
 	}
 }

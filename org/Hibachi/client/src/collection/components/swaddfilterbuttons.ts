@@ -29,8 +29,7 @@ class SWAddFilterButtons{
 
           require:'^swFilterGroups',
           restrict: 'E',
-          template: require("./addfilterbuttons.html"),
-          
+          templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"addfilterbuttons.html",
           scope:{
               itemInUse:"=",
               readOnly:"="

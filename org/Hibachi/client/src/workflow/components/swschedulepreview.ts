@@ -6,8 +6,8 @@ class SWSchedulePreviewController {
 
 class SWSchedulePreview implements ng.IDirective{
 
-    public template = require("./schedulepreview.html");
-	
+    public static $inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
+    public templateUrl;
     public restrict = 'AE';
     public scope = {};
 
@@ -16,10 +16,26 @@ class SWSchedulePreview implements ng.IDirective{
     };
     public controller=SWSchedulePreviewController;
     public controllerAs="swSchedulePreview";
-    
-	public static Factory(){
-		return /** @ngInject */ ()=> new this();
-	}
+
+    constructor(
+        public workflowPartialsPath,
+        public hibachiPathBuilder
+    ){
+        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.workflowPartialsPath) + "schedulepreview.html";
+    }
+
+    public static Factory(){
+        var directive = (
+            workflowPartialsPath,
+            hibachiPathBuilder
+        )=> new SWSchedulePreview(
+            workflowPartialsPath,
+            hibachiPathBuilder
+        );
+        directive.$inject = [ 'workflowPartialsPath', 'hibachiPathBuilder'];
+
+        return directive;
+    }
 }
 export{
     SWSchedulePreview

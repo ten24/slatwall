@@ -54,7 +54,7 @@ component displayname="Promotion" entityname="SlatwallPromotion" table="SwPromot
 	property name="promotionSummary" ormtype="string" length="1000";
 	property name="promotionDescription" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean" default="0";
-	property name="priority" ormtype="integer" default="1";
+	
 	// Related Object Properties (many-to-one)
 	property name="defaultImage" cfc="Image" fieldtype="many-to-one" fkcolumn="defaultImageID";
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID" hb_optionsNullRBKey="define.none";
@@ -62,7 +62,7 @@ component displayname="Promotion" entityname="SlatwallPromotion" table="SwPromot
 	// Related Object Properties (one-to-many)
 	property name="promotionPeriods" singularname="promotionPeriod" cfc="PromotionPeriod" fieldtype="one-to-many" fkcolumn="promotionID" cascade="all-delete-orphan" inverse="true";    
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="one-to-many" fkcolumn="promotionID" cascade="all-delete-orphan" inverse="true";
-	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="promotionID" cascade="delete-orphan" inverse="true";
+	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="promotionID" cascade="all" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="promotionID" cascade="all-delete-orphan" inverse="true";
 	
 	// Remote Properties

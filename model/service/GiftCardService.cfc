@@ -48,7 +48,6 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	property name="settingService" type="any";
-	property name="GiftCardDAO";
 	// ===================== START: Logical Methods ===========================
 	
 	/**
@@ -61,13 +60,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getAllGiftCardsOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-
+        
 		var giftCardList = this.getGiftCardCollectionList();
 		giftCardList.addFilter( 'ownerAccount.accountID', arguments.account.getAccountID() );
 		giftCardList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		giftCardList.setCurrentPageDeclaration(arguments.data.currentPage); 
-
-		return { "giftCardsOnAccount":  giftCardList.getPageRecords(), "recordsCount": giftCardList.getRecordsCount()}
+		
+		return { 
+			"giftCardsOnAccount":  giftCardList.getPageRecords(), 
+			"recordsCount": giftCardList.getRecordsCount()
+		};
 	}
 	
 	// =====================  END: Logical Methods ============================
@@ -78,6 +80,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 	public any function processGiftCard_create(required any giftCard, required any processObject){
+
 		if(isNull(arguments.giftCard)){
 			arguments.giftCard = this.newGiftCard();
 		}
@@ -92,21 +95,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate());
             }
 		}
-		
-		if(!isNull(arguments.processObject.getCreditExpirationTerm())){
-			arguments.giftCard.setCreditExpirationTerm(arguments.processObject.getCreditExpirationTerm());
-		}
 
 		if(!isNull(arguments.processObject.getOriginalOrderItem())){
 			arguments.giftCard.setOriginalOrderItem(arguments.processObject.getOriginalOrderItem());
-		}
-		
-		if(!isNull(arguments.processObject.getOrder())){
-			arguments.giftCard.setOrder(arguments.processObject.getOrder());
-		}
-		
-		if( !isNull(arguments.processObject.getSku()) ){
-			arguments.giftCard.setSku(arguments.processObject.getSku());
 		}
 
         if(!isNull(arguments.processObject.getOrderItemGiftRecipient())){
@@ -135,18 +126,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//is it time to credit the card
 		if(arguments.processObject.getCreditGiftCardFlag()){
-		    var amountToRedeem = arguments.giftCard.getSku().getRedemptionAmount(userDefinedPrice=arguments.giftCard.getPrice());
+		    var amountToRedeem = arguments.giftCard.getOriginalOrderItem().getSku().getRedemptionAmount(userDefinedPrice=arguments.giftCard.getOriginalOrderItem().getPrice());
 			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, amountToRedeem, arguments.processObject.getOrderPayments()[1]);
-		
-			if(!giftCardCreditTransaction.hasErrors()){
-	            arguments.giftCard = this.saveGiftCard(arguments.giftCard);
-			} else {
-				arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
-			}
-			
 		}
 
 		arguments.giftCard.setIssuedDate(now());
+
+		if(!giftCardCreditTransaction.hasErrors()){
+            		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+		} else {
+			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
+		}
+
 
 		return arguments.giftCard;
 
@@ -156,11 +147,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getCreditAmount(), arguments.processObject.getOrderPayment());
 
-		if(!isNull(arguments.processObject.getReasonForAdjustment())){
-			giftCardCreditTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
-			giftCardCreditTransaction.setAdjustedByAccount(getHibachiScope().getAccount());
-		}
-		
 		if(!giftCardCreditTransaction.hasErrors()){
 			arguments.giftCard.updateCalculatedProperties();
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
@@ -174,15 +160,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_addDebit(required any giftCard, required any processObject){
 
-		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount(), arguments.processObject.getOrderPayment(),arguments.processObject.getAllowNegativeBalanceFlag());
-	
-		if(!isNull(arguments.processObject.getReasonForAdjustment())){
-			giftCardDebitTransaction.setReasonForAdjustment(arguments.processObject.getReasonForAdjustment());
-			giftCardDebitTransaction.setAdjustedByAccount(getHibachiScope().getAccount());
-		}
-			
+		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount(), arguments.processObject.getOrderPayment());
+
 		if(!giftCardDebitTransaction.hasErrors()){
-			
 			if(arguments.giftCard.getBalanceAmount() == 0){
 				arguments.giftCard.setActiveFlag(false);//this will trigger updateCalculateProperties to run when gift card is saved
 			} else {
@@ -190,7 +170,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
-			
 			arguments.giftCard.addErrors(giftCardDebitTransaction.getErrors());
 		}
 
@@ -203,27 +182,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
        if(arguments.processObject.getTransactionType() == 'credit'){
 
          	var creditData = {
-         		creditAmount=arguments.processObject.getAmount(),
-         		reasonForAdjustment=arguments.processObject.getReasonForAdjustment()
+         		creditAmount=arguments.processObject.getAmount()
          	};
 
             return this.processGiftCard(arguments.GiftCard, creditData, 'addCredit'); 
        
        } else if (arguments.processObject.getTransactionType() == 'debit'){
-	
+
             var debitData = {
-            	debitAmount=arguments.processObject.getAmount(),
-            	allowNegativeBalanceFlag=getService("SettingService").getSettingValue("globalGiftCardAllowNegativeBalance"),
-         		reasonForAdjustment=arguments.processObject.getReasonForAdjustment()
+            	debitAmount=arguments.processObject.getAmount()
             };
-            
-            if(
-            	!debitData.allowNegativeBalanceFlag
-            	&& debitData.debitAmount > arguments.giftCard.getBalanceAmount()
-            ){
-				arguments.giftCard.addError("ownerAccount", rbKey('validate.offlineTransaction.GiftCard_OfflineTransaction.amount.lteProperty.giftCardBalanceAmount'));
-            }
-            
             return this.processGiftCard(arguments.giftCard, debitData, 'addDebit'); 
        
        }
@@ -299,11 +267,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	private any function createDebitGiftCardTransaction(required any giftCard, required any orderItems, required any amountToDebit, any orderPayment, boolean allowNegativeBalanceFlag){
+	private any function createDebitGiftCardTransaction(required any giftCard, required any orderItems, required any amountToDebit, any orderPayment){
 
 		var debitGiftTransaction = this.newGiftCardTransaction();
 
-        if(arguments.amountToDebit > arguments.giftCard.getBalanceAmount() && !arguments.allowNegativeBalanceFlag){
+        if(arguments.amountToDebit > arguments.giftCard.getBalanceAmount()){
             arguments.amountToDebit = arguments.giftcard.getBalanceAmount(); 
         }
 
@@ -334,29 +302,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(structKeyExists(arguments, "orderPayment") && !isNull(arguments.orderPayment)){
             creditGiftTransaction.setOrderPayment(arguments.orderPayment);
         }
-        
-        if(arguments.giftCard.hasCreditExpirationTerm()){
-        	var endDate = arguments.giftCard.getCreditExpirationTerm().getEndDate();
-        	creditGiftTransaction.setExpirationDate(endDate);
-        }
 
 		return this.saveGiftCardTransaction(creditGiftTransaction);
 	}
-	
-	public void function processGiftCard_debitExpiredGiftCardCredits(){
-		var expiredCreditsList = getGiftCardDAO().getExpiredCreditsList();
-		var emptyArray = [];
-		
-		for(var item in expiredCreditsList){
-			var giftCard = this.getGiftCard(item.giftCardID);
-			var processObject = giftCard.getProcessObject('addDebit');
-			processObject.setGiftCard(giftCard);
-			processObject.setDebitAmount(item.netExpiredCredit);
-			processObject.setReasonForAdjustment('Expired Credit');
-			giftCard = this.processGiftCard(giftCard,processObject,'addDebit');
-		}
-	}
-	
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================

@@ -46,8 +46,7 @@
 Notes:
 
 */
-// Q: couldn't find any use for **processTransaction**
-component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction,createTransaction,updateAmount,runPlaceOrderTransaction" {
+component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction,createTransaction,runPlaceOrderTransaction" {
 
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -70,8 +69,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="providerToken" ormType="string";
 	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
     property name="giftCardPaymentProcessedFlag" hb_populateEnabled="public" ormType="boolean" default="false";
-
-
+	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
@@ -112,10 +110,6 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="amountUncredited" persistent="false" hb_formatType="currency";
 	property name="amountUncaptured" persistent="false" hb_formatType="currency";
 	property name="amountUnreceived" persistent="false" hb_formatType="currency";
-	property name="totalAmountCreditedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
-	property name="totalAmountReceivedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
-	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
-	property name="refundableAmount" persistent="false" hb_formatType="currency";
 	property name="bankRoutingNumber" persistent="false" hb_populateEnabled="public";
 	property name="bankAccountNumber" persistent="false" hb_populateEnabled="public";
 	property name="checkNumber" persistent="false" hb_populateEnabled="public";
@@ -142,9 +136,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
 	property name="maximumPaymentMethodPaymentAmount" persistent="false";
-	property name="orderHasAnotherDynamicOrderPaymentFlag" persistent="false";
- 
-		
+
 	public string function getMostRecentChargeProviderTransactionID() {
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived()) && getPaymentTransactions()[i].getAmountReceived() > 0 && !isNull(getPaymentTransactions()[i].getProviderTransactionID()) && len(getPaymentTransactions()[i].getProviderTransactionID())) {
@@ -194,8 +186,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			setPaymentTerm( arguments.accountPaymentMethod.getPaymentTerm() );
 		}
 
-		// Credit Card, External & Gift Card
-		if(listFindNoCase("creditCard,giftCard,external", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
+		// Credit Card & Gift Card
+		if(listFindNoCase("creditCard,giftCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setProviderToken( arguments.accountPaymentMethod.getProviderToken() );
 		}
 
@@ -252,8 +244,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 
 		// Credit Card & Gift Card
-		if(listFindNoCase("creditCard,giftCard,external", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())
-			&& !isNull(arguments.orderPayment.getProviderToken())) {
+		if(listFindNoCase("creditCard,giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setProviderToken( arguments.orderPayment.getProviderToken() );
 		}
 
@@ -392,40 +383,32 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		return uncredited;
 	}
 
-	public numeric function getTotalAmountCreditedIncludingReferencingPayments(){
-		return getAmountCredited() + getReferencingPaymentAmountCreditedTotal();
-	}
-	
-	public numeric function getReferencingPaymentAmountCreditedTotal(){
-		var amount = 0;
-		for(var referencingOrderPayment in getReferencingOrderPayments()){
-			amount += referencingOrderPayment.getAmountCredited();
-		}
-		return amount;
-	}
-	
-	public numeric function getTotalAmountReceivedIncludingReferencingPayments(){
-		return getAmountReceived() + getReferencingPaymentAmountReceivedTotal();
-	}
-	
-	public numeric function getReferencingPaymentAmountReceivedTotal(){
-		var amount = 0;
-		for(var referencingOrderPayment in getReferencingOrderPayments()){
-			amount += referencingOrderPayment.getAmountReceived();
-		}
-		return amount;
-	}
-	
-	public numeric function getRefundableAmount(){
-		return getTotalAmountReceivedIncludingReferencingPayments() - getTotalAmountCreditedIncludingReferencingPayments();
-	}
 
 	public array function getExpirationMonthOptions() {
-		return getService('paymentService').getCardExpirationMonthOptions();
+		return [
+			'01',
+			'02',
+			'03',
+			'04',
+			'05',
+			'06',
+			'07',
+			'08',
+			'09',
+			'10',
+			'11',
+			'12'
+		];
 	}
 
 	public array function getExpirationYearOptions() {
-		return getService('paymentService').getCardExpirationYearOptions();
+		var yearOptions = [];
+		var currentYear = year(now());
+		for(var i = 0; i < 20; i++) {
+			var thisYear = currentYear + i;
+			arrayAppend(yearOptions,{name=thisYear, value=right(thisYear,2)});
+		}
+		return yearOptions;
 	}
 
 	public boolean function hasGiftCard(){
@@ -611,10 +594,6 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			}
 		}
 	}
-
-	public boolean function getOrderHasAnotherDynamicOrderPaymentFlag(){
-		return !isNull(getOrder()) && !isNull(getOrder().getDynamicChargeOrderPayment(this)); 
-	} 
 
 	// ============  END:  Non-Persistent Property Methods =================
 
@@ -827,22 +806,16 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 	}
 
-	public any function getSimpleRepresentation(boolean includeAmount=true) {
+	public any function getSimpleRepresentation() {
 		if(this.isNew()) {
 			return rbKey('define.new') & ' ' & rbKey('entity.orderPayment');
 		}
 
 		if(getPaymentMethodType() == "creditCard") {
-			var simpleRepresentation = getPaymentMethod().getPaymentMethodName() & " - " & getCreditCardType() & " ***" & getCreditCardLastFour();
-		}else{
-			var simpleRepresentation = getPaymentMethod().getPaymentMethodName();
+			return getPaymentMethod().getPaymentMethodName() & " - " & getCreditCardType() & " ***" & getCreditCardLastFour() & ' - ' & getFormattedValue('amount');
 		}
-		
-		if(arguments.includeAmount){
-			simpleRepresentation &=  ' - ' & getFormattedValue('amount');
-		}
-		return simpleRepresentation;
-		
+
+		return getPaymentMethod().getPaymentMethodName() & ' - ' & getFormattedValue('amount');
 	}
 
 	public any function setBillingAccountAddress( any accountAddress ) {

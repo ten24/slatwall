@@ -22,9 +22,10 @@ class SWListingFilterGroup implements ng.IDirective{
     public controller=SWListingFilterGroupController;
     public controllerAs="swListingFilterGroup";
     public static $inject = [];
-    
     public static Factory(){
-        return /** @ngInject */ () => new this();
+        var directive:ng.IDirectiveFactory=()=>new SWListingFilterGroup();
+        directive.$inject = [];
+        return directive;
     }
 
 }

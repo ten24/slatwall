@@ -56,20 +56,9 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.orderReturn#" edit="#rc.edit#">
-		<cfset local.orderReturnItemsQuantityUnreceivedTotal = 0>
-		<cfloop array="#rc.orderReturn.getOrderReturnItems()#" index="orderReturnItem">
-			<cfset local.orderReturnItemsQuantityUnreceivedTotal += orderReturnItem.getQuantityUnreceived() />
-		</cfloop>
-		<span ng-init="local.orderReturnItemsQuantityUnreceivedTotal = #local.orderReturnItemsQuantityUnreceivedTotal#"></span>
-		<span ng-init="local.orderReturnItemsQuantityTotal = 0"></span>
-		<div ng-if="local.orderReturnItemsQuantityTotal != local.orderReturnItemsQuantityUnreceivedTotal">
-			<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderReturn#" confirm="true">
-			</hb:HibachiEntityActionBar>
-		</div>
-		<div ng-cloak ng-if="local.orderReturnItemsQuantityTotal == local.orderReturnItemsQuantityUnreceivedTotal">
-			<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderReturn#" confirm="false">
-			</hb:HibachiEntityActionBar>
-		</div>
+		
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderReturn#">
+		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
@@ -91,12 +80,9 @@ Notes:
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityReceived')#</th>
 				<th>#$.slatwall.rbKey('entity.vendorOrderItem.quantityUnreceived')#</th>
 				<th>#$.slatwall.rbKey('define.qty')#</th>
-				<th>#$.slatwall.rbKey('define.stockloss')#</th>
-				<th>#$.slatwall.rbKey('define.stocklossreason')#</th>
 			</tr>
 			
 			<cfset orderReturnItemIndex = 0 />
-			<cfset orderReturnItemQuantityArray = []>
 			<cfloop array="#rc.orderReturn.getOrderReturnItems()#" index="orderReturnItem">
 				<tr>
 					<cfset orderReturnItemIndex++ />
@@ -110,15 +96,10 @@ Notes:
 					<td>#orderReturnItem.getQuantity()#</td>
 					<td>#orderReturnItem.getQuantityReceived()#</td>
 					<td>#orderReturnItem.getQuantityUnreceived()#</td>
-					<cfset local.itemQuantityString = "item#orderReturnItemIndex#.quantity" />
-					<cfset arrayAppend(orderReturnItemQuantityArray,local.itemQuantityString)>
-					<td><input type="text" name="orderReturnItems[#orderReturnItemIndex#].quantity" ng-model="#local.itemQuantityString#" onkeyup="$('##orderReturnItemsQuantityTotal').trigger('change')" ng-init="#local.itemQuantityString# = 0" class="span1" /></td>
-					<td><input type="text" name="orderReturnItems[#orderReturnItemIndex#].stockLoss" value="0" class="span1" /></td>
-					<td><input type="text" name="orderReturnItems[#orderReturnItemIndex#].stockLossReason" value="" class="span1" /></td>
+					<td><input type="text" name="orderReturnItems[#orderReturnItemIndex#].quantity" value="" class="span1" /></td>
 				</tr>
 			</cfloop>
 		</table>
-		<input type="text" id="orderReturnItemsQuantityTotal" ng-model="local.orderReturnItemsQuantityTotal" value="{{#ArrayToList(orderReturnItemQuantityArray,'--')#}}" style="display:none;">
 		
 	</hb:HibachiEntityProcessForm>
 </cfoutput>

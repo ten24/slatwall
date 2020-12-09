@@ -61,7 +61,7 @@ Notes:
 					backAction="admin:entity.detailproduct"
 					backQueryString="productID=#rc.product.getProductID()#"
 					deleteQueryString="redirectAction=admin:entity.detailproduct&productID=#rc.product.getProductID()#">
-			<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="move" type="list" modal="true" />
+			<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="move" type="list" modal="false" />
 			<cfif rc.sku.getBundleFlag() eq true>
 				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="makeupBundledSkus" type="list" modal="true" />
 				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="breakupBundledSkus" type="list" modal="true" />

@@ -178,8 +178,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// @hint Public populate method to utilize a struct of data that follows the standard property form format
 	public any function populate( required struct data={}, formUploadDottedPath="" ) {
+
 		// Call beforePopulate
 		beforePopulate(data=arguments.data);
+
+
 
 		// Get an array of All the properties for this object
 		var properties = getProperties();
@@ -189,7 +192,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Set the current property into variable of meta data
 			var currentProperty = properties[p];
-			
+
 			// Check to see if this property has a key in the data that was passed in
 			if(
 				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) &&
@@ -198,12 +201,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					||
 					(getHibachiScope().getPublicPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "public")
 					||
-					(getHibachiScope().getWorkflowPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "workflow")
-					||
 					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))
 			) {
+
 				// ( COLUMN )
 				if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && isSimpleValue(arguments.data[ currentProperty.name ]) && !structKeyExists(currentProperty, "hb_fileUpload") ) {
+
 
 					// If the value is blank, then we check to see if the property can be set to NULL.
 					if( trim(arguments.data[ currentProperty.name ]) == "" && ( !structKeyExists(currentProperty, "notNull") || !currentProperty.notNull ) ) {
@@ -218,21 +221,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 						_setProperty(currentProperty.name, trim(arguments.data[ currentProperty.name ]), currentProperty.hb_formatType);
 						*/
 						_setProperty(currentProperty.name, rereplace(trim(arguments.data[ currentProperty.name ]),chr(002),'','all'));
+
 						// if this property has a sessionDefault defined for it, then we should update that value with what was used
 						if(structKeyExists(currentProperty, "hb_sessionDefault")) {
 							setPropertySessionDefault(currentProperty.name, trim(arguments.data[ currentProperty.name ]));
 						}
 					}
-				// ( POPULATE-STRUCT )
-				} else if( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "struct"  && structKeyExists(currentProperty, "hb_populateStruct") && currentProperty.hb_populateStruct && isStruct( arguments.data[ currentProperty.name ] ) ) {
-					_setProperty(currentProperty.name, arguments.data[ currentProperty.name ] );
 
 				// ( POPULATE-ARRAY )
 				} else if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && structKeyExists(currentProperty, "hb_populateArray") && currentProperty.hb_populateArray && isArray( arguments.data[ currentProperty.name ] ) ) {
+
 					_setProperty(currentProperty.name, arguments.data[ currentProperty.name ] );
 
 				// (MANY-TO-ONE) Do this logic if this property is a many-to-one relationship, and the data passed in is of type struct
 				} else if( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "many-to-one" && isStruct( arguments.data[ currentProperty.name ] ) ) {
+
 					// Set the data of this Many-To-One relationship into it's own local struct
 					var manyToOneStructData = arguments.data[ currentProperty.name ];
 
@@ -290,6 +293,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 				// (ONE-TO-MANY) Do this logic if this property is a one-to-many or many-to-many relationship, and the data passed in is of type array
 				} else if ( structKeyExists(currentProperty, "fieldType") && (currentProperty.fieldType == "one-to-many" or currentProperty.fieldType == "many-to-many") && isArray( arguments.data[ currentProperty.name ] ) ) {
+
 					// Find the primaryID column Name for the related object
 					var primaryIDPropertyName = getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
 
@@ -328,6 +332,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					}
 				// (MANY-TO-MANY) Do this logic if this property is a many-to-many relationship, and the data passed in as a list of ID's
 				} else if ( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "many-to-many" && isSimpleValue( arguments.data[ currentProperty.name ] ) ) {
+
 					// Set the data of this Many-To-Many relationship into it's own local struct
 					var manyToManyIDList = arguments.data[ currentProperty.name ];
 
@@ -566,7 +571,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	// @hint Public method to retrieve a value based on a propertyIdentifier string format
-	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false, any args) {
+	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
 		
@@ -574,13 +579,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			if(arguments.formatValue) {
 				return object.getFormattedValue( propertyName );
 			}
-			
-			if (structKeyExists(arguments, "args")){
-				var rawValue = object.invokeMethod("get#propertyName#", args);
-			}else{
-				var rawValue = object.invokeMethod("get#propertyName#");
-			}
-			
+			var rawValue = object.invokeMethod("get#propertyName#");
 			if(!isNull(rawValue)) {
 				return rawValue;
 			}
@@ -588,7 +587,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		return "";
 	}
-	
 
 	public string function getOrmTypeByPropertyIdentifier( required string propertyIdentifier ) {		
 		return getService('HibachiService').getOrmTypeByEntityNameAndPropertyIdentifier(this.getClassName(), arguments.propertyIdentifier);
@@ -618,8 +616,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
 
-		//if 0 property identifier points to an object not a property on an object
-		if(listLen(arguments.propertyIdentifier, ".") <= 1) {
+		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 			return this;
 		}
 		var object = invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
@@ -628,14 +625,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 	}
 
-	public any function getFormattedValue(required string propertyName, string formatType, string locale, boolean useFallback=true ) {
+	public any function getFormattedValue(required string propertyName, string formatType ) {
 		arguments.value = invokeMethod("get#arguments.propertyName#");
+
 		// check if a formatType was passed in, if not then use the getPropertyFormatType() method to figure out what it should be by default
 		if(!structKeyExists(arguments, "formatType")) {
 			arguments.formatType = getPropertyFormatType( arguments.propertyName );
-		}
-		if(!structKeyExists(arguments, 'locale')){
-			arguments.locale = getHibachiScope().getSession().getRbLocale();
 		}
 
 		// If the formatType is custom then deligate back to the property specific getXXXFormatted() method.
@@ -659,50 +654,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			return "";
 		// This is a simple value, so now lets try to actually format the value
 		} else if (isSimpleValue(arguments.value)) {
-			var formatDetails = {
-				locale:arguments.locale,
-				object:this,
-				propertyName:arguments.propertyName,
-				useFallback:arguments.useFallback
-			};
-			
+			var formatDetails = {};
 			if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
 				formatDetails.currencyCode = getCurrencyCode();
 			}
-			
-			
-			// handle Attribute Options Translation
-			if (len(arguments.value) && arguments.formatType == 'multiselect' && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(arguments.propertyName) ) {
-
-				var propertyMeta = getPropertyMetaData( arguments.propertyName );
-				
-				if(structKeyExists(propertyMeta, "hb_attributeID")) {
-					
-					var attributeOptionValues = listToArray(arguments.value);
-					var formatedValues = '';
-					for(var attributeOptionValue in attributeOptionValues){
-						
-						var attributeOption = getDAO('AttributeDAO').getAttributeOptionByAttributeOptionValueAndAttributeID(
-							attributeOptionValue = attributeOptionValue, 
-							attributeID = propertyMeta.hb_attributeID
-						);
-						
-						if(!isNull(attributeOption)){
-							formatDetails['object'] = attributeOption;
-							formatDetails['propertyName'] = 'attributeOptionLabel';
-						}else{
-							formatDetails['object'] = this;
-							formatDetails['propertyName'] = arguments.propertyName;
-						}
-						formatedValues = listAppend(formatedValues, getService("hibachiUtilityService").formatValue(value=attributeOptionValue, formatType=arguments.formatType, formatDetails=formatDetails));
-						
-					}
-					return formatedValues;
-				}
-				
-			}
-			
-			
 			return getService("hibachiUtilityService").formatValue(value=arguments.value, formatType=arguments.formatType, formatDetails=formatDetails);
 		}
 
@@ -1060,10 +1015,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	// @hint helper function to pass this entity along with a template to the string replace function
-	public string function stringReplace( required string template, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList ) {
-		
-		arguments['object'] = this; 
-		
-		return getService("hibachiUtilityService").replaceStringTemplate(argumentCollection=arguments);
+	public string function stringReplace( required string templateString, boolean formatValues=false, boolean removeMissingKeys=false ) {
+		return getService("hibachiUtilityService").replaceStringTemplate(arguments.templateString, this, arguments.formatValues, arguments.removeMissingKeys);
 	}
 }

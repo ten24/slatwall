@@ -51,40 +51,14 @@ Notes:
 
 <cfparam name="rc.product" type="any" />
 
-<cfset local.productReviewCollectionList = rc.product.getProductReviewsCollectionList() />
-<cfset local.productReviewCollectionList.setDisplayProperties(
-  	"product.productName,rating,reviewTitle,review,reviewerName,account.primaryEmailAddress.emailAddress,createdDateTime",
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	}
-) />
-<cfset local.productReviewCollectionList.addDisplayProperty(
-	"productReviewStatusType.typeName",
-	"Status",
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	}
-) />
-<cfset local.productReviewCollectionList.addDisplayProperty(
-	"productReviewID",
-	"ProductReviewID",
-	{
-		isVisible=false,
-		isSearchable=true,
-		isDeletable=false
-	},
-	true
-) />
-
-<hb:HibachiListingDisplay 	collectionList="#local.productReviewCollectionList#"
-							recorddetailaction="admin:entity.detailproductreview"
-							recorddetailmodal="true"
-							recordeditaction="admin:entity.editproductreview"
-							recordeditmodal="true">
+<hb:HibachiListingDisplay smartList="#rc.product.getProductReviewsSmartList()#"
+						   recorddetailaction="admin:entity.detailproductreview"
+						   recorddetailmodal="true"
+						   recordeditaction="admin:entity.editproductreview"
+						   recordeditmodal="true">
+	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
+	<hb:HibachiListingColumn propertyIdentifier="rating" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 </hb:HibachiListingDisplay>
-
-<hb:HibachiActionCaller action="admin:entity.createProductReview" querystring="productID=#rc.product.getProductID()#" modal="true" type="link" class="btn btn-primary" />

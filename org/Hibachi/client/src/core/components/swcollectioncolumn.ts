@@ -25,9 +25,18 @@ class SWCollectionColumn implements ng.IDirective{
     public template=""; 
 
     public static Factory(){
-        return /** @ngInject; */ ( scopeService, utilityService) => {
-            return new this( scopeService, utilityService );
-        }
+        var directive:ng.IDirectiveFactory=(
+            scopeService, 
+            utilityService
+        )=>new SWCollectionColumn(
+            scopeService, 
+            utilityService
+        );
+        directive.$inject = [
+            'scopeService',
+            'utilityService'
+        ];
+        return directive;
     }
     
     //@ngInject

@@ -7,9 +7,15 @@ class SWClickOutside{
     };
     
     public static Factory(){
-        return /** @ngInject; */ ($document,$timeout,utilityService ) => {
-            return new this( $document,$timeout,utilityService );
-        }
+        var directive = (
+            $document,$timeout,utilityService
+        )=>new SWClickOutside(
+            $document,$timeout,utilityService
+        );
+        directive.$inject = [
+            '$document', '$timeout', 'utilityService'
+        ];
+        return directive;
     }
     //@ngInject
     constructor(
@@ -32,14 +38,9 @@ class SWClickOutside{
             }
             if(e.target !== elem && elem && elem[0] && !this.utilityService.isDescendantElement(elem[0],e.target)){
                 this.$timeout(()=>{
-                    scope?.swClickOutside?.();
+                    scope.swClickOutside();
                 });
             }
-        });
-        
-        scope.$on('$destroy', () => {
-           elem = null;
-           scope = null;
         });
     }
     

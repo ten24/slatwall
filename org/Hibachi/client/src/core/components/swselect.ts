@@ -79,12 +79,35 @@ class SWSelect implements ng.IDirective{
     };
     public controller=SWSelectController;
     public controllerAs="swSelect";
+    public static $inject = ['corePartialsPath','hibachiPathBuilder'];
 
-    public template = require("./select.html");
-
-	public static Factory(){
-		return /** @ngInject; */ () => new this();
-	}
+    public templateUrl;
+    //@ngInject
+    constructor(
+        public corePartialsPath,
+        public hibachiPathBuilder
+    ){
+        this.corePartialsPath = corePartialsPath;
+        this.hibachiPathBuilder = hibachiPathBuilder;
+        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath+'select.html');
+    }
+    public static Factory(){
+        var directive = (
+            corePartialsPath,
+            hibachiPathBuilder
+        )=>new SWSelect(
+            corePartialsPath,
+                hibachiPathBuilder
+        );
+        directive.$inject = [
+            'corePartialsPath',
+            'hibachiPathBuilder'
+        ];
+        return directive;
+    }
+    
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    }
 }
 export{
     SWSelect

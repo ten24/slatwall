@@ -1,5 +1,0 @@
-{
-	"properties": {
-		"statusCode": [{ "contexts": "edit,delete", "eq": "tibstNew" }]
-	}
-}

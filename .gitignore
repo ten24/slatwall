@@ -4,7 +4,6 @@
 *.zip
 *.lic
 *.pfx
-*.js.map
 #custom/
 _notes/
 aspnet_client/

@@ -52,12 +52,10 @@ Notes:
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" default="oitReturn"/>
-<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemReturnSkuOptionsSmartList() />
+<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />
 
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#local.addOrderItemSkuOptionsSmartList#"
-							  recordDetailAction="admin:entity.detailaccount"
-							  recordDetailModal="true"
 							  recordProcessAction="admin:entity.processOrder"
 							  recordProcessQueryString="orderItemTypeSystemCode=oitReturn"
 							  recordProcessContext="addOrderItem"
@@ -72,11 +70,6 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-		<hb:HibachiListingColumn processObjectProperty="commissionableVolume" title="#$.slatwall.rbKey('define.commissionableVolume')#" fieldClass="span1" />
-		<hb:HibachiListingColumn processObjectProperty="personalVolume" title="#$.slatwall.rbKey('define.personalVolume')#" fieldClass="span1" />
-		<hb:HibachiListingColumn processObjectProperty="productPackVolume" title="#$.slatwall.rbKey('define.productPackVolume')#" fieldClass="span1" />
-		<hb:HibachiListingColumn processObjectProperty="retailCommission" title="#$.slatwall.rbKey('define.retailCommission')#" fieldClass="span1" />
-		<hb:HibachiListingColumn processObjectProperty="retailValueVolume" title="#$.slatwall.rbKey('define.retailValueVolume')#" fieldClass="span1" />
 		<hb:HibachiListingColumn processObjectProperty="orderReturnID" title="#$.slatwall.rbKey('entity.orderReturn')#" fieldClass="span2" />
 		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
 		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />

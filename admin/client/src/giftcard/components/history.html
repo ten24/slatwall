@@ -71,16 +71,10 @@
 								    <span ng-if="transaction.orderPayment_order_orderOpenDateTime.trim().length"  ng-bind="transaction.orderPayment_order_orderOpenDateTime"></span>
 								    <span ng-if="!transaction.orderPayment_order_orderOpenDateTime.trim().length" ng-bind="transaction.createdDateTime"></span> 
 								</td>
-								<td><span ng-if="transaction.orderPayment_order_orderNumber.trim()">Order: 
+								<td><span ng-if="transaction.orderPayment_order_orderNumber !== undefined">Order: 
 									    <a href="{{transaction.detailOrderLink}}">
 										    <span ng-bind="transaction.orderPayment_order_orderNumber"></span>
 									    </a>
-									</span>
-									<span ng-if="transaction.reasonForAdjustment.trim()"><br>Reason:
-										<span ng-bind="transaction.reasonForAdjustment"></span>
-									</span>
-									<span ng-if="transaction.adjustedByAccount_calculatedFullName.trim()"><br>Adjusted By:
-										<span ng-bind="transaction.adjustedByAccount_calculatedFullName"></span>
 									</span>
 								</td>
 								<td>

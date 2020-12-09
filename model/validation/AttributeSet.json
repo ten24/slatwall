@@ -1,8 +1,8 @@
 {
-	"properties": {
-		"attributeSetName": [{ "contexts": "save", "required": true }],
-		"attributeSetCode": [{ "contexts": "save", "uniqueOrNull": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$" }],
-		"attributeSetObject": [{ "contexts": "save", "required": true }],
-		"attributes": [{ "contexts": "delete", "method": "notHasMigratedAttribute" }]
+	"properties":{
+		"attributeSetName":			[{"contexts":"save","required":true}],
+		"attributeSetCode":			[{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
+		"attributeSetObject":		[{"contexts":"save","required":true}],
+		"attributes":				[{"contexts":"delete","method":"notHasMigratedAttribute"}]
 	}
 }

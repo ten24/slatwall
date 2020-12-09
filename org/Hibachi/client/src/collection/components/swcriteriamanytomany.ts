@@ -44,8 +44,7 @@ class SWCriteriaManyToMany{
     ){
         return {
             restrict: 'E',
-            template: require('./criteriamanytomany.html'),
-            
+            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriamanytomany.html',
             link: function(scope, element, attrs){
                 scope.data ={};
                 scope.collectionOptionsOpen = false;

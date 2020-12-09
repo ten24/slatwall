@@ -46,9 +46,8 @@ class ObserverService extends BaseService{
         if(!id){
             id = this.utilityService.createID();
         }
-        
-        event = event?.toLowerCase() || 'unknownevent';
-        id = id?.toLowerCase();
+        event = event.toLowerCase();
+        id = id.toLowerCase();
         if (!this.observers[event]) {
             this.observers[event] = {};
         }
@@ -81,7 +80,7 @@ class ObserverService extends BaseService{
      * @description removes removes all the event from the observer object
      */
     detachByEvent = (event:string):void => {
-        event = event?.toLowerCase() || 'unknownevent';
+        event = event.toLowerCase();
         if(event in this.observers) {
             delete this.observers[event];
         }
@@ -96,7 +95,7 @@ class ObserverService extends BaseService{
      * @description removes removes all callbacks for an id in a specific event from the observer object
      */
     detachByEventAndId = (event:string, id:string):void => {
-        event = event?.toLowerCase() || 'unknownevent';
+        event = event.toLowerCase();
         id = id.toLowerCase();
         if(event in this.observers) {
             if(id in this.observers[event]) {
@@ -115,7 +114,7 @@ class ObserverService extends BaseService{
      */
     notify = (event:string, parameters?:any):any => {
         console.warn(event,parameters);
-        event = event?.toLowerCase() || 'unknownevent';
+        event = event.toLowerCase();
         return this.$timeout(()=>{
             for(var id in this.observers[event]) {
                 for(var callback of this.observers[event][id]) {
@@ -136,7 +135,7 @@ class ObserverService extends BaseService{
      */
     notifyById = (event:string, eventId:string ,parameters:any):any => {
         console.warn(event,eventId, parameters);
-        event = event?.toLowerCase() || 'unknownevent';
+        event = event.toLowerCase();
         eventId = eventId.toLowerCase();
         return this.$timeout(()=>{
             for(var id in this.observers[event]) {

@@ -9,10 +9,9 @@ class SWFPropertyDisplayController extends SWPropertyDisplayController {
         public utilityService,
         public $injector,
         public metadataService,
-        public observerService,
-        public publicService,
+        public observerService
     ){
-        super($filter,utilityService,$injector,metadataService,observerService,publicService);
+        super($filter,utilityService,$injector,metadataService,observerService);
 
         this.edit = true;
 

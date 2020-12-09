@@ -73,17 +73,17 @@
 	        <ns:ServiceType>#arguments.requestBean.getShippingIntegrationMethod()#</ns:ServiceType>
 	        <ns:PackagingType>YOUR_PACKAGING</ns:PackagingType>
 	        <cfif arguments.requestBean.getPackageNumber() EQ 1>
-	        <ns:TotalWeight>
-	            <ns:Units>LB</ns:Units>
-	            <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
-	        </ns:TotalWeight>
+		        <ns:TotalWeight>
+		            <ns:Units>LB</ns:Units>
+		            <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
+		        </ns:TotalWeight>
 	        </cfif>
 	        <ns:TotalInsuredValue>
 	            <ns:Currency>USD</ns:Currency>
 	            <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
 	        </ns:TotalInsuredValue>
 	       
-	        <ns:Shipper>
+			<ns:Shipper>
 				<ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
 	        	<ns:Contact>
 	            	<ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
@@ -129,44 +129,44 @@
         		<cfelse>
         			<ns:PaymentType>SENDER</ns:PaymentType>
         		</cfif>
-	           <ns:Payor>
+	            <ns:Payor>
 	           		<ns:ResponsibleParty>
-        				<cfif NOT isNull(arguments.requestBean.getThirdPartyShippingAccountIdentifier()) AND len(arguments.requestBean.getThirdPartyShippingAccountIdentifier())>
-	           				<ns:AccountNumber>#arguments.requestBean.getThirdPartyShippingAccountIdentifier()#</ns:AccountNumber>
-	           				<ns:Contact>
-				            	<ns:PersonName>#arguments.requestBean.getContactPersonName()#</ns:PersonName>
-				            	<ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
-				            	<ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber()#</ns:PhoneNumber>
-		           			</ns:Contact>
-		           			<ns:Address>
-				                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
-				                <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
-				                	 <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
-								</cfif>
-								<ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
-								<cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
-				                	<ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
-								<cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
-									<ns:StateOrProvinceCode>#left(arguments.requestBean.getShipToStateCode(),2)#</ns:StateOrProvinceCode> 
-								</cfif>
-				                <ns:PostalCode>#arguments.requestBean.getShipToPostalCode()#</ns:PostalCode>
-				                <ns:CountryCode>#arguments.requestBean.getShipToCountryCode()#</ns:CountryCode>
-			            	</ns:Address>
-	           			<cfelse>
-	           				<ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
-	           				<ns:Contact>
-				            	<ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
-				            	<ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
-				            	<ns:PhoneNumber>#trim(setting('contactPhoneNumber'))#</ns:PhoneNumber>
-		           			</ns:Contact>
-		           			<ns:Address>
-				            	<ns:StreetLines>#trim(setting('shipperStreet'))#</ns:StreetLines>
-				                <ns:City>#trim(setting('shipperCity'))#</ns:City>
-				                <ns:StateOrProvinceCode>#trim(setting('shipperStateCode'))#</ns:StateOrProvinceCode>
-				                <ns:PostalCode>#trim(setting('shipperPostalCode'))#</ns:PostalCode>
-				                <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
-			            	</ns:Address>
-	           			</cfif>
+			            <cfif NOT isNull(arguments.requestBean.getThirdPartyShippingAccountIdentifier()) AND len(arguments.requestBean.getThirdPartyShippingAccountIdentifier())>
+                            <ns:AccountNumber>#arguments.requestBean.getThirdPartyShippingAccountIdentifier()#</ns:AccountNumber>
+                            <ns:Contact>
+		                        <ns:PersonName>#arguments.requestBean.getContactPersonName()#</ns:PersonName>
+		                        <ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
+		                        <ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber()#</ns:PhoneNumber>
+                            </ns:Contact>
+                            <ns:Address>
+                            <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
+                            <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
+                                <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
+                            </cfif>
+                            <ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
+                            <cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
+                                <ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
+                            <cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
+                                <ns:StateOrProvinceCode>#left(arguments.requestBean.getShipToStateCode(),2)#</ns:StateOrProvinceCode> 
+                            </cfif>
+                            <ns:PostalCode>#arguments.requestBean.getShipToPostalCode()#</ns:PostalCode>
+                            <ns:CountryCode>#arguments.requestBean.getShipToCountryCode()#</ns:CountryCode>
+                        	</ns:Address>
+                        <cfelse>
+                            <ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
+                            <ns:Contact>
+                                <ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
+                                <ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
+                                <ns:PhoneNumber>#trim(setting('contactPhoneNumber'))#</ns:PhoneNumber>
+                            </ns:Contact>
+                            <ns:Address>
+                                <ns:StreetLines>#trim(setting('shipperStreet'))#</ns:StreetLines>
+                                <ns:City>#trim(setting('shipperCity'))#</ns:City>
+                                <ns:StateOrProvinceCode>#trim(setting('shipperStateCode'))#</ns:StateOrProvinceCode>
+                                <ns:PostalCode>#trim(setting('shipperPostalCode'))#</ns:PostalCode>
+                                <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
+                        	</ns:Address>
+                        </cfif>
 			        </ns:ResponsibleParty>
 	           </ns:Payor>
            </ns:ShippingChargesPayment>
@@ -228,7 +228,7 @@
 	        </ns:RequestedPackageLineItems>
 	    </ns:RequestedShipment>
         
-    </ns:ProcessShipmentRequest>
+	</ns:ProcessShipmentRequest>
 	</SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 </cfoutput>

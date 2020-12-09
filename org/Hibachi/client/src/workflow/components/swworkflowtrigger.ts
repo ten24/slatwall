@@ -2,7 +2,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowTrigger{
-
 	public static Factory(){
 		var directive = (
             $http,
@@ -54,9 +53,7 @@ class SWWorkflowTrigger{
 				workflowTrigger:"=",
 				workflowTriggers:"="
 			},
-			
-			template: require("./workflowtrigger.html"),
-			
+			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
 			link: function(scope, element,attrs){
 
 				/**
@@ -79,6 +76,8 @@ class SWWorkflowTrigger{
 						scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTrigger.data.workflow.data.workflowObject);
 						metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject], scope.workflowTrigger.data.workflow.data.workflowObject);
 						scope.workflowTriggers.selectedTrigger = workflowTrigger;
+                    	scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig =collectionConfigService.newCollectionConfig().loadJson(scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig.toString());
+
                     });
 				};
 

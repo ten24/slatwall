@@ -54,9 +54,6 @@ Notes:
 		<swa:SlatwallSetting settingName="accountHTMLTitleString" />
 		<swa:SlatwallSetting settingName="accountMetaDescriptionString" />
 		<swa:SlatwallSetting settingName="accountMetaKeywordsString" />
-		<cfif $.slatwall.getAccount().getSuperUserFlag() >
-			<swa:SlatwallSetting settingName="accountCustomAdminStylesheet" />
-		</cfif>
 		<swa:SlatwallSetting settingName="accountEligiblePaymentMethods" />
 		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" />
 		<swa:SlatwallSetting settingName="accountPaymentTerm" />

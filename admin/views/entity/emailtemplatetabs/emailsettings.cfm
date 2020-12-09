@@ -59,7 +59,6 @@ Notes:
 		<swa:SlatwallSetting settingName="emailReplyToAddress" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailCCAddress" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailBCCAddress" settingObject="#rc.emailTemplate#" />
-		<swa:SlatwallSetting settingName="emailLocaleString" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailSubject" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailSMTPServer" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailSMTPPort" settingObject="#rc.emailTemplate#" />

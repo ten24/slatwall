@@ -9,11 +9,8 @@
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="skuName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.sku#" property="backorderedMessaging" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.sku#" property="publishedStartDateTime" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.sku#" property="publishedEndDateTime" edit="#rc.edit#">
 			<cfif rc.product.getBaseProductType() EQ "event">
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="false">
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="false">
@@ -87,7 +84,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.sku#" property="formattedRedemptionAmount">
 				<cfelse>
 					<div ng-hide="redemptionAmountType == 'sameAsPrice' || redemptionAmountType == ''">
-						<hb:HibachiPropertyDisplay object="#rc.sku#" property="redemptionAmount" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.sku#" property="baseRedemptionAmount" edit="#rc.edit#">
 					</div>
 				</cfif>
 			</cfif>

@@ -63,8 +63,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="taxRateItemRequestBeansByAddressID" type="struct";
 	
 	// Pertinent Reference Information
-	property name="accountID" type="string";
-	property name="accountShortReferenceID" type="string"; 
+	property name="accountID" type="string"; 
 	property name="orderID" type="string";
 	
 	// Reference Objects
@@ -81,10 +80,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		variables.taxRateItemRequestBeansByAddressID = {};
 		
 		return super.init();
-	}
-	//doing this so it can be overriden in custom
-	public string function getAccountShortReferenceID(createNewFlag=false){
-		return this.getAccount().getShortReferenceID(arguments.createNewFlag);
 	}
 
 	public void function populateBillToWithAddress(required any address) {
@@ -111,11 +106,11 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 	}
 	
-	public void function addTaxRateItemRequestBean(required any referenceObject, required any taxCategoryRate, any taxAddress, string feeType) {
+	public void function addTaxRateItemRequestBean(required any referenceObject, required any taxCategoryRate, any taxAddress) {
 		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
 
 		// Check reference object type. Value should either be 'orderFulfillment' or 'orderItem' or 'OrderDeliveryItem'
-		if (!listFindNoCase('OrderItem,OrderFulfillment,OrderDeliveryItem,OrderReturn', arguments.referenceObject.getClassName())) {
+		if (!listFindNoCase('OrderItem,OrderFulfillment,OrderDeliveryItem', arguments.referenceObject.getClassName())) {
 			throw("#getClassName()# does not support objects of type '#arguments.referenceObject.getClassName()#' as the tax rate item's reference object.");
 		}
 
@@ -134,7 +129,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		if (arguments.referenceObject.getClassName() == 'OrderItem') {
 			taxRateItemRequestBean.populateWithOrderItem(arguments.referenceObject);
 		} else if (arguments.referenceObject.getClassName() == 'OrderFulfillment') {
-			taxRateItemRequestBean.populateWithOrderFulfillment(arguments.referenceObject,arguments.feeType);
+			taxRateItemRequestBean.populateWithOrderFulfillment(arguments.referenceObject);
 		} else if (arguments.referenceObject.getClassName() == 'OrderDeliveryItem' ){
 			taxRateItemRequestBean.populateWithOrderDeliveryItem(arguments.referenceObject);
 		} else if (arguments.referenceObject.getClassName() == 'OrderReturn' ){

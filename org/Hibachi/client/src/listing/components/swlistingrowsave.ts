@@ -20,8 +20,7 @@ class SWListingRowSaveController{
 }
 
 class SWListingRowSave implements ng.IDirective{
-    public template= require('./listingrowsave.html');
-    
+    public templateUrl;
     public restrict:string = 'EA';
     public scope=true;
     public bindToController={
@@ -32,13 +31,32 @@ class SWListingRowSave implements ng.IDirective{
     public static $inject = ['utilityService'];
 
     public static Factory(){
-        return /** @ngInject */ (utilityService,scopeService)=> new this(utilityService,scopeService)
+        var directive:ng.IDirectiveFactory=(
+            hibachiPathBuilder,
+            listingPartialPath,
+            utilityService,
+            scopeService
+        )=>new SWListingRowSave(
+            hibachiPathBuilder,
+            listingPartialPath,
+            utilityService,
+            scopeService
+        );
+        directive.$inject = [
+            'hibachiPathBuilder',
+            'listingPartialPath',
+            'utilityService',
+            'scopeService'
+        ];
+        return directive;
     }
-  
-    constructor(
-        private utilityService,
-        private scopeService
-    ){}
+    constructor(private hibachiPathBuilder, 
+                private listingPartialPath, 
+                private utilityService,
+                private scopeService
+    ){
+       this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingrowsave.html';
+    }
 
     public link:ng.IDirectiveLinkFn = ($scope:any, element:any, attrs:any) =>{
             var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");

@@ -79,7 +79,5 @@ Notes:
 		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>
-
-
 </cfoutput>
 

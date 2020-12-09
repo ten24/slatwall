@@ -53,7 +53,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 	
 	public string function getIntegrationTypes() {
-		return "tax,address";
+		return "tax";
 	}
 	
 	public string function getDisplayName() {
@@ -70,7 +70,6 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			sourceRegion = {fieldType="text"},
 			sourceCountry = {fieldType="text"},
 			sourcePostalCode = {fieldType="text"},
-			vatCountries = {fieldType="text"},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
 			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},
@@ -81,9 +80,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			companyCode = {fieldType="text"},
 			customerUsageTypePropertyIdentifier = {fieldType="text"},
 			taxExemptNumberPropertyIdentifier = {fieldType="text"},
-			debugModeFlag = {fieldType="yesno", defaultValue="0"},
-			testURL = {fieldType="text", defaultValue="https://development.avalara.net/1.0/tax/get"},
-			productionURL = {fieldType="text", defaultValue="https://avatax.avalara.net/1.0/tax/get"}
+			debugModeFlag = {fieldType="yesno", defaultValue="0"}
 		};
 
 		return settings;
@@ -91,14 +88,6 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	
 	public array function getEventHandlers() {
 		return ["Slatwall.integrationServices.avatax.model.handler.AvataxEventHandler"];
-	}
-	
-	public boolean function getAllowSiteSpecificSettingsFlag() {
-		return true;
-	}
-
-	public string function getAllowedSiteSettingNames() {
-		return "companyCode,sourceStreetAddress,sourceStreetAddress2,sourceCity,sourceRegion,sourceCountry,sourcePostalCode";
 	}
 	
 }

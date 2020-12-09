@@ -1,9 +1,6 @@
 component accessors="true" output="false" persistent="false" {
 
 	property name="hibachiInstanceApplicationScopeKey" type="string" persistent="false";
-	property name="currentMonth" persistent="false";
-	property name="currentYear" persistent="false";
-	property name="currentYearAbbreviated" persistent="false";
 
 	// Constructor Metod
 	public any function init( ) {
@@ -32,20 +29,6 @@ component accessors="true" output="false" persistent="false" {
 		}
 		return clientIP;
 	}
-
-	//convenience date functions for collections filters
-	public numeric function getCurrentMonth(){
-		return month(now());
-	} 
-
-	public numeric function getCurrentYear(){
-		return year(now());
-	} 
-
-	public numeric function getCurrentYearAbbreviated(){
-		return right(getCurrentYear(), 2); 
-	}  	
-	//end convenience date functions for collections filters
 	
 	// @help Public method to determine if this is a processObject.  This is overridden in the HibachiProcess.cfc
 	public any function isProcessObject() {
@@ -56,7 +39,18 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
 	public any function getBeanFactory() {
-		return application[ getApplicationValue('applicationKey') ].factory;		
+		
+		// Attempts to prevent concurrent requests on same server from interfering with each other while reloading beanFactory
+		if (!structKeyExists(variables, 'beanFactory')) {
+			lock scope="Application" timeout="2400" type="readonly" {
+				if (isNull(application[ getApplicationValue('applicationKey') ].factory)) {
+					throw("The beanFactory is expected to exist at this stage. Readonly application lock is applied. It is possible another concurrent request reloaded server and is interfering. Further investigation into this issue is required.");
+				}
+				
+				variables.beanFactory = application[ getApplicationValue('applicationKey') ].factory;
+			}
+		}
+		return variables.beanFactory;
 	}
 	
 	public any function getCustom(){
@@ -74,7 +68,9 @@ component accessors="true" output="false" persistent="false" {
 	}
 	// @hint sets bean factory, this probably should not ever be invoked outside of  initialization. Application.cfc should take care of this.
 	public void function setBeanFactory(required any beanFactory) {
-		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+		lock name="application_#getHibachiInstanceApplicationScopeKey()#_beanFactory" timeout="10" {
+			application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+		}
 	}
 
 	// @hint whether or not we have a bean
@@ -160,7 +156,7 @@ component accessors="true" output="false" persistent="false" {
 	public any function invokeMethod(required string methodName, struct methodArguments={}) {
 		if(structKeyExists(this, arguments.methodName)) {
 			var theMethod = this[ arguments.methodName ];
-			return theMethod(argumentCollection = arguments.methodArguments);
+			return theMethod(argumentCollection = methodArguments);
 		}
 		if(structKeyExists(this, "onMissingMethod")) {
 			return this.onMissingMethod(missingMethodName=arguments.methodName, missingMethodArguments=arguments.methodArguments);	
@@ -189,7 +185,7 @@ component accessors="true" output="false" persistent="false" {
 	
 	//Dump & Die, shortcut
 	public any function dd(required any data, numeric top = 2){
-		writeDump(var="#arguments.data#", top=arguments.top, abort=true);
+		writeDump(var="#data#", top=arguments.top, abort=true);
 	}
 	
 	// ===========================  END:  UTILITY METHODS ===========================================
@@ -206,6 +202,15 @@ component accessors="true" output="false" persistent="false" {
 	// ====================  END: INTERNALLY CACHED META VALUES =====================================
 	// ========================= START: DELIGATION HELPERS ==========================================
 	
+	public void function addCheckpoint(string description="", string tags, string blockName, any object) {
+		
+		// If no label provided, use the component filename by default
+		if (!structKeyExists(arguments, 'blockName')) {
+			arguments.blockName = listLast(getThisMetaData().path, '/');
+		}
+		
+		getHibachiScope().getProfiler().addCheckpoint(argumentCollection=arguments);
+	}
 	
 	public string function encryptValue(string value) {
 		return getService("hibachiUtilityService").encryptValue(argumentcollection=arguments);
@@ -223,17 +228,12 @@ component accessors="true" output="false" persistent="false" {
 		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
-	public void function traceHibachi(required string message, boolean generalLog=true){
-		arguments.logType = 'Trace';
-		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
-	}
-	
 	public void function logHibachiException(required any exception){
 		getService("hibachiUtilityService").logException(exception=arguments.exception);		
 	}
 	
 	public string function rbKey(required string key) {
-		return getHibachiScope().rbKey(argumentCollection=arguments);
+		return getHibachiScope().rbKey(arguments.key);
 	}
 	
 	public string function hibachiHTMLEditFormat(required any html=""){

@@ -208,8 +208,6 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	public void function preInsert(){
 		super.preInsert();
 		getService("inventoryService").createInventory( this );
-		// update the openorderitem records
-		getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'update', orderItemID = this.getOrderItem().getOrderItemID(), quantityDelivered = getQuantity());
 	}
 
 	public void function preUpdate(struct oldData){

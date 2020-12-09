@@ -56,20 +56,9 @@ Notes:
 <cfoutput>
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-			    
-			    <cfif !isNull(rc.orderDelivery.getOrderDeliveryStatusType())>
-			        <!--- Status Type --->
-			        <hb:HibachiPropertyDisplay object="#rc.orderDelivery.getOrderDeliveryStatusType()#" property="typeName" edit="false" title="Status">
-			        <!--- Status Reason --->
-			        <cfif !isNull(rc.orderDelivery.getUndeliverableOrderReason()) && !isNull(rc.$.slatwall.getService("typeService").getTypeByTypeCode(rc.orderDelivery.getUndeliverableOrderReason()))>
-			            <hb:HibachiPropertyDisplay object="#rc.$.slatwall.getService('typeService').getTypeByTypeCode(rc.orderDelivery.getUndeliverableOrderReason())#" property="typeName" edit="false" title="Undeliverable Reason">
-			        </cfif>
-			    </cfif>
-			    
 				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="createdDateTime">
 				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="fulfillmentMethod">
 				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="trackingNumber" edit="#rc.edit#">
-				    
 				<cfif !isNull(rc.orderDelivery.getShippingMethod())>	
 					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getShippingMethod()#" property="shippingMethodName">
 				</cfif>

@@ -59,7 +59,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
-	property name="promotionService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
@@ -67,68 +66,44 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="totpAuthenticator" type="any";
 	property name="typeService" type="any";
 	property name="validationService" type="any";
-	property name="hibachiEventService" type="any";
-	property name="hibachiValidationService" type="any";
 
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
 	}
 
-	public string function getPasswordResetID(required any account) {
+	public string function getPasswordResetID(required any account, boolean createNewResetID = true) {
 		var passwordResetID = "";
 		var accountAuthentication = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 
-		if(isNull(accountAuthentication)) {
+		if(isNull(accountAuthentication) && arguments.createNewResetID) {
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setExpirationDateTime(now() + 7);
 			accountAuthentication.setAccount( arguments.account );
 
 			accountAuthentication = this.saveAccountAuthentication( accountAuthentication );
 		}
-
-		return lcase("#arguments.account.getAccountID()##hash(accountAuthentication.getAccountAuthenticationID() & arguments.account.getAccountID())#");
+		
+		if(!isNull(accountAuthentication)) {
+			return lcase("#arguments.account.getAccountID()##hash(accountAuthentication.getAccountAuthenticationID() & arguments.account.getAccountID())#");
+		} else {
+			return "";
+		}
+		
 	}
 
 	// ===================== START: Logical Methods ===========================
 	
-	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddressOrUsername) {
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddressOrUsername);
+	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddress) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddress);
 		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
 	}
 	
-	public boolean function verifyTwoFactorAuthenticationRequiredByUsername(required string emailAddressOrUsername) {
-		var accountAuthentication = getAccountDAO().getActivePasswordByUsername(username=arguments.emailAddressOrUsername);
-		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
-	}
-	
-	public string function getSimpleRepresentation(required any account){
-		return arguments.account.getFullName();
-	}
-	
-	
-	public any function getAvailablePaymentMethods(required any account, struct data = {}) {
-
-		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
-		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
-		accountPaymentMethodList.addFilter("account.accountID", arguments.account.getAccountID() );
-		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
-		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
-		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
-		accountPaymentMethodList.addFilter('activeFlag', 1);
-		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
-
-		return accountPaymentMethodList;
-	}
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
 
 	public boolean function getPrimaryEmailAddressNotInUseFlag( required string emailAddress, string accountID ) {
 		return getAccountDAO().getPrimaryEmailAddressNotInUseFlag(argumentcollection=arguments);
-	}
-	
-	public boolean function getUsernameNotInUseFlag( required string username, string accountID ) {
-		return getAccountDAO().getUsernameNotInUseFlag(argumentcollection=arguments);
 	}
 
 	public any function getInternalAccountAuthenticationsByEmailAddress(required string emailAddress) {
@@ -170,6 +145,92 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: DAO Passthrough ============================
 
 	// ===================== START: Process Methods ===========================
+	
+	public any function getAllOrdersOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        param name="arguments.data.orderID" default= "";
+        
+		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
+
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			calculatedTotal,
+			createdDateTime,
+			orderStatusType.typeName,
+			orderFulfillments.shippingAddress.streetAddress,
+			orderFulfillments.shippingAddress.street2Address,
+			orderFulfillments.shippingAddress.city,
+			orderFulfillments.shippingAddress.stateCode,
+			orderFulfillments.shippingAddress.postalCode
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		
+		if( len(arguments.data.orderID) ){
+		    ordersList.addFilter( 'orderID', arguments.data.orderID );
+		}
+		ordersList.addGroupBy('orderID');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { 
+			"ordersOnAccount":  ordersList.getPageRecords(formatRecord = false), 
+			"records": ordersList.getRecordsCount()
+		};
+	}
+	
+	/**
+	 * Function to get All Parents on Account
+	 * */
+	public any function getAllParentsOnAccount(required any account) {
+		var parentAccountCollectionList = this.getAccountRelationshipCollectionList();
+		parentAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												parentAccount.emailAddress, 
+												parentAccount.firstName, 
+												parentAccount.lastName, 
+												parentAccount.username, 
+												parentAccount.accountID');
+		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.account.getAccountID() );
+		parentAccountCollectionList.addFilter( 'activeFlag', 1);
+		return parentAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	/**
+	 * Function to get All Childs on Account
+	 * */
+	public any function getAllChildsOnAccount(required any account) {
+		
+		var childAccountCollectionList = this.getAccountRelationshipCollectionList();
+		childAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												childAccount.emailAddress, 
+												childAccount.firstName, 
+												childAccount.lastName, 
+												childAccount.username, 
+												childAccount.accountID');
+		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.account.getAccountID() );
+		childAccountCollectionList.addFilter( 'activeFlag', 1 );
+		return childAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	public any function getAvailablePaymentMethods(required any account, struct data = {}) {
+		
+		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
+		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
+		accountPaymentMethodList.addFilter("account.accountID", arguments.account.getAccountID() );
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
+		accountPaymentMethodList.addFilter('activeFlag', 1);
+		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
+
+		return accountPaymentMethodList;
+	}
+	
 	
 	public struct function getAccountPaymentTransactionData(required any accountPayment){
 		var transactionData = {
@@ -347,14 +408,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccount_changePassword(required any account, required any processObject) {
 		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
 		//For now they are just calling this function that handles the actual work.
-		
 		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
-		
-		if(!arguments.account.hasErrors() && (getHibachiScope().getAccount().getAccountID() == arguments.account.getAccountID())){
-			//If user successfully change his password then logout that user
-			this.processAccount_logout(arguments.account);
-		}
-		
+
 		return arguments.account;
 	}
 	public any function processAccount_changePosPin(required any account, required any processObject) {
@@ -402,7 +457,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Populate the account with the correct values that have been previously validated
 			arguments.account.setFirstName( processObject.getFirstName() );
 			arguments.account.setLastName( processObject.getLastName() );
-			arguments.account.setUsername( processObject.getUsername() );
 			
 			if(!isNull(arguments.processObject.getOrganizationFlag())){
 				arguments.account.setOrganizationFlag(arguments.processObject.getOrganizationFlag());
@@ -498,7 +552,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.account;
 	}
-
+	
 	public any function processAccount_updatePrimaryEmailAddress(required any account, required any processObject, struct data={}) {
 
 		var primaryEmailAddressObject = arguments.account.getPrimaryEmailAddress();
@@ -507,7 +561,29 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.account = this.saveAccount(arguments.account);
 		
 		return arguments.account;
-	} 
+	}
+	
+	public any function processAccount_addAccountEmailAddress(required any account, required any processObject, struct data={}) {
+		
+		var accountEmailAddress = this.newAccountEmailAddress();
+		accountEmailAddress.setAccount(arguments.account);
+		accountEmailAddress.setEmailAddress(arguments.processObject.getEmailAddress());
+		this.saveAccountEmailAddress(accountEmailAddress);
+		arguments.account = this.saveAccount(arguments.account);
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_addAccountPhoneNumber(required any account, required any processObject, struct data={}) {
+		
+		var accountPhoneNumber = this.newAccountPhoneNumber();
+		accountPhoneNumber.setAccount(arguments.account);
+		accountPhoneNumber.setPhoneNumber(arguments.processObject.getPhoneNumber());
+		this.saveAccountPhoneNumber(accountPhoneNumber);
+		arguments.account = this.saveAccount(arguments.account);
+		
+		return arguments.account;
+	}
 
 	public any function processAccount_clone(required any account, required any processObject, struct data={}) {
 
@@ -694,51 +770,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 	
-	public any function processAccount_removePromotionCode(required any account, required struct data) {
-
-		if(structKeyExists(arguments.data, "promotionCodeID")) {
-			var promotionCode = getPromotionService().getPromotionCode( arguments.data.promotionCodeID );
-		} else if (structKeyExists(arguments.data, "promotionCode")) {
-			var promotionCode = getPromotionService().getPromotionCodeByPromotionCode( arguments.data.promotionCode );
-		}
-
-		if(!isNull(promotionCode)) {
-			arguments.account.removePromotionCode( promotionCode );
-		}
-
-		// Call saveOrder to recalculate all the orderTotal stuff
-		arguments.account = this.saveAccount(arguments.account);
-		return arguments.account;
-	}
-	
 	public any function processAccount_login(required any account, required any processObject) {
-		var emailAddressOrUsername = arguments.processObject.getEmailAddressOrUsername();
+		var emailAddress = arguments.processObject.getEmailAddress();;
 		var password = arguments.processObject.getPassword();
 		var authenticationCode = arguments.processObject.getAuthenticationCode();
 		
-		var loginType = "";
-		
-		// If emailAddressOrUsername is an email
-		if(getHibachiValidationService().validate_dataType(arguments.processObject, 'emailAddressOrUsername', 'email')){
-			loginType = "emailAddress";
-			
-			if(!isNull(arguments.processObject.getEmailAddress())){
-				var emailAddress = arguments.processObject.getEmailAddress();
-			}else{
-				var emailAddress = arguments.processObject.getEmailAddressOrUsername();
-			}
-			
-			// Attempt to load the account authentication by emailAddress
-			var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
-		
-		// If emailAddressOrUsername is a username
-		}else {
-			loginType = "username";
-			var username = arguments.processObject.getEmailAddressOrUsername();
-			
-			// Attempt to load the account authentication by username
-			var accountAuthentication = getAccountDAO().getActivePasswordByUsername(username=username);
-		}
+		// Attempt to load the account authentication by emailAddress
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
 		
 		// Account exists
 		if (!isNull(accountAuthentication)) {
@@ -757,9 +795,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Invalid Password
 				} else {
 					// No password specific error message, as that would provide a malicious attacker with useful information
-					arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validation.account_authorizeAccount.failure'));
-
+					arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
 				}
 				
 				// Verify two-factor authentication as long as login process has not already failed before this point
@@ -786,38 +822,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		// Invalid email, no account authentication exists
 		} else {
-			arguments.processObject.addError(loginType, rbKey('validation.account_authorizeAccount.failure'));
-			arguments.processObject.addError('emailAddressOrUsername', rbKey('validation.account_authorizeAccount.failure'));
+			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
 		}
 		
 		// Login the account
 		if (!arguments.processObject.hasErrors()) {
-			var activeFlag = accountAuthentication.getAccount().getActiveFlag();
-			
-			//the default value for activeflag is null we're considering that as active
-			if( isNull(activeFlag) || ( isBoolean(activeFlag) && activeFlag ) ) { 
-				getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
-				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
-				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
-			} else {
-				
-				if ( 'astSuspended' == accountAuthentication.getAccount().getAccountStatusType().getSystemCode() ) {
-					arguments.processObject.addError(loginType, rbKey('validate.account.suspended'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.suspended'));
-				} else {
-					arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
-				}
-				
-			}
+			getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+			accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
+			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 		// Login was invalid
 		} else {
-			var invalidLoginData = {};
-			if(loginType == "emailAddress"){
-				invalidLoginData = {emailAddress=emailAddress};
-			} else if(loginType == "username"){
-				invalidLoginData = {username=username};
-			}
+			var invalidLoginData = {emailAddress=emailAddress};
 			
 			if (!isNull(accountAuthentication)) {
 				invalidLoginData.account = accountAuthentication.getAccount();
@@ -902,6 +917,8 @@ component extends="HibachiService" accessors="true" output="false" {
         return arguments.account;
     }
 
+
+
 	public any function processAccount_resetPassword( required any account, required any processObject ) {
 
 		// If there are no errors
@@ -982,9 +999,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountEmailAddress.setAccount(arguments.account);
 			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
 
-			//Setup username
-			arguments.account.setUsername( processObject.getUsername() );
-			
 			// Setup the authentication
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setAccount( arguments.account );
@@ -1071,7 +1085,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {
 
 			// If loyaltyAccruement eq 'fulfillItem' as the type, then based on the amount create a new transaction and apply that amount
-			if (loyaltyAccruement.getAccruementEvent() eq 'itemFulfilled') {
+			if (loyaltyAccruement.getAccruementType() eq 'itemFulfilled') {
 
 				// Loop over the orderDeliveryItems in arguments.data.orderDelivery
 				for(var orderDeliveryItem in arguments.data.orderDelivery.getOrderDeliveryItems()) {
@@ -1137,7 +1151,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 						// Setup the transaction data
 						var transactionData = {
-							accruementEvent = "itemFulfilled",
+							accruementType = "itemFulfilled",
 							accountLoyalty = arguments.accountLoyalty,
 							loyaltyAccruement = loyaltyAccruement,
 							orderDeliveryItem = orderDeliveryItem,
@@ -1163,9 +1177,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {
 
 			// If loyaltyAccruement eq 'orderClosed' as the type
-			if (loyaltyAccruement.getAccruementEvent() eq 'orderClosed') {
+			if (loyaltyAccruement.getAccruementType() eq 'orderClosed') {
 
-				// If order status is closed
+				// If order satus is closed
 				if ( listFindNoCase("ostClosed",arguments.data.order.getorderStatusType().getSystemCode()) ){
 
 					// Create a new transaction
@@ -1173,7 +1187,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 					// Setup the transaction data
 					var transactionData = {
-						accruementEvent = "orderClosed",
+						accruementType = "orderClosed",
 						accountLoyalty = arguments.accountLoyalty,
 						loyaltyAccruement = loyaltyAccruement,
 						order = arguments.data.order,
@@ -1187,6 +1201,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 
+
+
 		return arguments.accountLoyalty;
 	}
 
@@ -1196,14 +1212,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {
 
 			// If loyaltyAccruement eq 'fulfillmentMetodUsed' as the type
-			if (loyaltyAccruement.getAccruementEvent() eq 'fulfillmentMethodUsed') {
+			if (loyaltyAccruement.getAccruementType() eq 'fulfillmentMethodUsed') {
 
 				// Create and setup a new transaction
 				var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
 
 				// Setup the transaction data
 				var transactionData = {
-					accruementEvent = "fulfillmentMethodUsed",
+					accruementType = "fulfillmentMethodUsed",
 					accountLoyalty = arguments.accountLoyalty,
 					loyaltyAccruement = loyaltyAccruement,
 					orderFulfillment = arguments.data.orderFulfillment,
@@ -1226,13 +1242,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {
 
 			// If loyaltyAccruement eq 'enrollment' as the type
-			if (loyaltyAccruement.getAccruementEvent() eq 'enrollment') {
+			if (loyaltyAccruement.getAccruementType() eq 'enrollment') {
 
 				var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
 
 				// Setup the transaction data
 				var transactionData = {
-					accruementEvent = "enrollment",
+					accruementType = "enrollment",
 					accountLoyalty = arguments.accountLoyalty,
 					loyaltyAccruement = loyaltyAccruement,
 					pointAdjustmentType = "pointsIn"
@@ -1253,7 +1269,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {
 
 			// If loyaltyAccruement is of type 'itemFulfilled'
-			if (loyaltyAccruement.getAccruementEvent() eq 'itemFulfilled') {
+			if (loyaltyAccruement.getAccruementType() eq 'itemFulfilled') {
 
 				// Loop over the items in the stockReceiver
 				for(var orderItemReceived in arguments.data.stockReceiver.getStockReceiverItems()) {
@@ -1319,7 +1335,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 						// Setup the transaction data
 						var transactionData = {
-							accruementEvent = "itemFulfilled",
+							accruementType = "itemFulfilled",
 							accountLoyalty = arguments.accountLoyalty,
 							loyaltyAccruement = loyaltyAccruement,
 							orderItemReceived = orderItemReceived,
@@ -1345,7 +1361,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
 
 		accountLoyaltyTransaction.setAccountLoyalty( arguments.accountLoyalty );
-		accountLoyaltyTransaction.setAccruementEvent( processObject.getManualAdjustmentType() );
+		accountLoyaltyTransaction.setAccruementType( processObject.getManualAdjustmentType() );
 
 		if (processObject.getManualAdjustmentType() eq "manualIn"){
 			accountLoyaltyTransaction.setPointsIn( processObject.getPoints() );
@@ -1356,230 +1372,78 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.accountLoyalty;
 	}
-	
-	public void function redeemLoyaltyRedemptions(required any accountLoyalty){
-		// Loop over account loyalty redemptions
-		for(var loyaltyRedemption in arguments.accountLoyalty.getLoyalty().getLoyaltyRedemptions()) {
-
-			// If loyalty auto redemption eq 'pointsAdjusted' as the type
-			if (loyaltyRedemption.getAutoRedemptionType() eq 'pointsAdjusted') {
-
-				redemptionData = {
-					account = arguments.accountLoyalty.getAccount(),
-					accountLoyalty = arguments.data.accountLoyalty
-				};
-
-				getLoyaltyService().processLoyaltyRedemption( loyaltyRedemption, redemptionData, 'redeem' );
-			}
-		}
-	}
-
-	public any function createPointsLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
-		
-		if ( arguments.data.loyaltyAccruement.getPointType() == 'fixed' && arguments.data.pointAdjustmentType == "pointsOut"){
-			arguments.accountLoyaltyTransaction.setPointsOut( arguments.data.loyaltyAccruement.getPointQuantity());
-			return arguments.accountLoyaltyTransaction;
-		}
-		
-		if ( arguments.data.loyaltyAccruement.getPointType() == 'fixed' && arguments.data.pointAdjustmentType == "pointsIn"){
-			arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity());
-			return arguments.accountLoyaltyTransaction;
-		}
-		
-		// if it's not fixed, it's pointsPerCurrencyUnit
-		var accruementCurrency = arguments.data.loyaltyAccruement.getAccruementCurrency(arguments.data.currencyCode);
-		
-		if(isNull(accruementCurrency)){
-			return arguments.accountLoyaltyTransaction;
-		}
-		
-		if(arguments.data.pointAdjustmentType == "pointsOut"){
-			arguments.accountLoyaltyTransaction.setPointsOut( accruementCurrency.getPointQuantity() * (arguments.data.orderItemReceived.getQuantity() * arguments.data.orderItemReceived.getOrderItem().getPrice()) );
-			return arguments.accountLoyaltyTransaction;
-		}
-		
-		var amount=0;
-		
-		if (arguments.data.accruementEvent eq 'itemFulfilled') {
-			
-			amount = accruementCurrency.getPointQuantity() * (arguments.data.orderDeliveryItem.getQuantity() * arguments.data.orderDeliveryItem.getOrderItem().getPrice());
-		
-		} else if (arguments.data.accruementEvent eq 'orderClosed') {
-
-			amount = accruementCurrency.getPointQuantity() * arguments.data.order.getTotal();
-			
-		} else if (arguments.data.accruementEvent eq 'fulfillmentMethodUsed') {
-			
-			amount = accruementCurrency.getPointQuantity() * arguments.data.orderFulfillment.getFulFillmentCharge();
-			
-		}
-		
-		arguments.accountLoyaltyTransaction.setPointsIn(amount);
-
-		return arguments.accountLoyaltyTransaction;
-	}
-	
-	public any function createPromotionLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
-		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			var promo = arguments.data.loyaltyAccruement.getPromotion();
-			var promoCode = getService("PromotionService").NewPromotionCode();
-			promoCode.setPromotionCode( getService("HibachiUtilityService").createUniqueCode(tableName="swPromotionCode",column="promotionCode",size=6) );
-			promoCode.setPromotion(promo);
-			promoCode.addAccount(arguments.data.account);
-			promoCode.setMaximumAccountUseCount(1);
-			promoCode.setMaximumUseCount(1);
-			promoCode = getService("PromotionService").savePromotionCode(promoCode);
-			promoCode.setStartDateTime(Now());
-			var term = arguments.data.loyaltyAccruement.getExpirationTerm();
-			if(!isNull(term)){
-				promoCode.setEndDateTime(term.getEndDate());
-			}
-			promo = getService("PromotionService").savePromotion(promo);
-			arguments.accountLoyaltyTransaction.setPromotionCode(promoCode);
-			getHibachiEventService().announceEvent("LoyaltyTransaction_PromotionCodeAssigned", promoCode);
-			arrayAppend(arguments.accountLoyaltyTransaction.getErrors(),promoCode.getErrors());
-		}
-		
-		return arguments.accountLoyaltyTransaction;
-	}
-	
-	private any function getExistingGiftCardBySkuAndAccount(required any sku,required any account,required string currencyCode){
-		var giftCardCollectionList = getService("GiftCardService").getGiftCardCollectionList();
-		giftCardCollectionList.addFilter("ownerAccount.accountID",arguments.account.getAccountID());
-		giftCardCollectionList.addFilter("sku.skuID",arguments.sku.getSkuID());
-		giftCardCollectionList.addFilter("currencyCode",arguments.currencyCode);
-		giftCardCollectionList.setPageRecordsShow(1);
-		giftCardCollectionList.setDisplayProperties("giftCardID");
-		giftCards = giftCardCollectionList.getPageRecords();
-		if(arrayLen(giftCards)){
-			return getService("GiftCardService").getGiftCard(giftCards[1]['giftCardID']);
-		}
-	}
-	
-	public any function createGiftCardLoyaltyTransaction(required any accountLoyaltyTransaction, required any data){
-		
-		if(arguments.data.pointAdjustmentType == "pointsIn"){
-			
-			var currencyCode = arguments.data.account.getSiteCurrencyCode();
-			var sku = arguments.data.loyaltyAccruement.getGiftCardSku();
-			
-			var giftCard = getExistingGiftCardBySkuAndAccount(sku,arguments.data.account,currencyCode);
-
-			if(isNull(giftCard)){
-
-				giftCard = getService("GiftCardService").newGiftCard();
-
-				var createGiftCardProcessObject = giftCard.getProcessObject('create'); 
-				
-				createGiftCardProcessObject.setCurrencyCode(currencyCode);
-				
-				createGiftCardProcessObject.setSku(sku);
-				
-				createGiftCardProcessObject.setOwnerAccount(arguments.data.account); 
-
-				createGiftCardProcessObject.setOwnerEmailAddress(arguments.data.account.getEmailAddress()); 
-
-				createGiftCardProcessObject.setCreditGiftCardFlag(false);
-				
-				if(structKeyExists(arguments.data,'orderItem')){
-					createGiftCardProcessObject.setOriginalOrderItem(arguments.data.orderItem);
-				}
-						
-				if(structKeyExists(arguments.data,'orderFulfillment')){
-					createGiftCardProcessObject.setOrder(arguments.data.orderFulfillment.getOrder());
-				}
-				
-				if(structKeyExists(arguments.data,'order')){
-					createGiftCardProcessObject.setOrder(arguments.data.order);
-				}
-				
-				if(structKeyExists(arguments.data,'creditExpirationTerm')){
-					createGiftCardProcessObject.setCreditExpirationTerm(arguments.data.creditExpirationTerm);
-				}
-				
-				giftCard = getService("GiftCardService").processGiftCard_Create(giftCard,createGiftCardProcessObject);  
-				
-			}
-			
-			var creditGiftCardProcessObject = giftCard.getProcessObject('addCredit');
-		
-			var accruementCurrency = arguments.data.loyaltyAccruement.getAccruementCurrency(currencyCode);
-			
-			if(isNull(accruementCurrency)){
-				return arguments.accountLoyaltyTransaction;
-			}
-			creditGiftCardProcessObject.setReasonForAdjustment(arguments.accountLoyaltyTransaction.getAccruementEvent());
-	
-			creditGiftCardProcessObject.setCreditAmount(accruementCurrency.getGiftCardValue());
-	
-			giftCard = getService("GiftCardService").processGiftCard_addCredit(giftCard, creditGiftCardProcessObject);
-	
-			if(giftCard.hasErrors()){
-				arguments.accountLoyaltyTransaction.addErrors(giftCard.getErrors());
-			}
-			
-			getHibachiEventService().announceEvent("LoyaltyTransaction_GiftCardCredited", giftCard);
-			
-			arguments.accountLoyaltyTransaction.setGiftCard(giftCard);
-	
-			return arguments.accountLoyaltyTransaction;
-		}
-		
-		// TODO: Remove giftCard if pointsOut
-
-	}
 
 	// Account Loyalty Transaction
 	public any function processAccountLoyaltyTransaction_create(required any accountLoyaltyTransaction, required struct data) {
 
 		// Process only the 'active' loyalty programs
-		if (!arguments.data.accountLoyalty.getLoyalty().getActiveFlag() ) {
-			return arguments.accountLoyaltyTransaction;
+		if ( arguments.data.accountLoyalty.getLoyalty().getActiveFlag() ) {
+
+			// Setup the transaction
+			arguments.accountLoyaltyTransaction.setAccruementType( arguments.data.accruementType );
+			arguments.accountLoyaltyTransaction.setAccountLoyalty( arguments.data.accountLoyalty );
+			arguments.accountLoyaltyTransaction.setLoyaltyAccruement( arguments.data.loyaltyAccruement );
+
+			// Set the order, orderItem and orderFulfillment if they exist
+			if(structKeyExists(arguments.data, "order")) {
+				arguments.accountLoyaltyTransaction.setOrder( arguments.data.order );
+			}
+
+			if(structKeyExists(arguments.data, "orderItem")) {
+				arguments.accountLoyaltyTransaction.setOrderItem( arguments.data.orderItem );
+			}
+
+			if(structKeyExists(arguments.data, "orderFulfillment")) {
+				arguments.accountLoyaltyTransaction.setOrderFulfillment( arguments.data.orderFulfillment );
+			}
+
+			// Set up loyalty program expiration date / time based upon the expiration term
+			if( !isNull(arguments.data.loyaltyAccruement.getExpirationTerm()) ){
+			    arguments.accountLoyaltyTransaction.setExpirationDateTime( arguments.data.loyaltyAccruement.getExpirationTerm().getEndDate() );
+			}
+
+
+			if ( arguments.data.pointAdjustmentType eq "pointsIn" ) {
+
+				if ( arguments.data.loyaltyAccruement.getPointType() eq 'fixed' ){
+					arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() );
+				}
+				else if ( arguments.data.loyaltyAccruement.getPointType() eq 'pointPerDollar' ) {
+
+					if (arguments.data.accruementType eq 'itemFulfilled') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * (arguments.data.orderDeliveryItem.getQuantity() * arguments.data.orderDeliveryItem.getOrderItem().getPrice()) );
+					} else if (arguments.data.accruementType eq 'orderClosed') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * arguments.data.order.getTotal() );
+					} else if (arguments.data.accruementType eq 'fulfillmentMethodUsed') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * arguments.data.orderFulfillment.getFulFillmentCharge() );
+					}
+				}
+
+			} else {
+				if ( arguments.data.loyaltyAccruement.getPointType() eq 'fixed' ){
+					arguments.accountLoyaltyTransaction.setPointsOut( arguments.data.loyaltyAccruement.getPointQuantity() );
+				}
+				else if ( arguments.data.loyaltyAccruement.getPointType() eq 'pointPerDollar' ) {
+					arguments.accountLoyaltyTransaction.setPointsOut( arguments.data.loyaltyAccruement.getPointQuantity() * (arguments.data.orderItemReceived.getQuantity() * arguments.data.orderItemReceived.getOrderItem().getPrice()) );
+				}
+			}
+
+			// Loop over account loyalty redemptions
+			for(var loyaltyRedemption in arguments.data.accountLoyalty.getLoyalty().getLoyaltyRedemptions()) {
+
+				// If loyalty auto redemption eq 'pointsAdjusted' as the type
+				if (loyaltyRedemption.getAutoRedemptionType() eq 'pointsAdjusted') {
+
+					redemptionData = {
+						account = arguments.data.accountLoyalty.getAccount(),
+						accountLoyalty = arguments.data.accountLoyalty
+					};
+
+					loyaltyRedemption = getLoyaltyService().processLoyaltyRedemption( loyaltyRedemption, redemptionData, 'redeem' );
+				}
+			}
+
 		}
-
-		// Setup the transaction
-		arguments.accountLoyaltyTransaction.setAccruementEvent( arguments.data.accruementEvent );
-		arguments.accountLoyaltyTransaction.setAccountLoyalty( arguments.data.accountLoyalty );
-		arguments.accountLoyaltyTransaction.setLoyaltyAccruement( arguments.data.loyaltyAccruement );
-
-		// Set the order, orderItem and orderFulfillment if they exist
-		if(structKeyExists(arguments.data, "order")) {
-			arguments.accountLoyaltyTransaction.setOrder(arguments.data.order );
-			arguments.data.currencyCode = arguments.data.order.getCurrencyCode();
-		}
-
-		if(structKeyExists(arguments.data, "orderItem")) {
-			arguments.accountLoyaltyTransaction.setOrderItem( arguments.data.orderItem );
-			arguments.data.currencyCode = arguments.data.orderItem.getCurrencyCode();
-		}
-
-		if(structKeyExists(arguments.data, "orderFulfillment")) {
-			arguments.accountLoyaltyTransaction.setOrderFulfillment( arguments.data.orderFulfillment );
-			arguments.data.currencyCode = arguments.data.orderFulfillment.getCurrencyCode();
-		}
-
-		// Set up loyalty program expiration date / time based upon the expiration term
-		var expirationTerm = arguments.data.loyaltyAccruement.getExpirationTerm();
-		if( !isNull(expirationTerm) ){
-		    arguments.accountLoyaltyTransaction.setExpirationDateTime( expirationTerm.getEndDate() );
-		}
-		
-		this.RedeemLoyaltyRedemptions(arguments.data.accountLoyalty);
-		
-		arguments.data.account = arguments.data.accountLoyalty.getAccount();
-
-		switch(arguments.data.loyaltyAccruement.getAccruementType()){
-			case "points":
-				arguments.accountLoyaltyTransaction = this.createPointsLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);
-				break;
-			case "promotion":
-				arguments.accountLoyaltyTransaction = this.createPromotionLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);
-				break;
-			case "giftCard":
-				arguments.accountLoyaltyTransaction = this.createGiftCardLoyaltyTransaction(arguments.accountLoyaltyTransaction, arguments.data);
-				break;
-		}
-
 		return arguments.accountLoyaltyTransaction;
 	}
 
@@ -1650,10 +1514,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(paymentTransaction.hasError('runTransaction') || paymentTransaction.getTransactionSuccessFlag() == false) {
 				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			}
-			
-			if (paymentTransaction.getTransactionSuccessFlag() == false){
-				arguments.accountPayment.setActiveFlag(false);
-			}
+		
 		}
 
 		return arguments.accountPayment;
@@ -1800,6 +1661,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveAccount(required any account, struct data={}, string context="save"){
+		
 		if (StructKeyExists(arguments.data, 'primaryEmailAddress.accountEmailAddressID') && len(arguments.data.primaryEmailAddress.accountEmailAddressID)) {
 			var currentPrimaryEmailAddress = arguments.account.getPrimaryEmailAddress();
 			var newPrimaryEmailAddress = this.getAccountEmailAddress(arguments.data.primaryEmailAddress.accountEmailAddressID);
@@ -1818,7 +1680,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 				
-		return super.save(entity=arguments.account,data=arguments.data,context=arguments.context);
+		return super.save(entity=arguments.account,data=arguments.data);
 	}
 	
 	public any function saveAccountEmailAddress(required accountEmailAddress, struct data={}, string context="save"){
@@ -1840,15 +1702,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return arguments.accountEmailAddress;
 		
-	}
-	
-	public any function saveAccountAddress(required any accountAddress, struct data={},string context="save", boolean verifyAddressFlag = false){
-		arguments.accountAddress = super.saveAccountAddress(arguments.accountAddress, arguments.data);
-		
-		if(!arguments.accountAddress.hasErrors()){
-			getAddressService().saveAddress(address=arguments.accountAddress.getAddress(),verifyAddressFlag=arguments.verifyAddressFlag);
-		}
-		return arguments.accountAddress;
 	}
 	
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
@@ -1975,8 +1828,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
-			
 			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
+			//clears cache keys on the permissiongroup Object
+			getService('HibachiCacheService').resetCachedKeyByPrefix('PermissionGroup.');
 			
 			//reset permission cache
 			getService('HibachiCacheService').resetPermissionCache();
@@ -1986,26 +1840,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		return arguments.permissionGroup;
-	}
-	
-	/**
-	 * helper function to update @entity/AccountGovernmentIdentification's dependent properties
-	 * extracted to make it customizable 
-	*/ 
-	public void function updateGovernmentIdentificationNumberProperties(required any governmentIdentification, required string governmentIdentificationNumber=""){
-		if(len(arguments.governmentIdentificationNumber)) {
-			arguments.governmentIdentification.setGovernmentIdentificationLastFour( right(arguments.governmentIdentificationNumber, 4) );
-		} else {
-			arguments.governmentIdentification.setGovernmentIdentificationLastFour();
-			arguments.governmentIdentification.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
-		}
-	}
-	
-	public any function addOrderToAccount(required any account, required any order){
-		if(arguments.order.isNew() || !arguments.account.hasOrder( arguments.order )) {
-			arrayAppend(arguments.account.getOrders(), arguments.order);
-		}
-		return arguments.order;
 	}
 	
 
@@ -2022,8 +1856,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryPhoneNumber", "left");
 		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryAddress", "left");
-		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryPaymentMethod", "left");
-
 
 		smartList.addKeywordProperty(propertyIdentifier="firstName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="lastName", weight=1);
@@ -2031,7 +1863,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		smartList.addKeywordProperty(propertyIdentifier="primaryEmailAddress.emailAddress", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="primaryPhoneNumber.phoneNumber", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="primaryAddress.streetAddress", weight=1);
-
 
 		return smartList;
 	}
@@ -2096,11 +1927,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPaymentMethod(javaCast("null", ""));
 			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
-			if(arguments.account.getAdminAccountFlag()){
-				getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
-			}
-			getDAO('AccountDAO').removeAccountFromEmails(arguments.account.getAccountID());
-			
+			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
+
 		}
 
 		return delete( arguments.account );

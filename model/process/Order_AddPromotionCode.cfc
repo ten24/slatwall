@@ -53,9 +53,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties
 	property name="promotionCode" hb_rbKey="entity.promotionCode.promotionCode";
-	
-	// Helper Properties
-	property name="updateOrderAmountFlag" default="1";
     
     public boolean function promotionCodeNotAlreadyApplied() {
         return !structKeyExists(variables,"promotionCode") || !variables.order.hasPromotionCode(getService("promotionService").getPromotionCodeByPromotionCode(variables.promotionCode));

@@ -9,17 +9,6 @@
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
-			<cfset local.formattedStartDate="#dateFormat(rc.product.getPublishedStartDateTime(), 'mm/dd/YYYY')#">
-			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedStartDateTime" edit="#rc.edit#" fieldType="text" fieldAttributes="sw-date-picker 
-														ng-model=""publishedStartDateTime""
-														ng-init=""publishedStartDateTime='#local.formattedStartDate#'""
-														autocomplete=""off"" ng-cloak">
-			
-			<cfset local.formattedEndDate="#dateFormat(rc.product.getPublishedEndDateTime(), 'mm/dd/YYYY')#">
-			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedEndDateTime" edit="#rc.edit#" fieldType="text" fieldAttributes="sw-date-picker 
-														ng-model=""publishedEndDateTime""
-														ng-init=""publishedEndDateTime='#local.formattedEndDate#'""
-														autocomplete=""off"" ng-cloak">
 			
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">

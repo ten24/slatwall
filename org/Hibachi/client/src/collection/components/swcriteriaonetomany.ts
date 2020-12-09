@@ -41,8 +41,7 @@ class SWCriteriaOneToMany{
     ){
         return {
             restrict: 'E',
-            template: require('./criteriaonetomany.html'),
-            
+            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriaonetomany.html',
             link: function(scope, element, attrs){
                 scope.data ={};
                 scope.collectionOptionsOpen = false;

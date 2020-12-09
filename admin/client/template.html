@@ -1,5 +1,0 @@
-<cfoutput>
-    <% htmlWebpackPlugin.files.js.forEach( (src) => { %> 
-        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/<%= src %>"></script>
-    <% }) %>
-</cfoutput>

@@ -143,7 +143,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	public any function saveComment(required any comment, required any data) {
-
+		
 		arguments.comment.populate( arguments.data );
 		
 		parseCommentAndCreateRelationships( arguments.comment );

@@ -1,6 +1,6 @@
 {
-	"properties": {
-		"location": [{ "required": true }],
-		"countPostDateTime": [{ "required": true, "dataType": "date" }]
+	"properties":{
+	    "location":								[{"required":true}],
+		"countPostDateTime":					[{"required":true,"dataType":"date"}]
 	}
 }

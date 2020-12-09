@@ -350,7 +350,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 	}
 	
 	public any function getRates(required any requestBean) {
-		
+
 		// Build Request XML
 		var xmlPacket = "";
 		var containers = getService('containerService').getContainerDetails(requestBean);
@@ -365,7 +365,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
         var prefix = getPrefix(xmlPacket);
         var XmlResponse = prefix.fileContent;
         var responseBean = getShippingRatesResponseBean(XmlResponse,prefix.Statuscode);
-        
+		
 		return responseBean;
 	}
 	

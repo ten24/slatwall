@@ -1,12 +1,14 @@
 {
-	"conditions": {
-		"attributeRequired": {
-			"attribute.requiredFlag": { "eq": true }
+	"conditions":{
+		"attributeRequired":{
+			"attribute.requiredFlag":{"eq":true}
 		}
 	},
-	"properties": {
-		"attributeValueType": [{ "contexts": "save", "required": true }],
-		"attribute": [{ "contexts": "save", "required": true }],
-		"attributeValue": [{ "contexts": "save", "method": "regexMatches" }]
+	"properties":{
+		"attributeValueType":	[{"contexts":"save","required":true}],
+		"attribute":			[{"contexts":"save","required":true}],
+		"attributeValue":		[
+			{"contexts":"save","method":"regexMatches"}
+		]
 	}
 }

@@ -39,12 +39,10 @@ class SWDisplayItem{
 				selectedPropertyChanged:"&"
 
 			},
-			
-			template: require("./displayitem.html"),
-			
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
 				scope.showDisplayItem = false;
-
+				
 				scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
 
 					var breadCrumb = {

@@ -130,13 +130,31 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 			return getPaymentMethod().getPaymentMethodType();	
 		}
 	}
-
 	public array function getExpirationMonthOptions() {
-		return getService('paymentService').getCardExpirationMonthOptions();
+		return [
+			'01',
+			'02',
+			'03',
+			'04',
+			'05',
+			'06',
+			'07',
+			'08',
+			'09',
+			'10',
+			'11',
+			'12'
+		];
 	}
-
+	
 	public array function getExpirationYearOptions() {
-		return getService('paymentService').getCardExpirationYearOptions();
+		var yearOptions = [];
+		var currentYear = year(now());
+		for(var i = 0; i < 20; i++) {
+			var thisYear = currentYear + i;
+			arrayAppend(yearOptions,{name=thisYear, value=right(thisYear,2)});
+		}
+		return yearOptions;
 	}
 	
 	public any function getPaymentMethodOptions() {

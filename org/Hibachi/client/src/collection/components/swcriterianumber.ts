@@ -21,8 +21,7 @@ class SWCriteriaNumber{
 	){
 		return {
 			restrict: 'E',
-			template: require('./criterianumber.html'),
-			
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criterianumber.html',
 			link: function(scope, element, attrs){
 				var getNumberOptions = function(type){
 					if(angular.isUndefined(type)){
@@ -195,12 +194,11 @@ class SWCriteriaNumber{
     			}
 		    	
 		    	scope.calculateCriteriaFilterPropertyValue = function(selectedFilterProperty) {
-		    	
-		    	    if(angular.isDefined(selectedFilterProperty.value)) {
+		    		
+		    	    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
 		    	    	
-						selectedFilterProperty.criteriaValue = selectedFilterProperty.value;
-						selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.value;
-						
+						selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
+
 		    		} else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
 						
 						if( !isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
@@ -233,7 +231,6 @@ class SWCriteriaNumber{
 
 
 			    scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
-
 					if(angular.isDefined(selectedFilterProperty)){
 						
 		    			angular.forEach(scope.conditionOptions, function(conditionOption){

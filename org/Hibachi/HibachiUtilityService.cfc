@@ -3,71 +3,6 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
-	
-		public any function hibachiArrayMap(required array data, required any closure, numeric parallelThreadNumber, boolean debug = false){
-		
-			if(!structKeyExists(arguments, 'parallelThreadNumber')){
-				arguments.parallelThreadNumber = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
-			}
-			
-			if(!isClosure(arguments.closure)){
-				throw('Invalid argument type, hibachiArrayMap expects a closure');
-			}
-			
-			var resultArray = [];
-			var threadNameList = '';
-			var dataCount = arrayLen(arguments.data);
-			for( var i = 1; i <= dataCount; i++ ){
-				var threadName = 'hibachiArrayMap-#CreateUUID()#-#i#';
-				threadNameList = listAppend(threadNameList, threadName);
-				
-				thread item=arguments.data[i] closure=arguments.closure name=threadName {
-					writeOutput(closure(item));
-				}
-				if(i % arguments.parallelThreadNumber == 0){
-				
-					thread action="join" name=threadNameList;
-				
-					for(var threadResult in threadNameList){
-						if(!structKeyExists(cfthread[threadResult], 'error')){
-							arrayAppend(resultArray, trim(cfthread[threadResult]['output']));
-						}else if(arguments.debug){
-							throw(cfthread[threadResult].error);
-						}
-					}
-					threadNameList = '';
-				}
-			}
-			
-			if(len(threadNameList)){
-			
-				thread action="join" name=threadNameList;
-				
-				for(var threadResult in threadNameList){
-					if(!structKeyExists(cfthread[threadResult], 'error')){
-						arrayAppend(resultArray, trim(cfthread[threadResult]['output']));
-					}else if(arguments.debug){
-						throw(cfthread[threadResult].error);
-					}
-				}
-			}
-			
-			return resultArray;
-		}
-	
-		public any function getHttpResponse(required any http, numeric timeout = 3, boolean throwOnTimeout = true){
-			arguments.http.setTimeout(arguments.timeout);
-			var result = arguments.http.send().getPrefix();
-			if( arguments.throwOnTimeout && result['status_code'] == 408 ){
-				throw(result['errordetail']);
-			}
-			if( findNoCase('application/json', result['header']) ){
-				return deserializeJson(result['filecontent']);
-			}else{
-				return result['filecontent'];
-			}
-		}
-		
 		public string function getDatabaseUUID(){
 			switch(getHibachiScope().getApplicationValue('databaseType')){
 				case 'Oracle10g':
@@ -139,15 +74,7 @@
 		public string function camelCaseToTitleCase(required string stringValue){
 			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
-
-		public string function arrayOfStructsToList(required array structs, required string structKeyForList, string delimiter=','){
-			var listToReturn = "";
-			for(var record in arguments.structs){
-				listToReturn = listAppend(listToReturn, record[arguments.structKeyForList], arguments.delimiter );
-			} 
-			return listToReturn; 
-		}
-
+		
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*
@@ -160,7 +87,7 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public array function arrayOfStructsSort(aOfS,key,sortOrder="asc"){
+		public array function arrayOfStructsSort(aOfS,key,sortOrder2="asc"){
 
 
 		        //by default, we'll use a textnocase sort
@@ -174,9 +101,12 @@
 		        var returnArray = arraynew(1);
 
 		        //grab the number of elements in the array (used in the loops)
-		        var count = arrayLen(arguments.aOfS);
+		        var count = arrayLen(aOfS);
 		        //make a variable to use in the loop
 		        var ii = 1; var j=1;
+		        //if there is a 3rd argument, set the sortOrder
+		        if(arraylen(arguments) GT 2)
+		            sortOrder = arguments[3];
 		        //if there is a 4th argument, set the sortType
 		        if(arraylen(arguments) GT 3)
 		            sortType = arguments[4];
@@ -185,12 +115,12 @@
 		            delim = arguments[5];
 		        //loop over the array of structs, building the sortArray
 		        for(ii = 1; ii lte count; ii = ii + 1)
-		            sortArray[ii] = arguments.aOfS[ii][arguments.key] & delim & ii;
+		            sortArray[ii] = aOfS[ii][key] & delim & ii;
 		        //now sort the array
-		        arraySort(sortArray,sortType,arguments.sortOrder);
+		        arraySort(sortArray,sortType,arguments.sortOrder2);
 		        //now build the return array
 		        for(ii = 1; ii lte count; ii = ii + 1)
-		            returnArray[ii] = arguments.aOfS[listLast(sortArray[ii],delim)];
+		            returnArray[ii] = aOfS[listLast(sortArray[ii],delim)];
 		        //return the array
 		        return returnArray;
 		}
@@ -219,9 +149,9 @@
 
 		// @hint this method will sanitize a struct of data
 		public void function sanitizeData(required any data){
-			for(var key in arguments.data){
-			  if( isSimpleValue(arguments.data[key]) && key != 'serializedJsonData'){
-			    arguments.data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
+			for(var key in data){
+			  if( isSimpleValue(data[key]) && key != 'serializedJsonData'){
+			    data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
 			  }
 			}
 		}
@@ -231,33 +161,6 @@
 
 			if(listFindNoCase("decimal,currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});
-			}else{
-				return this.formatValue_language(value=arguments.value,formatDetails=arguments.formatDetails);
-			}
-			return arguments.value;
-		}
-		
-		public any function formatValue_language(required string value, struct formatDetails={}){
-			if(structKeyExists(arguments.formatDetails,'locale') 
-				&& structKeyExists(arguments.formatDetails,'propertyName')
-				&& structKeyExists(arguments.formatDetails,'object')
-				&& structKeyExists(arguments.formatDetails.object, 'getPrimaryIDValue')
-			){
-				var translation = getService('TranslationService').getTranslationValue(
-					baseObject=arguments.formatDetails.object.getClassName(),
-					baseID = arguments.formatDetails.object.getPrimaryIDValue(),
-					basePropertyName=arguments.formatDetails.propertyName,
-					locale=arguments.formatDetails.locale
-				);
-
-				if(!isNull(translation)){
-					return translation;
-				}else if(!isNull(formatDetails.useFallback) && !formatDetails.useFallback){
-					var globalLocale = getService('SettingService').getSettingValue('globalLocale');
-					if(globalLocale != arguments.formatDetails.locale){
-						return '';
-					}
-				}
 			}
 			return arguments.value;
 		}
@@ -292,15 +195,11 @@
 		}
 
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
-
-			if(!structKeyExists(arguments, 'formatDetails')){
-				arguments.formatDetails.locale = getHibachiScope().getRBLocale();   
-			}
-
 			if(structKeyExists(arguments.formatDetails, "currencyCode") && len(arguments.formatDetails.currencyCode) == 3 ) {
-				return LSCurrencyFormat(arguments.value, arguments.formatDetails.currencyCode, arguments.formatDetails.locale);
+				return LSCurrencyFormat(arguments.value, arguments.formatDetails.currencyCode, getHibachiScope().getRBLocale());
 			}
-			return LSCurrencyFormat(arguments.value, "local", arguments.formatDetails.locale);
+			// If no currency code was passed in then we can default to USD
+			return LSCurrencyFormat(arguments.value, "USD", getHibachiScope().getRBLocale());
 		}
 
 		public any function formatValue_datetime( required string value, struct formatDetails={} ) {
@@ -374,16 +273,6 @@
 			}
 
 			return returnTitle;
-		}
-		
-		public string function createUniqueCode(required string tableName, required string column, string prefix = '', numeric size = 7) {
-			var isUnique = false;
-			var uniqueCode = "";
-			while(!isUnique) {
-				uniqueCode = prefix & getHibachiUtilityService().generateRandomID(size);
-				isUnique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.column, value=uniqueCode);
-			}
-			return uniqueCode;
 		}
 		
 		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){
@@ -463,9 +352,9 @@
 		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
 			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 				if(structkeyExists(arguments.parentObject,'getValueByPropertyIdentifier')){
-					arguments.data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+					data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
 				}else{
-					arguments.data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
+					data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
 				}
 				return;
 			}
@@ -478,31 +367,31 @@
 			//only structs using closures
 			if(!isNull(object) && (isObject(object) || isStruct(object))) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
-				param name="arguments.data[thisProperty]" default="#structNew()#";
+				param name="data[thisProperty]" default="#structNew()#";
 
-				if(!structKeyExists(arguments.data[thisProperty],"errors")) {
+				if(!structKeyExists(data[thisProperty],"errors")) {
 					// add error messages
-					arguments.data[thisProperty]["hasErrors"] = object.hasErrors();
-					arguments.data[thisProperty]["errors"] = object.getErrors();
+					data[thisProperty]["hasErrors"] = object.hasErrors();
+					data[thisProperty]["errors"] = object.getErrors();
 				}
 
-				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), arguments.data[thisProperty]);
+				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty]);
 			} else if(!isNull(object) && isArray(object)) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
-				param name="arguments.data[thisProperty]" default="#arrayNew(1)#";
+				param name="data[thisProperty]" default="#arrayNew(1)#";
 
 				for(var i = 1; i <= arrayLen(object); i++){
-					param name="arguments.data[thisProperty][i]" default="#structNew()#";
+					param name="data[thisProperty][i]" default="#structNew()#";
 
-					if(!structKeyExists(arguments.data[thisProperty][i],"errors")) {
+					if(!structKeyExists(data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
 							if(structKeyExists(data[thisProperty][i],'hasErrors')){
-								arguments.data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-								arguments.data[thisProperty][i]["errors"] = object[i].getErrors();
+								data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+								data[thisProperty][i]["errors"] = object[i].getErrors();
 							}else{
-								arguments.data[thisProperty][i]["hasErrors"] = false;
-								arguments.data[thisProperty][i]["errors"] = {};
+								data[thisProperty][i]["hasErrors"] = false;
+								data[thisProperty][i]["errors"] = {};
 							}
 
 
@@ -591,66 +480,22 @@
 		}
 
 		public boolean function isStringTemplate(required string value){
-			return arraylen(getTemplateKeys(arguments.value));
+			return arraylen(getTemplateKeys(value));
 		}
 
 		//replace single brackets ${}
-		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList, string locale=getHibachiScope().getSession().getRbLocale()) {
+		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 
 			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
-			
 			for(var i=1; i<=arrayLen(templateKeys); i++) {
 				var replaceDetails = {};
 				replaceDetails.key = templateKeys[i];
 				replaceDetails.value = templateKeys[i];
 
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
-
-				if( listLen(valueKey,':') == 2 && 
-					listFirst(valueKey,':') == 'template' &&
-					structKeyExists(arguments, 'templateContextPathList')	
-				){
-				
-					//${template:order-details} load order-details.cfm  
-					var templateBody = '';
-					var templateFileName = listRest(valueKey, ':') & '.cfm';
-
-
-					var contextPaths = listToArray(arguments.templateContextPathList); 
-
-					var templateContextPath = ''; 	
-					for(var contextPath in contextPaths){
-						
-						if(fileExists(contextPath & templateFileName)){
-						    templateContextPath = contextPath & templateFileName; 
-							break;	
-						} 
-					} 
-
-					if(len(templateContextPath)){ 
-
-						//TODO: remove Slatwall reference from hibachi
-						templateContextPath = replaceNoCase(templateContextPath, getApplicationValue('applicationRootMappingPath'), getApplicationValue('slatwallRootURL'));
-
-						//make object available in scope with its given name
-						if(structKeyExists(arguments.object, 'getClassName')){
-							local[arguments.object.getClassName()] = arguments.object;
-						} else if(isStruct(arguments.object)) {
-							structAppend(local, arguments.object); 
-						}
-
-						local.locale = arguments.locale;
-
-						savecontent variable="templateBody" {
-							include '#templateContextPath#';
-						} 
-
-						replaceDetails.value = templateBody; 
-					}
-
-				} else if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
+				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
 				} else if (isObject(arguments.object) &&
 					(
@@ -674,27 +519,20 @@
 					)
 				) {
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
-				}
-					
-				if ( arguments.removeMissingKeys && replaceDetails.key == replaceDetails.value) {
+				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';
 				}
 
 				arrayAppend(replacementArray, replaceDetails);
 			}
-
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
 			}
-
 			if(
 				arguments.template != returnString
 				&& arraylen(getTemplateKeys(returnString))
 			){
-				var args = arguments; 
-				args['template'] = returnString; 
-
-				returnString = replaceStringTemplate(argumentCollection=args);
+				returnString = replaceStringTemplate(returnString, arguments.object, arguments.formatValues,arguments.removeMissingKeys);
 			}
 
 			return returnString;
@@ -872,7 +710,7 @@
 				return "";
 			}
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				var sanitizedString = esapiEncode('html', arguments.html);
+				var sanitizedString = htmlEditFormat(arguments.html);
 			}else{
 				var sanitizedString = encodeForHTML(arguments.html);
 			}
@@ -1286,7 +1124,7 @@
 	             apiRequestAudit.setParams( serializeJson(form) );
 	        }
 	        
-	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getStatus() );
 	        
 	        apiRequestAudit.setRequestType( arguments.requestType);
 	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
@@ -1318,14 +1156,6 @@
 			var localEpoch = utcEpoch + getTimeZoneOffsetInSecondsWithDST() * -1 ;
 			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
 		}
-		
-		
-		public string function prefixListItem(required string list, required string prefix) {
-			var prefix = arguments.prefix;
-			return ListMap(arguments.list , function(item){
-				return prefix & arguments.item; //beware of scope
-			})
-		}
 
 	</cfscript>
 
@@ -1336,16 +1166,16 @@
 		<cftry>
 			<cflog file="#getApplicationValue('applicationKey')#" text="START EXCEPTION" />
 			<cfif structKeyExists(arguments.exception, "detail") and isSimpleValue(arguments.exception.detail)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="Detail: #arguments.exception.detail#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.detail#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "errNumber") and isSimpleValue(arguments.exception.errNumber)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="errNumber: #arguments.exception.errNumber#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.errNumber#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "message") and isSimpleValue(arguments.exception.message)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="Message: #arguments.exception.message#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.message#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "stackTrace") and isSimpleValue(arguments.exception.stackTrace)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="Stack Trace: #arguments.exception.stackTrace#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.stackTrace#" />
 			</cfif>
 			<cflog file="#getApplicationValue('applicationKey')#" text="END EXCEPTION" />
 			<cfcatch>
@@ -1359,21 +1189,12 @@
 		<cfargument name="messageType" default="" />
 		<cfargument name="messageCode" default="" />
 		<cfargument name="templatePath" default="" />
-		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning | Trace  --->
+		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
 		<cfargument name="logPrefix" default="" />
 
 		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
 			<!--- Set default logPrefix if not explicitly provided --->
-			<cfif arguments.logType EQ "Trace">
-				<cfif NOT getHibachiScope().hasValue('startTimer')>
-					<cfset getHibachiScope().setValue('startTimer', getTickCount()) />
-					<cfset getHibachiScope().setValue('lastTimer', getTickCount()) />
-				</cfif>
-				<cfset var timeSpentSinceFirstMarker = getTickCount() - getHibachiScope().getValue('startTimer') />
-				<cfset var timeSpentSinceLastMarker = getTickCount() - getHibachiScope().getValue('lastTimer') />
-				<cfset getHibachiScope().setValue('lastTimer', getTickCount()) />
-			</cfif>
 			
 			<cfif not len(arguments.logPrefix)>
 				<cfif arguments.generalLog>
@@ -1385,9 +1206,6 @@
 			
 			<cfset var logText = arguments.logPrefix />
 
-			<cfif arguments.logType eq "Trace">
-				<cfset logText &= " - [ Time Spent: #timeSpentSinceLastMarker# / #timeSpentSinceFirstMarker# ]" />
-			</cfif>
 			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
 				<cfset logText &= " - #arguments.messageType#" />
 			</cfif>
@@ -1400,9 +1218,9 @@
 			<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
 				<cfset logText &= " - #arguments.message#" />
 			</cfif>
-			
+
 			<!--- Verify that the log type was correct --->
-			<cfif not ListFind("Information,Error,Fatal,Warning,Trace", arguments.logType)>
+			<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
 				<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
 				<cfset arguments.logType = "Information" />
 			</cfif>

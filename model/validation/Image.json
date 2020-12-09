@@ -1,5 +1,5 @@
 {
-	"properties": {
-		"imageFile": [{ "contexts": "save", "required": true }]
+	"properties":{
+		"imageFile":			[{"contexts":"save","required":true}]
 	}
 }

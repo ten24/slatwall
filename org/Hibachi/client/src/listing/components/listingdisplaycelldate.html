@@ -1,6 +1,5 @@
     <!---used by reporting where dates could be Year, Year-Month,Year-Week,Year-Week-Day,Year-Week-Day-Hour--->
-    <span ng-init="reportingFlag=!swListingDisplayCell.value.indexOf || (swListingDisplayCell.value.indexOf('-') > -1 && swListingDisplayCell.value.indexOf(',') === -1)"></span>
-    <span ng-if="reportingFlag" 
+    <span ng-if="!swListingDisplayCell.value.indexOf || (swListingDisplayCell.value.indexOf('-') > -1 && swListingDisplayCell.value.indexOf(',') === -1)" 
           ng-bind="swListingDisplayCell.value | swdatereporting: swListingDisplayCell.swListingDisplay.collectionConfig.periodInterval"
           popover="{{swListingDisplayCell.popover}}"
           popover-trigger="mouseenter"
@@ -9,18 +8,12 @@
           popover-append-to-body="true">
     </span>
     
-    <span ng-init="datetimeFlag=swListingDisplayCell.value.indexOf(':') > -1"></span>
-    <span ng-if="datetimeFlag" 
-          ng-bind="swListingDisplayCell.value | swdate:swListingDisplayCell.dateFormat"
+    <span ng-if="swListingDisplayCell.value.indexOf(':') > -1" 
+          ng-bind="swListingDisplayCell.value | swdate:'MM/dd/yyyy'"
           popover="{{swListingDisplayCell.popover}}"
           popover-trigger="mouseenter"
           popover-placement="bottom"
           popover-popup-delay="50"
           popover-append-to-body="true">
-    </span>
-    
-    <span 
-        ng-if="!reportingFlag && !datetimeFlag"
-        ng-bind="swListingDisplayCell.value">
     </span>
 

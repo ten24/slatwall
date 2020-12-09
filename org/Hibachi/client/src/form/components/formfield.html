@@ -54,8 +54,7 @@
 						data-property-display="swFormField">
 	</sw-form-field-file>
 
-	<textarea ng-switch-when="textarea" class="{{swFormField.class}}"  id="{{swFormField.name}}TextArea" ng-model="swFormField.object.data[swFormField.propertyIdentifier]" name="{{swFormField.propertyIdentifier}}"></textarea>
-	
+	<textarea ng-switch-when="textarea" class="{{swFormField.class}}"  id="{{swFormField.name}}TextArea" ng-model="swFormField.object[swFormField.name]" name="{{swFormField.name}}"></textarea>
 	<span ng-switch-when="checkbox">
 		<input type="checkbox" ng-model="swFormField.object.data[swFormField.propertyIdentifier]" class="{{swFormField.class}}">
 		<input style="display:none"	type="text"

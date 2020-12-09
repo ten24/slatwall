@@ -11,11 +11,7 @@ class SWFCartItemsController{
     constructor(private $rootScope, private observerService){
         this.loadingImages = true;
         this.$rootScope = $rootScope;
-        this.$rootScope.slatwall.doAction('getResizedImageByProfileName', {
-            profileName:'small',
-            skuIds:this.orderItem.sku.skuID,
-            'returnJsonObjects' :   'cart'
-        })
+        this.$rootScope.slatwall.doAction('getResizedImageByProfileName',{profileName:'small',skuIds:this.orderItem.sku.skuID})
         .then((result:any)=>{
             if(result){
                 this.orderItem.sku.smallImagePath = result.resizedImagePaths[this.orderItem.sku.skuID];
@@ -38,15 +34,10 @@ class SWFCartItemsController{
         let orderItemID = child ? child.orderItemID : this.orderItem.orderItemID;
         this.updateOrderItemQuantityIsLoading = true;
         let data = {
-            'orderItem.orderItemID' : orderItemID,
-            'orderItem.quantity'    : newQuantity,
-            'returnJsonObjects'     : 'cart'
+                'orderItem.orderItemID':orderItemID,
+                'orderItem.quantity':newQuantity
         };
-        this.$rootScope.slatwall.doAction('updateOrderItemQuantity',data)
-        .then( result => {
-            if ( result.successfulActions.length ) {
-                this.observerService.notify('updatedCart', result.cart);
-            }
+        this.$rootScope.slatwall.doAction('updateOrderItemQuantity',data).then(result=>{
             this.updateOrderItemQuantityIsLoading = false;
         });
     }
@@ -54,21 +45,14 @@ class SWFCartItemsController{
         let orderItemID = child ? child.orderItemID  : this.orderItem.orderItemID;
         this.removeOrderItemIsLoading = true;
         let data = {
-            'orderItemID'       : this.orderItem.orderItemID,
-            'returnJsonObjects' : 'cart'
+            'orderItemID':this.orderItem.orderItemID
         };
-        
-        this.$rootScope.slatwall.doAction('removeOrderItem',data)
-        .then(result=>{
-            if ( result.successfulActions.length ) {
-                this.observerService.notify('updatedCart', result.cart);
-            }
+        this.$rootScope.slatwall.doAction('removeOrderItem',data).then(result=>{
             this.removeOrderItemIsLoading = false;
         });
     }
-    
-    public clearCartItems = () => {
-        this.$rootScope.slatwall.doAction('clearOrder', { 'returnJsonObjects' :   'cart' });
+    public clearCartItems = ()=>{
+        this.$rootScope.slatwall.doAction('clearOrder',{});
     }
 }
  

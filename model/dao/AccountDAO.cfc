@@ -47,15 +47,11 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiDAO">
-	
-	<cffunction name="getSessionBySessionCookie" access="public">
-		<cfargument name="cookieName" required="true" type="string" />
-		<cfargument name="cookieValue" required="true" type="string" />
-		
-		<cfreturn ORMExecuteQuery('FROM SlatwallSession where #arguments.cookieName# = :cookievalue',{ cookievalue = arguments.cookieValue }, true, { maxresults = 1 }) />
-		
-	</cffunction>
-	
+	<cfscript>
+		public any function getSessionBySessionCookieNPSID(any cookie){
+			return ORMExecuteQuery('FROM SlatwallSession where sessionCookieNPSID = :cookievar',{cookievar=cookie["#getApplicationValue('applicationKey')#-NPSID"]},true,{maxresults=1});
+		}
+	</cfscript>
 	<cffunction name="getPrimaryEmailAddressNotInUseFlag" returntype="boolean" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		<cfargument name="accountID" type="string" />
@@ -85,60 +81,7 @@ Notes:
 		)/>
 		<cfreturn !primaryInUseData />
 	</cffunction>
-	
-	<cffunction name="getUsernameNotInUseFlag" returntype="boolean" access="public">
-		<cfargument name="username" required="true" type="string" />
-		<cfargument name="accountID" type="string" />
 
-		<cfset var comparisonValue =""/>
-		<cfif getApplicationValue("databaseType") eq "Oracle10g">
-			<cfset comparisonValue = "lower(username)"/>
-		<cfelse>
-			<cfset comparisonValue = "username"/>
-		</cfif>
-		
-		<cfset var params = {username=lcase(arguments.username)}/>
-		<cfset var hql = "SELECT count(username) from SlatwallAccount
-			WHERE #comparisonValue#=:username
-		"/>
-		<cfif structKeyExists(arguments,'accountID')>
-			<cfset params['accountID'] = arguments.accountID/>
-			<cfset hql &= " AND accountID != :accountID"/>
-		</cfif>
-
-		<!--- make sure that we enforce this only against other non guest accounts --->
-		<cfset var usernameNotInUseData = ormExecuteQuery(
-			hql
-			, params,
-			true
-			,{maxresults=1}
-		)/>
-
-		<cfreturn usernameNotInUseData EQ 0 />
-
-	</cffunction>
-	
-
-	<cffunction name="getGovernmentIdNotInUseFlag" returntype="boolean" access="public">
-		<cfargument name="governmentIdentificationNumberHashed" required="true" type="string" />
-		<cfargument name="siteID" required="true" type="string" />
-		<cfargument name="accountID" required="true" type="string" />
-		
-		<cfset var params = [arguments.governmentIdentificationNumberHashed, arguments.siteID, arguments.accountID]/>
-		<cfset var hql ="
-					Select count(accountGovIdentificationID) 
-					FROM SlatwallAccountGovernmentIdentification gid 
-					WHERE gid.governmentIdentificationNumberHashed = ? 
-					AND gid.account.accountCreatedSite.siteID = ?
-					AND gid.account.accountID != ?
-		"/>
-		<cfset var count = ormExecuteQuery( hql, params, true, {maxresults=1} )/>
-
-		<cfreturn count EQ 0 />
-
-	</cffunction>
-	
-	
 	<cffunction name="getAccountIDByPrimaryEmailAddress">
 		<cfargument name="emailAddress" required="true" type="string" />
 
@@ -372,32 +315,6 @@ Notes:
 		<cfset hql &= " ORDER BY aa.createdDateTime DESC"/>
 		<cfreturn ormExecuteQuery(hql, {emailAddress=lcase(arguments.emailAddress)}, true, {maxResults=1}) />
 	</cffunction>
-	
-	<cffunction name="getActivePasswordByUsername" returntype="any" access="public">
-		<cfargument name="username" required="true" type="string" />
-		
-		<cfset var comparisonValue =""/>
-		
-		<cfif getApplicationValue("databaseType") eq "Oracle10g">
-			<cfset comparisonValue = "lower(a.username)"/>
-		<cfelse>
-			<cfset comparisonValue = "a.username"/>
-		</cfif>
-		
-		<cfset var hql = "SELECT aa FROM #getApplicationKey()#AccountAuthentication aa 
-			INNER JOIN FETCH aa.account a 
-			WHERE aa.password is not null 
-			AND #comparisonValue# = :username "
-		/>
-		
-		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration.integrationID')>
-			<cfset hql &= " AND aa.integration.integrationID is null "/> 
-		</cfif>
-		<cfset hql &= " ORDER BY aa.createdDateTime DESC"/>
-		
-		<cfreturn ormExecuteQuery(hql, {username=lcase(arguments.username)}, true, {maxResults=1}) />
-
-	</cffunction>
 
 	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">
 		<cfargument name="accountID" required="true" type="string" />
@@ -427,14 +344,8 @@ Notes:
 
 	<cffunction name="getAccountWithAuthenticationByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
-		
-		<cfif getApplicationValue("databaseType") eq "Oracle10g">
-			<cfset comparisonValue = "lower(pea.emailAddress)"/>
-		<cfelse>
-			<cfset comparisonValue = "pea.emailAddress"/>
-		</cfif>
 
-		<cfset var accounts = ormExecuteQuery("SELECT a FROM #getApplicationKey()#Account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue# = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM #getApplicationKey()#AccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=lcase(arguments.emailAddress)}) />
+		<cfset var accounts = ormExecuteQuery("SELECT a FROM #getApplicationKey()#Account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress) = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM #getApplicationKey()#AccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=lcase(arguments.emailAddress)}) />
 		<cfif arrayLen(accounts)>
 			<cfreturn accounts[1] />
 		</cfif>
@@ -476,19 +387,6 @@ Notes:
 				accountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
 		</cfquery>
 	</cffunction>
-	
-	<cffunction name="removeAccountFromEmails">
-		<cfargument name="accountID" type="any" required="true" >
-
-		<cfquery name="local.emailQuery">
-			UPDATE
-				SwEmail
-			SET
-				accountID = null
-			WHERE
-				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
-		</cfquery>
-	</cffunction>
 
 	<cffunction name="removeAccountFromAuditProperties" returntype="void" access="public">
 		<cfargument name="accountID" type="string" required="true" />
@@ -514,16 +412,6 @@ Notes:
 			</cfloop>
 		</cfloop>
 
-	</cffunction>
-	
-	<cffunction name="setAccountPaymentMethodInactive" returntype="void" access="public">
-		<cfargument name="accountPaymentMethodID" required="true"  />
-		<cfset var rs = "" />
-		<cfquery name="rs">
-			UPDATE SwAccountPaymentMethod
-			SET activeFlag = false
-			WHERE accountPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" />
-		</cfquery>
 	</cffunction>
 
 	<cffunction name="removeAccountFromAllSessions" returntype="void" access="public">

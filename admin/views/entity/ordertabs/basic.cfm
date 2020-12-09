@@ -38,10 +38,10 @@
 				<hb:HibachiFieldDisplay title="#$.slatwall.rbkey('entity.order.quoteNumber')#" value="#rc.order.getShortReferenceID(false)#" edit="false" displayType="dl">
 			</cfif>
 
+			<!--- Default Stock Location --->
 			<!---location type ahead collection--->
-
+			
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
-
 			<!--- Order IP Address --->
 			<cfif !isNull(rc.order.getOrderOpenIPAddress())>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOpenIPAddress" edit="false">
@@ -74,23 +74,9 @@
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" displayType="table">
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="currencyCode" edit="false" displayType="table">
-				<cfif rc.order.getVATTotal() GT 0 >
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="VATTotal" edit="false" displayType="table">
-				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false" displayType="table">
-				<cfif rc.order.getVATTotal() EQ 0 >
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
-				</cfif>
-				
-				<!--- Display summarized fulfillment charge if no handling fees --->
-				<cfif not rc.order.getFulfillmentHandlingFeeTotal()>
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false" displayType="table">
-				<!--- Display fulfillment charge broken down by handling fees and delivery charges --->
-				<cfelse>
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentChargeTotalBeforeHandlingFees" edit="false" displayType="table">
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentHandlingFeeTotal" edit="false" displayType="table">
-				</cfif>
-				
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.status')#" />

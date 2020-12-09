@@ -23,22 +23,14 @@ class RbKeyService{
 		return this._loadedResourceBundle;
 	}
 
-    rbKey= (key: string, replaceStringData?: any) => {
-		var keyValue = this.getRBKey(key,this.appConfig.rbLocale);
-		
-		/**
-		 * const templateString = "Hello ${this.name}!";
-		   const replaceStringData = {
-			    name: "world"    
-			}
-		 * 
-		 */ 
+    rbKey= (key,replaceStringData) => {
+		////$log.debug('rbkey');
+		////$log.debug(key);
+		////$log.debug(this.getConfig().rbLocale);
 
-		if(replaceStringData) {
-			//coppied from  https://github.com/mikemaccana/dynamic-template
-			keyValue = keyValue.replace(/\${(.*?)}/g, (_, g) => replaceStringData[g]);
-		}
-		
+		var keyValue = this.getRBKey(key,this.appConfig.rbLocale);
+		////$log.debug(keyValue);
+
 		return keyValue;
 	}
 	getRBKey= (key:string,locale?:string,checkedKeys?:string,originalKey?:string) => {
@@ -73,8 +65,8 @@ class RbKeyService{
 				return keyValue;
 			}
 			if(this.resourceBundles[locale]){
-			var bundle = this.resourceBundles[locale];
-				if(angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
+				var bundle = this.resourceBundles[locale];
+				if(angular.isDefined(bundle[key])) {
 					//$log.debug('rbkeyfound:'+bundle[key]);
 					return bundle[key];
 				}
@@ -95,7 +87,7 @@ class RbKeyService{
 			if(localeListArray.length === 2)  {
 				bundle = this.resourceBundles[localeListArray[0]];
 
-				if(angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
+				if(angular.isDefined(bundle[key])) {
 					//$log.debug('rbkey found:'+bundle[key]);
 					return bundle[key];
 				}

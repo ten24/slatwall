@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Product Review" entityname="SlatwallProductReview" table="SwProductReview" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" {
+component displayname="Product Review" entityname="SlatwallProductReview" table="SwProductReview" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="product.productReviews" {
 
 	// Persistent Properties
 	property name="productReviewID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -55,19 +55,16 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	property name="review" hb_populateEnabled="public" ormtype="string" length="4000" hint="HTML Formated review of the Product";
 	property name="reviewTitle" hb_populateEnabled="public" ormtype="string";
 	property name="rating" hb_populateEnabled="public" ormtype="int";
-
+ 
 	// Related Object Properties (many-to-one)
 	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_formFieldType="typeahead";
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID"; 
 	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
-	property name="productReviewStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="productReviewStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=productReviewStatusType&orderBy=sortOrder";
+	property name="productReviewsStatus" cfc="Type" fieldtype="many-to-one" fkcolumn="productReviewsStatusTypeID" hb_formFieldType="select" hb_optionsSmartListData="f:parentType.systemCode=productReviewsStatusType&orderBy=sortOrder";
 	
 	// Related Object Properties (one-to-many)
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productReviewID" inverse="true" cascade="all-delete-orphan";
-	
-	// Related Object Properties (many-to-many)
-	property name="productReviewSites" singularname="productReviewSite" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwProductReviewSite" fkcolumn="productReviewID" inversejoincolumn="siteID";
-
+ 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
@@ -79,8 +76,7 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	
 	// Non-Persistent Properties
 	property name="ratingOptions" type="array" persistent="false";
-	property name="productReviewProductName" persistent="false" type="string";
-
+	
 	public any function init() {
 		setActiveFlag(0);
 
@@ -90,11 +86,10 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 		if(isNull(variables.rating)) {
 			variables.rating = 0;
 		}
+
 		return super.init();
 	}
 	
-	
-
 	public string function getReviewerGravatarURL(numeric size=80) {
 		var server = "http://www.gravatar.com";
 
@@ -216,17 +211,16 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 		if( isNull(getAccount()) && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ) {
 			setAccount(getHibachiScope().getAccount());
 		}
-		
 	}
-
-
+	
 	public string function getProductReviewProductName()
 	{
 		if(!isNull(getProduct())){
 			return getProduct().getProductName();	
-		}		
+		}
 	}
-	
+
+
 	// ===================  END:  ORM Event Hooks  =========================
 
 	// ================== START: Deprecated Methods ========================

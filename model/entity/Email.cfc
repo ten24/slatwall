@@ -62,10 +62,8 @@ component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors
 
 	property name="relatedObject" ormtype="string";
 	property name="relatedObjectID" ormtype="string";
-	
 
 	// Related Object Properties (many-to-one)
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 
 	// Related Object Properties (one-to-many)
 

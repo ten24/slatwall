@@ -74,11 +74,7 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/fonts/opensans/opensans.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui.min.css" rel="stylesheet">
-		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css?v=#$.slatwall.getApplicationValue('instantiationKey')#" rel="stylesheet">
-		<cfset local.customStylesheet = request.slatwallScope.getAccount().setting('accountCustomAdminStylesheet') />
-		<cfif !isNull(local.customStylesheet) >
-			<style>#local.customStylesheet#</style>
-		</cfif>
+		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css?v=#$.slatwall.getApplicationValue('version')#" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/metismenu/metismenu.css" rel="stylesheet">
@@ -148,10 +144,7 @@ Notes:
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" icon="inbox icon-white" type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listreturnorder" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listordertemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
 									<li class="divider"></li>
@@ -162,11 +155,8 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
 									<li class="divider"></li>
-									<hb:HibachiActionCaller action="admin:entity.listorderimportbatch" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listgiftcard" type="list">
-									<li class="divider"></li>
-									<hb:HibachiActionCaller action="admin:entity.listtemplateitembatch" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.accounts_nav')#" icon="user icon-white" type="nav">
@@ -238,7 +228,6 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listresourcebundle" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
 									
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
@@ -398,7 +387,6 @@ Notes:
 						<div class="modal-footer">
 							<a href="##" target="_self" class="btn btn-sm btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
 							<a href="##" target="_self" class="btn btn-sm btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
-							<button type="submit" form="adminConfirmForm" class="btn btn-sm btn-default btn-primary hide" id="confirmYesButton"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</button>
 						</div>
 					</div>
 				</div>
@@ -437,9 +425,10 @@ Notes:
 			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></hb:HibachiScript>
 		</cfif>
 
-		<!--- Webpack bundles--->
-		<cfinclude template="#request.slatwallScope.getBaseURL()#/admin/client/dist/SlatwallAdminBundle.cfm" />
-		
+		<!-- code split vendor bundle before the other bundles because its common among them. -->
+ 		
+ 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
+ 		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 
 	</body>

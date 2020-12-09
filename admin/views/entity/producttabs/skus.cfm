@@ -121,7 +121,7 @@ Notes:
 	--->
 
 	<sw-pricing-manager data-product-id="#rc.product.getProductID()#" 
-						data-track-inventory="#rc.product.setting('skuTrackInventoryFlag')#">
+						data-track-inventory="#getHibachiScope().getService('settingService').getSettingValue('skuTrackInventoryFlag', rc.product)#">
 
 	</sw-pricing-manager>
 

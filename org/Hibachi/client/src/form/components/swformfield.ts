@@ -156,10 +156,6 @@ class SWFormFieldController {
 					'propertyIdentifier':this.propertyIdentifier
 				};
 			}
-			
-			if(this.object.$$getID().length){
-				this.optionsArguments.entityID = this.object.$$getID();
-			}
 
 			var optionsPromise = this.$hibachi.getPropertyDisplayOptions(this.object.metaData.className,
 				this.optionsArguments

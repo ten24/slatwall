@@ -59,7 +59,7 @@
 			autoLoginLogoutFromSlatwall( $=$ );
 			
 			// Setup the correct local in the request object for the current site
-			//$.slatwall.setRBLocale( $.siteConfig('javaLocale') );
+			$.slatwall.setRBLocale( $.siteConfig('javaLocale') );
 			
 			// Setup the correct site in the request object
 			$.slatwall.setSite( $.slatwall.getService("siteService").getSiteByCMSSiteID( $.event('siteID') ) );
@@ -171,30 +171,8 @@
 					}
 				}
 				
-				
-				if ($.slatwall.setting('globalURLKeyAccount') == 'subdomain') {
-				
-					var accountCode = getHibachiScope().getSubdomain();
-					if(len(accountCode)){
-						
-						var account = $.slatwall.getService('accountService').getAccountByAccountCode(accountCode);
-			
-						if(isNull(account) || isNull(account.getAccountCreatedSite())){
-							$.event('contentBean', $.getBean("content"));
-							$.event().getHandler('standard404').handle($.event());
-							return;
-						}
-						// if(account.getAccountCreatedSite().getCMSSiteID() != $.event('siteID')){
-						// 	$.redirect( $.createHREF(filename=$.getBean("content").getFilename(), siteid=account.getAccountCreatedSite().getCMSSiteID()) );
-						// 	return;
-						// }
-						
-						$.slatwall.setRouteEntity("account", account);
-					}
-				
-				
 				// Look for the Account URL Key
-				} else if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
+				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
 					accountKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/");
 					if(accountKeyLocation < listLen($.event('path'),"/")) {
 						$.slatwall.setRouteEntity("account", $.slatwall.getService("addressService").getAccountByURLTitle(listGetAt($.event('path'), accountKeyLocation + 1, "/"), true) );
@@ -226,8 +204,10 @@
 						}
 					}
 				}
+				
 				// Setup the proper content node and populate it with our FW/1 view on any keys that might have been found, use whichever key was farthest right
 				if( productKeyLocation && productKeyLocation > productTypeKeyLocation && productKeyLocation > brandKeyLocation && !$.slatwall.getProduct().isNew() && $.slatwall.getProduct().getActiveFlag() && ($.slatwall.getProduct().getPublishedFlag() || $.slatwall.getProduct().setting('productShowDetailWhenNotPublishedFlag'))) {
+					
 					// Attempt to load up the content template node, based on this products setting
 					var productTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getProduct().setting('productDisplayTemplate', [$.slatwall.getSite()]) );
 					
@@ -243,13 +223,13 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProduct().getTitle() );
-						if(len($.slatwall.getProduct().setting(settingName='productHTMLTitleString', formatValue=true))) {
-							$.content().setHTMLTitle( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting(settingName='productHTMLTitleString', formatValue=true), formatValues = true ) );	
+						if(len($.slatwall.getProduct().setting('productHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productHTMLTitleString') ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getProduct().getTitle() );
 						}
-						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting(settingName='productMetaDescriptionString', formatValue=true), formatValues = true ) );
-						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting(settingName='productMetaKeywordsString', formatValue=true), formatValues = true ) );
+						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaKeywordsString') ) );
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
 							
@@ -294,13 +274,13 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProductType().getProductTypeName() );
-						if(len($.slatwall.getProductType().setting(settingName='productTypeHTMLTitleString', formatValue=true))) {
-							$.content().setHTMLTitle( $.slatwall.getProductType().stringReplace( template = $.slatwall.getProductType().setting(settingName='productTypeHTMLTitleString', formatValue=true), formatValues = true ) );	
+						if(len($.slatwall.getProductType().setting('productTypeHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeHTMLTitleString') ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getProductType().getProductTypeName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getProductType().stringReplace( template = $.slatwall.getProductType().setting(settingName='productTypeMetaDescriptionString', formatValue=true), formatValues = true ) );
-						$.content().setMetaKeywords( $.slatwall.getProductType().stringReplace( template = $.slatwall.getProductType().setting(settingName='productTypeMetaKeywordsString', formatValue=true), formatValues = true ) );
+						$.content().setMetaDesc( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -325,13 +305,13 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getBrand().getBrandName() );
-						if(len($.slatwall.getBrand().setting(settingName='brandHTMLTitleString', formatValue=true))) {
-							$.content().setHTMLTitle( $.slatwall.getBrand().stringReplace( template = $.slatwall.getBrand().setting(settingName='brandHTMLTitleString', formatValue=true), formatValues = true ) );	
+						if(len($.slatwall.getBrand().setting('brandHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandHTMLTitleString') ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getBrand().getBrandName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getBrand().stringReplace( template = $.slatwall.getBrand().setting(settingName='brandMetaDescriptionString', formatValue=true), formatValues = true ) );
-						$.content().setMetaKeywords( $.slatwall.getBrand().stringReplace( template = $.slatwall.getBrand().setting(settingName='brandMetaKeywordsString', formatValue=true), formatValues = true ) );
+						$.content().setMetaDesc( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -359,13 +339,13 @@
 						if (!isNull($.slatwall.getRouteEntity("address").getName())) {
 							$.content().setTitle( $.slatwall.getRouteEntity("address").getName() );
 						}
-						if(len($.slatwall.getRouteEntity("address").setting(settingName='addressHTMLTitleString', formatValue=true))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").stringReplace( template = $.slatwall.getRouteEntity("address").setting(settingName='addressHTMLTitleString', formatValue=true), formatValues = true ) );	
+						if(len($.slatwall.getRouteEntity("address").setting('addressHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressHTMLTitleString') ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").getName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRouteEntity("address").stringReplace( template = $.slatwall.getRouteEntity("address").setting(settingName='addressMetaDescriptionString', formatValue=true), formatValues = true ) );
-						$.content().setMetaKeywords( $.slatwall.getRouteEntity("address").stringReplace( template = $.slatwall.getRouteEntity("address").setting(settingName='addressMetaKeywordsString', formatValue=true), formatValues = true ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -391,13 +371,13 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getRouteEntity("account").getFirstName() & " " & $.slatwall.getRouteEntity("account").getLastName() );
-						if(len($.slatwall.getRouteEntity().setting(settingName='accountHTMLTitleString', formatValue=true))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").stringReplace( template = $.slatwall.getRouteEntity("account").setting(settingName='accountHTMLTitleString', formatValue=true), formatValues = true ) );	
+						if(len($.slatwall.getRouteEntity().setting('accountHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountHTMLTitleString') ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").getFirstName() & " " & $.slatwall.getRouteEntity("account").getLastName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRouteEntity("account").stringReplace( template = $.slatwall.getRouteEntity("account").setting(settingName='accountMetaDescriptionString', formatValue=true), formatValues = true ) );
-						$.content().setMetaKeywords( $.slatwall.getRouteEntity("account").stringReplace( template = $.slatwall.getRouteEntity("account").setting(settingName='accountMetaKeywordsString', formatValue=true), formatValues = true ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -421,13 +401,13 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getRouteEntity("category").getCategoryName() );
-						if(len($.slatwall.getRouteEntity("category").setting(settingName='categoryHTMLTitleString', formatValue=true))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").stringReplace( template = $.slatwall.getRouteEntity("category").setting(settingName='categoryHTMLTitleString', formatValue=true), formatValues = true ) );	
+						if(len($.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString') ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").getCategoryName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRouteEntity("category").stringReplace( template = $.slatwall.getRouteEntity("category").setting(settingName='categoryMetaDescriptionString', formatValue=true), formatValues = true ) );
-						$.content().setMetaKeywords( $.slatwall.getRouteEntity("category").stringReplace( template = $.slatwall.getRouteEntity("category").setting(settingName='categoryMetaKeywordsString', formatValue=true), formatValues = true ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -451,13 +431,13 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getRouteEntity("attribute").getAttributeName() );
-						if(len($.slatwall.getRouteEntity("attribute").setting(settingName='attributeHTMLTitleString', formatValue=true))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").stringReplace( template = $.slatwall.getRouteEntity("attribute").setting(settingName='attributeHTMLTitleString', formatValue=true), formatValues = true ) );	
+						if(len($.slatwall.getRouteEntity("attribute").setting('attributeHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeHTMLTitleString') ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").getAttributeName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRouteEntity("attribute").stringReplace( template = $.slatwall.getRouteEntity("attribute").setting(settingName='attributeMetaDescriptionString', formatValue=true), formatValues = true ) );
-						$.content().setMetaKeywords( $.slatwall.getRouteEntity("attribute").stringReplace( template = $.slatwall.getRouteEntity("attribute").setting(settingName='attributeMetaKeywordsString', formatValue=true), formatValues = true ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -875,7 +855,11 @@
 		// This method is explicitly called during application reload from the conntector plugins onApplicationLoad() event
 		public void function verifySetup( required any $ ) {
 		
-
+			// Adding conditional statement to ensure backwards compatibility
+			// slatwallScope should exist because Slatwall Mura plugin (plugins/slatwall-mura/eventHandler.cfc) invokes slatwallApplication.reloadApplication() which creates hibachiScope. Need to set a flag so verifySlatwallRequest() will explicitly invoke slatwallApplication.bootstrap()
+			if (structKeyExists(request, 'slatwallScope')) {
+				request.slatwallScope.setValue('forceBootstrapFlag', true);
+			}
 			
 			verifySlatwallRequest( $=$ );
 			

@@ -35,6 +35,7 @@ class SWListingReportController {
     public createdByAccountID:string;
     public swListingDisplay:any;
     public isPublic:boolean;
+    public reportChanged:boolean;
     public accountOwnerID:string;
     public initchartobj:any;
     public comparechartobj: any;
@@ -65,8 +66,14 @@ class SWListingReportController {
                 this.selectReport(selectedReport);
             });
         }else{
-            this.getPeriodColumns();
+            this.getPeriodColumns().then(()=>{
+            this.selectPeriodColumn(this.periodColumns[this.periodColumns.findIndex( periodColumn => periodColumn.name === 'createdDateTime')]);
+            this.selectPeriodInterval('day');
+            this.startDate = new Date().addDays(-30);
+            this.endDate = new Date();
+            })
             this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
+            $("#get-started-report").removeClass("hide");
         }
         
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
@@ -86,6 +93,12 @@ class SWListingReportController {
     
     
     public saveReportCollection = (collectionName?)=>{
+        //Prevent saving report if no aggregate column is selected
+        if(!this.hasMetric) 
+        {
+            this.hasMetric = false;
+            return;
+        }
         if(collectionName || this.collectionId){
             
             
@@ -107,12 +120,14 @@ class SWListingReportController {
                 serializedJSONData['collectionName'] = collectionName;
             }
             
-            this.$hibachi.savePersonalCollection(
+            this.$hibachi.saveEntity(
+                'Collection',
+                this.collectionId || "",
                 {
-                    'entityID': this.collectionId,
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
-                }  
+                },
+                'save'  
             ).then((data)=>{
                 if(this.collectionId){
                     
@@ -235,21 +250,24 @@ class SWListingReportController {
             
             this.endDate = new Date(this.endDate);
             this.endDate.setHours(23,59,59,999);
-            //if date is in the wrong format then update those dates
-            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
-                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
-                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
-            }
+            
             this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
             //if the interval is an hour than we should only be able to show data for one day
             if(this.selectedPeriodInterval.value=='hour'){
                 this.tempEndDate = this.endDate;
-                this.endDate = new Date(this.startDate).addDays(1).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.startDate).addDays(1);//.toString('MMM dd, yyyy hh:mm tt');
             }else if(this.tempEndDate){
                 this.endDate = this.tempEndDate;
                 delete this.tempEndDate;
             }
+            
+            //if date is in the wrong format then update those dates
+            if(this.startDate.indexOf && this.startDate.indexOf('000Z') != -1){
+                this.startDate = new Date(this.startDate).toString('MMM dd, yyyy hh:mm tt');
+                this.endDate = new Date(this.endDate).toString('MMM dd, yyyy hh:mm tt');
+            }
+            
             for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
                 if(column.aggregate && column.aggregate.aggregateFunction && column.aggregate.aggregateFunction.length){
@@ -316,18 +334,18 @@ class SWListingReportController {
         this.endDateCompare = new Date(this.endDateCompare);
         this.endDateCompare.setHours(23,59,59,999);
         
+        if(this.selectedPeriodInterval.value=='hour'){
+            this.tempEndDateCompare= this.endDateCompare
+            this.endDateCompare = new Date(this.startDateCompare).addDays(1);//.toString('MMM dd, yyyy hh:mm tt');
+        }else if (this.tempEndDateCompare){
+            this.endDateCompare = this.tempEndDateCompare;
+            delete this.tempEndDateCompare;
+        }
+        
         //if date is in the wrong format then update those dates
         if(this.startDateCompare.indexOf && this.startDateCompare.indexOf('000Z') != -1){
             this.startDateCompare = new Date(this.startDateCompare).toString('MMM dd, yyyy hh:mm tt');
             this.endDateCompare = new Date(this.endDateCompare).toString('MMM dd, yyyy hh:mm tt');
-        }
-        
-        if(this.selectedPeriodInterval.value=='hour'){
-            this.tempEndDateCompare= this.endDateCompare
-            this.endDateCompare = new Date(this.startDateCompare).addDays(1).toString('MMM dd, yyyy hh:mm tt');
-        }else if (this.tempEndDateCompare){
-            this.endDateCompare = this.tempEndDateCompare;
-            delete this.tempEndDateCompare;
         }
         
         this.compareReportCollectionConfig = this.collectionConfig.clone();
@@ -358,7 +376,7 @@ class SWListingReportController {
         this.reportingData = reportingData;
 		var dates = [];
 		var datasets = [];
-		
+		this.reportChanged=true;
 		
         
 		if(ctx.is($("#myChartCompare"))){
@@ -412,6 +430,12 @@ class SWListingReportController {
 		});
 		//used to clear old rendered charts before adding new ones
 		
+		if(ctx.is($("#myChartCompare"))){
+		    var chart_label = `${this.startDateCompare.toDateString ? this.startDateCompare.toDateString():this.startDate} - ${this.endDateCompare.toDateString?this.endDateCompare.toDateString():this.endDateCompare}`;
+		}
+		else{
+		    var chart_label = `${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate}`;
+		}
         chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -423,7 +447,7 @@ class SWListingReportController {
                 responsive: true,
                 title:{
                   display:true,
-                  text:`(${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate})`
+                  text:'('+chart_label+')'
                 },
                 scales: {
                     yAxes: [{
@@ -514,7 +538,7 @@ class SWListingReportController {
                     this.periodColumns.push(column);
                 }
             }
-            
+
         });
         return promise;
     }
@@ -565,8 +589,7 @@ class SWListingReportController {
 
 class SWListingReport  implements ng.IDirective{
 
-    public template= require('./listingreport.html');
-
+    public templateUrl;
     public restrict = 'EA';
     public scope = {};
     public bindToController =  {
@@ -577,12 +600,27 @@ class SWListingReport  implements ng.IDirective{
     public controller = SWListingReportController;
     public controllerAs = 'swListingReport';
     public require={swListingDisplay:"?^swListingDisplay"};
-    
     //@ngInject
-    constructor(public scopeService){}
+    constructor(
+        public scopeService,
+        public collectionPartialsPath, 
+        public hibachiPathBuilder
+    ){
+        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingreport.html";
+    }
 
-     public static Factory(){
-        return /** @ngInject */ (scopeService)=> new this(scopeService)
+    public static Factory(){
+        var directive = (
+            scopeService,
+            listingPartialPath,
+            hibachiPathBuilder
+        )=> new SWListingReport(
+            scopeService,
+            listingPartialPath,
+            hibachiPathBuilder
+        );
+        directive.$inject = [ 'scopeService', 'listingPartialPath', 'hibachiPathBuilder'];
+        return directive;
     }
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

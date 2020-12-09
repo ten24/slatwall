@@ -54,7 +54,6 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showMultiSite="true" includeSettingNamesOnlyForSites="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods">
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
-		<swa:SlatwallSetting settingName="skuBackorderLimit" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" settingObject="#rc.sku#" />
@@ -72,14 +71,11 @@ Notes:
 		<swa:SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.sku#" />
-		<swa:SlatwallSetting settingName="skuTrackQATSBelowThreshold" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuStockHold" settingObject="#rc.sku#"/>
 		<swa:SlatwallSetting settingName="skuStockHoldTime" settingObject="#rc.sku#"/>
-		<swa:SlatwallSetting settingName="skuDisableAverageCostCalculation" settingObject="#rc.sku#"/>
-		<swa:SlatwallSetting settingName="skuDisableQoQCalculation" settingObject="#rc.sku#"/>
 		
 		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "gift-card">
 			<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.sku#" />
@@ -109,10 +105,5 @@ Notes:
 		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "subscription">
 			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.sku#"/>
 		</cfif>
-		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "miscFee">
-			<swa:SlatwallSetting settingName="skuIsRefundFee" settingObject="#rc.sku#"/>
-		</cfif>
-		<swa:SlatwallSetting settingName="skuAllowableRefundPercentages" settingObject="#rc.sku#"/>
-
 	</swa:SlatwallSettingTable>
 </cfoutput>

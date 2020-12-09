@@ -16,7 +16,8 @@ class SWGiftCardHistoryController{
         var totalDebit:number = 0; 
         
         var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
-        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime,reasonForAdjustment,adjustedByAccount.calculatedFullName", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime,reasonForAdjustment,adjustedBy");
+        
+        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
         transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
         transactionConfig.setAllRecords(true);
         transactionConfig.setOrderBy("createdDateTime|DESC");
@@ -40,7 +41,7 @@ class SWGiftCardHistoryController{
                 this.bouncedEmails = response.records; 
 
                 transactionConfig.getEntity().then((response)=>{
-                    this.transactions = response.records;
+                    this.transactions = response.records; 
                     var initialCreditIndex = this.transactions.length-1;
                     var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
                     var currentBalance = initialBalance; 

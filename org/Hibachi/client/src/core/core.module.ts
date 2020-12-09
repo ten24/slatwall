@@ -5,8 +5,6 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 //constant
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
-import { PublicRequest } from "./model/transient/publicrequest";
-
 //services
 import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
@@ -43,17 +41,13 @@ import {GlobalSearchController} from "./controllers/globalsearch";
 //filters
 import {PercentageFilter} from "./filters/percentage";
 import {EntityRBKey} from "./filters/entityrbkey";
-import {SWCurrency} from "./filters/swcurrency";
 import {SWTrim} from "./filters/swtrim";
 import {SWUnique} from "./filters/swunique";
 import {DateFilter} from "./filters/datefilter";
 import {DateReporting} from "./filters/datereporting";
-import {OrdinalFilter} from "./filters/ordinal";
-
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
-import {SWAddressVerification} from "./components/swaddressverification";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
 import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect";
@@ -63,11 +57,9 @@ import {SWCollectionConfig} from "./components/swcollectionconfig";
 import {SWCollectionFilter} from "./components/swcollectionfilter";
 import {SWCollectionOrderBy} from "./components/swcollectionorderby";
 import {SWCollectionColumn} from "./components/swcollectioncolumn";
-import {SWCurrencyFormatter} from "./components/swcurrencyformatter";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
 import {SWConfirm} from "./components/swconfirm";
-import {SWDatePicker} from "./components/swdatepicker";
 import {SWDraggable} from "./components/swdraggable";
 import {SWDraggableContainer} from "./components/swdraggablecontainer";
 import {SWEntityActionBar} from "./components/swentityactionbar";
@@ -97,8 +89,7 @@ import {SWOrderByControls} from "./components/sworderbycontrols";
 
 import {alertmodule} from "../alert/alert.module";
 import {dialogmodule} from "../dialog/dialog.module";
-import {cacheModule} from "../cache/cache.module";
-import {angularModalModule} from "../modal/modal.module";
+
 
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
@@ -108,51 +99,21 @@ var coremodule = angular.module('hibachi.core',[
   'ngAnimate',
   'ngRoute',
   'ngSanitize',
-  cacheModule.name,
-  alertmodule.name,
-  dialogmodule.name,
   //3rdParty modules
   'ui.bootstrap',
-  angularModalModule.name
+  alertmodule.name,
+  dialogmodule.name
 ])
-.config(
-    [ '$compileProvider','$httpProvider','$logProvider',
-      '$filterProvider','$provide','hibachiPathBuilder',
-      'appConfig','ModalServiceProvider',
-    ( 
-      $compileProvider,$httpProvider,$logProvider,
-      $filterProvider,$provide,hibachiPathBuilder,
-      appConfig,ModalServiceProvider
-    ) => {
-		
+.config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
-    
-    if(__DEBUG_MODE__){
-        $logProvider.debugEnabled( true );
-        $compileProvider.debugInfoEnabled(true);
-    } 
-    else {
-        /**
-         * https://docs.angularjs.org/guide/production
-         * 
-         */
-        $logProvider.debugEnabled( false );
-        
-        /**
-         *  No  `angular.element($0).scope()`` after disabling this
-         *  you can do `andular.reloadWithDebugInfo()` from browser's console to enable this temporarily
-         */
-        $compileProvider.debugInfoEnabled(false);
-        
-        //available after 1.6
-        // $compileProvider.commentDirectivesEnabled(false);
-        // $compileProvider.cssClassDirectivesEnabled(false);
+    if(!appConfig.debugFlag){
+        appConfig.debugFlag = false;    
     }
+    $logProvider.debugEnabled( appConfig.debugFlag );
     
-    
-    $filterProvider.register('likeFilter',function(){
+     $filterProvider.register('likeFilter',function(){
          return function(text){
              if(angular.isDefined(text) && angular.isString(text)){
                  return text.replace(new RegExp('%', 'g'), '');
@@ -160,8 +121,8 @@ var coremodule = angular.module('hibachi.core',[
              }
          };
      });
-    //This filter is used to shorten a string by removing the charecter count that is passed to it and ending it with "..."
-    $filterProvider.register('truncate',function(){
+     //This filter is used to shorten a string by removing the charecter count that is passed to it and ending it with "..."
+     $filterProvider.register('truncate',function(){
          return function (input, chars, breakOnWord) {
              if (isNaN(chars)) return input;
              if (chars <= 0) return '';
@@ -183,8 +144,8 @@ var coremodule = angular.module('hibachi.core',[
              return input;
          };
      });
-    //This filter is used to shorten long string but unlike "truncate", it removes from the start of the string and prepends "..."
-    $filterProvider.register('pretruncate',function(){
+     //This filter is used to shorten long string but unlike "truncate", it removes from the start of the string and prepends "..."
+     $filterProvider.register('pretruncate',function(){
          return function (input, chars, breakOnWord) {
              if (isNaN(chars)) return input;
              if (chars <= 0) return '';
@@ -208,21 +169,19 @@ var coremodule = angular.module('hibachi.core',[
          };
      });
 
+
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
-    // $provide.decorator('$hibachi',
-    $httpProvider.interceptors.push('hibachiInterceptor');
+   // $provide.decorator('$hibachi',
+   $httpProvider.interceptors.push('hibachiInterceptor');
    
-    //Pulls seperate http requests into a single digest cycle.
-    $httpProvider.useApplyAsync(true);
-    
-    // to set a default close delay on modals
-	ModalServiceProvider.configureOptions({ closeDelay: 0 });
+   //Pulls seperate http requests into a single digest cycle.
+   $httpProvider.useApplyAsync(true);
+
 }])
-.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService', ($rootScope,$hibachi, $route, $location,rbkeyService)=>{
+.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService',($rootScope,$hibachi, $route, $location,rbkeyService)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
     $rootScope.rbKey = rbkeyService.rbKey;
-    
     var original = $location.path;
     $location.path = function (path, reload) {
         if (reload === false) {
@@ -268,18 +227,17 @@ var coremodule = angular.module('hibachi.core',[
 .service('cartService',CartService)
 .service('hibachiValidationService',HibachiValidationService)
 .service('entityService',EntityService)
+
 //controllers
 .controller('globalSearch',GlobalSearchController)
-//filters
+//filters 
 .filter('dateFilter',['$filter',DateFilter.Factory])
-.filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])
 .filter('swdatereporting',['$filter',DateReporting.Factory])
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 .filter('swdate',['$filter',DateFilter.Factory])
 .filter('unique',[SWUnique.Factory])
-.filter('ordinal',OrdinalFilter.Factory)
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())
@@ -292,11 +250,8 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swTypeaheadRemoveSelection', SWTypeaheadRemoveSelection.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
-.directive('swAddressVerification',SWAddressVerification.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
 .directive('swConfirm',SWConfirm.Factory())
-.directive('swCurrencyFormatter', SWCurrencyFormatter.Factory())
-.directive('swDatePicker', SWDatePicker.Factory())
 .directive('swEntityActionBar',SWEntityActionBar.Factory())
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
@@ -321,15 +276,9 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swExportAction',SWExportAction.Factory())
 .directive('swHref',SWHref.Factory())
 .directive('swProcessCaller',SWProcessCaller.Factory())
-.directive('swSortable',SWSortable.Factory())
+.directive('sw:sortable',SWSortable.Factory())
 .directive('swOrderByControls', SWOrderByControls.Factory())
 ;
 export{
-	coremodule,
-	PublicService,
-	PublicRequest,
-	RequestService,
-	ObserverService,
-	UtilityService,
-	RbKeyService
+	coremodule
 }

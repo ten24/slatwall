@@ -60,22 +60,18 @@ Notes:
 		
 		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false">
 			<hb:HibachiProcessCaller action="admin:entity.processIntegration" entity="#rc.integration#" processContext="test" type="list" hideDisabled="false" />
-			<cfif !isNull(integrationCFC)>
-    			<cfloop array="#integrationCFC.getDetailActions()#" index="local.detailAction">
-    			    <hb:HibachiActionCaller 
-    			        action="#detailAction.action#" 
-    			        type="list" 
-    			        modal="#structKeyExists(detailAction,'modal')?detailAction.modal:false#"
-    			    />
-    			</cfloop>
-			</cfif>
+			<cfloop array="#integrationCFC.getDetailActions()#" index="detailAction">
+			    <hb:HibachiActionCaller 
+			        action="#detailAction.action#" 
+			        type="list" 
+			        modal="#structKeyExists(detailAction,'modal')?detailAction.modal:false#"
+			    />
+			</cfloop>
 		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiEntityDetailGroup object="#rc.integration#">
 			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif !isNull(integrationCFC)>
-			    <hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
-			</cfif>
+			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>

@@ -1,13 +1,13 @@
 {
-	"conditions": {
-		"skuIsNewFlag": {
-			"sku.newFlag": { "eq": true }
+	"conditions":{
+		"skuIsNewFlag":{
+			"sku.newFlag":{"eq":true}
 		}
 	},
 
-	"properties": {
-		"productTypeID": [{ "required": true }],
-		"price": [{ "conditions": "skuIsNewFlag", "required": true, "dataType": "numeric", "minValue": 0 }],
-		"productCode": [{ "required": true }]
+	"properties":{
+	    "productTypeID":		[{"required":true}],
+		"price":				[{"conditions":"skuIsNewFlag","required":true,"dataType":"numeric","minValue":0}],
+		"productCode":			[{"required":true}]
 	}
 }

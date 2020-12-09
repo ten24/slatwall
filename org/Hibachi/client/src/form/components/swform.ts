@@ -12,7 +12,6 @@ class SWFormController {
     public entityName:string;
     public action:string;
     public actions:string;
-    public returnJsonObjects: string;
     public object:any;
     public events: any;
     public name: string;
@@ -273,7 +272,6 @@ class SWFormController {
 
         angular.forEach(iterable, (val, key) => {
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                 
                  if(this.object.forms[this.name][key].$modelValue != undefined){
                     val = this.object.forms[this.name][key].$modelValue;
                 }else if(this.object.forms[this.name][key].$viewValue != undefined){
@@ -294,9 +292,6 @@ class SWFormController {
             else{
             }
         });
-        
-        
-        this.formData['returnJsonObjects'] = this.returnJsonObjects;
         
         return this.formData || "";
     }
@@ -321,7 +316,6 @@ class SWForm implements ng.IDirective {
             hiddenFields: "=?",
             action: "@?",
             actions: "@?",
-            returnJsonObjects: '@?',
             formClass: "@?",
             formData: "=?",
             errorClass: '@?',

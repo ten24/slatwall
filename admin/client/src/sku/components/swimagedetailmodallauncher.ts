@@ -113,7 +113,7 @@ class SWImageDetailModalLauncherController{
             data.append('imageFile', this.sku.data.imageFile);
         } else if(this.imageFileName){
             data.append('imageFile', this.imageFileName);
-        }
+        } 
        
         const inputs = $('input[type=file]');
         for(var input of <any>inputs){

@@ -73,7 +73,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
 	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID";
 	property name="eventRegistration" cfc="EventRegistration" fieldtype="many-to-one" fkcolumn="eventRegistrationID";
-	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID";
 	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
@@ -81,7 +80,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
-	property name="orderTemplate" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="option" cfc="Option" fieldtype="many-to-one" fkcolumn="optionID";
@@ -371,25 +369,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "eventRegistration");
 	}
-	
-	// EmailTemplate (many-to-one)
-  	public void function setEmailTemplate(required any emailTemplate) {
-  		variables.emailTemplate = arguments.emailTemplate;
-  		if(isNew() or !arguments.emailTemplate.hasAttributeValue( this )) {
-  			arrayAppend(arguments.emailTemplate.getAttributeValues(), this);
-  		}
-  	}
-
-  	public void function removeEmailTemplate(any emailTemplate) {
-  		if(!structKeyExists(arguments, "emailTemplate")) {
-  			arguments.emailTemplate = variables.emailTemplate;
-  		}
-  		var index = arrayFind(arguments.emailTemplate.getAttributeValues(), this);
-  		if(index > 0) {
-  			arrayDeleteAt(arguments.emailTemplate.getAttributeValues(), index);
-  		}
-  		structDelete(variables, "emailTemplate");
-  	}
 
 	// File (many-to-one)
 	public void function setFile(required any file) {
@@ -516,25 +495,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "orderPayment");
 	}
-	
-		// Order Template (many-to-one)
-	public void function setOrderTemplate(required any orderTemplate) {
-		variables.orderTemplate = arguments.orderTemplate;
-		if(isNew() or !arguments.orderTemplate.hasAttributeValue( this )) {
-			arrayAppend(arguments.orderTemplate.getAttributeValues(), this);
-		}
-	}
-	public void function removeOrderTemplate(any orderTemplate) {
-		if(!structKeyExists(arguments, "orderTemplate")) {
-			arguments.orderTemplate = variables.orderTemplate;
-		}
-		var index = arrayFind(arguments.orderTemplate.getAttributeValues(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.orderTemplate.getAttributeValues(), index);
-		}
-		structDelete(variables, "orderTemplate");
-	}
-	
 
 	// Order Fulfillment (many-to-one)
 	public void function setOrderFulfillment(required any orderFulfillment) {

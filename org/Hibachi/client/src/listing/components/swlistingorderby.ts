@@ -22,14 +22,21 @@ class SWListingOrderBy implements ng.IDirective{
     };
     public controller=SWListingOrderByController;
     public controllerAs="swListingOrderBy";
-    
-    
     public static Factory(){
-        return /** @ngInject */ (utilityService)=> new this(utilityService);
+        var directive:ng.IDirectiveFactory=(
+            utilityService
+        )=>new SWListingOrderBy(
+            utilityService
+        );
+        directive.$inject = [
+            'utilityService'
+        ];
+        return directive;
     }
-    
     //@ngInject
-    constructor(private utilityService){}
+    constructor(private utilityService){
+
+    }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 
@@ -38,6 +45,7 @@ class SWListingOrderBy implements ng.IDirective{
         };
 
         scope.$parent.swListingDisplay.orderBys.push(orderBy);
+
     }
 }
 export{

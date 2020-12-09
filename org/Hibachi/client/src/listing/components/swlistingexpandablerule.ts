@@ -48,12 +48,23 @@ class SWListingExpandableRule implements ng.IDirective{
     public controller=SWListingExpandableRuleController;
     public controllerAs="swListingExpandableRule";
 
-
     public static Factory(){
-        return /** @ngInject */ (scopeService, $q) => new this(scopeService, $q);
+        var directive:ng.IDirectiveFactory=(
+            scopeService,
+            $q
+        )=>new SWListingExpandableRule(
+            scopeService,
+            $q
+        );
+        directive.$inject = [
+            'scopeService',
+            '$q'
+        ];
+        return directive;
     }
-    
-    constructor(private scopeService, private $q){}
+    constructor(private scopeService, private $q){
+
+    }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
          scope.swListingExpandableRule.hasChildrenCollectionConfigPromise.then(()=>{

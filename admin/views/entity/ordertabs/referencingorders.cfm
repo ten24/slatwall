@@ -55,10 +55,9 @@ Notes:
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#rc.order.getReferencingOrdersSmartList()#" 
 			recordDetailAction="admin:entity.detailorder">
-		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="orderNumber" title="#getHibachiScope().rbKey('entity.order.referencingOrders.orderNumber')#" />
-		<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#getHibachiScope().rbKey('entity.order.referencingOrders.orderStatusType')#" />
-		<hb:HibachiListingColumn propertyIdentifier="orderType.typeName" title="#getHibachiScope().rbKey('entity.order.referencingOrders.orderType')#" />
+		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="orderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="account.fullName" sort="false" />
+		<hb:HibachiListingColumn propertyIdentifier="orderType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
 	</hb:HibachiListingDisplay>
 </cfoutput>
