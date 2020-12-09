@@ -40,10 +40,6 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
     $rootScope.slatwall.getProcessObject = entityService.newProcessObject;
     $rootScope.slatwall.getEntity = entityService.newEntity;
     $rootScope.slatwall.$hibachi.appConfig.apiSubsystemName = hibachiPathBuilder.apiSubsystemName;
-    
-    if(hibachiConfig && hibachiConfig.cmsSiteID){
-        $rootScope.slatwall.cmsSiteID = hibachiConfig.cmsSiteID;
-    }
 }])
 .constant('coreFrontEndPartialsPath','frontend/components/')
 

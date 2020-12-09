@@ -16,6 +16,5 @@
 		<Record productTypeID="444df2f7ea9c87e60051f3cd87b435a1" productTypeIDPath="444df2f7ea9c87e60051f3cd87b435a1" parentProductTypeID="NULL" productTypeName="Merchandise" systemCode="merchandise" urlTitle="merchandise" activeFlag="1" />
 		<Record productTypeID="ad9bb5c8f60546e0adb428b7be17673e" productTypeIDPath="ad9bb5c8f60546e0adb428b7be17673e" parentProductTypeID="NULL" productTypeName="Product Bundle" systemCode="productBundle" urlTitle="product-bundle" activeFlag="1" />
 		<Record productTypeID="444df2f9c7deaa1582e021e894c0e299" productTypeIDPath="444df2f9c7deaa1582e021e894c0e299" parentProductTypeID="NULL" productTypeName="Subscription" systemCode="subscription" urlTitle="subscription" activeFlag="1" />
-		<Record productTypeID="e9d52618d98011e9b98712bff9d404c8" productTypeIDPath="e9d52618d98011e9b98712bff9d404c8" parentProductTypeID="NULL" productTypeName="Miscellaneous Fee" systemCode="miscFee" urlTitle="miscFee" activeFlag="1" />
 	</Records>
 </Table>

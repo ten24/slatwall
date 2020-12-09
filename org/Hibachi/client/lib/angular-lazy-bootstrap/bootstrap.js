@@ -28,31 +28,18 @@
         }
         return angular.injector(modules);
     }
-    
-    /**
-     * `config = {  strictDi: boolean }`
-     * `strictDi` - disable automatic function annotation for the application. 
-     * This is meant to assist in finding bugs which break minified code. 
-     * 
-     * Defaults to `false`.
-     * 
-     */
-    function bootstrapApplication(angularApp, config) {
-        
+
+    function bootstrapApplication(angularApp) {
         angular.element(document).ready(function () {
         	try{
-        	    // https://docs.angularjs.org/api/ng/function/angular.bootstrap
 	        	if(angular.isArray(angularApp)){
-	        		angular.bootstrap(document, angularApp, config);
-	        	}
-	        	else {
-	        		angular.bootstrap(document, [angularApp], config);
+	        		angular.bootstrap(document, angularApp);
+	        	}else{
+	        		angular.bootstrap(document, [angularApp]);
 	        	}
 	        //if bootstrap fails then fall back to ui.bootstrap exclusively
-        	}
-        	catch(e) {
-        	    console.error(e);
-        		angular.bootstrap(document, ['ui.bootstrap'], config);
+        	}catch(e){
+        		angular.bootstrap(document, ['ui.bootstrap']);
         	}
         });
     }
@@ -62,11 +49,10 @@
         var injector = createInjector(modules),
             $q = injector.get('$q'),
             promises = [],
+            errorCallback = angular.noop,
             loadingCallback = angular.noop,
             doneCallback = angular.noop;
 
-        var errorCallback =  (e) => console.error(`Bootstraping ${app} FAILED`, e);
-            
         return {
 
             resolve: function (promise) {
@@ -75,12 +61,13 @@
                 return this;
             },
 
-            bootstrap: function (strictDi=false) {
+            bootstrap: function () {
+
                 loadingCallback();
 
                 return $q.all(promises)
                     .then(function () {
-                        bootstrapApplication(app, { 'strictDi': strictDi } );
+                        bootstrapApplication(app);
                     }, errorCallback)
                     .finally(doneCallback);
             },

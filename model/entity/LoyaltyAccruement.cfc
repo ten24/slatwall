@@ -42,22 +42,19 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	property name="loyaltyAccruementID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="startDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
 	property name="endDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
-	property name="accruementEvent" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="accruementType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="pointType" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="pointQuantity" ormType="integer";
 	property name="activeFlag" ormtype="boolean" default="1";
-
+	property name="currencyCode" ormtype="string" length="3";
+	
 	// Related Object Properties (many-to-one)
 	property name="loyalty" cfc="Loyalty" fieldtype="many-to-one" fkcolumn="loyaltyID";
 	property name="expirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="expirationTermID" hb_optionsNullRBKey="define.never";
-	property name="giftCardSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="giftCardSkuID";
-	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
-
+	
 	// Related Object Properties (one-to-many)
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" cascade="all-delete-orphan" inverse="true";
-	property name="accruementCurrencies" singularname="accruementCurrency" cfc="AccruementCurrency" type="array" fieldtype="one-to-many" fkcolumn="loyaltyAccruementID" inverse="true";
-
+	
 	// Related Object Properties (many-to-many - owner)
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwLoyaltyAccruBrand" fkcolumn="loyaltyAccruementID" inversejoincolumn="brandID";
 	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyAccruSku" fkcolumn="loyaltyAccruementID" inversejoincolumn="skuID";
@@ -68,7 +65,6 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclSku" fkcolumn="loyaltyAccruementID" inversejoincolumn="skuID";
 	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProduct" fkcolumn="loyaltyAccruementID" inversejoincolumn="productID";
 	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProductType" fkcolumn="loyaltyAccruementID" inversejoincolumn="productTypeID";
-	property name="optionalTargetAccountConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -81,31 +77,27 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	// Non-Persistent Properties
 
-	
+
 	public string function getSimpleRepresentation() {
 		return getLoyalty().getLoyaltyName() & " - " & getAccruementType();
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
-	public array function getAccruementTypeOptions() {
-		return this.getService("LoyaltyService").getAccruementTypeOptions();
-	}
 	
-	public array function getAccruementEventOptions() {
-		return this.getService("LoyaltyService").getAccruementEventOptions();
+	public array function getAccruementTypeOptions() {
+		return [
+			{name=rbKey('entity.loyaltyAccruement.accruementType.itemFulfilled'), value="itemFulfilled"},
+			{name=rbKey('entity.loyaltyAccruement.accruementType.orderClosed'), value="orderClosed"},
+			{name=rbKey('entity.loyaltyAccruement.accruementType.fulfillmentMethodUsed'), value="fulfillmentMethodUsed"},
+			{name=rbKey('entity.loyaltyAccruement.accruementType.enrollment'), value="enrollment"}
+		];
 	}
 	
 	public array function getPointTypeOptions() {
-		return this.getService("LoyaltyService").getPointTypeOptions();
-	}
-	
-	public string function getOptionalTargetAccountConfig(encodeForHTMLFlag=false){
-		if(structKeyExists(variables,"optionalTargetAccountConfig")){
-			if(encodeForHTMLFlag){
-				return getService("HibachiUtilityService").hibachiHTMLEditFormat(variables.optionalTargetAccountConfig);
-			}
-			return variables.optionalTargetAccountConfig;
-		}
+		return [
+			{name=rbKey('entity.loyaltyAccruement.pointType.fixed'), value="fixed"},
+			{name=rbKey('entity.loyaltyAccruement.pointType.pointPerDollar'), value="pointPerDollar"}
+		];
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -120,15 +112,6 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 		arguments.accountLoyaltyTransaction.removeLoyaltyAccruement( this );
 	}
 	
-	public any function getAccruementCurrency(required string currencyCode){
-		var accruementCurrenciesList = getService("LoyaltyService").getAccruementCurrencySmartList();
-		accruementCurrenciesList.addFilter("loyaltyAccruement.loyaltyAccruementID",this.getLoyaltyAccruementID());
-		accruementCurrenciesList.addFilter("currencyCode",arguments.currencyCode);
-		accruementCurrencies = accruementCurrenciesList.getPageRecords();
-		if(arrayLen(accruementCurrencies)){
-			return accruementCurrencies[1];
-		}
-	}
 	
 	// loyalty Program (many-to-one)
 	public void function setLoyalty(required any loyalty) {
@@ -146,14 +129,6 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 			arrayDeleteAt(arguments.loyalty.getLoyaltyAccruements(), index);
 		}
 		structDelete(variables, "loyalty");
-	}
-	
-	public void function addAccruementCurrency(required any accruementCurrency) {
-		arguments.accruementCurrency.setLoyaltyAccruement( this );
-	}
-	
-	public void function removeAccruementCurrency(required any accruementCurrency) {
-		arguments.accruementCurrency.removeLoyaltyAccruement( this );
 	}
 	
 	// Brands (many-to-many - owner)

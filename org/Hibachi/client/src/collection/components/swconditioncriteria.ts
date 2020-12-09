@@ -1,104 +1,98 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-
-const criteriaTemplateString = require('./criteria.html');
-
-const criteriaDateTemplateString = require('./criteriadate.html');
-const criteriaStringTemplateString = require('./criteriastring.html');
-const criteriaNumberTemplateString = require('./criterianumber.html');
-const criteriaBooleanTemplateString = require('./criteriaboolean.html');
-
-const criteriaManyToOneTemplateString = require('./criteriamanytoone.html');
-const criteriaOneToManyTemplateString = require('./criteriaonetomany.html');
-const criteriaManyToManyTemplateString = require('./criteriamanytomany.html');
-
 declare var Date:any;
-
 class SWConditionCriteria{
-    
 	public static Factory(){
-		return /** @ngInject; */ ( $http, $compile, $templateCache, $templateRequest, $log, $hibachi, $filter, metadataService) => {
-		    
-		    if(!$templateCache.get('criteriaTemplateString') ){
-		        $templateCache.put('criteriaTemplateString', criteriaTemplateString);
-		    }
-		    if(!$templateCache.get('criteriaDateTemplateString') ){
-		        $templateCache.put('criteriaDateTemplateString', criteriaDateTemplateString);
-		    }
-		    if(!$templateCache.get('criteriaStringTemplateString') ){
-		        $templateCache.put('criteriaStringTemplateString', criteriaStringTemplateString);
-		    }
-		    if(!$templateCache.get('criteriaNumberTemplateString') ){
-		        $templateCache.put('criteriaNumberTemplateString', criteriaNumberTemplateString);
-		    }
-		    if(!$templateCache.get('criteriaBooleanTemplateString') ){
-		        $templateCache.put('criteriaBooleanTemplateString', criteriaBooleanTemplateString);
-		    }
-		    if(!$templateCache.get('criteriaManyToOneTemplateString') ){
-		        $templateCache.put('criteriaManyToOneTemplateString', criteriaManyToOneTemplateString);
-		    }
-		    if(!$templateCache.get('criteriaOneToManyTemplateString') ){
-		        $templateCache.put('criteriaOneToManyTemplateString', criteriaOneToManyTemplateString);
-		    }
-		    if(!$templateCache.get('criteriaManyToManyTemplateString') ){
-		        $templateCache.put('criteriaManyToManyTemplateString', criteriaManyToManyTemplateString);
-		    }
-		    
-		    return new this($http, $compile, $templateRequest, $log, $hibachi, $filter, metadataService);
-		}
+		var directive:ng.IDirectiveFactory = (
+			$http,
+			$compile,
+			$templateCache,
+			$log,
+			$hibachi,
+			$filter,
+			collectionPartialsPath,
+			metadataService,
+			hibachiPathBuilder
+		)=>new SWConditionCriteria(
+			$http,
+			$compile,
+			$templateCache,
+			$log,
+			$hibachi,
+			$filter,
+			collectionPartialsPath,
+			metadataService,
+			hibachiPathBuilder
+		);
+		directive.$inject = [
+			'$http',
+			'$compile',
+			'$templateCache',
+			'$log',
+			'$hibachi',
+			'$filter',
+			'collectionPartialsPath',
+			'metadataService',
+			'hibachiPathBuilder'
+		];
+		return directive;
 	}
-	
     //@ngInject
 	constructor(
 		$http,
 		$compile,
-		$templateRequest,
+		$templateCache,
 		$log,
 		$hibachi,
 		$filter,
+		collectionPartialsPath,
 		metadataService,
+		hibachiPathBuilder
 	){
 		/* Template info begin*/
 		var getTemplate = function(selectedFilterProperty){
-			var templateName = '';
+			var template = '';
+			var templatePath = '';
 
 			if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
-				templateName = 'criteriaTemplateString';
+				templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteria.html";
 			}else{
 				var criteriaormtype = selectedFilterProperty.ormtype;
 				var criteriafieldtype = selectedFilterProperty.fieldtype;
 				/*TODO: convert all switches to object literals*/
 				switch(criteriaormtype){
 					case 'boolean':
-					templateName = 'criteriaBooleanTemplateString';
+					templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriaboolean.html";
 						break;
 					case 'string':
-						templateName = 'criteriaStringTemplateString';
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriastring.html";
 						break;
 					case 'timestamp':
-						templateName = 'criteriaDateTemplateString';
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriadate.html";
 						break;
 					case 'big_decimal':
 					case 'integer':
 					case 'float':
-						templateName = 'criteriaNumberTemplateString';
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criterianumber.html";
 						break;
+
+
 				}
 
 				switch(criteriafieldtype){
 					case "many-to-one":
-						templateName = 'criteriaManyToOneTemplateString';
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriamanytoone.html";
 						break;
 					case "many-to-many":
-						templateName = 'criteriaManyToManyTemplateString';
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriamanytomany.html";
 						break;
 					case "one-to-many":
-						templateName = 'criteriaOneToManyTemplateString';
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriaonetomany.html";
 						break;
 				}
 			}
 
-			var templateLoader = $templateRequest(templateName);
+			var templateLoader = $http.get(templatePath,{cache:$templateCache});
 
 			return templateLoader;
 		};
@@ -123,36 +117,36 @@ class SWConditionCriteria{
 						display:"Doesn't Equal",
 						comparisonOperator:"<>"
 					},
-					// {
-					// 	display:"Contains",
-					// 	comparisonOperator:"like",
-					// 	pattern:"%w%"
-					// },
-					// {
-					// 	display:"Doesn't Contain",
-					// 	comparisonOperator:"not like",
-					// 	pattern:"%w%"
-					// },
-					// {
-					// 	display:"Starts With",
-					// 	comparisonOperator:"like",
-					// 	pattern:"w%"
-					// },
-					// {
-					// 	display:"Doesn't Start With",
-					// 	comparisonOperator:"not like",
-					// 	pattern:"w%"
-					// },
-					// {
-					// 	display:"Ends With",
-					// 	comparisonOperator:"like",
-					// 	pattern:"%w"
-					// },
-					// {
-					// 	display:"Doesn't End With",
-					// 	comparisonOperator:"not like",
-					// 	pattern:"%w"
-					// },
+					{
+						display:"Contains",
+						comparisonOperator:"like",
+						pattern:"%w%"
+					},
+					{
+						display:"Doesn't Contain",
+						comparisonOperator:"not like",
+						pattern:"%w%"
+					},
+					{
+						display:"Starts With",
+						comparisonOperator:"like",
+						pattern:"w%"
+					},
+					{
+						display:"Doesn't Start With",
+						comparisonOperator:"not like",
+						pattern:"w%"
+					},
+					{
+						display:"Ends With",
+						comparisonOperator:"like",
+						pattern:"%w"
+					},
+					{
+						display:"Doesn't End With",
+						comparisonOperator:"not like",
+						pattern:"%w"
+					},
 					{
 						display:"In List",
 						comparisonOperator:"in"

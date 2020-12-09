@@ -35,11 +35,22 @@ class SWListingDisableRule implements ng.IDirective{
     public controllerAs="swListingDisableRule";
 
     public static Factory(){
-        return /** @ngInject */ (scopeService, $q) => new this(scopeService, $q);
+        var directive:ng.IDirectiveFactory=(
+            scopeService,
+            $q
+        )=>new SWListingDisableRule(
+            scopeService,
+            $q
+        );
+        directive.$inject = [
+            'scopeService',
+            '$q'
+        ];
+        return directive;
     }
-    
-    // @ngInject
-    constructor(private scopeService, private $q){}
+    constructor(private scopeService, private $q){
+
+    }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         var rule = {

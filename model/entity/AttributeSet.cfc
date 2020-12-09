@@ -87,14 +87,15 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	}
 	//checks whether we have an attribute that has been migrated
 	public boolean function notHasMigratedAttribute(){
-	for(var attr in this.getAttributes()) {
-			if(attr.getIsMigratedFlag()){
+		for(var attr in this.getAttributes()) {
+			if(
+				!isNull(attr.getIsMigratedFlag()) 
+				&& attr.getIsMigratedFlag()
+			){
 				return false;
 			}
 		}
 		return true;
-	
-	 
 	}
 	
 	
@@ -127,7 +128,6 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 			{value="Category", name=rbKey("entity.Category")},
 			{value="Content", name=rbKey("entity.Content")},
 			{value="EventRegistration", name=rbKey("entity.EventRegistration")},
-			{value="EmailTemplate", name=rbKey("entity.EmailTemplate")},
 			{value="File", name=rbKey("entity.File")},
 			{value="Image", name=rbKey("entity.Image")},
 			{value="Location", name=rbKey("entity.Location")},
@@ -135,7 +135,6 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 			{value="Order", name=rbKey("entity.Order")},
 			{value="OrderItem", name=rbKey("entity.OrderItem")},
 			{value="OrderPayment", name=rbKey("entity.OrderPayment")},
-			{value="OrderTemplate", name=rbKey("entity.OrderTemplate")},
 			{value="OrderFulfillment", name=rbKey("entity.OrderFulfillment")},
 			{value="OrderDelivery", name=rbKey("entity.OrderDelivery")},
 			{value="Option", name=rbKey("entity.Option")},

@@ -7,7 +7,6 @@ class SWSortable{
         directive.$inject = ['expression', 'compiledElement'];
         return directive;
     }
-    // @ngInject;
     constructor(
         expression, compiledElement
     ){

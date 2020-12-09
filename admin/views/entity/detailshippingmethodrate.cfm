@@ -77,12 +77,12 @@ Notes:
 			<hb:HibachiPropertyList>
 				<cfif rc.shippingMethodRate.isNew()>
 					<cfif isObject(rc.integration)>
-					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="shippingIntegration" edit="false" value="#rc.integration.getIntegrationName()#">
-					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="shippingIntegrationMethod" edit="#rc.edit#" fieldtype="select" valueOptions="#rc.integration.getShippingMethodOptions(rc.integration.getIntegrationID())#">
+						<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="shippingIntegration" edit="false" value="#rc.integration.getIntegrationName()#">
+						<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="shippingIntegrationMethod" edit="#rc.edit#" fieldtype="select" valueOptions="#rc.integration.getShippingMethodOptions(rc.integration.getIntegrationID())#">
 					<cfelse>
-						<cfinclude template="./shippingmethodratetabs/manualrateshippingintegrations.cfm" />
-						<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="rateType" edit="#rc.edit#" valueOptions="#rc.shippingMethodRate.getRateTypeOptions()#">
-						<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="ratePercentage" edit="#rc.edit#">
+                       <cfinclude template="./shippingmethodratetabs/manualrateshippingintegrations.cfm" />
+                       <hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="rateType" edit="#rc.edit#" valueOptions="#rc.shippingMethodRate.getRateTypeOptions()#">
+                       <hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="ratePercentage" edit="#rc.edit#">
 					</cfif>
 					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="addressZone" edit="#rc.edit#">
 					
@@ -119,10 +119,9 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.shippingMethodRate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif !isObject(rc.integration)>
-				<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/manualrateshippingintegrations" />
-			</cfif>
+            	<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/manualrateshippingintegrations" />
+        	</cfif>
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodratepricegroups" />
-			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodraterequirements" />
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodratesettings" />
 		</hb:HibachiEntityDetailGroup>
 		

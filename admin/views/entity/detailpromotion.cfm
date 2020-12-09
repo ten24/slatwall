@@ -67,7 +67,6 @@ Notes:
 		<hb:HibachiEntityActionBar type="detail" object="#rc.promotion#" edit="#rc.edit#" >
 			<hb:HibachiActionCaller action="admin:entity.createpromotioncode" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 			<hb:HibachiActionCaller action="admin:entity.createpromotionperiod" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
-			<hb:HibachiProcessCaller action="admin:entity.preprocesspromotion" entity="#rc.promotion#" processContext="duplicate" type="list" modal="true" />
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.promotion#">

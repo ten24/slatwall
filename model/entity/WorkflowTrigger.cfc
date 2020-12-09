@@ -50,15 +50,9 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="startDateTime" ormtype="timestamp";
 	property name="endDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
 	property name="collectionFetchSize" ormtype="integer";
-	property name="collectionFetchRecordsFlag" ormtype="boolean" hb_formatType="yesno" default="true";
 	property name="collectionPassthrough" ormType="boolean" hb_formatType="yesno" default="false";
 	property name="timeout" ormtype="integer" default="90"; 
 	property name="scheduleCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hint="json object used to construct the base collection HQL query";
-	property name="lockLevel" ormtype="string" hb_formatfieldtype="select" default="database" hint="if lock level is database, then isRunningFlag is checked in the database for locking. If application then we lock by serverInstanceKey";
-	property name="allowedInvocationCluster" ormtype="string";
-	property name="exclusiveInvocationClusterFlag" ormtype="boolean" hb_formatType="yesno";
-	property name="maxTryCount" ormtype="integer" default="10";
-	property name="retryDelay" ormtype="integer" default="0" hint="Value in seconds";
 	
 	// Calculated Properties
 
@@ -88,8 +82,6 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	// Non-Persistent Properties
 	
 	property name="workflowTriggerException" persistent="false";
-	property name="lockLevelOptions" persistent="false";
-	property name="collection" persistent="false";
 	
 	public void function setWorkflowTriggerException(required any e){
 		variables.workflowTriggerException = arguments.e;
@@ -99,20 +91,6 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 		if(structKeyExists(variables,"workflowTriggerException")){
 			return variables.workflowTriggerException;
 		}
-	}
-	
-	public array function lockLevelOptions(){
-		return [
-			{'name'='application','value'='application'},
-			{'name'='database','value'='database'}
-		];
-	}
-
-	public string function getLockLevel(){
-		if(!structKeyExists(variables,'lockLevel')){
-			variables.lockLevel = 'database';
-		}
-		return variables.lockLevel;
 	}
 	
 	
@@ -136,25 +114,6 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 		}
 		structDelete(variables, "workflow");
     }
-    
-    public any function getCollection(){
-    	// If Already cached
-		if(structKeyExists(variables,'collection')){
-			return variables.collection;
-		}
-		// handle legacy workflowTrigger 
-		if(structKeyExists(variables,'scheduleCollection')){
-			variables.collection = variables.scheduleCollection;
-			return variables.collection;
-		}
-		// Convert collection config into collection object
-		if(structKeyExists(variables, 'scheduleCollectionConfig') && len(variables.scheduleCollectionConfig)){
-			var scheduleCollectionConfig = deserializeJSON(variables.scheduleCollectionConfig);
-			variables.collection = getService('HibachiCollectionService').invokeMethod('get#scheduleCollectionConfig["baseEntityName"]#CollectionList');
-			variables.collection.setCollectionConfigStruct(scheduleCollectionConfig);
-			return variables.collection;
-		}
-	}
 	
 	// Deprecated Properties
 

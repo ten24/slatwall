@@ -31,10 +31,8 @@
 	<cfparam name="attributes.deleteQueryString" type="string" default="" />
 
 	<!--- Process Specific Values --->
-	<cfparam name="attributes.processAction" type="string" default="" />
-	<cfparam name="attributes.processContext" type="string" default="" />
-	
-	<cfparam name="attributes.confirm" type="boolean" default="false" />
+	<cfparam name="attributes.processAction" type="string" default="">
+	<cfparam name="attributes.processContext" type="string" default="">
 
 <cfelse>
 	<cfif not structKeyExists(request.context, "modal") or not request.context.modal>
@@ -123,7 +121,7 @@
 									<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 	
 									<!--- Detail: Actions --->
-									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1 || attributes.object.hasCalculatedProperties()>
+									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
 											<hb:HibachiDividerHider>
@@ -138,7 +136,7 @@
 
 									<!--- Detail: Button Groups --->
 									<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
-										<cfloop array="#thisTag.buttonGroups#" index="local.buttonGroup">
+										<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
 											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>											
 												#buttonGroup.generatedContent#
 											</cfif>
@@ -154,8 +152,8 @@
 											<div class="btn-group btn-group-sm">
 												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
 												<ul class="dropdown-menu pull-right">
-													<cfloop array="#attributes.object.getEmailTemplates()#" index="local.template">
-														<hb:HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#local.template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#local.template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
+													<cfloop array="#attributes.object.getEmailTemplates()#" index="template">
+														<hb:HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
 													</cfloop>
 												</ul>
 											</div>
@@ -165,8 +163,8 @@
 											<div class="btn-group btn-group-sm">
 												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
 												<ul class="dropdown-menu pull-right">
-													<cfloop array="#attributes.object.getPrintTemplates()#" index="local.template">
-														<hb:HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#local.template.getPrintTemplateID()#&printID=&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#local.template.getPrintTemplateName()#" type="list" />
+													<cfloop array="#attributes.object.getPrintTemplates()#" index="template">
+														<hb:HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" type="list" />
 													</cfloop>
 												</ul>
 											</div>
@@ -234,26 +232,9 @@
 									<div class="btn-group btn-group-sm">
 										<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 									</div>
-									<cfif NOT attributes.confirm>
-										<div class="btn-group btn-group-sm">
-											<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
-										</div>
-									<cfelse>
-										<cfset queryString = "" />
-										<cfif NOT isNull(attributes.processContext) >
-											<cfset queryString = "processContext=#attributes.processContext#" />
-										</cfif>
-										<!---<cfif NOT isNull(attributes.queryString--->
-										<a title="submit" 
-											class="btn btn-primary alert-confirm" 
-											target="_self" 
-											href="#attributes.hibachiScope.buildURL(action=attributes.processAction,querystring='processContext=#attributes.processContext#')#"
-											data-confirm="#attributes.hibachiScope.rbKey('entity.#attributes.object.getClassName()#.process.#attributes.processContext#_confirm')#"
-											data-include-form="true"
-										>
-											#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#
-										</a>
-									</cfif>
+									<div class="btn-group btn-group-sm">
+										<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
+									</div>
 								</cfif>
 							
 

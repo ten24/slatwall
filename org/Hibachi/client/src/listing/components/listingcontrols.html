@@ -3,7 +3,8 @@
         <span sw-listing-search  data-collection-config="swListingControls.collectionConfig"
               data-paginator="swListingControls.paginator"
               data-listing-id="{{ swListingControls.tableId }}"
-              data-default-search-column="swListingControls.defaultSearchColumn"
+              data-search-filter-property-identifier="{{swListingControls.swListingDisplay.searchFilterPropertyIdentifier}}"
+              data-show-search-filter-drop-down="swListingControls.swListingDisplay.showSearchFilterDropDown"
          ></span>
         <!-- PERSONAL COLLECTIONS -->
         <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.personalCollectionsClosed" id="j-personal-collections">
@@ -27,7 +28,7 @@
 						data-base-entity-name="swListingControls.collectionConfig.baseEntityName"
 				>
 					<li class="list-group-item"
-						ng-repeat="column in swListingControls.collectionConfig.columns track by $index"
+						ng-repeat="column in swListingControls.collectionConfig.columns"
 						ng-if="swListingControls.canDisplayColumn(column)"
 						sw-column-item
 						data-column="column"
@@ -80,7 +81,7 @@
         </div>
         <!--  //ADD FILTER -->
     </div>
-    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters">
+    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters || swListingControls.simple">
         <div class="s-filters">
             <!-- Filter -->
             <div class="btn-group"

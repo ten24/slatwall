@@ -68,37 +68,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="captureAuthorizedPaymentsFlag" hb_formFieldType="yesno";
 	property name="capturableAmount" hb_formatType="currency";
 
-
 	variables.orderDeliveryItems = [];
+	
 	
 	public any function getLocationTypeAheadCollectionList(){
 		var locationCollectionList = getService('locationService').getLocationCollectionList();
 		locationCollectionList.addFilter('activeFlag',1);
 		locationCollectionList.addFilter('parentLocation','NULL','IS NOT');
 		return locationCollectionList;
-	}
-	
-	public string function getLocationName(){ 
-		if (!isNull(getLocation())){
-			return getLocation().getLocationName();
-		}
-		return "";
-	}
-	
-	public string function getLocationID(){ 
-		if (!isNull(getLocation())){
-			return getLocation().getLocationID();
-		}
-		return;
-	}
-	
-	public any function getLocation(){
-		if(!structKeyExists(variables,'location') && !isNull(getOrder())){
-			variables.location = getOrder().getDefaultStockLocation();
-		}
-		if(structKeyExists(variables,'location')){
-			return variables.location;
-		}
 	}
 	
 	public array function getContainers(){

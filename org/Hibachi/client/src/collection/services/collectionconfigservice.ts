@@ -117,13 +117,10 @@ class CollectionConfig {
         private currentPage:number = 1,
         private pageShow:number = 10,
         private keywords:string = '',
-        private customEndpoint:string = '',
         private allRecords:boolean = false,
-        private limitCountTotal:number = 250,
         private dirtyRead:boolean = false,
         private isDistinct:boolean = false,
         private enableAveragesAndSums:boolean = false,
-        private listingSearchConfig:any = null,
 
     ){
         this.$hibachi = $hibachi;
@@ -134,7 +131,6 @@ class CollectionConfig {
                 this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
             }
         }
-        
     }
 
     public clearFilterGroups=():CollectionConfig=>{
@@ -162,13 +158,8 @@ class CollectionConfig {
     public loadJson= (jsonCollection):any =>{
         //if json then make a javascript object else use the javascript object
         //if coldfusion has double encoded the json keep calling fromJson until it becomes an object
-        try{
-            while(angular.isString(jsonCollection)){
-                jsonCollection = angular.fromJson(jsonCollection);
-            }
-        }catch(e){
-            console.log('Invalid JSON');
-            return this;
+        while(angular.isString(jsonCollection)){
+            jsonCollection = angular.fromJson(jsonCollection);
         }
         
         if(angular.isDefined(jsonCollection['ORDERBY']) && !angular.isDefined(jsonCollection.orderBy)){
@@ -194,7 +185,7 @@ class CollectionConfig {
             for(let filterGroup of jsonCollection.filterGroups){
 
                 for(let filter of filterGroup['filterGroup']){
-
+                
                     if(!filter.displayPropertyIdentifier && filter.propertyIdentifier){
                         let convertedPropertyIdentifier = filter.propertyIdentifier.replace(/_/g, '.');
                         if(convertedPropertyIdentifier[0] === "."){
@@ -218,7 +209,6 @@ class CollectionConfig {
         this.groupBys = jsonCollection.groupBys;
         this.pageShow = jsonCollection.pageShow;
         this.allRecords = jsonCollection.allRecords;
-        this.limitCountTotal = jsonCollection.limitCountTotal || 250;
         if(jsonCollection.dirtyRead){
             this.dirtyRead = jsonCollection.dirtyRead;
         }
@@ -226,9 +216,7 @@ class CollectionConfig {
         this.reportFlag = jsonCollection.reportFlag;
         this.useElasticSearch = jsonCollection.useElasticSearch;
         this.enableAveragesAndSums = jsonCollection.enableAveragesAndSums;
-        if(jsonCollection.listingSearchConfig){
-            this.listingSearchConfig = jsonCollection.listingSearchConfig;
-        }
+        
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
@@ -254,7 +242,7 @@ class CollectionConfig {
         if(validate){
             this.validateFilter(this.filterGroups);
         }
-        let options = {
+        return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
             columns: this.columns,
@@ -272,14 +260,8 @@ class CollectionConfig {
             isDistinct: this.isDistinct,
             orderBy:this.orderBy,
             periodInterval:this.periodInterval,
-            enableAveragesAndSums: this.enableAveragesAndSums,
+            enableAveragesAndSums: this.enableAveragesAndSums
         };
-        
-        if(this.listingSearchConfig){
-            options['listingSearchConfig'] = this.listingSearchConfig;
-        }
-        
-        return options;
     };
 
 
@@ -310,18 +292,12 @@ class CollectionConfig {
             defaultColumns: (!this.columns || !this.columns.length),
             useElasticSearch: this.useElasticSearch,
             allRecords: this.allRecords,
-            limitCountTotal: this.limitCountTotal,
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
             isReport: this.isReport(),
             periodInterval: this.periodInterval,
-            enableAveragesAndSums: this.enableAveragesAndSums,
-            customEndpoint:this.customEndpoint
+            enableAveragesAndSums: this.enableAveragesAndSums
         };
-
-        if(this.listingSearchConfig){
-            options['listingSearchConfig'] = this.listingSearchConfig;
-        }
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
         }
@@ -394,7 +370,7 @@ class CollectionConfig {
         }
         return propertyIdentifier;
     };
-
+    
     public hasNonPersistentProperty=()=>{
         for(var i in this.columns){
             var column = this.columns[i];
@@ -462,10 +438,10 @@ class CollectionConfig {
             if(angular.isDefined(options['isKeywordColumn'])){
                 isKeywordColumn = options['isKeywordColumn']
             }
-            if(angular.isDefined(options['isOnlyKeywordColumn'])){
+             if(angular.isDefined(options['isOnlyKeywordColumn'])){
                 isOnlyKeywordColumn = options['isOnlyKeywordColumn']
             }
-            
+
             if(angular.isDefined(lastEntity.metaData[lastProperty])){
                 persistent = lastEntity.metaData[lastProperty].persistent;
             }
@@ -957,15 +933,6 @@ class CollectionConfig {
         return this.currentPage;
     };
 
-    public setLimitCountTotal=(newCount):number=>{
-        this.limitCountTotal = newCount;
-        return this.limitCountTotal;
-    };
-
-    public getLimitCountTotal=():number=>{
-        return this.limitCountTotal;
-    };
-
     public setPageShow= (NumberOfPages):CollectionConfig =>{
         this.pageShow = NumberOfPages;
         return this;
@@ -973,10 +940,6 @@ class CollectionConfig {
 
     public getPageShow=():number=>{
         return this.pageShow;
-    };
-    
-    public getCustomEndpoint=():string=>{
-        return this.customEndpoint;
     };
 
     public setAllRecords= (allFlag:boolean=false):CollectionConfig =>{
@@ -993,11 +956,6 @@ class CollectionConfig {
         this.enableAveragesAndSums =  flag;
         return this;
     };
-    
-    public setListingSearchConfig = (config) => {
-        this.listingSearchConfig = config;
-        return this;
-    }
 
     public setDirtyRead = (flag:boolean=false)=>{
         this.dirtyRead = flag;
@@ -1006,11 +964,6 @@ class CollectionConfig {
 
     public setKeywords= (keyword) =>{
         this.keywords = keyword;
-        return this;
-    };
-    
-    public setCustomEndpoint= (endPoint:string) =>{
-        this.customEndpoint = endPoint;
         return this;
     };
 

@@ -1,50 +1,53 @@
 component output="false" accessors="true" extends="HibachiTransient" {
-	
-	property name="hibachiAuthenticationService" type="any";
-	property name="hibachiValidationService" type="any";
 
 	property name="account" type="any";
 	property name="content" type="any";
 	property name="session" type="any";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
-	property name="workflowPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
+	property name="profiler" type="any";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
 	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
 	property name="ormHasErrors" type="boolean" default="false";
-	property name="rbLocale" type="string";
+	property name="rbLocale";
 	property name="url" type="string";
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
 	property name="successfulActions" type="array";
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
-	property name="excludedModifiedEntityNames" type="array" hint="List of entities ignored by modifiedEntities during the current request";
+	property name="hibachiAuthenticationService" type="any";
 	property name="isAWSInstance" type="boolean" default="0";
-	property name="isECSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
 	property name="permissionGroupCacheKey" type="string";
 	property name="entityQueueData" type="struct";
+	property name="stateless" type="boolean";
 
 	public any function init() {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
-		setWorkflowPopulateFlag( false );
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
 		setSessionFoundExtendedPSIDCookieFlag( false );
+		setStateless(false);
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
 		setFailureActions( [] );
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
-		setExcludedModifiedEntityNames( [] );
 
 		return super.init();
+	}
+
+	public void function setStateless(boolean statelessValue=false){
+		variables.stateless = arguments.statelessValue;
+	}
+	public boolean function getStateless(){
+		return variables.stateless;
 	}
 
 	//get the users personal collection options
@@ -78,7 +81,27 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 		return variables.permissionGroupCacheKey;
 	}
-
+	
+	public any function getProfiler() {
+		if (!structKeyExists(variables, 'profiler')) {
+			// Cannot rely on beanFactory exists in order to allow profiling prior to that part of framework initialization
+			// Manually instantiate 
+			var componentPaths = ['Slatwall.custom.model.transient.HibachiProfiler', 'Slatwall.model.transient.HibachiProfiler', 'Slatwall.org.Hibachi.HibachiProfiler'];
+			var instantiationError = '';
+			for (var profilerComponentPath in componentPaths) {
+				try {
+					variables.profiler = createObject(profilerComponentPath);
+					break;
+				} catch (any e) {instantiationError = e;}
+			}
+			
+			if (!structKeyExists(variables, 'profiler')) {
+				throw("HibachiProfiler component could not be instantiated. Error message: #instantiationError.message#");
+			}
+		}
+		
+		return variables.profiler;
+	}
 
 	public string function getEntityURLKeyType(string entityURLKey=""){
 		if(!structKeyExists(variables,'entityURLKeyType')){
@@ -140,64 +163,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();//returned but not cached.
 	}
 
-	public string function getServerInstancePort(){
-
-		//Check if we already have a instancePort assigned.
-		if(hasApplicationValue("instancePort")){
-			return getApplicationValue("instancePort");
-		}
-		
-		//If we are not using ecs, then assign the instance port and return it.
-		if (!getHibachiScope().getIsECSInstance() || getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
-			var port = cgi.server_port;
-			setApplicationValue("instancePort", port);
-			return port;
-		}
-
-		// If ECS find and set port if available
-		var env = createObject( "java", "java.lang.System" ).getENV();
-		
-		// if hostname (dockerid) not available return
-		if(isNull(env['HOSTNAME']) || !len(env['HOSTNAME'])){
-			var port = '';
-			setApplicationValue("instancePort", port);
-			return port;
-		}
-		
-		try {
-			httpService = new http();
-			httpService.setTimeout(3);
-			httpService.setMethod("get");
-			httpService.setUrl("172.17.0.1:51678/v1/tasks?dockerid=#env['HOSTNAME']#");
-			result = httpService.send().getPrefix();
-	
-			if (result.fileContent == "Connection Timeout" || result.fileContent == "Connection Failure"){
-				var port = '';
-				setApplicationValue("instancePort", port);
-				return port;
-			}
-			
-			var instanceMetadata = deserializeJSON(result.fileContent);
-			if( structKeyExists(instanceMetadata, "containers") && structKeyExists(instanceMetadata["containers"][1], "ports")){
-				var ports = instanceMetadata["containers"][1]["ports"];
-				for(var port in ports) {
-					if(port["ContainerPort"] == "80"){
-						var port = port["HostPort"];
-						setApplicationValue("instancePort", port);
-						return port;
-					}
-				}
-			}
-		}catch(any e){
-			writeLog(file="#variables.framework.applicationKey#", text="General Log - Unable to get port number for instance #server[variables.framework.applicationKey].serverInstanceKey#");
-		}
-		
-		// if still no port then set to blank and exit
-		var port = '';
-		setApplicationValue("instancePort", port);
-		return port;
-	}
-
 	public any function getHibachiAuthenticationService(){
 		if(!structKeyExists(variables,'hibachiAuthenticationService')){
 			variables.hibachiAuthenticationService = getService('hibachiAuthenticationService');
@@ -252,40 +217,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ] = arguments.value;
 		}
 	}
-	
-	
-	public boolean function hasCookieValue(required string key) {
-		return StructKeyExists(COOKIE, arguments.key) && Len( Trim(COOKIE[arguments.key]) );
-	}
-	
-	public string function getCookieValue(required string key) {
-		if( this.hasCookieValue(arguments.key) ) { return COOKIE[arguments.key]; }
-	}
-	
-	public void function setCookieValue(required string key, string value, any expires) {
-		
-		if(!IsNull(arguments.value) && Len(Trim(arguments.value))){
-			
-			var args = {
-				name= arguments.key,  
-				value= arguments.value
-			};
-			if(!IsNull(arguments.expires)){
-				args.expires = arguments.expires;
-			}
-			
-			//the Hibachi service will takecare of [sessionCookieSecure and sessionCookieDomain] based on the application settings
-			this.getService('hibachiTagService').cfcookie(argumentCollection= args);
-		
-		} else {
-			this.clearCookieValue(arguments.key);
-		}
-	}
-	
-	public void function clearCookieValue(required string key) {
-		 StructDelete(COOKIE, arguments.key);
-	}
-
 
 	public string function renderJSObject() {
 		var config = getService('HibachiSessionService').getConfig();
@@ -296,27 +227,11 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	public void function addModifiedEntity( required any entity ) {
-		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName()) && !arguments.entity.getExcludeFromModifiedEntitiesFlag()){
-			arrayAppend(getModifiedEntities(), arguments.entity);
-		}
+		arrayAppend(getModifiedEntities(), arguments.entity);
 	}
 
 	public void function clearModifiedEntities() {
 		setModifiedEntities([]);
-	}
-	
-	public void function addExcludedModifiedEntityName( required string entityName ) {
-		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entityName)){
-			arrayAppend(getExcludedModifiedEntityNames(), arguments.entityName);
-		}
-	}
-	
-	public void function removeExcludedModifiedEntityName( required string entityName ) {
-		ArrayDeleteNoCase(getExcludedModifiedEntityNames(),arguments.entityName);
-	}
-	
-	public void function clearExcludedModifiedEntityNames() {
-		setIgnoredEntityNames([]);
 	}
 
 	public void function clearAuditsToCommitStruct() {
@@ -386,15 +301,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function hasFailureAction( required string action ) {
 		return arrayFindNoCase(getFailureActions(), arguments.action) > 0;
 	}
-	
-	public void function clearActionResult( required string action ) {
-		 arrayDeleteNoCase(getFailureActions(), arguments.action);
-		 arrayDeleteNoCase(getSuccessfulActions(), arguments.action);
-	}
 
 	public void function addActionResult( required string action, required failure=false ) {
-		clearActionResult(arguments.action);
-		
 		if(arguments.failure) {
 			arrayAppend(getFailureActions(), arguments.action);
 		} else {
@@ -442,11 +350,14 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	// ==================== SESSION / ACCOUNT SETUP ===========================
 
 	public any function getSession() {
+		
 		if(!structKeyExists(variables, "session")) {
-			getService("hibachiSessionService").setProperSession();
+			
+			getService("hibachiSessionService").setProperSession(getStateless());
 		}
 		return variables.session;
 	}
+	
 
 	public any function getAccount() {
 		return getSession().getAccount();
@@ -536,11 +447,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return rbKey(argumentcollection=arguments);
 	}
 
-	//convenience method for validate
-	public any function validate(required any object, string context="", boolean setErrors=true) {
-		return getService('hibachiValidationService').validate(argumentCollection=arguments); 
-	}
-
 	public boolean function authenticateAction( required string action,string processContext="" ) {
 		return getHibachiAuthenticationService().authenticateActionByAccount( action=arguments.action, account=getAccount(), processContext=arguments.processContext );
 	}
@@ -562,26 +468,14 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 
-	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', struct entityQueueData={}, string integrationID=''){
+	public any function addEntityQueueData(required string baseID, required string baseObject, string processMethod='', any entityQueueData={}, string entityQueueType = ''){
 		if(!structKeyExists(variables, "entityQueueData")) {
 			variables.entityQueueData = {};
 		}
-		var dataString = "#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#serializeJSON(arguments.entityQueueData)#";
+		arguments.entityQueueID = getDAO('HibachiDAO').createHibachiUUID();
 		
-		if (structKeyExists(arguments, "integrationID") && len(arguments.integrationID)){
-			dataString = dataString & "_#integrationID#"; 
-		}
-		
-		arguments.entityQueueID = hash(dataString, 'MD5');
-		
-		//this will be processed in this request.
-		arguments.entityQueueProcessingDateTime = now(); 
-		
-		// add 5 minutes for workflow retry if something goes wrong at the end of the request
-		arguments.entityQueueDateTime = DateAdd('n',5,now()); 
-		
-		if(!structKeyExists(variables.entityQueueData, arguments.entityQueueID)){
-			variables.entityQueueData[arguments.entityQueueID] = arguments;
+		if(!structKeyExists(variables.entityQueueData, '#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#')){
+			variables.entityQueueData['#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#hash(serializeJSON(arguments.entityQueueData),'md5')#'] = arguments;
 			getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
 		}
 	}
@@ -619,26 +513,5 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		
 	}
 	
-	public string function getServerInstanceKey(){
-		return server[getApplicationKey()].serverInstanceKey;
-	}
-
-	public any function getServerInstance(){
-		if(!structKeyExists(variables, 'serverInstance')){
-			variables.serverInstance = getService('hibachiCacheService').getServerInstanceByServerInstanceKey(getServerInstanceKey());
-		}
-		return variables.serverInstance;
-	}
-	
-	public any function setErrorExtraData(required struct data){
-		if(!structKeyExists(request, "errorExtraData")){
-			request.errorExtraData = {};
-		}
-		
-		for( var item in arguments.data ){
-			request.errorExtraData[item] = arguments.data[item];
-		}
-		
-	}
 	
 }

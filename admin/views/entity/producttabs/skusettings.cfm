@@ -68,7 +68,6 @@ Notes:
 		<swa:SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.product#" />
-		<swa:SlatwallSetting settingName="skuTrackQATSBelowThreshold" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.product#" />
@@ -100,9 +99,5 @@ Notes:
 		<cfif rc.product.getProductType().getBaseProductType() eq "subscription">
 			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.product#" />
 		</cfif>
-		<cfif rc.product.getProductType().getBaseProductType() eq "miscFee">
-			<swa:SlatwallSetting settingName="skuIsRefundFee" settingObject="#rc.product#"/>
-		</cfif>
-		<swa:SlatwallSetting settingName="skuAllowableRefundPercentages" settingObject="#rc.product#"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>

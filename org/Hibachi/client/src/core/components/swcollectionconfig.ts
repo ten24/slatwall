@@ -62,9 +62,24 @@ class SWCollectionConfig implements ng.IDirective{
     `
 
     public static Factory(){
-        return /** @ngInject; */ ( collectionConfigService, listingService, scopeService, $q ) => {
-            return new this( collectionConfigService, listingService, scopeService, $q ); 
-        }
+        var directive:ng.IDirectiveFactory=(
+            collectionConfigService,
+            listingService, 
+            scopeService,
+            $q
+        )=>new SWCollectionConfig(
+            collectionConfigService,
+            listingService, 
+            scopeService,
+            $q
+        );
+        directive.$inject = [
+            'collectionConfigService',
+            'listingService',
+            'scopeService',
+            '$q'
+        ];
+        return directive;
     }
     
     // @ngInject

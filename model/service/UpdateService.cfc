@@ -230,11 +230,7 @@ Notes:
 				<!--- if it's a database script look for db specific file --->
 				<cfif findNoCase("database/",arguments.script.getScriptPath())>
 					<cfset var dbSpecificFileName = replaceNoCase(arguments.script.getScriptPath(),".cfm",".#getApplicationValue("databaseType")#.cfm") />
-					<cfif directoryExists(expandPath("/Slatwall/custom/config/scripts")) AND fileExists(expandPath("/Slatwall/custom/config/scripts/#dbSpecificFileName#"))>
-						<cfinclude template="#getHibachiScope().getBaseURL()#/custom/config/scripts/#dbSpecificFileName#" />
-					<cfelseif directoryExists(expandPath("/Slatwall/custom/config/scripts")) AND fileExists(expandPath("/Slatwall/custom/config/scripts/#arguments.script.getScriptPath()#"))>
-						<cfinclude template="#getHibachiScope().getBaseURL()#/custom/config/scripts/#arguments.script.getScriptPath()#" />
-					<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#dbSpecificFileName#"))>
+					<cfif fileExists(expandPath("/Slatwall/config/scripts/#dbSpecificFileName#"))>
 						<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#dbSpecificFileName#" />
 					<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#arguments.script.getScriptPath()#"))>
 						<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#arguments.script.getScriptPath()#" />

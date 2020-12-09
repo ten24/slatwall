@@ -53,7 +53,7 @@ Notes:
 <cftry>
 	<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
 		<cfquery name="local.updateAddress">
-			UPDATE swAddress set addressName = STUFF(
+			UPDATE swAddress set calculatedAddressName = STUFF(
 			    (
 			      SELECT ', ' + v
 			      FROM (VALUES (streetAddress), (street2Address), (city), (stateCode), (postalCode), (countryCode)) AS v (v)
@@ -64,7 +64,7 @@ Notes:
 		</cfquery>
 	<cfelseif ListFind(this.ormSettings.dialect, 'MySQL')>
 		<cfquery name="local.updateAddress">
-			UPDATE SwAddress set addressName = CONCAT_WS(', ',streetAddress,street2Address,city,stateCode,postalCode,countryCode)
+			UPDATE SwAddress set calculatedAddressName = CONCAT_WS(', ',streetAddress,street2Address,city,stateCode,postalCode,countryCode)
 		</cfquery>
 	<cfelseif this.ormSettings.dialect eq 'Oracle10g'>
 		<cfquery name="local.getAddress">
@@ -96,7 +96,7 @@ Notes:
 			</cfscript>
 			<cfquery name="local.updateAddress">
 				update SwAddress
-				set addressName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.name#" />
+				set calculatedAddressName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.name#" />
 				where addressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getAddress.addressID#" />
 			</cfquery>
 				

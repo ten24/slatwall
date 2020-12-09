@@ -65,18 +65,10 @@ Notes:
 					<div class="alert alert-info" role="alert">	
 						<span data-sw-rbkey="'entity.sku.process.move.warning'"></span>
 					</div>
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="product" fieldName="productID" edit="true" labelText="#$.slatwall.rbkey('entity.Sku.process.move.placeholder')#">
 					
-				    <hb:HibachiTypeahead 
-						edit="true" 
-						collectionList="#rc.processObject.getProductTypeAheadCollectionList()#"
-                        placeHolder="#$.slatwall.rbkey('entity.Sku.process.move.placeholder')#"
-                        propertyToLoad="productName,productCode"
-                        selectedFormatString="${productCode} >> ${propertyName}"
-                        rbKey="processObject.Sku_Move.product"
-                        title="#$.slatwall.rbkey('entity.Sku.process.move')#"
-						initialEntityID="#rc.processObject.getProductID()#"
-						data-max-records="20"
-					></hb:HibachiTypeahead>
+
+							
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>
 			

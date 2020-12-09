@@ -4,8 +4,6 @@
 import {Cart} from "../model/entity/cart";
 import {Account} from "../model/entity/account";
 import {PublicRequest} from "../model/transient/publicrequest";
-import { Cache } from "cachefactory";
-declare var hibachiConfig: any;
 
 class PublicService {
     public account:Account;
@@ -33,7 +31,7 @@ class PublicService {
     public window:any;
     public finding:boolean;
     public rates:any;
-    public baseActionPath = "";
+    private baseActionPath = "";
     public months = [{name:'01 - JAN',value:1},{name:'02 - FEB',value:2},{name:'03 - MAR',value:3},{name:'04 - APR',value:4},{name:'05 - MAY',value:5},{name:'06 - JUN',value:6},{name:'07 - JUL',value:7},{name:'08 - AUG',value:8},{name:'09 - SEP',value:9},{name:'10 - OCT',value:10},{name:'11 - NOV',value:11},{name:'12 - DEC',value:12}];
     public years = [];
     public shippingAddress = "";
@@ -79,7 +77,6 @@ class PublicService {
         public $location:ng.ILocationService,
         public $hibachi:any,
         public $injector:ng.auto.IInjectorService,
-        public $httpParamSerializer,
         public requestService,
         public accountService,
         public accountAddressService,
@@ -88,9 +85,7 @@ class PublicService {
         public observerService,
         public appConfig,
         public $timeout,
-        public hibachiAuthenticationService,
-    	public sessionStorageCache: Cache,
-    	public inMemoryCache: Cache
+        public hibachiAuthenticationService
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -99,6 +94,7 @@ class PublicService {
         this.requestService = requestService;
         this.appConfig = appConfig;
         this.baseActionPath = this.appConfig.baseURL+"/index.cfm/api/scope/"; //default path
+        this.confirmationUrl = "/order-confirmation";
         this.checkoutUrl = "/checkout";
         this.$http = $http;
         this.$location = $location;
@@ -112,8 +108,6 @@ class PublicService {
         this.observerService = observerService;
         this.$timeout = $timeout;
         this.hibachiAuthenticationService=hibachiAuthenticationService;
-        
-        this.setOrderConfirmationUrl();
     }
 
     // public hasErrors = ()=>{
@@ -150,36 +144,33 @@ class PublicService {
         }
     }
     /** accessors for account */
-    public getAccount=(refresh=false): ng.IPromise<any> =>  {
+    public getAccount=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getAccount/';
-        
         if(!this.accountDataPromise || refresh){
             this.accountDataPromise = this.getData(urlBase, "account", "");
         }
         return this.accountDataPromise;
     }
     /** accessors for cart */
-    public getCart=(refresh=false, param = ''):any =>  {
-
+    public getCart=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getCart/';
         if(!this.cartDataPromise || refresh){
-            this.cartDataPromise = this.getData( urlBase, "cart", param );
+            this.cartDataPromise = this.getData(urlBase, "cart", "");
         }
-        
         return this.cartDataPromise;
     }
     /** accessors for countries */
     public getCountries=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getCountries/';
         if(!this.countryDataPromise || refresh){
-            this.countryDataPromise = this.getData(urlBase, "countries", "","get");
+            this.countryDataPromise = this.getData(urlBase, "countries", "");
         }
         return this.countryDataPromise;
     }
 
     /** accessors for states */
-    public getStates=(countryCode:string, address ?:any, refresh=false):any =>  {
-
+    public getStates=(countryCode:string, address:any, refresh=false):any =>  {
+        
        if(address && address.data){
            countryCode = address.data.countrycode || address.countrycode;
        }
@@ -192,7 +183,7 @@ class PublicService {
 
        if(!this.getRequestByAction('getStateCodeOptionsByCountryCode') || !this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh){
            
-           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode, "get");
+           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode);
            return this.stateDataPromise;
        }
 
@@ -201,7 +192,7 @@ class PublicService {
 
     public refreshAddressOptions = (address) =>{
         this.getStates(null, address);
-
+        this.getAddressOptions(null,address);
     }
 
     public getStateByStateCode = (stateCode)=>{
@@ -242,30 +233,28 @@ class PublicService {
 
        let urlBase = this.baseActionPath+'getAddressOptionsByCountryCode/';
        if(!this.getRequestByAction('getAddressOptionsByCountryCode') || !this.getRequestByAction('getAddressOptionsByCountryCode').loading || refresh){
-           this.addressOptionData = this.getData(urlBase, "addressOptions", "?countryCode="+countryCode, "get");
+           this.addressOptionData = this.getData(urlBase, "addressOptions", "?countryCode="+countryCode);
            return this.addressOptionData;
        }
        return this.addressOptionData;
     }
 
     /** accessors for states */
-    public getData=(url, setter, param, method='post'):any =>  {
+    public getData=(url, setter, param):any =>  {
 
         let urlBase = url + param;
-        let request = this.requestService.newPublicRequest(urlBase, null, method);
+        let request = this.requestService.newPublicRequest(urlBase);
 
         request.promise.then((result:any)=>{
             //don't need account and cart for anything other than account and cart calls.
-            if ( setter.indexOf('account') == -1) {
+            if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1){
                 if (result['account']){delete result['account'];}
-            }
-            if ( setter.indexOf('cart') == -1) {
                 if (result['cart']){delete result['cart'];}
             }
 
-            if((setter == 'cart'||setter=='account') && this[setter] && this[setter].populate){
+            if(setter == 'cart'||setter=='account' && this[setter] && this[setter].populate){
                 //cart and account return cart and account info flat
-                this[setter].populate(result[setter]);
+                this[setter].populate(result);
 
             }else{
                 //other functions reutrn cart,account and then data
@@ -316,52 +305,18 @@ class PublicService {
 
         }
     }
-    
-    private enforceCacheOwner(key: string) {
-		let cacheOwner = hibachiConfig.accountID?.trim() || "unknown";
-		if (this.sessionStorageCache.get("cacheOwner") !== cacheOwner) {
-			console.log(
-				`enforceCacheOwner: owner changed, 
-				 setting new owner to: ${cacheOwner} from: ${this.sessionStorageCache.get("cacheOwner")},
-				 and clearing cache for ${key}
-			    `
-			);
-			this.sessionStorageCache.remove(key);
-			this.sessionStorageCache.put("cacheOwner", cacheOwner);
-			return false;
-		}
-		return true;
-	}
-
-	public getFromSessionCache(key: string) {
-		return this.enforceCacheOwner(key) ? this.sessionStorageCache.get(key) : undefined;
-	}
-
-	public putIntoSessionCache(key: string, value: any) {
-		this.enforceCacheOwner(key);
-		this.sessionStorageCache.put(key, value);
-	}
-	
-	public removeFromSessionCache(key: string) {
-		this.enforceCacheOwner(key);
-		this.sessionStorageCache.remove(key);
-	}
-	
 
     /** this is the generic method used to call all server side actions.
     *  @param action {string} the name of the action (method) to call in the public service.
     *  @param data   {object} the params as key value pairs to pass in the post request.
     *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
     */
-    public doAction=(action:string, data:any={}, method:any='POST') => {
-        ///Prevent sending the same request multiple times in parallel
-        if(this.getRequestByAction(action) && this.loadingThisRequest(action, data, false)){
-            return this.$q.when();
-        }
-        
-         if (!action) {
-            throw "Exception: Action is required";
-        }
+    public doAction=(action:string, data?:any, method?:any) => {
+        //purge angular $ prefixed propertie
+        //Prevent sending the same request multiple times in parallel
+        if(this.getRequestByAction(action) && this.loadingThisRequest(action, data, false)) return this.$q.when();
+
+        if (!action) {throw "Action is required exception";}
 
         var urlBase = this.appConfig.baseURL;
 
@@ -372,32 +327,47 @@ class PublicService {
             urlBase = this.baseActionPath + action;//public path
         }
 
-        if(this.cmsSiteID){
-            data.cmsSiteID = this.cmsSiteID;
-        }
 
-        if(method == 'POST' && data.returnJsonObjects == undefined){
+        if(data){
+            method = "post";
             data.returnJsonObjects = "cart,account";
-        }
-            
-            
-        if (method == 'GET' && Object.keys(data).length !== 0){
+            if(this.cmsSiteID){
+                data.cmsSiteID = this.cmsSiteID;
+            }
+        }else{
             urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
-            urlBase += this.$httpParamSerializer(data);
-            data = null;
+            urlBase += "returnJsonObject=cart,account";
+            if(this.cmsSiteID){
+                urlBase += "&cmsSiteID=" + this.cmsSiteID;
+            }
         }
+        if (method == "post"){
 
-        
-        let request = this.requestService.newPublicRequest(urlBase,data,method);
+             data.returnJsonObjects = "cart,account";
+            //post
+            let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
 
-        request.promise.then((result:any)=>{
-            this.processAction(result,request);
-        }).catch((reason)=>{
+            request.promise.then((result:any)=>{
+                this.processAction(result,request);
+            }).catch((response)=>{
 
-        });
+            });
+            this.requests[request.getAction()]=request;
+            return request.promise;
+        }else{
+            //get
+            var url = urlBase;
+            let request = this.requestService.newPublicRequest(url,data,method);
 
-        this.requests[request.getAction()]=request;
-        return request.promise;
+            request.promise.then((result:any)=>{
+                this.processAction(result,request);
+            }).catch((reason)=>{
+
+            });
+
+            this.requests[request.getAction()]=request;
+            return request.promise;
+        }
 
     }
 
@@ -430,7 +400,7 @@ class PublicService {
         xhr.send(formData);
     }
 
-    public processAction = (response,request:PublicRequest)=>{
+    private processAction = (response,request:PublicRequest)=>{
 
         //Run any specific adjustments needed
         this.runCheckoutAdjustments(response);
@@ -467,7 +437,6 @@ class PublicService {
         if(response.cart){
             this.cart.populate(response.cart);
             this.cart.request = request;
-            this.putIntoSessionCache("cachedCart", response.cart);
         }
         this.errors = response.errors;
         if(response.messages){
@@ -528,15 +497,9 @@ class PublicService {
     public authenticateActionByAccount = (action:string,processContext:string)=>{
         return this.hibachiAuthenticationService.authenticateActionByAccount(action,processContext);
     }
-    
-    public authenticateEntityProperty( crudType:string, entityName:string, propertyName:string ) {
-		return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount( crudType, entityName, propertyName );
-	}
 
     public removeInvalidOrderPayments = (cart) =>{
-        if(angular.isDefined(cart.orderPayments)) {
         cart.orderPayments = cart.orderPayments.filter((payment)=>!payment.hasErrors);
-        }
     }
 
     /**
@@ -709,7 +672,7 @@ class PublicService {
         if(this.cart.orderFulfillments[fulfillmentIndex] && this.cart.orderFulfillments[fulfillmentIndex].accountAddress){
             oldAccountAddressID = this.cart.orderFulfillments[fulfillmentIndex].accountAddress.accountAddressID;
         }
-        this.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:orderFulfillmentID,returnJsonObjects:'cart'}).then(result=>{
+        this.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:orderFulfillmentID}).then(result=>{
             if(result && result.failureActions && result.failureActions.length){
                 this.$timeout(()=>{
                     if(oldAccountAddressID){
@@ -1633,7 +1596,7 @@ class PublicService {
                     if (serverData.successfulActions[action].indexOf("placeOrder") != -1){
                         //if there are no errors then redirect.
                         this.orderPlaced = true;
-                        this.redirectExact( this.confirmationUrl );
+                        this.redirectExact('/order-confirmation/');
                     }
                 }
             }else{
@@ -1680,14 +1643,6 @@ class PublicService {
         }
         return total;
     };
-    
-    private setOrderConfirmationUrl = () => {
-        if ( 'undefined' !== typeof hibachiConfig.orderConfirmationUrl ) {
-            this.confirmationUrl = hibachiConfig.orderConfirmationUrl;
-        } else {
-            this.confirmationUrl = "/order-confirmation";
-        }
-    }
 
 }
 export {PublicService};

@@ -42,13 +42,20 @@ class SWListingGlobalSearch implements ng.IDirective{
     };
     public controller=SWListingGlobalSearchController;
     public controllerAs="swListingGlobalSearch";
-    
-    public template= require('./listingglobalsearch.html');
-    
+    public templateUrl;
     public static Factory(){
-        return /** @ngInject */ () => new this();
+        var directive = (utilityService,listingPartialPath,hibachiPathBuilder)=>new SWListingGlobalSearch(utilityService,listingPartialPath,hibachiPathBuilder);
+        directive.$inject = ['utilityService','listingPartialPath','hibachiPathBuilder'];
+        return directive;
+    }
+    //@ngInject
+    constructor(private utilityService,listingPartialPath,hibachiPathBuilder){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(listingPartialPath) + "listingglobalsearch.html";
     }
 
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+
+    }
 }
 export{
     SWListingGlobalSearch

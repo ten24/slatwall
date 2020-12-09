@@ -45,7 +45,6 @@ Notes:
 
 <cfparam name="attributes.selectedAccountAddress" type="string" />
 <cfparam name="attributes.method" type="string" />
-<cfparam name="attributes.returnJsonObjects" type="string" default=""/>
 <cfparam name="attributes.visible" type="string" />
 <cfparam name="attributes.formID" type="string" default="#createUUID()#" />
 <cfparam name="attributes.additionalParameters" type="string" default="{}" />
@@ -57,12 +56,11 @@ Notes:
         <div class="alert alert-success" ng-show="slatwall.requests['#attributes.method#'].successfulActions.length">Shipping Address saved.</div>
         <div class="alert alert-danger" ng-show="slatwall.requests['#attributes.method#'].failureActions.length">Error saving shipping address. See below for errors.</div>
         <form 
-        	id="#attributes.formID#"
-        	ng-show="#attributes.visible#"
-        	swf-address-form
         	ng-model="#attributes.selectedAccountAddress#" 
         	data-method="#attributes.method#"
-        	<cfif len(attributes.returnJsonObjects) > data-return-json-objects="#attributes.returnJsonObjects#" </cfif>
+        	ng-show="#attributes.visible#"
+        	id="#attributes.formID#"
+        	swf-address-form
         >
         	<input id="#attributes.formID#_addressAccountID" type="hidden" name="accountAddressID"  class="form-control"
         		ng-model="#attributes.selectedAccountAddress#.accountAddressID" 

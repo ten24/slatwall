@@ -47,6 +47,7 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiService" persistent="false" accessors="true" output="false">
+
 	<cfproperty name="templateService" />
 	<cfproperty name="hibachiEntityQueueDAO" />
 	<cfproperty name="hibachiUtilityService" />
@@ -88,21 +89,14 @@ Notes:
 		</cfif>
 		<cfset cfmailAttributes["charset"] = "utf-8" />
 		<cfset cfmailAttributes["spoolEnable"] = arguments.async />
-		
-		<cfif structKeyExists(arguments, 'emailTemplate')>
 
-			<cfif isStruct(arguments.emailTemplate) AND structKeyExists(arguments.emailTemplate, 'emailTemplate') AND structKeyExists(arguments.emailTemplate['emailTemplate'],'emailTemplateID')>
-				<cfset arguments.emailTemplate = this.getEmailTemplate(arguments.emailTemplate['emailTemplate']['emailTemplateID']) />
-			</cfif>
-
-			<cfif !isNull(arguments.emailTemplate) AND len(arguments.emailTemplate.setting('emailSMTPServer'))>
-				<cfset cfmailAttributes["server"] = arguments.emailTemplate.setting('emailSMTPServer') />
-				<cfset cfmailAttributes["port"] = arguments.emailTemplate.setting('emailSMTPPort') />
-				<cfset cfmailAttributes["useSSL"] = arguments.emailTemplate.setting('emailSMTPUseSSL') />
-				<cfset cfmailAttributes["useTLS"] = arguments.emailTemplate.setting('emailSMTPUseTLS') />
-				<cfset cfmailAttributes["username"] = arguments.emailTemplate.setting('emailSMTPUsername') />
-				<cfset cfmailAttributes["password"] = arguments.emailTemplate.setting('emailSMTPPassword') />
-			</cfif>
+		<cfif structKeyExists(arguments, 'emailTemplate') AND !isNull(arguments.emailTemplate) AND len(arguments.emailTemplate.setting('emailSMTPServer'))>
+			<cfset cfmailAttributes["server"] = arguments.emailTemplate.setting('emailSMTPServer') />
+			<cfset cfmailAttributes["port"] = arguments.emailTemplate.setting('emailSMTPPort') />
+			<cfset cfmailAttributes["useSSL"] = arguments.emailTemplate.setting('emailSMTPUseSSL') />
+			<cfset cfmailAttributes["useTLS"] = arguments.emailTemplate.setting('emailSMTPUseTLS') />
+			<cfset cfmailAttributes["username"] = arguments.emailTemplate.setting('emailSMTPUsername') />
+			<cfset cfmailAttributes["password"] = arguments.emailTemplate.setting('emailSMTPPassword') />
 		</cfif>
 
 
@@ -177,7 +171,7 @@ Notes:
 			<cfset arguments.email = getHibachiDAO().save(arguments.email) />
 
 			<cfif not success>
-				<cfset getHibachiEntityQueueDAO().insertEntityQueue(baseID = arguments.email.getEmailID(), baseObject = 'Email', processMethod = 'processEmail_send') />	
+				<cfset	getHibachiEntityQueueDAO().insertEntityQueue(arguments.email.getEmailID(),'Email','processEmail_send') />	
 			</cfif> 
 		</cfif>
 	</cffunction>
@@ -211,7 +205,6 @@ Notes:
 				</cfif>
 			</cfloop>
 		</cfif>
-		
 		<cfif directoryExists("#getApplicationValue('applicationRootMappingPath')#/custom/templates/email/#arguments.object#")>
 			<cfdirectory action="list" directory="#getApplicationValue('applicationRootMappingPath')#/custom/templates/email/#arguments.object#" name="dir" />
 			<cfloop query="dir">
@@ -235,7 +228,7 @@ Notes:
 		return sl.getRecords();
 	}
 
-	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate, string locale) {
+	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate ) {
 		var email = this.newEmail();
 		arguments[arguments.entity.getClassName()] = arguments.entity;
 		email = this.processEmail(email, arguments, 'createFromTemplate');
@@ -263,121 +256,74 @@ Notes:
 	<cfscript>
 
 	public any function processEmail_createFromTemplate(required any email, required struct data) {
-	
-		if(structKeyExists(arguments.data, "emailTemplate") ) {
-		
-			if( isObject(arguments.data.emailTemplate) ){
-				var emailTemplate = arguments.data.emailTemplate;
-			} else if( isStruct(arguments.data.emailTemplate['emailTemplate']) && structKeyExists( arguments.data.emailTemplate['emailTemplate'], 'emailTemplateID') ){
-				var emailTemplate = this.getEmailTemplate(arguments.data.emailTemplate['emailTemplate']['emailTemplateID']);
-			}
 
+		if(structKeyExists(arguments.data, "emailTemplate") && isObject(arguments.data.emailTemplate)) {
+			var emailTemplate = arguments.data.emailTemplate;
 		} else if(structKeyExists(arguments.data, "emailTemplateID")) {
 			var emailTemplate = getTemplateService().getEmailTemplate( arguments.data.emailTemplateID );
 		}
 
-		if(isNull(emailTemplate)) {
-		
-			arguments.email.addError('emailTemplate', 'No email template provided'); 
-			return arguments.email;
-		}
+		if(!isNull(emailTemplate)) {
+			var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
+			var templateObject = javaCast('null','');
 
-		var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
-		var templateObject = javaCast('null','');
+			if(structKeyExists(arguments.data, emailTemplate.getEmailTemplateObject()) && isObject(arguments.data[emailTemplate.getEmailTemplateObject()])) {
+				// Set the template object from the passed object
+				var templateObject = arguments.data[ emailTemplate.getEmailTemplateObject() ];
 
-		if(structKeyExists(arguments.data, emailTemplate.getEmailTemplateObject()) && isObject(arguments.data[emailTemplate.getEmailTemplateObject()])) {
-			// Set the template object from the passed object
-			var templateObject = arguments.data[ emailTemplate.getEmailTemplateObject() ];
-
-		} else if(structKeyExists(arguments.data, templateObjectIDProperty)) {
-			// Set the template object from the passed ID
-			var templateObject = getServiceByEntityName( emailTemplate.getEmailTemplateObject() ).invokeMethod("get#emailTemplate.getEmailTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
-		}
-		
-		if(!isNull(templateObject) && isObject(templateObject) && structKeyExists(templateObject, "stringReplace")) {
-			
-			
-			if(structKeyExists(arguments.data,'locale')){
-				local.locale = arguments.data.locale;
-			}else if(!isNull(emailTemplate.setting('emailLocaleString'))){
-				local.locale = lcase(templateObject.stringReplace(emailTemplate.setting('emailLocaleString')));
-			}else{
-				local.locale = 'en_us';
+			} else if(structKeyExists(arguments.data, templateObjectIDProperty)) {
+				// Set the template object from the passed ID
+				var templateObject = getServiceByEntityName( emailTemplate.getEmailTemplateObject() ).invokeMethod("get#emailTemplate.getEmailTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
 			}
 
-			var templateContextPathList = emailTemplate.getTemplateContextPathList(); 
+			if(!isNull(templateObject) && isObject(templateObject) && structKeyExists(templateObject, "stringReplace")) {
 
-			// Setup the email values
-			arguments.email.setEmailTo( templateObject.stringReplace( emailTemplate.setting('emailToAddress'), false, true ) );
-			arguments.email.setEmailFrom( templateObject.stringReplace( emailTemplate.setting('emailFromAddress'), false, true ) );
-			arguments.email.setEmailCC( templateObject.stringReplace( emailTemplate.setting('emailCCAddress'), false, true ) );
-			arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
-			arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
-			arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
-			arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting(settingName='emailSubject',formatValue=true,formatDetails={locale=local.locale}), true, true ) );
-			arguments.email.setEmailBodyHTML( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyHTML',locale=local.locale), formatValues = true, templateContextPathList = templateContextPathList) );
-			arguments.email.setEmailBodyText( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyText',locale=local.locale), formatValues = true, templateContextPathList = templateContextPathList) );
-			arguments.email.setRelatedObject( templateObject.getClassName() );
-			arguments.email.setRelatedObjectID( templateObject.getPrimaryIDValue() );
+				// Setup the email values
+				arguments.email.setEmailTo( templateObject.stringReplace( emailTemplate.setting('emailToAddress'), false, true ) );
+				arguments.email.setEmailFrom( templateObject.stringReplace( emailTemplate.setting('emailFromAddress'), false, true ) );
+				arguments.email.setEmailCC( templateObject.stringReplace( emailTemplate.setting('emailCCAddress'), false, true ) );
+				arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
+				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
+				arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
+				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), true, true ) );
+				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML(),true ) );
+				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText(),true ) );
 
-			var templateFileResponse = "";
-			var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
-			
-			local.email = arguments.email;
-			local[ emailTemplate.getEmailTemplateObject() ] = templateObject; 
-			local.emailData[ emailTemplate.getEmailTemplateObject() ] = templateObject;	
-			local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
-			local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
-			local.emailTemplate = emailTemplate;
-			local.emailTemplateObject = templateObject;
 
-			if(structKeyExists(templateObject, 'hasAccount') && structKeyExists(templateObject, 'getAccount') && templateObject.hasAccount()){
-				local.account = templateObject.getAccount(); 
-				local.emailData['account'] = templateObject.getAccount(); 
-			}
+				var templateFileResponse = "";
+				var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
 
-			if(structKeyExists(templateObject, 'hasOrder') && structKeyExists(templateObject, 'getOrder') && templateObject.hasOrder()){
-				local.order = templateObject.getOrder(); 
-				local.emailData['order'] = templateObject.getOrder(); 
-				local.account = local.order.getAccount(); 
-				local.emailData['account'] = local.order.getAccount();	
-			}
-
-			if(structKeyExists(local, 'account') && len(local.account.getPreferredLocale())){
-				local.locale = local.account.getPreferredLocale();	
-			}
-
-			if(len(templatePath)) {
-				savecontent variable="templateFileResponse" {
-					include '#templatePath#';
+				local.email = arguments.email;
+				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
+				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
+				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
+				
+				if(len(templatePath)) {
+					savecontent variable="templateFileResponse" {
+						include '#templatePath#';
+					}
 				}
-			}
-			
-			if( structKeyExists( local.emailData, 'account' ) ){
-				arguments.email.setAccount( local.emailData.account );
+
+				if(len(templateFileResponse) && !structKeyExists(local.emailData, "emailBodyHTML")) {
+					local.emailData.emailBodyHTML = templateFileResponse;
+				}
+
+				arguments.email.populate( local.emailData );
+
+				// Do a second string replace for any additional keys added to emailData
+				arguments.email.setEmailTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailTo(), ""), object=emailData) );
+				arguments.email.setEmailFrom( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailFrom(), ""), object=emailData) );
+				arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailCC(), ""), object=emailData) );
+				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBCC(), ""), object=emailData) );
+				arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailReplyTo(), ""), object=emailData) );
+				arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailFailTo(), ""), object=emailData) );
+				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailSubject(), ""), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyHTML(), ""), object=emailData, formatValues=true) );
+				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyText(), ""), object=emailData, formatValues=true) );
+
+				arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 			}
 
-			if(len(templateFileResponse) && !structKeyExists(local.emailData, "emailBodyHTML")) {
-				local.emailData.emailBodyHTML = templateFileResponse;
-			}
-
-			arguments.email.populate( local.emailData );
-
-			// Do a second string replace for any additional keys added to emailData
-			arguments.email.setEmailTo( 
-				getHibachiUtilityService().replaceStringTemplate(
-					template=nullReplace(arguments.email.getEmailTo(), ""),
-					object=emailData) 
-				);
-			arguments.email.setEmailFrom( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailFrom(), ""), object=emailData) );
-			arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailCC(), ""), object=emailData) );
-			arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBCC(), ""), object=emailData) );
-			arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailReplyTo(), ""), object=emailData) );
-			arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailFailTo(), ""), object=emailData) );
-			arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailSubject(), ""), object=emailData, formatValues=true, locale = locale) );
-			arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyHTML(), ""), object=emailData, formatValues=true, templateContextPathList = templateContextPathList, locale = locale) );
-			arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyText(), ""), object=emailData, formatValues=true, templateContextPathList = templateContextPathList, locale = locale) );
-			arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 		}
 
 		return arguments.email;

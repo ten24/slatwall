@@ -1,38 +1,53 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWColumnSorter{
-	
-	public template = require("./columnsorter.html");
-	public restrict = 'AE';
-	public scope ={
-		column:"=",
-	};
-	
-	
 	public static Factory(){
-		return /** @ngInject; */ (observerService) => new this(observerService);
+		var directive = (
+			observerService,
+			corePartialsPath,
+			hibachiPathBuilder
+		)=> new SWColumnSorter(
+			observerService,
+			corePartialsPath,
+			hibachiPathBuilder
+		);
+		directive.$inject = [
+			'observerService',
+			'corePartialsPath',
+			'hibachiPathBuilder'
+		];
+		return directive;
 	}
-	
     //@ngInject
-	public constructor(private observerService){}
-	
-	public link : ng.IDirectiveLinkFn = (scope, element,attrs) => {
-        var orderBy:any = {
-            "propertyIdentifier": scope.column.propertyIdentifier,
-        }
+	public constructor(
+		observerService,
+		corePartialsPath,
+		hibachiPathBuilder
+	){
+		return {
+			restrict: 'AE',
+			scope:{
+				column:"=",
+			},
+			templateUrl:hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"columnsorter.html",
+			link: function(scope, element,attrs){
+                var orderBy:any = {
+                    "propertyIdentifier":scope.column.propertyIdentifier,
+                }
 
-        scope.sortAsc = () => {
-            orderBy.direction = 'Asc';
-            this.observerService.notify('sortByColumn',orderBy);
-        }
-        
-        scope.sortDesc = () => {
-            orderBy.direction = 'Desc';
-            this.observerService.notify('sortByColumn',orderBy);
-        }
+                scope.sortAsc = function(){
+                    orderBy.direction = 'Asc';
+                    this.observerService.notify('sortByColumn',orderBy);
+                }
+                scope.sortDesc = function(){
+                    orderBy.direction = 'Desc';
+                    observerService.notify('sortByColumn',orderBy);
+                }
+
+			}
+		};
 	}
 }
-
 export{
 	SWColumnSorter
 }

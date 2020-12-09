@@ -1,12 +1,37 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWExportAction{
-    
-    public template = require("./exportaction.html");
-    public restrict = 'A';
-
 	public static Factory(){
-		return /** @ngInject; */ () => new this();
+		var directive = (
+			$log,
+			corePartialsPath,
+			hibachiPathBuilder
+		)=>new SWExportAction(
+			$log,
+			corePartialsPath,
+			hibachiPathBuilder
+		);
+		directive.$inject=[
+			'$log',
+			'corePartialsPath',
+			'hibachiPathBuilder'
+		];
+		return directive;
+	}
+    //@ngInject
+	constructor(
+		$log,
+		corePartialsPath,
+		hibachiPathBuilder
+	){
+		return {
+			restrict:'A',
+			templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'exportaction.html',
+			scope: {
+			},
+			link:function(scope,element,attrs){
+			}
+		};
 	}
 }
 export{

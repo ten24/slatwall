@@ -105,40 +105,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return variables.resourceBundles[ arguments.locale ];
 	}
-
-	public array function getAvailableLocaleOptions(string localeFilterList='') {
-		var javaLocale = createObject('java', 'java.util.Locale');
-		var availableLocales = javaLocale.getAvailableLocales();
-
-		var locales = [];
-		for (var locale in availableLocales) {
-			var localeData = {
-				countryCode = lcase(locale.getCountry()),
-				languageCode = lcase(locale.getLanguage()),
-				name = locale.getDisplayName(),
-				languageName = locale.getDisplayLanguage(),
-				countryName = locale.getDisplayCountry()
-			};
-
-			// Assemble the rbLocale with optional country suffix
-			localeData.value = localeData.languageCode;
-			if (len(localeData.countryCode)) {
-				localeData.value &= '_#localeData.countryCode#';
-			}
-			
-			// Include locale if no filter provided or if locale in the filter list
-			if (len(localeData.value) && (!len(arguments.localeFilterList) || listFindNoCase(arguments.localeFilterList, localeData.value))) {
-				arrayAppend(locales, localeData);
-			}
-		}
-
-		// Apply alphabetical sort using display name
-		arraySort(locales, function(elementA, elementB) {
-			return compareNoCase(elementA.name, elementB.name);
-		});
-
-		return locales;
-	}
 	
 	
 }

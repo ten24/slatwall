@@ -79,7 +79,6 @@ Notes:
 				<cfelse>
 					<cfset paymentMethodSavedValue = "" />
 				</cfif>
-				
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentMethod" edit="#rc.edit#" >
 				<!--- Credit Card Details --->
 				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" >

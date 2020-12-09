@@ -104,7 +104,7 @@ class SWFulfillmentBatchDetailController  {
     public userCaptureAndFulfill = () => {
         //request the fulfillment process.
         this.state.loading = true;
-        
+
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.CREATE_FULFILLMENT_REQUESTED,
             payload: { viewState:this.state }
@@ -140,7 +140,7 @@ class SWFulfillmentBatchDetailController  {
             payload: {}
         });
     }
-
+    
     /** Populates box dimensions with dimensions from container preset */
     public userUpdatingBoxPreset = (box) => {
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({

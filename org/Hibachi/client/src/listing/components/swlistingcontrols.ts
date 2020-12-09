@@ -76,7 +76,7 @@ class SWListingControlsController {
             metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias], this.collectionConfig.baseEntityAlias);
         });
 
-        this.observerService.attach(this.filterActions, 'filterItemAction', this.tableId);
+        this.observerService.attach(this.filterActions, 'filterItemAction');
 
     }
     public filterActions =(res)=>{
@@ -189,8 +189,8 @@ class SWListingControlsController {
 
 class SWListingControls  implements ng.IDirective{
 
-    public template= require('./listingcontrols.html');
-    
+    public static $inject = ['listingPartialPath', 'hibachiPathBuilder'];
+    public templateUrl;
     public restrict = 'E';
     public scope = {};
     public require={swListingDisplay:'?^swListingDisplay'}
@@ -207,14 +207,28 @@ class SWListingControls  implements ng.IDirective{
         showToggleFilters : "=?",
         showToggleDisplayOptions : "=?",
         displayOptionsClosed:"=?",
-        simple:"=?",
-        defaultSearchColumn:"=?"
+        simple:"=?"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';
 
+    constructor(
+        public collectionPartialsPath,
+        public hibachiPathBuilder
+    ){
+        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingcontrols.html";
+    }
+
     public static Factory(){
-        return /** @ngInject */ () => new this();
+        var directive = (
+            listingPartialPath,
+            hibachiPathBuilder
+        )=> new SWListingControls(
+            listingPartialPath,
+            hibachiPathBuilder
+        );
+        directive.$inject = [ 'listingPartialPath', 'hibachiPathBuilder'];
+        return directive;
     }
 }
 

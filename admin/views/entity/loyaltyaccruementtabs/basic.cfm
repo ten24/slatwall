@@ -11,29 +11,9 @@
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="startDateTime" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="endDateTime" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="expirationTerm" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementEvent" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementType" edit="false">
-
-			<!--- TYPE - POINTS --->
-			<cfif rc.loyaltyAccruement.getAccruementType() EQ 'points' >
-				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointType" edit="false" >
-				
-				<cfif rc.loyaltyAccruement.getPointType() EQ 'fixed' >
-					<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointQuantity" edit="false">
-				</cfif>	
-				
-			</cfif>
-			
-			<!--- TYPE - GIFT CARD --->
-			<cfif rc.loyaltyAccruement.getAccruementType() EQ 'giftCard' >
-				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement.getGiftCardSku()#" property="skuCode" edit="false" />
-			</cfif>
-			
-			<!--- TYPE - PROMOTION --->
-			<cfif rc.loyaltyAccruement.getAccruementType() EQ 'promotion' >
-				<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement.getPromotion()#" property="promotionName" edit="false" />
-			</cfif>
-			
+			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointQuantity" edit="#rc.edit#">				
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

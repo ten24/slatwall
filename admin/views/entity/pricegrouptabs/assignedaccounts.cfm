@@ -52,28 +52,14 @@ Notes:
 <cfparam name="rc.priceGroup" type="any" />
 
 <cfoutput>
-	<cfset rc.assignedAccounts = rc.$.slatwall.getService("AccountService").getCollectionList("Account")>
-    <cfset rc.assignedAccounts.addFilter("priceGroups.priceGroupCode", "#rc.priceGroup.getPriceGroupCode()#","=")>
-    <cfset local.displayPropertyList = 'firstName,lastName,accountCode,company,primaryPhoneNumber.phoneNumber,primaryEmailAddress.emailAddress,guestAccountFlag,organizationFlag'/>
-    <cfset rc.assignedAccounts.setDisplayProperties(displayPropertyList,
-    	{
-    		isVisible=true,
-    		isSearchable=true,
-    		isDeletable=true
-    	}
-    )/>
-    <cfset rc.assignedAccounts.addDisplayProperty("accountID", "",
-    	{
-    		isVisible=false,
-    		isSearchable=false,
-    		isDeletable=false
-    	}
-    )/>
-
-<hb:HibachiListingDisplay
-	  collectionList="#rc.assignedAccounts#"
-	  recordEditAction="admin:entity.edit#lcase(rc.assignedAccounts.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(rc.assignedAccounts.getCollectionObject())#"
-	  usingPersonalCollection="false">
-</hb:HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" edit="#rc.edit#">
+						      
+		<hb:HibachiListingColumn propertyIdentifier="firstName" />
+		<hb:HibachiListingColumn propertyIdentifier="lastName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
+		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
+		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
+	
+	</hb:HibachiListingDisplay>
 </cfoutput>

@@ -10,7 +10,6 @@ class Pagination{
     public pageStart:number = 0;
     public pageEnd:number = 0;
     public recordsCount:number = 0;
-    public limitCountTotal:number = 0; //To be used to update the actual fetchcount instead of default 10
     public totalPages:number = 0;
     public totalPagesArray;
     public selectedPageShowOption;
@@ -70,12 +69,6 @@ class Pagination{
     public setRecordsCount=(recordsCount:number):void =>{
         this.recordsCount = recordsCount;
     };
-    public getLimitCountTotal=():number =>{
-        return this.limitCountTotal;
-    };
-    public setLimitCountTotal=(limitCountTotal:number):void =>{
-        this.limitCountTotal = limitCountTotal;
-    };
     public getPageShowOptions=() =>{
         return this.pageShowOptions;
     };
@@ -107,13 +100,9 @@ class Pagination{
         }
     };
     public hasPrevious=():boolean =>{
-        //With no actual recordsCount, need to check if previous page exists even if there's no data on current page. This enables user to go back to previous page if no results exist on current page, unloess its the very first page
-        return (this.getPageStart() <= 1 && this.getPageEnd() !== 0);
-        //this.getPageStart() checks if this isnt the first page itself
-        //this.getPageEnd() !== 0 tells us if a previous page exists even if the current page has no records 
+        return (this.getPageStart() <= 1);
     };
     public hasNext=():boolean =>{
-        //Same as above hasPrevious: Need to alter this to fetch anyways and then show appropriate message if no data exists on next fetch
         return (this.getPageEnd() === this.getRecordsCount());
     };
     public showPreviousJump=():boolean =>{
@@ -155,32 +144,15 @@ class Pagination{
     
     
     public setPageRecordsInfo = (collection):void =>{
-        //Documentation: Partial transfer of pagination control to front-end. Needs to be further rewritten
-        var pageRecordsCount = collection.pageRecordsCount,//actual results obtained - defaults to limit 10 unless otherwise specified by pageRecordsShow
-        pageRecordsShow = collection.pageRecordsShow,
-        recordsCount = collection.recordsCount, //arbitary fetch of recordsCount to get total records in db
-        pageRecordsEnd = collection.pageRecordsEnd,
-        limitCountTotal = collection.limitCountTotal;
-        this.setLimitCountTotal(limitCountTotal);
-        //Again, using the limitCountTotal to retain old functionality to work as before
-        if(limitCountTotal === 0){
-            this.setRecordsCount(recordsCount);
-            this.setPageEnd(pageRecordsCount);
-        }else{
-            if ((pageRecordsCount < recordsCount) && (pageRecordsCount < pageRecordsShow)){
-                    this.setPageEnd(pageRecordsCount);
-            }else{
-                    this.setPageEnd(pageRecordsEnd);
-            }
-            this.setRecordsCount((pageRecordsCount < pageRecordsShow) ? pageRecordsCount: recordsCount);
-        }
+        this.setRecordsCount(collection.recordsCount);
         if(this.getRecordsCount() === 0 ){
             this.setPageStart(0);
         } else{
             this.setPageStart(collection.pageRecordsStart);
         }
+        this.setPageEnd(collection.pageRecordsEnd);
         this.setTotalPages(collection.totalPages);
-        this.currentPage=collection.currentPage;
+
         this.totalPagesArray = [];
 
         if(angular.isUndefined(this.getCurrentPage()) || this.getCurrentPage() < 5){
@@ -192,7 +164,7 @@ class Pagination{
         }
         for(var i = start; i < end; i++){
             this.totalPagesArray.push(i);
-        } 
+        }
     };
 
     public notify(event, parameters){

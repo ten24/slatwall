@@ -111,7 +111,6 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 
 	public string function getNextRunDateTime(startDateTime, endDateTime){
 		var nextRun='';
-		var nextDay='';
 		
 		if( isNull(arguments.endDateTime) || endDateTime > now() ){
 			
@@ -159,6 +158,7 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 					if(startDateTime > now()){
 						var futureDayNumber=dayofweek(startDateTime);
 						
+						var nextDay='';
 						
 						for(i=1; i <= listLen(getDaysOfWeekToRun()); i++){
 							if(listgetAt(getDaysOfWeekToRun(),i) > todayNumber){
@@ -279,7 +279,7 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 						if(nextDay==''){
 							//remember to account for new years!
 							
-							nextDay = listGetAt(getDaysOfMonthToRun(),1);
+							nextDay = listGetAt(getDaysOfMonthToRun,1);
 							nextRun= createDateTime(year(now()),month(now()),nextDay,hour(getFrequencyStartTime()),minute(getFrequencyStartTime()),second(getFrequencyStartTime()));
 							nextRun = dateAdd("m",1,nextRun);
 						}else{

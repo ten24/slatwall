@@ -67,7 +67,7 @@ component displayname="Loyalty" entityname="SlatwallLoyalty" table="SwLoyalty" p
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Loyalty Program Accruements (one-to-many)	
+	// Loyalty Program Accruements (one-to-many)
 	public void function addLoyaltyAccruement(required any loyaltyAccruement) {
 		arguments.loyaltyAccruement.setLoyalty( this );
 	}

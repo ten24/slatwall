@@ -20,36 +20,29 @@ component accessors="true" output="false" extends="HibachiService" {
 		
 		return super.init();
 	}
-
+	
 	public any function getServerInstanceByServerInstanceKey(required string serverInstanceKey, boolean returnNewIfNotFound, string serverInstanceIPAddress){
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
-		
-		if(isNull(serverInstance)){
-			lock name="create_serverinstance_#arguments.serverInstanceKey#" type="exclusive" timeout="10"  {
-				// check one more time to make avoid duplicate server instance 
-				serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
-				if(isNull(serverInstance)){
-					serverInstance = this.newServerInstance();
-				
-					if(!structKeyExists(arguments, 'serverInstanceIPAddress')){
-						arguments.serverInstanceIPAddress = getHibachiScope().getServerInstanceIPAddress();
-					}
-					serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
-					serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-					serverInstance.setServerInstancePort(getHibachiScope().getServerInstancePort());
-					serverInstance.setServerInstanceClusterName(getHibachiScope().getApplicationValue('applicationCluster'));
-					serverInstance.setServerInstanceExpired(false);
-					serverInstance.setSettingsExpired(false);
-					serverInstance.setLastRequestDateTime(now());
-					
-					this.saveServerInstance(serverInstance); 
-					getHibachiScope().flushOrmSession();
 
-				}
-			}
+		if(isNull(serverInstance)){
+			serverInstance = this.newServerInstance();
 		}
-		return serverInstance;	
-	} 
+
+		if(serverInstance.getNewFlag()){
+			if(!structKeyExists(arguments, 'serverInstanceIPAddress')){
+				arguments.serverInstanceIPAddress = getHibachiScope().getServerInstanceIPAddress();
+			}
+			serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
+			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+			serverInstance.setServerInstanceExpired(false);
+			serverInstance.setSettingsExpired(false);
+			
+			this.saveServerInstance(serverInstance); 
+			getHibachiScope().flushOrmSession();
+		}
+		return serverInstance;
+	}
+	
 	
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
 		return getDao('HibachiCacheDAO').getDatabaseCacheByDatabaseCacheKey(arguments.databaseCacheKey);
@@ -117,10 +110,6 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	public void function updateServerInstanceSettingsCache(string serverInstanceKey){
-		if(getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
-			return;
-		}		
-
 		if(!structKeyExists(arguments, 'serverInstanceKey')){
 			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
 		}
@@ -128,12 +117,29 @@ component accessors="true" output="false" extends="HibachiService" {
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	
-
+	public boolean function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
+		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(argumentCollection=arguments);
+		if(isNull(isExpired)){
+			return false;
+		}else{
+			return isExpired;
+		}
+	} 
+	
+	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
+		var isExpired = getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(argumentCollection=arguments);
+		if(isNull(isExpired)){
+			return true;
+		}else{
+			return isExpired;
+		}
+	}
+		
 	public any function getCachedValue( required string key ) {
 		verifyCacheKey(arguments.key);
 
 		// If using the internal cache, then check there
-		if(getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && (!structKeyExists(getCache()[arguments.key],"expirationDateTime") || getCache()[arguments.key].expirationDateTime > now()) ) {
+		if(getInternalCacheFlag() && structKeyExists(getCache(), key) && (!structKeyExists(getCache()[key],"expirationDateTime") || getCache()[key].expirationDateTime > now()) ) {
 			return getCache()[ arguments.key ].value;
 			
 		// If using the external cache, then check there
@@ -196,8 +202,6 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 	
-	
-	
 	public any function resetCachedKeyByPrefix( required string keyPrefix, boolean waitForThreadComplete=false ) {
 		
 		verifyCacheKey(arguments.keyPrefix);
@@ -249,7 +253,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		} else if (!isObject(arguments.fallbackObject)) {
 			arguments.fallbackObject = getBean( arguments.fallbackObject );
 		}
-
+		
 		// If not then execute the function
 		var results = arguments.fallbackObject.invokeMethod(arguments.fallbackFunction, arguments.fallbackArguments);
 		

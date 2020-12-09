@@ -1,7 +1,5 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-declare var hibachiConfig;
-
 class SWRbKey{
 	public static Factory(){
 		var directive = (
@@ -29,8 +27,6 @@ class SWRbKey{
 		];
 		return directive;
 	}
-	
-// 	@ngInject;
 	constructor(
 		$hibachi,
 		observerService,
@@ -49,7 +45,7 @@ class SWRbKey{
 
 				var bindRBKey = ()=>{
 					if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
-						element.text(rbkeyService.getRBKey(rbKeyValue, hibachiConfig.rbLocale));
+						element.text(rbkeyService.getRBKey(rbKeyValue));
 					}
 				}
 

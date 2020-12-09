@@ -282,7 +282,7 @@ class SWInputController{
 			<a class="s-remove-change"
 				data-ng-click="swPropertyDisplay.clear()"
 				data-ng-if="swInput.edited && swInput.edit">
-					<i class="fa fa-times"></i>
+					<i class="fa fa-remove"></i>
 			</a>
 
 			<!-- Revert Button -->

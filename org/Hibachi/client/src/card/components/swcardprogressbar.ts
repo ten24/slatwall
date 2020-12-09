@@ -15,22 +15,32 @@ class SWCardProgressBarController {
 
 class SWCardProgressBar implements ng.IDirective {
     public controller:any=SWCardProgressBarController;
-    public controllerAs:string = 'SwCardProgressBarController';
-    
     public scope = {};
+    public controllerAs:string = 'SwCardProgressBarController';
     public bindToController:{[key: string]:string} = {
         valueMin: "@?",
         valueMax: "@?",
         valueNow: "@?"
     };
-    
     public transclude:boolean = true;
     public require:string = "^SWCardView";
-
-    public template:string = require('./cardprogressbar.html');
+    /**
+     * This is a wrapper class for the card components that allow you to define the columns.
+     */
+    public templateUrl:string = "";
     
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardprogressbar.html');
+    }
+    
+    /**
+     * Handles injecting the partials path into this class
+     */
     public static Factory(){
-        return () => new this();
+        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardProgressBar(cardPartialsPath, hibachiPathBuilder);
+        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
+        return component;
     }
 }
 export {SWCardProgressBarController, SWCardProgressBar};

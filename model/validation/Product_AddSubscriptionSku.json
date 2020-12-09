@@ -1,17 +1,17 @@
 {
-	"conditions": {
-		"renewalSku": {
-			"renewalSku": { "null": false }
+	"conditions":{
+		"renewalSku":{
+			"renewalSku":{"null":false}
 		},
-		"customRenewal": {
-			"renewalSku": { "null": true }
+		"customRenewal":{
+			"renewalSku":{"null":true}
 		}
 	},
-	"properties": {
-		"price": [{ "dataType": "numeric", "required": true }],
-		"listPrice": [{ "dataType": "numeric" }],
-		"renewalPrice": [{ "conditions": "customRenewal", "dataType": "numeric", "required": true }],
-		"subscriptionBenefits": [{ "required": true }],
-		"renewalSubscriptionBenefits": [{ "conditions": "customRenewal", "required": true }]
+	"properties":{
+		"price":						[{"dataType":"numeric","required":true}],
+		"listPrice":					[{"dataType":"numeric"}],
+		"renewalPrice":					[{"conditions":"customRenewal","dataType":"numeric","required":true}],
+		"subscriptionBenefits":			[{"required":true}],
+		"renewalSubscriptionBenefits":	[{"conditions":"customRenewal","required":true}]
 	}
 }

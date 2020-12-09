@@ -1,8 +1,8 @@
 {
-	"properties": {
-		"stockReceiverID": [{ "contexts": "delete", "maxLength": 0 }]
+	"properties":{
+		"stockReceiverID":				[{"contexts":"delete","maxLength":0}]
 	},
-	"populatedPropertyValidation": {
-		"stockReceiverItems": [{ "validate": "save" }]
+	"populatedPropertyValidation":{
+	    "stockReceiverItems":[{"validate":"save"}]
 	}
 }

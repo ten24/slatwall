@@ -31,18 +31,18 @@
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
-			if ( isSimpleValue( arguments.idOrFilter ) && len( arguments.idOrFilter ) ) {
-				var entity = entityLoadByPK( arguments.entityName, arguments.idOrFilter );
-			} else if ( isStruct( arguments.idOrFilter ) ){
-				var entity = entityLoad( arguments.entityName, arguments.idOrFilter, true );
+			if ( isSimpleValue( idOrFilter ) && len( idOrFilter ) ) {
+				var entity = entityLoadByPK( entityName, idOrFilter );
+			} else if ( isStruct( idOrFilter ) ){
+				var entity = entityLoad( entityName, idOrFilter, true );
 			}
 
 			if ( !isNull( entity ) ) {
 				return entity;
 			}
 
-			if ( arguments.isReturnNewOnNotFound ) {
-				return new( arguments.entityName );
+			if ( isReturnNewOnNotFound ) {
+				return new( entityName );
 			}
 		}
 
@@ -53,44 +53,44 @@
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
-			return entityLoad( arguments.entityName, arguments.filterCriteria, arguments.sortOrder, arguments.options );
+			return entityLoad( entityName, filterCriteria, sortOrder, options );
 		}
 
 
 		public any function new( required string entityName ) {
-			// Adds the Application Prefix to the entityName when needed.
+			// Adds the Applicatoin Prefix to the entityName when needed.
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
 
-			return entityNew( arguments.entityName );
+			return entityNew( entityName );
 		}
 
 
 		public any function save( required target ) {
 
 			// Save this entity
-			entitySave( arguments.target );
+			entitySave( target );
 
 			// Digg Deeper into any populatedSubProperties and save those as well.
-			if(!isNull(arguments.target.getPopulatedSubProperties())) {
-				for(var p in arguments.target.getPopulatedSubProperties()) {
-            		if(isArray(arguments.target.getPopulatedSubProperties()[p])) {
-            			for(var e=1; e<=arrayLen(arguments.target.getPopulatedSubProperties()[p]); e++) {
-            				this.save(target=arguments.target.getPopulatedSubProperties()[p][e]);
+			if(!isNull(target.getPopulatedSubProperties())) {
+				for(var p in target.getPopulatedSubProperties()) {
+            		if(isArray(target.getPopulatedSubProperties()[p])) {
+            			for(var e=1; e<=arrayLen(target.getPopulatedSubProperties()[p]); e++) {
+            				this.save(target=target.getPopulatedSubProperties()[p][e]);
             			}
             		} else {
-            			this.save(target=arguments.target.getPopulatedSubProperties()[p]);
+            			this.save(target=target.getPopulatedSubProperties()[p]);
             		}
             	}
             }
 
-			return arguments.target;
+			return target;
 		}
 
 		public void function delete(required target) {
-			if(isArray(arguments.target)) {
-				for(var object in arguments.target) {
+			if(isArray(target)) {
+				for(var object in target) {
 					delete(object);
 				}
 			} else {
@@ -98,7 +98,7 @@
 				if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
 					getHibachiAuditService().logEntityDelete(target);
 				}
-				entityDelete(arguments.target);
+				entityDelete(target);
 			}
 		}
 
@@ -131,7 +131,7 @@
 			getHibachiScope().clearModifiedEntities();
 			// Loop over the modifiedEntities to add updateCalculatedProperties to entity queue
 	    	for(var entity in modifiedEntities){
-	    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName()) && !entity.getCalculatedUpdateRunFlag()){
+	    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
 	    			getHibachiScope().addEntityQueueData(entity.getPrimaryIDValue(), entity.getClassName(), 'process#entity.getClassName()#_updateCalculatedProperties');
 	    		}
 	    	}
@@ -334,7 +334,6 @@
 		<cfargument name="returnPrimaryKeyValue" required="false" default="false" />
 		<cfargument name="primaryKeyColumn" required="false" default="" />
 		<cfargument name="compositeKeyOperator" required="false" type="string" default="AND" />
-		<cfargument name="dryRun" type="boolean" default="false" />
 
 		<cfset var keyList = structKeyList(arguments.updateData) />
 		<cfset var rs = "" />
@@ -348,130 +347,55 @@
 		<cfif arguments.returnPrimaryKeyValue>
 			<cfset var checkrs = "" />
 			<cfset var primaryKeyValue = "" />
-			
-		
+
 			<cfquery name="checkrs" result="local.sqlResult">
 				SELECT
-				#arguments.primaryKeyColumn#
+					#arguments.primaryKeyColumn#
 				FROM
 					#arguments.tableName#
 				WHERE
-				<cfloop from="1" to="#listLen(arguments.idColumns)#" index="local.i">
-					#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
-					<cfif listLen(arguments.idColumns) gt i>#arguments.compositeKeyOperator# </cfif>
-				</cfloop>
+					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="local.i">
+						#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
+				<cfif listLen(arguments.idColumns) gt i>#arguments.compositeKeyOperator# </cfif>
+					</cfloop>
 			</cfquery>
-			
-			<cfif arguments.dryRun>
-				<cfsavecontent variable="local.selectCheck" >
-					<cfoutput>
-						CHECKING <b>#arguments.tableName#</b> ( 
-						<cfloop from="1" to="#listLen(arguments.idColumns)#" index="local.i">
-					#listGetAt(arguments.idColumns, i)# = #arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#
-					<cfif listLen(arguments.idColumns) gt i>#arguments.compositeKeyOperator# </cfif>
-				</cfloop>
-						)
-					</cfoutput>
-				</cfsavecontent>
-				<cfoutput>#local.selectCheck#</cfoutput>
-			</cfif>
 			<cfif checkrs.recordCount>
 				<cfif !structIsEmpty(arguments.updateData)>
-				
-				
 					<cfset primaryKeyValue = checkrs[arguments.primaryKeyColumn][1] />
-						
-					<!--- Do not update if updateDate is just the idColumn --->
-					<cfif StructKeyList(arguments.updateData) EQ arguments.idColumns OR  keyList EQ '#arguments.idColumns#,#arguments.primaryKeyColumn#'>
-						<cfif arguments.dryRun>
-							<cfoutput>
-							- SKIP <br/>
-							</cfoutput>
-						</cfif>	
-						<cfreturn primaryKeyValue />
-					</cfif>
-				
-					
-					<cfif arguments.dryRun>
-						<cfsavecontent variable="local.updateQueryByPrimaryColumn" >
-							<cfoutput>
-									- UPDATE (
-									<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-		 								<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value eq true OR arguments.updateData[ listGetAT(keyList, i)].value EQ "TRUE")>
-		                                    #listGetAt(keyList, i)# = 1
-		                                <cfelseif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value eq false OR arguments.updateData[ listGetAT(keyList, i)].value EQ "FALSE")>
-		                                    #listGetAt(keyList, i)# = 0
-		 								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
-											#listGetAt(keyList, i)# = NULL
-										<cfelse>
-												#listGetAt(keyList, i)# = #arguments.updateData[ listGetAt(keyList, i) ].value#"
-										</cfif>
-										<cfif listLen(keyList) gt i>, </cfif>
-									</cfloop>
-									)<br />
-							</cfoutput>
-						</cfsavecontent>
-						<cfoutput>#local.updateQueryByPrimaryColumn#</cfoutput>
-					<cfelse>
-						<cfquery name="rs" result="local.sqlResult">
-							UPDATE
-								#arguments.tableName#
-								SET
-									<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-		 								<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value eq true OR arguments.updateData[ listGetAT(keyList, i)].value EQ "TRUE")>
-		                                    #listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_boolean" value="1">
-		                                <cfelseif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value eq false OR arguments.updateData[ listGetAT(keyList, i)].value EQ "FALSE")>
-		                                    #listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_boolean" value="0">
-		 								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
-											#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
-										<cfelse>
-											<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "decimal">
-												#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" scale="2" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
-											<cfelse>
-												#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
-											</cfif>
-										</cfif>
-										<cfif listLen(keyList) gt i>, </cfif>
-									</cfloop>
-								WHERE
-									#arguments.primaryKeyColumn# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#primaryKeyValue#" />
-						</cfquery>
-					</cfif>
-					
+					<cfquery name="rs" result="local.sqlResult">
+						UPDATE
+							#arguments.tableName#
+						SET
+							<cfloop from="1" to="#listLen(keyList)#" index="local.i">
+ 								<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value eq true OR arguments.updateData[ listGetAT(keyList, i)].value EQ "TRUE")>
+                                    #listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_boolean" value="1">
+                                <cfelseif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value eq false OR arguments.updateData[ listGetAT(keyList, i)].value EQ "FALSE")>
+                                    #listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_boolean" value="0">
+ 								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
+									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
+								<cfelse>
+									<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "decimal">
+										#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" scale="2" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+									<cfelse>
+										#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+									</cfif>
+								</cfif>
+								<cfif listLen(keyList) gt i>, </cfif>
+							</cfloop>
+						WHERE
+							#arguments.primaryKeyColumn# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#primaryKeyValue#" />
+					</cfquery>
 				</cfif>
 			<cfelse>
 				<cfset primaryKeyValue = arguments.insertData[ arguments.primaryKeyColumn ].value />
-				<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData, dryRun=arguments.dryRun) />
+				<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData) />
 			</cfif>
 			<cfreturn primaryKeyValue />
 		<cfelse>
-
-					
-			<cfif arguments.dryRun>
-				<cfsavecontent variable="local.updateQuery" >
-					<cfoutput>
-						- UPDATE (
-									<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-		 								<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value eq true OR arguments.updateData[ listGetAT(keyList, i)].value EQ "TRUE")>
-		                                    #listGetAt(keyList, i)# = 1
-		                                <cfelseif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value eq false OR arguments.updateData[ listGetAT(keyList, i)].value EQ "FALSE")>
-		                                    #listGetAt(keyList, i)# = 0
-		 								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
-											#listGetAt(keyList, i)# = NULL
-										<cfelse>
-												#listGetAt(keyList, i)# = #arguments.updateData[ listGetAt(keyList, i) ].value#"
-										</cfif>
-										<cfif listLen(keyList) gt i>, </cfif>
-									</cfloop>
-									)<br />
-					</cfoutput>
-				</cfsavecontent>
-				<cfoutput>#local.updateQuery#</cfoutput>
-			<cfelse>
-				<cfquery name="rs" result="local.sqlResult">
-					UPDATE
+			<cfquery name="rs" result="local.sqlResult">
+				UPDATE
 					#arguments.tableName#
-					SET
+				SET
 					<cfloop from="1" to="#listLen(keyList)#" index="local.i">
 						<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND (arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp" OR arguments.updateData[ listGetAt(keyList, i) ].dataType eq "float"))>
 							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
@@ -489,11 +413,9 @@
 						#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
 						<cfif listLen(arguments.idColumns) gt i>AND </cfif>
 					</cfloop>
-				</cfquery>
-			</cfif>
-			
+			</cfquery>
 			<cfif !sqlResult.recordCount>
-				<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData, dryRun=arguments.dryRun) />
+				<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData) />
 			</cfif>
 		</cfif>
 	</cffunction>
@@ -501,41 +423,30 @@
 	<cffunction name="recordInsert" returntype="void">
 		<cfargument name="tableName" required="true" type="string" />
 		<cfargument name="insertData" required="true" type="struct" />
-		<cfargument name="dryRun" type="boolean" default="false" />
 
 		<cfset var keyList = structKeyList(arguments.insertData) />
 		<cfset var keyListOracle = keyList />
 		<cfset var rs = "" />
 		<cfset var sqlResult = "" />
 		<cfset var i = 0 />
-		
-		<cfif arguments.dryRun>
-			<cfsavecontent variable="local.insertQuery" >
-				<cfoutput>
-					- INSERT <br />
-				</cfoutput>
-			</cfsavecontent>
-			<cfoutput>#local.insertQuery#</cfoutput>
-		<cfelse>
-			<cfquery name="rs" result="local.sqlResult">
-				INSERT INTO	#arguments.tableName# (
+		<cfquery name="rs" result="local.sqlResult">
+			INSERT INTO	#arguments.tableName# (
 				<cfif getApplicationValue("databaseType") eq "Oracle10g" AND listFindNoCase(keyListOracle,'type')>#listSetAt(keyListOracle,listFindNoCase(keyListOracle,'type'),'"type"')#<cfelse>#keyList#</cfif>
-				) VALUES (
-					<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-						<cfif arguments.insertData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.insertData[ listGetAt(keyList, i)].value eq true OR arguments.insertData[ listGetAt(keyList, i)].value eq "TRUE")>
-							<cfqueryparam cfsqltype="cf_sql_boolean" value="1">
-						<cfelseif arguments.insertData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.insertData[ listGetAt(keyList, i)].value eq false OR arguments.insertData[ listGetAt(keyList, i)].value eq "FALSE")>
-							<cfqueryparam cfsqltype="cf_sql_boolean" value="0">
-						<cfelseif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR trim(arguments.insertData[ listGetAt(keyList, i) ].value) EQ "">
-							<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
-						<cfelse>
-							<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
-						</cfif>
-						<cfif listLen(keyList) gt i>,</cfif>
-					</cfloop>
-				)
-			</cfquery>
-		</cfif>
+			) VALUES (
+				<cfloop from="1" to="#listLen(keyList)#" index="local.i">
+					<cfif arguments.insertData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.insertData[ listGetAt(keyList, i)].value eq true OR arguments.insertData[ listGetAt(keyList, i)].value eq "TRUE")>
+						<cfqueryparam cfsqltype="cf_sql_boolean" value="1">
+					<cfelseif arguments.insertData[ listGetAt(keyList, i) ].dataType eq "boolean" AND (arguments.insertData[ listGetAt(keyList, i)].value eq false OR arguments.insertData[ listGetAt(keyList, i)].value eq "FALSE")>
+						<cfqueryparam cfsqltype="cf_sql_boolean" value="0">
+					<cfelseif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR trim(arguments.insertData[ listGetAt(keyList, i) ].value) EQ "">
+						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
+					<cfelse>
+						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
+					</cfif>
+					<cfif listLen(keyList) gt i>,</cfif>
+				</cfloop>
+			)
+		</cfquery>
 
 	</cffunction>
 

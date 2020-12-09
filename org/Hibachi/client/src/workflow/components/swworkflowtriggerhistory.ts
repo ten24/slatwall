@@ -21,7 +21,6 @@ class SWWorkflowTriggerHistory{
         ];
         return directive;
     }
-    //@ngInject
     constructor(
             workflowPartialsPath,
             hibachiPathBuilder,
@@ -33,9 +32,7 @@ class SWWorkflowTriggerHistory{
             scope : {
                 workflow : "="
             },
-            
-            template: require("./workflowtriggerhistory.html"),
-            
+            templateUrl : hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggerhistory.html",
             link : function(scope, element, attrs) {
                 $rootScope.workflowID = scope.workflow.data.workflowID;
                 //Build the history collection.
@@ -46,8 +43,6 @@ class SWWorkflowTriggerHistory{
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("endTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("startTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("successFlag");
-                scope.workflowTriggerHistoryCollection.addDisplayProperty("serverInstanceKey");
-                scope.workflowTriggerHistoryCollection.addOrderBy("startTime|DESC");
             }
         };
     }

@@ -8,7 +8,6 @@ class SWFFormController {
     public form:any;
     public ngModel:any;
     public method:string;
-    public returnJsonObjects: string;
     public sRedirectUrl:string;
     public fRedirectUrl:string;
     public sAction;
@@ -20,11 +19,7 @@ class SWFFormController {
     public fileFlag:boolean = false;
     public errorToDisplay:string; //very first error returned from call
     public uploadProgressPercentage:any = 0;
-    public afterSubmitEventName:string;
-    public closeModal:boolean;
-    public modalId:string;
-    public newMethod:string;
-    public preFormPost:any;
+    
     // @ngInject
     constructor(
         public $rootScope,
@@ -42,10 +37,6 @@ class SWFFormController {
     public $onInit=()=>{
     }
     
-    public resetMethod=(newMethod)=>{
-        this.newMethod = newMethod;
-    }
-    
     public getFormData = ()=>{
         var formData = {};
         for(var key in this.form){
@@ -53,7 +44,6 @@ class SWFFormController {
                 formData[key]=this.form[key].$modelValue||this.form[key].$viewValue;
             }
         }
-        formData['returnJsonObjects'] = this.returnJsonObjects;
         return formData;
     }
     
@@ -84,32 +74,23 @@ class SWFFormController {
     }
     
     public submitForm = ()=>{
-        let method = this.newMethod ? this.newMethod : this.method;
         if(this.form.$valid){
             this.loading = true;
             let formData = this.getFormData();
-            if(this.preFormPost && !this.preFormPost(formData)){
-                this.loading = false;
-                return new Promise((reject)=>[]);
-            }
-            
-            if(this.closeModal && this.modalId){
-                $(`#${this.modalId}`).modal('toggle');
-            }
             if(this.fileFlag){
                 let file = this.getFileFromFormData(formData);
                 return this.uploadFile(this.method,file).then(result=>{
                     return this.processResult(result);
                 });
             }
-            
-            return this.$rootScope.slatwall.doAction(method,formData).then( (result) =>{
+            return this.$rootScope.slatwall.doAction(this.method,formData).then( (result) =>{
                 return this.processResult(result);
             });
-   
+            
+        }else{
+            this.form.$setSubmitted(true);
+            return new Promise((resolve,reject)=>[]);
         }
-        this.form.$setSubmitted(true);
-        return new Promise((resolve,reject)=>[]);
     }
     
    public uploadFile = (action, data) =>{ //promisified version of public service's uploadFile
@@ -150,9 +131,6 @@ class SWFFormController {
         if(!result) return result;
         this.$timeout(()=>{
         this.loading = false;
-        if(this.afterSubmitEventName){
-            this.observerService.notify(this.afterSubmitEventName);
-        }
         this.successfulActions = result.successfulActions;
         this.failureActions = result.failureActions;
         this.errors = result.errors;
@@ -166,7 +144,7 @@ class SWFFormController {
                 this.$rootScope.slatwall.redirectExact(this.sRedirectUrl);
             }
             if(this.sAction){
-                this.sAction(result);
+                this.sAction();
             }
             this.form.$setSubmitted(false);
             this.form.$setPristine(true);
@@ -200,16 +178,11 @@ class SWFForm  {
     */
     public bindToController = {
         method:"@?",
-        returnJsonObjects: '@?',
         sRedirectUrl:"@?",
         fRedirectUrl:"@?",
         sAction:"=?",
         fAction:"=?",
-        fileFlag:"@?",
-        afterSubmitEventName:"@?",
-        closeModal:"@?",
-        preFormPost:"<?", //method that executes before form post, return false to stop execution of ajax call.
-        modalId:"@?",
+        fileFlag:"@?"
     };
     public controller       = SWFFormController;
     public controllerAs     = "swfForm";

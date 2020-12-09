@@ -1,14 +1,32 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-const filterGroupsTemplateString = require("./filtergroups.html");
-
 class SWFilterGroups{
 	public static Factory(){
-		return /** @ngInject; */ ($log,observerService)=> new this( $log, observerService );
+		var directive = (
+			$log,
+			collectionPartialsPath,
+			hibachiPathBuilder,
+			observerService
+		)=> new SWFilterGroups(
+			$log,
+			collectionPartialsPath,
+			hibachiPathBuilder,
+			observerService
+		);
+		directive.$inject = [
+			'$log',
+			'collectionPartialsPath',
+			'hibachiPathBuilder',
+			'observerService'
+		];
+		return directive;
 	}
-	
-    // 	@ngInject;
-	constructor( $log, observerService ){
+	constructor(
+		$log,
+		collectionPartialsPath,
+		hibachiPathBuilder,
+		observerService
+	){
 		return {
 			restrict: 'EA',
 			scope:{
@@ -21,7 +39,7 @@ class SWFilterGroups{
                 simple:"=",
                 readOnly:"="
 			},
-			template: filterGroupsTemplateString,
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
 				//if the filter group comparisontype is not specified, then assume we are doing filters
 				if(!angular.isDefined($scope.comparisonType)){
@@ -73,7 +91,7 @@ class SWFilterGroups{
 
 						$log.debug('removeFilterItem');
 						$log.debug(filterItemIndex);
-
+						observerService.notifyById('swPaginationAction',$scope.collectionConfig.eventID ,{type:'setCurrentPage',payload:1});
 						$scope.saveCollection();
 					}
 				};

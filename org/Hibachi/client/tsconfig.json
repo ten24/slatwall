@@ -5,7 +5,6 @@
     "sourceMap": true
   },
   "files": [
-    "typings.d.ts",
     "typings/hibachiTypescript.d.ts",
     "typings/tsd.d.ts",
     "typings/requirejs/require.d.ts",

@@ -117,7 +117,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 			requestData.addUserField(listFirst(setting('invoiceUserFileThreeTemplate'), ' '), getService('HibachiUtilityService').replaceStringTemplate(listLast(setting('invoiceUserFileThreeTemplate'), ' '), requestBean.getOrder()));
 		}
 		if(!isNull(requestBean.getOrder())){
-			requestData.setInvoiceNumber(requestBean.getOrder().getShortReferenceID( true ));
+		requestData.setInvoiceNumber(requestBean.getOrder().getShortReferenceID( true ));
 		}
 
 		requestData.setCustomerId(getService('AccountService').getAccount(requestBean.getAccountID()).getShortReferenceID(true));

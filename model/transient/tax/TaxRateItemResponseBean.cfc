@@ -53,9 +53,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 	property name="referenceObjectType" type="string" default=""; // value should either be 'orderFulfillment' or 'orderItem'
 	property name="taxRate" type="numeric";
 	property name="taxAmount" type="numeric";
-	property name="VATPrice" type="numeric";
-	property name="VATAmount" type="numeric";
-	property name="feeType" type="string";
 	
 	property name="taxImpositionID" ormtype="string";
 	property name="taxImpositionName" ormtype="string";

@@ -58,7 +58,6 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeDescription" hb_populateEnabled="public" ormtype="string" length="4000" ;
 	property name="attributeHint" hb_populateEnabled="public" ormtype="string";
 	property name="attributeInputType" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
-	property name="attributeInputDisplayType" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="defaultValue" hb_populateEnabled="public" ormtype="string";
 	property name="formEmailConfirmationFlag" hb_populateEnabled="public" ormtype="boolean" default="false" ;
 	property name="requiredFlag" hb_populateEnabled="public" ormtype="boolean" default="false" ;
@@ -178,6 +177,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			{value="multiselect", name=rbKey("entity.attribute.attributeInputType.multiselect")},
 			{value="password", name=rbKey("entity.attribute.attributeInputType.password")},
 			{value="radioGroup", name=rbKey("entity.attribute.attributeInputType.radioGroup")},
+			{value="readOnly", name=rbKey("entity.attribute.attributeInputType.readOnly")},
 			{value="relatedObjectSelect", name=rbKey("entity.attribute.attributeInputType.relatedObjectSelect")},
 			{value="relatedObjectMultiselect", name=rbKey("entity.attribute.attributeInputType.relatedObjectMultiselect")},
 			{value="select", name=rbKey("entity.attribute.attributeInputType.select")},
@@ -187,14 +187,6 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			{value="time", name=rbKey("entity.attribute.attributeInputType.time")},
 			{value="wysiwyg", name=rbKey("entity.attribute.attributeInputType.wysiwyg")},
 			{value="yesNo", name=rbKey("entity.attribute.attributeInputType.yesNo")}
-		];
-    }
-    
-    public array function getAttributeInputDisplayTypeOptions() {
-		return [
-			{value="visible", name=rbKey("entity.attribute.attributeInputDisplayType.visible")},
-			{value="readOnly", name=rbKey("entity.attribute.attributeInputDisplayType.readOnly")},
-			{value="hidden", name=rbKey("entity.attribute.attributeInputDisplayType.hidden")}
 		];
     }
 
@@ -378,7 +370,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeAttribute( this );
 	}
-
+	
 	public boolean function isValidPropertyName(){
 		if(
 			isNull(getAttributeSet())

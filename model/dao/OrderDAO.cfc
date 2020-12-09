@@ -336,25 +336,6 @@ Notes:
 
 		<cfreturn 0 />
 	</cffunction>
-	
-	<cffunction name="removeAppliedOrderTemplateGiftCards" returntype="void" access="public">
-		<cfargument name="orderTemplateID" type="string" required="true" />
-		
-		<cfquery name="rs">
-			DELETE FROM swOrderTemplateAppliedGiftcard where orderTemplateID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
-		</cfquery>
-	</cffunction>
-
-	<cffunction name="removeTemporaryOrderTemplateItems" returntype="void" access="public">
-		<cfargument name="orderTemplateID" type="string" required="true" />
-		
-		<cfquery name="rs">
-			DELETE FROM SwOrderTemplateItem 
-			WHERE orderTemplateID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
-			AND temporaryFlag = 1
-		</cfquery>
-	</cffunction>
-
 	<cfscript>
 		public numeric function getOrderItemCountOnOrder(required any orderItem){
 			var orderItemCount = 0;
@@ -423,12 +404,6 @@ Notes:
 				return quantity >= arguments.orderItem.getSku().setting('skuOrderMinimumQuantity');
 			}
 			return true;
-		}
-		
-		public query function getTrueRefundSkuSettingRecords(){
-			var sql = "select settingValue, skuID, productID, productTypeID, brandID from swsetting where settingName = 'skuIsRefundFee'";
-			var settingQuery = queryExecute(sql);
-			return settingQuery;
 		}
 	</cfscript>
 

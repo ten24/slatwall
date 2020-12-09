@@ -1,7 +1,5 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-
-//TODO: remove, not in use
 class CacheService{
 
     private cacheData = {};

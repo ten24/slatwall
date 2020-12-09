@@ -402,12 +402,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		bestPrice.priceGroup = "";
 
 		// Loop over each of the price groups of this account, and get the price based on that pricegroup
-		var priceGroupCount = arrayLen(arguments.account.getPriceGroups());	
-		for(var i=1; i<=priceGroupCount; i++) {
+		for(var i=1; i<=arrayLen(arguments.account.getPriceGroups()); i++) {
 			if(account.getPriceGroups()[i].getActiveFlag()){
 				var thisPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=account.getPriceGroups()[i],currencyCode=arguments.currencyCode);
 
-				if(!IsNull(thisPrice) && thisPrice < bestPrice.price) {
+				if(thisPrice < bestPrice.price) {
 					bestPrice.price = thisPrice;
 					bestPrice.priceGroup = account.getPriceGroups()[i];
 				}
@@ -419,15 +418,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
 		var totalQuantity = arguments.order.getTotalItemQuantity();
-
 		if(!isNull(arguments.order.getAccount())){
-			var priceGroupCollection = arguments.order.getAccount().getPriceGroupsCollectionList();
-			priceGroupCollection.setDisplayProperties('priceGroupID');
-			priceGroups = priceGroupCollection.getRecords();
- 
+			var priceGroups = arguments.order.getAccount().getPriceGroups();
 			var priceGroupList = '';
 			for(var priceGroup in priceGroups){
-				priceGroupList &= priceGroup['priceGroupID'];
+				priceGroupList &= priceGroup.getPriceGroupID();
 			}
 		}else{
 			var priceGroupList = '';
@@ -435,42 +430,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var priceGroupCacheKey = hash(totalQuantity & priceGroupList,'md5');
 		
 		if( isNull(arguments.order.getPriceGroupCacheKey()) || arguments.order.getPriceGroupCacheKey() != priceGroupCacheKey ) {
-
-			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
-			var orderItems = arguments.order.getOrderItems(); 
-			for(var orderItem in orderItems){
-				
-				if(
-					(
-						!isNull(orderItem.getUserDefinedPriceFlag()) && orderItem.getUserDefinedPriceFlag()
-					)
-					|| orderItem.getOrderItemType().getSystemCode() == 'oitReplacement')
-				{
-					continue;
-				}
-				
-				orderItem.setAppliedPriceGroup(javaCast("null",""));
 			
-				if(!isNull(arguments.order.getAccount()) && isNull(orderItem.getOrder().getPriceGroup())){
-					
+			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
+			for(var orderItem in arguments.order.getOrderItems()){
+				orderItem.removeAppliedPriceGroup();
+				
+				if(!isNull(arguments.order.getAccount())){
 					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
 						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
-					} else {
+						if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
+							orderItem.setPrice( priceGroupDetails.price );
+							orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
+						}
+					}else{
 						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(orderItem.getSku(), arguments.order.getAccount());
+						if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
+							orderItem.setPrice( priceGroupDetails.price );
+							orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
+						}
 					}
 					
-					if( StructKeyExists(priceGroupDetails, 'price') && 
-						!IsNUll(priceGroupDetails.price) &&
-						priceGroupDetails.price < orderItem.getPrice() && 
-						isObject(priceGroupDetails.priceGroup)
-					) {
-						orderItem.setPrice( priceGroupDetails.price );
-						orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
-					}
-					
-				}else if(!isNull(orderItem.getOrder().getPriceGroup())){
-					orderItem.setPrice(orderItem.getSku().getPriceByCurrencyCode(currencyCode=arguments.order.getCurrencyCode(), priceGroups=[arguments.order.getPriceGroup()]));
-					orderItem.setAppliedPriceGroup( orderItem.getOrder().getPriceGroup() );
 				}
 			}
 		}

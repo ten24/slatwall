@@ -1,5 +1,5 @@
 {
-	"properties": {
-		"childCategories": [{ "contexts": "delete", "maxCollection": 0 }]
+	"properties":{
+		"childCategories":[{"contexts":"delete","maxCollection":0}]
 	}
 }

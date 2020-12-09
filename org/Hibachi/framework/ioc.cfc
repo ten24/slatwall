@@ -87,8 +87,8 @@ component {
     // return true if the factory (or a parent factory) knows about the requested bean
     public boolean function containsBean( string beanName ) {
         discoverBeans();
-        return structKeyExists( variables.beanInfo, arguments.beanName ) ||
-            ( hasParent() && variables.parent.containsBean( arguments.beanName ) );
+        return structKeyExists( variables.beanInfo, beanName ) ||
+            ( hasParent() && variables.parent.containsBean( beanName ) );
     }
 
 
@@ -198,22 +198,20 @@ component {
     // return the requested bean, fully populated
     public any function getBean( string beanName, struct constructorArgs = { } ) {
         discoverBeans();
-        if ( structKeyExists( variables.beanInfo, arguments.beanName ) ) {
-            if ( structKeyExists( variables.getBeanCache, arguments.beanName ) ) {
-                return variables.getBeanCache[ arguments.beanName ];
+        if ( structKeyExists( variables.beanInfo, beanName ) ) {
+            if ( structKeyExists( variables.getBeanCache, beanName ) ) {
+                return variables.getBeanCache[ beanName ];
             }
-
-            var bean = resolveBean( arguments.beanName, arguments.constructorArgs );
-            
-            if ( isSingleton( arguments.beanName ) ) variables.getBeanCache[ arguments.beanName ] = bean;
+            var bean = resolveBean( beanName, constructorArgs );
+            if ( isSingleton( beanName ) ) variables.getBeanCache[ beanName ] = bean;
             return bean;
         } else if ( hasParent() ) {
             // ideally throw an exception for non-DI/1 parent when args passed
             // WireBox adapter can do that since we control it but we can't do
             // anything for other bean factories - will revisit before release
-            return variables.parent.getBean( arguments.beanName, constructorArgs );
+            return variables.parent.getBean( beanName, constructorArgs );
         } else {
-            return missingBean( beanName = arguments.beanName, dependency = false );
+            return missingBean( beanName = beanName, dependency = false );
         }
     }
 
@@ -221,24 +219,24 @@ component {
     public any function getBeanInfo( string beanName = '', boolean flatten = false,
                                      string regex = '' ) {
         discoverBeans();
-        if ( len( arguments.beanName ) ) {
+        if ( len( beanName ) ) {
             // ask about a specific bean:
-            if ( structKeyExists( variables.beanInfo, arguments.beanName ) ) {
-                return variables.beanInfo[ arguments.beanName ];
+            if ( structKeyExists( variables.beanInfo, beanName ) ) {
+                return variables.beanInfo[ beanName ];
             }
             if ( hasParent() ) {
-                return parentBeanInfo( arguments.beanName );
+                return parentBeanInfo( beanName );
             }
-            throw 'bean not found: #arguments.beanName#';
+            throw 'bean not found: #beanName#';
         } else {
             var result = { beanInfo = { } };
             if ( hasParent() ) {
                 if ( flatten || len( regex ) ) {
-                    structAppend( result.beanInfo, parentBeanInfoList( arguments.flatten ).beanInfo );
+                    structAppend( result.beanInfo, parentBeanInfoList( flatten ).beanInfo );
                     structAppend( result.beanInfo, variables.beanInfo );
                 } else {
                     result.beanInfo = variables.beanInfo;
-                    result.parent = parentBeanInfoList( arguments.flatten );
+                    result.parent = parentBeanInfoList( flatten );
                 };
             } else {
                 result.beanInfo = variables.beanInfo;

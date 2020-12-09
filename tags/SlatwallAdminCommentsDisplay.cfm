@@ -63,10 +63,7 @@
 	</cfif>
 
 	<div class="tab-pane" id="tabComments">
-		
-		<cfset checkPermission = attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityCrudByAccount("read", "Comment", attributes.hibachiScope.getAccount() ) > 
-		<cfif checkPermission EQ true >
-			<cfoutput>
+		<cfoutput>
 			<table class="table table-bordered table-hover">
 				<thead>
 					<tr>
@@ -195,6 +192,5 @@
 				</table>
 			</cfif>
 		</cfoutput>
-		</cfif>
 	</div>
 </cfif>

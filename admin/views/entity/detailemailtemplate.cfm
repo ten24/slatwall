@@ -62,10 +62,6 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/htmlbody">
 			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/textbody">
 			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/emailsettings">
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.emailTemplate.getAssignedAttributeSetSmartList().getRecords()#" index="local.attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.emailTemplate#" attributeSet="#local.attributeSet#" />
-			</cfloop>
 		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>

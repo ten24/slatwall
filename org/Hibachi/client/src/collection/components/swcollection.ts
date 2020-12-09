@@ -21,8 +21,7 @@ class SWCollection{
 			collectionPartialsPath){
 		return {
 			restrict: 'A',
-			template: require("./collection.html"),
-			
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"collection.html",
 			link: function(scope,$element,$attrs){
 
 				scope.tabsUniqueID = Math.floor(Math.random()*999);

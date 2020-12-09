@@ -123,14 +123,12 @@ class SWSiteSelector implements ng.IDirective{
             $http,
             $hibachi,
             listingService,
-
 		    contentPartialsPath,
 			slatwallPathBuilder
         ) => new SWSiteSelector(
             $http,
             $hibachi,
             listingService,
-
 			contentPartialsPath,
 			slatwallPathBuilder
         );
@@ -138,7 +136,6 @@ class SWSiteSelector implements ng.IDirective{
             '$http',
             '$hibachi',
             'listingService',
-
 			'contentPartialsPath',
 			'slatwallPathBuilder'
         ];
@@ -150,7 +147,6 @@ class SWSiteSelector implements ng.IDirective{
 		private $http,
         private $hibachi,
         private listingService,
-
 	    private contentPartialsPath,
 		private slatwallPathBuilder
 	){

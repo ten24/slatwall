@@ -9,17 +9,14 @@ class SWFAlertController{
     public alertType:string;
     public duration:number = 2;
     public message:string;
-    public displayOnInit:boolean;
     
     constructor(private $rootScope, private $timeout, private $scope, private observerService){
         this.$rootScope = $rootScope;
         this.observerService.attach(this.displayAlert, this.alertTrigger);
     }
     
-    public $onInit=()=>{
-        if(this.displayOnInit){
-            this.displayAlert();
-        }
+    public $oninit=()=>{
+        
     }
     
     public displayAlert=()=>{
@@ -37,8 +34,7 @@ class SWFAlert{
                 alertTrigger:'@?',
                 alertType: '@?',
                 duration: '<?',
-                message: '@?',
-                displayOnInit:'<?'
+                message: '@?'
     };
     public controller = SWFAlertController
     public controllerAs = "swfAlert";

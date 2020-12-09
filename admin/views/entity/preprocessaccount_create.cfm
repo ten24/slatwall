@@ -66,7 +66,6 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="lastName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="company" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="phoneNumber" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="username" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountCreatedSite" edit="#rc.edit#">

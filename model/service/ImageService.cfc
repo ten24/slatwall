@@ -103,23 +103,13 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
         var resizedImagePaths = [];
         //var skus = [];
-        var basePath = "#getHibachiScope().getBaseImageURL()#/product/default";
         
         var skuRecords = getService('skuDAO').getImageFileDataBySkuIDList(arguments.skuIDList);
         for(var skuRecord in skuRecords){
-		
-        	if(!structKeyExists(skuRecord,'imageFile') && !structKeyExists(skuRecord,'defaultImage')){
-        		var imageFile = '';
-        	}else if(structKeyExists(skuRecord,'imageFile') && fileExists(expandPath("#basePath#/#skuRecord['imageFile']#"))){
-        		var imageFile = skuRecord['imageFile'];
-        	}else{
-        		var imageFile = skuRecord['defaultImage'];
-        	}
-				    
         	ArrayAppend(
         		resizedImagePaths, 
         		getService('imageService').getResizedImagePath(
-        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#imageFile#"
+        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#skuRecord['imageFile']#"
         		)
         	);
         }
@@ -147,31 +137,28 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	}
 
 	// Image File Methods
-	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
+	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="", string size) {
 		var resizedImagePath = "";
-		
 		// If the image can't be found default to a missing image
 		if(!fileExists(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath))) {
 			
 			//look if the path was supplied
-			if(structKeyExists(arguments, "missingImagePath") && fileExists(expandPath(arguments.missingImagePath))) {
+			if(structKeyExists(arguments, "missingImagePath") && fileExists(getHibachiUtilityService().hibachiExpandPath(arguments.missingImagePath))) {
 			
 				arguments.imagePath = "#getApplicationValue('baseURL')##arguments.missingImagePath#";
 				
 		    //look if this has been supplied at the site level.
-			} else if (
-				!isNull(getSiteService().getCurrentRequestSite()) 
-				&& !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))
-			) {
+			} else if (!isNull(getSiteService().getCurrentRequestSite()) && !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))) {
+                
                 arguments.imagePath = getSiteService().getCurrentRequestSite().setting('siteMissingImagePath');
 			
 			//check the custom location
-			} else if(fileExists(expandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {
+			} else if(fileExists(getHibachiUtilityService().hibachiExpandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {
                
                 arguments.imagePath = "#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg";
                 
             //Check settings location
-			}else if( fileExists(expandPath(getHibachiScope().setting('imageMissingImagePath'))) ){
+			}else if( fileExists(getHibachiUtilityService().hibachiExpandPath(getHibachiScope().setting('imageMissingImagePath'))) ){
                
 				arguments.imagePath = "#getApplicationValue('baseURL')##getHibachiScope().setting('imageMissingImagePath')#";			
             
@@ -184,6 +171,25 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			
 		}
 
+		if(structKeyExists(arguments, "size") && !structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")){
+			switch(arguments.size){
+				case "m": case "medium":
+		            arguments.height = getSettingService().getSettingValue("productImageMediumHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageMediumWidth");
+		            break;
+		        case "l": case "large":
+		            arguments.height = getSettingService().getSettingValue("productImageLargeHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageLargeWidth");
+		            break;
+		        case 'xl': case "extraLarge":
+		        	arguments.height = getSettingService().getSettingValue("productImageXLargeHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageXLargeWidth");
+		            break;
+		        default:
+		            arguments.height = getSettingService().getSettingValue("productImageSmallHeight");
+		            arguments.width  = getSettingService().getSettingValue("productImageSmallWidth");
+			}
+		}
 		// if no width and height is passed in, display the original image
 		if(!structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")) {
 
@@ -259,7 +265,6 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 				var originalFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath));
 				var resizedFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
-
 
 				if(originalFileObject.lastModified > resizedFileObject.lastModified) {
 					fileDelete(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
@@ -371,13 +376,10 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 					}
 				} catch(any e) {
 					// log the error
-					if(getHibachiScope().setting("globalLogMessages") == "detail"){
-						logHibachiException(e);
-					}
+					logHibachiException(e);
 				}
 			}
 		}
-
 		if(getHibachiUtilityService().isS3Path(resizedImagePath)){
 			var globalAssetsImageBaseURL = getHibachiScope().setting('globalAssetsImageBaseURL');
 			if(!len(globalAssetsImageBaseURL)){
@@ -521,3 +523,4 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	// ======================  END: Get Overrides =============================
 
 }
+

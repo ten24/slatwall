@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="AccountRelationshipRole" entityname="SlatwallAccountRelationshipRole" table="SwAccountRelationshipRole" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_permission="this" hb_serviceName="accountService" {
+component displayname="AccountRelationshipRole" entityname="SlatwallAccountRelationshipRole" table="SwAccountRelationshipRole" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" {
 	
 	// Persistent Properties
 	property name="accountRelationshipRoleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

@@ -4,7 +4,6 @@
 import {BaseEntity} from "./baseentity";
 
 class Account extends BaseEntity{
-    [x: string]: any;
     public accountID:string;
     public giftCards:Array<any>=[];
     public firstName:string;

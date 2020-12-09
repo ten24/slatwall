@@ -1,5 +1,0 @@
-{
-	"properties": {
-		"shippingMethod": [{ "required": true }]
-	}
-}

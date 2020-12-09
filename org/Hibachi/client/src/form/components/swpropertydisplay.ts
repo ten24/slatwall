@@ -70,7 +70,6 @@ class SWPropertyDisplayController {
 	public errorClass;
 	public propertyIdentifier; //dominant
 	public loader;
-	public updateAuthInfo;
 
     public swForm;
     public selected;
@@ -82,7 +81,6 @@ class SWPropertyDisplayController {
         public $injector,
         public metadataService:MetaDataService,
         public observerService,
-        public publicService,
         public listingService?
     ){
 
@@ -157,7 +155,6 @@ class SWPropertyDisplayController {
         }
 
         this.applyFilter = (model, filter)=> {
-            
             try{
                 return this.$filter(filter)(model)
             }catch (e){
@@ -223,15 +220,6 @@ class SWPropertyDisplayController {
         ){
             this.swInputOnChangeEvent = this.swForm.name + this.name + 'change';
             this.observerService.attach(this.onChange, this.swInputOnChangeEvent);
-        }
-        
-        if(this.object && this.propertyIdentifier){
-            this.updateAuthInfo = true;
-            // if(this.object.$$isPersisted()){
-            //     this.updateAuthInfo = this.publicService.authenticateEntityProperty('Update',this.object.className,this.propertyIdentifier);
-            // }else{
-            //     this.updateAuthInfo = this.publicService.authenticateEntityProperty('Create',this.object.className,this.propertyIdentifier);
-            // }
         }
 
 	}
@@ -300,7 +288,8 @@ class SWPropertyDisplayController {
             this.modalCallback();
         }
     }
-    
+
+
 }
 
 class SWPropertyDisplay implements ng.IDirective{

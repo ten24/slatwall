@@ -1,5 +1,5 @@
 {
-	"properties": {
-		"cost": [{ "dataType": "numeric", "minValue": 0 }]
+	"properties":{
+		"cost":	[{"dataType":"numeric","minValue":0}]
 	}
 }

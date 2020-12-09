@@ -67,6 +67,8 @@ class SWSelectionController{
 
 class SWSelection  implements ng.IDirective{
 
+    public static $inject = ['corePartialsPath', 'hibachiPathBuilder'];
+    public templateUrl;
     public restrict = 'E';
     public scope = {};
 
@@ -82,11 +84,24 @@ class SWSelection  implements ng.IDirective{
     public controller = SWSelectionController;
     public controllerAs = 'swSelection';
 
-    public template = require("./selection.html");
+    constructor(
+        public collectionPartialsPath,
+        public hibachiPathBuilder
+    ){
+        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "selection.html";
+    }
 
-	public static Factory(){
-		return /** @ngInject; */ () => new this();
-	}
+    public static Factory(){
+        var directive = (
+            corePartialsPath,
+            hibachiPathBuilder
+        )=> new SWSelection(
+            corePartialsPath,
+            hibachiPathBuilder
+        );
+        directive.$inject = [ 'corePartialsPath', 'hibachiPathBuilder'];
+        return directive;
+    }
 }
 export{
     SWSelection

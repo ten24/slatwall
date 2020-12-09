@@ -4,9 +4,6 @@
  * Handles adding, editing, and deleting Workflows Tasks.
  */
 class SWWorkflowTasks{
-    
-    public template = require("./workflowtasks.html");
-
 	public static Factory(){
 		var directive = (
 			$log,
@@ -42,8 +39,7 @@ class SWWorkflowTasks{
 			scope:{
 				workflow:"="
 			},
-			template: this.template,
-			
+			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtasks.html",
 			link: function(scope, element,attrs){
 				scope.workflowPartialsPath = hibachiPathBuilder.buildPartialsPath(workflowPartialsPath);
 				scope.propertiesList = {};
@@ -225,7 +221,7 @@ class SWWorkflowTasks{
 				};
 
 			}
-		} as SWWorkflowTasks;
+		};
 	}
 }
 export{

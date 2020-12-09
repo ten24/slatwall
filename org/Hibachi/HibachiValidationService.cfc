@@ -149,7 +149,6 @@ component output="false" accessors="true" extends="HibachiService" {
 
 			variables.validationByContextStructs["#arguments.object.getClassName()#-#arguments.context#"] = contextValidations;
 		}
-		
 		return variables.validationByContextStructs["#arguments.object.getClassName()#-#arguments.context#"];
 	}
 
@@ -211,13 +210,14 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public any function validate(required any object, string context="", boolean setErrors=true) {
 		
+		
 		// Setup an error bean
 		if(setErrors) {
 			var errorBean = arguments.object.getHibachiErrors();
 		} else {
 			var errorBean = getTransient("hibachiErrors");
 		}
-
+		
 		// If the context was 'false' then we don't do any validation
 		if(
 			(!isBoolean(arguments.context) || arguments.context)
@@ -227,11 +227,12 @@ component output="false" accessors="true" extends="HibachiService" {
 
 			// Get the valdiations for this context
 			var contextValidations = getValidationsByContext(object=arguments.object, context=arguments.context);
+
 			// Loop over each property in the validations for this context
 			for(var propertyIdentifier in contextValidations) {
 
 				// First make sure that the proerty exists
-				if(arguments.object.hasPropertyByPropertyIdentifier( propertyIdentifier )) {
+				if(arguments.object.hasProperty( propertyIdentifier )) {
 					// Loop over each of the constraints for this given property
 					for(var c=1; c<=arrayLen(contextValidations[ propertyIdentifier ]); c++) {
 
@@ -246,8 +247,6 @@ component output="false" accessors="true" extends="HibachiService" {
 							validateConstraint(object=arguments.object, propertyIdentifier=propertyIdentifier, constraintDetails=contextValidations[ propertyIdentifier ][c], errorBean=errorBean, context=arguments.context);
 						}
 					}
-				} else{
-					logHibachi("HibachiValidationService.validate() Property not found for Object = #arguments.object.getClassName()#, by PID = #propertyIdentifier#");
 				}
 			}
 
@@ -268,12 +267,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 
 		var isValid = invokeMethod("validate_#arguments.constraintDetails.constraintType#", {object=arguments.object, propertyIdentifier=arguments.propertyIdentifier, constraintValue=arguments.constraintDetails.constraintValue});
-		
+
 		if(!isValid) {
 			var thisPropertyName = listLast(arguments.propertyIdentifier, '.');
 
 			var replaceTemplateStruct = {};
-			replaceTemplateStruct.propertyName = arguments.object.getTitleByPropertyIdentifier(arguments.propertyIdentifier);
+			replaceTemplateStruct.propertyName = arguments.object.getPropertyTitle(thisPropertyName);
 
 			if(arguments.object.isPersistent()) {
 				var thisClassName = getLastEntityNameInPropertyIdentifier( arguments.object.getClassName(), arguments.propertyIdentifier);
@@ -331,14 +330,14 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_null(required any object, required string propertyIdentifier, boolean constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject) && structKeyExists(propertyObject, "get#listLast(arguments.propertyIdentifier,'.')#")) {
-			
+		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-			
-			return arguments.constraintValue == isNull(propertyValue);			
-		} else {
-			return arguments.constraintValue == isNull(propertyObject); 
-		} 
+		}
+		if(arguments.constraintValue == true){
+			return isNull(propertyValue);			
+		}else{
+			return !isNull(propertyValue);			
+		}
 	}
 
 	public boolean function validate_dataType(required any object, required string propertyIdentifier, required any constraintValue) {
@@ -565,18 +564,17 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function validate_eq(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
-		
 		var validateAsNumeric = validateAsNumeric(arguments.object, propertyName);
-		
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#propertyName#");
-
 			if(validateAsNumeric && !isNull(propertyValue)){
 				propertyValue = val(propertyValue);
 			}
 		}
-
-		return !IsNull(propertyValue) && propertyValue == arguments.constraintValue;
+		if(!isNull(propertyValue) && !isNull(propertyValue) && propertyValue == arguments.constraintValue) {
+			return true;
+		}
+		return false;
 	}
 
 	public boolean function validate_neq(required any object, required string propertyIdentifier, required string constraintValue) {
@@ -794,10 +792,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return false;
 	}
-	
-	public boolean function validate_notInList(required any object, required string propertyIdentifier, required string constraintValue) {
-		return !this.validate_inList(arguments.object, arguments.propertyIdentifier, arguments.constraintValue);
-	}
+
 
 	private boolean function validateAsNumeric(required any object, required string propertyName, string comparePropertyName){
 

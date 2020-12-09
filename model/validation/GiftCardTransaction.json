@@ -1,5 +1,6 @@
 {
-	"properties": {
-		"currencyCode": [{ "contexts": "save", "required": true }]
+
+	"properties":{
+	    "currencyCode":	               [{"contexts":"save","required":true}]
 	}
 }

@@ -60,7 +60,7 @@ component entityname="SlatwallCycleCountBatchItem" table="SwCycleCountBatchItem"
 	// Related Object Properties (one-to-many)
 
 	// Related Object Properties (one-to-one)
-	property name="physicalCountItem" cfc="PhysicalCountItem"fieldtype="one-to-one" fkcolumn="physicalCountItemID";
+	property name="physicalCountItem" cfc="PhysicalCountItem" fieldtype="one-to-one" fkcolumn="physicalCountItemID";
 
 	//Calculated Properties
 
@@ -75,14 +75,14 @@ component entityname="SlatwallCycleCountBatchItem" table="SwCycleCountBatchItem"
 
 	// Non-Persistent Properties
 	property name="batchStatusCode" persistent="false";
-
+	
 	//Derived Properties
 
 	// ============ START: Non-Persistent Property Methods =================
 	public string function getBatchStatusCode() {
 		return getCycleCountBatch().getCycleCountBatchStatusType().getSystemCode();
 	}
-	
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================

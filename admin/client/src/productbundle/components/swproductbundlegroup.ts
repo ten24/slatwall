@@ -215,7 +215,7 @@ class SWProductBundleGroup implements ng.IDirective{
 	public controller=SWProductBundleGroupController;
 	public controllerAs="swProductBundleGroup";
 
-    // @ngInject
+    //@ngInject
 	constructor(
                 private productBundlePartialsPath,
 			    slatwallPathBuilder){

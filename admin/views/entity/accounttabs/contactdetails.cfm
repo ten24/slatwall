@@ -97,27 +97,6 @@ Notes:
 	</hb:HibachiPropertyRow>
 	<hr />
 	<hb:HibachiPropertyRow>
-		
-		<!--- Government Identifications --->
-		<hb:HibachiPropertyList divClass="col-md-6">
-			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountGovernmentIdentification_plural')#" smartList="#rc.account.getAccountGovernmentIdentificationsSmartList()#"
-									  recordEditAction="admin:entity.editaccountgovernmentidentification"
-									  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
-									  recordEditModal=true
-									  recordDeleteAction="admin:entity.deleteaccountgovernmentidentification"
-									  recordDeleteQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
-									  edit="#rc.edit#">
-
-				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="governmentIdentificationLastFour" />
-				<hb:HibachiListingColumn propertyIdentifier="governmentIdentificationType.typeName" />
-
-			</hb:HibachiListingDisplay>
-
-			<hb:HibachiActionCaller action="admin:entity.createaccountgovernmentidentification" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	<hr />
-	<hb:HibachiPropertyRow>
 		<!--- Addresses --->
 		<hb:HibachiPropertyList divClass="col-md-12">
 			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountAddress_plural')#" smartList="#rc.account.getAccountAddressesSmartList()#"

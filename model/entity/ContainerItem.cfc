@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Container Item" entityname="SlatwallContainerItem" table="SwContainerItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="containerService" hb_permission="this" {
+component displayname="Container Item" entityname="SlatwallContainerItem" table="SwContainerItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="orderDeliveryItem.orderDelivery.orderDeliveryItems" hb_processContext="setupSubscription,setupContentAccess" {
 
 	// Persistent Properties
 	property name="containerItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

@@ -71,9 +71,7 @@ class SWEditFilterItem{
 				comparisonType:"=",
                 simple:"="
 			},
-			
-			template: require("./editfilteritem.html"),
-			
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
 
 
@@ -216,7 +214,7 @@ class SWEditFilterItem{
                     scope.selectedFilterProperty = selectedFilterProperty;
                 };
 
-                scope.addFilterItem = () => {
+                scope.addFilterItem = function(){
                     collectionService.newFilterItem(filterGroupsController.swFilterGroups.getFilterGroupItem(),filterGroupsController.swFilterGroups.setItemInUse);
                     this.observerService.notify('collectionConfigUpdated', {
                         collectionConfig: collectionService
@@ -235,7 +233,7 @@ class SWEditFilterItem{
                     if(scope.filterItem.$$isNew === true){
                         scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
                     }else{
-                        observerService.notifyById('filterItemAction', filterGroupsController.swListingControls.tableId, {action: 'close',filterItemIndex:scope.filterItemIndex});
+                        observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
                     }
                 };
 
@@ -375,7 +373,20 @@ class SWEditFilterItem{
                                                 case 'y':
                                                     filterItem.displayValue +='Year ';
                                                     break;
+                                                case 'lastWeek':
+                                                    filterItem.displayValue =' Last Week';
+                                                    break;
+                                                case 'lastMonth':
+                                                    filterItem.displayValue =' Last Month';
+                                                    break;
+                                                case 'lastQuarter':
+                                                    filterItem.displayValue =' Last Quarter';
+                                                    break;
+                                                case 'lastYear':
+                                                    filterItem.displayValue =' Last Year';
+                                                    break;
                                             }
+                                            
                                             filterItem.displayValue += filterItem.value;
                                         }
                                     }else{
@@ -450,17 +461,8 @@ class SWEditFilterItem{
                         var timeoutpromise = $timeout(function(){
                             callback();
                         });
-                        
                         timeoutpromise.then(()=>{
-                           
-                            observerService.notifyById( 'filterItemAction', filterGroupsController.swListingControls.tableId, 
-                                {
-                                    action: 'add',
-                                    filterItemIndex:scope.filterItemIndex,
-                                    collectionConfig:this.collectionConfig
-                                }
-                            );
-                            
+                            observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex,collectionConfig:this.collectionConfig});
                         });
 
 

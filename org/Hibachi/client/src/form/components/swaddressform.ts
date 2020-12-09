@@ -7,7 +7,6 @@ class SWAddressFormController {
     public slatwallScope:any;
     public slatwall:any;
     public action:any;
-    public returnJsonObjects: string;
     public customPartial:any;
     public fieldList:string;
     public showAddressBookSelect:boolean = false;
@@ -27,9 +26,7 @@ class SWAddressFormController {
         private $scope,
         private $log,
         private observerService,
-        private $rootScope
-    ) {
-            
+        private $rootScope) {
         //if exists, just name it slatwall.
         if (angular.isDefined(this.slatwallScope)){
             this.slatwall = this.slatwallScope;
@@ -49,17 +46,14 @@ class SWAddressFormController {
         if($rootScope.slatwall && !$scope.slatwall){
             $scope.slatwall = $rootScope.slatwall;
         }
-        
         let addressName = this.addressName;
-        
         if(this.address){
             this.address.getData = () => {
                 let formData = this.address || {};
-                
                 let form = this.address.forms[addressName];
-                for( let key in form ){
+                for(let key in form){
                     let val = form[key];
-                    if( typeof val === 'object' && val.hasOwnProperty('$modelValue') ){
+                    if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
                         if(val.$modelValue){
                             val = val.$modelValue;
                         }else if(val.$viewValue){
@@ -78,6 +72,7 @@ class SWAddressFormController {
                         }
                     }
                 }
+
                 return formData || "";
             }
         }
@@ -132,7 +127,6 @@ class SWAddressForm implements ng.IComponentOptions {
     public template:string;
     public bindToController = {
         action: '@',
-        returnJsonObjects: '@?',
         actionText: '@',
         context:'@',
         customPartial:'@',

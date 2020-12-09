@@ -1,7 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 
 class SWCollectionFilterController{
-    // @ngInject;
     constructor(){}
 }
 
@@ -20,7 +19,18 @@ class SWCollectionFilter implements ng.IDirective{
     public template = "";
 
     public static Factory(){
-        return /** @ngInject; */ (scopeService, utilityService ) => new this( scopeService, utilityService);
+        var directive:ng.IDirectiveFactory=(
+            scopeService, 
+            utilityService
+        )=>new SWCollectionFilter(
+            scopeService, 
+            utilityService
+        );
+        directive.$inject = [
+            'scopeService',
+            'utilityService'
+        ];
+        return directive;
     }
     
     //@ngInject

@@ -67,7 +67,7 @@ Notes:
 			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifiersubscription')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=subscription" modal="true" type="list" />
 			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifiercontentaccess')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=contentAccess" modal="true" type="list" />
 			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifierfulfillment')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=fulfillment" modal="true" type="list" />
-			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifierorder')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=order" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifierorder')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=order" modal="true" type="list" />
 		</hb:HibachiActionCallerDropdown>
 	</cfif>
 	

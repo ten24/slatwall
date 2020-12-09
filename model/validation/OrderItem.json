@@ -1,45 +1,24 @@
 {
-	"conditions": {
-		"shouldValidateQuantity": {
-			"quantityHasChangedOrOrderNotPlaced": { "eq": true },
-			"sellOnBackOrderFlag": { "eq": false }
+	"conditions":{
+	   "shouldValidateQuantity":{
+			"quantityHasChangedOrOrderNotPlaced":{"eq":true},
+			"sellOnBackOrderFlag":{"eq":false}
 		},
-		"validateQuantityAfterDelivery": {
-			"quantityHasChangedAndHasOrderDelivery": { "eq": true }
+		"validateQuantityAfterDelivery":{
+			"quantityHasChangedAndHasOrderDelivery":{"eq":true}
 		}
 	},
-	"properties": {
-		"orderItemGiftRecipients": [
-			{ "contexts": "addRecipientsToOrderItem", "method": "hasUnassignedGiftCards" }
+	"properties":{
+		"orderItemGiftRecipients":  [{"contexts":"addRecipientsToOrderItem","method":"hasUnassignedGiftCards"}],
+		"orderItemType":			[{"contexts":"save","required":true}],
+		"orderItemStatusType":		[{"contexts":"save","required":true}],
+		"orderStatusCode":			[{"contexts":"edit,delete","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}],
+		"sku":						[{"contexts":"save","required":true}],
+		"quantity":					[
+										{"conditions":"shouldValidateQuantity","contexts":"save","dataType":"numeric","method":"hasQuantityWithinMaxOrderQuantity"},
+										{"conditions":"shouldValidateQuantity","contexts":"save","dataType":"numeric","method":"hasQuantityWithinMinOrderQuantity"},
+										{"conditions":"validateQuantityAfterDelivery","contexts":"save","dataType":"numeric","method":"hasQuantityAboveOrderDelivery"}
 		],
-		"orderItemType": [{ "contexts": "save", "required": true }],
-		"orderItemStatusType": [{ "contexts": "save", "required": true }],
-		"orderStatusCode": [
-			{ "contexts": "edit,delete", "inList": "ostNotPlaced,ostNew,ostProcessing,ostOnHold" }
-		],
-		"sku": [{ "contexts": "save", "required": true }],
-		"price": [{ "contexts": "save", "required": true, "dataType": "numeric", "minValue": 0 }],
-		"skuPrice": [{ "contexts": "save", "required": true, "dataType": "numeric", "minValue": 0 }],
-		"quantity": [
-			{
-				"conditions": "shouldValidateQuantity",
-				"contexts": "save",
-				"dataType": "numeric",
-				"method": "hasQuantityWithinMaxOrderQuantity"
-			},
-			{
-				"conditions": "shouldValidateQuantity",
-				"contexts": "save",
-				"dataType": "numeric",
-				"method": "hasQuantityWithinMinOrderQuantity"
-			},
-			{
-				"conditions": "validateQuantityAfterDelivery",
-				"contexts": "save",
-				"dataType": "numeric",
-				"method": "hasQuantityAboveOrderDelivery"
-			}
-		],
-		"quantityDelivered": [{ "contexts": "delete", "eq": 0 }]
+		"quantityDelivered":		[{"contexts":"delete", "eq":0}]
 	}
 }

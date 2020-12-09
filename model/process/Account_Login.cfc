@@ -52,9 +52,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="account";
 
 	// Data Properties
-	property name="authenticationCode";
 	property name="emailAddress";
 	property name="password";
-	property name="emailAddressOrUsername";
+	property name="authenticationCode";
 	
 }

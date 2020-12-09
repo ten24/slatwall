@@ -16,7 +16,11 @@
 			<cfelseif rc.qualifierType eq "fulfillment">
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumFulfillmentWeight" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumFulfillmentWeight" edit="#rc.edit#" />
-
+			<cfelseif rc.qualifierType eq "order">
+				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumOrderQuantity" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumOrderQuantity" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumOrderSubtotal" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumOrderSubtotal" edit="#rc.edit#" />
 			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

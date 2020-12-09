@@ -1,7 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWEntityActionBarButtonGroupController{
-	// @ngInject;
 	constructor(){
 
 	}
@@ -17,11 +16,28 @@ class SWEntityActionBarButtonGroup implements ng.IDirective{
 	};
 	public controller=SWEntityActionBarButtonGroupController
 	public controllerAs="swEntityActionBarButtonGroup";
-
-	public template = require("./entityactionbarbuttongroup.html");
+	public templateUrl;
 
 	public static Factory(){
-		return /** @ngInject; */ () => new this();
+		var directive:ng.IDirectiveFactory=(
+			corePartialsPath,
+			hibachiPathBuilder
+		) => new SWEntityActionBarButtonGroup(
+			corePartialsPath,
+			hibachiPathBuilder
+		);
+		directive.$inject = ['corePartialsPath',
+			'hibachiPathBuilder'];
+		return directive;
+	}
+    //@ngInject
+	constructor(private corePartialsPath,
+			hibachiPathBuilder){
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'entityactionbarbuttongroup.html';
+	}
+
+	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+
 	}
 }
 export{

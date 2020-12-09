@@ -61,7 +61,7 @@ Notes:
 
         <hb:HibachiPropertyDisplay object="#rc.processObject#" property="transactionType" valueOptions="#rc.processObject.getTransactionTypeOptions()#" edit="#rc.edit#"> 
         <hb:HibachiPropertyDisplay object="#rc.processObject#" property="amount" edit="#rc.edit#">
-        <hb:HibachiPropertyDisplay object="#rc.processObject#" property="reasonForAdjustment" edit="#rc.edit#">
+
 	</hb:HibachiEntityProcessForm>
 </cfoutput>
 

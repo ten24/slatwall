@@ -89,29 +89,7 @@ Notes:
 		
 		<cfreturn "" />
 	</cffunction>
-
-	<!--- Convenience method for getting template directories for core and custom --->
-	<cffunction name="getTemplateContextPathList">
-		<cfargument name="templateType" type="string" required="true" />
-		<cfargument name="objectName" type="string" required="true" />
-		<cfargument name="includesFlag" type="string" default="false" />
-
-		<cfset local.rootPath = expandPath('/Slatwall') /> 
-		<!--- Custom Path --->
-		<cfset local.templateContextPathList = rootPath & "/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/" />
-		<!--- Core Path --->
-		<cfset templateContextPathList = listAppend(templateContextPathList, rootPath & "/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/") />	
-
-		<cfif arguments.includesFlag > 
-			
-			<cfset templateContextPathList = listAppend(templateContextPathlist, rootPath & "/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/inc/") />
-			<cfset templateContextPathList = listAppend(templateContextPathList, rootPath & "/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/inc/") />	
-			
-		</cfif> 
-
-		<cfreturn templateContextPathList /> 
-	</cffunction> 
-
+	
 	<!--- =====================  END: Logical Methods ============================ --->
 	
 	<!--- ===================== START: DAO Passthrough =========================== --->

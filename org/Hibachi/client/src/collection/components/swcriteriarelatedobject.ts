@@ -45,8 +45,7 @@ class SWCriteriaRelatedObject{
     ){
         return {
             restrict: 'E',
-            template: require('./criteriarelatedobject.html'),
-            
+            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriarelatedobject.html',
             link: function(scope, element, attrs){
                 var getRelatedObjectOptions = function(){
                     var relatedObjectOptions = {

@@ -26,10 +26,6 @@ export class DefaultSkuService {
             this.saveDefaultSku(args);
         }
     }
-    
-    public setDefaultSkuSelection(selectionID, skuID){
-        this.defaultSkuSelections[selectionID] = skuID;
-    }
 
     private saveDefaultSku = (args) =>{ 
         //we only want to call save on the second and subsequent times the event fires, because it will fire when it is initialized

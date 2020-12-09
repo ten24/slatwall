@@ -9,7 +9,6 @@ class SWTypeaheadRemoveSelectionController {
     public typeaheadDataKey:string; 
     public disabled:boolean; 
 
-    // @ngInject;
     constructor(
         public $scope,
         public listingService,
@@ -45,29 +44,43 @@ class SWTypeaheadRemoveSelectionController {
 
 class SWTypeaheadRemoveSelection implements ng.IDirective{
 
-    public transclude = true; 
+	public templateUrl;
+    public transclude=true; 
 	public restrict = "EA";
-	
 	public scope = {};
+
 	public bindToController = {
         typeaheadDataKey:"@?",
         index:"@?", 
         disabled:"=?"
 	};
-	
 	public controller=SWTypeaheadRemoveSelectionController;
 	public controllerAs="swTypeaheadRemoveSelection";
 
-    public template = require("./typeaheadremoveselection.html");
-
     // @ngInject
-	constructor( private scopeService ){}
-
-	public static Factory(){
-		return /** @ngInject; */ (scopeService) => new this(scopeService);
+	constructor( private scopeService, 
+                 private corePartialsPath,
+                 hibachiPathBuilder
+    ){
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadremoveselection.html";
 	}
 
-     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) => {
+	public static Factory(){
+		var directive:ng.IDirectiveFactory = (
+            scopeService
+			,corePartialsPath
+            ,hibachiPathBuilder
+
+		)=> new SWTypeaheadRemoveSelection(
+            scopeService
+            ,corePartialsPath
+            ,hibachiPathBuilder
+		);
+		directive.$inject = ["scopeService","corePartialsPath",'hibachiPathBuilder'];
+		return directive;
+	}
+
+     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         if(this.scopeService.hasParentScope(scope, "swListingDisplay")) {
             var listingDisplayScope = this.scopeService.getRootParentScope( scope, "swListingDisplay")["swListingDisplay"];
             scope.swTypeaheadRemoveSelection.typeaheadDataKey = listingDisplayScope.typeaheadDataKey;

@@ -57,11 +57,7 @@
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPrice" edit="false" displayType="table" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="discountAmount" edit="false" displayType="table" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPriceAfterDiscount" edit="false" displayType="table" />
-				<cfif rc.orderItem.getVATAmount()>
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="vatAmount" edit="false" displayType="table" />
-				<cfelse>
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="taxAmount" edit="false" displayType="table" />
-				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="taxAmount" edit="false" displayType="table" />
 				<hb:HibachiPropertyTableBreak />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="itemTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
 				

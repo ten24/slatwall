@@ -12,8 +12,6 @@ class SWScrollTrigger{
 		];
 		return directive;
 	}
-	
-// 	@ngInject;
 	constructor($rootScope, $window, $timeout){
 		return {
 			link : function(scope, elem, attrs) {

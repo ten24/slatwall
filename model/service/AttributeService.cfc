@@ -51,11 +51,11 @@ component  extends="HibachiService" accessors="true" {
 
 	property name="attributeDAO";
 	property name="hibachiCacheDAO";
-
+	
 	// ===================== START: Logical Methods ===========================
 
 	private struct function getAttributeSetMetaData(required attributeSet){
-		var attributeSetMetaDataCacheKey = "attributeService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#";
+		var attributeSetMetaDataCacheKey = "attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#";
 		var attributeSetMetaData = {};
 		if(getService('HibachiCacheService').hasCachedValue(attributeSetMetaDataCacheKey)){
 			attributeSetMetaData = getService('HibachiCacheService').getCachedValue(attributeSetMetaDataCacheKey);
@@ -192,10 +192,6 @@ component  extends="HibachiService" accessors="true" {
 		return optionLabels;
 		
 	}
-	
-	public string function getAttributeOptionLabelByAttributeCodeAndAttributeValue(required string attributeCode, required string attributeValue){
-		return getAttributeDAO().getAttributeOptionLabelByAttributeCodeAndAttributeValue(argumentCollection=arguments);
-	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -232,7 +228,7 @@ component  extends="HibachiService" accessors="true" {
 
 			//attributeModelCache
 
-			clearAttributeMetaDataCache(arguments.attributeSet);
+			clearAttributeMetatDataCache(arguments.attributeSet);
 		}
 		return attributeSet;
 	}
@@ -262,22 +258,22 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
 
 			//attributeModelCache
-			clearAttributeMetaDataCache(arguments.attribute.getAttributeSet());
+			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
 		}
 		
 		//if we are turning this into a custom property, we want to reload all servers to make sure things work properly
 		if(attribute.getCustomPropertyFlag()){
-			getHibachiCacheDAO().setAllServerInstancesExpired();	
+			getHibachiCacheDAO().setAllServerInstancesExpired();
 		}
 
 		return arguments.attribute;
 	}
 
-	public void function clearAttributeMetaDataCache(required any attributeSet){
+	public void function clearAttributeMetatDataCache(required any attributeSet){
 		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel");
 		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_CacheKey");
 		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#");
-		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#");
+		getHibachiCacheService().resetCachedKey("attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#");
 	}
 
 	// ======================  END: Save Overrides ============================
@@ -290,7 +286,7 @@ component  extends="HibachiService" accessors="true" {
 
 		// Clear the cached value of acceptable
 		if(deleteOK) {
-			clearAttributeMetaDataCache(arguments.attributeSet);
+			clearAttributeMetatDataCache(arguments.attributeSet);
 		}
 
 		return deleteOK;
@@ -309,7 +305,7 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiDAO().flushORMSession();
 
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#attributeSetObject#");
-			clearAttributeMetaDataCache(arguments.attribute.getAttributeSet());
+			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
 		}
 
 		return deleteOK;

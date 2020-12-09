@@ -1,8 +1,7 @@
 {
-	"properties": {
-		"reviewerName": [{ "contexts": "save", "required": true }],
-		"review": [{ "contexts": "save", "required": true }],
-		"product": [{ "contexts": "save", "required": true }],
-		"rating": [{ "contexts": "save", "dataType": "numeric", "lte": 10, "gte": 0 }]
+	"properties":{
+		"reviewerName":			[{"contexts":"save","required":true}],
+		"review":				[{"contexts":"save","required":true}],
+		"product":				[{"contexts":"save","required":true}]
 	}
 }
