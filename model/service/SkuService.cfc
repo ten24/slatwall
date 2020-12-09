@@ -156,11 +156,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Logical Methods ===========================
 	
 	/** 
-	 * Function append settings value to existing sku List
+	 * Function append settings value and options to existing sku List
 	 * @param - array of skus
 	 * @return - updated array of skus
 	 **/
-	public array function appendSettingsToSku(required array skus) {
+	public array function appendSettingsAndOptionsToSku(required array skus) {
 		if(arrayLen(arguments.skus)) {
 			
 			for(var sku in arguments.skus) {
@@ -169,6 +169,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	            sku['skuOrderMinimumQuantity'] = currentSku.setting('skuOrderMinimumQuantity');
 	            sku['skuOrderMaximumQuantity'] = currentSku.setting('skuOrderMaximumQuantity');
 	            sku['skuFulfillmentMethods'] = currentSku.getEligibleFulfillmentMethodsWithShippingMethods();
+	            
+	            
+	            var options = [];
+				if( arrayLen(currentSku.getOptions()) ) {
+					for(var option in currentSku.getOptions()){
+						ArrayAppend( options, {
+							"optionID" : option.getOptionID(),
+							"optionName" : option.getOptionName(),
+							"optionGroupID": option.getOptionGroup().getOptionGroupID(),
+							"optionGroupName": option.getOptionGroup().getOptionGroupName(),
+						} )
+					}
+				}
+	            sku['options'] = options;
+	            
+	            sku['imagePath'] = currentSku.getImagePath();
 	        }
 		}
 		return arguments.skus;
