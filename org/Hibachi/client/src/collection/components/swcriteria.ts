@@ -30,7 +30,8 @@ class SWCriteria{
 		        comparisonType:"=",
                 collectionConfig: "="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteria.html',
+			template: require('./criteria.html'),
+			
 			link: function(scope, element, attrs){
 			}
 		};

@@ -142,33 +142,74 @@ Notes:
 
 						<cfset settingFilterEntitiesName = thisSetting.settingFilterEntitiesName />
 						<cfset settingFilterEntitiesURL = thisSetting.settingFilterEntitiesURL />
+						
 						<cfloop array="#thisSetting.settingFilterEntities#" index="fe">
+							<!--- Don't add the same site twice when saving site settings. --->
+							<cfif filterEntitiesSiteCleanupFlag eq true and fe.getSiteName() neq tabData.site.getSiteName()>
+								<cfcontinue>
+							</cfif>
+							
+							<!--- Only add this if site wasn't already added and this isn't siteid--->
 							<cfset settingFilterEntitiesName = listAppend(settingFilterEntitiesName, "#thisSetting.hibachiScope.rbKey('entity.#fe.getClassName()#')#: #fe.getSimpleRepresentation()#") />
 							<cfset settingFilterEntitiesURL = listAppend(settingFilterEntitiesURL, "#fe.getPrimaryIDPropertyName()#=#fe.getPrimaryIDValue()#", "&") />
+								
 						</cfloop>
-
+						
 						<tr>
 							<td class="primary">
-								#thisSetting.settingDisplayName# <cfif len(thisSetting.settingHint)><a href="##" rel="tooltip" class="hint" title="#thisSetting.settingHint#"><i class="icon-question-sign"></i></a></cfif>
+								#thisSetting.settingDisplayName# <cfif len(thisSetting.settingHint)><a href="##" rel="tooltip" class="hint" title="#thisSetting.settingHint#"><i class="fa fa-question-circle"></i></a></cfif>
 							</td>
 							<cfif attributes.showFilterEntities>
 								<td>#settingFilterEntitiesName#</td>
 							</cfif>
 							<td>
 								#left(thisSetting.settingDetails.settingValueFormatted, 100)##len(thisSetting.settingDetails.settingValueFormatted) GT 100 ? "..." : ""#
+							
+								<cfset local.isTranslatable = listFindNoCase('text,email,textarea,wysiwyg',thisSetting.settingDetails.fieldType)>
+								<cfif local.isTranslatable>
+									<cfset local.hasSettingID = NOT isNull(thisSetting.settingDetails.settingID) AND len(thisSetting.settingDetails.settingID)>
+									<cfif local.hasSettingID>
+										
+										<cfset local.translationQS = "">
+										<cfset local.translationQS = listAppend(local.translationQS, "baseObject=Setting", "&") >
+										<cfset local.translationQS = listAppend(local.translationQS, "baseID=#thisSetting.settingDetails.settingID#", "&") >
+										<cfset local.translationQS = listAppend(local.translationQS, "basePropertyName=settingValue", "&") >
+										<cfset local.translationQS = listAppend(local.translationQS, "currentAction=#request.context[request.context.fw.getAction()]#", "&") >
+
+										<cfif NOT findNoCase('entity.settings', request.context[request.context.fw.getAction()])>
+											<cfset local.translationQS = listAppend(local.translationQS, "currentAction=#request.context[request.context.fw.getAction()]#", "&") >
+										</cfif>
+
+										<hb:HibachiProcessCaller 
+											entity="Translation" 
+											action="admin:entity.preprocesstranslation"
+											processContext="updateProperty"
+											icon="globe"
+											iconOnly="true"
+											modal="true"
+											class="pull-right"
+											queryString="#local.translationQS#"
+										/>
+									</cfif>
+								</cfif>
 							</td>
 							<cfif attributes.showInheritance>
 								<td>
 									<cfif thisSetting.settingDetails.settingInherited>
+										
 										<cfif thisSetting.settingDetails.settingValueResolvedLevel eq "global" or thisSetting.settingDetails.settingValueResolvedLevel eq "global.metadata">
 											<hb:HibachiActionCaller action="admin:entity.settings" text="#request.slatwallScope.rbKey('define.global')#"/>
 										<cfelseif thisSetting.settingDetails.settingValueResolvedLevel eq "site">
-											<hb:HibachiActionCaller action="admin:entity.detailsite" text="#request.slatwallScope.rbKey('entity.site')#" queryString="siteID=#thisSetting.settingDetails.settingRelationships.siteID#">
+											
+											<hb:HibachiActionCaller action="admin:entity.detailsite" text="#request.slatwallScope.rbKey('entity.site')#" queryString="sitesID=#thisSetting.settingDetails.settingRelationships.siteID#">
 										<cfelseif (thisSetting.settingDetails.settingValueResolvedLevel eq "object" and tabData.isGlobalFlag) or thisSetting.settingDetails.settingValueResolvedLevel eq "object.site">
+										
 											#request.slatwallScope.rbKey('define.here')#
 										<cfelseif thisSetting.settingDetails.settingValueResolvedLevel eq "object" and not tabData.isGlobalFlag>
+											
 											#request.slatwallScope.rbKey('define.here')# (#request.slatwallScope.rbKey('define.inherit')# #request.slatwallScope.rbKey('define.primary')#)
 										<cfelseif listFindNoCase("ancestor,ancestor.site",thisSetting.settingDetails.settingValueResolvedLevel)>
+											
 											<cfif structCount(thisSetting.settingDetails.settingRelationships) gt 0 and structCount(thisSetting.settingDetails.settingRelationships) lte 2 and structKeyExists(thisSetting.settingDetails.settingRelationships, "productTypeID")>
 													<cfset local.productType = request.slatwallScope.getService("productService").getProductType(thisSetting.settingDetails.settingRelationships.productTypeID) />
 													<cfset local.linktext = local.productType.getSimpleRepresentation() />

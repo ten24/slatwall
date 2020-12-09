@@ -67,7 +67,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";
 	property name="accountAuthentication" cfc="AccountAuthentication" fieldtype="many-to-one" fkcolumn="accountAuthenticationID" fetch="join";
 	property name="order" type="any" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	
+	property name="site" type="any" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID" fetch="join";
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -76,9 +77,10 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="requestAccount" type="any" persistent="false"; 
 	
 	
-	/**
+	/*
 	 * Handles all of the cases on the session that the user is not logged in.
 	 */
+	
 	public any function getLoggedInFlag(){
 		//If this is a new session, then the user is not logged in.
 		if (getNewFlag() && !isNull(getSessionCookieExtendedPSID())){
@@ -125,12 +127,32 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		return variables.requestAccount;
 	}
 	
+	public any function getSite(){
+		if(structKeyExists(variables, "site")) { 
+			return variables.site;
+		}
+		
+		var requestSite = getHibachiScope().getCurrentRequestSite();
+		if (!isNull(requestSite)){
+			//If no site is set on this site and one exists, use that one.
+			this.setSite( requestSite );
+			return variables.site;
+		}
+	
+	}
+
+	public any function setSite(site){
+		variables.site = arguments.site;
+	}
+	
 	
 	
 	public any function getOrder() {
-		if(structKeyExists(variables, "order")) {
+		if(structKeyExists(variables, "order") && (isNull(getHibachiScope().getCurrentRequestSite()) || variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID())) {
+			
 			return variables.order;
 		} else if (!structKeyExists(variables, "requestOrder")) {
+			
 			variables.requestOrder = getService("orderService").newOrder();
 			
 			// Set default stock location based on current request site, uses first location by default
@@ -148,8 +170,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
 				requestOrder.setOrderOrigin(siteOrderOrigin);
 			}
-			//Setup Site Created if using slatwall cms
-			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS() && !isNull(getHibachiScope().getCurrentRequestSite())){
+			//Setup Site Created 
+			if(!isNull(getHibachiScope().getCurrentRequestSite())){
 				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 			}
 			
@@ -172,6 +194,30 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	public void function removeOrder() {
 		if(structKeyExists(variables, "order")) {
 			structDelete(variables, "order");	
+		}
+	}
+	
+	public string function getRbLocale(){
+		if(structKeyExists(variables, 'rbLocale')){
+			return variables.rbLocale;
+		}
+		
+		if(len(getAccount().getPreferredLocale())){
+			variables.rbLocale = getAccount().getPreferredLocale();
+		}else if(structKeyExists(COOKIE, 'rbLocale')){
+			variables.rbLocale = COOKIE['rbLocale'];
+		}else{
+			variables.rbLocale = 'en_us';
+		}
+		
+		return variables.rbLocale;
+	}
+	
+	public string function setRbLocale(required string rbLocale){
+		if(isValid('regex',arguments.rbLocale,'\w{2}(_\w{2})?')){
+			getService("hibachiTagService").cfcookie(name='rbLocale', value=arguments.rbLocale,expires='never');
+			variables.rbLocale = arguments.rbLocale;
+			getHibachiScope().setRbLocale(arguments.rbLocale);
 		}
 	}
 	

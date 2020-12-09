@@ -109,7 +109,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.shippingAddress;
 	}
-	
+
 	public any function getSaveShippingAccountAddressFlag() {
 		if(!structKeyExists(variables, "saveShippingAccountAddressFlag")) {
 			variables.saveShippingAccountAddressFlag = 1;

@@ -3,6 +3,7 @@ component output="false" accessors="true" extends="HibachiController" {
     property name="fw" type="any";
     property name="hibachiCollectionService" type="any";
     property name="hibachiService" type="any";
+    property name="hibachiDAO" type="any";
     property name="hibachiUtilityService" type="any";
 
     this.restController = true;
@@ -17,6 +18,8 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
+    this.anyAdminMethods=listAppend(this.anyAdminMethods, 'savePersonalCollection');
+    this.anyAdminMethods=listAppend(this.anyAdminMethods, 'verifyAddress');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'log');
@@ -144,14 +147,9 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public void function getCurrencies(required struct rc){
-        var currenciesCollection = getHibachiScope().getService('hibachiCollectionService').getCurrencyCollectionList();
-        currenciesCollection.setDisplayProperties('currencyCode,currencySymbol');
-        var currencyStruct = {};
-        for(var currency in currenciesCollection.getRecords()){
-            currencyStruct[currency['currencyCode']] = currency['currencySymbol'];
-        }
-
-        arguments.rc.apiResponse.content['data'] = currencyStruct;
+        param name="arguments.rc.detailFlag" default="true";
+        arguments.rc.apiResponse.content['data'] = getHibachiScope().getService('currencyService').getAllActiveCurrencies(arguments.rc.detailFlag);
+        arguments.rc.apiResponse.content['locale'] = getHibachiScope().getSession().getRBLocale();
     }
 
     public void function getCurrencyRates(required struct rc){
@@ -176,7 +174,8 @@ component output="false" accessors="true" extends="HibachiController" {
                         arrayAppend(arguments.rc.apiResponse.content['messages'],messageStruct);
                     }
                 }
-                getPageContext().getResponse().setStatus(getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode());
+                var pc = getpagecontext().getresponse();
+                pc.getresponse().setstatus(getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode());
                 return;
             }
         }
@@ -225,31 +224,37 @@ component output="false" accessors="true" extends="HibachiController" {
      * ...should return three paths.
      */
     public any function getResizedImageByProfileName(required struct rc){
-            var imageHeight = 60;
-            var imageWidth  = 60;
+        var imageHeight = 60;
+        var imageWidth  = 60;
 
-            if(arguments.rc.profileName == "orderItem"){
-                imageHeight = 90;
-                imageWidth  = 90;
-            }else if (arguments.rc.profileName == "skuDetail"){
-                    imageHeight = 150;
-                    imageWidth  = 150;
+        if(arguments.rc.profileName == "orderItem"){
+            imageHeight = 90;
+            imageWidth  = 90;
+        }else if (arguments.rc.profileName == "skuDetail"){
+                imageHeight = 150;
+                imageWidth  = 150;
+        }
+        arguments.rc.apiResponse.content = {};
+        arguments.rc.apiResponse.content['resizedImagePaths'] = [];
+        var skus = [];
+
+        //smart list to load up sku array
+        var skuSmartList = getHibachiScope().getService('skuService').getSkuSmartList();
+        skuSmartList.addInFilter('skuID',rc.skuIDs);
+
+        if( skuSmartList.getRecordsCount() > 0){
+            var skus = skuSmartList.getRecords();
+
+            for  (var sku in skus){
+                ArrayAppend(arguments.rc.apiResponse.content['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));
             }
-            arguments.rc.apiResponse.content = {};
-            arguments.rc.apiResponse.content['resizedImagePaths'] = [];
-            var skus = [];
-
-            //smart list to load up sku array
-            var skuSmartList = getHibachiScope().getService('skuService').getSkuSmartList();
-            skuSmartList.addInFilter('skuID',rc.skuIDs);
-
-            if( skuSmartList.getRecordsCount() > 0){
-                var skus = skuSmartList.getRecords();
-
-                for  (var sku in skus){
-                    ArrayAppend(arguments.rc.apiResponse.content['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));
-                }
-            }
+        }
+    }
+    
+    public any function verifyAddress(required struct rc){
+        if(structKeyExists(arguments.rc,'address')){
+            arguments.rc.apiResponse.content = getHibachiScope().getService('addressService').verifyAddressStruct(arguments.rc.address);
+        }
     }
 
 
@@ -432,38 +437,71 @@ component output="false" accessors="true" extends="HibachiController" {
             property
             argumentsCollection
         */
-        var data = [];
-        var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
-        
+        var propertyDisplayOptions = [];
+
+		if(structKeyExists(arguments.rc, 'entityID') && len(arguments.rc.entityID)){
+			var entity = getService('hibachiService').invokeMethod('get#arguments.rc.entityName#',{1:arguments.rc.entityID});
+		}
+
+		if(isNull(entity)){ 
+			var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
+		}        
+
         if(entity.hasAttributeCode(arguments.rc.property)){
         	var attribute = getService('attributeService').getAttributeByAttributeCode(arguments.rc.property);
         	
-        	data = attribute.getAttributeOptionsOptions();
+        	propertyDisplayOptions = attribute.getAttributeOptionsOptions();
         }else{
         	if(isNull(arguments.rc.argument1)){
-	            data = entity.invokeMethod('get#arguments.rc.property#Options');
+	            propertyDisplayOptions = entity.invokeMethod('get#arguments.rc.property#Options');
 	        }else{
-	            data = entity.invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
+	            propertyDisplayOptions = entity.invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
 	        }
         }
         
+		var propertyDisplayOptionsCount = arrayLen(propertyDisplayOptions);
+      
+ 
+		//if not an array of structs format for consistency
+		if(!arrayIsEmpty(propertyDisplayOptions) && !isStruct(propertyDisplayOptions[1])){
+			var propertyDisplayOptionsFormatted = [];
+			for(var i=1; i <= propertyDisplayOptionsCount; i++){
+				var value = {
+					'name' = propertyDisplayOptions[i],
+					'value' = propertyDisplayOptions[i]
+				};
+				arrayAppend(propertyDisplayOptionsFormatted, value);
+			}
+			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
+		} else if (!arrayIsEmpty(propertyDisplayOptions) && find('NAME',structKeyList(propertyDisplayOptions[1]))){
+			//keep casing consistent for client side
+			var propertyDisplayOptionsFormatted = [];
+			for(var i=1; i <= propertyDisplayOptionsCount; i++){
+				var value = {
+					'name' = propertyDisplayOptions[i]['NAME'],
+					'value' = propertyDisplayOptions[i]['VALUE']  
+				};
+				arrayAppend(propertyDisplayOptionsFormatted, value);
+			}
+			propertyDisplayOptions = propertyDisplayOptionsFormatted; 
+		}  
 
         //if it contains an empty value make it the first item
         var emptyValue = javacast('null','');
-        var dataCount = arrayLen(data);
         var emptyValueIndex = 0;
-        for(var i = 1; i <= dataCount; i++){
-            if(structKeyExists(data[i],'VALUE') && data[i]['value'] == ''){
-                emptyValue = data[i];
+        for(var i = 1; i <= propertyDisplayOptionsCount; i++){
+            if(structKeyExists(propertyDisplayOptions[i],'value') && propertyDisplayOptions[i]['value'] == ''){
+                emptyValue = propertyDisplayOptions[i];
                 emptyValueIndex = i;
+				break;
             }
         }
         if(!isNull(emptyValue) && emptyValueIndex > 0){
-            ArrayPrepend(data,emptyValue);
-            ArrayDeleteAt(data,emptyValueIndex+1);
+            ArrayPrepend(propertyDisplayOptions,emptyValue);
+            ArrayDeleteAt(propertyDisplayOptions,emptyValueIndex+1);
         }
 
-        arguments.rc.apiResponse.content['data'] = data;
+        arguments.rc.apiResponse.content['data'] = propertyDisplayOptions;
     }
     /* pass in an entity name and recieve validation*/
     public any function getValidation(required struct rc){
@@ -489,12 +527,12 @@ component output="false" accessors="true" extends="HibachiController" {
 		    arrayAppend(allProcessMethods[arguments.rc.entityName], 'updateCalculatedProperties');
 		}
 		
-		for(var processMethod in allProcessMethods[arguments.rc.entityName]){
-			arrayAppend(processOptions, {
-				'name' = rbKey('entity.#arguments.rc.entityName#.process.#processMethod#'),
-				'value' = 'process#arguments.rc.entityName#_#processMethod#'
-			});
-		}
+			for(var processMethod in allProcessMethods[arguments.rc.entityName]){
+				arrayAppend(processOptions, {
+					'name' = rbKey('entity.#arguments.rc.entityName#.process.#processMethod#'),
+					'value' = 'process#arguments.rc.entityName#_#processMethod#'
+				});
+			}
 		
 		arguments.rc.apiResponse.content['data'] = processOptions;
 	}
@@ -725,6 +763,22 @@ component output="false" accessors="true" extends="HibachiController" {
         } 
         
     }
+    
+    public any function savePersonalCollection(required struct rc){
+        
+         if(structKEyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
+            var structuredData = deserializeJSON(arguments.rc.serializedJSONData);
+            if(!structKeyExists(arguments.rc,'publicFlag') || !arguments.rc.publicFlag){
+                structuredData.accountOwner = {
+                    accountID : getHibachiScope().getAccount().getAccountID()
+                };
+            }
+            arguments.rc.serializedJSONData = serializeJson(structuredData);
+         }
+        
+        arguments.rc.entityName = 'Collection';
+        return this.post(argumentCollection=arguments);
+    }
 
     public any function post( required struct rc ) {
         param name="arguments.rc.context" default="save";
@@ -760,9 +814,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 	        // SAVE
 	        if(arguments.rc.context eq 'save') {
-	           
 	            entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData});
-	            
 	        // DELETE
 	        } else if (arguments.rc.context eq 'delete') {
 	            getService('HibachiValidationService').validate(entity, 'delete');
@@ -771,7 +823,8 @@ component output="false" accessors="true" extends="HibachiController" {
                 }
 	        // PROCESS
 	        } else {
-	            entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.context});
+				//call process method by way of hibachiservice process so that process object gets inflated
+	            entity = entityService.invokeMethod("process", {1=entity, 2=structuredData, 3=arguments.rc.context});
 	        }
 
 	        // respond with data
@@ -784,26 +837,6 @@ component output="false" accessors="true" extends="HibachiController" {
 	        arguments.rc.apiResponse.content['data'][ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
 
 
-	        if(!isnull(arguments.rc.propertyIdentifiersList)){
-	            //respond with data
-	            arguments.rc.apiResponse.content['data'] = {};
-	            var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
-	            for(propertyIdentifier in propertyIdentifiersArray){
-	                //check if method exists before trying to retrieve a property
-	                /*if(propertyIdentifier == 'pageRecords'){
-	                    var pageRecords = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier,format=true);
-	                    var propertyIdentifiers = [];
-	                    if(arraylen(pageRecords)){
-	                        propertyIdentifiers = structKeyArray(pageRecords[1]);
-	                    }
-	                    pageRecords = getService('hibachiCollectionService').getFormattedObjectRecords(pageRecords,propertyIdentifiers);
-	                    arguments.rc.apiResponse.content['data'][propertyIdentifier] = pageRecords;
-	                }else{*/
-	                    arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
-	                //}
-	            }
-	        }
-
 	        if(entity.hasErrors()){
 	            arguments.rc.apiResponse.content.success = false;
 	            var context = getPageContext();
@@ -814,17 +847,31 @@ component output="false" accessors="true" extends="HibachiController" {
 	        }else{
 	            arguments.rc.apiResponse.content.success = true;
 
+				//if we didn't have any errors let's flush the session so we can respond with the ID for newly created entities
+				getHibachiDAO().flushORMSession();
+	
+				//respond with data
+				if(!isnull(arguments.rc.propertyIdentifiersList)){
+					arguments.rc.apiResponse.content['data'] = {};
+					var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
+					for(var propertyIdentifier in propertyIdentifiersArray){
+						try{	
+							var value = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
+							if(isObject(value)){
+								value = value.getStructRepresentation();
+							}
+							arguments.rc.apiResponse.content['data'][propertyIdentifier] = value;
+						} catch (any e) {
+							this.logHibachi('Could not add property identifier #propertyIdentifier# to api response for entity #entity.getClassName()#',true);
+						}
+					}
+				}
+
+
 	            // Setup success response message
 	            var replaceValues = {
 	                entityName = rbKey('entity.#entity.getClassName()#')
-	                 
 	            };
-	            
-	            if(arguments.rc.context eq 'save' && arguments.rc.entityName eq 'Collection' && entity.isReport())
-                    {
-                        replaceValues.entityName = 'Report';
-                    
-                    }
 
 	            var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entity.getClassName()#.#rc.context#_success" ), replaceValues);
 	            getHibachiScope().showMessage( successMessage, "success" );
@@ -840,7 +887,6 @@ component output="false" accessors="true" extends="HibachiController" {
 	                var errors = entity.getHibachiErrors().getErrors();
 	            }
                 arguments.rc.apiResponse.content.errors = errors;
-                
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
 	        
@@ -848,7 +894,7 @@ component output="false" accessors="true" extends="HibachiController" {
                 getService('HibachiUtilityService').logApiRequest(arguments.rc,  "post", structuredData);
             } 
         }
-        
+
     }
 
     private struct function addPopulatedSubPropertyIDsToData(required any entity, required struct data) {

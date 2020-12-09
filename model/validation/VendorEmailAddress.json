@@ -1,5 +1,5 @@
 {
-	"properties":{
-		"emailAddress":			[{"contexts":"save","dataType":"email"}]
+	"properties": {
+		"emailAddress": [{ "contexts": "save", "dataType": "email" }]
 	}
 }

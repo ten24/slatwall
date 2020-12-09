@@ -1,6 +1,6 @@
 <div class="input-group">
-
-    <div class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch">
+    
+    <div class="input-group-btn valign-middle search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedSearchColumn.title"></span> <span class="caret"></span>
         </button>
@@ -11,22 +11,40 @@
                 <a href data-ng-click="swListingSearch.selectSearchColumn(column)" data-ng-bind="column.displayTitle ? column.displayTitle : column.title"></a>
             </li>
         </ul>
-        
     </div>
-    <div ng-if="swListingSearch.showSearchFilterDropDown" class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch && swListingSearch.swListingDisplay.searchText.length">
+    
+    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showSearchFilterDropDown && (
+                ( swListingSearch.swListingDisplay.searchText && swListingSearch.swListingDisplay.searchText.length )
+                || swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode)" 
+        class="input-group-btn valign-middle  search-panel"
+        ng-init="swListingSearch.configureListingSearchConfigControls()">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedSearchFilter.title"></span> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li data-ng-repeat="filterOption in swListingSearch.searchableFilterOptions">
-                <a href data-ng-click="swListingSearch.selectSearchFilter(filterOption)" data-ng-bind="filterOption.displayTitle ? filterOption.displayTitle : filterOption.title"></a>
+                <a href data-ng-click="swListingSearch.changeSearchFilter(filterOption)" data-ng-bind="filterOption.title"></a>
             </li>
         </ul>
     </div>
+    
+    <div ng-if="swListingSearch.swListingDisplay.collectionConfig.listingSearchConfig.showWildCardPositionDropdown" 
+        class="input-group-btn valign-middle search-panel" 
+        ng-show="swListingSearch.swListingDisplay.searchText.length">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span data-ng-bind="swListingSearch.selectedWildCardPosition.title"></span> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li data-ng-repeat="option in swListingSearch.wildCardPositionOptions">
+                <a href data-ng-click="swListingSearch.changeWildCardPoition(option)" data-ng-bind="option.title"></a>
+            </li>
+        </ul>
+    </div>
+    
     <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
                 data-ng-model="swListingSearch.swListingDisplay.searchText"
-                data-ng-model-options='{ debounce: 500 }'
+                data-ng-model-options='{ debounce: 1000 }'
                 data-ng-change="swListingSearch.search()">
         <button class="btn btn-xs btn-default s-add-search-param"
                 data-ng-if="swListingSearch.swListingDisplay.searchText"
@@ -42,9 +60,9 @@
         <hr >
     </div>
     <!-- REPORT COLLECTIONS -->
-    <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn s-action"
-        ng-show="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+    <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn input-group-btn s-action s-action"
+        ng-if="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
+        <button class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
             <span sw-tooltip class="tool-tip-item" data-text="Reporting" data-position="bottom">
@@ -70,9 +88,9 @@
     </span>
 
     <!-- PERSONAL COLLECTIONS -->
-    <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
-        ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+    <span class="input-group-btn valign-middle s-action" ng-click="swListingSearch.savePersonalCollection()"
+        ng-if="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
+        <button class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
             <span sw-tooltip class="tool-tip-item" data-text="Save Report" data-position="bottom">
@@ -101,9 +119,9 @@
             </li>
         </ul>
     </span>
-    <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn s-action"
-        ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+    <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn valign-middle s-action"
+        ng-if="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
+        <button class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 
         >
@@ -125,21 +143,21 @@
             </li>
         </ul>
     </span>
-    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
+    <span class="input-group-btn valign-middle s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
         <span sw-tooltip class="tool-tip-item" data-text="Filtering" data-position="bottom">
             <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
                 <i class="fa fa-filter"></i>
             </button>
         </span>
     </span>
-    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleDisplayOptions">
+    <span class="input-group-btn valign-middle s-action" ng-show="swListingSearch.swListingControls.showToggleDisplayOptions">
         <span sw-tooltip class="tool-tip-item" data-text="Display Options" data-position="bottom">
             <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleDisplayOptions()">
                 <i class="fa fa-th"></i>
             </button>
         </span>
     </span>
-    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showExport">
+    <span class="input-group-btn valign-middle s-action" ng-show="swListingSearch.swListingControls.showExport">
         <span sw-tooltip class="tool-tip-item" data-text="Export" data-position="bottom">
             <button type="button"
                     class="btn btn-sm btn-default"
@@ -148,7 +166,7 @@
             </button>
         </span>
     </span>
-    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showPrintOptions">
+    <span class="input-group-btn valign-middle  s-action" ng-show="swListingSearch.swListingControls.showPrintOptions">
         <button type="button"
                 class="btn btn-sm btn-default dropdown-toggle"
                 data-toggle="dropdown">

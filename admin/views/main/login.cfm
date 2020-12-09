@@ -117,7 +117,11 @@ Notes:
 						<cfif rc.twoFactorAuthenticationRequiredFlag>
 							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="authenticationCode" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.authenticationCode')#" fieldAttributes="autocomplete='off' placeholder='#rc.fw.getHibachiScope().rbKey('entity.account.authenticationCode')#' required" />
 						<cfelse>
-							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off' placeholder='Email Address' required" />
+							<cfif rc.fw.getHibachiScope().setting('accountLoginEmailOrUsername') == "email">
+								<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off' placeholder='Email Address' required" />
+							<cfelse>
+								<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddressOrUsername" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddressOrUsername')#" fieldAttributes="autocomplete='off' placeholder='Email Address or Username' required" />
+							</cfif>
 							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" fieldAttributes="autocomplete='off' placeholder='Password' required" />
 							<hb:HibachiErrorDisplay object="#authorizeProcessObject#" errorName="authenticationCode" />
 							<a href="##" id="j-forgot-password" class="s-forgot-password-link s-login-link" tabindex="-1">Forgot Password</a>
@@ -156,6 +160,7 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#processObject#" property="company" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.company')#" fieldAttributes="placeholder='Company'" />
 					<hb:HibachiPropertyDisplay object="#processObject#" property="emailAddress" edit="true" fieldAttributes="placeholder='Email'"/>
 					<hb:HibachiPropertyDisplay object="#processObject#" property="emailAddressConfirm" edit="true" fieldAttributes="placeholder='Confirm Email'" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="username" edit="true" fieldAttributes="placeholder='Username'"/>
 					<hb:HibachiPropertyDisplay object="#processObject#" property="password" edit="true" fieldAttributes="placeholder='Password'"/>
 					<hb:HibachiPropertyDisplay object="#processObject#" property="passwordConfirm" edit="true" fieldAttributes="placeholder='Confirm Password'"/>
 					<button type="submit" class="btn btn-lg btn-primary pull-right">Create & Login</button>

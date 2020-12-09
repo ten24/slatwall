@@ -1,6 +1,19 @@
 {
-	"properties":{
-		"emailAddress":		[{"required":true, "dataType":"email"}],
-		"password":			[{"required":true}]
+	"conditions": {
+		"EmailAddressOrUsernameEnforcedLoginType": {
+			"emailAddressOrUsername": { "null": false }
+		},
+		"EmailAddressEnforcedLoginType": {
+			"emailAddress": { "null": false }
+		}
+	},
+	"properties": {
+		"emailAddressOrUsername": [
+			{ "conditions": "EmailAddressOrUsernameEnforcedLoginType", "required": true }
+		],
+		"emailAddress": [
+			{ "conditions": "EmailAddressEnforcedLoginType", "required": true, "dataType": "email" }
+		],
+		"password": [{ "required": true }]
 	}
 }

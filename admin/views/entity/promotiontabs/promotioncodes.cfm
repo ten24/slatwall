@@ -55,9 +55,8 @@ Notes:
 <cfoutput>
 
 	<hb:HibachiListingDisplay smartList="#rc.promotion.getPromotionCodesSmartList()#"
+							  recordDetailAction="admin:entity.detailpromotioncode"
 							  recordEditAction="admin:entity.editpromotioncode"
-							  recordEditQueryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#"
-							  recordEditModal=true
 							  recordDeleteAction="admin:entity.deletepromotioncode"
 							  recordDeleteQueryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()###tabpromotioncodes">
 
@@ -69,6 +68,7 @@ Notes:
 
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiActionCaller action="admin:entity.createpromotioncode" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true" />
+	<hb:HibachiActionCaller action="admin:entity.createpromotioncode" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" />
+
 </cfoutput>
 

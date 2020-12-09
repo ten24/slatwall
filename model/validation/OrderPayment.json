@@ -1,54 +1,95 @@
 {
-	"conditions":{
+	"conditions": {
 		"creditCardWithoutToken": {
-		    "paymentMethodType":{"eq":"creditCard"},
-		    "providerToken":{"null":true}
+			"paymentMethodType": { "eq": "creditCard" },
+			"providerToken": { "null": true }
 		},
 		"paymentTypeCreditCardNoTokenAndNewAndNotCopied": {
-			"paymentMethodType":{"eq":"creditCard"},
-			"newFlag":{"eq":true},
-			"providerToken":{"null":true},
-			"accountPaymentMethod":{"null":true},
-			"referencedOrderPayment":{"null":true}
+			"paymentMethodType": { "eq": "creditCard" },
+			"newFlag": { "eq": true },
+			"providerToken": { "null": true },
+			"accountPaymentMethod": { "null": true },
+			"referencedOrderPayment": { "null": true }
 		},
-	    "paymentTypeCreditCard":{
-	        "paymentMethodType":{"eq":"creditCard"}
-	    },
-		"paymentTypeGiftCard":{
- 			"paymentMethodType":{"eq":"giftCard"}	
- 		},
-	    "paymentTypeTermPayment":{
-	        "paymentMethodType":{"eq":"termPayment"}
-	    },
-	    "peerNullValueAlreadyExists":{
-	        "peerOrderPaymentNullAmountExistsFlag":{"eq":true}
-	    }
+		"paymentTypeCreditCard": {
+			"paymentMethodType": { "eq": "creditCard" }
+		},
+		"paymentTypeGiftCard": {
+			"paymentMethodType": { "eq": "giftCard" }
+		},
+		"paymentTypeTermPayment": {
+			"paymentMethodType": { "eq": "termPayment" }
+		},
+		"peerNullValueAlreadyExists": {
+			"peerOrderPaymentNullAmountExistsFlag": { "eq": true }
+		}
 	},
-	"properties":{
-	    "amount":				[
-	    	{"contexts":"save","dataType":"numeric","minValue":0},
-	    	{"contexts":"save","conditions":"peerNullValueAlreadyExists","required":true},
-	    	{"contexts":"save","conditions":"paymentTypeTermPayment","lteProperty":"termPaymentAccount.termAccountAvailableCredit"},
-	    	{"contexts":"save","lteProperty":"maximumPaymentMethodPaymentAmount"}
-	    ],
-	    "paymentMethod":		[{"contexts":"save","required":true}],
-		"paymentTransactions":	[{"contexts":"delete","maxCollection":0}],
-		"expirationMonth":		[{"contexts":"save","conditions":"paymentTypeCreditCard","dataType":"numeric","minValue":1,"maxValue":12,"required":true}],
-		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
-		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
-		"creditCardNumber":		[{"contexts":"save","conditions":"creditCardWithoutToken","required":true,"dataType":"creditCard"}],
-		"securityCode":			[{"contexts":"save","conditions":"paymentTypeCreditCardNoTokenAndNewAndNotCopied","required":true}],
-		"orderStatusCode":		[
-		    {"contexts":"createTransaction","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
-			{"contexts":"edit","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}
+	"properties": {
+		"amount": [
+			{ "contexts": "save", "dataType": "numeric", "minValue": 0 },
+			{ "contexts": "save", "conditions": "peerNullValueAlreadyExists", "required": true },
+			{
+				"contexts": "save",
+				"conditions": "paymentTypeTermPayment",
+				"lteProperty": "termPaymentAccount.termAccountAvailableCredit"
+			},
+			{ "contexts": "save", "lteProperty": "maximumPaymentMethodPaymentAmount" }
 		],
-		"termPaymentAccount":	[{"contexts":"save","required":true,"conditions":"paymentTypeTermPayment"}],
-        "giftCardNumberEncrypted": [{"contexts":"save","conditions":"paymentTypeGiftCard","method":"giftCardNotAppliedToOrder"}]
-    },
-	"populatedPropertyValidation":{
-	    "billingAddress":[
-	    	{"conditions":"paymentTypeCreditCard,paymentTypeTermPayment","validate":"full"}
-	    ]
+		"paymentMethod": [{ "contexts": "save", "required": true }],
+		"paymentTransactions": [{ "contexts": "delete", "maxCollection": 0 }],
+		"expirationMonth": [
+			{
+				"contexts": "save",
+				"conditions": "creditCardWithoutToken",
+				"dataType": "numeric",
+				"minValue": 1,
+				"maxValue": 12,
+				"required": true
+			}
+		],
+		"expirationYear": [
+			{ 
+				"contexts": "save", 
+				"conditions": "creditCardWithoutToken", 
+				"required": true 
+			}
+		],
+		"nameOnCreditCard": [
+			{ 
+				"contexts": "save", 
+				"conditions": "creditCardWithoutToken", 
+				"required": true 
+			}
+		],
+		"creditCardNumber": [
+			{
+				"contexts": "save",
+				"conditions": "creditCardWithoutToken",
+				"required": true,
+				"dataType": "creditCard"
+			}
+		],
+		"securityCode": [
+			{
+				"contexts": "save",
+				"conditions": "paymentTypeCreditCardNoTokenAndNewAndNotCopied",
+				"required": true
+			}
+		],
+		"orderStatusCode": [
+			{ "contexts": "createTransaction", "inList": "ostNotPlaced,ostNew,ostProcessing,ostOnHold" },
+			{ "contexts": "edit", "inList": "ostNotPlaced,ostNew,ostProcessing,ostOnHold" }
+		],
+		"termPaymentAccount": [
+			{ "contexts": "save", "required": true, "conditions": "paymentTypeTermPayment" }
+		],
+		"giftCardNumberEncrypted": [
+			{ "contexts": "save", "conditions": "paymentTypeGiftCard", "method": "giftCardNotAppliedToOrder" }
+		]
+	},
+	"populatedPropertyValidation": {
+		"billingAddress": [
+			{ "conditions": "paymentTypeCreditCard,paymentTypeTermPayment", "validate": "full" }
+		]
 	}
-	
 }

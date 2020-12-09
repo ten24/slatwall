@@ -66,7 +66,10 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="giftCardNumberEncrypted" ormType="string";
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="providerToken" ormType="string";
-
+	property name="calculatedExpirationDate" ormType="timestamp";
+	
+	property name="lastExpirationUpdateAttemptDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID" hb_optionsNullRBKey="define.select";
@@ -76,6 +79,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 	// Related Object Properties (one-to-many)
 	property name="subscriptionUsages" singularname="subscriptionUsage" hb_populateEnabled="public" cfc="SubscriptionUsage" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all";
+	property name="orderTemplates" singularname="orderTemplate" hb_populateEnabled="public" cfc="OrderTemplate" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all"; 
 	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" inverse="true" lazy="extra";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true";
 
@@ -101,6 +105,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 
+	
 	public string function getPaymentMethodType() {
 		if(isNull(getPaymentMethod())){
 			return "";
@@ -109,30 +114,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	}
 
 	public array function getExpirationMonthOptions() {
-		return [
-			'01',
-			'02',
-			'03',
-			'04',
-			'05',
-			'06',
-			'07',
-			'08',
-			'09',
-			'10',
-			'11',
-			'12'
-		];
+		return getService('paymentService').getCardExpirationMonthOptions();
 	}
 
 	public array function getExpirationYearOptions() {
-		var yearOptions = [];
-		var currentYear = year(now());
-		for(var i = 0; i < 10; i++) {
-			var thisYear = currentYear + i;
-			arrayAppend(yearOptions,{name=thisYear, value=right(thisYear,2)});
-		}
-		return yearOptions;
+		return getService('paymentService').getCardExpirationYearOptions(10);
 	}
 
 	public boolean function isExpired(){
@@ -149,10 +135,38 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			} else if (currentYear == expirationYearAsInteger && currentMonth >= expirationMonthAsInteger 
 			|| currentYear > expirationYearAsInteger) {
 				return true;
-			} 
+			}
 		} else {
 			return false;
 		}
+	}
+	
+	public any function hasValidExpirationMonth(){
+		var expirationYear = getExpirationYear();
+		var expirationMonth = getExpirationMonth();
+		
+		//saved as 1,2, or 3 for example 
+		if (len(expirationMonth) == 1){
+		   expirationMonth = val("0#expirationMonth#") 
+		}
+		
+		//saved as 19,20,or 21 for example insteadof 2019,2020
+		if (len("#expirationYear#") == 2){
+			 expirationDate = "20#expirationYear#-#expirationMonth#-15T00:00:00-00:00";	
+		}else{
+			 expirationDate = "#expirationYear#-#expirationMonth#-15T00:00:00-00:00";
+		}
+		
+		var parsedDate = parseDateTime(expirationDate, "yyyy-MM-dd'T'HH:nn:ssX");
+		var failed = false;
+		var passed = true;
+		
+		//make sure the month is not in the past if the year is this year.
+		//date compare will return -1 if the parsedDate is in the past.
+		if (dateCompare(parsedDate, now(), "m") == -1){
+			return failed;
+		}
+		return passed;
 	}
 
 	public void function copyFromOrderPayment(required any orderPayment) {
@@ -287,7 +301,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			sl.addSelect('paymentMethodName', 'name');
 			sl.addSelect('paymentMethodID', 'value');
 			sl.addSelect('paymentMethodType', 'paymentmethodtype');
-
+			
 			variables.paymentMethodOptions = sl.getRecords();
 			arrayPrepend(variables.paymentMethodOptions, {name=getHibachiScope().getRBKey("entity.accountPaymentMethod.paymentMethod.select"), value=""});
 		}
@@ -366,6 +380,14 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		arguments.paymentTransaction.removeAccountPaymentMethod( this );
 	}
 
+	// Order Templates (one-to-many)
+	public void function addOrderTemplate(required any orderTemplate) {
+		arguments.orderTemplate.setAccountPaymentMethod( this );
+	}
+	public void function removeOrderTemplate(required any orderTemplate) {
+		arguments.orderTemplate.removeAccountPaymentMethod( this );
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
@@ -390,9 +412,6 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			}
 			
 			arrayPrepend(variables.billingAccountAddressOptions, {value="new", name="New"});
-			if( arrayLen(variables.billingAccountAddressOptions) == 1){
-			    variables.billingAccountAddressOptions[1]['selected'] = "selected";
-			}
 		}
 		return variables.billingAccountAddressOptions;
 	}
@@ -484,6 +503,13 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		super.populate(argumentCollection=arguments);
 
 		setupEncryptedProperties();
+	}
+	
+	public any function getExpirationDate(){
+		if(structKeyExists(variables, 'expirationMonth') && structKeyExists(variables, 'expirationYear')){
+			var lastDayOfMonth = daysInMonth(createDate(variables.expirationYear, variables.expirationMonth, '1'));
+			return createDate(variables.expirationYear, variables.expirationMonth, lastDayOfMonth);
+		}
 	}
 
 	// ==================  END:  Overridden Methods ========================

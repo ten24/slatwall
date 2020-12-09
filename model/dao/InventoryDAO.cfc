@@ -154,27 +154,21 @@ Notes:
 		public array function getQDOO(required string productID, string productRemoteID){
 			var q = new Query();
 			var sql = "SELECT 
-						coalesce(sum(orderdeliveryitem.quantity), 0) as quantity, 
-						sku.skuID as skuID, 
-						stock.stockID as stockID, 
-						location.locationID as locationID, 
-						location.locationIDPath as locationIDPath 
-						
-						FROM SwOrderItem orderitem 
-							left outer join SwOrderDeliveryItem orderdeliveryitem on orderitem.orderItemID=orderdeliveryitem.orderItemID 
-							left outer join SwStock stock on orderitem.stockID=stock.stockID 
-							left outer join SwLocation location on stock.locationID=location.locationID 
-							left outer join SwSku sku on orderitem.skuID=sku.skuID 
-							inner join SwOrder ord 
-							inner join SwType type 
-							inner join SwType othertype 
-						WHERE orderitem.orderID=ord.orderID 
-							and ord.orderStatusTypeID=type.typeID 
-							and orderitem.orderItemTypeID=othertype.typeID 
-							and (type.systemCode not in ('ostNotPlaced' , 'ostClosed' , 'ostCanceled')) 
-							and othertype.systemCode='oitSale' 
-							and sku.productID=:productID 
-						GROUP BY sku.skuID, stock.stockID ,location.locationID ,location.locationIDPath
+					    coalesce(sum(orderdeliveryitem.quantity), 0) as quantity, 
+					    orderitem.skuID as skuID, 
+					    stock.stockID as stockID, 
+					    stock.locationID as locationID,
+					    location.locationIDPath as locationIDPath
+					    FROM SwOrderItem orderitem 
+					        inner join SwOrder ord on orderitem.orderID=ord.orderID  
+					        inner join SwSku sku on orderitem.skuID=sku.skuID 
+					        left join SwOrderDeliveryItem orderdeliveryitem on orderitem.orderItemID=orderdeliveryitem.orderItemID 
+					        left join SwStock stock on orderdeliveryitem.stockID=stock.stockID
+					        left join SwLocation location on stock.locationID=location.locationID 
+					    WHERE sku.productID=:productID 
+					        and ord.orderStatusTypeID not in ('2c9180866b4d105e016b4e2666760029','444df2b8b98441f8e8fc6b5b4266548c','444df2b498de93b4b33001593e96f4be','444df2b90f62f72711eb5b3c90848e7e')
+					        and orderitem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
+					    GROUP BY orderitem.skuID, stock.stockID, stock.locationID, location.locationIDPath
 						  	 ";
 			q.addParam(name="productID", value="#arguments.productID#", cfsqltype="CF_SQL_VARCHAR");	
 			q.setSQL(sql);
@@ -204,33 +198,15 @@ Notes:
 			
 			var QDOOHashMap = {};
 			
-			//This variable will store the total QDOO and QOO by skuID
-			var skuTotalsHashMap = {};
-			
 			for(var i=1;i <= arrayLen(QDOO);i++){
-				
-				if ( structKeyExists(QDOO[i], 'stockID')){
-					QDOOHashMap["#QDOO[i]['stockID']#"] = QDOO[i]; 
+				if ( structKeyExists(QDOO[i], 'stockID') && len( QDOO[i]['stockID'] )){
+					QDOOHashMap[QDOO[i]['stockID']] = QDOO[i]; 
 				} else {
-					QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 
+					QDOOHashMap[QDOO[i]['skuID']] = QDOO[i]; 
 				}
-				
-				if ( !structKeyExists(skuTotalsHashMap, "#QDOO[i]['skuID']#") ){
-					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] = 0;
-					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQOO'] = 0;
-				}
-				
-				skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] += QDOO[i]['QDOO'];
-				
 			}
 			
 			var QOO = getQOO(productID=arguments.productID);
-			
-			for(var item in QOO){ 
-				if(structKeyExists(skuTotalsHashMap,item['skuID'])){
-					skuTotalsHashMap[item['skuID']]['totalQOO'] += item['QOO'];
-				}
-			}
 			
 			for(var QOOData in QOO){
 				var record = {};
@@ -252,13 +228,13 @@ Notes:
 				}
 				var quantityReceived = 0;
 				
-				if( structKeyExists(QOOData, 'stockID' ) && structKeyExists(QDOOHashMap,"#QOOData['stockID']#")){
-					quantityReceived = QDOOHashMap['#QOOData['stockID']#']['QDOO'];
+				if( structKeyExists(QOOData, 'stockID' ) && structKeyExists(QDOOHashMap, QOOData['stockID'] )){
+					quantityReceived = QDOOHashMap[ QOOData['stockID'] ]['QDOO'];
 						
 					record['QNDOO'] = QOOData['QOO'] - quantityReceived;
-				}else if( structKeyExists(skuTotalsHashMap,'#QOOData['skuID']#') ){
+				}else if( structKeyExists(QDOOHashMap, QOOData['skuID'] ) ){
 					
-					record['QNDOO'] = skuTotalsHashMap["#QOOData['skuID']#"]['totalQOO'] - skuTotalsHashMap["#QOOData['skuID']#"]['totalQDOO'];
+					record['QNDOO'] = QOOData['QOO'] - QDOOHashMap[ QOOData['skuID'] ]['QDOO'];
 				}
 				
 				arrayAppend(QNDOO,record);

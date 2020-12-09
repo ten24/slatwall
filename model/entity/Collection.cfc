@@ -48,7 +48,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="dirtyReadFlag" ormtype="boolean";
 	property name="useElasticSearch" ormtype="boolean" default="0";
 	property name="reportFlag" ormtype="boolean" default="0";
-	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="1";
+	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="1";//disable this by setting to 1 n comment values passed from front-end unless explicitly needed
 	property name="softDeleteFlag" ormtype="boolean" default="0";
 	property name="publicFlag" ormtype="boolean" default="0";
 
@@ -81,11 +81,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="hibachiService" type="any" persistent="false";
 	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
+	property name="hqlParamOrmTypes" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
 	property name="ignorePeriodInterval" type="boolean" persistent="false" default="false";
 
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
+	property name="limitCountTotal" persistent="false" type="numeric" default=250 hint="This sets whether to fetch total count or not. Defaults to 250 for pagination purposes. Fetches 10 records only as per defualt hibernate limit settings";//Need to merge this with hibernate limit parameter
 
 	property name="recordsCountData" persistent="false"; 
 
@@ -109,7 +111,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="processObjectArray" type="array" persistent="false";
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
-	property name="savedStateID" type="string" persistent="false";
 	property name="collectionEntityObject" type="any" persistent="false";
 	property name="hasAggregate" type="boolean" persistent="false";
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
@@ -140,20 +141,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="totalSumAggregates" persistent="false" type="array";
 
 	property name="exportFileName" type="string" persistent="false";
+	property name="useScrollableFlag" persistent="false";
 	property name="runningGetRecordsCount" type="boolean" persistent="false" default="false";
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
+	property name="listingSearchFiltersApplied" type="boolean" persistent="false" default="false";
 	
-	
-	
-
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function init(){
 		super.init();
-
-		param name="session.entityCollection" type="struct" default="#structNew()#";
-		param name="session.entityCollection.savedStates" type="array" default="#arrayNew(1)#";
-
+		
 		variables.inlistDelimiter = ",";
 		variables.totalAvgAggregates = [];
 		variables.totalSumAggregates = [];
@@ -164,6 +161,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.currentPageDeclaration = 1;
 		variables.pageRecordsStart = 1;
 		variables.pageRecordsShow = 10;
+		variables.limitCountTotal = 250; //TODO: Fetch from config file
 		variables.keywords = "";
 		variables.keywordArray = [];
 		variables.postFilterGroups = [];
@@ -208,6 +206,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 	
+	private string function getDatasource(){
+		if(!structKeyExists(variables,'datasource')){
+			variables.datasource =  getApplicationValue("hibachiConfig").readOnlyDataSource;
+		}
+		return variables.datasource;
+	}
 	
 	public void function setInlistDelimiter(delimiter=","){
 		variables.inlistDelimiter = arguments.delimiter;
@@ -348,12 +352,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			arguments.authorizedProperty = convertPropertyIdentifierToAlias(arguments.authorizedProperty);
 		}
 		if(!hasAuthorizedProperty(arguments.authorizedProperty)){
-			arrayAppend(getAuthorizedProperties(),authorizedProperty);
+			arrayAppend(getAuthorizedProperties(),arguments.authorizedProperty);
 		}
 	}
 
 	public boolean function hasAuthorizedProperty(required string authorizedProperty){
-		return arrayFind(getAuthorizedProperties(),authorizedProperty);
+		return arrayFind(getAuthorizedProperties(),arguments.authorizedProperty);
 	}
 
 	public void function setFilterAggregates(required struct aggregations){
@@ -362,10 +366,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public struct function getFilterAggregates(){
 		if(!structKeyExists(variables,'filterAggregates')){
-			if(
-				getUseElasticSearch() && hasService('elasticSearchService')
-			){
-
+			
+			if(getUseElasticSearch() && hasService('elasticSearchService')){
 				getService('elasticSearchService').getFilterAggregates(this);
 			}
 		}
@@ -382,24 +384,202 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return variables.collectionEntityObject;
 	}
+	
+	
+	/**
+	 * Named as CollectionObject-listingSearchConfig, as Collection.cfc has it's own listingSearchConfig
+	 * 
+	 * 
+	 * 	var listingSearchConfig  = {
+			
+			//default options
+			
+			"wildCardPosition"
+			"showWildCardPositionDropdown"
+			"searchFilterPropertyIdentifier"
+			"showSearchFilterDropDown"
+			"ignoreSearchFilters",
+	
+			//extra-options
+			"selectedSearchFiterCode" = "lastThreeMonths"
+			
+		};
+	 * 
+	*/ 
+	public any function getCollectionObjectListingSearchConfig() {
+		
+		if(!structKeyExists(variables,'collectionObjectListingSearchConfig')) {
+			this.setCollectionObjectListingSearchConfig({}); 
+		}
+		
+		return variables.collectionObjectListingSearchConfig;
+	}
+	
+
+	/**
+	 * Do not update the struct directly (getCollectionConfigStruct()[listingSearchConfig]) ;
+	*/ 
+	public void function setCollectionObjectListingSearchConfig(required struct listingSearchConfig) {
+		
+		if(StructKeyExists(this.getCollectionConfigStruct(), 'listingSearchConfig')){
+			variables['collectionObjectListingSearchConfig'] = this.getCollectionConfigStruct()['listingSearchConfig'];
+		}else{
+			variables['collectionObjectListingSearchConfig'] = this.getCollectionEntityObject().getListingSearchConfig();
+		}
+		
+		StructAppend(variables['collectionObjectListingSearchConfig'], arguments.listingSearchConfig,true);// Merge and override
+		
+		//update The CollectionConfigStruct
+		var collectionConfig = this.getCollectionConfigStruct();
+		collectionConfig["listingSearchConfig"] = variables['collectionObjectListingSearchConfig'];
+		this.setCollectionConfigStruct(collectionConfig);
+	}
+	
+	
+	public array function getListingSearchFilterOptions() {
+		// Replicating to keep things simple for now
+		// TODO: see if we'd like to make it more configurable
+		return [
+			{
+                title:'Last Month',
+                code:'lastOneMonth',
+                criteria:"m:1",
+            },
+            {
+                title:'Last Two Months',
+                code:'lastTwoMonths',
+                criteria:"m:2",
+            },
+			{
+                title:'Last 3 Months',
+                code:'lastThreeMonths',
+                criteria:"m:3",
+            },
+            
+            {
+                title:'Last 6 Months',
+                code:'lastSixMonths',
+                criteria:"m:6",
+            },
+            
+            {
+                title:'1 Year Ago',
+                code:'lastOneYear',
+                criteria:"yyyy:1",
+            },
+            
+            {
+                title:'All Time',
+                code:'allRecords',
+            }
+            
+        ];
+	}
+	
+	public void function updateListingSearchFilters() {
+		if(structKeyExists(variables, 'listingSearchFiltersApplied') && variables.listingSearchFiltersApplied){
+			return;
+		}
+		
+		var listingSearchConfig = this.getCollectionObjectListingSearchConfig();
+
+		if(!structKeyExists(listingSearchConfig, 'searchFilterPropertyIdentifier')){
+			return;
+		} 
+	
+		var searchFilterCondition = (
+				StructKeyExists(listingSearchConfig, 'selectedSearchFilterCode')
+				&& len( trim(listingSearchConfig.selectedSearchFilterCode) )
+			);
+		
+		//if we have keywords and there's no search-filter applied
+		if(!searchFilterCondition && Arraylen(getKeywordArray())){ 
+			listingSearchConfig['selectedSearchFilterCode'] = 'lastThreeMonths';
+			searchFilterCondition = true;
+		}
+
+		//if the the user has selected 'allRecords'
+		if(searchFilterCondition && listingSearchConfig.selectedSearchFilterCode == "allRecords") {
+			searchFilterCondition = false;
+		}
+		
+
+		if(!searchFilterCondition || listingSearchConfig.ignoreSearchFilters ) {
+			this.removeFilterGroupByFilterGroupAlias('listingSearchFilters');
+			//return; //nothing to add //Can't return here till other conditions are met
+			//Commenting the above line here for Nitin's approval. Delete in future commit.
+		}else{
+			//Adding else condition to close loop on previous if clause
+		//        else add listingSearchFilter      //
+			var selectedFilterIndex = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
+				return arguments.opt.code == listingSearchConfig.selectedSearchFilterCode;
+			});
+
+			var criterias = ListToArray(this.getListingSearchFilterOptions()[selectedFilterIndex].criteria,':');
+			var filterValue = DateAdd("#criterias[1]#","-#criterias[2]#",now());
+
+			this.addFilter(
+				propertyIdentifier = listingSearchConfig.searchFilterPropertyIdentifier,
+				value = filterValue,
+				comparisonOperator = ">=",
+				filterGroupAlias = "listingSearchFilters"
+			);
+		}
+
+		//Update filter to get entire count from db or only config driven default (250) number.
+		if(structKeyExists(listingSearchConfig, 'limitCountTotal')){
+			variables.limitCountTotal = listingSearchConfig.limitCountTotal;
+			setLimitCountTotal(variables.limitCountTotal);
+		}
+		variables.listingSearchFiltersApplied = true;
+	
+	}
+
 
 	public string function getAlias(required string propertyIdentifier){
 		var alias = "";
+		var aliasMap = getService('HibachiCollectionService').getAliasMap();
 
-		if(
-			structKeyExists(getService('HibachiCollectionService').getAliasMap(),getCollectionObject())
-			&& structKeyExists(getService('HibachiCollectionService').getAliasMap()[getCollectionObject()],arguments.propertyIdentifier)
-		){
-			alias = getService('HibachiCollectionService').getAliasMap()[getCollectionObject()][arguments.propertyIdentifier];
+		if(structKeyExists(aliasMap,getCollectionObject()) && structKeyExists(aliasMap[getCollectionObject()],arguments.propertyIdentifier)){
+			alias = aliasMap[getCollectionObject()][arguments.propertyIdentifier];
 		}
 		return alias;
 	}
 
-	public numeric function getFilterGroupIndexByFilterGroupAlias(required string filterGroupAlias, required string filterGroupLogicalOperator="AND"){
+	public numeric function getFilterGroupIndexByFilterGroupAlias(required string filterGroupAlias, string filterGroupLogicalOperator="AND"){
  		if(!hasFilterGroupByFilterGroupAlias(arguments.filterGroupAlias)){
- 			variables.filterGroupAliasMap[filterGroupAlias] = addFilterGroupWithAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
+ 			variables.filterGroupAliasMap[arguments.filterGroupAlias] = addFilterGroupWithAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
  		}
- 		return variables.filterGroupAliasMap[filterGroupAlias];
+ 		return variables.filterGroupAliasMap[arguments.filterGroupAlias];
+ 	}
+ 	
+ 	public struct function getFilterGroupByFilterGroupAliasPath(required string filterGroupAliasPath, string filterGroupLogicalOperator="AND"){
+ 		
+ 		var filterGroupAliasArray = listToArray(arguments.filterGroupAliasPath,'.');
+ 		var filterGroupArray = getCollectionConfigStruct()['filterGroups'];
+ 		var existingPath = '';
+ 		var currentFilterGroup = filterGroupArray[1];
+ 		
+ 		for(var filterGroupAlias in filterGroupAliasArray){
+ 			var found = false;
+ 			for( var filterGroup in filterGroupArray ){
+ 				if(structKeyExists(filterGroup,'filterGroupAlias') && filterGroup['filterGroupAlias'] == filterGroupAlias){
+ 					found = true;
+ 					filterGroupArray = filterGroup['filterGroup'];
+ 					existingPath = listAppend(existingPath,filterGroupAlias,'.');
+ 					currentFilterGroup = filterGroup;
+ 					break;
+ 				}
+ 			}
+ 			if(!found){
+				addFilterGroupWithAlias(filterGroupAlias,filterGroupLogicalOperator,existingPath);
+				existingPath = listAppend(existingPath,filterGroupAlias,'.');
+				currentFilterGroup = getFilterGroupByFilterGroupAliasPath(existingPath);
+				filterGroupArray = filterGroup['filterGroup'];
+ 			}
+ 		}
+
+ 		return currentFilterGroup;
  	}
 
  	public boolean function hasFilterGroupByFilterGroupAlias(required string filterGroupAlias){
@@ -409,7 +589,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		}
  		//if not found right away check manually
  		var filterGroupIndex = 1;
- 		for(var filterGroup in getCollectionConfigStruct()['filterGroups']){
+ 		var collectionConfigStruct = getCollectionConfigStruct();
+ 		for(var filterGroup in collectionConfigStruct['filterGroups']){
  			if(
  				structKeyExists(filterGroup,'filterGroupAlias')
  				&& filterGroup.filterGroupAlias == arguments.filterGroupAlias
@@ -422,17 +603,38 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		return false;
  	}
 
- 	public numeric function addFilterGroupWithAlias(required string filterGroupAlias, required string filterGroupLogicalOperator){
+ 	public numeric function addFilterGroupWithAlias(required string filterGroupAlias, required string filterGroupLogicalOperator, string filterGroupAliasPath){
  		var collectionConfig = this.getCollectionConfigStruct();
- 		var newFilterGroup = {"filterGroup"=[]};
- 		if(ArrayLen(collectionConfig['filterGroups']) >= 1){
- 			newFilterGroup["logicalOperator"] = arguments.filterGroupLogicalOperator;
- 			newFilterGroup["filterGroupAlias"] = arguments.filterGroupAlias;
+ 		
+ 		var filterGroupArray = collectionConfig['filterGroups'];
+
+ 		if( structKeyExists(arguments, 'filterGroupAliasPath') && len(arguments.filterGroupAliasPath)){
+ 			filterGroup = getFilterGroupByFilterGroupAliasPath(arguments.filterGroupAliasPath, arguments.filterGroupLogicalOperator);
+ 			filterGroupArray = filterGroup['filterGroup'];
  		}
- 		ArrayAppend(collectionConfig['filterGroups'], newFilterGroup);
+ 		
+ 		var newFilterGroup = {"filterGroup"=[]};
+ 		newFilterGroup["filterGroupAlias"] = arguments.filterGroupAlias;
+ 		
+ 		if(ArrayLen(filterGroupArray) >= 1){
+ 			newFilterGroup["logicalOperator"] = arguments.filterGroupLogicalOperator;
+ 		}
+ 		ArrayAppend(filterGroupArray, newFilterGroup);
  		this.setCollectionConfigStruct(collectionConfig);
  		return ArrayLen(collectionConfig['filterGroups']);
  	}
+ 	
+ 	public void function removeFilterGroupByFilterGroupAlias(required string filterGroupAlias){
+ 		if(this.hasFilterGroupByFilterGroupAlias(arguments.filterGroupAlias)){
+ 			var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias);
+
+ 			ArrayDeleteAt( this.getCollectionConfigStruct()['filterGroups'], filterGroupIndex); 
+ 			
+ 			StructDelete(variables.filterGroupAliasMap, arguments.filterGroupAlias);
+ 		}
+ 	}
+
+ 	
 
  	public string function getPropertyIdentifierAlias(required string propertyIdentifier, aliastype="none"){
  		if(findNoCase('(',arguments.propertyIdentifier)){
@@ -463,7 +665,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	 		var _propertyIdentifier = '';
 			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 			var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
-			
+
 			if(getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier)){
 				propertyIdentifierAliasData.hasManyRelationColumn=true;
 			}
@@ -479,10 +681,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							arguments.aliastype=='column'
 							&& !getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(arguments.propertyIdentifier))
 							&& structKeyExists(current_object[propertyIdentifierParts[i]], 'fieldtype')
-							&& current_object[propertyIdentifierParts[i]].fieldtype neq 'id'
+							&& current_object[propertyIdentifierParts[i]].fieldtype != 'id'
 						)
 					){
-						//addGroupBy(alias);
 						propertyIdentifierAliasData.hasManyRelationFilter=true;
 					}
 					
@@ -526,7 +727,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		required string value,
 		string comparisonOperator="=",
 		boolean hidden=true
-
 	){
 		var collectionConfigStruct = this.getCollectionConfigStruct();
 
@@ -546,7 +746,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"value" = arguments.value,
 			"hidden"=arguments.hidden
 		};
-		
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
 		}
@@ -562,8 +761,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(getService('HibachiCollectionService').getCollectionCache(),getCollectionObject())){
 			getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()] = {};
 		}
-		if(structKeyExists(getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()],cacheKey)){
-			return getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][cacheKey];
+		if(structKeyExists(getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()],arguments.cacheKey)){
+			return getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][arguments.cacheKey];
 		}
 	}
 
@@ -572,7 +771,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()] = {};
 		}
 
-		getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][cacheKey] = arguments.value;
+		getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][arguments.cacheKey] = arguments.value;
 
 	}
 
@@ -586,9 +785,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	    string filterGroupAlias="",
  		string filterGroupLogicalOperator="AND",
  		boolean hidden=true,
- 		boolean ignoredWhenSearch=false,
- 		string displayPropertyIdentifier="",
-		string displayValue = ""
+ 		boolean ignoredWhenSearch=false
 	){
 		
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
@@ -598,9 +795,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			collectionConfig["filterGroups"] = [{"filterGroup"=[]}];
 		}
 
-		var filterGroupIndex = 1;
+		var filterGroup = collectionConfig['filterGroups'][1];
  		if(len(arguments.filterGroupAlias) > 0){
- 			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
+ 			filterGroup = this.getFilterGroupByFilterGroupAliasPath(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
  		}
 
 		var alias = getBaseEntityAlias();
@@ -613,16 +810,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value,
 			"hidden"=arguments.hidden,
-			"ignoredWhenSearch"= arguments.ignoredWhenSearch,
-			"displayPropertyIdentifier" = arguments.displayPropertyIdentifier,
-			"displayValue" = arguments.displayValue
+			"ignoredWhenSearch"= arguments.ignoredWhenSearch
 		};
 		
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
 		}
 
-		if(len(aggregate)){
+		if(len(arguments.aggregate)){
 			filter["aggregate"] = aggregate;
 			setHasAggregate(true);
 		}
@@ -643,13 +838,36 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 		//if we already have a filter group then we need a logicalOperator
-		if(arraylen(collectionConfig['filterGroups'][filterGroupIndex]['filterGroup'])){
+		if(arraylen(filterGroup['filterGroup'])){
 			filter["logicalOperator"]=arguments.logicalOperator;
 		}
 
- 		arrayAppend(getCollectionConfigStruct()['filterGroups'][filterGroupIndex]['filterGroup'],filter);
+ 		arrayAppend(filterGroup['filterGroup'],filter);
 
 
+	}
+
+	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
+
+
+		var collectionConfig = this.getCollectionConfigStruct();
+		collectionConfig["columns"] = [];
+		this.setCollectionConfigStruct(collectionConfig);
+
+
+		var displayProperties = listToArray(arguments.displayPropertiesList);
+		for(var displayProperty in displayProperties){
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
+		}
+
+	}
+	
+	public void function addDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
+
+		var displayProperties = listToArray(arguments.displayPropertiesList);
+		for(var displayProperty in displayProperties){
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
+		}
 	}
 
 	public void function addGroupBy(required string groupByAlias){
@@ -674,25 +892,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 	
-	
-	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
-
-		var collectionConfig = this.getCollectionConfigStruct();
-		collectionConfig["columns"] = [];
-		this.setCollectionConfigStruct(collectionConfig);
-
-		addDisplayProperties(arguments.displayPropertiesList, arguments.columnConfig);
-	}
-
-
-	public void function addDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
-
-		var displayProperties = listToArray(arguments.displayPropertiesList);
-		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
-		}
-	}
-
 
 	public void function addDisplayProperty(required string displayProperty, string title, struct columnConfig = {}, boolean prepend=false){
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -705,7 +904,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			if(find('|', arguments.displayProperty)){
 				column['alias'] = listLast(arguments.displayProperty, '|');
-				arguments.displayProperty = listFirst(arguments.displayProperty, '|');
+				
+			arguments.displayProperty = listFirst(arguments.displayProperty, '|');
 			}
 
 			column["propertyIdentifier"]=arguments.displayProperty;
@@ -727,7 +927,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty)){
 					column['persistent'] = false;
 				}
-				var ormtype = getOrmTypeByPropertyIdentifier(arguments.displayProperty);
+				var ormtype = getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.displayProperty);
 				if(len(ormtype)){
 					column['ormtype'] = ormtype;
 				}
@@ -757,10 +957,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			collectionConfig["columns"] = [];
 		}
 
+		arguments.column['isEditable'] = false;
 		arguments.column['isDeletable'] = false;
 		arguments.column['isVisible'] = false;
 		arguments.column['isSearchable'] = false;
 		arguments.column['isExportable'] = false;
+		if(structKeyExists(arguments.columnConfig, 'isEditable')){
+			arguments.column['isEditable'] = arguments.columnConfig['isEditable'];
+		}
 		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
 			
 			arguments.column['isDeletable'] = arguments.columnConfig['isDeletable'];
@@ -794,6 +998,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(structKeyExists(arguments.columnConfig,'isDistinct')){
 			arguments.column['isDistinct']=arguments.columnConfig['isDistinct'];
 		}
+		
+		if(structKeyExists(arguments.columnConfig,'arguments')){
+			arguments.column['arguments']=arguments.columnConfig['arguments'];
+		}
 
 		if(arguments.prepend){
 			arrayPrepend(collectionConfig.columns,arguments.column);
@@ -805,7 +1013,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	//add display Aggregate
-	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}, string title){
+	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = getBaseEntityAlias();
 		var join = {};
@@ -1013,7 +1221,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function getPropertyIdentifierIsPersistent(required string propertyIdentifier){
-		return getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
+		var formattedPropertyIdentifier = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
+		return getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(), formattedPropertyIdentifier);
 	}
 
 	public string function getOrmTypeByPropertyIdentifier(required string propertyIdentifier){
@@ -1042,7 +1251,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var columnsArray = [];
 			
 			//check to see if we are supposed to add default columns
-			if(addDefaultColumns){
+			if(arguments.addDefaultColumns){
 					
 				var cacheKey = 'defaultColumns' & arguments.collectionObject & '#getReportFlag()#';
 				var cachedColumnsArray = getCollectionCacheValue(cacheKey);
@@ -1060,7 +1269,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					//loop through all defaultProperties
 					for(var defaultProperty in defaultProperties){
 						var columnStruct = {};
-						columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
+						columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) ;
+
+						if(!structKeyExists(defaultProperty, 'name')){
+							continue; //alternatively we could throw
+						}
+
+						columnStruct['propertyIdentifier'] &= '.' & defaultProperty.name;
 	
 						columnStruct['title'] = newEntity.getTitleByPropertyIdentifier(defaultProperty.name);
 						//if propertyKey is a primary id, hide it and make it so it can't be deleted
@@ -1118,7 +1333,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	//ADD FUNCTIONS
 
-	public void function addHQLParam(required string paramKey, required any paramValue) {
+	public void function addHQLParam(required string paramKey, required any paramValue, string ormType) {
+
+		//if using scrollable we need to format to make java happy
+		if( getUseScrollableFlag() && 
+			structKeyExists(arguments, 'ormType')
+		){
+			variables.hqlParamOrmTypes[ arguments.paramKey ] = arguments.ormType; 
+
+			if(arguments.ormType == 'boolean'){
+				if(arguments.paramValue == 'True'){
+					arguments.paramValue = true;
+				} else if( arguments.paramValue == 'False'){
+					arguments.paramValue = false;
+				}
+			}
+		
+			if(arguments.ormType == 'big_decimal'){
+				arguments.paramValue = javaCast('java.math.BigDecimal', arguments.paramValue);
+			}
+		} 
+
 		variables.hqlParams[ arguments.paramKey ] = arguments.paramValue;
 	}
 
@@ -1132,6 +1367,32 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			addHQLParam(key,arguments.collectionHQLParams[key]);
 		}
 	}
+	
+	private boolean function hasManyToOneNonPersistentColumn() {
+		
+		if( !structKeyExists(variables,'manyToOneNonPersistentColumn') && isNull(variables.manyToOneNonPersistentColumn)) {
+			variables.manyToOneNonPersistentColumn = false;
+			
+			if(structKeyExists(this.getCollectionConfigStruct(),'columns')) {
+				for(var column in this.getCollectionConfigStruct().columns) {
+					if(structKeyExists(column,'persistent') && column.persistent == false) {
+						var propertyIdentifier = rereplace(replace(column.propertyIdentifier,getBaseEntityAlias(),''),'_','.','all');
+						if(left(propertyIdentifier,1) == '.'){
+							propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+						}
+						
+						if(listLen(propertyIdentifier, '.') >= 2){ 
+							variables.manyToOneNonPersistentColumn = true;
+							break;
+						} 
+					}
+				}
+			}
+			
+		}
+
+		return variables.manyToOneNonPersistentColumn;
+	}
 
 	//join introspects on itself for nested joins to ensure that all joins are added in the correct order
 	private string function addJoinHQL(required string parentAlias, required any join){
@@ -1139,10 +1400,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(find('.', arguments.join.associationName) > 0){
 			separator = '_';
 		}
+
+		var joinSyntax = 'left join'; 
+
+		if( getUseScrollableFlag() &&
+		    !getRunningGetRecordsCount() &&
+			(structKeyExists(arguments.join, 'column') && arguments.join.column) 
+			&& hasManyToOneNonPersistentColumn()
+		){
+			joinSyntax = 'join fetch';
+		} 
 		//Alias_
-		var fullJoinName = "#parentAlias##separator##arguments.join.associationName#";
+		var fullJoinName = "#arguments.parentAlias##separator##arguments.join.associationName#";
 		addHQLAlias(fullJoinName,arguments.join.alias);
-		var joinHQL = ' left join #fullJoinName# as #arguments.join.alias# ';
+		var joinHQL = ' #joinSyntax# #fullJoinName# as #arguments.join.alias# ';
 		if(!isnull(arguments.join.joins)){
 			for(var childJoin in arguments.join.joins){
 				joinHQL &= addJoinHQL(join.alias,childJoin);
@@ -1191,7 +1462,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var aggregateFilterHQL = '';
 		for(var filter in aggregateFilters){
-			var propertyIdentifierAlias = getPropertyIdentifierAlias(filter.propertyIdentifier,'aggregateFilter'); ///XXX workaround for joins
 			var logicalOperator = '';
 			if(structKeyExists(filter,"logicalOperator") && len(aggregateFilterHQL) > 0){
 				logicalOperator = filter.logicalOperator;
@@ -1209,7 +1479,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function formatAggregateFunction(aggregate){
 		var aggregateFunction = '';
-		switch(LCASE(aggregate)){
+		switch(LCASE(arguments.aggregate)){
 			case "average":
 				aggregateFunction = 'avg';
 				break;
@@ -1218,7 +1488,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			case "avg":
 			case "sum":
 			case "count":
-				aggregateFunction = LCASE(aggregate);
+				aggregateFunction = LCASE(arguments.aggregate);
 				break;
 		}
 		return aggregateFunction;
@@ -1275,14 +1545,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(aggregateFunction == 'COUNT'){
 				var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(arguments.column.propertyIdentifier));
 				//when doing a count on objects it is important to inlcude that it is Distinct
-	//			 however if we are doing a query like
-	//			SELECT firstName,count(firstName) FROM swaccount
-	//			group by firstName
-	//			then distinct doesn't make sense because we want to know how many people of each name by string and not object count
-	//			TODO: to support this level of reporting on the colleciton UI we will need to enable removal of id from collections
-	//			and hide the show/edit button therefore there will be two types of collections report collection and entity collection
+				//			 however if we are doing a query like
+				//			SELECT firstName,count(firstName) FROM swaccount
+				//			group by firstName
+				//			then distinct doesn't make sense because we want to know how many people of each name by string and not object count
+				//			TODO: to support this level of reporting on the colleciton UI we will need to enable removal of id from collections
+				//			and hide the show/edit button therefore there will be two types of collections report collection and entity collection
 
-				var isDistinct = isObject;
+			
+				var isDistinct = isObject && this.getNonPersistentColumn();
 
 				if(structKeyExists(column,'isDistinct')){
 					isDistinct = column.isDistinct;
@@ -1477,27 +1748,36 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		string comparisonOperator,
 		string logicalOperator,
 		array filterGroup,
-		numeric filterGroupIndex=1
+		numeric filterGroupIndex=1,
+		string filterGroupAlias
 	) {
 		//first do we have filters?
-		if(arraylen(collectionConfigStruct['filterGroups'])){
+		if(arraylen(variables.collectionConfigStruct['filterGroups'])){
 			//filterGroupName is used to navigate a filtergroup path. If not specified we can assume there is only the base filterGroup.
 			var selectedFilterGroup = [];
 
-			if(isNull(arguments.filterGroupIndex)){
+			if(!isNull(arguments.filterGroupAlias)){
+				arguments.filterGroupIndex = getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias); 
+			} else if(isNull(arguments.filterGroupIndex)){
 				arguments.filterGroupIndex=1;
 			}
 
 			if(!structKeyExists(arguments,'filterGroup')){
 				selectedFilterGroup = getCollectionConfigStruct()['filterGroups'][arguments.filterGroupIndex].filterGroup;
-			}
-
+			} 
+		
 			var filterGroupCount = arraylen(selectedFilterGroup);
 			for(var i=filterGroupCount; i >= 1; i--){
+
+				//skip if it's a filter group 
+				if(structKeyExists(selectedFilterGroup[i], 'filterGroup')){
+					continue; 
+				}
+
 				var filter = selectedFilterGroup[i];
+				
 				var isRemovable = true;
 				if(structKeyExists(arguments,'propertyIdentifier')){
-
 					if(getPropertyIdentifierAlias(filter.propertyIdentifier) != getPropertyIdentifierAlias(arguments.propertyIdentifier)){
 						isRemovable = false;
 					}
@@ -1515,7 +1795,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 				}
 
-				if(structKeyExists(arguments,'value')){
+				if(!isNull(filter.value) && structKeyExists(arguments,'value')){
 					if(filter.value != arguments.value){
 						isRemovable = false;
 					}
@@ -1531,7 +1811,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				if(!structKeyExists(arguments,'filterGroup')){
 					getCollectionConfigStruct()['filterGroups'][arguments.filterGroupIndex].filterGroup = selectedFilterGroup;
-				}
+				} 
 			}
 		}
 	}
@@ -1552,8 +1832,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 	private string function getFilterGroupHQL(required array filterGroup){
-	
-	
 		var filterGroupHQL = '';
 		//reverse to preserve logicalOperator ordering when looping  by decrementing
 		var reverseFilterGroup = getHibachiUtilityService().arrayReverse(arguments.filterGroup);
@@ -1561,18 +1839,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filter = reverseFilterGroup[i];
 			
-			var removeCheck = false; // if the filter is ignored or the FilterGroup is empty array --> remove it
 			if( structKeyExists(filter, 'ignoredWhenSearch') && !isNull(getKeywords()) && len(getKeywords())  && filter.ignoredWhenSearch){ //XXX not considering this filter when ignoredWhenSearch is set 
-				removeCheck = true;
-			}else if( StructKeyExists(filter,'filterGroup') && !ArrayLen(filter.filterGroup)){
-				removeCheck = true;
-			}
-			
-			if(removeCheck) {
 				arrayDeleteAt(reverseFilterGroup,i);
-				continue;	
+				continue;
 			}
-			
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
@@ -1583,7 +1853,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					logicalOperator = 'AND';
 				}
 			}
-			
 			if(!isnull(filter.collectionID) || !isNull(filter.collection)){
 				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";
 			}else {
@@ -1609,11 +1878,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								if(structKeyExists(filter,'propertyIdentifier') && len(filter.propertyIdentifier)){
 									var propertyIdentifier = filter.propertyIdentifier;
 									getPropertyIdentifierAlias(rereplace(listrest(propertyIdentifier,'_'),'_','.','all'),'filter');
-
-									if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
-										propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
+									
+									//Handle Booleans (BIT)
+									if(right(propertyIdentifier, 4) == 'Flag' && ListFind('<>,!=',comparisonOperator) > 0){
+										filterGroupHQL &= " #logicalOperator# (#propertyIdentifier# #comparisonOperator# #predicate# OR #propertyIdentifier# IS NULL) ";
+									}else{
+										if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
+											propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
+										}
+										if(structKeyExists(filter,'measureCriteria') && filter['measureCriteria'] == 'matchPart'){
+											switch(filter.measureType){
+												case 'd':
+													propertyIdentifier = 'day(#propertyIdentifier#)';
+													break;
+												case 'm':
+													propertyIdentifier = 'month(#propertyIdentifier#)';
+													break;
+												case 'y':
+													propertyIdentifier = 'year(#propertyIdentifier#)';
+													break;
+											}
+										}
+										filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
+										
 									}
-									filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
 								}
 						}else{
 							var attributeHQL = getFilterAttributeHQL(filter);
@@ -1624,7 +1912,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 			}
-			
 		}
 		return filterGroupHQL;
 	}
@@ -1647,18 +1934,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getFilterGroupsHQL(required array filterGroups){
-
 		var filterGroupsHQL = '';
 		var reverseFilterGroup = getHibachiUtilityService().arrayReverse(arguments.filterGroups);
-	
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filterGroup = reverseFilterGroup[i];
-			
-			if( !ArrayLen(filterGroup.filterGroup) ) { //if the filterGroup is empty array remove it;
-				ArrayDeleteAt(reverseFilterGroup,i);
-				continue;
-			}
-			
 			var logicalOperator = '';
 			if(i != arraylen(reverseFilterGroup)){
 				if(structKeyExists(filterGroup,'logicalOperator') && len(filterGroup.logicalOperator)){
@@ -1669,9 +1948,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			//constuct HQL to be used in filterGroup
-			var filterGroupHQL =  getFilterGroupHQL(filterGroup.filterGroup);
-			
-			if(len(trim(filterGroupHQL))){
+			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
+			if(len(filterGroupHQL)){
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			}else{
 				arrayDeleteAt(reverseFilterGroup,i);
@@ -1719,7 +1997,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var filterGroupsHQL = getFilterGroupsHQL(arguments.filterGroups);
 
-		if(len(trim(filterGroupsHQL))){
+		if(len(filterGroupsHQL)){
 			filterHQL &= ' where ';
 			filterHQL &= filterGroupsHQL;
 		}
@@ -1760,7 +2038,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						structKeyExists(join,'filter')	
 						&& !structKeyExists(join,'column')
 					)
-				)
+				) 
 			){
 				return true;
 			}
@@ -1783,6 +2061,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getValidJoins(boolean recordsCountJoin=false){
 		var validJoins = [];
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
+			
 			for(var join in getCollectionConfigStruct()["joins"]){
 				if(
 					!arguments.recordsCountJoin
@@ -1796,8 +2075,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								structKeyExists(join,'aggregateFilter')
 								&& join.aggregateFilter
 							)||(
-								structKeyExists(join,'aggregateColumnCount')
-								&& join.aggregateColumnCount
+								structKeyExists(join,'aggregateColumn')
+								&& join.aggregateColumn
 							)||(
 								structKeyExists(join,'toMany')
 								&& join.toMany
@@ -1819,13 +2098,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public string function getJoinHQL(boolean recordsCountJoin=false){
 		var joinHQL = '';
 		var joins = getValidJoins(arguments.recordsCountJoin);
-			
         var allAliases = getAllAliases();
 		for(var join in joins){
-			if(listFind(allAliases, join.alias)){
-                joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
-            }
-		}
+                if(listFind(allAliases, join.alias)){
+                    joinHQL &= addJoinHQL(getBaseEntityAlias(),join);
+                }
+			}
 		
 		return joinHQL;
 	}
@@ -1838,9 +2116,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 		if(structKeyExists(collectionConfigStruct, 'columns') && arraylen(collectionConfigStruct.columns)){
-			var columnCount = arraylen(collectionConfigStruct.columns); 
+			var columns = collectionConfigStruct.columns;
+			var columnCount = arraylen(columns); 
             for(var i = 1; i <= columnCount; i++){
-                aliases = listAppend(aliases, listFirst(collectionConfigStruct.columns[i].propertyIdentifier, '.'));
+                aliases = listAppend(aliases, listFirst(columns[i].propertyIdentifier, '.'));
             }
         }
 			
@@ -1883,19 +2162,74 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
         return listremoveduplicates(aliases);
     }
+    
+    private boolean function isSearchableColumn(required struct column){
+    	if(structKeyExists(arguments.column, 'isSearchable')){
+    		return arguments.column.isSearchable;
+    	}
+		return false;
+    }
+    
+    private boolean function hasKeywords(){
+    	return !isNull(getKeywords()) && len(getKeywords());
+    }
 
     public any function getFilterAliases(filterGroup){
         var aliasList = '';
-        for(var fgIndex = 1; fgIndex <= arrayLen(filterGroup); fgIndex++){
-            if(structKeyExists(filterGroup[fgIndex], 'filterGroup')){
-                aliasList = listAppend(aliasList,getFilterAliases(filterGroup[fgIndex].filterGroup));
+        for(var fgIndex = 1; fgIndex <= arrayLen(arguments.filterGroup); fgIndex++){
+            if(structKeyExists(arguments.filterGroup[fgIndex], 'filterGroup')){
+                aliasList = listAppend(aliasList,getFilterAliases(arguments.filterGroup[fgIndex].filterGroup));
             }else{
-                aliasList = listAppend(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.'));
+                aliasList = listAppend(aliasList, listFirst(arguments.filterGroup[fgIndex].propertyIdentifier, '.'));
             }
         }
         return aliasList;
     }
 
+	public void function executeUpdate(required struct updateSetStruct){
+
+		var updateHQL = getUpdateHQL(argumentCollection=arguments); 
+
+		ormExecuteQuery(updateHQL, getHQLParams());
+	}
+
+	public string function getUpdateHQL(required struct updateSetStruct){
+
+		var alias = getBaseEntityAlias();//make sure it doesn't conflict
+		var entityReference = getDao('hibachiDAO').getApplicationKey() & getCollectionObject(); 
+
+		var updateHQL = 'UPDATE #entityReference# as #alias# ';
+
+		updateHQL &= 'SET ';
+		
+		for(var property in arguments.updateSetStruct){
+			//not paramatizing to prevent conflicts with filters:
+			updateHQL &= ' #alias#.#property# = #arguments.updateSetStruct[property]# ';
+		} 	
+
+		var primaryIDPropertyName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() ); 
+
+		this.setDisplayProperties(primaryIDPropertyName); 
+
+		var filterGroupArray = getFilterGroupArrayFromAncestors(this);
+		if(arraylen(filterGroupArray)){
+			var filterGroupHQL = getFilterHQL(filterGroupArray);
+		
+			//please note that this function will not behave correctly with any join that can't be determined by foreign key in the table being updated
+			//TODO: implement fallback to sql
+			var joins = getValidJoins();
+			for(var join in joins){
+				var removeJoinAlias = alias & '.' & replaceNoCase( listRest(join.alias,'_'), '_', '.', 'ALL' );
+	
+				filterGroupHQL = replaceNoCase( filterGroupHQL, join.alias, removeJoinAlias, 'ALL' );
+			}
+				
+			updateHQL &= filterGroupHQL;	
+		}
+
+		return updateHQL; 
+	}
+	//Documentation: hql building gets triggered here; Possible TODO: pass limit from ui to here and add as a parameter
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false, recordsCountJoins=false){
 		
 		structDelete(variables,'groupBys');
@@ -1905,6 +2239,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy,arguments.recordsCountJoins);
+	//Documentation: Here, var HQL returns the collection - columns list
 		return HQL;
 	}
 
@@ -1975,7 +2310,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(structKeyExists(variables,'groupBys')){
 			groupByList = variables.groupBys;
 		}
-
+		
 		if(!len(trim(groupByList)) && (!isReport() || !hasPeriodColumn())){
 			return '';
 		}
@@ -2019,31 +2354,32 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		);
 	}
 
-	public struct function getDefaultOrderBy(){
-		var orderByStruct={};
-		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
+	public any function getDefaultOrderBy(){
+	
+		var entityName = this.getCollectionObject();
+		var hibachiService = getService('hibachiService');
+		var hibachiCollectionService = getService('hibachiCollectionService');
+		
 		//is default order by based on hb_defaultOrderProperty
-		if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
-			orderByStruct={
-				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getThisMetaData()["hb_defaultOrderProperty"],
-				direction="asc"
+		if( hibachiService.hasDefaultOrderByPropertyNameByEntityName(entityName) ){
+	
+			return {
+				propertyIdentifier = hibachiService.getDefaultOrderByPropertyIdentifierByEntityName(entityName),
+				direction = "asc"
 			};
-		//if not then does it have a createdDateTime
-		} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
-
-			var orderByStruct={
-				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime",
-				direction="desc"
-			};
-
-		//if still not then order by primary id
-		} else {
-			var orderByStruct={
-				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getPrimaryIDPropertyName(),
-				direction="asc"
+		} 
+		//if not then does it have a createdDateTime, and the trecords-count in the table doesnot exceed `globalDefaultOrderByMaxRecordsLimit`
+		else if( 
+		    !hibachiCollectionService.tableSizeExceedsDefaultOrderByLimit( hibachiService.getTableNameByEntityName(entityName) ) 
+		    && 
+		    hibachiService.getEntityHasPropertyByEntityName(entityName, "createdDateTime" ) 
+		){
+		    
+			return {
+				propertyIdentifier = hibachiService. getDefaultOrderByPropertyIdentifierByEntityName( entityName, "createdDateTime"),
+				direction = "desc"
 			};
 		}
-		return orderByStruct;
 	}
 
 	private string function getOrderByHQL(array orderBy=getOrderBys()){
@@ -2054,18 +2390,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var orderByCount = arraylen(arguments.orderBy);
 		//if order by count is 0, then use the default order by
-		if(orderByCount == 0 && !getHasAggregate()){
-			arrayAppend(arguments.orderby,getDefaultOrderBy());
-			orderByCount++;
+		
+		if(orderByCount == 0 && !getHasAggregate() ){
+			var defaultOrderBy = getDefaultOrderBy();
+			if( !isNull(defaultOrderBy) ){
+				arrayAppend( arguments.orderby, defaultOrderBy );
+				orderByCount++;
+			}
 		}
 
 		for(var i = 1; i <= orderByCount; i++){
 			var ordering = arguments.orderBy[i];
 			var direction = '';
+
 			if(!isnull(ordering.direction)){
 				direction = ordering.direction;
 			}
-
+			
 			orderByHQL &= '#getPropertyIdentifierAlias(ordering.propertyIdentifier,'orderBy')# #direction# ';
 
 			//check whether a comma is needed
@@ -2140,11 +2481,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var convertedPropertyIdentifier = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedPropertyIdentifier)) {
-			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
-			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
-			if (left(convertedPropertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
-				convertedPropertyIdentifier = right(convertedPropertyIdentifier, len(convertedPropertyIdentifier) - len(getBaseEntityAlias()) - 1);
+			if (left(propertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
+				propertyIdentifier = right(propertyIdentifier, len(propertyIdentifier) - len(getBaseEntityAlias()) - 1);
 			}
+			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),replace(arguments.propertyIdentifier, '_', '.', 'all'));
+			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
 		}
 		return convertedPropertyIdentifier;
 	}
@@ -2405,6 +2746,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			throw(rbkey('admin.reports.nonPersistentReport'));
 		}
 	}
+	public boolean function getUseScrollableFlag(){
+		if(!structKeyExists(variables, 'userScrollableFlag')){
+			variables.userScrollableFlag = this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext())); 
+		}
+		return variables.userScrollableFlag;  
+	}
+
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
 		isReportAndHasNonPersistent();
@@ -2440,8 +2788,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}else{
 						var HQL = '';
 						var HQLParams = {};
-						saveState();
-						if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
+						
+						if(getUseScrollableFlag()){
+							
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
 							variables.processObjectArray = [];
@@ -2449,31 +2798,51 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							HQL = 'SELECT DISTINCT(#entityAlias#) ' & getHQL(excludeGroupBy=true);
 
 							HQLParams = getHQLParams();
-							var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+
+							//build the scrollable query.
+							var scrollableSession = ormGetSessionFactory().openSession(); //use the new session but scroll results.
+	    					scrollableSession.setDefaultReadOnly(true);
+							
+							var cacheMode = createObject("java","org.hibernate.CacheMode");
+	    					var scrollMode = createObject("java","org.hibernate.ScrollMode");
+
+							//begin transaction on the scrollable session to avoid empty result when records exist lucee4
+							var tx = scrollableSession.beginTransaction();
+							
+	    					var query = scrollableSession.createQuery(HQL)
+								.setCacheMode(cacheMode.IGNORE)
+								.setFirstResult(getPageRecordsStart()-1)
+								.setMaxResults(getPageRecordsShow())
+								.setFetchSize(getPageRecordsShow());
+
+							//Add all of the params.
+							for (var param in HQLParams){
+								query.setParameter(param, HQLParams[param]);
+							}
+							// Set the pagination info.
+							var entities = query.scroll(scrollMode.FORWARD_ONLY);
 							var columns = getCollectionConfigStruct()["columns"];
-
-							for(var entity in entities){
-								var pageRecord = {};
-								for(var column in columns){
-									var propertyIdentifier = rereplace(replace(column.propertyIdentifier,entityAlias,''),'_','.','all');
-									if(left(propertyIdentifier,1) == '.'){
-										propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
-									}
-
-									if(structKeyExists(column,'setting') && column.setting == true){
-										propertyIdentifier = ListRest(column.propertyIdentifier,'.');
-										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
-									}else{
-										pageRecord[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = entity.getValueByPropertyIdentifier(propertyIdentifier);
+							try{
+								while(entities.next()){
+									var entity = entities.get(0);
+									var pageRecord = makeRecordStructFromScorllableORMEntity(entity);
+									
+									arrayAppend(variables.pageRecords,pageRecord);
+	
+									if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
+										var processObject = entity.getProcessObject(this.getProcessContext());
+										arrayAppend(variables.processObjectArray,processObject);
 									}
 								}
-								arrayAppend(variables.pageRecords,pageRecord);
-
-								if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
-									var processObject = entity.getProcessObject(this.getProcessContext());
-									arrayAppend(variables.processObjectArray,processObject);
+							}catch(any ormError){
+								throw(ormError);
+							}finally{
+								tx.commit();//not committing anything really	
+								if (scrollableSession.isOpen()){
+									scrollableSession.close();
 								}
 							}
+
 						}else{
 							HQL = getHQL();
 							HQLParams = getHQLParams();
@@ -2488,7 +2857,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							} else {
 								//Get the pageRecords
-								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#", datasource=getDatasource()});
 
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("pageRecords-" & getCacheName())){
@@ -2505,6 +2874,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
+				
+				if(getApplicationValue('errorDisplayFlag')){
+					rethrow;
+				}
+			
 				if(isNull(HQL)){ 
 					var HQL = '';
 				}
@@ -2553,12 +2927,54 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 
-	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=getORMSession()) {
+	public any function getScrollableRecords(boolean refresh=false, boolean readOnlyMode=true, any ormSession=ORMGetSession()) {
 		if( !structKeyExists(variables, "scrollableRecords") || arguments.refresh == true) {
 			variables.scrollableRecords = getService('ORMService').getScrollableRecordsByCollectionList(collectionList=this,ormSession=arguments.ormSession);
 		}
 
 		return variables.scrollableRecords;
+	}
+	
+	
+	private struct function makeRecordStructFromScorllableORMEntity(required any entity) {
+		var record = {};
+		var columns = getCollectionConfigStruct()["columns"];
+		
+		for(var column in columns) {
+		
+			if(structKeyExists(column,'setting') && column.setting == true){
+				propertyIdentifier = ListRest(column.propertyIdentifier,'.');
+				record[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = getSettingValueFormattedByPropertyIdentifier(propertyIdentifier,entity);
+			}else{
+				
+				var columnEntity = arguments.entity; 
+				
+				var propertyIdentifier = rereplace(replace(column.propertyIdentifier,getBaseEntityAlias(),''),'_','.','all');
+				if(left(propertyIdentifier,1) == '.'){
+					propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+				}
+
+				//walk nested props
+				while( ListLen(propertyIdentifier, '.') >= 2 && !IsSimpleValue(columnEntity)){
+					var entityProperty = ListFirst(propertyIdentifier, '.'); 
+					propertyIdentifier = ListRest(propertyIdentifier, '.');
+					columnEntity = columnEntity.getValueByPropertyIdentifier(entityProperty); 
+				} 
+				
+				if(IsSimpleValue(columnEntity)) { //there's no related entity
+					record[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity;
+				} else {
+					
+					if (!isNull(column.arguments)){
+						record[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier, args=column.arguments);
+					}else{
+						record[convertPropertyIdentifierToAlias(column.propertyIdentifier)] = columnEntity.getValueByPropertyIdentifier(propertyIdentifier);
+					}
+				}
+			}
+		}
+		
+		return record;
 	}
 
 
@@ -2570,14 +2986,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!this.getNewFlag()){
 				reportCacheKey = '_reportCollection_'&getCollectionID()&hash(getCollectionConfig(),'md5');
 				reportCacheKey &= getIgnorePeriodInterval();
-				if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
-					return getService('HibachiCacheService').getCachedValue(reportCacheKey);
-				}
 			}
 			
-			
-			
-		
+			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
+				return getService('HibachiCacheService').getCachedValue(reportCacheKey);
+			}
 			
 			arguments.formatRecords=false;
 		}
@@ -2613,27 +3026,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var HQL = '';
 						var HQLParams = {};
 						//For processing objects because we have a non-persistent column
-						if(this.getNonPersistentColumn()){
+						if(getUseScrollableFlag()){
 							variables.records = [];
+							var entityAlias = "_#lcase(this.getCollectionObject())#";
 							HQL =  'SELECT DISTINCT(_#lcase(this.getCollectionObject())#) ' &  getHQL(forExport=arguments.forExport);
 							HQLParams = getHQLParams();
 
-							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-							
+							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#", datasource=getDatasource()});
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
-								var record = {};
-
-								for(var column in columns){
-
-									var listRestValue = ListRest(column.propertyIdentifier,'.');
-									if(structKeyExists(column,'setting') && column.setting == true){
-										record[Replace(listRestValue,'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRestValue,entity);
-									}else{
-										record[Replace(listRestValue,'.','_','all')] = entity.getValueByPropertyIdentifier(listRestValue);
-									}//<--end if
-
-								}//<--end for
+								var record = makeRecordStructFromScorllableORMEntity(entity);
 								arrayAppend(variables.records,record);
 							}//<--end entity
 						//standard Collections HQL
@@ -2652,7 +3054,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
 							} else {
 								//Get the Records
-								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#", datasource=getDatasource()});
 								
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
@@ -2671,6 +3073,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
+				
+				if(getApplicationValue('errorDisplayFlag')){
+					rethrow;
+				}
 				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
@@ -2754,18 +3160,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function setRecordsCount(required numeric total){
 		variables.recordsCount = arguments.total;
 	}
-	
-	public any function getRecordsCountData(){
-		if(!structkeyExists(variables,'recordsCountData')){
-			getRecordsCount();
-			if(!structkeyExists(variables,'recordsCountData')){
-				variables.recordsCountData['recordsCount'] = 0;	
-			}
-		}
 
+	public any function getRecordsCountData(){
+		if(variables.limitCountTotal == 0){ //Only fetch all records if limitCountTotal is turned off by setting to zero
+			getRecordsCount();
+			/*Documentation: Question for Miguel/Nitin: This will never occur since getRecords returns this value. Then why is this check here? */
+			if(!structkeyExists(variables,'recordsCountData')){	
+				variables.recordsCountData['recordsCount'] = 0;
+			}
+			variables.recordsCountData['limitCountTotal'] = 0;//Passing flag here for pagination to show total records;Adding here since this is tied to the total recordsCountData set
+		}else{//Return 250/config value by default
+			variables.recordsCountData['recordsCount'] = 250;
+			variables.recordsCountData['limitCountTotal'] = variables.limitCountTotal;//Default value from config
+		}
 		return variables.recordsCountData;
 	}
-
+	//Documentation: This is where count, sum n avg is calculated
 	public any function getRecordsCount(boolean refresh=false) {
 		setRunningGetRecordsCount(true);
 		if(arguments.refresh){
@@ -2796,7 +3206,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
-						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
+
+						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1, datasource=getDatasource()});
 						var recordCount = 0;
 						
 						if(structkeyExists(variables,'recordsCountData') && structkeyExists(variables.recordsCountData,'recordsCount')){
@@ -2836,9 +3247,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 
-	public string function getPrimaryIDList(){
+	public string function getPrimaryIDList(numeric recordCount){
 		var primaryIDList = "";
-		var primaryIDRecords = getPrimaryIDs(this.getRecordsCount());
+		var primaryIDRecords = getPrimaryIDs(argumentCollection=arguments);
 		var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() );
 		for(var primaryIDRecord in primaryIDRecords){
 			primaryIDList = listAppend(primaryIDList,primaryIDRecord[primaryIDName]);
@@ -2903,8 +3314,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public numeric function getPageRecordsEnd() {
 		var pageRecordEnd = getPageRecordsStart() + getPageRecordsShow() - 1;
-		if(pageRecordEnd > getRecordsCount()) {
-			pageRecordEnd = getRecordsCount();
+		//TODO: Entire pagination logic ideally belongs in front end. Possible rewrite needed
+		//Documentation: Only fetch recordsCount if old total records display is needed.
+		if(variables.limitCountTotal == 0){
+ 			if(pageRecordEnd > getRecordsCount()) {
+				pageRecordEnd = getRecordsCount();
+			}
+		}else{
+			if(pageRecordEnd > variables.limitCountTotal){
+				pageRecordEnd = variables.limitCountTotal;
+			}
 		}
 		return pageRecordEnd;
 	}
@@ -2914,7 +3333,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getTotalPages() {
-		return ceiling(getRecordsCount() / getPageRecordsShow());
+		var totalPageCount = 0;
+		//Documentation: Same as getPageRecordsEnd. Only fetch recordsCount if old total records display is needed.
+		//Can remove these checks if we can remove the total records count display logic from collections.
+		if(variables.limitCountTotal == 0){
+			totalPageCount = ceiling(getRecordsCount() / getPageRecordsShow());
+		}
+		else{
+			totalPageCount = ceiling(variables.limitCountTotal / getPageRecordsShow());
+		}
+		return totalPageCount;
 	}
 
 	private string function getParamID(){
@@ -2927,12 +3355,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(getHibachiScope().getService('hibachiUtilityService').isStringTemplate(arguments.filterValue)){
 			return  getHibachiScope().getService('hibachiUtilityService').replaceStringTemplate(arguments.filterValue, arguments.object);
 		}
-		return filterValue;
+		return arguments.filterValue;
 	}
 	
 	private struct function makeDateRangeFromCriteriaAndMeasureType(required any criteria, required any measureType, any measureCriteria){
 		var rangeStruct = StructNew();
-		
+	
 		//Backward compatibility
 		if( arguments.measureCriteria == 'exactDate' || arguments.measureCriteria == 'exactDateFuture' ) {
 			
@@ -3031,26 +3459,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
 					setEndRange = DateAdd("d", -1, firstDayOfCurrentYear);
 				break;
-				case 'lastFullWeek': //Last Full Week
-					var firstOfCurrentWeek = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
-					setStartRange = DateAdd('d',-7,firstOfCurrentWeek);
-					setEndRange = DateAdd('d',-1,firstOfCurrentWeek);
-					break;
-				case 'lastFullMonth': //Last Full Month
-					var firstOfCurrentMonth = createDate(year(now()), month(now()), 1);
-					setStartRange = DateAdd('m',-1,firstOfCurrentMonth);
-					setEndRange = DateAdd('d',-1,firstOfCurrentMonth);
-					break;
-				case 'lastFullQuarter': //Last Full Quarter
-					var quarter = floor(month(now()) / 3);
-					setStartRange = CreateDate(year(now()), (quarter-1)*3 + 1, 1);
-					setEndRange = DateAdd("d", -1, DateAdd("m", 3, setStartRange));
-					break;
-				case 'lastFullYear': //Last Full year
-					var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
-					setStartRange = DateAdd("yyyy", -1, firstDayOfCurrentYear);
-					setEndRange = DateAdd("d", -1, firstDayOfCurrentYear);
-					break;
+				case 'moreMinutes': //More than N Minutes Ago
+					setStartRange = DateAdd("n",  - arguments.criteria, Now());
+				break;
+				case 'moreHours': //More than N Hours Ago
+					setStartRange = DateAdd("h",  - arguments.criteria, Now());
+				break;
 				case 'moreDays': //More than N Day Ago
 					setStartRange = DateAdd("d",  - arguments.criteria, Now());
 				break;
@@ -3106,7 +3520,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			if(setStartRange != "") {
-				if(arguments.measureType== "lastHour") {
+				if( ListFindNoCase("moreHours,moreMinutes,lastHour", arguments.measureType) ) {
 					rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), hour(setStartRange), minute(setStartRange), second(setStartRange));
 				} else {
 					rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), 0, 0, 0);
@@ -3114,7 +3528,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			if(setEndRange != "") {
-				if(arguments.measureType== "lastHour") {
+				if( ListFindNoCase("moreHours,moreMinutes,lastHour", arguments.measureType) ) {
 					rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), hour(setEndRange), minute(setEndRange), second(setEndRange));
 				} else {
 					rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), 23, 59, 59);
@@ -3138,8 +3552,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		return rangeStruct;
 	}
-	
-	
+		
 	private struct function formatDateRange(required any dateRange){ //XXX date-format dd/mm/yyyy-dd/mm/yyyy
 		var rangeStruct = StructNew();
 		
@@ -3160,15 +3573,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var dateRangePredicate = "";
 		var range = StructNew();
 		
-		if(structKeyExists(arguments.filter, 'measureCriteria') && structKeyExists(arguments.filter, 'measureType')) {
-			
+		if( structKeyExists(arguments.filter, 'measureCriteria') && 
+			structKeyExists(arguments.filter, 'measureType')
+		) {
+	
 			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType, arguments.filter.measureCriteria);
-			
-			if (listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)) {
-				structDelete(range, 'rangeEndValue');
-			}else if (listFindnocase('<=,<,lt,lte', arguments.filter.comparisonOperator)) {
-				structDelete(range, 'rangStartValue');
-			}
 			
 		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
 			
@@ -3177,10 +3586,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			} else { // otherwise it should be an epoch range
 				range = makeLocalDateRangeFromEpochRange(arguments.filter.value);
 			}
+			
 		} else if(listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)) {
+		
 			//convert unix timestamp
 			if(isNumeric(arguments.filter.value)){
 				range.rangStartValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
+			} else if(arguments.filter.value == 'now()' ){
+				range.rangStartValue = now();
 			} else {
 				range.rangStartValue = arguments.filter.value;
 			}
@@ -3189,6 +3602,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			if(isNumeric(arguments.filter.value)){
 				range.rangeEndValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
+			} else if(arguments.filter.value == 'now()' ){
+				range.rangeEndValue = now();
 			}else{
 				range.rangeEndValue = arguments.filter.value;
 			}
@@ -3202,14 +3617,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 
-		if( StructKeyExists(range, "rangStartValue") && !isNull(range.rangStartValue) ) {
+		if( StructKeyExists(range, "rangStartValue") && len(range.rangStartValue) ) {
 			var rangeStartParamID = getParamID();
-			addHQLParam(rangeStartParamID, range.rangStartValue);
+			addHQLParam(rangeStartParamID, range.rangStartValue, arguments.filter['ormtype']);
 		}
 		
-		if( StructKeyExists(range, "rangeEndValue") && !isNull(range.rangeEndValue) ) {
+		if( StructKeyExists(range, "rangeEndValue") && len(range.rangeEndValue) ) {
 			var rangeEndParamID = getParamID();
-			addHQLParam(rangeEndParamID, range.rangeEndValue);
+			addHQLParam(rangeEndParamID, range.rangeEndValue, arguments.filter['ormtype']);
 		}
 		
 		if(!isNull(rangeStartParamID) && !isNull(rangeEndParamID)) {
@@ -3219,10 +3634,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		} else if(!isNull(rangeEndParamID)) {
 			dateRangePredicate = ":#rangeEndParamID#";
 		}
-		
+	
 		return dateRangePredicate;
 	}
-	
+
 	private string function getNumericRangePredicate(required any filter){
 		var numericRangePredicate = "";
 	
@@ -3233,10 +3648,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var rangeEndValue = ranges[2];
 			
 			var rangeStartParamID = getParamID();
-			addHQLParam(rangeStartParamID,rangStartValue);
+			addHQLParam(rangeStartParamID,rangStartValue, arguments.filter['ormtype']);
 			
 			var rangeEndParamID = getParamID();
-			addHQLParam(rangeEndParamID, rangeEndValue);
+			addHQLParam(rangeEndParamID, rangeEndValue, arguments.filter['ormtype']);
 
 			numericRangePredicate = ":#rangeStartParamID# AND :#rangeEndParamID#";
 
@@ -3244,7 +3659,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 			var rangeEndValue = ranges[1];
 			var rangeEndParamID = getParamID();
-			addHQLParam(rangeEndParamID, rangeEndValue);
+			addHQLParam(rangeEndParamID, rangeEndValue, arguments.filter['ormtype']);
 			
 			var minValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
 			minValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'min','minValue');
@@ -3262,7 +3677,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			var rangStartValue = ranges[1];
 			var rangeStartParamID = getParamID();
-			addHQLParam(rangeStartParamID,rangStartValue);
+			addHQLParam(rangeStartParamID,rangStartValue, arguments.filter['ormtype']);
 			var maxValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
 			maxValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'max','maxValue');
 			maxValueCollection.setPageRecordsShow(1);
@@ -3293,7 +3708,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 		} else {
 			var paramID = getParamID();
-			addHQLParam(paramID,arguments.filter.value);
+			addHQLParam(paramID,arguments.filter.value, arguments.filter['ormtype']);
 			rangePredicate = ":#paramID#";
 		}
 		
@@ -3308,33 +3723,33 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var predicate = '';
-		if(!structKeyExists(filter,"value")){
-			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
-				filter.value = filter.displayValue;
+		if(!structKeyExists(arguments.filter,"value")){
+			if(structKeyExists(arguments.filter,'ormtype') && arguments.filter.ormtype == 'string' && structKeyExists(arguments.filter,'displayValue')){
+				arguments.filter.value = arguments.filter.displayValue;
 			} else {
-				filter.value = "";
+				arguments.filter.value = "";
 			}
 		}
 		//Session Filters
-		filter.value = replaceStringTemplateInFilterValue(getHibachiScope(), filter.value);
+		arguments.filter.value = replaceStringTemplateInFilterValue(getHibachiScope(), arguments.filter.value);
 
 			//verify we are handling a range value
 		if(listfindnocase("between,not between,>,>=,<,<=,gt,gte,lt,lte",arguments.filter.comparisonOperator)) {
 			
 			predicate = getRangePredicate(arguments.filter);
 	
-		} else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not') {
+		} else if(arguments.filter.comparisonOperator == 'is' || arguments.filter.comparisonOperator == 'is not') {
 			
-			predicate = filter.value;
+			predicate = arguments.filter.value;
 			
-		} else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in') {
+		} else if(arguments.filter.comparisonOperator == 'in' || arguments.filter.comparisonOperator == 'not in') {
 			
-			if(len(filter.value)) {
+			if(len(arguments.filter.value)) {
 				var paramList = '';
-				var values = listToArray(filter.value,this.getInlistDelimiter());
+				var values = listToArray(arguments.filter.value,this.getInlistDelimiter());
 				for(var value in values){
 					var paramID = getParamID();
-					addHQLParam(paramID,value);
+					addHQLParam(paramID, value, arguments.filter['ormtype']);
 					paramList = listAppend(paramList, ':#paramID#');
 				}
 				predicate = '(#paramList#)';
@@ -3342,35 +3757,34 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				predicate = "('')";
 			}
 			
-		} else if(arguments.filter.comparisonOperator eq 'like' || arguments.filter.comparisonOperator eq 'not like') {
+		} else if(arguments.filter.comparisonOperator == 'like' || arguments.filter.comparisonOperator == 'not like') {
 			var paramID = getParamID();
 
 			// Return empty string if comparison value is not set
-			if(!len(filter.value)){
+			if(!len(arguments.filter.value)){
 				return "";
 			}
 
-			if(structKeyExists(filter,'pattern')){
-				switch(filter.pattern){
+			if(structKeyExists(arguments.filter,'pattern')){
+				switch(arguments.filter.pattern){
 					case '%w%':
-						filter.value = '%#filter.value#%';
+						arguments.filter.value = '%#filter.value#%';
 						break;
 					case 'w%':
-						filter.value = '#filter.value#%';
+						arguments.filter.value = '#filter.value#%';
 						break;
 					case '%w':
-						filter.value = '%#filter.value#';
+						arguments.filter.value = '%#filter.value#';
 						break;
 				}
 			}
 			
-			addHQLParam(paramID,arguments.filter.value);
+			addHQLParam(paramID,arguments.filter.value,arguments.filter['ormtype']);
 			predicate = ":#paramID#";
 		
 		} else {
-			
 			var paramID = getParamID();
-			addHQLParam(paramID,arguments.filter.value);
+			addHQLParam(paramID,arguments.filter.value,arguments.filter['ormtype']);
 			predicate = ":#paramID#";
 		}
 		
@@ -3407,6 +3821,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return count;
 	}
 
+	//Documentation: getSelectionCountHQL gets the count of records, sum n average. 
+	//TODO: Sums and average dont make sense cos of different currency values, etc. as per Sumit. Needs to be removed in a future commit. 
+	//If it needs to be retained, does it really belong here as part of collections or will it be better served to put this in a separate service call?
 	public any function getSelectionCountHQL(){
 
 		var countHQLSelections = "";
@@ -3422,13 +3839,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				&& !getprimaryIDFound()
 			)
 		){
+			
 			var countHQLSelections = "SELECT NEW MAP(COUNT( tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true,false,true)# )';
  		}else{
+ 			
  			var countHQLSelections = 'SELECT NEW MAP(COUNT( #getBaseEntityAlias()#.id) as recordsCount ';
  			var countHQLSuffix = getHQL(true,false,false,false,true);
 		}
-		
+
+
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
@@ -3440,6 +3860,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					&& !getprimaryIDFound()
 				)
 			){
+				
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
 				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier,'aggregateColumn')#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
@@ -3569,6 +3990,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 	
+	//Documentation: Builds the selection list - but not the actual query.
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 
 
@@ -3630,12 +4052,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					)
 					&& structKeyExists(column, 'ormtype') 
 					&& (
-						column.ormtype eq 'big_decimal'
-						|| column.ormtype eq 'integer'
-						|| column.ormtype eq 'float'
-						|| column.ormtype eq 'double'
+						column.ormtype == 'big_decimal'
+						|| column.ormtype == 'integer'
+						|| column.ormtype == 'float'
+						|| column.ormtype == 'double'
 					) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
 				){
+					
 					addTotalAvgAggregate(column);
 					addTotalSumAggregate(column);
 				}
@@ -3645,6 +4068,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}//<--end if
 
 			}else{
+				
 				getPropertyIdentifierAlias(column.propertyIdentifier,'column');
 				if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
 					if(structKeyExists(column,'attributeID')){
@@ -3687,17 +4111,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								var columnAlias = getColumnAlias(column);
 
 								if(structKeyExists(column, 'ormtype') &&
-									(column.ormtype eq 'big_decimal'
-									|| column.ormtype eq 'integer'
-									|| column.ormtype eq 'float'
-									|| column.ormtype eq 'double'
+									(column.ormtype == 'big_decimal'
+									|| column.ormtype == 'integer'
+									|| column.ormtype == 'float'
+									|| column.ormtype == 'double'
 									) && !getService('HibachiService').hasToManyByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(column.propertyIdentifier))
 								){
 									addTotalAvgAggregate(column);
 									addTotalSumAggregate(column);
 								}
 
-								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								if(arguments.forExport  && structKeyExists(column, 'ormtype') && column.ormtype == 'timestamp'){
+									var dateFormat = '%m/%d/%Y %H:%i:%s';
+									if(structKeyExists(column, 'type')){
+										if(column.type == 'date'){
+											dateFormat = '%m/%d/%Y';
+										}else if(column.type == 'time'){
+											dateFormat = '%H:%i:%s';
+										}
+									}
+									
+									columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#dateFormat#') as #columnAlias#";
+								}else{
+									columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								}
 							}
 						}else{
 							continue;
@@ -3726,6 +4163,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	
 	public boolean function getDisableAveragesAndSumsFlag(){
+		//hack should be driven by frontend
+		if(getCollectionObject()=='SkuPrice'){
+			return true;
+		}
+		
 		if(!structKeyExists(variables,'disableAveragesAndSumsFlag')){
 			variables.disableAveragesAndSumsFlag = true;
 		}
@@ -3733,56 +4175,49 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function addTotalAvgAggregate(required struct column){
-		
-		if(getDisableAveragesAndSumsFlag()){
-			return;	
-		}
-		
-		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumnCount');
-		
-		var found = false;
-		for(var item in variables.totalAvgAggregates){
-			if(item.propertyIdentifier == column.propertyIdentifier){
-				found = true;
+		if(!getDisableAveragesAndSumsFlag()){
+			getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+			var found = false;
+			for(var item in variables.totalAvgAggregates){
+				if(item.propertyIdentifier == column.propertyIdentifier){
+					found = true;
+				}
+			}
+	
+			if(!found){
+				arrayAppend(variables.totalAvgAggregates,column);
 			}
 		}
 
-		if(!found){
-			arrayAppend(variables.totalAvgAggregates,column);
-		}
 
 	}
 
 	public void function addTotalSumAggregate(required struct column){
-		
-		if(getDisableAveragesAndSumsFlag()){
-			return;	
-		}
-		
-		getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumnCount');
-		
-		var found = false;
-		for(var item in variables.totalSumAggregates){
-			if(item.propertyIdentifier == column.propertyIdentifier){
-				found = true;
+		if(!getDisableAveragesAndSumsFlag()){
+			getPropertyIdentifierAlias(arguments.column.propertyIdentifier,'aggregateColumn');
+			var found = false;
+			for(var item in variables.totalSumAggregates){
+				if(item.propertyIdentifier == column.propertyIdentifier){
+					found = true;
+				}
+			}
+			if(!found){
+				arrayAppend(variables.totalSumAggregates,column);
 			}
 		}
-		if(!found){
-			arrayAppend(variables.totalSumAggregates,column);
-		}
 	}
-	
+
 	public string function getColumnAlias(required struct column){
 
-		if(structKeyExists(column,'attributeID')){
-			return listLast(column.propertyIdentifier,'.');
+		if(structKeyExists(arguments.column,'attributeID')){
+			return listLast(arguments.column.propertyIdentifier,'.');
 		}else{
 			if(
-				structKeyExists(column,'aggregate')
-				&& structKeyExists(column.aggregate,'aggregateFunction')
-				&& len(column.aggregate.aggregateFunction)
+				structKeyExists(arguments.column,'aggregate')
+				&& structKeyExists(arguments.column.aggregate,'aggregateFunction')
+				&& len(arguments.column.aggregate.aggregateFunction)
 			){
-				return column.aggregate.aggregateAlias;
+				return arguments.column.aggregate.aggregateAlias;
 			}else{
 
 
@@ -3804,7 +4239,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									alias=currentAlias&'_'&columnPropertyIdentiferArray[j],
 									column=true
 							};
-							
+
 
 							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
 							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
@@ -3893,7 +4328,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.groupBys = arrayToList(groupBys);
 			//standard group by check
 			}else if(
-				!this.getNonPersistentColumn() &&
 				(
 					( 
 					  structKeyExists(variables, "groupByRequired") &&
@@ -3963,29 +4397,33 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				
 				//if we have the collection objects primary id property as a column exclude all others group bys for better performance
-				if(getprimaryIDFound()){
-					if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride)){
-						if(arraylen(getOrderBys()) == 0){
-							groupByOverride = listAppend(groupByOverride,convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier));
+				if( getPrimaryIDFound()){
+
+					if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride) ){
+						
+						if(arraylen(getOrderBys()) == 0 && !isNull(getDefaultOrderBy()) ){
+							groupByOverride = listAppend(groupByOverride, convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier) );
 						}
-						variables.groupBys = groupByOverride;
-						return variables.groupBys;
-					}
-					
-					if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
-						if(getApplyOrderBysToGroupBys()){
-							for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
-								if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier)) continue;
-								groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
-							}
-						}
-					}else{
-						if(!getExcludeOrderBy()){
-							var orderBy = getDefaultOrderBy();
-							if(!getHasAggregate()){
-								groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
-							}
-						}
+    					variables.groupBys = groupByOverride;
+    					return variables.groupBys;
+    				}
+	
+    				if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0 ){
+    					
+    					if(getApplyOrderBysToGroupBys() ){
+    						for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++ ){
+    							if (
+    							    ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 
+    							    || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier) 
+    							){
+    							    continue;
+    							}
+    							groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
+    						}
+    					}
+    				} 
+    				else if( !getExcludeOrderBy() && !getHasAggregate() && !isNull(getDefaultOrderBy()) ){
+						groupByList = listAppend(groupByList, getDefaultOrderBy().propertyIdentifier);
 					}
 				}
 				variables.groupBys = groupByList;
@@ -4020,11 +4458,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var postFilterHQL = "";
 			var orderByHQL = "";
 			var groupByHQL = "";
-			
+
 
 			if(!isnull(this.getParentCollection())){
 				mergeParentCollectionFilters();
 			}
+			
+			//if the request's comming from the listing displays
+			if( StructKeyExists(this.getCollectionConfigStruct(),'listingSearchConfig')) {
+				this.updateListingSearchFilters();
+			}
+			
 
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
@@ -4070,32 +4514,45 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 
 			//add leaf node filters as private filter group
-			if(getFilterByLeafNodesFlag()) {
+			if(getFilterByLeafNodesFlag()){
+				var logicalOperator = '';
+				if(len(filterHQL)){
+					logicalOperator = 'AND';
+				}else{
+					filterHQL &= ' where ';
+				}
 				var leafNodeHQL = getLeafNodeHQL();
-				if( len( trim(leafNodeHQL) ) ) {
-					var subQueryPrefix =  len(trim(filterHQL)) ? 'AND' : 'where' ; 
-					filterHQL &= " #subQueryPrefix# (#leafNodeHQL#)";
+
+				if(len(leafNodeHQL)){
+					filterHQL &= " #logicalOperator# (#leafNodeHQL#)";
 				}
 			}
-			
-			//add nonleaf node filters as private filter group
+
 			if(getFilterByNonLeafNodesFlag()){
+				var logicalOperator = '';
+				if(len(filterHQL)){
+					logicalOperator = 'AND';
+				}else{
+					filterHQL &= ' where ';
+				}
 				var nonLeafNodeHQL = getNonLeafNodeHQL();
-				if( len( trim(nonLeafNodeHQL) ) ){
-					var subQueryPrefix =  len(trim(filterHQL))  ? 'AND' : 'where' ;
-					filterHQL &= " #subQueryPrefix# (#nonLeafNodeHQL#)";
+
+				if(len(nonLeafNodeHQL)){
+					filterHQL &= " #logicalOperator# (#nonLeafNodeHQL#)";
 				}
 			}
 
 			addPostFiltersFromKeywords(collectionConfig);
 
 			//check if the user has applied any filters from the ui list view
-			if(arraylen(getPostFilterGroups())) {
-				var postFilterGroupsHQL = getFilterGroupsHQL(postFilterGroups);
-				if( len( trim(postFilterGroupsHQL) ) ) {
-					var subQueryPrefix =  len(trim(filterHQL))  ? 'AND' : 'where' ;
-					postFilterHQL &= " #subQueryPrefix# (#postFilterGroupsHQL#)";
+			if(arraylen(getPostFilterGroups())){
+				if(len(filterHQL) == 0){
+					postFilterHQL &= ' where ';
+					postFilterHQL &= '(' & getFilterGroupsHQL(postFilterGroups) & ')';
+				}else{
+					postFilterHQL &= ' AND ' & '(' & getFilterGroupsHQL(postFilterGroups) & ')';
 				}
+
 			}
 
 
@@ -4115,7 +4572,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
 			joinsHQL &= getJoinHQL(arguments.recordsCountJoins);
-			HQL = SelectHQL & FromHQL & joinsHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
+			HQL = SelectHQL & FromHQL & joinsHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL; 
 		
 
 		}
@@ -4137,6 +4594,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			defaultColumns = true;
 			var columns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 		}
+		var searchConfig = this.getCollectionObjectListingSearchConfig();
+ 
 		var keywordIndex = 0;
 		//loop through keywords
 		for(var keyword in keywordArray) {
@@ -4150,31 +4609,39 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 				var currentFilter = { "comparisonOperator" = "like"}; //
-				
-				var wildcrdPosition = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
-				switch(wildcrdPosition){
+				switch(searchConfig.wildCardPosition){
 					case "left":
-							currentFilter['value']="%#keyword#";
+							currentFilter['value'] = "%#keyword#";
 						break;
 					case "right":
-							currentFilter['value']="#keyword#%";
+							currentFilter['value'] = "#keyword#%";
+						break;
+					case "exact":
+							currentFilter['value'] = keyword;
+							currentFilter['comparisonOperator'] = '=';
 						break;
 					case "both":
 					default:
-							currentFilter['value']="%#keyword#%";
+							currentFilter['value'] = "%#keyword#%";
 						break;
 				}
 				
-				if ((
-					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
-					) || (
-					defaultColumns && (
-						structKeyExists(column, 'fkcolumn')
-					|| (structKeyExists(column, 'persistent') && column.persistent == false)
-					|| !structKeyExists(column, 'ormtype')
-					))
-				) continue;
-				//if ormtype is not set, find it
+				if(
+					( 
+						!defaultColumns && 
+						( 
+							!structKeyExists(column, 'isSearchable') || !column.isSearchable 
+							|| !this.getPropertyIdentifierIsPersistent(column.propertyIdentifier) 
+						)
+					) 
+					|| 
+					(  defaultColumns &&  structKeyExists(column, 'fkcolumn')  ) //default prop's are already filtered for persistent
+				){
+					continue;
+				}
+				
+				// TODO: process this in HibachiCollectionService
+				// if ormtype is not set, find it
 				if(!structKeyExists(column, 'ormtype')){
 					var allColumns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 					for(var col in allColumns){
@@ -4192,8 +4659,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				) continue;
 
 				var formatter = (
-					column.ormtype eq 'big_decimal' 
-					|| column.ormtype eq 'integer' 
+					column.ormtype == 'big_decimal' 
+					|| column.ormtype == 'integer' 
 					|| (
 						structKeyExists(column,'aggregate')
 						&& structKeyExists(column.aggregate,'aggregateFunction')
@@ -4239,7 +4706,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			keywordIndex++;
 		}
-
+		
 	}
 
 	//TODO:write an export/import service so we can share json files of the collectionConfig
@@ -4251,88 +4718,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setCollectionConfig(fileRead( "#filePath##filename#.json" ));
 	}
 
-	// =============== Saved State Logic ===========================
-
-	public void function loadSavedState(required string savedStateID) {
-		var savedStates = [];
-		if(getHibachiScope().hasSessionValue('collectionSavedState')) {
-			savedStates = getHibachiScope().getSessionValue('collectionSavedState');
-		}
-		for(var s=1; s<=arrayLen(savedStates); s++) {
-			if(savedStates[s].savedStateID eq arguments.savedStateID) {
-				for(var key in savedStates[s]) {
-					variables[key] = duplicate(savedStates[s][key]);
-				}
-			}
-		}
-	}
-
-	private void function saveState() {
-		// Make sure that the saved states structure and array exists
-		if(!getHibachiScope().hasSessionValue('collectionSavedState')) {
-			getHibachiScope().setSessionValue('collectionSavedState', []);
-		}
-
-		var sessionKey = "";
-		if(structKeyExists(COOKIE, "JSESSIONID")) {
-			sessionKey = COOKIE.JSESSIONID;
-		} else if (structKeyExists(COOKIE, "CFTOKEN")) {
-			sessionKey = COOKIE.CFTOKEN;
-		} else if (structKeyExists(COOKIE, "CFID")) {
-			sessionKey = COOKIE.CFID;
-		}
-
-		// Lock the session so that we can manipulate based on saved state
-		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_collectionSavedStateUpdateLogic" timeout="10" {
-
-			// Get the saved state struct
-			var states = getHibachiScope().getSessionValue('collectionSavedState');
-
-			// Setup the state
-			var state = getStateStruct();
-			state.savedStateID = getSavedStateID();
-
-			// If the savedState already existed, then delete it
-			for(var e=1; e<=arrayLen(states); e++) {
-				if(states[e].savedStateID eq state.savedStateID) {
-					arrayDeleteAt(states, e);
-				}
-			}
-
-			// Add the state to the states array
-			arrayPrepend(states, state);
-
-			for(var s=arrayLen(states); s>30; s--) {
-				arrayDeleteAt(states, s);
-			}
-
-			getHibachiScope().setSessionValue('collectionSavedState', states);
-		}
-	}
-
-	public string function getSavedStateID() {
-		if(!structKeyExists(variables, "savedStateID")) {
-			variables.savedStateID = createUUID();
-		}
-
-		return variables.savedStateID;
-	}
-
-	public struct function getStateStruct() {
-		var stateStruct = {};
-		//TODO:change what the state variables are, evaluate the value of them
-		if(!structKeyExists(variables,'collectionConfigStruct')){
-			variables.collectionConfigStruct = getCollectionConfigStruct();
-		}
-		stateStruct.collectionConfig = duplicate(variables.collectionConfigStruct);
-		if(!structKeyExists(variables,'keywords')){
-			stateStruct.keywords = duplicate(variables.keywords);
-		}
-
-		stateStruct.pageRecordsShow = duplicate(variables.pageRecordsShow);
-
-		return stateStruct;
-	}
 
 	//Utility Functions may even belong in another service altogether based on how universally appliable they are
 
@@ -4388,7 +4773,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function prepareAliasForFilterGroups(required array filterGroup){
 		for(var filter in arguments.filterGroup){
 			if(structKeyExists(filter,'propertyIdentifier')){
-				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier,'filter'));
+				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier),'filter');
 			}else if(structKeyExists(filter,'filterGroup')){
 				prepareAliasForFilterGroups(filter.filterGroup);
 			}
@@ -4416,7 +4801,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function isRangeApplied(required string range, required string value){
-		return structKeyExists(url,"R:#arguments.range#") and url["R:#arguments.range#"] eq arguments.value;
+		return structKeyExists(url,"R:#arguments.range#") and url["R:#arguments.range#"] == arguments.value;
 
 	}
 
@@ -4480,7 +4865,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		} catch (any e) {
 			
 			if(getApplicationValue('errorDisplayFlag')){
-				writedump(e);throw();
+				rethrow;
 			}
 			var messageDetail = e.message;
 			

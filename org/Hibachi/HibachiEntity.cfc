@@ -10,14 +10,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="processObjects" type="struct" persistent="false";
 	property name="auditSmartList" type="any" persistent="false";
 	property name="dataCacheProperties" type="array" persistent="false";
+	property name="disableRecordLevelPermissions" persistent="false"; 
+	property name="preUpdateData" persistent="false"; 
+	property name="excludeFromModifiedEntitiesFlag" persistent="false";
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if( !setting("globalDisableRecordLevelPermissions")
-			&& !this.getNewFlag() 
+		
+		if(this.getDisableRecordLevelPermissions()){
+			return; 
+		}
+
+		if( !this.getNewFlag() 
 			&& getService('HibachiAuthenticationService').hasPermissionRecordRestriction(getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
@@ -39,7 +46,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
  			}
 		}
 	}
+
+	public any function getDisableRecordLevelPermissions(){
+		if(!structKeyExists(variables, 'disableRecordLevelPermissions')){
+			variables.disableRecordLevelPermissions = this.setting(settingName="globalDisableRecordLevelPermissions");	
+		}	
+		return variables.disableRecordLevelPermissions; 
+	}	
 	
+	public function getExcludeFromModifiedEntitiesFlag(){
+		if(!structKeyExists(variables, 'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
+	}
+
 	private void function throwNoAccess(){
 		var context = getPageContext();
 		status = 403;
@@ -77,32 +98,62 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return super.init();
 	}
 
+	// @hint helper function to return a Setting
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false, formatDetails={}) {
+
+		var settingService = getService('settingService'); 
+
+		if( !settingService.isGlobalSetting(arguments.settingName)){
+			arguments.object = this;  
+		} else {
+			arguments.object = settingService;	
+		} 
+		
+		if(arguments.formatValue && !structKeyExists(arguments.formatDetails, 'locale')){
+			arguments.formatDetails.locale = getHibachiScope().getSession().getRbLocale();
+		}
+
+		var cacheArguments = {
+			key = settingService.getSettingCacheKey(argumentCollection=arguments), 
+			fallbackObject = settingService, 
+			fallbackFunction = "getSettingDetails", 
+			fallbackArguments = arguments	
+		};
+
+		//delegate everything to setting service
+		var cachedSettingDetails = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
+
+		//we must have this setting value if we don't maybe we should throw an error
+		if(!isNull(cachedSettingDetails)){
+			if(arguments.formatValue && structKeyExists(cachedSettingDetails, 'settingValueFormatted')){
+				return cachedSettingDetails.settingValueFormatted;
+			}else if(structKeyExists(cachedSettingDetails, 'settingValue')){
+				return cachedSettingDetails.settingValue;
+			}
+		} 
+	}
+
 	public any function getEntityService(){ 
 		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
 	} 
 
-	public struct function getStructRepresentation(string properties){
-		if(structKeyExists(arguments, 'properties')){
-			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue(), 2=arguments.properties});
-		} else {
-			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
-		} 
+	public any function getEntityCollectionList(){
+		return getEntityService().invokeMethod('get#getClassName()#CollectionList'); 
 	}
 
-	public string function getJsonRepresentation(string properties){
-		if(structKeyExists(arguments, 'properties')){
-			return serializeJson(this.getStructRepresentation(arguments.properties)); 
-		} else {
-			return serializeJson(this.getStructRepresentation()); 
-		}
+	public struct function getStructRepresentation(string properties){
+		if(structKeyExists(arguments, 'properties') && len(arguments.properties)){
+			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue(),2=arguments.properties});	
+		} 
+		return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()}); 
+	}
+
+	public string function getJsonRepresentation(){
+		return serializeJson(this.getStructRepresentation()); 
 	} 
 
-	public string function getEncodedJsonRepresentation(string properties){ 
-		if(structKeyExists(arguments, 'properties')){
-			return getService('HibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation(arguments.properties)); 
-		} else {
-			return getService('HibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation()); 
-		}
+	public string function getEncodedJsonRepresentation(){ 
+		return getService('hibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation()); 
 	} 
 
 	public string function getTableName(){
@@ -114,7 +165,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	public string function getUploadDirectoryByPropertyName(required string propertyName){
-		var uploadDirectory = setting('globalAssetsFileFolderPath') & "/";
+		var uploadDirectory = getHibachiScope().setting('globalAssetsFileFolderPath') & "/";
 
 		uploadDirectory &= "#lcase(arguments.propertyName)#/";
 
@@ -136,16 +187,41 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		variables.calculatedUpdateRunFlag = arguments.calculatedUpdateRunFlagValue;
 	}
 	
+	
+	/**
+	 * Due to variable-scope caching, for non-persistent properties, 
+	 * if these are loaded in the memory there's no direct way to, reload/refresh their values,
+	 * unless if you keep track of all of the properties invloled.
+	 * this helper function is a lazy way of doing that. 
+	 * 
+	 * Note:
+	 * It only care about the current entity, not the nested(related child) properties.
+	 *  
+	 **/ 
+	public void function clearNonPersistentCalculatedPropertiesCache(){
+        // Loop over all properties
+        for(var property in getProperties()) {
+            // Look for any that start with the calculatedXXX naming convention
+            if( left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true") ){
+				structDelete(variables, right(property.name, len(property.name)-10));
+            }
+        }
+	}
+	
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
-	public void function updateCalculatedProperties(boolean runAgain=false) {
+	public void function updateCalculatedProperties(boolean runAgain=false, boolean cascadeCalculateFlag=true) {
         if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
             // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
             variables.calculatedUpdateRunFlag = true;
             // Loop over all properties
             for(var property in getProperties()) {
-
+            	
                 // Look for any that start with the calculatedXXX naming convention
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
+                	
+                	if (!verifyPerformCalculateForProperty(property)) {
+	        			continue;
+	        		}
 					//prior to invoking we should remove any first level caching that would cause a stale calculation
 					var nonPersistentProperty = right(property.name, len(property.name)-10);
 					if(listFindNoCase('Product,Sku,Stock,SkuLocationQuantity',this.getClassName())){
@@ -163,14 +239,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                         variables[ property.name ] = value;
                     }
 
-                } else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
-                	
+                } else if (arguments.cascadeCalculateFlag == true && structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
                 	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
                 	if (verifyPerformCascadeCalculateForProperty(property)) {
                     	variables[ property.name ].updateCalculatedProperties();
-					}
+                	}
                 }
             }
+
         }
     }
 
@@ -399,7 +475,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint public method to determine if this entity is audited
 	public any function getAuditableFlag() {
 		var metaData = getThisMetaData();
-		if(isPersistent() && (setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
+		if(isPersistent() && (getHibachiScope().setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
 			return true;
 		}
 		return false;
@@ -633,7 +709,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public any function getPropertyOptionsCollectionList( required string propertyName, refresh=false ) {
 		var cacheKey = "#arguments.propertyName#OptionsCollectionList";
 
-		if(!structKeyExists(variables, cacheKey) || arguments.refresh) {
+		if(!structKeyExists(variables, cacheKey) || arguments.refresh ) {
 
 			var propertyMeta = getPropertyMetaData( arguments.propertyName );
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMeta.cfc,'.') );
@@ -877,22 +953,35 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
 	}
 	
-	public boolean function verifyPerformCascadeCalculateForProperty(required any property) {
+	public boolean function verifyPerformCalculateForProperty(required any property, boolean cascadeCalculateFlag = false) {
 		// NOTE: Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
         
     	// Implies calculation should cascade in any state
-    	var performCascadeCalculateFlag = true;
+    	var performCalculateFlag = true;
     	
     	// Entity has defined method for this property to handle determining whether calculation should cascade in the current state
-		if (structKeyExists(this, 'get#arguments.property.name#PerformCascadeCalculateFlag')) {
-			performCascadeCalculateFlag = this.invokeMethod('get#arguments.property.name#PerformCascadeCalculateFlag');
+    	var propertyMethodName = 'get#arguments.property.name#Perform';
+    	if(arguments.cascadeCalculateFlag){
+    		propertyMethodName &= 'Cascade';
+    	}
+    	propertyMethodName &= 'CalculateFlag';
+    	
+		if (structKeyExists(this, propertyMethodName)) {
+			performCalculateFlag = this.invokeMethod(propertyMethodName);
+		} else if (structKeyExists(this, 'getPerformCalculateFlag') ) {
+			performCalculateFlag = this.invokeMethod('getPerformCalculateFlag',{ 1 = arguments.property });
 		}
 		
-		return performCascadeCalculateFlag;
+		return performCalculateFlag;
+	}
+	
+	public boolean function verifyPerformCascadeCalculateForProperty(required any property, boolean cascadeCalculateFlag = true) {
+		return verifyPerformCalculateForProperty(argumentCollection=arguments);
 	}
 
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
 	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
+	
 		// hasUniqueOrNullXXX() 		Where XXX is a property to check if that property value is currenly unique in the DB
 		if( left(arguments.missingMethodName, 15) == "hasUniqueOrNull") {
 
@@ -940,11 +1029,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					return getPropertySmartList( propertyName=propertyName );
 				}
 			}
+			
 			// getXXXTypeAheadCollectionList similar to Options but instead of returning data it will return a collectionlist to get data lazily
 			if ( len(arguments.missingMethodName) > 23 && right(arguments.missingMethodName, 23) == "TypeAheadCollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-26);
 				return getPropertyOptionsCollectionList(propertyName,true);
 			}
+			
+			// getXXXCollectionList()		Where XXX is an entity
 			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
 				if(hasProperty(propertyName)){
@@ -1085,66 +1177,64 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preInsert(){
-		try{
-			if(!this.isPersistable()) {
-				for(var errorName in getErrors()) {
-					for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
-						logHibachi("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
-					}
+		// set errorextradata to capture info in case of error
+		getHibachiScope().setErrorExtraData({'EntityName': getEntityName(), 'Method': 'preInsert', 'EntityID': getPrimaryIDValue() });
+		
+		if(!this.isPersistable()) {
+			for(var errorName in getErrors()) {
+				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
+					logHibachi("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
 				}
-				throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors.  The specific errors will be shown in the Slatwall log.");
 			}
-			
-			var timestamp = now();
-		
-				// Setup The First Created Date Time
-				if(structKeyExists(this,"setCreatedDateTime")){
-					this.setCreatedDateTime(timestamp);
+			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors.  The specific errors will be shown in the Slatwall log.");
+		}
+
+		var timestamp = now();
+
+		// Setup The First Created Date Time
+		if(structKeyExists(this,"setCreatedDateTime")){
+			this.setCreatedDateTime(timestamp);
+		}
+
+		// Setup The First Modified Date Time
+		if(structKeyExists(this,"setModifiedDateTime")){
+			this.setModifiedDateTime(timestamp);
+		}
+
+		// These are more complicated options that should not be called during application setup
+		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
+
+			// Setup the first sortOrder
+			if(structKeyExists(this,"setSortOrder")) {
+				var metaData = getPropertyMetaData("sortOrder");
+				var topSortOrder = 0;
+				if(structKeyExists(metaData, "sortContext") && structKeyExists(variables, metaData.sortContext)) {
+					topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table, contextIDColumn=variables[ metaData.sortContext ].getPrimaryIDPropertyName(), contextIDValue=variables[ metaData.sortContext ].getPrimaryIDValue() );
+				} else {
+					topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table );
 				}
-		
-				// Setup The First Modified Date Time
-				if(structKeyExists(this,"setModifiedDateTime")){
-					this.setModifiedDateTime(timestamp);
-				}
-		
-				// These are more complicated options that should not be called during application setup
-				if(!isNull(getHibachiScope()) && getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-		
-					// Setup the first sortOrder
-					if(structKeyExists(this,"setSortOrder")) {
-						var metaData = getPropertyMetaData("sortOrder");
-						var topSortOrder = 0;
-						if(structKeyExists(metaData, "sortContext") && structKeyExists(variables, metaData.sortContext)) {
-							topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table, contextIDColumn=variables[ metaData.sortContext ].getPrimaryIDPropertyName(), contextIDValue=variables[ metaData.sortContext ].getPrimaryIDValue() );
-						} else {
-							topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table );
-						}
-						setSortOrder( topSortOrder + 1 );
-					}
-		
-					// Set createdByAccount
-					if(structKeyExists(this,"setCreatedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
-						setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );
-					}
-		
-					// Set modifiedByAccount
-					if(structKeyExists(this,"setModifiedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
-						setModifiedByAccountID( getHibachiScope().getAccount().getAccountID() );
-					}
-		
-					// Log audit only if admin user
-					if(!isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
-						getService("hibachiAuditService").logEntityModify(entity=this);
-					}
-		
-				}
-			
+				setSortOrder( topSortOrder + 1 );
+			}
+
+			// Set createdByAccount
+			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() ){
+				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );
+			}
+
+			// Set modifiedByAccount
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() ){
+				setModifiedByAccountID( getHibachiScope().getAccount().getAccountID() );
+			}
+
+			// Log audit only if admin user
+			if(getAuditableFlag() && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+				getService("hibachiAuditService").logEntityModify(entity=this);
+			}
+
 			// Add to the modifiedEntities
 			getHibachiScope().addModifiedEntity( this );
-		}catch(any e){
-			logHibachi('preInsert fail:'&serializeJson(e),false);
-			writedump(e);abort;
 		}
+
 	}
 	
 	public void function postInsert(){
@@ -1184,45 +1274,43 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	public void function preUpdate(struct oldData){
-		try{
-			if(!this.isPersistable()) {
-				for(var errorName in getErrors()) {
-					for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
-						logHibachi("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
-					}
+		// set errorextradata to capture info in case of error
+		getHibachiScope().setErrorExtraData({'EntityName': getEntityName(), 'Method': 'preUpdate','EntityID': getPrimaryIDValue() });
+
+		if(!this.isPersistable()) {
+			for(var errorName in getErrors()) {
+				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
+					logHibachi("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
 				}
-				throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors - #serializeJSON(getErrors())#");
 			}
-			var timestamp = now();
+			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors - #serializeJSON(getErrors())#");
+		}
 		
-			// Update the Modified datetime if one exists
-			if(structKeyExists(this,"setModifiedDateTime")){
-				this.setModifiedDateTime(timestamp);
+		variables.preUpdateData = arguments.oldData;
+		
+		var timestamp = now();
+
+		// Update the Modified datetime if one exists
+		if(structKeyExists(this,"setModifiedDateTime")){
+			this.setModifiedDateTime(timestamp);
+		}
+
+		// These are more complicated options that should not be called during application setup
+		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
+
+			// Set modifiedByAccount
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() ){
+				setModifiedByAccountID(getHibachiScope().getAccount().getAccountID());
 			}
-	
-			// These are more complicated options that should not be called during application setup
-			if(!isNull(getHibachiScope()) && getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-	
-				// Set modifiedByAccount
-				if(structKeyExists(this,"setModifiedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
-					setModifiedByAccountID(getHibachiScope().getAccount().getAccountID());
-				}
-	
-				// Log audit only if admin user or there are prevous audit recods
-				if(
-					getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 
-					|| !isNull(getHibachiScope()) && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() 
-				) {
-	
-					getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
-				}
-	
+
+			// Log audit only if admin user or there are prevous audit recods
+			if(getAuditableFlag() && getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 || !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+
+				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
 			}
+
 			// Add to the modifiedEntities
 			getHibachiScope().addModifiedEntity( this );
-		}catch(any e){
-			logHibachi('Preupdate Faile:'&serializeJson(e),false);
-			writedump(e);abort;
 		}
 
 	}
@@ -1273,7 +1361,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}else{
 				//Remove all non Persistent, Relational and Excluded columns
 				for(var x = 1; x <= arraylen(properties); x++){
-					if(!ListContains(excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
+					if(!ListContains(arguments.excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
 					(!structKeyExists(properties[x], "persistent") || properties[x].persistent)){
 						arrayAppend(defaultProperties, properties[x]);
 					}

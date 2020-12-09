@@ -54,9 +54,23 @@ Notes:
 
 <cfoutput>
 	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="skus" edit="#rc.edit#" displayType="plainTitle" />
+        <hb:HibachiListingDisplay 
+            collectionList="#rc.promotionQualifier.getIncludedSkusCollection()#" 
+            title="Included Skus" 
+            collectionConfigFieldName="includedSkusCollectionConfig" 
+            edit="#rc.edit#" 
+            displaytype="plainTitle"
+            showSimpleListingControls="false"
+            hideUnfilteredResults="true"/>
 	</div>
 	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="excludedSkus" edit="#rc.edit#" displayType="plainTitle" />
+	    <hb:HibachiListingDisplay 
+	        collectionList="#rc.promotionQualifier.getExcludedSkusCollection()#" 
+	        title="Excluded Skus"
+	        collectionConfigFieldName="excludedSkusCollectionConfig" 
+	        edit="#rc.edit#" 
+	        displaytype="plainTitle"
+	        showSimpleListingControls="false"
+	        hideUnfilteredResults="true"/>
 	</div>
 </cfoutput>

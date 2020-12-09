@@ -10,8 +10,9 @@ class SWTypeaheadInputFieldController {
     public typeaheadCollectionConfig; 
     public modelValue; 
     public columns = []; 
-    public filters = [];
+    public filters;
     public propertiesToLoad; 
+    public propertiesToSearch;
     public placeholderRbKey;
     public propertyToSave;
     public propertyToShow;
@@ -22,6 +23,7 @@ class SWTypeaheadInputFieldController {
     public eventListeners;
     public variables;
     public titleText;
+    public typeaheadDataKey;
     private collectionConfig;
     private $root;
     
@@ -33,7 +35,9 @@ class SWTypeaheadInputFieldController {
                 private $rootScope,
                 private observerService
     ){
+
         this.$root = $rootScope;
+
         if( angular.isUndefined(this.typeaheadCollectionConfig)){
             if(angular.isDefined(this.entityName)){
                 this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName);
@@ -54,13 +58,20 @@ class SWTypeaheadInputFieldController {
         }
 
         if(angular.isDefined(this.propertiesToLoad)){
-            this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+            if(this.propertiesToSearch && this.propertiesToSearch.length){
+                var propertiesToLoad = this.propertiesToLoad.split(',');
+                for(var propertyToLoad of propertiesToLoad){
+                    this.typeaheadCollectionConfig.addDisplayProperty(propertyToLoad,undefined,{isSearchable:this.propertiesToSearch.split(',').indexOf(propertyToLoad)>-1});
+                }
+            }else{
+                this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+            }
         }
         
         angular.forEach(this.columns, (column)=>{
                 this.typeaheadCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
         });
-        
+
         angular.forEach(this.filters, (filter)=>{
                 this.typeaheadCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
@@ -99,7 +110,6 @@ class SWTypeaheadInputFieldController {
 
 class SWTypeaheadInputField implements ng.IDirective{
 
-    public templateUrl;
     public transclude=true; 
     public restrict = "EA";
     public scope = {};
@@ -108,7 +118,9 @@ class SWTypeaheadInputField implements ng.IDirective{
         fieldName:"@",
         entityName:"@",
         typeaheadCollectionConfig:"=?",
+        filters:"=?",
         propertiesToLoad:"@?",
+        propertiesToSearch:"@?",
         placeholderRbKey:"@?",
         propertyToShow:"@",
         propertyToSave:"@",
@@ -121,28 +133,18 @@ class SWTypeaheadInputField implements ng.IDirective{
         eventListeners:'=?',
         placeholderText:'@?',
         searchEndpoint:'@?',
-        titleText:'@?'
+        titleText:'@?',
+        typeaheadDataKey:'@?'
     };
     public controller=SWTypeaheadInputFieldController;
     public controllerAs="swTypeaheadInputField";
 
-    // @ngInject
-    constructor(private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadinputfield.html";
-    }
+    public template = require("./typeaheadinputfield.html");
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            corePartialsPath
-            ,hibachiPathBuilder
+	public static Factory(){
+		return /** @ngInject; */ () => new this();
+	}
 
-        )=> new SWTypeaheadInputField(
-            corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["corePartialsPath",'hibachiPathBuilder'];
-        return directive;
-    }
 }
 export{
     SWTypeaheadInputField,

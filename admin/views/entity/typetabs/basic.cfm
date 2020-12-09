@@ -75,7 +75,7 @@ Notes:
 			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeDescription" edit="#rc.edit#">
 
 			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
-				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#" fieldType="select" valueOptions="#$.slatwall.getService('typeService').getTypeSystemCodeOptionsByParentSystemCode(local.parentType.getSystemCode())#">
+				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#">
 			<cfelseif isNull(local.parentType) && !isNull(rc.type.getSystemCode())>
 				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
 			</cfif>

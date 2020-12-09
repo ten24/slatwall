@@ -168,38 +168,65 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getAverageDiscountAmount(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAveragePriceSoldAfterDiscount(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getAveragePriceSoldAfterDiscount(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageProfit(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getAverageProfit(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageLandedProfit(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getAverageLandedProfit(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageMarkup(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getAverageMarkup(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageLandedMarkup(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getAverageLandedMarkup(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public numeric function getCurrentMargin(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getCurrentMargin(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getCurrentLandedMargin(this.getStockID(),arguments.currencyCode);
 	}
 
 	public numeric function getCurrentSkuPrice() {
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 	    var currencyCode = "USD";
 	    
 	    //Find it on the location.
@@ -227,6 +254,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	*/
 	
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getQOH() * getAverageCost();
 	}
 
@@ -235,10 +265,16 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 //	}
 
 	public numeric function getAveragePriceSold(required string currencyCode="USD"){
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('stockDao').getAveragePriceSold(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public any function getQOQ() {
+		if(getSku().setting('skuDisableQoQCalculation') == true){
+			return 0;
+		}
 		return getQuantity("QOQ");
 	}
 
@@ -283,6 +319,18 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
  			super.updateCalculatedProperties(argumentCollection=arguments);
 			ormflush();
  			getService("stockService").processStock(this, "updateInventoryCalculationsForLocations");
+ 			
+ 			
+			var parentStockCollection = getService('skuService').getStockCollectionList();
+			parentStockCollection.addFilter('sku.bundledSkus.bundledSku.skuID',this.getSku().getSkuID());
+			parentStockCollection.addFilter('location.locationID',this.getLocation().getLocationID())
+			parentStockCollection.setDisplayProperties('stockID');
+			var parentStockRecords = parentStockCollection.getRecords();
+
+			for(var record in parentStockRecords){
+				var parentStock = getService('StockService').getStock(record.stockID);
+				getHibachiScope().addModifiedEntity(parentStock);
+			}
  		}
  	}
 	

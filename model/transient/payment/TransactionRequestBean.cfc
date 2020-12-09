@@ -65,6 +65,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="expirationYear" type="numeric";
 	property name="securityCode" type="string";
 	property name="providerToken" type="string";
+	
 	// Account Info
 	property name="accountFirstName" type="string";   
 	property name="accountLastName" type="string";   
@@ -91,7 +92,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	// Pertinent Reference Information (used for orderPayments)
 	property name="orderPaymentID" type="string";
 	property name="orderID" type="string";
-	property name="orderShortReferenceID" type="string";
+
 	
 	// Pertinent Reference Information (used for all above)
 	property name="accountID" type="string";
@@ -102,6 +103,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="accountPaymentMethod" type="any";
 	property name="order" type="any";
 	property name="orderPayment" type="any";
+	property name="originalPaymentTransaction" type="any";
 	
 	// Always there if this Account Payment or Order Payment has previously had an authorization done
 	property name="originalAuthorizationCode" type="string";
@@ -380,6 +382,33 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		setAccountPaymentMethod( arguments.accountPaymentMethod );
 		setAccount( arguments.accountPaymentMethod.getAccount() );
 		
+	}
+	
+	public string function getOriginalProviderTransactionID(){
+		if(structKeyExists(variables,'originalPaymentTransaction')){
+			return getOriginalPaymentTransaction.getProviderTransactionID();
+		}
+		if(structKeyExists(variables,'originalProviderTransactionID')){
+			return variables.originalProviderTransactionID;
+		}
+	}
+	
+	public string function getOriginalChargeProviderTransactionID(){
+		if(structKeyExists(variables,'originalPaymentTransaction')){
+			return getOriginalPaymentTransaction().getProviderTransactionID();
+		}
+		if(structKeyExists(variables,'originalChargeProviderTransactionID')){
+			return variables.originalChargeProviderTransactionID;
+		}
+	}
+	
+	public string function getOriginalAuthorizationProviderTransactionID(){
+		if(structKeyExists(variables,'originalPaymentTransaction')){
+			return getOriginalPaymentTransaction.getProviderTransactionID();
+		}
+		if(structKeyExists(variables,'originalAuthorizationProviderTransactionID')){
+			return variables.originalAuthorizationProviderTransactionID;
+		}
 	}
 	
 	// Deprecated

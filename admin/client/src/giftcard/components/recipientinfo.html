@@ -16,21 +16,24 @@
 			<li>
 				<div class="row s-line-item">
 					<div class="col-xs-4 s-title">First Name:</div>
-					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_firstName"></div>
+					<div class="col-xs-8 s-value" ng-if="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_firstName.trim()" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_firstName"></div>
+					<div class="col-xs-8 s-value" ng-if="!swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_firstName.trim()" ng-bind="swGiftCardRecipientInfo.giftCard.ownerFirstName"></div>
 				</div>
 			</li>
 
 			<li>
 				<div class="row s-line-item">
 					<div class="col-xs-4 s-title">Last Name:</div>
-					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_lastName"></div>
+					<div class="col-xs-8 s-value" ng-if="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_lastName.trim()" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_lastName"></div>
+					<div class="col-xs-8 s-value" ng-if="!swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_lastName.trim()" ng-bind="swGiftCardRecipientInfo.giftCard.ownerLastName"></div>
 				</div>
 			</li>
 
 			<li>
 				<div class="row s-line-item">
 					<div class="col-xs-4 s-title">Email:</div>
-					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_emailAddress"></div>
+					<div class="col-xs-8 s-value" ng-if="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_emailAddress.trim()" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_emailAddress"></div>
+					<div class="col-xs-8 s-value" ng-if="!swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_emailAddress.trim()" ng-bind="swGiftCardRecipientInfo.giftCard.ownerEmailAddress"></div>
 				</div>
 			</li>
 

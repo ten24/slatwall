@@ -73,7 +73,8 @@ Notes:
 				<cfelse>
 					<cfset local.selectedLocationID = "" />
 				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="#rc.edit#" >
+				
+				<swa:SlatwallLocationTypeahead property="#rc.processObject#" locationPropertyName="location.locationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.location')#" edit="#rc.edit#" showActiveLocationsFlag="true" ></swa:SlatwallLocationTypeahead>
 
 				<!--- Shipping - Hidden Fields --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
