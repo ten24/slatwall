@@ -8,7 +8,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public array function getEntityNameOptions() {
-		var entitiesMetaData = getEntitiesMetaData();
+		var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
 
 		var entityNames = [];
 		for (var entityName in entitiesMetaData) {
@@ -103,7 +103,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			return arguments.collectionRecords;
 		}
 		
-		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName( arguments.baseObject );
+		var primaryIDPropertyName = getService("HibachiService").getPrimaryIDPropertyNameByEntityName( arguments.baseObject );
 		
 		if( !arrayLen(arguments.collectionRecords) || !structKeyExists(arguments.collectionRecords[1], primaryIDPropertyName) || !len(arguments.collectionRecords[1][primaryIDPropertyName]) ){
 			return arguments.collectionRecords;

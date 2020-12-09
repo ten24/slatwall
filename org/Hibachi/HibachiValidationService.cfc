@@ -276,7 +276,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			replaceTemplateStruct.propertyName = arguments.object.getTitleByPropertyIdentifier(arguments.propertyIdentifier);
 
 			if(arguments.object.isPersistent()) {
-				var thisClassName = getLastEntityNameInPropertyIdentifier( arguments.object.getClassName(), arguments.propertyIdentifier);
+				var thisClassName = getService('hibachiService').getLastEntityNameInPropertyIdentifier( arguments.object.getClassName(), arguments.propertyIdentifier);
 				replaceTemplateStruct.className = getHibachiScope().rbKey('entity.#thisClassName#');
 			} else {
 				var thisClassName = arguments.object.getClassName();

@@ -659,7 +659,7 @@
 				} else if (isObject(arguments.object) &&
 					(
 						(
-							arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+							arguments.object.isPersistent() && getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
 						)
 						||
 						(

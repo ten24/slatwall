@@ -422,7 +422,7 @@ component extends="Slatwall.model.service.OrderService" {
 	 */ 
 	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		
-		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+		var orderTemplateOrderDetailsKey = arguments.orderTemplate.getOrderTemplateOrderDetailsKey();
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
 			return request[orderTemplateOrderDetailsKey];
@@ -527,7 +527,7 @@ component extends="Slatwall.model.service.OrderService" {
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
+		}
 
 		return request[orderTemplateOrderDetailsKey];
 	}

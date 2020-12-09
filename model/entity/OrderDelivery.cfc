@@ -171,6 +171,16 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	public string function getSimpleRepresentation() {
 		return "Order Delivery: Order ##" & getOrder().getOrderNumber();
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
+
 
 	// ==================  END:  Overridden Methods ========================
 

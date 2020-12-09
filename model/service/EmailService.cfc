@@ -280,7 +280,7 @@ Notes:
 			arguments.email.addError('emailTemplate', 'No email template provided'); 
 		}
 
-		var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
+		var templateObjectIDProperty = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
 		var templateObject = javaCast('null','');
 
 		if(structKeyExists(arguments.data, emailTemplate.getEmailTemplateObject()) && isObject(arguments.data[emailTemplate.getEmailTemplateObject()])) {

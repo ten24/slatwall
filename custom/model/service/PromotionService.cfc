@@ -354,13 +354,11 @@ component extends="Slatwall.model.service.PromotionService" {
 			getService('orderService').saveOrderItem(newOrderItem);
 
 			if(!newOrderItem.hasErrors()){
-
-				getPromotionDAO().insertAppliedPromotionFromOrderItem(
-						orderItemID=newOrderItem.getOrderItemID(), 
-						promotionID =item.promotion.getPromotionID(),
-						promotionRewardID= item.promotionReward.getPromotionRewardID(),
-						skuID=sku.getSkuID()
-					);
+				var newAppliedPromotion = this.newPromotionApplied();
+				newAppliedPromotion.setOrderItem(newOrderItem);
+				newAppliedPromotion.setPromotion(item.promotion);
+				newAppliedPromotion.setPromotionReward(item.promotionReward);
+				newAppliedPromotion.setRewardSku(sku);
 			}else{
 				newOrderItem.removeOrderFulfillment(arguments.fulfillment);
 				newOrderItem.removeOrder(arguments.order);
