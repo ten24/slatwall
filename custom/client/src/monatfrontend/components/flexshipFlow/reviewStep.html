@@ -1,69 +1,82 @@
 	<section class="cart-page" ng-cloak>
-		<div class="container">
-			<div class="row no-gutters align-items-start">
-				<div class="col-12 col-md-7">
-					<div class="cart-products review-products">
-						<h2 sw-rbKey="'frontend.flexship.reviewAndCreate'"></h2>
-						<div class="border-bottom my-3">
-							<p class="mb-1 todays-order-text border-0" sw-rbkey="'frontend.enrollment.yourNextFlexshipOrder'"></p>
-						</div>
-						<ul>
-							<li>
-								<h6 class="title-sm">
-									<span sw-rbkey="'frontend.checkout.flexshipFrequency'"> </span>
+		<div class="container review-page p-md-5">
+			<div class="row">
+				<div class="col-md-7 review-heading">
+					<h2 sw-rbKey="'frontend.flexship.reviewAndCreate'"></h2>
+				</div>
+			</div>
+			<div class="row align-items-start">
+				<div class="col-12 col-md-7 tabs">
+					<div class="cart-products review-products mr-5">
+						<div class="tab">
+							<input class="tab-input" type="checkbox" id="chck1" checked>
+							<label class="tab-label" for="chck1">
+								<h3 class="mb-1 border-0 review-tab-header pl-2" sw-rbkey="'frontend.enrollment.yourNextFlexshipOrder'"></h3>
 									<a 
 										href="#" 
-										class="edit" 
+										class="edit edit-icon" 
 										ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.FREQUENCY)"
-										sw-rbkey="'frontend.global.edit'"
-									></a>
-								</h6>
-								<p>
-									{{reviewStep.orderTemplateService.mostRecentOrderTemplate.frequencyTerm_termName}} 
-									<span sw-rbKey="'define.aroundThe'"></span> 
-									{{reviewStep.orderTemplateService.mostRecentOrderTemplate.scheduleOrderDayOfTheMonth | ordinal}}	
-								</p>
-							</li>
-						</ul>
-						<div class="todays-order">
-							<h6 class="title-sm">
-								<span sw-rbKey="'admin.entity.ordertemplatetabs.ordertemplateitems'"></span>
+									>	<span sw-rbkey="'frontend.global.edit'" class="d-none"> </span>
+										<i class="fal fa-pen"></i>
+									</a>
+							</label>
+							<div class="tab-content">
+								<div class="p-3">
+										<h6 class="title-sm">
+											<span sw-rbkey="'frontend.checkout.flexshipFrequency'"> </span>
+										</h6>
+										<p>
+											{{reviewStep.orderTemplateService.mostRecentOrderTemplate.frequencyTerm_termName}} 
+											<span sw-rbKey="'define.aroundThe'"></span> 
+											{{reviewStep.orderTemplateService.mostRecentOrderTemplate.scheduleOrderDayOfTheMonth | ordinal}}	
+										</p>
+								</div>
+							</div>
+							</div>
+						<div class="todays-order tab">
+							<input class="tab-input" type="checkbox" id="chck2" checked>
+							<label class="tab-label" for="chck2">
+							<h3 class="mb-1 border-0 review-tab-header pl-2" sw-rbkey="'admin.entity.ordertemplatetabs.ordertemplateitems'"></h3>
 								<a 
 									href="##" 
-									class="edit" 
+									class="edit edit-icon" 
 									ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.SHOP)"
-									sw-rbkey="'frontend.cart.editItems'"
-								></a>
-								<br><br>
-							</h6>
-							<table class="table review-table" ng-cloak>
-								<tbody>
-									<tr ng-repeat="item in reviewStep.orderTemplateService.mostRecentOrderTemplate.orderTemplateItems">
-										<td class="item-image">
+								>
+									<span sw-rbkey="'frontend.cart.editItems'" class="d-none"></span>
+									<i class="fal fa-pen"></i>
+								</a>
+						</label>
+						<div class="tab-content">
+							<div class="review-table" ng-cloak>
+									<div ng-repeat="item in reviewStep.orderTemplateService.mostRecentOrderTemplate.orderTemplateItems" class="orderItem border-bottom row">
+										<div class="item-image col-3">
 											<a ng-href="{{item.skuProductURL}}">
 												<img image-manager class="img-fluid" ng-src="{{item.sku_imagePath}}" />
 											</a>
-										</td>
-										<td class="item-name">
-											<h6 class="title-sm">
-												<a ng-href="{{item.skuProductURL}}">{{item.sku_product_productName}}</a>
-											</h6>
-										</td>
-										<td class="item-quantity">
-											<div class="qty">
-												<span sw-rbkey="'frontend.flexship.qty'"></span> {{item.quantity}}
+										</div>
+										<div class="col-9">
+											<div class="col-12 item-name">
+												<h6 class="title-sm">
+													<a ng-href="{{item.skuProductURL}}">{{item.sku_product_productName}}</a>
+												</h6>	
 											</div>
-										</td>
-										<td class="item-price">
-											<span class="price">{{ item.calculatedTotal| swcurrency: reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode }}</span>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+											<div class="col-12 item-details">
+												<div class="item-quantity col-6">
+													<div class="qty">
+														<span sw-rbkey="'frontend.flexship.qty'"></span> {{item.quantity}}
+													</div>
+												</div>
+												<div class="item-price col-6">
+													<span class="price">{{ item.calculatedTotal| swcurrency: reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode }}</span>
+												</div>
+											</div>
+									</div>
+							</div>
+						</div>
 						</div>
 					</div>
 				</div>
-				
+			</div>
 				<!---colored-box-right--->
 				<div class="col-12 col-md-5">
 					<div class="cart-right-container">

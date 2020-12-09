@@ -1483,8 +1483,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var productIDQuery = queryExecute(sql,params);
             var productIDs = ValueList(productIDQuery.baseID);
             
-            productCollectionList.addFilter(propertyIdentifier='productName',value='%#arguments.data.keyword#%', comparisonOperator='LIKE',filterGroup='keyword');
-            productCollectionList.addFilter(propertyIdentifier='productID',value=productIDs,comparisonOperator='IN',logicalOperator='OR',filterGroup='keyword');
+            productCollectionList.addFilter(propertyIdentifier='productName',value='%#arguments.data.keyword#%', comparisonOperator='LIKE',filterGroupAlias='keyword');
+            productCollectionList.addFilter(propertyIdentifier='productID',value=productIDs,comparisonOperator='IN',logicalOperator='OR',filterGroupAlias='keyword');
         }
         
         var recordsCount = productCollectionList.getRecordsCount();
