@@ -489,20 +489,32 @@ Notes:
 	
 	<cfscript>
     
-    public any function getOptionNameByOptionIdAndOptionValue( required struct skuOptionsData ){
+    public string function getOptionIDsByOptionGroupCodeAndOptionNames( required struct skuOptionsData ){
+    	
     	var sql = "";
-    	var index = 1;
+    	for( var optionGroupCode in arguments.skuOptionsData ){
+    	    sql += "SELECT so.optionID 
+            	        FROM swOption AS so 
+            	    INNER JOIN swoptiongroup AS sog ON so.optionGroupID = sog.optionGroupID 
+            	        AND so.optionName = '#arguments.skuOptionsData[optionGroupCode]#' AND sog.optionGroupCode = '#optionGroupCode#'";
+            sql += " UNION ";
+    	}
+        
+        dump(sql);
+        
+        sql = left(sql, len(sql) - 7 ); // remove last ` UNION `;
     	var queryService = new query();
-		for (var skuOptionNames in skuOptionsData ) {
-			var sql &= "SELECT so.optionID FROM swOption AS so INNER JOIN swoptiongroup AS sog ON so.optionGroupID=sog.optionGroupID AND so.optionName = '#skuOptionsData[skuOptionNames]#' AND sog.optionGroupCode = '#skuOptionNames#'"&" UNION ";
-			index++;
-		}
-		var records = queryService.execute(sql=left(trim(sql),len(trim(sql))-6)).getResult();
-		var result = "";
-			for(var i=1;i<=records.recordCount;i++) {
-				 result &= records.optionID & ',';
-			}
-		return left(trim(result),len(trim(result))-1);
+    	var records = queryService.execute(sql=sql).getResult();
+    
+        dump(records);
+    
+		var optionIDs =  records.reduce( function(accumulated, row){
+		    return accumulated & row.optionID & ',';
+		},'');
+
+        dump(optionIDs);
+    
+		return left(optionIDs, len(optionIDs) - 1 ); //discard last comma
     }
         
     </cfscript>
