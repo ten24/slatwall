@@ -1469,6 +1469,38 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         );
 	}
 	
+	public array function generateSkuOptionsAndCreateNewOnes( struct data, struct mapping, struct propertyMetaData ){
+	    
+	    var skuOptionGroups = this.getSkuDAO().getOptionGroupCodeIndex();
+	    
+	    var options = [];
+	    
+	    for(var optionGroupCode in skuOptionGroups ){
+	    	if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
+	            
+	            var optionID = this.getSkuDAO().getOptionIDByOptionGroupIDAndOptionName( 
+	                skuOptionGroups[optionGroupCode], 
+	                arguments.data[optionGroupCode] 
+	            );
+	            
+	    	    if( !isNull(optionID) && !this.hibachiIsEmpty(optionID) ){
+	    	        options.append({
+    	    	        'optionID': optionID 
+	    	        });
+	    	    } else {
+	    	        // create a new option inside the optionGroup
+	    	        options.append({
+	    	            'optionID' : '',
+	    	            'optionName' : arguments.data[optionGroupCode],
+	    	            'optionGroupID' : skuOptionGroups[optionGroupCode],
+	    	        });
+	    	    }
+	    	}
+	    }
+	    
+	    return options;
+	}
+	
 	public any function generateSkuOptions( struct data, struct mapping, struct propertyMetaData ){
 	    
 	    var optionsData = {};

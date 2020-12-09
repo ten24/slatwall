@@ -488,6 +488,37 @@ Notes:
 	</cffunction>
 	
 	<cfscript>
+	
+	public struct function getOptionGroupCodeIndex(){
+	
+	    var cacheKey = 'cache_getSkuOprionGroupsCodeandIDPairs';
+	    if(structKeyExists(variables, cacheKey)){
+	        return variables[cacheKey];
+	    }
+	    
+	    var sql = "SELECT optionGroupCode,optionGroupID from swOptionGroup";
+	    var queryService = new query();
+    	var records = queryService.execute(sql=sql).getResult();
+        
+        var optionGroups = {};
+		records.each( function(row){ optionGroups[ row.optionGroupCode ] = row.optionGroupID; });
+		
+		variables[cacheKey] = optionGroups;
+		return variables[cacheKey];
+	}
+	
+	public string function getOptionIDByOptionGroupIDAndOptionName(required string optionGroupID, required string optionName){
+	    var sql = "SELECT so.optionID 
+            	        FROM swOption AS so 
+            	    INNER JOIN swOptionGroup AS sog 
+            	        ON so.optionGroupID = sog.optionGroupID 
+            	        AND so.optionName = ':optionName' AND sog.optionGroupID = ':optionGroupID'";
+	    var queryService = new query();
+	    queryService.addParam(name='optionGroupID', value=arguments.optionGroupID, CFSQLTYPE="CF_SQL_STRING");
+	    queryService.addParam(name='optionName', value=arguments.optionName, CFSQLTYPE="CF_SQL_STRING");
+
+    	return queryService.execute(sql=sql).getResult()['optionID'];
+	}
     
     public string function getOptionIDsByOptionGroupCodeAndOptionNames( required struct skuOptionsData ){
     	

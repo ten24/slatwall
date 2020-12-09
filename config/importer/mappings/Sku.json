@@ -81,7 +81,7 @@
             "excludeFromPostSaveMethod" : true,
             "excludeFromTemplate" : true,
             "excludeFromValidation"  : true,
-            "generatorFunction": "generateSkuOptions"
+            "generatorFunction": "generateSkuOptionsAndCreateNewOnes"
         }
     ],
     
