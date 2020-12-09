@@ -95,6 +95,7 @@ Notes:
     	data-account-id="'#local.accountID#'" 
     	data-account-type="'#local.accountType#'"
     	data-site-id="'#local.siteID#'" 
+    	data-can-edit-price="#$.slatwall.getService('HibachiAuthenticationService').authenticateEntityPropertyCrudByAccount(crudType='update', entityName='OrderItem', propertyName='price', account=$.slatwall.getAccount())#" 
     	data-currency-code="'#local.currencyCode#'" 
     	data-sku-properties-to-display-with-config="[{'name': 'personalVolumeByCurrencyCode','rbkey': 'Personal Volume','config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}},{'name': 'commissionableVolumeByCurrencyCode','rbkey': 'Commissionable Volume', 'config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}}]"
 	></sw-add-order-items-by-sku>

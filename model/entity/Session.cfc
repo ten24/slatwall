@@ -161,7 +161,7 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 			
 			// Set default stock location based on current request site, uses first location by default
  			if (!isNull(getHibachiScope().getCurrentRequestSiteLocation())) {
- 				requestOrder.setDefaultStockLocation(getHibachiScope().getCurrentRequestSiteLocation());
+ 				variables.requestOrder.setDefaultStockLocation(getHibachiScope().getCurrentRequestSiteLocation());
 			}
 			 
 			//check if we are running on a CMS site by domain

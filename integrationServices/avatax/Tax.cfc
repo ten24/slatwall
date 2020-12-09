@@ -335,21 +335,27 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		var responseData = httpRequest.send().getPrefix();
 		
 		if (IsJSON(responseData.FileContent)){
+			
 			// a valid response was retrieved
 			// health check passed
 			responseBean.healthcheckFlag = true;
 			var fileContent = DeserializeJSON(responseData.FileContent);
+
 			if (structKeyExists(fileContent, 'resultCode') && fileContent.resultCode == 'Error'){
-				var getAvalaraError = fileContent.messages['1']['Summary'];
-				if(!len(trim(getAvalaraError))){
-					var defaultMessage = getAvalaraError;
-				}else{
-					var defaultMessage = "Avalara server communication fault";
+				var avalaraError = fileContent.messages['1']['Summary'];
+				
+				if(!len(trim(avalaraError))){
+					avalaraError = "Avalara server communication fault";
 				}
-				var getErroMessage = getHibachiScope().getService('HibachiUtilityService').getFormattedErrorMessage("Avalara",fileContent.resultCode,defaultMessage);
+				var errorMessage = getHibachiScope().getService('HibachiUtilityService').getFormattedErrorMessage("Avalara",fileContent.resultCode,avalaraError);
 				responseBean.clearHibachiErrors();
-				responseBean.addError("Avalara error",getErroMessage);
-				responseBean.setData(fileContent.messages);
+				responseBean.addError("Avalara error",errorMessage);
+
+				if(fileContent.messages['1']['RefersTo'] == 'DocStatus' && avalaraError == 'DocStatus is invalid for this operation.'){
+					responseBean.setData({'DocStatus':avalaraError});
+				}else{
+					responseBean.setData(fileContent.messages);
+				}
 				for(var message in fileContent.messages){
 					responseBean.addError(message['RefersTo'],message['Summary']);
 				}

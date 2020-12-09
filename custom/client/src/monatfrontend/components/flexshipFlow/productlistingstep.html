@@ -12,12 +12,12 @@
 	</div>
     
 	<!--- Start your order banner --->
-	<div class="py-4 mb-5 mx-0 todays-order-bar row">
+	<div class="py-4 mb-5 mx-0 todays-order-bar row filters">
 	    <div class="col ml-3">
 	        <div class="input-group custom-input-group">
 	        	<!----TODO: RBkey----->
 	            <input 
-	                placeholder="SEARCH FOR PRODUCTS" 
+	                placeholder="Search" 
 	                type="text"  
 	                class="form-control search-input" 
 	                ng-model="productController.searchTerm" 
@@ -39,32 +39,7 @@
 	            </div>
 	        </div>
 	    </div>
-        <div ng-repeat="categoryName in productController.monatService.productFilterCategories" sw-click-outside="productController.showProductFilter[categoryName] = false" class="filter-col">
-            <div>
-                <div class="text-white">
-                   <div ng-click="productController.toggleShowFilterCategory(categoryName)">  
-                        <a class="my-0 text-white"> {{ productController.productFilters[categoryName].name ? categoryName + ': '+productController.productFilters[categoryName].name : 'Shop ' + categoryName }}
-                            <i 
-                                class="far"
-                                ng-class="{
-                                    'fa-angle-down' : !productController.showProductFilter[categoryName],
-                                    'fa-angle-up' : productController.showProductFilter[categoryName]
-                                }"
-                            ></i>
-                        </a>  
-                    </div>
-                    <div 
-                        ng-style="productController.showProductFilter[categoryName] && {'display':'block'} || {'display': 'none'}"
-                        class="dropdown-menu rounded-0"
-                    >
-                        <a ng-click="productController.toggleShowFilterCategory(categoryName)" class="close-filters desktop-hide">Close <i class="fal fa-times"></i></a>
-                        <a ng-click="productController.getProducts(filter,categoryName); productController.toggleShowFilterCategory(categoryName)" class="dropdown-item" ng-repeat="filter in flexshipFlow.monatService.productFilters[categoryName]">
-                            {{filter.name}}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <filter-menu parent-controller="productController"></filter-menu>
 	</div>
 
 	<div class="container products-listing-section">  

@@ -88,12 +88,6 @@
 		"validOrder" : [
 			[
 				{
-					"propertyIdentifier": "remoteID",
-					"comparisonOperator": "is",
-					"value": "null",
-					"ormtype": "string"
-				},
-				{
 					"propertyIdentifier": "orderNumber",
 					"comparisonOperator": "is not",
 					"logicalOperator": "AND",
@@ -129,12 +123,6 @@
 				}
 			],
 			[
-				{
-					"propertyIdentifier": "remoteID",
-					"comparisonOperator": "is",
-					"value": "null",
-					"ormtype": "string"
-				},
 				{
 					"propertyIdentifier": "orderNumber",
 					"comparisonOperator": "is not",
@@ -225,13 +213,6 @@
 	},
 	"afterOrderProcess_OrderCloseSuccess" : {
 		"filters" : [
-			
-			{
-				"propertyIdentifier": "remoteID",
-				"comparisonOperator": "is",
-				"value": "null",
-				"ormtype": "string"
-			},
 			{
 				"propertyIdentifier": "orderNumber",
 				"comparisonOperator": "is not",
@@ -272,6 +253,12 @@
 	},
 	"afterOrderTemplateProcess_cancelSuccess" : {
 		"filters" : [
+			{
+				"propertyIdentifier": "orderTemplateNumber",
+				"comparisonOperator": "is not",
+				"value": "null",
+				"ormtype": "string"
+			},
 			{
 				"propertyIdentifier": "orderTemplateType.systemCode",
 				"comparisonOperator": "=",

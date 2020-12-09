@@ -24,12 +24,17 @@ export class OrderTemplateService {
 	public appliedPromotionCodeList = [];
 	public cartTotalThresholdForOFYAndFreeShippingLoaded: boolean = false;
 	public wishlistsRefreshed = false;
+	public showPurchasePlusMessage = false;
+	public newOrderTemplateData:boolean;
+	public showThresholdMessage:boolean;
+	public hasShownThresholdMessage:boolean;
 	
 	//@ngInject
 	constructor(
 		public $q: ng.IQService,
 		public monatService: MonatService,
 		public publicService: PublicService,
+		private $timeout
 	) {}
 
 	/**
@@ -241,7 +246,7 @@ export class OrderTemplateService {
     */
 
 	public updateOrderTemplateSchedule = (data) => {
-		return this.monatService.doPublicAction("updateOrderTemplateSchedule", data);
+		return this.publicService.doAction("updateOrderTemplateSchedule", data);
 	};
 
 	public updateOrderTemplateFrequency = (
@@ -264,7 +269,7 @@ export class OrderTemplateService {
 			payload["scheduleOrderDayOfTheMonth"] = scheduleOrderDayOfTheMonth;
 		}
 		
-		 this.monatService.doPublicAction("updateOrderTemplateFrequency", payload).then(res => {
+		 this.publicService.doAction("updateOrderTemplateFrequency", payload).then(res => {
 		 	if(res.successfulActions && res.successfulActions.indexOf('public:order.deleteOrderTemplatePromoItem') > -1){
 		 		this.splicePromoItem();
 		 	}
@@ -316,6 +321,7 @@ export class OrderTemplateService {
      * 
     */ 
     public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag=false, optionalData = {}) => {
+    	
         optionalData['orderTemplateID'] = orderTemplateID;
         optionalData['skuID'] = skuID;
         optionalData['quantity'] = quantity;
@@ -324,6 +330,7 @@ export class OrderTemplateService {
 	  
         this.publicService.doAction('addOrderTemplateItem',optionalData).then(res=>{
             if(res.orderTemplate){
+            	this.newOrderTemplateData = true;
                 this.manageOrderTemplate(res.orderTemplate);
                 this.updateOrderTemplateDataOnService(res.orderTemplate);
             }
@@ -344,6 +351,7 @@ export class OrderTemplateService {
     */
 
 	public editOrderTemplateItem = (orderTemplateItemID: string, newQuantity: number = 1) => {
+		this.newOrderTemplateData = true;
 		let payload = {
 			orderTemplateItemID: orderTemplateItemID,
 			quantity: newQuantity,
@@ -354,6 +362,7 @@ export class OrderTemplateService {
 	
 
 	public deleteOrderTemplateItem = (orderTemplateItemID) => {
+		this.newOrderTemplateData = true;
 		return this.publicService.doAction("deleteOrderTemplateItem", {
 			orderTemplateItemID: orderTemplateItemID,
 		});
@@ -365,6 +374,7 @@ export class OrderTemplateService {
 	 */
 
 	public removeOrderTemplateItem = (orderTemplateItemID: string) => {
+		this.newOrderTemplateData = true;
 		let payload = { orderTemplateItemID: orderTemplateItemID };
 		return this.monatService.doPublicAction("removeOrderTemplateItem", payload);
 	};
@@ -522,6 +532,20 @@ export class OrderTemplateService {
             this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
             this.cartTotalThresholdForOFYAndFreeShippingLoaded = true;
         }
+   
+        this.showPurchasePlusMessage = this.mostRecentOrderTemplate['purchasePlusMessage']?.message?.length || false;
+    	let hasReachedThreshold = this.cartTotalThresholdForOFYAndFreeShipping - this.mostRecentOrderTemplate.calculatedSubTotal <= 0;
+    	
+		this.showThresholdMessage = (!this.hasShownThresholdMessage && hasReachedThreshold);
+		
+		this.$timeout(() => {
+			this.showThresholdMessage = false;
+			this.newOrderTemplateData = false;
+			this.showPurchasePlusMessage = false;
+		},6000);
+       
+       this.hasShownThresholdMessage = hasReachedThreshold;
+       
     }
     
     public addPromotionCode(promotionCode:string, orderTemplateID = this.currentOrderTemplateID){

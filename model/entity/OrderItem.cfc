@@ -536,7 +536,7 @@ property name="personalVolume" ormtype="big_decimal";
 			var price = 0;
 		
 			//get bundle price
-			if(!isnull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(!isnull(getSku()) && getDAO('skuDAO').getProductTypeSystemCodeBySkuID(getSku().getSkuID()) == 'productBundle'){
 				price = getProductBundlePrice();
 			}else if(!isNull(getPrice())){
 				price = getPrice();
@@ -1252,6 +1252,15 @@ property name="personalVolume" ormtype="big_decimal";
 
 		return variables.assignedAttributeSetSmartList;
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1265,6 +1274,7 @@ property name="personalVolume" ormtype="big_decimal";
 		getOrderItemStatusType();
 
 	}
+
 
 	// ===================  END:  ORM Event Hooks  =========================	
 		//CUSTOM FUNCTIONS BEGIN

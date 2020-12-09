@@ -189,14 +189,10 @@ class MonatCheckoutController {
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false, next = false):Screen | void => {
-		if("undefined" == typeof this.state.cart){
-			hardRefresh = true;
-		}
-		return this.publicService.getCart(hardRefresh).then(data => {
+		
+		return this.monatService.getCart(hardRefresh).then(cart => {
 			
-			if(hardRefresh){
-				this.state.cart = this.publicService.cart; 
-			}
+			this.state.cart = cart;
 			
 			let screen = Screen.ACCOUNT;
 			this.calculateListPrice();
@@ -448,7 +444,7 @@ class MonatCheckoutController {
 	public setCheckoutDefaults(){
 	
 		if(
-			!this.publicService.cart.orderID.length 
+			!this.publicService.cart?.orderID?.length 
 			|| ( 
 					this.monatService.cartHasShippingFulfillmentMethodType(this.publicService.cart) 
 					&& this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1
@@ -463,7 +459,7 @@ class MonatCheckoutController {
 	
 	public calculateListPrice(){
 		this.listPrice = 0;
-		if(this.state.cart){
+		if(this.state.cart && this.state.cart.orderItems){
 			for(let item of this.state.cart.orderItems){
 				this.listPrice += (item.calculatedListPrice * item.quantity);
 			}
