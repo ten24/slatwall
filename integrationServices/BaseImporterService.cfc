@@ -433,12 +433,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( structKeyExists(arguments.mapping, 'relations') ){
 	       
 	        for(var related in arguments.mapping.relations ){
-	        
+	        	
 	            if(structKeyExists(related, 'excludeFromPostPopulateMethod') && related.excludeFromPostPopulateMethod ){
 	               // TODO use better naming-convention  or find a different solution
 	                continue;
 	            }
-	            
+
 	            // this might return an entity or an array in case of *-to-many relations
   	            var relatedEntityOrArray = arguments.entity.invokeMethod( 'get'&related.propertyIdentifier );
   	         
@@ -471,8 +471,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( structKeyExists(arguments.mapping, 'relations') ){
 	       
 	        for(var related in arguments.mapping.relations ){
-	        
-	            if(structKeyExists(related, 'excludeFromPostSaveMethod') && related.excludeFromPostSaveMethod ){
+	        	
+	        	if(structKeyExists(related, 'excludeFromPostSaveMethod') && related.excludeFromPostSaveMethod ){
 	               // TODO use better naming-convention  or find a different solution
 	                continue;
 	            }
@@ -1481,8 +1481,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	     		optionsData[ optionGroupCode ] = arguments.data[ optionGroupCode ];
 	     	}
 	     }
-
-	     if( !structIsEmpty(optionsData)) {
+	     if(!structIsEmpty(optionsData)){
 	     	return this.getSkuDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData );
 	     }
 	}

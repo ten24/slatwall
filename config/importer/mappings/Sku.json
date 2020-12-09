@@ -76,7 +76,7 @@
         {
             "type": "manyToMany",
             "entityName": "Option",
-            "propertyIdentifier": "option",
+            "propertyIdentifier": "options",
             "excludeFromPostPopulateMethod" : true,
             "excludeFromPostSaveMethod" : true,
             "excludeFromTemplate" : true,
