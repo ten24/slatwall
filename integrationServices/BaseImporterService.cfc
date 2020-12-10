@@ -57,8 +57,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
 	property name = "hibachiEntityQueueDAO";
-	property name = "skuDAO";
-
+	property name = "OptionDAO";
+	
 	property name = "cachedEntityMappings" type="struct";
 	property name = "cachedMappingPropertiesValidations" type="struct";
 	
@@ -1472,14 +1472,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	// on hold, need to add volatile support for to-many relations
 	public array function generateSkuOptionsAndCreateNewOnes( struct data, struct mapping, struct propertyMetaData ){
 	    
-	    var skuOptionGroups = this.getSkuDAO().getOptionGroupCodeIndex();
+	    var skuOptionGroups = this.getOptionDAO().getOptionGroupCodeIndex();
 	    
 	    var options = [];
 	    
 	    for(var optionGroupCode in skuOptionGroups ){
 	    	if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
 	            
-	            var optionID = this.getSkuDAO().getOptionIDByOptionGroupIDAndOptionName( 
+	            var optionID = this.getOptionDAO().getOptionIDByOptionGroupIDAndOptionName( 
 	                skuOptionGroups[optionGroupCode], 
 	                arguments.data[optionGroupCode] 
 	            );
@@ -1507,7 +1507,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public any function generateSkuOptions( struct data, struct mapping, struct propertyMetaData ){
 	    
         var optionsData = {};
-        var skuOptionGroups = this.getSkuDAO().getOptionGroupCodeIndex();
+        var skuOptionGroups = this.getOptionDAO().getOptionGroupCodeIndex();
         
         for(var optionGroupCode in skuOptionGroups ){
             if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
@@ -1516,7 +1516,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
         
         if(!structIsEmpty(optionsData)){
-            return this.getSkuDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData );
+            return this.getOptionDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData );
         }
 	}
 	
