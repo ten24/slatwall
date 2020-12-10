@@ -20,10 +20,10 @@ export class MonatService {
 	public cart: Cart;
 	public lastAddedSkuID: string = "";
 	public previouslySelectedStarterPackBundleSkuID: string;
-	public canPlaceOrder: boolean;
-	public hasOwnerAccountOnSession: boolean;
+	public canPlaceOrder: boolean=false;
+	public hasOwnerAccountOnSession: boolean=false;
 	public successfulActions = [];
-	public showAddToCartMessage: boolean;
+	public showAddToCartMessage: boolean=false;
 	public lastAddedProduct: cartOrderItem;
 	public muraContent = {};
 	public productFilters:any = {};
@@ -32,12 +32,12 @@ export class MonatService {
 	public qualifiedPromos = [];
 	public promotionRewardSkus = {};
 	public productFilterCategories = ['Hair','Skin','Wellness','Promotion'];
-	public showPurchasePlusMessage = false;
+	public showPurchasePlusMessage:boolean = false;
 	public currentCartDateTime: string;
-	public hasShownCanPlaceOrderAlert: boolean;
-	public showCanPlaceOrderAlert:boolean;
-	public canPlaceOrderMessage:boolean;
-	public cartUpdated:boolean;
+	public hasShownCanPlaceOrderAlert: boolean = false;
+	public showCanPlaceOrderAlert:boolean = false;
+	public canPlaceOrderMessage:boolean = false;
+	public cartUpdated:boolean = false;
 	
 	//@ngInject
 	constructor(
@@ -476,7 +476,9 @@ export class MonatService {
 	
 	
 	private timeOutThisProperty(thisKey:string, s:number, firstVal = true, lastVal = false){
+		console.log('timing out '+thisKey);
 		if(!(thisKey in this)) return;
+		console.log('missed that return');
 		let ms = s * 1000;
 		this[thisKey] = firstVal;
 		this.$timeout(() => {
