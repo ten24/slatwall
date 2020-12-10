@@ -144,7 +144,8 @@
 					<div ng-if="monatProductModal.loaded">
 						<button
 							class="btn loaded">
-							<span  sw-rbkey="'frontend.global.addedToFlexship'"></span>
+							<span ng-if="monatProductModal.type != 'flexship'" sw-rbkey="'frontend.global.addedToCart'"></span>
+							<span ng-if="monatProductModal.type == 'flexship'" sw-rbkey="'frontend.global.addedToFlexship'"></span>
 						</button>
 					</div>
 					<button 
