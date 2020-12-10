@@ -476,9 +476,7 @@ export class MonatService {
 	
 	
 	private timeOutThisProperty(thisKey:string, s:number, firstVal = true, lastVal = false){
-		console.log('timing out '+thisKey);
 		if(!(thisKey in this)) return;
-		console.log('missed that return');
 		let ms = s * 1000;
 		this[thisKey] = firstVal;
 		this.$timeout(() => {
