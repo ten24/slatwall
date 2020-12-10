@@ -312,6 +312,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var totalItemTax = 0;
 					var totalItemVAT = 0;
 					var taxAdjusted = false;
+					var refundPercentage = originalOrderItem.getAllowableRefundPercent();
 					
 					for(var originalAppliedTax in originalAppliedTaxes) {
 
@@ -324,7 +325,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setOrderItem( orderItem );
 						newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
 						
-						var VATAmount = round((originalAppliedTax.getVATAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * 100) / 100;
+						
+						var VATAmount = round((originalAppliedTax.getVATAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * refundPercentage) / 100;
 						
 						totalItemVAT += VATAmount;
 						
@@ -336,17 +338,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							totalItemVAT += 0.01;
 							VATAdjusted = true;
 						}
+
 						newAppliedTax.setVATAmount( VATAmount );
 						
-						var taxAmount = round((originalAppliedTax.getTaxAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * 100) / 100;
-						
+						var taxAmount = round((originalAppliedTax.getTaxAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * refundPercentage) / 100;
+
 						totalItemTax += taxAmount;
 						
 						if(totalItemTax > originalOrderItem.getTaxAmountNotRefunded()){
 							taxAmount -= totalItemTax - originalOrderItem.getTaxAmountNotRefunded();
 							taxAdjusted = true;
 						}
-						
+
 						newAppliedTax.setTaxLiabilityAmount( taxamount );
 
 						newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
@@ -368,7 +371,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					if(!taxAdjusted){
-						var correctProportionalTaxAmount = round(originalOrderItem.getTaxAmount() * orderItem.getQuantity() * 100 / originalOrderItem.getQuantity()) / 100;
+						var correctProportionalTaxAmount = round(originalOrderItem.getTaxAmount() * orderItem.getQuantity() * refundPercentage / originalOrderItem.getQuantity()) / 100;
 						var appliedTaxDifference = correctProportionalTaxAmount - orderItem.getTaxAmount();
 						
 						if(appliedTaxDifference != 0){

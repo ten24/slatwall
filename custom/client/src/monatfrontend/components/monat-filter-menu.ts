@@ -30,6 +30,7 @@ class MonatFilterMenuController{
 	}
 	
 	public callProductFunction = (category, categoryType)=>{
+		this.showFilterMenu = false;
 		return this.parentController[this.productFunction](category,categoryType);
 	}
 	
