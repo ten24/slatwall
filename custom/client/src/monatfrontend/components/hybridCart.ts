@@ -61,12 +61,13 @@ class HybridCartController {
 		});
 		
 		//only apply open and close animation if the cart is closed
-		if(toggleCart && !this.showCart){
-			this.showCart = true;
-			this.$timeout(() =>{
-				this.showCart = false;	
-			} , 6000)
-		}
+		//Commented out for potential future re-enabling
+		// if(toggleCart && !this.showCart){
+		// 	this.showCart = true;
+		// 	this.$timeout(() =>{
+		// 		this.showCart = false;	
+		// 	} , 6000)
+		// }
 	}
 	
 	private recalculatePrices():void{
