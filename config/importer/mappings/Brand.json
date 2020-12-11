@@ -38,7 +38,9 @@
         {
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateBrandUrlTitle",
-            "allowUpdate": false
+            "allowUpdate"        : false,
+             "evaluationMode"    : "lazy",
+            "__hint"             : "lazy evaluation means, the value for this property will get generted just before populating the object"
         }
     ],
     
