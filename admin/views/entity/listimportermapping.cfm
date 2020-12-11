@@ -12,7 +12,7 @@
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<cfset displayPropertyList = "name,description,baseObject,mapping"/>
+<cfset displayPropertyList = "name,description,baseObject"/>
 <cfset rc.importerMappingCollectionList.setDisplayProperties(
 	displayPropertyList,
 	{
@@ -29,7 +29,7 @@
 })/>
 <hb:HibachiListingDisplay 
 	collectionList="#rc.importerMappingCollectionList#"
-	recordEditAction="admin:entity.edit#lcase(rc.importerMappingCollectionlist.getCollectionObject())#"
-	recordDetailAction="admin:entity.detail#lcase(rc.importerMappingCollectionlist.getCollectionObject())#"
+	recordEditAction="admin:entity.editImporterMapping"
+	recordDetailAction="admin:entity.editImporterMapping"
 >
 </hb:HibachiListingDisplay>

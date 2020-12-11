@@ -1,4 +1,4 @@
-component displayname="ImporterMapping" entityname="SlatwallImporterMapping" table="SwImporterMapping" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiImporterMappingService" hb_processContexts="" {
+component displayname="ImporterMapping" entityname="SlatwallImporterMapping" table="SwImporterMapping" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiService" hb_processContexts="" {
     
     // Persistent Properties
 	property name="importerMappingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
