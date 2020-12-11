@@ -57,7 +57,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
 	property name = "hibachiEntityQueueDAO";
-
+	property name = "OptionDAO";
+	
 	property name = "cachedEntityMappings" type="struct";
 	property name = "cachedMappingPropertiesValidations" type="struct";
 	
@@ -432,6 +433,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( structKeyExists(arguments.mapping, 'relations') ){
 	       
 	        for(var related in arguments.mapping.relations ){
+	        	
+	            if(structKeyExists(related, 'excludeFromPostPopulateMethod') && related.excludeFromPostPopulateMethod ){
+	               // TODO use better naming-convention  or find a different solution
+	                continue;
+	            }
+
 	            // this might return an entity or an array in case of *-to-many relations
   	            var relatedEntityOrArray = arguments.entity.invokeMethod( 'get'&related.propertyIdentifier );
   	         
@@ -464,6 +471,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( structKeyExists(arguments.mapping, 'relations') ){
 	       
 	        for(var related in arguments.mapping.relations ){
+	        	
+	        	if(structKeyExists(related, 'excludeFromPostSaveMethod') && related.excludeFromPostSaveMethod ){
+	               // TODO use better naming-convention  or find a different solution
+	                continue;
+	            }
+	            
 	            // this might return an entity or an array in case of *-to-many relations
   	            var relatedEntityOrArray = arguments.entity.invokeMethod( 'get'&related.propertyIdentifier );
   	         
@@ -499,7 +512,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
         
         if( structKeyExists(arguments.entityQueueData, '__lazy')){
-            this.resolveEntityLazyProperties( argumentCollection = arguments );
+            this.resolveEntityLazyProperties( 
+                entityName      = entityName,
+                transformedData = arguments.entityQueueData,
+                mapping = arguments.mapping
+            );
         }
         
         // make-sure all of the dependencies had been resolved, 
@@ -1392,7 +1409,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public string function createProductTypeImportRemoteID( required struct data, required struct mapping ){
 	   
-	   var formattedProductTypeName = reReplace(arguments.data['productTypeName'],"\s", " ", "all");
+	   var formattedProductTypeName = reReplace(arguments.data['productTypeName'],"\s", "", "all");
 	    
 	   formattedProductTypeName = lcase( trim( formattedProductTypeName ) );
 	    
@@ -1451,7 +1468,59 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             nested      = true
         );
 	}
-
+	
+	// on hold, need to add volatile support for to-many relations
+	public array function generateSkuOptionsAndCreateNewOnes( struct data, struct mapping, struct propertyMetaData ){
+	    
+	    var skuOptionGroups = this.getOptionDAO().getOptionGroupCodeIndex();
+	    
+	    var options = [];
+	    
+	    for(var optionGroupCode in skuOptionGroups ){
+	    	if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
+	            
+	            var optionID = this.getOptionDAO().getOptionIDByOptionGroupIDAndOptionName( 
+	                skuOptionGroups[optionGroupCode], 
+	                arguments.data[optionGroupCode] 
+	            );
+	            
+	    	    if( !isNull(optionID) && !this.hibachiIsEmpty(optionID) ){
+	    	        options.append({
+    	    	        'optionID': optionID 
+	    	        });
+	    	    } else {
+	    	        // create a new option inside the optionGroup
+	    	        options.append({
+	    	            'optionID' : '',
+	    	            'optionName' : arguments.data[optionGroupCode],
+	    	            "optionGroup" : {
+	    	                'optionGroupID' : skuOptionGroups[optionGroupCode]
+	    	            }
+	    	        });
+	    	    }
+	    	}
+	    }
+	    
+	    return options;
+	}
+	
+	public any function generateSkuOptions( struct data, struct mapping, struct propertyMetaData ){
+	    
+        var optionsData = {};
+        var skuOptionGroups = this.getOptionDAO().getOptionGroupCodeIndex();
+        
+        for(var optionGroupCode in skuOptionGroups ){
+            if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
+                optionsData[ optionGroupCode ] = arguments.data[ optionGroupCode ];
+            }
+        }
+        
+        if(!structIsEmpty(optionsData)){
+            return this.getOptionDAO().getOptionIDsByOptionGroupCodeAndOptionNames( optionsData );
+        }
+	}
+	
+	
 	/////////////////.                  INVENTORY
 	
 	

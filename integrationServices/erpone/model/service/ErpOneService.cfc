@@ -67,6 +67,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
   	        
             //creating struct for fast-lookups
             variables.sampleCSVFilesOptions = {
+                "Sku"   		: "sku",
                 "Product"		: "product"
                 
             };
