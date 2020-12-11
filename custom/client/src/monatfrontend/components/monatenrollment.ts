@@ -158,6 +158,8 @@ class MonatEnrollmentController {
 
 	public next() {
 		this.navigate(this.position + 1);
+		document.body.scrollTop = 0; // For Safari
+		document.documentElement.scrollTop = 0;
 	}
 
 	public previous() {
