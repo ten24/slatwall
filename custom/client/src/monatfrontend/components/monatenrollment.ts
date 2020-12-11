@@ -196,11 +196,12 @@ class MonatEnrollmentController {
 		}else{
 			this.updateSteps(index);
 		}
+		
 	}
 	
 	public updateSteps(index:number){
 		this.position = index;
-		this.showMiniCart = ( this.steps[ this.position ].showMiniCart == 'true' ); 
+		this.monatService.shouldHideMiniCart = ( this.steps[ this.position ].showMiniCart != 'true' ); 
 		this.showFlexshipCart = ( this.steps[ this.position ].showFlexshipCart == 'true' ); 
 		
 		angular.forEach(this.steps, (step) => {
