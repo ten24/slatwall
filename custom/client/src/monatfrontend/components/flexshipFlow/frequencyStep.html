@@ -1,32 +1,33 @@
-<div class="container">
-	<div class="subtext subtext1">       
-		
-		<p class="error_text text-danger bundle-error-text ng-scope" ng-if="frequencyStep.flexshipFrequencyHasErrors" sw-rbkey="'frontend.enrollment.selectMonthDay'"></p>
-		
-		<h2>
-			<span class="choic" sw-rbkey="'frontend.enrollment.greatChoice'"></span> 
+<div class="great_part step5_part">
+	<div class="container-xs">
+		<div class="subtext subtext1">       
 			
-			<span sw-rbKey="'frontend.enrollment.recieveItemsSub'"></span>
-
-			<div class="title-dropdown">
-				<select  
-					class="title-dropdown__select"
-					ng-model="frequencyStep.term"
-					ng-init="frequencyStep.term = frequencyStep.frequencyTerms[0]"
-					ng-options="term.name for term in frequencyStep.frequencyTerms"
-				></select>
+			<p class="error_text text-danger bundle-error-text ng-scope" ng-if="frequencyStep.flexshipFrequencyHasErrors" sw-rbkey="'frontend.enrollment.selectMonthDay'"></p>
+			<div class="frequency-form">
+				<h2 sw-rbkey="'frontend.enrollment.greatChoice'"></h2>
+				<span sw-rbKey="'frontend.enrollment.recieveItemsSub'"></span>
+	
+				<div class="title-dropdown">
+					<select  
+						class="title-dropdown__select"
+						ng-model="frequencyStep.term"
+						ng-init="frequencyStep.term = frequencyStep.frequencyTerms[0]"
+						ng-options="term.name for term in frequencyStep.frequencyTerms"
+					></select>
+				</div>
+	
+				<span sw-rbKey="'frontend.global.onThe'"></span>
+				<div class="title-dropdown">
+					<select 
+						ng-model="frequencyStep.day" 
+						class="title-dropdown__select"
+						ng-options="(day | ordinal) for day in frequencyStep.flexshipDaysOfMonth"
+					></select>
+				</div>
 			</div>
-
-			<span sw-rbKey="'frontend.global.onThe'"></span>
-			<div class="title-dropdown">
-				<select 
-					ng-model="frequencyStep.day" 
-					class="title-dropdown__select"
-					ng-options="(day | ordinal) for day in frequencyStep.flexshipDaysOfMonth"
-				></select>
-			</div>
-		</h2>
-		<p sw-rbkey="'frontend.enrollment.adjustLater'"></p>
+			<p class="mt-5" sw-rbkey="'frontend.enrollment.adjustLater'"></p>
+			
+		</div>
 	</div>
 </div>
 <button 
