@@ -507,6 +507,156 @@
                 "dataType": "string"
             }
         },
+        "BumpStop": {
+            "propertyIdentifier": "productBumpStop",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "OutsideHeight": {
+            "propertyIdentifier": "productOutsideHeight",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "OutsideWidth": {
+            "propertyIdentifier": "productOutsideWidth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "OutsideDepth": {
+            "propertyIdentifier": "productOutsideDepth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "InsideHeight": {
+            "propertyIdentifier": "productInsideHeight",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "InsideWidth": {
+            "propertyIdentifier": "productInsideWidth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "InsideDepth": {
+            "propertyIdentifier": "productInsideDepth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderKeyway": {
+            "propertyIdentifier": "productCylinderKeyway",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderFinish": {
+            "propertyIdentifier": "productCylinderFinish",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderType": {
+            "propertyIdentifier": "productCylinderType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderStyle": {
+            "propertyIdentifier": "productCylinderStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderKeying": {
+            "propertyIdentifier": "productCylinderKeying",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "CylinderCamStyle": {
+            "propertyIdentifier": "productCylinderCamStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "CylinderLength": {
+            "propertyIdentifier": "productCylinderLength",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Restricted": {
+            "propertyIdentifier": "productRestricted",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+         "PinSize": {
+            "propertyIdentifier": "productPinSize",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "LockBrand": {
+            "propertyIdentifier": "productLockBrand",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "ProductStyle": {
+            "propertyIdentifier": "productStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Spec": {
+            "propertyIdentifier": "productSpec",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "TwoInOne": {
+            "propertyIdentifier": "productTwoInOne",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Tension": {
+            "propertyIdentifier": "productTension",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Size": {
+            "propertyIdentifier": "productSize",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Handle": {
+            "propertyIdentifier": "productHandle",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+         "HandleStyle": {
+            "propertyIdentifier": "productHandleStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "MaterialThickness": {
+            "propertyIdentifier": "productMaterialThickness",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "ProductSeries": {
             "propertyIdentifier": "productSeries",
             "validations": {
