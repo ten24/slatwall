@@ -4195,7 +4195,7 @@ table .s-table-header .table-section a.s-hint {
   margin-bottom: 15px;
 }
 .s-bundle-group-items .input-group .input-group-btn {
-  z-index: 1000;
+  z-index: 100;
   vertical-align: bottom;
 }
 .s-bundle-group-items .dropdown-menu {
