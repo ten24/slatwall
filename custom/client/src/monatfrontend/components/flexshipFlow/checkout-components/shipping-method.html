@@ -1,30 +1,48 @@
-<div class="new_address">
-    <section class="shipping-page">
-    	<div class="container">
-           	<div class="shipping_sec mb-5">
-        		
-        		<h2 class="checkout-heading"><span sw-rbKey="'frontend.flexshipCheckout.shippingMethodMessage'"></span></h2>
-        		
-				<div class="shipping-options" ng-cloak>
-					<ul>
-						<li ng-repeat="shippingMethod in flexshipCheckoutShippingMethod.currentState.shippingMethodOptions">
-							<div
-								class="custom-radio form-group"
-								ng-click="$parent.flexshipCheckoutShippingMethod.setSelectedShippingMethodID(shippingMethod.value)"
-							>
-								<input
-									type="radio"
-									name="shippingMethodID"
-									id="accountAddress-{{shippingMethod.shippingMethodID}}" 
-									ng-checked="shippingMethod.value === $parent.flexshipCheckoutShippingMethod.currentState.selectedShippingMethodID"
-								/>
-								<label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
-							</div>
-						</li>
-					</ul>
-				</div>
-				
-			</div>
+<div class="my-3 py-2 row w-75-scale mx-auto">
+	<div class="col-9 col-md-8">
+		<h2 class="h2-md-scale mb-0">
+			<i class="pr-4 fal fa-shipping-timed"></i>
+			<a ng-click="checkout.state.currentStep = checkout.SCREEN.SHIPPING_METHOD" data-toggle="collapse" href="##shippingMethod" role="button" aria-expanded="false" aria-controls="shippingMethod" sw-rbkey="'frontend.checkout.deliveryOptions'">
+			</a>
+		</h2>
+		
+		<p class="sub-paragraph" ng-show="checkout.state.shippingMethod.showParagraph && checkout.state.cart.orderFulfillments[0].shippingMethod.shippingMethodName.length">
+			{{checkout.state.cart.orderFulfillments[0].shippingMethod.shippingMethodName}}({{checkout.state.cart.orderFulfillments[0].fulfillmentCharge}})
+		</p>
+	</div>
+	<div class="col-3 col-md-4">
+		<a ng-click="checkout.state.currentStep = checkout.SCREEN.SHIPPING_METHOD" class="float-right edit-link" data-toggle="collapse" href="##shippingMethod" role="button" aria-expanded="false" aria-controls="shipping">
+			<span class="d-none d-md-inline" sw-rbkey="'frontend.global.edit'"></span><i class="pl-3 fal fa-pen"></i>
+		</a>	
+	</div>
+</div>
+<div 
+	data-parent="##checkoutAccordion"
+	class="collapse ml-md-4"
+	ng-class="{
+    	'show': checkout.state.currentStep === checkout.SCREEN.SHIPPING_METHOD && !slatwall.toggleForm
+    }"
+	id="shippingMethod" 
+	ng-show="checkout.state.currentStep === checkout.SCREEN.SHIPPING_METHOD"
+>
+	<div class="shipping_method_sec w-75-scale mx-auto mt-0 mb-5">
+	    <div class="shipping-options px-3 px-md-4" ng-cloak>
+			<ul class="list-unstyled">
+				<li ng-repeat="shippingMethod in flexshipCheckoutShippingMethod.currentState.shippingMethodOptions">
+					<div
+						class="custom-radio"
+						ng-click="$parent.flexshipCheckoutShippingMethod.setSelectedShippingMethodID(shippingMethod.value)"
+					>
+						<input
+							type="radio"
+							name="shippingMethodID"
+							id="accountAddress-{{shippingMethod.shippingMethodID}}" 
+							ng-checked="shippingMethod.value === $parent.flexshipCheckoutShippingMethod.currentState.selectedShippingMethodID"
+						/>
+						<label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
+					</div>
+				</li>
+			</ul>
 		</div>
-    </section>
+	</div>
 </div>
