@@ -3,8 +3,8 @@
 <!--- Header area --->
 <section ng-controller="productListingController as productController" ng-init="productController.flexshipFlag = true" class="bg-white great_part step3_part todays-order great_part">
 	
-	<div class="mx-5 my-3 ">
-	    <div>
+	<div class="container">
+	    <div class="mx-3 my-4">
 	    	<!---TODO: call for component ---->
 			<h1 ng-bind-html="flexshipFlow.muraData.plTitle"></h1> 
 	        <div class="text-grey"><div ng-bind-html="flexshipFlow.muraData.plBody"></div></div>
@@ -12,34 +12,38 @@
 	</div>
     
 	<!--- Start your order banner --->
-	<div class="py-4 mb-5 mx-0 todays-order-bar row filters">
-	    <div class="col ml-3">
-	        <div class="input-group custom-input-group">
-	        	<!----TODO: RBkey----->
-	            <input 
-	                placeholder="Search" 
-	                type="text"  
-	                class="form-control search-input" 
-	                ng-model="productController.searchTerm" 
-	                ng-model-options="{debounce: 500}" 
-	                ng-change="productController.searchByKeyword()"
-	                type="text"
-	            >
-	            <div class="input-group-append align-items-center">
-	                <div>
-	                    <i 
-                    		class="fas text-white"
-	                    	ng-class="{
-	                    		'fa-spinner fa-pulse':productController.loading,
-	                    		'fa-search':!productController.loading
-	                    	}"
-	                    >
-	                   </i>
-	                </div>
-	            </div>
+	<div class="mb-5 mx-0 todays-order-bar row filter-bar">
+		<div class="container">
+			<div class="row">
+			    <div class="search-bar col">
+			        <div class="input-group custom-input-group">
+			        	<!----TODO: RBkey----->
+			            <input 
+			                placeholder="Search" 
+			                type="text"  
+			                class="form-control search-input" 
+			                ng-model="productController.searchTerm" 
+			                ng-model-options="{debounce: 500}" 
+			                ng-change="productController.searchByKeyword()"
+			                type="text"
+			            >
+			            <div class="input-group-append align-items-center">
+			                <div>
+			                    <i 
+		                    		class="fas text-white"
+			                    	ng-class="{
+			                    		'fa-spinner fa-pulse':productController.loading,
+			                    		'fa-search':!productController.loading
+			                    	}"
+			                    >
+			                   </i>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+		        <filter-menu parent-controller="productController"></filter-menu>
 	        </div>
-	    </div>
-        <filter-menu parent-controller="productController"></filter-menu>
+		</div>
 	</div>
 
 	<div class="container products-listing-section">  
