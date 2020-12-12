@@ -158,6 +158,8 @@ class MonatEnrollmentController {
 
 	public next() {
 		this.navigate(this.position + 1);
+		document.body.scrollTop = 0; // For Safari
+		document.documentElement.scrollTop = 0;
 	}
 
 	public previous() {
@@ -196,11 +198,12 @@ class MonatEnrollmentController {
 		}else{
 			this.updateSteps(index);
 		}
+		
 	}
 	
 	public updateSteps(index:number){
 		this.position = index;
-		this.showMiniCart = ( this.steps[ this.position ].showMiniCart == 'true' ); 
+		this.monatService.shouldHideMiniCart = ( this.steps[ this.position ].showMiniCart != 'true' ); 
 		this.showFlexshipCart = ( this.steps[ this.position ].showFlexshipCart == 'true' ); 
 		
 		angular.forEach(this.steps, (step) => {

@@ -1,5 +1,5 @@
 
-<div class="header-cart" ng-click="hybridCart.toggleCart()">
+<div class="header-cart" ng-click="hybridCart.toggleCart()" ng-if="!hybridCart.monatService.shouldHideMiniCart">
 	<a href="#">
 		<i class="fal fa-shopping-cart"></i>
 	
@@ -135,12 +135,6 @@
 							</ul>
 						</div>
 						<div class="card-footer">
-							<div ng-if="hybridCart.monatService.cart.canPlaceOrderMessage" class="flexship-alert px-3 py-2">
-								<i class="fal fa-exclamation-circle text-danger"></i>
-								<p class="my-1">
-									<span ng-bind-html="hybridCart.monatService.cart.canPlaceOrderMessage.message"></span> 
-								</p>
-							</div>
 							<div ng-if="hybridCart.listPrice && hybridCart.listPrice > 0" class="row justify-content-between suggested">
 								<span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span>
 								<span class="ml-2" ng-bind-html="hybridCart.listPrice | swcurrency:hybridCart.cart.currencyCode"></span>
