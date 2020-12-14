@@ -17,7 +17,7 @@ component displayname="ImporterMapping" entityname="SlatwallImporterMapping" tab
 	
 	//returns an array of name/value structs for
 	public array function getBaseObjectOptions() {
-	    var baseObjectOptions = getService('HibachiService').getEntityNameOptions("baseObjectOptions", variables);
+	    var baseObjectOptions = getService('HibachiService').getEntityNameOptions();
 	    return baseObjectOptions;
 	}
 }
