@@ -358,7 +358,7 @@ Notes:
 					<cfif structKeyExists(url, 'ng')>
 						<ng-view></ng-view>
 					<cfelseif structKeyExists(url, 'ngRedirectURL')>
-						<script>window.location.href = "/?ng##!/entity/Content/";</script>
+						<script>window.location.href = "/?ng##!#url.ngRedirectURL#";</script>
 					<cfelse>
 							#body#
 					</cfif>
