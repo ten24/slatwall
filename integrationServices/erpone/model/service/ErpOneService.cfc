@@ -333,12 +333,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public any function transformErpOneAccounts( required array accountDataArray ){
 	    var erponeMapping = {
 	        "customer" : "remoteAccountID",
-	        "name" : "firstName",
+	        "customer" : "companyCode",
+	        "company_cu" : "firstName",
 	        "country_code" : "countryCode",
 	        "email_address" : "email",
 	        "phone" : "phone",
 	        "Active" : "accountActiveFlag",
-	        "company_cu" : "companyName"
+	        "name" : "companyName"
 	    };
 	    
 	    return this.transformedErponeItems( arguments.accountDataArray, erponeMapping);
