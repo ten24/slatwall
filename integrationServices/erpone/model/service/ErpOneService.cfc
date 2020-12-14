@@ -339,7 +339,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        "email_address" : "email",
 	        "phone" : "phone",
 	        "Active" : "accountActiveFlag",
-	        "company_cu" : "companyName"
+	        "name" : "companyName"
 	    };
 	    
 	    return this.transformedErponeItems( arguments.accountDataArray, erponeMapping);
