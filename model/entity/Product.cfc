@@ -214,11 +214,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productKeyMachineType" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachineCutByCode" ormtype="boolean" hb_formatType="yesno";
  property name="productKeyMachineDuplicate" ormtype="boolean" hb_formatType="yesno";
+ property name="productPickStyle" ormtype="string" hb_formFieldType="select";
  property name="productTension" ormtype="string";
  property name="productTensionWrenchStyle" ormtype="string";
  property name="productHandle" ormtype="boolean" hb_formatType="yesno";
  property name="productHandleStyle" ormtype="string";
+ property name="productToolMaterial" ormtype="string";
  property name="productMaterialThickness" ormtype="string";
+ property name="productLock" ormtype="string" hb_formFieldType="select";
+ property name="productMachineCompatibility" ormtype="string";
  property name="productPinSize" ormtype="string";
  property name="productLockBrand" ormtype="string";
  property name="productProprietary" ormtype="boolean" hb_formatType="yesno" default="0";
@@ -246,6 +250,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productFailSecure" ormtype="boolean" hb_formatType="yesno";
  property name="productRestricted" ormtype="boolean" hb_formatType="yesno";
  property name="productSize" ormtype="string";
+ property name="productExpandable" ormtype="boolean" hb_formatType="yesno";
+ property name="productCapacity" ormtype="string";
  property name="productStyle" ormtype="string";
  property name="productSpec" ormtype="string";
  property name="productTwoInOne" ormtype="string";

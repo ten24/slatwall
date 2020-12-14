@@ -657,6 +657,48 @@
                 "dataType": "string"
             }
         },
+         "TensionWrenchStyle": {
+            "propertyIdentifier": "productTensionWrenchStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "PickStyle": {
+            "propertyIdentifier": "productPickStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "ToolMaterial": {
+            "propertyIdentifier": "productToolMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Lock": {
+            "propertyIdentifier": "productLock",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Capacity": {
+            "propertyIdentifier": "productCapacity",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Expandable": {
+            "propertyIdentifier": "productExpandable",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+         "MachineCompatibility": {
+            "propertyIdentifier": "productMachineCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "ProductSeries": {
             "propertyIdentifier": "productSeries",
             "validations": {
