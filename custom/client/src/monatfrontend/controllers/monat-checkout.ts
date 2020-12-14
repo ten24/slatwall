@@ -151,7 +151,7 @@ class MonatCheckoutController {
 		
 		//TODO: delete these event listeners and call within function
 		this.observerService.attach(()=>{
-			this.getCurrentCheckoutScreen(false, false, false, Screen.SHIPPING_METHOD);
+			this.getCurrentCheckoutScreen(false, false);
 		}, 'addShippingAddressSuccess' ); 
 		
 		this.observerService.attach(()=>{
@@ -159,7 +159,7 @@ class MonatCheckoutController {
 		}, 'addOrderPaymentSuccess' ); 
 		
 		this.observerService.attach(()=>{
-			this.getCurrentCheckoutScreen(false, false, false, Screen.SHIPPING_METHOD);
+			this.getCurrentCheckoutScreen(false, false);
 		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
 		
 		this.observerService.attach(()=>{
@@ -453,9 +453,6 @@ class MonatCheckoutController {
 		){
 			return this.getCurrentCheckoutScreen(false, false);
 		} 
-		this.publicService.doAction('setIntialShippingAndBilling',{returnJsonObjects:'cart'}).then(res=>{
-			this.getCurrentCheckoutScreen(false, false);
-		});
 	}
 	
 	public calculateListPrice(){
