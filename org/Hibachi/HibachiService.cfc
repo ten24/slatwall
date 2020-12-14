@@ -90,20 +90,6 @@
 			return collection;
 		}
 		
-		public any function getEntityNameOptions(){
-			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
-			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
-			arraySort(entitiesMetaDataArray,"text");
-			var entityNameOptions = [];
-			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
-				//only show what you are authenticated to make
-				if(getHibachiScope().authenticateEntity('read', entitiesMetaDataArray[i])){
-					arrayAppend(entityNameOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
-				}
-			}
-			return entityNameOptions;
-		}
-		
 		public any function list(required string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			return getHibachiDAO().list(argumentcollection=arguments);
 		}

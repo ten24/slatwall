@@ -17,7 +17,22 @@ component displayname="ImporterMapping" entityname="SlatwallImporterMapping" tab
 	
 	//returns an array of name/value structs for
 	public array function getBaseObjectOptions() {
-	    var baseObjectOptions = getService('HibachiService').getEntityNameOptions();
-	    return baseObjectOptions;
+	    if(!structKeyExists(variables, "baseObjectOptions") ){
+			
+			var entitiesMetaData = this.getService("hibachiService").getEntitiesMetaData();
+			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
+			arraySort(entitiesMetaDataArray,"text");
+			
+			var baseObjectOptions = [];
+			for( var i=1; i<=arrayLen(entitiesMetaDataArray); i++ ){
+				//only show what you are authenticated to make
+				if( this.getHibachiScope().authenticateEntity('read', entitiesMetaDataArray[i]) ){
+					arrayAppend( baseObjectOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
+				}
+			}
+		    variables.baseObjectOptions	= baseObjectOptions;
+		}
+		
+		return variables.baseObjectOptions;
 	}
 }
