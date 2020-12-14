@@ -57,7 +57,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
-	
+			this.logHibachi('Start executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+			var triggerExecutionStartTime = getTickCount();
 			//only flush on after
 			if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
 				getHibachiScope().flushORMSession();
@@ -123,6 +124,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Persist the info to the DB
 			workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 		}
+		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()# - Duration: #numberFormat( getTickCount() - triggerExecutionStartTime )# ms', true);
 		return successFlag;
 	}
 	
@@ -220,6 +222,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger, boolean skipTriggerRunningCheck = false) {
 		this.logHibachi('Start executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+		var triggerExecutionStartTime = getTickCount();
+		
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -374,6 +378,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 		
+		var triggerExecutionStartTime = getTickCount();
+		
 		//Change WorkflowTrigger runningFlag to FALSE
 		updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=false);
 	
@@ -403,7 +409,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
-		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()# - Duration: #numberFormat( getTickCount() - triggerExecutionStartTime )# ms', true);
 		return workflowTrigger;
 	}
 
