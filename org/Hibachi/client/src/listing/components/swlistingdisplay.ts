@@ -213,7 +213,13 @@ class SWListingDisplayController{
 
          }else{
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
-            this.processCollection();
+
+            if (this.name || this.baseEntityName || this.collectionConfig || this.collection || this.collectionPromise) {
+                this.processCollection();
+            }
+            else {
+                console.warn("This listing does not have enough info to make a proper collection query", this);
+            }
         }
         
         if(!this.reportAction && this.baseEntityName){

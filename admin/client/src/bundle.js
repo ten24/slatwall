@@ -72061,7 +72061,9 @@ var SWCriteriaNumber = /** @class */ (function () {
                         }
                     }
                     else {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart || selectedFilterProperty.value;
+                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaValue;
                     }
                     scope.filterItem.value = selectedFilterProperty.criteriaValue;
                 };
@@ -89231,7 +89233,12 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         else {
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
-            this.processCollection();
+            if (this.name || this.baseEntityName || this.collectionConfig || this.collection || this.collectionPromise) {
+                this.processCollection();
+            }
+            else {
+                console.warn("This listing does not have enough info to make a proper collection query", this);
+            }
         }
         if (!this.reportAction && this.baseEntityName) {
             this.reportAction = 'entity.reportlist' + this.baseEntityName.toLowerCase();
