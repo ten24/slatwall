@@ -57,8 +57,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
-			this.logHibachi('Start executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
-			var triggerExecutionStartTime = getTickCount();
 			//only flush on after
 			if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
 				getHibachiScope().flushORMSession();
@@ -124,7 +122,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Persist the info to the DB
 			workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 		}
-		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()# - Duration: #numberFormat( getTickCount() - triggerExecutionStartTime )# ms', true);
 		return successFlag;
 	}
 	
@@ -378,8 +375,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 		
-		var triggerExecutionStartTime = getTickCount();
-		
 		//Change WorkflowTrigger runningFlag to FALSE
 		updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=false);
 	
@@ -409,8 +404,27 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
-		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()# - Duration: #numberFormat( getTickCount() - triggerExecutionStartTime )# ms', true);
+		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()# - #getFormatedExecutionTime(triggerExecutionStartTime, getTickCount())#', true);
 		return workflowTrigger;
+	}
+	
+	private string function getFormatedExecutionTime(required numeric start, required numeric end){
+		var millis = numberFormat( end - start );
+		var formatedValue = 'Duration: ' & millis & ' ms';
+		
+		//tags to simplify search
+		if(millis > 300000){
+			formatedValue &= ' [over5minutes]';
+		}else if(millis > 180000){
+			formatedValue &= ' [over3minutes]';
+		}else if(millis > 120000){
+			formatedValue &= ' [over2minutes]';
+		}else if(millis > 60000){
+			formatedValue &= ' [over1minute]';
+		}else if(millis > 30000){
+			formatedValue &= ' [over30seconds]';
+		}
+		return formatedValue;
 	}
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
