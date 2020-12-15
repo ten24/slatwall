@@ -1048,7 +1048,7 @@
 				}
 
 				// Perform sort on createdDateTime
-				sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
+				var sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
 
 				// Build array of sorted passwords
 				for (var spk in sortedPasswordKeys) {
