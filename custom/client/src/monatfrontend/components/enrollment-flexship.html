@@ -93,7 +93,7 @@
 					</div>
 					<div class="row justify-content-between">
 						<span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span>
-						<span ng-bind-html="(enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal : 0) | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode"></span>
+						<span ng-bind-html="'&minus;' + ((enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal ? enrollmentFlexship.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal : 0) | swcurrency:enrollmentFlexship.hybridCart.cart.currencyCode)"></span>
 					</div>
 				</div>
 				<div class="row justify-content-between total">
