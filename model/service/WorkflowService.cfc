@@ -57,7 +57,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
-	
 			//only flush on after
 			if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
 				getHibachiScope().flushORMSession();
@@ -220,6 +219,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger, boolean skipTriggerRunningCheck = false) {
 		this.logHibachi('Start executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+		var triggerExecutionStartTime = getTickCount();
+		
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -403,8 +404,27 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
-		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()# - #getFormatedExecutionTime(triggerExecutionStartTime, getTickCount())#', true);
 		return workflowTrigger;
+	}
+	
+	private string function getFormatedExecutionTime(required numeric start, required numeric end){
+		var millis = numberFormat( end - start );
+		var formatedValue = 'Duration: ' & millis & ' ms';
+		
+		//tags to simplify search
+		if(millis > 300000){
+			formatedValue &= ' [over5minutes]';
+		}else if(millis > 180000){
+			formatedValue &= ' [over3minutes]';
+		}else if(millis > 120000){
+			formatedValue &= ' [over2minutes]';
+		}else if(millis > 60000){
+			formatedValue &= ' [over1minute]';
+		}else if(millis > 30000){
+			formatedValue &= ' [over30seconds]';
+		}
+		return formatedValue;
 	}
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
