@@ -35,6 +35,12 @@
                 "dataType": "string"
             }
         },
+        "companyCode": {
+            "propertyIdentifier": "companyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "organizationFlag": {
             "propertyIdentifier": "organizationFlag",
             "defaultValue": false,
