@@ -10,17 +10,17 @@
 					ng-class="{ 'selected': item.skuID == ofyEnrollment.stagedProductID }"
 				>
 					<div class="fitbox pr-box-wrapper">
-						<div class="quick-view d-none d-lg-block">
+						<figure class="quick-view">
 		      				<div class="overlay">
 		      					<div class="overlay-inner">
 		      						<span><a ng-click="ofyEnrollment.launchQuickShopModal(item)" class="btn prod-btn" sw-rbkey="'frontend.global.quickShop'"></a></span>
 		      					</div>
 		      				</div>
-		      			</div>
-						<figure>
-							<img image-manager ng-src="{{ item.skuImagePath[0] }}" />
-						</figure>
-						
+		      				<div class="d-block">
+		      					<img image-manager ng-src="{{ item.skuImagePath[0] }}" />
+		      				</div>
+		      			</figure>
+
 						<div>
 							<h4 ng-bind="item.skuName"></h4>
 							
@@ -36,7 +36,6 @@
 							<span ng-if="item.skuID != ofyEnrollment.stagedProductID" sw-rbKey="'frontend.global.addToCart'"></span>
 							<span ng-if="item.skuID == ofyEnrollment.stagedProductID" sw-rbKey="'frontend.global.addedToCart'"></span>
 						</a>
-						<a ng-click="ofyEnrollment.launchQuickShopModal(item)" class="btn add-to-cart d-block d-lg-none mt-3" sw-rbkey="'frontend.global.quickShop'"></a>
 						</div>
 					</div>
 				</div>
