@@ -72061,7 +72061,9 @@ var SWCriteriaNumber = /** @class */ (function () {
                         }
                     }
                     else {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart || selectedFilterProperty.value;
+                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaValue;
                     }
                     scope.filterItem.value = selectedFilterProperty.criteriaValue;
                 };
@@ -80797,12 +80799,33 @@ var HibachiInterceptor = /** @class */ (function () {
         };
         this.responseError = function (rejection) {
             if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499) {
-                if (rejection.data && rejection.data.messages) {
+                var message;
+                if (rejection.data && rejection.data.messages && rejection.data.errors) {
+                    var msg = '';
+                    var errorList = rejection.data.errors;
+                    for (var errors in errorList) {
+                        for (var i = 0; i < errorList[errors].length; i++) {
+                            msg += errorList[errors][i] + " ";
+                        }
+                    }
+                    var messageList = rejection.data.messages;
+                    if (messageList && messageList.length) {
+                        for (message in messageList) {
+                            msg += messageList[message].message + " ";
+                        }
+                    }
+                    var messages = {
+                        msg: msg,
+                        type: 'error'
+                    };
+                    _this.alertService.addAlert(messages);
+                }
+                else if (rejection.data && rejection.data.messages) {
                     var alerts = _this.alertService.formatMessagesToAlerts(rejection.data.messages);
                     _this.alertService.addAlerts(alerts);
                 }
                 else {
-                    var message = {
+                    message = {
                         msg: 'there was error retrieving data',
                         type: 'error'
                     };
@@ -89231,7 +89254,12 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         else {
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
-            this.processCollection();
+            if (this.name || this.baseEntityName || this.collectionConfig || this.collection || this.collectionPromise) {
+                this.processCollection();
+            }
+            else {
+                console.warn("This listing does not have enough info to make a proper collection query", this);
+            }
         }
         if (!this.reportAction && this.baseEntityName) {
             this.reportAction = 'entity.reportlist' + this.baseEntityName.toLowerCase();
