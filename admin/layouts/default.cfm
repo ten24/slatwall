@@ -250,20 +250,20 @@ Notes:
 									<hb:HibachiActionCaller action="admin:report" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listsession" type="list">
+									<!---<hb:HibachiActionCaller action="admin:entity.listsession" type="list">--->
 									<hb:HibachiActionCaller action="admin:entity.listtask" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
 									<hb:HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true">
-									<hb:HibachiActionCaller action="admin:main.log" type="list">
+									<!---<hb:HibachiActionCaller action="admin:main.log" type="list">--->
 									<hb:HibachiActionCaller action="admin:entity.listaudit" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listemail" type="list">
-									<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">
-									<hb:HibachiActionCaller action="admin:main.update" type="list">
+									<!---<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">--->
+									<!---<hb:HibachiActionCaller action="admin:main.update" type="list">--->
 									<cfif $.slatwall.getAccount().getSuperUserFlag()>
-										<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
-										<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
-										<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">
-											<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#&#getHibachiScope().getApplicationValue('applicationUpdateKey')#=#getHibachiScope().getApplicationValue('applicationUpdatePassword')#&#getHibachiScope().getApplicationValue('applicationCreateJsonKey')#=#getHibachiScope().getApplicationValue('applicationCreateJsonPassword')#" type="list" text="Create Json">
+										<!---<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
+										<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">--->
+										<!---<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">--->
+										<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#&#getHibachiScope().getApplicationValue('applicationUpdateKey')#=#getHibachiScope().getApplicationValue('applicationUpdatePassword')#&#getHibachiScope().getApplicationValue('applicationCreateJsonKey')#=#getHibachiScope().getApplicationValue('applicationCreateJsonPassword')#" type="list" text="Create Json">
 									</cfif>
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
@@ -317,7 +317,7 @@ Notes:
 									</cfif>
 									<li><a title="User Docs" href="http://docs.getslatwall.com/##users-administrator-overview" target="_blank">#$.slatwall.rbKey('define.userGuide')#</a></li>
 									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">#$.slatwall.rbKey('define.developerDocs')#</a></li>
-									<hb:HibachiActionCaller action="admin:main.about" type="list">
+									<hb:HibachiActionCaller action="admin:main.system" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:main.changelanguage" 
 										queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
