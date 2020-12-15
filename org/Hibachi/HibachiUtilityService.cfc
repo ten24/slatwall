@@ -1,6 +1,7 @@
 <cfcomponent output="false" accessors="true" extends="HibachiService">
 
 	<cfproperty name="hibachiTagService" type="any" />
+	<cfproperty name="encryptionPasswordArray" type="any" />
 
 	<cfscript>
 	
@@ -905,7 +906,8 @@
 		}
 
 		public string function decryptValue(required string value, string salt="") {
-			for (var passwordData in getEncryptionPasswordArray()) {
+			var encryptionPasswordArray = getEncryptionPasswordArray();
+			for (var passwordData in encryptionPasswordArray) {
 				var key = "";
 				var algorithm = getEncryptionAlgorithm();
 				var encoding = getEncryptionEncoding();
@@ -988,6 +990,10 @@
 		}
 
 		public any function getEncryptionPasswordArray() {
+		
+			if(structKeyExists(variables, 'encryptionPasswordArray')){
+				return variables.encryptionPasswordArray;
+			}
 			var passwords = [];
 
 			// Generate default password if necessary
@@ -1042,7 +1048,7 @@
 				}
 
 				// Perform sort on createdDateTime
-				sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
+				var sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
 
 				// Build array of sorted passwords
 				for (var spk in sortedPasswordKeys) {
@@ -1058,6 +1064,8 @@
 
 				passwords = sortedPasswords;
 			}
+			
+			variables.encryptionPasswordArray = passwords;
 
 			return passwords;
 		}
@@ -1134,12 +1142,15 @@
 		}
 
 		private void function writeEncryptionPasswordFile(array encryptionPasswordArray) {
+		
+			
 			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
 			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
 
 			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
 			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
 			logHibachi("Encryption key file updated", true);
+			structDelete(variables, 'encryptionPasswordArray');
 		}
 
 		private any function readEncryptionPasswordFile() {
