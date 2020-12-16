@@ -36,7 +36,7 @@ class VIPController {
 	public defaultTerm;
 	public termMap = {};
 	public isInitialized = false;
-	public paginationMethod = 'getproductsByCategoryOrContentID';
+	public paginationMethod = 'getProductsByCategoryOrContentID';
 	public productRecordsCount: number;
 	public flexshipProductRecordsCount:number;
 	public paginationObject = {hideProductPacksAndDisplayOnly: true};
@@ -229,7 +229,7 @@ class VIPController {
 			this.paginationObject['categoryID'] = category.value;
 		}
 		
-		this.publicService.doAction('getproductsByCategoryOrContentID', data, 'GET').then((result) => {
+		this.publicService.doAction('getProductsByCategoryOrContentID', data, 'GET').then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount
@@ -257,7 +257,7 @@ class VIPController {
 			this.paginationObject['categoryID'] = category.value;
 		}
 		
-		this.publicService.doAction('getproductsByCategoryOrContentID', data, 'GET').then((result) => {
+		this.publicService.doAction('getProductsByCategoryOrContentID', data, 'GET').then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount
