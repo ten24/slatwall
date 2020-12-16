@@ -24,7 +24,7 @@ class EnrollmentMPController {
 	public monthOptions: Array<number|string> = [];
 	public currentDate: any;
 	public productRecordsCount:any;
-	public paginationMethod = 'getproductsByCategoryOrContentID';
+	public paginationMethod = 'getProductsByCategoryOrContentID';
 	public paginationObject = {hideProductPacksAndDisplayOnly: true};
 	public isInitialized = false;
 	public upgradeFlow:boolean;
@@ -302,7 +302,7 @@ class EnrollmentMPController {
 			this.paginationObject['categoryID'] = category.value;
 		}
 		
-		this.publicService.doAction('getproductsByCategoryOrContentID', data, 'GET').then((result) => {
+		this.publicService.doAction('getProductsByCategoryOrContentID', data, 'GET').then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount
