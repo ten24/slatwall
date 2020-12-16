@@ -2279,7 +2279,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
 
-        this.setDefaultShippingMethod(cart,false);
+        // this.setDefaultShippingMethod(cart,false);
         // if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
         //     this.setShippingSameAsBilling();
         // }
