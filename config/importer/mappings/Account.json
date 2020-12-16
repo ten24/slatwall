@@ -26,12 +26,17 @@
         "username": {
             "propertyIdentifier": "username",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },
         "companyName": {
             "propertyIdentifier": "company",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "companyCode": {
+            "propertyIdentifier": "companyCode",
             "validations": {
                 "dataType": "string"
             }
@@ -58,18 +63,15 @@
     "relations": [
         {
             "type": "oneToOne",
-            "entityName": "AccountEmailAddress",
-            "propertyIdentifier": "primaryEmailAddress"
-        },
-        {
-            "type": "oneToOne",
+            "isNullable": true,
             "entityName": "AccountPhoneNumber",
             "propertyIdentifier": "primaryPhoneNumber"
         },
         {
-            "type": "oneToMany",
-            "entityName": "AccountAuthentication",
-            "propertyIdentifier": "accountAuthentications",
+            "type": "oneToOne",
+            "isNullable": true,
+            "entityName": "AccountEmailAddress",
+            "propertyIdentifier": "primaryEmailAddress"
         }
     ],
     
@@ -79,10 +81,6 @@
         "keys": [
             "remoteAccountID"
         ]
-    },
-    
-    "validationContext": "save",
-    
-    "postPopulateMethods": [ "updateCalculatedProperties" ]
+    }
     
 }

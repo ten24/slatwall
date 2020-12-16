@@ -3,7 +3,7 @@
     
     "properties": {
         
-        "orderID": {
+        "remoteOrderID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -14,11 +14,12 @@
             "propertyIdentifier": "orderNumber",
             "validations": {
                 "required": true,
-                "dataType": "string"
+                "dataType": "numeric"
             }
         },
         "currencyCode": {
             "propertyIdentifier": "currencyCode",
+            "defaultValue": "USD",
             "validations": {
                 "dataType": "string"
             }
@@ -27,6 +28,12 @@
             "propertyIdentifier": "orderOpenDateTime",
             "validations": {
                 "dataType": "date"
+            }
+        },
+        "orderIPAddress": {
+            "propertyIdentifier": "orderOpenIPAddress",
+            "validations": {
+                "dataType": "string"
             }
         },
         "orderCloseDateTime": {
@@ -41,39 +48,82 @@
                 "dataType": "date"
             }
         },
-        "quoteFlag": {
-            "propertyIdentifier": "quoteFlag",
-            "defaultValue": false,
+        "canceledDateTime": {
+            "propertyIdentifier": "orderCanceledDateTime",
             "validations": {
-                "dataType": "boolean"
+                "dataType": "date"
+            }
+        },
+        "orderNotes": {
+            "propertyIdentifier": "orderNotes",
+            "validations": {
+                "dataType": "string"
             }
         }
         
     },
-    "importIdentifier": {
-        "propertyIdentifier": "importRemoteID",
-        "type": "composite",
-        "keys": [
-            "orderID"
-        ]
-    },
     
     "relations": [
         {
-            "entityName": "account",
-            "propertyIdentifier": "Account"
+            "type"                   : "manyToOne",
+            "entityName"             : "Address",
+            "isNullable"             : true,
+            "propertyIdentifier"     : "billingAddress",
+            "sourceDataKeysPrefix"   : "BillingAddress_"
         },
         {
-            "entityName": "billingAccountAddress",
-            "propertyIdentifier": "AccountAddress"
-        },
-        {
-            "entityName": "defaultStockLocation",
-            "propertyIdentifier": "Location"
-        },
-        {
-            "entityName": "shippingAccountAddress",
-            "propertyIdentifier": "AccountAddress"
+            "type"                   : "manyToOne",
+            "entityName"             : "Address",
+            "isNullable"             : true,
+            "propertyIdentifier"     : "shippingAddress",
+            "sourceDataKeysPrefix"   : "ShippingAddress_"
         }
-    ]
+    ],
+    
+     "dependencies" : [
+        {
+            "key"                   : "remoteAccountID",
+            "entityName"            : "Account",
+            "lookupKey"             : "remoteID",
+            "propertyIdentifier"    : "account"
+        },
+        {
+            "key"                   : "orderTypeCode",
+            "lookupKey"             : "systemCode",
+            "entityName"            : "Type",
+            "defaultValue"          : "444df2df9f923d6c6fd0942a466e84cc",
+            "__hint"                : "this defaultValue for order-type is `otSale`.",
+            "excludeFromValidation" : true,
+            "propertyIdentifier"    : "orderType"
+        },
+        {
+            "key"                   : "orderStatusCode",
+            "lookupKey"             : "systemCode",
+            "entityName"            : "Type",
+            "defaultValue"          : "444df2b5c8f9b37338229d4f7dd84ad1",
+            "__hint"                : "this defaultValue for order-type is `ostNew`.",
+            "excludeFromValidation" : true,
+            "propertyIdentifier"    : "orderStatusType"
+        },
+        {
+            "key"                   : "remoteOrderOriginID",
+            "isNullable"            : true,
+            "lookupKey"             : "remoteID",
+            "entityName"            : "OrderOrigin",
+            "propertyIdentifier"    : "orderOrigin"
+        },
+        {
+            "key"                   : "orderSiteCode",
+            "isNullable"            : true,
+            "lookupKey"             : "siteCode",
+            "entityName"            : "Site",
+            "propertyIdentifier"    : "orderCreatedSite"
+        },
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier"        : "importRemoteID",
+        "type"                      : "composite",
+        "keys"                      : [ "remoteOrderID" ]
+    }
 }

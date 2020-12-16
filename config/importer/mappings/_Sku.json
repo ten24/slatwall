@@ -1,0 +1,94 @@
+{
+    "entityName": "Sku",
+    "properties": {
+        "remoteSkuID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "skuName": {
+            "propertyIdentifier": "skuName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "skuCode": {
+            "propertyIdentifier": "skuCode",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "price": {
+            "propertyIdentifier": "price",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
+        "listPrice": {
+            "propertyIdentifier": "listPrice",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
+        "skuDescription": {
+            "propertyIdentifier": "skuDescription",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "skuPublishedFlag": {
+            "propertyIdentifier": "publishedFlag",
+            "defaultValue": true,
+            "allowUpdate": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "skuActiveFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "allowUpdate": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    
+    "generatedProperties": [
+        {
+            "propertyIdentifier": "imageFile",
+            "generatorFunction": "generateSkuImageFile"
+        }
+    ],
+    
+    "relations": [
+        {
+            "type": "oneToMany",
+            "entityName": "SkuPrice",
+            "propertyIdentifier": "skuPrices"
+        }
+    ],
+    
+    "dependencies" : [
+        {
+            "key"                : "remoteProductID",
+            "entityName"         : "Product",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "product"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteSkuID"
+        ]
+    }
+}
