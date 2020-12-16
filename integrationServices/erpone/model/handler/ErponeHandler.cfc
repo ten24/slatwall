@@ -1,11 +1,6 @@
 component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
-	private any function getIntegration(){
-		if(!structKeyExists(variables,'integration')){
-			variables.integration = getService('integrationService').getIntegrationByIntegrationPackage('erpone');
-		}
-		return variables.integration;
-	}
+	property name="erpOneIntegrationCFC";
 	
 	private function addToQueue(required any entity){
 		try {
@@ -13,11 +8,11 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				baseID          = arguments.entity.getPrimaryIDValue(),
 				baseObject      = arguments.entity.getClassName(),
 				processMethod   = 'pushAccountDataToErpOne',
-				integrationID   = getIntegration().getIntegrationID()
+				integrationID   = this.erpOneIntegrationCFC().getIntegrationID()
 			);
 			
 		}catch( any e) {
-			if( getIntegration().setting('devMode') ){
+			if( this.erpOneIntegrationCFC().setting('devMode') ){
 				rethrow;
 			}
 		}

@@ -54,70 +54,7 @@ component accessors="true" output="false" displayname="ErpOne" extends="Slatwall
 	
 	
 	
-	/**
-	 * Function to call create-Erpone-user-API
-	 * @requestData struct, required, post-request-payload
-	 * @return struct, of successful-response or formated-error-response 
-	*/ 
-	private struct function upsertErponeUser(required struct requestData, boolean create=false) {
-		if(arguments.create){
-			var response = this.getErpOneService().pushErpOneDataApiCall({
-		    "table": "customer",
-		    "triggers": "true",
-		    "records": [
-			        arguments.requestData
-			    ]
-			}, "create");
-		}else{
-			var response = this.getErpOneService().pushErpOneDataApiCall({
-		    "table":   "customer",
-		    "triggers": true,
-		    "changes": [
-			        arguments.requestData
-			   ]
-			}, "update");
-		}
-		
-		/** Format error:
-		 * typical error response: { "status": "error", "message": "Required fields missing: email"};
-		 * typical successful response: {"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
-		*/
-		
-		if( !structKeyExists(response,'status') || response.status != 'success') {
-			response['requestAttributes'] = httpRequest.getAttributes() ;
-			response['requestParams'] = httpRequest.getParams();
-			response['content'] = rawRequest.fileContent;
-		}
-		
-		return response;
-	}
-
 	
-	/**
-	 * Function to be create an user account on Erpone, and update Slatwlll-Account on successful response
-	 * @entity, @model/Account.cfc, user-account we're processing
-	 * @data, struct, containing post request payload
-	 * 
-	 * Note: in current setup this function will be called from ErponeService::push(), which will be called from EntityQueue
-	 * 
-	*/ 
-	public void function pushData(required any entity, struct data ={}, boolean create = false) {
-		//push to remote endpoint
-		var response = upsertErponeUser(arguments.data.payload, arguments.create);
-	
-		if( !structKeyExists(response,'status') || response.status != 'success' || 
-			!StructKeyExists(response ,'id') || 
-			!len( trim(response.id) ) 
-		) {
-			
-			if( !arguments.create && structKeyExists(response, 'message') && FindNoCase('could not be found', response.message) ){
-				return pushData(arguments.entity, arguments.data, true);
-			}
-			//the call was not successful
-			throw("Error in ErpOne::PushData() #SerializeJson(response)#"); //this will comeup in EntityQueue
-		} 
-		
-	}
 	
 
 }

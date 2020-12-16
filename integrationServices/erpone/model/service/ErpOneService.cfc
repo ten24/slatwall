@@ -61,24 +61,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         return variables.integration;
     }
 	
-	public array function getEventHandlers() {
-		
-		return [ 'Slatwall.integrationServices.erpone.model.handler.ErponeHandler' ];
-	}
-	
-	/**
-	 * @hint helper function to return the instance of this integration/Data.cfc
-	*/
-	private any function getDataIntegrationCFC(){
-
-		if( !structKeyExists(variables,'dataIntegrationCFC') ){
-			variables['dataIntegrationCFC'] = this.getIntegrationService().getDataIntegrationCFC( getIntegration() );
-		}
-
-		return variables.dataIntegrationCFC;
-	}
-
-	
 	public struct function getAvailableSampleCsvFilesIndex(){
   	    
   	    if( !structKeyExists(variables, 'availableSampleCsvFilesIndex') ){
@@ -301,7 +283,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return DeSerializeJson(rawRequest.fileContent);
     }
     
-    public any function pushErpOneDataApiCall( required any requestData, string endpoint="read" ){
+    public any function callErpOneDataApi( required any requestData, string endpoint="read" ){
         
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json");
 		
@@ -469,7 +451,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	 * 
 	 * @account, @enty/Account.cfc 
 	 * @returns, Struct of account properties+values required by Erpone createUser API.
-	*/ 
+	**/ 
 	public any function convertSwAccountToErponeAccount(required any account){
 		
 		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,remoteID,company,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
@@ -501,14 +483,79 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	/**
 	 * @hint helper function, to push Data into @thisIntegration/Data.cfc for further processing, from EntityQueue
 	 * 
-	*/ 
+	**/ 
 	public void function pushAccountDataToErpOne(required any entity, any data ={}){
 		logHibachi("ERPOne - Start pushData - Account: #arguments.entity.getAccountID()#");
 		
 		arguments.data.payload = this.convertSwAccountToErponeAccount(arguments.entity);
-		getDataIntegrationCFC().pushData(argumentCollection=arguments);
+		this.pushData(argumentCollection=arguments);
 		
 		logHibachi("ERPOne - End pushData");
+	}
+	
+	/**
+	 * Function to call create-Erpone-user-API
+	 * @requestData struct, required, post-request-payload
+	 * @return struct, of successful-response or formated-error-response 
+	*/ 
+	private struct function upsertErponeUser(required struct requestData, boolean create=false) {
+		if(arguments.create){
+			var response = this.callErpOneDataApi({
+		    "table": "customer",
+		    "triggers": "true",
+		    "records": [
+			        arguments.requestData
+			    ]
+			}, "create");
+		}else{
+			var response = this.callErpOneDataApi({
+		    "table":   "customer",
+		    "triggers": true,
+		    "changes": [
+			        arguments.requestData
+			   ]
+			}, "update");
+		}
+		
+		/** Format error:
+		 * typical error response: { "status": "error", "message": "Required fields missing: email"};
+		 * typical successful response: {"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
+		*/
+		
+		if( !structKeyExists(response,'status') || response.status != 'success') {
+			response['requestAttributes'] = httpRequest.getAttributes() ;
+			response['requestParams'] = httpRequest.getParams();
+			response['content'] = rawRequest.fileContent;
+		}
+		
+		return response;
+	}
+
+	
+	/**
+	 * Function to be create an user account on Erpone, and update Slatwlll-Account on successful response
+	 * @entity, @model/Account.cfc, user-account we're processing
+	 * @data, struct, containing post request payload
+	 * 
+	 * Note: in current setup this function will be called from ErponeService::push(), which will be called from EntityQueue
+	 * 
+	*/ 
+	public void function pushData(required any entity, struct data ={}, boolean create = false) {
+		//push to remote endpoint
+		var response = upsertErponeUser(arguments.data.payload, arguments.create);
+	
+		if( !structKeyExists(response,'status') || response.status != 'success' || 
+			!StructKeyExists(response ,'id') || 
+			!len( trim(response.id) ) 
+		) {
+			
+			if( !arguments.create && structKeyExists(response, 'message') && FindNoCase('could not be found', response.message) ){
+				return pushData(arguments.entity, arguments.data, true);
+			}
+			//the call was not successful
+			throw("Error in ErpOne::PushData() #SerializeJson(response)#"); //this will comeup in EntityQueue
+		} 
+		
 	}
 	
 	
