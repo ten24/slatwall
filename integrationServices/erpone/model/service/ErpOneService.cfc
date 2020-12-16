@@ -314,7 +314,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
     	    "query": "FOR EACH customer WHERE customer.active = YES",
-    	    "columns" : "name,country_code,email_address,phone,Active,company_cu"
+    	    "columns" : "name,country_code,email_address,phone,Active,company_cu,customer"
     	})
     	
 		
@@ -363,7 +363,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 			try {
 				
-				writeDump(this.getAccountData( currentPage, pageSize	));
+				this.getAccountData( currentPage, pageSize	);
 				this.logHibachi("Successfully called getAccountData for CurrentPage: #currentPage# and PageSize: #pageSize#");
 				
 			} catch(e){
