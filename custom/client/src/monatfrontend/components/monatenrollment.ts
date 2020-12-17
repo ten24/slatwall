@@ -214,7 +214,9 @@ class MonatEnrollmentController {
 		this.steps[this.position].selected = true;
 		if(this.currentStepName == 'orderListing'){
 			this.flexshipShouldBeChecked = true;	
-		} 
+		}else if(this.currentStepName == 'todaysOrder'){
+			this.flexshipShouldBeChecked = false;
+		}
 		
 		if(this.account.accountID.length){
 			this.hasSkippedSteps = true;
