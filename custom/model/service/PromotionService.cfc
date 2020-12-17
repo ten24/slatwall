@@ -250,6 +250,7 @@ component extends="Slatwall.model.service.PromotionService" {
 		if(isNull(promoCacheKey) || arguments.order.getPromotionCacheKey() != promoCacheKey){
     		arguments.order.updateQualifiedMerchandiseRewardsArray();
     	}
+
 	}
 	
 	public void function allocatePersonalVolumeDiscountToOrderItems(required any order, required amountToDistribute){
@@ -302,7 +303,9 @@ component extends="Slatwall.model.service.PromotionService" {
 		    if(orderItem.hasAppliedPromotion()){
 		    	var appliedPromotion = orderItem.getAppliedPromotions()[1];
 		    	var currentPVDiscountAmount = appliedPromotion.getPersonalVolumeDiscountAmount();
-		    	
+		    	if(isNull(currentPVDiscountAmount)){
+		    		currentPVDiscountAmount = 0;
+		    	}
 				appliedPromotion.setPersonalVolumeDiscountAmount(currentPVDiscountAmount + currentOrderItemAllocationAmount);
 		    }else{
 		    	var newAppliedPromotion = this.newPromotionApplied();
@@ -328,7 +331,6 @@ component extends="Slatwall.model.service.PromotionService" {
 		}
 		
 		for(var item in arguments.itemsToBeAdded){
-			
 			var sku = skuService.getSku(item.skuID);
 			if(isNull(sku)){
 				continue;
@@ -351,14 +353,19 @@ component extends="Slatwall.model.service.PromotionService" {
 			var showInCartFlag = item.promotionReward.getShowRewardSkuInCartFlag() ?: true;
 			newOrderItem.setShowInCartFlag(showInCartFlag);
 	
-			getService('orderService').saveOrderItem(newOrderItem);
+			getService('hibachiService').saveOrderItem(newOrderItem);
 
 			if(!newOrderItem.hasErrors()){
+				
 				var newAppliedPromotion = this.newPromotionApplied();
+				newAppliedPromotion.setAppliedType('orderItem');
 				newAppliedPromotion.setOrderItem(newOrderItem);
 				newAppliedPromotion.setPromotion(item.promotion);
 				newAppliedPromotion.setPromotionReward(item.promotionReward);
 				newAppliedPromotion.setRewardSku(sku);
+				getService('hibachiService').savePromotionApplied(newAppliedPromotion);
+				getHibachiScope().flushORMSession();
+				
 			}else{
 				newOrderItem.removeOrderFulfillment(arguments.fulfillment);
 				newOrderItem.removeOrder(arguments.order);
