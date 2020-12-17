@@ -19,12 +19,14 @@
         },
         "currencyCode": {
             "propertyIdentifier": "currencyCode",
+            "default" : "USD",
             "validations": {
                 "dataType": "string"
             }
         },
-        "isCompany": {
+        "isCompanyPaymentMethod": {
             "propertyIdentifier": "companyPaymentMethodFlag",
+            "default" : false,
             "validations": {
                 "dataType": "boolean"
             }
@@ -53,8 +55,8 @@
                 "dataType": "string"
             }
         },
-        "giftCardNumberEncrypted": {
-            "propertyIdentifier": "giftCardNumberEncrypted",
+        "ccHolderName": {
+            "propertyIdentifier": "nameOnCreditCard",
             "validations": {
                 "dataType": "string"
             }
@@ -63,6 +65,12 @@
             "propertyIdentifier": "purchaseOrderNumber",
             "validations": {
                 "dataType": "string"
+            }
+        },
+        "paymentDueDate": {
+            "propertyIdentifier": "paymentDueDate",
+            "validations": {
+                "dataType": "date"
             }
         }
         
@@ -73,63 +81,36 @@
             "type": "manyToOne",
             "entityName": "Address",
             "propertyIdentifier": "billingAddress",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateOrderBillingAddress"
-        },
-        {
-            "type": "manyToOne",
-            "entityName": "AccountAddress",
-            "propertyIdentifier": "billingAccountAddress",
-            "excludeFromCSVTemplate" : true,
-            "excludeFromValidation"  : true,
-            "generatorFunction": "generateOrderBillingAccountAddress"
-        },
+        }
     ],
     
      "dependencies" : [
         {
-            "key"                : "remoteAccountPaymentMethodID",
-            "OPTIONAL_DEPENDENCY": true,
-            "entityName"         : "AccountPaymentMethod",
-            "lookupKey"          : "remoteID",
-            "propertyIdentifier" : "accountPaymentMethod"
-        },
-        {
-            "key"                : "remoteTermPaymentAccountID",
-            "OPTIONAL_DEPENDENCY": true,
-            "entityName"         : "Account",
-            "lookupKey"          : "remoteID",
-            "propertyIdentifier" : "termPaymentAccount"
-        },
-        {
             "key"                : "remoteOrderID",
-            "OPTIONAL_DEPENDENCY": true,
             "entityName"         : "Order",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "order"
         },
         {
-            "key"                : "orderTypeCode",
-            "OPTIONAL_DEPENDENCY": true,
+            "key"                : "paymentMethod",
+            "lookupKey"          : "paymentMethodName",
+            "entityName"         : "PaymentMethod",
+            "propertyIdentifier" : "paymentMethod"
+        },
+        {
+            "key"                : "orderPaymentTypeCode",
+            "isNullable"         : true,
             "lookupKey"          : "systemCode",
             "entityName"         : "Type",
             "propertyIdentifier" : "orderPaymentType"
         },
         {
             "key"                : "orderPaymentStatusTypeCode",
-            "OPTIONAL_DEPENDENCY": true,
+            "isNullable"         : true,
             "lookupKey"          : "systemCode",
             "entityName"         : "Type",
             "propertyIdentifier" : "orderPaymentStatusType"
-        },
-        {
-            "key"                : "orderSiteCode",
-            "OPTIONAL_DEPENDENCY": true,
-            "lookupKey"          : "remoteID",
-            "entityName"         : "Site",
-            "propertyIdentifier" : "orderCreatedSite"
-        },
+        }
     ],
     
     "importIdentifier": {
