@@ -396,6 +396,13 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 		return variables.billingAccountAddressOptions;
 	}
+	
+	public any function getBillingAddressOptions(string accountID){
+	  // Currenlty disable the edit option in paymentMethod for edit billing address in so returnt blank array for billingAdress options
+		variables.billingAddressOptions = [];
+		return variables.billingAddressOptions;
+	}
+	
 
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
