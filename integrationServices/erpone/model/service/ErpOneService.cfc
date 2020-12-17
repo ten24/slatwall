@@ -264,7 +264,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	return httpRequest;
     }
     
-    public any function getErpOneData( required struct requestData, string endpoint="read" ){
+    public any function callErpOneCreateDataApi( required struct requestData, string endpoint="read" ){
         
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint);
 		
@@ -277,14 +277,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         var rawRequest = httpRequest.send().getPrefix();
         
         if( !IsJson(rawRequest.fileContent) ){
-		    throw("ERPONE - getErpOneData: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		    throw("ERPONE - callErpOneCreateDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
 			
 	    return DeSerializeJson(rawRequest.fileContent);
     }
     
-    public any function callErpOneDataApi( required any requestData, string endpoint="read" ){
-        
+    public any function callErpOneUpdateDataApi( required any requestData, string endpoint="read" ){
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json");
 		
 		// Authentication headers
@@ -292,9 +291,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		httpRequest.addParam(type="body", value=serializeJSON(requestData));
 
         var rawRequest = httpRequest.send().getPrefix();
-
+        
         if( !IsJson(rawRequest.fileContent) ){
-		    throw("ERPONE - getErpOneData: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		    throw("ERPONE - callErpOneCreateDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
 			
 	    return DeSerializeJson(rawRequest.fileContent);
@@ -326,7 +325,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     public any function getAccountData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getAccountData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
 
-    	var accountsArray = this.getErpOneData({
+    	var accountsArray = this.callErpOneCreateDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
     	    "query": "FOR EACH customer WHERE customer.active = YES",
@@ -367,7 +366,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		logHibachi("ERPONE - Starting importing importErpOneAccounts");
 		
-		var response = this.getErpOneData({
+		var response = this.callErpOneCreateDataApi({
     	    "table" : "customer"
     	}, "count");
     	
@@ -427,7 +426,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		if( !structKeyExists(arguments.data, 'RemoteProductID') || this.hibachiIsEmpty(arguments.data.RemoteProductID) ){
 			// var productCode = arguments.data.ProductCode;
-			// var remoteProductIDArray = this.getErpOneData({
+			// var remoteProductIDArray = this.callErpOneCreateDataApi({
 			//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
 			//  	    "columns" : "__rowids"
 			//  	})
@@ -453,7 +452,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	 * @returns, Struct of account properties+values required by Erpone createUser API.
 	**/ 
 	public any function convertSwAccountToErponeAccount(required any account){
-		
 		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,remoteID,company,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
 		var addressPropList = 	this.getHibachiUtilityService().prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
 
@@ -469,14 +467,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		};
 
 		var erponeAccount = {};
-		
+
 		for(var fromKey in mapping){
 			if( StructKeyExists( swAccountStruct, fromKey ) && !IsNull(swAccountStruct[fromKey]) ){
 				erponeAccount[mapping[fromKey]] = swAccountStruct[fromKey];
 			}
 		}
-	
-		return erponeAccount;		
+
+		return erponeAccount;			
 	}
 	
 	
@@ -488,31 +486,22 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		logHibachi("ERPOne - Start pushData - Account: #arguments.entity.getAccountID()#");
 		
 		arguments.data.payload = this.convertSwAccountToErponeAccount(arguments.entity);
-		this.pushData(argumentCollection=arguments);
-		
-		logHibachi("ERPOne - End pushData");
-	}
-	
-	/**
-	 * Function to call create-Erpone-user-API
-	 * @requestData struct, required, post-request-payload
-	 * @return struct, of successful-response or formated-error-response 
-	*/ 
-	private struct function upsertErponeUser(required struct requestData, boolean create=false) {
+		arguments.create = false;
+		//push to remote endpoint
 		if(arguments.create){
-			var response = this.callErpOneDataApi({
+			var response = this.callErpOneUpdateDataApi({
 		    "table": "customer",
 		    "triggers": "true",
 		    "records": [
-			        arguments.requestData
+			        arguments.data.payload
 			    ]
 			}, "create");
 		}else{
-			var response = this.callErpOneDataApi({
+			var response = this.callErpOneUpdateDataApi({
 		    "table":   "customer",
-		    "triggers": true,
+		    "triggers": "true",
 		    "changes": [
-			        arguments.requestData
+			        arguments.data.payload
 			   ]
 			}, "update");
 		}
@@ -528,22 +517,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			response['content'] = rawRequest.fileContent;
 		}
 		
-		return response;
-	}
-
-	
-	/**
-	 * Function to be create an user account on Erpone, and update Slatwlll-Account on successful response
-	 * @entity, @model/Account.cfc, user-account we're processing
-	 * @data, struct, containing post request payload
-	 * 
-	 * Note: in current setup this function will be called from ErponeService::push(), which will be called from EntityQueue
-	 * 
-	*/ 
-	public void function pushData(required any entity, struct data ={}, boolean create = false) {
-		//push to remote endpoint
-		var response = upsertErponeUser(arguments.data.payload, arguments.create);
-	
 		if( !structKeyExists(response,'status') || response.status != 'success' || 
 			!StructKeyExists(response ,'id') || 
 			!len( trim(response.id) ) 
@@ -555,8 +528,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			//the call was not successful
 			throw("Error in ErpOne::PushData() #SerializeJson(response)#"); //this will comeup in EntityQueue
 		} 
-		
+
+		logHibachi("ERPOne - End pushData");
 	}
-	
 	
 }
