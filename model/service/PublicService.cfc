@@ -101,9 +101,8 @@ component  accessors="true" output="false"
 	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
 	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
 	       
-	       StructAppend( arguments.data, {"f:productType.productTypeIDPath:like" : productType.getProductTypeID()} ); 
-	       //StructAppend( arguments.data, {'f:productType': {"productTypeIDPath:like" : productType.getProductTypeID()} } );
-	       //StructAppend( arguments.data, {"formCollectionsList": "f:productType"});
+	       //Append filter in URL
+	       StructAppend( url, {"f:productType.productTypeIDPath:like" : productType.getProductTypeID()} );
 	    }
 	    
 	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
