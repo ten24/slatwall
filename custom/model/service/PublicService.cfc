@@ -47,6 +47,7 @@ Notes:
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     property name="ContentService";
+    property name="transientAccountData";
     
      public any function login( required struct data ){
          
@@ -2768,6 +2769,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
 
     public void function getAccountData(any data) {
+        if(!getHibachiScope().getLoggedInFlag() && structKeyExists(variables, 'transientAccountData')){
+            arguments.data.ajaxResponse = variables.transientAccountData;
+            return;
+        }
         var accountData = { 
             'account': getHibachiScope().getAccountData()
         };
@@ -2775,6 +2780,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var siteCode = getHibachiScope().getRedirectSiteCode();
 		if(len(siteCode)){
 			accountData['redirectTo'] = siteCode;
+		}
+		if(!getHibachiScope().getLoggedInFlag()){
+		    variables.transientAccountData = accountData;
 		}
         arguments.data.ajaxResponse = accountData;
     }

@@ -80,11 +80,14 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 	public boolean function isEventQualified(required string entityName, required string baseID, required string event, any entity){
 		
+		if(!len(arguments.baseID)){
+			return false;
+		}
+		
 		if(structKeyExists(arguments, 'entity') && !isEntityQualified(arguments.entity)){
 			return false;
 		}
 		
-		var primaryIDPropertyName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName(arguments.entityName);
 		var qualifiers = getQualifiers();
 		
 		if( !structKeyExists(qualifiers, arguments.event) ){
@@ -94,6 +97,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		if( !structKeyExists(qualifiers[arguments.event], 'filters') ){
 			return true;
 		}
+		
+		
+		var primaryIDPropertyName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName(arguments.entityName);
+		
 		
 		var filters = [];
 		
@@ -132,6 +139,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		if(!primaryFilterApplied){
 			entityCollectionList.addFilter('#primaryIDPropertyName#', arguments.baseID);
 		}
+		
 		return entityCollectionList.getRecordsCount() > 0;
 	}
 	
@@ -394,13 +402,13 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	
 
 	public void function push(required any entity, any data ={}){
-		
+	
 		//Check if the object still valid to be pushed
 		if( !structKeyExists(arguments.data, 'event') || !isEventQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.data.event)){
 			return;
 		}
 		
-		logHibachi("InfoTrax - Start pushData - Event: #arguments.data.event#");
+		logHibachi("InfoTrax - Start pushData - Event: #arguments.data.event#, Entity: #arguments.entity.getClassName()#, ID: #arguments.entity.getPrimaryIDValue()#");
 		
 		switch ( arguments.entity.getClassName() ) {
 			
