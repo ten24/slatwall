@@ -102,7 +102,7 @@ component  accessors="true" output="false"
 	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
 	       
 	       //Append filter in URL
-	       StructAppend( url, {"f:productType.productTypeIDPath:like" : productType.getProductTypeID()} );
+	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
 	    }
 	    
 	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
