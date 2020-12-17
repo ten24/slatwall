@@ -61,6 +61,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					!isNull(appliedPromotion.getPromotionReward())
 					&& appliedPromotion.getPromotionReward().getRewardType() =='rewardSku' 
 					&& !isNull(orderItem.getOrder())
+					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
 				){	
 					order = orderItem.getOrder();
 					order.removeOrderItem(orderItem);
@@ -409,6 +410,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.promotionReward.getPromoHasRan()){
 			return;
 		}
+	
+		promotionReward.setPromotionRewardProcessingFlag(true);
 		
 		arguments.promotionReward.setPromoHasRan(true);
 		
