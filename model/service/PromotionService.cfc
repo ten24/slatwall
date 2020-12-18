@@ -55,18 +55,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
 			var orderItem = arguments.orderItems[oi];
 			var appliedPromotions = orderItem.getAppliedPromotions();
+			var dropSkuFlag = false;
 			for(var appliedPromotion in appliedPromotions){
-				appliedPromotion.removeOrderItem(reciprocateFlag=false);
-				if(
-					!isNull(appliedPromotion.getPromotionReward())
-					&& appliedPromotion.getPromotionReward().getRewardType() =='rewardSku' 
-					&& !isNull(orderItem.getOrder())
-				){	
-					order = orderItem.getOrder();
-					order.removeOrderItem(orderItem);
+				if(!isNull(appliedPromotion.getPromotionReward()) && appliedPromotion.getPromotionReward().getRewardType() =='rewardSku'){
+					dropSkuFlag = true;
+					if ( !isNull(orderItem.getOrder())
+						&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
+					){	
+						appliedPromotion.removeOrderItem(reciprocateFlag=false);
+						var order = orderItem.getOrder();
+						order.removeOrderItem(orderItem);
+					}
+				}else{
+					appliedPromotion.removeOrderItem(reciprocateFlag=false);
 				}
 			}
-			ArrayClear(orderItem.getAppliedPromotions());	
+			if(!dropSkuFlag){
+				ArrayClear(orderItem.getAppliedPromotions());
+			}
 		}
 	}
 
@@ -409,6 +415,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.promotionReward.getPromoHasRan()){
 			return;
 		}
+	
+		promotionReward.setPromotionRewardProcessingFlag(true);
 		
 		arguments.promotionReward.setPromoHasRan(true);
 		
@@ -452,7 +460,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-		
+
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
@@ -486,9 +494,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setCurrencyCode(currencyCode);
 	
 			getService('orderService').saveOrderItem(newOrderItem);
-			
+
 			if(!newOrderItem.hasErrors()){
 				var newAppliedPromotion = this.newPromotionApplied();
+				newAppliedPromotion.setAppliedType('orderItem');
 				newAppliedPromotion.setOrderItem(newOrderItem);
 				newAppliedPromotion.setPromotion(item.promotion);
 				newAppliedPromotion.setPromotionReward(item.promotionReward);

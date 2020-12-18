@@ -91,6 +91,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="includedStackableRewards" singularname="includedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackIncl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
 	property name="excludedStackableRewards" singularname="excludedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackExcl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
 	
+	//Non persistent properties
+	property name="promotionRewardProcessingFlag" persistent="false";
+	
 	// Deprecated Properties
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwPromoRewardOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
@@ -294,6 +297,13 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 			}
 		}
 		return variables.excludedSkusCollection;
+	}
+		
+	public boolean function getPromotionRewardProcessingFlag(){
+		if(isNull(variables.promotionRewardProcessingFlag)){
+			variables.promotionRewardProcessingFlag = false;
+		}
+		return variables.promotionRewardProcessingFlag;
 	}
 	
 	public void function saveIncludedSkusCollection(){
