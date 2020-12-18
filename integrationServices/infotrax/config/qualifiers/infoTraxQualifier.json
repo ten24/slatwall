@@ -258,13 +258,6 @@
 				"comparisonOperator": "is not",
 				"value": "null",
 				"ormtype": "string"
-			},
-			{
-				"propertyIdentifier": "orderTemplateType.systemCode",
-				"comparisonOperator": "=",
-				"logicalOperator": "AND",
-				"value": "ottSchedule",
-				"ormtype": "string"
 			}
 		]
 	}
