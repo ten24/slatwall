@@ -331,7 +331,7 @@ component  accessors="true" output="false"
 	    
 	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
         
-        if( isNull( productBundleBuild ) || productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) {
+        if( isNull( productBundleBuild ) || ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) ) {
             getHibachiScope().addActionResult("public:product.addProductBundleToCart",true);
             return;
         }
