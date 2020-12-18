@@ -478,10 +478,6 @@ component extends="HibachiService" accessors="true" {
 			
 			for(var product in arguments.products) {
 				
-				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-					continue;
-				}
-				
 	            var imageFile = product[arguments.propertyName] ? : '';
 	            if( isEmpty(imageFile) ) {
 	            	continue;
