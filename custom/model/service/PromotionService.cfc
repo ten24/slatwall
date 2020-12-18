@@ -352,8 +352,9 @@ component extends="Slatwall.model.service.PromotionService" {
 			newOrderItem.setCurrencyCode(currencyCode);
 			var showInCartFlag = item.promotionReward.getShowRewardSkuInCartFlag() ?: true;
 			newOrderItem.setShowInCartFlag(showInCartFlag);
-	
-			getService('hibachiService').saveOrderItem(newOrderItem);
+			
+			//Use hibachiService to avoid order amount update
+			getService('hibachiService').save(newOrderItem);
 
 			if(!newOrderItem.hasErrors()){
 				
