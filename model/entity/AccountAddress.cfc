@@ -78,7 +78,7 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	public any function getDefaultCollectionProperties(string includesList = "accountAddressID,accountAddressName,address.streetAddress,address.street2Address,address.locality,address.city,address.stateCode,address.postalCode,address.countryCode,address.verificationJson", string excludesList=""){
+	public any function getDefaultCollectionProperties(string includesList = "accountAddressID,accountAddressName,address.streetAddress,address.street2Address,address.locality,address.city,address.stateCode,address.postalCode,address.countryCode,address.verificationJson,address.addressID", string excludesList=""){
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 	

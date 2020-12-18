@@ -134,12 +134,13 @@ class MonatCheckoutController {
 		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
 		}, 'shippingAddressSelected');	
 		
-		this.observerService.attach(()=>{
+		this.observerService.attach((data)=>{
 			this.toggleBillingAddressForm = false;
 			if (!this.addingSavedPaymentMethod) {
 				this.currentPaymentMethodID = '';	
 			}
 			this.addingSavedPaymentMethod = false;
+			this.publicService.cart.billingAddress.addressID = data.newAccountAddress.address_addressID;
 		}, 'addBillingAddressSuccess');
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
