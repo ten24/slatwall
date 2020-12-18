@@ -518,7 +518,7 @@ class PublicService {
         if(!request || !request.loading) return false;
 
         for(let identifier in conditions){
-            if (!((conditions[identifier] === true && !strict) || request.data[identifier] == conditions[identifier])){
+            if (!((conditions[identifier] === true && !strict) || (request.data && request.data[identifier] == conditions[identifier]) )){
                 return false;
             }
         }
