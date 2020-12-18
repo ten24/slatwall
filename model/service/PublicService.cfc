@@ -89,6 +89,50 @@ component  accessors="true" output="false"
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
 	
+	/**
+	 * Get Product List (an alternative to generic entity api call for products)
+	 * */
+	public void function getProductList( required struct data ) {
+	    param name="arguments.data.includeChildProductType" default= 0;
+	    param name="arguments.data.productTypeUrlTitle" default= "";
+	    arguments.data.entityName = "Product";
+	    arguments.data.restRequestFlag = 1;
+	    //Set an In filter for child types
+	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
+	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
+	       
+	       //Append filter in URL
+	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
+	    }
+	    
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
+	        
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(result.pageRecords);
+	    }
+	    
+	    arguments.data.ajaxResponse = result;
+	}
+	
+	/**
+	 * Get Sku List (an alternative to generic entity api call for products)
+	 * */
+	public void function getSkuList( required struct data ) {
+	    arguments.data.entityName = "Sku";
+	    arguments.data.restRequestFlag = 1;
+	    
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
+	    }
+	    
+	    arguments.data.ajaxResponse = result;
+	    
+	}
+	
 	
 	/***
 	 * Method to return list of bundle groups and sku list for product
