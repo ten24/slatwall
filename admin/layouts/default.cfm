@@ -231,7 +231,6 @@ Notes:
 									</cfloop>
 								</hb:HibachiActionCallerDropdown>
 							</cfif>
-
 						</ul>
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">

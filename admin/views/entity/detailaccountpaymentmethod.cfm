@@ -149,7 +149,7 @@ Notes:
 					<cfif isNull(url.accountID) and not isNull(rc.accountPaymentMethod.getAccount())>
 						<cfset url.accountID = rc.accountPaymentMethod.getAccount().getAccountID()>
 					</cfif>
-					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(url.accountID)#"/>
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAddress" valueoptions="#rc.accountPaymentMethod.getBillingAddressOptions(url.accountID)#"/>
 					<!--- Credit Card Details --->
 					<hb:HibachiDisplayToggle selector="select[name='billingAccountAddress.accountAddressID']" showValues="new" >
 						<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
