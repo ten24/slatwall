@@ -1,6 +1,22 @@
     
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
+    public void function afterOrderProcess_cancelOrderFailure(required any slatwallScope, required any order, required any data ={}) {
+        
+        if(arguments.order.getStatusCode() == "ostCanceled"){
+            arguments.order.clearHibachiErrors();
+        }
+        
+    }
+
+    public void function afterOrderProcess_placeInProcessingOneFailure(required any slatwallScope, required any order, required any data ={}) {
+        
+        if(arguments.order.getOrderStatusType().getTypeCode() == "processing1"){
+            arguments.order.clearHibachiErrors();
+        }
+        
+    }
+
     public void function afterOrderProcess_releaseCreditsSuccess(required any slatwallScope, required any order, required any data ={}) {
         
         if(arguments.order.getTypeCode() == "otReturnOrder"){
