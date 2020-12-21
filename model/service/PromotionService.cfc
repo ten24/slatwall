@@ -63,8 +63,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
 					){	
 						appliedPromotion.removeOrderItem(reciprocateFlag=false);
-						var order = orderItem.getOrder();
-						order.removeOrderItem(orderItem);
+						getOrderService().deleteOrderItem(orderItem=orderItem, updateOrderAmounts=false, setDropSkuRemovedFlag=false);
 					}
 				}else{
 					appliedPromotion.removeOrderItem(reciprocateFlag=false);

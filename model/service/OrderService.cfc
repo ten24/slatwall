@@ -5661,7 +5661,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return delete( arguments.order );
 	}
 
-	public any function deleteOrderItem( required any orderItem, updateOrderAmounts = true ) {
+	public any function deleteOrderItem( required any orderItem, boolean updateOrderAmounts = true, boolean setDropSkuRemovedFlag = true ) {
 	
 		getHibachiEventService().announceEvent("beforeOrderItemDelete", arguments);
 
@@ -5671,7 +5671,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Remove the primary fields so that we can delete this entity
 			var order = arguments.orderItem.getOrder();
 		
-			if(arguments.orderItem.getRewardSkuFlag()){
+			if(arguments.orderItem.getRewardSkuFlag() && arguments.setDropSkuRemovedFlag){
 				order.setDropSkuRemovedFlag(true);	
 			}
 			
