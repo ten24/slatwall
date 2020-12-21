@@ -34,7 +34,7 @@
                         data-ng-disabled="swTypeaheadSearch.disabled"/>
                 </div>
             <div class="input-group-btn">
-                <button class="btn btn-default" type='button' ng-click="swTypeaheadSearch.toggleOptions()" data-ng-disabled="swTypeaheadSearch.disabled" style="border-radius:0;height: 31px;">
+                <button class="btn btn-default" type='button' ng-click="swTypeaheadSearch.toggleOptions(true)" data-ng-disabled="swTypeaheadSearch.disabled" style="border-radius:0;height: 31px;">
                     <i class="fa" data-ng-class="(swTypeaheadSearch.hideSearch) ? 'fa-caret-down': 'fa-caret-up'" ></i>
                 </button>
                 <button class="btn btn-sm btn-primary" type='button' ng-if="swTypeaheadSearch.showAddButton" ng-click="swTypeaheadSearch.addButtonItem()" data-ng-disabled="swTypeaheadSearch.disabled">

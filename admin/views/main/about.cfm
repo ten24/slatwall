@@ -61,7 +61,7 @@ Notes:
 	 </div>
 	<div style="padding: 20px;padding-top: 70px;">
 		<div class="svohelpabout">
-			<strong>Documentation: </strong><a href="http://docs.getslatwall.com">http://docs.getslatwall.com</a><br /><br />
+			<strong>Documentation: </strong><a href="https://www.slatwallcommerce.com/developer/">https://www.slatwallcommerce.com/developer</a><br /><br />
 			<strong>Google Group: </strong><a href="http://groups.google.com/group/slatwallecommerce">http://groups.google.com/group/slatwallecommerce</a><br /><br />
 			<strong>Feature & Bug Tracking: </strong><a href="https://github.com/ten24/Slatwall/issues">https://github.com/ten24/Slatwall/issues</a><br /><br />
 			<strong>Debugging Details: </strong>Please Copy & Paste these debugging details to any issues submitted<br /><br />
