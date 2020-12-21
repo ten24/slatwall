@@ -151,7 +151,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -1473,7 +1472,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList=""){
 		
-		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, defaultSku.price, defaultSku.listPrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, productType.productTypeID, defaultSku.imageFile, brand.brandID, brand.brandName";
+		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, defaultSku.price, defaultSku.listPrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, productType.productTypeID, productType.productTypeIDPath, defaultSku.imageFile, brand.brandID, brand.brandName, brand.urlTitle, productType.urlTitle";
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 
