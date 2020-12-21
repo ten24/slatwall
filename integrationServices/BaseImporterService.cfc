@@ -355,11 +355,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    for( var dependency in arguments.entityQueueData.__dependencies ){
             
-            var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-                "entityName"    = dependency.entityName,
-    	        "uniqueKey"     = dependency.lookupKey,
-    	        "uniqueValue"   = dependency.lookupValue ?: javaCast('null', 0)
-            );
+            if( structKeyExists(dependency, 'lookupValue') ){
+                local.dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+                    "entityName"    = dependency.entityName,
+        	        "uniqueKey"     = dependency.lookupKey,
+        	        "uniqueValue"   = dependency.lookupValue
+                );
+            }
                 
             if( !structKeyExists(dependency, 'isNullable') ){
                 // by default every dependency is treated as required [ not-nullable ]
@@ -368,9 +370,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             
             var dependencyPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
             
-            if( !isNull(dependencyPrimaryIDValue) && !this.hibachiIsEmpty(dependencyPrimaryIDValue) ){
+            if( !isNull(local.dependencyPrimaryIDValue) && !this.hibachiIsEmpty(local.dependencyPrimaryIDValue) ){
                 
-                arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependencyPrimaryIDValue }
+                arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : local.dependencyPrimaryIDValue }
                 
             } else if( !dependency.isNullable ){
                 
