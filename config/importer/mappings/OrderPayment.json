@@ -24,6 +24,12 @@
 				"dataType": "string"
 			}
 		},
+		"ccProviderToken": {
+		    "propertyIdentifier": "providerToken",
+			"validations": {
+				"dataType": "string"
+			}
+		},
 		"ccNumberLastFour": {
 			"propertyIdentifier": "creditCardLastFour",
 			"validations": {
@@ -65,14 +71,36 @@
 			"validations": {
 				"dataType": "date"
 			}
+		},
+		"transactionID": {
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"authorizationCode": {
+		    "validations": {
+		        "dataType": "string"
+		    }
 		}
 	},
 
-	"relations": [{
-		"type": "manyToOne",
-		"entityName": "Address",
-		"propertyIdentifier": "billingAddress"
-	}],
+	"relations": [
+	    {
+    		"type": "manyToOne",
+    		"entityName": "Address",
+    		"propertyIdentifier": "billingAddress"
+    	},
+    	{
+    	    "type" : "oneToMany",
+            "entityName" : "PaymentTransaction",
+            "generatorFunction" : "generateOrderPaymentTransactions",
+            "propertyIdentifier" : "paymentTransactions",
+            "excludeFromTemplate" : true,
+            "excludeFromValidation"  : true,
+            "excludeFromPostSaveMethod" : true,
+            "excludeFromPostPopulateMethod" : true
+    	}
+	],
 
 	"dependencies": [{
 			"key"                   : "remoteOrderID",
