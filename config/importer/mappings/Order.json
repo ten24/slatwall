@@ -84,7 +84,7 @@
         {
             "key"                   : "remoteAccountID",
             "entityName"            : "Account",
-            "lookupKey"             : "remoteID",
+            "lookupKey"             : "companyCode",
             "propertyIdentifier"    : "account"
         },
         {
@@ -110,6 +110,8 @@
             "isNullable"            : true,
             "lookupKey"             : "remoteID",
             "entityName"            : "OrderOrigin",
+            "defaultValue"          : "2c918082626f886001627251f01a00ab",
+            "__hint"                : "this defaultValue for order-origin is `external`.",
             "propertyIdentifier"    : "orderOrigin"
         },
         {
@@ -117,6 +119,8 @@
             "isNullable"            : true,
             "lookupKey"             : "siteCode",
             "entityName"            : "Site",
+            "defaultValue"          : "2c9680847491ce86017491f46ec50036",
+            "__hint"                : "this defaultValue for order-site is `default site`.",
             "propertyIdentifier"    : "orderCreatedSite"
         },
     ],
