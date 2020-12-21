@@ -72,7 +72,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
                 
             };
             // TODO, need a way to figureout which entity-mappings are allowed to be import, 
-            // Order vs account-phone-number
+            // Account vs account-phone-number
   	    }
   	    
   	    return variables.sampleCSVFilesOptions;
@@ -332,11 +332,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 	public any function getOrderData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getOrderData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
-
+		//still working to get order numbers without hyphen so pass one order for testing
     	var OrdersArray = this.getErpOneData({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
-    	    "query": "FOR EACH oe_head WHERE oe_head.order = '86036'",
+    	    "query": "FOR EACH oe_head WHERE oe_head.order = '86036a'",
     	    "columns" : "order,ord_date,customer,adr,currency_code,postal_code,state"
     	})
 
@@ -427,7 +427,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var currentPage = 1;
 		var pageSize = 1;
 		var recordsFetched = 0;
-		
+		//still working so stop the looping and pass parameter with some values for testing
 		//while ( recordsFetched < totalRecordsCount ){
 			
 			try {
