@@ -324,9 +324,16 @@ component extends="Slatwall.model.service.OrderService" {
         if(isObject(arguments.originalOrderItem)){
 	        for(var priceField in variables.customPriceFields){
 	            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
+	            var returnOrderItemPrice = returnOrderItem.getPrice();
+	            var returnOrderItemPercentage = arguments.originalOrderItem.getAllowableRefundPercent();
+	            
+	            if(returnOrderItemPercentage != 100){
+	            	returnOrderItemPrice = getHibachiUtilityService().precisionCalculate(returnOrderItemPrice * 100 / returnOrderItemPercentage);	
+	            }
+	            
 	            if(!isNull(price)){
 	            	if(arguments.originalOrderItem.getExtendedPriceAfterDiscount() != 0){
-	                	price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+	                	price = price * returnOrderItemPrice / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
 	            	}else{
 	            		price = 0;
 	            	}

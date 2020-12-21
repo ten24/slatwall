@@ -221,9 +221,9 @@ class SWReturnOrderItemsController{
 
        if(orderItem.returnQuantity > 0 && orderItem.total > 0){
 
-           orderItem.refundUnitPV = this.applyRefundPercentage(orderItem,  orderItem.refundTotal * orderItem.pvTotal / ( this.applyRefundPercentage(orderItem, orderItem.total) * orderItem.returnQuantity) );
+           orderItem.refundUnitPV = orderItem.refundTotal * orderItem.pvTotal / ( this.applyRefundPercentage(orderItem, orderItem.total) * orderItem.returnQuantity);
            orderItem.refundPVTotal = getDecimalRep( orderItem.refundUnitPV * orderItem.returnQuantity );
-           orderItem.refundUnitCV = this.applyRefundPercentage(orderItem,  orderItem.refundTotal * orderItem.cvTotal / (this.applyRefundPercentage(orderItem, orderItem.total) * orderItem.returnQuantity) );
+           orderItem.refundUnitCV = orderItem.refundTotal * orderItem.cvTotal / (this.applyRefundPercentage(orderItem, orderItem.total) * orderItem.returnQuantity);
            orderItem.refundCVTotal = getDecimalRep( orderItem.refundUnitCV * orderItem.returnQuantity );
 
        }else{
