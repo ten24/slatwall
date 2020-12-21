@@ -1,129 +1,123 @@
 {
-    "entityName": "OrderPayment",
-    
-    "properties": {
-        
-        "remoteOrderPaymentID": {
-            "propertyIdentifier": "remoteID",
-            "validations": {
-                "required": true,
-                "dataType": "string"
-            }
-        },
-        "orderAmount": {
-            "propertyIdentifier": "amount",
-            "validations": {
-                "required": true,
-                "dataType": "string"
-            }
-        },
-        "currencyCode": {
-            "propertyIdentifier": "currencyCode",
-            "default" : "USD",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "isCompanyPaymentMethod": {
-            "propertyIdentifier": "companyPaymentMethodFlag",
-            "default" : false,
-            "validations": {
-                "dataType": "boolean"
-            }
-        },
-        "ccNumberLastFour": {
-            "propertyIdentifier": "creditCardLastFour",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "ccType": {
-            "propertyIdentifier": "creditCardType",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "ccExpirationMonth": {
-            "propertyIdentifier": "expirationMonth",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "ccExpirationYear": {
-            "propertyIdentifier": "expirationYear",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "ccHolderName": {
-            "propertyIdentifier": "nameOnCreditCard",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "purchaseOrderNumber": {
-            "propertyIdentifier": "purchaseOrderNumber",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "paymentDueDate": {
-            "propertyIdentifier": "paymentDueDate",
-            "validations": {
-                "dataType": "date"
-            }
-        }
-        
-    },
-    
-    "relations": [
-         {
-            "type": "manyToOne",
-            "entityName": "Address",
-            "propertyIdentifier": "billingAddress",
-        }
-    ],
-    
-     "dependencies" : [
-        {
-            "key"                : "remoteOrderID",
-            "entityName"         : "Order",
-            "lookupKey"          : "remoteID",
-            "propertyIdentifier" : "order"
-        },
-        {
-            "key"                : "paymentMethod",
-            "lookupKey"          : "paymentMethodName",
-            "entityName"         : "PaymentMethod",
-            "propertyIdentifier" : "paymentMethod"
-        },
-        {
-            "key"                : "paymentTerm",
-            "lookupKey"          : "paymentTermName",
-            "entityName"         : "PaymentTerm",
-            "propertyIdentifier" : "paymentTerm"
-        },
-        {
-            "key"                : "orderPaymentTypeCode",
-            "isNullable"         : true,
-            "lookupKey"          : "systemCode",
-            "entityName"         : "Type",
-            "propertyIdentifier" : "orderPaymentType"
-        },
-        {
-            "key"                : "orderPaymentStatusTypeCode",
-            "isNullable"         : true,
-            "lookupKey"          : "systemCode",
-            "entityName"         : "Type",
-            "propertyIdentifier" : "orderPaymentStatusType"
-        }
-    ],
-    
-    "importIdentifier": {
-        "propertyIdentifier": "importRemoteID",
-        "type": "composite",
-        "keys": [
-            "remoteOrderPaymentID"
-        ]
-    }
+	"entityName": "OrderPayment",
+
+	"properties": {
+
+		"remoteOrderPaymentID": {
+			"propertyIdentifier": "remoteID",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		},
+		"amount": {
+			"propertyIdentifier": "amount",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		},
+		"currencyCode": {
+			"propertyIdentifier": "currencyCode",
+			"default": "USD",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccNumberLastFour": {
+			"propertyIdentifier": "creditCardLastFour",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccType": {
+			"propertyIdentifier": "creditCardType",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccExpirationMonth": {
+			"propertyIdentifier": "expirationMonth",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccExpirationYear": {
+			"propertyIdentifier": "expirationYear",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccHolderName": {
+			"propertyIdentifier": "nameOnCreditCard",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"purchaseOrderNumber": {
+			"propertyIdentifier": "purchaseOrderNumber",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"paymentDueDate": {
+			"propertyIdentifier": "paymentDueDate",
+			"validations": {
+				"dataType": "date"
+			}
+		}
+	},
+
+	"relations": [{
+		"type": "manyToOne",
+		"entityName": "Address",
+		"propertyIdentifier": "billingAddress"
+	}],
+
+	"dependencies": [{
+			"key"                   : "remoteOrderID",
+			"entityName"            : "Order",
+			"lookupKey"             : "remoteID",
+			"propertyIdentifier"    : "order"
+		},
+		{
+			"key"                   : "paymentMethod",
+			"lookupKey"             : "paymentMethodName",
+			"defaultValue"          : "444df303dedc6dab69dd7ebcc9b8036a",
+			"__hint"                : "default payment-method is credit-card",
+			"entityName"            : "PaymentMethod",
+			"propertyIdentifier"    : "paymentMethod"
+		},
+		{
+			"key"                   : "paymentTerm",
+			"lookupKey"             : "paymentTermName",
+			"isNullable"            : true,
+			"entityName"            : "PaymentTerm",
+			"propertyIdentifier"    : "paymentTerm"
+		},
+		{
+			"key"                   : "orderPaymentTypeCode",
+			"defaultValue"          : "444df2f0fed139ff94191de8fcd1f61b",
+			"__hint"                : "default order-payment-type is `optCharge`",
+			"lookupKey"             : "systemCode",
+			"entityName"            : "Type",
+			"propertyIdentifier"    : "orderPaymentType"
+		},
+		{
+			"key"                   : "orderPaymentStatusTypeCode",
+			"defaultValue"          : "5accbf57dcf5bb3eb71614febe83a31d",
+			"__hint"                : "default order-payment-status-type is `opstActive`",
+			"lookupKey"             : "systemCode",
+			"entityName"            : "Type",
+			"propertyIdentifier"    : "orderPaymentStatusType"
+		}
+	],
+
+	"importIdentifier": {
+		"propertyIdentifier" : "importRemoteID",
+		"type" : "composite",
+		"keys" : [
+			"remoteOrderPaymentID"
+		]
+	}
 }
