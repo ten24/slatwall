@@ -205,25 +205,30 @@ component  accessors="true" output="false"
 	        return;
 	    }
 	    
+	    var productBundleBuildCollectionList = getProductService().getProductBundleBuildCollectionList();
+	    productBundleBuildCollectionList.setDisplayProperties('productBundleBuildID');
 	    if( !account.isNew() ) {
-	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        var productBundleBuild = getProductService().getProductBundleBuildByProductBundleSkuANDSession( [sku, getHibachiScope().getSession()] );
+	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
 	    }
-	    
-    
-        if( isNull( productBundleBuild ) ) {
+	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', sku.getSkuID() );
+	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
+	    var productBundle = productBundleBuildCollectionList.getRecords();
+        
+        //return false if there are no active builds
+        if( !ArrayLen( productBundle ) ) {
 	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
 	        return;
 	    }
     
         var productBundleBuildItemCollectionList = getProductService().getProductBundleBuildItemCollectionList();
         productBundleBuildItemCollectionList.setDisplayProperties("quantity, productBundleBuildItemID, sku.skuID")
-        productBundleBuildItemCollectionList.addFilter( "productBundleBuild.productBundleBuildID",  productBundleBuild.getProductBundleBuildID() );
+        productBundleBuildItemCollectionList.addFilter( "productBundleBuild.productBundleBuildID",  productBundle[1]['productBundleBuildID'] );
         
         var bundleBuildResponse = {
-            "productBundleBuildID" : productBundleBuild.getProductBundleBuildID(),
-            "productBundleSkuID" : productBundleBuild.getProductBundleSkuID(),
+            "productBundleBuildID" : productBundle[1]['productBundleBuildID'],
+            "productBundleSkuID" : sku.getSkuID(),
             "bundleItems" : productBundleBuildItemCollectionList.getRecords( formatRecords = false )
         };
 	    
@@ -234,9 +239,10 @@ component  accessors="true" output="false"
 	/**
 	 * Method to create product bundle build
 	 * 
-	 * @param - skuID
+	 * @param - skuID (can also accept comma separated list)
 	 * @param - default skuID (from bundle product)
-	 * @param - quantity
+	 * @param - quantity (can also accept comma separated list)
+	 * @param - productBundleGroupID
 	 * */
 	public void function createProductBundleBuild( required struct data ) {
 	    param name="arguments.data.skuID";
@@ -246,22 +252,25 @@ component  accessors="true" output="false"
 	    
 	    var bundleSku = getProductService().getSku( arguments.data.defaultSkuID );
 	    var account = getHibachiScope().getAccount();
-	    var sku = getProductService().getSku( arguments.data.skuID );
 	    
-	    if( isNull( sku ) || isNull( bundleSku ) ) {
+	    if( isNull( bundleSku ) ) {
 	        getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
 	        return;
 	    }
 	    
+	    var productBundleBuildCollectionList = getProductService().getProductBundleBuildCollectionList();
+	    productBundleBuildCollectionList.setDisplayProperties('productBundleBuildID');
 	    if( !account.isNew() ) {
-	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, bundleSku] );
+	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        var productBundleBuild = getProductService().getProductBundleBuildBySessionANDProductBundleSku( [ getHibachiScope().getSession(), bundleSku] );
+	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
 	    }
+	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', bundleSku.getSkuID() );
+	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
+	    var productBundle = productBundleBuildCollectionList.getRecords();
         
-        if( isNull( productBundleBuild ) ) {
-            
-            productBundleBuild = getProductService().newProductBundleBuild();
+        if( !ArrayLen( productBundle ) ) {
+            var productBundleBuild = getProductService().newProductBundleBuild();
             productBundleBuild.setProductBundleSku( bundleSku );
             
             if( !isNull( getHibachiScope().getSession() ) ) {
@@ -271,31 +280,45 @@ component  accessors="true" output="false"
             if( !account.isNew() ) {
                 productBundleBuild.setAccount( account );
             }
-            
+            productBundleBuild.setActiveFlag(true);
             productBundleBuild = getProductService().saveProductBundleBuild( productBundleBuild );
             
             if( productBundleBuild.hasErrors() ) {
                 getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
 	            return;
             }
-            
+        } else {
+            var productBundleBuild = getProductService().getProductBundleBuild( productBundle[1]['productBundleBuildID'] );
         }
         
         //Check & update bundle items
-        var productBundleBuildItem = getProductService().getProductBundleBuildItemBySkuANDProductBundleBuild( [sku, productBundleBuild] );
+        var skuList = ListToArray( arguments.data.skuID );
+        var quantities = ListToArray( arguments.data.quantity );
         
-        if( isNull( productBundleBuildItem ) ) {
-            productBundleBuildItem = getProductService().newProductBundleBuildItem();
-        }
-        productBundleBuildItem.setQuantity( arguments.data.quantity );
-        productBundleBuildItem.setSku( sku );
-        productBundleBuildItem.setProductBundleBuild( productBundleBuild );
-        productBundleBuildItem.setProductBundleGroup( getProductService().getProductBundleGroup( arguments.data.productBundleGroupID ) );
-        productBundleBuildItem = getProductService().saveProductBundleBuildItem( productBundleBuildItem );
-        
-        if( productBundleBuildItem.hasErrors() ) {
-            getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
-            return;
+        var index = 1;
+        for( var skuID in skuList ) {
+            var sku = getProductService().getSku( skuID );
+            
+            if( isNull( sku ) ) {
+    	        getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+    	        return;
+    	    }
+    	    
+            var productBundleBuildItem = getProductService().getProductBundleBuildItemBySkuANDProductBundleBuild( [sku, productBundleBuild] );
+            
+            if( isNull( productBundleBuildItem ) ) {
+                productBundleBuildItem = getProductService().newProductBundleBuildItem();
+            }
+            productBundleBuildItem.setQuantity( quantities[ index++ ] );
+            productBundleBuildItem.setSku( sku );
+            productBundleBuildItem.setProductBundleBuild( productBundleBuild );
+            productBundleBuildItem.setProductBundleGroup( getProductService().getProductBundleGroup( arguments.data.productBundleGroupID ) );
+            productBundleBuildItem = getProductService().saveProductBundleBuildItem( productBundleBuildItem );
+            
+            if( productBundleBuildItem.hasErrors() ) {
+                getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+                return;
+            }
         }
         
         getHibachiScope().addActionResult("public:product.createProductBundleBuild",false);
@@ -355,6 +378,11 @@ component  accessors="true" output="false"
         
         //Call Add Order Item
         this.addOrderItem(data= arguments.data);
+        
+        //set bundle build to false
+        productBundleBuild.setActiveFlag(false);
+        getProductService().saveProductBundleBuild( productBundleBuild );
+        
 	 }
 	
 	
