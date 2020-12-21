@@ -50,6 +50,7 @@ component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" p
 	
 	// Persistent Properties
 	property name="productBundleBuildID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean" default="false";
 	
 	// Calculated Properties
 
