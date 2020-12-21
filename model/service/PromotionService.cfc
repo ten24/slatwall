@@ -52,7 +52,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var orderService = getService('orderService');
 		// Clear all previously applied promotions for order items
-		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
+		for(var oi=arrayLen(arguments.orderItems); oi>=1; oi--) {
 			var orderItem = arguments.orderItems[oi];
 			var appliedPromotions = orderItem.getAppliedPromotions();
 			var dropSkuFlag = false;
