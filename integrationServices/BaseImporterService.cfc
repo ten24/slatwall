@@ -1583,17 +1583,29 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         //dont create stock if there is no locationID / skuID
 	}
 	
-    /////////////////.                  ORDER
+    /////////////////.                  ORDER-PAYMENT
+    
+    public array function generateOrderPaymentTransactions( struct data, struct mapping, struct propertyMetaData ){
+        
+        if( structKeyExists(arguments.data, 'transactionID') || structKeyExists(arguments.data, 'authorizationCode') ){
+            var transactionData = {
+                'paymentTransactionID' : '',
+                'amount' : arguments.data.amount
+            };
+            if(structKeyExists(arguments.data, 'transactionID')){
+                transactionData['providerTransactionID'] = arguments.data.transactionID;
+            }
+            if(structKeyExists(arguments.data, 'authorizationCode')){
+                transactionData['authorizationCode'] = arguments.data.authorizationCode;
+            }
+            
+            return [ transactionData ];
+        }
+        
+        return [];
+    }
+    
 
-	public any function generateOrderBillingAddress( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-	
-	public any function generateOrderShippingAddress( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-
-	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 
 }

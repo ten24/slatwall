@@ -86,7 +86,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
