@@ -409,7 +409,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    "table" : "oe_head"
     	}, "count");
     	
-		var totalRecordsCount = 1000;
+		var totalRecordsCount = response.count;
 		var currentPage = 1;
 		var pageSize = 100;
 		var recordsFetched = 0;
