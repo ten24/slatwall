@@ -150,7 +150,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="listPrice" hb_formatType="currency" persistent="false";
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
-	property name="schedulingOptions" hb_formatType="array" persistent="false";
+	property name="schedulingOptions" hb_formatType="array" persistent="false";	//CUSTOM PROPERTIES BEGIN
+
+ property name="extensionColor" ormtype="string" hb_formFieldType="select";
+ property name="exampleSelect" ormtype="string" hb_formFieldType="select";
+ property name="flyType" ormtype="string" hb_formFieldType="select";
+ property name="numberOfPockets" ormtype="string";
+ property name="pantsStyle" ormtype="string" hb_formFieldType="select";
+ property name="ghtesting" ormtype="string";
+ property name="chipset" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
