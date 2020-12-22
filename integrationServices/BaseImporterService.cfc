@@ -199,58 +199,64 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( structKeyExists(this, preProcessFunctionName) ){
             arguments.data = this.invokeMethod( preProcessFunctionName, { "data" : arguments.data } );
 	    }
+	    // if preprocess data is null then skip rest of the logic
+	    if(!isNull(arguments.data)){
+		    var entityMapping = this.getEntityMapping( arguments.entityName );
+	
+		    var validation = this.validateEntityData( 
+		        entityName    = arguments.entityName, 
+		        data          = arguments.data, 
+		        mapping       = entityMapping,
+		        collectErrors = true
+		    );
+	
+		    if( !validation.isValid ){
+		        
+		        var entityQueueData = {
+		            'data'          :  arguments.data,
+		            'batchID'       : arguments.batchID,
+		            'entityName'    : arguments.entityName
+		        }
+		        
+		        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
+		        this.getHibachiEntityQueueDAO().insertEntityQueueFailure(
+	        	    baseID              = '', //not needed
+	        	    baseObject          = arguments.entityName, 
+	        	    processMethod       = 'reQueueImportFailure',
+	        	    entityQueueData     = entityQueueData, 
+	        	    integrationID       = this.getIntegration().getIntegrationID(), 
+	        	    batchID             = arguments.batchID,
+	        	    mostRecentError     = serializeJson( validation.errors )
+	        	);
+	        	
+		    } else {
+		    
+	    	    var transformedData = this.transformEntityData( 
+	    	        entityName     = arguments.entityName, 
+	    	        data           = arguments.data,
+	    	        mapping        = entityMapping,
+	    	        emptyRelations = validation.emptyRelations
+	    	    );
+	
+	    	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
 	    
-	    var entityMapping = this.getEntityMapping( arguments.entityName );
-
-	    var validation = this.validateEntityData( 
-	        entityName    = arguments.entityName, 
-	        data          = arguments.data, 
-	        mapping       = entityMapping,
-	        collectErrors = true
-	    );
-
-	    if( !validation.isValid ){
-	        
-	        var entityQueueData = {
-	            'data'          :  arguments.data,
-	            'batchID'       : arguments.batchID,
-	            'entityName'    : arguments.entityName
-	        }
-	        
-	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
-	        this.getHibachiEntityQueueDAO().insertEntityQueueFailure(
-        	    baseID              = '', //not needed
-        	    baseObject          = arguments.entityName, 
-        	    processMethod       = 'reQueueImportFailure',
-        	    entityQueueData     = entityQueueData, 
-        	    integrationID       = this.getIntegration().getIntegrationID(), 
-        	    batchID             = arguments.batchID,
-        	    mostRecentError     = serializeJson( validation.errors )
-        	);
-        	
-	    } else {
-	    
-    	    var transformedData = this.transformEntityData( 
-    	        entityName     = arguments.entityName, 
-    	        data           = arguments.data,
-    	        mapping        = entityMapping,
-    	        emptyRelations = validation.emptyRelations
-    	    );
-
-    	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
-    
-    	    this.getHibachiEntityQueueDAO().insertEntityQueue(
-        	    baseID              = transformedData[ primaryIDPropertyName ], 
-        	    baseObject          = arguments.entityName, 
-        	    processMethod       = 'processEntityImport',
-        	    entityQueueData     = transformedData, 
-        	    integrationID       = this.getIntegration().getIntegrationID(), 
-            	batchID             = arguments.batchID
-        	);
-	        
+	    	    this.getHibachiEntityQueueDAO().insertEntityQueue(
+	        	    baseID              = transformedData[ primaryIDPropertyName ], 
+	        	    baseObject          = arguments.entityName, 
+	        	    processMethod       = 'processEntityImport',
+	        	    entityQueueData     = transformedData, 
+	        	    integrationID       = this.getIntegration().getIntegrationID(), 
+	            	batchID             = arguments.batchID
+	        	);
+		        
+		    }
+		    
+	    	return validation;
 	    }
-	    
-    	return validation;
+	    else{
+	    	
+	    	return;
+	    }
 	}
 	
 	public any function reQueueImportFailure( any entity, struct entityQueueData ){

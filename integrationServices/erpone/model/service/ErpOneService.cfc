@@ -409,9 +409,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    "table" : "oe_head"
     	}, "count");
     	
-		var totalRecordsCount = response.count;
+		var totalRecordsCount = 1000;
 		var currentPage = 1;
-		var pageSize = 50;
+		var pageSize = 100;
 		var recordsFetched = 0;
 		
 		while ( recordsFetched < totalRecordsCount ){
@@ -512,9 +512,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 		    return transformedItem;
 			
-		}
-		else{
-			break;
 		}
 	}
 	
