@@ -356,13 +356,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    for( var dependency in arguments.entityQueueData.__dependencies ){
             
             if( structKeyExists(dependency, 'lookupValue') ){
-                local.dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+                var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
                     "entityName"    = dependency.entityName,
         	        "uniqueKey"     = dependency.lookupKey,
         	        "uniqueValue"   = dependency.lookupValue
                 );
+
             }
-                
+            else{
+            	var dependencyPrimaryIDValue = javaCast( 'NULL' , 0 );
+            }    
             if( !structKeyExists(dependency, 'isNullable') ){
                 // by default every dependency is treated as required [ not-nullable ]
                 dependency.isNullable = false; 
@@ -370,13 +373,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             
             var dependencyPrimaryIDProperty = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( dependency.entityName );
             
-            if( !isNull(local.dependencyPrimaryIDValue) && !this.hibachiIsEmpty(local.dependencyPrimaryIDValue) ){
+            if( !isNull(dependencyPrimaryIDValue) && !this.hibachiIsEmpty(dependencyPrimaryIDValue) ){
                 
-                arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : local.dependencyPrimaryIDValue }
+                arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependencyPrimaryIDValue }
                 
             } else if( !dependency.isNullable ){
                 
-                // if the pependency cintains a default-value, use that
+                // if the pependency contains a default-value, use that
                 if( structKeyExists(dependency, 'defaultValue') ){
                     arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependency.defaultValue }
                     continue;
@@ -520,7 +523,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 mapping = arguments.mapping
             );
         }
-        
+
         // make-sure all of the dependencies had been resolved, 
         // like Product is required before SKU can be created for that Product	    
 	    if( structKeyExists(arguments.entityQueueData, '__dependencies') ){
@@ -541,6 +544,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
 	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
+
 	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
 	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
 	    

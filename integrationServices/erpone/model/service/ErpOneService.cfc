@@ -289,7 +289,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var transformedData = [];
 		
 	    for( var thisItem in arguments.items ){
-	    	
+	    	dump(thisItem);abort;
 	    	var transformedItem = {};
 	    	
 	    	for( var sourceKey in arguments.erponeMapping ){
@@ -336,15 +336,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	var OrdersArray = this.getErpOneData({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
-    	    "query": "FOR EACH oe_head WHERE oe_head.order = '86036a'",
+    	    "query": "FOR EACH oe_head",
     	    "columns" : "order,ord_date,customer,adr,currency_code,postal_code,state"
     	})
 
 		if( OrdersArray.len() > 0 ){
-		
+
 		    this.logHibachi("ERPONE - Start pushing Orders to import-queue ");
 		   //dump(this.transformErpOneOrders( OrdersArray ));abort;
-			var batch = this.pushRecordsIntoImportQueue( "Order", this.transformErpOneOrders( OrdersArray ) );
+			var batch = this.pushRecordsIntoImportQueue( "Order", OrdersArray );
 			this.logHibachi("ERPONE - Finish pushing Orders to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
 
 		} else {
@@ -425,10 +425,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	
 		var totalRecordsCount = response.count;
 		var currentPage = 1;
-		var pageSize = 1;
+		var pageSize = 50;
 		var recordsFetched = 0;
-		//still working so stop the looping and pass parameter with some values for testing
-		//while ( recordsFetched < totalRecordsCount ){
+		
+		while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				this.getOrderData( currentPage, pageSize );
@@ -440,10 +440,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				this.getHibachiUtilityService().logException(e);
 			}
 			
-			// increment rgardless of success or failure;
-		// 	recordsFetched += pageSize;
-		// 	currentPage += 1;
-		// }
+			//increment rgardless of success or failure;
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -497,13 +497,39 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	public struct function preProcessOrderData(required struct data ){
-
-		if( !structKeyExists(arguments.data, 'remoteOrderID') || this.hibachiIsEmpty(arguments.data.remoteOrderID) ){
-			
-			arguments.data.remoteOrderID = arguments.data.OrderNumber;
-		}
 		
-	    return arguments.data;
+		if(find("-",arguments.data.order) < 1){
+			var erponeMapping = {
+		        "order" : "orderNumber",
+		        "ord_date" : "orderOpenDateTime",
+		        "customer" : "RemoteAccountID",
+		        "currency_code" : "BillingAddress_countryCode",
+		        "postal_code" : "BillingAddress_postalCode",
+		        "state" : "BillingAddress_stateCode"
+		    };
+		    
+	    	var transformedItem = {};
+	
+	    	for( var sourceKey in erponeMapping ){
+	    		var destinationKey = erponeMapping[ sourceKey ];
+	    		
+	    		if( structKeyExists(arguments.data, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
+	    		}
+	    		
+	    	}
+	    	
+	    	if( !structKeyExists(transformedItem, 'remoteOrderID') || this.hibachiIsEmpty(transformedItem.remoteOrderID) ){
+				
+				transformedItem.remoteOrderID = transformedItem.OrderNumber;
+			}
+			
+		    return transformedItem;
+			
+		}
+		else{
+			break;
+		}
 	}
 	
 }
