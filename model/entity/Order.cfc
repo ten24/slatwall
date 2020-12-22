@@ -224,7 +224,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="dropSkuRemovedFlag" ormtype="boolean" default=0;
 	property name="incompleteReturnFlag" ormtype="boolean";
 	property name="sharedByAccount" cfc="Account" fieldType="many-to-one" fkcolumn="sharedByAccountID";
-	property name="qualifiedMerchandiseRewardsArray" ormtype="text" default="[]";
+	property name="qualifiedMerchandiseRewardsArray" ormtype="text" default="[]" hb_auditable="false";
 	
     property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
