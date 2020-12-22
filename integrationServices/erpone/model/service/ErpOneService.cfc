@@ -289,7 +289,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var transformedData = [];
 		
 	    for( var thisItem in arguments.items ){
-	    	dump(thisItem);abort;
+	    	
 	    	var transformedItem = {};
 	    	
 	    	for( var sourceKey in arguments.erponeMapping ){
@@ -343,7 +343,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		if( OrdersArray.len() > 0 ){
 
 		    this.logHibachi("ERPONE - Start pushing Orders to import-queue ");
-		   //dump(this.transformErpOneOrders( OrdersArray ));abort;
 			var batch = this.pushRecordsIntoImportQueue( "Order", OrdersArray );
 			this.logHibachi("ERPONE - Finish pushing Orders to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
 
@@ -365,19 +364,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    };
 	    
 	    return this.transformedErponeItems( arguments.accountDataArray, erponeMapping);
-	}
-	
-	public any function transformErpOneOrders( required array orderDataArray ){
-	    var erponeMapping = {
-	        "order" : "orderNumber",
-	        "ord_date" : "orderOpenDateTime",
-	        "customer" : "RemoteAccountID",
-	        "currency_code" : "BillingAddress_countryCode",
-	        "postal_code" : "BillingAddress_postalCode",
-	        "state" : "BillingAddress_stateCode"
-	    };
-	    
-	    return this.transformedErponeItems( arguments.orderDataArray, erponeMapping);
 	}
 	
 	public any function importErpOneAccounts(){
