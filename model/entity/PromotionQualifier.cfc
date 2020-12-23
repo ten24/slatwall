@@ -367,7 +367,6 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(arguments.orderCollection)){
 			return false;
 		}
-		logHibachi('=====> PromotionQualifier #variables.promotionQualifierID# - getCollectionHasOrderByOrderID - ORDER ID: #arguments.orderID#', true);
 		
     	arguments.orderCollection.setDisplayProperties('orderID'); 
 		arguments.orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
