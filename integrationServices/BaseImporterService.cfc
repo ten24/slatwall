@@ -1576,18 +1576,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         
         //dont create stock if there is no locationID / skuID
 	}
-	
-    /////////////////.                  ORDER
 
-	public any function generateOrderBillingAddress( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-	
-	public any function generateOrderShippingAddress( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-
-	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 
 }
