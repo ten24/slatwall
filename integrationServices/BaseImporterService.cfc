@@ -252,8 +252,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            	batchID             = arguments.batchID
 	        	);
 	    	
-	    	return validation;
-	    }
+	}
+	
+	return validation;
 	}
 	
 	public any function reQueueImportFailure( any entity, struct entityQueueData ){
