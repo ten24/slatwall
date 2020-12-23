@@ -375,19 +375,15 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	private string function getQualifiedSkuList(required any skuCollection){
 		
+		var skuList = '';
 		var cacheKey = "promotionQualifier_#variables.promotionQualifierID#_getCollectionHasSkuBySkuID_CacheKey";
 		if(getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			var skuData = getService('HibachiCacheService').getCachedValue(cacheKey);
-			return skuData.skus;
+			skuList = getService('HibachiCacheService').getCachedValue(cacheKey);
+		}else{
+			skuList = skuCollection.getPrimaryIDList();
+			getService('HibachiCacheService').setCachedValue(cacheKey, skuList, dateAdd('s', val(getCacheDuration()), now()));
 		}
-		
-		var skuData = {
-			'skus' : skuCollection.getPrimaryIDList(),
-			'expiration' : dateAdd('s', val(getCacheDuration()), now())
-		}
-		getService('HibachiCacheService').setCachedValue(cacheKey, skuData);
-		
-		return skuData.skus;
+		return skuList;
 	}
 	
 	private boolean function getCollectionHasSkuBySkuID( required any skuCollection, required string skuID ){
