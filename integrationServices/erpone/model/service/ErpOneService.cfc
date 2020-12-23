@@ -484,7 +484,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	public struct function preProcessOrderData(required struct data ){
 		
-		if(find("-",arguments.data.order) < 1){
+		if( left(arguments.data.order, 1) == '-' ){
+			return;
+		}
 			var erponeMapping = {
 		        "order" : "orderNumber",
 		        "ord_date" : "orderOpenDateTime",
@@ -505,14 +507,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    		
 	    	}
 	    	
-	    	if( !structKeyExists(transformedItem, 'remoteOrderID') || this.hibachiIsEmpty(transformedItem.remoteOrderID) ){
-				
-				transformedItem.remoteOrderID = transformedItem.OrderNumber;
-			}
+	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
 			
 		    return transformedItem;
-			
-		}
 	}
 	
 }

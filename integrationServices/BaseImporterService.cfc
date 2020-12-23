@@ -200,8 +200,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             arguments.data = this.invokeMethod( preProcessFunctionName, { "data" : arguments.data } );
 	    }
 	    // if preprocess data is null then skip rest of the logic
-	    if(!isNull(arguments.data)){
-		    var entityMapping = this.getEntityMapping( arguments.entityName );
+	    if( isNull(arguments.data) ){
+	    	return;
+	    }
+		
+		var entityMapping = this.getEntityMapping( arguments.entityName );
 	
 		    var validation = this.validateEntityData( 
 		        entityName    = arguments.entityName, 
@@ -248,14 +251,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        	    integrationID       = this.getIntegration().getIntegrationID(), 
 	            	batchID             = arguments.batchID
 	        	);
-		        
-		    }
-		    
-	    	return validation;
-	    }
-	    else{
 	    	
-	    	return;
+	    	return validation;
 	    }
 	}
 	
@@ -368,10 +365,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	        "uniqueValue"   = dependency.lookupValue
                 );
 
-            }
-            else{
-            	var dependencyPrimaryIDValue = javaCast( 'NULL' , 0 );
-            }    
+            }   
             if( !structKeyExists(dependency, 'isNullable') ){
                 // by default every dependency is treated as required [ not-nullable ]
                 dependency.isNullable = false; 
@@ -385,7 +379,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 
             } else if( !dependency.isNullable ){
                 
-                // if the pependency contains a default-value, use that
+                // if the dependency contains a default-value, use that
                 if( structKeyExists(dependency, 'defaultValue') ){
                     arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependency.defaultValue }
                     continue;
@@ -1583,29 +1577,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         //dont create stock if there is no locationID / skuID
 	}
 	
-    /////////////////.                  ORDER-PAYMENT
-    
-    public array function generateOrderPaymentTransactions( struct data, struct mapping, struct propertyMetaData ){
-        
-        if( structKeyExists(arguments.data, 'transactionID') || structKeyExists(arguments.data, 'authorizationCode') ){
-            var transactionData = {
-                'paymentTransactionID' : '',
-                'amount' : arguments.data.amount
-            };
-            if(structKeyExists(arguments.data, 'transactionID')){
-                transactionData['providerTransactionID'] = arguments.data.transactionID;
-            }
-            if(structKeyExists(arguments.data, 'authorizationCode')){
-                transactionData['authorizationCode'] = arguments.data.authorizationCode;
-            }
-            
-            return [ transactionData ];
-        }
-        
-        return [];
-    }
-    
+    /////////////////.                  ORDER
 
+	public any function generateOrderBillingAddress( struct data, struct mapping, struct propertyMetaData ){
+		
+	}
+	
+	public any function generateOrderShippingAddress( struct data, struct mapping, struct propertyMetaData ){
+		
+	}
+
+	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 
 }
