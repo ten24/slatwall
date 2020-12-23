@@ -410,11 +410,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	}, "count");
     	
 		var totalRecordsCount = response.count;
-		var currentPage = 1;
+		var currentPage = 1000;
 		var pageSize = 100;
 		var recordsFetched = 0;
 		
-		while ( recordsFetched < totalRecordsCount ){
+		//while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				this.getOrderData( currentPage, pageSize );
@@ -427,9 +427,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 			
 			//increment rgardless of success or failure;
-			recordsFetched += pageSize;
-			currentPage += 1;
-		}
+			// recordsFetched += pageSize;
+			// currentPage += 1;
+		//}
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -488,12 +488,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			return;
 		}
 			var erponeMapping = {
-		        "order" : "orderNumber",
-		        "ord_date" : "orderOpenDateTime",
-		        "customer" : "RemoteAccountID",
+		        "order" 		: "orderNumber",
+		        "ord_date"		: "orderOpenDateTime",
+		        "customer"		: "RemoteAccountID",
 		        "currency_code" : "BillingAddress_countryCode",
-		        "postal_code" : "BillingAddress_postalCode",
-		        "state" : "BillingAddress_stateCode"
+		        "postal_code"	: "BillingAddress_postalCode",
+		        "adr"			: "Address",
+		        "state" 		: "BillingAddress_stateCode"
 		    };
 		    
 	    	var transformedItem = {};
@@ -508,7 +509,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	}
 	    	
 	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
-			
+	    	transformedItem.BillingAddress_streetAddress = transformedItem.Address[2];
+	    	transformedItem.BillingAddress_street2Address = transformedItem.Address[1];
+	    	transformedItem.BillingAddress_city = transformedItem.Address[4];
+
 		    return transformedItem;
 	}
 	
