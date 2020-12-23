@@ -63,6 +63,8 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="includedOrdersCollectionConfig" ormtype="text";
 	property name="excludedOrdersCollectionConfig" ormtype="text";
 	
+	property name="cacheDuration" ormtype="integer"; // in seconds
+	
 	// Related Entities (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	
@@ -365,15 +367,38 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(arguments.orderCollection)){
 			return false;
 		}
-
+		logHibachi('=====> PromotionQualifier #variables.promotionQualifierID# - getCollectionHasOrderByOrderID - ORDER ID: #arguments.orderID#', true);
+		
     	arguments.orderCollection.setDisplayProperties('orderID'); 
 		arguments.orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
 		return !arrayIsEmpty(arguments.orderCollection.getPageRecords(formatRecords=false,refresh=true));
 	}
 	
+	private string function getQualifiedSkuList(required any skuCollection){
+		
+		var cacheKey = "promotionQualifier_#variables.promotionQualifierID#_getCollectionHasSkuBySkuID_CacheKey";
+		if(getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var skuData = getService('HibachiCacheService').getCachedValue(cacheKey);
+			return skuData.skus;
+		}
+		
+		var skuData = {
+			'skus' : skuCollection.getPrimaryIDList(),
+			'expiration' : dateAdd('s', val(getCacheDuration()), now())
+		}
+		getService('HibachiCacheService').setCachedValue(cacheKey, skuData);
+		
+		return skuData.skus;
+	}
+	
 	private boolean function getCollectionHasSkuBySkuID( required any skuCollection, required string skuID ){
+		
 		if(isNull(arguments.skuCollection)){
 			return false;
+		}
+		
+		if(structKeyExists(variables, 'cacheDuration') && variables.cacheDuration > 0){
+			return listFind(getQualifiedSkuList(arguments.skuCollection), arguments.skuID);
 		}
 		arguments.skuCollection.setDisplayProperties('skuID');
 		arguments.skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');

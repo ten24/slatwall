@@ -1930,6 +1930,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return newPromotion;
 	}
+	
+	
+	public any function processPromotionQualifier_clearCache(required any promotionQualifier, required any processObject){
+		getService('HibachiCacheService').resetCachedKey("promotionQualifier_#arguments.promotionQualifier.getPromotionQualifierID()#_getCollectionHasSkuBySkuID_CacheKey");
+		return arguments.promotionQualifier;
+	}
 
 	public any function processPromotionPeriod_duplicatePromotionPeriod(required any promotionPeriod, required any processObject){
 
