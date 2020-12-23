@@ -135,5 +135,5 @@ component entityname="SlatwallPromotionRewardCurrency" table="SwPromotionRewardC
 	
 	// ================== START: Deprecated Methods ========================
 	
-	// ==================  END:  Deprecated Methods ========================	
+	// ==================  END:  Deprecated Methods ========================
 }

@@ -42,7 +42,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 		chimpData['merge_fields']['DOMAINURL'] = '' ;
 		
 		//Setup group data, aka interests
-	 	var interestDataStruct = getHibachiScope().getService('MailchimpAPIService').getMailChimpInterestDataStruct();
+	 	var interestDataStruct = getHibachiScope().getService('mailchimpService').getMailChimpInterestDataStruct();
 	 	chimpData['interests'] = interestDataStruct;
 	 		
  		if ( len(rc.EmployeeCount) && structKeyExists( chimpData['interests'], rc.EmployeeCount ) ){
@@ -59,11 +59,11 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
  		
 		var serializedChimpData =serializeJson(chimpData);
 		
-		var chimpResponseData = getHibachiScope().getService('MailchimpAPIService').sendRequestToMailChimp(apiRoute="members" ,method='POST',jsonData=serializedChimpData);
+		var chimpResponseData = getHibachiScope().getService('mailchimpService').sendRequestToMailChimp(apiRoute="members" ,method='POST',jsonData=serializedChimpData);
 		
 		if ( structKeyExists(chimpResponseData, 'title') AND chimpResponseData.title EQ 'Member Exists') {
 			//if user already exists, we're going to just update their data on mailchimp
-			var existingUser = getHibachiScope().getService('MailchimpAPIService').sendRequestToMailChimp(apiRoute="members/#Hash(trim(rc.emailAddress), 'MD5')#" ,method='GET');
+			var existingUser = getHibachiScope().getService('mailchimpService').sendRequestToMailChimp(apiRoute="members/#Hash(trim(rc.emailAddress), 'MD5')#" ,method='GET');
 			
 	 		if ( len(rc.EmployeeCount) && structKeyExists( existingUser['interests'], rc.EmployeeCount ) ){
  				existingUser['interests'][rc.EmployeeCount] = true;
@@ -79,7 +79,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	 		
 	 		serializedChimpData =serializeJson(existingUser);
 			
-			chimpResponseData = getHibachiScope().getService('MailchimpAPIService').sendRequestToMailChimp(apiRoute="members/#Hash(trim(rc.emailAddress), 'MD5')#" ,method='PUT',jsonData=serializedChimpData);
+			chimpResponseData = getHibachiScope().getService('mailchimpService').sendRequestToMailChimp(apiRoute="members/#Hash(trim(rc.emailAddress), 'MD5')#" ,method='PUT',jsonData=serializedChimpData);
 				
 		}
 		
@@ -95,7 +95,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 		prospData['details'] = trim(rc.Description);
 		
 		if ( len(rc.Industry) ){
-			var industry =  getHibachiScope().getService('MailchimpAPIService').sendRequestToMailChimp(apiRoute='interest-categories/9a5899cd17/interests/#rc.Industry#', method='GET');
+			var industry =  getHibachiScope().getService('mailchimpService').sendRequestToMailChimp(apiRoute='interest-categories/9a5899cd17/interests/#rc.Industry#', method='GET');
 	
 			if ( structKeyExists(industry, 'name') ){
 				industryName = industry.name;
@@ -103,7 +103,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 		}
 		
 		if ( len(rc.EmployeeCount) ) {
-			var employeeCount = getHibachiScope().getService('MailchimpAPIService').sendRequestToMailChimp(apiRoute='interest-categories/39712b5abd/interests/#rc.EmployeeCount#', method='GET');
+			var employeeCount = getHibachiScope().getService('mailchimpService').sendRequestToMailChimp(apiRoute='interest-categories/39712b5abd/interests/#rc.EmployeeCount#', method='GET');
 			
 			if ( structKeyExists(employeeCount, 'name') ) {
 				employeeCountLabel = employeeCount.name;
@@ -124,14 +124,14 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 		}
 		
 		var serializedProspData= serializeJson(prospData);
-		var prospResponseData =  getHibachiScope().getService('MailchimpAPIService').postLeadToProsperWork(serializedProspData);
+		var prospResponseData =  getHibachiScope().getService('mailchimpService').postLeadToProsperWork(serializedProspData);
 
 	}
 	
 	
 	public void function updateProsperworkLeads(){
 		
-		var employeeCountResponse = getHibachiScope().getService('MailchimpAPIService').sendRequestToMailChimp(apiRoute='interest-categories/39712b5abd/interests/', method='GET');
+		var employeeCountResponse = getHibachiScope().getService('mailchimpService').sendRequestToMailChimp(apiRoute='interest-categories/39712b5abd/interests/', method='GET');
 		var employeCountStruct = {};
 		
 		for (var employeeCount in employeeCountResponse.interests){
@@ -146,7 +146,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 		requestData['sort_direction'] = 'asc';
 		
 		var serializedRequestData = serializeJson(requestData);
-		var prospResponseData =  getHibachiScope().getService('MailchimpAPIService').getLeadsFromProsperWork(serializedRequestData);
+		var prospResponseData =  getHibachiScope().getService('mailchimpService').getLeadsFromProsperWork(serializedRequestData);
 		var responseData = deserializeJson(prospResponseData.fileContent);
 		
 		while (arrayLen(responseData) ){
@@ -161,7 +161,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 							];
 							
 							var serializedLeadData= serializeJson(leadData);
-							var updateResponseData =  getHibachiScope().getService('MailchimpAPIService').updateProsperWorkLeads(serializedLeadData, lead.id );
+							var updateResponseData =  getHibachiScope().getService('mailchimpService').updateProsperWorkLeads(serializedLeadData, lead.id );
 							
 						}
 					} catch (any e){
@@ -175,7 +175,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 			
 			requestData['page_number']++;
 			serializedRequestData = serializeJson(requestData);
-			prospResponseData =  getHibachiScope().getService('MailchimpAPIService').getLeadsFromProsperWork(serializedRequestData);
+			prospResponseData =  getHibachiScope().getService('mailchimpService').getLeadsFromProsperWork(serializedRequestData);
 			responseData = deserializeJson(prospResponseData.fileContent);
 		}
 

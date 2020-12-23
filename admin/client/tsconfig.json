@@ -1,25 +1,11 @@
 {
-
   "compilerOptions": {
-        "target":"es5",
-        "module": "commonjs",
-        "sourceMap": true,
-        "skipLibCheck": true,
-    },
-
-    "include": [
-        "./**/*",
-        "../../org/Hibachi/client/src/*"
-    ],
-
-    "typeRoots": [ "node_modules/@types", "./typings.d.ts" ],
-    
-     "files": [
-        "./typings.d.ts",
-        "../../org/Hibachi/client/typings/hibachiTypescript.d.ts",
-        "../../org/Hibachi/client/typings/tsd.d.ts",
-        "../../org/Hibachi/client/typings/requirejs/require.d.ts",
-        "../../org/Hibachi/client/typings/js-md5/md5.d.ts",
-        "../../org/Hibachi/client/typings/datejs/datejs.d.ts"
-    ]
+    "target":"es5",
+    "module": "commonjs",
+    "sourceMap": true
+  },
+  "files": [
+    "typings/slatwallTypescript.d.ts",
+    "typings/tsd.d.ts"
+  ]
 }

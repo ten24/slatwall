@@ -51,23 +51,8 @@ Notes:
 
 
 <cfparam name="rc.content" type="any" />
-<cfparam name="rc.parentContentID" type="string" default="" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-
-
-<!--- content populated on the RC is actually the parent content record let's declare a new content object for what we're creating --->
-<cfif structKeyExists(rc, 'content') AND NOT rc.content.getNewFlag()>
-	<cfset rc.parentContent = rc.content /> 
-	<cfset rc.content = getHibachiScope().getService('ContentService').newContent() />
-</cfif> 
-
-<!--- Listing display will pass content ID of the content record that add was clicked from, we want this to be the parent --->
-<cfif structKeyExists(rc, 'contentID') >
-	<cfset rc.parentContentID = rc.contentID />
-</cfif> 
-
-
 <hb:HibachiEntityProcessForm entity="#rc.content#" edit="#rc.edit#" sRedirectAction="admin:entity.editcontent">
 	
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject#" backQueryString="?ng##!/entity/Content/" >

@@ -49,7 +49,7 @@
     "tsify": "^4.0.1",
     "typescript": "^3.8.3",
     "vinyl-source-stream": "^1.1.0",
-    "webpack": "^4.44.2",
+    "webpack": "^4.43.0",
     "webpack-cli": "*",
     "webpack-dev-server": "^3.1.11",
     "webpack-merge": "^5.0.9",
@@ -66,18 +66,18 @@
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor test/protractor-conf.js",
     "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + cat('app/bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'app/index-async.html');\"",
-    "buildSlatwall": "cd admin/client && env NODE_ENV=production webpack --config webpack-production.config.js --bail",
-    "buildSlatwall:debug": "cd admin/client && env NODE_ENV=development webpack --config webpack.config.js --bail",
+    "buildSlatwall": "cd admin/client && webpack",
+    "buildSlatwall:prod": "cd admin/client && webpack --config webpack-production.config.js",
     "buildHibachi": "cd org/Hibachi/client && env NODE_ENV=production webpack --config webpack-production.config.js",
     "buildHibachi:debug": "cd org/Hibachi/client && env NODE_ENV=development webpack",
     "buildFrontend": "cd org/Hibachi/client && webpack --config webpack-frontend-develop.config.js",
     "buildFrontend:prod": "cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js",
     "buildSpec": "cd admin/client && webpack --config webpack-test.config.js",
     "buildCSS": "lessc admin/client/css/main.less admin/client/css/main.css",
-    "buildCustomAdmin": "cd custom/admin/client && env NODE_ENV=production  webpack --config webpack-production.config.js --bail",
-    "buildCustomAdmin:debug": "cd custom/admin/client && env NODE_ENV=development  webpack --config webpack.config.js --bail",
-    "buildCustomFrontend": "cd custom/client && env NODE_ENV=production  webpack --config webpack-production.config.js --bail",
-    "buildCustomFrontend:debug": "cd custom/client && env NODE_ENV=development  webpack --config webpack.config.js --bail"
+    "buildCustomAdmin": "cd custom/admin/client && env NODE_ENV=production webpack --config webpack-production.config.js --bail",
+    "buildCustomAdmin:debug": "cd custom/admin/client && env NODE_ENV=development webpack --config webpack.config.js --bail",
+    "buildCustomFrontend": "cd custom/client && env NODE_ENV=production webpack --config webpack-production.config.js --bail",
+    "buildCustomFrontend:debug": "cd custom/client && env NODE_ENV=development webpack --config webpack.config.js --bail"
   },
   "jshintConfig": {
     "predef": [

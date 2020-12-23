@@ -78,9 +78,7 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Promotion (many-to-one)
-	
-	
+	// Promotion (many-to-one)	
 	public void function setPromotion(required any promotion) {
 		variables.promotion = arguments.promotion;
 		if(isNew() or !arguments.promotion.hasAppliedPromotion( this )) {
@@ -155,9 +153,39 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 		structDelete(variables, "order");
 	}
 
+	public boolean function getExcludeFromModifiedEntitiesFlag(){
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			if( !isNull(getOrderItem()) ){
+				variables.excludeFromModifiedEntitiesFlag = getOrderItem().getExcludeFromModifiedEntitiesFlag();
+			}
+			if(!isNull(getOrderFulfillment())){
+				variables.excludeFromModifiedEntitiesFlag = getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
+			}
+			if(!isNull(getOrder())){
+				variables.excludeFromModifiedEntitiesFlag = getOrder().getExcludeFromModifiedEntitiesFlag();
+			}
+		}
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================	
+	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
+
+public numeric function getCustomDiscountAmount(required string customPriceField){
+        return this.invokeMethod('get#customPriceField#DiscountAmount');
+    }
+    
+    public boolean function getEnrollmentFeeRefundFlag(){
+        if(!structKeyExists(variables,'enrollmentFeeRefundFlag')){
+            variables.enrollmentFeeRefundFlag = false;
+        }
+        return variables.enrollmentFeeRefundFlag;
+    }
+    //CUSTOM FUNCTIONS END
 }

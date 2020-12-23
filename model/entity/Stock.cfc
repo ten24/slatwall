@@ -319,6 +319,18 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
  			super.updateCalculatedProperties(argumentCollection=arguments);
 			ormflush();
  			getService("stockService").processStock(this, "updateInventoryCalculationsForLocations");
+ 			
+ 			
+			var parentStockCollection = getService('skuService').getStockCollectionList();
+			parentStockCollection.addFilter('sku.bundledSkus.bundledSku.skuID',this.getSku().getSkuID());
+			parentStockCollection.addFilter('location.locationID',this.getLocation().getLocationID())
+			parentStockCollection.setDisplayProperties('stockID');
+			var parentStockRecords = parentStockCollection.getRecords();
+
+			for(var record in parentStockRecords){
+				var parentStock = getService('StockService').getStock(record.stockID);
+				getHibachiScope().addModifiedEntity(parentStock);
+			}
  		}
  	}
 	

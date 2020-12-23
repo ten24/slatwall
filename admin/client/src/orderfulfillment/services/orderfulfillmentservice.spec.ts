@@ -2,6 +2,7 @@
 /// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
 
 import {coremodule} from "../../../../../org/Hibachi/client/src/core/core.module";
+
 import {HibachiService} from "../../../../../org/Hibachi/client/src/core/services/hibachiservice";
 import {collectionmodule} from "../../../../../org/Hibachi/client/src/collection/collection.module";
 import {CollectionConfig} from "../../../../../org/Hibachi/client/src/collection/services/collectionconfigservice";

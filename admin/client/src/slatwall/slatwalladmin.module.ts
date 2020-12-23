@@ -77,6 +77,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      datepickerPopupConfig.toggleWeeksText = null;
 
 
+
      // route provider configuration
 
 
@@ -99,6 +100,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }])
  //services
 //directives
+
 //controllers
 .controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',($scope:any, $compile)=> {
     //Define the different payment types used here
@@ -168,6 +170,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }
 }])
 //filters
+
 ;
 export{
     slatwalladminmodule

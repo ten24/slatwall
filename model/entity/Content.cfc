@@ -112,13 +112,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="cmsContentIDPath" ormtype="string" length="500";
 
 
-	// ============ START: Non-Persistent Property Methods =================	//CUSTOM PROPERTIES BEGIN
-
- property name="linkLabel" ormtype="string";
- property name="customBody" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
- property name="linkUrl" ormtype="string";
- property name="associatedImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
- property name="customSummary" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";//CUSTOM PROPERTIES END
+	// ============ START: Non-Persistent Property Methods =================
 	public string function getAssetsPath(){
 		if(!isNull(getSite()) && !structKeyExists(variables,'assetsPath')){
 			variables.assetsPath = getSite().getAssetsPath();

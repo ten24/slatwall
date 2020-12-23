@@ -136,8 +136,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
 
 	// Remote properties
-	property name="remoteID" ormtype="string" hb_populateEnabled="private";
-	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+	property name="remoteID" ormtype="string";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -222,6 +221,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================== START: Logical Methods =========================	
 
 	
+ 
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());

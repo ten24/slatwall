@@ -124,7 +124,6 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="skuCollection" persistent="false";
 	property name="promoHasRan" persistent="false";
 	
-	
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -466,6 +465,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 
 	// =================== START: ORM Event Hooks  =========================
 	
+	public void function preDelete(){
+		getDAO('PromotionDAO').deleteRewardStackingForPromotionReward(this);
+	}
+	
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================= START: Deprecated Methods  ========================
@@ -670,5 +673,5 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 	}
 	
-	// =================  END: Deprecated Methods   ========================	
+	// =================  END: Deprecated Methods   ========================
 }

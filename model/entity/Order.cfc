@@ -68,6 +68,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderNotes" ormtype="text";
 	property name="addToEntityQueueFlag" ormtype="boolean";
 	property name="taxCommitDateTime" ormtype="timestamp";
+	property name="taxTransactionReferenceNumber" ormtype="string";
 	
 	//used to check whether tax calculations should be run again
 	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
@@ -112,9 +113,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// Related Object Properties (many-to-many - inverse)
 
 	// Remote properties
-	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
-	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
-
+	property name="remoteID" ormtype="string";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -216,6 +215,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 	property name="calculatedFulfillmentHandlingFeeTotal" ormtype="big_decimal" hb_formatType="currency";
 
+	
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -356,6 +356,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			for(var orderPayment in getOrderPayments()) {
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
+			
+			this.setCalculatedPaymentAmountDue(this.getPaymentAmountDue());
 			
 			// create openorderitem records
 			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'add', orderID = getOrderID());
@@ -930,7 +932,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public boolean function isOrderFullyDelivered(){
 		return getQuantityUndelivered() == 0 && getQuantityUnreceived() == 0;
 	}
-
+	
+	public boolean function hasDropSku(){
+		 var orderItemCollectionList = getOrderService().getOrderItemCollectionList();
+		 orderItemCollectionList.addFilter('order.orderID', this.getOrderID());
+		 orderItemCollectionList.addFilter('rewardSkuFlag', 1);
+		 orderItemCollectionList.setPageRecordsShow(1);
+		 return arrayLen(orderItemCollectionList.getPageRecords(formatRecords=false));
+	}
+	
 	public numeric function getPaymentAmountAuthorizedTotal() {
 		var totalPaymentsAuthorized = 0;
 
@@ -1900,5 +1910,4 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================
-	
 }

@@ -128,6 +128,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	
+
 	public any function getCachedValue( required string key ) {
 		verifyCacheKey(arguments.key);
 

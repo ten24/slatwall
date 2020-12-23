@@ -223,6 +223,11 @@ component accessors="true" output="false" persistent="false" {
 		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
+	public void function traceHibachi(required string message, boolean generalLog=true){
+		arguments.logType = 'Trace';
+		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
+	}
+	
 	public void function logHibachiException(required any exception){
 		getService("hibachiUtilityService").logException(exception=arguments.exception);		
 	}
@@ -242,34 +247,6 @@ component accessors="true" output="false" persistent="false" {
 	public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
 		return getService("hibachiUtilityService").formatValue(argumentcollection=arguments);
 	} 
-	
-	
-    public boolean function hibachiIsEmpty( any input, boolean noTrim=false ){
-        
-        if( !structKeyExists(arguments, 'input') || IsNull(arguments.input) ){
-            return true;
-        }
-        
-        if( IsSimpleValue(arguments.input) ){
-           return arguments.noTrim ? len( arguments.input ) == 0 : len( trim(arguments.input) ) == 0;
-        }
-        
-        if( IsStruct(arguments.input) ){
-            return StructIsEmpty(arguments.input);
-        }
-        
-        if( IsArray(arguments.input) ){
-            return ArrayIsEmpty(arguments.input);
-        }
-        
-        if( IsQuery(arguments.input) ){
-            return arguments.input.recordCount == 0;
-        }
-        
-        // isObject | not-NULL | boolean
-        return false;
-    }
-
 	
 	// =========================  END:  DELIGATION HELPERS ==========================================
 	// ========================= START: APPLICATION VAUES ===========================================

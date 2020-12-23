@@ -41,7 +41,6 @@
 		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		text				|	Simple Text Field
 		textarea			|	Simple Textarea
-		json    			|	Simple Formatted json
 		time				|	This is still just a textbox, but it adds the jQuery time picker
 		typeahead			|	This is used for working with the angular typeahead functionality
 		wysiwyg				|	Value needs to be a string
@@ -296,6 +295,7 @@
 					lastEntityName = attributes.object.getClassName();
 					propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
 				}
+
 				relatedEntity = listLast(attributes.property,'.');
 				propertyMetaData = propsStruct[relatedEntity];
 				if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
@@ -332,6 +332,7 @@
 						labelText=""
 						placeholder="Search #propertynamerbkey#"
 						initialEntityID="#attributes.value#"
+						propertyToShow="#attributes.autocompleteNameProperty#"
 						data-max-records="20"
 					></hb:HibachiTypeahead>
 				</div>
@@ -357,15 +358,6 @@
 				</div>
 			</cfoutput>
 		</cfcase>
-		
-		<cfcase value="json">
-			<cfoutput>
-				<div class="position-relative">
-					<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
-				</div>
-			</cfoutput>
-		</cfcase>
-		
 		<cfcase value="time">
 			<cfoutput>
 				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# timepicker form-control" #attributes.fieldAttributes# />

@@ -7,7 +7,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="content" type="any";
 	property name="session" type="any";
 	property name="loggedInAsAdminFlag" type="boolean";
-	property name="objectPopulateMode" type="string" default="default"; // default, private, public
+	property name="publicPopulateFlag" type="boolean";
+	property name="workflowPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
@@ -30,6 +31,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public any function init() {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
+		setPublicPopulateFlag( false );
+		setWorkflowPopulateFlag( false );
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
@@ -293,7 +296,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	public void function addModifiedEntity( required any entity ) {
-		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName())){
+		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName()) && !arguments.entity.getExcludeFromModifiedEntitiesFlag()){
 			arrayAppend(getModifiedEntities(), arguments.entity);
 		}
 	}
@@ -570,7 +573,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 		
 		arguments.entityQueueID = hash(dataString, 'MD5');
-		arguments.entityQueueProcessingDateTime = now(); //this will be processed in this request.
+		
+		//this will be processed in this request.
+		arguments.entityQueueProcessingDateTime = now(); 
+		
+		// add 5 minutes for workflow retry if something goes wrong at the end of the request
+		arguments.entityQueueDateTime = DateAdd('n',5,now()); 
 		
 		if(!structKeyExists(variables.entityQueueData, arguments.entityQueueID)){
 			variables.entityQueueData[arguments.entityQueueID] = arguments;

@@ -54,6 +54,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 
 	public void function updateOrderAmountsWithTaxes(required any order) {
+
 		if (!arguments.order.hasOrderItem()){
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 			return;
@@ -90,6 +91,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		var orderFulfillmentList ="";
  		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
  			
+
  			if(!isNull(orderFulfillment.getShippingAddress())){
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
  				if(!isNull(orderFulfillment.getSelectedShippingMethodOption())){
@@ -669,6 +671,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 									newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 									newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
+
 									// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 									if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 										newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
@@ -914,10 +917,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// Loop over the rates of that category, looking for a unique integration
 				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+
 					// If a unique integration is found, then we add it to the integrations to call
 					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
 
 						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+
 						if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
 							taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderItem, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
 						}

@@ -73,7 +73,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	//order created for applying promos ahead of scheduled order placement
 	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
-	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID" hb_populateEnabled="private";
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID" hb_populateEnabled="workflow";
 	
 	// Related Object Properties (one-to-many)
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true" hb_cascadeCalculate="true";
@@ -269,7 +269,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		return variables.total; 
 	} 
 
-	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.accountID,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName", string excludesList=""){
+	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.accountID,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
@@ -372,8 +372,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOrderTemplate( this );
 	}
-
-
+	
 	//Email Template Helpers
 	public string function getOrderTemplateItemDetailsHTML(){
 		var html = "<ul>";
@@ -421,5 +420,6 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		
 		return variables.orderTemplateItemsCount;
 	}
+	
 	
 }

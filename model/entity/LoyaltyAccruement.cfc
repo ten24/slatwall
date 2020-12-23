@@ -81,6 +81,7 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	// Non-Persistent Properties
 
+	
 	public string function getSimpleRepresentation() {
 		return getLoyalty().getLoyaltyName() & " - " & getAccruementType();
 	}

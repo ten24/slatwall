@@ -54,7 +54,6 @@ component extends="testbox.Application"{
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
     
 	this.sessionManagement = true;
-	this.applicationTimeout = createTimespan(0, 0, 100000, 0);
 
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/", "");
 	
@@ -68,5 +67,8 @@ component extends="testbox.Application"{
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
 	this.ormSettings.automanageSession = false;
+	setting requestTimeOut="0";
+
+	
 
 }

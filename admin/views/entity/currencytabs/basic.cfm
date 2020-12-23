@@ -11,6 +11,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencyCode">
 			<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencyName">
 			<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencySymbol" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.currency#" property="formatMask" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.currency#" property="formattedExample">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

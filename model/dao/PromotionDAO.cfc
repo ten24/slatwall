@@ -441,18 +441,33 @@ Notes:
 		<cfargument name="orderItemID" required="true" type="any" />
 		<cfargument name="promotionID" required="true" type="any" />
 		<cfargument name="promotionRewardID" required="true" type="any" />
-	
+		<cfargument name="skuID" required="true" type="any" />
+		
 		<cfquery>
 			INSERT INTO swPromotionApplied (promotionAppliedID, appliedType, promotionID, promotionRewardID, orderItemID, skuID)
-			SELECT 
-				'#getHibachiScope().createHibachiUUID()#' as promotionAppliedID,
-				'orderItem' as appliedType, 
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionID#" /> as promotionID,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionRewardID#" /> as promotionRewardID,
-				orderItemID,
-				skuID
-			FROM swOrderItem
-			WHERE orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+			values( 
+				'#getHibachiScope().createHibachiUUID()#',
+				'orderItem', 
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionID#" /> ,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionRewardID#" /> ,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" /> ,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.skuID#" /> 
+			)
+		</cfquery>
+	</cffunction>
+	
+	<cffunction name="deleteRewardStackingForPromotionReward" returntype="void" access="public">
+		<cfargument name="promotionReward" required="true" type="any" />
+		<cfset var promotionRewardID = arguments.promotionReward.getPromotionRewardID() />
+		<cfquery>
+			DELETE FROM swpromorewardstackexcl
+			WHERE promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#promotionRewardID#" />
+			OR linkedPromotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#promotionRewardID#" />
+		</cfquery>
+		<cfquery>
+			DELETE FROM swpromorewardstackincl
+			WHERE promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#promotionRewardID#" />
+			OR linkedPromotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#promotionRewardID#" />
 		</cfquery>
 	</cffunction>
 	

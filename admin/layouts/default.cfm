@@ -71,48 +71,19 @@ Notes:
 
 			<base href="#baseHREF#" />
 		</cfif>
-		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/pacejs/pace-theme-flash.css" rel="stylesheet">
-		<script>
-		    // custom options for pace-js
-			window.paceOptions = {
-			    document: true, // disabled
-			    eventLag: true,
-			    restartOnPushState: true,
-			    restartOnRequestAfter: true,
-			    ajax: {
-			        trackMethods: [ 'POST','GET']
-			    }
-			};
-			
-		</script>
-		
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/fonts/opensans/opensans.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css?v=#$.slatwall.getApplicationValue('instantiationKey')#" rel="stylesheet">
+		<cfset local.customStylesheet = request.slatwallScope.getAccount().setting('accountCustomAdminStylesheet') />
+		<cfif !isNull(local.customStylesheet) >
+			<style>#local.customStylesheet#</style>
+		</cfif>
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/metismenu/metismenu.css" rel="stylesheet">
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
-		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/RetryProxy/lib/RetryProxyES5.js" charset="utf-8"></hb:HibachiScript>
-        <script>
-            function failSafeGlobalFunction(name) { //extra-args
-				var args = [];
-				for (var i = 1; i < arguments.length; ++i) {
-		            args[i-1] = arguments[i];
-		        }
-		        
-				//it will retry every 500ms, until succeed, or tried 2000 times 
-				new RetryProxyES5(window, name, 500, 2000,true)
-                .setArgs(args).run()
-
-			}
-			
-			function failSafeGetTabHTMLForTabGroup( element, tab) {
-				failSafeGlobalFunction('getTabHTMLForTabGroup', element, tab);
-			}
-        </script>
 
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></hb:HibachiScript>
@@ -177,6 +148,7 @@ Notes:
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" icon="inbox icon-white" type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listreturnorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listordertemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">
@@ -193,6 +165,8 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listorderimportbatch" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listgiftcard" type="list">
+									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listtemplateitembatch" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.accounts_nav')#" icon="user icon-white" type="nav">
@@ -231,7 +205,7 @@ Notes:
 										<hb:HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['subsystem']#" type="list">
 										<cfset local.integration = $.slatwall.getService('integrationService').getIntegrationByIntegrationPackage(local.intsys['subsystem']) />
 										<cfset local.integrationCFC = $.slatwall.getService('integrationService').getIntegrationCFC(local.integration) />
-										<cfif NOT isNull(local.integrationCFC) AND structKeyExists(local.integrationCFC,'getMenuItems')>
+										<cfif structKeyExists(local.integrationCFC,'getMenuItems')>
 											<cfloop array="#local.integrationCFC.getMenuItems()#" index="local.menuitem">
 												<hb:HibachiActionCaller action="#local.menuitem['action']#" text="#local.menuitem['text']#" type="list">
 											</cfloop>
@@ -278,13 +252,13 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
-									<!---<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">--->
+									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
 									<!---deprecated--->
 									<!---<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
 									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">--->
-									<!---<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
-									<hb:HibachiActionCaller action="admin:report" type="list">--->
+									<hb:HibachiActionCaller action="admin:report" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsession" type="list">
@@ -293,8 +267,6 @@ Notes:
 									<hb:HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true">
 									<hb:HibachiActionCaller action="admin:main.log" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listaudit" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listbatch" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listentityqueue" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listemail" type="list">
 									<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">
 									<hb:HibachiActionCaller action="admin:main.update" type="list">
@@ -302,8 +274,8 @@ Notes:
 										<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
 										<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
 										<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">
+											<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#&#getHibachiScope().getApplicationValue('applicationUpdateKey')#=#getHibachiScope().getApplicationValue('applicationUpdatePassword')#&#getHibachiScope().getApplicationValue('applicationCreateJsonKey')#=#getHibachiScope().getApplicationValue('applicationCreateJsonPassword')#" type="list" text="Create Json">
 									</cfif>
-									<hb:HibachiActionCaller action="admin:entity.listimportermapping" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 						
@@ -426,6 +398,7 @@ Notes:
 						<div class="modal-footer">
 							<a href="##" target="_self" class="btn btn-sm btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
 							<a href="##" target="_self" class="btn btn-sm btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
+							<button type="submit" form="adminConfirmForm" class="btn btn-sm btn-default btn-primary hide" id="confirmYesButton"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</button>
 						</div>
 					</div>
 				</div>
@@ -464,12 +437,11 @@ Notes:
 			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></hb:HibachiScript>
 		</cfif>
 
-		<!-- code split vendor bundle before the other bundles because its common among them. -->
- 		
-        <!--- Webpack bundles--->
-	    <cfinclude template="#request.slatwallScope.getBaseURL()#/admin/client/dist/SlatwallAdminBundle.cfm" />
-
+		<!--- Webpack bundles--->
+		<cfinclude template="#request.slatwallScope.getBaseURL()#/admin/client/dist/SlatwallAdminBundle.cfm" />
+		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
+
 	</body>
 </html>
 </cfoutput>

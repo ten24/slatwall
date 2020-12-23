@@ -4,6 +4,8 @@
 class SWListingDisplayController{
     /* local state variables */
     public  actions = [];
+    public actionBarActions;
+    public listActions;
     public adminattributes;
     public administrativeCount;
     public allpropertyidentifiers:string = "";
@@ -114,7 +116,6 @@ class SWListingDisplayController{
     public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
-    public showAutoRefresh:boolean;
     public showReport:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
@@ -173,7 +174,7 @@ class SWListingDisplayController{
     public $onInit = () => {
         // giving it a time-out to run this code in next digest-cycle, so everything is rendered 
         this.$timeout( () =>  this.startLoading() );
-
+        
     }
     
     public refreshListingDisplay = () => {
@@ -206,7 +207,8 @@ class SWListingDisplayController{
         this.$timeout( ()=> {
             // @ts-ignore from hibachiAssets/js/global.js
             window?.removeLoadingDiv?.(this.tableID);
-        },100); // to avoide flickring of ng-repeat
+            this.loading = false;
+        },50); // to avoide flickring of ng-repeat
     }
     
    /**
@@ -239,7 +241,19 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showFilters)){
            this.showFilters = true;
         }
-        
+        if(angular.isUndefined(this.actionBarActions)){
+            this.actionBarActions = {
+                export:true,
+                print:true,
+                email:true
+            }
+        }else if(typeof this.actionBarActions == 'string'){
+            let actionBarArray = this.actionBarActions.split(',');
+            this.actionBarActions = {};
+            for(let i = 0; i< actionBarArray.length; i++){
+                this.actionBarActions[actionBarArray[i]] = true;
+            }
+        }
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -465,9 +479,6 @@ class SWListingDisplayController{
             this.tableID = 'LD'+this.utilityService.createID();
         }
         
-        this.observerService.attach(this.refreshListingDisplay, 'refreshListingDisplay', this.tableID);
-        
-        
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null;
@@ -546,7 +557,6 @@ class SWListingDisplayController{
             this.hasSearch = true;
             this.showSearch = true;
         }
-
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
         }
@@ -840,6 +850,18 @@ class SWListingDisplayController{
                 .remove();
         }
     };
+    
+    public executeListAction(listAction:any){
+        let data = {};
+        if(listAction.selectedRecords){
+            data[this.multiselectFieldName] = this.selectionService.getSelections(this.tableID).join();
+        }
+        $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'='+listAction.action+'" method="post" id="executeListAction"></form>');
+        if(listAction.selectedRecords){
+            $('#executeListAction').append("<input type='hidden' name='"+this.multiselectFieldName+"' value='" + this.selectionService.getSelections(this.tableID).join() + "' />")
+        }
+        $('#executeListAction').submit().remove();
+    }
 
     public printCurrentList =(printTemplateID)=>{
 
@@ -935,6 +957,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /*Admin Actions*/
             actions:"<?",
+            actionBarActions:"@?",
             administrativeCount:"@?",
             
             recordEditModal:"<?",
@@ -984,6 +1007,7 @@ class SWListingDisplay implements ng.IDirective{
             }
             ]
             */
+            listActions:'<?',
             listingColumns:'<?',
 
             /*Hierachy Expandable*/
@@ -994,6 +1018,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /*Searching*/
             searchText:"<?",
+            defaultSearchColumn:"@?",
 
             /*Sorting*/
             sortable:"<?",
@@ -1026,7 +1051,6 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showToggleDisplayOptions:"<?",
             showSearch:"<?",
-            showAutoRefresh:"<?",
             showSearchFilters:"<?",
             showFilters:"<?",
             showSimpleListingControls:"<?",

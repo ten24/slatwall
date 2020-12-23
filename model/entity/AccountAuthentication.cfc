@@ -74,7 +74,6 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
-	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -88,7 +87,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 
 
 	// ============ START: Non-Persistent Property Methods =================
-	
+
 	public boolean function getForceLogoutFlag() {
 		/*
 			//if(!isNull(session.getAccountAuthentication().getIntegration()) && !currentSession.getAccountAuthentication().getIntegration().getIntegrationCFC( "authentication" ).verifySessionLogin( currentSession )) {

@@ -104,8 +104,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Related Object Properties (many-to-many - inverse)
 
 	// Remote properties
-	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
-	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+	property name="remoteID" ormtype="string";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -155,7 +154,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================== START: Logical Methods =========================
-
+		
 	public boolean function getVerifiedShippingAddressFlag(){
 		if( !isNull(this.getShippingAddress()) ){
 			return this.getShippingAddress().getVerifiedByIntegrationFlag();
@@ -963,11 +962,12 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 				|| (!isNull(this.getOrder()) &&  this.getOrder().getOrderID() != arguments.oldData.order.getOrderID() )
 			)
 		){
+			var newOrderID = isNull(this.getOrder()) ? 'NULL' : this.getOrder().getOrderID();
 			//Reset the order to the old Data
 			this.setOrder(arguments.oldData.order);
 
 			//Log that this occurred in the Slatwall Log
-			logHibachi("Order Fulfillment: #this.getOrderFulfillmentID()# tried to update it's order. This change has been prevented", true);
+			logHibachi("Order Fulfillment: #this.getOrderFulfillmentID()# tried to update it's order. This change has been prevented. Old Order ID: #arguments.oldData.order.getOrderID()#, new Order ID: #newOrderID#", true);
 		}
 
 		super.preUpdate(argumentCollection=arguments);

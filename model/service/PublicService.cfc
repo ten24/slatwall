@@ -714,10 +714,10 @@ component  accessors="true" output="false"
                 for(var fulfillment in order.getOrderFulfillments()){
                     fulfillment.setShippingAddress(accountAddress.getAddress());
                     fulfillment.setAccountAddress(accountAddress);
-                    getService("OrderService").saveOrderFulfillment(fulfillment);
+                    getService("OrderService").saveOrderFulfillment(orderFulfillment = fulfillment, updateOrderAmounts = false);
                 }
             }
-            getService("OrderService").saveOrder(order);
+            getService("OrderService").saveOrder(order = order, updateOrderAmounts = false);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
             if(!isNull(accountAddress)){
@@ -841,7 +841,7 @@ component  accessors="true" output="false"
                 }
             }
             orderFulfillment.setShippingMethod(shippingMethod);
-            getService("OrderService").saveOrder(order); 
+            getService("OrderService").saveOrder(order = order, updateOrderAmounts = false); 
             getHibachiScope().flushOrmSession();   
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
         }else{
@@ -850,12 +850,12 @@ component  accessors="true" output="false"
         }
         
         orderFulfillment.setShippingMethod(shippingMethod);
-        orderFulfillment = getService("OrderService").saveOrderFulfillment(orderFulfillment);
+        orderFulfillment = getService("OrderService").saveOrderFulfillment(orderFulfillment = orderFulfillment, updateOrderAmounts = false);
         if(orderFulfillment.hasErrors()){
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", orderFulfillment.hasErrors());
             return;
         }
-        order = getService("OrderService").saveOrder(order); 
+        order = getService("OrderService").saveOrder(order = order, updateOrderAmounts = false); 
         if(!order.hasErrors()){
 			getDao('hibachiDao').flushOrmSession();
         }
@@ -1585,11 +1585,16 @@ component  accessors="true" output="false"
         }
 
         if (!isNull(newBillingAddress) && newBillingAddress.hasErrors()) {
-            this.addErrors(arguments.data, newBillingAddress.getErrors());
+            if(!isNull(paymentMethod)){
+                paymentMethod.addError('addOrderPayment',getHibachiScope().rbKey('validate.processOrder_AddOrderPayment.invalidBillingAddress'),true);
+                this.addErrors(arguments.data, paymentMethod.getErrors());
+                getDAO('AccountDAO').setAccountPaymentMethodInactive(paymentMethod.getAccountPaymentMethodID());
+            }else{
+                this.addErrors(arguments.data, newBillingAddress.getErrors());
+            }
             return;
         }
 
-       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {
@@ -1706,6 +1711,18 @@ component  accessors="true" output="false"
             arguments.data.ajaxResponse["errors"] = {};
         }
         arguments.data.ajaxResponse["errors"] = errors;
+    }
+    
+    public any function addMessages( required struct data , messages){
+
+        if (!structKeyExists(arguments.data, "ajaxResponse")){
+            arguments.data["ajaxResponse"] = {};
+        }
+        
+        if (!structKeyExists(arguments.data.ajaxResponse, "messages")){
+            arguments.data.ajaxResponse["messages"] = {};
+        }
+        arguments.data.ajaxResponse["messages"] = messages;
     } 
     
     /** returns a list of state code options either for us (default) or by the passed in countryCode */

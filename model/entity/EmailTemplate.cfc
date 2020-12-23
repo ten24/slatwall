@@ -81,7 +81,7 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 
 
 	// ============ START: Non-Persistent Property Methods =================
-
+	
 	public array function getEmailTemplateObjectOptions() {
 		if(!structKeyExists(variables, "emailTemplateObjectOptions")) {
 			var emd = getService("hibachiService").getEntitiesMetaData();

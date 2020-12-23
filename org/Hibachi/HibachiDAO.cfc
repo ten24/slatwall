@@ -58,7 +58,7 @@
 
 
 		public any function new( required string entityName ) {
-			// Adds the Applicatoin Prefix to the entityName when needed.
+			// Adds the Application Prefix to the entityName when needed.
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
@@ -71,6 +71,19 @@
 
 			// Save this entity
 			entitySave( arguments.target );
+
+			// Digg Deeper into any populatedSubProperties and save those as well.
+			if(!isNull(arguments.target.getPopulatedSubProperties())) {
+				for(var p in arguments.target.getPopulatedSubProperties()) {
+            		if(isArray(arguments.target.getPopulatedSubProperties()[p])) {
+            			for(var e=1; e<=arrayLen(arguments.target.getPopulatedSubProperties()[p]); e++) {
+            				this.save(target=arguments.target.getPopulatedSubProperties()[p][e]);
+            			}
+            		} else {
+            			this.save(target=arguments.target.getPopulatedSubProperties()[p]);
+            		}
+            	}
+            }
 
 			return arguments.target;
 		}
@@ -108,7 +121,6 @@
 	    }
 
 	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
-
 	    	// Initate the first flush
 	    	ormFlush();
 	    	// flush again to persist any changes done during ORM Event handler
@@ -162,21 +174,6 @@
 
 		// =====================  END: Private Helper Methods ============================
 
-
-        public any function getAnyColumnValueByTableNameAndUniqueKeyValue(required string tableName, required string columnToFetch, required string uniqueKey, required any uniqueValue ){
-		
-			var qry = new query();
-			qry.addParam( name='uniqueValue',    value=arguments.uniqueValue );
-			qry.setSql("
-    			    SELECT  #arguments.columnToFetch# 
-    			    FROM    #arguments.tableName# 
-    			    WHERE   #arguments.uniqueKey# = :uniqueValue 
-    			");
-			
-			var result = qry.execute().getResult();
-
-	    	return result[arguments.columnToFetch];
-		}
 
 	</cfscript>
 

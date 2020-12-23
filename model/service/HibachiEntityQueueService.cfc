@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="false" accessors="true" output="false" {
 	
-
+	
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
@@ -60,21 +60,15 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 	// ===================== START: Process Methods ===========================
 	
 	public void function addQueueHistoryAndDeleteQueue(required any entityQueue, required boolean success){
-		this.addQueueHistory( argumentCollection=arguments );
-		this.deleteEntityQueue(entityQueue);
-	}
-	
-	public boolean function deleteBatch(required any batch) {
-		
-        // Check delete validation for batch
-		if(arguments.batch.isDeletable()) {
+		var entityQueueHistory = this.newEntityQueueHistory();
+		entityQueueHistory.setEntityQueueType(arguments.entityQueue.getEntityQueueType());
+		entityQueueHistory.setBaseObject(arguments.entityQueue.getBaseObject());
+		entityQueueHistory.setBaseID(arguments.entityQueue.getBaseID());
+		entityQueueHistory.setEntityQueueHistoryDateTime(arguments.entityQueue.getEntityQueueDateTime());
+		entityQueueHistory.setSuccessFlag(arguments.success);
+		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
 
-			this.getHibachiEntityQueueDAO().deleteBatchItems( arguments.batch.getBatchID() );
-			
-		    return delete( arguments.batch );
-		}
-		
-		return false;
+		this.deleteEntityQueue(entityQueue);
 	}
 
 

@@ -347,8 +347,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccount_changePassword(required any account, required any processObject) {
 		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
 		//For now they are just calling this function that handles the actual work.
+		
 		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
-
+		
+		if(!arguments.account.hasErrors() && (getHibachiScope().getAccount().getAccountID() == arguments.account.getAccountID())){
+			//If user successfully change his password then logout that user
+			this.processAccount_logout(arguments.account);
+		}
+		
 		return arguments.account;
 	}
 	public any function processAccount_changePosPin(required any account, required any processObject) {
@@ -2093,6 +2099,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(arguments.account.getAdminAccountFlag()){
 				getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 			}
+			getDAO('AccountDAO').removeAccountFromEmails(arguments.account.getAccountID());
 			
 		}
 

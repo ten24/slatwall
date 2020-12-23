@@ -86,7 +86,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="taxAddress" type="any" default="";
 	property name="taxCategoryRate" type="any" default="";
 	
-	
+
 	public void function populateWithOrderItem(required any orderItem) {
 		// Set reference object and type
 		setOrderItem(arguments.orderItem);

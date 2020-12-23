@@ -67,9 +67,7 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 	// Related Object Properties (many-to-many - inverse)
 	
 	// Remote properties
-	property name="remoteID" hb_populateEnabled="private" ormtype="string";
-	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
-
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

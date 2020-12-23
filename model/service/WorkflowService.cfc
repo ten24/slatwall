@@ -257,30 +257,6 @@ component extends="HibachiService" accessors="true" output="false" {
 					var scheduleCollection = arguments.workflowTrigger.getCollection();
 					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
 					
-					if(currentObjectName == 'EntityQueue' && isNumeric(arguments.workflowTrigger.getMaxTryCount())){
-						scheduleCollection.addDisplayProperty('tryCount');
-						scheduleCollection.addFilter(
-							propertyIdentifier = 'tryCount',
-							value = arguments.workflowTrigger.getMaxTryCount(),
-							comparisonOperator = "<=",
-							filterGroupAlias = "maxTryCount"
-						);
-						
-						scheduleCollection.addFilter(
-							propertyIdentifier = 'entityQueueDateTime',
-							value = 'NULL',
-							comparisonOperator = 'IS',
-							filterGroupAlias = 'processingTime'
-						);
-						
-						scheduleCollection.addFilter(
-							logicalOperator='OR',
-							propertyIdentifier = 'entityQueueDateTime',
-							value = now(),
-							comparisonOperator = '<=',
-							filterGroupAlias = 'processingTime'
-						);
-					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
 							
@@ -296,6 +272,7 @@ component extends="HibachiService" accessors="true" output="false" {
 								
 								if(isNumeric(arguments.workflowTrigger.getCollectionFetchSize()) && arguments.workflowTrigger.getCollectionFetchSize() > 0){
 									scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
+									getHibachiScope().setValue('debug_collection_config', scheduleCollection.getCollectionConfig());
 									processData['collectionData'] = scheduleCollection.getPageRecords(formatRecords=false);
 								}else{
 									processData['collectionData'] = scheduleCollection.getRecords(formatRecords=false);
@@ -462,9 +439,15 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			//PROCESS
 			case 'process' :
+				
+				// Append extra data passed in the WorkflowAction
+				structAppend(arguments.data, arguments.workflowTaskAction.getProcessMethodDataStruct(), true);
+					
 				if(structKeyExists(arguments,'entity')){
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
+					
+					
 
 					//process will determine whether we need to inflate a process object or pass data directly
 					arguments.entity = entityService.process(arguments.entity, arguments.data, processContext);
@@ -474,9 +457,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					}
 				}else{
 					var entityService = getServiceByEntityName( entityName=arguments.workflowTaskAction.getWorkflowTask().getWorkflow().getWorkflowObject());
-					var processData = {};
 					try{
-						var processMethod = entityService.invokeMethod(arguments.workflowTaskAction.getProcessMethod(), processData);
+						var processMethod = entityService.invokeMethod(arguments.workflowTaskAction.getProcessMethod(), { 'data' : arguments.data } );
 						actionSuccess = true;
 					}catch(any e){
 						actionSuccess = false;
@@ -516,8 +498,16 @@ component extends="HibachiService" accessors="true" output="false" {
 						'emailTemplateID' : arguments.workflowTaskAction.getEmailTemplate().getEmailTemplateID()
 					} 
 				}; 
-	
-				actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+
+				if(arguments.type == 'Event'){
+					arguments.baseObject = arguments.entity.getClassName();
+					arguments.baseID = arguments.entity.getPrimaryIDValue();
+					getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
+					actionSuccess = true; 
+				} else {
+					actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+				}
+				
 				break; 
 
 			//IMPORT
@@ -616,7 +606,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
 	   
-		getHibachiScope().setObjectPopulateMode( 'private' );;
+		getHibachiScope().setWorkflowPopulateFlag(true);
 		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
@@ -698,7 +688,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.entity = super.save(argumentcollection=arguments);
 
 		//Check if is a Schedule Trigger
-		if(structKeyExists(arguments.data, "schedule")){
+		if(structKeyExists(arguments.data, "schedule") && !isNull(entity.getSchedule())){
 		// Update the nextRunDateTime
 			arguments.entity.setNextRunDateTime( entity.getSchedule().getNextRunDateTime(entity.getStartDateTime(), entity.getEndDateTime()) );
 		}
@@ -847,6 +837,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}	
 	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
+
 		getHibachiDAO().flushORMSession();
 		
 		/*

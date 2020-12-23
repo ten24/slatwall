@@ -279,15 +279,16 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				} else {
 					var unitAmount = orderItem.getPrice();
 				}
-
-				 item_payload.append({
-					'name' : '#orderItem.getSku().getProduct().getTitle()#',
-					'kind' : 'DEBIT',
-					'quantity' : '#orderItem.getQuantity()#',
-					'unitAmount' : '#unitAmount#',
-					'productCode' : '#orderItem.getSku().getSkuCode()#',
-					"totalAmount" : "#(orderItem.getQuantity() * unitAmount)#"
-				});
+				if(unitAmount != 0){
+					 item_payload.append({
+						'name' : '#orderItem.getSku().getProduct().getTitle()#',
+						'kind' : 'DEBIT',
+						'quantity' : '#orderItem.getQuantity()#',
+						'unitAmount' : '#unitAmount#',
+						'productCode' : '#orderItem.getSku().getSkuCode()#',
+						"totalAmount" : "#(orderItem.getQuantity() * unitAmount)#"
+					});
+				}
 
 			}
 		}
@@ -398,6 +399,11 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				}
 			}
 			else{
+				if(structKeyExists(fileContent,'errors')){
+					for(var error in fileContent.errors){
+						responseBean.addMessage('error', error.message);
+					}
+				}
 				responseBean.addError("Processing error", "Not able to process this request.");
 				//responseBean.addError("Processing error", "Not able to process this request. #SerializeJson(payload)# =====XXXXXX===== #SerializeJson(response)# =====XXXXXX===== #SerializeJson(shippingAddress)#");
 			}

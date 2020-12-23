@@ -1,10 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-import { ObserverService } from "../../core/core.module";
-import { LocalStorageService } from "../../core/services/localstorageservice";
-import { CollectionService } from "../../collection/services/collectionservice";
-
 class SWListingSearchController {
 
     private filterPropertiesList;
@@ -16,7 +12,6 @@ class SWListingSearchController {
     private filtersClosed:boolean=true;
     private showToggleFilters:boolean;
     private showToggleDisplayOptions:boolean;
-    private showAutoRefresh:boolean;
     private newFilterPosition;
     private itemInUse;
     private getCollection;
@@ -32,35 +27,25 @@ class SWListingSearchController {
     public limitCountTotal;
     
     public swListingControls:any;
-    public hasPersonalCollections = false;
+    public hasPersonalCollections:boolean=false;
     public personalCollections:any;
     public selectedPersonalCollection:any;
-    public collectionNameSaveIsOpen = false;
+    public collectionNameSaveIsOpen:boolean=false;
     public printTemplateOptions:any[];
     public personalCollectionIdentifier:string;
-    
-    
-    //Auto-refresh
-    private autoRefreshIntervalReference = null;
+    public defaultSearchColumn: any;
 
-    public autoRefreshConfig = {
-        'autoRefreshInterval' : 30, // seconds --> for timeout x1000
-        'autoRefreshEnabled' : false // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
-    };
-    
-    
     //@ngInject
     constructor(
         public $scope,
         public $rootScope,
-        public $timeout,
-        public $interval : ng.IIntervalService,
         public $hibachi,
+        public $timeout,
         public metadataService,
         public listingService,
-        public collectionService : CollectionService,
-        public observerService : ObserverService,
-        public localStorageService : LocalStorageService,
+        public collectionService,
+        public observerService,
+        public localStorageService,
         public appConfig
     ) {
        
@@ -132,8 +117,18 @@ class SWListingSearchController {
             this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
         }
 
-        this.selectedSearchColumn={title:'All'};
+        if(this.defaultSearchColumn){
+            this.selectedSearchColumn = this.searchableOptions
+                                                .find(column => column.propertyIdentifier === this.collectionConfig.baseEntityAlias+'.'+this.defaultSearchColumn);
+        }
+            
+        if(!this.selectedSearchColumn){
+            this.selectedSearchColumn = { title : 'All' };
+        }
+            
+            
         this.configureSearchableColumns(this.selectedSearchColumn);
+ 
 
         if(this.swListingControls.showPrintOptions){
             //load the options
@@ -157,19 +152,6 @@ class SWListingSearchController {
                 }
             );
         }
-        
-       if(this.showAutoRefresh) {
-            // on init --> check to set time-out intervals
-            let savedAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
-            
-            if( savedAutoRefreshConfig ){
-                this.autoRefreshConfig = savedAutoRefreshConfig;
-            }
-            
-            if( savedAutoRefreshConfig?.autoRefreshEnabled){
-                this.setupAutoRefreshTimeout();
-            }
-        }
     }
     
     public configureListingSearchConfigControls(searchConfig?) {
@@ -186,6 +168,7 @@ class SWListingSearchController {
         }
         
     }
+    
     
     public changeSearchFilter = (filter)=>{
         if(this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode !== filter.value){
@@ -269,67 +252,7 @@ class SWListingSearchController {
             this.getPersonalCollections();
         });
     }
-    
-    public onRefresh = () => {
-        //notify - Refresh - Listing
-        this.observerService.notifyById( 'refreshListingDisplay', this.listingId , null); // this.swListingDisplay.refreshListingDisplay();
-    }
-    
-    public onToggleAutoRefereshEnabled = () => {
-        
-        if( !this.autoRefreshConfig.autoRefreshEnabled ){
-            this.autoRefreshConfig.autoRefreshEnabled = true;
-        } 
-        else {
-            this.autoRefreshConfig.autoRefreshEnabled = false;
-        }
-        
-        // update local-storage
-        this.saveSelectedAutoRefreshConfig(this.swListingDisplay.personalCollectionKey, this.autoRefreshConfig);
-        
-        
-        if( !this.autoRefreshConfig.autoRefreshEnabled ){
-            // set-timeouts
-            this.setupAutoRefreshTimeout();
-        } 
-        else {
-            // unset-timeouts
-            this.clearAutoRefreshTimeout();
-        }
-    }
-    
-    public onSaveAutoRefereshConfig = () => {
-        
-        // update local-storage --> save autoRefreshConfig
-        this.saveSelectedAutoRefreshConfig(this.swListingDisplay.personalCollectionKey, this.autoRefreshConfig);
-        // update-timeputs
-        this.setupAutoRefreshTimeout();
-    }
-    
-    private saveSelectedAutoRefreshConfig = ( cacheKey: string, config) => {
-	    let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs') || {};
-	    selectedAutoRefreshConfigs[ cacheKey ] = angular.copy(config);
-	    this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
-    }
-    
-    private setupAutoRefreshTimeout = () => {
-        //clear old timeouts if any
-        this.clearAutoRefreshTimeout();
-        
-        let thisAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
-        
-        if( thisAutoRefreshConfig?.autoRefreshEnabled ){
-            this.autoRefreshIntervalReference = this.$interval(this.onRefresh, thisAutoRefreshConfig.autoRefreshInterval*1000);
-        }
-    }
-    
-    private clearAutoRefreshTimeout = () => {
-        // remove interval
-        this.$interval.cancel(this.autoRefreshIntervalReference);
-        this.autoRefreshIntervalReference = null;
-    }
-    
-    
+
     public savePersonalCollection=(collectionName?)=>{
         if(
             this.localStorageService.hasItem('selectedPersonalCollection') &&
@@ -424,18 +347,22 @@ class SWListingSearchController {
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         
         this.swListingDisplay.collectionConfig = this.collectionConfig;
+        
+         this.configureSearchableColumns(this.selectedSearchColumn);
 
         this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
 
     };
 
     private configureSearchableColumns=(column)=>{
-
         var searchableColumns = [];
         if(column.propertyIdentifier){
             searchableColumns.push(column.propertyIdentifier);
         }else{
             searchableColumns = this.searchableColumns;
+        }
+        if(!searchableColumns.length){
+            return;
         }
 
         for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
@@ -446,7 +373,6 @@ class SWListingSearchController {
             }
         }
     }
-
 
 
 }
@@ -462,8 +388,8 @@ class SWListingSearch  implements ng.IDirective{
         collectionConfig : "=",
         paginator : "=?",
         listingId : "@?",
-        showAutoRefresh : "<?",
         showToggleSearch:"=?",
+        defaultSearchColumn:"=?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';

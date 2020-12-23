@@ -91,4 +91,5 @@ component extends="HibachiDAO" {
 			,{locationID=arguments.locationID},true
 		);
 	}
+	
 }

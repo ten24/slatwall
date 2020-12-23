@@ -106,8 +106,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalProduct" fkcolumn="productID" inversejoincolumn="physicalID" inverse="true";
 
 	// Remote Properties
-	property name="remoteID" ormtype="string" hb_populateEnabled="private";
-	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+	property name="remoteID" ormtype="string";
 
 	// Audit Properties 
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -155,130 +154,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-	
-	//CUSTOM PROPERTIES BEGIN
-
- property name="productSafeTypeStyle" ormtype="string" hb_formFieldType="select";
- property name="productSafeFireRated" ormtype="string";
- property name="productSafeSafetyRating" ormtype="string";
- property name="productDoorKnobFunction" ormtype="string" hb_formFieldType="select";
- property name="productDoorKnobSeries" ormtype="string" hb_formFieldType="select";
- property name="productBoredLockGrade" ormtype="string" hb_formFieldType="select";
- property name="productBoredLockStyle" ormtype="string" hb_formFieldType="select";
- property name="mechanicalHardwareFunction" ormtype="string" hb_formFieldType="select";
- property name="mechanicalHardwareBoltLatch" ormtype="string";
- property name="merchanicalLockSeries" ormtype="string";
- property name="mechanicalHardwareOverrideType" ormtype="string";
- property name="mechanicalHardwareTrim" ormtype="string";
- property name="mechanicalMaterialThickness" ormtype="string";
- property name="mechanicalKeying" ormtype="string" hb_formFieldType="select";
- property name="mechanicalStyle" ormtype="string";
- property name="productBumpStop" ormtype="boolean" hb_formatType="yesno";
- property name="mechanicalRekeyable" ormtype="boolean" hb_formatType="yesno";
- property name="mechanicalBodyMaterial" ormtype="string" hb_formFieldType="select";
- property name="mechanicalShackleMaterial" ormtype="string" hb_formFieldType="select";
- property name="mechanicalShackleDiameter" ormtype="string" hb_formFieldType="select";
- property name="mechanicalShackleClearance" ormtype="string" hb_formFieldType="select";
- property name="mechanicalBodyWidth" ormtype="string";
- property name="productElectronicAuditTrail" ormtype="boolean" hb_formatType="yesno";
- property name="productElectronicPin" ormtype="boolean" hb_formatType="yesno";
- property name="productElectronicProx" ormtype="boolean" hb_formatType="yesno";
- property name="productElectronicUsers" ormtype="string";
- property name="productElectronicScheduling" ormtype="boolean" hb_formatType="yesno";
- property name="productCover" ormtype="string";
- property name="productCoverStyle" ormtype="string";
- property name="productHanded" ormtype="string" hb_formFieldType="select";
- property name="productMaterial" ormtype="string";
- property name="productSpringSize" ormtype="string";
- property name="productMfgWarranty" ormtype="string";
- property name="productHoldOpen" ormtype="boolean" hb_formatType="yesno";
- property name="productParallelArm" ormtype="boolean" hb_formatType="yesno";
- property name="productRegularArm" ormtype="boolean" hb_formatType="yesno";
- property name="productExtraDutyArm" ormtype="boolean" hb_formatType="yesno";
- property name="productCushNStopArm" ormtype="boolean" hb_formatType="yesno";
- property name="productFastenerPack" ormtype="string";
- property name="productBackset" ormtype="string";
- property name="productDoorThickness" ormtype="string";
- property name="productHoleSize" ormtype="string";
- property name="productCTC" ormtype="string";
- property name="productLockType" ormtype="string";
- property name="productCutoutType" ormtype="string";
- property name="productDoorSwing" ormtype="string";
- property name="productDoorHand" ormtype="string";
- property name="productOffset" ormtype="string";
- property name="productProjection" ormtype="string";
- property name="productDoorAccessoryStyle" ormtype="string";
- property name="productHingeMaterial" ormtype="string";
- property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
- property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
- property name="productKeyMachineType" ormtype="string" hb_formFieldType="select";
- property name="productKeyMachineCutByCode" ormtype="boolean" hb_formatType="yesno";
- property name="productKeyMachineDuplicate" ormtype="boolean" hb_formatType="yesno";
- property name="productPickStyle" ormtype="string" hb_formFieldType="select";
- property name="productTension" ormtype="string";
- property name="productTensionWrenchStyle" ormtype="string";
- property name="productHandle" ormtype="boolean" hb_formatType="yesno";
- property name="productHandleStyle" ormtype="string";
- property name="productToolMaterial" ormtype="string";
- property name="productMaterialThickness" ormtype="string";
- property name="productLock" ormtype="string" hb_formFieldType="select";
- property name="productMachineCompatibility" ormtype="string";
- property name="productPinSize" ormtype="string";
- property name="productLockBrand" ormtype="string";
- property name="productProprietary" ormtype="boolean" hb_formatType="yesno" default="0";
- property name="productCylinderKeyway" ormtype="string" hb_formFieldType="select";
- property name="productCylinderFinish" ormtype="string" hb_formFieldType="select";
- property name="productCylinderStyle" ormtype="string" hb_formFieldType="select";
- property name="productCylinderKeying" ormtype="string" hb_formFieldType="select";
- property name="productCylinderMaterial" ormtype="string" hb_formFieldType="select";
- property name="productCylinderFormat" ormtype="string" hb_formFieldType="select";
- property name="productCylinderCam" ormtype="string" hb_formFieldType="select";
- property name="productCylinderCamStyle" ormtype="string" hb_formFieldType="select";
- property name="productCylinderPins" ormtype="string";
- property name="productCylinderLength" ormtype="string";
- property name="productCylinderType" ormtype="string" hb_formFieldType="select";
- property name="productKeyApplication" ormtype="string";
- property name="productKeyDesign" ormtype="string";
- property name="productKeyMaterial" ormtype="string" hb_formFieldType="select";
- property name="productKeySize" ormtype="string";
- property name="productKeyColor" ormtype="string";
- property name="productPinKitType" ormtype="string" hb_formFieldType="select";
- property name="productTwinPack" ormtype="boolean" hb_formatType="yesno";
- property name="productResidential" ormtype="boolean" hb_formatType="yesno";
- property name="productBoxQuantity" ormtype="string";
- property name="productFailSafe" ormtype="boolean" hb_formatType="yesno";
- property name="productFailSecure" ormtype="boolean" hb_formatType="yesno";
- property name="productRestricted" ormtype="boolean" hb_formatType="yesno";
- property name="productSize" ormtype="string";
- property name="productExpandable" ormtype="boolean" hb_formatType="yesno";
- property name="productCapacity" ormtype="string";
- property name="productStyle" ormtype="string";
- property name="productSpec" ormtype="string";
- property name="productTwoInOne" ormtype="string";
- property name="productOutsideHeight" ormtype="string";
- property name="productOutsideWidth" ormtype="string";
- property name="productOutsideDepth" ormtype="string";
- property name="productInsideHeight" ormtype="string";
- property name="productInsideWidth" ormtype="string";
- property name="productInsideDepth" ormtype="string";
- property name="productUM" ormtype="string";
- property name="productFinishCode" ormtype="string";
- property name="productSeries" ormtype="string";
- property name="productColor" ormtype="string";
- property name="productPackageQty" ormtype="string";
- property name="productListingTitle" ormtype="string";
- property name="productWeight" ormtype="string";
- property name="productLength" ormtype="string";
- property name="productHeight" ormtype="string";
- property name="productWidth" ormtype="string";
- property name="productBaseHeight" ormtype="string";
- property name="productClearance" ormtype="string";
- property name="productDiameter" ormtype="string";
- property name="productPackageType" ormtype="string" hb_formFieldType="select";
- property name="productDisplay" ormtype="boolean" hb_formatType="yesno" default="Yes";
- property name="searchKeywords" length="4000"  ormtype="string" hb_formFieldType="textarea";
- property name="productBuildable" ormtype="boolean" hb_formatType="yesno" default="No";//CUSTOM PROPERTIES END
-	 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -296,7 +171,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return variables.nextDeliveryScheduleDate;
 		}
 	}
+	
 	public any function getActiveSkuPricesForProductByCurrencyCode(required string currencyCode){
+
 		var skuPriceCollectionList = getService('skuService').getSkuPriceCollectionList();
 		skuPriceCollectionList.addFilter('sku.product.productID', this.getProductID());
 		skuPriceCollectionList.addFilter('activeFlag', 1);
@@ -317,6 +194,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		
 		return priceStruct;
 	}
+	
+	public any function getSkuForPriceGroup(required string currencyCode, required number priceGroupCode){
+		var skuPrices = this.getActiveSkuPricesForProductByCurrencyCode(arguments.currencyCode);
+
+		var skuID = ( !isNull(skuPrices[arguments.priceGroupCode]) && arrayLen(skuPrices[arguments.priceGroupCode]) && !isNull(skuPrices[arguments.priceGroupCode][1]['sku_skuID']) )
+    				? skuPrices[arguments.priceGroupCode][1]['sku_skuID'] : '';
+		if(len(skuID)){
+			return getService('skuService').getSku(skuID);
+		}else{
+			return this.getDefaultSku();
+		}
+    		
+	}
+	
 	public boolean function getDeferredRevenueFlag(){
 		if(!structKeyExists(variables,'deferredRevenueFlag')){
 			return false;
@@ -1429,11 +1320,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	public void function removeRelatedProduct(required any relatedProduct) {
 		arguments.relatedProduct.removeProduct( this );
-	}
-	
-	// Default-Sku (many-to-one)
-	public void function setDefaultSku(required any sku) {
-		arguments.sku.setProduct( this );
 	}
 
 	// Skus (one-to-many)

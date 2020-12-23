@@ -324,6 +324,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var amount = 0;
 		if(!isNull(this.getOrderPayments())){
 			for( var orderPayment in this.getOrderPayments() ){
+				if(!structKeyExists(orderPayment,'amount')){
+					continue;
+				}
 				var originalOrderPayment = getService('orderService').getOrderPayment(orderPayment.originalOrderPaymentID);
 				var compAmount = round(val(orderPayment.amount) * 100);
 				var refundableAmount = round(originalOrderPayment.getRefundableAmount() * 100);

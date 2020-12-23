@@ -9,7 +9,6 @@
 	<cfparam name="attributes.collectionEntity" type="any" default="" />
 	<cfparam name="attributes.pageTitle" type="string" default="" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
-	<cfparam name="attributes.showbackAction" type="boolean" default="true" />
 
 	<!--- Action Callers (top buttons) --->
 	<cfparam name="attributes.showcancel" type="boolean" default="true" />
@@ -32,8 +31,10 @@
 	<cfparam name="attributes.deleteQueryString" type="string" default="" />
 
 	<!--- Process Specific Values --->
-	<cfparam name="attributes.processAction" type="string" default="">
-	<cfparam name="attributes.processContext" type="string" default="">
+	<cfparam name="attributes.processAction" type="string" default="" />
+	<cfparam name="attributes.processContext" type="string" default="" />
+	
+	<cfparam name="attributes.confirm" type="boolean" default="false" />
 
 <cfelse>
 	<cfif not structKeyExists(request.context, "modal") or not request.context.modal>
@@ -79,9 +80,8 @@
 							<cfelseif attributes.type eq "reportlisting">
 							
 								<cfparam name="request.context.keywords" default="" />
-								<cfif attributes.showbackAction>
 								<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
-								</cfif>
+								
 								<cfif len( trim( thistag.generatedcontent ) ) gt 1>
 									<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 									<ul class="dropdown-menu pull-right">
@@ -120,9 +120,8 @@
 							
 								<div class="btn-group btn-group-sm">
 									<!--- Detail: Back Button --->
-									<cfif attributes.showbackAction>
 									<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
-									</cfif>
+	
 									<!--- Detail: Actions --->
 									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1 || attributes.object.hasCalculatedProperties()>
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
@@ -232,14 +231,29 @@
 									<cfif !len(attributes.processAction) and structKeyExists(request.context.entityActionDetails, "processAction")>
 										<cfset attributes.processAction = request.context.entityActionDetails.processAction />
 									</cfif>
-									<cfif attributes.showbackAction>
 									<div class="btn-group btn-group-sm">
 										<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 									</div>
+									<cfif NOT attributes.confirm>
+										<div class="btn-group btn-group-sm">
+											<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
+										</div>
+									<cfelse>
+										<cfset queryString = "" />
+										<cfif NOT isNull(attributes.processContext) >
+											<cfset queryString = "processContext=#attributes.processContext#" />
+										</cfif>
+										<!---<cfif NOT isNull(attributes.queryString--->
+										<a title="submit" 
+											class="btn btn-primary alert-confirm" 
+											target="_self" 
+											href="#attributes.hibachiScope.buildURL(action=attributes.processAction,querystring='processContext=#attributes.processContext#')#"
+											data-confirm="#attributes.hibachiScope.rbKey('entity.#attributes.object.getClassName()#.process.#attributes.processContext#_confirm')#"
+											data-include-form="true"
+										>
+											#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#
+										</a>
 									</cfif>
-									<div class="btn-group btn-group-sm">
-										<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
-									</div>
 								</cfif>
 							
 

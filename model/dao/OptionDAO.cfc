@@ -158,72 +158,16 @@ Notes:
 				true,
 				{maxResults=1}
 			);
-			var queryService = new query();
-			var sql = "INSERT INTO SwSkuOption (skuID,optionID)
-				SELECT s.skuID,'#optionID#' as optionID
-				FROM SwSku s where s.productID = :productID
-			";
-			queryService.addParam(name='productID',value=arguments.productID,CFSQLTYPE="CF_SQL_STRING");
-			queryService.execute(sql=sql);
+			
+			if(!isNull(optionID) && !isEmpty(optionID)){
+				var queryService = new query();
+				var sql = "INSERT INTO SwSkuOption (skuID,optionID)
+					SELECT s.skuID,'#optionID#' as optionID
+					FROM SwSku s where s.productID = :productID
+				";
+				queryService.addParam(name='productID',value=arguments.productID,CFSQLTYPE="CF_SQL_STRING");
+				queryService.execute(sql=sql);
+			}
 		}
 	</cfscript>
-	
-	<cfscript>
-	
-	public struct function getOptionGroupCodeIndex(){
-	
-	    var cacheKey = 'cache_getSkuOprionGroupsCodeandIDPairs';
-	    if(structKeyExists(variables, cacheKey)){
-	        return variables[cacheKey];
-	    }
-	    
-	    var sql = "SELECT optionGroupCode,optionGroupID from swOptionGroup";
-	    var queryService = new query();
-    	var records = queryService.execute(sql=sql).getResult();
-        
-        var optionGroups = {};
-		records.each( function(row){ optionGroups[ row.optionGroupCode ] = row.optionGroupID; });
-		
-		variables[cacheKey] = optionGroups;
-		return variables[cacheKey];
-	}
-	
-	public string function getOptionIDByOptionGroupIDAndOptionName(required string optionGroupID, required string optionName){
-	   
-	    var sql = "SELECT optionID 
-            	   FROM SwOption 
-            	   WHERE optionGroupID = :optionGroupID AND optionName = :optionName
-            	  ";
-            	  
-	    var queryService = new query();
-	    queryService.addParam(name='optionGroupID', value=arguments.optionGroupID);
-	    queryService.addParam(name='optionName', value=arguments.optionName);
-
-    	return queryService.execute(sql=sql).getResult()['optionID'];
-	}
-    
-    public string function getOptionIDsByOptionGroupCodeAndOptionNames( required struct skuOptionsData ){
-    	
-    	var sql = "";
-    	for( var optionGroupCode in arguments.skuOptionsData ){
-    	    sql &= "SELECT so.optionID 
-            	        FROM swOption AS so 
-            	    INNER JOIN swoptiongroup AS sog ON so.optionGroupID = sog.optionGroupID 
-            	        AND so.optionName = '#arguments.skuOptionsData[optionGroupCode]#' AND sog.optionGroupCode = '#optionGroupCode#'";
-            sql &= " UNION ";
-    	}
-        
-        sql = left(sql, len(sql) - 7 ); // remove last ` UNION `;
-    	var queryService = new query();
-    	var records = queryService.execute(sql=sql).getResult();
-    
-		var optionIDs =  records.reduce( function(accumulated, row){
-		    return accumulated & row.optionID & ',';
-		},'');
-    
-		return left(optionIDs, len(optionIDs) - 1 ); //discard last comma
-    }
-        
-    </cfscript>
-    
 </cfcomponent>

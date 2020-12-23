@@ -52,7 +52,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public string function getAppsPath(){
-		return expandPath('/#getApplicationValue('applicationKey')#') & '/custom/apps';
+		return expandPath('/#getApplicationValue('applicationKey')#') & '/apps';
 	}
 	
 	public void function deployApplication(required any app) {

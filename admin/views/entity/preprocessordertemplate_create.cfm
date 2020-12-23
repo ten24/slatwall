@@ -61,7 +61,7 @@ Notes:
 	<hb:HibachiPropertyRow>
 	<hb:HibachiPropertyList>
 
-			<cfif not structKeyExists(rc,'accountID') OR len(rc.accountID) EQ 0 >
+			<cfif not structKeyExists(rc,'accountID') OR len(rc.accountID) EQ 0 />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="newAccountFlag" edit="#rc.edit#" fieldType="yesno">
 				
 				<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="#rc.processObject.getNewAccountFlag()#">

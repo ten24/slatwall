@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallEntityQueueFailure" table="SwEntityQueueFailure" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" hb_auditable="false" hb_processContexts="reQueue" {
+component entityname="SlatwallEntityQueueFailure" table="SwEntityQueueFailure" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" hb_auditable="false" {
 
 	// Persistent Properties
 	property name="entityQueueFailureID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -63,7 +63,6 @@ component entityname="SlatwallEntityQueueFailure" table="SwEntityQueueFailure" p
 	// Related Object Properties (many-to-one)
 	
 	property name="integration" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
-	property name="batch" cfc="Batch" fieldtype="many-to-one" fkcolumn="batchID";
 
 	// Related Object Properties (one-to-many)
 

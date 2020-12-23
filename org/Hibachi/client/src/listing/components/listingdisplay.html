@@ -32,12 +32,12 @@
                     data-show-export="swListingDisplay.showExport"
                     data-show-report="swListingDisplay.showReport"
                     data-show-toggle-search="swListingDisplay.showSearch"
-                    data-show-auto-refresh="swListingDisplay.showAutoRefresh"
                     data-show-toggle-filters="swListingDisplay.showFilters"
                     data-show-print-options="swListingDisplay.showPrintOptions"
                     data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
                     data-personal-collection-identifier="swListingDisplay.personalCollectionIdentifier"
+                    data-default-search-column="swListingDisplay.defaultSearchColumn"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
             </sw-listing-controls>
@@ -58,25 +58,32 @@
                         </span>
 
                     </div>
-                    <div class="col-sm-4" style="text-align:right;">
+                    <div ng-if="swListingDisplay.actionBarActions || swListingDisplay.listActions" class="col-sm-4" style="text-align:right;">
                         <div class="btn-toolbar" style="margin:0">
                             <div class="btn-group btn-group-xs">
                                 <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">Action <span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right">
                                     <li>
-                                        <a href data-ng-click="swListingDisplay.exportCurrentList()">Export</a>
+                                        <a href ng-if="swListingDisplay.actionBarActions.export" data-ng-click="swListingDisplay.exportCurrentList()">Export</a>
                                     </li>
                                     <li>
-                                        <a href data-ng-click="swListingDisplay.printCurrentList()">Print</a>
+                                        <a href ng-if="swListingDisplay.actionBarActions.print" data-ng-click="swListingDisplay.printCurrentList()">Print</a>
                                     </li>
                                     <li>
-                                        <a href data-ng-click="swListingDisplay.emailCurrentList()">Email</a>
+                                        <a href ng-if="swListingDisplay.actionBarActions.email" data-ng-click="swListingDisplay.emailCurrentList()">Email</a>
                                     </li>
                                     <li>
                                         <a href
                                            data-ng-click="swListingDisplay.exportCurrentList(true)"
-                                           data-ng-if="swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
+                                           data-ng-if="swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0 && swListingDisplay.actionBarActions.export">
                                             Export Selected Rows ({{swListingDisplay.multiselectCount}})
+                                        </a>
+                                    </li>
+                                    <li ng-repeat="listAction in swListingDisplay.listActions">
+                                        <a href 
+                                            data-ng-if="!listAction.selectedRecords || swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0"
+                                            data-ng-click="swListingDisplay.executeListAction(listAction)">
+                                            {{listAction.name}}
                                         </a>
                                     </li>
                                 </ul>

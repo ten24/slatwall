@@ -61,18 +61,13 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         arguments.rc.requestHeaderData = getHTTPRequestData();
         arguments.rc['ajaxRequest'] = true;
         arguments.rc.headers["Content-Type"] = 'application/json';
+        arguments.rc.headers["Cache-Control"] = 'no-cache="Set-Cookie"';
         request.layout = false;
         if ( arguments.rc.jsonRequest == true && structKeyExists( arguments.rc, 'deserializedJSONData') ){
            	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
         }
-        
-        
         //if we have a get request there is nothing to persist because nothing changed
-        if(
-            structKeyExists(arguments.rc,'context') 
-            && len(arguments.rc.context) >= 3 
-            && left(arguments.rc.context,3) == 'GET'
-        ){
+        if(!isNull(arguments.rc.requestHeaderData.method) && arguments.rc.requestHeaderData.method == 'GET'){
             getHibachiScope().setPersistSessionFlag(false);
         }
     }
