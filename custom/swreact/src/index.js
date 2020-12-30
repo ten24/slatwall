@@ -6,20 +6,24 @@ import './i18n'
 import '@slatwall/slatwallassetlibrary/dist/app.bundle.css'
 import '@slatwall/slatwallassetlibrary/dist/app.bundle.js'
 import { Home } from './pages'
+import { Provider } from 'react-redux'
+import store from './createStore'
 
 ReactDOM.render(
   <React.StrictMode>
-    <Header
-      themePath={document
-        .getElementById('reactHeader')
-        .getAttribute('data-themePath')}
-      mainNavigation={document
-        .getElementById('reactHeader')
-        .getAttribute('data-mainNavigation')}
-      productCategories={document
-        .getElementById('reactHeader')
-        .getAttribute('data-productCategories')}
-    />
+    <Provider store={store}>
+      <Header
+        themePath={document
+          .getElementById('reactHeader')
+          .getAttribute('data-themePath')}
+        mainNavigation={document
+          .getElementById('reactHeader')
+          .getAttribute('data-mainNavigation')}
+        productCategories={document
+          .getElementById('reactHeader')
+          .getAttribute('data-productCategories')}
+      />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('reactHeader')
 )

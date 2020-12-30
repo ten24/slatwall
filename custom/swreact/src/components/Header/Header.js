@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import logo from '../../assets/images/sb-logo.png'
 import mobileLogo from '../../assets/images/sb-logo-mobile.png'
-import { cleanHTML } from '../../utils'
+import { connect } from 'react-redux'
 
 const MegaMenu = props => {
   return (
@@ -41,9 +41,8 @@ const MegaMenu = props => {
 }
 
 function Header(props) {
-  const productCategories = JSON.parse(props.productCategories)
   let menuItems = new Map()
-  productCategories.forEach(item => {
+  props.productCategories.forEach(item => {
     if (menuItems.has(item.parentContent_title)) {
       let exisitingItems = menuItems.get(item.parentContent_title)
       exisitingItems.push(item)
@@ -180,7 +179,12 @@ function Header(props) {
 }
 Header.propTypes = {
   mainNavigation: PropTypes.string,
-  productCategories: PropTypes.string,
+  productCategories: PropTypes.array,
+}
+function mapStateToProps(state) {
+  const { preload } = state
+  console.log(state)
+  return preload.navigation
 }
 
-export default Header
+export default connect(mapStateToProps)(Header)

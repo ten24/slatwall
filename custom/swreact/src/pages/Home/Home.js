@@ -3,7 +3,6 @@ import { HomeBanner, HomeBrand, HomeDetails } from '../../components'
 import PropTypes from 'prop-types'
 
 const Home = props => {
-  console.log(props)
   return (
     <>
       <HomeBanner

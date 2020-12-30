@@ -8,7 +8,6 @@ import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
 
 const FeaturedProducts = ({ sliderData }) => {
-  console.log(Background)
   const settings = {
     dots: false,
     infinite: true,
@@ -125,7 +124,6 @@ const MainBanner = props => {
 }
 
 function HomeBanner(props) {
-  console.log(props)
   const homeMainBanner = JSON.parse(props.homeMainBanner)
   const featuredSlider = JSON.parse(props.featuredSlider)
 
