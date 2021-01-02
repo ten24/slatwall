@@ -1,6 +1,6 @@
-# Based on the Lucee4-Nginx Container
-FROM lucee/lucee4-nginx:latest
-MAINTAINER Greg Moser, greg.moser@ten24web.com
+# Based on the Lucee Container
+FROM lucee/lucee:5.3-nginx
+LABEL maintainer="Slatwall Inc."
 
 RUN apt-get update && apt-get install -y uuid-runtime
 

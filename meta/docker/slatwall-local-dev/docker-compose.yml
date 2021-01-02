@@ -2,6 +2,8 @@ version: '3'
 services:
   slatwallweb:
     build: .
+    volumes:
+      - ../../../:/var/www/
     ports:
      - "80:8888"
     links:
@@ -15,6 +17,8 @@ services:
      LUCEE_JAVA_OPTS: -Xms1024m -Xmx1024m
   slatwalldb:
     image: mysql:5.7
+    ports:
+     - "3300:3306"
     environment:
      MYSQL_ROOT_PASSWORD : NOT_SECURE_CHANGE
      MYSQL_DATABASE : Slatwall

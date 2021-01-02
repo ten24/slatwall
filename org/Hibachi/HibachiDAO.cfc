@@ -220,8 +220,8 @@
 	
 	<cffunction name="getRecordLevelPermissionEntitieNames">
 		<cfquery name="local.rs">
-			SELECT p.entityClassName FROM swpermissionrecordrestriction prr
-			INNER JOIN swpermission p ON prr.permissionID = p.permissionID
+			SELECT p.entityClassName FROM SwPermissionRecordRestriction prr
+			INNER JOIN SwPermission p ON prr.permissionID = p.permissionID
 			GROUP BY p.entityClassName
 		</cfquery>
 		<cfreturn rs />

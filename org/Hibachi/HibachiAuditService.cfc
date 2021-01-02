@@ -146,10 +146,10 @@ component extends="HibachiService" accessors="true" {
 				arguments.audit.auditID = createHibachiUUID();
 				
 				if(arguments.audit['auditType'] == 'archive'){
-					var tableName = 'swauditarchive';
+					var tableName = 'SwAuditArchive';
 					var primarycolumnName = 'auditarchiveID';
 				}else{
-					var tableName = 'swaudit';
+					var tableName = 'SwAudit';
 					var primarycolumnName = 'auditID';
 				}
 				
