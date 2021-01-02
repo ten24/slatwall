@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
-import { Footer, Header } from './components'
 import './i18n'
 import '@slatwall/slatwallassetlibrary/dist/app.bundle.css'
 import '@slatwall/slatwallassetlibrary/dist/app.bundle.js'
@@ -10,26 +9,8 @@ import { Provider } from 'react-redux'
 import store from './createStore'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <Header
-        themePath={document
-          .getElementById('reactHeader')
-          .getAttribute('data-themePath')}
-        mainNavigation={document
-          .getElementById('reactHeader')
-          .getAttribute('data-mainNavigation')}
-        productCategories={document
-          .getElementById('reactHeader')
-          .getAttribute('data-productCategories')}
-      />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('reactHeader')
-)
-
-ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
     <Home
       homeMainBanner={document
         .getElementById('reactHome')
@@ -45,33 +26,9 @@ ReactDOM.render(
         .getAttribute('data-homeBrand')}
       shopBy={document.getElementById('reactHome').getAttribute('data-shopBy')}
     />
-  </React.StrictMode>,
+  </Provider>,
+  // </React.StrictMode>
   document.getElementById('reactHome')
-)
-ReactDOM.render(
-  <React.StrictMode>
-    <Footer
-      isContact={document
-        .getElementById('reactFooter')
-        .getAttribute('data-isContact')}
-      contactUs={document
-        .getElementById('reactFooter')
-        .getAttribute('data-contactUs')}
-      getInTouch={document
-        .getElementById('reactFooter')
-        .getAttribute('data-getInTouch')}
-      siteLinks={document
-        .getElementById('reactFooter')
-        .getAttribute('data-siteLinks')}
-      stayInformed={document
-        .getElementById('reactFooter')
-        .getAttribute('data-stayInformed')}
-      copywriteDate={document
-        .getElementById('reactFooter')
-        .getAttribute('data-copywriteDate')}
-    />
-  </React.StrictMode>,
-  document.getElementById('reactFooter')
 )
 
 // If you want to start measuring performance in your app, pass a function

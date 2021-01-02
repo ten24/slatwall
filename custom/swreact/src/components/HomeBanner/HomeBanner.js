@@ -124,23 +124,20 @@ const MainBanner = props => {
 }
 
 function HomeBanner(props) {
-  const homeMainBanner = JSON.parse(props.homeMainBanner)
-  const featuredSlider = JSON.parse(props.featuredSlider)
-
   return (
     <div
       className="hero mt-2"
       style={{ backgroundImage: `url(${Background})` }}
     >
-      <FeaturedProducts sliderData={featuredSlider} />
-      <MainBanner sliderData={homeMainBanner} />
+      <FeaturedProducts sliderData={props.featuredSlider} />
+      <MainBanner sliderData={props.homeMainBanner} />
     </div>
   )
 }
 
 HomeBanner.propTypes = {
-  homeMainBanner: PropTypes.string,
-  featuredSlider: PropTypes.string,
+  homeMainBanner: PropTypes.array,
+  featuredSlider: PropTypes.array,
 }
 
 export default HomeBanner

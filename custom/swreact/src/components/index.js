@@ -7,5 +7,6 @@ export { Button } from './Button/Button'
 export { default as HomeBanner } from './HomeBanner/HomeBanner'
 export { default as HomeBrand } from './HomeBrand/HomeBrand'
 export { default as HomeDetails } from './HomeDetails/HomeDetails'
+export { default as SEO } from './SEO/SEO'
 
 // export { default as APITester } from './APITester/APITester'

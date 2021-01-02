@@ -183,7 +183,6 @@ Header.propTypes = {
 }
 function mapStateToProps(state) {
   const { preload } = state
-  console.log(state)
   return preload.navigation
 }
 

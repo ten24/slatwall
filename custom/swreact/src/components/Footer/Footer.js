@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import logo from '../../assets/images/sb-logo-white.png'
+import { connect } from 'react-redux'
 
 function Footer(props) {
   return (
@@ -155,4 +156,9 @@ Footer.propTypes = {
   copywriteDate: PropTypes.string,
 }
 
-export default Footer
+function mapStateToProps(state) {
+  const { preload } = state
+  return preload.footer
+}
+
+export default connect(mapStateToProps)(Footer)
