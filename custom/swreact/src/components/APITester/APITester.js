@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import * as SlatwalSDK from '@slatwall/slatwall-sdk/dist/client/index'
 const APITester = () => {
+  // const hostURL = 'https://slatwalldevelop.ten24dev.com/index.cfm/'
+  const hostURL = 'http://slatwalldevelop.local:8906/index.cfm/'
   let slatwall = SlatwalSDK.init({
-    host: 'http://slatwalldevelop.local:8906/index.cfm/',
+    host: hostURL,
   })
 
   let bearerToken = {}
