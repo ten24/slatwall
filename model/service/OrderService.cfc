@@ -151,6 +151,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return orderDetails;
     }
+    
+    /**
+     * Required list property
+     * It's a hard coded list of options that can be available with order requirements list
+     * This method is added to handle frontend side of wordpress plugin
+     * */
+    public string function getOrderRequiredStepsList() {
+    	return "account,fulfillment,payment";
+    }
 	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
 		var orderRequirementsList = "";
