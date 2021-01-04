@@ -409,13 +409,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var response = this.getErpOneData({
     	    "table" : "oe_line"
     	}, "count");
-		//dump(response.count);
-		var totalRecordsCount = 100;
+	
 		var currentPage = 1;
 		var pageSize = 100;
 		var recordsFetched = 0;
 
-	//	while ( recordsFetched < totalRecordsCount ){
+		while ( recordsFetched < totalRecordsCount ){
 
 			try {
 				this.getOrderItemData( currentPage, pageSize );
@@ -427,10 +426,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				this.getHibachiUtilityService().logException(e);
 			}
 
-			//increment rgardless of success or failure;
-		// 	recordsFetched += pageSize;
-		// 	currentPage += 1;
-		// }
+			increment rgardless of success or failure;
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
 
 	    this.logHibachi("ERPONE - Finish importing ErpOneOrderItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
