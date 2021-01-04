@@ -84,7 +84,7 @@
         {
             "key"                   : "remoteAccountID",
             "entityName"            : "Account",
-            "lookupKey"             : "companyCode",
+            "lookupKey"             : "remoteID",
             "propertyIdentifier"    : "account"
         },
         {
@@ -110,8 +110,6 @@
             "isNullable"            : true,
             "lookupKey"             : "remoteID",
             "entityName"            : "OrderOrigin",
-            "defaultValue"          : "2c918082626f886001627251f01a00ab",
-            "__hint"                : "this defaultValue for order-origin is `external`.",
             "propertyIdentifier"    : "orderOrigin"
         },
         {
@@ -119,8 +117,6 @@
             "isNullable"            : true,
             "lookupKey"             : "siteCode",
             "entityName"            : "Site",
-            "defaultValue"          : "stoneAndBerg",
-            "__hint"                : "this defaultValue for order-site is `default site`.",
             "propertyIdentifier"    : "orderCreatedSite"
         },
     ],

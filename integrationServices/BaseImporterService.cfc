@@ -545,10 +545,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    //dump(arguments.entityQueueData);abort;
 	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
 	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
-		// dump(arguments.entity);
-		
-		// dump(arguments.entityQueueData);
-		// abort;
+
 	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
 	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
 	    
