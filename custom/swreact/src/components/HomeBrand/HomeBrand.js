@@ -31,13 +31,12 @@ function HomeBrand(props) {
       },
     ],
   }
-  const homeBrand = JSON.parse(props.homeBrand)
 
   return (
     <div className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
       <h3 className="h3">Shop by Manufacturer</h3>
       <Slider {...settings}>
-        {homeBrand.map(({ associatedImage, linkUrl, title }, index) => {
+        {props.homeBrand.map(({ associatedImage, linkUrl, title }, index) => {
           return (
             <div key={index} className="repeater">
               <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
@@ -61,7 +60,7 @@ function HomeBrand(props) {
 }
 
 HomeBrand.propTypes = {
-  homeBrand: PropTypes.string,
+  homeBrand: PropTypes.array,
   shopBy: PropTypes.string,
 }
 

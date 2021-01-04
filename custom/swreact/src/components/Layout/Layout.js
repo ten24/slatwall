@@ -1,34 +1,21 @@
 import React from 'react'
-import { Navigation } from '..'
+import { Footer, Header } from '..'
+import SEO from '../SEO/SEO'
 
-class Layout extends React.Component {
-  render() {
-    const { style = 'full' } = this.props
-    if (style === 'full') {
-      return (
-        <div className="layout">
-          <Navigation />
-          <div className="container-fluid ">
-            <div className="row">
-              <div className="col-sm-12">{this.props.children}</div>
-            </div>
-          </div>
-        </div>
-      )
-    } else if (style === 'sidbar') {
-      return (
-        <div className="layout">
-          <Navigation />
-          <div className="container">
-            <div className="row">
-              <div className="col-sm-4">col-sm-4</div>
-              <div className="col-sm-8">{this.props.children}</div>
-            </div>
-          </div>
-        </div>
-      )
-    }
-  }
+const Layout = ({ children }) => {
+  return (
+    <>
+      <SEO />
+      <Header />
+      {children}
+      <Footer />
+    </>
+  )
 }
+// function mapStateToProps(state) {
+
+//   return preload.navigation
+// }
 
 export default Layout
+// export default connect(mapStateToProps)(Layout)

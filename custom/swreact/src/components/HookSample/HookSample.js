@@ -5,11 +5,10 @@ import i18next from 'i18next'
 const HookSample = props => {
   const { t } = useTranslation()
 
-  console.log(props)
   return (
     <div>
       <h1>{t('Welcome to React')}</h1>
-      <p>{t('description.part1')}</p>
+      <p>{t('admin.entity.brandTabs.vendors')}</p>
       <button
         type="button"
         className="btn btn-outline-primary"
