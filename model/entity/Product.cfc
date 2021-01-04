@@ -154,18 +154,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-<<<<<<< HEAD
-	//CUSTOM PROPERTIES BEGIN
-
- property name="productHingeMaterial" ormtype="string";
- property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
- property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
- property name="productKeyApplication" ormtype="string";
- property name="productKeyDesign" ormtype="string";
- property name="productPackageQty" ormtype="string";
- property name="productListingTitle" ormtype="string";
- property name="productWeight" ormtype="string";//CUSTOM PROPERTIES END
-=======
 	
 	
 	//CUSTOM PROPERTIES BEGIN
@@ -291,7 +279,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="searchKeywords" length="4000"  ormtype="string" hb_formFieldType="textarea";
  property name="productBuildable" ormtype="boolean" hb_formatType="yesno" default="No";//CUSTOM PROPERTIES END
 	 
->>>>>>> develop-team
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
