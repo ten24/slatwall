@@ -106,7 +106,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
     	///Order Items Information
 		var ordersItemsCollectionList = this.getOrderItemCollectionList();
-		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle');
+		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle, quantity, calculatedQuantityDelivered');
 		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
