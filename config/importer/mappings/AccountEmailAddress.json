@@ -6,8 +6,8 @@
         "email": {
             "propertyIdentifier": "emailAddress",
             "validations": {
-                "required": true,
-                "dataType": "email"
+                "dataType": "email",
+                "required": true
             }
         }
     },

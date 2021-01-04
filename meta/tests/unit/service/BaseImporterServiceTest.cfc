@@ -124,39 +124,39 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	private struct function getSampleProductData(){
         return {
             "PriceGroupActiveFlag": "false",
-            "ProductPublishedFlag": "true",
-            "BrandWebsite": "www.Valsartan and Hydrochlorothiazide.com",
-            "TypeCode": "abcdefgdilkl",
-            "ProductTypeActiveFlag": "false",
-            "ProductTypeDescription": "",
-            "BrandName": "Valsartan and Hydrochlorothiazide",
-            "SkuName": "Water - Spring Water 500ml sku 4",
-            "RemoteSkuID": "8919",
-            "SkuActiveFlag": "false",
-            "PriceGroupCode": "pgtOne",
-            "ProductDescription": "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
-            "ProductTypePublishedFlag": "",
-            "RemoteSkuPriceID": "81957",
-            "CurrencyCode": "CAD",
-            "BrandActiveFlag": "true",
-            "ProductTypeName": "Product type 111",
-            "ProductCode": "",
-            "PriceGroupName": "Price group one",
-            "SkuDescription": "Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.\n\nIn quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
-            "RemoteProductID": "65584",
-            "RemoteProductTypeID": "37890",
-            "Price": "397.03",
-            "MaxQuantity": "0",
-            "ListPrice": "",
-            "RemoteBrandID": "93326",
-            "ProductActiveFlag": "true",
-            "SkuPublishedFlag": "true",
-            "BrandPublishedFlag": "false",
-            "SkuPriceActiveFlag": "true",
-            "MinQuantity": "4",
-            "RemotePriceGroupID": "79978",
-            "ProductName": "Water - Spring Water 500ml",
-            "SkuCode": "SKU_8919"
+    		"ProductPublishedFlag": "true",
+    		"BrandWebsite": "https://www.alendronate-sodium.com",
+    		"ProductTypeActiveFlag": "false",
+    		"ProductTypeDescription": "In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
+    		"BrandName": "Alendronate Sodium",
+    		"SkuName": "Bacon Strip Precooked sku 4",
+    		"RemoteSkuID": "34875",
+    		"SkuActiveFlag": "false",
+    		"PriceGroupCode": "pgtTwo",
+    		"ProductDescription": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.",
+    		"ProductTypePublishedFlag": "",
+    		"RemoteSkuPriceID": "71097",
+    		"CurrencyCode": "PHP",
+    		"BrandActiveFlag": "true",
+    		"ProductTypeName": "Product type 333",
+    		"ProductCode": "product_aaa_bbb_xxx",
+    		"PriceGroupName": "Price group two",
+    		"SkuDescription": "Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti.",
+    		"RemoteProductID": "13463",
+    		"RemoteProductTypeID": "70845",
+    		"Price": "594.47",
+    		"MaxQuantity": "93",
+    		"ListPrice": "594.47",
+    		"RemoteBrandID": "52319",
+    		"ProductActiveFlag": "false",
+    		"SkuPublishedFlag": "false",
+    		"BrandPublishedFlag": "true",
+    		"SkuPriceActiveFlag": "true",
+    		"MinQuantity": "1",
+    		"RemotePriceGroupID": "88698",
+    		"ProductName": "Bacon Strip Precooked",
+    		"SkuCode": "SKU_34875",
+    		"ProductTypeCode": "product_type_3296"
         };
 	}
 	
@@ -294,7 +294,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
     
     
-    
     /**
      * @test 
     */
@@ -303,6 +302,23 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         debug( header );
         
         $assert.isEqual("AccountActiveFlag,CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,RemoteAccountID,Username", header.columns );
+    }
+    
+    /**
+     * @test 
+    */
+    public void function getOrderCSVHeaderMetaData_should_include_address_prefixes(){
+        var header = this.getService().getEntityCSVHeaderMetaData( 'Order' );
+        debug( header );
+        
+        $assert.isTrue( ListFind(header.columns, "BillingAddress_city") );
+        $assert.isTrue( ListFind(header.columns, "BillingAddress_streetAddress") );
+        $assert.isTrue( ListFind(header.columns, "BillingAddress_street2Address") );
+        
+        $assert.isTrue( ListFind(header.columns, "ShippingAddress_city") );
+        $assert.isTrue( ListFind(header.columns, "ShippingAddress_streetAddress") );
+        $assert.isTrue( ListFind(header.columns, "ShippingAddress_street2Address") );
+        
     }
 	
 	
@@ -381,26 +397,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    debug(validation);
 	    assertFalse(validation.isValid);
 	    expect(validation.errors).toHaveKey('email', "the validation should fail for email");
-	}
-	
-	/**
-	 * @test
-	*/
-	public void function validateAccountData_should_fail_for_username(){
-	    
-	    var sampleAccountData = getSampleAccountData();
-	    sampleAccountData.delete('username');
-	    sampleAccountData['usernameeee'] = "nitin.yadav";
-	    
-	    var validation = this.getService().validateEntityData(
-	        entityName="Account", 
-	        data = sampleAccountData, 
-	        collectErrors = true 
-	    );
-	    
-	    debug(validation);
-	    assertFalse(validation.isValid);
-	    expect(validation.errors).toHaveKey('username', "the validation should fail for username");
 	}
 	
 	/**
@@ -523,7 +519,204 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'validateAccountData_spy_called');
         structDelete( variables.service, 'validateAccountData');
     }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_not_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_exist_in_source_data(){
 
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address";
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('email');
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_not_exist_in_source_data(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_not_return_empty_relations_for_failed_validation_when_data_does_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address"; // the validation will fail for email type
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('email');
+	    
+	    expect(validation.emptyRelations).toBeEmpty();
+    }
+    
+     /**
+     * @test
+    */
+    public void function validateEntityData_should_return_empty_relations_when_data_doesnot_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+
+	    assertTrue( isStruct(validation.emptyRelations) );
+	    expect(validation.emptyRelations).toHaveKey('primaryEmailAddress');
+	    assert(validation.emptyRelations.primaryEmailAddress.isEmptyRelation);
+
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_ignre_validation_errors_for_relations_having_excludeFromValidation_flag(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address";
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['excludeFromValidation'] = true;
+        })
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_fail_validate_for_sourceDataKeysPrefix_for_invalid_data(){
+
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping  = this.getService().getEntityMapping( "Account" );
+        mapping.relations = [{
+            "type"                  : "oneToOne",
+            "entityName"            : "AccountPhoneNumber",
+            "propertyIdentifier"    : "primaryPhoneNumber",
+            "sourceDataKeysPrefix"  : "testPrefix--"
+        }];
+
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey("testPrefix--phone");
+	    expect(validation.errors).toHaveKey("testPrefix--remoteAccountID");
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function validateEntityData_should_pass_validate_for_sourceDataKeysPrefix_for_valid_data(){
+
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping  = this.getService().getEntityMapping( "Account" );
+        mapping.relations = [{
+            "type"                  : "oneToOne",
+            "entityName"            : "AccountPhoneNumber",
+            "propertyIdentifier"    : "primaryPhoneNumber",
+            "sourceDataKeysPrefix"  : "testPrefix--"
+        }];
+
+
+        sampleAccountData['testPrefix--phone'] = sampleAccountData['phone'];
+        sampleAccountData['testPrefix--remoteAccountID'] = sampleAccountData['remoteAccountID'];
+        
+	    var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+	    
+	    debug(validation);
+	    assertTrue(validation.isValid);
+	    expect(validation.errors).toBeEmpty();
+    }
+    
+    
+    
+    
 
 
 	/** ***************************.  Transform  .***************************** */
@@ -1026,32 +1219,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'emailAddress' ");
     }
     
-    
-    /** 
-	 * @test
-	*/
-    public void function transformAccountDataTest_should_contain_accountAuthentication_properties(){
-	    
-	    var sampleAccountData = getSampleAccountData();
-	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
-	    debug(data);
-	    
-	    expect(data).toHaveKey('accountAuthentications', "transformed data should have key 'accountAuthentications' ");
-	    expect(data.accountAuthentications).toBeTypeOf('array',  "accountAuthentications should be an struct ");
-	    
-	    var accountAuthentication = data.accountAuthentications[1];
-	    expect(accountAuthentication).toBeTypeOf('struct',  "accountAuthentication should be an struct ");
-	   
-	    expect(accountAuthentication).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
-	    expect(accountAuthentication).toHaveKey('accountAuthenticationID',  "transformed data should have key 'accountAuthenticationID' ");
-	    
-	    expect(accountAuthentication).toHaveKey('password',  "transformed data should have key 'password' ");
-	    expect(accountAuthentication).toHaveKey('activeFlag',  "primaryEmailAddress should have key 'activeFlag' ");
-	    expect(accountAuthentication).toHaveKey('updatePasswordOnNextLoginFlag',  "primaryEmailAddress should have key 'updatePasswordOnNextLoginFlag' ");
-    }
-    
-    
     /**
      * @test
     */
@@ -1078,6 +1245,108 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'transformAccountData_spy_called');
         structDelete( variables.service, 'transformAccountData');
     }
+    
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_data_for_relation_when_source_data_doesnot_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('email');
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+        
+        var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+        
+        debug(validation);
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping, 
+            emptyRelations = validation.emptyRelations
+        );
+	    
+	    debug(transformedData);
+	    
+	    assertFalse(structKeyExists(transformedData, 'primaryEmailAddress'));
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_for_relation_when_source_data_does_have_all_required_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.relations.each(function(rel){
+            rel['isNullable'] = true;
+        })
+        
+        var validation = this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+        
+        debug(validation);
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping, 
+            emptyRelations = validation.emptyRelations
+        );
+	    
+	    debug(transformedData);
+	    
+	    assertTrue(structKeyExists(transformedData, 'primaryEmailAddress'));
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_be_able_to_use_prefixed_properties_for_relations(){
+
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping  = this.getService().getEntityMapping( "Account" );
+        mapping.relations = [{
+            "type"                  : "oneToOne",
+            "entityName"            : "AccountPhoneNumber",
+            "propertyIdentifier"    : "primaryPhoneNumber",
+            "sourceDataKeysPrefix"  : "testPrefix--"
+        }];
+
+
+        sampleAccountData['testPrefix--phone'] = sampleAccountData['phone'];
+        sampleAccountData['testPrefix--remoteAccountID'] = sampleAccountData['remoteAccountID'];
+        
+	    var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping
+        );
+        
+        debug(transformedData);
+        assertTrue( structKeyExists(transformedData, 'primaryPhoneNumber') );
+        assertTrue( structKeyExists(transformedData.primaryPhoneNumber, 'phoneNumber') );
+        assertTrue( transformedData.primaryPhoneNumber.phoneNumber == 9090909090 );
+    }
+    
+    
     
     /** ***************************.  EntityQueue and FailureQueue .***************************** */
 
@@ -1352,14 +1621,88 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'resolveAccountDependencies');
     }
     
+    
+    
+    
+    
+    private struct function getAccountEmailAddressMapping(){
+        return {
+            "entityName": "AccountEmailAddress",
+            "properties": {
+                "email": {
+                    "propertyIdentifier": "emailAddress",
+                    "validations": { "required": true, "dataType": "email" }
+                }
+            },
+            "importIdentifier": {
+                "propertyIdentifier": "importRemoteID",
+                "type": "composite",
+                "keys": [
+                    "remoteAccountID",
+                    "email"
+                ]
+            },
+            "dependencies" : [{
+                "key"                : "remoteAccountID",
+                "entityName"         : "Account",
+                "lookupKey"          : "remoteID",
+                "propertyIdentifier" : "account"
+            }]
+        };
+    }
+    
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_add_errors_when_dependancy_is_not_resolve(){
+    public void function processEntityImport_check_transform_data(){
+        
+        var sampleProductData = {
+            	"__dependancies": [{
+            		"key": "remoteSkuID",
+            		"entityName": "Sku",
+            		"lookupKey": "remoteID",
+            		"propertyIdentifier": "sku",
+            		"lookupValue": "1"
+            	}, {
+            		"key": "remoteLocationID",
+            		"entityName": "Location",
+            		"lookupKey": "remoteID",
+            		"propertyIdentifier": "location",
+            		"lookupValue": "87090B80C8D31B4CDB500112B16C720B"
+            	}],
+            	"createdDateTime": "27",
+            	"inventoryID": "",
+            	"landedAmount": "100",
+            	"landedCost": "98",
+            	"cost": "54",
+            	"stock": {
+            		"stockID": "4028c08475735ffa01757360ead40006"
+            	},
+            	"cogs": "22",
+            	"remoteID": "1",
+            	"currencyCode": "IDR",
+            	"quantityOut": "14",
+            	"quantityIn": "53",
+            	"importRemoteID": "C4CA4238A0B923820DCC509A6F75849B"
+            };
+        var tempInventory = this.getService().getHibachiService().newInventory();
+	    tempAccountData = this.getService().processEntityImport( tempInventory, sampleProductData );
+        //var data = this.getService().transformEntityData( entityName="Inventory", data=sampleProductData );
+
+        debug(tempInventory);
+        debug(tempAccountData);
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityDependencies_should_add_errors_when_dependency_is_not_resolve(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
@@ -1373,26 +1716,23 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         expect( emailAddress.getErrors() ).toBeStruct();
         expect( emailAddress.getErrors() ).toHaveKey( 'account' );
-        
-        expect( emailAddress.getErrors().account[1] )
-        .toBe('Depandancy for propertyIdentifier [account] on Entity [AccountEmailAddress] could not be resolved yet');
-        
     }
     
     
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_not_add_errors_when_dependancy_is_resolve(){
+    public void function resolveEntityDependencies_should_not_add_errors_when_dependency_is_resolve(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
         var accountID = hash("123xxxunittest"&now(), 'MD5');
-        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': remoteAccountID });
         
         
         var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
@@ -1412,16 +1752,17 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function resolveEntityDependencies_should_add_dependancy_data_when_resolved(){
+    public void function resolveEntityDependencies_should_add_dependency_data_when_resolved(){
         var emailAddress = this.getService().getHibachiService().newAccountEmailAddress();
         
+        var remoteAccountID = RandRange(1000,1000000);
         var data = {
-            'remoteAccountID' : '12345465',
+            'remoteAccountID' : remoteAccountID,
             'email': "abc@xyz.com"
         };
         
         var accountID = hash("123xxxunittest"&now(), 'MD5');
-        insertRow("swAccount", { 'accountID': accountID, 'remoteID': '12345465' });
+        insertRow("swAccount", { 'accountID': accountID, 'remoteID': remoteAccountID });
         
         
         var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
@@ -1439,7 +1780,279 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         deleteRow('swAccount', 'accountID', accountID );
     }
-
+    
+    
+    
+    /***************. Lazy Evaluation *******************/
 
     
+    /***************. Lazy Evaluated properties *******************/
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_lazy_evaluated__properties(){
+
+        var sampleData = getSampleProductData();
+
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( StructKeyExists(transformedData, 'productCode') ).toBeFalse();
+        expect( StructKeyExists(transformedData, 'productDescription') ).toBeFalse();
+        expect( StructKeyExists(transformedData, 'productName') ).toBeFalse();
+        expect( StructKeyExists(transformedData, 'publishedFlag') ).toBeFalse();
+        // .....
+        // ....
+    }
+
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__properties(){
+
+         var sampleData = getSampleProductData();
+
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = mapping
+        );
+        
+        debug( transformedData );
+	    
+        expect( transformedData ).toHaveKey('__lazy');
+        expect( transformedData.__lazy ).toBeStruct();
+        expect( transformedData.__lazy ).toHaveKey('properties');
+        
+        expect( transformedData.__lazy.properties ).toHaveKey('productCode');
+        expect( transformedData.__lazy.properties ).toHaveKey('productDescription');
+        expect( transformedData.__lazy.properties ).toHaveKey('productName');
+        // .....
+        // ....
+    }
+
+    /**
+     * @test
+    */
+    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__properties(){
+
+        var sampleData = getSampleProductData();
+
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
+        
+        debug( resolvedData );
+	    
+        expect( StructKeyExists(resolvedData, 'urlTitle') ).toBeTrue();
+    }
+
+
+    /***************. Lazy Evaluated generated-properties *******************/
+
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_lazy_evaluated__generated_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping["generatedProperties"] = [{
+            "propertyIdentifier"    : "urtTitle",
+            "allowUpdate"           : false,
+            "evaluationMode"        : "lazy",
+        }];
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( StructKeyExists(transformedData, 'urlTitle') ).toBeFalse();
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__generated_properties(){
+
+        var sampleAccountData = getSampleAccountData();
+
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping["generatedProperties"] = [{
+            "propertyIdentifier"    : "urtTitle",
+            "allowUpdate"           : false,
+            "evaluationMode"        : "lazy",
+        }];
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Account", 
+            data = sampleAccountData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( transformedData ).toHaveKey('__lazy');
+        expect( transformedData.__lazy ).toBeStruct();
+        expect( transformedData.__lazy ).toHaveKey('generatedProperties');
+    }
+    
+    /**
+     * @test
+    */
+    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__generated_properties(){
+
+        var sampleData = getSampleProductData();
+
+        var mapping = this.getService().getEntityMapping( 'Product' );
+        mapping["generatedProperties"] = [{
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateProductTypeUrlTitle",
+            "allowUpdate"        : false,
+            "evaluationMode"     : "lazy",
+            "__hint"             : "lazy evaluation means, the value for this property will get generted just before populating the object"
+        }];
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = mapping
+        );
+	    
+	    debug(transformedData);
+	    
+	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
+        
+        debug( resolvedData );
+	    
+        expect( StructKeyExists(resolvedData, 'urlTitle') ).toBeTrue();
+    }
+
+    
+    
+    /***************. Lazy Evaluated relation's properties *******************/
+
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_not_generate_lazy_evaluated__relations_properties(){
+
+        var sampleData = getSampleProductData();
+
+        // modify brand mapping, temporarly
+        var mapping = this.getService().getEntityMapping( 'Brand' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = this.getService().getEntityMapping( 'Product' )
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( StructKeyExists(transformedData.brand, 'brandName') ).toBeFalse();
+        expect( StructKeyExists(transformedData.brand, 'brandWebsite') ).toBeFalse();
+        expect( StructKeyExists(transformedData.brand, 'brandPublishedFlag') ).toBeFalse();
+        expect( StructKeyExists(transformedData.brand, 'brandActiveFlag') ).toBeFalse();
+        // .....
+        // ....
+    }
+    
+    /**
+     * @test
+    */
+    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__relations_properties(){
+
+        var sampleData = getSampleProductData();
+
+        // modify brand mapping, temporarly
+        var mapping = this.getService().getEntityMapping( 'Brand' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = this.getService().getEntityMapping( 'Product' )
+        );
+	    
+	    debug(transformedData);
+	    
+        expect( transformedData ).toHaveKey('__lazy');
+        expect( transformedData.__lazy ).toBeStruct();
+        expect( transformedData.__lazy ).toHaveKey('relations');
+        
+        
+        expext(transformedData.brand).toHaveKey('__lazy');
+        expext(transformedData.brand.__lazy).toHaveKey('properties');
+    }
+
+    /**
+     * @test
+    */
+    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__generated_properties(){
+
+        var sampleData = getSampleProductData();
+
+        // modify brand mapping, temporarly
+        var mapping = this.getService().getEntityMapping( 'Brand' );
+        mapping.properties.each( function( propName ){ 
+            mapping.properties[propName]['evaluationMode'] = 'lazy';
+        });
+        
+        
+        var transformedData = this.getService().transformEntityData(
+            entityName = "Product", 
+            data = sampleData, 
+            mapping = this.getService().getEntityMapping( 'Product' )
+        );
+	    
+	    debug(transformedData);
+	    
+	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
+        
+        debug( resolvedData );
+	    
+        expect( StructKeyExists(resolvedData.brand, 'brandName') ).toBeTrue();
+    }
+
+
 }

@@ -422,7 +422,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		// Loop over all of the primaryID's that are still in the list, and add the relationship
 		for(var relatedEntityID in arguments.manyToManyIDList ){
 			// Load the specific entity, if one doesn't exist... this will be null
-			var relatedEntity = entityService.invokeMethod( "get"&currentPropertyName, { 1=relatedEntityID } );
+			var relatedEntity = entityService.invokeMethod( "get"&entityName, { 1=relatedEntityID } );
 			// If the entity exists, then add it to the relationship
 			if(!isNull(relatedEntity)) {
 				this.invokeMethod( "add"&currentPropertySingularname, { 1=relatedEntity } );

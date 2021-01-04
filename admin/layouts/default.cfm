@@ -303,6 +303,7 @@ Notes:
 										<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
 										<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">
 									</cfif>
+									<hb:HibachiActionCaller action="admin:entity.listimportermapping" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 						
