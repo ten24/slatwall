@@ -409,8 +409,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	private string function getFormatedExecutionTime(required numeric start, required numeric end){
-		var millis = numberFormat( end - start );
-		var formatedValue = 'Duration: ' & millis & ' ms';
+		var millis = end - start;
+		var formatedValue = 'Duration: ' & numberFormat(millis) & ' ms';
 		
 		//tags to simplify search
 		if(millis > 300000){
