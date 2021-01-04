@@ -24,7 +24,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	// Get Order Data
 	public any function importOrders(){
 	    this.getService('erpOneService').importErpOneOrders();
-	
+	}
 	// Get Order Items Data
 	public any function importOrderItems(){
 	    this.getService('erpOneService').importErpOneOrderItems();
