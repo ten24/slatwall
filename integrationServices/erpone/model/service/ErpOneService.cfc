@@ -536,18 +536,46 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return arguments.data;
 	}
 	
-<<<<<<< HEAD
-	public any function preProcessOrderItemData(required struct data ){
-
-=======
 	public struct function preProcessOrderData(required struct data ){
-		
->>>>>>> origin/develop-team-mp-OrderDataFromErpone
+
 		if( left(arguments.data.order, 1) == '-' ){
 			return;
 		}
 			var erponeMapping = {
-<<<<<<< HEAD
+		        "order" 		: "orderNumber",
+		        "ord_date"		: "orderOpenDateTime",
+		        "customer"		: "RemoteAccountID",
+		        "currency_code" : "BillingAddress_countryCode",
+		        "postal_code"	: "BillingAddress_postalCode",
+		        "adr"			: "Address",
+		        "state" 		: "BillingAddress_stateCode"
+		    };
+
+	    	var transformedItem = {};
+
+	    	for( var sourceKey in erponeMapping ){
+	    		var destinationKey = erponeMapping[ sourceKey ];
+
+	    		if( structKeyExists(arguments.data, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
+	    		}
+
+	    	}
+
+	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
+	    	transformedItem.BillingAddress_streetAddress = transformedItem.Address[2];
+	    	transformedItem.BillingAddress_street2Address = transformedItem.Address[1];
+	    	transformedItem.BillingAddress_city = transformedItem.Address[4];
+
+		    return transformedItem;
+	}
+	
+	public any function preProcessOrderItemData(required struct data ){
+
+		if( left(arguments.data.order, 1) == '-' ){
+			return;
+		}
+			var erponeMapping = {
 		        "order" : "RemoteOrderID",
 		        "price" : "Price",
 		        "list_price" : "SkuPrice",
@@ -569,34 +597,4 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
 		    return transformedItem;
 	}
-=======
-		        "order" 		: "orderNumber",
-		        "ord_date"		: "orderOpenDateTime",
-		        "customer"		: "RemoteAccountID",
-		        "currency_code" : "BillingAddress_countryCode",
-		        "postal_code"	: "BillingAddress_postalCode",
-		        "adr"			: "Address",
-		        "state" 		: "BillingAddress_stateCode"
-		    };
-		    
-	    	var transformedItem = {};
-	
-	    	for( var sourceKey in erponeMapping ){
-	    		var destinationKey = erponeMapping[ sourceKey ];
-	    		
-	    		if( structKeyExists(arguments.data, sourceKey) ){
-	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
-	    		}
-	    		
-	    	}
-	    	
-	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
-	    	transformedItem.BillingAddress_streetAddress = transformedItem.Address[2];
-	    	transformedItem.BillingAddress_street2Address = transformedItem.Address[1];
-	    	transformedItem.BillingAddress_city = transformedItem.Address[4];
-
-		    return transformedItem;
-	}
-	
->>>>>>> origin/develop-team-mp-OrderDataFromErpone
 }
