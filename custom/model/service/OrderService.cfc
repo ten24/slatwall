@@ -2079,11 +2079,11 @@ component extends="Slatwall.model.service.OrderService" {
 					var responseBean = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
 					var data = responseBean.getData();
 					if(!responseBean.hasErrors()){
-						if(!isNull(data) && structKeyExists(data,'DocCode')){
+						if(!isNull(data) && isStruct(data) && structKeyExists(data,'DocCode')){
 							arguments.order.setTaxCommitDateTime(now());
 							arguments.order.setTaxTransactionReferenceNumber(responseBean.getData()['DocCode']);
 						}
-					}else if(!isNull(data) && structKeyExists(data,'DocStatus')){
+					}else if(!isNull(data) && isStruct(data) && structKeyExists(data,'DocStatus')){
 						arguments.order.setTaxCommitDateTime(now());
 						arguments.order.setTaxTransactionReferenceNumber(arguments.order.getOrderNumber());
 						arguments.order.setTaxCommitResponse(data['DocStatus']);
