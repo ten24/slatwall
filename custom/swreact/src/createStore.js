@@ -1,4 +1,6 @@
-import { createStore, combineReducers } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+
 import { composeWithDevTools } from 'redux-devtools-extension'
 import preload from './reducers/preload'
 import batch from './reducers/batch'
@@ -17,6 +19,10 @@ const rootReducer = combineReducers({
   account,
 })
 
-const store = createStore(rootReducer, preloadedState, composeWithDevTools())
+const store = createStore(
+  rootReducer,
+  preloadedState,
+  composeWithDevTools(applyMiddleware(thunkMiddleware))
+)
 // console.log(store.getState())
 export default store
