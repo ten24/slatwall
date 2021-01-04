@@ -3,6 +3,21 @@ import PropTypes from 'prop-types'
 import logo from '../../assets/images/sb-logo.png'
 import mobileLogo from '../../assets/images/sb-logo-mobile.png'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+
+const CartMenuItem = ({ orderCount, total }) => {
+  return (
+    <div className="navbar-tool ml-3">
+      <a className="navbar-tool-icon-box bg-secondary" href="##">
+        <span className="navbar-tool-label">{orderCount}</span>
+        <i className="far fa-shopping-cart"></i>
+      </a>
+      <a className="navbar-tool-text" href="shop-cart.html">
+        <small>My Cart</small>${total}
+      </a>
+    </div>
+  )
+}
 
 const MegaMenu = props => {
   return (
@@ -100,9 +115,9 @@ function Header(props) {
                       <i className="far fa-bars"></i>
                     </div>
                   </a>
-                  <a
+                  <Link
                     className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2"
-                    href="##"
+                    to="/MyAccount"
                     data-toggle="modal"
                   >
                     <div className="navbar-tool-icon-box">
@@ -111,16 +126,9 @@ function Header(props) {
                     <div className="navbar-tool-text ml-n3">
                       <small>Hello, Sign in</small>My Account
                     </div>
-                  </a>
-                  <div className="navbar-tool ml-3">
-                    <a className="navbar-tool-icon-box bg-secondary" href="##">
-                      <span className="navbar-tool-label">4</span>
-                      <i className="far fa-shopping-cart"></i>
-                    </a>
-                    <a className="navbar-tool-text" href="shop-cart.html">
-                      <small>My Cart</small>$265.00
-                    </a>
-                  </div>
+                  </Link>
+
+                  <CartMenuItem {...props} />
                 </div>
               </div>
 
@@ -180,10 +188,15 @@ function Header(props) {
 Header.propTypes = {
   mainNavigation: PropTypes.string,
   productCategories: PropTypes.array,
+  orderCount: PropTypes.number,
 }
 function mapStateToProps(state) {
-  const { preload } = state
-  return preload.navigation
+  const { preload, cartReducer } = state
+  return {
+    ...preload.navigation,
+    orderCount: cartReducer.orderItems.length,
+    total: cartReducer.total,
+  }
 }
 
 export default connect(mapStateToProps)(Header)
