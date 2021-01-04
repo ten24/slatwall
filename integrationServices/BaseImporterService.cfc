@@ -505,7 +505,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
-
+	    //dump(arguments.entityQueueData);
 	    var entityName = arguments.entity.getClassName();
         
         var extensionFunctionName = 'process#entityName#_import';
@@ -542,9 +542,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             this.resolveEntityVolatileRelations(entityName, arguments.entityQueueData);
 	    }
 	    
+	    //dump(arguments.entityQueueData);abort;
 	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
 	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
-
+		// dump(arguments.entity);
+		
+		// dump(arguments.entityQueueData);
+		// abort;
 	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
 	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
 	    
