@@ -23,8 +23,8 @@
         },
         "currencyCode": {
             "propertyIdentifier": "currencyCode",
-            "defaultValue": "USD",
             "validations": {
+                "required": true,
                 "dataType": "string"
             }
         },
@@ -100,11 +100,10 @@
             "propertyIdentifier": "parentOrderItem"
         },
         {
-            "isNullable": true,
             "key": "remoteOrderFulfillmentID",
             "lookupKey": "remoteID",
             "entityName": "OrderFulfillment",
-            "propertyIdentifier": "orderFulfillment"
+            "propertyIdentifier": "prderFulfillment"
         },
         {
             "isNullable": true,
