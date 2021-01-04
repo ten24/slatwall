@@ -1,3 +1,5 @@
+import AccountLogin from './AccountLogin/AccountLogin'
+
 export { default as Navigation } from './Navigation/Navigation'
 export { default as Layout } from './Layout/Layout'
 export { default as HookSample } from './HookSample/HookSample'
@@ -8,5 +10,6 @@ export { default as HomeBanner } from './HomeBanner/HomeBanner'
 export { default as HomeBrand } from './HomeBrand/HomeBrand'
 export { default as HomeDetails } from './HomeDetails/HomeDetails'
 export { default as SEO } from './SEO/SEO'
+export { default as AccountLogin } from './AccountLogin/AccountLogin'
 
 // export { default as APITester } from './APITester/APITester'

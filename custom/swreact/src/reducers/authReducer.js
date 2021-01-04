@@ -16,34 +16,23 @@ const initState = {
 const auth = (state = initState, action) => {
   switch (action.type) {
     case REQUEST_LOGIN:
-      return Object.assign({}, state, {
-        isFetching: true,
-      })
+      return { ...state, isFetching: true }
 
     case RECEIVE_LOGIN:
       const { loginToken } = action
       localStorage.setItem('loginToken', loginToken)
 
-      return Object.assign({}, state, {
-        loginToken,
-        isFetching: false,
-        err: null,
-      })
+      return { ...state, loginToken, isFetching: false, err: null }
 
     case ERROR_LOGIN:
       const { err } = action
-      return Object.assign({}, state, {
-        err,
-        isFetching: false,
-      })
+      console.log('authReducer', action)
+      return { ...state, err, isFetching: false }
 
     case LOGOUT:
       localStorage.removeItem('loginToken')
 
-      return Object.assign({}, state, {
-        loginToken: null,
-        isFetching: false,
-      })
+      return { ...state, loginToken: null, isFetching: false }
 
     default:
       return state

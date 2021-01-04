@@ -1,24 +1,36 @@
 import React from 'react'
 import { Layout } from '../../components'
-import APITester from '../../components/APITester/APITester'
+import { getUser } from '../../actions/userActions'
 // import PropTypes from 'prop-types'
-// import { connect } from 'react-redux'
+import { connect } from 'react-redux'
 
-const MyAccount = props => {
+const AccountLogin = React.lazy(() =>
+  import('../../components/AccountLogin/AccountLogin')
+)
+const AccountProfile = React.lazy(() =>
+  import('../../components/AccountProfile/AccountProfile')
+)
+
+const MyAccount = ({ user, auth }) => {
   return (
-    <>
-      <Layout>
-        <div>MyAccount</div>
-        <APITester />
-      </Layout>
-    </>
+    <Layout>
+      <div>MyAccount</div>
+      {auth.loginToken && <AccountProfile />}
+      {!auth.loginToken && <AccountLogin />}
+    </Layout>
   )
 }
 
-// function mapStateToProps(state) {
-//   const { preload } = state
-//   return preload.home
-// }
+const mapStateToProps = state => {
+  return {
+    auth: state.authReducer,
+    user: state.userReducer,
+  }
+}
 
-// export default connect(mapStateToProps)(MyAccount)
-export default MyAccount
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: async () => dispatch(getUser()),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(MyAccount)

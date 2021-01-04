@@ -1,6 +1,6 @@
 import validator from 'validator'
 import { SlatwalApiService } from '../services'
-
+import { requestUser, receiveUser } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
 export const ERROR_LOGIN = 'ERROR_LOGIN'
@@ -12,14 +12,14 @@ export const requestLogin = () => {
   }
 }
 
-export const receiveLogin = loginToken => {
+export const receiveLogin = (loginToken) => {
   return {
     type: RECEIVE_LOGIN,
     loginToken,
   }
 }
 
-const errorLogin = err => {
+const errorLogin = (err) => {
   return {
     type: ERROR_LOGIN,
     err,
@@ -33,30 +33,21 @@ export const logout = () => {
 }
 
 export const login = (email, password) => {
-  return async dispatch => {
+  console.log('login', email)
+  return async (dispatch) => {
     dispatch(requestLogin())
     dispatch(requestUser())
 
-    if (!email || !email.length)
-      return dispatch(errorLogin('Invalid email or password!'))
-    if (!validator.isEmail(email))
-      return dispatch(errorLogin('Invalid email or password!'))
-
-    if (!password || !password.length)
-      return dispatch(errorLogin('Invalid email or password!'))
-    if (password.length < 8)
-      return dispatch(errorLogin('Invalid email or password!'))
-
-    const req = SlatwalApiService.auth.login({
-      emailAddress: username,
+    const req = await SlatwalApiService.auth.login({
+      emailAddress: email,
       password: password,
     })
 
     if (req.isFail()) {
-      dispatch(errorLogin(err.toString()))
+      dispatch(errorLogin(req.toString()))
     } else {
-      dispatch(receiveLogin(response.success().token))
-      dispatch(receiveUser(res))
+      dispatch(receiveLogin(req.success().token))
+      dispatch(receiveUser(req))
     }
   }
 }
