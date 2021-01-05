@@ -81,8 +81,8 @@
 			"key": "statusCode",
 			"lookupKey": "systemCode",
 			"entityName": "Type",
-			"defaultValue": "...",
-			"__hint": "this defaultValue for status-code is `odstDelivered`.",
+			"defaultValue": "2c91808a76ca27fb0176d38b682b0016",
+			"__hint": "this defaultValue for status-code is `odstUndeliverable`.",
 			"propertyIdentifier": "orderDeliveryStatusType"
 		}
 	],
