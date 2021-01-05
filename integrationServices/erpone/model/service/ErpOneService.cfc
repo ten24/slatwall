@@ -264,7 +264,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	return httpRequest;
     }
     
-    public any function callErpOneCreateDataApi( required struct requestData, string endpoint="read" ){
+    public any function callErpOneGetDataApi( required struct requestData, string endpoint="read" ){
         
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint);
 		
@@ -277,7 +277,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         var rawRequest = httpRequest.send().getPrefix();
         
         if( !IsJson(rawRequest.fileContent) ){
-		    throw("ERPONE - callErpOneCreateDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		    throw("ERPONE - callErpOneGetDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
 			
 	    return DeSerializeJson(rawRequest.fileContent);
@@ -293,7 +293,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         var rawRequest = httpRequest.send().getPrefix();
         
         if( !IsJson(rawRequest.fileContent) ){
-		    throw("ERPONE - callErpOneCreateDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		    throw("ERPONE - callErpOneUpdateDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
 			
 	    return DeSerializeJson(rawRequest.fileContent);
