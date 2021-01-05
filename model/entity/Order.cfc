@@ -138,6 +138,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderPaymentCreditAmountNeeded" persistent="false" hb_formatType="currency";
 	property name="orderPaymentRefundOptions" persistent="false";
 	property name="orderRequirementsList" persistent="false";
+	property name="orderRequiredStepsList" persistent="false";
 	property name="orderTypeOptions" persistent="false";
 	property name="defaultStockLocationOptions" persistent="false";
 	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
@@ -713,6 +714,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public any function getOrderRequirementsList() {
 		return getService("orderService").getOrderRequirementsList(order=this);
+	}
+	
+	/**
+     * It's a hard coded list of options that can be available with order requirements list
+     * This method is added to handle frontend side of wordpress plugin
+     * */
+	public any function getOrderRequiredStepsList() {
+		return getService("orderService").getOrderRequiredStepsList();
 	}
 
 	public numeric function getOrderPaymentAmountNeeded() {

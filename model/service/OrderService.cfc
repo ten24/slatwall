@@ -106,7 +106,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
     	///Order Items Information
 		var ordersItemsCollectionList = this.getOrderItemCollectionList();
-		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle');
+		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle, quantity, calculatedQuantityDelivered');
 		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
@@ -150,6 +150,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderDetails['orderFulfillments'] = ordersFulfillmentCollectionList.getRecords(formatRecords = false);
 		
 		return orderDetails;
+    }
+    
+    /**
+     * Required list property
+     * It's a hard coded list of options that can be available with order requirements list
+     * This method is added to handle frontend side of wordpress plugin
+     * */
+    public string function getOrderRequiredStepsList() {
+    	return "account,fulfillment,payment";
     }
 	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
