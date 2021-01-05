@@ -165,7 +165,7 @@ function Header(props) {
                       key={index}
                       subMenu={menuItem}
                       title={menuItem[0]['parentContent_title']}
-                      linkUrl={menuItem[0]['parentContent_linkUrl']}
+                      linkUrl={menuItem[0]['linkUrl']}
                     />
                   )
                 })}

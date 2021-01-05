@@ -5,16 +5,14 @@ import { connect } from 'react-redux'
 
 const Home = props => {
   return (
-    <>
-      <Layout>
-        <HomeBanner
-          homeMainBanner={props.homeMainBanner}
-          featuredSlider={props.featuredSlider}
-        />
-        <HomeDetails homeContent={props.homeContent} />
-        <HomeBrand homeBrand={props.homeBrand} shopBy={props.shopBy} />
-      </Layout>
-    </>
+    <Layout>
+      <HomeBanner
+        homeMainBanner={props.homeMainBanner}
+        featuredSlider={props.featuredSlider}
+      />
+      <HomeDetails homeContent={props.homeContent} />
+      <HomeBrand homeBrand={props.homeBrand} shopBy={props.shopBy} />
+    </Layout>
   )
 }
 Home.propTypes = {
