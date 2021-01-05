@@ -325,7 +325,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     public any function getAccountData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getAccountData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
 
-    	var accountsArray = this.callErpOneCreateDataApi({
+    	var accountsArray = this.callErpOneGetDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
     	    "query": "FOR EACH customer WHERE customer.active = YES",
@@ -365,7 +365,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		logHibachi("ERPONE - Starting importing importErpOneAccounts");
 		
-		var response = this.callErpOneCreateDataApi({
+		var response = this.callErpOneGetDataApi({
     	    "table" : "customer"
     	}, "count");
     	
@@ -425,7 +425,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		if( !structKeyExists(arguments.data, 'RemoteProductID') || this.hibachiIsEmpty(arguments.data.RemoteProductID) ){
 			// var productCode = arguments.data.ProductCode;
-			// var remoteProductIDArray = this.callErpOneCreateDataApi({
+			// var remoteProductIDArray = this.callErpOneGetDataApi({
 			//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
 			//  	    "columns" : "__rowids"
 			//  	})
