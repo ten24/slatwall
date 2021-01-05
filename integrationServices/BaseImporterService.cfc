@@ -358,7 +358,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
                 "entityName"    = dependency.entityName,
     	        "uniqueKey"     = dependency.lookupKey,
-    	        "uniqueValue"   = dependency.lookupValue
+    	        "uniqueValue"   = dependency.lookupValue ?: javaCast('null', 0)
             );
                 
             if( !structKeyExists(dependency, 'isNullable') ){
@@ -1046,7 +1046,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        transformedData['__dependencies'] = [];
 	        for( var dependency in arguments.mapping.dependencies ){
-	            dependency['lookupValue'] = arguments.data[ dependency.key ];
+	        
+	            if(structKeyExists(arguments.data, dependency.key) ){
+	                dependency['lookupValue'] = arguments.data[ dependency.key ];
+	            }
+	            
 	            transformedData['__dependencies'].append( dependency );
 	        }
 	    }
@@ -1567,17 +1571,29 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         //dont create stock if there is no locationID / skuID
 	}
 	
-    /////////////////.                  ORDER
+    /////////////////.                  ORDER-PAYMENT
+    
+    public array function generateOrderPaymentTransactions( struct data, struct mapping, struct propertyMetaData ){
+        
+        if( structKeyExists(arguments.data, 'transactionID') || structKeyExists(arguments.data, 'authorizationCode') ){
+            var transactionData = {
+                'paymentTransactionID' : '',
+                'amount' : arguments.data.amount
+            };
+            if(structKeyExists(arguments.data, 'transactionID')){
+                transactionData['providerTransactionID'] = arguments.data.transactionID;
+            }
+            if(structKeyExists(arguments.data, 'authorizationCode')){
+                transactionData['authorizationCode'] = arguments.data.authorizationCode;
+            }
+            
+            return [ transactionData ];
+        }
+        
+        return [];
+    }
+    
 
-	public any function generateOrderBillingAddress( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-	
-	public any function generateOrderShippingAddress( struct data, struct mapping, struct propertyMetaData ){
-		
-	}
-
-	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 
 }

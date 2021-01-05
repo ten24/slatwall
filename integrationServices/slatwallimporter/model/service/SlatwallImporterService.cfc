@@ -71,6 +71,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
                 "Inventory"         : "inventory",
                 "Order"             : "order",
                 "OrderItem"         : "orderItem",
+                "OrderPayment"      : "orderPayment",
                 "OrderFulfillment"  : "orderFulfillment",
                 "Product"		    : "product",
                 "Sku"   		    : "sku"
