@@ -2,14 +2,14 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	
 	property name="erpOneIntegrationCFC";
 	
-	private any function getIntegrationID(){
+	public any function getIntegrationID(){
 		if(!structKeyExists(variables, 'integrationID')){
 			variables.integration = this.getErpOneIntegrationCFC().getIntegration().getIntegrationID();
 		}
 		return variables.integration;
 	}
 	
-	private function addToQueue(required any entity){
+	public function addToQueue(required any entity){
 		try {
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = arguments.entity.getPrimaryIDValue(),
