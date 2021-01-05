@@ -9,6 +9,7 @@ export { default as HomeDetails } from './HomeDetails/HomeDetails'
 export { default as SEO } from './SEO/SEO'
 export { default as AccountLogin } from './AccountLogin/AccountLogin'
 export { default as ActionBanner } from './ActionBanner/ActionBanner'
+export { default as BreadCrumb } from './BreadCrumb/BreadCrumb'
 
 // Under MyAccount
 export { default as OrderHistory } from './OrderHistory/OrderHistory'

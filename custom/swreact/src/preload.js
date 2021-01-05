@@ -1,5 +1,4 @@
 export default {
-  name: 'Tom Smith',
   navigation: {
     mainNavigation:
       '<ul> <li><a href="/">Home</a></li> <li><a href="/about">About</a></li> <li><a href="/contact">Contact</a></li> </ul>',
@@ -471,7 +470,6 @@ export default {
       },
     ],
   },
-
   home: {
     featuredSlider: [
       {
@@ -796,6 +794,53 @@ export default {
       markup:
         '<h4 style="text-align:center">Looking to Open an Account?</h4> <p style="text-align:center">Fill out the Credit Application completely and email it to orders@stoneandberg.com so that we may begin the application process for your in-house account. Once we have accepted your credit application and verified your company you will be ready to order!</p> <p style="text-align:center"><a class="btn" href="/custom/assets/Files/StoneBerg_Credit_App.pdf">Download Credit Application</a></p>',
     },
+    customBody:
+      '<p><strong>Stone &amp; Berg</strong><br /> 239 Mill Street<br /> Worcester MA 01602</p> <p>Phone: (508) 753-3551<br /> Toll Free: (800) 225-7405<br /> Fax: (800) 535-5625</p> <p><strong>Email</strong><br /> orders@stoneandberg.com</p> <p><strong>Hours</strong><br /> Monday - Friday<br /> 8AM - 5PM</p>',
+    customSummary:
+      '<h2>We are here to help. Contact us with any questions.</h2> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>',
+  },
+  categoryListing: {
+    template: 'category-listing',
+    title: 'Shop Door Hardware',
+    crumbs: [
+      { slug: '/', title: 'Home' },
+      { slug: '/products', title: 'Products' },
+      { slug: '/products/door-hardware', title: 'Door Hardware' },
+    ],
+    categories: [
+      {
+        heading: 'Door Closers & Operators',
+        items: [
+          { title: 'Automatic Operators', link: '/#' },
+          { title: 'Heavy Duty', link: '/#' },
+          { title: 'Medium Duty', link: '/#' },
+          { title: 'Light Duty', link: '/#' },
+          { title: 'Heavy Duty', link: '/#' },
+          { title: 'Door Closer Parts', link: '/#' },
+        ],
+      },
+      {
+        heading: 'Storefront Hardware',
+        items: [
+          { title: 'Deadlatches', link: '/#' },
+          { title: 'Deadbolts', link: '/#' },
+          { title: 'Hookbolts', link: '/#' },
+          { title: 'Paddles/Levers', link: '/#' },
+          { title: 'Parts & Accessories', link: '/#' },
+        ],
+      },
+      {
+        heading: 'Electric Strikes',
+        items: [
+          { title: 'Surface Mount Style', link: '/#' },
+          { title: 'In-Frame Style', link: '/#' },
+          { title: 'For Rim Exits', link: '/#' },
+          { title: 'For Cylindrical Locksets', link: '/#' },
+          { title: 'For Mortise Locks', link: '/#' },
+          { title: 'Fire Rated', link: '/#' },
+        ],
+      },
+    ],
     customBody:
       '<p><strong>Stone &amp; Berg</strong><br /> 239 Mill Street<br /> Worcester MA 01602</p> <p>Phone: (508) 753-3551<br /> Toll Free: (800) 225-7405<br /> Fax: (800) 535-5625</p> <p><strong>Email</strong><br /> orders@stoneandberg.com</p> <p><strong>Hours</strong><br /> Monday - Friday<br /> 8AM - 5PM</p>',
     customSummary:
