@@ -1,6 +1,7 @@
 component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" accessors="true" output="false"{
 	
 	property name="erpOneIntegrationCFC";
+	property name="hibachiEntityQueueDAO";
 	
 	public any function getIntegrationID(){
 		if(!structKeyExists(variables, 'integrationID')){
@@ -11,7 +12,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	
 	public function addToQueue(required any entity){
 		try {
-			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+			this.getHibachiEntityQueueDAO().insertEntityQueue(
 				baseID          = arguments.entity.getPrimaryIDValue(),
 				baseObject      = arguments.entity.getClassName(),
 				processMethod   = 'pushAccountDataToErpOne',

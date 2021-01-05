@@ -283,7 +283,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return DeSerializeJson(rawRequest.fileContent);
     }
     
-    public any function callErpOneUpdateDataApi( required any requestData, string endpoint="read" ){
+    public any function callErpOneUpdateDataApi( required any requestData, string endpoint="create" ){
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json");
 		
 		// Authentication headers
@@ -487,23 +487,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		arguments.data.payload = this.convertSwAccountToErponeAccount(arguments.entity);
 		arguments.create = false;
 		//push to remote endpoint
+		var operation = "update";
 		if(arguments.create){
-			var response = this.callErpOneUpdateDataApi({
+			operation = "create";
+		}
+		
+		var response = this.callErpOneUpdateDataApi({
 		    "table": "customer",
 		    "triggers": "true",
 		    "records": [
 			        arguments.data.payload
 			    ]
-			}, "create");
-		}else{
-			var response = this.callErpOneUpdateDataApi({
-		    "table":   "customer",
-		    "triggers": "true",
-		    "changes": [
-			        arguments.data.payload
-			   ]
-			}, "update");
-		}
+	  }, operation );
 		
 		/** Format error:
 		 * typical error response: { "status": "error", "message": "Required fields missing: email"};
