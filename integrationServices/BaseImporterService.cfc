@@ -193,7 +193,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return newBatch;
 	}
 	
-	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
+	public any function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
 	    
 	    var preProcessFunctionName = "preProcess#arguments.entityName#Data";
 	    if( structKeyExists(this, preProcessFunctionName) ){
