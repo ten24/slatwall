@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import logo from '../../assets/images/sb-logo-white.png'
 import { connect } from 'react-redux'
 import { useFormik } from 'formik'
+import { ActionBanner } from '..'
 // import * as Yup from 'yup'
 
 const NewsletterForm = () => {
@@ -99,22 +100,18 @@ const NewsletterForm = () => {
   )
 }
 
-function Footer(props) {
+function Footer({
+  actionBanner,
+  getInTouch,
+  siteLinks,
+  stayInformed,
+  copywriteDate,
+  actionBannerDisable,
+}) {
   return (
     <footer className="pt-5">
-      {props.isContact === 'true' && (
-        <div className="bg-primary p-5">
-          <div className="container">
-            <div className="row">
-              <div className="col-0 col-md-2"></div>
-              <div
-                className="col-md-8 text-center"
-                dangerouslySetInnerHTML={{ __html: props.contactUs }}
-              />
-              <div className="col-0 col-md-2"></div>
-            </div>
-          </div>
-        </div>
+      {actionBanner.display && !actionBannerDisable && (
+        <ActionBanner {...actionBanner} />
       )}
 
       <div className="bg-light pt-4">
@@ -123,18 +120,18 @@ function Footer(props) {
             <div className="col-md-2 col-sm-6">
               <div
                 className="widget widget-links pb-2 mb-4"
-                dangerouslySetInnerHTML={{ __html: props.siteLinks }}
+                dangerouslySetInnerHTML={{ __html: siteLinks }}
               />
             </div>
             <div className="col-md-4 col-sm-6">
               <div
                 className="widget widget-links pb-2 mb-4"
-                dangerouslySetInnerHTML={{ __html: props.getInTouch }}
+                dangerouslySetInnerHTML={{ __html: getInTouch }}
               />
             </div>
             <div className="col-md-6">
               <div className="widget pb-2 mb-4">
-                <div dangerouslySetInnerHTML={{ __html: props.stayInformed }} />
+                <div dangerouslySetInnerHTML={{ __html: stayInformed }} />
                 <NewsletterForm />
               </div>
             </div>
@@ -148,8 +145,8 @@ function Footer(props) {
               <img className="w-50" src={logo} alt="Stone and Berg logo" />
             </div>
             <div className="col-md-6 font-size-xs text-light text-center text-md-right mb-4">
-              {`@${props.copywriteDate} `} All rights reserved. Stone and Berg
-              Company Inc
+              {`@${copywriteDate} `} All rights reserved. Stone and Berg Company
+              Inc
             </div>
           </div>
         </div>
@@ -158,12 +155,24 @@ function Footer(props) {
   )
 }
 Footer.propTypes = {
-  isContact: PropTypes.string,
-  contactUs: PropTypes.string,
+  actionBanner: PropTypes.object,
   getInTouch: PropTypes.string,
   siteLinks: PropTypes.string,
   stayInformed: PropTypes.string,
   copywriteDate: PropTypes.string,
+  actionBannerDisable: PropTypes.bool,
+}
+
+Footer.defaultProps = {
+  actionBanner: {
+    display: true,
+    markup: '',
+  },
+  getInTouch: '',
+  siteLinks: '',
+  stayInformed: '',
+  copywriteDate: '',
+  actionBannerDisable: false,
 }
 
 function mapStateToProps(state) {

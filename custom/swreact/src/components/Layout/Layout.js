@@ -2,13 +2,13 @@ import React from 'react'
 import { Footer, Header } from '..'
 import SEO from '../SEO/SEO'
 
-const Layout = ({ children }) => {
+const Layout = ({ children, actionBannerDisable }) => {
   return (
     <>
       <SEO />
       <Header />
       {children}
-      <Footer />
+      <Footer actionBannerDisable={actionBannerDisable} />
     </>
   )
 }

@@ -471,6 +471,7 @@ export default {
       },
     ],
   },
+
   home: {
     featuredSlider: [
       {
@@ -763,9 +764,11 @@ export default {
     shopBy: '/shop/',
   },
   footer: {
-    isContact: 'true',
-    contactUs:
-      '<h4>Can&#39;t find what you are looking for?</h4> <p>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero&#39;s De Finibus Bonorum et Malorum for use in a type specimen book.</p> <p><a href="##" class="btn">Contact Us</a></p>',
+    actionBanner: {
+      display: true,
+      markup:
+        '<h4>Can&#39;t find what you are looking for?</h4> <p>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero&#39;s De Finibus Bonorum et Malorum for use in a type specimen book.</p> <p><a href="##" class="btn">Contact Us</a></p>',
+    },
     getInTouch:
       '<h3>Get in Touch</h3> <ul> <li>(508) 753-3551</li> <li>Toll Free: (800)535-5625</li> <li><a href="http://emailto:orders@stoneandberg.com">orders@stonandberg.com</a></li> <li>Monday - Friday: 8AM - 5PM</li> </ul> <p>&nbsp;</p> <ul> <li>239 Mill Street</li> <li>Worchester, MA 01602</li> </ul>',
     siteLinks:
@@ -773,5 +776,29 @@ export default {
     stayInformed:
       '<h3>Stay Informed</h3> <p>Sign up to receive any updates on pricing, specials, industry events and lcoal training at our facility!</p>',
     copywriteDate: '2020',
+  },
+  about: {
+    template: 'default-one-column',
+    title: 'About',
+    customBody:
+      '<div class="mb-5" style="max-width: 800px;margin:auto;"> <h2 style="text-align:center">A Distributor of Security and Locksmith Products</h2> <p style="text-align:center">As a company that has been in business for over one hundred years, we understand that it&#39;s impossible to know everything. That&#39;s why we&#39;re here.</p> </div> <hr /> <div class="mt-5"> <h3>Our Story</h3> </div> <div class="row"> <div class="col-md-8"> <p>Stone &amp; Berg Company, Inc. is a fifth generation business, and was established in 1883 under the name Berg Lumber Company. In 1891 we moved to 99 Stafford Street in Worcester, where we would remain for over 100 years. In 1909 we became Stone &amp; Berg Lumber Company after the acquisition of Gates Lumber and Stone &amp; Foster Lumber. While the word &quot;lumber&quot; remained in our name until 1999, we became more focused on hardware in 1960, and by 1967 we were a full-fledged security hardware distributor.</p> <p>The year 1973 was when we came out with our very first iteration of the Stone &amp; Berg Price Book and Catalog. Back then it was printed of course, and each page put in a vinyl page protector and placed in a massive 5-inch-thick blue binder. These large binders would be delivered to our customers, and used for product reference and pricing.</p> <p>In 2007, we moved down the road to our current location at 239 Mill Street, upgrading to a much larger warehouse and office space. We currently keep up on our Catalog and Price Book, and although it has certainly changed over time, it still provides the same service and value to our customers many years later.</p> <p>We currently offer a wide variety of products for security professionals from over 90 manufacturers. Our central New England location allows us to deliver shipments next day to most of our Northeast customers, with same-day shipping for any order received by 5:00 PM. Our facility provides us with an area to host seminars on product, series, and vendor training, as well as other hands-on training for our customers.</p> <div class="row"> <div class="col-sm-6"> <h4>Products</h4> <ul> <li>High Security Key Systems</li> <li>Proprietary Key Systems</li> <li>Commercial Door Hardware</li> <li>Residential Door Hardware</li> <li>Keyblanks</li> <li>Safes</li> <li>Padlocks</li> <li>Sales Counter Displays</li> <li>Cam, Mailbox, Drawer Locks</li> <li>And much more</li> </ul> </div> <div class="col-sm-6"> <h4>Services</h4> <ul> <li>Cylinder Pinning</li> <li>High Security Cylinder Pinning</li> <li>Key Stamping</li> <li>Key Decoding</li> <li>Key Cutting</li> <li>Abloy</li> <li>Ace</li> <li>ASSA</li> <li>Chicago Double Sided</li> <li>Medeco</li> <li>Master Key Charts &amp; System Creation</li> </ul> </div> </div> </div> <div class="col-md-3"><img alt="" src="/custom/assets/Images/about-img.jpg" style="height:auto; width:600px" /></div> </div> <div class="row bg-lightgray p-3 pt-4 rounded text-center mt-4"> <div class="col-md-3"><img alt="" src="/custom/assets/Images/customer-service-icon.png" style="height:70px; margin-bottom:20px; width:auto" /> <h5>Great Customer Service</h5> <p>Our company upholds a high standard of business practices in order to deliver excellent customer service and products. We also offer technical assistance to provide answers to all your questions. In addition, we do callbacks if the items you ordered are out of stock.</p> </div> <div class="col-md-3"><img alt="" src="/custom/assets/Images/cart-icon.png" style="height:70px; margin-bottom:20px; width:auto" /> <h5>No Minimum Order</h5> <p>We accommodate orders of all sizes. Small or large, your order is important to us.</p> </div> <div class="col-md-3"><img alt="" src="/custom/assets/Images/shipping-icon.png" style="height:70px; margin-bottom:20px; width:auto" /> <h5>Same Day Shipping</h5> <p>We offer same day shipping on all orders placed by 5:00PM EST, and next-day delivery to most areas in the Northeast. We also urge you to take advantage of our free freight policy for any order amounting to $350 or more.</p> </div> <div class="col-md-3"><img alt="" src="/custom/assets/Images/secure-icon.png" style="height:70px; margin-bottom:20px; width:auto" /> <h5>Providing for Your Security Hardware Needs</h5> <p>At Stone &amp; Berg Company, Inc., we manage our inventory efficiently to accomplish an average 98% fill rate on all of our orders. We stock over 90 security hardware lines and 30,000 SKUs in one warehouse location.</p> </div> </div>',
+  },
+  contact: {
+    template: 'contact',
+    title: 'Contact Us',
+    form: {
+      type: 'contact-us',
+      markup:
+        '<form name="contact-us" action="?slatAction=public:form.addFormResponse" enctype="application/json" method="POST"> <input type="hidden" name="formResponse.formID" value="2c91808575030b800175064d31680010"> <input type="hidden" name="sRedirectURL" value="?submitted=true"> <input type="hidden" name="context" value="addFormResponse"> <div class="s-required"> <label for="firstName"> <span>First Name</span> </label> <div> <input type="text" name="firstName" value="" class="form-control required " required=""> </div> </div> <div class="s-required"> <label for="lastName"> <span>Last Name</span> </label> <div> <input type="text" name="lastName" value="" class="form-control required " required=""> </div> </div> <div class="s-required"> <label for="emailAddress"> <span>Email Address</span> </label> <div> <input type="text" name="emailAddress" value="" class="form-control required " required=""> </div> </div> <div class=""> <label for="phoneNumber"> <span>Phone Number</span> </label> <div> <input type="text" name="phoneNumber" value="" class="form-control "> </div> </div> <div class=""> <label for="subject"> <span>Subject</span> </label> <div> <input type="text" name="subject" value="" class="form-control "> </div> </div> <div class=""> <label for="preferredContact"> <span>How would you like to be contacted?</span> </label> <div> <div class="radio"> <input type="radio" ng-model="preferredContact" id="email" name="preferredContact" value="email" class="" checked="checked"> <label for="email"> Email </label> </div> <div class="radio"> <input type="radio" ng-model="preferredContact" id="phone" name="preferredContact" value="phone" class=""> <label for="phone"> Phone </label> </div> </div> </div> <div class="s-required"> <label for="message"> <span>Message</span> </label> <div> <div class="position-relative"> <textarea name="message" class="required form-control" required=""></textarea> </div> </div> </div> <input type="submit" value="Submit"> </form>',
+    },
+    actionBanner: {
+      display: true,
+      markup:
+        '<h4 style="text-align:center">Looking to Open an Account?</h4> <p style="text-align:center">Fill out the Credit Application completely and email it to orders@stoneandberg.com so that we may begin the application process for your in-house account. Once we have accepted your credit application and verified your company you will be ready to order!</p> <p style="text-align:center"><a class="btn" href="/custom/assets/Files/StoneBerg_Credit_App.pdf">Download Credit Application</a></p>',
+    },
+    customBody:
+      '<p><strong>Stone &amp; Berg</strong><br /> 239 Mill Street<br /> Worcester MA 01602</p> <p>Phone: (508) 753-3551<br /> Toll Free: (800) 225-7405<br /> Fax: (800) 535-5625</p> <p><strong>Email</strong><br /> orders@stoneandberg.com</p> <p><strong>Hours</strong><br /> Monday - Friday<br /> 8AM - 5PM</p>',
+    customSummary:
+      '<h2>We are here to help. Contact us with any questions.</h2> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>',
   },
 }

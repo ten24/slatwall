@@ -3,24 +3,32 @@ import React from 'react'
 import { Layout } from '../../components'
 import { connect } from 'react-redux'
 
-const About = () => {
+const About = ({ title, customBody }) => {
   return (
     <Layout>
-      <h1>About</h1>
-      <a
-        target="_blank"
-        rel="noreferrer"
-        href="https://stoneandberg.ten24dev.com/about"
-      >
-        Template
-      </a>
+      <div class="bg-light p-0">
+        <div class="page-title-overlap bg-lightgray pt-4">
+          <div class="container d-lg-flex justify-content-between py-2 py-lg-3">
+            <div class="order-lg-1 pr-lg-4 text-center">
+              <h1 class="h3 text-dark mb-0 font-accent">{title}</h1>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="container bg-light box-shadow-lg rounded-lg p-5"
+          dangerouslySetInnerHTML={{
+            __html: customBody,
+          }}
+        ></div>
+      </div>
     </Layout>
   )
 }
 
 function mapStateToProps(state) {
   const { preload } = state
-  return preload
+  return preload.about
 }
 
 About.propTypes = {}
