@@ -16,7 +16,6 @@ class SWSiteSelectorController {
     public typeaheadDataKey:string;
     public listingID:string;
     public disabled:boolean;
-    public swListingDisplay:any;
 
     //@ngInject
     constructor(
@@ -51,10 +50,6 @@ class SWSiteSelectorController {
     }
 
     public selectSite = () =>{
-        if(!this.collectionConfigToFilter && this.swListingDisplay){
-            this.collectionConfigToFilter=this.swListingDisplay.collectionConfig;
-        }
-        
         this.collectionConfigToFilter.removeFilterByDisplayPropertyIdentifier(this.simpleFilterPropertyIdentifier);
         console.log("selectSite", this.selectedSite)
         switch(this.selectedSite){
@@ -104,7 +99,6 @@ class SWSiteSelector implements ng.IDirective{
     public templateUrl;
     public restrict = "EA";
     public scope = {};
-    public require={swListingDisplay:'?^swListingDisplay'};
 
     public bindToController = {
         inListingDisplay:"=?",
@@ -123,14 +117,14 @@ class SWSiteSelector implements ng.IDirective{
             $http,
             $hibachi,
             listingService,
-
+            scopeService,
 		    contentPartialsPath,
 			slatwallPathBuilder
         ) => new SWSiteSelector(
             $http,
             $hibachi,
             listingService,
-
+            scopeService,
 			contentPartialsPath,
 			slatwallPathBuilder
         );
@@ -138,7 +132,7 @@ class SWSiteSelector implements ng.IDirective{
             '$http',
             '$hibachi',
             'listingService',
-
+            'scopeService',
 			'contentPartialsPath',
 			'slatwallPathBuilder'
         ];
@@ -150,7 +144,7 @@ class SWSiteSelector implements ng.IDirective{
 		private $http,
         private $hibachi,
         private listingService,
-
+        private scopeService,
 	    private contentPartialsPath,
 		private slatwallPathBuilder
 	){
@@ -164,8 +158,8 @@ class SWSiteSelector implements ng.IDirective{
         if($scope.swSiteSelector.inListingDisplay == null){
             $scope.swSiteSelector.inListingDisplay = !$scope.swSiteSelector.withTypeahead;
         }
-        if($scope.swSiteSelector.inListingDisplay == true && $scope.swSiteSelector.swListingDisplay){
-            var listingDisplayScope = $scope.swSiteSelector.swListingDisplay;
+        if($scope.swSiteSelector.inListingDisplay == true && this.scopeService.hasParentScope($scope, "swListingDisplay")){
+            var listingDisplayScope = this.scopeService.getRootParentScope($scope, "swListingDisplay")["swListingDisplay"];
             $scope.swSiteSelector.listingID = listingDisplayScope.tableID;
             if(listingDisplayScope.collectionConfig != null){
                 $scope.swSiteSelector.collectionConfigToFilter = listingDisplayScope.collectionConfig;

@@ -56,7 +56,6 @@ class ProductCreateController{
                                     collectionConfig.setDisplayProperties('optionID',undefined,{isVisible:false});
                                     //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
                                     collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
-                                    collectionConfig.addFilter('activeFlag',1,'=');
                                    
                                         
                                         var productTypeIDArray = this.$scope.productTypeIDPaths[this.$scope.preprocessproduct_createCtrl.selectedOption.value].split(","); 

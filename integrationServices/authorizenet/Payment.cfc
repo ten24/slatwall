@@ -116,9 +116,8 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		if(listLen(setting('invoiceUserFileThreeTemplate'), ' ') == 2){
 			requestData.addUserField(listFirst(setting('invoiceUserFileThreeTemplate'), ' '), getService('HibachiUtilityService').replaceStringTemplate(listLast(setting('invoiceUserFileThreeTemplate'), ' '), requestBean.getOrder()));
 		}
-		if(!isNull(requestBean.getOrder())){
-			requestData.setInvoiceNumber(requestBean.getOrder().getShortReferenceID( true ));
-		}
+
+		requestData.setInvoiceNumber(requestBean.getOrder().getShortReferenceID( true ));
 
 		requestData.setCustomerId(getService('AccountService').getAccount(requestBean.getAccountID()).getShortReferenceID(true));
 
@@ -182,11 +181,10 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		var response = getTransient('CreditCardTransactionResponseBean');
 		arguments.requestData = deserializeJSON(REReplace(trim(arguments.requestData), '[^\x00-\x7F]', '', "ALL"));
 
-		var responseData = deserializeJSON(REReplace(trim(arguments.rawResponse.fileContent), '[^\x00-\x7F]', '', "ALL"));
-		if(structKeyExists(responseData,'transactionResponse')){
-			responseData=responseData.transactionResponse;
-		}
-			// Populate the data with the raw response & request
+		var responseData = deserializeJSON(REReplace(trim(arguments.rawResponse.fileContent), '[^\x00-\x7F]', '', "ALL")).transactionResponse;
+
+
+		// Populate the data with the raw response & request
 		var data = {
 			responseData = arguments.rawResponse,
 			requestData = arguments.requestData

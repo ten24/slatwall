@@ -55,19 +55,14 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.collection#" edit="#rc.edit#" fredirectAction="entity.preprocesscollection" fRedirectQS="collectionID=#rc.collection.getCollectionID()#&processContext=clone">
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.collection#">
+		</hb:HibachiEntityActionBar>
 		
-	<hb:HibachiEntityActionBar type="listing" pageTitle="#(rc.collection.isReport() || (!structKeyExists(rc, 'sRedirectURL') && !structKeyExists(rc,'modal')) ? #$.slatwall.rbkey('entity.Collection.process.listOrderReport')# : #$.slatwall.rbkey('entity.Collection.process.clone')#)#" showCreate="false">
-			<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller class="btn btn-default" icon="glyphicon glyphicon-arrow-left" action="admin:entity.reportlistOrder" queryString="collectionID=#rc.collection.getCollectionID()#" text="#$.slatwall.rbkey('entity.Collection.process.backToReport')#" />
-			<hb:HibachiActionCaller type="button" class="btn btn-primary" text="#$.slatwall.rbkey('entity.Collection.process.listOrderReport')#" />
-			</hb:HibachiEntityActionBarButtonGroup>
-		</hb:HibachiEntityActionBar>		
-		    
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				<!--- General Details --->
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="collectionName" edit="#rc.edit#" title="#(rc.collection.isReport() || (!structKeyExists(rc, 'sRedirectURL') && !structKeyExists(rc,'modal')) ? #rc.$.slatwall.rbKey('entity.Collection.process.duplicateReportName')# : #$.slatwall.rbkey('entity.collection.collectionName')#)#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="collectionCode" edit="#rc.edit#" title="#(rc.collection.isReport() || (!structKeyExists(rc, 'sRedirectURL') && !structKeyExists(rc,'modal')) ? #rc.$.slatwall.rbKey('entity.Collection.process.duplicateReportCode')# : #$.slatwall.rbkey('entity.collection.collectionCode')#)#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="collectionName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="collectionCode" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

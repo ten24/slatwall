@@ -68,7 +68,9 @@ component displayname="Promotion Message Applied" entityname="SlatwallPromotionM
 	property name="promotionQualifier" persistent="false";
 	property name="promotionRewards" persistent="false";
 	property name="promotionName" persistent="false";
-		
+		//CUSTOM PROPERTIES BEGIN
+property name="qualifierProgress" ormtype="integer";
+    //CUSTOM PROPERTIES END
 	public any function getPromotionQualifier(){
 	    if(!structKeyExists(variables,'promotionQualifier')){
     	    variables.promotionQualifier = getPromotionQualifierMessage().getPromotionQualifier();

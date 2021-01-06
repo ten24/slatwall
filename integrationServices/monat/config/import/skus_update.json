@@ -1,0 +1,31 @@
+{
+    "baseentity":"Sku",
+    "mapping":[
+        {
+          "sourceColumn":"SKUItemCode",
+          "propertyIdentifier":"skuCode",
+          "key":true
+        },
+        {
+          "sourceColumn":"ItemName",
+          "propertyIdentifier":"skuName"
+        },
+        {
+          "sourceColumn":"SKUItemID",
+          "propertyIdentifier":"remoteID",
+        },
+        {
+          "sourceColumn":"SalesCategoryCode",
+          "propertyIdentifier":"salesCategoryCode"
+        },
+        {
+          "sourceColumn":"DangerousGoodsFlag",
+          "propertyIdentifier":"dangerousGoodsFlag",
+        },
+        {
+          "sourcecolumn":"modifiedDateTime",
+          "sourceColumnDataGenerator":"NOW()",
+          "propertyidentifier":"modifiedDateTime",
+        }
+    ]
+}

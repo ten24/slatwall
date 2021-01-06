@@ -96,7 +96,9 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 
 	property name="avsDescription" persistent="false";
 
-
+	//CUSTOM PROPERTIES BEGIN
+property name="referenceNumber" ormtype="string";
+    //CUSTOM PROPERTIES END
 	public any function init() {
 		setAmountAuthorized(0);
 		setAmountCharged(0);

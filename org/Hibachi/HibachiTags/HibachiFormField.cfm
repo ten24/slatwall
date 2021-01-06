@@ -295,7 +295,6 @@
 					lastEntityName = attributes.object.getClassName();
 					propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
 				}
-
 				relatedEntity = listLast(attributes.property,'.');
 				propertyMetaData = propsStruct[relatedEntity];
 				if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){

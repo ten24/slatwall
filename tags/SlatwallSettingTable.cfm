@@ -226,7 +226,11 @@ Notes:
 									</cfif>
 								</td>
 							</cfif>
+							
 							<td class="admin admin1">
+								
+								
+								
 								<cfset objectHasDefinedSetting = false />
 								<cfif (thisSetting.settingDetails.settingValueResolvedLevel eq "object" and tabData.isGlobalFlag) or thisSetting.settingDetails.settingValueResolvedLevel eq "object.site">
 									<cfset objectHasDefinedSetting = true />

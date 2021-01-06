@@ -66,7 +66,8 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-	
+	property name="expirationDate" hb_populateEnabled="true" ormtype="timestamp";
+
 	
 	property name="governmentIdentificationNumber" persistent="false";
 	
@@ -76,7 +77,10 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Account (many-to-one)    	
+	// Account (many-to-one)    	//CUSTOM PROPERTIES BEGIN
+property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="Using this for unique gov-ID validation";
+
+//CUSTOM PROPERTIES END
 	public void function setAccount(required any account) {    
 		variables.account = arguments.account;    
 		if(isNew() || !arguments.account.hasAccountGovernmentIdentifications( this )) {    
@@ -143,5 +147,31 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
+
+public boolean function validateGovernmentIdentificationNumber() {
+		var governmentID = this.getGovernmentIdentificationNumber();
+		var siteCreatedCountry = this.getAccount().getAccountCreatedSite().getRemoteID();
+		
+		if ( 'USA' == siteCreatedCountry ) {
+			return ( 9 == len( governmentID ) );
+		} else if ( 'CAN' == siteCreatedCountry ) {
+			return ( 9 == len( governmentID ) || 10 == len( governmentID ) );
+		}
+		
+		return true;
+	}
+	
+	public boolean function validateGovernmentIdIsUniquePerCountry() {
+		if(!isNull(getGovernmentIdentificationNumberHashed())){
+			return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
+					this.getGovernmentIdentificationNumberHashed(),
+					this.getAccount().getAccountCreatedSite().getSiteID(),
+					this.getAccount().getAccountID()
+			);
+		}
+		return true;
+	}
+	
+//CUSTOM FUNCTIONS END
 }

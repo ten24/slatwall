@@ -144,7 +144,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="maximumPaymentMethodPaymentAmount" persistent="false";
 	property name="orderHasAnotherDynamicOrderPaymentFlag" persistent="false";
  
-		
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="paymentNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public string function getMostRecentChargeProviderTransactionID() {
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived()) && getPaymentTransactions()[i].getAmountReceived() > 0 && !isNull(getPaymentTransactions()[i].getProviderTransactionID()) && len(getPaymentTransactions()[i].getProviderTransactionID())) {
@@ -877,6 +879,15 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		super.populate(argumentCollection=arguments);
 
 		setupEncryptedProperties();
+	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
 	}
 
 	// ==================  END:  Overridden Methods ========================

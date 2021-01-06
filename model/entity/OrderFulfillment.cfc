@@ -154,7 +154,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================== START: Logical Methods =========================
-		
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="carrierCode" ormtype="string";
+ property name="shipmentTypeCode" ormtype="string";
+ property name="shippingMethodCode" ormtype="string";
+ property name="warehouseCode" ormtype="string";
+ property name="freightTypeCode" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getVerifiedShippingAddressFlag(){
 		if( !isNull(this.getShippingAddress()) ){
 			return this.getShippingAddress().getVerifiedByIntegrationFlag();
@@ -403,11 +409,19 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getChargeAfterDiscount() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() + getChargeTaxAmount() - getDiscountAmount());
+		var chargeAfterDiscount = getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() + getChargeTaxAmount() - getDiscountAmount());
+		if(chargeAfterDiscount < 0){
+			chargeAfterDiscount = 0;
+		}
+		return chargeAfterDiscount;
 	}
 	
 	public numeric function getChargeAfterDiscountPreTax() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() - getDiscountAmount());
+		var chargeAfterDiscount = getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() - getDiscountAmount());
+		if(chargeAfterDiscount < 0){
+			chargeAfterDiscount = 0;
+		}
+		return chargeAfterDiscount;
 	}
 
 	public numeric function getDiscountAmount() {
@@ -935,6 +949,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		return variables.orderFulfillmentStatusType;
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
+
 
 	// ==================  END:  Overridden Methods ========================
 

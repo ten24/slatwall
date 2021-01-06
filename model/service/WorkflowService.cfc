@@ -57,7 +57,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
-	
 			//only flush on after
 			if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
 				getHibachiScope().flushORMSession();
@@ -154,10 +153,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowOnAllServers() {
+		getDao('HibachiCacheDAO').deleteStaleServerInstance();
+		if(getHibachiScope().getApplicationValue('applicationCluster') == ''){
+			return;
+		}
 		// get all active instances in the current cluster
 		var serverInstanceCollectionList = getService('HibachiService').getServerInstanceCollectionList();
 		serverInstanceCollectionList.addFilter('serverInstanceClusterName',getHibachiScope().getApplicationValue('applicationCluster'));
-		
+
 		var serverInstances = serverInstanceCollectionList.getRecords();
 		for (var serverInstance in serverInstances) {
 			
@@ -179,8 +182,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		// update timestamp on server instance
 		getDao('hibachiCacheDAO').updateServerInstanceLastRequestDateTime();
 		
-		getWorkflowDAO().resetExpiredWorkflows(); 
-		
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		var exclusiveInvocationClusters = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationClusters();
 		for(var workflowTrigger in workflowTriggers) {
@@ -192,6 +193,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			if( findNoCase(getHibachiScope().getApplicationValue('applicationCluster'), exclusiveInvocationClusters) && (isNull(workflowTrigger.getAllowedInvocationCluster()) || !findNoCase(workflowTrigger.getAllowedInvocationCluster(), exclusiveInvocationClusters)) ) {
 				continue;
 			}
+			
+			if(workflowTrigger.getLockLevel() == 'database' && !isNull(workflowTrigger.getRunningFlag()) && workflowTrigger.getRunningFlag()){
+				//timed out
+				if( DateAdd("n",val(workflowTrigger.getTimeout()),workflowTrigger.getNextRunDateTime()) < now() ){
+					getWorkflowDAO().resetExpiredWorkflow(workflowTrigger.getWorkflowTriggerID());
+				}else{
+				// not timed out yet, skip
+					continue;
+				}
+			}
+			
 			runWorkflowsByScheduleTrigger(workflowTrigger);
 		}
 	}
@@ -207,6 +219,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger, boolean skipTriggerRunningCheck = false) {
 		this.logHibachi('Start executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+		var triggerExecutionStartTime = getTickCount();
+		
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -390,8 +404,27 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
-		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()# - #getFormatedExecutionTime(triggerExecutionStartTime, getTickCount())#', true);
 		return workflowTrigger;
+	}
+	
+	private string function getFormatedExecutionTime(required numeric start, required numeric end){
+		var millis = numberFormat( end - start );
+		var formatedValue = 'Duration: ' & millis & ' ms';
+		
+		//tags to simplify search
+		if(millis > 300000){
+			formatedValue &= ' [over5minutes]';
+		}else if(millis > 180000){
+			formatedValue &= ' [over3minutes]';
+		}else if(millis > 120000){
+			formatedValue &= ' [over2minutes]';
+		}else if(millis > 60000){
+			formatedValue &= ' [over1minute]';
+		}else if(millis > 30000){
+			formatedValue &= ' [over30seconds]';
+		}
+		return formatedValue;
 	}
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
@@ -837,7 +870,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	}	
 	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
-
 		getHibachiDAO().flushORMSession();
 		
 		/*

@@ -56,10 +56,10 @@ component extends="framework.aop" {
    }
    
    public any function reloadBean( string beanName) {
-     var info = variables.beanInfo[ arguments.beanName ];
+     var info = variables.beanInfo[ beanName ];
      if ( info.isSingleton ) {
          // cache on the qualified bean name:
-         var qualifiedName = arguments.beanName;
+         var qualifiedName = beanName;
          if ( structKeyExists( info, 'name' ) && structKeyExists( info, 'qualifier' ) ) {
              qualifiedName = info.name & info.qualifier;
          }

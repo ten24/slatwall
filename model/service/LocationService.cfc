@@ -177,6 +177,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// ====================== START: Delete Overrides =========================
 	
 	public boolean function deleteLocation(required any location) {
+		
 		//Remove this location from all order defaultstocklocation assignments
 		var orderSmartList=getService("OrderService").getOrderSmartlist();
 		orderSmartList.addFilter('defaultstocklocation.locationID',arguments.location.getLocationID());
@@ -185,21 +186,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				defaultStockLocationOrders[i].setDefaultStockLocation(javaCast('null',''));
 		}
 		
-		arguments.location.setLocationAddresses(javaCast("null", ""));
-		var data = getDAO("LocationDAO").removeAssociatedLocationRecords(arguments.location.getLocationID());
-		
 		return super.delete(arguments.location);
-	}
-	
-	public boolean function deleteLocationAddress(required any locationAddress) {
-        // Check delete validation for batch
-        //writeDump(locationAddress);abort;
-		if(arguments.locationAddress.isDeletable()) {
-		  var data = getDAO("LocationDAO").removeAddressLocation(arguments.locationAddress.getLocationAddressID());
-		}
-
-		return delete( arguments.locationAddress );
-
 	}
 	
 	// ======================  END: Delete Overrides ==========================

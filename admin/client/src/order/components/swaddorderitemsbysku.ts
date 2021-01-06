@@ -27,6 +27,8 @@ class SWAddOrderItemsBySkuController{
     public skuPropertiesToDisplay:string;
     
     public skuPropertiesToDisplayWithConfig: string;
+    
+    public canEditPrice:boolean;
 	
 	constructor(public $hibachi,
 	            public collectionConfigService, 
@@ -62,7 +64,7 @@ class SWAddOrderItemsBySkuController{
             	'propertyIdentifier':'priceByCurrencyCode',
             	'type':'currency',
             	'isCollectionColumn':true,
-            	'isEditable':true,
+            	'isEditable':this.canEditPrice,
             	'isVisible':true
 	        }
 	    );
@@ -241,6 +243,7 @@ class SWAddOrderItemsBySku implements ng.IDirective {
         skuPropertiesToDisplay: '@?',
         skuPropertiesToDisplayWithConfig: '@?',
         edit:"=?",
+        canEditPrice:"=?",
         exchangeOrderFlag:"=?"
 	};
 	public controller=SWAddOrderItemsBySkuController;

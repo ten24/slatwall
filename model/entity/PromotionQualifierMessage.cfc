@@ -12,6 +12,11 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
     property name="messageRequirementsCollection" persistent="false";
     
     
+  	//CUSTOM PROPERTIES BEGIN
+property name="qualifierProgressTemplate" ormtype="string";
+    property name="qualifierProgress" type="integer" persistent="false";
+
+   //CUSTOM PROPERTIES END
 	public any function getMessageRequirementsCollection(){
 		if(isNull(variables.messageRequirementsCollection)){
 			var collectionConfig = getMessageRequirementsCollectionConfig();

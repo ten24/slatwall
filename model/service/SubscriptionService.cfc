@@ -185,7 +185,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
-
 	public any function getSubscriptionOrderItemByOrderItem(required any orderItem){
 		return getSubscriptionDAO().getSubscriptionOrderItemByOrderItemID(arguments.orderItem.getOrderItemID());
 	}

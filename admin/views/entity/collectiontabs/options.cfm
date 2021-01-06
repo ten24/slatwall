@@ -9,8 +9,6 @@
 	recordEditAction="admin:entity.edit#lcase(rc.collection.getCollectionObject())#"
 	recordDetailAction="admin:entity.detail#lcase(rc.collection.getCollectionObject())#"
 	collectionConfigFieldName="collectionConfig"
-	showToggleDisplayOptions="#rc.edit#"
-	showFilters="#rc.edit#"
 >
 </hb:HibachiListingDisplay>
 

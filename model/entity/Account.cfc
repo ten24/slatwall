@@ -154,6 +154,53 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
     property name="preferredLocale" persistent="false";
 	property name="countryCode" persistent="false"; 
 	
+	 	//CUSTOM PROPERTIES BEGIN
+property name="accountType" ormtype="string" hb_formFieldType="select";
+	property name="enrollmentDate" ormtype="timestamp";
+	property name="vipUpgradeDateTime" ormtype="timestamp";
+	property name="mpUpgradeDateTime" ormtype="timestamp";
+	property name="allowCorporateEmailsFlag" ormtype="boolean" default="0";
+	property name="upgradeSyncFlag" ormtype="boolean" default="0";
+	
+	property name="sponsorIDNumber" ormtype="string";
+	property name="lastSyncedDateTime" ormtype="timestamp";
+	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
+	property name="languagePreference" ormtype="string" hb_formFieldType="select";
+	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="calculatedPhoneNumber" ormtype="string";
+	property name="calculatedEmailAddress" ormtype="string";
+	
+	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
+	property name="saveablePaymentMethodsCollectionList" persistent="false";
+	property name="canCreateFlexshipFlag" persistent="false";
+	property name="genderFullWord" persistent = "false";
+	property name="spouseFirstName" persistent = "false";
+	property name="spouseLastName" persistent = "false";
+	property name="governmentIdentificationLastFour" persistent = "false";
+	
+	property name="uplineMPAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="uplineMPAccountID";
+
+
+ property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
+ property name="subscriptionType" ormtype="string" hb_formFieldType="select";
+ property name="renewalDate" ormtype="timestamp" hb_formatType="date";
+ property name="spouseName" ormtype="string";
+ property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
+ property name="birthDate" ormtype="timestamp" hb_formatType="date";
+ property name="accountType" ormtype="string" hb_formFieldType="select";
+ property name="accountStatus" ormtype="string" hb_formFieldType="select";
+ property name="complianceStatus" ormtype="string" hb_formFieldType="select";
+ property name="businessAccountFlag" ormtype="boolean" hb_formatType="yesno" default="false";
+ property name="profileImageTest" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
+ property name="gender" ormtype="string" hb_formFieldType="select";
+ property name="accountNumber" ormtype="string";
+ property name="careerTitle" ormtype="string" hb_formFieldType="select";
+ property name="referType" ormtype="string" hb_formFieldType="select";
+ property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
+ property name="terminationDate" ormtype="timestamp" hb_formatType="date";
+ property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
+ property name="languagePreference" ormtype="string" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -1202,5 +1249,234 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
 	}
+	//CUSTOM FUNCTIONS BEGIN
 
+public boolean function getUpgradeSyncFlag(){
+		//default to false if not set.
+		if(!structKeyExists(variables, 'upgradeSyncFlag')){
+			variables.upgradeSyncFlag =  false;
+		}
+		
+		return variables.upgradeSyncFlag;
+	}
+	
+	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
+		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
+			var orderCollection = getService('OrderService').getOrderCollectionList(); 
+			orderCollection.addFilter('account.accountID', getAccountID());
+			orderCollection.addFilter('orderTemplate.orderTemplateID','NULL','is not');
+			//not cancelled, using ID because it's a faster query than systemCode
+			orderCollection.addFilter('orderStatusType.typeID','444df2b90f62f72711eb5b3c90848e7e','!=');
+			orderCollection.addFilter('orderOpenDateTime','1/1/' & year(now()),'>='); 
+			orderCollection.addFilter('orderOpenDateTime','12/31/' & year(now()),'<=');
+			variables.successfulFlexshipOrdersThisYearCount = orderCollection.getRecordsCount();  
+		} 
+		return variables.successfulFlexshipOrdersThisYearCount; 
+	}
+
+	public any function getSaveablePaymentMethodsCollectionList() {
+		if(!structKeyExists(variables, 'saveablePaymentMethodsCollectionList')) {
+			variables.saveablePaymentMethodsCollectionList = getService('paymentService').getPaymentMethodCollectionList();
+			variables.saveablePaymentMethodsCollectionList.addFilter('activeFlag', 1);
+			variables.saveablePaymentMethodsCollectionList.addFilter('allowSaveFlag', 1);
+			variables.saveablePaymentMethodsCollectionList.addFilter('paymentMethodType', 'creditCard,giftCard,external,termPayment', 'in');
+			if(len(setting('accountEligiblePaymentMethods'))) {
+				variables.saveablePaymentMethodsCollectionList.addFilter('paymentMethodID', setting('accountEligiblePaymentMethods'), 'in');
+			}
+		}
+		return variables.saveablePaymentMethodsCollectionList;
+	}
+	
+	public any function getAccountNumber(){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getSystemCode() == 'astGoodStanding'){
+			if(!isNull(this.getAccountID())){
+				var maxAccountNumberQuery = new query();
+				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';
+				
+				maxAccountNumberQuery.setSQL(maxAccountNumberSQL);
+				maxAccountNumberQuery.addParam(name="accountID",value=this.getAccountID());
+				maxAccountNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
+				var insertedID = maxAccountNumberQuery.execute().getPrefix().generatedKey;
+				
+				setAccountNumber(insertedID);	
+			}
+		}
+		if(!isNull(variables.accountNumber)){
+			return variables.accountNumber;
+		}
+	}
+	
+	public string function getLanguagePreferenceLabel(){
+		if(!StructKeyExists(variables, "languagePreferenceLabel")) {
+			
+			var attributeOption = this.getDAO('AttributeDAO').getAttributeOptionByAttributeOptionValueAndAttributeID(
+								    attributeOptionValue = this.getLanguagePreference() ?: 'en', 
+								    attributeID = this.getService('AttributeService').getAttributeByAttributeCode('languagePreference').getAttributeID()
+								);
+								
+			variables.languagePreferenceLabel = attributeOption.getAttributeOptionLabel();
+		}
+		
+		return variables.languagePreferenceLabel;
+	}
+	
+	public boolean function getCanCreateFlexshipFlag() {
+		
+		// If the user is not logged in, or retail, return false.
+		var priceGroups = this.getPriceGroups();
+		if ( ! len( priceGroups ) ) {
+			return false;
+			
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) { 
+			//Retail price-group
+			return false;
+		}
+		
+		if ( isNull( this.getAccountCreatedSite() ) ) {
+			return false;
+		}
+		
+		if( this.getAccountType() == 'marketPartner' ){
+		
+			var daysAfterEnrollment = this.getAccountCreatedSite().setting(
+							'integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate'
+						);
+						
+			var enrollmentDate = this.getEnrollmentDate();
+			
+			if ( !isNull( enrollmentDate ) ) {
+				// Add the days after enrollment a user can create flexship to the enrollment date.
+				var dateAfterCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+				
+				// If today is a greater date than the date they can create a flexship.
+				return ( dateCompare( dateAfterCanCreateFlexship, now() ) == -1 ); // -1, if date1 is earlier than date2
+			}	
+		}
+		
+		return true;
+	}
+
+	//custom validation methods
+		
+	public boolean function restrictRenewalDateToOneYearOut() {
+		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
+			return getService('accountService').restrictRenewalDateToOneYearOut(this.getRenewalDate());
+		}
+		return true;
+	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	public boolean function onlyOnePriceGroup(){
+		return arrayLen(this.getPriceGroups()) <= 1;
+	}
+	
+	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
+		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
+	}
+	
+	public string function getGenderFullWord(){
+	    var genderFullWord = "";
+	    var gender = LCase(this.getGender());
+		switch (gender) {
+			case "f": 
+			         genderFullWord = getHibachiScope().getRbKey('define.female'); 
+			         break;
+			case "m": 
+			         genderFullWord =  getHibachiScope().getRbKey('define.male'); 
+			         break;
+			case "p":
+			case "prefernottoSay": 
+			         genderFullWord = getHibachiScope().getRbKey('define.prefernottoSay'); 
+			         break;
+		}
+		return genderFullWord;
+	}
+	
+	public string function getSpouseFirstName(){
+	    if(!IsNull(this.getSpouseName())){
+	       return ListFirst(this.getSpouseName(),", ");
+	    }
+	}
+	
+	public string function getSpouseLastName(){
+	    if(!IsNull(this.getSpouseName())){
+	       return ListRest(this.getSpouseName(),", ");
+	    }
+	}
+	public string function getGovernmentIdentificationLastFour(){
+	    if(!IsNull(this.getAccountGovernmentIdentifications()) && ArrayLen(this.getAccountGovernmentIdentifications()) >0){
+	        
+	       return this.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationLastFour();
+	    }
+	}
+	
+	public numeric function getVIPEnrollmentAmountPaid(){
+		if(!structKeyExists(variables,'vipEnrollmentAmountPaid')){
+			var enrollmentAmountPaid = 0;
+			var vipSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
+			
+			var enrollmentOrderItemCollection = getService('OrderService').getOrderItemCollectionList();
+			enrollmentOrderItemCollection.setDisplayProperties('calculatedExtendedPriceAfterDiscount');
+			enrollmentOrderItemCollection.addFilter('order.account.accountID',getAccountID());
+			enrollmentOrderItemCollection.addFilter('sku.skuID',vipSkuID);
+			enrollmentOrderItemCollection.addFilter('order.orderStatusType.systemCode','ostProcessing,ostClosed','IN');
+			
+			var enrollmentOrderItems = enrollmentOrderItemCollection.getRecords();
+			if(arrayLen(enrollmentOrderItems)){
+				var enrollmentOrderItem = enrollmentOrderItems[1];
+				enrollmentAmountPaid += enrollmentOrderItem.calculatedExtendedPriceAfterDiscount;
+			}
+			variables.vipEnrollmentAmountPaid = enrollmentAmountPaid;
+		}
+		return variables.vipEnrollmentAmountPaid;
+	}
+	
+	public boolean function canSponsor(){
+		if(structKeyExists(variables, 'canSponsorFlag')){
+			return variables.canSponsorFlag;
+		}
+		
+		if(
+			(getAccountType() == 'marketPartner' || getAccountType() == 'VIP')
+			&&
+			structKeyExists(variables,'accountNumber') 
+			&&
+			len(variables.accountNumber)
+			&& 
+			!isNull(this.getAccountStatusType()) 
+			&& 
+			this.getAccountStatusType().getSystemCode() == 'astGoodStanding'
+		){
+			variables.canSponsorFlag = true;
+			return true;
+		}
+		
+		
+		return false;
+	
+	}
+	
+	public void function setAllowCorporateEmailsFlag( required boolean allowCorporateEmailsFlag ){
+		
+		getService('mailchimpService').queueSubscriptionUpdate( this, arguments.allowCorporateEmailsFlag );
+		variables.allowCorporateEmailsFlag = arguments.allowCorporateEmailsFlag;
+		
+	}
+	
+	public boolean function canViewProductPacks(){
+		if(isNull(this.getAccountCreatedSite())){
+			return true;
+		}
+		
+		var maxDaysAfterAccountCreate = this.getAccountCreatedSite().setting("siteMaxDaysAfterAccountCreate");
+		
+		return  ( isNull(this.getProductPackPurchasedFlag()) || !this.getProductPackPurchasedFlag() )
+				&& !isNull(maxDaysAfterAccountCreate) 
+				&& !isNull(this.getEnrollmentDate()) 
+				&& dateDiff("d", this.getEnrollmentDate(), now()) < maxDaysAfterAccountCreate;
+	}//CUSTOM FUNCTIONS END
 }

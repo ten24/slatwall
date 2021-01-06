@@ -92,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <div style="margin-left:5px; margin-top:10px" data-ng-if="swListingDisplay.showPagination == 'top' || swListingDisplay.showPagination == 'both'">
+            <div style="margin-left:5px; margin-top:10px" data-ng-if="!swListingDisplay.hideAllResults && (swListingDisplay.showPagination == 'top' || swListingDisplay.showPagination == 'both')">
                 <sw-pagination-bar
                         data-ng-if="swListingDisplay.paginator &&
                                     swListingDisplay.collectionData.recordsCount &&
@@ -100,7 +100,7 @@
                         data-paginator="swListingDisplay.paginator">
                 </sw-pagination-bar>
             </div>
-            <div class="table-responsive">
+            <div ng-if="!swListingDisplay.hideAllResults" class="table-responsive">
                 
                 <table class="table table-bordered s-detail-content-table">
                     <thead>

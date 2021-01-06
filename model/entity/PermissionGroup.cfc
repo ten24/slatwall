@@ -53,7 +53,6 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	property name="permissionGroupName" ormtype="string";
 	//used to check if we need to generate a new permision group json file
 	property name="calculatedJsonCheckSum" ormtype="string";
-	property name="permissionGroupCode" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	
@@ -93,7 +92,6 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 		
 		return "";
 	}
-
 	
 	public string function getPermissionsByDetailsCacheKey(){
 		if(structKeyExists(variables,'permissionGroupID') && len(variables.permissionGroupID)){

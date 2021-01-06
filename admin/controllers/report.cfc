@@ -46,11 +46,9 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiControllerEntity" {
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
 
 	property name="hibachiReportService" type="any";
-	property name="orderService" type="any";
-	property name="accountService" type="any";
 
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods,'default');
@@ -60,12 +58,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function default(required struct rc) {
 		param name="arguments.rc.reportID" default="";
 		
-		arguments.rc.orderCollectionList = getOrderService().getOrderCollectionList();
-		arguments.rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
-		arguments.rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
-		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
-		arguments.rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
-
 		if(!arguments.rc.ajaxRequest) {
 			var savedReportsSmartList = getHibachiReportService().getReportSmartList();
 			savedReportsSmartList.addOrder('reportTitle');
@@ -115,7 +107,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(arguments.rc.ajaxRequest && structKeyExists(arguments.rc, "reportName")) {
 			
 			arguments.rc.ajaxResponse["report"] = {};		
-
+			
 			if(arguments.rc.report.getReportType() NEQ "none"){
 				arguments.rc.ajaxResponse["report"]["chartData"] = arguments.rc.report.getChartData();
 			} else { 
@@ -123,81 +115,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			
 			arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
-			arguments.rc.ajaxResponse["report"]["reportDateTimeGroupBy"] = arguments.rc.report.getReportDateTimeGroupBy();
+			
+			if(arguments.rc.report.getShowReport()){ 
+				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
+			} else { 
+				arguments.rc.ajaxResponse["report"]["hideReport"] = true; 	
+			}
 			
 		} else {
 			arguments.rc.pageTitle = arguments.rc.report.getReportTitle();
-		}
-		
-		arguments.rc.ajaxResponse["report"]["period"] = "Today";
-		var currentPeriodMinDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),0,0,0);
-		var currentPeriodMaxDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),23,59,59);
-
-		if(arguments.rc.report.getReportDateTimeGroupBy() == "hour") {
-			currentPeriodMinDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),Hour(now()),0,0);
-			currentPeriodMaxDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),Hour(now()),59,59);
-			arguments.rc.ajaxResponse["report"]["period"] = "This Hour";
-		}
-		
-		if(arguments.rc.report.getReportDateTimeGroupBy() == "day") {
-			currentPeriodMinDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),0,0,0);
-			currentPeriodMaxDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),23,59,59);
-			arguments.rc.ajaxResponse["report"]["period"] = "Today";
-		}
-		
-		if(arguments.rc.report.getReportDateTimeGroupBy() == "week") {
-			currentPeriodMinDateTime = CreateDateTime(Year(now()),Month(now()),Day(DateAdd('d', -7, now())),0,0,0);
-			currentPeriodMaxDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),23,59,59);
-			arguments.rc.ajaxResponse["report"]["period"] = "This Week";
-		}
-		
-		if(arguments.rc.report.getReportDateTimeGroupBy() == "month") {
-			// first day of the month to the current day
-			currentPeriodMinDateTime = CreateDateTime(Year(now()),Month(now()),1,0,0,0);
-			currentPeriodMaxDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),23,59,59);
-			arguments.rc.ajaxResponse["report"]["period"] = "This Month";
-		}
-		
-		if(arguments.rc.report.getReportDateTimeGroupBy() == "year") {
-			// first day of the year to the current day
-			currentPeriodMinDateTime = CreateDateTime(Year(now()),1,1,0,0,0);
-			currentPeriodMaxDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),23,59,59);
-			arguments.rc.ajaxResponse["report"]["period"] = "This Year";
-		}
-		
-		var salesRevenueThisPeriodCollectionList = getOrderService().getOrderCollectionList();
-		salesRevenueThisPeriodCollectionList.setDisplayProperties("");
-		salesRevenueThisPeriodCollectionList.addDisplayAggregate('calculatedTotal','SUM','totalSalesRevenue');
-		salesRevenueThisPeriodCollectionList.addDisplayAggregate('orderID','COUNT','orderCount');
-		salesRevenueThisPeriodCollectionList.addDisplayAggregate('calculatedTotal','AVG','averageOrderTotal');
-
-		if(arguments.rc.report.getReportSite() != "ALL") {
-			salesRevenueThisPeriodCollectionList.addFilter('orderCreatedSite.siteID', 'NULL','IS');
-		} else {
-			salesRevenueThisPeriodCollectionList.addFilter('orderCreatedSite.siteID', arguments.rc.report.getReportSite(),'=');
-		}
-		salesRevenueThisPeriodCollectionList.addFilter('createdDateTime', currentPeriodMinDateTime, '>=');
-		salesRevenueThisPeriodCollectionList.addFilter('createdDateTime', currentPeriodMaxDateTime, '<=');
-		salesRevenueThisPeriodCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
-		if(salesRevenueThisPeriodCollectionList.getRecords()[1]['totalSalesRevenue'] EQ " ") {
-			arguments.rc.ajaxResponse["report"]["salesRevenueThisPeriod"] = "$0";
-			arguments.rc.ajaxResponse["report"]["orderCount"] = 0;
-			arguments.rc.ajaxResponse["report"]["averageOrderTotal"] = "$0";
-		} else {
-			arguments.rc.ajaxResponse["report"]["salesRevenueThisPeriod"] = formatValue(salesRevenueThisPeriodCollectionList.getRecords()[1]['totalSalesRevenue'], 'currency');
-			arguments.rc.ajaxResponse["report"]["orderCount"] = salesRevenueThisPeriodCollectionList.getRecords()[1]['orderCount'];
-			arguments.rc.ajaxResponse["report"]["averageOrderTotal"] = formatValue(salesRevenueThisPeriodCollectionList.getRecords()[1]['averageOrderTotal'], 'currency');
-		}
-		
-		var accountsThisPeriodCollectionList = getAccountService().getAccountCollectionList();
-		accountsThisPeriodCollectionList.setDisplayProperties("");
-		accountsThisPeriodCollectionList.addDisplayAggregate('accountID','COUNT','accountCount');
-		accountsThisPeriodCollectionList.addFilter('createdDateTime', currentPeriodMinDateTime, '>=');
-		accountsThisPeriodCollectionList.addFilter('createdDateTime', currentPeriodMaxDateTime, '<=');
-		if(accountsThisPeriodCollectionList.getRecords()[1]['accountCount'] EQ " ") {
-			arguments.rc.ajaxResponse["report"]["accountCount"] = 0;
-		} else {
-			arguments.rc.ajaxResponse["report"]["accountCount"] = accountsThisPeriodCollectionList.getRecords()[1]['accountCount'];
 		}
 	}
 	
@@ -230,5 +156,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
 	}
-
+	
+	
 }

@@ -134,7 +134,6 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
 		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
 		
-
 		// Run Scripts
 		if( !getHibachiScope().getApplicationValue('skipDbData')){
 			getBeanFactory().getBean("updateService").runScripts();

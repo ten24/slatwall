@@ -67,7 +67,6 @@ Notes:
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/brand" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/category" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/content" />
-		<hb:hibachiEntityDetailItem view="admin:entity/settingstabs/collectionSetting">
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/email" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/fulfillmentmethod" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/image" />

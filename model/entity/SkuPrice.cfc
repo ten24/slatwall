@@ -82,7 +82,18 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
  	
 
 	
+	//CUSTOM PROPERTIES BEGIN
+property name="personalVolume" ormtype="big_decimal";
+    property name="taxableAmount" ormtype="big_decimal";
+    property name="commissionableVolume" ormtype="big_decimal";
+    property name="retailCommission" ormtype="big_decimal";
+    property name="productPackVolume" ormtype="big_decimal";
+    property name="retailValueVolume" ormtype="big_decimal";
+	property name="skuProductURL" persistent="false";
+	property name="skuImagePath" persistent="false";
+	property name="skuAdjustedPricing" persistent="false";
 	
+//CUSTOM PROPERTIES END
 	public boolean function hasValidQuantityConfiguration(){
  		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity()))){ 
 			if(isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity())){ 
@@ -151,5 +162,16 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 		super.preUpdate(arguments.oldData);
 	}
     
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
+
+public any function getSkuProductURL(){
+		var skuProductURL = getSku().getProduct().getProductURL();
+		return skuProductURL;
+	}
+	
+	public any function getSkuImagePath(){
+		var skuImagePath = getSku().getImagePath();
+		return skuImagePath;
+	}
+//CUSTOM FUNCTIONS END
 }

@@ -1,6 +1,7 @@
 <cfcomponent output="false" accessors="true" extends="HibachiService">
 
 	<cfproperty name="hibachiTagService" type="any" />
+	<cfproperty name="encryptionPasswordArray" type="any" />
 
 	<cfscript>
 	
@@ -446,9 +447,13 @@
 			return encoder.decodeForHTML(arguments.stringValue);
 		}
 
-		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
+		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, string availablePropertyIdentifierList) {
 			var responseData = {};
-
+			
+			if(!structKeyExists(arguments,'availablePropertyIdentifierList')){
+				arguments.availablePropertyIdentifierList = arguments.propertyIdentifierList;
+			}
+			
 			var propertyIdentifierArray = listToArray(arguments.propertyIdentifierList);
 			for(var i=1; i <= arraylen(propertyIdentifierArray);i++) {
 				var propertyIdentifier = propertyIdentifierArray[i];
@@ -497,7 +502,7 @@
 					if(!structKeyExists(arguments.data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
-							if(structKeyExists(data[thisProperty][i],'hasErrors')){
+							if(structKeyExists(arguments.data[thisProperty][i],'hasErrors')){
 								arguments.data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
 								arguments.data[thisProperty][i]["errors"] = object[i].getErrors();
 							}else{
@@ -511,7 +516,7 @@
 						}
 					}
 
-					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
+					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), arguments.data[thisProperty][i]);
 				}
 			}
 		}
@@ -655,7 +660,7 @@
 				} else if (isObject(arguments.object) &&
 					(
 						(
-							arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+							arguments.object.isPersistent() && getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
 						)
 						||
 						(
@@ -901,7 +906,8 @@
 		}
 
 		public string function decryptValue(required string value, string salt="") {
-			for (var passwordData in getEncryptionPasswordArray()) {
+			var encryptionPasswordArray = getEncryptionPasswordArray();
+			for (var passwordData in encryptionPasswordArray) {
 				var key = "";
 				var algorithm = getEncryptionAlgorithm();
 				var encoding = getEncryptionEncoding();
@@ -984,6 +990,10 @@
 		}
 
 		public any function getEncryptionPasswordArray() {
+		
+			if(structKeyExists(variables, 'encryptionPasswordArray')){
+				return variables.encryptionPasswordArray;
+			}
 			var passwords = [];
 
 			// Generate default password if necessary
@@ -1038,7 +1048,7 @@
 				}
 
 				// Perform sort on createdDateTime
-				sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
+				var sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
 
 				// Build array of sorted passwords
 				for (var spk in sortedPasswordKeys) {
@@ -1054,6 +1064,8 @@
 
 				passwords = sortedPasswords;
 			}
+			
+			variables.encryptionPasswordArray = passwords;
 
 			return passwords;
 		}
@@ -1130,12 +1142,15 @@
 		}
 
 		private void function writeEncryptionPasswordFile(array encryptionPasswordArray) {
+		
+			
 			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
 			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
 
 			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
 			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
 			logHibachi("Encryption key file updated", true);
+			structDelete(variables, 'encryptionPasswordArray');
 		}
 
 		private any function readEncryptionPasswordFile() {

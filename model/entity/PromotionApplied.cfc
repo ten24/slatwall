@@ -78,7 +78,16 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Promotion (many-to-one)	
+	// Promotion (many-to-one)	//CUSTOM PROPERTIES BEGIN
+property name="personalVolumeDiscountAmount" ormtype="big_decimal";
+    property name="taxableAmountDiscountAmount" ormtype="big_decimal";
+    property name="commissionableVolumeDiscountAmount" ormtype="big_decimal";
+    property name="retailCommissionDiscountAmount" ormtype="big_decimal";
+    property name="productPackVolumeDiscountAmount" ormtype="big_decimal";
+    property name="retailValueVolumeDiscountAmount" ormtype="big_decimal";
+    property name="enrollmentFeeRefundFlag" ormtype="boolean" default="0";
+    
+   //CUSTOM PROPERTIES END
 	public void function setPromotion(required any promotion) {
 		variables.promotion = arguments.promotion;
 		if(isNew() or !arguments.promotion.hasAppliedPromotion( this )) {
