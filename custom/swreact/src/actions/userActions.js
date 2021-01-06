@@ -8,14 +8,14 @@ export const REQUEST_CREATE_USER = 'REQUEST_CREATE_USER'
 export const RECEIVE_CREATE_USER = 'RECEIVE_CREATE_USER'
 export const ERROR_CREATE_USER = 'ERROR_CREATE_USER'
 
-export const requestUser = (loginToken) => {
+export const requestUser = loginToken => {
   return {
     type: REQUEST_USER,
     loginToken,
   }
 }
 
-export const receiveUser = (user) => {
+export const receiveUser = user => {
   return {
     type: RECEIVE_USER,
     user,
@@ -34,14 +34,14 @@ export const requestCreateUser = () => {
   }
 }
 
-export const receiveCreateUser = (user) => {
+export const receiveCreateUser = user => {
   return {
     type: RECEIVE_CREATE_USER,
     user,
   }
 }
 
-const errorCreateUser = (err) => {
+const errorCreateUser = err => {
   return {
     type: ERROR_CREATE_USER,
     err,
@@ -49,7 +49,8 @@ const errorCreateUser = (err) => {
 }
 
 export const getUser = () => {
-  return async (dispatch) => {
+  return async dispatch => {
+    console.log('REDUX')
     const loginToken = localStorage.getItem('loginToken')
 
     dispatch(requestUser(loginToken))

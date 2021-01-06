@@ -35,6 +35,7 @@ export default function App() {
           <Route path="/category-listing" component={CategoryListing} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
+          <Route path="/my-account" component={MyAccount} />
           <Route path="/MyAccount" component={MyAccount} />
           <Route path="/" render={() => <Home />} />
         </Switch>

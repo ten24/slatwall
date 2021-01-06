@@ -1,7 +1,23 @@
-import { REQUEST_USER, RECEIVE_USER, CLEAR_USER, REQUEST_CREATE_USER, RECEIVE_CREATE_USER, ERROR_CREATE_USER } from '../actions/userActions'
+import {
+  REQUEST_USER,
+  RECEIVE_USER,
+  CLEAR_USER,
+  REQUEST_CREATE_USER,
+  RECEIVE_CREATE_USER,
+  ERROR_CREATE_USER,
+} from '../actions/userActions'
 
 const initStateFromSlatwall = {
   accountID: '',
+  firstName: '',
+  lastName: '',
+  primaryEmailAddress: {
+    emailAddress: '',
+  },
+  primaryPhoneNumber: {
+    phoneNumber: '',
+  },
+  company: '',
 }
 
 const initialState = {

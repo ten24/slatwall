@@ -12,14 +12,14 @@ export const requestLogin = () => {
   }
 }
 
-export const receiveLogin = (loginToken) => {
+export const receiveLogin = loginToken => {
   return {
     type: RECEIVE_LOGIN,
     loginToken,
   }
 }
 
-const errorLogin = (err) => {
+const errorLogin = err => {
   return {
     type: ERROR_LOGIN,
     err,
@@ -31,10 +31,16 @@ export const logout = () => {
     type: LOGOUT,
   }
 }
+export const logoutUser = () => {
+  console.log('logoutUser')
+  return async dispatch => {
+    dispatch(logout())
+  }
+}
 
 export const login = (email, password) => {
   console.log('login', email)
-  return async (dispatch) => {
+  return async dispatch => {
     dispatch(requestLogin())
     dispatch(requestUser())
 

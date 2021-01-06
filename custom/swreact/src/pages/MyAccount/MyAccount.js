@@ -3,48 +3,65 @@ import { Layout } from '../../components'
 import { getUser } from '../../actions/userActions'
 // import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
 
 const AccountLogin = React.lazy(() =>
   import('../../components/AccountLogin/AccountLogin')
 )
+const AccountOverview = React.lazy(() =>
+  import('../../components/Account/AccountOverview/AccountOverview')
+)
+
 const AccountProfile = React.lazy(() =>
-  import('../../components/AccountProfile/AccountProfile')
+  import('../../components/Account/AccountProfile/AccountProfile')
 )
 
-const OrderCards = React.lazy(() =>
-  import('../../components/OrderCards/OrderCards')
+const AccountFavorites = React.lazy(() =>
+  import('../../components/Account/AccountFavorites/AccountFavorites')
 )
 
-const OrderHistory = React.lazy(() =>
-  import('../../components/OrderHistory/OrderHistory')
+const AccountAddresses = React.lazy(() =>
+  import('../../components/Account/AccountAddresses/AccountAddresses')
 )
 
-const MyAccountRoot = props => {
-  const { auth } = props
-  return (
-    <Layout>
-      <div>MyAccount</div>
-      {auth.loginToken && <AccountProfile />}
-      {!auth.loginToken && <AccountLogin />}
-    </Layout>
-  )
-}
+const AccountPaymentMethods = React.lazy(() =>
+  import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods')
+)
+
+const AccountOrderHistory = React.lazy(() =>
+  import('../../components/Account/AccountOrderHistory/AccountOrderHistory')
+)
 
 const MyAccount = props => {
+  const { auth } = props
   let match = useRouteMatch()
   return (
-    <Switch>
-      <Route path={`${match.path}/cards`}>
-        <OrderCards />
-      </Route>
-      <Route path={`${match.path}/order-history`}>
-        <OrderHistory />
-      </Route>
-      <Route path={match.path}>
-        <MyAccountRoot {...props} />
-      </Route>
-    </Switch>
+    <Layout>
+      {auth.loginToken && (
+        <Switch>
+          <Route path={`${match.path}/addresses`}>
+            <AccountAddresses />
+          </Route>
+          <Route path={`${match.path}/favorites`}>
+            <AccountFavorites />
+          </Route>
+          <Route path={`${match.path}/cards`}>
+            <AccountPaymentMethods />
+          </Route>
+          <Route path={`${match.path}/order-history`}>
+            <AccountOrderHistory />
+          </Route>
+          <Route path={`${match.path}/profile`}>
+            <AccountProfile />
+          </Route>
+          <Route path={match.path}>
+            {auth.loginToken && <AccountOverview />}
+            {!auth.loginToken && <AccountLogin />}
+          </Route>
+        </Switch>
+      )}
+      {!auth.loginToken && <AccountLogin />}
+    </Layout>
   )
 }
 

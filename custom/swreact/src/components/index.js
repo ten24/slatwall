@@ -12,8 +12,8 @@ export { default as ActionBanner } from './ActionBanner/ActionBanner'
 export { default as BreadCrumb } from './BreadCrumb/BreadCrumb'
 
 // Under MyAccount
-export { default as OrderHistory } from './OrderHistory/OrderHistory'
-export { default as OrderCards } from './OrderCards/OrderCards'
+export { default as OrderHistory } from './Account/AccountOrderHistory/AccountOrderHistory'
+export { default as OrderCards } from './Account/AccountPaymentMethods/AccountPaymentMethods'
 
 // Translation Demo
 export { default as HookSample } from './HookSample/HookSample'

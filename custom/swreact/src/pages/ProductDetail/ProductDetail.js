@@ -55,6 +55,8 @@ const ProductDetailGallery = () => {
     </div>
   )
 }
+
+// TODO: Migrate to reactstrap accordion
 const ProductPagePanels = () => {
   return (
     <div className="accordion mb-4" id="productPanels">
@@ -183,6 +185,7 @@ const ProductPageContent = () => {
                   data-toggle="tooltip"
                   title="Add to wishlist"
                 >
+                  {/* TODO: The heart shold be its own component */}
                   <i className="far fa-heart fa-circle"></i>
                 </button>
               </div>
@@ -256,6 +259,7 @@ const ProductPageContent = () => {
   )
 }
 
+//TODO: THis should share the same component as the the home page
 const ProductDetailSlider = () => {
   return (
     <div className="container px-5">

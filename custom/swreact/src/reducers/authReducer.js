@@ -26,7 +26,6 @@ const auth = (state = initState, action) => {
 
     case ERROR_LOGIN:
       const { err } = action
-      console.log('authReducer', action)
       return { ...state, err, isFetching: false }
 
     case LOGOUT:

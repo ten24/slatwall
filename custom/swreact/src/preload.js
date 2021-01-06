@@ -846,4 +846,28 @@ export default {
     customSummary:
       '<h2>We are here to help. Contact us with any questions.</h2> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>',
   },
+  accountOverview: {
+    crumbs: [
+      { slug: '/', title: 'Home' },
+      { slug: '/my-account', title: 'Account' },
+    ],
+    template: 'account-dashboard',
+    title: 'My Dashboard',
+    contentTitle: 'Welcome to Stone and Berg',
+    customBody:
+      '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget.</p> <p><a href="/shop">Start Shopping</a></p>',
+    customSummary: '',
+  },
+  accountProfile: {
+    crumbs: [
+      { slug: '/', title: 'Home' },
+      { slug: '/my-account', title: 'Account' },
+      { slug: '/my-account/profile', title: 'Profile' },
+    ],
+    template: 'account-profile',
+    title: 'My Profile',
+    contentTitle: 'Update your profile details below:',
+    customBody: '',
+    customSummary: '',
+  },
 }
