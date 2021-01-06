@@ -289,9 +289,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		// Authentication headers
 		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
 		httpRequest.addParam(type="body", value=serializeJSON(requestData));
-
         var rawRequest = httpRequest.send().getPrefix();
-        
         if( !IsJson(rawRequest.fileContent) ){
 		    throw("ERPONE - callErpOneUpdateDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
@@ -457,7 +455,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		accountPropList = accountPropList & ',' & addressPropList;
 		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
 		var mapping = {
-			"remoteID" : "__rowids",
+			"remoteID" : "__rowid",
 	        "primaryAddress_address_countryCode" : "country_code",
 	        "primaryEmailAddress_emailAddress" : "email_address",
 	        "primaryPhoneNumber_phoneNumber" : "phone",
@@ -487,18 +485,25 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		arguments.data.payload = this.convertSwAccountToErponeAccount(arguments.entity);
 		arguments.create = false;
 		//push to remote endpoint
-		var operation = "update";
-		if(arguments.create){
-			operation = "create";
-		}
 		
-		var response = this.callErpOneUpdateDataApi({
-		    "table": "customer",
-		    "triggers": "true",
-		    "records": [
-			        arguments.data.payload
-			    ]
-	  }, operation );
+		
+		if( !this.hibachiIsEmpty(arguments.entity.getRemoteID()) ){
+		
+			var response = this.callErpOneUpdateDataApi({
+			    "table": "customer",
+			    "triggers": "true",
+			    "changes": [ arguments.data.payload ]
+			}, "update" );
+			
+		} else {
+			
+			var response = this.callErpOneUpdateDataApi({
+			    "table": "customer",
+			    "triggers": "true",
+			    "records": [ arguments.data.payload ]
+			}, "create" );
+			
+		}
 		
 		/** Format error:
 		 * typical error response: { "status": "error", "message": "Required fields missing: email"};
