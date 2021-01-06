@@ -17,7 +17,12 @@
 			      </td>
 			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#orderTemplateItem.getSku().getSkuCode()#</td>
 			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#orderTemplateItem.getSku().getSkuDefinition()#</td>
-			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#getService('HibachiUtilityService').formatValue_currency(orderTemplateItem.getSkuPriceByCurrencyCode(), {currencyCode:orderTemplate.getCurrencyCode()})#</td>
+			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">
+				      <cfset local.skuPrice = orderTemplateItem.getSkuPriceByCurrencyCode()>
+				      <cfif NOT isNull(local.skuPrice)>
+				    	#getService('HibachiUtilityService').formatValue_currency(local.skuPrice, {currencyCode:orderTemplate.getCurrencyCode()})#
+				      </cfif>
+			      </td>
 			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#orderTemplateItem.getQuantity()#</td>
 			   </tr>
 		   </cfloop>
