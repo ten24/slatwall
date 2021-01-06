@@ -88,7 +88,7 @@ component extends="Slatwall.model.service.HibachiService" {
 
         return accountUpdated;
     }
-    public void function resumeEnrollment(required string enrollmentCode){
+    public any function resumeEnrollment(required string enrollmentCode){
         param name="enrollmentCode";
         
         if(len(enrollmentCode) != 32){
@@ -115,6 +115,7 @@ component extends="Slatwall.model.service.HibachiService" {
         getService('OrderService').processOrder(order,'updateOrderAmounts');
         getService("HibachiSessionService").persistSession();
         getHibachiScope().flushORMSession();
+        return order;
     }
     
 }
