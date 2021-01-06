@@ -105,11 +105,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 
-	//CUSTOM PROPERTIES BEGIN
-property name="moMoneyBalance" persistent="false";
-	property name="moMoneyWallet" fieldtype="boolean" persistent="false";
-    
-   //CUSTOM PROPERTIES END
+	
 	public string function getPaymentMethodType() {
 		if(isNull(getPaymentMethod())){
 			return "";
@@ -520,62 +516,5 @@ property name="moMoneyBalance" persistent="false";
 
 	// =================== START: ORM Event Hooks  =========================
 
-	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
-
-public array function getPaymentMethodOptions() {
-		if(!structKeyExists(variables, "paymentMethodOptions")) {
-			var sl = getPaymentMethodOptionsSmartList();
-			sl.addSelect('paymentMethodName', 'name');
-			sl.addSelect('paymentMethodID', 'value');
-			sl.addSelect('paymentMethodType', 'paymentmethodtype');
-		    
-		    //Restrict backend to add any external gateway as payment method	
-			sl.addWhereCondition("paymentMethodType != 'external' ");
-			
-			variables.paymentMethodOptions = sl.getRecords();
-			arrayPrepend(variables.paymentMethodOptions, {name=getHibachiScope().getRBKey("entity.accountPaymentMethod.paymentMethod.select"), value=""});
-		}
-		return variables.paymentMethodOptions;
-	}
-	
-	public any function getMoMoneyWallet()
-	{
-	    if(!StructKeyExists(variables,"moMoneyWallet"))
-	    {
-	    	if(!isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getPaymentIntegration()) && getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'hyperwallet')
-	        {
-	            variables.moMoneyWallet =  true;
-	        }
-	        else{
-	        	variables.moMoneyWallet =  false;
-	        }
-	    }
-	    
-	    return variables.moMoneyWallet;
-	}
-	
-	public any function getMoMoneyBalance()
-	{
-		//always use getMoMoneyWallet check before getting the balance
-	    if(!StructKeyExists(variables,"moMoneyBalance"))
-	    {
-	    	var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
-	    	requestBean.setProviderToken(getProviderToken());
-			requestBean.setTransactionType("balance");
-			
-	        var responseBean = getService('integrationService').getIntegrationByIntegrationPackage('hyperwallet').getIntegrationCFC("Payment").processExternal(requestBean);
-	        if(!responseBean.hasErrors())
-	        {
-	        	variables.moMoneyBalance = responseBean.getAmountAuthorized();
-	        }
-	        else{
-	        	//addErrors(responseBean.getErrors());
-	        	getHibachiScope().addErrors(responseBean.getErrors());
-	        	variables.moMoneyBalance = 0;
-	        }
-	    }
-	    
-	    return variables.moMoneyBalance;
-	}
-	//CUSTOM FUNCTIONS END
+	// ===================  END:  ORM Event Hooks  =========================	
 }

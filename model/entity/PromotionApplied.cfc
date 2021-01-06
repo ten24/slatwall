@@ -78,16 +78,7 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Promotion (many-to-one)	//CUSTOM PROPERTIES BEGIN
-property name="personalVolumeDiscountAmount" ormtype="big_decimal";
-    property name="taxableAmountDiscountAmount" ormtype="big_decimal";
-    property name="commissionableVolumeDiscountAmount" ormtype="big_decimal";
-    property name="retailCommissionDiscountAmount" ormtype="big_decimal";
-    property name="productPackVolumeDiscountAmount" ormtype="big_decimal";
-    property name="retailValueVolumeDiscountAmount" ormtype="big_decimal";
-    property name="enrollmentFeeRefundFlag" ormtype="boolean" default="0";
-    
-   //CUSTOM PROPERTIES END
+	// Promotion (many-to-one)	
 	public void function setPromotion(required any promotion) {
 		variables.promotion = arguments.promotion;
 		if(isNew() or !arguments.promotion.hasAppliedPromotion( this )) {
@@ -184,17 +175,5 @@ property name="personalVolumeDiscountAmount" ormtype="big_decimal";
 	
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
-
-public numeric function getCustomDiscountAmount(required string customPriceField){
-        return this.invokeMethod('get#customPriceField#DiscountAmount');
-    }
-    
-    public boolean function getEnrollmentFeeRefundFlag(){
-        if(!structKeyExists(variables,'enrollmentFeeRefundFlag')){
-            variables.enrollmentFeeRefundFlag = false;
-        }
-        return variables.enrollmentFeeRefundFlag;
-    }
-    //CUSTOM FUNCTIONS END
+	// ===================  END:  ORM Event Hooks  =========================	
 }

@@ -84,12 +84,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	
 	// Non-Persistent Properties
 	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";
-	//CUSTOM PROPERTIES BEGIN
-
- property name="purchaseOrderNumber" ormtype="string";
- property name="scanDate" ormtype="timestamp" hb_formatType="date";
- property name="shipmentNumber" ormtype="string";
- property name="shipmentSequence" ormtype="string";//CUSTOM PROPERTIES END
+	
 	public any function getTotalQuantityDelivered() {
 		var totalDelivered = 0;
 		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {

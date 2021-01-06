@@ -99,13 +99,5 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 		
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
-
-public boolean function childAccountHasMultipleParents(){
-	    if(!isNull(getChildAccount())){
-		    return arrayLen(getChildAccount().getParentAccountRelationships()) > 1;
-	    }
-	    return true;
-	}
-    //CUSTOM FUNCTIONS END
+	// ===================  END:  ORM Event Hooks  =========================	
 }

@@ -81,10 +81,7 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	// Non-Persistent Properties
 
-	//CUSTOM PROPERTIES BEGIN
-property name="refereeFlag" ormtype="boolean" default="0";
 	
-//CUSTOM PROPERTIES END
 	public string function getSimpleRepresentation() {
 		return getLoyalty().getLoyaltyName() & " - " & getAccruementType();
 	}
@@ -343,13 +340,5 @@ property name="refereeFlag" ormtype="boolean" default="0";
 	
 	// ================== START: Deprecated Methods ========================
 	
-	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
-
-public boolean function getRefereeFlag(){
-	    if(!structKeyExists(variables,"refereeFlag")){
-	        variables.refereeFlag = false;
-	    }
-	    return variables.refereeFlag;
-	}
-//CUSTOM FUNCTIONS END
+	// ==================  END:  Deprecated Methods ========================	
 }
