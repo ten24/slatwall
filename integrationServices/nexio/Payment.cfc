@@ -328,7 +328,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
 				getHibachiScope().clearSessionValue('kount-token');
 			}
-			// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
+			// Setting AVS code (Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
 			var responseDataAvsCode = "";
 			
 			if (!isNull(responseData.avsResults)

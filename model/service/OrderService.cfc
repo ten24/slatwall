@@ -1800,7 +1800,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
 
-			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from flexship success: #!newOrder.hasErrors()#');
+			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from order-template success: #!newOrder.hasErrors()#');
 
 			var processOrderTemplateRemovePromotionCode = arguments.orderTemplate.getProcessObject('removePromotionCode');
 			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
