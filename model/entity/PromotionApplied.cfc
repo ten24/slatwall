@@ -175,17 +175,5 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 	
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
-
-public numeric function getCustomDiscountAmount(required string customPriceField){
-        return this.invokeMethod('get#customPriceField#DiscountAmount');
-    }
-    
-    public boolean function getEnrollmentFeeRefundFlag(){
-        if(!structKeyExists(variables,'enrollmentFeeRefundFlag')){
-            variables.enrollmentFeeRefundFlag = false;
-        }
-        return variables.enrollmentFeeRefundFlag;
-    }
-    //CUSTOM FUNCTIONS END
+	// ===================  END:  ORM Event Hooks  =========================	
 }

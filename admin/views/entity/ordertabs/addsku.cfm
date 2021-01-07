@@ -86,6 +86,7 @@ Notes:
     	data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" 
     	data-account-id="'#local.accountID#'" 
     	data-site-id="'#local.siteID#'" 
+    	    	data-can-edit-price="#$.slatwall.getService('HibachiAuthenticationService').authenticateEntityPropertyCrudByAccount(crudType='update', entityName='OrderItem', propertyName='price', account=$.slatwall.getAccount())#" 
     	data-currency-code="'#local.currencyCode#'"
 	>
 	</sw-add-order-items-by-sku>

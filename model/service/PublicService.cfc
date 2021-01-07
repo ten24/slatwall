@@ -85,7 +85,7 @@ component  accessors="true" output="false"
         
 		if(structKeyExists(this, arguments.methodName)) {
 			var theMethod = this[ arguments.methodName ];
-			return theMethod(argumentCollection = methodArguments);
+			return theMethod(argumentCollection = arguments.methodArguments);
 		}
 		
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
@@ -803,7 +803,7 @@ component  accessors="true" output="false"
     }
     
    /** Sets the shipping method to an order shippingMethodID */
-    public void function addShippingMethodUsingShippingMethodID(required struct data){
+    public void function addShippingMethodUsingShippingMethodID(required struct data, boolean addSuccessAction=true){
         param name="arguments.data.shippingMethodID" default="";
         
         if(!len(arguments.data.shippingMethodID)){
@@ -842,8 +842,10 @@ component  accessors="true" output="false"
             }
             orderFulfillment.setShippingMethod(shippingMethod);
             getService("OrderService").saveOrder(order = order, updateOrderAmounts = false); 
-            getHibachiScope().flushOrmSession();   
-            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
+            getHibachiScope().flushOrmSession();
+            if(arguments.addSuccessAction || shippingMethod.hasErrors()){
+                getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
+            }
         }else{
              getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", true);
             return;
@@ -858,8 +860,9 @@ component  accessors="true" output="false"
         order = getService("OrderService").saveOrder(order = order, updateOrderAmounts = false); 
         if(!order.hasErrors()){
 			getDao('hibachiDao').flushOrmSession();
+        }else{
+		    getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", order.hasErrors());          
         }
-		getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", order.hasErrors());          
     }
     
     public any function addBillingAddressUsingAccountAddress(required data){
@@ -2341,7 +2344,7 @@ component  accessors="true" output="false"
     }
     
     public void function deleteOrderTemplate(required any data){
-        param name="data.orderTemplateItemID" default="";
+        param name="data.orderTemplateID" default="";
 
         var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
         
@@ -2357,7 +2360,6 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
     }
-    
     
     ///    ############### .  getXXXOptions();  .  ###############   
     
@@ -2409,6 +2411,41 @@ component  accessors="true" output="false"
      public void function getExpirationYearOptions(required any data) {
        	var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
+    }
+    
+    public void function getQualifiedMerchandiseRewardsForOrder(required struct data){
+        param name="arguments.data.orderID";
+        
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
+            var rewardArgs = {
+                order:order,
+                apiFlag:true,
+                rewardTypeList:'merchandise'
+            };
+            var rewards = getService('PromotionService').getQualifiedPromotionRewardsForOrder(argumentCollection=rewardArgs);
+            
+            arguments.data['ajaxResponse']['rewards'] = rewards;
+        }
+    }
+    
+    public void function getQualifiedPromotionRewardSkusForOrder(required struct data){
+        param name="arguments.data.orderID";
+        /*
+            OrderID is required, data can also include promotionRewardID to return skus for a particular reward.
+            Other optional arguments: pageRecordsShow (default 25), formatRecords (default false)
+        */
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
+            arguments.data.order = order;
+            var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
+        }
     }
     
 }
