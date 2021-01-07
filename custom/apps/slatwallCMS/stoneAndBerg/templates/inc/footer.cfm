@@ -1,23 +1,49 @@
 <cfscript>
     local.isContact = $.slatwall.getContent().getUrlTitlePath() NEQ "contact";
-    local.contactUs = EncodeForHTMLAttribute($.renderContent($.getContentByUrlTitlePath('footer/contact-us').getContentID(), 'customBody'));
-    local.getInTouch = EncodeForHTMLAttribute($.renderContent($.getContentByUrlTitlePath('footer/get-in-touch').getContentID(), 'customBody'));
-    local.siteLinks = EncodeForHTMLAttribute($.renderContent($.getContentByUrlTitlePath('footer/site-links').getContentID(), 'customBody'));
-    local.stayInformed = EncodeForHTMLAttribute($.renderContent($.getContentByUrlTitlePath('footer/stay-informed').getContentID(), 'customBody'));
+    local.contactUs = $.renderContent($.getContentByUrlTitlePath('footer/contact-us').getContentID(), 'customBody');
+    local.getInTouch = $.renderContent($.getContentByUrlTitlePath('footer/get-in-touch').getContentID(), 'customBody');
+    local.siteLinks = $.renderContent($.getContentByUrlTitlePath('footer/site-links').getContentID(), 'customBody');
+    local.stayInformed = $.renderContent($.getContentByUrlTitlePath('footer/stay-informed').getContentID(), 'customBody');
     local.copywriteDate =  #year(now())#;
+    
+    local.footer = {
+      "actionBanner": {
+        "display": true,
+        "markup": '#reReplace(local.contactUs,"#chr(13)#|#chr(9)#|\n|\r","","ALL")#',
+      },
+        "getInTouch": '#reReplace(local.getInTouch,"#chr(13)#|#chr(9)#|\n|\r","","ALL")#',
+        "siteLinks": '#reReplace(local.siteLinks,"#chr(13)#|#chr(9)#|\n|\r","","ALL")#',
+        "stayInformed": '#reReplace(local.stayInformed,"#chr(13)#|#chr(9)#|\n|\r","","ALL")#',
+        "copywriteDate": #local.copywriteDate#,
+    }
+    
+    local.userReducer = $.slatwall.getAccount();
+    local.userReducer["firstName"] = StructKeyExists(local.userReducer, "firstName") ? local.userReducer : "";
+    local.userReducer["lastName"] = StructKeyExists(local.userReducer, "lastName") ? local.userReducer : "";
 
 </cfscript>
 <cfoutput>
-<!--- Footer--->
-<div id="reactFooter"
- data-isContact=#local.isContact#
- data-contactUs=#local.contactUs#
- data-getInTouch=#local.getInTouch#
- data-siteLinks=#local.siteLinks#
- data-stayInformed=#local.stayInformed#
- data-copywriteDate=#local.copywriteDate# 
- ></div>
-  
+<script>
+ 
+        window.__PRELOADED_STATE__ = JSON.stringify({
+          preload: {
+            navigation: #serializeJson(StructKeyExists(local, "navigation")? local.navigation : {})#,
+            footer: #serializeJson(StructKeyExists(local, "footer")? local.footer : {})#,
+            about: #serializeJson(StructKeyExists(local, "about")? local.about : {})#,
+            home: #serializeJson(StructKeyExists(local, "home")? local.home : {})#,
+            contact: #serializeJson(StructKeyExists(local, "contact")? local.contact : {})#,
+            categoryListing: #serializeJson(StructKeyExists(local, "categoryListing")? local["categoryListing"] : {})#,
+            accountOverview: #serializeJson(StructKeyExists(local, "accountOverview")? local["accountOverview"] : {})#,
+            accountProfile: #serializeJson(StructKeyExists(local, "accountProfile")? local["accountProfile"] : {})#,
+            accountOrderHistory: #serializeJson(StructKeyExists(local, "accountOrderHistory")? local["accountOrderHistory"] : {})#,
+            accountFavorites: #serializeJson(StructKeyExists(local, "accountFavorites")? local["accountFavorites"] : {})#,
+            accountAddresses: #serializeJson(StructKeyExists(local, "accountAddresses")? local["accountAddresses"] : {})#,
+            accountPaymentMethods: #serializeJson(StructKeyExists(local, "accountPaymentMethods")? local["accountPaymentMethods"] : {})#,
+            test: "sdfdf",
+          },
+          userReducer: #serializeJson(local.userReducer)# ,
+        }).replace(/</g, '\\u003c')
+      </script>
   <!--- JavaScript libraries, plugins and custom scripts--->
   <script
   src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"

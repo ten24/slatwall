@@ -1,5 +1,5 @@
 <cfscript>
-    local.mainNavigation = EncodeForHTMLAttribute($.renderContent($.getContentByUrlTitlePath('header/main-navigation').getContentID(), 'customBody'));
+    local.mainNavigation = $.renderContent($.getContentByUrlTitlePath('header/main-navigation').getContentID(), 'customBody');
     local.themePath= $.getThemePath()
 
     local.productsMainNav = $.slatwall.getService('contentService').getContentCollectionList();
@@ -13,7 +13,10 @@
     local.productsMainNav.setPageRecordsShow(100) ;
     local.productCategories = local.productsMainNav.getPageRecords();
 
-
+    local.navigation = {
+      "mainNavigation": '#reReplace(local.mainNavigation,"#chr(13)#|#chr(9)#|\n|\r","","ALL")#',
+      "productCategories": #local.productCategories#,
+      }
 
 </cfscript>
 
@@ -28,12 +31,6 @@
   <!-- Body-->
   <body>
     <!-- Navbar 3 Level (Light)-->
-    
-<div id="reactHeader"
- data-themePath=""
- data-mainNavigation=#local.mainNavigation#
- data-productCategories="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(local.productCategories))#"
- ></div>
-   
+
   
  </cfoutput>
