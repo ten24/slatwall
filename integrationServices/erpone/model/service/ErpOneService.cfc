@@ -322,11 +322,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     public any function getAccountData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getAccountData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
-
+		
+		// Change company name as per our environment in API query
+		if( !this.setting("devMode") ){
+    		var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND company_cu = "SB"';
+		} else {
+			var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND company_cu = "DC"';
+		}
+			
     	var accountsArray = this.callErpOneGetDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
-    	    "query": "FOR EACH customer WHERE customer.active = YES",
+			"query": requestQuery,
     	    "columns" : "name,country_code,email_address,phone,Active,company_cu,customer"
     	})
     	
@@ -506,29 +513,17 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
 		
 		/** Format error:
-		 * typical error response: { "status": "error", "message": "Required fields missing: email"};
-		 * typical successful response: {"status":"success","message":null,"id":426855,"rows":1,"request_id":null}
+		 * typical error response: { "errordetail": "error", "filecontent": "null"};
+		 * typical successful response: {"table":"customer","updated":1,"triggers":false}
 		*/
-		
-		if( !structKeyExists(response,'status') || response.status != 'success') {
-			response['requestAttributes'] = httpRequest.getAttributes() ;
-			response['requestParams'] = httpRequest.getParams();
-			response['content'] = rawRequest.fileContent;
+	
+		if( structKeyExists(response, 'updated') && response.updated > 0 ){
+			logHibachi("ERPOne - Successfully updated Account Data");
 		}
-		
-		if( !structKeyExists(response,'status') || response.status != 'success' || 
-			!StructKeyExists(response ,'id') || 
-			!len( trim(response.id) ) 
-		) {
-			
-			if( !arguments.create && structKeyExists(response, 'message') && FindNoCase('could not be found', response.message) ){
-				return pushData(arguments.entity, arguments.data, true);
-			}
-			//the call was not successful
-			throw("Error in ErpOne::PushData() #SerializeJson(response)#"); //this will comeup in EntityQueue
-		} 
-
-		logHibachi("ERPOne - End pushData");
+		else {
+			throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+		}
+		logHibachi("ERPOne - End Account pushData");
 	}
 	
 }

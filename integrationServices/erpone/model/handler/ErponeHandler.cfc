@@ -31,4 +31,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 		addToQueue(arguments.entity);
 	}
 	
+	public void function afterAccountEmailAddressSaveSuccess(any slatwallScope, any entity, any eventData) {
+		addToQueue(arguments.entity);
+	}
 }
