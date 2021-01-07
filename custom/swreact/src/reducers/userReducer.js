@@ -4,12 +4,8 @@ const initialState = {
   accountID: '',
   firstName: '',
   lastName: '',
-  primaryEmailAddress: {
-    emailAddress: '',
-  },
-  primaryPhoneNumber: {
-    phoneNumber: '',
-  },
+  primaryEmailAddress: [],
+  primaryPhoneNumber: [],
   company: '',
 }
 

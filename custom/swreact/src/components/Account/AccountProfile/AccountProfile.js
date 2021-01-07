@@ -10,8 +10,8 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, getMyUser, us
     initialValues: {
       accountFirstName: user.firstName,
       accountLastName: user.lastName,
-      accountEmailAddress: user.primaryEmailAddress.emailAddress,
-      accountPhoneNumber: user.primaryPhoneNumber.phoneNumber,
+      accountEmailAddress: user.primaryEmailAddress.length !== 0 ? user.primaryEmailAddress.emailAddress : '',
+      accountPhoneNumber: user.primaryPhoneNumber.length !== 0 ? user.primaryPhoneNumber.phoneNumber : '',
       accountExt: '',
       accountCompany: user.company,
     },
@@ -40,7 +40,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, getMyUser, us
           <div className="col-sm-6">
             <div className="form-group">
               <label htmlFor="accountEmailAddress">Email Address</label>
-              <input className="form-control" type="accountEmailAddress" id="accountEmailAddress" value={formik.values.emailAddress} onChange={formik.handleChange} disabled="" />
+              <input className="form-control" type="accountEmailAddress" id="accountEmailAddress" value={formik.values.accountEmailAddress} onChange={formik.handleChange} disabled="" />
             </div>
           </div>
           <div className="col-sm-4">

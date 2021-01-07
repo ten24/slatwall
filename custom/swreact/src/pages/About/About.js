@@ -16,7 +16,7 @@ const About = ({ title, customBody }) => {
         </div>
 
         <div
-          class="container bg-light box-shadow-lg rounded-lg p-5"
+          className="container bg-light box-shadow-lg rounded-lg p-5"
           dangerouslySetInnerHTML={{
             __html: customBody,
           }}
