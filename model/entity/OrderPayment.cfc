@@ -878,6 +878,15 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		setupEncryptedProperties();
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 

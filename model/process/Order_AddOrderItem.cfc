@@ -846,44 +846,44 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function populate( required struct data={} ) {
 		// Call the super populate to do all the standard logic
 		super.populate(argumentcollection=arguments);
-
-		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
-		var assignedOrderItemAttributeSetCollectionList = getSku().getAssignedOrderItemAttributeSetCollectionList();
-		
-		assignedOrderItemAttributeSetCollectionList.setDisplayProperties('attributeSetID');
-		
-		var assignedOrderItemAttributeSetRecords = assignedOrderItemAttributeSetCollectionList.getRecords();
-		
-		var attributeSetIDArray = [];
-		
-		for(var assignedOrderItemAttributeSetRecord in assignedOrderItemAttributeSetRecords){
-			arrayAppend(attributeSetIDArray,assignedOrderItemAttributeSetRecord['attributeSetID']);
-		}
-		var cacheKey = "Order_AddOrderItem_populate#arrayToList(attributeSetIDArray)#";
-		
-		var attributeCollectionListRecords = [];
-		
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			if(arrayLen(attributeSetIDArray)){
-				var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
-				attributeCollectionList.setDisplayProperties('attributeCode');
-				attributeCollectionList.addFilter('attributeSet.attributeSetID',arrayToList(attributeSetIDArray),'IN');
-				attributeCollectionListRecords = attributeCollectionList.getRecords();
+		if(!isNull(getSku())){
+			//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
+			var assignedOrderItemAttributeSetCollectionList = getSku().getAssignedOrderItemAttributeSetCollectionList();
+			
+			assignedOrderItemAttributeSetCollectionList.setDisplayProperties('attributeSetID');
+			
+			var assignedOrderItemAttributeSetRecords = assignedOrderItemAttributeSetCollectionList.getRecords();
+			
+			var attributeSetIDArray = [];
+			
+			for(var assignedOrderItemAttributeSetRecord in assignedOrderItemAttributeSetRecords){
+				arrayAppend(attributeSetIDArray,assignedOrderItemAttributeSetRecord['attributeSetID']);
+			}
+			var cacheKey = "Order_AddOrderItem_populate#arrayToList(attributeSetIDArray)#";
+			
+			var attributeCollectionListRecords = [];
+			
+			if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+				if(arrayLen(attributeSetIDArray)){
+					var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
+					attributeCollectionList.setDisplayProperties('attributeCode');
+					attributeCollectionList.addFilter('attributeSet.attributeSetID',arrayToList(attributeSetIDArray),'IN');
+					attributeCollectionListRecords = attributeCollectionList.getRecords();
+				}
+				
+				getService('HibachiCacheService').setCachedValue(cacheKey, attributeCollectionListRecords);
+			}else{
+				attributeCollectionListRecords = getService('HibachiCacheService').getCachedValue(cacheKey);
 			}
 			
-			getService('HibachiCacheService').setCachedValue(cacheKey, attributeCollectionListRecords);
-		}else{
-			attributeCollectionListRecords = getService('HibachiCacheService').getCachedValue(cacheKey);
-		}
-		
-		for(var attributeCollectionListRecord in attributeCollectionListRecords){
-			if(len(trim(attributeCollectionListRecord['attributeCode']))){
-				if (structKeyExists(attributeCollectionListRecord, 'attributeCode') && len(attributeCollectionListRecord['attributeCode']) && structKeyExists(data, attributeCollectionListRecord['attributeCode']) && len(data[ attributeCollectionListRecord['attributeCode']])){
-					attributeValuesByCodeStruct[ attributeCollectionListRecord['attributeCode'] ] = data[ attributeCollectionListRecord['attributeCode'] ];
+			for(var attributeCollectionListRecord in attributeCollectionListRecords){
+				if(len(trim(attributeCollectionListRecord['attributeCode']))){
+					if (structKeyExists(attributeCollectionListRecord, 'attributeCode') && len(attributeCollectionListRecord['attributeCode']) && structKeyExists(data, attributeCollectionListRecord['attributeCode']) && len(data[ attributeCollectionListRecord['attributeCode']])){
+						attributeValuesByCodeStruct[ attributeCollectionListRecord['attributeCode'] ] = data[ attributeCollectionListRecord['attributeCode'] ];
+					}
 				}
 			}
 		}
-
 		// Return this object
 		return this;
 	}

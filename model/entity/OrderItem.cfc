@@ -474,7 +474,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			var price = 0;
 		
 			//get bundle price
-			if(!isnull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(!isnull(getSku()) && getDAO('skuDAO').getProductTypeSystemCodeBySkuID(getSku().getSkuID()) == 'productBundle'){
 				price = getProductBundlePrice();
 			}else if(!isNull(getPrice())){
 				price = getPrice();
@@ -1190,6 +1190,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		return variables.assignedAttributeSetSmartList;
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1204,5 +1213,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	}
 
-	// ===================  END:  ORM Event Hooks  =========================
+
+	// ===================  END:  ORM Event Hooks  =========================	
+		
 }

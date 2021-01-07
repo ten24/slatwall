@@ -440,6 +440,11 @@ Notes:
 		<!--- Webpack bundles--->
 		<cfinclude template="#request.slatwallScope.getBaseURL()#/admin/client/dist/SlatwallAdminBundle.cfm" />
 		
+		<!--- TODO --->
+		<!-- code split vendor bundle before the other bundles because its common among them. -->
+ 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
+ 		
+
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 
 	</body>

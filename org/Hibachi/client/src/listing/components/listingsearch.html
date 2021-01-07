@@ -44,8 +44,7 @@
     <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
                 data-ng-model="swListingSearch.swListingDisplay.searchText"
-                data-ng-model-options='{ debounce: 1000 }'
-                data-ng-change="swListingSearch.search()">
+                data-ng-keyup="$event.keyCode == 13 && swListingSearch.search()">
         <button class="btn btn-xs btn-default s-add-search-param"
                 data-ng-if="swListingSearch.swListingDisplay.searchText"
                 data-ng-disabled="!swListingSearch.selectedSearchColumn || (swListingSearch.selectedSearchColumn.title == 'All')"
@@ -142,6 +141,13 @@
                 ><i class="fa fa-trash"></i></a>
             </li>
         </ul>
+    </span>
+    <span class="input-group-btn valign-middle s-action">
+        <span sw-tooltip class="tool-tip-item" data-text="Search" data-position="bottom">
+            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.search()">
+                <i class="fa fa-search"></i>
+            </button>
+        </span>
     </span>
     <span class="input-group-btn valign-middle s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
         <span sw-tooltip class="tool-tip-item" data-text="Filtering" data-position="bottom">
