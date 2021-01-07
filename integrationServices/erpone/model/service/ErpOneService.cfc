@@ -337,7 +337,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
     	    "query": "FOR EACH oe_head",
-    	    "columns" : "order,ord_date,customer,adr,currency_code,postal_code,state"
+    	    "columns" : "order,ord_date,customer,adr,currency_code,country_code,postal_code,state"
     	})
 
 		if( OrdersArray.len() > 0 ){
@@ -410,7 +410,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	}, "count");
     	
 		var totalRecordsCount = response.count;
-		var currentPage = 1000;
+		var currentPage = 1;
 		var pageSize = 100;
 		var recordsFetched = 0;
 		
@@ -482,7 +482,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return arguments.data;
 	}
 	
-	public struct function preProcessOrderData(required struct data ){
+	public any function preProcessOrderData(required struct data ){
 		
 		if( left(arguments.data.order, 1) == '-' ){
 			return;
@@ -491,7 +491,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		        "order" 		: "orderNumber",
 		        "ord_date"		: "orderOpenDateTime",
 		        "customer"		: "RemoteAccountID",
-		        "currency_code" : "BillingAddress_countryCode",
+		        "currency_code" : "currency_code",
+		        "country_code"  : "BillingAddress_countryCode",
 		        "postal_code"	: "BillingAddress_postalCode",
 		        "adr"			: "Address",
 		        "state" 		: "BillingAddress_stateCode"
@@ -512,7 +513,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	transformedItem.BillingAddress_streetAddress = transformedItem.Address[2];
 	    	transformedItem.BillingAddress_street2Address = transformedItem.Address[1];
 	    	transformedItem.BillingAddress_city = transformedItem.Address[4];
-
+			transformedItem.Address = {
+					  "streetAddress"  : transformedItem.Address[2],
+	                  "street2Address" : transformedItem.Address[1],
+	                  "city"           : transformedItem.Address[4],
+	                  "countryCode"	   : transformedItem.BillingAddress_countryCode,
+	                  "stateCode"	   : transformedItem.BillingAddress_stateCode,
+	                  "postalCode"	   : transformedItem.BillingAddress_postalCode,
+			};
 		    return transformedItem;
 	}
 	

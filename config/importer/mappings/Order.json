@@ -77,6 +77,14 @@
             "isNullable"             : true,
             "propertyIdentifier"     : "shippingAddress",
             "sourceDataKeysPrefix"   : "ShippingAddress_"
+        },
+        {
+            "type"                   : "oneToMany",
+            "entityName"             : "OrderFulfillment",
+            "propertyIdentifier"     : "orderFulfillments",
+            "excludeFromTemplate"    : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction"      : "generateOrderOrderFulfillments"
         }
     ],
     
