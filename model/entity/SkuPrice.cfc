@@ -81,8 +81,6 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="hasValidQuantityConfiguration" persistent="false"; 
  	
 
-	
-	
 	public boolean function hasValidQuantityConfiguration(){
  		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity()))){ 
 			if(isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity())){ 
@@ -151,5 +149,5 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 		super.preUpdate(arguments.oldData);
 	}
     
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	
 }

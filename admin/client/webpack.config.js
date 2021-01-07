@@ -217,3 +217,4 @@ devConfig.plugins =  [
 ];   
 
 module.exports = devConfig;
+

@@ -105,7 +105,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 
-	
+
 	public string function getPaymentMethodType() {
 		if(isNull(getPaymentMethod())){
 			return "";
@@ -516,5 +516,5 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 	// =================== START: ORM Event Hooks  =========================
 
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	
 }

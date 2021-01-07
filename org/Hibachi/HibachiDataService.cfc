@@ -307,10 +307,10 @@ component accessors="true" output="false" extends="HibachiService" {
 		var columnInfo = {columnName="", tableName="", dataType="", fieldType="", tableType=""};
 
 		var fullBaseEntityName = getProperlyCasedFullEntityName(arguments.baseEntityName);
-		var entityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(fullBaseEntityName, arguments.propertyIdentifier);
+		var entityName = getLastEntityNameInPropertyIdentifier(fullBaseEntityName, arguments.propertyIdentifier);
 		columnInfo["tableName"] = getEntityMetaData(entityName)["table"];
 
-		if(getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(fullBaseEntityName, arguments.propertyIdentifier)) {
+		if(getHasPropertyByEntityNameAndPropertyIdentifier(fullBaseEntityName, arguments.propertyIdentifier)) {
 
 			columnInfo["columnName"] = listLast(arguments.propertyIdentifier, ".");
 			var propertiesMeta = getPropertiesStructByEntityName(entityName);
@@ -355,14 +355,14 @@ component accessors="true" output="false" extends="HibachiService" {
 			var columnInfo = getColumnInfoByPropertyIdentifier(config["baseEntity"], mapping["propertyIdentifier"]);
 			var thisColumnName = columnInfo["columnName"];
 			var thisTableName = columnInfo["tableName"];
-			var thisEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(config["baseEntity"], mapping["propertyIdentifier"]);
+			var thisEntityName = getLastEntityNameInPropertyIdentifier(config["baseEntity"], mapping["propertyIdentifier"]);
 
 			// add this table to tables struct if it doesn't exists
 			initializeTableStruct(tables, thisTableName);
 				tables[ thisTableName ]["tableType"] = columnInfo["tableType"];
 
 			// get table primary key
-			tables[ thisTableName ]["primaryKeyColumn"] = getService("hibachiService").getPrimaryIDColumnNameByEntityName(thisEntityName);
+			tables[ thisTableName ]["primaryKeyColumn"] = getPrimaryIDColumnNameByEntityName(thisEntityName);
 			//set table depth
 			tables[ thisTableName ]["depth"] = listLen(mapping["propertyIdentifier"], ".");
 
@@ -424,12 +424,12 @@ component accessors="true" output="false" extends="HibachiService" {
 					var newColumnInfo = getColumnInfoByPropertyIdentifier(config["baseEntity"], thisPropertyIdentifier);
 					var newColumnName = newColumnInfo["columnName"];
 					var newTableName = newColumnInfo["tableName"];
-					var newEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(config["baseEntity"], thisPropertyIdentifier);
+					var newEntityName = getLastEntityNameInPropertyIdentifier(config["baseEntity"], thisPropertyIdentifier);
 
 					initializeTableStruct(tables, newTableName);
 					tables[ newTableName ]["tableType"] = newColumnInfo["tableType"];
 					tables[ newTableName ]["depth"] = listLen(thisPropertyIdentifier, ".");
-					tables[ newTableName ]["primaryKeyColumn"] = getService("hibachiService").getPrimaryIDColumnNameByEntityName(newEntityName);
+					tables[ newTableName ]["primaryKeyColumn"] = getPrimaryIDColumnNameByEntityName(newEntityName);
 
 					// many-to-many and one-to-many need to get added after the main object so, set a lower depth
 					if(newColumnInfo["fieldType"] == "many-to-many") {

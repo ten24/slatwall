@@ -93,9 +93,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="countryCodeOptions" persistent="false" type="array";
 	property name="salutationOptions" persistent="false" type="array";
 	property name="stateCodeOptions" persistent="false" type="array";
-	
+
 	// ==================== START: Logical Methods =========================
-		
+
 	public boolean function getAddressMatchFlag( required any address ) {
 		if(
 			nullReplace(getCountryCode(),"") != nullReplace(arguments.address.getCountryCode(),"")
@@ -309,16 +309,15 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
-	
+
 	public void function preInsert(){
 		getAddressName();
 	}
-	
+
 	public void function preUpdate(){
 		structDelete(variables,'addressName');
 		getAddressName();
 	}
-	
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================

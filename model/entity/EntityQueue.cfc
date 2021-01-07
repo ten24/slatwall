@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" hb_auditable="false" {
+component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" hb_auditable="false" hb_permission="this" hb_processContexts="processQueue" {
 
 	// Persistent Properties
 	property name="entityQueueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -65,9 +65,9 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	// Related Object Properties (many-to-one)
 	
 	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
+	property name="batch" cfc="Batch" fieldtype="many-to-one" fkcolumn="batchID";
 
 	// Related Object Properties (one-to-many)
-
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties

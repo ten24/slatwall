@@ -19,7 +19,7 @@ import {SWOrderTemplatePromotions} from "./components/swordertemplatepromotions"
 import {SWOrderTemplatePromotionItems} from "./components/swordertemplatepromotionitems";
 import {SWOrderTemplateUpcomingOrdersCard} from "./components/swordertemplateupcomingorderscard";
 import {SWOrderTemplateUpdateScheduleModal} from "./components/swordertemplateupdateschedulemodal";
-import {SWAddOrderItemsBySku} from "order/components/swaddorderitemsbysku";
+import {SWAddOrderItemsBySku} from "./components/swaddorderitemsbysku";
 import {SWAddPromotionOrderItemsBySku} from "./components/swaddpromotionorderitemsbysku";
 
 var ordermodule = angular.module('order',[coremodule.name])

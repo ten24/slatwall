@@ -16,7 +16,6 @@
 			<cfelseif rc.qualifierType eq "fulfillment">
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumFulfillmentWeight" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumFulfillmentWeight" edit="#rc.edit#" />
-
 			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
