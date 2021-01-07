@@ -37,7 +37,7 @@ Notes:
 */
 
 
-component accessors='true' output='false' displayname='InfoTrax' extends='Slatwall.org.Hibachi.HibachiObject' {
+component accessors='true' output='false' displayname='InfoTrax' extends='Slatwall.integrationServices.BaseData' {
 
 	property name='infoTraxService' type='any' persistent='false';
 	property name='sessionToken' type='string' persistent='false';
@@ -50,22 +50,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		return this;
 	}
 	
-	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
-			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
-		}
-		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
-	}
-	
-	// @hint helper function to return the integration entity that this belongs to
-	public any function getIntegration() {
-		return getService('integrationService').getIntegrationByIntegrationPackage(getPackageName());
-	}
-
-	// @hint helper function to return the packagename of this integration
-	public any function getPackageName() {
-		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	public string function getBlacklistedKeys(){
+		return 'apikey|password|creditcard|jsessionid';
 	}
 	
 	private struct function postRequest(required string service, required struct requestData, string jsessionid){
@@ -77,25 +63,10 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			requestURL &= ';jsessionid=' & arguments.jsessionid;
 		}
 		
-		requestURL &= '?format=JSON';
-		requestURL &= '&apikey=' & setting('apikey');
-		requestURL &= '&service=' & arguments.service;
+		requestURL &= '?format=JSON&apikey=' & setting('apikey') & '&service=' & arguments.service;
 		
-		var httpRequest = new http();
-		httpRequest.setMethod('POST');
-		httpRequest.setUrl( requestURL );
-		
-		for(var key in requestData){
-			httpRequest.addParam(type='formfield',name='#key#',value='#requestData[key]#');
-		}
-		
-		var response = getService('hibachiUtilityService').getHttpResponse(httpRequest);
+		var response = request(url=requestURL, method='POST', data=requestData).response;
 
-		
-		// if(structKeyExists(arguments, 'jsessionid')){
-		// 	writedump(requestData); 
-		// 	writedump(response); abort;
-		// }
 		
 		if( structKeyExists(response, 'errors') && arrayLen(response.errors) ){
 			var errorMessages = '';

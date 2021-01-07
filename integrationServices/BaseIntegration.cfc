@@ -131,4 +131,5 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
+	
 }

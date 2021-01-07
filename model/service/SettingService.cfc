@@ -299,6 +299,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
 			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
+			globalIntegrationRequestLog = {fieldType="yesno",defaultValue=0},
+			globalIntegrationRequestLogExpirationDays = {fieldtype="text", defaultValue=30, validate={dataType="numeric",required=true,maxValue=180}},
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},

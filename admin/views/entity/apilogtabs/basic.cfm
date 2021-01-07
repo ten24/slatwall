@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,56 +45,27 @@
 
 Notes:
 
-*/
-component extends="Slatwall.integrationServices.BaseIntegrationType" {
+--->
 
-	public any function init() {
-		return this;
-	}
-	
-	public string function getPaymentMethodTypes() {
-		return "";
-	}
-	
-	public any function processCreditCard(required any requestBean) {
-		throw("The processCreditCard() Method was not setup for this integration service");	
-	}
-	
-	public boolean function getTestModeFlag(required any requestBean, string settingName="testingFlag"){
-		var testModeFlag = setting(argumentCollection=arguments);
-		
-		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-			testModeFlag = arguments.requestBean.getOrder().getTestOrderFlag();
-		}
-		
-		return testModeFlag;
-	}
-	
-	public boolean function getLiveModeFlag(required any requestBean, string settingName="liveModeFlag"){
-		var liveModeFlag = setting(argumentCollection=arguments);
-		
-		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-			liveModeFlag = false;
-		}
-		
-		return liveModeFlag;
-	}
-	
-	public string function getExternalPaymentHTML() {
-		return "";
-	}
-	
-	public string function getSupportedChargeTransactionTypes() {
-		return "receive";
-	}
-	
-	public string function getSupportedCreditTransactionTypes() {
-		return "credit";
-	}
-	
-	
-	// DEPRECATED
-	public string function getExternalPaymentCheckoutViewPath() {
-		return "/Slatwall/integrationServices/#getPackageName()#/views/checkout/externalpayment.cfm";
-	}
-}
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
+
+<cfparam name="rc.apiLog" type="any" />
+<cfset rc.edit = false />
+
+<cfoutput>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="createdDateTime" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="requestIdentifier" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="apiLogType" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="source" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="targetUrl" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="header" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="statusCode" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="responseTime" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="data" edit="false">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+</cfoutput>

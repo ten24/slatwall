@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,56 +45,23 @@
 
 Notes:
 
-*/
-component extends="Slatwall.integrationServices.BaseIntegrationType" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	public any function init() {
-		return this;
-	}
-	
-	public string function getPaymentMethodTypes() {
-		return "";
-	}
-	
-	public any function processCreditCard(required any requestBean) {
-		throw("The processCreditCard() Method was not setup for this integration service");	
-	}
-	
-	public boolean function getTestModeFlag(required any requestBean, string settingName="testingFlag"){
-		var testModeFlag = setting(argumentCollection=arguments);
+
+
+<cfparam name="rc.apiLog" type="any" />
+<cfset rc.edit = false />
+
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.apiLog#" edit="false">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.apiLog#" edit="false" showdelete="false" pageTitle="API Log" />
+								   
+		<hb:HibachiEntityDetailGroup object="#rc.apiLog#">
+			<hb:HibachiEntityDetailItem view="admin:entity/apilogtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/apilogtabs/response" open="true" />
+		</hb:HibachiEntityDetailGroup>
 		
-		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-			testModeFlag = arguments.requestBean.getOrder().getTestOrderFlag();
-		}
-		
-		return testModeFlag;
-	}
-	
-	public boolean function getLiveModeFlag(required any requestBean, string settingName="liveModeFlag"){
-		var liveModeFlag = setting(argumentCollection=arguments);
-		
-		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
-			liveModeFlag = false;
-		}
-		
-		return liveModeFlag;
-	}
-	
-	public string function getExternalPaymentHTML() {
-		return "";
-	}
-	
-	public string function getSupportedChargeTransactionTypes() {
-		return "receive";
-	}
-	
-	public string function getSupportedCreditTransactionTypes() {
-		return "credit";
-	}
-	
-	
-	// DEPRECATED
-	public string function getExternalPaymentCheckoutViewPath() {
-		return "/Slatwall/integrationServices/#getPackageName()#/views/checkout/externalpayment.cfm";
-	}
-}
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

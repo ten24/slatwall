@@ -88,6 +88,8 @@ Notes:
 		<swa:SlatwallSetting settingName="globalS3SecretAccessKey"/>
 		<swa:SlatwallSetting settingName="globalEntityQueueDataProcessCount"/>
 		<swa:SlatwallSetting settingName="globalDisableUninstalledIntegration"/>
+		<swa:SlatwallSetting settingName="globalIntegrationRequestLog"/>
+		<swa:SlatwallSetting settingName="globalIntegrationRequestLogExpirationDays"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 
