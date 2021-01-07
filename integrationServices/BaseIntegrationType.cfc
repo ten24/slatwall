@@ -85,7 +85,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	 * Helper function to remove any sensitive data from the API Request before saving to the DB
 	 */
 	 public string function getBlacklistedKeys(){
-		return 'apikey|password|creditcard';
+		return 'apikey|password|creditcard|Authorization';
 	}
 	
 	public string function sanitizeForLogs(required string data){
@@ -155,13 +155,11 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 			getDAO('HibachiDataDAO').deleteOldApiLogs(olderDate = dateAdd('d', maxDays, now()));
 		}
 		
-		var responseData = response['filecontent'];
-		
 		if(structKeyExists(response, 'mimetype') && response['mimetype'] == 'application/json'){
-			responseData = DeserializeJSON(response['filecontent']);
+			response['filecontent'] = DeserializeJSON(response['filecontent']);
 		}
 		
-		return { 'response' : responseData, 'status_code' : response['status_code'] };
+		return response;
 	}
 
 }
