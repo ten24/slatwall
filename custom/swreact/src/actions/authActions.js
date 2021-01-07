@@ -1,6 +1,6 @@
 import validator from 'validator'
 import { SlatwalApiService } from '../services'
-import { requestUser, receiveUser } from './userActions'
+import { requestUser, receiveUser, clearUser } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
 export const ERROR_LOGIN = 'ERROR_LOGIN'
@@ -26,15 +26,15 @@ const errorLogin = err => {
   }
 }
 
-export const logout = () => {
+export const requestLogOut = () => {
   return {
     type: LOGOUT,
   }
 }
-export const logoutUser = () => {
-  console.log('logoutUser')
+export const logout = () => {
   return async dispatch => {
-    dispatch(logout())
+    dispatch(requestLogOut())
+    dispatch(clearUser())
   }
 }
 

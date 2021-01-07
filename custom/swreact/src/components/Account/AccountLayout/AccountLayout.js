@@ -1,16 +1,16 @@
 import { Link } from 'react-router-dom'
 import { BreadCrumb } from '../..'
-import { logoutUser } from '../../../actions/authActions'
+import { logout } from '../../../actions/authActions'
 import { connect } from 'react-redux'
 
-const AccountSidebar = ({ logout }) => {
+const AccountSidebar = ({ logout, user }) => {
   return (
     <aside className="col-lg-4 pt-4 pt-lg-0">
       <div className="cz-sidebar-static rounded-lg box-shadow-lg px-0 pb-0 mb-5 mb-lg-0">
         <div className="px-4 mb-4">
           <div className="media align-items-center">
             <div className="media-body">
-              <h3 className="font-size-base mb-0">Susan Gardner</h3>
+              <h3 className="font-size-base mb-0">{`${user.firstName} ${user.lastName}`}</h3>
               <a
                 href="#"
                 onClick={() => {
@@ -32,42 +32,27 @@ const AccountSidebar = ({ logout }) => {
         </div>
         <ul className="list-unstyled mb-0">
           <li className="border-bottom mb-0">
-            <Link
-              to="/my-account/order-history"
-              className="nav-link-style d-flex align-items-center px-4 py-3"
-            >
+            <Link to="/my-account/order-history" className="nav-link-style d-flex align-items-center px-4 py-3">
               <i className="far fa-shopping-bag pr-2" /> Order History
             </Link>
           </li>
           <li className="border-bottom mb-0">
-            <Link
-              to="/my-account/profile"
-              className="nav-link-style d-flex align-items-center px-4 py-3"
-            >
+            <Link to="/my-account/profile" className="nav-link-style d-flex align-items-center px-4 py-3">
               <i className="far fa-user pr-2" /> Profile Info
             </Link>
           </li>
           <li className="border-bottom mb-0">
-            <Link
-              to="/my-account/favorites"
-              className="nav-link-style d-flex align-items-center px-4 py-3"
-            >
+            <Link to="/my-account/favorites" className="nav-link-style d-flex align-items-center px-4 py-3">
               <i className="far fa-heart pr-2" /> Favorties
             </Link>
           </li>
           <li className="border-bottom mb-0">
-            <Link
-              to="/my-account/addresses"
-              className="nav-link-style d-flex align-items-center px-4 py-3"
-            >
+            <Link to="/my-account/addresses" className="nav-link-style d-flex align-items-center px-4 py-3">
               <i className="far fa-map-marker-alt pr-2" /> Addresses
             </Link>
           </li>
           <li className="mb-0">
-            <Link
-              to="/my-account/cards"
-              className="nav-link-style d-flex align-items-center px-4 py-3"
-            >
+            <Link to="/my-account/cards" className="nav-link-style d-flex align-items-center px-4 py-3">
               <i className="far fa-credit-card pr-2" /> Payment Methods
             </Link>
           </li>
@@ -92,13 +77,13 @@ const AccountHeader = ({ crumbs, title }) => {
   )
 }
 
-const AccountLayout = ({ crumbs, children, title, logout }) => {
+const AccountLayout = ({ crumbs, children, title, logout, user }) => {
   return (
     <>
       <AccountHeader crumbs={crumbs} title={title} />
       <div className="container pb-5 mb-2 mb-md-3">
         <div className="row">
-          <AccountSidebar logout={logout} />
+          <AccountSidebar logout={logout} user={user} />
           <section className="col-lg-8">{children}</section>
         </div>
       </div>
@@ -106,11 +91,11 @@ const AccountLayout = ({ crumbs, children, title, logout }) => {
   )
 }
 const mapStateToProps = state => {
-  return {}
+  return { user: state.userReducer }
 }
 const mapDispatchToProps = dispatch => {
   return {
-    logout: async () => dispatch(logoutUser()),
+    logout: async () => dispatch(logout()),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AccountLayout)

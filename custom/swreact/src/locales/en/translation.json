@@ -882,6 +882,30 @@
                     "webWholesaleQEXP": "webWholesaleQEXP",
                     "webWholesaleQOH": "webWholesaleQOH"
                 },
+                "AccountLead": "Account Lead",
+                "DataResource": "Data Resource",
+                "OpenOrderItem": "Open Order Item",
+                "OrderImportBatchItem": {
+                    "processingErrors": "Processing Errors"
+                },
+                "OrderItemSkuBundle": "Order Item Sku Bundle",
+                "OrderStatusHistory": "Order Status History",
+                "PromotionMessageApplied": "Promotion Message Applied",
+                "ReservedKeyword": "Reserved Keyword",
+                "ResourceBundle": {
+                    "resourceBundleLocale": "Resource Bundle Locale",
+                    "resourcebundleValue": "Resource Bundle Value",
+                    "resourceBundleKey": "Resource Bundle Key"
+                },
+                "VolumeRebuildBatch": "Volume Rebuild Batch",
+                "VolumeRebuildBatchOrder": "Volume Rebuild BatchOrder",
+                "VolumeRebuildBatchOrderItem": "Volume Rebuild BatchOrderItem",
+                "ImporterMapping": {
+                    "description": "Description",
+                    "baseObject": "Base object",
+                    "mapping": "Mapping",
+                    "importerMappingID": "Importer Mapping ID"
+                },
                 "attribute": {
                     "attributeClassType": "attributeClassType",
                     "attributeCode": "Attribute Code",
@@ -3131,9 +3155,6 @@
                         "typename": "Status"
                     }
                 },
-                "OrderImportBatchItem": {
-                    "processingErrors": "Processing Errors"
-                },
                 "orderfulfillment": {
                     "discountAmount": "Discounts",
                     "fulfillmentcharge": "Fulfillment Charge",
@@ -4039,11 +4060,6 @@
                 },
                 "rewardType": "Reward Type",
                 "amountType": "Amount Type",
-                "ResourceBundle": {
-                    "resourceBundleLocale": "Resource Bundle Locale",
-                    "resourcebundleValue": "Resource Bundle Value",
-                    "resourceBundleKey": "Resource Bundle Key"
-                },
                 "resourcebundle_plural": "Resource Bundle"
             },
             "api": {
@@ -7522,7 +7538,8 @@
                         "twofactorauthentication": {
                             "disabled": "You have not enabled two-step authentication.",
                             "security_info": "Make your account more secure with two-step authentication. Each time you log in you'll be required to enter your password and a single-use authorization code."
-                        }
+                        },
+                        "wishlists": "Wishlists"
                     },
                     "addorderitemgiftrecipient": {
                         "createRecipient": "Create Recipient",
@@ -7773,6 +7790,7 @@
                     "listworkflow": "Workflows",
                     "listcyclecountbatch": "Cycle Count Batches",
                     "listcyclecountgroup": "Cycle Count Groups",
+                    "listimportermapping": "Importer Mappings",
                     "locationconfigurationtabs": {
                         "locationconfigurationsettings": "Location Configuration Settings"
                     },

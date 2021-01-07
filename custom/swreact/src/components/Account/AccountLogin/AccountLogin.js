@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { login } from '../../actions/authActions'
-import { getUser } from '../../actions/userActions'
+import { login } from '../../../actions/authActions'
+import { getUser } from '../../../actions/userActions'
 import { connect } from 'react-redux'
 
 const AccountLogin = ({ login, auth }) => {
@@ -12,7 +12,7 @@ const AccountLogin = ({ login, auth }) => {
       <span>Username</span>
       <input
         value={email}
-        onChange={(event) => {
+        onChange={event => {
           setEmail(event.target.value)
         }}
       />
@@ -20,7 +20,7 @@ const AccountLogin = ({ login, auth }) => {
       <input
         value={password}
         type="password"
-        onChange={(event) => {
+        onChange={event => {
           setPassword(event.target.value)
         }}
       />
@@ -37,14 +37,14 @@ const AccountLogin = ({ login, auth }) => {
     </div>
   )
 }
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     auth: state.authReducer,
     user: state.userReducer,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   console.log('were')
   return {
     getUser: async () => dispatch(getUser()),

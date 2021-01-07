@@ -6,11 +6,11 @@ import { connect } from 'react-redux'
 const About = ({ title, customBody }) => {
   return (
     <Layout>
-      <div class="bg-light p-0">
-        <div class="page-title-overlap bg-lightgray pt-4">
-          <div class="container d-lg-flex justify-content-between py-2 py-lg-3">
-            <div class="order-lg-1 pr-lg-4 text-center">
-              <h1 class="h3 text-dark mb-0 font-accent">{title}</h1>
+      <div className="bg-light p-0">
+        <div className="page-title-overlap bg-lightgray pt-4">
+          <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
+            <div className="order-lg-1 pr-lg-4 text-center">
+              <h1 className="h3 text-dark mb-0 font-accent">{title}</h1>
             </div>
           </div>
         </div>

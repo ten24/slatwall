@@ -50,7 +50,6 @@ const errorCreateUser = err => {
 
 export const getUser = () => {
   return async dispatch => {
-    console.log('REDUX')
     const loginToken = localStorage.getItem('loginToken')
 
     dispatch(requestUser(loginToken))
@@ -61,7 +60,7 @@ export const getUser = () => {
     })
 
     if (req.isFail()) {
-      logout()
+      dispatch(logout())
     } else {
       dispatch(receiveUser(req.success().account))
     }

@@ -43,6 +43,18 @@
         */
         window.__PRELOADED_STATE__ = JSON.stringify({
           preload: {},
+          userReducer: { 
+            accountID: '',
+            firstName: '',
+            lastName: '',
+            primaryEmailAddress: {
+              emailAddress: '',
+            },
+            primaryPhoneNumber: {
+              phoneNumber: '',
+            },
+            company: '',
+          },
         }).replace(/</g, '\\u003c')
       </script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

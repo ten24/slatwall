@@ -1,7 +1,6 @@
 export default {
   navigation: {
-    mainNavigation:
-      '<ul> <li><a href="/">Home</a></li> <li><a href="/about">About</a></li> <li><a href="/contact">Contact</a></li> </ul>',
+    mainNavigation: '<ul> <li><a href="/">Home</a></li> <li><a href="/about">About</a></li> <li><a href="/contact">Contact</a></li> </ul>',
     productCategories: [
       {
         contentBody: ' ',
@@ -23,8 +22,7 @@ export default {
         associatedImage: ' ',
         contentID: '2c91808a74bb14de0174bc712e870021',
         cmsContentIDPath: ' ',
-        customBody:
-          '<a class="product-dropdown-header" href="/">Accessories</a>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Key Cabinets</a></li>\r\n\t<li><a href="/product-detail">Key Storage</a></li>\r\n\t<li><a href="/product-detail">Key Tags</a></li>\r\n\t<li><a href="/product-detail">Key Caps</a></li>\r\n\t<li><a href="/product-detail">Wrist Coils</a></li>\r\n\t<li><a href="/product-detail">Tough Links</a></li>\r\n\t<li><a href="/product-detail">Key Identifiers</a></li>\r\n\t<li><a href="/product-detail">Key Rings</a></li>\r\n\t<li><a href="/product-detail">Lanyards</a></li>\r\n\t<li><a href="/product-detail">Key Retractors</a></li>\r\n\t<li><a href="/product-detail">Key Releases</a></li>\r\n\t<li><a href="/product-detail">Key Lights</a></li>\r\n</ul>\r\n',
+        customBody: '<a class="product-dropdown-header" href="/">Accessories</a>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Key Cabinets</a></li>\r\n\t<li><a href="/product-detail">Key Storage</a></li>\r\n\t<li><a href="/product-detail">Key Tags</a></li>\r\n\t<li><a href="/product-detail">Key Caps</a></li>\r\n\t<li><a href="/product-detail">Wrist Coils</a></li>\r\n\t<li><a href="/product-detail">Tough Links</a></li>\r\n\t<li><a href="/product-detail">Key Identifiers</a></li>\r\n\t<li><a href="/product-detail">Key Rings</a></li>\r\n\t<li><a href="/product-detail">Lanyards</a></li>\r\n\t<li><a href="/product-detail">Key Retractors</a></li>\r\n\t<li><a href="/product-detail">Key Releases</a></li>\r\n\t<li><a href="/product-detail">Key Lights</a></li>\r\n</ul>\r\n',
         parentContent_title: 'Keyblanks & Automotive',
         urlTitlePath: ' ',
         linkUrl: '/category-listing',
@@ -85,8 +83,7 @@ export default {
         associatedImage: ' ',
         contentID: '2c91808a74bb14de0174bc9292e7002f',
         cmsContentIDPath: ' ',
-        customBody:
-          '<p><a class="product-dropdown-header" href="/">Automotive</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Keys</a></li>\r\n\t<li><a href="/product-detail">Remotes</a></li>\r\n\t<li><a href="/product-detail">Transponder Keys</a></li>\r\n\t<li><a href="/product-detail">Shells</a></li>\r\n\t<li><a href="/product-detail">Remote Head Keys</a></li>\r\n\t<li><a href="/product-detail">Auto Locks</a></li>\r\n\t<li><a href="/product-detail">Auto Tools</a></li>\r\n\t<li><a href="/product-detail">Programming Tools</a></li>\r\n\t<li><a href="/product-detail">Parts</a></li>\r\n</ul>\r\n',
+        customBody: '<p><a class="product-dropdown-header" href="/">Automotive</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Keys</a></li>\r\n\t<li><a href="/product-detail">Remotes</a></li>\r\n\t<li><a href="/product-detail">Transponder Keys</a></li>\r\n\t<li><a href="/product-detail">Shells</a></li>\r\n\t<li><a href="/product-detail">Remote Head Keys</a></li>\r\n\t<li><a href="/product-detail">Auto Locks</a></li>\r\n\t<li><a href="/product-detail">Auto Tools</a></li>\r\n\t<li><a href="/product-detail">Programming Tools</a></li>\r\n\t<li><a href="/product-detail">Parts</a></li>\r\n</ul>\r\n',
         parentContent_title: 'Keyblanks & Automotive',
         urlTitlePath: ' ',
         linkUrl: '/category-listing',
@@ -116,8 +113,7 @@ export default {
         associatedImage: ' ',
         contentID: '2c91808a74bb14de0174bccba6680036',
         cmsContentIDPath: ' ',
-        customBody:
-          '<p><a class="product-dropdown-header" href="/">Locksmith Tools</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Automotive Tools </a></li>\r\n\t<li><a href="/product-detail">Picks</a></li>\r\n\t<li><a href="/product-detail">Pin Kits</a></li>\r\n\t<li><a href="/product-detail">Hinge Repair </a></li>\r\n\t<li><a href="/product-detail">Keying Tools </a></li>\r\n\t<li><a href="/product-detail">Files</a></li>\r\n\t<li><a href="/product-detail">Drill Bits</a></li>\r\n\t<li><a href="/product-detail">Miscellaneous</a></li>\r\n</ul>\r\n',
+        customBody: '<p><a class="product-dropdown-header" href="/">Locksmith Tools</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Automotive Tools </a></li>\r\n\t<li><a href="/product-detail">Picks</a></li>\r\n\t<li><a href="/product-detail">Pin Kits</a></li>\r\n\t<li><a href="/product-detail">Hinge Repair </a></li>\r\n\t<li><a href="/product-detail">Keying Tools </a></li>\r\n\t<li><a href="/product-detail">Files</a></li>\r\n\t<li><a href="/product-detail">Drill Bits</a></li>\r\n\t<li><a href="/product-detail">Miscellaneous</a></li>\r\n</ul>\r\n',
         parentContent_title: 'Cylinders, Rekeying Supplies & Tools',
         urlTitlePath: ' ',
         linkUrl: '/category-listing',
@@ -147,8 +143,7 @@ export default {
         associatedImage: ' ',
         contentID: '2c91808a74bb14de0174bccdaf200038',
         cmsContentIDPath: ' ',
-        customBody:
-          '<p><a class="product-dropdown-header" href="/">IC Cores, Housings </a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Rim Housings </a></li>\r\n\t<li><a href="/product-detail">Mortise Housings</a></li>\r\n\t<li><a href="/product-detail">IC Cores</a></li>\r\n\t<li><a href="/product-detail">Convertible Housings </a></li>\r\n\t<li><a href="/product-detail">Cams, Tailpieces &amp; Parts </a></li>\r\n\t<li><a href="/product-detail">Kits</a></li>\r\n\t<li><a href="/product-detail">Pins</a></li>\r\n\t<li><a href="/product-detail">Tools</a></li>\r\n</ul>\r\n',
+        customBody: '<p><a class="product-dropdown-header" href="/">IC Cores, Housings </a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Rim Housings </a></li>\r\n\t<li><a href="/product-detail">Mortise Housings</a></li>\r\n\t<li><a href="/product-detail">IC Cores</a></li>\r\n\t<li><a href="/product-detail">Convertible Housings </a></li>\r\n\t<li><a href="/product-detail">Cams, Tailpieces &amp; Parts </a></li>\r\n\t<li><a href="/product-detail">Kits</a></li>\r\n\t<li><a href="/product-detail">Pins</a></li>\r\n\t<li><a href="/product-detail">Tools</a></li>\r\n</ul>\r\n',
         parentContent_title: 'Cylinders, Rekeying Supplies & Tools',
         urlTitlePath: ' ',
         linkUrl: '/category-listing',
@@ -178,8 +173,7 @@ export default {
         associatedImage: ' ',
         contentID: '2c91808a74bb14de0174bccf1a89003a',
         cmsContentIDPath: ' ',
-        customBody:
-          '<p><a class="product-dropdown-header" href="/">Cylinders</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Universal KIK/KIL/KID C-Clip </a></li>\r\n\t<li><a href="/product-detail">Universal KIK/KIL/KID Screwcap </a></li>\r\n\t<li><a href="/product-detail">Key-in-Knob</a></li>\r\n\t<li><a href="/product-detail">Key-in-Deadbolt</a></li>\r\n\t<li><a href="/product-detail">Mortise Cylinders</a></li>\r\n\t<li><a href="/product-detail">Specialty Cylinders</a></li>\r\n\t<li><a href="/product-detail">Dummy Cylinders </a></li>\r\n\t<li><a href="/product-detail">Thumbturn</a></li>\r\n\t<li><a href="/product-detail">Profile Cylinders</a></li>\r\n</ul>\r\n',
+        customBody: '<p><a class="product-dropdown-header" href="/">Cylinders</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Universal KIK/KIL/KID C-Clip </a></li>\r\n\t<li><a href="/product-detail">Universal KIK/KIL/KID Screwcap </a></li>\r\n\t<li><a href="/product-detail">Key-in-Knob</a></li>\r\n\t<li><a href="/product-detail">Key-in-Deadbolt</a></li>\r\n\t<li><a href="/product-detail">Mortise Cylinders</a></li>\r\n\t<li><a href="/product-detail">Specialty Cylinders</a></li>\r\n\t<li><a href="/product-detail">Dummy Cylinders </a></li>\r\n\t<li><a href="/product-detail">Thumbturn</a></li>\r\n\t<li><a href="/product-detail">Profile Cylinders</a></li>\r\n</ul>\r\n',
         parentContent_title: 'Cylinders, Rekeying Supplies & Tools',
         urlTitlePath: ' ',
         linkUrl: '/category-listing',
@@ -209,8 +203,7 @@ export default {
         associatedImage: ' ',
         contentID: '2c91808a74bb14de0174bcd097c1003c',
         cmsContentIDPath: ' ',
-        customBody:
-          '<p><a class="product-dropdown-header" href="/">Parts &amp; Components</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Cams</a></li>\r\n\t<li><a href="/product-detail">Tailpieces</a></li>\r\n\t<li><a href="/product-detail">Pins &amp; Pinning Parts </a></li>\r\n\t<li><a href="/product-detail">Collars</a></li>\r\n\t<li><a href="/product-detail">Plugs</a></li>\r\n\t<li><a href="/product-detail">Miscellaneous</a></li>\r\n</ul>\r\n',
+        customBody: '<p><a class="product-dropdown-header" href="/">Parts &amp; Components</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Cams</a></li>\r\n\t<li><a href="/product-detail">Tailpieces</a></li>\r\n\t<li><a href="/product-detail">Pins &amp; Pinning Parts </a></li>\r\n\t<li><a href="/product-detail">Collars</a></li>\r\n\t<li><a href="/product-detail">Plugs</a></li>\r\n\t<li><a href="/product-detail">Miscellaneous</a></li>\r\n</ul>\r\n',
         parentContent_title: 'Cylinders, Rekeying Supplies & Tools',
         urlTitlePath: ' ',
         linkUrl: '/category-listing',
@@ -240,8 +233,7 @@ export default {
         associatedImage: ' ',
         contentID: '2c91808274d4e2120174d52f79430011',
         cmsContentIDPath: ' ',
-        customBody:
-          '<p><a class="product-dropdown-header" href="/">Key Machines</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Manual</a></li>\r\n\t<li><a href="/product-detail">Semi-Automatic</a></li>\r\n\t<li><a href="/product-detail">Automatic</a></li>\r\n\t<li><a href="/product-detail">Tubular</a></li>\r\n\t<li><a href="/product-detail">Hi-Security Sidewinder </a></li>\r\n\t<li><a href="/product-detail">Code Origination</a></li>\r\n</ul>\r\n\r\n<p><a class="product-dropdown-header" href="/">Key Machine Replacement Parts </a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Cutters</a></li>\r\n\t<li><a href="/product-detail">Brushes</a></li>\r\n\t<li><a href="/product-detail">Parts</a></li>\r\n</ul>\r\n',
+        customBody: '<p><a class="product-dropdown-header" href="/">Key Machines</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Manual</a></li>\r\n\t<li><a href="/product-detail">Semi-Automatic</a></li>\r\n\t<li><a href="/product-detail">Automatic</a></li>\r\n\t<li><a href="/product-detail">Tubular</a></li>\r\n\t<li><a href="/product-detail">Hi-Security Sidewinder </a></li>\r\n\t<li><a href="/product-detail">Code Origination</a></li>\r\n</ul>\r\n\r\n<p><a class="product-dropdown-header" href="/">Key Machine Replacement Parts </a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Cutters</a></li>\r\n\t<li><a href="/product-detail">Brushes</a></li>\r\n\t<li><a href="/product-detail">Parts</a></li>\r\n</ul>\r\n',
         parentContent_title: 'Key Machines & Safes',
         urlTitlePath: ' ',
         linkUrl: '/category-listing',
@@ -426,8 +418,7 @@ export default {
         associatedImage: ' ',
         contentID: '2c91808274d4e2120174d5425f320017',
         cmsContentIDPath: ' ',
-        customBody:
-          '<p><a class="product-dropdown-header" href="/">Cam Locks &amp; Auxiliary Locks</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Drawer Locks </a></li>\r\n\t<li><a href="/product-detail">Cam Locks </a></li>\r\n\t<li><a href="/product-detail">Door Locks </a></li>\r\n\t<li><a href="/product-detail">Cabinet Locks </a></li>\r\n\t<li><a href="/product-detail">Auxiliary Locks </a></li>\r\n\t<li><a href="/product-detail">Mailbox Locks </a></li>\r\n\t<li><a href="/product-detail">Regulator</a></li>\r\n\t<li><a href="/product-detail">Replacement Knobs </a></li>\r\n\t<li><a href="/product-detail">Window Locks </a></li>\r\n\t<li><a href="/product-detail">Showcase Locks </a></li>\r\n\t<li><a href="/product-detail">Desk Locks</a></li>\r\n</ul>\r\n',
+        customBody: '<p><a class="product-dropdown-header" href="/">Cam Locks &amp; Auxiliary Locks</a></p>\r\n\r\n<ul>\r\n\t<li><a href="/product-detail">Drawer Locks </a></li>\r\n\t<li><a href="/product-detail">Cam Locks </a></li>\r\n\t<li><a href="/product-detail">Door Locks </a></li>\r\n\t<li><a href="/product-detail">Cabinet Locks </a></li>\r\n\t<li><a href="/product-detail">Auxiliary Locks </a></li>\r\n\t<li><a href="/product-detail">Mailbox Locks </a></li>\r\n\t<li><a href="/product-detail">Regulator</a></li>\r\n\t<li><a href="/product-detail">Replacement Knobs </a></li>\r\n\t<li><a href="/product-detail">Window Locks </a></li>\r\n\t<li><a href="/product-detail">Showcase Locks </a></li>\r\n\t<li><a href="/product-detail">Desk Locks</a></li>\r\n</ul>\r\n',
         parentContent_title: 'Builders Hardware & Utility Locks',
         urlTitlePath: ' ',
         linkUrl: '/category-listing',
@@ -530,8 +521,7 @@ export default {
         titlePath: ' ',
         cmsContentIDPath: ' ',
         allowPurchaseFlag: ' ',
-        customBody:
-          '<p>We are a Security Hardware Wholesale Company based out of Worcester, MA, dedicated to helping you and your company do business on a day-to-day basis. We offer a wide range of high-quality products and services at competitive prices. There is no minimum order requirement, and we ship to most locations in New England next-day delivery.</p>\r\n',
+        customBody: '<p>We are a Security Hardware Wholesale Company based out of Worcester, MA, dedicated to helping you and your company do business on a day-to-day basis. We offer a wide range of high-quality products and services at competitive prices. There is no minimum order requirement, and we ship to most locations in New England next-day delivery.</p>\r\n',
         templateFlag: ' ',
         urlTitlePath: ' ',
         productListingPageFlag: ' ',
@@ -559,8 +549,7 @@ export default {
         titlePath: ' ',
         cmsContentIDPath: ' ',
         allowPurchaseFlag: ' ',
-        customBody:
-          '<p>We keep inventory of over 90 manufacturers on the shelf, giving you access to a wide range of products. No matter what the job requires we can get you what you need, and fast.</p>',
+        customBody: '<p>We keep inventory of over 90 manufacturers on the shelf, giving you access to a wide range of products. No matter what the job requires we can get you what you need, and fast.</p>',
         templateFlag: ' ',
         urlTitlePath: ' ',
         productListingPageFlag: ' ',
@@ -586,8 +575,7 @@ export default {
         titlePath: ' ',
         cmsContentIDPath: ' ',
         allowPurchaseFlag: ' ',
-        customBody:
-          '<p>We love our industry, and believe that working together is essential to ensuring that it thrives. We offer in-house training for anyone that would like to expand their knowledge and continue learning through a hands-on approach.</p>\r\n',
+        customBody: '<p>We love our industry, and believe that working together is essential to ensuring that it thrives. We offer in-house training for anyone that would like to expand their knowledge and continue learning through a hands-on approach.</p>\r\n',
         templateFlag: ' ',
         urlTitlePath: ' ',
         productListingPageFlag: ' ',
@@ -613,8 +601,7 @@ export default {
         titlePath: ' ',
         cmsContentIDPath: ' ',
         allowPurchaseFlag: ' ',
-        customBody:
-          '<p>Stone &amp; Berg Company, Inc. has been providing specialized services to clients in the locksmith industry for more than 52 years. We have an in-house technical staff that will be happy to assist you with any questions you may have, so don&rsquo;t be afraid to pick up the phone!</p>\r\n',
+        customBody: '<p>Stone &amp; Berg Company, Inc. has been providing specialized services to clients in the locksmith industry for more than 52 years. We have an in-house technical staff that will be happy to assist you with any questions you may have, so don&rsquo;t be afraid to pick up the phone!</p>\r\n',
         templateFlag: ' ',
         urlTitlePath: ' ',
         productListingPageFlag: ' ',
@@ -764,15 +751,11 @@ export default {
   footer: {
     actionBanner: {
       display: true,
-      markup:
-        '<h4>Can&#39;t find what you are looking for?</h4> <p>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero&#39;s De Finibus Bonorum et Malorum for use in a type specimen book.</p> <p><a href="##" class="btn">Contact Us</a></p>',
+      markup: '<h4>Can&#39;t find what you are looking for?</h4> <p>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero&#39;s De Finibus Bonorum et Malorum for use in a type specimen book.</p> <p><a href="##" class="btn">Contact Us</a></p>',
     },
-    getInTouch:
-      '<h3>Get in Touch</h3> <ul> <li>(508) 753-3551</li> <li>Toll Free: (800)535-5625</li> <li><a href="http://emailto:orders@stoneandberg.com">orders@stonandberg.com</a></li> <li>Monday - Friday: 8AM - 5PM</li> </ul> <p>&nbsp;</p> <ul> <li>239 Mill Street</li> <li>Worchester, MA 01602</li> </ul>',
-    siteLinks:
-      '<h3>Site Links</h3> <ul> <li><a href="##">Home</a></li> <li><a href="##">Products</a></li> <li><a href="##">About</a></li> <li><a href="##">Resources</a></li> <li><a href="##">Contact</a></li> <li><a href="##">My Account</a></li> </ul>',
-    stayInformed:
-      '<h3>Stay Informed</h3> <p>Sign up to receive any updates on pricing, specials, industry events and lcoal training at our facility!</p>',
+    getInTouch: '<h3>Get in Touch</h3> <ul> <li>(508) 753-3551</li> <li>Toll Free: (800)535-5625</li> <li><a href="http://emailto:orders@stoneandberg.com">orders@stonandberg.com</a></li> <li>Monday - Friday: 8AM - 5PM</li> </ul> <p>&nbsp;</p> <ul> <li>239 Mill Street</li> <li>Worchester, MA 01602</li> </ul>',
+    siteLinks: '<h3>Site Links</h3> <ul> <li><a href="##">Home</a></li> <li><a href="##">Products</a></li> <li><a href="##">About</a></li> <li><a href="##">Resources</a></li> <li><a href="##">Contact</a></li> <li><a href="##">My Account</a></li> </ul>',
+    stayInformed: '<h3>Stay Informed</h3> <p>Sign up to receive any updates on pricing, specials, industry events and lcoal training at our facility!</p>',
     copywriteDate: '2020',
   },
   about: {
@@ -791,13 +774,10 @@ export default {
     },
     actionBanner: {
       display: true,
-      markup:
-        '<h4 style="text-align:center">Looking to Open an Account?</h4> <p style="text-align:center">Fill out the Credit Application completely and email it to orders@stoneandberg.com so that we may begin the application process for your in-house account. Once we have accepted your credit application and verified your company you will be ready to order!</p> <p style="text-align:center"><a class="btn" href="/custom/assets/Files/StoneBerg_Credit_App.pdf">Download Credit Application</a></p>',
+      markup: '<h4 style="text-align:center">Looking to Open an Account?</h4> <p style="text-align:center">Fill out the Credit Application completely and email it to orders@stoneandberg.com so that we may begin the application process for your in-house account. Once we have accepted your credit application and verified your company you will be ready to order!</p> <p style="text-align:center"><a class="btn" href="/custom/assets/Files/StoneBerg_Credit_App.pdf">Download Credit Application</a></p>',
     },
-    customBody:
-      '<p><strong>Stone &amp; Berg</strong><br /> 239 Mill Street<br /> Worcester MA 01602</p> <p>Phone: (508) 753-3551<br /> Toll Free: (800) 225-7405<br /> Fax: (800) 535-5625</p> <p><strong>Email</strong><br /> orders@stoneandberg.com</p> <p><strong>Hours</strong><br /> Monday - Friday<br /> 8AM - 5PM</p>',
-    customSummary:
-      '<h2>We are here to help. Contact us with any questions.</h2> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>',
+    customBody: '<p><strong>Stone &amp; Berg</strong><br /> 239 Mill Street<br /> Worcester MA 01602</p> <p>Phone: (508) 753-3551<br /> Toll Free: (800) 225-7405<br /> Fax: (800) 535-5625</p> <p><strong>Email</strong><br /> orders@stoneandberg.com</p> <p><strong>Hours</strong><br /> Monday - Friday<br /> 8AM - 5PM</p>',
+    customSummary: '<h2>We are here to help. Contact us with any questions.</h2> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>',
   },
   categoryListing: {
     template: 'category-listing',
@@ -841,10 +821,8 @@ export default {
         ],
       },
     ],
-    customBody:
-      '<p><strong>Stone &amp; Berg</strong><br /> 239 Mill Street<br /> Worcester MA 01602</p> <p>Phone: (508) 753-3551<br /> Toll Free: (800) 225-7405<br /> Fax: (800) 535-5625</p> <p><strong>Email</strong><br /> orders@stoneandberg.com</p> <p><strong>Hours</strong><br /> Monday - Friday<br /> 8AM - 5PM</p>',
-    customSummary:
-      '<h2>We are here to help. Contact us with any questions.</h2> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>',
+    customBody: '<p><strong>Stone &amp; Berg</strong><br /> 239 Mill Street<br /> Worcester MA 01602</p> <p>Phone: (508) 753-3551<br /> Toll Free: (800) 225-7405<br /> Fax: (800) 535-5625</p> <p><strong>Email</strong><br /> orders@stoneandberg.com</p> <p><strong>Hours</strong><br /> Monday - Friday<br /> 8AM - 5PM</p>',
+    customSummary: '<h2>We are here to help. Contact us with any questions.</h2> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>',
   },
   accountOverview: {
     crumbs: [
@@ -854,8 +832,7 @@ export default {
     template: 'account-dashboard',
     title: 'My Dashboard',
     contentTitle: 'Welcome to Stone and Berg',
-    customBody:
-      '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget.</p> <p><a href="/shop">Start Shopping</a></p>',
+    customBody: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget.</p> <p><a href="/shop">Start Shopping</a></p>',
     customSummary: '',
   },
   accountProfile: {
@@ -869,5 +846,188 @@ export default {
     contentTitle: 'Update your profile details below:',
     customBody: '',
     customSummary: '',
+  },
+  accountOrderHistory: {
+    crumbs: [
+      { slug: '/', title: 'Home' },
+      { slug: '/my-account', title: 'Account' },
+      { slug: '/my-account/order-history', title: 'Order History' },
+    ],
+    template: 'order-history',
+    title: 'My Orders',
+    contentTitle: '',
+    customBody: '',
+    customSummary: '',
+    orders: [
+      {
+        number: '34VB5540K83',
+        location: 'PO: 51705',
+        datePurchased: 'May 21, 2019',
+        status: 'New',
+        statusType: 'info',
+        total: '$358.75',
+        trackingNumbers: ['573289573802', '643068306672'],
+      },
+
+      {
+        number: '78A643CD409',
+        location: '',
+        datePurchased: 'December 09, 2018',
+        status: 'Canceled',
+        statusType: 'danger',
+        total: '$760.50',
+        trackingNumbers: ['573289573802', '643068306672'],
+      },
+
+      {
+        number: '112P45A90V2',
+        location: '',
+        datePurchased: 'October 15, 2018',
+        status: 'Partially Shipped',
+        statusType: 'warning',
+        total: '$1,264.00',
+        trackingNumbers: ['573289573802', '643068306672'],
+      },
+
+      {
+        number: '28BA67U0981',
+        location: '',
+        datePurchased: 'July 19, 2018',
+        status: 'Complete',
+        statusType: 'success',
+        total: '$198.35',
+        trackingNumbers: ['573289573802', '643068306672'],
+      },
+
+      {
+        number: '502TR872W2',
+        location: '',
+        datePurchased: 'April 04, 2018',
+        status: 'Complete',
+        statusType: 'success',
+        total: '$2,133.90',
+        trackingNumbers: ['573289573802', '643068306672'],
+      },
+
+      {
+        number: '47H76G09F33',
+        location: '',
+        datePurchased: 'March 30, 2018',
+        status: 'Complete',
+        statusType: 'success',
+        total: '$86.40',
+        trackingNumbers: ['573289573802', '643068306672'],
+      },
+    ],
+  },
+  accountFavorites: {
+    crumbs: [
+      { slug: '/', title: 'Home' },
+      { slug: '/my-account', title: 'Account' },
+      { slug: '/my-account/favorites', title: 'Favorites' },
+    ],
+    template: 'order-history',
+    title: 'My Favorites',
+    contentTitle: '',
+    customBody: '',
+    customSummary: '',
+    items: [
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        linkUrl: '/hop-single-v1.html',
+      },
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        linkUrl: '/shop-single-v1.html',
+      },
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        linkUrl: '/shop-single-v1.html',
+      },
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        linkUrl: '/shop-single-v1.html',
+      },
+    ],
+  },
+  accountAddresses: {
+    crumbs: [
+      { slug: '/', title: 'Home' },
+      { slug: '/my-account', title: 'Account' },
+      { slug: '/my-account/addresses', title: 'Addresses' },
+    ],
+    template: 'account-address',
+    title: 'My Addresses',
+    contentTitle: 'List of your registered addresses:',
+    customBody: '',
+    customSummary: '',
+    addresses: [
+      {
+        location: '396 Lillian Blvd, Holbrook, NY 11741, USA',
+        isPrimary: true,
+      },
+      {
+        location: '769, Industrial, West Chicago, IL 60185, USA',
+        isPrimary: false,
+      },
+      {
+        location: '514 S. Magnolia St. Orlando, FL 32806, USA',
+        isPrimary: false,
+      },
+    ],
+  },
+  accountPaymentMethods: {
+    crumbs: [
+      { slug: '/', title: 'Home' },
+      { slug: '/my-account', title: 'Account' },
+      { slug: '/my-account/cards', title: 'Payment Methods' },
+    ],
+    template: 'cards',
+    title: 'Payment Methods',
+    contentTitle: 'Primary payment method is used by default',
+    customBody: '',
+    customSummary: '',
+    paymentMethods: [
+      {
+        type: 'Visa',
+        ending: 'ending in 4999',
+        isPrimary: true,
+        name: 'Susan Gardner',
+        expirationDate: '08 / 2019',
+      },
+      {
+        type: 'MasterCard',
+        ending: 'ending in 0015',
+        isPrimary: false,
+        name: 'Susan Gardner',
+        expirationDate: '11 / 2021',
+      },
+      {
+        type: 'Visa',
+        ending: 'ending in 6073',
+        isPrimary: false,
+        name: 'Susan Gardner',
+        expirationDate: '09 / 2021',
+      },
+      {
+        type: 'Visa',
+        ending: 'ending in 9791',
+        isPrimary: false,
+        name: 'Susan Gardner',
+        expirationDate: '05 / 2021',
+      },
+    ],
   },
 }

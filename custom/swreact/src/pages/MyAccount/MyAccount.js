@@ -5,32 +5,18 @@ import { getUser } from '../../actions/userActions'
 import { connect } from 'react-redux'
 import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
 
-const AccountLogin = React.lazy(() =>
-  import('../../components/AccountLogin/AccountLogin')
-)
-const AccountOverview = React.lazy(() =>
-  import('../../components/Account/AccountOverview/AccountOverview')
-)
+const AccountLogin = React.lazy(() => import('../../components/Account/AccountLogin/AccountLogin'))
+const AccountOverview = React.lazy(() => import('../../components/Account/AccountOverview/AccountOverview'))
 
-const AccountProfile = React.lazy(() =>
-  import('../../components/Account/AccountProfile/AccountProfile')
-)
+const AccountProfile = React.lazy(() => import('../../components/Account/AccountProfile/AccountProfile'))
 
-const AccountFavorites = React.lazy(() =>
-  import('../../components/Account/AccountFavorites/AccountFavorites')
-)
+const AccountFavorites = React.lazy(() => import('../../components/Account/AccountFavorites/AccountFavorites'))
 
-const AccountAddresses = React.lazy(() =>
-  import('../../components/Account/AccountAddresses/AccountAddresses')
-)
+const AccountAddresses = React.lazy(() => import('../../components/Account/AccountAddresses/AccountAddresses'))
 
-const AccountPaymentMethods = React.lazy(() =>
-  import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods')
-)
+const AccountPaymentMethods = React.lazy(() => import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods'))
 
-const AccountOrderHistory = React.lazy(() =>
-  import('../../components/Account/AccountOrderHistory/AccountOrderHistory')
-)
+const AccountOrderHistory = React.lazy(() => import('../../components/Account/AccountOrderHistory/AccountOrderHistory'))
 
 const MyAccount = props => {
   const { auth } = props

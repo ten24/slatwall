@@ -9,7 +9,7 @@ const CartMenuItem = ({ orderCount, total }) => {
   return (
     <div className="navbar-tool ml-3">
       <a className="navbar-tool-icon-box bg-secondary" href="##">
-        <span className="navbar-tool-label">{orderCount}</span>
+        {orderCount > 0 && <span className="navbar-tool-label">{orderCount}</span>}
         <i className="far fa-shopping-cart"></i>
       </a>
       <a className="navbar-tool-text" href="shop-cart.html">
@@ -22,11 +22,7 @@ const CartMenuItem = ({ orderCount, total }) => {
 const MegaMenu = props => {
   return (
     <li className="nav-item dropdown">
-      <a
-        className="nav-link dropdown-toggle"
-        href={props.linkUrl}
-        data-toggle="dropdown"
-      >
+      <a className="nav-link dropdown-toggle" href={props.linkUrl} data-toggle="dropdown">
         {props.title}
       </a>
       <div className="dropdown-menu pt-0 pb-3">
@@ -55,6 +51,23 @@ const MegaMenu = props => {
   )
 }
 
+const AccountBubble = ({ isAuthenticated, name }) => {
+  return (
+    <>
+      <div className="navbar-tool-icon-box">
+        <i className="far fa-user"></i>
+      </div>
+      <div className="navbar-tool-text ml-n3">
+        <small>
+          Hello, {isAuthenticated && name}
+          {!isAuthenticated && 'Sign in'}
+        </small>
+        My Account
+      </div>
+    </>
+  )
+}
+
 function Header(props) {
   let menuItems = new Map()
   props.productCategories.forEach(item => {
@@ -72,28 +85,17 @@ function Header(props) {
       <div className="navbar-sticky bg-light">
         <div className="navbar navbar-expand-lg navbar-light">
           <div className="container">
-            <a
-              className="navbar-brand d-none d-md-block mr-3 flex-shrink-0"
-              href="/"
-            >
+            <a className="navbar-brand d-none d-md-block mr-3 flex-shrink-0" href="/">
               <img src={logo} alt="Stone & Berg Logo" />
             </a>
             <a className="navbar-brand d-md-none mr-2" href="/">
-              <img
-                src={mobileLogo}
-                style={{ minWidth: '90px' }}
-                alt="Stone & Berg Logo"
-              />
+              <img src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
             </a>
 
             <div className="navbar-right">
               <div className="navbar-topright">
                 <div className="input-group-overlay d-none d-lg-flex">
-                  <input
-                    className="form-control appended-form-control"
-                    type="text"
-                    placeholder="Search for products"
-                  />
+                  <input className="form-control appended-form-control" type="text" placeholder="Search for products" />
                   <div className="input-group-append-overlay">
                     <span className="input-group-text">
                       <i className="far fa-search"></i>
@@ -101,12 +103,7 @@ function Header(props) {
                   </div>
                 </div>
                 <div className="navbar-toolbar d-flex flex-shrink-0 align-items-center">
-                  <button
-                    className="navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="##navbarCollapse"
-                  >
+                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="##navbarCollapse">
                     <span className="navbar-toggler-icon"></span>
                   </button>
                   <a className="navbar-tool navbar-stuck-toggler" href="##">
@@ -115,17 +112,8 @@ function Header(props) {
                       <i className="far fa-bars"></i>
                     </div>
                   </a>
-                  <Link
-                    className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2"
-                    to="/MyAccount"
-                    data-toggle="modal"
-                  >
-                    <div className="navbar-tool-icon-box">
-                      <i className="far fa-user"></i>
-                    </div>
-                    <div className="navbar-tool-text ml-n3">
-                      <small>Hello, Sign in</small>My Account
-                    </div>
+                  <Link className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" to="/MyAccount" data-toggle="modal">
+                    <AccountBubble isAuthenticated={props.user.accountID} name={props.user.firstName} />
                   </Link>
 
                   <CartMenuItem {...props} />
@@ -151,30 +139,18 @@ function Header(props) {
                     <i className="far fa-search"></i>
                   </span>
                 </div>
-                <input
-                  className="form-control prepended-form-control"
-                  type="text"
-                  placeholder="Search for products"
-                />
+                <input className="form-control prepended-form-control" type="text" placeholder="Search for products" />
               </div>
 
               <ul className="navbar-nav nav-categories">
                 {[...menuItems.values()].map((menuItem, index) => {
-                  return (
-                    <MegaMenu
-                      key={index}
-                      subMenu={menuItem}
-                      title={menuItem[0]['parentContent_title']}
-                      linkUrl={menuItem[0]['linkUrl']}
-                    />
-                  )
+                  return <MegaMenu key={index} subMenu={menuItem} title={menuItem[0]['parentContent_title']} linkUrl={menuItem[0]['linkUrl']} />
                 })}
               </ul>
               <ul className="navbar-nav mega-nav ml-lg-2">
                 <li className="nav-item">
                   <a className="nav-link" href="##">
-                    <i className="far fa-industry-alt mr-2"></i>Shop by
-                    Manufacturer
+                    <i className="far fa-industry-alt mr-2"></i>Shop by Manufacturer
                   </a>
                 </li>
               </ul>
@@ -196,6 +172,7 @@ function mapStateToProps(state) {
     ...preload.navigation,
     orderCount: cartReducer.orderItems.length,
     total: cartReducer.total,
+    user: state.userReducer,
   }
 }
 

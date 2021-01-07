@@ -35,7 +35,7 @@ const AccountRecentOrders = () => {
   )
 }
 
-const AccountOverview = ({ customBody, crumbs, title, contentTitle }) => {
+const AccountOverview = ({ customBody, crumbs, title, contentTitle, getUser }) => {
   useEffect(() => {
     getUser()
   }, [])
