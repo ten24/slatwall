@@ -61,7 +61,11 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		return jwt;
 	}
 	
-	public string function createToken(){
+	/**
+	 * Method to create JWT Token for account
+	 * @param - setOrder : flag to set order on JWT
+	 * */
+	public string function createToken(boolean setOrder = true, boolean clearOrder = false){
 		//create token
 		var key = getService('settingService').getSettingValue('globalClientSecret');
 		var jwt = newJwt(key);
@@ -73,6 +77,16 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
 		payload['issuer'] = CGI['server_name'];
 		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
+		
+		if( arguments.setOrder && !arguments.clearOrder ) {
+			//set cart order id on payload
+			var mostRecentCart = getService('orderService').getMostRecentNotPlacedOrderByAccountID(getHibachiScope().getAccount().getAccountID());
+			if( !isNull(mostRecentCart) ) {
+				payload['orderid'] = mostRecentCart.getOrderID();
+			}
+		} else if(arguments.clearOrder) {
+			payload['orderid'] = '';
+		}
 		
 		//add users role so we can make decisions on frontend permissions
 		if(getHibachiScope().getAccount().getSuperUserFlag()){

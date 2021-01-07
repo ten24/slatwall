@@ -340,5 +340,5 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	// ================== START: Deprecated Methods ========================
 	
-	// ==================  END:  Deprecated Methods ========================	
+	// ==================  END:  Deprecated Methods ========================
 }

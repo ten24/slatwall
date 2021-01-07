@@ -68,6 +68,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		var taxRateItemResponseBean = getTransient('TaxRateItemResponseBean');
 		
 		taxRateItemResponseBean.populate(arguments);
+
 		arrayAppend(getTaxRateItemResponseBeans(), taxRateItemResponseBean);
 	}
 	

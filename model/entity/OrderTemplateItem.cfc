@@ -71,7 +71,6 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="taxableAmountTotal" persistent="false";  
 	
 	
-	
 
 	public numeric function getTotal(){
 		

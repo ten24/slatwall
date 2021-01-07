@@ -235,6 +235,4 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
-	
-//CUSTOM FUNCTIONS END
 }

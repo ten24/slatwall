@@ -83,6 +83,7 @@
 	
 	<!--- First Make sure that we have the ability to actually display this property --->
 	<cfif !attributes.object.isPersistent() || attributes.hibachiScope.authenticateEntityProperty('read', attributes.object.getClassName(), attributes.property)>
+
 		<cfsilent>
 			
 			<!--- If this was originally set to edit... make sure that they have edit ability for this property --->

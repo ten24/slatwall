@@ -100,11 +100,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listcollection');
 	this.secureMethods=listAppend(this.secureMethods, 'listcurrency');
 	this.secureMethods=listAppend(this.secureMethods, 'listattributeset');
-	this.secureMethods=listAppend(this.secureMethods, 'createreport');
-	this.secureMethods=listAppend(this.secureMethods, 'editreport');
-	this.secureMethods=listAppend(this.secureMethods, 'deletereport');
-	this.secureMethods=listAppend(this.secureMethods, 'editWishList');
-	this.secureMethods=listAppend(this.secureMethods, 'saveWishList');
+	this.secureMethods=listAppend(this.secureMethods,'createreport');
+	this.secureMethods=listAppend(this.secureMethods,'editreport');
+	this.secureMethods=listAppend(this.secureMethods,'deletereport');
+	this.secureMethods=listAppend(this.secureMethods,'editWishList');
+	this.secureMethods=listAppend(this.secureMethods,'saveWishList');
 	this.secureMethods=listAppend(this.secureMethods, 'listform');
 	this.secureMethods=listAppend(this.secureMethods, 'listaccountrelationshiprole');
 	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
@@ -114,9 +114,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessaccount_changepassword');
-	this.secureMethods=listAppend(this.secureMethods, 'processorder_changereturnpercentage');
-	this.secureMethods=listAppend(this.secureMethods, 'preprocessemail_addtoqueue');
-
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -193,8 +190,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function processCollection(required struct rc){
 		arguments.rc.collection=getService('HibachiCollectionService').getCollection(arguments.rc.collectionID);
 		//redirect to report listing only if the collection is a report
-		if(arguments.rc.collection.isReport()){
-			arguments.rc.sRedirectAction="entity.reportlist#arguments.rc.collection.getCollectionObject()#";
+		if(arguments.rc.collection.isReport() && arguments.rc.processContext == 'clone'){
+			// custom Success message for entities
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.define.clone_success" ), "${itemEntityName}", rbKey('admin.define.report'), "all" ), "success");
+			rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
 		}
 		genericProcessMethod(entityName="Collection",rc=arguments.rc);
 	}
@@ -603,6 +602,33 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			renderOrRedirectFailure( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);
 		}
 	}
+	
+	
+	
+	
+	public void function deleteReport(required struct rc) {
+		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
+		var deleteOK = getService('HibachiCollectionService').delete(rc.collection);
+		
+		// SUCCESS
+		if(deleteOK)
+		{
+		getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.entity.delete_success" ), "${itemEntityName}", rbKey('admin.define.report'), "all" ), "success");
+		renderOrRedirectFailure( defaultAction="admin:entity.reportlist#lcase(rc.collection.getCollectionObject())#", maintainQueryString=false, rc=arguments.rc);
+		
+			
+		// FAILURE
+		} else {
+
+			// Show all of the specific messages & error messages for the entity
+			entity.showErrorsAndMessages();
+
+			// Render or Redirect a faluire
+			renderOrRedirectFailure( defaultAction="admin:entity.reportlist#lcase(rc.collection.getCollectionObject())#", maintainQueryString=true, rc=arguments.rc);
+		}
+		
+	}
+
 
 	public void function saveState(required struct rc) {
 		param name="rc.countryCode" default="";

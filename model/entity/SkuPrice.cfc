@@ -151,5 +151,5 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 		super.preUpdate(arguments.oldData);
 	}
     
-	// ===================  END:  ORM Event Hooks  =========================	
+	// ===================  END:  ORM Event Hooks  =========================
 }

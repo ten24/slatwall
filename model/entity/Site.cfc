@@ -85,7 +85,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="sitePath" persistent="false";
 	property name="templatesPath" persistent="false";
 	property name="assetsPath" persistent="false";
-	
+
 	public boolean function getAllowAdminAccessFlag() {
 		if(isNull(variables.allowAdminAccessFlag)) {
 			variables.allowAdminAccessFlag = 0;
@@ -217,5 +217,5 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 
 	// ================== START: Deprecated Methods ========================
 
-	// ==================  END:  Deprecated Methods ========================	
+	// ==================  END:  Deprecated Methods ========================
 }

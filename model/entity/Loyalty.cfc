@@ -123,5 +123,5 @@ component displayname="Loyalty" entityname="SlatwallLoyalty" table="SwLoyalty" p
 	
 	// ================== START: Deprecated Methods ========================
 	
-	// ==================  END:  Deprecated Methods ========================	
+	// ==================  END:  Deprecated Methods ========================
 }

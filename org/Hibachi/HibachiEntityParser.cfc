@@ -262,6 +262,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
  				}
  				break;
  			case 'text':
+
  			case 'checkboxGroup':
  			case 'radioGroup':
  				ORMType = 'string';

@@ -96,7 +96,7 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 
 	property name="avsDescription" persistent="false";
 
-	
+
 	public any function init() {
 		setAmountAuthorized(0);
 		setAmountCharged(0);

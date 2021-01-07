@@ -85,6 +85,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// ================= Overrides =================================
 	
 	public any function getCurrentRequestSite() {
+
 		if(!structKeyExists(variables,'currentRequestSite')){
 			if ( len( getContextRoot() ) ) {
 				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
