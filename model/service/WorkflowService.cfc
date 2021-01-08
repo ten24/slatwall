@@ -639,7 +639,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
 	   
-		getHibachiScope().setWorkflowPopulateFlag(true);
+		getHibachiScope().setObjectPopulateMode( 'private' );;
 		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
