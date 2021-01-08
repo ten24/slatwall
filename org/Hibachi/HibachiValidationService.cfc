@@ -212,7 +212,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function validate(required any object, string context="", boolean setErrors=true) {
 		
 		// Setup an error bean
-		if(setErrors) {
+		if(arguments.setErrors) {
 			var errorBean = arguments.object.getHibachiErrors();
 		} else {
 			var errorBean = getTransient("hibachiErrors");
@@ -254,7 +254,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 
 		// If the setErrors was true, then we can set this error
-		if(setErrors) {
+		if(arguments.setErrors) {
 			arguments.object.setHibachiErrors( errorBean );
 		}
 
@@ -276,7 +276,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			replaceTemplateStruct.propertyName = arguments.object.getTitleByPropertyIdentifier(arguments.propertyIdentifier);
 
 			if(arguments.object.isPersistent()) {
-				var thisClassName = getLastEntityNameInPropertyIdentifier( arguments.object.getClassName(), arguments.propertyIdentifier);
+				var thisClassName = getService('hibachiService').getLastEntityNameInPropertyIdentifier( arguments.object.getClassName(), arguments.propertyIdentifier);
 				replaceTemplateStruct.className = getHibachiScope().rbKey('entity.#thisClassName#');
 			} else {
 				var thisClassName = arguments.object.getClassName();

@@ -8,7 +8,7 @@ export class OrderTemplateService {
 	public orderTemplateItemPropertyIdentifierList = ''; //this get's programitically set
 
 	public editablePropertyIdentifierList = '';
-    public searchablePropertyIdentifierList = 'skuCode';
+    public searchablePropertyIdentifierList = 'skuCode,calculatedSkuDefinition,product.productName';
     public pricePropertyIdentfierList = 'priceByCurrencyCode,total';
     
     public viewOrderTemplateItemsCollection;

@@ -130,6 +130,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		var allSettingMetaData = {
 
 			// Account
+			accountCustomAdminStylesheet = {fieldtype="text"},
 			accountEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			accountEligiblePaymentTerms = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentTerm", defaultValue=getPaymentService().getAllActivePaymentTermIDList()},
 			accountPaymentTerm = {fieldType="select"},
@@ -228,6 +229,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
 			globalAPIPageShowLimit = {fieldtype="text", defaultValue=250},
+			globalAPIExportLimit = {fieldtype="text", defaultValue=100000},
 			globalAssetsImageBaseURL = {fieldType="text", defaultValue=''},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
@@ -297,7 +299,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
 			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
-
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -386,6 +387,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Site
 			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
+			siteDateFormat = {fieldType="select", defaultValue="mm-dd-yyyy"},
 			siteDefaultAccountPaymentMethod = {fieldtype="select", defaultValue="444df303dedc6dab69dd7ebcc9b8036a"},	
 			siteDefaultLocale = {fieldType="select"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
@@ -416,6 +418,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowWaitlistingFlag = {fieldType="yesno", defaultValue=0},
+			skuBackorderLimit = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 			skuBundleAutoMakeupInventoryOnSaleFlag = {fieldType="yesno", defaultValue=0},
 			skuBundleAutoBreakupInventoryOnReturnFlag = {fieldType="yesno", defaultValue=0},
 			skuCurrency = {fieldType="select", defaultValue="USD"},
@@ -454,6 +457,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
 			skuDisableAverageCostCalculation = {fieldType="yesno", defaultValue=0},
 			skuDisableQoQCalculation = {fieldType="yesno", defaultValue=0},
+			skuAllowableRefundPercentages = {fieldType="text", defaultValue=0},
 			
 			skuRevenueLedgerAccount = {fieldType="select", defaultValue="54cf9c67d219bd4eddc6aa7dfe32aa02"},
 			skuCogsLedgerAccount = {fieldType="select", defaultValue="54cd90d6dd39c2e90c99cdb675371a05"},
@@ -651,6 +655,13 @@ component extends="HibachiService" output="false" accessors="true" {
 				return ['-','_'];
 			case "siteAvailableLocales":
 				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDateFormat":
+				var options = [
+					{'value':'mm-dd-yyyy','name':'Month - Day - Year'},
+					{'value':'dd-mm-yyyy','name':'Day - Month - Year'},
+					{'value':'yyyy-mm-dd','name':'Year - Month - Day'}
+				]
+				return options;
 			case "siteDefaultLocale":
 				return getTranslationService().getSiteAvailableLocalesOptions();
 			case "siteDefaultAccountPaymentMethod":
@@ -1306,7 +1317,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	private void function updateBaseEntityCalculations(required any setting ){
 		if( !isNull(arguments.setting.getBaseObject()) ){
 			var entityService = getServiceByEntityName(entityName=arguments.setting.getBaseObject());
-			var primaryIDProperty = getPrimaryIDPropertyNameByEntityName(arguments.setting.getBaseObject());
+			var primaryIDProperty = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(arguments.setting.getBaseObject());
 			var updateEntity = entityService.invokeMethod( "get#arguments.setting.getBaseObject()#", {1=arguments.setting.invokeMethod("get#primaryIDProperty#")} );
 			getHibachiScope().addModifiedEntity(updateEntity); 
 		}
@@ -1338,7 +1349,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		// Check to see if we are going to need to update the
 		var calculateStockNeeded = false;
-		if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
+		if(listFindNoCase("skuAllowBackorderFlag,skuBackorderLimit,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 			calculateStockNeeded = true;
 		}
 		var settingName = arguments.entity.getSettingName();
@@ -1387,7 +1398,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
-			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
+			if(listFindNoCase("skuAllowBackorderFlag,skuBackorderLimit,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated(argumentCollection=arguments);
 			}
 		}

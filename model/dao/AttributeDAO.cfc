@@ -58,7 +58,7 @@ Notes:
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public">
+	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public" localMode="true">
 		<cfargument name="attributeSetObject" required="true" type="string" />
 		
 		<cfset var rs = "" />
@@ -107,14 +107,17 @@ Notes:
 	
 	<cffunction name = "getAttributesDataByEntityName">
 		<cfargument name="entityName" type="string" required="true" >
+		<cfargument name="includeCustomProperties" type="boolean" default="false" >
 		
 		<cfquery name = "local.attributesDataQuery">
 				SELECT attributeCode, attributeInputType 
 				FROM swAttribute
 				INNER JOIN swAttributeSet on swAttribute.attributeSetID = swAttributeSet.attributeSetID
 				WHERE
+				<cfif !arguments.includeCustomProperties >
 					( swAttribute.customPropertyFlag is null OR swAttribute.customPropertyFlag = 0 )
 				AND
+				</cfif>
 					swAttributeSet.activeFlag = 1
 				AND 
 					swAttributeSet.globalFlag = 1
@@ -129,6 +132,22 @@ Notes:
 		<cfargument name="attributeID" type="string" required="true" >
 		
 		<cfreturn ormExecuteQuery("SELECT aAttributeOption FROM SlatwallAttributeOption aAttributeOption WHERE aAttributeOption.attributeOptionValue = ? AND aAttributeOption.attribute.attributeID = ? ORDER BY sortOrder ASC", [arguments.attributeOptionValue, arguments.attributeID], true, {maxResults=1}) />
+	</cffunction>
+	
+	<cffunction name="getAttributeOptionLabelByAttributeCodeAndAttributeValue" output="false" access="public">
+		<cfargument name="attributeCode" type="string" required="true">
+		<cfargument name="attributeValue" type="string" required="true">
+		<cfquery name="local.attributeOptionLabels">
+			SELECT IFNULL(ao.attributeOptionLabel,'') as label
+			FROM swattributeoption ao 
+				JOIN swattribute a on a.attributeID = ao.attributeID
+			WHERE ao.attributeOptionValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeValue#"/>
+				AND a.attributeCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeCode#"/>
+			LIMIT 1
+		</cfquery>
+		<cfloop query="#local.attributeOptionLabels#">
+			<cfreturn label>
+		</cfloop>
 	</cffunction>
 
 </cfcomponent>

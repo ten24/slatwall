@@ -54,6 +54,9 @@ Notes:
 <cfparam name="rc.promotionQualifierID" type="string" default="#rc.promotionQualifierMessage.getPromotionQualifier().getPromotionQualifierID()#">
 <cfparam name="rc.edit" type="boolean">
 
+<cfif !isObject(rc.promotionQualifier) AND isStruct(rc.promotionQualifier) AND structKeyExists(rc.promotionQualifier, 'promotionQualifierID')>
+    <cfset rc.promotionQualifier = $.slatwall.getService('promotionService').getPromotionQualifier(rc.promotionQualifier.promotionQualifierID) />
+</cfif>
 <cfif rc.promotionQualifierMessage.getNewFlag()>
 	<cfset local.cancelAction="admin:entity.detailpromotionqualifier" />
 	<cfset local.cancelQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#" />
@@ -61,6 +64,7 @@ Notes:
 	<cfset local.cancelAction="admin:entity.detailpromotionqualifiermessage" />
 	<cfset local.cancelQueryString="promotionQualifierMessageID=#rc.promotionQualifierMessage.getPromotionQualifierMessageID()#" />
 </cfif>
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.promotionQualifierMessage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailPromotionQualifierMessage">
 	    <hb:HibachiEntityActionBar type="detail" object="#rc.promotionQualifierMessage#" edit="#rc.edit#" 

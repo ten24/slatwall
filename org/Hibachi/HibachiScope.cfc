@@ -233,7 +233,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	// @hint facade method to set values in the session scope
-	public void function setSessionValue(required any key, required any value) {
+	public void function setSessionValue(required any key, required any value) localmode = "modern"{
 		var sessionKey = "";
 		if(structKeyExists(COOKIE, "JSESSIONID")) {
 			sessionKey = COOKIE.JSESSIONID;
@@ -242,11 +242,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		} else if (structKeyExists(COOKIE, "CFID")) {
 			sessionKey = COOKIE.CFID;
 		}
-		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_#arguments.key#" timeout="10" {
-			if(!structKeyExists(session, getHibachiInstanceApplicationScopeKey())) {
-				session[ getHibachiInstanceApplicationScopeKey() ] = {};
+		var instanceApplicationScopeKey = getHibachiInstanceApplicationScopeKey();
+		lock name="#sessionKey#_#instanceApplicationScopeKey#_#arguments.key#" timeout="10" {
+			if(!structKeyExists(session, instanceApplicationScopeKey)) {
+				session[ instanceApplicationScopeKey ] = {};
 			}
-			session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ] = arguments.value;
+			session[ instanceApplicationScopeKey ][ arguments.key ] = arguments.value;
 		}
 	}
 	
@@ -293,7 +294,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	public void function addModifiedEntity( required any entity ) {
-		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName())){
+		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName()) && !arguments.entity.getExcludeFromModifiedEntitiesFlag()){
 			arrayAppend(getModifiedEntities(), arguments.entity);
 		}
 	}
@@ -570,7 +571,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 		
 		arguments.entityQueueID = hash(dataString, 'MD5');
-		arguments.entityQueueProcessingDateTime = now(); //this will be processed in this request.
+		
+		//this will be processed in this request.
+		arguments.entityQueueProcessingDateTime = now(); 
+		
+		// add 5 minutes for workflow retry if something goes wrong at the end of the request
+		arguments.entityQueueDateTime = DateAdd('n',5,now()); 
 		
 		if(!structKeyExists(variables.entityQueueData, arguments.entityQueueID)){
 			variables.entityQueueData[arguments.entityQueueID] = arguments;

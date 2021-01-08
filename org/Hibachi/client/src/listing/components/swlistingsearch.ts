@@ -42,8 +42,10 @@ class SWListingSearchController {
     
     //Auto-refresh
     private autoRefreshIntervalReference = null;
+    
+    public defaultSearchColumn: any;
 
-    public autoRefreshConfig = {
+    public autoRefreshConfig : any  = {
         'autoRefreshInterval' : 30, // seconds --> for timeout x1000
         'autoRefreshEnabled' : false // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
     };
@@ -133,6 +135,16 @@ class SWListingSearchController {
         }
 
         this.selectedSearchColumn={title:'All'};
+        
+        if(this.defaultSearchColumn){
+            this.selectedSearchColumn = this.searchableOptions
+                                                .find(column => column.propertyIdentifier === this.collectionConfig.baseEntityAlias+'.'+this.defaultSearchColumn);
+        }
+
+        if(!this.selectedSearchColumn){
+            this.selectedSearchColumn = { title : 'All' };
+        }
+        
         this.configureSearchableColumns(this.selectedSearchColumn);
 
         if(this.swListingControls.showPrintOptions){
@@ -160,7 +172,7 @@ class SWListingSearchController {
         
        if(this.showAutoRefresh) {
             // on init --> check to set time-out intervals
-            let savedAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
+            let savedAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey] as any;
             
             if( savedAutoRefreshConfig ){
                 this.autoRefreshConfig = savedAutoRefreshConfig;
@@ -316,7 +328,7 @@ class SWListingSearchController {
         //clear old timeouts if any
         this.clearAutoRefreshTimeout();
         
-        let thisAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
+        let thisAutoRefreshConfig =  this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey] as any;
         
         if( thisAutoRefreshConfig?.autoRefreshEnabled ){
             this.autoRefreshIntervalReference = this.$interval(this.onRefresh, thisAutoRefreshConfig.autoRefreshInterval*1000);
@@ -424,6 +436,8 @@ class SWListingSearchController {
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         
         this.swListingDisplay.collectionConfig = this.collectionConfig;
+        
+        this.configureSearchableColumns(this.selectedSearchColumn);
 
         this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
 
@@ -436,6 +450,10 @@ class SWListingSearchController {
             searchableColumns.push(column.propertyIdentifier);
         }else{
             searchableColumns = this.searchableColumns;
+        }
+        
+        if(!searchableColumns.length){
+            return;
         }
 
         for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
@@ -464,6 +482,7 @@ class SWListingSearch  implements ng.IDirective{
         listingId : "@?",
         showAutoRefresh : "<?",
         showToggleSearch:"=?",
+        defaultSearchColumn:"=?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';

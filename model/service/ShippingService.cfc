@@ -56,7 +56,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public array function getShippingMethodRatesByOrderFulfillmentAndShippingMethod(required any orderFulfillment, required any shippingMethod){
 		var shippingMethodRatesSmartList = getService('shippingService').getShippingMethodRateSmartList();
-		shippingMethodRatesSmartList.addFilter('shippingMethod.shippingMethodID',shippingMethod.getShippingMethodID());
+		shippingMethodRatesSmartList.addFilter('shippingMethod.shippingMethodID',arguments.shippingMethod.getShippingMethodID());
 		shippingMethodRatesSmartList.addFilter('activeFlag',1);
 		
 		var subTotalAfterDiscounts = arguments.orderFulfillment.getSubtotalAfterDiscounts();
