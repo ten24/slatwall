@@ -433,9 +433,13 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function validate_minCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
-			var propertyCollection = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#CollectionList");
-			propertyCollection.setPageRecordsShow(constraintValue + 1);
-			var propertyValue = propertyCollection.getPageRecords(formatRecords=false);
+			if(!arguments.object.isProcessObject() && getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(arguments.object.getClassName(), arguments.propertyIdentifier)){
+				var propertyCollection = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#CollectionList");
+				propertyCollection.setPageRecordsShow(constraintValue + 1);
+				var propertyValue = propertyCollection.getPageRecords(formatRecords=false);
+			}else{
+				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			}
 		}
 		if(isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) >= arguments.constraintValue)) {
 			return true;
@@ -446,9 +450,16 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function validate_maxCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
-			var propertyCollection = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#CollectionList");
-			propertyCollection.setPageRecordsShow(constraintValue);
-			var propertyValue = propertyCollection.getPageRecords(formatRecords=false);
+			
+			if(!arguments.object.isProcessObject() && getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(arguments.object.getClassName(), arguments.propertyIdentifier)){
+				var propertyCollection = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#CollectionList");
+				propertyCollection.setPageRecordsShow(constraintValue);
+				var propertyValue = propertyCollection.getPageRecords(formatRecords=false);
+			}else{
+				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			}
+			
+			
 		}
 		if(isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) <= arguments.constraintValue)) {
 			return true;
