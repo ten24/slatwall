@@ -62,7 +62,11 @@ export const getUser = () => {
     if (req.isFail()) {
       dispatch(logout())
     } else {
-      dispatch(receiveUser(req.success().account))
+      if (req.success().account.accountID === '') {
+        dispatch(logout())
+      } else {
+        dispatch(receiveUser(req.success().account))
+      }
     }
   }
 }
