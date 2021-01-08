@@ -332,7 +332,7 @@ component accessors="true" output="false" persistent="false" {
 			return application[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
 		}
 		
-		throw("You have requested a value for '#arguments.key#' from the core hibachi application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet");
+		throw("You have requested a value for '#getHibachiInstanceApplicationScopeKey()#' '#arguments.key#' from the core hibachi application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet");
 	}
 	
 	// @hint facade method to set values in the application scope 

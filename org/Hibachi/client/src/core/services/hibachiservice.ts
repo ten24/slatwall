@@ -69,7 +69,7 @@ class HibachiService{
 	};
 
     public getUrlWithActionPrefix = () => {
-        return this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+"=";
+        return this.appConfig.baseURL+'index.cfm/?'+this.appConfig.action+"=";
     }
 
 	getJsEntities= () =>{
