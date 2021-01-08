@@ -226,6 +226,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productPinSize" ormtype="string";
  property name="productLockBrand" ormtype="string";
  property name="productProprietary" ormtype="boolean" hb_formatType="yesno" default="0";
+ property name="productCylinderCamGroup" ormtype="string";
  property name="productCylinderKeyway" ormtype="string" hb_formFieldType="select";
  property name="productCylinderFinish" ormtype="string" hb_formFieldType="select";
  property name="productCylinderStyle" ormtype="string" hb_formFieldType="select";
