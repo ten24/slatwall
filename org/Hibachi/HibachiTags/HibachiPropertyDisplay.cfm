@@ -66,6 +66,7 @@
 		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		text				|	Simple Text Field
 		textarea			|	Simple Textarea
+		json    			|	Simple Formatted json
 		time				|	This is still just a textbox, but it adds the jQuery time picker
 		wysiwyg				|	Value needs to be a string
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
@@ -83,7 +84,7 @@
 	
 	<!--- First Make sure that we have the ability to actually display this property --->
 	<cfif !attributes.object.isPersistent() || attributes.hibachiScope.authenticateEntityProperty('read', attributes.object.getClassName(), attributes.property)>
-
+		
 		<cfsilent>
 			
 			<!--- If this was originally set to edit... make sure that they have edit ability for this property --->
@@ -136,7 +137,7 @@
 				</cfif>
 				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-acnameproperty="#attributes.autocompleteNameProperty#"', ' ') />
 			</cfif>
-
+			
 			<!--- Set Up The Value --->
 			<cfif attributes.value eq "">
 	
@@ -152,7 +153,7 @@
 				>
 					<cfset attributes.value = attributes.object.getFormattedValue(attributes.property,'decimal') />
 				</cfif>
-
+				
 				<!--- If the value was an object, typically a MANY-TO-ONE, then we get either the identifierValue or for display a simpleRepresentation --->
 				<cfif isObject(attributes.value) && attributes.object.isPersistent()>
 					<cfif attributes.edit>
@@ -188,6 +189,7 @@
 						<cfif isNumeric(attributes.value) and attributes.value lt 0>
 							<cfset attributes.valueClass &= " negative" />
 						</cfif>
+						
 						<cfif attributes.attributeFlag AND attributes.object.hasAttributeCode(attributes.property)>
 							<cfset attributes.value = attributes.object.getAttributeValueLabel(attributes.property)>
 						<cfelse>
@@ -234,6 +236,11 @@
 				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseObject=#attributes.object.getClassName()#", "&") />
 				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseID=#attributes.object.getPrimaryIDValue()#", "&") />
 				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "basePropertyName=#attributes.property#", "&") />
+			</cfif>
+			
+				<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif attributes.fieldType EQ 'json'>
+			    <cfset attributes.fieldClass= attributes.fieldClass &" json"/>
 			</cfif>
 				
 			<!--- Add the error class to the form field if it didn't pass validation --->

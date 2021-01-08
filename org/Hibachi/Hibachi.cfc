@@ -611,7 +611,7 @@ component extends="framework.one" {
 			}
 
 		} else if(authorizationDetails.authorizedFlag && authorizationDetails.publicAccessFlag) {
-			getHibachiScope().setPublicPopulateFlag( true );
+			getHibachiScope().setObjectPopulateMode( 'public' );
 		}
 
 		//detect if we are on an angular hashbang page

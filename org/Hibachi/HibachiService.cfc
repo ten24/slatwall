@@ -7,7 +7,7 @@
 	<cfproperty name="hibachiEventService" type="any">
 	<cfproperty name="hibachiRBService" type="any">
 	<cfproperty name="hibachiSessionService" type="any">
-	<cfproperty name="hibachiTagService" type="any">
+	<cfproperty name="hibachiTagService" type="anhasToManyByEntityNameAndPropertyIdentifiery">
 	<cfproperty name="hibachiUtilityService" type="any">
 	<cfproperty name="hibachiValidationService" type="any">
 	
@@ -192,6 +192,35 @@
 			return arguments.entity;
 		}
 		
+		
+		public any function savePopulatedSubPrpertiesRecursively(required any entity, required string context){
+
+		    var subPropertiesStruct = arguments.entity.getPopulatedSubProperties();
+		    if( !isStruct(subPropertiesStruct) ){
+		        return;
+		    }
+		    
+			// Loop ove each property that was populated
+			for(var propertyName in subPropertiesStruct ){
+				
+				// if sub-property was a `*.to-many` then it will be an array
+				var entityOrArray = subPropertiesStruct[ propertyName ]; 
+				
+				if( !IsArray(entityOrArray) ){
+				    entityOrArray = [ entityOrArray ];
+				} 
+				
+    		    var entityService = this.getServiceByEntityName( entityOrArray[1].getClassName() );
+	
+				for( var entity in entityOrArray){
+				    // we're not worried about the validation errors as populated sub-properties should have been be validated already, 
+				    // and errors should have been bubbled to the root entity
+				    entityService.invokeMethod('save'&entity.getClassName(), { 1=entity, 2={}, 3=arguments.context } );    
+				}
+			}
+			
+		}
+		
 		// @hint the default save method will populate, validate, and if not errors delegate to the DAO where entitySave() is called.
 	    public any function save(required any entity, struct data, string context="save") {
 
@@ -217,8 +246,25 @@
 			//check if this is new before save - announcements will need this information later.
 	        var isNew = arguments.entity.isNew();
 	        
+	        
+	        
+	        // so the event-handler-functions can declare required-argument as entity-name 
+	        // Example `after[Account]CreateSuccess(required any account, struct data, string context )`
+	        arguments[ arguments.entity.getClassName() ] = arguments.entity;
+
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
+	            
+	            // save populated sub-properties first; if any
+	            // because if we're creating new nested entities, like sku-with product, 
+	            // and not calling save on sku, 
+	            //   the SKU-validation will run [ NOTE: check `validate()`` function in HibachiTransient ), 
+	            //   but the events will not get fired
+	            if( !isNull(arguments.entity.getPopulatedSubProperties()) ){
+	 
+	                this.savePopulatedSubPrpertiesRecursively( arguments.entity, arguments.context );
+	            }
+	            
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
@@ -1331,12 +1377,13 @@
 		}
 		
 		public string function hasToManyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-		
+			
 			var hasToMany = false;
 			var propertiesStruct = getPropertiesStructByEntityName( arguments.entityName );
 			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 			
 			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+			
 				if(structKeyExists(propertiesStruct, propertyIdentifierParts[i]) && structKeyExists(propertiesStruct[propertyIdentifierParts[i]], 'cfc')){
 					var currentProperty = propertiesStruct[propertyIdentifierParts[i]];
 					if(	structKeyExists(currentProperty, "fieldtype") && currentProperty["fieldtype"].endsWith('-to-many')){
@@ -1344,10 +1391,12 @@
 						break;
 					}
 					propertiesStruct = getService('hibachiService').getPropertiesStructByEntityName(currentProperty['cfc']);
-				}else{
+					
+				} else {
 					break;
 				}
 			}
+			
 			return hasToMany;
 		}
 		
@@ -1377,6 +1426,25 @@
 		public string function getTableNameByEntityName(required string entityName){
 			var entityMetaData = getEntityMetaData( arguments.entityName );
 			return entityMetaData.table; 
+		}
+		
+		
+		public any function getAnyColumnValueByEntityNameAndUniqueKeyValue( required string entityName, required string columnToFetch, required string uniqueKey, required any uniqueValue ){
+		
+		    return this.getHibachiDAO().getAnyColumnValueByTableNameAndUniqueKeyValue(
+		        tableName   = this.getTableNameByEntityName( arguments.entityName ), 
+		        columnToFetch  = arguments.columnToFetch, 
+		        uniqueKey   = arguments.uniqueKey, 
+		        uniqueValue = arguments.uniqueValue
+		    );
+		    
+		}
+		
+		public any function getPrimaryIDValueByEntityNameAndUniqueKeyValue( required string entityName, required string uniqueKey, required any uniqueValue ){
+		    
+		    arguments.columnToFetch  = this.getPrimaryIDColumnNameByEntityName( arguments.entityName );
+		    
+		    return this.getAnyColumnValueByEntityNameAndUniqueKeyValue( argumentCollection = arguments );
 		}
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {
