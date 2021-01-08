@@ -10,8 +10,8 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, getMyUser, us
     initialValues: {
       accountFirstName: user.firstName,
       accountLastName: user.lastName,
-      accountEmailAddress: user.primaryEmailAddress.length !== 0 ? user.primaryEmailAddress.emailAddress : '',
-      accountPhoneNumber: user.primaryPhoneNumber.length !== 0 ? user.primaryPhoneNumber.phoneNumber : '',
+      accountEmailAddress: user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : '',
+      accountPhoneNumber: user.primaryPhoneNumber ? user.primaryPhoneNumber.phoneNumber : '',
       accountExt: '',
       accountCompany: user.company,
     },
