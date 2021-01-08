@@ -39,9 +39,13 @@ component extends="testbox.system.BaseSpec"{
 	    
 	    var baseImporterServiceMock = createMock('Slatwall.integrationServices.BaseImporterService');
 	    
+	    baseImporterServiceMock.init();
+	    
+	    baseImporterServiceMock.setHibachiService( this.getHibachiServiceMock() );
         baseImporterServiceMock.setHibachiUtilityService(this.getHibachiUtilityServiceMock());
         baseImporterServiceMock.setHibachiValidationService(this.getHibachiValidationServiceMock());
         baseImporterServiceMock.setHibachiEntityQueueService(this.getHibachiEntityQueueServiceMock());
+		baseImporterServiceMock.setHibachiEntityQueueDAO( this.getHibachiEntityQueueDAOMock() );
 
         return baseImporterServiceMock;
 	}

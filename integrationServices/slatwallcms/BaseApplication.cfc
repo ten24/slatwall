@@ -365,11 +365,11 @@ Notes:
 		var siteTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
 		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/templates/";
 
-		if(fileExists(specificFormTemplateFilePath)){
+		if(fileExists(ExpandPath(specificFormTemplateFilePath))){
 			var templatePath = siteTemplatePath & specificFormTemplateFileName;
-		} else if(fileExists(baseTemplatePath & specificFormTemplateFileName)){
+		} else if(fileExists(ExpandPath(baseTemplatePath) & specificFormTemplateFileName)){
 			var templatePath = baseTemplatePath & specificFormTemplateFileName;
-		} else if(fileExists(siteTemplatePath & defaultFormTemplateFileName)){
+		} else if(fileExists(ExpandPath(siteTemplatePath) & defaultFormTemplateFileName)){
 			var templatePath = siteTemplatePath & defaultFormTemplateFileName;
 		} else {
 			var templatePath = baseTemplatePath & defaultFormTemplateFileName;

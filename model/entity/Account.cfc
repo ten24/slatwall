@@ -39,11 +39,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean";
+	property name="activeFlag" ormtype="boolean" hb_populateEnabled="private";
 	property name="superUserFlag" ormtype="boolean";
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
-	property name="company" hb_populateEnabled="false" ormtype="string";
+	property name="company" hb_populateEnabled="private" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
 	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
@@ -80,7 +80,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="childAccountRelationships" singularname="childAccountRelationship" fieldtype="one-to-many" type="array" fkcolumn="parentAccountID" cfc="AccountRelationship";
 	property name="parentAccountRelationships" singularname="parentAccountRelationship" fieldtype="one-to-many" type="array" fkcolumn="childAccountID"   cfc="AccountRelationship";
 	property name="accountAddresses" hb_populateEnabled="public" singularname="accountAddress" fieldtype="one-to-many" type="array" fkcolumn="accountID" cfc="AccountAddress" inverse="true" cascade="all-delete-orphan";
-	property name="accountAuthentications" singularname="accountAuthentication" cfc="AccountAuthentication" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
+	property name="accountAuthentications" singularname="accountAuthentication" cfc="AccountAuthentication" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true" hb_populateEnabled="private";
 	property name="accountContentAccesses" hb_populateEnabled="false" singularname="accountContentAccess" cfc="AccountContentAccess" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountEmailAddresses" hb_populateEnabled="public" singularname="accountEmailAddress" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountEmailAddress" cascade="all-delete-orphan" inverse="true";
@@ -110,10 +110,12 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="promotionCodes" hb_populateEnabled="false" singularname="promotionCode" cfc="PromotionCode" type="array" fieldtype="many-to-many" linktable="SwPromotionCodeAccount" fkcolumn="accountID" inversejoincolumn="promotionCodeID" inverse="true";
 
 	// Remote properties
-	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="remoteEmployeeID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="remoteCustomerID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="remoteContactID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
+
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -153,7 +155,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
     property name="permissionGroupNameList" persistent="false";
     property name="preferredLocale" persistent="false";
 	property name="countryCode" persistent="false"; 
-	
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="companyCode" ormtype="string";//CUSTOM PROPERTIES END
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
