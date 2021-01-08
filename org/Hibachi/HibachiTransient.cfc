@@ -175,9 +175,269 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public any function afterPopulate( required struct data={} ) {
 		// Left Blank to be overridden by objects
 	}
+	
+	
+	/**
+	 * Helper function to for `populate()` to check if the property can be populated; 
+	*/
+    public boolean function canPopulateProperty( 
+        required struct propertyMeta,  
+        string objectPopulateMode = 'default' //allowed values are [ default, public, private ]
+    ){
+        
+        var propertyPopulateLevel = 'default';
+        
+        // we can rename `hb_populateEnabled` to `hb_populateLevel` as the later is more meaningful 
+        // but not donig so to maintain compatability.
+        // one option can be to support both keywords, and depricate the old one so we can slowly migrate
+        if( structKeyExists(arguments.propertyMeta, "hb_populateEnabled") ){
+            // allowed values are, [ false, private, public, true ]
+            propertyPopulateLevel = arguments.propertyMeta.hb_populateEnabled; 
+        }
+        
+        // if the property is explicitly marked to not populate in any condition [ `hb_populateEnabled="false"` ]
+        if( propertyPopulateLevel == false ){
+            return false; 
+        }
+        
+        // if the property is explicitly marked to populate in all conditions [ `hb_populateEnabled="true"` ]
+        // OR if the current-Object is a Transient
+        if( ( propertyPopulateLevel == true ) || !this.isPersistent() ){
+            return true; 
+        }
+        
+        // if populate-mode is PRIVATE
+        // only populate-level [ private, public, true ] can be populated in PRIVATE mode
+        if( arguments.objectPopulateMode == 'private' && listFindNoCase('private,public', propertyPopulateLevel) ){
+            return true; 
+        }
+        
+        // if populate-mode on is PUBLIC
+        // only populate-level [ public, true ] can be populated in PRIVATE mode
+        if( arguments.objectPopulateMode == 'public' && propertyPopulateLevel == 'public' ){
+            return true; 
+        }
+        
+        // else the populate-mode is DEFAULT,  
+        // we'll check if current-user can perform CRUD for this property
+        return this.getHibachiScope().authenticateEntityProperty( 
+            crudType        = "update", 
+            entityName      = this.getClassName(),
+            propertyName    = arguments.propertyMeta.name 
+        );
+        
+        this.logHibachi("the populate-mode: #arguments.objectPopulateMode# & property-populate-level: #propertyPopulateLevel# are not valid for Entity: #this.getClassName()# & propertyMetaData: " & serializeJSON(arguments.propertyMeta) );
+        return false;
+    }
+    
+    /**
+	 * Helper function to for `populate()` to populate simple properties; 
+	*/
+    private void function populateSimpleValue( required struct propertyMeta, required any propertyValue ){
+        
+        arguments.propertyValue = trim(arguments.propertyValue);
+        
+        // If the value is blank, then we check to see if the property can be set to NULL.
+		if( arguments.propertyValue == "" && ( !structKeyExists(arguments.propertyMeta, "notNull") || !arguments.propertyMeta.notNull ) ) {
+			_setProperty(arguments.propertyMeta.name);
+
+		// If the value isn't blank, or we can't set to null... then we just set the value.
+		} else {
+			/*
+			if( !structKeyExists(arguments.propertyMeta,'hb_formatType') ){
+				arguments.propertyMeta.hb_formatType = '';
+			}
+			_setProperty(arguments.propertyMeta.name, arguments.propertyValue, arguments.propertyMeta.hb_formatType);
+			*/
+			
+			_setProperty(arguments.propertyMeta.name, rereplace( arguments.propertyValue, chr(002),'','all'));
+			// if this property has a sessionDefault defined for it, then we should update that value with what was used
+			if(structKeyExists(arguments.propertyMeta, "hb_sessionDefault")) {
+				setPropertySessionDefault( arguments.propertyMeta.name, arguments.propertyValue );
+			}
+		}
+    }
+
+    /**
+	 * Helper function to for `populate()` to populate many-to-one properties; 
+	*/
+    private any function populateManyToOne( 
+        required struct propertyMeta, 
+        required struct manyToOneDataStruct, 
+        string formUploadDottedPath="", 
+        string objectPopulateMode = this.getHibachiScope().getObjectPopulateMode(),
+    ){
+        
+        var entityName = listLast( arguments.propertyMeta.cfc, '.' );
+		var entityService = this.getService( "hibachiService" ).getServiceByEntityName( entityName );
+        var relatedPropertyName = arguments.propertyMeta.name;
+		// Find the primaryID column Name
+		var primaryIDPropertyName = this.getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( entityName );
+        
+		// If the primaryID exists then we can set the relationship
+		if( !structKeyExists(arguments.manyToOneDataStruct, primaryIDPropertyName) ){
+		    arguments.manyToOneDataStruct[ primaryIDPropertyName ] = '';
+		}
+
+        var primaryIDValue = trim( arguments.manyToOneDataStruct[primaryIDPropertyName] );
+		
+	    // If there were no additional values in the strucuture then we just try to get the entity and set it... 
+		// in this way a null is a valid option
+		if( structCount(arguments.manyToOneDataStruct) == 1 ){
+		    
+			// If the value passed in for the ID is blank, then set the value of the currentProperty to NULL
+			if( primaryIDValue == "") {
+				return _setProperty( relatedPropertyName );
+            }
+            
+            // If it was an actual ID, then we will try to load that entity
+
+			// Load the specific entity, if one doesn't exist... this will be null
+			var relatedEntity = entityService.invokeMethod("get" & entityName, { 1=primaryIDValue });
+			
+			if( !isNull(relatedEntity) ){
+				// Set the value of the property as the loaded entity
+				_setProperty(relatedPropertyName, relatedEntity );
+			}
+			
+			return; // no further operation required;
+		}
+
+
+		// If there were additional values in the data, then we will get the entity by the primaryID or create a new one
+		// and populate / validate by calling save in it's service[ see populated-sub-properties, and validation ].
+
+		// try to load if there was a prior relation 
+		var relatedEntity = this.invokeMethod( "get" & relatedPropertyName );
+        // 	if one doesn't exist, we're creating a new relation
+		if( isNull(relatedEntity) || relatedEntity.getPrimaryIDValue() != primaryIDValue ){
+			relatedEntity = entityService.invokeMethod( "get" & entityName, { 1=primaryIDValue, 2=true } );
+		} 
+
+		// Set the value of the property as the loaded entity
+		_setProperty( relatedPropertyName, relatedEntity );
+		// Populate the sub property
+		relatedEntity.populate( 
+		    arguments.manyToOneDataStruct, 
+		    arguments.formUploadDottedPath & relatedPropertyName & '.', 
+		    arguments.objectPopulateMode 
+		);
+		
+		// Tell the variables scope that we populated this sub-property
+		this.addPopulatedSubProperty( relatedPropertyName, relatedEntity);
+    }
+    
+    /**
+	 * Helper function to for `populate()` to populate ont-to-many properties; 
+	*/   
+    private any function populateOneToMany( 
+        required struct propertyMeta, 
+        required array oneToManyDataArray, 
+        string formUploadDottedPath="", 
+        string objectPopulateMode = this.getHibachiScope().getObjectPopulateMode()  
+    ){
+        
+        var entityName = listLast( arguments.propertyMeta.cfc, '.' );
+		var entityService = this.getService( "hibachiService" ).getServiceByEntityName( entityName );
+        
+        var currentPropertyName = arguments.propertyMeta.name;
+        var currentPropertySingularName = arguments.propertyMeta.singularName;
+		var primaryIDPropertyName = this.getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( entityName );
+		
+		// And Filter invalid indices
+		arguments.oneToManyDataArray = arguments.oneToManyDataArray.filter( function(value){ 
+		    return !isNull(value); 
+		});
+		
+		// Loop over the array of objects in the data... Then load, populate, and validate each one
+		for( var i=1; i<= arrayLen(arguments.oneToManyDataArray); i++ ){
+		    
+		    var oneToManyItemDataStruct = arguments.oneToManyDataArray[ i ];
+
+		    // Check to make sure that this struct has the primary ID property in it, otherwise we can't do a populate.  
+		    if( structKeyExists( oneToManyItemDataStruct, primaryIDPropertyName) ){
+		        
+		        var primaryIDValue = trim( oneToManyItemDataStruct[ primaryIDPropertyName ] );
+
+				// Load the specific entity, and if one doesn't exist yet then return a new entity
+				var relatedEntity = entityService.invokeMethod( "get"&entityName, { 1=primaryIDValue, 2=true } );
+				// Add the entity to the existing objects properties
+				this.invokeMethod("add"&currentPropertySingularName, { 1=relatedEntity });
+
+				// If there were additional values in the data array, then we use those values to populate the entity, and validating it as well.
+				if( structCount(oneToManyItemDataStruct) > 1) {
+					
+					// Populate the sub property
+					relatedEntity.populate( 
+					    data                    = oneToManyItemDataStruct, 
+					    formUploadDottedPath    = arguments.formUploadDottedPath&currentPropertyName&"["&i&"].", // E.g. `order.orderItems[1].`
+					    objectPopulateMode      = arguments.objectPopulateMode 
+					);
+					
+					this.addPopulatedSubProperty(currentPropertyName, relatedEntity);
+				}
+			}
+		}
+		
+    }
+    
+    /**
+	 * Helper function to for `populate()` to populate many-to-many properties; 
+	*/   
+    private void function populateManyToMany( required struct propertyMeta, required string manyToManyIDList ){
+
+        var entityName = listLast( arguments.propertyMeta.cfc, '.' );
+        var currentPropertyName = arguments.propertyMeta.name;
+        var currentPropertySingularName = arguments.propertyMeta.singularName;
+
+		// set the service to use to get the specific entity
+		var entityService = this.getService( "hibachiService" ).getServiceByEntityName( entityName );
+		// Find the primaryID column Name
+		var primaryIDPropertyName = this.getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( entityName );
+
+		// Get all of the existing related entities
+		var existingRelatedEntities = invokeMethod( "get"&currentPropertyName );
+
+		if( isNull(existingRelatedEntities)) {
+			throw("The Many-To-Many relationship for '#currentPropertyName#' could not be populated because it wasn't setup as an empty array on init.");
+		}
+
+		// Loop over the existing related entities and check if the primaryID exists in the list of data that was passed in.
+		for(var relatedEntity in existingRelatedEntities ){
+
+			// Get the primary ID of this existing relationship
+			var thisPrimrayID = relatedEntity.invokeMethod( "get"&primaryIDPropertyName );
+			// Find out if hat ID is in the list
+			var listIndex = listFind( arguments.manyToManyIDList, thisPrimrayID );
+
+			if(listIndex) {
+			    // If the relationship already exist, then remove that id from the list
+				arguments.manyToManyIDList = listDeleteAt(arguments.manyToManyIDList, listIndex);
+			} else {
+			    // If the relationship no longer exists in the list, then remove the entity relationship
+				this.invokeMethod("remove"&currentPropertySingularname, { 1=relatedEntity } );
+			}
+		}
+
+		// Loop over all of the primaryID's that are still in the list, and add the relationship
+		for(var relatedEntityID in arguments.manyToManyIDList ){
+			// Load the specific entity, if one doesn't exist... this will be null
+			var relatedEntity = entityService.invokeMethod( "get"&entityName, { 1=relatedEntityID } );
+			// If the entity exists, then add it to the relationship
+			if(!isNull(relatedEntity)) {
+				this.invokeMethod( "add"&currentPropertySingularname, { 1=relatedEntity } );
+			}
+		}
+		
+    }
 
 	// @hint Public populate method to utilize a struct of data that follows the standard property form format
-	public any function populate( required struct data={}, formUploadDottedPath="" ) {
+	public any function populate( 
+	    required struct data, 
+	    string formUploadDottedPath        = "", 
+	    string objectPopulateMode   = this.getHibachiScope().getObjectPopulateMode() 
+	){
+	    
 		// Call beforePopulate
 		beforePopulate(data=arguments.data);
 
@@ -189,203 +449,57 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Set the current property into variable of meta data
 			var currentProperty = properties[p];
-			
+
 			// Check to see if this property has a key in the data that was passed in
-			if(
-				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) &&
-				(
-					!isPersistent()
-					||
-					(getHibachiScope().getPublicPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "public")
-					||
-					(getHibachiScope().getWorkflowPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "workflow")
-					||
-					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))
-			) {
+			if( structKeyExists(arguments.data, currentProperty.name) && this.canPopulateProperty(currentProperty, arguments.objectPopulateMode) ){
+
+			    var currentPropertyValue = arguments.data[ currentProperty.name ];
+
 				// ( COLUMN )
-				if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && isSimpleValue(arguments.data[ currentProperty.name ]) && !structKeyExists(currentProperty, "hb_fileUpload") ) {
+				if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && isSimpleValue(currentPropertyValue) && !structKeyExists(currentProperty, "hb_fileUpload") ) {
 
-					// If the value is blank, then we check to see if the property can be set to NULL.
-					if( trim(arguments.data[ currentProperty.name ]) == "" && ( !structKeyExists(currentProperty, "notNull") || !currentProperty.notNull ) ) {
-						_setProperty(currentProperty.name);
+                    populateSimpleValue(currentProperty, currentPropertyValue);
 
-					// If the value isn't blank, or we can't set to null... then we just set the value.
-					} else {
-						/*
-						if( !structKeyExists(currentProperty,'hb_formatType') ){
-							currentProperty.hb_formatType = '';
-						}
-						_setProperty(currentProperty.name, trim(arguments.data[ currentProperty.name ]), currentProperty.hb_formatType);
-						*/
-						_setProperty(currentProperty.name, rereplace(trim(arguments.data[ currentProperty.name ]),chr(002),'','all'));
-						// if this property has a sessionDefault defined for it, then we should update that value with what was used
-						if(structKeyExists(currentProperty, "hb_sessionDefault")) {
-							setPropertySessionDefault(currentProperty.name, trim(arguments.data[ currentProperty.name ]));
-						}
-					}
 				// ( POPULATE-STRUCT )
-				} else if( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "struct"  && structKeyExists(currentProperty, "hb_populateStruct") && currentProperty.hb_populateStruct && isStruct( arguments.data[ currentProperty.name ] ) ) {
-					_setProperty(currentProperty.name, arguments.data[ currentProperty.name ] );
+				} else if( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "struct"  && structKeyExists(currentProperty, "hb_populateStruct") && currentProperty.hb_populateStruct && isStruct( currentPropertyValue ) ) {
+
+					_setProperty(currentProperty.name, currentPropertyValue );
 
 				// ( POPULATE-ARRAY )
-				} else if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && structKeyExists(currentProperty, "hb_populateArray") && currentProperty.hb_populateArray && isArray( arguments.data[ currentProperty.name ] ) ) {
-					_setProperty(currentProperty.name, arguments.data[ currentProperty.name ] );
+				} else if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && structKeyExists(currentProperty, "hb_populateArray") && currentProperty.hb_populateArray && isArray( currentPropertyValue ) ) {
+
+					_setProperty(currentProperty.name, currentPropertyValue );
 
 				// (MANY-TO-ONE) Do this logic if this property is a many-to-one relationship, and the data passed in is of type struct
-				} else if( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "many-to-one" && isStruct( arguments.data[ currentProperty.name ] ) ) {
-					// Set the data of this Many-To-One relationship into it's own local struct
-					var manyToOneStructData = arguments.data[ currentProperty.name ];
+				} else if( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "many-to-one" && isStruct( currentPropertyValue ) ){
 
-					// Find the primaryID column Name
-					var primaryIDPropertyName = getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
-
-					// If the primaryID exists then we can set the relationship
-					if(structKeyExists(manyToOneStructData, primaryIDPropertyName)) {
-
-						// set the service to use to get the specific entity
-						var entityService = getService( "hibachiService" ).getServiceByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
-
-						// If there were additional values in the data, then we will get the entity by the primaryID and populate / validate by calling save in its service.
-						if(structCount(manyToOneStructData) gt 1) {
-
-							// Load the specifiv entity, if one doesn't exist, this will return a new entity
-							var currentEntity = this.invokeMethod("get#currentProperty.name#");
-							if(!isNull(currentEntity) && currentEntity.getPrimaryIDValue() == manyToOneStructData[primaryIDPropertyName]) {
-								var thisEntity = currentEntity;
-							} else if (len(manyToOneStructData[primaryIDPropertyName])) {
-								var thisEntity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=manyToOneStructData[primaryIDPropertyName],2=true});
-							} else {
-								var thisEntity = entityService.invokeMethod( "new#listLast(currentProperty.cfc,'.')#" );
-							}
-
-							// Set the value of the property as the loaded entity
-							_setProperty(currentProperty.name, thisEntity );
-
-							// Populate the sub property
-							thisEntity.populate(manyToOneStructData, '#arguments.formUploadDottedPath##currentProperty.name#.');
-
-							// Tell the variables scope that we populated this sub-property
-							addPopulatedSubProperty(currentProperty.name, thisEntity);
-
-						// If there were no additional values in the strucuture then we just try to get the entity and set it... in this way a null is a valid option
-						} else {
-							// If the value passed in for the ID is blank, then set the value of the currentProperty to NULL
-							if(manyToOneStructData[primaryIDPropertyName] == "") {
-								_setProperty(currentProperty.name);
-
-							// If it was an actual ID, then we will try to load that entity
-							} else {
-
-								// Load the specifiv entity, if one doesn't exist... this will be null
-								var thisEntity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=manyToOneStructData[primaryIDPropertyName]});
-
-								if(!isNull(thisEntity)) {
-									// Set the value of the property as the loaded entity
-									_setProperty(currentProperty.name, thisEntity );
-								}
-
-							}
-						}
-					}
+					populateManyToOne( currentProperty, currentPropertyValue, arguments.formUploadDottedPath );
 
 				// (ONE-TO-MANY) Do this logic if this property is a one-to-many or many-to-many relationship, and the data passed in is of type array
-				} else if ( structKeyExists(currentProperty, "fieldType") && (currentProperty.fieldType == "one-to-many" or currentProperty.fieldType == "many-to-many") && isArray( arguments.data[ currentProperty.name ] ) ) {
-					// Find the primaryID column Name for the related object
-					var primaryIDPropertyName = getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
+				} else if ( structKeyExists(currentProperty, "fieldType") && (currentProperty.fieldType == "one-to-many" or currentProperty.fieldType == "many-to-many") && isArray( currentPropertyValue ) ){
 
-					// Set the data of this One-To-Many relationship into it's own local array
-					var oneToManyArrayData = arguments.data[ currentProperty.name ];
+    			    // Also check to make sure populateSubProperties was not set to false in the data (if not defined we asume true).
+        		    var canPopulateSubProperties = (!structKeyExists(arguments.data, "populateSubProperties") || arguments.data.populateSubProperties); //not sure about the use-cases, but keeping it for compatibility.
+                    
+                    if(canPopulateSubProperties){
+					    populateOneToMany( currentProperty, currentPropertyValue, arguments.formUploadDottedPath );
+                    }
 
-					//Filter invalid indices
-					oneToManyArrayData = arrayFilter(oneToManyArrayData,function(value){
-						return !isNull(value);
-					});
-
-					// Loop over the array of objects in the data... Then load, populate, and validate each one
-					for(var a=1; a<=arrayLen(oneToManyArrayData); a++) {
-
-						// Check to make sure that this array has the primary ID property in it, otherwise we can't do a populate.  Also check to make sure populateSubProperties was not set to false in the data (if not defined we asume true).
-						if(structKeyExists(oneToManyArrayData[a], primaryIDPropertyName) && (!structKeyExists(arguments.data, "populateSubProperties") || arguments.data.populateSubProperties)) {
-
-							// set the service to use to get the specific entity
-							var entityService = getService( "hibachiService" ).getServiceByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
-
-							// Load the specific entity, and if one doesn't exist yet then return a new entity
-							var thisEntity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=oneToManyArrayData[a][primaryIDPropertyName],2=true});
-
-							// Add the entity to the existing objects properties
-							this.invokeMethod("add#currentProperty.singularName#", {1=thisEntity});
-
-							// If there were additional values in the data array, then we use those values to populate the entity, and validating it aswell.
-							if(structCount(oneToManyArrayData[a]) gt 1) {
-
-								// Populate the sub property
-								thisEntity.populate(oneToManyArrayData[a], '#arguments.formUploadDottedPath##currentProperty.name#[#a#].');
-
-								addPopulatedSubProperty(currentProperty.name, thisEntity);
-							}
-						}
-					}
 				// (MANY-TO-MANY) Do this logic if this property is a many-to-many relationship, and the data passed in as a list of ID's
-				} else if ( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "many-to-many" && isSimpleValue( arguments.data[ currentProperty.name ] ) ) {
-					// Set the data of this Many-To-Many relationship into it's own local struct
-					var manyToManyIDList = arguments.data[ currentProperty.name ];
+				} else if ( structKeyExists(currentProperty, "fieldType") && currentProperty.fieldType == "many-to-many" && isSimpleValue( currentPropertyValue ) ){
 
-					// Find the primaryID column Name
-					var primaryIDPropertyName = getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
+					populateManyToMany( currentProperty, currentPropertyValue );
 
-					// Get all of the existing related entities
-					var existingRelatedEntities = invokeMethod("get#currentProperty.name#");
-
-					if(isNull(existingRelatedEntities)) {
-						throw("The Many-To-Many relationship for '#currentProperty.name#' could not be populated because it wasn't setup as an empty array on init.");
-					}
-
-					// Loop over the existing related entities and check if the primaryID exists in the list of data that was passed in.
-					for(var m=arrayLen(existingRelatedEntities); m>=1; m-- ) {
-
-						// Get the primary ID of this existing relationship
-						var thisPrimrayID = existingRelatedEntities[m].invokeMethod("get#primaryIDPropertyName#");
-
-						// Find out if hat ID is in the list
-						var listIndex = listFind( manyToManyIDList, thisPrimrayID );
-
-						// If the relationship already exist, then remove that id from the list
-						if(listIndex) {
-							manyToManyIDList = listDeleteAt(manyToManyIDList, listIndex);
-						// If the relationship no longer exists in the list, then remove the entity relationship
-						} else {
-							this.invokeMethod("remove#currentProperty.singularname#", {1=existingRelatedEntities[m]});
-						}
-					}
-
-					// Loop over all of the primaryID's that are still in the list, and add the relationship
-					for(var n=1; n<=listLen( manyToManyIDList ); n++) {
-
-						// set the service to use to get the specific entity
-						var entityService = getService( "hibachiService" ).getServiceByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
-
-						// set the id of this entity into a local variable
-						var thisEntityID = listGetAt(manyToManyIDList, n);
-
-						// Load the specific entity, if one doesn't exist... this will be null
-						var thisEntity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=thisEntityID});
-
-						// If the entity exists, then add it to the relationship
-						if(!isNull(thisEntity)) {
-							this.invokeMethod("add#currentProperty.singularname#", {1=thisEntity});
-						}
-					}
 				}
 			}
 		}
 
 		// Do any file upload properties
 		for( var p=1; p <= arrayLen(properties); p++ ) {
-			
+
 			// Setup the current property
 			currentProperty = properties[p];
-			
+
 			// Check to see if we should upload this property
 			// Prepend the provided formUploadDottedPath if this file is being uploaded as a subpopulated property to determine absolute path reference for form scope retrieval
 			if( 
@@ -442,7 +556,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 						// Update the property with the serverFile name
 						_setProperty(currentProperty.name, uploadData.serverFile);
-						
+
 						// Attempt to invoke setXXXUploadStatus() method naming convention if exists to store reference to the file upload status data
 						// If file upload property name already has xxxUpload suffix, only add 'Status' so we can reference 'setXXXUploadStatus' instead of 'setXXXUploadUploadStatus'
 						var uploadStatusMethodName = 'set#currentProperty.name#';
@@ -451,7 +565,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 						} else {
 							uploadStatusMethodName &= 'UploadStatus';
 						}
-						
+
 						// Invoke if a method matches the appropriate naming convention
 						if (structKeyExists(this, uploadStatusMethodName)) {
 							invokeMethod(uploadStatusMethodName, {1=uploadData});
@@ -470,7 +584,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		// Return this object
 		return this;
 	}
-
+	
 	public void function addPopulatedSubProperty( required string propertyName, required any entity ) {
 		// Make sure the structure exists
 		if(!structKeyExists(variables, "populatedSubProperties")){
@@ -528,6 +642,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							// If it had errors, add an error to this entity
 							if(variables.populatedSubProperties[ propertyName ][i].hasErrors()) {
 								getHibachiErrors().addError('populate', propertyName);
+								this.addErrors(variables.populatedSubProperties[ propertyName ][i].getErrors());
 							}
 						}
 
@@ -539,6 +654,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 						// If it had errors, add an error to this entity
 						if(variables[ propertyName ].hasErrors()) {
 							getHibachiErrors().addError('populate', propertyName);
+							this.addErrors(variables[ propertyName ].getErrors());
 						}
 					}
 				}
@@ -986,8 +1102,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		return getApplicationValue("classPropertyCache_#getClassFullname()#");
 	}
 
-	private struct function convertStructToLowerCase(struct st){
-		var aKeys = structKeyArray(st);
+	private struct function convertStructToLowerCase(required struct st){
+		var aKeys = structKeyArray(arguments.st);
         var stN = structNew();
         var i= 0;
         var ai= 0;

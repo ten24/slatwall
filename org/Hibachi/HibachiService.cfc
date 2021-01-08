@@ -7,7 +7,7 @@
 	<cfproperty name="hibachiEventService" type="any">
 	<cfproperty name="hibachiRBService" type="any">
 	<cfproperty name="hibachiSessionService" type="any">
-	<cfproperty name="hibachiTagService" type="anhasToManyByEntityNameAndPropertyIdentifiery">
+	<cfproperty name="hibachiTagService" type="any">
 	<cfproperty name="hibachiUtilityService" type="any">
 	<cfproperty name="hibachiValidationService" type="any">
 	

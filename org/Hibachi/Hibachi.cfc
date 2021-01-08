@@ -206,6 +206,7 @@ component extends="framework.one" {
 	this.ormenabled = true;
 	this.ormsettings = {};
 	this.ormsettings.cfclocation = [ "/#variables.framework.applicationKey#/model/entity" ];
+	this.ormSettings.dialect = "MySQL"
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
@@ -334,6 +335,7 @@ component extends="framework.one" {
 		// clean any beancache for local development
 		if(structKeyExists(url, "reloadbean") && getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
 			getBeanFactory().reloadBean(url.reloadbean);
+			writeLog(file="#variables.framework.applicationKey#", text="General Log - Reloading bean #url.reloadbean#");
 		}
 		
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
@@ -803,6 +805,7 @@ component extends="framework.one" {
 					var hibachiBF = new framework.hibachiaop("/#variables.framework.applicationKey#/org/Hibachi", {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
+							'applicationRootMappingPath' = applicationInitData["applicationRootMappingPath"],
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
 						},
 						recurse=false,

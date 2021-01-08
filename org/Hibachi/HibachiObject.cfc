@@ -248,6 +248,33 @@ component accessors="true" output="false" persistent="false" {
 		return getService("hibachiUtilityService").formatValue(argumentcollection=arguments);
 	} 
 	
+	
+    public boolean function hibachiIsEmpty( any input, boolean noTrim=false ){
+
+        if( !structKeyExists(arguments, 'input') || IsNull(arguments.input) ){
+            return true;
+        }
+
+        if( IsSimpleValue(arguments.input) ){
+           return arguments.noTrim ? len( arguments.input ) == 0 : len( trim(arguments.input) ) == 0;
+        }
+
+        if( IsStruct(arguments.input) ){
+            return StructIsEmpty(arguments.input);
+        }
+
+        if( IsArray(arguments.input) ){
+            return ArrayIsEmpty(arguments.input);
+        }
+
+        if( IsQuery(arguments.input) ){
+            return arguments.input.recordCount == 0;
+        }
+
+        // isObject | not-NULL | boolean
+        return false;
+    }
+	
 	// =========================  END:  DELIGATION HELPERS ==========================================
 	// ========================= START: APPLICATION VAUES ===========================================
 	
