@@ -180,34 +180,36 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 					if(noMethod) { 
                         this.logHibachi("EntityQueue - processEntityQueueArray() did not find any processMethod in entityQueueData, deleting this record");
-						this.deleteEntityQueueItem( entityQueue['entityQueueID'] );
+						this.deleteEntityQueueItem( arguments.entityQueue['entityQueueID'] );
 						return;
 					}
 					
-					var entityService = getServiceForEntityQueue(entityQueue);
-	                if( len(entityQueue['baseID']) ){
+					var entityService = getServiceForEntityQueue(arguments.entityQueue);
+	                if( len(arguments.entityQueue['baseID']) ){
 					    // not passing the 2nd argument as true to return a new entity, so that we ignore bad entity-IDs;
-					    var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", { 1=entityQueue['baseID']} );
+					    var entity = entityService.invokeMethod( "get#arguments.entityQueue['baseObject']#", { 1=arguments.entityQueue['baseID']} );
 	                } else {
-	                    var entity = entityService.invokeMethod( "new#entityQueue['baseObject']#" );
+	                    var entity = entityService.invokeMethod( "new#arguments.entityQueue['baseObject']#" );
 	                }
 
 					if( isNull(entity) ){
-						this.logHibachi("EntityQueue - processEntityQueueArray() - entity is null, deleting this record #entityQueue['entityQueueID']#");
-						this.deleteEntityQueueItem( entityQueue['entityQueueID'] );
+						this.logHibachi("EntityQueue - processEntityQueueArray() - entity is null, deleting this record #arguments.entityQueue['entityQueueID']#");
+						this.deleteEntityQueueItem( arguments.entityQueue['entityQueueID'] );
 						return;
 					}
 	
 					var entityMethodInvoked = invokeMethodOrProcessOnService(arguments.entityQueue, entity, entityService);  
 					
-					if(entityMethodInvoked){
+					if( entityMethodInvoked ){
 						ormflush();
 					} else {
 						ORMClearSession();
-						getHibachiScope().setORMHasErrors(false);
+						this.getHibachiScope().setORMHasErrors(false);
 					}
-					deleteEntityQueueItem(arguments.entityQueue['entityQueueID'], true);
-				}catch(any e){
+					
+					this.deleteEntityQueueItem(arguments.entityQueue['entityQueueID'], true);
+					
+				} catch(any e){
 					
 					if(!structKeyExists(arguments.entityQueue,'tryCount') || isNull(arguments.entityQueue['tryCount'])){
 						arguments.entityQueue['tryCount'] = 1; 
@@ -219,7 +221,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						getHibachiEntityQueueDAO().updateNextRetryDateAndMostRecentError(arguments.entityQueue['entityQueueID'], e.message);
 					}
 					
-					if(getHibachiScope().setting("globalLogMessages") == "detail"){
+					if(this.getHibachiScope().setting("globalLogMessages") == "detail"){
 						logHibachiException(e);
 					}
 				}
