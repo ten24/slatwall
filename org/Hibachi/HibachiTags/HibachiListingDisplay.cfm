@@ -20,12 +20,13 @@
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
-	<cfparam name="attributes.showAutoRefresh" type="boolean" default="false"/>
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
+	<cfparam name="attributes.defaultSearchColumn" type="string" default=""/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
 	<cfparam name="attributes.refreshEvent" type="string" default="" />
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
-
+	<cfparam name="attributes.hasActionBar" type="boolean" default="false"/>
+	<cfparam name="attributes.actionBarActions" type="string" default="export,print,email"/>
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordActions" type="string" default="" />
 	<cfparam name="attributes.recordEditEvent" type="string" default="" />
@@ -88,6 +89,7 @@
 	<!--- Settings --->
 	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
 	<cfparam name="attributes.hideUnfilteredResults" type="boolean" default="false" /> <!--- If true, collection will only show records when filtered or searched --->
+	<cfparam name="attributes.hideAllResults" type="boolean" default="false" />	<!--- If true, collection will never show records --->
 
 	<!--- ThisTag Variables used just inside --->
 	<cfparam name="thistag.columns" type="array" default="#arrayNew(1)#" />
@@ -156,6 +158,9 @@
 				<cfif len(attributes.personalCollectionKey)>
 					data-personal-collection-key="#attributes.personalCollectionKey#"
 				</cfif>
+				<cfif len(attributes.defaultSearchColumn)>
+					data-default-search-column="#attributes.defaultSearchColumn#"
+				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
 			    <cfif len(attributes.listingID)>
@@ -211,8 +216,7 @@
 				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"
 				data-show-export="#attributes.showExport#"
 				data-show-search="#attributes.showSearch#"
-				data-show-auto-refresh="#attributes.showAutoRefresh#"
-				data-has-action-bar="false"
+				data-has-action-bar="#attributes.hasActionBar#"
 				data-expandable="#attributes.expandable#"
 				data-using-personal-collection="#attributes.usingPersonalCollection#"
 				<cfif len(attributes.listingColumns)>
@@ -233,12 +237,22 @@
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
 			    </cfif>
-			    <cfif attributes.hideUnfilteredResults >
+			    <cfif attributes.hideUnfilteredResults AND NOT attributes.hideAllResults>
 			    	hide-unfiltered-results="true"
+			    </cfif>
+			    <cfif attributes.hideAllResults >
+			    	hide-all-results="true"
 			    </cfif>
 			    <cfif !isNull(attributes.currencyCode) && len(attributes.currencyCode)>
 			    	data-currency-code="#attributes.currencyCode#"
 			    </cfif>
+			    <cfif !isNull(attributes.actionBarActions)>
+			    	data-action-bar-actions="#attributes.actionBarActions#"	
+			    </cfif>
+			    <cfif !isNull(attributes.listActions) && len(attributes.listActions)>
+			    	data-list-actions="#attributes.listActions#"	
+			    </cfif>
+			    
 			>
 			</sw-listing-display>
 			<cfif structKeyExists(attributes,'collectionConfigFieldName')>

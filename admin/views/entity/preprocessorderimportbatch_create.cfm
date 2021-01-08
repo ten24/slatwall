@@ -58,10 +58,11 @@ Notes:
 	
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderImportBatch#">
 	</hb:HibachiEntityActionBar>
-	
+	<input type="hidden" name="sRedirectAction" value="admin:entity.editOrderImportBatch">
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderImportBatchName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeID" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="batchFile" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

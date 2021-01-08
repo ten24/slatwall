@@ -67,7 +67,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	
 	// Related Entities (one-to-many)
-	property name="promotionQualifierMessages" singularname="promotionQualifierMessage" cfc="PromotionQualifierMessage" fieldtype="one-to-many" fkcolumn="promotionQualifierID" inverse=true;
+	property name="promotionQualifierMessages" singularname="promotionQualifierMessage" cfc="PromotionQualifierMessage" fieldtype="one-to-many" fkcolumn="promotionQualifierID" inverse=true cascade="all-delete-orphan";
 	
 	// Related Entities (many-to-many - owner)
 	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoQualFulfillmentMethod" fkcolumn="promotionQualifierID" inversejoincolumn="fulfillmentMethodID";

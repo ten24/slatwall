@@ -91,12 +91,13 @@ Notes:
 
 	</cffunction> 
 
-	<cffunction name="resetExpiredWorkflows">
+	<cffunction name="resetExpiredWorkflow">
+		<cfargument name="workflowTriggerID" required="true" type="string" />
 		<cfset var rs = "" />
 		<cfquery name="rs">
 			UPDATE swWorkflowTrigger 
 			SET runningFlag = 0
-			WHERE runningFlag=true AND DATE_ADD(nextRunDateTime, INTERVAL timeout MINUTE) < NOW()
+			WHERE runningFlag=true AND workflowTriggerID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.workflowTriggerID#">
 		</cfquery>
 	</cffunction>
 
@@ -108,8 +109,6 @@ Notes:
 									AND
 										triggerType = :triggerType
 									AND
-										(runningFlag is NULL or runningFlag = false)
-									AND
 										(nextRunDateTime is null or nextRunDateTime <= CURRENT_TIMESTAMP())
 								',{triggerType='Schedule'})/>
 
@@ -118,7 +117,6 @@ Notes:
 	<cffunction name="updateWorkflowTriggerRunning" returnType="Boolean">
 		<cfargument name="workflowTriggerID" required="true" type="string" />
 		<cfargument name="runningFlag" required="true" type="boolean" />
-		<cfargument name="timeout" required="false" type="numeric" />
 
 		<cfset var rs = "" />
 		<cfquery name="rs" result="local.result">
@@ -126,11 +124,7 @@ Notes:
 			SET runningFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> 
 			WHERE workflowTriggerID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.workflowTriggerID#">
 			AND runningFlag != <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> 
-			<cfif structKeyExists(arguments, "timeout")>
-				AND nextRunDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#dateAdd('n',(-1 * arguments.timeout),now())#"> 
-			<cfelse>
-				AND (nextRunDateTime is null or nextRunDateTime <= CURRENT_TIMESTAMP())
-			</cfif> 
+			AND (nextRunDateTime is null or nextRunDateTime <= CURRENT_TIMESTAMP())
 		</cfquery>
 		
 		<cfreturn local.result.recordcount != 0 />

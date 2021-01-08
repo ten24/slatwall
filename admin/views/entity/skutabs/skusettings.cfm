@@ -54,6 +54,7 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showMultiSite="true" includeSettingNamesOnlyForSites="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods">
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuBackorderLimit" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" settingObject="#rc.sku#" />
@@ -75,6 +76,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesMQATSBOMFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuStockHold" settingObject="#rc.sku#"/>
 		<swa:SlatwallSetting settingName="skuStockHoldTime" settingObject="#rc.sku#"/>
 		<swa:SlatwallSetting settingName="skuDisableAverageCostCalculation" settingObject="#rc.sku#"/>
@@ -111,5 +113,7 @@ Notes:
 		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "miscFee">
 			<swa:SlatwallSetting settingName="skuIsRefundFee" settingObject="#rc.sku#"/>
 		</cfif>
+		<swa:SlatwallSetting settingName="skuAllowableRefundPercentages" settingObject="#rc.sku#"/>
+
 	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -226,10 +226,10 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		
 		// JSON
 		jQuery.each(jQuery( scopeSelector ).find(jQuery( 'pre.json' )), function(i, v){
-		    
+
 		    var jsonStr = $(this).text();
 		    var jsonObj = jsonStr;
-		    
+
 		    try {
 		        jsonObj = JSON.parse( jsonStr );
 		    } catch (e){
@@ -237,7 +237,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		    }
 
             var syntaxHighlight = function(json){
-        
+
                 try {
                     if (typeof json != 'string') {
                         json = JSON.stringify(json, undefined, "\t");
@@ -245,9 +245,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
                 } catch (e){
     		        console.warn(e);
     		    }   
-    		    
+
                 json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                
+
                 return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
                     var cls = 'number';
                     if ( /^"/.test(match) ){
@@ -260,10 +260,10 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
                     return '<span class="' + cls + '">' + match + '</span>';
                 });
             }
-            
+
             $(this).html( syntaxHighlight(jsonObj) );
 		});
-	
+
 	
 		// Tooltips
 		jQuery( scopeSelector ).find(jQuery('.hint')).tooltip();
@@ -291,9 +291,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				jQuery( this ).removeClass('hide');
 			}
 			*/
-	
+
 			jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
-				
 	            var selectedValue = jQuery(this).val() || '';
 	
 	            if(bindData.valueAttribute.length) {
@@ -500,8 +499,29 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		// Alerts
 		jQuery('body').on('click', '.alert-confirm', function(e){
 			e.preventDefault();
-			jQuery('#adminConfirm .modal-body').html( jQuery(this).data('confirm') );
-			jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
+			let bodyHtml = '';
+			if(jQuery(this).data('includeForm')){
+				let form = jQuery(this).closest('form')[0];
+				bodyHtml += `<form action="${form.action}" id="adminConfirmForm" method="POST">`
+				for(let i = 0; i < form.length; i++){
+					if(form[i].name){
+						bodyHtml += `<input type="hidden" name="${form[i].name}" value="${form[i].value}">`;
+					}
+				}
+			}
+			bodyHtml += jQuery(this).data('confirm');
+			if(jQuery(this).data('includeForm')){
+				bodyHtml += '</form>';
+			}
+			jQuery('#adminConfirm .modal-body').html( bodyHtml );
+			if(jQuery(this).data('includeForm')){
+				jQuery('#adminConfirm #confirmYesButton').removeClass('hide');
+				jQuery('#adminConfirm #confirmYesLink').addClass('hide');
+			}else{
+				jQuery('#adminConfirm #confirmYesButton').addClass('hide');
+				jQuery('#adminConfirm #confirmYesLink').removeClass('hide');
+				jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
+			}
 			jQuery('#adminConfirm').modal();
 		});
 		jQuery('body').on('click', '.btn-disabled', function(e){	

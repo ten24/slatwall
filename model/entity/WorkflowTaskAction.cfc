@@ -45,6 +45,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	property name="updateData" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 	property name="processEntityQueueFlagPropertyName" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="processMethod" ormtype="string";
+	property name="processMethodData" ormtype="string" length="8000" hb_formFieldType="textarea";
 	property name="webhookURL" ormtype="string";
 	
 	
@@ -170,6 +171,14 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 				break;
 		}
 		return getHibachiScope().authenticateEntity(crudType, getWorkflowTask().getWorkflow().getWorkflowObject());
+	}
+	
+	public struct function getProcessMethodDataStruct(){
+		if(structKeyExists(variables, 'processMethodData') && IsJSON(variables.processMethodData)){
+			return deserializeJSON(variables.processMethodData);
+		}else{
+			return {};
+		}
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================

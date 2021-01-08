@@ -1,8 +1,5 @@
 /*
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/develop
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -29,10 +26,7 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/develop
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -40,10 +34,7 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/develop
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -57,6 +48,10 @@ Notes:
 */
 component extends="Slatwall.org.Hibachi.HibachiObject" {
 	
+	public any function init() {
+		return this;
+	}
+	
 	/**
 	 * Helper function to return the value for a Setting by 'settingName'.
 	 * 
@@ -68,7 +63,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		}
 		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 	}
-
+	
 	/**
 	 * Helper function to return the associated Integration-entity, for this integration.
 	 * 
@@ -84,4 +79,4 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 
-} 
+}
