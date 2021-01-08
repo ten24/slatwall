@@ -2,7 +2,6 @@
 <cfinclude template="inc/header/header.cfm" />
 
 <cfoutput>
-  
   <!--- Hero slider --->
   <div class="hero mt-2" style="background-image: url(#$.getThemePath()#/custom/client/assets/images/main-bg-img.jpg);">
     <!--- Featured Products --->
@@ -234,6 +233,13 @@
     
     <a class="btn btn-primary mt-3 btn-long" href="#$.renderContent($.getContentByUrlTitlePath('home/shop-by').getContentID(), 'linkUrl')#">More Brands</a>
   </div>
+  
+  <script>
+    window.__STATE = #$.getStackedContent({
+      'header/main-navigation' : 'customBody',
+      'home/shop-by' : ['linkUrl', 'title', 'customBody']
+    })#
+  </script>
 
 </cfoutput>
 
