@@ -20,6 +20,8 @@ const AccountSidebar = ({ logout, user }) => {
               >
                 Logout
               </a>
+              <br/>
+              <Link to="/testing"></Link>
             </div>
           </div>
         </div>

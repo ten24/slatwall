@@ -112,7 +112,7 @@ function Header(props) {
                       <i className="far fa-bars"></i>
                     </div>
                   </a>
-                  <Link className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" to="/MyAccount" data-toggle="modal">
+                  <Link className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" to="/my-account" data-toggle="modal">
                     <AccountBubble isAuthenticated={props.user.accountID} name={props.user.firstName} />
                   </Link>
 

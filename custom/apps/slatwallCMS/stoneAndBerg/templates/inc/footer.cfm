@@ -24,7 +24,8 @@
 </cfscript>
 <cfoutput>
 <script>
- 
+        // window.__SDK_URL__ = 'http://stoneandberg.local:8906/index.cfm/';
+        window.__SDK_URL__ = 'https://stoneandberg-admin.ten24dev.com/index.cfm/';
         window.__PRELOADED_STATE__ = JSON.stringify({
           preload: {
             navigation: #serializeJson(StructKeyExists(local, "navigation")? local.navigation : {})#,
