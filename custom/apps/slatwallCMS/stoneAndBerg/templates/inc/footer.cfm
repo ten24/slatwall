@@ -24,7 +24,6 @@
 </cfscript>
 <cfoutput>
 <script>
-        // window.__SDK_URL__ = 'http://stoneandberg.local:8906/index.cfm/';
         window.__SDK_URL__ = 'https://stoneandberg-admin.ten24dev.com/index.cfm/';
         window.__PRELOADED_STATE__ = JSON.stringify({
           preload: {
@@ -40,7 +39,6 @@
             accountFavorites: #serializeJson(StructKeyExists(local, "accountFavorites")? local["accountFavorites"] : {})#,
             accountAddresses: #serializeJson(StructKeyExists(local, "accountAddresses")? local["accountAddresses"] : {})#,
             accountPaymentMethods: #serializeJson(StructKeyExists(local, "accountPaymentMethods")? local["accountPaymentMethods"] : {})#,
-            test: "sdfdf",
           },
           userReducer: #serializeJson(local.userReducer)# ,
         }).replace(/</g, '\\u003c')
