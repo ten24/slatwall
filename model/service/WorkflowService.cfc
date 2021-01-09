@@ -57,7 +57,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
-	
 			//only flush on after
 			if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
 				getHibachiScope().flushORMSession();
@@ -154,10 +153,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowOnAllServers() {
+		getDao('HibachiCacheDAO').deleteStaleServerInstance();
+		if(getHibachiScope().getApplicationValue('applicationCluster') == ''){
+			return;
+		}
 		// get all active instances in the current cluster
 		var serverInstanceCollectionList = getService('HibachiService').getServerInstanceCollectionList();
 		serverInstanceCollectionList.addFilter('serverInstanceClusterName',getHibachiScope().getApplicationValue('applicationCluster'));
-		
+
 		var serverInstances = serverInstanceCollectionList.getRecords();
 		for (var serverInstance in serverInstances) {
 			
@@ -179,8 +182,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		// update timestamp on server instance
 		getDao('hibachiCacheDAO').updateServerInstanceLastRequestDateTime();
 		
-		getWorkflowDAO().resetExpiredWorkflows(); 
-		
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		var exclusiveInvocationClusters = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationClusters();
 		for(var workflowTrigger in workflowTriggers) {
@@ -192,6 +193,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			if( findNoCase(getHibachiScope().getApplicationValue('applicationCluster'), exclusiveInvocationClusters) && (isNull(workflowTrigger.getAllowedInvocationCluster()) || !findNoCase(workflowTrigger.getAllowedInvocationCluster(), exclusiveInvocationClusters)) ) {
 				continue;
 			}
+			
+			if(workflowTrigger.getLockLevel() == 'database' && !isNull(workflowTrigger.getRunningFlag()) && workflowTrigger.getRunningFlag()){
+				//timed out
+				if( DateAdd("n",val(workflowTrigger.getTimeout()),workflowTrigger.getNextRunDateTime()) < now() ){
+					getWorkflowDAO().resetExpiredWorkflow(workflowTrigger.getWorkflowTriggerID());
+				}else{
+				// not timed out yet, skip
+					continue;
+				}
+			}
+			
 			runWorkflowsByScheduleTrigger(workflowTrigger);
 		}
 	}
@@ -207,6 +219,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger, boolean skipTriggerRunningCheck = false) {
 		this.logHibachi('Start executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+		var triggerExecutionStartTime = getTickCount();
+		
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -257,30 +271,6 @@ component extends="HibachiService" accessors="true" output="false" {
 					var scheduleCollection = arguments.workflowTrigger.getCollection();
 					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
 					
-					if(currentObjectName == 'EntityQueue' && isNumeric(arguments.workflowTrigger.getMaxTryCount())){
-						scheduleCollection.addDisplayProperty('tryCount');
-						scheduleCollection.addFilter(
-							propertyIdentifier = 'tryCount',
-							value = arguments.workflowTrigger.getMaxTryCount(),
-							comparisonOperator = "<=",
-							filterGroupAlias = "maxTryCount"
-						);
-						
-						scheduleCollection.addFilter(
-							propertyIdentifier = 'entityQueueDateTime',
-							value = 'NULL',
-							comparisonOperator = 'IS',
-							filterGroupAlias = 'processingTime'
-						);
-						
-						scheduleCollection.addFilter(
-							logicalOperator='OR',
-							propertyIdentifier = 'entityQueueDateTime',
-							value = now(),
-							comparisonOperator = '<=',
-							filterGroupAlias = 'processingTime'
-						);
-					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
 							
@@ -296,6 +286,7 @@ component extends="HibachiService" accessors="true" output="false" {
 								
 								if(isNumeric(arguments.workflowTrigger.getCollectionFetchSize()) && arguments.workflowTrigger.getCollectionFetchSize() > 0){
 									scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
+									getHibachiScope().setValue('debug_collection_config', scheduleCollection.getCollectionConfig());
 									processData['collectionData'] = scheduleCollection.getPageRecords(formatRecords=false);
 								}else{
 									processData['collectionData'] = scheduleCollection.getRecords(formatRecords=false);
@@ -413,8 +404,27 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
-		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
+		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()# - #getFormatedExecutionTime(triggerExecutionStartTime, getTickCount())#', true);
 		return workflowTrigger;
+	}
+	
+	private string function getFormatedExecutionTime(required numeric start, required numeric end){
+		var millis = numberFormat( end - start );
+		var formatedValue = 'Duration: ' & millis & ' ms';
+		
+		//tags to simplify search
+		if(millis > 300000){
+			formatedValue &= ' [over5minutes]';
+		}else if(millis > 180000){
+			formatedValue &= ' [over3minutes]';
+		}else if(millis > 120000){
+			formatedValue &= ' [over2minutes]';
+		}else if(millis > 60000){
+			formatedValue &= ' [over1minute]';
+		}else if(millis > 30000){
+			formatedValue &= ' [over30seconds]';
+		}
+		return formatedValue;
 	}
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
@@ -462,9 +472,15 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			//PROCESS
 			case 'process' :
+				
+				// Append extra data passed in the WorkflowAction
+				structAppend(arguments.data, arguments.workflowTaskAction.getProcessMethodDataStruct(), true);
+					
 				if(structKeyExists(arguments,'entity')){
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
+					
+					
 
 					//process will determine whether we need to inflate a process object or pass data directly
 					arguments.entity = entityService.process(arguments.entity, arguments.data, processContext);
@@ -474,9 +490,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					}
 				}else{
 					var entityService = getServiceByEntityName( entityName=arguments.workflowTaskAction.getWorkflowTask().getWorkflow().getWorkflowObject());
-					var processData = {};
 					try{
-						var processMethod = entityService.invokeMethod(arguments.workflowTaskAction.getProcessMethod(), processData);
+						var processMethod = entityService.invokeMethod(arguments.workflowTaskAction.getProcessMethod(), { 'data' : arguments.data } );
 						actionSuccess = true;
 					}catch(any e){
 						actionSuccess = false;
@@ -516,8 +531,16 @@ component extends="HibachiService" accessors="true" output="false" {
 						'emailTemplateID' : arguments.workflowTaskAction.getEmailTemplate().getEmailTemplateID()
 					} 
 				}; 
-	
-				actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+
+				if(arguments.type == 'Event'){
+					arguments.baseObject = arguments.entity.getClassName();
+					arguments.baseID = arguments.entity.getPrimaryIDValue();
+					getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
+					actionSuccess = true; 
+				} else {
+					actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+				}
+				
 				break; 
 
 			//IMPORT
@@ -698,7 +721,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.entity = super.save(argumentcollection=arguments);
 
 		//Check if is a Schedule Trigger
-		if(structKeyExists(arguments.data, "schedule")){
+		if(structKeyExists(arguments.data, "schedule") && !isNull(entity.getSchedule())){
 		// Update the nextRunDateTime
 			arguments.entity.setNextRunDateTime( entity.getSchedule().getNextRunDateTime(entity.getStartDateTime(), entity.getEndDateTime()) );
 		}

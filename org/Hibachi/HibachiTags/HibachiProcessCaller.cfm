@@ -19,8 +19,7 @@
 	<cfparam name="attributes.disabled" type="boolean" default="false" />
 	<cfparam name="attributes.modal" type="boolean" default="false" />
 	<cfparam name="attributes.currentAction" type="string" default=""/>
-	<cfparam name="attributes.sRedirectAction" type="string" default=""/>
-
+	
 	<cfset local.entityName = "" />
 	
 	<!-- make sure recordProcessContext is always lower case -->
@@ -52,9 +51,7 @@
 		<cfset attributes.disabledText = local.processErrors.getAllErrorsHTML() />
 	</cfif>
 	
-	<cfif len(attributes.sRedirectAction) >
-	    <cfset attributes.queryString = listAppend(attributes.queryString, "sRedirectAction=#attributes.sRedirectAction#","&") />
-	<cfelseif len(attributes.currentAction)>
+	<cfif len(attributes.currentAction)>
 		<cfset attributes.queryString = listAppend(attributes.queryString, "sRedirectAction=#attributes.currentAction#","&") />
 	</cfif>
 	

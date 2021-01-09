@@ -476,6 +476,19 @@ Notes:
 				accountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="removeAccountFromEmails">
+		<cfargument name="accountID" type="any" required="true" >
+
+		<cfquery name="local.emailQuery">
+			UPDATE
+				SwEmail
+			SET
+				accountID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="removeAccountFromAuditProperties" returntype="void" access="public">
 		<cfargument name="accountID" type="string" required="true" />
@@ -501,6 +514,16 @@ Notes:
 			</cfloop>
 		</cfloop>
 
+	</cffunction>
+	
+	<cffunction name="setAccountPaymentMethodInactive" returntype="void" access="public">
+		<cfargument name="accountPaymentMethodID" required="true"  />
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			UPDATE SwAccountPaymentMethod
+			SET activeFlag = false
+			WHERE accountPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" />
+		</cfquery>
 	</cffunction>
 
 	<cffunction name="removeAccountFromAllSessions" returntype="void" access="public">

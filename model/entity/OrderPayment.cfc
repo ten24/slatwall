@@ -99,7 +99,6 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
-
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
@@ -146,7 +145,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="maximumPaymentMethodPaymentAmount" persistent="false";
 	property name="orderHasAnotherDynamicOrderPaymentFlag" persistent="false";
  
-
+		
 	public string function getMostRecentChargeProviderTransactionID() {
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived()) && getPaymentTransactions()[i].getAmountReceived() > 0 && !isNull(getPaymentTransactions()[i].getProviderTransactionID()) && len(getPaymentTransactions()[i].getProviderTransactionID())) {
@@ -879,6 +878,15 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		super.populate(argumentCollection=arguments);
 
 		setupEncryptedProperties();
+	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
 	}
 
 	// ==================  END:  Overridden Methods ========================

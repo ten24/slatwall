@@ -69,7 +69,7 @@ class HibachiService{
 	};
 
     public getUrlWithActionPrefix = () => {
-        return this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+"=";
+        return this.appConfig.baseURL+'index.cfm/?'+this.appConfig.action+"=";
     }
 
 	getJsEntities= () =>{
@@ -231,8 +231,8 @@ class HibachiService{
 
 		if (entityName != undefined){
 			var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
-			if(angular.element(document.body).injector().has(entityServiceName)){
-				var entityService = angular.element(document.body).injector().get(entityServiceName);
+			if(this.$injector.has(entityServiceName)){
+				var entityService = this.$injector.get(entityServiceName);
 				let functionObj = entityService['new'+entityName];
 				if (entityService['new'+entityName] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)){
 					return entityService['new'+entityName]();
@@ -560,7 +560,13 @@ class HibachiService{
 	};
 
 	getCurrencies = () =>{
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
+		if(this.appConfig.currencies){
+			var deferredCurrency = this.$q.defer();
+			deferredCurrency.resolve({ 'data' : this.appConfig.currencies });
+			return deferredCurrency.promise; 
+		}
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies';
+		urlString += '&instantiationKey='+this.appConfig.instantiationKey;
 		let request = this.requestService.newAdminRequest(urlString, null, 'GET');
 
 		return request.promise;

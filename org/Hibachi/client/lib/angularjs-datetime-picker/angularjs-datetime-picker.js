@@ -59,7 +59,7 @@
                 div.attr('close-on-select', 'false');
             }
             
-            if (options.scope) {
+            if (options.elementScope) {
                 div.attr('element-scope', 'elementScope');
             }
 

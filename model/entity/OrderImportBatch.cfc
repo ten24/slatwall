@@ -12,6 +12,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 
     // Related Object Properties (many-to-one)
     property name="orderImportBatchStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderImportBatchStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderImportBatchStatusType";
+    property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID";
     property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 
     // Audit Properties
@@ -39,6 +40,10 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 		if(structKeyExists(variables,'shippingMethod')){
 			return variables.shippingMethod;
 		}
+	}
+	
+	public any function getOrderTypeOptions(){
+		return getService('OrderImportBatchService').getOrderTypeOptions();
 	}
 	
 	public array function getShippingMethodOptions(){
@@ -72,5 +77,23 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 			variables.shippingMethodOptions = shippingMethodsCollectionList.getRecords();
 		}
 		return variables.shippingMethodOptions;
+	}
+	
+	public boolean function allItemsHaveOriginalOrder(){
+		var orderImportBatchItemCollection = getService('OrderImportBatchService').getOrderImportBatchItemCollectionList();
+		orderImportBatchItemCollection.addFilter('orderImportBatch.orderImportBatchID',this.getOrderImportBatchID());
+		orderImportBatchItemCollection.addFilter('originalOrder.orderID','null','IS');
+		return orderImportBatchItemCollection.getRecordsCount() == 0;
+	}
+	
+	public boolean function skusAreActiveAndAccountsAreInGoodStanding(){
+		var orderImportBatchItemCollection = getService('OrderImportBatchService').getOrderImportBatchItemCollectionList();
+		orderImportBatchItemCollection.addFilter('orderImportBatch.orderImportBatchID',this.getOrderImportBatchID());
+		orderImportBatchItemCollection.addFilter('sku.skuID','null','IS','OR','','invalidReasons');
+		orderImportBatchItemCollection.addFilter('sku.activeFlag',0,'=','OR','','invalidReasons');
+		orderImportBatchItemCollection.addFilter('sku.product.activeFlag',0,'=','OR','','invalidReasons');
+		orderImportBatchItemCollection.addFilter('account.accountID','null','IS','OR','','invalidReasons');
+		orderImportBatchItemCollection.addFilter('account.accountStatusType.systemCode','astGoodStanding','!=','OR','','invalidReasons');
+		return orderImportBatchItemCollection.getRecordsCount() == 0;
 	}
 } 

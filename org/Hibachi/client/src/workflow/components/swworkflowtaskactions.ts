@@ -105,12 +105,11 @@ class SWWorkflowTaskActionsController {
              ***/
             if(angular.isUndefined(this.workflowTask.data.workflowTaskActions)){
                 var workflowTaskPromise = this.workflowTask.$$getWorkflowTaskActions();
-                workflowTaskPromise.then( ()=> {
+                workflowTaskPromise.then( (data)=> {
                     this.workflowTaskActions = this.workflowTask.data.workflowTaskActions;
                     angular.forEach(this.workflowTaskActions,  (workflowTaskAction) =>{
                         getObjectByActionType(workflowTaskAction);
                     });
-                    this.$log.debug(this.workflowTaskActions);
                 });
             }else{
                 this.workflowTaskActions = this.workflowTask.data.workflowTaskActions;
@@ -186,8 +185,6 @@ class SWWorkflowTaskActionsController {
          * --------------------------------------------------------------------------------------------------------
          */
         this.selectWorkflowTaskAction = (workflowTaskAction) => {
-            this.$log.debug("Selecting new task action for editing: ");
-            this.$log.debug(workflowTaskAction);
             this.finished = false;
             this.workflowTaskActions.selectedTaskAction = undefined;
             var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName(this.workflowTask.data.workflow.data.workflowObject, true);
@@ -199,15 +196,17 @@ class SWWorkflowTaskActionsController {
                 this.metadataService.setPropertiesList(value, this.workflowTask.data.workflow.data.workflowObject);
                 this.filterPropertiesList[this.workflowTask.data.workflow.data.workflowObject] = this.metadataService.getPropertiesListByBaseEntityAlias(this.workflowTask.data.workflow.data.workflowObject);
                 this.metadataService.formatPropertiesList(this.filterPropertiesList[this.workflowTask.data.workflow.data.workflowObject], this.workflowTask.data.workflow.data.workflowObject);
+
                 this.workflowTaskActions.selectedTaskAction = workflowTaskAction;
                 this.emailTemplateSelected =  (this.workflowTaskActions.selectedTaskAction.data.emailTemplate) ? this.workflowTaskActions.selectedTaskAction.data.emailTemplate.data.emailTemplateName : '';
 
                 this.emailTemplateCollectionConfig = this.collectionConfigService.newCollectionConfig("EmailTemplate");
                 this.emailTemplateCollectionConfig.setDisplayProperties("emailTemplateID,emailTemplateName");
                 this.emailTemplateCollectionConfig.addFilter("emailTemplateObject",this.workflowTask.data.workflow.data.workflowObject);
+                
+                this.searchProcess.name = (this.workflowTaskActions.selectedTaskAction.data.processMethod) ? this.workflowTaskActions.selectedTaskAction.data.processMethod : '';
 
-
-                this.printTemplateSelected =  (this.workflowTaskActions.selectedTaskAction.data.printTemplate) ? this.workflowTaskActions.selectedTaskAction.data.printTemplate.data.printTemplateName : '';
+                this.printTemplateSelected = (this.workflowTaskActions.selectedTaskAction.data.printTemplate) ? this.workflowTaskActions.selectedTaskAction.data.printTemplate.data.printTemplateName : '';
 
                 this.printTemplateCollectionConfig = this.collectionConfigService.newCollectionConfig("PrintTemplate");
                 this.printTemplateCollectionConfig.setDisplayProperties("printTemplateID,printTemplateName");

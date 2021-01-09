@@ -1,6 +1,6 @@
 <div class="s-bundle-add-items s-workflow-objs">
     <div ng-show="!swWorkflowTaskActions.workflowTaskActions.length" class="alert alert-info" role="alert" sw-rbkey="'entity.workflowtaskaction.norecordsfound'"><!-- Message created by rb key --></div>
-    <span class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in swWorkflowTaskActions.workflowTaskActions" ng-init="workflowTaskAction.$$actionIndex = $index">
+    <span class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in swWorkflowTaskActions.workflowTaskActions track by $index" ng-init="workflowTaskAction.$$actionIndex = $index">
         <span class="s-bundle-add-obj" data-ng-if="workflowTaskAction.$$isPersisted()">
             <ul class="list-unstyled list-inline">
                 <li class="s-item-type s-tooltip ng-binding" data-ng-bind="$index+1"></li>
@@ -170,22 +170,14 @@
 
                                     </div>
                                 </div>
-                                <!--- // search --->
-	                            <!--<h4>Dynamic Numeric</h4>-->
-	                            <!--<div class="row">-->
-	                                <!--<div class="col-md-6 form-group form-group-sm">-->
-	                                    <!--<select class="form-control input-sm">-->
-	                                        <!--<option value="1">Dynamic Numeric Value</option>-->
-	                                        <!--<option value="2">Add 'N'</option>-->
-	                                        <!--<option value="3">Set value to '0'</option>-->
-	                                        <!--<option value="4">Subtract 'N'</option>-->
-	                                    <!--</select>-->
-	                                <!--</div>-->
-	                                <!--<div class="col-md-6 form-group form-group-sm">-->
-	                                    <!--<input type="number" class="form-control" placeholder="" value="4">-->
-	                                    <!--&lt;!&ndash; <p class="help-block">Help text here.</p> &ndash;&gt;-->
-	                                <!--</div>-->
-	                            <!--</div>-->
+                                
+                                <sw-property-display
+                                    data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+                                    data-property-identifier="processMethodData"
+                                    data-editable="true"
+                                    data-editing="true"
+    	                        >
+    	                       </sw-property-display>
 	                        </div>
 	                        
 	                         <div 	class="s-filter-group-item"

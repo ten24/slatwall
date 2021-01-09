@@ -79,6 +79,7 @@ class PublicService {
         public $location:ng.ILocationService,
         public $hibachi:any,
         public $injector:ng.auto.IInjectorService,
+        public $httpParamSerializer,
         public requestService,
         public accountService,
         public accountAddressService,
@@ -88,8 +89,8 @@ class PublicService {
         public appConfig,
         public $timeout,
         public hibachiAuthenticationService,
-    	private sessionStorageCache: Cache,
-    	private inMemoryCache: Cache
+    	public sessionStorageCache: Cache,
+    	public inMemoryCache: Cache
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -149,8 +150,9 @@ class PublicService {
         }
     }
     /** accessors for account */
-    public getAccount=(refresh=false):any =>  {
+    public getAccount=(refresh=false): ng.IPromise<any> =>  {
         let urlBase = this.baseActionPath+'getAccount/';
+        
         if(!this.accountDataPromise || refresh){
             this.accountDataPromise = this.getData(urlBase, "account", "");
         }
@@ -344,18 +346,22 @@ class PublicService {
 		this.enforceCacheOwner(key);
 		this.sessionStorageCache.remove(key);
 	}
+	
 
     /** this is the generic method used to call all server side actions.
     *  @param action {string} the name of the action (method) to call in the public service.
     *  @param data   {object} the params as key value pairs to pass in the post request.
     *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
     */
-    public doAction=(action:string, data?:any, method?:any) => {
-        //purge angular $ prefixed propertie
-        //Prevent sending the same request multiple times in parallel
-        if(this.getRequestByAction(action) && this.loadingThisRequest(action, data, false)) return this.$q.when();
-
-        if (!action) {throw "Action is required exception";}
+    public doAction=(action:string, data:any={}, method:any='POST') => {
+        ///Prevent sending the same request multiple times in parallel
+        if(this.getRequestByAction(action) && this.loadingThisRequest(action, data, false)){
+            return this.$q.when();
+        }
+        
+         if (!action) {
+            throw "Exception: Action is required";
+        }
 
         var urlBase = this.appConfig.baseURL;
 
@@ -366,46 +372,32 @@ class PublicService {
             urlBase = this.baseActionPath + action;//public path
         }
 
+        if(this.cmsSiteID){
+            data.cmsSiteID = this.cmsSiteID;
+        }
 
-        if(data){
-            method = "post";
-            if(data.returnJsonObjects == undefined){
-                data.returnJsonObjects = "cart,account";
-            }
-            if(this.cmsSiteID){
-                data.cmsSiteID = this.cmsSiteID;
-            }
-        }else{
+        if(method == 'POST' && data.returnJsonObjects == undefined){
+            data.returnJsonObjects = "cart,account";
+        }
+            
+            
+        if (method == 'GET' && Object.keys(data).length !== 0){
             urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
-            if(this.cmsSiteID){
-                urlBase += "&cmsSiteID=" + this.cmsSiteID;
-            }
+            urlBase += this.$httpParamSerializer(data);
+            data = null;
         }
-        if (method == "post"){
-            //post
-            let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
 
-            request.promise.then((result:any)=>{
-                this.processAction(result,request);
-            }).catch((response)=>{
+        
+        let request = this.requestService.newPublicRequest(urlBase,data,method);
 
-            });
-            this.requests[request.getAction()]=request;
-            return request.promise;
-        }else{
-            //get
-            var url = urlBase;
-            let request = this.requestService.newPublicRequest(url,data,method);
+        request.promise.then((result:any)=>{
+            this.processAction(result,request);
+        }).catch((reason)=>{
 
-            request.promise.then((result:any)=>{
-                this.processAction(result,request);
-            }).catch((reason)=>{
+        });
 
-            });
-
-            this.requests[request.getAction()]=request;
-            return request.promise;
-        }
+        this.requests[request.getAction()]=request;
+        return request.promise;
 
     }
 
@@ -526,7 +518,7 @@ class PublicService {
         if(!request || !request.loading) return false;
 
         for(let identifier in conditions){
-            if (!((conditions[identifier] === true && !strict) || request.data[identifier] == conditions[identifier])){
+            if (!((conditions[identifier] === true && !strict) || (request.data && request.data[identifier] == conditions[identifier]) )){
                 return false;
             }
         }

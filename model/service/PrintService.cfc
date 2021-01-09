@@ -72,7 +72,7 @@ Notes:
 		}
 		
 		if(!isNull(printTemplate)) {
-			var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(printTemplate.getPrintTemplateObject());
+			var templateObjectIDProperty = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(printTemplate.getPrintTemplateObject());
 			var templateObject = javaCast('null','');
 			
 			if(structKeyExists(arguments.data, printTemplate.getPrintTemplateObject()) && isObject(arguments.data[ printTemplate.getPrintTemplateObject() ])) {
