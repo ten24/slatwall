@@ -54,7 +54,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
 	property name="company" hb_populateEnabled="public" ormtype="string";
-	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
 	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
 	property name="totpSecretKeyCreatedDateTime" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
@@ -121,9 +121,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="remoteContactID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non Persistent

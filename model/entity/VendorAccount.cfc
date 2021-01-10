@@ -57,9 +57,9 @@ component entityname="SlatwallVendorAccount" table="SwVendorAccount" persistent=
 	property name="roleType" cfc="Type" fieldtype="many-to-one" fkcolumn="roleTypeID" hb_optionsSmartListData="f:parentType.systemCode=roleType";
 	
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Remote properties

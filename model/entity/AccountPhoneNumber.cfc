@@ -59,9 +59,9 @@ component displayname="Account Phone Number" entityname="SlatwallAccountPhoneNum
  	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
   	
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	

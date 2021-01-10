@@ -62,8 +62,8 @@ component displayname="DatabaseCache" entityname="SlatwallDatabaseCache" table="
 	// Remote Properties
 	
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	
 	// Non-Persistent Properties
 

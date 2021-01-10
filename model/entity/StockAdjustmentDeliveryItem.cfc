@@ -60,9 +60,9 @@ component entityname="SlatwallStockAdjustmentDeliveryItem" table="SwStockAdjustm
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 	
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp" hb_displayType="datetime";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// ============ START: Non-Persistent Property Methods =================
