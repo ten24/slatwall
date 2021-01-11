@@ -72,7 +72,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
                 
             };
             // TODO, need a way to figureout which entity-mappings are allowed to be import, 
-            // account vs account-phone-number
+            // Account vs account-phone-number
   	    }
   	    
   	    return variables.sampleCSVFilesOptions;
@@ -249,7 +249,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     
         
-    public any function createHttpRequest(required string endPointUrl, string requestType="POST"){
+    public any function createHttpRequest(required string endPointUrl, string requestType="POST", string requestContentType="application/x-www-form-urlencoded"){
     	if(!this.setting("devMode")){
 			var requestURL = this.setting("prodGatewayURL") & arguments.endPointUrl;
 		}
@@ -260,11 +260,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		httpRequest.setMethod(arguments.requestType);
 		httpRequest.setCharset("utf-8");
 		httpRequest.setUrl(requestURL);
-    	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
+    	httpRequest.addParam( type='header', name='Content-Type', value=arguments.requestContentType);
     	return httpRequest;
     }
     
-    public any function getErpOneData( required struct requestData, string endpoint="read" ){
+    public any function callErpOneGetDataApi( required struct requestData, string endpoint="read" ){
         
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint);
 		
@@ -274,11 +274,24 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		for( var key in arguments.requestData ){
 		    httpRequest.addParam( type='formfield', name= key, value = arguments.requestData[key] );
 		}
-    
         var rawRequest = httpRequest.send().getPrefix();
-
+        
         if( !IsJson(rawRequest.fileContent) ){
-		    throw("ERPONE - getErpOneData: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		    throw("ERPONE - callErpOneGetDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		}
+			
+	    return DeSerializeJson(rawRequest.fileContent);
+    }
+    
+    public any function callErpOneUpdateDataApi( required any requestData, string endpoint="create" ){
+    	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json");
+		
+		// Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
+		httpRequest.addParam(type="body", value=serializeJSON(requestData));
+        var rawRequest = httpRequest.send().getPrefix();
+        if( !IsJson(rawRequest.fileContent) ){
+		    throw("ERPONE - callErpOneUpdateDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
 			
 	    return DeSerializeJson(rawRequest.fileContent);
@@ -309,11 +322,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     public any function getAccountData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getAccountData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
-
-    	var accountsArray = this.getErpOneData({
+		
+		// Change company name as per our environment in API query
+		if( !this.setting("devMode") ){
+    		var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND company_cu = "SB"';
+		} else {
+			var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND company_cu = "DC"';
+		}
+			
+    	var accountsArray = this.callErpOneGetDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
-    	    "query": "FOR EACH customer WHERE customer.active = YES",
+			"query": requestQuery,
     	    "columns" : "name,country_code,email_address,phone,Active,company_cu,customer"
     	})
     	
@@ -330,7 +350,50 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
     }
 
-	
+	public any function getOrderData(numeric pageNumber = 1, numeric pageSize = 50 ){
+    	logHibachi("ERPONE - called getOrderData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
+		//still working to get order numbers without hyphen so pass one order for testing
+    	var OrdersArray = this.getErpOneData({
+    	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
+    	    "take" : arguments.pageSize,
+    	    "query": "FOR EACH oe_head",
+    	    "columns" : "order,ord_date,customer,adr,currency_code,country_code,postal_code,state"
+    	})
+
+		if( OrdersArray.len() > 0 ){
+
+		    this.logHibachi("ERPONE - Start pushing Orders to import-queue ");
+			var batch = this.pushRecordsIntoImportQueue( "Order", OrdersArray );
+			this.logHibachi("ERPONE - Finish pushing Orders to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
+
+		} else {
+		    this.logHibachi("ERPONE - No data recieve from getOrderData API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
+		}
+		
+    }
+    
+    public any function getOrderItemData(numeric pageNumber = 1, numeric pageSize = 50 ){
+    	logHibachi("ERPONE - called getOrderItemData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
+		//still working to get order numbers without hyphen so pass one order for testing
+    	var OrdersArray = this.getErpOneData({
+    	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
+    	    "take" : arguments.pageSize,
+    	    "query": "FOR EACH oe_line",
+    	    "columns" : "order,price,list_price,item,line"
+    	})
+
+		if( OrdersArray.len() > 0 ){
+
+		    this.logHibachi("ERPONE - Start pushing OrderItem to import-queue ");
+			var batch = this.pushRecordsIntoImportQueue( "OrderItem", OrdersArray );
+			this.logHibachi("ERPONE - Finish pushing OrderItem to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
+
+		} else {
+		    this.logHibachi("ERPONE - No data recieve from getOrderItemData API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
+		}
+
+    }
+    
 	public any function transformErpOneAccounts( required array accountDataArray ){
 	    var erponeMapping = {
 	        "__rowids" : "remoteAccountID",
@@ -345,12 +408,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return this.transformedErponeItems( arguments.accountDataArray, erponeMapping);
 	}
 	
-	
 	public any function importErpOneAccounts(){
 		
 		logHibachi("ERPONE - Starting importing importErpOneAccounts");
 		
-		var response = this.getErpOneData({
+		var response = this.callErpOneGetDataApi({
     	    "table" : "customer"
     	}, "count");
     	
@@ -378,7 +440,73 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			currentPage += 1;
 		}
 		
-	    this.logHibachi("ERPONE - Finish importing importErpOneAccounts for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
+	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
+	}
+	
+	public any function importErpOneOrders(){
+		
+		logHibachi("ERPONE - Starting importing importErpOneOrders");
+			
+		var response = this.getErpOneData({
+    	    "table" : "oe_head"
+    	}, "count");
+    	
+		var totalRecordsCount = response.count;
+		var currentPage = 1;
+		var pageSize = 100;
+		var recordsFetched = 0;
+		
+		while ( recordsFetched < totalRecordsCount ){
+			
+			try {
+				this.getOrderData( currentPage, pageSize );
+				this.logHibachi("Successfully called getOrderData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+				
+			} catch(e){
+			
+				this.logHibachi("Got error while trying to call getOrderData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+				this.getHibachiUtilityService().logException(e);
+			}
+			
+			//increment regardless of success or failure;
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
+		
+	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
+	}
+	
+	public any function importErpOneOrderItems(){
+
+		logHibachi("ERPONE - Starting importing ErpOneOrderItems");
+
+		var response = this.getErpOneData({
+    	    "table" : "oe_line"
+    	}, "count");
+		
+		var totalRecordsCount = response.count;
+		var currentPage = 1;
+		var pageSize = 100;
+		var recordsFetched = 0;
+
+		while ( recordsFetched < totalRecordsCount ){
+
+			try {
+				this.getOrderItemData( currentPage, pageSize );
+				this.logHibachi("Successfully called getOrderItemData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+
+			} catch(e){
+
+				this.logHibachi("Got error while trying to call getOrderItemData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+				this.getHibachiUtilityService().logException(e);
+			}
+
+			//increment regardless of success or failure;
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
+
+	    this.logHibachi("ERPONE - Finish importing ErpOneOrderItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
 	
 	public struct function preProcessProductData(required struct data ){
@@ -410,7 +538,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		if( !structKeyExists(arguments.data, 'RemoteProductID') || this.hibachiIsEmpty(arguments.data.RemoteProductID) ){
 			// var productCode = arguments.data.ProductCode;
-			// var remoteProductIDArray = this.getErpOneData({
+			// var remoteProductIDArray = this.callErpOneGetDataApi({
 			//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
 			//  	    "columns" : "__rowids"
 			//  	})
@@ -428,5 +556,147 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 	    return arguments.data;
 	}
+
+	/**
+	 * @hint helper function to create a struct of properties+values from @entity/Account.cfc.
+	 * 
+	 * @account, @enty/Account.cfc 
+	 * @returns, Struct of account properties+values required by Erpone createUser API.
+	**/ 
+	public any function convertSwAccountToErponeAccount(required any account){
+		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,remoteID,company,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
+		var addressPropList = 	this.getHibachiUtilityService().prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
+
+		accountPropList = accountPropList & ',' & addressPropList;
+		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
+		var mapping = {
+			"remoteID" : "__rowid",
+	        "primaryAddress_address_countryCode" : "country_code",
+	        "primaryEmailAddress_emailAddress" : "email_address",
+	        "primaryPhoneNumber_phoneNumber" : "phone",
+	        "activeFlag" : "Active",
+	        "company" : "name"
+		};
+
+		var erponeAccount = {};
+
+		for(var fromKey in mapping){
+			if( StructKeyExists( swAccountStruct, fromKey ) && !IsNull(swAccountStruct[fromKey]) ){
+				erponeAccount[mapping[fromKey]] = swAccountStruct[fromKey];
+			}
+		}
+
+		return erponeAccount;			
+	}
 	
+	
+	/**
+	 * @hint helper function, to push Data into @thisIntegration/Data.cfc for further processing, from EntityQueue
+	 * 
+	**/ 
+	public void function pushAccountDataToErpOne(required any entity, any data ={}){
+		logHibachi("ERPOne - Start pushData - Account: #arguments.entity.getAccountID()#");
+		
+		arguments.data.payload = this.convertSwAccountToErponeAccount(arguments.entity);
+		arguments.create = false;
+		//push to remote endpoint
+		
+		
+
+        var payload = {
+		  "table"	 : "customer",
+		  "triggers" : "true",
+		  "changes"	 : [ arguments.data.payload ]
+		};
+			
+		if( !this.hibachiIsEmpty(arguments.entity.getRemoteID()) ){
+			var response = this.callErpOneUpdateDataApi(payload, "update" );
+		} else {
+			var response = this.callErpOneUpdateDataApi(payload, "create" );
+		}
+		
+		
+		/** Format error:
+		 * typical error response: { "errordetail": "error", "filecontent": "null"};
+		 * typical successful response: {"table":"customer","updated":1,"triggers":false}
+		*/
+	
+		if( structKeyExists(response, 'updated') && response.updated > 0 ){
+			logHibachi("ERPOne - Successfully updated Account Data");
+		}
+		else {
+			throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+		}
+		logHibachi("ERPOne - End Account pushData");
+	}
+	
+	public any function preProcessOrderData(required struct data ){
+		
+		if( left(arguments.data.order, 1) == '-' ){
+			return;
+		}
+			var erponeMapping = {
+		        "order" 		: "orderNumber",
+		        "ord_date"		: "orderOpenDateTime",
+		        "customer"		: "RemoteAccountID",
+		        "currency_code" : "currency_code",
+		        "country_code"  : "BillingAddress_countryCode",
+		        "postal_code"	: "BillingAddress_postalCode",
+		        "adr"			: "Address",
+		        "state" 		: "BillingAddress_stateCode"
+		    };
+
+	    	var transformedItem = {};
+
+	    	for( var sourceKey in erponeMapping ){
+	    		var destinationKey = erponeMapping[ sourceKey ];
+
+	    		if( structKeyExists(arguments.data, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
+	    		}
+
+	    	}
+
+	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
+	    	transformedItem.BillingAddress_streetAddress = transformedItem.Address[2];
+	    	transformedItem.BillingAddress_street2Address = transformedItem.Address[1];
+	    	transformedItem.BillingAddress_city = transformedItem.Address[4];
+			transformedItem.Address = {
+					  "streetAddress"  : transformedItem.Address[2],
+	                  "street2Address" : transformedItem.Address[1],
+	                  "city"           : transformedItem.Address[4],
+	                  "countryCode"	   : transformedItem.BillingAddress_countryCode,
+	                  "stateCode"	   : transformedItem.BillingAddress_stateCode,
+	                  "postalCode"	   : transformedItem.BillingAddress_postalCode,
+			};
+		    return transformedItem;
+	}
+	
+	public any function preProcessOrderItemData(required struct data ){
+
+		if( left(arguments.data.order, 1) == '-' ){
+			return;
+		}
+			var erponeMapping = {
+		        "order" : "RemoteOrderID",
+		        "price" : "Price",
+		        "list_price" : "SkuPrice",
+		        "item" : "RemoteSkuID",
+		        "line" : "Line"
+		    };
+
+	    	var transformedItem = {};
+
+	    	for( var sourceKey in erponeMapping ){
+	    		var destinationKey = erponeMapping[ sourceKey ];
+
+	    		if( structKeyExists(arguments.data, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
+	    		}
+
+	    	}
+
+	    	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
+		    return transformedItem;
+	}
 }

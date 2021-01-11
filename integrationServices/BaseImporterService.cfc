@@ -50,7 +50,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	property name = "locationService";
-	property name="stockService";
+	property name = "stockService";
+	property name = "addressService";
 	
 	property name = "hibachiService";
 	property name = "hibachiUtilityService";
@@ -193,64 +194,68 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return newBatch;
 	}
 	
-	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
+	public any function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
 	    
 	    var preProcessFunctionName = "preProcess#arguments.entityName#Data";
 	    if( structKeyExists(this, preProcessFunctionName) ){
             arguments.data = this.invokeMethod( preProcessFunctionName, { "data" : arguments.data } );
 	    }
-	    
-	    var entityMapping = this.getEntityMapping( arguments.entityName );
-
-	    var validation = this.validateEntityData( 
-	        entityName    = arguments.entityName, 
-	        data          = arguments.data, 
-	        mapping       = entityMapping,
-	        collectErrors = true
-	    );
-
-	    if( !validation.isValid ){
-	        
-	        var entityQueueData = {
-	            'data'          :  arguments.data,
-	            'batchID'       : arguments.batchID,
-	            'entityName'    : arguments.entityName
-	        }
-	        
-	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
-	        this.getHibachiEntityQueueDAO().insertEntityQueueFailure(
-        	    baseID              = '', //not needed
-        	    baseObject          = arguments.entityName, 
-        	    processMethod       = 'reQueueImportFailure',
-        	    entityQueueData     = entityQueueData, 
-        	    integrationID       = this.getIntegration().getIntegrationID(), 
-        	    batchID             = arguments.batchID,
-        	    mostRecentError     = serializeJson( validation.errors )
-        	);
-        	
-	    } else {
-	    
-    	    var transformedData = this.transformEntityData( 
-    	        entityName     = arguments.entityName, 
-    	        data           = arguments.data,
-    	        mapping        = entityMapping,
-    	        emptyRelations = validation.emptyRelations
-    	    );
-
-    	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
-    
-    	    this.getHibachiEntityQueueDAO().insertEntityQueue(
-        	    baseID              = transformedData[ primaryIDPropertyName ], 
-        	    baseObject          = arguments.entityName, 
-        	    processMethod       = 'processEntityImport',
-        	    entityQueueData     = transformedData, 
-        	    integrationID       = this.getIntegration().getIntegrationID(), 
-            	batchID             = arguments.batchID
-        	);
-	        
+	    // if preprocess data is null then skip rest of the logic
+	    if( isNull(arguments.data) ){
+	    	return;
 	    }
+		
+		var entityMapping = this.getEntityMapping( arguments.entityName );
+	
+		    var validation = this.validateEntityData( 
+		        entityName    = arguments.entityName, 
+		        data          = arguments.data, 
+		        mapping       = entityMapping,
+		        collectErrors = true
+		    );
+	
+		    if( !validation.isValid ){
+		        
+		        var entityQueueData = {
+		            'data'          :  arguments.data,
+		            'batchID'       : arguments.batchID,
+		            'entityName'    : arguments.entityName
+		        }
+		        
+		        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
+		        this.getHibachiEntityQueueDAO().insertEntityQueueFailure(
+	        	    baseID              = '', //not needed
+	        	    baseObject          = arguments.entityName, 
+	        	    processMethod       = 'reQueueImportFailure',
+	        	    entityQueueData     = entityQueueData, 
+	        	    integrationID       = this.getIntegration().getIntegrationID(), 
+	        	    batchID             = arguments.batchID,
+	        	    mostRecentError     = serializeJson( validation.errors )
+	        	);
+	        	
+		    } else {
+		    
+	    	    var transformedData = this.transformEntityData( 
+	    	        entityName     = arguments.entityName, 
+	    	        data           = arguments.data,
+	    	        mapping        = entityMapping,
+	    	        emptyRelations = validation.emptyRelations
+	    	    );
+	
+	    	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
 	    
-    	return validation;
+	    	    this.getHibachiEntityQueueDAO().insertEntityQueue(
+	        	    baseID              = transformedData[ primaryIDPropertyName ], 
+	        	    baseObject          = arguments.entityName, 
+	        	    processMethod       = 'processEntityImport',
+	        	    entityQueueData     = transformedData, 
+	        	    integrationID       = this.getIntegration().getIntegrationID(), 
+	            	batchID             = arguments.batchID
+	        	);
+	    	
+	}
+	
+	return validation;
 	}
 	
 	public any function reQueueImportFailure( any entity, struct entityQueueData ){
@@ -354,13 +359,37 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public void function genericResolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
 	    
 	    for( var dependency in arguments.entityQueueData.__dependencies ){
-            
-            var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-                "entityName"    = dependency.entityName,
-    	        "uniqueKey"     = dependency.lookupKey,
-    	        "uniqueValue"   = dependency.lookupValue ?: javaCast('null', 0)
-            );
-                
+	    	
+        	 /**
+	         * Fallback order 
+	         * 1. resolver-function provided in the dependencyMetaData
+	         * 
+	         * 2. conventional resolver-functions `resolve[entityName][dependencyName]` in the service, 
+	         *    where ProertyName ==> dependencyMetaData.propertyIdentifier
+	         *    
+	         *    Ex. resolveOrderFulfillment(){......}
+	         * 
+	         * 3. resolve it using regular `resolveEntityDependencies` flow
+	         * 
+	        */
+	        
+	        if( structKeyExists(dependency, 'resolverFunction') ){
+	            return this.invokeMethod( dependency.resolverFunction, arguments );
+	        }
+	        
+	        var conventionalResolverFunctionName = 'resolve'&arguments.mapping.entityName&dependency.propertyIdentifier;
+	        if( structKeyExists(this, conventionalResolverFunctionName) ){
+	            return this.invokeMethod( conventionalResolverFunctionName, arguments );
+	        }
+	        
+            if( structKeyExists(dependency, 'lookupValue') ){
+                var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+                    "entityName"    = dependency.entityName,
+        	        "uniqueKey"     = dependency.lookupKey,
+        	        "uniqueValue"   = dependency.lookupValue
+                );
+
+            }   
             if( !structKeyExists(dependency, 'isNullable') ){
                 // by default every dependency is treated as required [ not-nullable ]
                 dependency.isNullable = false; 
@@ -374,7 +403,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 
             } else if( !dependency.isNullable ){
                 
-                // if the pependency cintains a default-value, use that
+                // if the dependency contains a default-value, use that
                 if( structKeyExists(dependency, 'defaultValue') ){
                     arguments.entityQueueData[ dependency.propertyIdentifier ] = { "#dependencyPrimaryIDProperty#" : dependency.defaultValue }
                     continue;
@@ -499,7 +528,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
-	    
+
 	    var entityName = arguments.entity.getClassName();
         
         var extensionFunctionName = 'process#entityName#_import';
@@ -518,7 +547,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 mapping = arguments.mapping
             );
         }
-        
+
         // make-sure all of the dependencies had been resolved, 
         // like Product is required before SKU can be created for that Product	    
 	    if( structKeyExists(arguments.entityQueueData, '__dependencies') ){
@@ -536,9 +565,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             this.resolveEntityVolatileRelations(entityName, arguments.entityQueueData);
 	    }
 	    
-	    
 	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
 	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
+
 	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
 	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
 	    
@@ -1571,11 +1600,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         //dont create stock if there is no locationID / skuID
 	}
 	
+	
     /////////////////.                  ORDER-PAYMENT
-    
+
     public array function generateOrderPaymentTransactions( struct data, struct mapping, struct propertyMetaData ){
-        
-        if( structKeyExists(arguments.data, 'transactionID') || structKeyExists(arguments.data, 'authorizationCode') ){
+    	if( structKeyExists(arguments.data, 'transactionID') || structKeyExists(arguments.data, 'authorizationCode') ){
             var transactionData = {
                 'paymentTransactionID' : '',
                 'amount' : arguments.data.amount
@@ -1586,14 +1615,39 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             if(structKeyExists(arguments.data, 'authorizationCode')){
                 transactionData['authorizationCode'] = arguments.data.authorizationCode;
             }
-            
+
             return [ transactionData ];
         }
-        
+
         return [];
     }
     
+    /////////////////.                  ORDER
 
+    public array function generateOrderOrderFulfillments( 
+    	struct data, 
+    	struct mapping, 
+    	struct propertyMetaData ){
+    	
+		//create new fullfillment
+	    return [{
+	    	"orderFulfillmentID"	   : "",
+            "remoteOrderFulfillmentID" : arguments.data.remoteOrderID,
+            "currencyCode"			   : arguments.data.currency_code,
+            //this defaultValue for FulfillmentMethod is `Shipping`
+            "fulfillmentMethod"        : {
+            	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
+            },
+            "shippingAddress"		   : {
+            		  "name"		   : getAddressService().getAddressName(arguments.data.Address),
+	                  "streetAddress"  : arguments.data.BillingAddress_streetAddress,
+	                  "street2Address" : arguments.data.BillingAddress_street2Address,
+	                  "city"           : arguments.data.BillingAddress_city,
+	                  "countryCode"	   : arguments.data.BillingAddress_countryCode,
+	                  "stateCode"	   : arguments.data.BillingAddress_stateCode,
+	                  "postalCode"	   : arguments.data.BillingAddress_postalCode,
+	           },
+        }];
+    }
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
-
 }

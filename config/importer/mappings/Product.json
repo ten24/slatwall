@@ -699,6 +699,12 @@
                 "dataType": "string"
             }
         },
+        "CylinderCamGroup": {
+            "propertyIdentifier": "productCylinderCamGroup",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "ProductSeries": {
             "propertyIdentifier": "productSeries",
             "validations": {
