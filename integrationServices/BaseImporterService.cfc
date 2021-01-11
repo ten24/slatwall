@@ -50,7 +50,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	property name = "locationService";
-	property name="stockService";
+	property name = "stockService";
+	property name = "addressService";
 	
 	property name = "hibachiService";
 	property name = "hibachiUtilityService";
@@ -358,7 +359,29 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public void function genericResolveEntityDependencies(required any entity, required struct entityQueueData, struct mapping ){
 	    
 	    for( var dependency in arguments.entityQueueData.__dependencies ){
-            
+	    	
+        	 /**
+	         * Fallback order 
+	         * 1. resolver-function provided in the dependencyMetaData
+	         * 
+	         * 2. conventional resolver-functions `resolve[entityName][dependencyName]` in the service, 
+	         *    where ProertyName ==> dependencyMetaData.propertyIdentifier
+	         *    
+	         *    Ex. resolveOrderFulfillment(){......}
+	         * 
+	         * 3. resolve it using regular `resolveEntityDependencies` flow
+	         * 
+	        */
+	        
+	        if( structKeyExists(dependency, 'resolverFunction') ){
+	            return this.invokeMethod( dependency.resolverFunction, arguments );
+	        }
+	        
+	        var conventionalResolverFunctionName = 'resolve'&arguments.mapping.entityName&dependency.propertyIdentifier;
+	        if( structKeyExists(this, conventionalResolverFunctionName) ){
+	            return this.invokeMethod( conventionalResolverFunctionName, arguments );
+	        }
+	        
             if( structKeyExists(dependency, 'lookupValue') ){
                 var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
                     "entityName"    = dependency.entityName,
@@ -1597,6 +1620,34 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
 
         return [];
+    }
+    
+    /////////////////.                  ORDER
+
+    public array function generateOrderOrderFulfillments( 
+    	struct data, 
+    	struct mapping, 
+    	struct propertyMetaData ){
+    	
+		//create new fullfillment
+	    return [{
+	    	"orderFulfillmentID"	   : "",
+            "remoteOrderFulfillmentID" : arguments.data.remoteOrderID,
+            "currencyCode"			   : arguments.data.currency_code,
+            //this defaultValue for FulfillmentMethod is `Shipping`
+            "fulfillmentMethod"        : {
+            	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
+            },
+            "shippingAddress"		   : {
+            		  "name"		   : getAddressService().getAddressName(arguments.data.Address),
+	                  "streetAddress"  : arguments.data.BillingAddress_streetAddress,
+	                  "street2Address" : arguments.data.BillingAddress_street2Address,
+	                  "city"           : arguments.data.BillingAddress_city,
+	                  "countryCode"	   : arguments.data.BillingAddress_countryCode,
+	                  "stateCode"	   : arguments.data.BillingAddress_stateCode,
+	                  "postalCode"	   : arguments.data.BillingAddress_postalCode,
+	           },
+        }];
     }
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 }

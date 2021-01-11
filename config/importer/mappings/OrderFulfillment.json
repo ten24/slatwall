@@ -13,7 +13,6 @@
         "email": {
             "propertyIdentifier": "emailAddress",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },
