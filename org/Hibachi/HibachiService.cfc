@@ -1378,25 +1378,26 @@
 		
 		public string function hasToManyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 			
-			if(listLen(arguments.propertyIdentifier, ".") gt 1) {
-				var propertiesSruct = getPropertiesStructByEntityName( arguments.entityName );
-				if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
-					throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
-				}
-				if(
-					structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "fieldtype") 
-					&& (
-						propertiesSruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'one-to-many'
-						|| propertiesSruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'many-to-many'
-					)
-				){
-					return true;
-				}
-				
-				return hasToManyByEntityNameAndPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
-			}
-			return false;
+			var hasToMany = false;
+			var propertiesStruct = getPropertiesStructByEntityName( arguments.entityName );
+			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 			
+			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+			
+				if(structKeyExists(propertiesStruct, propertyIdentifierParts[i]) && structKeyExists(propertiesStruct[propertyIdentifierParts[i]], 'cfc')){
+					var currentProperty = propertiesStruct[propertyIdentifierParts[i]];
+					if(	structKeyExists(currentProperty, "fieldtype") && currentProperty["fieldtype"].endsWith('-to-many')){
+						hasToMany = true;
+						break;
+					}
+					propertiesStruct = getService('hibachiService').getPropertiesStructByEntityName(currentProperty['cfc']);
+					
+				} else {
+					break;
+				}
+			}
+			
+			return hasToMany;
 		}
 		
 		public boolean function hasDefaultOrderByPropertyNameByEntityName(required string entityName){
@@ -1404,7 +1405,7 @@
             return StructKeyExists(entityMetaData, "hb_defaultOrderProperty");
 		}
 		
-		public string function getDfaultOrderByProeprtyNameByEntityName(required string entityName){
+		public string function getDefaultOrderByPropertyNameByEntityName(required string entityName){
 			var entityMetaData = this.getEntityMetaData( arguments.entityName );
             return entityMetaData["hb_defaultOrderProperty"];
 		}
@@ -1412,7 +1413,7 @@
 		public string function getDefaultOrderByPropertyIdentifierByEntityName(required string entityName, string orderByPropertyName){
 
 			if( !structKeyExists(arguments, 'orderByPropertyName') ){
-			    arguments.orderByPropertyName = this.getDfaultOrderByProeprtyNameByEntityName(arguments.entityName);
+			    arguments.orderByPropertyName = this.getDefaultOrderByPropertyNameByEntityName(arguments.entityName);
 			}
 
 			return '_' & lcase( this.getProperlyCasedShortEntityName(arguments.entityName) ) & '.' & arguments.orderByPropertyName;

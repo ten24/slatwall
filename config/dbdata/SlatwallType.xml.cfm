@@ -83,6 +83,10 @@
 		<Record typeID="963c1f73115111ea9fa612bff9d404c8" typeIDPath="443df2c3df09e67dddb27918f02c2d83,963c1f73115111ea9fa612bff9d404c8" parentTypeID="443df2c3df09e67dddb27918f02c2d83" typeName="Partially Processed" systemCode="oibstPartial" sortOrder="2" />
 		<Record typeID="b2183cf4115111ea9fa612bff9d404c8" typeIDPath="443df2c3df09e67dddb27918f02c2d83,b2183cf4115111ea9fa612bff9d404c8" parentTypeID="443df2c3df09e67dddb27918f02c2d83" typeName="Processed" systemCode="oibstProcessed" sortOrder="3" />
 		
+		<Record typeID="443df2c3df09e67dade2a918b12c2d95" typeIDPath="443df2c3df09e67dade2a918b12c2d95" parentTypeID="NULL" typeName="Template Item Batch Status Types" systemCode="templateItemBatchStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="4e1ec3dbaf29f11fdcb23311fa3c2aa2" typeIDPath="443df2c3df09e67dade2a918b12c2d95,4e1ec3dbaf29f11fdcb23311fa3c2aa2" parentTypeID="443df2c3df09e67dade2a918b12c2d95" typeName="New" systemCode="tibstNew" sortOrder="1" />
+		<Record typeID="521e3ca4225131e79f4412aff9d334c9" typeIDPath="443df2c3df09e67dade2a918b12c2d95,521e3ca4225131e79f4412aff9d334c9" parentTypeID="443df2c3df09e67dade2a918b12c2d95" typeName="Processed" systemCode="tibstProcessed" sortOrder="2" />
+		
 		<Record typeID="e96fcde3115111ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8" parentTypeID="NULL" typeName="Order Import Batch Item Status Types" systemCode="orderImportBatchItemStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="03c83b1d115211ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,03c83b1d115211ea9fa612bff9d404c8" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="New" systemCode="oibistNew" sortOrder="1" />
 		<Record typeID="1de04d7d115211ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,1de04d7d115211ea9fa612bff9d404c8" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="Placed" systemCode="oibstPlaced" sortOrder="2" />

@@ -280,7 +280,7 @@ Notes:
 			arguments.email.addError('emailTemplate', 'No email template provided'); 
 		}
 
-		var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
+		var templateObjectIDProperty = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
 		var templateObject = javaCast('null','');
 
 		if(structKeyExists(arguments.data, emailTemplate.getEmailTemplateObject()) && isObject(arguments.data[emailTemplate.getEmailTemplateObject()])) {
@@ -315,7 +315,8 @@ Notes:
 			arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting(settingName='emailSubject',formatValue=true,formatDetails={locale=local.locale}), true, true ) );
 			arguments.email.setEmailBodyHTML( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyHTML',locale=local.locale), formatValues = true, templateContextPathList = templateContextPathList) );
 			arguments.email.setEmailBodyText( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyText',locale=local.locale), formatValues = true, templateContextPathList = templateContextPathList) );
-
+			arguments.email.setRelatedObject( templateObject.getClassName() );
+			arguments.email.setRelatedObjectID( templateObject.getPrimaryIDValue() );
 
 			var templateFileResponse = "";
 			var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
@@ -348,6 +349,10 @@ Notes:
 				savecontent variable="templateFileResponse" {
 					include '#templatePath#';
 				}
+			}
+			
+			if( structKeyExists( local.emailData, 'account' ) ){
+				arguments.email.setAccount( local.emailData.account );
 			}
 
 			if(len(templateFileResponse) && !structKeyExists(local.emailData, "emailBodyHTML")) {

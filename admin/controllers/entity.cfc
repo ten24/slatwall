@@ -110,6 +110,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
 	this.secureMethods=listAppend(this.secureMethods, 'editPermissionGroup');
 	this.secureMethods=listAppend(this.secureMethods, 'retryEntityQueueFailures');
+	this.secureMethods=listAppend(this.secureMethods, 'batchReleaseReturnOrders');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessaccount_changepassword');
@@ -187,9 +188,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	//Collection
 	public void function processCollection(required struct rc){
-		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
+		arguments.rc.collection=getService('HibachiCollectionService').getCollection(arguments.rc.collectionID);
 		//redirect to report listing only if the collection is a report
-		if(rc.collection.isReport()){
+		if(arguments.rc.collection.isReport() && arguments.rc.processContext == 'clone'){
+			// custom Success message for entities
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.define.clone_success" ), "${itemEntityName}", rbKey('admin.define.report'), "all" ), "success");
 			rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
 		}
 		genericProcessMethod(entityName="Collection",rc=arguments.rc);
@@ -599,6 +602,33 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			renderOrRedirectFailure( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);
 		}
 	}
+	
+	
+	
+	
+	public void function deleteReport(required struct rc) {
+		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
+		var deleteOK = getService('HibachiCollectionService').delete(rc.collection);
+		
+		// SUCCESS
+		if(deleteOK)
+		{
+		getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.entity.delete_success" ), "${itemEntityName}", rbKey('admin.define.report'), "all" ), "success");
+		renderOrRedirectFailure( defaultAction="admin:entity.reportlist#lcase(rc.collection.getCollectionObject())#", maintainQueryString=false, rc=arguments.rc);
+		
+			
+		// FAILURE
+		} else {
+
+			// Show all of the specific messages & error messages for the entity
+			entity.showErrorsAndMessages();
+
+			// Render or Redirect a faluire
+			renderOrRedirectFailure( defaultAction="admin:entity.reportlist#lcase(rc.collection.getCollectionObject())#", maintainQueryString=true, rc=arguments.rc);
+		}
+		
+	}
+
 
 	public void function saveState(required struct rc) {
 		param name="rc.countryCode" default="";
@@ -778,5 +808,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getOptionService().removeDefaultImageFromOption(rc.optionID,rc.imageID);
 		}
 		genericDeleteMethod(entityName="image", rc=arguments.rc);
+	}
+	
+	public void function batchReleaseReturnOrders(required struct rc){
+		param name="arguments.rc.orderIDList";
+		
+		for(var orderID in arguments.rc.orderIDList){
+			var entityQueueArguments = {
+				'baseObject':'Order',
+				'processMethod':'processOrder_releaseCredits',
+				'baseID':orderID
+			};
+			getHibachiScope().addEntityQueueData(argumentCollection=entityQueueArguments);
+		}
+		renderOrRedirectSuccess( defaultAction="admin:entity.listreturnorder", maintainQueryString=false, rc=arguments.rc);
 	}
 }

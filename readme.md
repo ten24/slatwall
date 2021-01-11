@@ -1,7 +1,7 @@
 # Slatwall eCommerce Platform
 [![Circle CI](https://circleci.com/gh/ten24/slatwall/tree/master.svg?style=svg)](https://circleci.com/gh/ten24/slatwall/tree/master) [![Analytics](https://slatwall-ga-beacon.appspot.com/UA-22767386-6/code)](https://github.com/igrigorik/ga-beacon)
 
-Slatwall is an open source eCommerce platform that runs on the JVM.  Learn more about what you can do with Slatwall Commerce by visiting: http://slatwallcommerce.com
+Slatwall is an open source eCommerce platform that runs on the JVM.  Learn more about what you can do with Slatwall Commerce by visiting: https://www.slatwallcommerce.com/
 
 Requirements
 ------------
@@ -16,7 +16,13 @@ Lucee 4.5.
 Documentation
 -------------
 
-Please view the project documentation, including install instructions: http://docs.slatwallcommerce.com
+Please view the project documentation, including install instructions: https://www.slatwallcommerce.com/developer/
+
+
+Slatwall Developer API
+----------------------
+
+Slatwall API documentation is available via Postman: https://publicapi.slatwallcommerce.com/
 
 
 Running Repo For Development
@@ -68,7 +74,7 @@ A copy of GNU General Public License (GPL) is included in this distribution,
 in the file GNU_V3_Copy.txt. If you do not have the source code, or for more information
 including questions about commercial license both can be found on the website:
 
-http://www.getslatwall.com
+https://www.slatwallcommerce.com/
 
 
 	Slatwall - An Open Source eCommerce Platform

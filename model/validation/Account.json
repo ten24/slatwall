@@ -43,9 +43,10 @@
 		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
 		"emailAddress": [
 			{
-				"contexts": "save",
+				"contexts": "save,updateAccount",
 				"conditions": "doesNotHasRemoteID",
-				"dataType": "email"
+				"dataType": "email",
+				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			},
 			{
 				"contexts": "createPassword",

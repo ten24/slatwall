@@ -85,6 +85,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// ================= Overrides =================================
 	
 	public any function getCurrentRequestSite() {
+
 		if(!structKeyExists(variables,'currentRequestSite')){
 			if ( len( getContextRoot() ) ) {
 				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
@@ -140,10 +141,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			var site = getCurrentRequestSite();
 			if ( !isNull(site) ){
 				//Though the relationship is a many-to-many we're only dealing with 1 location as of now
-				
 				if(site.getLocationsCount()){
-					var locationsSmartList = site.getLocationsSmartlist();
-					variables.currentRequestSiteLocation= locationsSmartList.getFirstRecord();
+					variables.currentRequestSiteLocation= site.getLocations()[1];
 				}
 			}
 		}
@@ -520,14 +519,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         }
         
         var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
-
+		
         //only need to work if order fulfillment data exists
         if(structKeyExists(data,'orderFulfillments')){
             //Attach some meta for for orderFulfillments
             var requiresFulfillment = false;
             var orderFulfillmentWithShippingMethodOptionsIndex = 1;
             for (var orderFulfillment in data.orderFulfillments){
-                if(structKeyExists(orderFulfillment,'shippingMethodOptions')){
+            	if(structKeyExists(orderFulfillment,'shippingMethodOptions')){
                     if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
                                 requiresFulfillment = true; break;
                     }
@@ -541,6 +540,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
                   data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
             }
         }
+        
         // add error messages
         data["hasErrors"] = getCart().hasErrors();
         data["errors"] = getCart().getErrors();

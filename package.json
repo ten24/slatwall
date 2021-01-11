@@ -49,7 +49,7 @@
     "tsify": "^4.0.1",
     "typescript": "^3.8.3",
     "vinyl-source-stream": "^1.1.0",
-    "webpack": "^4.44.2",
+    "webpack": "^4.43.0",
     "webpack-cli": "*",
     "webpack-dev-server": "^3.1.11",
     "webpack-merge": "^5.0.9",
@@ -74,10 +74,10 @@
     "buildFrontend:prod": "cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js",
     "buildSpec": "cd admin/client && webpack --config webpack-test.config.js",
     "buildCSS": "lessc admin/client/css/main.less admin/client/css/main.css",
-    "buildCustomAdmin": "cd custom/admin/client && env NODE_ENV=production  webpack --config webpack-production.config.js --bail",
-    "buildCustomAdmin:debug": "cd custom/admin/client && env NODE_ENV=development  webpack --config webpack.config.js --bail",
-    "buildCustomFrontend": "cd custom/client && env NODE_ENV=production  webpack --config webpack-production.config.js --bail",
-    "buildCustomFrontend:debug": "cd custom/client && env NODE_ENV=development  webpack --config webpack.config.js --bail"
+    "buildCustomAdmin": "cd custom/admin/client && env NODE_ENV=production webpack --config webpack-production.config.js --bail",
+    "buildCustomAdmin:debug": "cd custom/admin/client && env NODE_ENV=development webpack --config webpack.config.js --bail",
+    "buildCustomFrontend": "cd custom/client && env NODE_ENV=production webpack --config webpack-production.config.js --bail",
+    "buildCustomFrontend:debug": "cd custom/client && env NODE_ENV=development webpack --config webpack.config.js --bail"
   },
   "jshintConfig": {
     "predef": [

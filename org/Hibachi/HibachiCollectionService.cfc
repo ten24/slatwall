@@ -40,7 +40,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	//returns meta data about the objects properties
 	public array function getEntityNameOptions() {
-		var entitiesMetaData = getEntitiesMetaData();
+		var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
 		var entitiesArray = listToArray(structKeyList(entitiesMetaData));
 		arraySort(entitiesArray,"text");
 
@@ -109,7 +109,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function getEntityNameProperties( required string EntityName ) {
 		var returnArray = [];
 		var sortArray = [];
-		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.entityName)#"});
+		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getService('hibachiService').getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getService('hibachiService').getProperlyCasedShortEntityName(arguments.entityName)#"});
 		var properties = getPropertiesStructByEntityName(arguments.entityName);
 
 		for(var attributeCode in listToArray(attributeCodesList)) {
@@ -161,7 +161,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function getTransientCollectionByEntityName(required string entityName, struct data={}){
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
 		var collectionEntity = this.newCollection();
-		var properlyCasedShortEntityName = getProperlyCasedShortEntityName(arguments.entityName);
+		var properlyCasedShortEntityName = getService('hibachiService').getProperlyCasedShortEntityName(arguments.entityName);
 		collectionEntity.setCollectionObject(properlyCasedShortEntityName,collectionOptions.defaultColumns);
 
 		return collectionEntity;
@@ -171,7 +171,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 
-		if(arguments.collectionConfig neq ""){
+		if(arguments.collectionConfig != ""){
 			collectionEntity.setCollectionConfig(arguments.collectionConfig);
 		}
 
@@ -1163,7 +1163,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data,'keywords')){
 			collection1.setKeywords(arguments.data.keywords);
 		}
-		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
+		var primaryIDPropertyName = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
 		
 		//Because we need to be able to join the collections later, we need to force the primaryIDProperty to be exportable
 		collection1 = forcePrimaryIDExportable( collection1 );
@@ -1252,7 +1252,17 @@ component output="false" accessors="true" extends="HibachiService" {
 		} else {
 			exportFileName = arguments.collectionEntity.getCollectionConfigStruct().baseEntityName;
 		}
-		var collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
+		var collectionData = [];
+		var exportRecordsCountLimit = getHibachiScope().setting('globalAPIExportLimit');
+		
+		if(isNumeric(exportRecordsCountLimit)){
+			arguments.collectionEntity.setPageRecordsShow(exportRecordsCountLimit);
+			collectionData = arguments.collectionEntity.getPageRecords(forExport=true,formatRecords=false);
+		}else{
+			collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
+		}
+		
+		
 		var headers = getHeadersListByCollection(arguments.collectionEntity);
 		var title =  getHeadersListByCollection(arguments.collectionEntity, true);
 		
@@ -1288,7 +1298,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public any function forcePrimaryIDExportable (required any collectionEntity){
-		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.collectionEntity.getCollectionObject());
+		var primaryIDPropertyName = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(arguments.collectionEntity.getCollectionObject());
 		
 		for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
 			if (

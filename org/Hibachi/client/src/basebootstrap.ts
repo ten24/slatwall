@@ -11,6 +11,7 @@ export class BaseBootStrapper{
     public _resourceBundle = {};
     public $http:ng.IHttpService;
     public $q:ng.IQService;
+    public $httpParamSerializer;
     public appConfig:any;
     public attributeMetaData:any;
     public instantiationKey:string;
@@ -23,10 +24,11 @@ export class BaseBootStrapper{
             instantiationKey : undefined
         }
         // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
-        return angular.lazy(this.myApplication).resolve( ['$http','$q', ($http, $q) => {
+        return angular.lazy(this.myApplication).resolve( ['$http','$q', '$httpParamSerializer', ($http, $q, $httpParamSerializer) => {
             
             this.$http = $http;
             this.$q = $q;
+            this.$httpParamSerializer = $httpParamSerializer;
             
             return this.getInstantiationKey().then( (instantiationKey: string) => {
                

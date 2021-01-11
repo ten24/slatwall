@@ -192,6 +192,10 @@ component  extends="HibachiService" accessors="true" {
 		return optionLabels;
 		
 	}
+	
+	public string function getAttributeOptionLabelByAttributeCodeAndAttributeValue(required string attributeCode, required string attributeValue){
+		return getAttributeDAO().getAttributeOptionLabelByAttributeCodeAndAttributeValue(argumentCollection=arguments);
+	}
 
 	// =====================  END: Logical Methods ============================
 

@@ -5,8 +5,11 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfset rc.orderImportBatchItemCollectionList = rc.orderImportBatch.getOrderImportBatchItemsCollectionList() />
-<cfset rc.orderImportBatchItemCollectionList.setDisplayProperties('orderImportBatchItemStatusType.typeName,originalOrderNumber,accountNumber,skuCode,quantity,name,streetAddress,street2Address,city,stateCode,locality,postalCode,countryCode,phoneNumber,processingErrors',{isVisible=true,isSearchable=true}) />
 
+<cfset rc.orderImportBatchItemCollectionList.setDisplayProperties('orderImportBatchItemStatusType.typeName,accountNumber,skuCode,quantity,name,streetAddress,street2Address,city,stateCode,locality,postalCode,countryCode,phoneNumber,processingErrors',{isVisible=true,isSearchable=true}) />
+<cfif NOT isNull(rc.orderImportBatch.getOrderType()) AND rc.orderImportBatch.getOrderType().getSystemCode() == "otReplacementOrder" >
+	<cfset rc.orderImportBatchItemCollectionList.addDisplayProperty(displayProperty='originalOrderNumber', columnConfig={isVisible:true}, prepend=true)/>
+</cfif>
 <!--- ottSchedule, using ID to improve performance --->
 <cfset rc.orderImportBatchItemCollectionList.setOrderBy('accountNumber|asc')/>
 

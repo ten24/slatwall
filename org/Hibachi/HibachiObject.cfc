@@ -223,6 +223,11 @@ component accessors="true" output="false" persistent="false" {
 		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
 	}
 	
+	public void function traceHibachi(required string message, boolean generalLog=true){
+		arguments.logType = 'Trace';
+		getService("hibachiUtilityService").logMessage(argumentCollection=arguments);		
+	}
+	
 	public void function logHibachiException(required any exception){
 		getService("hibachiUtilityService").logException(exception=arguments.exception);		
 	}
@@ -245,31 +250,30 @@ component accessors="true" output="false" persistent="false" {
 	
 	
     public boolean function hibachiIsEmpty( any input, boolean noTrim=false ){
-        
+
         if( !structKeyExists(arguments, 'input') || IsNull(arguments.input) ){
             return true;
         }
-        
+
         if( IsSimpleValue(arguments.input) ){
            return arguments.noTrim ? len( arguments.input ) == 0 : len( trim(arguments.input) ) == 0;
         }
-        
+
         if( IsStruct(arguments.input) ){
             return StructIsEmpty(arguments.input);
         }
-        
+
         if( IsArray(arguments.input) ){
             return ArrayIsEmpty(arguments.input);
         }
-        
+
         if( IsQuery(arguments.input) ){
             return arguments.input.recordCount == 0;
         }
-        
+
         // isObject | not-NULL | boolean
         return false;
     }
-
 	
 	// =========================  END:  DELIGATION HELPERS ==========================================
 	// ========================= START: APPLICATION VAUES ===========================================
@@ -328,7 +332,7 @@ component accessors="true" output="false" persistent="false" {
 			return application[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
 		}
 		
-		throw("You have requested a value for '#arguments.key#' from the core hibachi application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet");
+		throw("You have requested a value for '#getHibachiInstanceApplicationScopeKey()#' '#arguments.key#' from the core hibachi application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet");
 	}
 	
 	// @hint facade method to set values in the application scope 

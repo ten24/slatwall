@@ -72,6 +72,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesMQATSBOMFlag" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.product#" />
 		<cfif rc.product.getProductType().getBaseProductType() eq "gift-card">
 			<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.product#" />
@@ -103,5 +104,6 @@ Notes:
 		<cfif rc.product.getProductType().getBaseProductType() eq "miscFee">
 			<swa:SlatwallSetting settingName="skuIsRefundFee" settingObject="#rc.product#"/>
 		</cfif>
+		<swa:SlatwallSetting settingName="skuAllowableRefundPercentages" settingObject="#rc.product#"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
