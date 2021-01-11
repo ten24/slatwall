@@ -54,10 +54,19 @@
                 </span>
         </button>
     </span>
-    
+   
+    <span class="input-group-btn valign-middle s-action" ng-show="swListingSearch.swListingControls.showToggleSearch">
+        <span sw-tooltip class="tool-tip-item" data-text="Search" data-position="bottom">
+            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.search()">
+                <i class="fa fa-search"></i>
+            </button>
+        </span>
+    </span>    
+
     <div ng-show="!swListingSearch.swListingControls.showToggleSearch">
         <hr >
     </div>
+   
     <!-- REPORT COLLECTIONS -->
     <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn input-group-btn s-action s-action"
         ng-if="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
@@ -118,6 +127,7 @@
             </li>
         </ul>
     </span>
+    
     <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn valign-middle s-action"
         ng-if="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
         <button class="btn btn-sm btn-default dropdown-toggle"
@@ -142,13 +152,7 @@
             </li>
         </ul>
     </span>
-    <span class="input-group-btn valign-middle s-action">
-        <span sw-tooltip class="tool-tip-item" data-text="Search" data-position="bottom">
-            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.search()">
-                <i class="fa fa-search"></i>
-            </button>
-        </span>
-    </span>
+
     <span class="input-group-btn valign-middle s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
         <span sw-tooltip class="tool-tip-item" data-text="Filtering" data-position="bottom">
             <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
