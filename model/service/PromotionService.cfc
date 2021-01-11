@@ -46,27 +46,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService" type="any";
 	property name="roundingRuleService" type="any";
 	property name="skuService" type="any";
+	property name="orderService" type="any";
 
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
 		
 		var orderService = getService('orderService');
 		// Clear all previously applied promotions for order items
-		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
+		for(var oi=arrayLen(arguments.orderItems); oi>=1; oi--) {
 			var orderItem = arguments.orderItems[oi];
 			var appliedPromotions = orderItem.getAppliedPromotions();
+			var dropSkuFlag = false;
 			for(var appliedPromotion in appliedPromotions){
-				appliedPromotion.removeOrderItem(reciprocateFlag=false);
-				if(
-					!isNull(appliedPromotion.getPromotionReward())
-					&& appliedPromotion.getPromotionReward().getRewardType() =='rewardSku' 
-					&& !isNull(orderItem.getOrder())
-					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
-				){	
-					order = orderItem.getOrder();
-					order.removeOrderItem(orderItem);
+				if(!isNull(appliedPromotion.getPromotionReward()) && appliedPromotion.getPromotionReward().getRewardType() =='rewardSku'){
+					dropSkuFlag = true;
+					if ( !isNull(orderItem.getOrder())
+						&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
+					){	
+						appliedPromotion.removeOrderItem(reciprocateFlag=false);
+						getOrderService().deleteOrderItem(orderItem=orderItem, updateOrderAmounts=false, setDropSkuRemovedFlag=false);
+					}
+				}else{
+					appliedPromotion.removeOrderItem(reciprocateFlag=false);
 				}
 			}
-			ArrayClear(orderItem.getAppliedPromotions());	
+			if(!dropSkuFlag){
+				ArrayClear(orderItem.getAppliedPromotions());
+			}
 		}
 	}
 
@@ -454,7 +459,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-		
+
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
@@ -488,15 +493,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setCurrencyCode(currencyCode);
 	
 			getService('orderService').saveOrderItem(newOrderItem);
-			
-			if(!newOrderItem.hasErrors()){
 
-				getPromotionDAO().insertAppliedPromotionFromOrderItem(
-						orderItemID=newOrderItem.getOrderItemID(), 
-						promotionID =item.promotion.getPromotionID(),
-						promotionRewardID= item.promotionReward.getPromotionRewardID(),
-						skuID=sku.getSkuID()
-					);
+			if(!newOrderItem.hasErrors()){
+				var newAppliedPromotion = this.newPromotionApplied();
+				newAppliedPromotion.setAppliedType('orderItem');
+				newAppliedPromotion.setOrderItem(newOrderItem);
+				newAppliedPromotion.setPromotion(item.promotion);
+				newAppliedPromotion.setPromotionReward(item.promotionReward);
+				newAppliedPromotion.setRewardSku(sku);
 			}else{
 				newOrderItem.removeOrderFulfillment(arguments.fulfillment);
 				newOrderItem.removeOrder(arguments.order);
@@ -511,8 +515,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getService('hibachiService').saveOrder(arguments.order);
 		}
 		
-		if(arguments.order.isOrderPaidFor() 
-			&& ( !arguments.order.hasDropSku() || listFindNoCase('ostNew,ostProcessing,ostClosed',arguments.order.getOrderStatusType().getSystemCode() ) ) ){
+		if(arguments.order.getOrderStatusType().getSystemCode() == 'ostClosed'){
 			return;
 		}
 
@@ -656,6 +659,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if( listFindNoCase("otReturnOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
 				// TODO [issue #1766]: In the future allow for return Items to have negative promotions applied.  This isn't import right now because you can determine how much you would like to refund ordersItems
 			}
+			
 		}
 	}
 
@@ -1678,31 +1682,94 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return canPlaceOrderDetails; 
 	}
 	
-	public array function getQualifiedPromotionRewardsForOrder( required any order ){
+	public array function getQualifiedPromotionRewardsForOrder( required any order, string promotionRewardID, boolean apiFlag=false, string rewardTypeList = "merchandise,subscription,contentAccess,order,fulfillment,rewardSku" ){
 		var qualifiedPromotionRewards = [];
 		var promotionEffectiveDateTime = now();
+		
 		if(arguments.order.getOrderStatusType().getSystemCode() != "ostNotPlaced" && !isNull(arguments.order.getOrderOpenDateTime())) {
 			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
 		}
+		
+		var rewardArgs = {
+			rewardTypeList=arguments.rewardTypeList,
+			promotionCodeList=arguments.order.getPromotionCodeList(),
+			qualificationRequired=true,
+			promotionEffectiveDateTime=promotionEffectiveDateTime,
+			site=arguments.order.getOrderCreatedSite()
+		};
+		
+		if( !isNull(arguments.promotionRewardID) ){
+			rewardArgs.promotionRewardID = arguments.promotionRewardID;
+		}
+		
+		if(arguments.apiFlag){
+			rewardArgs.publishedFlag = true;
+			var propertyIdentifierList = getPromotionRewardPropertyIdentifierList();
+		}
+		
 		// Loop over all Potential Discounts that require qualifications
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment,rewardSku", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(argumentCollection = rewardArgs);
 		for(var promoReward in promotionRewards){
 			var promoPeriod = promoReward.getPromotionPeriod();
 			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
 			if(qualificationDetails.qualificationsMeet){
-				arrayAppend(qualifiedPromotionRewards,promoReward);
+				if(!arguments.apiFlag){
+					arrayAppend(qualifiedPromotionRewards,promoReward);
+				}else{
+					var qualifications = 0;
+					for(var qualifierDetail in qualificationDetails.qualifierDetails){
+						qualifications += qualifierDetail.qualificationCount;
+					}
+					var promoRewardStruct = getService('HibachiUtilityService').buildPropertyIdentifierListDataStruct(promoReward,propertyIdentifierList);
+					promoRewardStruct['qualifications'] = qualifications;
+					arrayAppend(qualifiedPromotionRewards,promoRewardStruct);
+				}
 			}
 		}
 		return qualifiedPromotionRewards;
 	}
 	
-	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
+	public string function getPromotionRewardPropertyIdentifierList(){
+		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName,maximumUsePerQualification,maximumUsePerOrder,maximumUsePerItem,title,rewardHeader,description';
+	}
+	
+	public array function getQualifiedPromotionRewardSkusForOrder( required any order,
+																	numeric pageRecordsShow=25,
+																	boolean formatRecords=false,
+																	string promotionRewardID
+																	string additionalCollectionConfig){
+
 		var rewardSkus = [];
-		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		var qualifiedPromotionRewardArguments = {
+			order:arguments.order
+		};
+		if( !isNull(arguments.promotionRewardID) ){
+			qualifiedPromotionRewardArguments.promotionRewardID = arguments.promotionRewardID;
+		}
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( argumentCollection=qualifiedPromotionRewardArguments );
+
 		for(var promotionReward in qualifiedPromotionRewards){
 			var skuCollection = promotionReward.getSkuCollection();
 			if(!isNull(skuCollection)){
+				
 				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
+				
+				if(structKeyExists(arguments, 'additionalCollectionConfig')){
+					
+					if(structKeyExists(arguments.additionalCollectionConfig,'displayProperties')){
+						for(var displayProperty in arguments.additionalCollectionConfig.displayProperties){
+							skuCollection.addDisplayProperty(displayProperty);
+						}
+					}
+					
+					if(structKeyExists(arguments.additionalCollectionConfig,'filters')){
+						for(var filter in arguments.additionalCollectionConfig.filters){
+							skuCollection.addFilter(argumentCollection=filter);
+						}
+					}
+					
+				}
+				
 				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
 				var promoRewardStruct = {
 					promotionRewardID=promotionReward.getPromotionRewardID(),

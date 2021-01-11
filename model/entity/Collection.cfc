@@ -572,7 +572,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  				}
  			}
  			if(!found){
-				addFilterGroupWithAlias(filterGroupAlias,filterGroupLogicalOperator,existingPath);
+				addFilterGroupWithAlias(filterGroupAlias,arguments.filterGroupLogicalOperator,existingPath);
 				existingPath = listAppend(existingPath,filterGroupAlias,'.');
 				currentFilterGroup = getFilterGroupByFilterGroupAliasPath(existingPath);
 				filterGroupArray = filterGroup['filterGroup'];
@@ -1557,8 +1557,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 				var isDistinct = isObject && this.getNonPersistentColumn();
 
-				if(structKeyExists(column,'isDistinct')){
-					isDistinct = column.isDistinct;
+				if(structKeyExists(arguments.column,'isDistinct')){
+					isDistinct = arguments.column.isDistinct;
 				}
 
 				if( isDistinct){
@@ -1665,39 +1665,39 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function isAggregateFunction(required string propertyIdentifier){
-		return refindNoCase('^(count|sum|avg|min|max)\(', propertyIdentifier);
+		return refindNoCase('^(count|sum|avg|min|max)\(', arguments.propertyIdentifier);
 	}
 
 	public any function mergeCollectionFilter(required any baseCollection, required any currentCollection) {
-		var totalFilterGroups = arrayLen(currentCollection);
+		var totalFilterGroups = arrayLen(arguments.currentCollection);
 		for(var i =1; i <= totalFilterGroups; i++){
-			if(!ArrayIsDefined(baseCollection, i)){
-				baseCollection[i] = { "filterGroup" = []};
+			if(!ArrayIsDefined(arguments.baseCollection, i)){
+				arguments.baseCollection[i] = { "filterGroup" = []};
 			}
-			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
-				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
+			if(arraylen(arguments.baseCollection[i].filterGroup) && arraylen(arguments.currentCollection[i].filterGroup)){
+				arguments.currentCollection[i].filterGroup[1].logicalOperator = 'AND';
 			}
-			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
+			ArrayAppend(arguments.baseCollection[i].filterGroup,arguments.currentCollection[i].filterGroup, true);
 		}
-		return baseCollection;
+		return arguments.baseCollection;
 	}
 
 	public void function mergeJoins(required any baseJoins){
 		var currentCollection = getCollectionConfigStruct();
 		if(isNull(currentCollection.joins) || !arraylen(currentCollection.joins)){
-			currentCollection.joins = baseJoins;
+			currentCollection.joins = arguments.baseJoins;
 			return;
 		}
-		for(var i = 1; i <= arraylen(baseJoins); i++) {
+		for(var i = 1; i <= arraylen(arguments.baseJoins); i++) {
 			var isFound = false;
 			for (var j = 1; j <= arraylen(currentCollection.joins); j++) {
-				if (currentCollection.joins[j]['associationName'] == baseJoins[i]['associationName']) {
+				if (currentCollection.joins[j]['associationName'] == arguments.baseJoins[i]['associationName']) {
 					isFound = true;
 					break;
 				}
 			}
 			if (!isFound) {
-				arrayAppend(currentCollection.joins, baseJoins[i]);
+				arrayAppend(currentCollection.joins, arguments.baseJoins[i]);
 			}
 		}
 	}
@@ -2483,8 +2483,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var convertedPropertyIdentifier = getCollectionCacheValue(cacheKey);
 		if(isNull(convertedPropertyIdentifier)) {
-			if (left(propertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
-				propertyIdentifier = right(propertyIdentifier, len(propertyIdentifier) - len(getBaseEntityAlias()) - 1);
+			if (left(arguments.propertyIdentifier, len(getBaseEntityAlias())) == getBaseEntityAlias()) {
+				arguments.propertyIdentifier = right(arguments.propertyIdentifier, len(arguments.propertyIdentifier) - len(getBaseEntityAlias()) - 1);
 			}
 			arguments.propertyIdentifier = getHibachiService().getProperlyCasedPropertyIdentifier(getCollectionObject(),replace(arguments.propertyIdentifier, '_', '.', 'all'));
 			convertedPropertyIdentifier = Replace(arguments.propertyIdentifier, '.', '_', 'all');
@@ -4259,8 +4259,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 				}
 
-				if(structKeyExists(column, 'alias')){
-					return column.alias;
+				if(structKeyExists(arguments.column, 'alias')){
+					return arguments.column.alias;
 				}
 				return Replace(Replace(arguments.column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
 			}

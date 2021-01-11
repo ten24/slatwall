@@ -57,6 +57,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="addToEntityQueueFlag" ormtype="boolean" default="false";
 	property name="scheduleOrderProcessingFlag" ormtype="boolean" default="false";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="activationDateTime" ormtype="timestamp";
 	property name="canceledDateTime" ormtype="timestamp";
 	property name="lastOrderPlacedDateTime" ormtype="timestamp";
 	
@@ -95,7 +96,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentDiscount" ormtype="big_decimal" hb_formatType="currency";
-
+	property name="calculatedRecalculationCacheKey" ormtype="string" length="32";
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -124,6 +126,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="statusCode" persistent="false";
 	property name="typeCode" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
+	property name="recalculationCacheKey" persistent="false";
 	
 
 	public any function getOrderTemplateNumber(){
@@ -228,46 +231,80 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	}  
 
 	public numeric function getFulfillmentDiscount() {
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'fulfillmentDiscount')){
-			variables.fulfillmentDiscount = getService('OrderService').getFulfillmentDiscountForOrderTemplate(this); 
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.fulfillmentDiscount = getService('OrderService').getFulfillmentDiscountForOrderTemplate(this); 
+			}else{
+				variables.fulfillmentDiscount = getCalculatedFulfillmentDiscount();
+			}
 		}
 		return variables.fulfillmentDiscount;
 	}
 
 	public numeric function getFulfillmentTotal() {
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'fulfillmentTotal')){
-			variables.fulfillmentTotal = getService('OrderService').getFulfillmentTotalForOrderTemplate(this); 
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.fulfillmentTotal = getService('OrderService').getFulfillmentTotalForOrderTemplate(this); 
+			}else{
+				variables.fulfillmentTotal = getCalculatedFulfillmentTotal();
+			}
 		}
 		return variables.fulfillmentTotal;
 	}
 
 	public numeric function getSubtotal(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'subtotal')){
-			variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
+			}else{
+				variables.subtotal = getCalculatedSubtotal();
+			}
 		}
 		return variables.subtotal; 
 	}
 	
 	public numeric function getDiscountTotal(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'discountTotal')){
-			variables.discountTotal = getService('orderService').getOrderTemplateDiscountTotal(this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.discountTotal = getService('orderService').getOrderTemplateDiscountTotal(this);
+			}else{
+				variables.discountTotal = getCalculatedDiscountTotal();
+			}
 		}
 		return variables.discountTotal; 
 	}
 
 	public numeric function getTaxableAmountTotal() {
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'taxableAmountTotal')){
-			variables.taxableAmountTotal = getService('OrderService').getTaxableAmountTotalForOrderTemplate(this); 
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.taxableAmountTotal = getService('OrderService').getTaxableAmountTotalForOrderTemplate(this); 
+			}else{
+				variables.taxableAmountTotal = getCalculatedTaxableAmountTotal();
+			}
 		}
 		return variables.taxableAmountTotal;
 	}
 
-	public numeric function getTotal(){ 
+	public numeric function getTotal(){
+		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
 		if(!structKeyExists(variables, 'total')){
-			variables.total = getService('orderService').getOrderTemplateTotal(this);
+			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
+				variables.total = getService('orderService').getOrderTemplateTotal(this);
+			}else{
+				variables.total = getCalculatedTotal();
+			}
 		}
 		return variables.total; 
 	} 
+	
+	public string function getOrderTemplateOrderDetailsKey(){
+		return "orderTemplateOrderDetails#getOrderTemplateID()#";
+	}
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.accountID,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
 		arguments.includesList = listAppend(arguments.includesList, 'orderTemplateStatusType.systemCode'); 
@@ -419,6 +456,26 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		}
 		
 		return variables.orderTemplateItemsCount;
+	}
+	
+	private boolean function matchRecalculationCacheKey(){
+		return getCalculatedRecalculationCacheKey() == getRecalculationCacheKey();
+		
+	}
+	
+	public string function getRecalculationCacheKey(){
+		var cacheKey = '';
+		cacheKey &= this.getOrderTemplateID();
+		
+		var orderTemplateItems = this.getOrderTemplateItems();
+		for(var orderTemplateItem in orderTemplateItems){
+			cacheKey &= orderTemplateItem.getSku().getSkuID() & orderTemplateItem.getQuantity();
+		}
+		
+		cacheKey &= this.getOrderTemplateStatusType().getTypeID();
+		cacheKey &= this.getLastOrderPlacedDateTime();
+		
+		return hash(cacheKey,'md5');
 	}
 	
 	

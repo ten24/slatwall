@@ -54,7 +54,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 
 	public void function updateOrderAmountsWithTaxes(required any order) {
-
 		if (!arguments.order.hasOrderItem()){
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 			return;
@@ -91,7 +90,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		var orderFulfillmentList ="";
  		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
  			
-
  			if(!isNull(orderFulfillment.getShippingAddress())){
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
  				if(!isNull(orderFulfillment.getSelectedShippingMethodOption())){
@@ -314,6 +312,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var totalItemTax = 0;
 					var totalItemVAT = 0;
 					var taxAdjusted = false;
+					var refundPercentage = originalOrderItem.getAllowableRefundPercent();
 					
 					for(var originalAppliedTax in originalAppliedTaxes) {
 
@@ -326,7 +325,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setOrderItem( orderItem );
 						newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
 						
-						var VATAmount = round((originalAppliedTax.getVATAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * 100) / 100;
+						
+						var VATAmount = round((originalAppliedTax.getVATAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * refundPercentage) / 100;
 						
 						totalItemVAT += VATAmount;
 						
@@ -338,17 +338,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							totalItemVAT += 0.01;
 							VATAdjusted = true;
 						}
+
 						newAppliedTax.setVATAmount( VATAmount );
 						
-						var taxAmount = round((originalAppliedTax.getTaxAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * 100) / 100;
-						
+						var taxAmount = round((originalAppliedTax.getTaxAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * refundPercentage) / 100;
+
 						totalItemTax += taxAmount;
 						
 						if(totalItemTax > originalOrderItem.getTaxAmountNotRefunded()){
 							taxAmount -= totalItemTax - originalOrderItem.getTaxAmountNotRefunded();
 							taxAdjusted = true;
 						}
-						
+
 						newAppliedTax.setTaxLiabilityAmount( taxamount );
 
 						newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
@@ -370,7 +371,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					if(!taxAdjusted){
-						var correctProportionalTaxAmount = round(originalOrderItem.getTaxAmount() * orderItem.getQuantity() * 100 / originalOrderItem.getQuantity()) / 100;
+						var correctProportionalTaxAmount = round(originalOrderItem.getTaxAmount() * orderItem.getQuantity() * refundPercentage / originalOrderItem.getQuantity()) / 100;
 						var appliedTaxDifference = correctProportionalTaxAmount - orderItem.getTaxAmount();
 						
 						if(appliedTaxDifference != 0){
@@ -671,7 +672,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 									newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 									newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-
 									// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 									if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 										newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
@@ -917,12 +917,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// Loop over the rates of that category, looking for a unique integration
 				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
-
 					// If a unique integration is found, then we add it to the integrations to call
 					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
 
 						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
-
 						if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
 							taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderItem, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
 						}
