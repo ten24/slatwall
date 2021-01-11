@@ -1,36 +1,5 @@
 component extends="Slatwall.model.service.OrderService" {
 
-	property name="hibachiDAO";
-	property name="orderDAO";
-	property name="productDAO";
-	property name="promotionDAO";
-
-	property name="accountService";
-	property name="addressService";
-	property name="commentService";
-	property name="emailService";
-	property name="eventRegistrationService";
-	property name="fulfillmentService";
-	property name="giftCardService";
-	property name="hibachiUtilityService";
-	property name="hibachiEntityQueueService";
-	property name="hibachiAuthenticationService";
-	property name="integrationService";
-	property name="locationService";
-	property name="paymentService";
-	property name="priceGroupService";
-	property name="promotionService";
-	property name="settingService";
-	property name="shippingService";
-	property name="siteService";
-	property name="skuService";
-	property name="stockService";
-	property name="subscriptionService";
-	property name="taxService";
-	property name="typeService";
-
-	// ====================== START: Save Overrides ===========================
-
 	public any function saveOrder(required any order, struct data={}, string context="save", boolean updateOrderAmounts=false, boolean updateShippingMethodOptions=false, boolean checkNewAccountAddressSave=true) {
 
 		// Call the generic save method to populate and validate
@@ -82,7 +51,9 @@ component extends="Slatwall.model.service.OrderService" {
 			for(var ofi=arrayLen(arguments.order.getOrderFulfillments()); ofi>=1; ofi--) {
 
 				var orderFulfillment = arguments.order.getOrderFulfillments()[ofi];
-
+				
+				// Comment out this remove orderFulfillment from the order because we are unable to create fullfillment with every order because of this code snippet
+				
 				// If that orderFulfillment isn't in use anymore, then we need to remove it from the order
 				// if(!arrayFind(orderFulfillmentsInUse, orderFulfillment.getOrderFulfillmentID())) {
 				// 	orderFulfillment.removeOrder();

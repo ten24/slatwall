@@ -125,9 +125,9 @@
         {
             "key"                   : "orderSiteCode",
             "isNullable"            : true,
-            "lookupKey"             : "siteCode",
+            "lookupKey"             : "siteID",
             "entityName"            : "Site",
-            "defaultValue"          : "stoneAndBerg",
+            "defaultValue"          : "2c9680847491ce86017491f46ec50036",
             "__hint"                : "this defaultValue for order-site is `default site`.",
             "propertyIdentifier"    : "orderCreatedSite"
         },
