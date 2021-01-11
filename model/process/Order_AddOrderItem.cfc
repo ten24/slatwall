@@ -640,7 +640,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ===================== START: Helper Methods =========================
 
 	public any function getAssignedOrderItemAttributeSets() {
-		if(!isNull(getSku())) {
+		
+		if(
+			!isNull(getSku()) 
+			&&structKeyExists(request,'context') 
+			&& structKeyExists(request.context,'fw')
+			&& request.context.fw.getSubsystem(request.context[request.context.fw.getAction()]) == 'admin'
+		) {
 			return getSku().getAssignedOrderItemAttributeSetSmartList().getRecords();
 		}
 
