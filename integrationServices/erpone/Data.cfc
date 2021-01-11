@@ -52,5 +52,9 @@ component accessors="true" output="false" displayname="ErpOne" extends="Slatwall
 
 	property name="erpOneService";
 	
+	
+	
+	
+	
 
 }
