@@ -372,6 +372,28 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
     }
     
+    public any function getOrderItemData(numeric pageNumber = 1, numeric pageSize = 50 ){
+    	logHibachi("ERPONE - called getOrderItemData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
+		//still working to get order numbers without hyphen so pass one order for testing
+    	var OrdersArray = this.getErpOneData({
+    	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
+    	    "take" : arguments.pageSize,
+    	    "query": "FOR EACH oe_line",
+    	    "columns" : "order,price,list_price,item,line"
+    	})
+
+		if( OrdersArray.len() > 0 ){
+
+		    this.logHibachi("ERPONE - Start pushing OrderItem to import-queue ");
+			var batch = this.pushRecordsIntoImportQueue( "OrderItem", OrdersArray );
+			this.logHibachi("ERPONE - Finish pushing OrderItem to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
+
+		} else {
+		    this.logHibachi("ERPONE - No data recieve from getOrderItemData API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
+		}
+
+    }
+    
 	public any function transformErpOneAccounts( required array accountDataArray ){
 	    var erponeMapping = {
 	        "__rowids" : "remoteAccountID",
@@ -434,7 +456,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var pageSize = 100;
 		var recordsFetched = 0;
 		
-		//while ( recordsFetched < totalRecordsCount ){
+		while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				this.getOrderData( currentPage, pageSize );
@@ -446,12 +468,45 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				this.getHibachiUtilityService().logException(e);
 			}
 			
-			//increment rgardless of success or failure;
-			// recordsFetched += pageSize;
-			// currentPage += 1;
-		//}
+			//increment regardless of success or failure;
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
+	}
+	
+	public any function importErpOneOrderItems(){
+
+		logHibachi("ERPONE - Starting importing ErpOneOrderItems");
+
+		var response = this.getErpOneData({
+    	    "table" : "oe_line"
+    	}, "count");
+		
+		var totalRecordsCount = response.count;
+		var currentPage = 1;
+		var pageSize = 100;
+		var recordsFetched = 0;
+
+		while ( recordsFetched < totalRecordsCount ){
+
+			try {
+				this.getOrderItemData( currentPage, pageSize );
+				this.logHibachi("Successfully called getOrderItemData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+
+			} catch(e){
+
+				this.logHibachi("Got error while trying to call getOrderItemData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+				this.getHibachiUtilityService().logException(e);
+			}
+
+			//increment regardless of success or failure;
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
+
+	    this.logHibachi("ERPONE - Finish importing ErpOneOrderItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
 	
 	public struct function preProcessProductData(required struct data ){
@@ -590,18 +645,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		        "adr"			: "Address",
 		        "state" 		: "BillingAddress_stateCode"
 		    };
-		    
+
 	    	var transformedItem = {};
-	
+
 	    	for( var sourceKey in erponeMapping ){
 	    		var destinationKey = erponeMapping[ sourceKey ];
-	    		
+
 	    		if( structKeyExists(arguments.data, sourceKey) ){
 	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
 	    		}
-	    		
+
 	    	}
-	    	
+
 	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
 	    	transformedItem.BillingAddress_streetAddress = transformedItem.Address[2];
 	    	transformedItem.BillingAddress_street2Address = transformedItem.Address[1];
@@ -617,4 +672,31 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    return transformedItem;
 	}
 	
+	public any function preProcessOrderItemData(required struct data ){
+
+		if( left(arguments.data.order, 1) == '-' ){
+			return;
+		}
+			var erponeMapping = {
+		        "order" : "RemoteOrderID",
+		        "price" : "Price",
+		        "list_price" : "SkuPrice",
+		        "item" : "RemoteSkuID",
+		        "line" : "Line"
+		    };
+
+	    	var transformedItem = {};
+
+	    	for( var sourceKey in erponeMapping ){
+	    		var destinationKey = erponeMapping[ sourceKey ];
+
+	    		if( structKeyExists(arguments.data, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
+	    		}
+
+	    	}
+
+	    	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
+		    return transformedItem;
+	}
 }

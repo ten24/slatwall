@@ -4,6 +4,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	this.secureMethods=listAppend(this.secureMethods, 'getAccess');
 	this.secureMethods=listAppend(this.secureMethods, 'importAccounts');
 	this.secureMethods=listAppend(this.secureMethods, 'importOrders');
+	this.secureMethods=listAppend(this.secureMethods, 'importOrderItems');
 	this.secureMethods=listAppend(this.secureMethods, 'default');
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessintegration');
 	this.secureMethods=listAppend(this.secureMethods, 'processintegration');
@@ -23,6 +24,10 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	// Get Order Data
 	public any function importOrders(){
 	    this.getService('erpOneService').importErpOneOrders();
+	}
+	// Get Order Items Data
+	public any function importOrderItems(){
+	    this.getService('erpOneService').importErpOneOrderItems();
 	}
 
 	public function before( required struct rc ){
