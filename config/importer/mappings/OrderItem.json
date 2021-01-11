@@ -100,7 +100,6 @@
             "propertyIdentifier": "parentOrderItem"
         },
         {
-            "isNullable": true,
             "key": "remoteOrderFulfillmentID",
             "lookupKey": "remoteID",
             "entityName": "OrderFulfillment",
