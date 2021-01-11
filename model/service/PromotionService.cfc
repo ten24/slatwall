@@ -46,27 +46,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService" type="any";
 	property name="roundingRuleService" type="any";
 	property name="skuService" type="any";
+	property name="orderService" type="any";
 
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
+		
 		var orderService = getService('orderService');
 		// Clear all previously applied promotions for order items
-		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
+		for(var oi=arrayLen(arguments.orderItems); oi>=1; oi--) {
 			var orderItem = arguments.orderItems[oi];
 			var appliedPromotions = orderItem.getAppliedPromotions();
+			var dropSkuFlag = false;
 			for(var appliedPromotion in appliedPromotions){
-				appliedPromotion.removeOrderItem(reciprocateFlag=false);
-				if(
-					!isNull(appliedPromotion.getPromotionReward())
-					&& appliedPromotion.getPromotionReward().getRewardType() =='rewardSku' 
-					&& !isNull(orderItem.getOrder())
-					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
-				){
-					order = orderItem.getOrder();
-					order.removeOrderItem(orderItem);
-					orderService.saveOrder(order);
+				if(!isNull(appliedPromotion.getPromotionReward()) && appliedPromotion.getPromotionReward().getRewardType() =='rewardSku'){
+					dropSkuFlag = true;
+					if ( !isNull(orderItem.getOrder())
+						&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
+					){	
+						appliedPromotion.removeOrderItem(reciprocateFlag=false);
+						getOrderService().deleteOrderItem(orderItem=orderItem, updateOrderAmounts=false, setDropSkuRemovedFlag=false);
+					}
+				}else{
+					appliedPromotion.removeOrderItem(reciprocateFlag=false);
 				}
 			}
-			ArrayClear(orderItem.getAppliedPromotions());
+			if(!dropSkuFlag){
+				ArrayClear(orderItem.getAppliedPromotions());
+			}
 		}
 	}
 
@@ -409,7 +414,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.promotionReward.getPromoHasRan()){
 			return;
 		}
-		
+	
 		promotionReward.setPromotionRewardProcessingFlag(true);
 		
 		arguments.promotionReward.setPromoHasRan(true);
@@ -438,6 +443,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		for(var skuRecord in rewardSkusCollection){
+		
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
 				skuID: skuRecord['skuID'],
@@ -453,22 +459,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-	
+
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
 		
 		var skuService = getService('skuService');
-		
+		var currencyCode = arguments.order.getCurrencyCode();
+		if(isNull(currencyCode)){
+			return;
+		}
+	
 		for(var item in arguments.itemsToBeAdded){
+			
 			var sku = skuService.getSku(item.skuID);
 			if(isNull(sku)){
 				continue;
 			}
 
 			var newOrderItem = getService("OrderService").newOrderItem();
-			newOrderItem.setPrice(0);
-			newOrderItem.setSkuPrice(0);
+			var priceFields = ['taxableAmount','listPrice', 'price', 'skuPrice'];
+			for(var priceField in priceFields){
+				newOrderItem.invokeMethod('set#priceField#', {1=0});
+			}
+			
 			newOrderItem.setUserDefinedPriceFlag(true);
 			newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
 			newOrderItem.setOrderFulfillment( arguments.fulfillment );
@@ -476,14 +490,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setSku(sku);
 			newOrderItem.setOrder(arguments.order);
 			newOrderItem.setRewardSkuFlag(true);
+			newOrderItem.setCurrencyCode(currencyCode);
+	
 			getService('orderService').saveOrderItem(newOrderItem);
-			
-			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
-				getPromotionDAO().insertAppliedPromotionFromOrderItem(
-						orderItemID=newOrderItem.getOrderItemID(), 
-						promotionID =item.promotion.getPromotionID(),
-						promotionRewardID= item.promotionReward.getPromotionRewardID()
-					);
+
+			if(!newOrderItem.hasErrors()){
+				var newAppliedPromotion = this.newPromotionApplied();
+				newAppliedPromotion.setAppliedType('orderItem');
+				newAppliedPromotion.setOrderItem(newOrderItem);
+				newAppliedPromotion.setPromotion(item.promotion);
+				newAppliedPromotion.setPromotionReward(item.promotionReward);
+				newAppliedPromotion.setRewardSku(sku);
+			}else{
+				newOrderItem.removeOrderFulfillment(arguments.fulfillment);
+				newOrderItem.removeOrder(arguments.order);
 			}
 		}
 		arguments.itemsToBeAdded = [];
@@ -494,8 +514,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.order.getNewFlag()){
 			getService('hibachiService').saveOrder(arguments.order);
 		}
-
-		if(arguments.order.isOrderPaidFor()){
+		
+		if(arguments.order.getOrderStatusType().getSystemCode() == 'ostClosed'){
 			return;
 		}
 
@@ -514,6 +534,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		}
 
  		var orderFulfillmentList ="";
+ 		
  		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
  			if(!isNull(orderFulfillment.getShippingAddress())){
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
@@ -534,9 +555,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
+		
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
-				
+	
 				clearPreviouslyAppliedPromotions(arguments.order);
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
 				getHibachiScope().flushOrmSession();
@@ -637,6 +659,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if( listFindNoCase("otReturnOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
 				// TODO [issue #1766]: In the future allow for return Items to have negative promotions applied.  This isn't import right now because you can determine how much you would like to refund ordersItems
 			}
+			
 		}
 	}
 
@@ -1659,31 +1682,94 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return canPlaceOrderDetails; 
 	}
 	
-	public array function getQualifiedPromotionRewardsForOrder( required any order ){
+	public array function getQualifiedPromotionRewardsForOrder( required any order, string promotionRewardID, boolean apiFlag=false, string rewardTypeList = "merchandise,subscription,contentAccess,order,fulfillment,rewardSku" ){
 		var qualifiedPromotionRewards = [];
 		var promotionEffectiveDateTime = now();
+		
 		if(arguments.order.getOrderStatusType().getSystemCode() != "ostNotPlaced" && !isNull(arguments.order.getOrderOpenDateTime())) {
 			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
 		}
+		
+		var rewardArgs = {
+			rewardTypeList=arguments.rewardTypeList,
+			promotionCodeList=arguments.order.getPromotionCodeList(),
+			qualificationRequired=true,
+			promotionEffectiveDateTime=promotionEffectiveDateTime,
+			site=arguments.order.getOrderCreatedSite()
+		};
+		
+		if( !isNull(arguments.promotionRewardID) ){
+			rewardArgs.promotionRewardID = arguments.promotionRewardID;
+		}
+		
+		if(arguments.apiFlag){
+			rewardArgs.publishedFlag = true;
+			var propertyIdentifierList = getPromotionRewardPropertyIdentifierList();
+		}
+		
 		// Loop over all Potential Discounts that require qualifications
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment,rewardSku", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(argumentCollection = rewardArgs);
 		for(var promoReward in promotionRewards){
 			var promoPeriod = promoReward.getPromotionPeriod();
 			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
 			if(qualificationDetails.qualificationsMeet){
-				arrayAppend(qualifiedPromotionRewards,promoReward);
+				if(!arguments.apiFlag){
+					arrayAppend(qualifiedPromotionRewards,promoReward);
+				}else{
+					var qualifications = 0;
+					for(var qualifierDetail in qualificationDetails.qualifierDetails){
+						qualifications += qualifierDetail.qualificationCount;
+					}
+					var promoRewardStruct = getService('HibachiUtilityService').buildPropertyIdentifierListDataStruct(promoReward,propertyIdentifierList);
+					promoRewardStruct['qualifications'] = qualifications;
+					arrayAppend(qualifiedPromotionRewards,promoRewardStruct);
+				}
 			}
 		}
 		return qualifiedPromotionRewards;
 	}
 	
-	public array function getQualifiedPromotionRewardSkusForOrder( required any order, numeric pageRecordsShow=25, boolean formatRecords=false){
+	public string function getPromotionRewardPropertyIdentifierList(){
+		return 'promotionRewardID,amount,amountType,rewardType,promotionPeriod.promotion.promotionName,maximumUsePerQualification,maximumUsePerOrder,maximumUsePerItem,title,rewardHeader,description';
+	}
+	
+	public array function getQualifiedPromotionRewardSkusForOrder( required any order,
+																	numeric pageRecordsShow=25,
+																	boolean formatRecords=false,
+																	string promotionRewardID
+																	string additionalCollectionConfig){
+
 		var rewardSkus = [];
-		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		var qualifiedPromotionRewardArguments = {
+			order:arguments.order
+		};
+		if( !isNull(arguments.promotionRewardID) ){
+			qualifiedPromotionRewardArguments.promotionRewardID = arguments.promotionRewardID;
+		}
+		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( argumentCollection=qualifiedPromotionRewardArguments );
+
 		for(var promotionReward in qualifiedPromotionRewards){
 			var skuCollection = promotionReward.getSkuCollection();
 			if(!isNull(skuCollection)){
+				
 				skuCollection.setPageRecordsShow(arguments.pageRecordsShow);
+				
+				if(structKeyExists(arguments, 'additionalCollectionConfig')){
+					
+					if(structKeyExists(arguments.additionalCollectionConfig,'displayProperties')){
+						for(var displayProperty in arguments.additionalCollectionConfig.displayProperties){
+							skuCollection.addDisplayProperty(displayProperty);
+						}
+					}
+					
+					if(structKeyExists(arguments.additionalCollectionConfig,'filters')){
+						for(var filter in arguments.additionalCollectionConfig.filters){
+							skuCollection.addFilter(argumentCollection=filter);
+						}
+					}
+					
+				}
+				
 				var skus = skuCollection.getPageRecords(formatRecords=arguments.formatRecords, refresh=true);
 				var promoRewardStruct = {
 					promotionRewardID=promotionReward.getPromotionRewardID(),
@@ -1799,6 +1885,52 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 
+	public any function processPromotion_duplicate(required any promotion, required any processObject){
+
+		var newPromotion = this.newPromotion();
+		
+		var promotionName = arguments.promotion.getPromotionName();
+		if(!isNull(arguments.processObject.getPromotionName())){
+			promotionName = arguments.processObject.getPromotionName();
+		}
+		
+		newPromotion.setPromotionName( promotionName );
+		newPromotion.setActiveFlag(false);
+		
+		if( !isNull(arguments.promotion.getPromotionSummary()) ){
+			newPromotion.setPromotionSummary(arguments.promotion.getPromotionSummary());
+		}
+		if( !isNull(arguments.promotion.getPromotionDescription()) ){
+			newPromotion.setPromotionDescription(arguments.promotion.getPromotionDescription());
+		}
+		if( !isNull(arguments.promotion.getPriority()) ){
+			newPromotion.setPriority(arguments.promotion.getPriority());
+		}
+		
+		if( !isNull(arguments.promotion.getDefaultImage()) ){
+			newPromotion.setDefaultImage(arguments.promotion.getDefaultImage());
+		}
+		if( !isNull(arguments.promotion.getSite()) ){
+			newPromotion.setSite(arguments.promotion.getSite());
+		}
+
+		this.savePromotion(newPromotion);
+		
+		for( var promotionPeriod in arguments.promotion.getPromotionPeriods() ){
+			
+			var processObject = promotionPeriod.getProcessObject('duplicatePromotionPeriod');
+			processObject.setPromotionPeriodName( promotionPeriod.getPromotionPeriodName() );
+			processObject.setMaximumUseCount( promotionPeriod.getMaximumUseCount() );
+			processObject.setMaximumAccountUseCount( promotionPeriod.getMaximumAccountUseCount() );
+			processObject.setPromotion( newPromotion );
+			processObject.setQualifierLogicalOperatorType( promotionPeriod.getQualifierLogicalOperatorType() );
+			
+			var newPromotionPeriod = this.processPromotionPeriod_duplicatePromotionPeriod(promotionPeriod,processObject);
+		}
+		
+		return newPromotion;
+	}
+
 	public any function processPromotionPeriod_duplicatePromotionPeriod(required any promotionPeriod, required any processObject){
 
 		// Duplicate promotion period and set new values from process object
@@ -1817,108 +1949,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getMaximumAccountUseCount()) && len(arguments.processObject.getMaximumAccountUseCount())) {
 			newPromotionPeriod.setMaximumAccountUseCount(arguments.processObject.getMaximumAccountUseCount());
 		}
-		newPromotionPeriod.setPromotion(arguments.promotionPeriod.getPromotion());
+		newPromotionPeriod.setPromotion(arguments.processObject.getPromotion());
+		newPromotionPeriod.setQualifierLogicalOperatorType(arguments.processObject.getQualifierLogicalOperatorType());
 		var newPromotionPeriod = this.savePromotionPeriod(newPromotionPeriod);
 
 		// Duplicate promotionRewards
 		for(var promotionReward in arguments.promotionPeriod.getPromotionRewards()){
-			var newPromotionReward = this.newPromotionReward();
-			newPromotionReward.setAmount(promotionReward.getAmount());
-			newPromotionReward.setCurrencyCode(promotionReward.getCurrencyCode());
-			newPromotionReward.setAmountType(promotionReward.getAmountType());
-			newPromotionReward.setRewardType(promotionReward.getRewardType());
-			newPromotionReward.setApplicableTerm(promotionReward.getApplicableTerm());
-			newPromotionReward.setMaximumUsePerOrder(promotionReward.getMaximumUsePerOrder());
-			newPromotionReward.setMaximumUsePerItem(promotionReward.getMaximumUsePerItem());
-			newPromotionReward.setMaximumUsePerQualification(promotionReward.getMaximumUsePerQualification());
-			if(!isNull(promotionReward.getRoundingRule())) {
-				newPromotionReward.setRoundingRule(promotionReward.getRoundingRule());
-			}
-			if(arrayLen(promotionReward.getPromotionRewardCurrencies())) {
-				for(var promotionRewardCurrency in promotionReward.getPromotionRewardCurrencies()) {
-					newPromotionReward.addPromotionRewardCurrency(promotionRewardCurrency);
-				}
-			}
-			if(arrayLen(promotionReward.getEligiblePriceGroups())) {
-				for(var eligiblePriceGroup in promotionReward.getEligiblePriceGroups()) {
-					newPromotionReward.addEligiblePriceGroup(eligiblePriceGroup);
-				}
-			}
-			if(arrayLen(promotionReward.getFulfillmentMethods())) {
-				for(var fulfillmentMethod in promotionReward.getFulfillmentMethods()) {
-					newPromotionReward.addFulfillmentMethod(fulfillmentMethod);
-				}
-			}
-			if(arrayLen(promotionReward.getShippingAddressZones())) {
-				for(var shippingAddressZone in promotionReward.getShippingAddressZones()) {
-					newPromotionReward.addShippingAddressZone(shippingAddressZone);
-				}
-			}
-			if(arrayLen(promotionReward.getShippingMethods())) {
-				for(var shippingMethod in promotionReward.getShippingMethods()) {
-					newPromotionReward.addShippingMethod(shippingMethod);
-				}
-			}
-			if(arrayLen(promotionReward.getBrands())) {
-				for(var brand in promotionReward.getBrands()) {
-					newPromotionReward.addBrand(brand);
-				}
-			}
-			if(arrayLen(promotionReward.getOptions())) {
-				for(var option in promotionReward.getOptions()) {
-					newPromotionReward.addOption(option);
-				}
-			}
-			if(arrayLen(promotionReward.getSkus())) {
-				for(var sku in promotionReward.getSkus()) {
-					newPromotionReward.addSku(sku);
-				}
-			}
-			if(arrayLen(promotionReward.getProducts())) {
-				for(var product in promotionReward.getProducts()) {
-					newPromotionReward.addProduct(product);
-				}
-			}
-			if(arrayLen(promotionReward.getProductTypes())) {
-				for(var productType in promotionReward.getProductTypes()) {
-					newPromotionReward.addProductType(productType);
-				}
-			}
-			if(arrayLen(promotionReward.getExcludedBrands())) {
-				for(var excludedBrand in promotionReward.getExcludedBrands()) {
-					newPromotionReward.addExcludedBrand(excludedBrand);
-				}
-			}
-			if(arrayLen(promotionReward.getExcludedOptions())) {
-				for(var excludedOption in promotionReward.getExcludedOptions()) {
-					newPromotionReward.addExcludedOption(excludedOption);
-				}
-			}
-			if(arrayLen(promotionReward.getExcludedSkus())) {
-				for(var excludedSkus in promotionReward.getExcludedSkus()) {
-					newPromotionReward.addExcludedSkus(excludedSkus);
-				}
-			}
-			if(arrayLen(promotionReward.getExcludedProducts())) {
-				for(var excludedProduct in promotionReward.getExcludedProducts()) {
-					newPromotionReward.addExcludedProduct(excludedProduct);
-				}
-			}
-			if(arrayLen(promotionReward.getExcludedProductTypes())) {
-				for(var excludedProductType in promotionReward.getExcludedProductTypes()) {
-					newPromotionReward.addExcludedProductType(excludedProductType);
-				}
-			}
-			
-			if( !isNull( promotionReward.getExcludedSkusCollectionConfig() ) 
-				&& len( promotionReward.getExcludedSkusCollectionConfig() ) ){
-					newPromotionReward.setExcludedSkusCollectionConfig( promotionReward.getExcludedSkusCollectionConfig() );	
-				} 
-			if( !isNull(promotionReward.getIncludedSkusCollectionConfig() )
-				&& len( promotionReward.getIncludedSkusCollectionConfig() ) ){
-					newPromotionReward.setIncludedSkusCollectionConfig( promotionReward.getIncludedSkusCollectionConfig() );
-				}
-		
+			var newPromotionReward = this.duplicatePromotionReward( promotionReward );
 			newPromotionPeriod.addPromotionReward(newPromotionReward);
 		}
 
@@ -1937,74 +1974,102 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newpromotionQualifier.setMinimumFulfillmentWeight(promotionQualifier.getMinimumFulfillmentWeight());
 			newpromotionQualifier.setMaximumFulfillmentWeight(promotionQualifier.getMaximumFulfillmentWeight());
 			newpromotionQualifier.setRewardMatchingType(promotionQualifier.getRewardMatchingType());
-			if(arrayLen(promotionQualifier.getFulFillmentMethods())) {
-				for(var fulFillmentMethod in promotionQualifier.getFulFillmentMethods()) {
+			
+			var fulfillmentMethods = promotionQualifier.getFulFillmentMethods();
+			if(arrayLen(fulfillmentMethods)) {
+				for(var fulFillmentMethod in fulfillmentMethods) {
 					newpromotionQualifier.addFulFillmentMethod(fulFillmentMethod);
 				}
 			}
-			if(arrayLen(promotionQualifier.getShippingMethods())) {
-				for(var shippingMethod in promotionQualifier.getShippingMethods()) {
+			
+			var shipMethods = promotionQualifier.getShippingMethods();
+			
+			if(arrayLen(shipMethods)) {
+				for(var shippingMethod in shipMethods) {
 					newpromotionQualifier.addShippingMethod(shippingMethod);
 				}
 			}
-			if(arrayLen(promotionQualifier.getShippingAddressZones())) {
-				for(var shippingAddressZone in promotionQualifier.getShippingAddressZones()) {
+			
+			var addressZones = promotionQualifier.getShippingAddressZones();
+			if(arrayLen(addressZones)) {
+				for(var shippingAddressZone in addressZones) {
 					newpromotionQualifier.addShippingAddressZone(shippingAddressZone);
 				}
 			}
-			if(arrayLen(promotionQualifier.getBrands())) {
-				for(var brand in promotionQualifier.getBrands()) {
+			
+			var brands = promotionQualifier.getBrands();
+			if(arrayLen(brands)) {
+				for(var brand in brands) {
 					newpromotionQualifier.addBrand(brand);
 				}
 			}
-			if(arrayLen(promotionQualifier.getOptions())) {
-				for(var option in promotionQualifier.getOptions()) {
+			
+			var options = promotionQualifier.getOptions();
+			if(arrayLen(options)) {
+				for(var option in options) {
 					newpromotionQualifier.addOption(option);
 				}
 			}
-			if(arrayLen(promotionQualifier.getSkus())) {
-				for(var sku in promotionQualifier.getSkus()) {
+			
+			var skus = promotionQualifier.getSkus();
+			if(arrayLen(skus)) {
+				for(var sku in skus) {
 					newpromotionQualifier.addSku(sku);
 				}
 			}
-			if(arrayLen(promotionQualifier.getProducts())) {
-				for(var product in promotionQualifier.getProducts()) {
+			
+			var products = promotionQualifier.getProducts();
+			if(arrayLen(products)) {
+				for(var product in products ) {
 					newpromotionQualifier.addProduct(product);
 				}
 			}
-			if(arrayLen(promotionQualifier.getProductTypes())) {
-				for(var productType in promotionQualifier.getProductTypes()) {
+			
+			var productTypes = promotionQualifier.getProductTypes();
+			if(arrayLen( productTypes )) {
+				for(var productType in productTypes ) {
 					newpromotionQualifier.addProductType(productType);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedBrands())) {
-				for(var excludedBrand in promotionQualifier.getExcludedBrands()) {
+			
+			var brands = promotionQualifier.getExcludedBrands();
+			if(arrayLen(brands)) {
+				for(var excludedBrand in brands) {
 					newpromotionQualifier.addExcludedBrand(excludedBrand);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedOptions())) {
-				for(var excludedOption in promotionQualifier.getExcludedOptions()) {
+			
+			var excludedOptions = promotionQualifier.getExcludedOptions();
+			if(arrayLen(excludedOptions)) {
+				for(var excludedOption in excludedOptions) {
 					newpromotionQualifier.addExcludedOption(excludedOption);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedSkus())) {
-				for(var excludedSku in promotionQualifier.getExcludedSkus()) {
+			
+			var excludedBrands = promotionQualifier.getExcludedSkus();
+			if(arrayLen(excludedBrands)) {
+				for(var excludedSku in excludedBrands) {
 					newpromotionQualifier.addExcludedSku(excludedSku);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedProducts())) {
-				for(var excludedProduct in promotionQualifier.getExcludedProducts()) {
+			
+			var excludedProducts = promotionQualifier.getExcludedProducts();
+			if(arrayLen(excludedProducts)) {
+				for(var excludedProduct in excludedProducts) {
 					newpromotionQualifier.addExcludedProduct(excludedProduct);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedProductTypes())) {
-				for(var excludedProductType in promotionQualifier.getExcludedProductTypes()) {
+			
+			var excludedTypes = promotionQualifier.getExcludedProductTypes()
+			if(arrayLen(excludedTypes)) {
+				for(var excludedProductType in excludedTypes) {
 					newpromotionQualifier.addExcludedProductType(excludedProductType);
 				}
 			}
 			
-			if(arrayLen(promotionQualifier.getPromotionQualifierMessages())) {
-				for(var originalMessage in promotionQualifier.getPromotionQualifierMessages()) {
+			var promoMessages = promotionQualifier.getPromotionQualifierMessages();
+			if(arrayLen(promoMessages)) {
+				for(var originalMessage in promoMessages) {
 					var newMessage = this.newPromotionQualifierMessage();
 					newMessage.setMessage(originalMessage.getMessage());
 					newMessage.setMessageRequirementsCollectionConfig(originalMessage.getMessageRequirementsCollectionConfig());
@@ -2042,6 +2107,144 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return newPromotionPeriod;
+	}
+	
+	public any function duplicatePromotionReward(required any promotionReward){
+		var newPromotionReward = this.newPromotionReward();
+		newPromotionReward.setAmount( arguments.promotionReward.getAmount() );
+		newPromotionReward.setCurrencyCode( arguments.promotionReward.getCurrencyCode() );
+		newPromotionReward.setAmountType( arguments.promotionReward.getAmountType() );
+		newPromotionReward.setRewardType( arguments.promotionReward.getRewardType() );
+		newPromotionReward.setApplicableTerm( arguments.promotionReward.getApplicableTerm() );
+		newPromotionReward.setMaximumUsePerOrder( arguments.promotionReward.getMaximumUsePerOrder() );
+		newPromotionReward.setMaximumUsePerItem( arguments.promotionReward.getMaximumUsePerItem() );
+		newPromotionReward.setMaximumUsePerQualification( arguments.promotionReward.getMaximumUsePerQualification() );
+		if( !isNull( arguments.promotionReward.getRoundingRule() ) ){
+			newPromotionReward.setRoundingRule( arguments.promotionReward.getRoundingRule() );
+		}
+		
+		var currencies = arguments.promotionReward.getPromotionRewardCurrencies();
+		if(arrayLen(currencies)) {
+			for(var promotionRewardCurrency in currencies) {
+				newPromotionReward.addPromotionRewardCurrency(promotionRewardCurrency);
+			}
+		}
+		
+		var priceGroups = arguments.promotionReward.getEligiblePriceGroups();
+		if(arrayLen(priceGroups)) {
+			for(var eligiblePriceGroup in priceGroups ) {
+				newPromotionReward.addEligiblePriceGroup(eligiblePriceGroup);
+			}
+		}
+		
+		var fulfillments = arguments.promotionReward.getFulfillmentMethods();
+		if(arrayLen(fulfillments)) {
+			for(var fulfillmentMethod in fulfillments ) {
+				newPromotionReward.addFulfillmentMethod(fulfillmentMethod);
+			}
+		}
+		
+		var addresses = arguments.promotionReward.getShippingAddressZones();
+		if(arrayLen(addresses)) {
+			for(var shippingAddressZone in addresses ) {
+				newPromotionReward.addShippingAddressZone(shippingAddressZone);
+			}
+		}
+		
+		var shipMethods = arguments.promotionReward.getShippingMethods();
+		if(arrayLen(shipMethods)) {
+			for(var shippingMethod in shipMethods) {
+				newPromotionReward.addShippingMethod(shippingMethod);
+			}
+		}
+		
+		var brands = arguments.promotionReward.getBrands();
+		if(arrayLen(brands)) {
+			for(var brand in brands) {
+				newPromotionReward.addBrand(brand);
+			}
+		}
+		
+		var options = arguments.promotionReward.getOptions();
+		if(arrayLen(options)) {
+			for(var option in options) {
+				newPromotionReward.addOption(option);
+			}
+		}
+		
+		var skus = arguments.promotionReward.getSkus();
+		if(arrayLen(skus)) {
+			for(var sku in skus) {
+				newPromotionReward.addSku(sku);
+			}
+		}
+		
+		var products = arguments.promotionReward.getProducts();
+		if(arrayLen(products)) {
+			for(var product in products) {
+				newPromotionReward.addProduct(product);
+			}
+		}
+		
+		var productTypes = arguments.promotionReward.getProductTypes();
+		if(arrayLen(productTypes)) {
+			for(var productType in productTypes) {
+				newPromotionReward.addProductType(productType);
+			}
+		}
+		
+		var excludedBrands = arguments.promotionReward.getExcludedBrands();
+		if(arrayLen(excludedBrands)) {
+			for(var excludedBrand in excludedBrands) {
+				newPromotionReward.addExcludedBrand(excludedBrand);
+			}
+		}
+		
+		var excludedOptions = arguments.promotionReward.getExcludedOptions();
+		if(arrayLen(excludedOptions)) {
+			for(var excludedOption in excludedOptions) {
+				newPromotionReward.addExcludedOption(excludedOption);
+			}
+		}
+		
+		var excludedSkus = arguments.promotionReward.getExcludedSkus();
+		if(arrayLen(excludedSkus)) {
+			for(var excludedSku in excludedSkus) {
+				newPromotionReward.addExcludedSkus(excludedSku);
+			}
+		}
+		
+		var excludedProducts = arguments.promotionReward.getExcludedProducts();
+		if(arrayLen(excludedProducts)) {
+			for(var excludedProduct in excludedProducts) {
+				newPromotionReward.addExcludedProduct(excludedProduct);
+			}
+		}
+		
+		var excludedProductTypes = arguments.promotionReward.getExcludedProductTypes();
+		if(arrayLen(excludedProductTypes)) {
+			for(var excludedProductType in excludedProductTypes) {
+				newPromotionReward.addExcludedProductType(excludedProductType);
+			}
+		}
+		
+		if( !isNull( arguments.promotionReward.getExcludedSkusCollectionConfig() ) 
+			&& len( arguments.promotionReward.getExcludedSkusCollectionConfig() ) )
+		{
+			newPromotionReward.setExcludedSkusCollectionConfig( arguments.promotionReward.getExcludedSkusCollectionConfig() );	
+		} 
+			
+		if( !isNull(arguments.promotionReward.getIncludedSkusCollectionConfig() )
+			&& len( arguments.promotionReward.getIncludedSkusCollectionConfig() ) )
+		{
+			newPromotionReward.setIncludedSkusCollectionConfig( arguments.promotionReward.getIncludedSkusCollectionConfig() );
+		}
+		
+		if( !isNull(arguments.promotionReward.getRewardSkuQuantity()) ){
+			newPromotionReward.setRewardSkuQuantity(arguments.promotionReward.getRewardSkuQuantity())
+		}
+		
+		return newPromotionReward;
 	}
 
 	public any function processPromotionPeriod_endPromotionPeriod(required any promotionPeriod, required any processObject){

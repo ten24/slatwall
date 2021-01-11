@@ -322,13 +322,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				}
 			}
 			
-			// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
+			// Save Card, this is the important token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 
 			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
 				getHibachiScope().clearSessionValue('kount-token');
 			}
-			// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
+			// Setting AVS code (Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
 			var responseDataAvsCode = "";
 			
 			if (!isNull(responseData.avsResults)
@@ -374,16 +374,24 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				
 				if (!isNull(responseData.avsResults)){
 					arguments.responseBean.addMessage(messageName="nexio.avsResults.error", message="#responseData.avsResults.error#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
-					arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
+					if (!isNull(responseData.avsResults.gatewayMessage.avsresponse)) {
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.avsresponse", message="#responseData.avsResults.gatewayMessage.avsresponse#");
+					}
+					if (!isNull(responseData.avsResults.gatewayMessage.message)) {
+						arguments.responseBean.addMessage(messageName="nexio.avsResults.gatewayMessage.message", message="#responseData.avsResults.gatewayMessage.message#");
+					}
 				} else {
 					arguments.responseBean.addMessage(messageName="nexio.avsResults", message="avsResults is undefinied; verifyAvsSetting set to 'Do not perform AVS check'");
 				}
 				
 				if (!isNull(responseData.cvcResults)){
 					arguments.responseBean.addMessage(messageName="nexio.cvcResults.error", message="#responseData.cvcResults.error#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
-					arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
+					if (!isNull(responseData.cvcResults.gatewayMessage.cvvresponse)){
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.cvvresponse", message="#responseData.cvcResults.gatewayMessage.cvvresponse#");
+					}
+					if (!isNull(responseData.cvcResults.gatewayMessage.message)){
+						arguments.responseBean.addMessage(messageName="nexio.cvcResults.gatewayMessage.message", message="#responseData.cvcResults.gatewayMessage.message#");
+					}
 				} else {
 					arguments.responseBean.addMessage(messageName="nexio.cvcResults", message="cvcResults is undefinied; verifyCvcFlag set to 'No'");
 				}
@@ -437,10 +445,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "processingOptions" = {
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
 			    }
 			};	
+			
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
 			
 			// Response Data
@@ -486,15 +494,23 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "processingOptions" = {
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
 			    }
 			};	
-
+			
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-	
-			// Response Data
-			if (!responseBean.hasErrors()) {
+			
+			if(structKeyExists(responseData, 'Error')){
+					var getNexioError = arguments.responseBean.getErrors();
+					if(structKeyExists(getNexioError, 'serverCommunicationFault')){
+						var defaultMessage = getNexioError['serverCommunicationFault']['1'];
+					}else{
+						var defaultMessage = "Nexio server communication fault";
+					}
+					var getErroMessage = getHibachiScope().getService('HibachiUtilityService').getFormattedErrorMessage("Nexio","#responseData['Error']#",defaultMessage);
+					arguments.responseBean.clearHibachiErrors();
+					arguments.responseBean.addError("Nexio error",getErroMessage);
+			}else if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
 				arguments.responseBean.setProviderTransactionID(responseData.id);
 				if(structKeyExists(responseData, 'authCode')){
@@ -580,11 +596,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "card" = {
 			    	"expirationMonth" = arguments.requestBean.getExpirationMonth(),
 			    	"expirationYear" = arguments.requestBean.getExpirationYear()
-			    },
-			    "processingOptions" = {
-				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			}
+			
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
 			
 			// Response Data
@@ -678,6 +692,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 		var httpRequest = new http();
+		httpRequest.setTimeout(10);
 		httpRequest.setUrl(apiUrl);
 		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
 			httpRequest.setMethod('GET');
@@ -718,8 +733,11 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 
 		if (arguments.transactionName == 'deleteToken') {
 			var responseData = {};
-			
-			responseData = deserializeJSON(httpResponse.fileContent);
+			if(isJSON(httpResponse.fileContent)){
+				responseData = deserializeJSON(httpResponse.fileContent);
+			}else{
+				responseData = httpResponse.fileContent;
+			}
 			return responseData;
 		} else {
 			var responseData = {};
@@ -728,9 +746,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.setStatusCode("ERROR");
 				
 				// Public error message
-				var responseContent = deserializeJSON( httpResponse.filecontent );
-				if ( isStruct( responseContent ) && structKeyExists( responseContent, 'message' ) ) {
-					arguments.responseBean.addError( 'serverCommunicationFault', responseContent.message );
+				if(isJSON(httpResponse.fileContent)){
+					responseData = deserializeJSON(httpResponse.fileContent);
+				}else{
+					responseData = httpResponse.fileContent;
+				}
+				if ( isStruct( responseData ) && structKeyExists( responseData, 'message' ) ) {
+					arguments.responseBean.addError( 'serverCommunicationFault', responseData.message );
 				} else {
 					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#" );
 				}
@@ -747,19 +769,16 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					arguments.responseBean.setStatusCode(httpResponse.status_code);
 					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.status_code#");
 	
-					// Convert JSON response
-					responseData = deserializeJSON(httpResponse.fileContent);
-					
 					// ---> Comment Out:
 					// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 					// Comment Out: <---
 	
 					
-					if (structKeyExists(responseData, 'error')) {
+					if ( isStruct(responseData) && structKeyExists(responseData, 'error') ) {
 						arguments.responseBean.addMessage('errorCode', "#responseData.error#");
 					}
 	
-					if (structKeyExists(responseData, 'message')) {
+					if ( isStruct(responseData) && structKeyExists(responseData, 'message') ) {
 						// Add additional instructions for unauthorized error.
 						if (httpResponse.status_code == '401') {
 							responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";

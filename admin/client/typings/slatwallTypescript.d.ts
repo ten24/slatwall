@@ -72,6 +72,8 @@
 /// <reference path="../src/sku/components/swskuthumbnail.ts" />
 /// <reference path="../src/sku/services/defaultskuservice.ts" />
 /// <reference path="../src/sku/services/skupriceservice.ts" />
+/// <reference path="../src/slatwall/components/swcurrencyformatter.ts" />
+/// <reference path="../src/slatwall/filters/swcurrency.ts" />
 /// <reference path="../src/slatwall/services/slatwallpathbuilder.ts" />
 /// <reference path="../src/subscriptionusage/components/swscheduleddeliveriescard.ts" />
 //}

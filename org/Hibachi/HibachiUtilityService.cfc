@@ -1,6 +1,7 @@
 <cfcomponent output="false" accessors="true" extends="HibachiService">
 
 	<cfproperty name="hibachiTagService" type="any" />
+	<cfproperty name="encryptionPasswordArray" type="any" />
 
 	<cfscript>
 	
@@ -397,13 +398,12 @@
 				returnValue = '#returnValue#-1';
 			}
 
-			var unique = getHibachiDAO().verifyUniquePropertyValue(
+            var unique = getHibachiDAO().verifyUniquePropertyValue(
     			entityName=arguments.entityName, 
     			propertyName=arguments.propertyName, 
     			value=returnValue
 			);
-            
-            
+			
 			while(!unique) {
 				addon++;
 				returnValue = "#arguments.propertyValue#-#addon#";
@@ -451,9 +451,13 @@
 			return encoder.decodeForHTML(arguments.stringValue);
 		}
 
-		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
+		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, string availablePropertyIdentifierList) {
 			var responseData = {};
-
+			
+			if(!structKeyExists(arguments,'availablePropertyIdentifierList')){
+				arguments.availablePropertyIdentifierList = arguments.propertyIdentifierList;
+			}
+			
 			var propertyIdentifierArray = listToArray(arguments.propertyIdentifierList);
 			for(var i=1; i <= arraylen(propertyIdentifierArray);i++) {
 				var propertyIdentifier = propertyIdentifierArray[i];
@@ -502,7 +506,7 @@
 					if(!structKeyExists(arguments.data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
-							if(structKeyExists(data[thisProperty][i],'hasErrors')){
+							if(structKeyExists(arguments.data[thisProperty][i],'hasErrors')){
 								arguments.data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
 								arguments.data[thisProperty][i]["errors"] = object[i].getErrors();
 							}else{
@@ -516,7 +520,7 @@
 						}
 					}
 
-					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
+					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), arguments.data[thisProperty][i]);
 				}
 			}
 		}
@@ -660,7 +664,7 @@
 				} else if (isObject(arguments.object) &&
 					(
 						(
-							arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+							arguments.object.isPersistent() && getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
 						)
 						||
 						(
@@ -769,8 +773,7 @@
 
 			return arguments.filename;
 		}
-		
-				
+
 		/**
           * Utlility Function to sluggify any string input;
           * 
@@ -785,23 +788,23 @@
 		public string function createSEOString(required string toFormat, string delimiter="-", boolean smallCase=true){
 
 			var result = replace(arguments.toFormat,"'", "", "all");
-        	
+
         	result = trim(ReReplaceNoCase(result, "<[^>]*>", "", "ALL"));
-        	
+
         	result = ReplaceList(result, "À,Á,Â,Ã,Ä,Å,Æ,È,É,Ê,Ë,Ì,Í,Î,Ï,Ð,Ñ,Ò,Ó,Ô,Õ,Ö,Ø,Ù,Ú,Û,Ü,Ý,à,á,â,ã,ä,å,æ,è,é,ê,ë,ì,í,î,ï,ñ,ò,ó,ô,õ,ö,ø,ù,ú,û,ü,ý,&nbsp;,&amp;", "A,A,A,A,A,A,AE,E,E,E,E,I,I,I,I,D,N,O,O,O,O,O,0,U,U,U,U,Y,a,a,a,a,a,a,ae,e,e,e,e,i,i,i,i,n,o,o,o,o,o,0,u,u,u,u,y, , ");
-        	
+
         	result = trim(rereplace(result, "[[:punct:]]"," ","all"));
-        	
+
         	result = rereplace(result, "[[:space:]]+","!","all");
-        	
+
         	result = ReReplace(result, "[^a-zA-Z0-9!]", "", "ALL");
-        
+
         	result = trim(rereplace(result, "!+", arguments.delimiter, "all"));
-            
+
             if( arguments.smallCase ){
                 result = lcase(result);
             }
-            
+
         	return result;
 		}
 
@@ -932,7 +935,8 @@
 		}
 
 		public string function decryptValue(required string value, string salt="") {
-			for (var passwordData in getEncryptionPasswordArray()) {
+			var encryptionPasswordArray = getEncryptionPasswordArray();
+			for (var passwordData in encryptionPasswordArray) {
 				var key = "";
 				var algorithm = getEncryptionAlgorithm();
 				var encoding = getEncryptionEncoding();
@@ -1015,6 +1019,10 @@
 		}
 
 		public any function getEncryptionPasswordArray() {
+		
+			if(structKeyExists(variables, 'encryptionPasswordArray')){
+				return variables.encryptionPasswordArray;
+			}
 			var passwords = [];
 
 			// Generate default password if necessary
@@ -1069,7 +1077,7 @@
 				}
 
 				// Perform sort on createdDateTime
-				sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
+				var sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
 
 				// Build array of sorted passwords
 				for (var spk in sortedPasswordKeys) {
@@ -1085,6 +1093,8 @@
 
 				passwords = sortedPasswords;
 			}
+			
+			variables.encryptionPasswordArray = passwords;
 
 			return passwords;
 		}
@@ -1094,11 +1104,11 @@
 		 *  Example. generateRandomPassword(10);
 		*/
 		public string function generateRandomPassword( numeric length=8 ){
-            
+
             if(arguments.length<5){
                 throw("there must be at least 5 chars in the password")
             }
-     
+
     		//  Set up available lower case values. 
     		var strLowerCaseAlpha = "abcdefghjkmnpqrstuvwxyz"; // o,i,l has been ignored as they can have confusing-font
     		var strUpperCaseAlpha = UCase( strLowerCaseAlpha );
@@ -1106,9 +1116,9 @@
     		var strNumbers = "123456789"; // 0 is ignored as it can has confusing fonts for example  o,O,0
     		//  Set up additional valid password chars. 
     		var strOtherChars = "~!@##$%^&*";
-    	
+
     		var strAllValidChars = ( strLowerCaseAlpha & strUpperCaseAlpha & strNumbers & strOtherChars );
-    		
+
     		// Create an array to contain the password ( think of a string as an array of character).
     		var arrPassword = [];
     		/* 
@@ -1120,7 +1130,7 @@
             	- must have at least 1 uppercase letter
             	- must have at least 1 lower case letter
             */
-            
+
     		//  Select the random number from our number set. 
     		arrPassword[ 1 ] = Mid( strNumbers, RandRange( 1, Len(strNumbers) ), 1 );
     		//  Select the random letter from our lower case set. 
@@ -1133,13 +1143,13 @@
             	requirement. In order to do that, we must add more
             	random characters to make up a proper length. 
             */
-            
+
     		//  Create rest of the password. 
     		for ( var charIndex=(ArrayLen( arrPassword ) + 1) ; charIndex<= arguments.length ; charIndex++ ) {
         		/*  Pick random value. For this character, we can choose from the entire set of valid characters. */
         		arrPassword[ charIndex ] = Mid( strAllValidChars, RandRange( 1, Len(strAllValidChars) ), 1 );
     		}
-    		
+
     		/* 
             	Now, we have an array that has the proper number of
             	characters and fits the business rules. But, we don't
@@ -1152,7 +1162,6 @@
             */
     		return ArrayToList( arrPassword, "" );
 	    }
-
 
 		private string function getEncryptionKeyFilePath() {
 			return getEncryptionKeyLocation() & getEncryptionKeyFileName();
@@ -1226,12 +1235,15 @@
 		}
 
 		private void function writeEncryptionPasswordFile(array encryptionPasswordArray) {
+		
+			
 			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
 			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
 
 			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
 			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
 			logHibachi("Encryption key file updated", true);
+			structDelete(variables, 'encryptionPasswordArray');
 		}
 
 		private any function readEncryptionPasswordFile() {
@@ -1382,7 +1394,7 @@
 	             apiRequestAudit.setParams( serializeJson(form) );
 	        }
 	        
-	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getStatus() );
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
 	        
 	        apiRequestAudit.setRequestType( arguments.requestType);
 	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
@@ -1432,7 +1444,7 @@
     	 * UPDATE https://gist.github.com/bennadel/9760097
     	*/
     	public array function csvStringToArray(string csvString="", string delimiter=",", trimTrailingEmptyLine=true ){
-    
+
     		/* 
     			Check to see if we need to trimTrailingEmptyLine the data. By default, we are
     			going to pull off any new line and carraige returns that are
@@ -1443,13 +1455,13 @@
     			//  Remove trailing line breaks and carriage returns. 
     			arguments.csvString = reReplace( arguments.csvString, "[\r\n]+$", "", "all" );
     		}
-    		
+
     		//  Make sure the delimiter is just one character. 
     		if( (len( arguments.delimiter ) != 1) ){
     			//  Set the default delimiter value. 
     			arguments.delimiter = ",";
     		}
-    
+
     		/* 
     			Now, let's define the pattern for parsing the CSV data. We are going to use verbose regular expression 
     			since this is a rather complicated pattern.
@@ -1459,12 +1471,12 @@
     		*/
     		var regEx = ""
     		savecontent variable="regEx"{
-    		
+
     			writeOutput("(?x)");
-    
+
     			//  Make sure we pick up where we left off. 
     			writeOutput("\G");
-    
+
     			/* 
     				We are going to start off with a field value since
     				the first thing in our file should be a field (or a completely empty file).
@@ -1476,7 +1488,7 @@
     				//  Standard field value - GROUP 2 
     				writeOutput("([^""\#arguments.delimiter#\r\n]*+)");
     			writeOutput(")");
-    
+
     			//  Delimiter - GROUP 3 
     			writeOutput(
     				"(
@@ -1487,20 +1499,20 @@
     				)"
     			);
     		};
-    
+
     		/* 
     			Create a compiled Java regular expression pattern object
     			for the experssion that will be parsing the CSV.
     		*/
     		var pattern = createObject( "java", "java.util.regex.Pattern").compile(javaCast( "string", regEx ) );
-    		
+
     		/* 
     			Now, get the pattern matcher for our target text (the CSV
     			data). This will allows us to iterate over all the tokens
     			in the CSV data for individual evaluation.
     		*/
     		var matcher = pattern.matcher( javaCast("string", arguments.csvString) );
-    
+
     		/* 
     			Create an array to hold the CSV data. We are going to create an array of arrays in which 
     			each nested array represents a row in the CSV data file. We are going to start off the CSV
@@ -1509,14 +1521,14 @@
     			As such, we will always have at least one row in our result.
     		*/
     		var csvParsedRows = [ [] ];
-    		
+
     		/* 
     			Here's where the magic is taking place; we are going to use the Java pattern matcher 
     			to iterate over each of the CSV data fields using the regular expression we defined above.
     			Each match will have at least the field value and possibly an optional trailing delimiter.
     		*/
     		while( matcher.find() ){
-    		
+
     			// Next, try to get the qualified field value. If the field was not qualified, this value will be null.
     			var fieldValue = matcher.group( javaCast("int", 1) );
     			/* 
@@ -1524,37 +1536,37 @@
     				If it doesn't exist, then we want the non-qualified field.
     				If it does exist, then we want to replace any escaped, embedded quotes.
     			*/
-    			
+
     			if( !isNull(fieldValue) ){
-    			
+
     				// The qualified field was found. 
     				// Replace escpaed quotes (two double quotes in a row) with an unescaped double quote.
     				fieldValue = replace( fieldValue, '""', '"', "all" );
-    				
+
     			} else {
-    			
+
     				// No qualified field value was found; as such, let's use the non-qualified field value.
     				fieldValue = matcher.group( javaCast("int", 2) );
     			}
-    
+
     			// Now that we have our parsed field value, let's add it to the most recently created CSV row collection.
     			arrayAppend( csvParsedRows[arrayLen(csvParsedRows)], fieldValue );
-    
+
     			/* 
     				Get the delimiter. We know that the delimiter will always be matched, 
     				but in the case that it matched the end of the CSV string, it will not have a length.
     			*/
     			var delimiterGroup = matcher.group( javaCast("int", 3) );
-    
+
     			/* 
     				Check to see if we found a delimiter that is not the field delimiter (end-of-file delimiter will not have
     				a length). If this is the case, then our delimiter is the line delimiter. 
     				Add a new data array to the CSV data collection.
     			*/
     			if( len(delimiterGroup) && delimiterGroup != arguments.delimiter ){
-    			
+
     				arrayAppend( csvParsedRows, arrayNew( 1 ) );
-    				
+
     			} else if( !len( delimiterGroup ) ) {
     				/* 
     					If our delimiter has no length, it means that we reached the end of the CSV data. 
@@ -1563,7 +1575,7 @@
     				break;
     			}
     		}
-    		
+
     		/* 
     			At this point, our array should contain the parsed contents
     			of the CSV value as an array of arrays. Return the array.
@@ -1604,12 +1616,21 @@
 		<cfargument name="messageType" default="" />
 		<cfargument name="messageCode" default="" />
 		<cfargument name="templatePath" default="" />
-		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
+		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning | Trace  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
 		<cfargument name="logPrefix" default="" />
 
 		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
 			<!--- Set default logPrefix if not explicitly provided --->
+			<cfif arguments.logType EQ "Trace">
+				<cfif NOT getHibachiScope().hasValue('startTimer')>
+					<cfset getHibachiScope().setValue('startTimer', getTickCount()) />
+					<cfset getHibachiScope().setValue('lastTimer', getTickCount()) />
+				</cfif>
+				<cfset var timeSpentSinceFirstMarker = getTickCount() - getHibachiScope().getValue('startTimer') />
+				<cfset var timeSpentSinceLastMarker = getTickCount() - getHibachiScope().getValue('lastTimer') />
+				<cfset getHibachiScope().setValue('lastTimer', getTickCount()) />
+			</cfif>
 			
 			<cfif not len(arguments.logPrefix)>
 				<cfif arguments.generalLog>
@@ -1621,6 +1642,9 @@
 			
 			<cfset var logText = arguments.logPrefix />
 
+			<cfif arguments.logType eq "Trace">
+				<cfset logText &= " - [ Time Spent: #timeSpentSinceLastMarker# / #timeSpentSinceFirstMarker# ]" />
+			</cfif>
 			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
 				<cfset logText &= " - #arguments.messageType#" />
 			</cfif>
@@ -1633,9 +1657,9 @@
 			<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
 				<cfset logText &= " - #arguments.message#" />
 			</cfif>
-
+			
 			<!--- Verify that the log type was correct --->
-			<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
+			<cfif not ListFind("Information,Error,Fatal,Warning,Trace", arguments.logType)>
 				<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
 				<cfset arguments.logType = "Information" />
 			</cfif>

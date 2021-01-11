@@ -309,10 +309,9 @@ component extends="framework.one" {
     }
 
 	public any function bootstrap() {
-	    
+		
 		setupRequestDefaults();
 		setupGlobalRequest();
-		
 		// Announce the applicatoinRequest event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationBootstrapRequestStart");
 
@@ -334,7 +333,7 @@ component extends="framework.one" {
 		var httpRequestData = GetHttpRequestData();
 		
 		// clean any beancache for local development
-		if( structKeyExists(url, "reloadbean") && this.getEnvironment() == 'local' ){
+		if(structKeyExists(url, "reloadbean") && getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
 			getBeanFactory().reloadBean(url.reloadbean);
 			writeLog(file="#variables.framework.applicationKey#", text="General Log - Reloading bean #url.reloadbean#");
 		}
@@ -407,7 +406,11 @@ component extends="framework.one" {
 		
 		
 		// Verify that the session is setup
-		getHibachiScope().getService("hibachiSessionService").setProperSession();
+		if(!structKeyExists(arguments, "managesession") || arguments.managesession == true){
+			getHibachiScope().getService("hibachiSessionService").setProperSession();
+		} else {
+			getHibachiScope().setPersistSessionFlag(false);
+		}
 		
 		// CSRF / Duplicate Request Handling
 		if(structKeyExists(request, "context")){
@@ -485,13 +488,14 @@ component extends="framework.one" {
 		setupGlobalRequest();
 		
 		var httpRequestData = getHTTPRequestData();
-		
 		//Echo origin for OPTIONS preflight
 		if( variables.framework.preflightOptions &&
         	request._fw1.cgiRequestMethod == "OPTIONS" &&
 			structKeyExists(httpRequestData.headers,'Origin')
 			){
 			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
+			populateCORSHeader(httpRequestData.headers['Origin']);
+			return;
 		}
 
 		//Set an account before checking auth in case the user is trying to login via the REST API
@@ -534,6 +538,18 @@ component extends="framework.one" {
 		}
 
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
+		
+		if(getSubsystem(request.context[ getAction() ]) == 'admin'){
+			//check to see if we have admin restricted domains via global setting
+			var adminDomanNamesSetting = getHibachiScope().setting('globalAdminDomainNames');
+			//if a list of admin domains has been specified then check to see if the domain exists in the list. if none specified then pass through
+			if(!isNull(adminDomanNamesSetting) && len(adminDomanNamesSetting)){
+				if(!ListFind(adminDomanNamesSetting, cgi.http_host)){
+					writeOutput('#cgi.http_host# is not an admin domain and therefore restricted.');
+					abort;
+				}
+			}
+		}
 
 		var restInfo = {};
 		//prepare restinfo
@@ -839,7 +855,7 @@ component extends="framework.one" {
 					// writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory declared 'Hibachi' fallback beans for: #replace(listSort(hibachiFallbackBeanNameList, 'textnocase'), ',', ', ', 'all')#");
 					
 					// Setup the custom bean factory
-					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
+					if(directoryExists("#getHibachiScope().getApplicationValue('applicationRootMappingPath')#/custom/model")) {
 						var customBF = new framework.hibachiaop("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"],
@@ -1109,6 +1125,8 @@ component extends="framework.one" {
 				writeOutput( serializeJSON(arguments.rc.ajaxResponse) );
 			}
 			abort;
+		}else if(arguments.rc.ajaxRequest){
+			populateAPIHeaders();
 		}
 
 	}
@@ -1118,7 +1136,7 @@ component extends="framework.one" {
 		param name="arguments.rc.ajaxRequest" default="false";
 
 		if(arguments.rc.ajaxRequest) {
-			setupResponse(rc);
+			setupResponse(arguments.rc);
 		}
 
 		if(structKeyExists(url, "modal") && url.modal) {
@@ -1175,7 +1193,9 @@ component extends="framework.one" {
 				arrayAppend(entityQueueArray, entityQueueData[i]);
 				currentIndex++;
 			}
+			
 			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
+			
 		}
 		
 	}

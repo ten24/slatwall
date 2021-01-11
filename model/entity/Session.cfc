@@ -147,17 +147,17 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	
 	
 	
-	public any function getOrder() {
-		if(structKeyExists(variables, "order") && variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID()) {
+	public any function getOrder(boolean createIfNotFound=true) {
+		if(structKeyExists(variables, "order") && (isNull(getHibachiScope().getCurrentRequestSite()) || variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID())) {
 			
 			return variables.order;
-		} else if (!structKeyExists(variables, "requestOrder")) {
+		} else if (!structKeyExists(variables, "requestOrder") && arguments.createIfNotFound) {
 			
 			variables.requestOrder = getService("orderService").newOrder();
 			
 			// Set default stock location based on current request site, uses first location by default
  			if (!isNull(getHibachiScope().getCurrentRequestSiteLocation())) {
- 				requestOrder.setDefaultStockLocation(getHibachiScope().getCurrentRequestSiteLocation());
+ 				variables.requestOrder.setDefaultStockLocation(getHibachiScope().getCurrentRequestSiteLocation());
 			}
 			 
 			//check if we are running on a CMS site by domain
@@ -176,7 +176,9 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 			}
 			
 		}
-		return variables.requestOrder;
+		if(structKeyExists(variables,'requestOrder')){
+			return variables.requestOrder;
+		}
 	}
 	
 	public void function removeAccount() {

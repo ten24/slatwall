@@ -151,9 +151,13 @@
 											<cfset emailCollection.addDisplayProperty(displayProperty="createdDateTime",columnConfig={isVisible=true} ) />
 											<cfset emailCollection.addDisplayProperty(displayProperty="emailID",columnConfig={isVisible=false,isDeletable=false} ) />
 											
-											<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue() )/>
-											<cfset emailCollection.addFilter(propertyIdentifier='relatedObject',value=attributes.object.getClassName() )/>
-											
+											<cfif attributes.object.getClassName() EQ 'Account'>
+												<cfset emailCollection.addFilter(propertyIdentifier='emailTo',value=attributes.object.getEmailAddress() )/>
+											<cfelse>
+												<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue() )/>
+												<cfset emailCollection.addFilter(propertyIdentifier='relatedObject',value=attributes.object.getClassName() )/>
+											</cfif>
+											<cfset emailCollection.addOrderBy('createdDateTime|DESC') />
 											<hb:HibachiListingDisplay 
 												collectionList="#emailCollection#"
 												usingPersonalCollection="false"
