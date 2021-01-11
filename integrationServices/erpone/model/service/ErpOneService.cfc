@@ -494,23 +494,19 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		//push to remote endpoint
 		
 		
+
+        var payload = {
+		  "table"	 : "customer",
+		  "triggers" : "true",
+		  "changes"	 : [ arguments.data.payload ]
+		};
+			
 		if( !this.hibachiIsEmpty(arguments.entity.getRemoteID()) ){
-		
-			var response = this.callErpOneUpdateDataApi({
-			    "table": "customer",
-			    "triggers": "true",
-			    "changes": [ arguments.data.payload ]
-			}, "update" );
-			
+			var response = this.callErpOneUpdateDataApi(payload, "update" );
 		} else {
-			
-			var response = this.callErpOneUpdateDataApi({
-			    "table": "customer",
-			    "triggers": "true",
-			    "records": [ arguments.data.payload ]
-			}, "create" );
-			
+			var response = this.callErpOneUpdateDataApi(payload, "create" );
 		}
+		
 		
 		/** Format error:
 		 * typical error response: { "errordetail": "error", "filecontent": "null"};
