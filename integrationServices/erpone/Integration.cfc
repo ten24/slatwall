@@ -56,6 +56,13 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		return "ERP One";
 	}
 	
+		
+	public array function getEventHandlers() {
+		
+		return [ 'Slatwall.integrationServices.erpone.model.handler.ErponeHandler' ];
+	}
+	
+	
 	public struct function getSettings() {
 		return {
 		    devGatewayURL = {fieldType="text"},
