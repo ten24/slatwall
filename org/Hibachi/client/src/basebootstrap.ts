@@ -11,7 +11,6 @@ export class BaseBootStrapper{
     public _resourceBundle = {};
     public $http:ng.IHttpService;
     public $q:ng.IQService;
-    public $httpParamSerializer;
     public appConfig:any;
     public attributeMetaData:any;
     public instantiationKey:string;
@@ -24,11 +23,10 @@ export class BaseBootStrapper{
             instantiationKey : undefined
         }
         // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
-        return angular.lazy(this.myApplication).resolve( ['$http','$q', '$httpParamSerializer', ($http, $q, $httpParamSerializer) => {
+        return angular.lazy(this.myApplication).resolve( ['$http','$q', ($http, $q) => {
             
             this.$http = $http;
             this.$q = $q;
-            this.$httpParamSerializer = $httpParamSerializer;
             
             return this.getInstantiationKey().then( (instantiationKey: string) => {
                
@@ -242,7 +240,7 @@ export class BaseBootStrapper{
         
         return this.getInstantiationKey()
         .then( (instantiationKey) => {
-            return this.$http.get( urlString + 'custom/system/config.json?instantiationKey=' + instantiationKey ) 
+            return this.$http.get( urlString + '/custom/system/config.json?instantiationKey=' + instantiationKey ) 
         })
         .then( (resp: any) => resp.data.data )
         .then( (data) => {
@@ -278,7 +276,7 @@ export class BaseBootStrapper{
             return this._resourceBundle[locale];
         }
 
-        var urlString = this.appConfig.baseURL + 'custom/system/resourceBundles/' + locale + '.json?instantiationKey=' + this.appConfig.instantiationKey;
+        var urlString = this.appConfig.baseURL + '/custom/system/resourceBundles/' + locale + '.json?instantiationKey=' + this.appConfig.instantiationKey;
         this.$http({ url:urlString,  method:"GET" })
         .success( (response:any, status, headersGetter ) => {
             this._resourceBundle[locale] = response;
