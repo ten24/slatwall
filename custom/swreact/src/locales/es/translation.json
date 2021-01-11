@@ -1,0 +1,25 @@
+{
+    "es": {
+        "translation": {
+            "define": {
+                "all": "Todos"
+            },
+            "entity": {
+                "account": {
+                    "lastName": "El Apellido"
+                }
+            },
+            "product": {
+                "brand": "Marca"
+            },
+            "toolbar": {
+                "dashboard": "Tablero de instrumentos",
+                "products": {
+                    "createnewproduct": "Crear Nuevos Productos",
+                    "listproducts": "Lista De Productos"
+                }
+            },
+            "vendor": "Proveedor"
+        }
+    }
+}

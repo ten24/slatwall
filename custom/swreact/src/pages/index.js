@@ -1,0 +1,8 @@
+export { default as Home } from './Home/Home'
+export { default as Cart } from './Cart/Cart'
+export { default as MyAccount } from './MyAccount/MyAccount'
+export { default as ProductSearch } from './ProductSearch/ProductSearch'
+export { default as ProductDetail } from './ProductDetail/ProductDetail'
+export { default as CategoryListing } from './CategoryListing/CategoryListing'
+export { default as Contact } from './Contact/Contact'
+export { default as About } from './About/About'
