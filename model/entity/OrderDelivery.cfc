@@ -84,7 +84,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	
 	// Non-Persistent Properties
 	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";
-
+	
 	public any function getTotalQuantityDelivered() {
 		var totalDelivered = 0;
 		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
@@ -166,6 +166,16 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	public string function getSimpleRepresentation() {
 		return "Order Delivery: Order ##" & getOrder().getOrderNumber();
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
+
 
 	// ==================  END:  Overridden Methods ========================
 

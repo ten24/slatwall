@@ -61,18 +61,13 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         arguments.rc.requestHeaderData = getHTTPRequestData();
         arguments.rc['ajaxRequest'] = true;
         arguments.rc.headers["Content-Type"] = 'application/json';
+        arguments.rc.headers["Cache-Control"] = 'no-cache="Set-Cookie"';
         request.layout = false;
         if ( arguments.rc.jsonRequest == true && structKeyExists( arguments.rc, 'deserializedJSONData') ){
            	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
         }
-        
-        
         //if we have a get request there is nothing to persist because nothing changed
-        if(
-            structKeyExists(arguments.rc,'context') 
-            && len(arguments.rc.context) >= 3 
-            && left(arguments.rc.context,3) == 'GET'
-        ){
+        if(!isNull(arguments.rc.requestHeaderData.method) && arguments.rc.requestHeaderData.method == 'GET'){
             getHibachiScope().setPersistSessionFlag(false);
         }
     }
@@ -86,7 +81,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 publicService.invokeMethod("getCartData", {data=arguments.rc});
             }else if ( arguments.rc.context == "getAccount"){
                 publicService.invokeMethod("getAccountData", {data=arguments.rc});
-            }else if (  rc.context != "get"){
+            }else if (  arguments.rc.context != "get"){
                 publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
             }
             
@@ -99,14 +94,14 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         var publicService = getService('PublicService');
 
         if (arguments.rc.context != "get" && arguments.rc.context == "process"){
-            publicService.doProcess(rc);
+            publicService.doProcess(arguments.rc);
         }else if (arguments.rc.context == "getCart"){
-            rc.context = "getCartData";
-            this.get(rc);
+            arguments.rc.context = "getCartData";
+            this.get(arguments.rc);
         }else if(arguments.rc.context == "getAccount"){
-            rc.context = "getAccountData";
-            this.get(rc);
-        }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
+            arguments.rc.context = "getAccountData";
+            this.get(arguments.rc);
+        }else if ( StructKeyExists(arguments.rc, "context") && arguments.rc.context != "get"){
             
             var actions = [];
             if (arguments.rc.context contains ","){
@@ -132,7 +127,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 }
             }
         }else{
-            this.get(rc);
+            this.get(arguments.rc);
         }
     }
     

@@ -12,6 +12,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="dataCacheProperties" type="array" persistent="false";
 	property name="disableRecordLevelPermissions" persistent="false"; 
 	property name="preUpdateData" persistent="false"; 
+	property name="excludeFromModifiedEntitiesFlag" persistent="false";
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
@@ -52,6 +53,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}	
 		return variables.disableRecordLevelPermissions; 
 	}	
+	
+	public function getExcludeFromModifiedEntitiesFlag(){
+		if(!structKeyExists(variables, 'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
+	}
 
 	private void function throwNoAccess(){
 		var context = getPageContext();
@@ -466,11 +474,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint public method to determine if this entity is audited
 	public any function getAuditableFlag() {
-		var metaData = getThisMetaData();
-		if(isPersistent() && (getHibachiScope().setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
-			return true;
+
+		if(!structKeyExists(variables, "auditableFlag")) {
+			var metaData = getThisMetaData();
+
+			if(isPersistent() && (getHibachiScope().setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
+				variables.auditableFlag = true;
+			}else{
+				variables.auditableFlag = false;
+			}
+			
 		}
-		return false;
+		
+		return variables.auditableFlag;
 	}
 
 	// @hint Returns a smart list of audits related to this entity
@@ -486,7 +502,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public any function getAuditCollectionList(){
 		if(!structKeyExists(variables,'auditCollectionList')){
 			variables.auditCollectionList = getService('hibachiAuditService').getAuditCollectionListForEntity(entity=this);
-		}	variables.auditCollectionList.setOrderBy('auditDateTime|DESC');
+			variables.auditCollectionList.setOrderBy('auditDateTime|DESC');
+		}	
 		return variables.auditCollectionList;
 	}
 
@@ -1296,7 +1313,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 
 			// Log audit only if admin user or there are prevous audit recods
-			if(getAuditableFlag() && getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 || !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+			if(getAuditableFlag() && isQualifiedToAudit()) {
 
 				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
 			}
@@ -1305,6 +1322,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			getHibachiScope().addModifiedEntity( this );
 		}
 
+	}
+	
+	public boolean function isQualifiedToAudit(){
+		return getService("hibachiAuditService").getAuditCollectionListForEntity(entity=this).getRecordsCount() != 0 || !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag();
 	}
 	
 	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent

@@ -50,6 +50,8 @@
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
+	<cfparam name="attributes.attributeFlag" type="boolean" default="false" />				<!--- Set to true when property is a custom property linked to an attribute in order to display the attribute value label rather than the value --->
+	
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -188,7 +190,11 @@
 							<cfset attributes.valueClass &= " negative" />
 						</cfif>
 						
-						<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						<cfif attributes.attributeFlag AND attributes.object.hasAttributeCode(attributes.property)>
+							<cfset attributes.value = attributes.object.getAttributeValueLabel(attributes.property)>
+						<cfelse>
+							<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						</cfif>
 						
 					</cfif>
 				</cfif>

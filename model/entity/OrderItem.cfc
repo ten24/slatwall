@@ -109,7 +109,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
     property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
-	
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
@@ -119,6 +119,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	// Non persistent properties
 	property name="activeEventRegistrations" persistent="false";
+	property name="currentSkuPrice" persistent="false"  hb_formatType="currency";
 	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
 	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
@@ -148,6 +149,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
 
+	
+ 	
 	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
@@ -241,18 +244,25 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
-			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag') && getOrderItemType().getSystemCode() neq 'oitReturn') {
+			if(isEmpty(maxQTY)){
+				//Set maximum quantity by global setting
+				maxQTY = setting('skuOrderMaximumQuantity');		
+			}
+			if(getSku().setting('skuTrackInventoryFlag') && (!getSku().setting('skuAllowBackorderFlag') || getSku().setting('skuBackorderLimit') > 0) && getOrderItemType().getSystemCode() neq 'oitReturn') {
 				
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY && getStock().getLocation().setting('locationRequiresQATSForOrdering')) {
 					
 					maxQTY = getStock().getQuantity('QATS');
 				
-				} else if( getSku().getQATS() <= maxQTY ){
+				} else if( isNull( this.getOrder().getDefaultStockLocation() ) && getSku().getQATS() <= maxQTY ){
 					
-					if ( isNull( this.getOrder().getDefaultStockLocation() ) ){
-						maxQTY = getSku().getQATS();
-					}else{
-						maxQTY = getSku().getQuantity(quantityType='QATS', locationID=this.getOrder().getDefaultStockLocation().getLocationID() );
+					maxQTY = getSku().getQATS();
+					
+				} else if( !isNull( this.getOrder().getDefaultStockLocation() ) ){
+					
+					var locationQATS = getSku().getQuantity(quantityType='QATS', locationID=this.getOrder().getDefaultStockLocation().getLocationID() );
+					if( locationQATS < maxQTY ){
+						maxQTY = locationQATS;
 					}
 				}
 				
@@ -433,7 +443,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			return getOrderFulfillment().getEstimatedDeliveryDateTime();
 		}
     }
-
+    
+    public numeric function getPrice(){
+        if( !isNull(this.getRewardSkuFlag()) && this.getRewardSkuFlag()){
+            variables.price = 0;
+        }
+        return variables.price;
+    }
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -459,7 +475,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			var price = 0;
 		
 			//get bundle price
-			if(!isnull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(!isnull(getSku()) && getDAO('skuDAO').getProductTypeSystemCodeBySkuID(getSku().getSkuID()) == 'productBundle'){
 				price = getProductBundlePrice();
 			}else if(!isNull(getPrice())){
 				price = getPrice();
@@ -552,7 +568,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 
 	}
-
+	
+	public numeric function getCurrentSkuPrice(){
+		return getSku().getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(),priceGroups=this.getOrder().getAccount().getPriceGroups());
+	}
 
 	public numeric function getExtendedSkuPrice() {
 		return getService('HibachiUtilityService').precisionCalculate(getSkuPrice() * getQuantity());
@@ -1172,6 +1191,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		return variables.assignedAttributeSetSmartList;
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1186,6 +1214,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	}
 
+
 	// ===================  END:  ORM Event Hooks  =========================	
-	
+		
 }

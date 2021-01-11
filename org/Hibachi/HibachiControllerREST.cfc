@@ -147,14 +147,9 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public void function getCurrencies(required struct rc){
-        var currenciesCollection = getHibachiScope().getService('hibachiCollectionService').getCurrencyCollectionList();
-        currenciesCollection.setDisplayProperties('currencyCode,currencySymbol');
-        var currencyStruct = {};
-        for(var currency in currenciesCollection.getRecords()){
-            currencyStruct[currency['currencyCode']] = currency['currencySymbol'];
-        }
-
-        arguments.rc.apiResponse.content['data'] = currencyStruct;
+        param name="arguments.rc.detailFlag" default="true";
+        arguments.rc.apiResponse.content['data'] = getHibachiScope().getService('currencyService').getAllActiveCurrencies(arguments.rc.detailFlag);
+        arguments.rc.apiResponse.content['locale'] = getHibachiScope().getSession().getRBLocale();
     }
 
     public void function getCurrencyRates(required struct rc){
@@ -179,7 +174,8 @@ component output="false" accessors="true" extends="HibachiController" {
                         arrayAppend(arguments.rc.apiResponse.content['messages'],messageStruct);
                     }
                 }
-                getPageContext().getResponse().setStatus(getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode());
+                var pc = getpagecontext().getresponse();
+                pc.getresponse().setstatus(getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode());
                 return;
             }
         }

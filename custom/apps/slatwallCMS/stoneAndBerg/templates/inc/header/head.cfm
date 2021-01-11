@@ -16,7 +16,7 @@
 <link rel="mask-icon" color="##fe6a6a" href="safari-pinned-tab.svg">
 <meta name="msapplication-TileColor" content="##ffffff">
 <meta name="theme-color" content="##ffffff">
-<!--- Main Theme Styles --->
-<link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/client/dist/app.bundle.css">
+
+<cfinclude template="reactHeaderAssets.cfm" />
 
 </cfoutput>

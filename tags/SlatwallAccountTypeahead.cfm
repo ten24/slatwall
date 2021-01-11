@@ -51,8 +51,8 @@ Notes:
 <cfparam name="attributes.placeholderText" type="string" default="Search Accounts" />
 <cfparam name="attributes.required" type="boolean" default="false"/>
 <cfparam name="attributes.typeaheadID" type="string" default=""/>
-<cfparam name="attributes.propertiesToSearch" type="string" default="firstName,lastName,company"/>
-<cfparam name="attributes.propertiesToLoad" type="string" default="accountID,calculatedFullName,firstName,lastName,company,calculatedAdminIcon,accountCreatedSite.siteID"/>
+<cfparam name="attributes.propertiesToSearch" type="string" default="firstName,lastName,company,accountNumber"/>
+<cfparam name="attributes.propertiesToLoad" type="string" default="accountID,calculatedFullName,accountNumber,firstName,lastName,company,calculatedAdminIcon,accountCreatedSite.siteID"/>
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
@@ -75,6 +75,9 @@ Notes:
 						<div class="col-xs-10 col-sm-offset-1">
 							<p class="fullName first" sw-typeahead-search-line-item data-property-identifier="calculatedFullName"></p>
 							<p class="company" sw-typeahead-search-line-item data-property-identifier="company"></p>
+							<p class="account-number">
+								<span sw-typeahead-search-line-item bind-html="true" data-property-identifier="accountNumber"> ##</span>
+							</p>
 						</div>
 					</div>
 			</sw-typeahead-input-field>

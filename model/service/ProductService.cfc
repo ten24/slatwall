@@ -68,6 +68,15 @@ component extends="HibachiService" accessors="true" {
 
 	// ===================== START: Logical Methods ===========================
 	
+	public any function getApprovedProductReviewCollectionList(required any productID){
+		var approvedProductReviewCollectionList = this.getProductReviewCollectionList();
+		approvedProductReviewCollectionList.setDisplayProperties("reviewerName,review,reviewTitle,rating,activeFlag");
+		approvedProductReviewCollectionList.addFilter("product.productID",arguments.productID);
+		approvedProductReviewCollectionList.addFilter("product.activeFlag",1);
+		approvedProductReviewCollectionList.addFilter("productReviewStatusType.systemCode","prstApproved");
+		return approvedProductReviewCollectionList;
+	}
+	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
 		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
@@ -772,8 +781,6 @@ component extends="HibachiService" accessors="true" {
 				newSku.setProduct(arguments.product);
 				newSku.setImageFile(newSku.generateImageFileName());
 
-				this.getSkuService().saveSku( newSku, {}, 'create' );
-
 				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
 				}
@@ -791,8 +798,6 @@ component extends="HibachiService" accessors="true" {
 					newSku.setImageFile(newSku.generateImageFileName());
 
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
-    				this.getSkuService().saveSku( newSku, {}, 'create' );
-
 					if(c==1) {
 						arguments.product.setDefaultSku(newSku);
 					}
@@ -842,8 +847,6 @@ component extends="HibachiService" accessors="true" {
 					newSku.setPrice(arguments.processObject.getPrice());
                     setListPriceOnSkuByProductAndProcessObject(newSku, arguments.product, arguments.processObject);
 					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
-                	
-                	this.getSkuService().saveSku( newSku, {}, 'create' );
 
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
 					arguments.product.addSku(newSku);
@@ -906,9 +909,6 @@ component extends="HibachiService" accessors="true" {
 					arguments.product.setRenewalSku( arguments.processObject.getRenewalSku() );
 
 				}
-				
-				this.getSkuService().saveSku(thisSku, {}, 'create' );
-				
 				thisSku.setImageFile(thisSku.generateImageFileName());
 			}
 		//GENERATE - GIFT SKUS
@@ -1068,6 +1068,11 @@ component extends="HibachiService" accessors="true" {
 			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
 			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
+			
+			var skuID = product.getDefaultSku().getSkuID();
+			var updateSku = getService('skuService').getSku( skuID );
+			updateSku.setDefaultImageModifiedDateTime(Now());
+			getService("skuService").saveSku( updateSku );
 
 			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
 				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);

@@ -25,6 +25,7 @@
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
+            
             <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null && !swListingDisplay.customListingControls"
                     data-table-id="swListingDisplay.tableID"
                     data-collection-config="swListingDisplay.collectionConfig"
@@ -38,9 +39,10 @@
                     data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
                     data-personal-collection-identifier="swListingDisplay.personalCollectionIdentifier"
+                    data-default-search-column="swListingDisplay.defaultSearchColumn"
                     data-ng-if="swListingDisplay.hasSearch !== false">
-
             </sw-listing-controls>
+            
             <span ng-if="swListingDisplay.multiSlot && swListingDisplay.customListingControls">
                 <div  ng-transclude="customListingControls" id="customListingControls"></div>
             </span>
@@ -58,25 +60,32 @@
                         </span>
 
                     </div>
-                    <div class="col-sm-4" style="text-align:right;">
+                    <div ng-if="swListingDisplay.actionBarActions || swListingDisplay.listActions" class="col-sm-4" style="text-align:right;">
                         <div class="btn-toolbar" style="margin:0">
                             <div class="btn-group btn-group-xs">
                                 <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">Action <span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right">
                                     <li>
-                                        <a href data-ng-click="swListingDisplay.exportCurrentList()">Export</a>
+                                        <a href ng-if="swListingDisplay.actionBarActions.export" data-ng-click="swListingDisplay.exportCurrentList()">Export</a>
                                     </li>
                                     <li>
-                                        <a href data-ng-click="swListingDisplay.printCurrentList()">Print</a>
+                                        <a href ng-if="swListingDisplay.actionBarActions.print" data-ng-click="swListingDisplay.printCurrentList()">Print</a>
                                     </li>
                                     <li>
-                                        <a href data-ng-click="swListingDisplay.emailCurrentList()">Email</a>
+                                        <a href ng-if="swListingDisplay.actionBarActions.email" data-ng-click="swListingDisplay.emailCurrentList()">Email</a>
                                     </li>
                                     <li>
                                         <a href
                                            data-ng-click="swListingDisplay.exportCurrentList(true)"
-                                           data-ng-if="swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
+                                           data-ng-if="swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0 && swListingDisplay.actionBarActions.export">
                                             Export Selected Rows ({{swListingDisplay.multiselectCount}})
+                                        </a>
+                                    </li>
+                                    <li ng-repeat="listAction in swListingDisplay.listActions">
+                                        <a href 
+                                            data-ng-if="!listAction.selectedRecords || swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0"
+                                            data-ng-click="swListingDisplay.executeListAction(listAction)">
+                                            {{listAction.name}}
                                         </a>
                                     </li>
                                 </ul>
@@ -85,7 +94,7 @@
                     </div>
                 </div>
             </div>
-            <div style="margin-left:5px; margin-top:10px" data-ng-if="swListingDisplay.showPagination == 'top' || swListingDisplay.showPagination == 'both'">
+            <div style="margin-left:5px; margin-top:10px" data-ng-if="!swListingDisplay.hideAllResults && (swListingDisplay.showPagination == 'top' || swListingDisplay.showPagination == 'both')">
                 <sw-pagination-bar
                         data-ng-if="swListingDisplay.paginator &&
                                     swListingDisplay.collectionData.recordsCount &&
@@ -93,7 +102,7 @@
                         data-paginator="swListingDisplay.paginator">
                 </sw-pagination-bar>
             </div>
-            <div class="table-responsive">
+            <div ng-if="!swListingDisplay.hideAllResults" class="table-responsive">
                 
                 <table class="table table-bordered s-detail-content-table">
                     <thead>

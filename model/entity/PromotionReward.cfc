@@ -69,6 +69,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="includedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
 	property name="excludedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
 	property name="rewardSkuQuantity" ormtype="integer" default=0;
+	property name="publishedFlag" ormtype="boolean" default=0;
+	property name="title" ormtype="string";
+	property name="rewardHeader" ormtype="string";
+	property name="description" ormtype="string" length="1000";
 
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
@@ -191,6 +195,13 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 		return variables.amount;
 	}
+	
+	public boolean function getPublishedFlag(){
+		if(!structKeyExists(variables,'publishedFlag')){
+			variables.publishedFlag = false;
+		}
+		return variables.publishedFlag;
+ 	}
 
 	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity, any account){
 		var daoArguments = {
@@ -466,6 +477,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 
 	// =================== START: ORM Event Hooks  =========================
 	
+	public void function preDelete(){
+		getDAO('PromotionDAO').deleteRewardStackingForPromotionReward(this);
+	}
+	
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================= START: Deprecated Methods  ========================
@@ -670,5 +685,5 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 	}
 	
-	// =================  END: Deprecated Methods   ========================	
+	// =================  END: Deprecated Methods   ========================		
 }

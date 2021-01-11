@@ -146,6 +146,21 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 		structDelete(variables, "orderItem");
 	}
 	
+	public boolean function getExcludeFromModifiedEntitiesFlag(){
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			if( !isNull(getOrderItem()) ){
+				variables.excludeFromModifiedEntitiesFlag = getOrderItem().getExcludeFromModifiedEntitiesFlag();
+			}
+			if(!isNull(getOrderFulfillment())){
+				variables.excludeFromModifiedEntitiesFlag = getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
+			}
+		}
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
