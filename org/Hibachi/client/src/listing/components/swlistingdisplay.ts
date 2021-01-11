@@ -116,6 +116,7 @@ class SWListingDisplayController{
     public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
+    public showAutoRefresh:boolean;
     public showReport:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
@@ -490,6 +491,8 @@ class SWListingDisplayController{
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
         }
+        
+        this.observerService.attach(this.refreshListingDisplay, 'refreshListingDisplay', this.tableID);
         
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
@@ -1053,6 +1056,7 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showToggleDisplayOptions:"<?",
             showSearch:"<?",
+            showAutoRefresh:"<?",
             showSearchFilters:"<?",
             showFilters:"<?",
             showSimpleListingControls:"<?",

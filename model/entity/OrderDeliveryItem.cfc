@@ -63,7 +63,9 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	property name="containerItems" singularname="containerItem" fieldType="one-to-many" type="array" fkColumn="orderDeliveryItemID" cfc="ContainerItem" inverse="true";
 	
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

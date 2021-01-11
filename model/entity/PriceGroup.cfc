@@ -56,7 +56,9 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	property name="priceGroupCode" ormtype="string" index="PI_PRICEGROUPCODE";
 	
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 	
 	// Related Object Properties (Many-To-One)
 	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" hb_optionsNullRBKey="define.none";

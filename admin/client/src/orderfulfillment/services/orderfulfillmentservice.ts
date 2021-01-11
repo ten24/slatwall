@@ -347,7 +347,6 @@ class OrderFulfillmentService {
             this.emitUpdateToClient();
             return;
         }
-
          
         let data:any = {};
         //Add the order information

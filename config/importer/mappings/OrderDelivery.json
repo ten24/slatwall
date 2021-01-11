@@ -1,0 +1,97 @@
+{
+	"entityName": "OrderDelivery",
+
+	"properties": {
+
+		"remoteOrderDeliveryID": {
+			"propertyIdentifier": "remoteID",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		},
+		"invoiceNumber": {
+			"propertyIdentifier": "invoiceNumber",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"trackingNumber": {
+			"propertyIdentifier": "trackingNumber",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"trackingUrl": {
+			"propertyIdentifier": "trackingUrl",
+			"validations": {
+				"dataType": "URL"
+			}
+		},
+		"containerLabel": {
+			"propertyIdentifier": "containerLabel",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"undeliverableOrderReason": {
+			"propertyIdentifier": "undeliverableOrderReason",
+			"validations": {
+				"dataType": "string"
+			}
+		}
+	},
+
+	"relations": [{
+		"type": "manyToOne",
+		"entityName": "Address",
+		"isNullable": true,
+		"propertyIdentifier": "shippingAddress"
+	}],
+
+	"dependencies": [{
+			"key": "remoteOrderID",
+			"entityName": "Order",
+			"lookupKey": "remoteID",
+			"propertyIdentifier": "order"
+		},
+		{
+			"key": "pickupLocationRemoteID",
+			"entityName": "Location",
+			"isNullable": true,
+			"lookupKey": "remoteID",
+			"propertyIdentifier": "pickupLocation"
+		},
+		{
+			"key": "remoteFulfillmentMethodID",
+			"entityName": "FulfillmentMethod",
+			"defaultValue": "444df2fb93d5fa960ba2966ba2017953",
+			"__hint": "this defaultValue for FulfillmentMethod is `Shipping`.",
+			"lookupKey": "remoteID",
+			"propertyIdentifier": "fulfillmentMethod"
+		},
+		{
+			"key": "shippingMethod",
+			"entityName": "ShippingMethod",
+			"isNullable": true,
+			"lookupKey": "shippingMethodCode",
+			"propertyIdentifier": "shippingMethod"
+		},
+		{
+			"key": "statusCode",
+			"lookupKey": "systemCode",
+			"entityName": "Type",
+			"defaultValue": "2c91808a76ca27fb0176d38b682b0016",
+			"__hint": "this defaultValue for status-code is `odstUndeliverable`.",
+			"propertyIdentifier": "orderDeliveryStatusType"
+		}
+	],
+
+	"importIdentifier": {
+		"propertyIdentifier": "importRemoteID",
+		"type": "composite",
+		"keys": [
+			"remoteOrderFulfillmentID"
+		]
+	}
+}

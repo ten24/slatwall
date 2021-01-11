@@ -1,1 +1,0 @@
-cd admin/client && webpack --config webpack-production.config.js

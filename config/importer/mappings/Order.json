@@ -1,0 +1,141 @@
+{
+    "entityName": "Order",
+    
+    "properties": {
+        
+        "remoteOrderID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "orderNumber": {
+            "propertyIdentifier": "orderNumber",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "defaultValue": "USD",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "orderOpenDateTime": {
+            "propertyIdentifier": "orderOpenDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "orderIPAddress": {
+            "propertyIdentifier": "orderOpenIPAddress",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "orderCloseDateTime": {
+            "propertyIdentifier": "orderCloseDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "estimatedDeliveryDateTime": {
+            "propertyIdentifier": "estimatedDeliveryDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "canceledDateTime": {
+            "propertyIdentifier": "orderCanceledDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "orderNotes": {
+            "propertyIdentifier": "orderNotes",
+            "validations": {
+                "dataType": "string"
+            }
+        }
+        
+    },
+    
+    "relations": [
+        {
+            "type"                   : "manyToOne",
+            "entityName"             : "Address",
+            "isNullable"             : true,
+            "propertyIdentifier"     : "billingAddress",
+            "sourceDataKeysPrefix"   : "BillingAddress_"
+        },
+        {
+            "type"                   : "manyToOne",
+            "entityName"             : "Address",
+            "isNullable"             : true,
+            "propertyIdentifier"     : "shippingAddress",
+            "sourceDataKeysPrefix"   : "ShippingAddress_"
+        },
+        {
+            "type"                   : "oneToMany",
+            "entityName"             : "OrderFulfillment",
+            "propertyIdentifier"     : "orderFulfillments",
+            "excludeFromTemplate"    : true,
+            "excludeFromValidation"  : true,
+            "generatorFunction"      : "generateOrderOrderFulfillments"
+        }
+    ],
+    
+     "dependencies" : [
+        {
+            "key"                   : "remoteAccountID",
+            "entityName"            : "Account",
+            "lookupKey"             : "companyCode",
+            "propertyIdentifier"    : "account"
+        },
+        {
+            "key"                   : "orderTypeCode",
+            "lookupKey"             : "systemCode",
+            "entityName"            : "Type",
+            "defaultValue"          : "444df2df9f923d6c6fd0942a466e84cc",
+            "__hint"                : "this defaultValue for order-type is `otSale`.",
+            "excludeFromValidation" : true,
+            "propertyIdentifier"    : "orderType"
+        },
+        {
+            "key"                   : "orderStatusCode",
+            "lookupKey"             : "systemCode",
+            "entityName"            : "Type",
+            "defaultValue"          : "444df2b5c8f9b37338229d4f7dd84ad1",
+            "__hint"                : "this defaultValue for order-type is `ostNew`.",
+            "excludeFromValidation" : true,
+            "propertyIdentifier"    : "orderStatusType"
+        },
+        {
+            "key"                   : "remoteOrderOriginID",
+            "isNullable"            : true,
+            "lookupKey"             : "remoteID",
+            "entityName"            : "OrderOrigin",
+            "defaultValue"          : "2c918082626f886001627251f01a00ab",
+            "__hint"                : "this defaultValue for order-origin is `external`.",
+            "propertyIdentifier"    : "orderOrigin"
+        },
+        {
+            "key"                   : "orderSiteCode",
+            "isNullable"            : true,
+            "lookupKey"             : "siteID",
+            "entityName"            : "Site",
+            "defaultValue"          : "2c9680847491ce86017491f46ec50036",
+            "__hint"                : "this defaultValue for order-site is `default site`.",
+            "propertyIdentifier"    : "orderCreatedSite"
+        },
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier"        : "importRemoteID",
+        "type"                      : "composite",
+        "keys"                      : [ "remoteOrderID" ]
+    }
+}

@@ -6,6 +6,53 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function isUniqueProperty( required string propertyName, required any entity ) {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
 	}
+	
+	/**
+	 * this function takes a csv-file path, a list of columnTypes and returns an struct like 
+	 * 
+	 * returns an struct containig the query-object and an array of lines with errors
+	 *	{ 
+	 *		query  : theQueryObject, 
+	 *		errors : [  
+	 *					{
+	 *						line: number, 
+	 *						record: [val1, val2, ......] // array of all the columns in that line
+	 *					}
+	 *				] 
+	 *	}
+	*/
+	public any function csvFileToQuery(required string csvFilePath, string columnTypes, boolean useHeaderRowAsColumns=true, string columns, string delimiter=",", boolean trimTrailingEmptyLine=true){
+
+		//read-csv-file
+		var records = this.getHibachiUtilityService().csvStringToArray( FileRead(arguments.csvFilePath,"utf-8") );
+
+
+		if( arguments.useHeaderRowAsColumns ){
+			arguments.columns = ArrayToList( records[1] );
+		}
+
+		arguments.columns = REReplace(arguments.columns, '[^a-zA-Z\d,]', '', 'ALL');
+
+		var numberOfColumns = Listlen(arguments.columns, ',', true);
+		var numberOfRecords = ArrayLen(records);
+
+		var csvQuery = QueryNew(arguments.columns, arguments.columnTypes ?: javaCast( "Null" , "" ));
+		var errors = [];
+
+		// starting from 2, to skip the header
+		for(var i=2; i<= numberOfRecords; i++) {
+			var record = records[i];
+			
+			if(ArrayLen(record) != numberOfColumns){
+				ArrayAppend(errors, {"line": i, 'record': record } );	
+				continue;
+			}
+			
+			QueryAddRow(csvQuery, record);
+		}
+
+		return { 'query': csvQuery, 'errors': errors };
+	}
 
 	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, string columnTypeList='', boolean useHeaderRow=true, string columnsList){
 		var csvFile = FileOpen(pathToCSV);
@@ -307,10 +354,10 @@ component accessors="true" output="false" extends="HibachiService" {
 		var columnInfo = {columnName="", tableName="", dataType="", fieldType="", tableType=""};
 
 		var fullBaseEntityName = getProperlyCasedFullEntityName(arguments.baseEntityName);
-		var entityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(fullBaseEntityName, arguments.propertyIdentifier);
+		var entityName = getLastEntityNameInPropertyIdentifier(fullBaseEntityName, arguments.propertyIdentifier);
 		columnInfo["tableName"] = getEntityMetaData(entityName)["table"];
 
-		if(getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(fullBaseEntityName, arguments.propertyIdentifier)) {
+		if(getHasPropertyByEntityNameAndPropertyIdentifier(fullBaseEntityName, arguments.propertyIdentifier)) {
 
 			columnInfo["columnName"] = listLast(arguments.propertyIdentifier, ".");
 			var propertiesMeta = getPropertiesStructByEntityName(entityName);
@@ -331,7 +378,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 
 			if( structKeyExists(propertyMeta, "ormType") ) {
-				columnInfo["dataType"] = getService('hibachiUtilityService').getSQLType(propertyMeta.ormType);
+				columnInfo["dataType"] = this.getHibachiUtilityService().getSQLType(propertyMeta.ormType);
 			} else if ( structKeyExists(propertyMeta, "type") ) {
 				columnInfo["dataType"] = propertyMeta.type;
 			}
@@ -355,14 +402,14 @@ component accessors="true" output="false" extends="HibachiService" {
 			var columnInfo = getColumnInfoByPropertyIdentifier(config["baseEntity"], mapping["propertyIdentifier"]);
 			var thisColumnName = columnInfo["columnName"];
 			var thisTableName = columnInfo["tableName"];
-			var thisEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(config["baseEntity"], mapping["propertyIdentifier"]);
+			var thisEntityName = getLastEntityNameInPropertyIdentifier(config["baseEntity"], mapping["propertyIdentifier"]);
 
 			// add this table to tables struct if it doesn't exists
 			initializeTableStruct(tables, thisTableName);
 				tables[ thisTableName ]["tableType"] = columnInfo["tableType"];
 
 			// get table primary key
-			tables[ thisTableName ]["primaryKeyColumn"] = getService("hibachiService").getPrimaryIDColumnNameByEntityName(thisEntityName);
+			tables[ thisTableName ]["primaryKeyColumn"] = getPrimaryIDColumnNameByEntityName(thisEntityName);
 			//set table depth
 			tables[ thisTableName ]["depth"] = listLen(mapping["propertyIdentifier"], ".");
 
@@ -424,12 +471,12 @@ component accessors="true" output="false" extends="HibachiService" {
 					var newColumnInfo = getColumnInfoByPropertyIdentifier(config["baseEntity"], thisPropertyIdentifier);
 					var newColumnName = newColumnInfo["columnName"];
 					var newTableName = newColumnInfo["tableName"];
-					var newEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(config["baseEntity"], thisPropertyIdentifier);
+					var newEntityName = getLastEntityNameInPropertyIdentifier(config["baseEntity"], thisPropertyIdentifier);
 
 					initializeTableStruct(tables, newTableName);
 					tables[ newTableName ]["tableType"] = newColumnInfo["tableType"];
 					tables[ newTableName ]["depth"] = listLen(thisPropertyIdentifier, ".");
-					tables[ newTableName ]["primaryKeyColumn"] = getService("hibachiService").getPrimaryIDColumnNameByEntityName(newEntityName);
+					tables[ newTableName ]["primaryKeyColumn"] = getPrimaryIDColumnNameByEntityName(newEntityName);
 
 					// many-to-many and one-to-many need to get added after the main object so, set a lower depth
 					if(newColumnInfo["fieldType"] == "many-to-many") {
@@ -497,7 +544,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 	public void function loadDataFromQuery(required any query, required any configJSON, dryRun = false) {
-		var qryColumns = getService("HibachiUtilityService").getQueryLabels(arguments.query);
+		var qryColumns =  this.getHibachiUtilityService().getQueryLabels(arguments.query);
 		var configStruct = parseImportConfig(arguments.configJSON);
 		var tables = configStruct["tables"];
 		
@@ -693,10 +740,10 @@ component accessors="true" output="false" extends="HibachiService" {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
 							}
-							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
+							var idKeyStruct = structGet( this.getHibachiUtilityService().formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
 							idKeyStruct["value"] = primaryKeyValue == "" ? "null" : primaryKeyValue;
 						} else if(tables[ tableName ][ "tableType" ] != "linktable") {
-							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
+							var idKeyStruct = structGet( this.getHibachiUtilityService().formatStructKeyList("generatedIDStruct.#tableName#"));
 							idKeyStruct["value"] = primaryKeyValue;
 						}
 
@@ -773,12 +820,12 @@ component accessors="true" output="false" extends="HibachiService" {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
 							}
-							var IDValueStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
+							var IDValueStruct = structGet( this.getHibachiUtilityService().formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
 							if(structKeyExists(IDValueStruct, "value")) {
 								IDValue = IDValueStruct["value"];
 							}
 						} else {
-							var IDValueStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
+							var IDValueStruct = structGet( this.getHibachiUtilityService().formatStructKeyList("generatedIDStruct.#tableName#"));
 							if(structKeyExists(IDValueStruct, "value")) {
 								IDValue = IDValueStruct["value"];
 							}

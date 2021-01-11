@@ -261,5 +261,4 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 		return ratesResponseBean;
 	}
 	
-
 }

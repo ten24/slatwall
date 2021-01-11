@@ -1,0 +1,69 @@
+{
+    "entityName": "SkuPrice",
+    
+    "properties": {
+        
+        "remoteSkuPriceID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "minQuantity":  {
+            "propertyIdentifier": "minQuantity",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "maxQuantity": {
+            "propertyIdentifier": "maxQuantity",
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "defaultValue": "USD",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "price": {
+            "propertyIdentifier": "price",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
+        "listPrice": {
+            "propertyIdentifier": "listPrice",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
+        "skuPriceActiveFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "allowUpdate": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    
+    "dependencies" : [
+        {
+            "key"                : "remoteSkuID",
+            "entityName"         : "Sku",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "sku"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier" : "importRemoteID",
+        "keys" : [ "remoteSkuID" ],
+        "generatorFunction"  : "createSkuPriceImportRemoteID"
+    }
+}

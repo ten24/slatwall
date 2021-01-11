@@ -74,7 +74,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	//order created for applying promos ahead of scheduled order placement
 	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
-	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID" hb_populateEnabled="workflow";
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID" hb_populateEnabled="private";
 	
 	// Related Object Properties (one-to-many)
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true" hb_cascadeCalculate="true";

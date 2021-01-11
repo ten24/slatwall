@@ -12,7 +12,6 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
     property name="messageRequirementsCollection" persistent="false";
     
     
-  	
 	public any function getMessageRequirementsCollection(){
 		if(isNull(variables.messageRequirementsCollection)){
 			var collectionConfig = getMessageRequirementsCollectionConfig();
@@ -96,6 +95,5 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
     	returnValue = getService('HibachiUtilityService').replaceFunctionTemplate(returnValue);
     	return returnValue;
 	}	
-	
 	
 }

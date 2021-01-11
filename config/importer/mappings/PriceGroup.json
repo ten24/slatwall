@@ -1,0 +1,47 @@
+{
+    "entityName": "PriceGroup",
+    
+    "properties": {
+        
+        "remotePriceGroupID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        
+        "priceGroupName": {
+            "propertyIdentifier": "priceGroupName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        
+        "priceGroupCode": {
+            "propertyIdentifier": "priceGroupCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        
+        "priceGroupActiveFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "allowUpdate": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remotePriceGroupID"
+        ]
+    }
+
+}

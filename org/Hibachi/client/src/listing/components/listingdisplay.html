@@ -25,6 +25,7 @@
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
+            
             <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null && !swListingDisplay.customListingControls"
                     data-table-id="swListingDisplay.tableID"
                     data-collection-config="swListingDisplay.collectionConfig"
@@ -32,6 +33,7 @@
                     data-show-export="swListingDisplay.showExport"
                     data-show-report="swListingDisplay.showReport"
                     data-show-toggle-search="swListingDisplay.showSearch"
+                    data-show-auto-refresh="swListingDisplay.showAutoRefresh"
                     data-show-toggle-filters="swListingDisplay.showFilters"
                     data-show-print-options="swListingDisplay.showPrintOptions"
                     data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
@@ -39,8 +41,8 @@
                     data-personal-collection-identifier="swListingDisplay.personalCollectionIdentifier"
                     data-default-search-column="swListingDisplay.defaultSearchColumn"
                     data-ng-if="swListingDisplay.hasSearch !== false">
-
             </sw-listing-controls>
+            
             <span ng-if="swListingDisplay.multiSlot && swListingDisplay.customListingControls">
                 <div  ng-transclude="customListingControls" id="customListingControls"></div>
             </span>
