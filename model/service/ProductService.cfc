@@ -95,6 +95,97 @@ component extends="HibachiService" accessors="true" {
 		return relatedProducts;
 	}
 	
+	/** Function append Images to existing product List
+	 * @param - array of products
+	 * @param - image property name
+	 * @param - addAltImage - boolean to ignore alt images
+	 * @return - updated array of products
+	 **/
+	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+		if(arrayLen(arguments.products)) {
+			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
+			var resizeSizes=['s','m','l','xl']; //add all sized images
+			
+			for(var product in arguments.products) {
+				
+				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
+					continue;
+				}
+				
+	            var imageFile = product[arguments.propertyName] ? : '';
+	            if( isEmpty(imageFile) ) {
+	            	continue;
+	            }
+	            var imageArray = [];
+	            for( var size in resizeSizes) {
+	            	var resizeImageData = {
+		                size=size, //Large Image
+		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
+		                missingImagePath = missingImageSetting
+		            };
+		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
+	            }
+	            
+	            product['images'] = imageArray;
+	        }
+	        
+	        //If there's only one product in response, add alternate images as well
+	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && StructKeyExists(arguments.products[1], 'productID') && trim(arguments.products[1].productID) != "" ) {
+	        	//Modify image size to be used as size index
+	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
+	        }
+	        
+		}
+		return arguments.products;
+	}
+	
+	/**
+	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
+	 * */
+	public any function appendCategoriesAndOptionsToProduct(required array products) {
+		if(arrayLen(arguments.products)) {
+			for(var product in arguments.products) {
+				
+				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
+					continue;
+				}
+				
+				var currentProduct = this.getProduct(product.productID);
+				if( isNull( currentProduct ) ) {
+					continue;
+				}
+				var categories = [];
+				if( arrayLen(currentProduct.getCategories()) ) {
+					var productCategories = currentProduct.getCategories();
+					for( var i=1; i<= arrayLen(productCategories); i++ ) {
+						categories[i]['categoryID'] = productCategories[i].getCategoryID();
+						categories[i]['categoryName'] = productCategories[i].getCategoryName();
+						categories[i]['urlTitle'] = productCategories[i].getUrlTitle();
+					}
+				}
+				
+				product['categories'] = categories;
+				
+				//Append Option Groups
+				var optionGroups = [];
+				if( arrayLen(currentProduct.getOptionGroups()) ) {
+					for(var optionGroup in currentProduct.getOptionGroups()){
+						ArrayAppend( optionGroups, {
+							"optionGroupdID" : optionGroup.getOptionGroupID(),
+							"optionGroupName" : optionGroup.getOptionGroupName(),
+						} )
+					}
+				}
+				product['optionGroups'] =  optionGroups;
+				
+				//Append base product type system code
+				product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
+			}
+		}
+		
+		return arguments.products;
+	}
+	
 
 	public numeric function getProductRating(required any product){
 		return getDao('productDao').getProductRating(arguments.product);
