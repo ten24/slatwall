@@ -178,7 +178,15 @@
 										<!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection:</label> -->
 										<div class="col-sm-12 s-no-paddings">
 										    
-										    <ng-form name="listingForm" sw-isolate-child-form>
+										    
+										    <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="collectionBasedFlag"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                            ></sw-property-display>
+										    
+										    <ng-form name="listingForm" sw-isolate-child-form ng-if="workflow.data.workflowObject && workflowTriggers.selectedTrigger.collectionBasedFlag">
 										        <!--- display initial listing or saved collection config --->
                                                 <sw-listing-display
                                                     data-ng-if="!workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
@@ -386,6 +394,7 @@
                                                     data-property-identifier="collectionFetchSize"
                                                     data-editing="true"
                                                     data-is-dirty="true"
+                                                    data-ng-if="workflowTriggers.selectedTrigger.collectionBasedFlag"
                                             ></sw-property-display>
     										<div class="clearfix"></div>
                                             <sw-property-display
@@ -399,12 +408,14 @@
                                                     data-property-identifier="collectionPassthrough"
                                                     data-editing="true"
                                                     data-is-dirty="true"
+                                                    data-ng-if="workflowTriggers.selectedTrigger.collectionBasedFlag"
                                             ></sw-property-display>
                                             <sw-property-display
                                                     data-object="workflowTriggers.selectedTrigger"
                                                     data-property-identifier="collectionFetchRecordsFlag"
                                                     data-editing="true"
                                                     data-is-dirty="true"
+                                                    
                                             ></sw-property-display>
                                             <sw-property-display
                                                     data-object="workflowTriggers.selectedTrigger"
@@ -420,7 +431,14 @@
                                                     data-is-dirty="true"
                                                     ng-if="workflow.data.workflowObject && workflow.data.workflowObject.toLowerCase() == 'entityqueue'"
                                             ></sw-property-display>
-                                            
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="lockLevel"
+                                                    data-field-type="select"
+                                                    data-options="lockLevelOptions"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                            ></sw-property-display>
                                         </div>
 									</div>
 								</div>

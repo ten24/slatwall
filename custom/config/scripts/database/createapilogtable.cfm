@@ -20,6 +20,11 @@
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
           
 	</cfquery>
+	
+	<cfquery name="local.createApiLog">
+	    ALTER TABLE `swworkflowtrigger` ADD `collectionBasedFlag` BIT(1)  NULL  DEFAULT 1;
+	</cfquery>
+	
     <cfcatch >
         <cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Create ApiLog Table (#cfcatch.detail#)">
     	<cfset local.scriptHasErrors = true />

@@ -226,6 +226,10 @@ class SWFormFieldController {
 				}
 
 			});
+		}else{
+			this.object.data['selected'+this.propertyIdentifier] = this.options.filter(obj => {
+				return obj.value === this.object.data[this.propertyIdentifier]
+			})[0];
 		}
 	}
 
