@@ -4,6 +4,7 @@ import logo from '../../assets/images/sb-logo-white.png'
 import { connect } from 'react-redux'
 import { useFormik } from 'formik'
 import { ActionBanner, SignUpForm } from '..'
+import SWImage from '../SWImage/SWImage'
 // import * as Yup from 'yup'
 
 const NewsletterForm = () => {
@@ -54,7 +55,7 @@ const NewsletterForm = () => {
   )
 }
 
-function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable }) {
+function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
   return (
     <footer className="pt-5">
       {actionBanner.display && !actionBannerDisable && <ActionBanner {...actionBanner} />}
@@ -71,7 +72,7 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
             <div className="col-md-6">
               <div className="widget pb-2 mb-4">
                 <div dangerouslySetInnerHTML={{ __html: stayInformed }} />
-                <SignUpForm />
+                <SignUpForm url={formLink} />
               </div>
             </div>
           </div>
@@ -81,7 +82,7 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
         <div className="container">
           <div className="row">
             <div className="col-md-6 text-center text-md-left mb-4 text-light">
-              <img className="w-50" src={logo} alt="Stone and Berg logo" />
+              <SWImage className="w-50" src={logo} alt="Stone and Berg logo" />
             </div>
             <div className="col-md-6 font-size-xs text-light text-center text-md-right mb-4">{`@${copywriteDate} `} All rights reserved. Stone and Berg Company Inc</div>
           </div>
@@ -96,6 +97,7 @@ Footer.propTypes = {
   siteLinks: PropTypes.string,
   stayInformed: PropTypes.string,
   copywriteDate: PropTypes.string,
+  formLink: PropTypes.string,
   actionBannerDisable: PropTypes.bool,
 }
 
@@ -108,12 +110,13 @@ Footer.defaultProps = {
   siteLinks: '',
   stayInformed: '',
   copywriteDate: '',
+  formLink: 'https://jster.us7.list-manage.com/subscribe/post?u=XXXX&id=XXXXXX',
   actionBannerDisable: false,
 }
 
 function mapStateToProps(state) {
   const { preload } = state
-  return preload.footer
+  return { ...preload.footer }
 }
 
 export default connect(mapStateToProps)(Footer)

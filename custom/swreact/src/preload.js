@@ -468,6 +468,7 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        imgUrl: 'product-img-1.png',
         linkUrl: '/hop-single-v1.html',
       },
       {
@@ -475,6 +476,7 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        imgUrl: 'product-img-2.png',
         linkUrl: '/shop-single-v1.html',
       },
       {
@@ -482,6 +484,7 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        imgUrl: 'product-img-3.png',
         linkUrl: '/shop-single-v1.html',
       },
       {
@@ -489,6 +492,7 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        imgUrl: 'product-img-4.png',
         linkUrl: '/shop-single-v1.html',
       },
       {
@@ -757,6 +761,7 @@ export default {
     siteLinks: '<h3>Site Links</h3> <ul> <li><a href="##">Home</a></li> <li><a href="##">Products</a></li> <li><a href="##">About</a></li> <li><a href="##">Resources</a></li> <li><a href="##">Contact</a></li> <li><a href="##">My Account</a></li> </ul>',
     stayInformed: '<h3>Stay Informed</h3> <p>Sign up to receive any updates on pricing, specials, industry events and lcoal training at our facility!</p>',
     copywriteDate: '2020',
+    formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
   },
   about: {
     template: 'default-one-column',
@@ -1027,6 +1032,171 @@ export default {
         isPrimary: false,
         name: 'Susan Gardner',
         expirationDate: '05 / 2021',
+      },
+    ],
+  },
+  theme: {
+    host: 'https://stoneandberg.ten24dev.com',
+    basePath: '/custom/client/assets/images/',
+  },
+  productListing: {
+    crumbs: [
+      { slug: '/', title: 'Home' },
+      { slug: '/products', title: 'Shop' },
+      { slug: '/products', title: 'Door Closers & Operators' },
+    ],
+    template: 'product-listing',
+    title: 'Door Closers & Operators',
+    contentTitle: '',
+    customBody: '',
+    customSummary: '',
+    products: [
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        imgUrl: 'product-img-1.png',
+        linkUrl: '/hop-single-v1.html',
+      },
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        imgUrl: 'product-img-2.png',
+        linkUrl: '/shop-single-v1.html',
+      },
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        imgUrl: 'product-img-3.png',
+        linkUrl: '/shop-single-v1.html',
+      },
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        imgUrl: 'product-img-4.png',
+        linkUrl: '/shop-single-v1.html',
+      },
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        linkUrl: '/shop-single-v1.html',
+      },
+      {
+        brand: 'Brand A',
+        productTile: 'Title 1',
+        price: '$209.24',
+        displayPrice: '$156.99',
+        linkUrl: '/shop-single-v1.html',
+      },
+    ],
+    sortOptions: ['Popularity', 'Low - High Price', 'High - Low Price', 'Average Rating', 'A - Z Order', 'Z - A Order'],
+    appliedFilters: [
+      {
+        name: 'American Lock',
+      },
+      {
+        name: 'Bright Brass',
+      },
+    ],
+    filters: [
+      {
+        name: 'Product Type',
+        type: 'single',
+        options: [
+          {
+            name: 'View all',
+            link: '#',
+            count: '1,953',
+          },
+          {
+            name: 'Pumps & High Heels',
+            link: '#',
+            count: '247',
+          },
+          {
+            name: 'Ballerinas & Flats',
+            link: '#',
+            count: '156',
+          },
+        ],
+      },
+      {
+        name: 'Brand',
+        type: 'single',
+        options: [
+          {
+            name: 'View all',
+            link: '#',
+            sub: '',
+            count: '1,953',
+          },
+          {
+            name: 'Pumps & High Heels',
+            link: '#',
+            sub: '',
+            count: '247',
+          },
+          {
+            name: 'Ballerinas & Flats',
+            link: '#',
+            sub: '',
+            count: '156',
+          },
+        ],
+      },
+      {
+        name: 'Stye',
+        type: 'single',
+        options: [
+          {
+            name: 'View all',
+            link: '#',
+            count: '1,953',
+          },
+          {
+            name: 'Pumps & High Heels',
+            link: '#',
+            count: '247',
+          },
+          {
+            name: 'Ballerinas & Flats',
+            link: '#',
+            count: '156',
+          },
+        ],
+      },
+      {
+        name: 'Finish',
+        type: 'multi',
+        options: [
+          {
+            name: 'Lifetime Brass',
+            sub: '505',
+            link: '',
+            count: '',
+          },
+          {
+            name: 'Bright Brass',
+            sub: '605 | US3',
+            link: '',
+            count: '',
+          },
+          {
+            name: 'Satin Brass',
+            sub: '606 | US4',
+            link: '',
+            count: '',
+          },
+        ],
       },
     ],
   },
