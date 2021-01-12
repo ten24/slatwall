@@ -59,7 +59,7 @@ class SWWorkflowTriggers{
 			link: function(scope, element,attrs,formController){
                 
                 scope.schedule = {
-                    'tableID' : 'LD' + utilityService.createID(),
+                    'tableID' : 'LD' + utilityService.createID()
                 };
                 
                 scope.lockLevelOptions = [{ 'name': 'Database', 'value':'database'},{ 'name': 'Application', 'value':'application'}];
