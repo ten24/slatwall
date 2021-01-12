@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 const Home = React.lazy(() => import('./pages/Home/Home'))
 const MyAccount = React.lazy(() => import('./pages/MyAccount/MyAccount'))
-const ProductSearch = React.lazy(() => import('./pages/ProductSearch/ProductSearch'))
+const ProductListing = React.lazy(() => import('./pages/ProductListing/ProductListing'))
 
 const ProductDetail = React.lazy(() => import('./pages/ProductDetail/ProductDetail'))
 
@@ -25,7 +25,7 @@ export default function App() {
         {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/products" component={ProductSearch} />
+          <Route path="/products" component={ProductListing} />
           <Route path="/product-detail" component={ProductDetail} />
           <Route path="/category-listing" component={CategoryListing} />
           <Route path="/about" component={About} />

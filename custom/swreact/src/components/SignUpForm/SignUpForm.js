@@ -50,8 +50,7 @@ const MyForm = ({ status, message, onValidated }) => {
   )
 }
 
-const SignUpForm = () => {
-  const url = 'https://jster.us7.list-manage.com/subscribe/post?u=XXXX&id=XXXXXX'
+const SignUpForm = ({ url }) => {
   return (
     <MailchimpSubscribe
       url={url}

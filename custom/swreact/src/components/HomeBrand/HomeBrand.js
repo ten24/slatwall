@@ -1,17 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Slider from 'react-slick'
+import { SWImage } from '..'
 
 const BandSlide = ({ associatedImage, linkUrl, title, slideKey }) => {
   return (
     <div index={slideKey} className="repeater">
       <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
         <a className="d-block p-4" href={linkUrl}>
-          <img
-            className="d-block mx-auto"
-            src={`/custom/assets/files/associatedimage/${associatedImage}`}
-            alt={title}
-          />
+          <SWImage className="d-block mx-auto" customPath="/custom/assets/files/associatedimage/" src={associatedImage} alt={title} />
         </a>
       </div>
     </div>
@@ -48,10 +45,7 @@ function HomeBrand(props) {
     ],
   }
   return (
-    <div
-      style={{ height: 'fit-content' }}
-      className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center"
-    >
+    <div style={{ height: 'fit-content' }} className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
       <h3 className="h3">Shop by Manufacturer</h3>
       <Slider {...settings}>
         {props.homeBrand.map((slide, index) => {
