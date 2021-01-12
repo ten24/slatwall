@@ -103,7 +103,7 @@ function Header(props) {
                   </div>
                 </div>
                 <div className="navbar-toolbar d-flex flex-shrink-0 align-items-center">
-                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="##navbarCollapse">
+                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
                     <span className="navbar-toggler-icon"></span>
                   </button>
                   <a className="navbar-tool navbar-stuck-toggler" href="##">

@@ -54,7 +54,7 @@ const NewsletterForm = () => {
   )
 }
 
-function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable }) {
+function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
   return (
     <footer className="pt-5">
       {actionBanner.display && !actionBannerDisable && <ActionBanner {...actionBanner} />}
@@ -71,7 +71,7 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
             <div className="col-md-6">
               <div className="widget pb-2 mb-4">
                 <div dangerouslySetInnerHTML={{ __html: stayInformed }} />
-                <SignUpForm />
+                <SignUpForm url={formLink} />
               </div>
             </div>
           </div>
@@ -96,6 +96,7 @@ Footer.propTypes = {
   siteLinks: PropTypes.string,
   stayInformed: PropTypes.string,
   copywriteDate: PropTypes.string,
+  formLink: PropTypes.string,
   actionBannerDisable: PropTypes.bool,
 }
 
@@ -108,6 +109,7 @@ Footer.defaultProps = {
   siteLinks: '',
   stayInformed: '',
   copywriteDate: '',
+  formLink: 'https://jster.us7.list-manage.com/subscribe/post?u=XXXX&id=XXXXXX',
   actionBannerDisable: false,
 }
 
