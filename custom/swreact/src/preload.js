@@ -468,6 +468,7 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        imgUrl: 'product-img-1.png',
         linkUrl: '/hop-single-v1.html',
       },
       {
@@ -475,6 +476,7 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        imgUrl: 'product-img-2.png',
         linkUrl: '/shop-single-v1.html',
       },
       {
@@ -482,6 +484,7 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        imgUrl: 'product-img-3.png',
         linkUrl: '/shop-single-v1.html',
       },
       {
@@ -489,6 +492,7 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        imgUrl: 'product-img-4.png',
         linkUrl: '/shop-single-v1.html',
       },
       {
@@ -1030,5 +1034,9 @@ export default {
         expirationDate: '05 / 2021',
       },
     ],
+  },
+  theme: {
+    host: 'https://stoneandberg.ten24dev.com',
+    basePath: '/custom/client/assets/images/',
   },
 }
