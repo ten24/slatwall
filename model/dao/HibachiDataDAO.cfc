@@ -96,12 +96,13 @@ Notes:
 	</cffunction>
 	
 	
-	<cffunction name="deleteOldApiLogs" returntype="any" access="public">
-		<cfargument name="olderDate" type="datetime" required="true" />
+	<cffunction name="deleteStaleData" returntype="any" access="public">
+		<cfargument name="tableName" type="string" required="true" />
+		<cfargument name="olderThanDate" type="datetime" required="true" />
 
 		<cfset var rs = "" />
 		<cfquery name="rs" result="local.deleteOldApiLogs">
-			DELETE FROM swApiLog  WHERE createdDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.olderDate#" />
+			DELETE FROM #tableName#  WHERE createdDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.olderThanDate#" />
 		</cfquery>
 	</cffunction>
 	

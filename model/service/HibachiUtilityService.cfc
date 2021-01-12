@@ -51,6 +51,13 @@ Notes:
 	<cfproperty name="settingService" type="any" />
 
 	<cfscript>
+	
+		public void function deleteStaleData(numeric days = 7){
+			var olderThanDate = dateAdd('d', arguments.days * -1, now()); 
+			
+			getDAO('HibachiDataDAO').deleteStaleData(tableName = 'SwApiLog', olderDate = olderThanDate);
+			getDAO('HibachiDataDAO').deleteStaleData(tableName = 'SwWorkflowTriggerHistory', olderDate = olderThanDate);
+		}
 		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
 			if(!structKeyExists(arguments.formatDetails,'locale')){
