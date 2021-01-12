@@ -166,6 +166,7 @@ component  accessors="true" output="false"
                 //get sku list form collection config
                 var skuCollections = getSkuService().getSkuCollectionList();
                 skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+                skuCollections.addDisplayProperties("calculatedSkuDefinition");
                 skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
 	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
                 var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
@@ -335,7 +336,7 @@ component  accessors="true" output="false"
 	    
 	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
         
-        if( isNull( productBundleBuild ) || ( ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) || ( !isNull(productBundleBuild.getSession()) && productBundleBuild.getSession().getSessionID() != getHibachiScope().getSession().getSessionID() ) ) ) {
+        if( isNull( productBundleBuild ) || ( ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) && ( !isNull(productBundleBuild.getSession()) && productBundleBuild.getSession().getSessionID() != getHibachiScope().getSession().getSessionID() ) ) ) {
             getHibachiScope().addActionResult("public:product.removeProductBundleBuild",true);
             return;
         }
@@ -1419,10 +1420,18 @@ component  accessors="true" output="false"
                 }
               }
               
-              getService("OrderService").saveOrderFulfillment(orderFulfillment);
+              orderFulfillment = getService("OrderService").saveOrderFulfillment(orderFulfillment);
+              
+              if( orderFulfillment.hasErrors() ) {
+                this.addErrors(arguments.data, orderFulfillment.getErrors()); //add the basic errors
+                getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", orderFulfillment.hasErrors());
+                return;
+              }
+              
             }
             
             getService("OrderService").saveOrder(order);
+            
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
             if(!isNull(accountAddress)){
