@@ -353,13 +353,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public any function getOrderData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getOrderData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
 		//still working to get order numbers without hyphen so pass one order for testing
-    	var OrdersArray = this.getErpOneData({
+    	var OrdersArray = this.callErpOneGetDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
     	    "query": "FOR EACH oe_head",
     	    "columns" : "order,ord_date,customer,adr,currency_code,country_code,postal_code,state"
     	})
-
 		if( OrdersArray.len() > 0 ){
 
 		    this.logHibachi("ERPONE - Start pushing Orders to import-queue ");
@@ -375,7 +374,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     public any function getOrderItemData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getOrderItemData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
 		//still working to get order numbers without hyphen so pass one order for testing
-    	var OrdersArray = this.getErpOneData({
+    	var OrdersArray = this.callErpOneGetDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
     	    "query": "FOR EACH oe_line",
@@ -422,7 +421,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		var recordsFetched = 0;
 		
-		while ( recordsFetched < totalRecordsCount ){
+		// while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				
@@ -436,9 +435,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 			
 			// increment rgardless of success or failure;
-			recordsFetched += pageSize;
-			currentPage += 1;
-		}
+			// recordsFetched += pageSize;
+			// currentPage += 1;
+		//}
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -447,7 +446,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		logHibachi("ERPONE - Starting importing importErpOneOrders");
 			
-		var response = this.getErpOneData({
+		var response = this.callErpOneGetDataApi({
     	    "table" : "oe_head"
     	}, "count");
     	
@@ -456,7 +455,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var pageSize = 100;
 		var recordsFetched = 0;
 		
-		while ( recordsFetched < totalRecordsCount ){
+		//while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				this.getOrderData( currentPage, pageSize );
@@ -469,9 +468,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 			
 			//increment regardless of success or failure;
-			recordsFetched += pageSize;
-			currentPage += 1;
-		}
+		// 	recordsFetched += pageSize;
+		// 	currentPage += 1;
+		// }
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -480,7 +479,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		logHibachi("ERPONE - Starting importing ErpOneOrderItems");
 
-		var response = this.getErpOneData({
+		var response = this.callErpOneGetDataApi({
     	    "table" : "oe_line"
     	}, "count");
 		
@@ -589,7 +588,35 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return erponeAccount;			
 	}
 	
-	
+	public any function convertSwOrderToErponeOrder(required any order){
+		var orderPropList =  "orderID,orderNumber,remoteID,orderOpenDateTime,currencyCode,account.companyCode";
+		
+		var addressPropList = 	this.getHibachiUtilityService().prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "billingAddress.");
+
+		orderPropList = orderPropList & ',' & addressPropList;
+		var swOrderStruct = arguments.order.getStructRepresentation( orderPropList );
+		var mapping = {
+			
+		 "orderNumber"					: "order",
+		 "orderOpenDateTime"			: "ord_date",
+		 "account_companyCode"			: "customer",
+		 "currencyCode"					: "currency_code",
+		 "billingAddress_country_code"	: "country_code",
+		 "billingAddress_postal_code"	: "postal_code",
+		 //"Address"						: "adr",
+		 "billingAddress_state"			: "state"
+		};
+
+		var erponeOrder = {};
+
+		for(var fromKey in mapping){
+			if( StructKeyExists( swOrderStruct, fromKey ) && !IsNull(swOrderStruct[fromKey]) ){
+				erponeOrder[mapping[fromKey]] = swOrderStruct[fromKey];
+			}
+		}
+
+		return erponeOrder;			
+	}
 	/**
 	 * @hint helper function, to push Data into @thisIntegration/Data.cfc for further processing, from EntityQueue
 	 * 
@@ -599,10 +626,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		arguments.data.payload = this.convertSwAccountToErponeAccount(arguments.entity);
 		arguments.create = false;
+		
 		//push to remote endpoint
-		
-		
-
         var payload = {
 		  "table"	 : "customer",
 		  "triggers" : "true",
@@ -630,8 +655,41 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		logHibachi("ERPOne - End Account pushData");
 	}
 	
-	public any function preProcessOrderData(required struct data ){
+	public void function pushOrderDataToErpOne(required any entity, any data ={}){
+		logHibachi("ERPOne - Start pushData - Order: #arguments.entity.getOrderID()#");
 		
+		arguments.data.payload = this.convertSwOrderToErponeOrder(arguments.entity);
+		arguments.create = false;
+		//push to remote endpoint
+		
+        var payload = {
+		  "table"	 : "oe_head",
+		  "triggers" : "true",
+		  "changes"	 : [ arguments.data.payload ]
+		};
+			
+		if( !this.hibachiIsEmpty(arguments.entity.getRemoteID()) ){
+			var response = this.callErpOneUpdateDataApi(payload, "update" );
+		} else {
+			var response = this.callErpOneUpdateDataApi(payload, "create" );
+		}
+		
+		
+		/** Format error:
+		 * typical error response: { "errordetail": "error", "filecontent": "null"};
+		 * typical successful response: {"table":"customer","updated":1,"triggers":false}
+		*/
+	
+		if( structKeyExists(response, 'updated') && response.updated > 0 ){
+			logHibachi("ERPOne - Successfully updated Account Data");
+		}
+		else {
+			throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+		}
+		logHibachi("ERPOne - End Account pushData");
+	}
+	
+	public any function preProcessOrderData(required struct data ){
 		if( left(arguments.data.order, 1) == '-' ){
 			return;
 		}
@@ -640,10 +698,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		        "ord_date"		: "orderOpenDateTime",
 		        "customer"		: "RemoteAccountID",
 		        "currency_code" : "currency_code",
-		        "country_code"  : "BillingAddress_countryCode",
-		        "postal_code"	: "BillingAddress_postalCode",
+		        "country_code"  : "billingAddress_countryCode",
+		        "postal_code"	: "billingAddress_postalCode",
 		        "adr"			: "Address",
-		        "state" 		: "BillingAddress_stateCode"
+		        "state" 		: "billingAddress_stateCode"
 		    };
 
 	    	var transformedItem = {};
@@ -658,9 +716,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	}
 
 	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
-	    	transformedItem.BillingAddress_streetAddress = transformedItem.Address[2];
-	    	transformedItem.BillingAddress_street2Address = transformedItem.Address[1];
-	    	transformedItem.BillingAddress_city = transformedItem.Address[4];
+	    	transformedItem.billingAddress_remoteAddressID = "bill_"&transformedItem.OrderNumber;
+	    	transformedItem.billingAddress_streetAddress = transformedItem.Address[1];
+	    	transformedItem.billingAddress_street2Address = transformedItem.Address[2];
+	    	transformedItem.billingAddress_city = transformedItem.Address[4];
 			transformedItem.Address = {
 					  "streetAddress"  : transformedItem.Address[2],
 	                  "street2Address" : transformedItem.Address[1],
