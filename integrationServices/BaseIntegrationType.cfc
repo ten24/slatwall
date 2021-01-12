@@ -150,9 +150,6 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 			logArguments['response'] = sanitizeForLogs(response['filecontent']);
 			logArguments['apiLogType'] = 'response';
 			getDAO('HibachiDataDAO').createApiLog(argumentCollection=logArguments);
-			
-			var maxDays = val(getHibachiScope().setting('globalIntegrationRequestLogExpirationDays')) * -1;
-			getDAO('HibachiDataDAO').deleteOldApiLogs(olderDate = dateAdd('d', maxDays, now()));
 		}
 		
 		if(structKeyExists(response, 'mimetype') && response['mimetype'] == 'application/json'){
