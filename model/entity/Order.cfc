@@ -721,7 +721,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
      * This method is added to handle frontend side of wordpress plugin
      * */
 	public any function getOrderRequiredStepsList() {
-		return getService("orderService").getOrderRequiredStepsList();
+		return getService("orderService").getOrderRequiredStepsList(order=this);
 	}
 
 	public numeric function getOrderPaymentAmountNeeded() {

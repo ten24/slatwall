@@ -156,9 +156,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
      * Required list property
      * It's a hard coded list of options that can be available with order requirements list
      * This method is added to handle frontend side of wordpress plugin
+     * @param -  order object
+     * @return - list of steps
      * */
-    public string function getOrderRequiredStepsList() {
-    	return "account,fulfillment,payment";
+    public string function getOrderRequiredStepsList(required any order) {
+    	var orderRequiredStepsList = "account";
+    	
+    	// Check each of the order Items and set fulfillment for non gift card items
+		var orderItemsCount = arrayLen(arguments.order.getOrderItems());
+		for(var i = 1; i <= orderItemsCount; i++) {
+			if( arguments.order.getOrderItems()[i].getSku().getProduct().getBaseProductType() != "gift-card" ) {
+				orderRequiredStepsList = listAppend(orderRequiredStepsList, "fulfillment");
+				break;
+			}
+		}
+    	
+    	orderRequiredStepsList = listAppend(orderRequiredStepsList, "payment");
+    	
+    	return orderRequiredStepsList;
     }
 	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
