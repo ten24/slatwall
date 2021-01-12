@@ -321,19 +321,20 @@ component extends="Slatwall.model.service.OrderService" {
     
     public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
         var returnOrderItem = super.addReturnOrderItemSetup(argumentCollection=arguments);
+        var returnOrderItemPrice = returnOrderItem.getPrice();
+        var returnOrderItemPercentage = arguments.originalOrderItem.getAllowableRefundPercent();
         if(isObject(arguments.originalOrderItem)){
 	        for(var priceField in variables.customPriceFields){
 	            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
-	            var returnOrderItemPrice = returnOrderItem.getPrice();
-	            var returnOrderItemPercentage = arguments.originalOrderItem.getAllowableRefundPercent();
+	            var returnPrice = returnOrderItemPrice;
 	            
-	            if(returnOrderItemPercentage != 100){
-	            	returnOrderItemPrice = getHibachiUtilityService().precisionCalculate(returnOrderItemPrice * 100 / returnOrderItemPercentage);	
+	            if(returnOrderItemPercentage != 100 && priceField != 'taxableAmount'){
+	            	returnPrice = getHibachiUtilityService().precisionCalculate(returnOrderItemPrice * 100 / returnOrderItemPercentage);	
 	            }
 	            
 	            if(!isNull(price)){
 	            	if(arguments.originalOrderItem.getExtendedPriceAfterDiscount() != 0){
-	                	price = price * returnOrderItemPrice / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+	                	price = price * returnPrice / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
 	            	}else{
 	            		price = 0;
 	            	}
