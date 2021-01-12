@@ -18,10 +18,8 @@ const HeartButton = ({ isSaved }) => {
 }
 
 const FeaturedProductCard = ({ isSpecial, brand, productTile, price, displayPrice, linkUrl, imgUrl }) => {
-  const styler = { width: '100%', display: 'inline-block' }
-
   return (
-    <div style={styler}>
+    <div>
       <div className="card product-card">
         {isSpecial && <span className="badge badge-primary">On Special</span>}
         <HeartButton isSaved={false} />
