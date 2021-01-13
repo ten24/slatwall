@@ -100,7 +100,7 @@ component entityname="SlatwallProductBundleBuildItem" table="SwProductBundleBuil
 			if (arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity')) {
 				return true;
 			}
-	        return quantity <= getMaximumOrderQuantity();
+	        return quantity <= getMaximumOrderQuantitySetting();
 		}
         return true;
     }
@@ -114,7 +114,7 @@ component entityname="SlatwallProductBundleBuildItem" table="SwProductBundleBuil
         return false;
     }
  	
- 	public numeric function getMaximumOrderQuantity() {
+ 	public numeric function getMaximumOrderQuantitySetting() {
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
