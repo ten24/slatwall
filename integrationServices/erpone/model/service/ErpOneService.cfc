@@ -53,6 +53,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="hibachiCacheService";
 	property name="hibachiDataService";
 	property name="hibachiUtilityService";
+	property name = "addressService";
 	
 	public any function getIntegration(){
 	    if( !structKeyExists( variables, 'integration') ){
@@ -601,20 +602,36 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		 "orderOpenDateTime"			: "ord_date",
 		 "account_companyCode"			: "customer",
 		 "currencyCode"					: "currency_code",
-		 "billingAddress_country_code"	: "country_code",
-		 "billingAddress_postal_code"	: "postal_code",
-		 //"Address"						: "adr",
-		 "billingAddress_state"			: "state"
+		 "billingAddress_countryCode"	: "country_code",
+		 "billingAddress_postalCode"	: "postal_code",
+		 "billingAddress_stateCode"	    : "state"
 		};
-
 		var erponeOrder = {};
-
+		var address = [];
 		for(var fromKey in mapping){
 			if( StructKeyExists( swOrderStruct, fromKey ) && !IsNull(swOrderStruct[fromKey]) ){
 				erponeOrder[mapping[fromKey]] = swOrderStruct[fromKey];
 			}
 		}
-
+		if( StructKeyExists( swOrderStruct, "billingAddress_street2Address" ) && !IsNull(swOrderStruct["billingAddress_street2Address"]) ){
+				address.append(swOrderStruct["billingAddress_street2Address"]);
+			}
+		if( StructKeyExists( swOrderStruct, "billingAddress_streetAddress" ) && !IsNull(swOrderStruct["billingAddress_streetAddress"]) ){
+			address.append(swOrderStruct["billingAddress_streetAddress"]);
+		}
+		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress3" )){
+			address.append("");
+		}
+		if( StructKeyExists( swOrderStruct, "billingAddress_city" ) && !IsNull(swOrderStruct["billingAddress_city"]) ){
+			address.append(swOrderStruct["billingAddress_city"]);
+		}
+		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress4" )){
+			address.append("");
+		}
+		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress5" )){
+			address.append("");
+		}
+		erponeOrder["adr"]=address;
 		return erponeOrder;			
 	}
 	/**
@@ -661,7 +678,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		arguments.data.payload = this.convertSwOrderToErponeOrder(arguments.entity);
 		arguments.create = false;
 		//push to remote endpoint
-		
         var payload = {
 		  "table"	 : "oe_head",
 		  "triggers" : "true",
@@ -681,15 +697,16 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		*/
 	
 		if( structKeyExists(response, 'updated') && response.updated > 0 ){
-			logHibachi("ERPOne - Successfully updated Account Data");
+			logHibachi("ERPOne - Successfully updated Order Data");
 		}
 		else {
-			throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+			throw("ERPONE - callErpOnePushOrderApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
 		}
-		logHibachi("ERPOne - End Account pushData");
+		logHibachi("ERPOne - End Order pushData");
 	}
 	
 	public any function preProcessOrderData(required struct data ){
+		//dump(data);abort;
 		if( left(arguments.data.order, 1) == '-' ){
 			return;
 		}
@@ -698,10 +715,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		        "ord_date"		: "orderOpenDateTime",
 		        "customer"		: "RemoteAccountID",
 		        "currency_code" : "currency_code",
-		        "country_code"  : "billingAddress_countryCode",
-		        "postal_code"	: "billingAddress_postalCode",
+		        "country_code"  : "countryCode",
+		        "postal_code"	: "postalCode",
 		        "adr"			: "Address",
-		        "state" 		: "billingAddress_stateCode"
+		        "state" 		: "stateCode"
 		    };
 
 	    	var transformedItem = {};
@@ -716,18 +733,35 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	}
 
 	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
-	    	transformedItem.billingAddress_remoteAddressID = "bill_"&transformedItem.OrderNumber;
-	    	transformedItem.billingAddress_streetAddress = transformedItem.Address[1];
-	    	transformedItem.billingAddress_street2Address = transformedItem.Address[2];
-	    	transformedItem.billingAddress_city = transformedItem.Address[4];
-			transformedItem.Address = {
+			transformedItem.FullAddress = {
 					  "streetAddress"  : transformedItem.Address[2],
 	                  "street2Address" : transformedItem.Address[1],
 	                  "city"           : transformedItem.Address[4],
-	                  "countryCode"	   : transformedItem.BillingAddress_countryCode,
-	                  "stateCode"	   : transformedItem.BillingAddress_stateCode,
-	                  "postalCode"	   : transformedItem.BillingAddress_postalCode,
+	                  "countryCode"	   : transformedItem.countryCode,
+	                  "stateCode"	   : transformedItem.stateCode,
+	                  "postalCode"	   : transformedItem.postalCode,
 			};
+			
+			//Billing address transform data
+			transformedItem.BillingAddress_remoteAddressID = "bill_"&transformedItem.OrderNumber;
+			transformedItem.BillingAddress_name			   = getAddressService().getAddressName(transformedItem.FullAddress);
+			transformedItem.BillingAddress_streetAddress   = transformedItem.Address[2];
+	        transformedItem.BillingAddress_street2Address  = transformedItem.Address[1];
+	        transformedItem.BillingAddress_city       	   = transformedItem.Address[4];
+	        transformedItem.BillingAddress_countryCode	   = transformedItem.countryCode;
+	        transformedItem.BillingAddress_stateCode	   = transformedItem.stateCode;
+	        transformedItem.BillingAddress_postalCode	   = transformedItem.postalCode;
+	        
+	        //Shipping address transform data
+			transformedItem.ShippingAddress_remoteAddressID 		= "ship_"&transformedItem.OrderNumber;
+			transformedItem.ShippingAddress_name					= getAddressService().getAddressName(transformedItem.FullAddress);
+			transformedItem.ShippingAddress_streetAddress   		= transformedItem.Address[2];
+	        transformedItem.ShippingAddress_street2Address  		= transformedItem.Address[1];
+	        transformedItem.ShippingAddress_city      				= transformedItem.Address[4];
+	        transformedItem.ShippingAddress_countryCode	    		= transformedItem.countryCode;
+	        transformedItem.ShippingAddress_stateCode	    		= transformedItem.stateCode;
+	        transformedItem.ShippingAddress_postalCode  			= transformedItem.postalCode;
+		    
 		    return transformedItem;
 	}
 	

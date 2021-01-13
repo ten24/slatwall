@@ -1639,13 +1639,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
             },
             "shippingAddress"		   : {
-            		  "name"		   : getAddressService().getAddressName(arguments.data.Address),
-	                  "streetAddress"  : arguments.data.BillingAddress_streetAddress,
-	                  "street2Address" : arguments.data.BillingAddress_street2Address,
-	                  "city"           : arguments.data.BillingAddress_city,
-	                  "countryCode"	   : arguments.data.BillingAddress_countryCode,
-	                  "stateCode"	   : arguments.data.BillingAddress_stateCode,
-	                  "postalCode"	   : arguments.data.BillingAddress_postalCode,
+            		  "name"		   : getAddressService().getAddressName(arguments.data.FullAddress),
+	                  "streetAddress"  : arguments.data.Address[2],
+	                  "street2Address" : arguments.data.Address[1],
+	                  "city"           : arguments.data.Address[4],
+	                  "countryCode"	   : arguments.data.countryCode,
+	                  "stateCode"	   : arguments.data.stateCode,
+	                  "postalCode"	   : arguments.data.postalCode,
 	           },
         }];
     }
