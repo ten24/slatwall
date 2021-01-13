@@ -9,10 +9,10 @@ const MyForm = ({ status, message, onValidated }) => {
       company &&
       email.value.indexOf('@') > -1 &&
       onValidated({
-        EMAIL: email.value,
-        LNAME: lName.value,
-        FNAME: fName.value,
-        COMPANY: company.value,
+        MERGE0: email.value,
+        MERGE2: lName.value,
+        MERGE1: fName.value,
+        MERGE3: company.value,
       })
   }
 

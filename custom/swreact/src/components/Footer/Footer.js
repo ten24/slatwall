@@ -2,58 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import logo from '../../assets/images/sb-logo-white.png'
 import { connect } from 'react-redux'
-import { useFormik } from 'formik'
 import { ActionBanner, SignUpForm } from '..'
 import SWImage from '../SWImage/SWImage'
 // import * as Yup from 'yup'
-
-const NewsletterForm = () => {
-  const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      company: '',
-      email: '',
-    },
-
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2))
-    },
-  })
-
-  return (
-    <form onSubmit={formik.handleSubmit}>
-      <div className="input-group input-group-overlay flex-nowrap">
-        <div className="input-group-prepend-overlay">
-          <span className="input-group-text text-muted font-size-base"></span>
-        </div>
-        <div className="row">
-          <div className="col-12 d-flex">
-            <input className="form-control prepended-form-control mr-2" type="text" name="firstName" id="firstName" onChange={formik.handleChange} value={formik.values.firstName} placeholder="First Name" required />
-            <input className="form-control prepended-form-control mr-2" type="text" name="lastName" id="lastName" onChange={formik.handleChange} value={formik.values.lastName} placeholder="Last Name" required />
-            <input className="form-control prepended-form-control" type="text" name="company" id="company" onChange={formik.handleChange} value={formik.values.company} placeholder="Company" required />
-          </div>
-          <div className="col-12 d-flex pt-2">
-            <input className="form-control prepended-form-control" type="email" name="email" id="email" placeholder="Your email" onChange={formik.handleChange} value={formik.values.email} required />
-            <div className="input-group-append">
-              <button className="btn btn-primary" type="submit" name="subscribe" id="mc-embedded-subscribe">
-                Subscribe*
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* <!--- real people should not fill this in and expect good things - do not remove this or risk form bot signups---> */}
-      <div style={{ position: 'absolute', left: '-5000px' }} aria-hidden="true">
-        <input type="text" name="b_c7103e2c981361a6639545bd5_29ca296126" tabIndex="-1" />
-      </div>
-      <small className="form-text text-light opacity-50" id="mc-helper">
-        *Subscribe to our newsletter to receive early discount offers, updates and new products info.
-      </small>
-      <div className="subscribe-status"></div>
-    </form>
-  )
-}
 
 function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
   return (
