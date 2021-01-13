@@ -39,8 +39,8 @@ export const logout = () => {
 }
 
 export const login = (email, password) => {
-  console.log('login', email)
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    let state = getState()
     dispatch(requestLogin())
     dispatch(requestUser())
 
