@@ -396,7 +396,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
 				order.setOrderStatusType(SHIPPED);
-
+				ormStatelessSession.update("SlatwallOrder",order);
 				orderDeliveryRemoteIDList = listAppend(orderDeliveryRemoteIDList, shipment.shipmentId)
 			}
 			if(persist){
