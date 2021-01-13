@@ -1,4 +1,3 @@
-import validator from 'validator'
 import { SlatwalApiService } from '../services'
 import { requestUser, receiveUser, clearUser } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
