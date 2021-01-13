@@ -1,0 +1,10 @@
+{
+	"properties": {
+		"name": [{ "contexts": "save", "required": true }],
+		"mappingCode": [
+		    { "contexts": "save", "required": true, "uniqueOrNull": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$" } }
+		],
+		"baseObject": [{ "contexts": "save", "required": true }],
+		"mapping": [{ "contexts": "save", "required": true }]
+	}
+}
