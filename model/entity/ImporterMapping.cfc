@@ -3,6 +3,7 @@ component displayname="ImporterMapping" entityname="SlatwallImporterMapping" tab
     // Persistent Properties
 	property name="importerMappingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
     property name="name" ormtype="string";
+    property name="mappingCode" ormtype="string";
     property name="description" ormtype="string";
     property name="baseObject" ormtype="string" hb_formFieldType="select";
     property name="mapping" ormtype="string" hb_formFieldType="json";

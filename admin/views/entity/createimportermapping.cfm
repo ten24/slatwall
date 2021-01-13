@@ -11,6 +11,7 @@
 			<hb:HibachiPropertyRow>
 				<hb:HibachiPropertyList>
 					<hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="name" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="mappingCode" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="description" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="baseObject" edit="#rc.edit#">
                     <hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="mapping" edit="#rc.edit#">
