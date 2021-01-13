@@ -1,2 +1,0 @@
-(this.webpackJsonpswreact=this.webpackJsonpswreact||[]).push([[19],{130:function(e,t,r){"use strict";r.r(t);var c=r(4),n=(r(0),r(68)),s=r(25);t.default=Object(s.b)((function(e){return e.preload}))((function(){return Object(c.jsxs)(n.h,{children:[Object(c.jsx)("h1",{children:"ProductSearch"}),Object(c.jsx)("a",{target:"_blank",rel:"noreferrer",href:"https://stoneandberg.ten24dev.com/products",children:"Template"})]})}))}}]);
-//# sourceMappingURL=19.d941b315.chunk.js.map

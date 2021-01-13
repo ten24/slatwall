@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { BreadCrumb, FeaturedProductCard, Layout } from '../../components'
 import { connect } from 'react-redux'
+import { getUser } from '../../actions/userActions'
+import { search, setKeyword, setSort } from '../../actions/productSearchActions'
+import _ from 'lodash'
 
 const ProductListingHeader = ({ title, crumbs }) => {
   return (
@@ -16,7 +19,7 @@ const ProductListingHeader = ({ title, crumbs }) => {
     </div>
   )
 }
-const ProductListingToolBar = ({ sortOptions, appliedFilters }) => {
+const ProductListingToolBar = ({ searchWithFilters, sortByAction, sortOptions, appliedFilters, sortBy }) => {
   return (
     <div className="d-flex justify-content-center justify-content-sm-between align-items-center pt-2 pb-4 pb-sm-5">
       <div className="d-flex flex-wrap">
@@ -40,12 +43,13 @@ const ProductListingToolBar = ({ sortOptions, appliedFilters }) => {
         <label className="text-dark opacity-75 text-nowrap mr-2 mb-0 d-none d-sm-block" htmlFor="sorting">
           Sort by:
         </label>
-        {/* <select className="form-control custom-select" id="sorting" value={this.state.value} onChange={this.handleChange}> */}
         <select
           className="form-control custom-select"
           id="sorting"
-          onChange={e => {
-            console.log('changes Select', e)
+          value={sortBy}
+          onChange={event => {
+            sortByAction(event.target.value)
+            searchWithFilters()
           }}
         >
           {sortOptions &&
@@ -176,7 +180,23 @@ const ProductListingFilter = ({ name, type, options, index }) => {
   )
 }
 
-const ProductListingSidebar = ({ filters, resultCount = '287' }) => {
+const ProductListingSidebar = ({ searchWithFilters, setKeywordAction, keyword, filters, resultCount = '287' }) => {
+  const [searchTerm, setSearchTerm] = useState(keyword)
+
+  const slowlyRequest = useCallback(
+    _.debounce(value => {
+      console.log('sdfd', value)
+      // this can also dispatch a redux action
+      setKeywordAction(value)
+      searchWithFilters()
+    }, 500),
+    []
+  )
+
+  const handleInputChange = e => {
+    setSearchTerm(e.target.value)
+    slowlyRequest(e.target.value)
+  }
   return (
     <div className="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
       <div className="cz-sidebar-header box-shadow-sm">
@@ -194,7 +214,7 @@ const ProductListingSidebar = ({ filters, resultCount = '287' }) => {
             <span className="text-right col">{resultCount} Results</span>
           </div>
           <div className="input-group-overlay input-group-sm mb-2">
-            <input className="cz-filter-search form-control form-control-sm appended-form-control" type="text" placeholder="Search by product title or SKU" />
+            <input className="cz-filter-search form-control form-control-sm appended-form-control" type="text" value={searchTerm} onChange={handleInputChange} placeholder="Search by product title or SKU" />
             <div className="input-group-append-overlay">
               <span className="input-group-text">
                 <i className="fa fa-search"></i>
@@ -212,19 +232,19 @@ const ProductListingSidebar = ({ filters, resultCount = '287' }) => {
     </div>
   )
 }
-const ProductListing = ({ crumbs, products, title, filters, appliedFilters, sortOptions }) => {
+const ProductListing = ({ keyword, setKeywordAction, searchWithFilters, crumbs, products, title, appliedFilters, sortOptions, sortByAction, sortBy, potentialFilters }) => {
   return (
     <Layout>
       <ProductListingHeader title={title} crumbs={crumbs} />
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <aside className="col-lg-4">
-            <ProductListingSidebar filters={filters} />
+            <ProductListingSidebar setKeywordAction={setKeywordAction} searchWithFilters={searchWithFilters} keyword={keyword} filters={potentialFilters} />
           </aside>
           <div className="col-lg-8">
-            <ProductListingToolBar appliedFilters={appliedFilters} sortOptions={sortOptions} />
+            <ProductListingToolBar searchWithFilters={searchWithFilters} sortByAction={sortByAction} appliedFilters={appliedFilters} sortBy={sortBy} sortOptions={sortOptions} />
             <ProductListingGrid productResults={products} />
-            <ProductListingPagination />
+            <ProductListingPagination searchWithFilters={searchWithFilters} />
           </div>
         </div>
       </div>
@@ -233,9 +253,16 @@ const ProductListing = ({ crumbs, products, title, filters, appliedFilters, sort
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return preload.productListing
+  const { preload, productSearchReducer } = state
+  return { ...preload.productListing, ...productSearchReducer }
 }
-
-export default connect(mapStateToProps)(ProductListing)
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: async () => dispatch(getUser()),
+    sortByAction: async sortBy => dispatch(setSort(sortBy)),
+    setKeywordAction: async keyword => dispatch(setKeyword(keyword)),
+    searchWithFilters: async () => dispatch(search()),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ProductListing)
 //          <BreadCrumb crumbs={crumbs} />
