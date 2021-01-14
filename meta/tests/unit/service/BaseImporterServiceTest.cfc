@@ -322,32 +322,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
 	
 	
-	 /**
-     * @test
-    */
-    public void function getEntityMapping_should_call_extention_point_when_declared(){
-        
-        // declare a mock finction on the target-service
-        function getAccountMapping_spy(){
-            this['getAccountMapping_spy_called'] = "it works";
-            return {};
-        }
-        
-        variables.service['getAccountMapping'] = getAccountMapping_spy;
-        
-        this.getService().getEntityMapping( "Account" );
-        
-        expect( variables.service ).toHaveKey('getAccountMapping_spy_called');
-        expect( variables.service.getAccountMapping_spy_called ).toBe('it works');
-        
-        debug(variables.service.getAccountMapping_spy_called);
-        
-        // cleanup
-        structDelete( variables.service, 'getAccountMapping_spy_called');
-        structDelete( variables.service, 'getAccountMapping');
-    }
-
-	
 	/*****************************.  Validation.  .******************************/
 	
 	/**
@@ -2021,8 +1995,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         expect( transformedData.__lazy ).toHaveKey('relations');
         
         
-        expext(transformedData.brand).toHaveKey('__lazy');
-        expext(transformedData.brand.__lazy).toHaveKey('properties');
+        expect(transformedData.brand).toHaveKey('__lazy');
+        expect(transformedData.brand.__lazy).toHaveKey('properties');
     }
 
     /**

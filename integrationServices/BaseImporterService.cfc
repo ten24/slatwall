@@ -52,6 +52,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "locationService";
 	property name = "stockService";
 	property name = "addressService";
+	property name = "importerMappingService";
 	
 	property name = "hibachiService";
 	property name = "hibachiUtilityService";
@@ -78,29 +79,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         throw("override this function in your integrtion service to return the associated instance of integration-entity");
     }
 
-	public struct function getEntityMapping( required string entityName ){
+	public struct function getEntityMapping( required string mappingCode ){
 	    
-	    var extentionFunctionName = 'get#arguments.entityName#Mapping';
-	    if( structKeyExists(this, extentionFunctionName) ){
-	        return this.invokeMethod( extentionFunctionName, arguments );
-	    }
-	    
-	    
-	    var cachedMappings = this.getCachedEntityMappings();
-	    
-	    if( !structKeyExists( cachedMappings, arguments.entityName) ){
-	        
-	        //Can be overriden to Read from Files/DB/Function whatever 
-	        var mappingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#ucFirst(arguments.entityName)#.json');
-	        
-	        if( isJson(mappingJson) ){
-	            cachedMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);
-	        } else {
-	            throw( "Mapping for #arguments.entityName#.json is not valid : \n" &mappingJson );
-	        }
-	    }
-	    
-        return cachedMappings[ arguments.entityName ];
+	    return this.getImporterMappingService().getMappingByMappingCode(arguments.mappingCode);
 	}
 
   	public struct function createEntityCSVHeaderMetaDataRecursively( required string entityName, string sourceDataKeysPrefix = '' ){

@@ -51,9 +51,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="importerMappingDAO" type="any";
 	property name="hibachiCacheService" type="any";
 	
-	public any function init(){
-	    super.init(argumentCollection=arguments);
-	}
+	property name="mappingCacheLoadedFlag" default=false;
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -104,19 +102,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		)
 		.each( function(fileName){
 
-	        var mappingJson = FileRead( baseDir & fileName);
+	        var mappingJson = FileRead( baseDir & arguments.fileName);
 	        if(!this.isValidImporterMappingConfig(mappingJson)){
 	            throw("Importer Mapping File #file# is not valid \n" &mappingJson );
 	        }
 	        
 	        var mappingStruct = deSerializeJSON(mappingJson);
-	        mappingStruct['mappingCode'] = listFirst(fileName, '.');
+	        mappingStruct['mappingCode'] = listFirst(arguments.fileName, '.');
 	        defaultMappings[ mappingStruct.mappingCode ] = mappingStruct;
 		});
 		
 		structAppend( defaultMappings, this.getMappingsFromDB() );
 	    
 	    this.setCachedMappings(defaultMappings);
+	    this.setMappingCacheLoadedFlag(true);
 	}
 	
 	public struct function getMappingsFromDB(){
@@ -135,6 +134,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public struct function getCachedMappings(){
+	    if(!this.getMappingCacheLoadedFlag()){
+	        this.reloadMappings();
+	    }
+	    
 	    return this.getHibachiCacheService().getCachedValue('importerMappings');
 	}
 	
