@@ -43,6 +43,7 @@ class ReturnOrderItem{
     public taxRefundAmount:number;
     public returnQuantity=0;
     public maxRefund:number;
+    public penaltyFreeMaxRefund:number;
     public orderType:string;
 
     constructor(obj,orderDiscountRatio, orderType){
@@ -70,6 +71,11 @@ class ReturnOrderItem{
         }else{
             this.maxRefund =  this.applyRefundPercentage(this.total);
         }
+        if(this.calculatedExtendedUnitPriceAfterDiscount){
+            this.penaltyFreeMaxRefund = this.calculatedExtendedUnitPriceAfterDiscount * this.returnQuantityMaximum;
+        }else{
+            this.penaltyFreeMaxRefund = this.total;
+        }
         return this;
     }
     
@@ -79,21 +85,21 @@ class ReturnOrderItem{
     public getAllocatedRefundOrderDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
             
-            return getDecimalRep( (this.allocatedOrderDiscountAmount * this.refundTotal * this.maxRefund / Math.pow(this.total,2)) );
+            return getDecimalRep( (this.allocatedOrderDiscountAmount * this.refundTotal * this.penaltyFreeMaxRefund / Math.pow(this.total,2)) );
         }
         return 0;
     }
     
     public getAllocatedRefundOrderPVDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
-            return getDecimalRep( (this.allocatedOrderPersonalVolumeDiscountAmount * this.refundPVTotal * this.maxRefund / (this.pvTotal * this.total)) );
+            return getDecimalRep( (this.allocatedOrderPersonalVolumeDiscountAmount * this.refundPVTotal * this.penaltyFreeMaxRefund / (this.pvTotal * this.total)) );
         }
         return 0;
     }
     
     public getAllocatedRefundOrderCVDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
-            return getDecimalRep( (this.allocatedOrderCommissionableVolumeDiscountAmount * this.refundCVTotal * this.maxRefund / (this.cvTotal * this.total) ) );
+            return getDecimalRep( (this.allocatedOrderCommissionableVolumeDiscountAmount * this.refundCVTotal * this.penaltyFreeMaxRefund / (this.cvTotal * this.total) ) );
         }
         return 0;
     }
