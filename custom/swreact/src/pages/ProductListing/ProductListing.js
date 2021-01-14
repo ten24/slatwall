@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { BreadCrumb, FeaturedProductCard, Layout } from '../../components'
 import { connect } from 'react-redux'
 import { getUser } from '../../actions/userActions'
@@ -130,6 +130,13 @@ const ProductListingPagination = () => {
   )
 }
 const ProductListingFilter = ({ name, type, options, index }) => {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+
+  useEffect(() => {
+    setSearchResults(options.filter(option => option.name.toLowerCase().includes(searchTerm.toLowerCase())))
+  }, [searchTerm])
+
   return (
     <div className="card border-bottom pt-1 pb-2 my-1">
       <div className="card-header">
@@ -144,7 +151,15 @@ const ProductListingFilter = ({ name, type, options, index }) => {
         <div className="card-body">
           <div className="widget widget-links cz-filter">
             <div className="input-group-overlay input-group-sm mb-2">
-              <input className="cz-filter-search form-control form-control-sm appended-form-control" type="text" placeholder="Search" />
+              <input
+                className="cz-filter-search form-control form-control-sm appended-form-control"
+                value={searchTerm}
+                onChange={event => {
+                  setSearchTerm(event.target.value)
+                }}
+                type="text"
+                placeholder="Search"
+              />
               <div className="input-group-append-overlay">
                 <span className="input-group-text">
                   <i className="far fa-search"></i>
@@ -152,8 +167,8 @@ const ProductListingFilter = ({ name, type, options, index }) => {
               </div>
             </div>
             <ul className="widget-list cz-filter-list pt-1" style={{ height: '12rem' }} data-simplebar data-simplebar-auto-hide="false">
-              {options &&
-                options.map(({ name, link, count, sub }, index) => {
+              {searchResults &&
+                searchResults.map(({ name, link, count, sub }, index) => {
                   return (
                     <li key={index} className="widget-list-item cz-filter-item">
                       <a className="widget-list-link d-flex justify-content-between align-items-center" href={link}>
@@ -182,11 +197,12 @@ const ProductListingFilter = ({ name, type, options, index }) => {
 
 const ProductListingSidebar = ({ searchWithFilters, setKeywordAction, keyword, filters, resultCount = '287' }) => {
   const [searchTerm, setSearchTerm] = useState(keyword)
+  if (searchTerm !== keyword) {
+    setSearchTerm(keyword)
+  }
 
   const slowlyRequest = useCallback(
     _.debounce(value => {
-      console.log('sdfd', value)
-      // this can also dispatch a redux action
       setKeywordAction(value)
       searchWithFilters()
     }, 500),
