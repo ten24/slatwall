@@ -142,10 +142,10 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		
 		var response = httpService.send().getPrefix();
 		
-		var reponseTime = getTickCount() - requestStartTime;
+		var responseTime = getTickCount() - requestStartTime;
 		
 		if(logRequest){
-			logArguments['responseTime'] = reponseTime;
+			logArguments['responseTime'] = responseTime;
 			logArguments['statusCode'] = response['status_code'];
 			logArguments['response'] = sanitizeForLogs(response['filecontent']);
 			logArguments['apiLogType'] = 'response';
@@ -153,7 +153,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		}
 		
 		if(structKeyExists(response, 'mimetype') && response['mimetype'] == 'application/json'){
-			response['filecontent'] = DeserializeJSON(response['filecontent']);
+			response.fileContent = DeserializeJSON(response.fileContent);
 		}
 		
 		return response;

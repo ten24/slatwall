@@ -520,7 +520,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					arguments.responseBean.addError("Nexio error",getErroMessage);
 			}else if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
-				arguments.responseBean.setProviderTransactionID(responseData.id);
+				arguments.responseBean.setProviderTransactionID(responseData.id
 				if(structKeyExists(responseData, 'authCode')){
 					arguments.responseBean.setAuthorizationCode(responseData.authCode);
 				}
@@ -702,7 +702,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		var postData = {};
 		var requestMethod = 'POST';
 		var headers = {
-			'Authorization' : toBase64('#username#:#password#') // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
+			'Authorization' : 'Basic ' & toBase64('#username#:#password#') // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
 		};
 
 		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
@@ -731,7 +731,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Server error handling - Unavailable or Communication Problem
 			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
-				
+				responseData = httpResponse.fileContent;
 				// Public error message
 				if ( isStruct( responseData ) && structKeyExists( responseData, 'message' ) ) {
 					arguments.responseBean.addError( 'serverCommunicationFault', responseData.message );
@@ -774,7 +774,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			} else {
 				arguments.responseBean.setStatusCode(httpResponse.status_code);
 				// Convert JSON response
-				responseData = deserializeJSON(httpResponse.fileContent);
+				
+				responseData = httpResponse.fileContent;
+				
 				if(structKeyExists(responseData, 'gatewayResponse') && structKeyExists(responseData['gatewayResponse'], 'refNumber')){
 					arguments.responseBean.setReferenceNumber(responseData.gatewayResponse.refNumber)
 				}
