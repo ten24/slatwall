@@ -36,9 +36,7 @@
 Notes:
 */
 
-component accessors='true' output='false' displayname='Avalara-Address' 
-extends="Slatwall.integrationServices.BaseAddress"
-implements="Slatwall.integrationServices.AddressInterface" {
+component accessors='true' output='false' displayname='Avalara-Address' extends="Slatwall.integrationServices.BaseAddress" implements="Slatwall.integrationServices.AddressInterface" {
 
 	property name='avataxService' type='any' persistent='false';
 

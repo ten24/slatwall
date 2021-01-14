@@ -78,5 +78,85 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	public string function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
+	
+	
+	
+	/**
+	 * Helper function to remove any sensitive data from the API Request before saving to the DB
+	 */
+	 public string function getBlacklistedKeys(){
+		return 'apikey|password|creditcard|Authorization';
+	}
+	
+	public string function sanitizeForLogs(required string data){
+		var protectedValues = getBlacklistedKeys();
+		
+		//Handle JSON
+		var sanitizedValue = reReplaceNoCase(arguments.data, '"(#protectedValues#)":"([^"]+)"', '"\1":"[REDACTED]"', 'ALL');
+		
+		//Handle QueryStrings/FormPosts
+		sanitizedValue = reReplaceNoCase(sanitizedValue, '(#protectedValues#)=([^&]+)', '\1=[REDACTED]', 'ALL');
+
+		return sanitizedValue;
+	}
+
+	public struct function request(string url, string method='GET', struct data={}, string dataType = 'html', struct headers={}, numeric timeout = 3, string charset = 'UTF-8'){
+		var logRequest = getHibachiScope().setting('globalIntegrationRequestLog');
+		
+		var logArguments = {
+			'source' : getPackageName(),
+			'apiLogType' : 'request',
+			'requestIdentifier' : createHibachiUUID(),
+			'targetUrl' : sanitizeForLogs(arguments.url),
+			'method' : arguments.method,
+			'data' : sanitizeForLogs(SerializeJSON(arguments.data)),
+			'header' : sanitizeForLogs(SerializeJSON(arguments.headers))
+		}
+		
+		var httpService = new http(
+			method  = arguments.method,
+			url     = arguments.url,
+			timeout = arguments.timeout,
+			charset = arguments.charset
+		);
+	
+		// Set headers
+		for(var headerName in arguments.headers){
+			httpService.addParam(type="header", name=headerName, value=arguments.headers[headerName]);
+		}
+		
+		// Set Payload
+		if(arguments.dataType == 'json'){
+			httpService.addParam(type="body", value=SerializeJSON(arguments.data));
+		}else{
+			var paramType = arguments.method == 'GET' ? 'URL' : 'formField';
+			for(var dataName in arguments.data){
+				httpService.addParam(type=paramType, name=dataName, value=arguments.data[dataName]);
+			}
+		}
+		
+		if(logRequest){
+			getDAO('HibachiDataDAO').createApiLog(argumentCollection=logArguments);
+		}
+		var requestStartTime = getTickCount();
+		
+		var response = httpService.send().getPrefix();
+		
+		var reponseTime = getTickCount() - requestStartTime;
+		
+		if(logRequest){
+			logArguments['responseTime'] = reponseTime;
+			logArguments['statusCode'] = response['status_code'];
+			logArguments['response'] = sanitizeForLogs(response['filecontent']);
+			logArguments['apiLogType'] = 'response';
+			getDAO('HibachiDataDAO').createApiLog(argumentCollection=logArguments);
+		}
+		
+		if(structKeyExists(response, 'mimetype') && response['mimetype'] == 'application/json'){
+			response['filecontent'] = DeserializeJSON(response['filecontent']);
+		}
+		
+		return response;
+	}
 
 }

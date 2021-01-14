@@ -61,6 +61,8 @@ class SWWorkflowTriggers{
                 scope.schedule = {
                     'tableID' : 'LD' + utilityService.createID()
                 };
+                
+                scope.lockLevelOptions = [{ 'name': 'Database', 'value':'database'},{ 'name': 'Application', 'value':'application'}];
 
                 scope.$watch('workflowTriggers.selectedTrigger', function(newValue, oldValue){
                     if(newValue !== undefined && newValue !== oldValue){
@@ -284,6 +286,9 @@ class SWWorkflowTriggers{
 				scope.setAsSchedule = function(workflowTrigger){
                     if(!workflowTrigger.$$isPersisted()){
                         workflowTrigger.data.saveTriggerHistoryFlag = 1;
+                        workflowTrigger.data.collectionBasedFlag = 1;
+                        workflowTrigger.data.collectionFetchRecordsFlag = 1;
+                        workflowTrigger.data.collectionPassthrough = 0;
                     }
 				};
 

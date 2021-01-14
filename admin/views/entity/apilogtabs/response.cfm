@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,29 +45,19 @@
 
 Notes:
 
-*/
-component extends="Slatwall.integrationServices.BaseIntegrationType" {
-	
-	public any function init() {
-		return this;
-	}
-	
-	public any function getTaxRates(required any requestBean) {
-		return getTransient("TaxRatesResponseBean");
-	}
-	
-	public any function testIntegration() {
- 		var requestBean = new Slatwall.model.transient.tax.TaxRatesRequestBean();
- 		requestBean.setAccount(getHibachiScope().getAccount());
- 		requestBean.setOrder(getHibachiScope().getCart());
- 		
- 		var testAddress = getHibachiScope().getAccount().getAddress();
- 		requestbean.setBillToStreetAddress(testAddress.getStreetAddress());
- 		requestbean.setBillToCity(testAddress.getCity());
- 		requestbean.setBillToStateCode(testAddress.getStateCode());
- 		requestbean.setBillToPostalCode(testAddress.getPostalCode());
- 		requestbean.setBillToCountryCode(testAddress.getCountryCode());
- 		
- 		return getTaxRates(requestBean);
- 	}
-}
+--->
+
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
+
+<cfparam name="rc.apiLog" type="any" />
+<cfset rc.edit = false />
+
+<cfoutput>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.apiLog#" property="response" edit="false">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+</cfoutput>

@@ -348,6 +348,13 @@ class HibachiService{
 
         return request.promise;
     };
+    getUtilityOptions= () => {
+
+        var urlString = this.getUrlWithActionPrefix()+'api:main.getUtilityMethods';
+		let request = this.requestService.newAdminRequest(urlString)
+
+        return request.promise;
+    };
 	checkUniqueOrNullValue = (object, property, value) => {
 		var objectName = object.metaData.className;
 		var objectID = object.$$getID();

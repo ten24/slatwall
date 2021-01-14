@@ -272,6 +272,51 @@
 	                                <input type="checkbox" data-ng-model="swWorkflowTaskActions.deleteConfirmed" id="j-delete-confirm"><label for="j-delete-confirm"> Confirm "{{swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject}}" object will be deleted</label>
 	                            </div>
 	                        </div>
+	                        
+	                        <div 	class="s-filter-group-item"
+									data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'utility'">
+                                <h4>Utility Method</h4>
+                                <div class="form-group form-group-sm">
+                                    <!--- search --->
+                                    <div class="s-select-list-wrapper s-search">
+                                        <div class="form-group">
+                                            <!-- Option select field wrapper -->
+                                            <div class="input-group">
+                                                <div class="s-input-btn">
+                                                    <!-- Need to display the workflow event name if it exists -->
+                                                    <input type="search" class="form-control" name="processMethod" placeholder="Search&hellip;" data-ng-model="swWorkflowTaskActions.searchProcess.name" data-ng-focus="swWorkflowTaskActions.searchProcess.name = ''" data-ng-change="swWorkflowTaskActions.getUtilityOptions()">
+                                                    <!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
+                                                    <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
+
+                                                </div>
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-sm btn-default" data-ng-click="swWorkflowTaskActions.getUtilityOptions();"><i class="fa fa-caret-down"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Dropdown wrapper -->
+                                        <div class="dropdown s-search-results-wrapper" data-ng-if="swWorkflowTaskActions.showUtilityOptions">
+                                            <ul class="dropdown-menu" ng-if="swWorkflowTaskActions.utilityOptions">
+                                                <li data-ng-repeat="utilityOption in swWorkflowTaskActions.utilityOptions | filter:swWorkflowTaskActions.searchProcess.name">
+                                                    <a data-ng-click="swWorkflowTaskActions.selectUtility(utilityOption)">{{utilityOption.name}}</a>
+                                                </li>
+                                                <li data-ng-if="(utilityOptions | filter:swWorkflowTaskActions.searchProcess.name).length == 0">
+                                                    <a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                
+                                <sw-property-display
+                                    data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+                                    data-property-identifier="processMethodData"
+                                    data-editable="true"
+                                    data-editing="true"
+    	                        >
+    	                       </sw-property-display>
+	                        </div>
 	                        <!-- //Filter Criteria End -->
 	                    </div>
 	                    <div class="col-xs-3">

@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,29 +45,23 @@
 
 Notes:
 
-*/
-component extends="Slatwall.integrationServices.BaseIntegrationType" {
-	
-	public any function init() {
-		return this;
-	}
-	
-	public any function getTaxRates(required any requestBean) {
-		return getTransient("TaxRatesResponseBean");
-	}
-	
-	public any function testIntegration() {
- 		var requestBean = new Slatwall.model.transient.tax.TaxRatesRequestBean();
- 		requestBean.setAccount(getHibachiScope().getAccount());
- 		requestBean.setOrder(getHibachiScope().getCart());
- 		
- 		var testAddress = getHibachiScope().getAccount().getAddress();
- 		requestbean.setBillToStreetAddress(testAddress.getStreetAddress());
- 		requestbean.setBillToCity(testAddress.getCity());
- 		requestbean.setBillToStateCode(testAddress.getStateCode());
- 		requestbean.setBillToPostalCode(testAddress.getPostalCode());
- 		requestbean.setBillToCountryCode(testAddress.getCountryCode());
- 		
- 		return getTaxRates(requestBean);
- 	}
-}
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+
+<cfparam name="rc.apiLog" type="any" />
+<cfset rc.edit = false />
+
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.apiLog#" edit="false">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.apiLog#" edit="false" showdelete="false" pageTitle="API Log" />
+								   
+		<hb:HibachiEntityDetailGroup object="#rc.apiLog#">
+			<hb:HibachiEntityDetailItem view="admin:entity/apilogtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/apilogtabs/response" open="true" />
+		</hb:HibachiEntityDetailGroup>
+		
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

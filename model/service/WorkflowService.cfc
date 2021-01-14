@@ -266,7 +266,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				getService('hibachiEventService').announceEvent('beforeWorkflowTriggerPopulate',{workflowTrigger=arguments.workflowTrigger,timeout=timeout});
 				
-				if(	!isNull(arguments.workflowTrigger.getCollection()) ){
+				if(	arguments.workflowTrigger.getCollectionBasedFlag() && !isNull(arguments.workflowTrigger.getCollection()) ){
 					
 					var scheduleCollection = arguments.workflowTrigger.getCollection();
 					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
@@ -542,6 +542,20 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 				
 				break; 
+				
+			case 'utility' :
+				// Append extra data passed in the WorkflowAction
+				structAppend(arguments.data, arguments.workflowTaskAction.getProcessMethodDataStruct(), true);
+				
+				try{
+					var processMethod = getService('HibachiUtilityService').invokeMethod(arguments.workflowTaskAction.getProcessMethod(), arguments.data );
+					actionSuccess = true;
+				}catch(any e){
+					actionSuccess = false;
+				}
+				
+				
+				break;
 
 			//IMPORT
 			case 'import' :

@@ -46,9 +46,7 @@
 Notes:
 
 */
-component accessors="true" output="false" displayname="Avatax" 
-implements = "Slatwall.integrationServices.TaxInterface" 
-extends = "Slatwall.integrationServices.BaseTax" {
+component accessors="true" output="false" displayname="Avatax" implements = "Slatwall.integrationServices.TaxInterface" extends = "Slatwall.integrationServices.BaseTax" {
 	
 	property name='avataxService' type='any' persistent='false';
 
@@ -313,33 +311,35 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		}
 		
 		// Setup Request to push to Avatax
-        var httpRequest = new http();
-        httpRequest.setMethod("POST");
+		
+		
+
         var testingFlag = setting('testingFlag');
         if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
         	testingFlag = arguments.requestBean.getOrder().getTestOrderFlag();
         }
         
-        if(testingFlag) {
-        	httpRequest.setUrl(setting('testURL'));	
-        } else {
-        	httpRequest.setUrl(setting('productionURL'));
+        var requestURL = setting('testURL');
+        
+        if(!testingFlag) {
+        	requestURL = setting('productionURL');
         }
         
-        // Set the auth and other http headers
-        getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
-
-		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
-		httpRequest.setTimeout(60);
-	
-		var responseData = httpRequest.send().getPrefix();
+		var responseData = request(
+			url = requestURL,
+			method = 'POST',
+			data = requestDataStruct,
+			dataType='json',
+			headers = getAvataxService().getHttpHeaders(),
+			timeout = 60
+		);
 		
-		if (IsJSON(responseData.FileContent)){
+		if (isStruct(responseData.FileContent)){
 			
 			// a valid response was retrieved
 			// health check passed
 			responseBean.healthcheckFlag = true;
-			var fileContent = DeserializeJSON(responseData.FileContent);
+			var fileContent = responseData.FileContent;
 
 			if (structKeyExists(fileContent, 'resultCode') && fileContent.resultCode == 'Error'){
 				var avalaraError = fileContent.messages['1']['Summary'];
@@ -467,34 +467,35 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		};
 		
 		// Setup Request to push to Avatax
-        var httpRequest = new http();
-        httpRequest.setMethod("POST");
         var testingFlag = setting('testingFlag');
         if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
         	testingFlag = arguments.requestBean.getOrder().getTestOrderFlag();
         }
         
-        if(testingFlag) {
-        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/cancel");	
-        } else {
-        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/cancel");
+        var requestURL = setting('testURL');
+        
+        if(!testingFlag) {
+        	requestURL = setting('productionURL');
         }
         
-        // Set the auth and other http headers
-        getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
-	
-		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
+		var responseData = request(
+			url = requestURL,
+			method = 'POST',
+			data = requestDataStruct,
+			dataType='json',
+			headers = getAvataxService().getHttpHeaders(),
+			timeout = 60
+		);
 		
-		var responseData = httpRequest.send().getPrefix();
-		if (IsJSON(responseData.FileContent)){
-			var fileContent = DeserializeJSON(responseData.FileContent);
+		if (isStruct(responseData.FileContent)){
+			var fileContent = responseData.FileContent;
 
 			if (structKeyExists(fileContent,'resultCode') && fileContent.resultCode == 'Error' && structKeyExists(fileContent,'messages')){
 				responseBean.setData(fileContent.messages);
 			}
 				
 		}else{
-			responseBean.setData(responseData.Responseheader.Explanation);
+			responseBean.setData(responseData.ResponseHeader.Explanation);
 		}
 	}
 }
