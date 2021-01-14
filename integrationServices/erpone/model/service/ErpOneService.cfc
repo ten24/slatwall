@@ -139,7 +139,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
   	}
 	
-	
     public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
     	return this.getErpOneIntegrationCFC().setting( argumentCollection=arguments );
 	}
@@ -246,9 +245,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
     }
     
-    
-    
-        
     public any function createHttpRequest(required string endPointUrl, string requestType="POST", string requestContentType="application/x-www-form-urlencoded"){
     	if(!this.setting("devMode")){
 			var requestURL = this.setting("prodGatewayURL") & arguments.endPointUrl;
@@ -265,7 +261,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function callErpOneGetDataApi( required struct requestData, string endpoint="read" ){
-        
+  
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint);
 		
 		// Authentication headers
@@ -296,40 +292,35 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 	    return DeSerializeJson(rawRequest.fileContent);
     }
-    
     	
-	public array function transformedErpOneItems(required array items, required struct erponeMapping ){
-		var transformedData = [];
-		
-	    for( var thisItem in arguments.items ){
-	    	
-	    	var transformedItem = {};
+	public struct function transformedErpOneItems(required struct items, required struct erponeMapping ){
+
+		var transformedItem = {};
 	    	
 	    	for( var sourceKey in arguments.erponeMapping ){
 	    		var destinationKey = arguments.erponeMapping[ sourceKey ];
 	    		
-	    		if( structKeyExists(thisItem, sourceKey) ){
-	        	    transformedItem[ destinationKey ] = thisItem[ sourceKey ];
+	    		if( structKeyExists(arguments.items, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = arguments.items[ sourceKey ];
 	    		}
-	    		
 	    	}
-	    	
-	    	transformedData.append(transformedItem);
-	    }
 	    
-	    return transformedData;
+	    return transformedItem;
 	}
+    
+    // get data API call
     
     public any function getAccountData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getAccountData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
+		// comment out the functionallity as we dont have data for DC on dev DB 
 		
 		// Change company name as per our environment in API query
-		if( !this.setting("devMode") ){
-    		var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND company_cu = "SB"';
-		} else {
-			var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND company_cu = "DC"';
-		}
-			
+		// if( !this.setting("devMode") ){
+		//  var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND customer.company_cu = "SB"';
+		// } else {
+		// 	var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND customer.company_cu = "DC"';
+		// }
+		var requestQuery = 'FOR EACH customer WHERE customer.active = YES AND customer.company_cu = "SB"';	
     	var accountsArray = this.callErpOneGetDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
@@ -341,7 +332,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		if( accountsArray.len() > 0 ){
 		
 		    this.logHibachi("ERPONE - Start pushing accounts to import-queue ");
-			var batch = this.pushRecordsIntoImportQueue( "Account", this.transformErpOneAccounts( accountsArray ) );
+			var batch = this.pushRecordsIntoImportQueue( "Account", accountsArray );
 			this.logHibachi("ERPONE - Finish pushing accounts to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
 
 		} else {
@@ -393,20 +384,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
 
     }
-    
-	public any function transformErpOneAccounts( required array accountDataArray ){
-	    var erponeMapping = {
-	        "__rowids" : "remoteAccountID",
-	         "country_code" : "countryCode",
-	        "customer" : "companyCode",
-	        "email_address" : "email",
-	        "phone" : "phone",
-	        "Active" : "accountActiveFlag",
-	        "name" : "companyName"
-	    };
-	    
-	    return this.transformedErponeItems( arguments.accountDataArray, erponeMapping);
-	}
+	
+	// Importer Functions - Paginated data API call
 	
 	public any function importErpOneAccounts(){
 		
@@ -418,7 +397,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	
 		var totalRecordsCount = response.count;
 		var currentPage = 1;
-		var pageSize = 50;
+		var pageSize = 100;
 
 		var recordsFetched = 0;
 		
@@ -435,7 +414,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				this.getHibachiUtilityService().logException(e);
 			}
 			
-			// increment rgardless of success or failure;
+			//increment rgardless of success or failure;
 			recordsFetched += pageSize;
 			currentPage += 1;
 		}
@@ -509,54 +488,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    this.logHibachi("ERPONE - Finish importing ErpOneOrderItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
 	
-	public struct function preProcessProductData(required struct data ){
-
-		if( !structKeyExists(arguments.data, 'Price') || this.hibachiIsEmpty(arguments.data.Price) ) {
-			
-			arguments.data.Price=arguments.data.ListPrice;
-		}
-		
-		if( !structKeyExists(arguments.data, 'ListPrice') || this.hibachiIsEmpty(arguments.data.ListPrice) ) {
-			
-			arguments.data.ListPrice=arguments.data.Price;
-		}
-		
-		// using -- so we can revert it when sending data back to erpone
-		
-		if( structKeyExists(arguments.data, 'ProductCode') ){
-			
-			arguments.data.ProductCode=reReplace(reReplace(arguments.data.ProductCode, "(\\|/)", "--", "all" ),"\s", "__", "all");
-		}
-
-		if( !structKeyExists(arguments.data, 'SkuCode') || this.hibachiIsEmpty( arguments.data.SkuCode ) ){
-			
-			arguments.data.SkuCode = arguments.data.ProductCode;
-		}else{
-			
-			arguments.data.SkuCode = Replace(arguments.data.SkuCode, " " , "--");
-		}
-		
-		if( !structKeyExists(arguments.data, 'RemoteProductID') || this.hibachiIsEmpty(arguments.data.RemoteProductID) ){
-			// var productCode = arguments.data.ProductCode;
-			// var remoteProductIDArray = this.callErpOneGetDataApi({
-			//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
-			//  	    "columns" : "__rowids"
-			//  	})
-			// arguments.data.RemoteProductID=remoteProductIDArray[1].__rowids;
-			arguments.data.RemoteProductID = arguments.data.ProductCode;
-		}
-		
-		if( !structKeyExists(arguments.data, 'RemoteSkuID') || this.hibachiIsEmpty( arguments.data.RemoteSkuID ) ){
-			arguments.data.RemoteSkuID = arguments.data.SkuCode;
-		}
-		
-		if( !structKeyExists(arguments.data, 'skuName') || this.hibachiIsEmpty( arguments.data.skuName ) ){
-			arguments.data.skuName = arguments.data.productName;
-		}
-		
-	    return arguments.data;
-	}
-
 	/**
 	 * @hint helper function to create a struct of properties+values from @entity/Account.cfc.
 	 * 
@@ -628,6 +559,110 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
 		}
 		logHibachi("ERPOne - End Account pushData");
+	}
+	
+	// Preprocess Functions - Process data as per slatwall
+	
+	public struct function preProcessProductData(required struct data ){
+
+		if( !structKeyExists(arguments.data, 'Price') || this.hibachiIsEmpty(arguments.data.Price) ) {
+			
+			arguments.data.Price=arguments.data.ListPrice;
+		}
+		
+		if( !structKeyExists(arguments.data, 'ListPrice') || this.hibachiIsEmpty(arguments.data.ListPrice) ) {
+			
+			arguments.data.ListPrice=arguments.data.Price;
+		}
+		
+		// using -- so we can revert it when sending data back to erpone
+		
+		if( structKeyExists(arguments.data, 'ProductCode') ){
+			
+			arguments.data.ProductCode=reReplace(reReplace(arguments.data.ProductCode, "(\\|/)", "--", "all" ),"\s", "__", "all");
+		}
+
+		if( !structKeyExists(arguments.data, 'SkuCode') || this.hibachiIsEmpty( arguments.data.SkuCode ) ){
+			
+			arguments.data.SkuCode = arguments.data.ProductCode;
+		}else{
+			
+			arguments.data.SkuCode = Replace(arguments.data.SkuCode, " " , "--");
+		}
+		
+		if( !structKeyExists(arguments.data, 'RemoteProductID') || this.hibachiIsEmpty(arguments.data.RemoteProductID) ){
+			// var productCode = arguments.data.ProductCode;
+			// var remoteProductIDArray = this.callErpOneGetDataApi({
+			//  	    "query": "FOR EACH item WHERE item= '#productCode#' AND company_it = 'SB'",
+			//  	    "columns" : "__rowids"
+			//  	})
+			// arguments.data.RemoteProductID=remoteProductIDArray[1].__rowids;
+			arguments.data.RemoteProductID = arguments.data.ProductCode;
+		}
+		
+		if( !structKeyExists(arguments.data, 'RemoteSkuID') || this.hibachiIsEmpty( arguments.data.RemoteSkuID ) ){
+			arguments.data.RemoteSkuID = arguments.data.SkuCode;
+		}
+		
+		if( !structKeyExists(arguments.data, 'skuName') || this.hibachiIsEmpty( arguments.data.skuName ) ){
+			arguments.data.skuName = arguments.data.productName;
+		}
+		
+	    return arguments.data;
+	}
+	
+	public any function preProcessAccountData(required struct data ){
+		logHibachi("ERPONE - called getSy_contactAccountData");
+		// comment out the functionallity as we dont have data for DC on dev DB
+		
+		// Change company name as per our environment in API query
+		// if( !this.setting("devMode") ){
+		// var requestQuery = 'FOR EACH sy_contact WHERE sy_contact.company_sy = "SB" AND sy_contact.contact_type = "customer" AND sy_contact.contact = "'&arguments.data.customer&'"';
+		// } else {
+		// 	var requestQuery = 'FOR EACH sy_contact WHERE sy_contact.company_sy = "DC" AND sy_contact.contact_type = "customer" AND sy_contact.contact = "'&arguments.data.customer&'"';
+		// }
+		var requestQuery = 'FOR EACH sy_contact WHERE sy_contact.company_sy = "SB" AND sy_contact.contact_type = "customer" AND sy_contact.contact = "'&arguments.data.customer&'"';	
+    	var syAccountsArray = this.callErpOneGetDataApi({
+			"query": requestQuery,
+    	    "columns" : "First_Name,Last_Name,key1,key2,contact,adr[1],adr[2],adr[3],adr[4],adr[5],country_code,cell,contact_type"
+    	})
+    	
+    	if(!this.hibachiIsEmpty(syAccountsArray)){
+    		syAccountsArray = syAccountsArray[1];
+    		arguments.data.append(syAccountsArray, false);
+    		
+	    	if( !structKeyExists(arguments.data, 'First_Name') || this.hibachiIsEmpty(arguments.data.First_Name) ) {
+				
+				arguments.data.First_Name = arguments.data.key1;
+			}
+			
+			if( !structKeyExists(arguments.data, 'phone') || this.hibachiIsEmpty(arguments.data.phone) ) {
+				
+				arguments.data.phone = arguments.data.cell;
+			}
+    	}
+    	
+		if( !structKeyExists(arguments.data, 'First_Name') || this.hibachiIsEmpty(arguments.data.First_Name) ) {
+				
+				arguments.data.organizationFlag = "true";
+		}
+		var erponeMapping = {
+	        "__rowids" : "remoteAccountID",
+	         "country_code" : "countryCode",
+	        "customer" : "companyCode",
+	        "email_address" : "email",
+	        "phone" : "phone",
+	        "Active" : "accountActiveFlag",
+	        "name" : "companyName",
+	        "First_Name" : "firstName",
+	        "Last_Name" : "lastName",
+	        "cell" : "phone1",
+	        "adr_1" : "streetAddress",
+	        "adr_2" : "street2Address",
+	        "adr_4" : "city",
+	    };
+		var transformedItem = this.transformedErponeItems( arguments.data, erponeMapping);
+	    return transformedItem;
 	}
 	
 	public any function preProcessOrderData(required struct data ){

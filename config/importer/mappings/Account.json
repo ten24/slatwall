@@ -13,7 +13,6 @@
         "firstName": {
             "propertyIdentifier": "firstName",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },
