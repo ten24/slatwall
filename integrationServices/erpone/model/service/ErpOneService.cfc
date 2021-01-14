@@ -53,7 +53,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="hibachiCacheService";
 	property name="hibachiDataService";
 	property name="hibachiUtilityService";
-	property name = "addressService";
+	property name= "addressService";
 	
 	public any function getIntegration(){
 	    if( !structKeyExists( variables, 'integration') ){
@@ -299,26 +299,20 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     	
-	public array function transformedErpOneItems(required array items, required struct erponeMapping ){
-		var transformedData = [];
-		
-	    for( var thisItem in arguments.items ){
-	    	
-	    	var transformedItem = {};
+	public struct function transformedErpOneItems(required struct items, required struct erponeMapping ){
+
+		var transformedItem = {};
 	    	
 	    	for( var sourceKey in arguments.erponeMapping ){
 	    		var destinationKey = arguments.erponeMapping[ sourceKey ];
 	    		
-	    		if( structKeyExists(thisItem, sourceKey) ){
-	        	    transformedItem[ destinationKey ] = thisItem[ sourceKey ];
+	    		if( structKeyExists(arguments.items, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = arguments.items[ sourceKey ];
 	    		}
 	    		
 	    	}
 	    	
-	    	transformedData.append(transformedItem);
-	    }
-	    
-	    return transformedData;
+	    return transformedItem;
 	}
     
     public any function getAccountData(numeric pageNumber = 1, numeric pageSize = 50 ){
@@ -710,59 +704,49 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		if( left(arguments.data.order, 1) == '-' ){
 			return;
 		}
-			var erponeMapping = {
-		        "order" 		: "orderNumber",
-		        "ord_date"		: "orderOpenDateTime",
-		        "customer"		: "RemoteAccountID",
-		        "currency_code" : "currency_code",
-		        "country_code"  : "countryCode",
-		        "postal_code"	: "postalCode",
-		        "adr"			: "Address",
-		        "state" 		: "stateCode"
-		    };
-
-	    	var transformedItem = {};
-
-	    	for( var sourceKey in erponeMapping ){
-	    		var destinationKey = erponeMapping[ sourceKey ];
-
-	    		if( structKeyExists(arguments.data, sourceKey) ){
-	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
-	    		}
-
-	    	}
-
-	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
-			transformedItem.FullAddress = {
-					  "streetAddress"  : transformedItem.Address[2],
-	                  "street2Address" : transformedItem.Address[1],
-	                  "city"           : transformedItem.Address[4],
-	                  "countryCode"	   : transformedItem.countryCode,
-	                  "stateCode"	   : transformedItem.stateCode,
-	                  "postalCode"	   : transformedItem.postalCode,
-			};
-			
-			//Billing address transform data
-			transformedItem.BillingAddress_remoteAddressID = "bill_"&transformedItem.OrderNumber;
-			transformedItem.BillingAddress_name			   = getAddressService().getAddressName(transformedItem.FullAddress);
-			transformedItem.BillingAddress_streetAddress   = transformedItem.Address[2];
-	        transformedItem.BillingAddress_street2Address  = transformedItem.Address[1];
-	        transformedItem.BillingAddress_city       	   = transformedItem.Address[4];
-	        transformedItem.BillingAddress_countryCode	   = transformedItem.countryCode;
-	        transformedItem.BillingAddress_stateCode	   = transformedItem.stateCode;
-	        transformedItem.BillingAddress_postalCode	   = transformedItem.postalCode;
-	        
-	        //Shipping address transform data
-			transformedItem.ShippingAddress_remoteAddressID 		= "ship_"&transformedItem.OrderNumber;
-			transformedItem.ShippingAddress_name					= getAddressService().getAddressName(transformedItem.FullAddress);
-			transformedItem.ShippingAddress_streetAddress   		= transformedItem.Address[2];
-	        transformedItem.ShippingAddress_street2Address  		= transformedItem.Address[1];
-	        transformedItem.ShippingAddress_city      				= transformedItem.Address[4];
-	        transformedItem.ShippingAddress_countryCode	    		= transformedItem.countryCode;
-	        transformedItem.ShippingAddress_stateCode	    		= transformedItem.stateCode;
-	        transformedItem.ShippingAddress_postalCode  			= transformedItem.postalCode;
-		    
-		    return transformedItem;
+		var erponeMapping = {
+	        "order" 		: "orderNumber",
+	        "ord_date"		: "orderOpenDateTime",
+	        "customer"		: "RemoteAccountID",
+	        "currency_code" : "currency_code",
+	        "country_code"  : "countryCode",
+	        "postal_code"	: "postalCode",
+	        "adr"			: "Address",
+	        "state" 		: "stateCode"
+	    };
+	    
+		var transformedItem = this.transformedErponeItems( arguments.data, erponeMapping);
+    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
+		transformedItem.FullAddress = {
+				  "streetAddress"  : transformedItem.Address[2],
+                  "street2Address" : transformedItem.Address[1],
+                  "city"           : transformedItem.Address[4],
+                  "countryCode"	   : transformedItem.countryCode,
+                  "stateCode"	   : transformedItem.stateCode,
+                  "postalCode"	   : transformedItem.postalCode,
+		};
+		
+		//Billing address transform data
+		transformedItem["BillingAddress_remoteAddressID"] = "bill_"&transformedItem.OrderNumber;
+		transformedItem["BillingAddress_name"]			  = getAddressService().getAddressName(transformedItem.FullAddress);
+		transformedItem["BillingAddress_streetAddress"]   = transformedItem.Address[2];
+        transformedItem["BillingAddress_street2Address"]  = transformedItem.Address[1];
+        transformedItem["BillingAddress_city"]     	      = transformedItem.Address[4];
+        transformedItem["BillingAddress_countryCode"]     = transformedItem.countryCode;
+        transformedItem["BillingAddress_stateCode"]	      = transformedItem.stateCode;
+        transformedItem["BillingAddress_postalCode"]	  = transformedItem.postalCode;
+        
+        //Shipping address transform data
+		transformedItem["ShippingAddress_remoteAddressID"] 		= "ship_"&transformedItem.OrderNumber;
+		transformedItem["ShippingAddress_name"]					= getAddressService().getAddressName(transformedItem.FullAddress);
+		transformedItem["ShippingAddress_streetAddress"]   		= transformedItem.Address[2];
+        transformedItem["ShippingAddress_street2Address"]  		= transformedItem.Address[1];
+        transformedItem["ShippingAddress_city"]     			= transformedItem.Address[4];
+        transformedItem["ShippingAddress_countryCode"]	    	= transformedItem.countryCode;
+        transformedItem["ShippingAddress_stateCode"]	    	= transformedItem.stateCode;
+        transformedItem["ShippingAddress_postalCode"] 			= transformedItem.postalCode;
+	    
+	    return transformedItem;
 	}
 	
 	public any function preProcessOrderItemData(required struct data ){
@@ -770,26 +754,17 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		if( left(arguments.data.order, 1) == '-' ){
 			return;
 		}
-			var erponeMapping = {
-		        "order" : "RemoteOrderID",
-		        "price" : "Price",
-		        "list_price" : "SkuPrice",
-		        "item" : "RemoteSkuID",
-		        "line" : "Line"
-		    };
+		var erponeMapping = {
+	        "order" : "RemoteOrderID",
+	        "price" : "Price",
+	        "list_price" : "SkuPrice",
+	        "item" : "RemoteSkuID",
+	        "line" : "Line"
+	    };
 
-	    	var transformedItem = {};
-
-	    	for( var sourceKey in erponeMapping ){
-	    		var destinationKey = erponeMapping[ sourceKey ];
-
-	    		if( structKeyExists(arguments.data, sourceKey) ){
-	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
-	    		}
-
-	    	}
-
-	    	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
-		    return transformedItem;
+    	var transformedItem = this.transformedErponeItems( arguments.data, erponeMapping);
+    	
+    	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
+	    return transformedItem;
 	}
 }
