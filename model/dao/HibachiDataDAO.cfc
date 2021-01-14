@@ -100,10 +100,13 @@ Notes:
 		<cfargument name="tableName" type="string" required="true" />
 		<cfargument name="olderThanDate" type="datetime" required="true" />
 
-		<cfset var rs = "" />
-		<cfquery name="rs" result="local.deleteOldApiLogs">
-			DELETE FROM #tableName#  WHERE createdDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.olderThanDate#" />
-		</cfquery>
+		<cfif listFindNoCase('SwApiLog,SwWorkflowTriggerHistory', arguments.tableName)>
+			<cfset var rs = "" />
+			<cfquery name="rs" result="local.deleteOldApiLogs">
+				DELETE FROM #tableName#  WHERE createdDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#arguments.olderThanDate#" />
+			</cfquery>
+		</cfif>
+		
 	</cffunction>
 	
 </cfcomponent>
