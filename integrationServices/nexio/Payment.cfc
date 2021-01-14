@@ -520,7 +520,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					arguments.responseBean.addError("Nexio error",getErroMessage);
 			}else if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
-				arguments.responseBean.setProviderTransactionID(responseData.id
+				arguments.responseBean.setProviderTransactionID(responseData.id);
 				if(structKeyExists(responseData, 'authCode')){
 					arguments.responseBean.setAuthorizationCode(responseData.authCode);
 				}
