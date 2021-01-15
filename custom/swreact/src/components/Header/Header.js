@@ -88,7 +88,6 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
   const slowlyRequest = useCallback(
     _.debounce(value => {
       setKeywordAction(value)
-      history.push('/products')
     }, 500),
     []
   )
@@ -112,6 +111,11 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
                     className="form-control appended-form-control"
                     type="text"
                     value={searchTerm}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        history.push('/products')
+                      }
+                    }}
                     onChange={e => {
                       setSearchTerm(e.target.value)
                       slowlyRequest(e.target.value)
@@ -120,7 +124,13 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
                   />
                   <div className="input-group-append-overlay">
                     <span className="input-group-text">
-                      <i className="far fa-search"></i>
+                      <i
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          history.push('/products')
+                        }}
+                        className="far fa-search"
+                      ></i>
                     </span>
                   </div>
                 </div>
