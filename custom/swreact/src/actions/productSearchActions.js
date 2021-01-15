@@ -1,7 +1,5 @@
-import { sortBy } from 'lodash'
-
 export const ADD_FILTER = 'ADD_FILTER'
-export const REMOVE_FILTER = 'ADD_FILTER'
+export const REMOVE_FILTER = 'REMOVE_FILTER'
 
 export const SET_SORT = 'SET_SORT'
 
