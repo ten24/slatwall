@@ -1,13 +1,12 @@
 import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import logo from '../../assets/images/sb-logo.png'
-import mobileLogo from '../../assets/images/sb-logo-mobile.png'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import { setKeyword } from '../../actions/productSearchActions'
 import { getUser } from '../../actions/userActions'
 import { useHistory } from 'react-router-dom'
+import SWImage from '../SWImage/SWImage'
 
 const CartMenuItem = ({ orderCount, total }) => {
   return (
@@ -72,7 +71,7 @@ const AccountBubble = ({ isAuthenticated, name }) => {
   )
 }
 
-function Header({ setKeywordAction, productCategories, user, mainNavigation, orderCount, total }) {
+function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, mainNavigation, orderCount, total }) {
   let menuItems = new Map()
   productCategories.forEach(item => {
     if (menuItems.has(item.parentContent_title)) {
@@ -100,10 +99,10 @@ function Header({ setKeywordAction, productCategories, user, mainNavigation, ord
         <div className="navbar navbar-expand-lg navbar-light">
           <div className="container">
             <a className="navbar-brand d-none d-md-block mr-3 flex-shrink-0" href="/">
-              <img src={logo} alt="Stone & Berg Logo" />
+              <SWImage src={logo} alt="Stone & Berg Logo" />
             </a>
             <a className="navbar-brand d-md-none mr-2" href="/">
-              <img src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
+              <SWImage src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
             </a>
 
             <div className="navbar-right">
