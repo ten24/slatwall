@@ -104,7 +104,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Related Object Properties (many-to-many - inverse)
 
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -154,7 +155,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================== START: Logical Methods =========================
-		
+
 	public boolean function getVerifiedShippingAddressFlag(){
 		if( !isNull(this.getShippingAddress()) ){
 			return this.getShippingAddress().getVerifiedByIntegrationFlag();
@@ -403,19 +404,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getChargeAfterDiscount() {
-		var chargeAfterDiscount = getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() + getChargeTaxAmount() - getDiscountAmount());
-		if(chargeAfterDiscount < 0){
-			chargeAfterDiscount = 0;
-		}
-		return chargeAfterDiscount;
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() + getChargeTaxAmount() - getDiscountAmount());
 	}
 	
 	public numeric function getChargeAfterDiscountPreTax() {
-		var chargeAfterDiscount = getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() - getDiscountAmount());
-		if(chargeAfterDiscount < 0){
-			chargeAfterDiscount = 0;
-		}
-		return chargeAfterDiscount;
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() - getDiscountAmount());
 	}
 
 	public numeric function getDiscountAmount() {
@@ -943,16 +936,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		return variables.orderFulfillmentStatusType;
 	}
-	
-	public boolean function isQualifiedToAudit(){
-		var qualified = super.isQualifiedToAudit();
-		
-		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
-			qualified = true;
-		}
-		return qualified;
-	}
-
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -980,12 +963,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 				|| (!isNull(this.getOrder()) &&  this.getOrder().getOrderID() != arguments.oldData.order.getOrderID() )
 			)
 		){
-			var newOrderID = isNull(this.getOrder()) ? 'NULL' : this.getOrder().getOrderID();
 			//Reset the order to the old Data
 			this.setOrder(arguments.oldData.order);
 
 			//Log that this occurred in the Slatwall Log
-			logHibachi("Order Fulfillment: #this.getOrderFulfillmentID()# tried to update it's order. This change has been prevented. Old Order ID: #arguments.oldData.order.getOrderID()#, new Order ID: #newOrderID#", true);
+			logHibachi("Order Fulfillment: #this.getOrderFulfillmentID()# tried to update it's order. This change has been prevented", true);
 		}
 
 		super.preUpdate(argumentCollection=arguments);

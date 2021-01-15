@@ -875,7 +875,6 @@
 		// This method is explicitly called during application reload from the conntector plugins onApplicationLoad() event
 		public void function verifySetup( required any $ ) {
 		
-
 			
 			verifySlatwallRequest( $=$ );
 			

@@ -785,7 +785,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	    string filterGroupAlias="",
  		string filterGroupLogicalOperator="AND",
  		boolean hidden=true,
- 		boolean ignoredWhenSearch=false
+ 		boolean ignoredWhenSearch=false,
+ 		string displayPropertyIdentifier="",
+		string displayValue = "",
 	){
 		
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
@@ -3466,24 +3468,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					setStartRange = DateAdd("h",  - arguments.criteria, Now());
 				break;
 				case 'moreDays': //More than N Day Ago
-					setStartRange = DateAdd("d",  - arguments.criteria, Now());
-				break;
+					setEndRange = DateAdd("d",  - arguments.criteria, Now());
+					break;
 				case 'moreWeeks': //More than N Week Ago
 					var firstOfCurrentWeek = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
-					setStartRange = DateAdd("d",  - arguments.criteria * 7, firstOfCurrentWeek);
-				break;
+					setEndRange = DateAdd("d",  - arguments.criteria * 7, firstOfCurrentWeek);
+					break;
 				case 'moreMonths': //More than N Month Ago
 					var firstOfCurrentMonth = createDate(year(now()), month(now()), 1);
-					setStartRange = DateAdd("m",  - arguments.criteria, firstOfCurrentMonth);
-				break;
+					setEndRange = DateAdd("m",  - arguments.criteria, firstOfCurrentMonth);
+					break;
 				case 'moreQuarters': //More than N Quarter Ago
 					var quarter = floor(month(now()) / 3);
 					var firstDayOfCurrentQuarter = CreateDate(year(now()), (quarter)*3 + 1, 1);
-					setStartRange = DateAdd("m",  - arguments.criteria * 3, firstDayOfCurrentQuarter);
-				break;
+					setEndRange = DateAdd("m",  - arguments.criteria * 3, firstDayOfCurrentQuarter);
+					break;
 				case 'moreYears': //More than N Year Ago
 					var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
-					setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
+					setEndRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
 				break;
 				case 'exactDays': //Exact N Day Ago
 					setStartRange = DateAdd("d",  - arguments.criteria, Now());

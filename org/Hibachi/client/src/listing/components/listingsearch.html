@@ -54,12 +54,21 @@
                 </span>
         </button>
     </span>
-    
+   
+    <span class="input-group-btn valign-middle s-action" ng-show="swListingSearch.swListingControls.showToggleSearch">
+        <span sw-tooltip class="tool-tip-item" data-text="Search" data-position="bottom">
+            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.search()">
+                <i class="fa fa-search"></i>
+            </button>
+        </span>
+    </span>    
+
     <div ng-show="!swListingSearch.swListingControls.showToggleSearch">
         <hr >
     </div>
+   
     <!-- REPORT COLLECTIONS -->
-    <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn input-group-btn s-action s-action"
+    <span ng-click="swListingSearch.swListingDisplay.getPersistedReports()" ng-show="swListingSearch.swListingControls.showReport" class="input-group-btn input-group-btn s-action"
         ng-if="(swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
         <button class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -118,6 +127,7 @@
             </li>
         </ul>
     </span>
+    
     <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn valign-middle s-action"
         ng-if="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
         <button class="btn btn-sm btn-default dropdown-toggle"
@@ -142,13 +152,7 @@
             </li>
         </ul>
     </span>
-    <span class="input-group-btn valign-middle s-action">
-        <span sw-tooltip class="tool-tip-item" data-text="Search" data-position="bottom">
-            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.search()">
-                <i class="fa fa-search"></i>
-            </button>
-        </span>
-    </span>
+
     <span class="input-group-btn valign-middle s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
         <span sw-tooltip class="tool-tip-item" data-text="Filtering" data-position="bottom">
             <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
@@ -183,6 +187,58 @@
                 <a ng-click="swListingSearch.swListingControls.printCollection(printTemplate.printTemplateID)">
                     <span ng-bind="printTemplate.printTemplateName"></span>
                 </a>
+            </li>
+        </ul>
+    </span>
+    
+     <!-- Referesh -->
+    <span class="input-group-btn valign-middle s-action" ng-if="!swListingSearch.showAutoRefresh">
+         <button class="btn btn-sm btn-default" type="button" ng-click="swListingSearch.onRefresh()">
+            <span sw-tooltip class="tool-tip-item" data-text="Refresh" data-position="bottom">
+                <i class="fa fa-sync" aria-hidden="true"></i>
+            </span>
+        </button>
+    </span>
+
+    <!-- Auto Referesh -->
+    <span class="input-group-btn valign-middle s-action" ng-if="swListingSearch.showAutoRefresh">
+
+        <button class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span sw-tooltip class="tool-tip-item" data-text="Auto-Refresh" data-position="bottom">
+                <i class="fa fa-sync" aria-hidden="true"></i>
+            </span>
+        </button>
+
+        <ul class="dropdown-menu pull-right">
+            <li class="autoRefreshDropDown">
+                <div class="s-edit refreshInputGroup">
+
+                    <label onclick="event.stopPropagation();">
+                        <input type="checkbox" name="isTimerTrue" id="isTimerTrue" class="enableAutoRefresh"
+                            ng-checked="swListingSearch.autoRefreshConfig.autoRefreshEnabled"
+                            ng-click="swListingSearch.onToggleAutoRefereshEnabled()" 
+                        />  
+                        Auto-Refresh
+                    </label>
+
+                    <br/>
+
+                    <a class="btn btn-xs btn-success s-action-btn" 
+                    ng-hide="swListingSearch.autoRefreshConfig.autoRefreshEnabled" 
+                    ng-click="swListingSearch.onRefresh()">Click to Refresh</a>
+
+                    <span ng-show="swListingSearch.autoRefreshConfig.autoRefreshEnabled">
+                        <input
+                            type="text"
+                            ng-model="swListingSearch.autoRefreshConfig.autoRefreshInterval"
+                            class="form-control refreshTextbox" 
+                        >
+                        <a class="btn btn-xs btn-success s-action-btn"
+                            ng-click="swListingSearch.onSaveAutoRefereshConfig()"
+                        > save </a> 
+                    </span>
+                </div>
             </li>
         </ul>
     </span>

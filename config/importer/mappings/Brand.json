@@ -1,0 +1,54 @@
+{
+    "entityName": "Brand",
+    
+    "properties": {
+        
+        "remoteBrandID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "brandName": {
+            "propertyIdentifier": "brandName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "brandWebsite": {
+            "propertyIdentifier": "brandWebsite",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "brandPublishedFlag": {
+            "propertyIdentifier": "publishedFlag",
+            "defaultValue": true,
+            "allowUpdate": false
+        },
+        "brandActiveFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "allowUpdate": false
+        }
+    },
+    
+    "generatedProperties" : [
+        {
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generateBrandUrlTitle",
+            "allowUpdate"        : false,
+             "evaluationMode"    : "lazy",
+            "__hint"             : "lazy evaluation means, the value for this property will get generted just before populating the object"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "brandName"
+        ]
+    }
+}

@@ -34,6 +34,28 @@ component extends="testbox.system.BaseSpec"{
 			return transientMock;
 		}
 	}
+	
+	public any function getBaseImporterServiceMock(){
+	    
+	    var baseImporterServiceMock = createMock('Slatwall.integrationServices.BaseImporterService');
+	    
+	    baseImporterServiceMock.init();
+	    
+	    baseImporterServiceMock.setHibachiService( this.getHibachiServiceMock() );
+        baseImporterServiceMock.setHibachiUtilityService(this.getHibachiUtilityServiceMock());
+        baseImporterServiceMock.setHibachiValidationService(this.getHibachiValidationServiceMock());
+        baseImporterServiceMock.setHibachiEntityQueueService(this.getHibachiEntityQueueServiceMock());
+		baseImporterServiceMock.setHibachiEntityQueueDAO( this.getHibachiEntityQueueDAOMock() );
+
+        return baseImporterServiceMock;
+	}
+	
+	public any function getHibachiEntityQueueServiceMock(){
+
+		var hibachiEntityQueueServiceMock = createMock('Slatwall.model.service.HibachiEntityQueueService');
+		hibachiEntityQueueServiceMock.setHibachiEntityQueueDAO( this.getHibachiEntityQueueDAOMock() );
+		return hibachiEntityQueueServiceMock;
+	}
 
 	public any function getHibachiValidationServiceMock(){
 		var hibachiUtilityService = this.getHibachiUtilityServiceMock();
@@ -249,6 +271,12 @@ component extends="testbox.system.BaseSpec"{
 		imageService.setskuService(skuService);
 
 		return imageService;
+	}
+	
+	public any function getHibachiEntityQueueDAOMock(){
+		var hibachiEntityQueueDAO = createMock('Slatwall.model.dao.HibachiEntityQueueDAO');
+		hibachiEntityQueueDAO.setHibachiService( this.getHibachiServiceMock() );
+		return hibachiEntityQueueDAO;
 	}
 
 	public any function getOrderDAOMock() {

@@ -1,0 +1,90 @@
+{
+    "entityName": "Account",
+    
+    "properties": {
+        
+        "remoteAccountID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "firstName": {
+            "propertyIdentifier": "firstName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "lastName": {
+            "propertyIdentifier": "lastName",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "username": {
+            "propertyIdentifier": "username",
+            "validations": {
+                "dataType": "string",
+                "required": true
+            }
+        },
+        "companyName": {
+            "propertyIdentifier": "company",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "organizationFlag": {
+            "propertyIdentifier": "organizationFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "accountActiveFlag": {
+            "propertyIdentifier": "activeFlag"
+        }
+    },
+    
+    "generatedProperties": [
+        {
+            "propertyIdentifier": "urtTitle",
+            "allowUpdate": false
+        }    
+    ],
+    
+    "relations": [
+        {
+            "type": "oneToOne",
+            "isNullabel": true,
+            "entityName": "AccountPhoneNumber",
+            "propertyIdentifier": "primaryPhoneNumber"
+        },
+        {
+            "type": "oneToOne",
+            "isNullabel": true,
+            "entityName": "AccountEmailAddress",
+            "propertyIdentifier": "primaryEmailAddress"
+        },
+        {
+            "type": "oneToMany",
+            "entityName": "AccountAuthentication",
+            "propertyIdentifier": "accountAuthentications",
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteAccountID"
+        ]
+    },
+    
+    "validationContext": "save",
+    
+    "postPopulateMethods": [ "updateCalculatedProperties" ]
+    
+}

@@ -92,7 +92,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	// Pertinent Reference Information (used for orderPayments)
 	property name="orderPaymentID" type="string";
 	property name="orderID" type="string";
-
 	
 	// Pertinent Reference Information (used for all above)
 	property name="accountID" type="string";

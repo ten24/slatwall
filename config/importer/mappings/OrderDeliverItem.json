@@ -1,0 +1,42 @@
+{
+	"entityName": "OrderDelivery",
+
+	"properties": {
+
+		"remoteOrderDeliveryItemID": {
+			"propertyIdentifier": "remoteID",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		},
+		"quantity": {
+			"propertyIdentifier": "invoiceNumber",
+			"validations": {
+				"dataType": "numeric"
+			}
+		}
+	},
+
+	"dependencies": [{
+			"key": "remoteOrderDeliveryID",
+			"entityName": "OrderDelivery",
+			"lookupKey": "remoteID",
+			"propertyIdentifier": "orderDelivery"
+		},
+		{
+			"key": "remoteOrderItemID",
+			"entityName": "OrderItem",
+			"lookupKey": "remoteID",
+			"propertyIdentifier": "orderItem"
+		}
+	],
+
+	"importIdentifier": {
+		"propertyIdentifier": "importRemoteID",
+		"type": "composite",
+		"keys": [
+			"remoteOrderFulfillmentID"
+		]
+	}
+}

@@ -206,6 +206,7 @@ component extends="framework.one" {
 	this.ormenabled = true;
 	this.ormsettings = {};
 	this.ormsettings.cfclocation = [ "/#variables.framework.applicationKey#/model/entity" ];
+	this.ormSettings.dialect = "MySQL"
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
@@ -334,6 +335,7 @@ component extends="framework.one" {
 		// clean any beancache for local development
 		if(structKeyExists(url, "reloadbean") && getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
 			getBeanFactory().reloadBean(url.reloadbean);
+			writeLog(file="#variables.framework.applicationKey#", text="General Log - Reloading bean #url.reloadbean#");
 		}
 		
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
@@ -486,13 +488,14 @@ component extends="framework.one" {
 		setupGlobalRequest();
 		
 		var httpRequestData = getHTTPRequestData();
-		
 		//Echo origin for OPTIONS preflight
 		if( variables.framework.preflightOptions &&
         	request._fw1.cgiRequestMethod == "OPTIONS" &&
 			structKeyExists(httpRequestData.headers,'Origin')
 			){
 			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
+			populateCORSHeader(httpRequestData.headers['Origin']);
+			return;
 		}
 
 		//Set an account before checking auth in case the user is trying to login via the REST API
@@ -611,7 +614,7 @@ component extends="framework.one" {
 			}
 
 		} else if(authorizationDetails.authorizedFlag && authorizationDetails.publicAccessFlag) {
-			getHibachiScope().setPublicPopulateFlag( true );
+			getHibachiScope().setObjectPopulateMode( 'public' );
 		}
 
 		//detect if we are on an angular hashbang page
@@ -803,6 +806,7 @@ component extends="framework.one" {
 					var hibachiBF = new framework.hibachiaop("/#variables.framework.applicationKey#/org/Hibachi", {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
+							'applicationRootMappingPath' = applicationInitData["applicationRootMappingPath"],
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
 						},
 						recurse=false,
@@ -1121,6 +1125,8 @@ component extends="framework.one" {
 				writeOutput( serializeJSON(arguments.rc.ajaxResponse) );
 			}
 			abort;
+		}else if(arguments.rc.ajaxRequest){
+			populateAPIHeaders();
 		}
 
 	}

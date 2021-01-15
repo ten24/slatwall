@@ -1,0 +1,33 @@
+{
+    "entityName": "AccountAuthentication",
+    
+    "properties": {
+        "email": {
+            "validations": {
+                "required": true,
+                "dataType": "email"
+            }
+        }
+    },
+    
+    "generatedProperties" : [
+        {
+            "propertyIdentifier" : "password",
+            "generatorFunction"  : "generateAccountAuthenticationPassword"
+        },
+        {
+            "propertyIdentifier" : "activeFlag",
+            "defaultValue" : true
+        },
+        {
+            "propertyIdentifier" : "updatePasswordOnNextLoginFlag",
+            "defaultValue" : true
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [ "remoteAccountID" ]
+    }
+}

@@ -1,0 +1,86 @@
+{
+    "entityName": "Account",
+    
+    "properties": {
+        
+        "remoteAccountID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "firstName": {
+            "propertyIdentifier": "firstName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "lastName": {
+            "propertyIdentifier": "lastName",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "username": {
+            "propertyIdentifier": "username",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "companyName": {
+            "propertyIdentifier": "company",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "companyCode": {
+            "propertyIdentifier": "companyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "organizationFlag": {
+            "propertyIdentifier": "organizationFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "accountActiveFlag": {
+            "propertyIdentifier": "activeFlag"
+        }
+    },
+    
+    "generatedProperties": [
+        {
+            "propertyIdentifier": "urtTitle",
+            "allowUpdate": false
+        }    
+    ],
+    
+    "relations": [
+        {
+            "type": "oneToOne",
+            "isNullable": true,
+            "entityName": "AccountPhoneNumber",
+            "propertyIdentifier": "primaryPhoneNumber"
+        },
+        {
+            "type": "oneToOne",
+            "isNullable": true,
+            "entityName": "AccountEmailAddress",
+            "propertyIdentifier": "primaryEmailAddress"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteAccountID"
+        ]
+    }
+    
+}
