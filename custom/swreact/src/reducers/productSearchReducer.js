@@ -1,4 +1,4 @@
-import { ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
+import { UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
 
 const products = [
   {
@@ -53,7 +53,7 @@ const initState = {
   products: products,
   potentialFilters: [
     {
-      name: 'Product Type',
+      filterName: 'Product Type',
       type: 'single',
       options: [
         {
@@ -74,7 +74,7 @@ const initState = {
       ],
     },
     {
-      name: 'Brand',
+      filterName: 'Brand',
       type: 'single',
       options: [
         {
@@ -98,7 +98,7 @@ const initState = {
       ],
     },
     {
-      name: 'Stye',
+      filterName: 'Stye',
       type: 'single',
       options: [
         {
@@ -118,25 +118,30 @@ const initState = {
         },
       ],
     },
+  ],
+  attributes: [
     {
-      name: 'Finish',
+      filterName: 'Finish',
       type: 'multi',
       options: [
         {
           name: 'Lifetime Brass',
           sub: '505',
+          isSelected: true,
           link: '',
           count: '',
         },
         {
           name: 'Bright Brass',
           sub: '605 | US3',
+          isSelected: false,
           link: '',
           count: '',
         },
         {
           name: 'Satin Brass',
           sub: '606 | US4',
+          isSelected: false,
           link: '',
           count: '',
         },
@@ -159,13 +164,14 @@ const productSearch = (state = initState, action) => {
       const { sortBy } = action
       return { ...state, sortBy }
 
+    case UPDATE_ATTRIBUTE:
+      state.attributes.map(attribute => attribute.options.map(option => (option.isSelected = option.name === action.attribute.name ? !option.isSelected : option.isSelected))) //.filter(filter => filter.name !== action.filter.name)
+      return { ...state, attributes: [...state.attributes] }
     case ADD_FILTER:
-      const filterToAdd = action.filter
-      return { ...state }
+      return { ...state, appliedFilters: [...state.appliedFilters, action.filter] }
 
     case REMOVE_FILTER:
-      const filterToRemove = action.filter
-      return { ...state }
+      return { ...state, appliedFilters: state.appliedFilters.filter(filter => filter.name !== action.filter.name) }
 
     case SET_KEYWORD:
       const { keyword } = action
