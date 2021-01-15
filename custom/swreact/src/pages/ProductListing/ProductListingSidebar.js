@@ -5,7 +5,7 @@ import { search, setKeyword, setSort, removeFilter } from '../../actions/product
 import _ from 'lodash'
 import ProductListingFilter from './ProductListingFilter'
 
-const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordAction, keyword, potentialFilters, resultCount = '287' }) => {
+const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordAction, keyword, potentialFilters, attributes, resultCount = '287' }) => {
   const [searchTerm, setSearchTerm] = useState(keyword)
   if (searchTerm !== keyword) {
     setSearchTerm(keyword)
@@ -50,7 +50,11 @@ const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordA
           <div className="accordion mt-3 border-top" id="shop-categories">
             {potentialFilters &&
               potentialFilters.map((filter, index) => {
-                return <ProductListingFilter key={index} index={index} {...filter} />
+                return <ProductListingFilter key={index} index={`filter${index}`} {...filter} />
+              })}
+            {attributes &&
+              attributes.map((filter, index) => {
+                return <ProductListingFilter key={index} index={`attr${index}`} {...filter} />
               })}
           </div>
         </div>

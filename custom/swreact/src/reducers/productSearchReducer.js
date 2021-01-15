@@ -1,5 +1,4 @@
-import { ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
-import _ from 'lodash'
+import { UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
 
 const products = [
   {
@@ -119,6 +118,8 @@ const initState = {
         },
       ],
     },
+  ],
+  attributes: [
     {
       filterName: 'Finish',
       type: 'multi',
@@ -126,18 +127,21 @@ const initState = {
         {
           name: 'Lifetime Brass',
           sub: '505',
+          isSelected: true,
           link: '',
           count: '',
         },
         {
           name: 'Bright Brass',
           sub: '605 | US3',
+          isSelected: false,
           link: '',
           count: '',
         },
         {
           name: 'Satin Brass',
           sub: '606 | US4',
+          isSelected: false,
           link: '',
           count: '',
         },
@@ -160,6 +164,9 @@ const productSearch = (state = initState, action) => {
       const { sortBy } = action
       return { ...state, sortBy }
 
+    case UPDATE_ATTRIBUTE:
+      state.attributes.map(attribute => attribute.options.map(option => (option.isSelected = option.name === action.attribute.name ? !option.isSelected : option.isSelected))) //.filter(filter => filter.name !== action.filter.name)
+      return { ...state, attributes: [...state.attributes] }
     case ADD_FILTER:
       return { ...state, appliedFilters: [...state.appliedFilters, action.filter] }
 

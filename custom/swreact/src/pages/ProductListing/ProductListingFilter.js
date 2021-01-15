@@ -2,28 +2,34 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { FeaturedProductCard, Layout } from '../../components'
 import { connect } from 'react-redux'
 import { getUser } from '../../actions/userActions'
-import { search, setKeyword, setSort, addFilter, removeFilter } from '../../actions/productSearchActions'
+import { search, setKeyword, setSort, addFilter, removeFilter, updateAttribute } from '../../actions/productSearchActions'
 import _ from 'lodash'
 
-const AttributeFacet = ({ name, count, sub, index, options, type }) => {
+const AttributeFacet = ({ name, count, sub, filterName, updateAttributeAction, isSelected }) => {
+  const token = filterName.replace(/\s/g, '') + name.replace(/\s/g, '') + 'input'
   return (
-    <li key={index} className="widget-list-item cz-filter-item">
+    <li className="widget-list-item cz-filter-item">
       <a
         className="widget-list-link d-flex justify-content-between align-items-center"
-        onClick={event => {
-          const filterItem = options.filter(potentialFilter => {
-            return potentialFilter.name === name
-          }, name)
-          console.log('potentialFilter', filterItem)
-
-          console.log('addFilterAction', { name, type, options: filterItem })
-          // setFilterAction({ name, type, options: filterItem })
-          // searchWithFilters()
-        }}
+        // onClick={event => {
+        //   console.log('updateAttributeAction', { name, filterName })
+        //   // updateAttributeAction({ name, filterItem })
+        //   // searchWithFilters()
+        // }}
       >
         <span className="cz-filter-item-text">
           <div className="custom-control custom-checkbox">
-            <label className="custom-control-label" htmlFor="finish505">
+            <input
+              className="custom-control-input"
+              type="checkbox"
+              checked={isSelected}
+              onChange={event => {
+                updateAttributeAction({ name, filterName })
+                //   // searchWithFilters()
+              }}
+              id={token}
+            />
+            <label className="custom-control-label" htmlFor={token}>
               {name} <span className="font-size-xs text-muted">{sub}</span>
             </label>
           </div>
@@ -72,7 +78,7 @@ const FacetSearch = ({ searchTerm, search }) => {
   )
 }
 
-const ProductListingFilter = ({ searchWithFilters, appliedFilters, addFilterAction, filterName, type, options, index }) => {
+const ProductListingFilter = ({ updateAttributeAction, searchWithFilters, appliedFilters, addFilterAction, filterName, type, options, index }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
 
@@ -103,9 +109,9 @@ const ProductListingFilter = ({ searchWithFilters, appliedFilters, addFilterActi
               {searchResults &&
                 searchResults.map((result, index) => {
                   if (type === 'single') {
-                    return <DrillDownFacet searchWithFilters={searchWithFilters} addFilterAction={addFilterAction} {...result} key={index} filterName={filterName} />
+                    return <DrillDownFacet earchWithFilters={searchWithFilters} addFilterAction={addFilterAction} {...result} key={index} filterName={filterName} />
                   } else {
-                    return <AttributeFacet {...result} key={index} />
+                    return <AttributeFacet updateAttributeAction={updateAttributeAction} searchWithFilters={searchWithFilters} {...result} key={index} filterName={filterName} />
                   }
                 })}
             </ul>
@@ -127,6 +133,7 @@ const mapDispatchToProps = dispatch => {
     setKeywordAction: async keyword => dispatch(setKeyword(keyword)),
     removeFilterAction: async filter => dispatch(removeFilter(filter)),
     addFilterAction: async filter => dispatch(addFilter(filter)),
+    updateAttributeAction: async filter => dispatch(updateAttribute(filter)),
     searchWithFilters: async () => dispatch(search()),
   }
 }

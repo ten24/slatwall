@@ -1,5 +1,6 @@
 export const ADD_FILTER = 'ADD_FILTER'
 export const REMOVE_FILTER = 'REMOVE_FILTER'
+export const UPDATE_ATTRIBUTE = 'UPDATE_ATTRIBUTE'
 
 export const SET_SORT = 'SET_SORT'
 
@@ -26,6 +27,12 @@ export const removeFilter = filter => {
   return {
     type: REMOVE_FILTER,
     filter,
+  }
+}
+export const updateAttribute = attribute => {
+  return {
+    type: UPDATE_ATTRIBUTE,
+    attribute,
   }
 }
 
