@@ -46,6 +46,63 @@ component accessors='true' output='false' displayname='Avalara-Address' extends=
 	}
 	
 	
+		/**
+	 * Function to call avalara-APIs
+	 * @endpoint space separated method and api-endpoint, 'GET /abc/pqr', "POST /abc/pqr"
+	 * @payload request body
+	 * @return An struct of, either successful-response or formated-error-response 
+	*/ 
+	public struct function makeApiRequest(required string endpoint, struct payload={}) {
+		
+		/**
+		 * Currently this function is being used for address API's
+		 * Hardcoding The URL as Tax integration is still on V1
+		 * 
+		*/
+		var requestURL = 'https://rest.avatax.com/api/v2';
+		if(setting('testingFlag')) { 
+			requestURL = 'https://sandbox-rest.avatax.com/api/v2';
+		}
+	
+		requestURL &= ListLast(arguments.endpoint, " ");
+		
+		
+		var rawResponse = request(
+			url = requestURL,
+			method = ListFirst(arguments.endpoint, " "),
+			data = arguments.payload,
+			dataType='json',
+			headers = this.getAvataxService().getHttpHeaders(),
+			timeout = 5
+		);
+		
+		var response = {};
+		if( isStruct(rawResponse.fileContent) ) {
+			response = rawResponse.fileContent;
+			
+		} else {
+			response = { 
+				"error": { 
+					"code": "ApiError",
+					"message": "response is not valid JSON", 
+					"response": rawResponse.fileContent 
+				} 
+			};
+		} 
+		
+		/** 
+		 * If there's an error, add request data: in the response
+		 * NOTE: for a typical error/success responses see at the bottom of this file
+		*/
+		if( structKeyExists(response, 'error') && setting('debugModeFlag') ) {
+			response['requestAttributes'] = httpRequest.getAttributes() ;
+			response['requestParams'] = httpRequest.getParams();
+			debugLog(response);
+		}
+
+		return response;
+	}
+	
 	/**
 	 * Function to test if we're able to communicate with the Avalara APIs
 	 * API Endpoint: "GET /utilities/ping"
@@ -63,7 +120,75 @@ component accessors='true' output='false' displayname='Avalara-Address' extends=
 	 * @returns Struct of Success/failure response
 	*/
 	public struct function verifyAddress(required struct address) {
-		return this.getAvataxService().verifyAddress(arguments.address);
+		var response = this.makeApiRequest('POST /addresses/resolve', this.getAvataxService().convertSwAddressToAvalaraAddress(arguments.address) );
+		
+		var formattedResponse = {};
+		formattedResponse['success'] = false;
+		formattedResponse['message'] = '';
+					
+		if( structKeyExists(response, 'validatedAddresses') &&
+			IsArray(response.validatedAddresses) &&
+			ArrayLen(response.validatedAddresses)
+		){
+			var suggestion = response.validatedAddresses[1];
+			
+			var formattedSuggestion = {};
+			formattedSuggestion['addressID'] = arguments.address['addressID'];
+			
+			formattedSuggestion['streetAddress'] = suggestion["line1"];
+			formattedSuggestion['street2Address'] = suggestion["line2"];
+			formattedSuggestion['city'] = suggestion["city"];
+			formattedSuggestion['stateCode'] = suggestion["region"];
+			formattedSuggestion['postalCode'] = suggestion["postalCode"];
+			formattedSuggestion['countryCode'] = suggestion["country"];
+			
+			
+			formattedResponse['success'] =  this.getAvataxService().compareAddressWithSuggestion(arguments.address, formattedSuggestion);
+			formattedResponse['suggestedAddress'] = formattedSuggestion;
+			
+			if(StructKeyExists(response, 'resolutionQuality')) {
+				formattedResponse['message'] = "Resolution quality: #response.resolutionQuality#";
+			}
+		
+		} else if( structKeyExists(response, 'error') ) {
+			formattedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
+		} else if( structKeyExists(response, 'messages') && isArray(response['messages']) && !arrayIsEmpty(response['messages'])){
+			formattedResponse['message'] = '';
+
+			for(var message in response['messages']){
+
+				if(len(formattedResponse['message'])){
+					formattedResponse['message'] &= ', ';
+				} 
+
+				if(structKeyExists(message, 'summary')){
+
+					if(message['summary'] == 'Country not supported.'){
+						formattedResponse['success'] = true; 	
+						formattedResponse['suggestedAddress'] = arguments.address;
+					} 
+
+					formattedResponse['message'] &= message['summary'];
+				}
+
+				if(structKeyExists(message, 'details')){
+					formattedResponse['message'] &= ' - ' & message['details']
+				}
+
+				if(formattedResponse['success']){
+					break; 
+				} 
+			}  
+	
+		} else {
+			formattedResponse['message'] = "Something went wrong";
+		}
+		
+		if(setting('debugModeFlag')){
+			this.getAvataxService().debugLog(formattedResponse);
+		}
+		
+		return formattedResponse;
 	}
 	
 }

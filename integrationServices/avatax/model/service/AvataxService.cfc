@@ -101,75 +101,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/
 	public struct function verifyAddress(required struct address) {
 
-		var response = this.makeApiRequest('POST /addresses/resolve', this.convertSwAddressToAvalaraAddress(arguments.address) );
 		
-		var formattedResponse = {};
-		formattedResponse['success'] = false;
-		formattedResponse['message'] = '';
-					
-		if( structKeyExists(response, 'validatedAddresses') &&
-			IsArray(response.validatedAddresses) &&
-			ArrayLen(response.validatedAddresses)
-		){
-			var suggestion = response.validatedAddresses[1];
-			
-			var formattedSuggestion = {};
-			formattedSuggestion['addressID'] = arguments.address['addressID'];
-			
-			formattedSuggestion['streetAddress'] = suggestion["line1"];
-			formattedSuggestion['street2Address'] = suggestion["line2"];
-			formattedSuggestion['city'] = suggestion["city"];
-			formattedSuggestion['stateCode'] = suggestion["region"];
-			formattedSuggestion['postalCode'] = suggestion["postalCode"];
-			formattedSuggestion['countryCode'] = suggestion["country"];
-			
-			
-			formattedResponse['success'] =  compareAddressWithSuggestion(arguments.address, formattedSuggestion);
-			formattedResponse['suggestedAddress'] = formattedSuggestion;
-			
-			if(StructKeyExists(response, 'resolutionQuality')) {
-				formattedResponse['message'] = "Resolution quality: #response.resolutionQuality#";
-			}
-		
-		} else if( structKeyExists(response, 'error') ) {
-			formattedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
-		} else if( structKeyExists(response, 'messages') && isArray(response['messages']) && !arrayIsEmpty(response['messages'])){
-			formattedResponse['message'] = '';
-
-			for(var message in response['messages']){
-
-				if(len(formattedResponse['message'])){
-					formattedResponse['message'] &= ', ';
-				} 
-
-				if(structKeyExists(message, 'summary')){
-
-					if(message['summary'] == 'Country not supported.'){
-						formattedResponse['success'] = true; 	
-						formattedResponse['suggestedAddress'] = arguments.address;
-					} 
-
-					formattedResponse['message'] &= message['summary'];
-				}
-
-				if(structKeyExists(message, 'details')){
-					formattedResponse['message'] &= ' - ' & message['details']
-				}
-
-				if(formattedResponse['success']){
-					break; 
-				} 
-			}  
-	
-		} else {
-			formattedResponse['message'] = "Something went wrong";
-		}
-		
-		if(setting('debugModeFlag')){
-			debugLog(formattedResponse);
-		}
-		
-		return formattedResponse;
 	}
 	
 	/**
@@ -210,64 +142,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 
 	
-	/**
-	 * Function to call avalara-APIs
-	 * @endpoint space separated method and api-endpoint, 'GET /abc/pqr', "POST /abc/pqr"
-	 * @payload request body
-	 * @return An struct of, either successful-response or formated-error-response 
-	*/ 
-	public struct function makeApiRequest(required string endpoint, struct payload={}) {
-		
-		/**
-		 * Currently this function is being used for address API's
-		 * Hardcoding The URL as Tax integration is still on V1
-		 * 
-		*/
-		var requestURL = 'https://rest.avatax.com/api/v2';
-		if(setting('testingFlag')) { 
-			requestURL = 'https://sandbox-rest.avatax.com/api/v2';
-		}
-	
-		requestURL &= ListLast(arguments.endpoint, " ");
-
-		var httpRequest = new http();
-		httpRequest.setMethod( ListFirst(arguments.endpoint, " ") );
-		httpRequest.setUrl( requestURL );
-
-    	setHttpHeaders(httpRequest);
-    	
-    	httpRequest.addParam(type='body', value="#SerializeJson(arguments.payload)#");
-		httpRequest.setTimeout(5);
-
-		var rawResponse = httpRequest.send().getPrefix();
-		
-		var response = {};
-		if( IsJson(rawResponse.fileContent) ) {
-			response = DeSerializeJson(rawResponse.fileContent); 
-		} 
-		else {
-
-			response = { 
-						"error": { 
-								"code": "ApiError",
-								"message": "response is not valid JSON", 
-								"response": rawResponse.fileContent 
-							} 
-					};
-		} 
-		
-		/** 
-		 * If there's an error, add request data: in the response
-		 * NOTE: for a typical error/success responses see at the bottom of this file
-		*/
-		if( structKeyExists(response, 'error') && setting('debugModeFlag') ) {
-			response['requestAttributes'] = httpRequest.getAttributes() ;
-			response['requestParams'] = httpRequest.getParams();
-			debugLog(response);
-		}
-
-		return response;
-	}
 
 	private void function debugLog( required any input, string type = "Information") {
 		if(!IsSimpleValue(arguments.input)) {
