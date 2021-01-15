@@ -5,7 +5,7 @@ import { getUser } from '../../actions/userActions'
 import { search, setKeyword, setSort, addFilter, removeFilter, updateAttribute } from '../../actions/productSearchActions'
 import _ from 'lodash'
 
-const AttributeFacet = ({ name, count, sub, filterName, updateAttributeAction, isSelected }) => {
+const AttributeFacet = ({ name, count, sub, filterName, updateAttributeAction, isSelected, searchWithFilters }) => {
   const token = filterName.replace(/\s/g, '') + name.replace(/\s/g, '') + 'input'
   return (
     <li className="widget-list-item cz-filter-item">
@@ -25,7 +25,7 @@ const AttributeFacet = ({ name, count, sub, filterName, updateAttributeAction, i
               checked={isSelected}
               onChange={event => {
                 updateAttributeAction({ name, filterName })
-                //   // searchWithFilters()
+                searchWithFilters()
               }}
               id={token}
             />
@@ -109,7 +109,7 @@ const ProductListingFilter = ({ updateAttributeAction, searchWithFilters, applie
               {searchResults &&
                 searchResults.map((result, index) => {
                   if (type === 'single') {
-                    return <DrillDownFacet earchWithFilters={searchWithFilters} addFilterAction={addFilterAction} {...result} key={index} filterName={filterName} />
+                    return <DrillDownFacet searchWithFilters={searchWithFilters} addFilterAction={addFilterAction} {...result} key={index} filterName={filterName} />
                   } else {
                     return <AttributeFacet updateAttributeAction={updateAttributeAction} searchWithFilters={searchWithFilters} {...result} key={index} filterName={filterName} />
                   }
