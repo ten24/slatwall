@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import logo from '../../assets/images/sb-logo-white.png'
 import { connect } from 'react-redux'
 import { ActionBanner, SignUpForm } from '..'
 import SWImage from '../SWImage/SWImage'
 // import * as Yup from 'yup'
 
-function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
+function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink, logo }) {
   return (
     <footer className="pt-5">
       {actionBanner.display && !actionBannerDisable && <ActionBanner {...actionBanner} />}
@@ -50,6 +49,7 @@ Footer.propTypes = {
   copywriteDate: PropTypes.string,
   formLink: PropTypes.string,
   actionBannerDisable: PropTypes.bool,
+  logo: PropTypes.string,
 }
 
 Footer.defaultProps = {
