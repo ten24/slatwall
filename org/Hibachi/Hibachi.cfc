@@ -128,6 +128,9 @@ component extends="framework.one" {
 	}
 
 	public string function getEnvironment() {
+		if ( isServerNameAnIP() ) {
+			return '';
+		}
 		for(var i = 1; i <= arrayLen(variables.framework.hibachi.availableEnvironments); i++){
 			if( structKeyExists(variables.framework.hibachi, '#variables.framework.hibachi.availableEnvironments[i]#UrlPattern')){
 				var currentEnvironmentUrlPattern = variables.framework.hibachi['#variables.framework.hibachi.availableEnvironments[i]#UrlPattern'];
@@ -374,6 +377,13 @@ component extends="framework.one" {
 				getHibachiScope().setApplicationValue("applicationCluster", serverInstance.getServerInstanceClusterName());
 			}
 			
+		}
+		
+		if( !getHibachiScope().hasApplicationValue("applicationEnvironment") || getHibachiScope().getApplicationValue("applicationEnvironment") == '' ){
+			var environment = getEnvironment();
+			if( environment != '' ) {
+				getHibachiScope().setApplicationValue("applicationEnvironment", environment);
+			}
 		}
 		
 		//Sets the correct site for api calls.
