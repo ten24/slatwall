@@ -569,10 +569,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			*/
 			if( structKeyExists(response, 'created') && response.created > 0 ){
 				logHibachi("ERPOne - Successfully created Account on Erpone with rowID #response.rowids[1]#");
-				var accountAuthentication = getAccountDAO().getUpdateRemoteIDForNewAccount(
+				getAccountDAO().updateRemoteIDForNewAccount(
 					accountID = arguments.data.payload.remoteAccountID , 
 					remoteID = response.rowids[1] , 
-					importRemoteID = this.genericCreateEntityImportRemoteID( arguments.data.payload , this.getEntityMapping( 'Account' )) );
+					importRemoteID = this.genericCreateEntityImportRemoteID( arguments.data.payload , this.getEntityMapping( 'Account' )) 
+					);
 				logHibachi("ERPOne - Successfully updated Slatwall account with accountID #arguments.data.payload.remoteAccountID#");
 			}
 			else {
@@ -681,12 +682,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	
 		if( !structKeyExists(arguments.data, 'First_Name') || this.hibachiIsEmpty(arguments.data.First_Name) ) {
 				
-				arguments.data.organizationFlag = "true";
+				arguments.data.organizationFlag = true;
 		}
 		
 		if( !structKeyExists(arguments.data, 'Last_Name') || this.hibachiIsEmpty(arguments.data.Last_Name) ) {
 				
-				arguments.data["organizationFlag"] = "true";
+				arguments.data["organizationFlag"] = true;
 		}
 		var erponeMapping = {
 	        "__rowids" : "remoteAccountID",

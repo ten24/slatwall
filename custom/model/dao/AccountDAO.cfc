@@ -1,7 +1,7 @@
 <cfcomponent extends="Slatwall.model.dao.AccountDAO">
 
 	
-	<cffunction name="getUpdateRemoteIDForNewAccount" returntype="void" access="public">
+	<cffunction name="updateRemoteIDForNewAccount" returntype="void" access="public">
 		<cfargument name="accountID" />
 		<cfargument name="remoteID" />
 		<cfargument name="importRemoteID" />
