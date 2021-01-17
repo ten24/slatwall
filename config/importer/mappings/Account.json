@@ -71,6 +71,12 @@
             "isNullable": true,
             "entityName": "AccountEmailAddress",
             "propertyIdentifier": "primaryEmailAddress"
+        },
+        {
+            "type": "manyToOne",
+            "isNullable": true,
+            "entityName": "AccountAddress",
+            "propertyIdentifier": "primaryAddress"
         }
     ],
     

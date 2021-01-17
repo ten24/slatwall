@@ -54,6 +54,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="hibachiDataService";
 	property name="hibachiUtilityService";
 	
+	property name="accountDAO" type="any";
+	
 	public any function getIntegration(){
 	    if( !structKeyExists( variables, 'integration') ){
 	        variables.integration = this.getIntegrationByIntegrationPackage('erpone');
@@ -261,7 +263,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function callErpOneGetDataApi( required struct requestData, string endpoint="read" ){
-  
+		getService('hibachiTagService').cfsetting(requesttimeout=100000);
     	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint);
 		
 		// Authentication headers
@@ -271,7 +273,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    httpRequest.addParam( type='formfield', name= key, value = arguments.requestData[key] );
 		}
         var rawRequest = httpRequest.send().getPrefix();
-        
         if( !IsJson(rawRequest.fileContent) ){
 		    throw("ERPONE - callErpOneGetDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
@@ -293,15 +294,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return DeSerializeJson(rawRequest.fileContent);
     }
     	
-	public struct function transformedErpOneItems(required struct items, required struct erponeMapping ){
+	public struct function transformedErpOneItems(required struct item, required struct erponeMapping ){
 
 		var transformedItem = {};
 	    	
 	    	for( var sourceKey in arguments.erponeMapping ){
 	    		var destinationKey = arguments.erponeMapping[ sourceKey ];
 	    		
-	    		if( structKeyExists(arguments.items, sourceKey) ){
-	        	    transformedItem[ destinationKey ] = arguments.items[ sourceKey ];
+	    		if( structKeyExists(arguments.item, sourceKey) ){
+	        	    transformedItem[ destinationKey ] = arguments.item[ sourceKey ];
 	    		}
 	    	}
 	    
@@ -401,7 +402,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		var recordsFetched = 0;
 		
-		while ( recordsFetched < totalRecordsCount ){
+		 while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				
@@ -502,10 +503,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
 		var mapping = {
 			"remoteID" : "__rowid",
+			"accountID" : "remoteAccountID",
 	        "primaryAddress_address_countryCode" : "country_code",
 	        "primaryEmailAddress_emailAddress" : "email_address",
 	        "primaryPhoneNumber_phoneNumber" : "phone",
 	        "activeFlag" : "Active",
+	        "customer" : "companyCode",
 	        "company" : "name"
 		};
 
@@ -530,10 +533,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		arguments.data.payload = this.convertSwAccountToErponeAccount(arguments.entity);
 		arguments.create = false;
+		
 		//push to remote endpoint
 		
-		
-
         var payload = {
 		  "table"	 : "customer",
 		  "triggers" : "true",
@@ -542,22 +544,42 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 		if( !this.hibachiIsEmpty(arguments.entity.getRemoteID()) ){
 			var response = this.callErpOneUpdateDataApi(payload, "update" );
+			
+			/** Format error:
+			 * typical error response: { "errordetail": "error", "filecontent": "null"};
+			 * typical successful response: {"table":"customer","updated":1,"triggers":false}
+			*/
+		
+			if( structKeyExists(response, 'updated') && response.updated > 0 ){
+				logHibachi("ERPOne - Successfully updated Account Data");
+			}
+			else {
+				throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+			}
 		} else {
+			var payload = {
+			  "table"	 : "customer",
+			  "triggers" : "true",
+			  "records"	 : [ arguments.data.payload ]
+			};
 			var response = this.callErpOneUpdateDataApi(payload, "create" );
+			/** Format error:
+			 * typical error response: { "errordetail": "error", "filecontent": "null"};
+			 * typical successful response: {"table":"customer","updated":1,"triggers":false}
+			*/
+			if( structKeyExists(response, 'created') && response.created > 0 ){
+				logHibachi("ERPOne - Successfully created Account on Erpone with rowID #response.rowids[1]#");
+				var accountAuthentication = getAccountDAO().getUpdateRemoteIDForNewAccount(
+					accountID = arguments.data.payload.remoteAccountID , 
+					remoteID = response.rowids[1] , 
+					importRemoteID = this.genericCreateEntityImportRemoteID( arguments.data.payload , this.getEntityMapping( 'Account' )) );
+				logHibachi("ERPOne - Successfully updated Slatwall account with accountID #arguments.data.payload.remoteAccountID#");
+			}
+			else {
+				throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+			}
 		}
 		
-		
-		/** Format error:
-		 * typical error response: { "errordetail": "error", "filecontent": "null"};
-		 * typical successful response: {"table":"customer","updated":1,"triggers":false}
-		*/
-	
-		if( structKeyExists(response, 'updated') && response.updated > 0 ){
-			logHibachi("ERPOne - Successfully updated Account Data");
-		}
-		else {
-			throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
-		}
 		logHibachi("ERPOne - End Account pushData");
 	}
 	
@@ -624,7 +646,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var requestQuery = 'FOR EACH sy_contact WHERE sy_contact.company_sy = "SB" AND sy_contact.contact_type = "customer" AND sy_contact.contact = "'&arguments.data.customer&'"';	
     	var syAccountsArray = this.callErpOneGetDataApi({
 			"query": requestQuery,
-    	    "columns" : "First_Name,Last_Name,key1,key2,contact,adr[1],adr[2],adr[3],adr[4],adr[5],country_code,cell,contact_type"
+    	    "columns" : "First_Name,Last_Name,key1,key2,contact,adr[1],adr[2],adr[3],adr[4],adr[5],country_code,cell,contact_type,state,postal_code"
     	})
     	
     	if(!this.hibachiIsEmpty(syAccountsArray)){
@@ -640,11 +662,31 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				
 				arguments.data.phone = arguments.data.cell;
 			}
+			
+			if( !structKeyExists(arguments.data, 'remoteAccountAddressID') || this.hibachiIsEmpty(arguments.data.remoteAccountAddressID) ) {
+				
+				arguments.data["accountAddressID"] = arguments.data.__rowids;
+			}
+			
+			if( !structKeyExists(arguments.data, 'remoteAddressID') || this.hibachiIsEmpty(arguments.data.remoteAddressID) ) {
+				
+				arguments.data["addressID"] = arguments.data.__rowids;
+			}
+			
+			if( !structKeyExists(arguments.data, 'addressName') || this.hibachiIsEmpty(arguments.data.addressName) ) {
+				
+				arguments.data["addressName"] = "Default";
+			}
     	}
     	
 		if( !structKeyExists(arguments.data, 'First_Name') || this.hibachiIsEmpty(arguments.data.First_Name) ) {
 				
 				arguments.data.organizationFlag = "true";
+		}
+		
+		if( !structKeyExists(arguments.data, 'Last_Name') || this.hibachiIsEmpty(arguments.data.Last_Name) ) {
+				
+				arguments.data["organizationFlag"] = "true";
 		}
 		var erponeMapping = {
 	        "__rowids" : "remoteAccountID",
@@ -660,7 +702,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        "adr_1" : "streetAddress",
 	        "adr_2" : "street2Address",
 	        "adr_4" : "city",
+	        "state" : "stateCode",
+	        "postal_code" : "postalCode",
+	        "organizationFlag" : "organizationFlag",
+	        "accountAddressID" : "remoteAccountAddressID",
+	        "addressID" : "remoteAddressID",
+	        "addressName" : "name"
+	        
 	    };
+	    
 		var transformedItem = this.transformedErponeItems( arguments.data, erponeMapping);
 	    return transformedItem;
 	}
