@@ -27,5 +27,6 @@
 		<Record updateScriptID="364ee100245d11ebb39212f40be05e23" scriptPath="database/ordertemplateactivationdatetime.cfm" loadOrder="124" maxExecutionCount="1" />
 		<Record updateScriptID="0c7ccfba25e711ebb39212f40be05e23" scriptPath="database/ordertemplatecalculatedproperties2.cfm" loadOrder="125" maxExecutionCount="1" />
 		<Record updateScriptID="0c8ccfba25e711ebb39212f40be05e23" scriptPath="database/createapilogtable.cfm" loadOrder="126" maxExecutionCount="1" />
+		<Record updateScriptID="537e006e59c711eba0cd12f40be05e23" scriptPath="database/orderitemofyflag.cfm" loadOrder="128" maxExecutionCount="1" />
 	</Records> 
 </Table>
