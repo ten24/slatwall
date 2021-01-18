@@ -1,5 +1,5 @@
 {
 	"properties": {
-		"scheduleOrderNextPlaceDateTime": [{ "method": "isValidScheduleDay" }]
+		"scheduleOrderNextPlaceDateTime": [{ "method": "isValidScheduleDayFlag" }]
 	}
 }

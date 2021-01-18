@@ -86,7 +86,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 	}
 	
-	public boolean function isValidScheduleDay(){
+	public boolean function isValidScheduleDayFlag(){
 		return DateDiff("d",now(),variables.scheduleOrderNextPlaceDateTime) <= 60;
 	}
 }
