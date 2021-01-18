@@ -294,7 +294,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return DeSerializeJson(rawRequest.fileContent);
     }
     	
-	public struct function transformedErpOneItems(required struct item, required struct erponeMapping ){
+	public struct function transformedErpOneItem(required struct item, required struct erponeMapping ){
 
 		var transformedItem = {};
 	    	
@@ -602,7 +602,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					logHibachi("ERPOne - Successfully updated Sy_contact Data");
 				}
 				else {
-					throw("ERPONE - callErpOnePushSy_contactApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+					throw("ERPONE - callErpOnePushSy_contactApi: Error occured while updating `sy_contact`, request: #Serializejson(arguments.data.payload)#");
 				}
 			}
 			
@@ -793,7 +793,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        
 	    };
 	    
-		var transformedItem = this.transformedErponeItems( arguments.data, erponeMapping);
+		var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
 	    return transformedItem;
 	}
 	
