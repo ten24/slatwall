@@ -1,52 +1,101 @@
 import { RECIVE_FEATURED_PRODUCTS, REQUEST_FEATURED_PRODUCTS, UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
 
 const products = [
-  {
-    brand: 'Brand A',
-    productTile: 'Title 1',
-    price: '$209.24',
-    displayPrice: '$156.99',
-    imgUrl: 'product-img-1.png',
-    linkUrl: '/hop-single-v1.html',
-  },
-  {
-    brand: 'Brand A',
-    productTile: 'Title 1',
-    price: '$209.24',
-    displayPrice: '$156.99',
-    imgUrl: 'product-img-2.png',
-    linkUrl: '/shop-single-v1.html',
-  },
-  {
-    brand: 'Brand A',
-    productTile: 'Title 1',
-    price: '$209.24',
-    displayPrice: '$156.99',
-    imgUrl: 'product-img-3.png',
-    linkUrl: '/shop-single-v1.html',
-  },
-  {
-    brand: 'Brand A',
-    productTile: 'Title 1',
-    price: '$209.24',
-    displayPrice: '$156.99',
-    imgUrl: 'product-img-4.png',
-    linkUrl: '/shop-single-v1.html',
-  },
-  {
-    brand: 'Brand A',
-    productTile: 'Title 1',
-    price: '$209.24',
-    displayPrice: '$156.99',
-    linkUrl: '/shop-single-v1.html',
-  },
-  {
-    brand: 'Brand A',
-    productTile: 'Title 1',
-    price: '$209.24',
-    displayPrice: '$156.99',
-    linkUrl: '/shop-single-v1.html',
-  },
+ {
+      brand_brandName: 'Sargent',
+      urlTitle: 'sargent-spindle-kit-2-1-4-door579-3',
+      brand_urlTitle: '',
+      listPrice: '',
+      defaultProductImageFiles: [
+        {
+          imageFile: '579-3-.jpeg',
+          skuDefinition: ''
+        }
+      ],
+      calculatedTitle: 'Sargent Sargent Spindle Kit, 2-1/4" Door',
+      calculatedSalePrice: 40,
+      productName: 'Sargent Spindle Kit, 2-1/4" Door',
+      livePrice: '',
+      productClearance: '',
+      productID: '2c918082765161ad0176517911fb008a',
+      productFeatured: true
+    },
+    {
+      brand_brandName: 'Sargent',
+      urlTitle: 'sargent-30-series-exit-device-trim-dummy-ll-design-26d28-d-ll-26d',
+      brand_urlTitle: '',
+      listPrice: '',
+      defaultProductImageFiles: [
+        {
+          imageFile: '28-D__LL__26D-.jpeg',
+          skuDefinition: ''
+        }
+      ],
+      calculatedTitle: 'Sargent Sargent 30 Series Exit Device Trim, Dummy, LL Design, 26D',
+      calculatedSalePrice: 370,
+      productName: 'Sargent 30 Series Exit Device Trim, Dummy, LL Design, 26D',
+      livePrice: '',
+      productClearance: '',
+      productID: '2c918082765161ad017651790f2a007c',
+      productFeatured: true
+    },
+    {
+      brand_brandName: 'Sargent',
+      urlTitle: 'sargent-knob-hub-retainer97-0043',
+      brand_urlTitle: '',
+      listPrice: '',
+      defaultProductImageFiles: [
+        {
+          imageFile: '97-0043-.jpeg',
+          skuDefinition: ''
+        }
+      ],
+      calculatedTitle: 'Sargent Sargent Knob Hub Retainer',
+      calculatedSalePrice: 8.4,
+      productName: 'Sargent Knob Hub Retainer',
+      livePrice: '',
+      productClearance: '',
+      productID: '2c918082765161ad0176517910970083',
+      productFeatured: true
+    },
+    {
+      brand_brandName: 'Sargent',
+      urlTitle: 'sargent-30-series-surface-vertical-rod-device-48-en-689-3727-48-pen',
+      brand_urlTitle: '',
+      listPrice: '',
+      defaultProductImageFiles: [
+        {
+          imageFile: '3727__48__PEN-.jpeg',
+          skuDefinition: ''
+        }
+      ],
+      calculatedTitle: 'Sargent Sargent 30 Series Surface Vertical Rod Device, 48", EN (689)',
+      calculatedSalePrice: 999,
+      productName: 'Sargent 30 Series Surface Vertical Rod Device, 48", EN (689)',
+      livePrice: '',
+      productClearance: '',
+      productID: '2c918082765161ad017651790d550075',
+      productFeatured: true
+    },
+    {
+      brand_brandName: 'Lucky Line',
+      urlTitle: 'precision-pen-screwdriveru12201',
+      brand_urlTitle: '',
+      listPrice: '',
+      defaultProductImageFiles: [
+        {
+          imageFile: 'U12201-.jpeg',
+          skuDefinition: ''
+        }
+      ],
+      calculatedTitle: 'Lucky Line Precision Pen Screwdriver',
+      calculatedSalePrice: 8.63,
+      productName: 'Precision Pen Screwdriver',
+      livePrice: '',
+      productClearance: '',
+      productID: '40289084765102130176511521d200f7',
+      productFeatured: true
+    }
 ]
 
 const initState = {
