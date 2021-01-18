@@ -71,6 +71,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    return this.getCachedMappings()[ arguments.mappingCode];
 	}
 	
+	public struct function getMappingNamesIndex(){
+	    var index = {};
+	    var cachedMappings = this.getCachedMappings();
+	    for(var mappingCode in cachedMappings){
+	        index[ mappingCode ] = cachedMappings[mappingCode].name;
+	    }
+	    return index;
+	}
+	
 	public any function saveImporterMapping(required any importerMapping, required struct data) {
 		 arguments.importerMapping = super.saveImporterMapping(argumentCollection=arguments);
 		 
@@ -109,6 +118,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	        }
 	        
 	        var mappingStruct = deSerializeJSON(mappingJson);
+	        mappingStruct['name'] = listFirst(fileName, '.');
 	        defaultMappings[ mappingStruct.mappingCode ] = mappingStruct;
 		});
 		
@@ -161,7 +171,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	        "errors" = []
 	    };
 	    
-	    
         if( !IsJSON( arguments.mapping )){
             // TODO rb-keys
             validation.isValid = false;
@@ -176,10 +185,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             validation.errors.append('Mapping should have a `mappingCode` property');       
         }
         
+        if(!structKeyExists(mappingStruct, 'entityName')){
+            validation.isValid = false;
+            validation.errors.append('Mapping should have a `entityName` property');       
+        }
+        
         if(structKeyExists(mappingStruct, 'relations')){
             for(var relation in mappingStruct.relations){
+                if(!structKeyExists(relation, 'entityName') ){
+                    validation.isValid = false;
+                    validation.errors.append('Mapping relation should have a `entityName` : #serializeJson(relation)#'); 
+                }
+                
                 if(!structKeyExists(relation, 'mappingCode') ){
-                    
                     if( !structKeyExists(relation, 'hasMapping') || relation.hasMapping == true ){
                         validation.isValid = false;
                         validation.errors.append('Mapping relation should have a `mappingCode` : #serializeJson(relation)#'); 

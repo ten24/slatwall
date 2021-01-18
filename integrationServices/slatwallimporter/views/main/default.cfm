@@ -13,9 +13,9 @@
    
     <hb:HibachiPropertyRow>
    	    <hb:HibachiPropertyList>
-		    <cfloop struct="#rc.sampleCsvFilesIndex#" item="local.entityName">
+		    <cfloop struct="#rc.sampleCsvFilesIndex#" item="local.mappingCode">
 		        <br/>
-		        <hb:HibachiActionCaller action="admin:slatwallImporter:main.getSampleCSV" queryString="entityName=#local.entityName#" text="Download - #local.entityName# Import Template" modal="false" type="link" target="_blank" class="btn btn-primary btn-sm" icon="download" />
+		        <hb:HibachiActionCaller action="admin:slatwallImporter:main.getSampleCSV" queryString="mappingCode=#local.mappingCode#" text="Download - #rc.sampleCsvFilesIndex[ local.mappingCode ]# Import Template" modal="false" type="link" target="_blank" class="btn btn-primary btn-sm" icon="download" />
 		        <br/>
 		   </cfloop> 
 		</hb:HibachiPropertyList>

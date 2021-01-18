@@ -61,12 +61,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiEntityQueueDAO";
 	property name = "OptionDAO";
 	
-	property name = "cachedMappingPropertiesValidations" type="struct";
-	
 	
 	public any function init() {
 	    super.init(argumentCollection = arguments);
-	    this.setCachedMappingPropertiesValidations( {} );
 	}
 	
 	
@@ -90,7 +87,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	
   	/*****************              Process - Queue - Process                 ******************/
 
-    public any function createNewImportBatch(required struct mapping, required any queryOrArrayOfStruct){
+    public any function createNewImportBatch(required struct mapping, required any queryOrArrayOfStruct, string batchDescription){
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
 	    
@@ -100,9 +97,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        var batchItemsCount = arguments.queryOrArrayOfStruct.len() // array
 	    }
 	    
+	    if(isNull(arguments.batchDescription)){
+	        arguments.batchDescription = "Import Batch for Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#] of length [#batchItemsCount#]  created on " & dateFormat(now(), "long");
+	    }
+	    
 	    newBatch.setBaseObject( arguments.mapping.entityName );
 	    newBatch.setInitialEntityQueueItemsCount(batchItemsCount);
-	    newBatch.setBatchDescription("Import Batch for Entity-#arguments.maping.entityName#. Mapping-[#arguments.mapping.mappingCode#] of length [#batchItemsCount#]  created on " & dateFormat(now(), "long") );
+	    newBatch.setBatchDescription(arguments.batchDescription);
 	    
 	    this.getHibachiEntityQueueService().saveBatch(newBatch);
 	    this.getHibachiScope().flushORMSession();
@@ -787,7 +788,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var transformedData = {};
 	    
 	    if(!arguments.nested){
-	        // snapshot source-data and mapping-Code so that we can have multiple mapings per entity and use the source-data later on;
+	        // snapshot source-data and mapping-Code so that we can have multiple mappings per entity and use the source-data later on;
 	        transformedData['__sourceData'] = arguments.data;
 	        transformedData['mappingCode'] = arguments.mapping.mappingCode;
 	    }
