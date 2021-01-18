@@ -68,12 +68,14 @@
             "type"                   : "manyToOne",
             "entityName"             : "Address",
             "propertyIdentifier"     : "billingAddress",
+            "isNullable"             : true,
             "sourceDataKeysPrefix"   : "BillingAddress_"
         },
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
             "propertyIdentifier"     : "shippingAddress",
+            "isNullable"             : true,
             "sourceDataKeysPrefix"   : "ShippingAddress_"
         },
         {

@@ -299,7 +299,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     	
-	public struct function transformedErpOneItems(required struct items, required struct erponeMapping ){
+	public struct function transformedErpOneItem(required struct item, required struct erponeMapping ){
 
 		var transformedItem = {};
 	    	
@@ -399,7 +399,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        "name" : "companyName"
 	    };
 	    
-	    return this.transformedErponeItems( arguments.accountDataArray, erponeMapping);
+	    return this.transformedErponeItem( arguments.accountDataArray, erponeMapping);
 	}
 	
 	public any function importErpOneAccounts(){
@@ -715,7 +715,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        "state" 		: "stateCode"
 	    };
 	    
-		var transformedItem = this.transformedErponeItems( arguments.data, erponeMapping);
+		var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
     	transformedItem.remoteOrderID = transformedItem.OrderNumber;
 		transformedItem.FullAddress = {
 				  "streetAddress"  : transformedItem.Address[2],
@@ -762,7 +762,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        "line" : "Line"
 	    };
 
-    	var transformedItem = this.transformedErponeItems( arguments.data, erponeMapping);
+    	var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
     	
     	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
 	    return transformedItem;
