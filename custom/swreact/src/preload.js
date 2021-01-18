@@ -1,5 +1,7 @@
 export default {
   navigation: {
+    logo: 'sb-logo.png',
+    mobileLogo: 'sb-logo-mobile.png',
     mainNavigation: '<ul> <li><a href="/">Home</a></li> <li><a href="/about">About</a></li> <li><a href="/contact">Contact</a></li> </ul>',
     productCategories: [
       {
@@ -468,8 +470,9 @@ export default {
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
+        isSpecial: true,
         imgUrl: 'product-img-1.png',
-        linkUrl: '/hop-single-v1.html',
+        linkUrl: '/product-detail',
       },
       {
         brand: 'Brand A',
@@ -477,7 +480,7 @@ export default {
         price: '$209.24',
         displayPrice: '$156.99',
         imgUrl: 'product-img-2.png',
-        linkUrl: '/shop-single-v1.html',
+        linkUrl: '/product-detail',
       },
       {
         brand: 'Brand A',
@@ -485,29 +488,30 @@ export default {
         price: '$209.24',
         displayPrice: '$156.99',
         imgUrl: 'product-img-3.png',
-        linkUrl: '/shop-single-v1.html',
+        linkUrl: '/product-detail',
       },
       {
         brand: 'Brand A',
         productTile: 'Title 1',
         price: '$209.24',
+        isSpecial: true,
         displayPrice: '$156.99',
         imgUrl: 'product-img-4.png',
-        linkUrl: '/shop-single-v1.html',
+        linkUrl: '/product-detail',
       },
       {
         brand: 'Brand A',
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
-        linkUrl: '/shop-single-v1.html',
+        linkUrl: '/product-detail',
       },
       {
         brand: 'Brand A',
         productTile: 'Title 1',
         price: '$209.24',
         displayPrice: '$156.99',
-        linkUrl: '/shop-single-v1.html',
+        linkUrl: '/product-detail',
       },
     ],
     homeMainBanner: [
@@ -761,6 +765,7 @@ export default {
     siteLinks: '<h3>Site Links</h3> <ul> <li><a href="##">Home</a></li> <li><a href="##">Products</a></li> <li><a href="##">About</a></li> <li><a href="##">Resources</a></li> <li><a href="##">Contact</a></li> <li><a href="##">My Account</a></li> </ul>',
     stayInformed: '<h3>Stay Informed</h3> <p>Sign up to receive any updates on pricing, specials, industry events and lcoal training at our facility!</p>',
     copywriteDate: '2020',
+    logo: 'sb-logo-white.png',
     formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
   },
   about: {

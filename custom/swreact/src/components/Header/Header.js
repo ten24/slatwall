@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import logo from '../../assets/images/sb-logo.png'
-import mobileLogo from '../../assets/images/sb-logo-mobile.png'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import _ from 'lodash'
+import { setKeyword } from '../../actions/productSearchActions'
+import { getUser } from '../../actions/userActions'
+import { useHistory } from 'react-router-dom'
+import SWImage from '../SWImage/SWImage'
 
 const CartMenuItem = ({ orderCount, total }) => {
   return (
@@ -68,9 +71,9 @@ const AccountBubble = ({ isAuthenticated, name }) => {
   )
 }
 
-function Header(props) {
+function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, mainNavigation, orderCount, total }) {
   let menuItems = new Map()
-  props.productCategories.forEach(item => {
+  productCategories.forEach(item => {
     if (menuItems.has(item.parentContent_title)) {
       let exisitingItems = menuItems.get(item.parentContent_title)
       exisitingItems.push(item)
@@ -79,6 +82,15 @@ function Header(props) {
       menuItems.set(item.parentContent_title, [item])
     }
   })
+  const [searchTerm, setSearchTerm] = useState('')
+  let history = useHistory()
+
+  const slowlyRequest = useCallback(
+    _.debounce(value => {
+      setKeywordAction(value)
+    }, 500),
+    []
+  )
 
   return (
     <header className="shadow-sm">
@@ -86,19 +98,39 @@ function Header(props) {
         <div className="navbar navbar-expand-lg navbar-light">
           <div className="container">
             <a className="navbar-brand d-none d-md-block mr-3 flex-shrink-0" href="/">
-              <img src={logo} alt="Stone & Berg Logo" />
+              <SWImage src={logo} alt="Stone & Berg Logo" />
             </a>
             <a className="navbar-brand d-md-none mr-2" href="/">
-              <img src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
+              <SWImage src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
             </a>
 
             <div className="navbar-right">
               <div className="navbar-topright">
                 <div className="input-group-overlay d-none d-lg-flex">
-                  <input className="form-control appended-form-control" type="text" placeholder="Search for products" />
+                  <input
+                    className="form-control appended-form-control"
+                    type="text"
+                    value={searchTerm}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        history.push('/products')
+                      }
+                    }}
+                    onChange={e => {
+                      setSearchTerm(e.target.value)
+                      slowlyRequest(e.target.value)
+                    }}
+                    placeholder="Search for products"
+                  />
                   <div className="input-group-append-overlay">
                     <span className="input-group-text">
-                      <i className="far fa-search"></i>
+                      <i
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          history.push('/products')
+                        }}
+                        className="far fa-search"
+                      ></i>
                     </span>
                   </div>
                 </div>
@@ -113,17 +145,17 @@ function Header(props) {
                     </div>
                   </a>
                   <Link className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" to="/my-account" data-toggle="modal">
-                    <AccountBubble isAuthenticated={props.user.accountID} name={props.user.firstName} />
+                    <AccountBubble isAuthenticated={user.accountID} name={user.firstName} />
                   </Link>
 
-                  <CartMenuItem {...props} />
+                  <CartMenuItem orderCount={orderCount} total={total} />
                 </div>
               </div>
 
               <div
                 className="navbar-main-links"
                 dangerouslySetInnerHTML={{
-                  __html: props.mainNavigation,
+                  __html: mainNavigation,
                 }}
               />
             </div>
@@ -175,5 +207,10 @@ function mapStateToProps(state) {
     user: state.userReducer,
   }
 }
-
-export default connect(mapStateToProps)(Header)
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: async () => dispatch(getUser()),
+    setKeywordAction: async keyword => dispatch(setKeyword(keyword)),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
