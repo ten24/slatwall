@@ -13,7 +13,6 @@
         "firstName": {
             "propertyIdentifier": "firstName",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },
@@ -72,6 +71,12 @@
             "isNullable": true,
             "entityName": "AccountEmailAddress",
             "propertyIdentifier": "primaryEmailAddress"
+        },
+        {
+            "type": "manyToOne",
+            "isNullable": true,
+            "entityName": "AccountAddress",
+            "propertyIdentifier": "primaryAddress"
         }
     ],
     

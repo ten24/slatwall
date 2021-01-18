@@ -33,7 +33,6 @@
         "street2Address": {
             "propertyIdentifier": "street2Address",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },
