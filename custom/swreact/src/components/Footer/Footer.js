@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { ActionBanner, SignUpForm } from '..'
 import SWImage from '../SWImage/SWImage'
+import styles from './Footer.module.css'
 // import * as Yup from 'yup'
 
 function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink, logo }) {
@@ -10,7 +11,7 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
     <footer className="pt-5">
       {actionBanner.display && !actionBannerDisable && <ActionBanner {...actionBanner} />}
 
-      <div className="bg-light pt-4">
+      <div className="bg-light p-5">
         <div className="container">
           <div className="row pt-2">
             <div className="col-md-2 col-sm-6">
@@ -21,20 +22,20 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
             </div>
             <div className="col-md-6">
               <div className="widget pb-2 mb-4">
-                <div dangerouslySetInnerHTML={{ __html: stayInformed }} />
+                <div className={`${styles.stayInformed}`} dangerouslySetInnerHTML={{ __html: stayInformed }} />
                 <SignUpForm url={formLink} />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-darker pt-4">
+      <div className={`${styles.bgFooter} pt-4`}>
         <div className="container">
           <div className="row">
             <div className="col-md-6 text-center text-md-left mb-4 text-light">
               <SWImage className="w-50" src={logo} alt="Stone and Berg logo" />
             </div>
-            <div className="col-md-6 font-size-xs text-light text-center text-md-right mb-4">{`@${copywriteDate} `} All rights reserved. Stone and Berg Company Inc</div>
+            <div className="col-md-6 font-size-xs text-center text-md-right mb-4">{`@${copywriteDate} `} All rights reserved. Stone and Berg Company Inc</div>
           </div>
         </div>
       </div>
