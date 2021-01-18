@@ -11,7 +11,7 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
     <footer className="pt-5">
       {actionBanner.display && !actionBannerDisable && <ActionBanner {...actionBanner} />}
 
-      <div className="bg-light p-5">
+      <div className={`${styles.bottomBar} p-5`}>
         <div className="container">
           <div className="row pt-2">
             <div className="col-md-2 col-sm-6">
