@@ -94,18 +94,18 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	}
 	
 	public void function setupIntegrations() {
-		// var tryCount = 0;
-		// while(tryCount < 10) {
-		// 	tryCount++;
-		// 	try{
+		var tryCount = 0;
+		while(tryCount < 10) {
+			tryCount++;
+			try{
 				getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
 				writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
-				//break;
-			//} catch (any e) {
-				// writeLog(file="Slatwall", text="General Log - Integrations setup try count: #tryCount#");
-				// sleep(1000);
-			//}
-		//}
+				break;
+			} catch (any e) {
+				writeLog(file="Slatwall", text="General Log - Integrations setup try count: #tryCount#");
+				sleep(1000);
+			}
+		}
 	}
 	
 	public void function onUpdateRequest() {
