@@ -10,12 +10,12 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 		return variables.integration;
 	}
 	
-	public function addToQueue(required any entity){
+	public function addToQueue(required any entity , required any processMethod){
 		try {
 			this.getHibachiEntityQueueDAO().insertEntityQueue(
 				baseID          = arguments.entity.getPrimaryIDValue(),
 				baseObject      = arguments.entity.getClassName(),
-				processMethod   = 'pushAccountDataToErpOne',
+				processMethod   = arguments.processMethod,
 				integrationID   = this.getIntegrationID()
 			);
 			
@@ -28,22 +28,18 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	
 	
 	public void function afterAccountSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity);
+		addToQueue(arguments.entity , pushAccountDataToErpOne);
 	}
 	
 	public void function afterAccountEmailAddressSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity.getAccount());
+		addToQueue(arguments.entity.getAccount()  , pushAccountDataToErpOne);
 	}
 	
 	public void function afterAccountPhoneNumberSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity.getAccount());
-	}
-	
-	public void function afterAccountPhoneNumberSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity.getAccount());
+		addToQueue(arguments.entity.getAccount()  , pushAccountDataToErpOne);
 	}
 	
 	public void function afterAccountAddressSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity.getAccount());
+		addToQueue(arguments.entity.getAccount()  , pushAccountDataToErpOne);
 	}
 }
