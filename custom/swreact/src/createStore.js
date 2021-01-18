@@ -7,9 +7,9 @@ import rootReducer from './reducers'
 
 import devData from './preload'
 // Grab the state from a global variable injected into the server-generated HTML
-const preloadedState = JSON.parse(window.__PRELOADED_STATE__)
-
-preloadedState.preload = _.merge(preloadedState.preload, devData)
+let preloadedState = JSON.parse(window.__PRELOADED_STATE__)
+preloadedState.preload = _.merge(devData,preloadedState.preload)
+// preloadedState.preload = {...devData,...preloadedState.preload}
 // Allow the passed state to be garbage-collected
 delete window.__PRELOADED_STATE__
 // Create Redux store with initial state
