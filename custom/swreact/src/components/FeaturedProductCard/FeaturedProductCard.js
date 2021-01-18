@@ -36,7 +36,11 @@ const FeaturedProductCard = ({ isSpecial, brand, productTile, price, displayPric
           <div className="d-flex justify-content-between">
             <div className="product-price">
               <span className="text-accent">{displayPrice}</span>
-              <span className="">{price}</span>
+              {isSpecial && (
+                <span style={{ marginLeft: '5px' }}>
+                  <small>{`${price} LIST`}</small>
+                </span>
+              )}
             </div>
           </div>
         </div>

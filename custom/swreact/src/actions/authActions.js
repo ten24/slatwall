@@ -39,20 +39,22 @@ export const logout = () => {
 
 export const login = (email, password) => {
   return async (dispatch, getState) => {
-    let state = getState()
-    dispatch(requestLogin())
-    dispatch(requestUser())
+    let { accountID } = getState().userReducer
+    if (!accountID.length) {
+      dispatch(requestLogin())
+      dispatch(requestUser())
 
-    const req = await SlatwalApiService.auth.login({
-      emailAddress: email,
-      password: password,
-    })
+      const req = await SlatwalApiService.auth.login({
+        emailAddress: email,
+        password: password,
+      })
 
-    if (req.isFail()) {
-      dispatch(errorLogin(req.toString()))
-    } else {
-      dispatch(receiveLogin(req.success().token))
-      dispatch(receiveUser(req))
+      if (req.isFail()) {
+        dispatch(errorLogin(req.toString()))
+      } else {
+        dispatch(receiveLogin(req.success().token))
+        dispatch(receiveUser(req))
+      }
     }
   }
 }
