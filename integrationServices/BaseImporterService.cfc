@@ -61,13 +61,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiEntityQueueDAO";
 	property name = "OptionDAO";
 	
-	property name = "cachedEntityMappings" type="struct";
 	property name = "cachedMappingPropertiesValidations" type="struct";
 	
 	
 	public any function init() {
 	    super.init(argumentCollection = arguments);
-	    this.setCachedEntityMappings( {} );
 	    this.setCachedMappingPropertiesValidations( {} );
 	}
 	
@@ -534,63 +532,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    return this.genericValidateMappingData( argumentCollection = arguments);
         }
     }
-    
-    public struct function getMappingPropertiesValidations( required struct mapping ){
-        
-        var cachedMappingPropertiesValidations = this.getCachedMappingPropertiesValidations();
-        var cacheKey = hash(serializeJson(arguments.mapping), 'md5');
-        
-        if(structKeyExists(cachedMappingPropertiesValidations, cacheKey) ){
-            return cachedMappingPropertiesValidations[ cacheKey ];
-        }
-        
-        var propertiesValidations = {};
-        // loop over all of the properties and grab all of the properties having validation rules
-	    if( structKeyExists(arguments.mapping, 'properties') ){
-    	    for( var sourcePropertyName in arguments.mapping.properties ){
-    	        var propertyMetaData = arguments.mapping.properties[sourcePropertyName];
-    	        if( structKeyExists(propertyMetaData, 'validations') ){
-    	            propertiesValidations[ sourcePropertyName ] = propertyMetaData.validations;
-    	        }
-    	    }
-	    }
-	    
-	    // loop over all of the entity dependencies and make sure the dependency-key prop is required in the validations
-	    if( structKeyExists(arguments.mapping, 'dependencies') ){
-	        for( var dependency in arguments.mapping.dependencies ){
-	            // skip nullble dependencies
-  	            if(structKeyExists(dependency, 'isNullable') && dependency.isNullable ){
-  	                continue;
-  	            }
-  	            // skip dependencies having a default-value
-  	            if(structKeyExists(dependency, 'defaultValue') && !this.hibachiIsEmpty(dependency.defaultValue) ){
-  	                continue;
-  	            }
-  	            
-  	            if( !structKeyExists(propertiesValidations, dependency.key) ){
-  	                propertiesValidations[ dependency.key ] = {};
-  	            }
-  	            // make sure dependency-key[sourcePropertyName] is required
-  	            propertiesValidations[ dependency.key ]['required'] = true;
-	        }
-	    }
-        
-	    // loop over all of the keys in importIdentifier and make sure these are required in the validations
-	    for(var sourcePropertyName in mapping.importIdentifier.keys ){
-
-            if( !structKeyExists(propertiesValidations, sourcePropertyName) ){
-                propertiesValidations[ sourcePropertyName ] = {};
-            }
-            // make sure dependency sourcePropertyName is required
-            propertiesValidations[ sourcePropertyName ]['required'] = true;
-	    }
-        
-        
-        // put it into cache
-        cachedMappingPropertiesValidations[ cacheKey ] = propertiesValidations;
-        
-	    return propertiesValidations;
-    }
 
 	public struct function genericValidateMappingData(
 	    required struct data, 
@@ -607,7 +548,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var emptyRelations = {};
 	    var hasAllRequiredProperties = true;
 	    
-	    var entityPropertiesValidations = this.getMappingPropertiesValidations( arguments.mapping, arguments.sourceDataKeysPrefix);
+	    var entityPropertiesValidations = this.getImporterMappingService().getMappingPropertiesValidations( arguments.mapping.mappingCode );
 	    
 	    for( var propertyName in entityPropertiesValidations ){
 	        

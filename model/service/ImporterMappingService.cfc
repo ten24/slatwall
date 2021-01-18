@@ -149,6 +149,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    var mappings = this.getCachedMappings();
 	    mappings[arguments.mapping.mappingCode] = arguments.mapping;
 	    this.setCachedMappings(mappings);
+	    
+	    // removed cached validations for this mapping, it will get re-calculated when required next time;
+	    this.removeMappingPropertiesValidationsFromCache(arguments.mapping.mappingCode);
 	}
 	
 	public struct function isValidImporterMappingConfig(required string mapping){
@@ -255,6 +258,85 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
   	    return variables[ cacheKey ];
   	}
   	
+  	
+  	public struct function getMappingPropertiesValidations( required string mappingCode ){
+        
+        var cachedMappingPropertiesValidations = this.getCachedMappingPropertiesValidations();
+
+        if(structKeyExists(cachedMappingPropertiesValidations, arguments.mappingCode) ){
+            return cachedMappingPropertiesValidations[ arguments.mappingCode ];
+        }
+        
+        var mapping = this.getMappingByMappingCode(arguments.mappingCode);
+        
+        var propertiesValidations = {};
+        // loop over all of the properties and grab all of the properties having validation rules
+	    if( structKeyExists(mapping, 'properties') ){
+    	    for( var sourcePropertyName in mapping.properties ){
+    	        var propertyMetaData = mapping.properties[sourcePropertyName];
+    	        if( structKeyExists(propertyMetaData, 'validations') ){
+    	            propertiesValidations[ sourcePropertyName ] = propertyMetaData.validations;
+    	        }
+    	    }
+	    }
+	    
+	    // loop over all of the entity dependencies and make sure the dependency-key prop is required in the validations
+	    if( structKeyExists(mapping, 'dependencies') ){
+	        for( var dependency in mapping.dependencies ){
+	            // skip nullble dependencies
+  	            if(structKeyExists(dependency, 'isNullable') && dependency.isNullable ){
+  	                continue;
+  	            }
+  	            // skip dependencies having a default-value
+  	            if(structKeyExists(dependency, 'defaultValue') && !this.hibachiIsEmpty(dependency.defaultValue) ){
+  	                continue;
+  	            }
+  	            
+  	            if( !structKeyExists(propertiesValidations, dependency.key) ){
+  	                propertiesValidations[ dependency.key ] = {};
+  	            }
+  	            // make sure dependency-key[sourcePropertyName] is required
+  	            propertiesValidations[ dependency.key ]['required'] = true;
+	        }
+	    }
+        
+	    // loop over all of the keys in importIdentifier and make sure these are required in the validations
+	    for(var sourcePropertyName in mapping.importIdentifier.keys ){
+
+            if( !structKeyExists(propertiesValidations, sourcePropertyName) ){
+                propertiesValidations[ sourcePropertyName ] = {};
+            }
+            // make sure dependency sourcePropertyName is required
+            propertiesValidations[ sourcePropertyName ]['required'] = true;
+	    }
+        
+        
+        // put it into cache
+        this.putMappingPropertiesValidationsIntoCache(arguments.mappingCode, propertiesValidations);
+
+	    return propertiesValidations;
+    }
+    
+    public struct function getCachedMappingPropertiesValidations(){
+	    return this.getHibachiCacheService().getCachedValue('cachedMappingPropertiesValidations') ?: {};
+	}
+	
+	public void function setCachedMappingPropertiesValidations( required struct validations){
+	    this.getHibachiCacheService().setCachedValue('cachedMappingPropertiesValidations', arguments.validations);
+	}
+	
+	public void function putMappingPropertiesValidationsIntoCache(required string mappingCode, required struct mappingValodations ){
+	    var cachedValidations = this.getCachedMappingPropertiesValidations();
+	    cachedValidations[arguments.mappingCode] = arguments.mappingValodations;
+	    this.setCachedMappingPropertiesValidations(cachedValidations);
+	}
+	
+	public void function removeMappingPropertiesValidationsFromCache(required string mappingCode){
+	    var cachedValidations = this.getCachedMappingPropertiesValidations();
+	    cachedValidations.delete( arguments.mappingCode );
+	    this.setCachedMappingPropertiesValidations(cachedValidations);
+	}
+
 	
 	// ======================  END: Save Overrides ============================
 	
