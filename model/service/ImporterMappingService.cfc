@@ -162,6 +162,72 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         return true;
 	}
 	
+	
+	
+	public struct function createMappingCSVHeaderMetaDataRecursively( required string mappingCode, string sourceDataKeysPrefix = '' ){
+  	    
+        var headers = {};
+        var mapping = this.getMappingByMappingCode( arguments.mappingCode );
+    
+        if(structKeyExists(mapping, 'properties') ){
+            for( var sourcePropertyName in mapping.properties ){
+                if( !this.hibachiIsEmpty(arguments.sourceDataKeysPrefix) ){
+                    sourcePropertyName = arguments.sourceDataKeysPrefix & sourcePropertyName;
+                }
+                // we can add a way to either define or infer data-type if needed
+                headers[ ucFirst(sourcePropertyName, true) ] = "VarChar"; 
+            }
+        }
+  	    
+  	    if( structKeyExists(mapping, 'relations') ){
+  	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
+  	        for(var thisRelation in mapping.relations){
+  	            // includeInCSVTemplate is a flag in thisRelation mappings; 
+  	            // being used to handle recursive-relations, like productType and parentProductType
+  	            if( !structKeyExists(thisRelation, 'excludeFromTemplate') || !thisRelation.excludeFromTemplate ){
+  	                headers.append( this.createMappingCSVHeaderMetaDataRecursively(
+                        mappingCode          = thisRelation.mappingCode ?: thisRelation.entityName,
+                        sourceDataKeysPrefix = thisRelation.sourceDataKeysPrefix ?: ''
+                    ));
+  	            }
+	        }
+  	    }
+  	    
+  	    if( structKeyExists(mapping, 'dependencies') ){
+  	        for(var dependency in mapping.dependencies ){
+  	            // add prefix if needed
+  	            var sourcePropertyName = dependency.key;
+  	            if( !this.hibachiIsEmpty(arguments.sourceDataKeysPrefix) ){
+                    sourcePropertyName = arguments.sourceDataKeysPrefix & sourcePropertyName;
+                }
+                
+  	            headers[ ucFirst(sourcePropertyName, true) ] = 'VarChar';
+	        }
+  	    }
+  	    
+  	    return headers;
+    }
+
+	public struct function getMappingCSVHeaderMetaData( required string mappingCode ){
+	    
+	    var cacheKey = "getMappingCSVHeaderMetaData_" &arguments.mappingCode;
+	    
+	    if( !structKeyExists(variables, cacheKey) ){
+	        
+      	    var columnNamesAndTypes = this.createMappingCSVHeaderMetaDataRecursively( arguments.mappingCode );
+      	    
+      	    var columns = columnNamesAndTypes.keyArray().sort('textNoCase');
+      	    var columnTypes = columns.map( function( column ){ 
+      	        return columnNamesAndTypes[ column ]; 
+      	    });
+      	    
+      	    variables[ cacheKey ] = { "columns": columns.toList(), "columnTypes": columnTypes.toList() };
+	    }
+	    
+  	    return variables[ cacheKey ];
+  	}
+  	
+	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
