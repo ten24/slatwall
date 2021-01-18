@@ -1,6 +1,6 @@
 {
     "entityName": "ProductType",
-
+    "mappingCode": "ProductType",
     "properties": {
 
         "remoteProductTypeID": {
@@ -59,6 +59,7 @@
             "type" : "manyToOne",
             "entityName" : "ProductType",
             "propertyIdentifier" : "parentProductType",
+            "hasMapping"         : false,
             "excludeFromTemplate" : true,
             "excludeFromValidation"  : true,
             "generatorFunction" : "generateProductTypeParentProductType"

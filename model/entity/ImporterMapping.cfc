@@ -39,6 +39,13 @@ component displayname="ImporterMapping" entityname="SlatwallImporterMapping" tab
 	
 	
 	public boolean function isValidImporterMapping(){
-	    return this.getService('importerService').isValidImporterMappingConfig(this.getMapping());
+	    var validation = this.getService('importerService').isValidImporterMappingConfig(this.getMapping());
+	    if(!validation.isValid){
+	        for(var i=1; i<=validation.errors.len(); i++){
+	            this.addError("mapping-error-#i#", validation.errors[i]);
+	        }
+	    }
+	    
+	    return validation.isValid;
 	}
 }

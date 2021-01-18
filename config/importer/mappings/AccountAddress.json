@@ -1,6 +1,7 @@
 {
     "entityName": "AccountAddress",
-   
+    "mappingCode": "AccountAddress",
+
    
     "properties": {
         
@@ -32,6 +33,7 @@
         {
             "type": "manyToOne",
             "entityName": "Address",
+            "mappingCode": "Address",
             "propertyIdentifier": "address"
         }
     ],

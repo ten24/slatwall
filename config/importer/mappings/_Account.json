@@ -1,6 +1,7 @@
 {
     "entityName": "Account",
-    
+    "mappingCode": "Account",
+
     "properties": {
         
         "remoteAccountID": {
@@ -60,17 +61,20 @@
             "type": "oneToOne",
             "isNullabel": true,
             "entityName": "AccountPhoneNumber",
+            "mappingCode": "AccountPhoneNumber",
             "propertyIdentifier": "primaryPhoneNumber"
         },
         {
             "type": "oneToOne",
             "isNullabel": true,
             "entityName": "AccountEmailAddress",
+            "mappingCode": "AccountEmailAddress",
             "propertyIdentifier": "primaryEmailAddress"
         },
         {
             "type": "oneToMany",
             "entityName": "AccountAuthentication",
+            "mappingCode": "AccountAuthentication",
             "propertyIdentifier": "accountAuthentications",
         }
     ],

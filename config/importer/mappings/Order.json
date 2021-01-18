@@ -1,6 +1,6 @@
 {
     "entityName": "Order",
-    
+    "mappingCode": "Order",
     "properties": {
         
         "remoteOrderID": {
@@ -67,6 +67,7 @@
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
+            "mappingCode"            : "Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "billingAddress",
             "sourceDataKeysPrefix"   : "BillingAddress_"
@@ -74,6 +75,7 @@
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
+            "mappingCode"            : "Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "shippingAddress",
             "sourceDataKeysPrefix"   : "ShippingAddress_"
@@ -81,6 +83,7 @@
         {
             "type"                   : "oneToMany",
             "entityName"             : "OrderFulfillment",
+            "hasMapping"             : false,
             "propertyIdentifier"     : "orderFulfillments",
             "excludeFromTemplate"    : true,
             "excludeFromValidation"  : true,

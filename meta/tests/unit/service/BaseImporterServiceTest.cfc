@@ -629,6 +629,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         mapping.relations = [{
             "type"                  : "oneToOne",
             "entityName"            : "AccountPhoneNumber",
+            "mappingCode"           : "AccountPhoneNumber",
             "propertyIdentifier"    : "primaryPhoneNumber",
             "sourceDataKeysPrefix"  : "testPrefix--"
         }];
@@ -658,6 +659,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         mapping.relations = [{
             "type"                  : "oneToOne",
             "entityName"            : "AccountPhoneNumber",
+            "mappingCode"           : "AccountPhoneNumber",
             "propertyIdentifier"    : "primaryPhoneNumber",
             "sourceDataKeysPrefix"  : "testPrefix--"
         }];
@@ -1209,6 +1211,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         mapping.relations = [{
             "type"                  : "oneToOne",
             "entityName"            : "AccountPhoneNumber",
+            "mappingCode"           : "AccountPhoneNumber",
             "propertyIdentifier"    : "primaryPhoneNumber",
             "sourceDataKeysPrefix"  : "testPrefix--"
         }];

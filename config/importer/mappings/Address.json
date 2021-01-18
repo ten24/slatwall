@@ -1,6 +1,6 @@
 {
     "entityName": "Address",
-    
+    "mappingCode": "Address",
     "properties": {
         
         "remoteAddressID": {

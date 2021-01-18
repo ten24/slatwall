@@ -1,6 +1,6 @@
 {
     "entityName": "Inventory",
-
+    "mappingCode": "Inventory",
     "properties": {
 
         "remoteInventoryID": {
@@ -70,6 +70,7 @@
             "type": "manyToOne",
             "entityName": "Stock",
             "propertyIdentifier": "stock",
+            "hasMapping"         : false,
             "excludeFromTemplate" : true,
             "excludeFromValidation"  : true,
             "generatorFunction": "generateInventoryStock"

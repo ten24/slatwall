@@ -256,7 +256,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        for( var thisRelation in arguments.transformedData.__lazy.relations ){
 	            
 	            var transformedRelationData = arguments.transformedData[ thisRelation.propertyIdentifier ];
-	            var relationMapping = this.getMappingByMappingCode( thisRelation.mappingCode ?: thisRelation.entityName);
+	            var relationMapping = this.getMappingByMappingCode( thisRelation.mappingCode );
 	            
 	            transformedRelationData = this.resolveMappingLazyProperties( 
 	                mapping         = relationMapping,
@@ -396,7 +396,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                     for( var relatedEntity in relatedEntityOrArray ){
                         this.invokePostPopulateMethodsRecursively( 
                             entity   = relatedEntity,
-                            mapping = this.getMappingByMappingCode( related.mappingCode ?: related.entityName )
+                            mapping = this.getMappingByMappingCode( related.mappingCode )
                         ); 
                     }
   	            }
@@ -434,7 +434,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                     for( var relatedEntity in relatedEntityOrArray ){
                         this.invokePostSaveMethodsRecursively( 
                             entity   = relatedEntity,
-                            mapping = this.getMappingByMappingCode( related.mappingCode ?: related.entityName )
+                            mapping = this.getMappingByMappingCode( related.mappingCode )
                         ); 
                     }
   	            }
@@ -535,7 +535,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
     }
     
-    public struct function getEntityPropertiesValidations( required struct mapping ){
+    public struct function getMappingPropertiesValidations( required struct mapping ){
         
         var cachedMappingPropertiesValidations = this.getCachedMappingPropertiesValidations();
         var cacheKey = hash(serializeJson(arguments.mapping), 'md5');
@@ -607,7 +607,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var emptyRelations = {};
 	    var hasAllRequiredProperties = true;
 	    
-	    var entityPropertiesValidations = this.getEntityPropertiesValidations( arguments.mapping, arguments.sourceDataKeysPrefix);
+	    var entityPropertiesValidations = this.getMappingPropertiesValidations( arguments.mapping, arguments.sourceDataKeysPrefix);
 	    
 	    for( var propertyName in entityPropertiesValidations ){
 	        
@@ -685,7 +685,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 
                 var relationValidation = this.validateMappingData(
                     data                 = arguments.data,  
-                    mappingCode          = thisRelation.mappingCode ?: thisRelation.entityName, 
+                    mappingCode          = thisRelation.mappingCode, 
                     collectErrors        = arguments.collectErrors,
                     sourceDataKeysPrefix = thisRelation.sourceDataKeysPrefix ?: ''
                 );
@@ -1188,7 +1188,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         //TODO: ( if-needed ) properly handle scenarios for -to-Many relations
         // if source-property for the relation already exist in the incoming-data, than it should be an array
         // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
-        var relationMapping = this.getMappingByMappingCode( arguments.relationMetaData.mappingCode ?: arguments.relationMetaData.entityName );
+        var relationMapping = this.getMappingByMappingCode( arguments.relationMetaData.mappingCode );
         var transformedRelationData = this.transformMappingData( 
             mapping              = relationMapping, 
             data                 = arguments.data,
@@ -1275,7 +1275,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         required struct parentEntityMapping,
         required struct relationMetaData 
     ){
-        var mapping = this.getMappingByMappingCode(arguments.relationMetaData.mappingCode ?: arguments.relationMetaData.entityName);
+        var mapping = this.getMappingByMappingCode(arguments.relationMetaData.mappingCode );
 	   	var productTypeImportRemoteID = this.createMappingImportRemoteID( mapping=mapping, data=arguments.data );
 	    	    
 	    var productTypeID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
@@ -1290,7 +1290,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	
     	// create new product-type
     	return this.transformMappingData( 
-            entityName  = "ProductType", 
+            mapping     = mapping, 
             data        = arguments.data,
             nested      = true
         );
@@ -1309,7 +1309,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        propertyName  = arguments.propertyMetaData.propertyIdentifier,
 	        propertyValue = arguments.data.productTypeName
 	   );
-	   
 	}
 	
 	public string function createProductTypeImportRemoteID( required struct data, required struct mapping ){
@@ -1354,8 +1353,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         required struct relationMetaData 	
     ){
         
-	    var priceGroupImportRemoteID = this.createMappingImportRemoteID( 'PriceGroup', arguments.data );
-	   
+	    var mapping = this.getMappingByMappingCode(arguments.relationMetaData.mappingCode );
+	   	var priceGroupImportRemoteID = this.createMappingImportRemoteID( mapping=mapping, data=arguments.data );
+	    
 	    var priceGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
 	        "entityName"  = 'PriceGroup',
 	        "uniqueKey"   = 'importRemoteID',
@@ -1368,13 +1368,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	
     	// create a new price-group
     	return this.transformMappingData( 
-            entityName  = "PriceGroup", 
+            mapping     = mapping, 
             data        = arguments.data,
             nested      = true
         );
 	}
 	
-	// on hold, need to add volatile support for to-many relations
+	//TODO: on hold, need to add volatile support for to-many relations
 	public array function generateSkuOptionsAndCreateNewOnes( struct data, struct mapping, struct propertyMetaData ){
 	    
 	    var skuOptionGroups = this.getOptionDAO().getOptionGroupCodeIndex();
@@ -1451,7 +1451,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             }
             
     	    //Find if we have a stock for this sku and location.
-		    var stock = getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
+		    var stock = this.getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
 		    
 		    if( !isNull(stock) ){
 		    	return { "stockID" : stock.getstockID() };
@@ -1499,7 +1499,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     public array function generateOrderOrderFulfillments( 
     	struct data, 
     	struct mapping, 
-    	struct propertyMetaData ){
+    	struct propertyMetaData
+    ){
     	
 		//create new fullfillment
 	    return [{
@@ -1511,13 +1512,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
             },
             "shippingAddress"		   : {
-            		  "name"		   : getAddressService().getAddressName(arguments.data.Address),
-	                  "streetAddress"  : arguments.data.BillingAddress_streetAddress,
-	                  "street2Address" : arguments.data.BillingAddress_street2Address,
-	                  "city"           : arguments.data.BillingAddress_city,
-	                  "countryCode"	   : arguments.data.BillingAddress_countryCode,
-	                  "stateCode"	   : arguments.data.BillingAddress_stateCode,
-	                  "postalCode"	   : arguments.data.BillingAddress_postalCode,
+            		  "name"		   : this.getAddressService().getAddressName(arguments.data.Address),
+	                  "streetAddress"  : arguments.data.ShippingAddress_streetAddress,
+	                  "street2Address" : arguments.data.ShippingAddress_street2Address,
+	                  "city"           : arguments.data.ShippingAddress_city,
+	                  "countryCode"	   : arguments.data.ShippingAddress_countryCode,
+	                  "stateCode"	   : arguments.data.ShippingAddress_stateCode,
+	                  "postalCode"	   : arguments.data.ShippingAddress_postalCode,
 	           },
         }];
     }

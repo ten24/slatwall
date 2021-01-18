@@ -71,7 +71,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    return this.getCachedMappings()[ arguments.mappingCode];
 	}
 	
-	
 	public any function saveImporterMapping(required any importerMapping, required struct data) {
 		 arguments.importerMapping = super.saveImporterMapping(argumentCollection=arguments);
 		 
@@ -103,12 +102,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		.each( function(fileName){
 
 	        var mappingJson = FileRead( baseDir & arguments.fileName);
-	        if(!this.isValidImporterMappingConfig(mappingJson)){
-	            throw("Importer Mapping File #file# is not valid \n" &mappingJson );
+	        
+	        var validation = this.isValidImporterMappingConfig(mappingJson);
+	        if(!validation.isValid){
+	            throw("Importer Mapping File #arguments.fileName# is not valid \n, mapping: #mappingJson#  \n errors: #serializeJson(validation.errors)#" );
 	        }
 	        
 	        var mappingStruct = deSerializeJSON(mappingJson);
-	        mappingStruct['mappingCode'] = listFirst(arguments.fileName, '.');
 	        defaultMappings[ mappingStruct.mappingCode ] = mappingStruct;
 		});
 		
@@ -151,15 +151,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    this.setCachedMappings(mappings);
 	}
 	
-	public boolean function isValidImporterMappingConfig(required string mapping){
+	public struct function isValidImporterMappingConfig(required string mapping){
+	    
+	    var validation = {
+	        'isValid' = true,
+	        "errors" = []
+	    };
+	    
 	    
         if( !IsJSON( arguments.mapping )){
-            return false;
+            // TODO rb-keys
+            validation.isValid = false;
+            validation.errors.append('Mapping is not a valid json String');
+            return validation;
         }
         
-	    // TODO: add more checks, for relations, properties, generator-functions
+        var mappingStruct = deSerializeJSON(arguments.mapping);
         
-        return true;
+        if(!structKeyExists(mappingStruct, 'mappingCode')){
+            validation.isValid = false;
+            validation.errors.append('Mapping should have a `mappingCode` property');       
+        }
+        
+        if(structKeyExists(mappingStruct, 'relations')){
+            for(var relation in mappingStruct.relations){
+                if(!structKeyExists(relation, 'mappingCode') ){
+                    
+                    if( !structKeyExists(relation, 'hasMapping') || relation.hasMapping == true ){
+                        validation.isValid = false;
+                        validation.errors.append('Mapping relation should have a `mappingCode` : #serializeJson(relation)#'); 
+                    }
+                }
+            }
+        }
+        
+	    // TODO: add more checks, for properties, generator-functions
+        
+        return validation;
 	}
 	
 	

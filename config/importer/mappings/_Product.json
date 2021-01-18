@@ -1,6 +1,6 @@
 {
     "entityName": "Product",
-    
+    "mappingCode": "Product",
     "properties": {
         
         "remoteProductID": {
@@ -60,18 +60,21 @@
             "type": "manyToOne",
             "isVolatile": true,
             "entityName": "Brand",
+            "mappingCode": "Brand",
             "propertyIdentifier": "brand"
         },
         {
             "type": "manyToOne",
             "isVolatile": true,
             "entityName": "ProductType",
+            "mappingCode": "ProductType",
             "propertyIdentifier": "productType",
             "generatorFunction"  : "generateProductProductType"
         },
         {
             "type": "manyToOne",
             "entityName": "Sku",
+            "mappingCode": "Sku",
             "propertyIdentifier": "defaultSku"
         }
     ],

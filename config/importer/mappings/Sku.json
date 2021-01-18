@@ -1,5 +1,6 @@
 {
     "entityName": "Sku",
+    "mappingCode": "Sku",
     "properties": {
         "remoteSkuID": {
             "propertyIdentifier": "remoteID",
@@ -71,11 +72,13 @@
         {
             "type": "oneToMany",
             "entityName": "SkuPrice",
+            "mappingCode": "SkuPrice",
             "propertyIdentifier": "skuPrices"
         },
         {
             "type": "manyToMany",
             "entityName": "Option",
+            "hasMapping"         : false,
             "propertyIdentifier": "options",
             "excludeFromPostPopulateMethod" : true,
             "excludeFromPostSaveMethod" : true,
