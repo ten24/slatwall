@@ -1,4 +1,4 @@
-import { UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
+import { RECIVE_FEATURED_PRODUCTS, REQUEST_FEATURED_PRODUCTS, UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
 
 const products = [
   {
@@ -186,6 +186,13 @@ const productSearch = (state = initState, action) => {
     case RECIVE_PRODUCTS:
       const { products } = action
       return { ...state, products, isFetching: false }
+
+    case REQUEST_FEATURED_PRODUCTS:
+      return { ...state, isFetching: true }
+
+    case RECIVE_FEATURED_PRODUCTS:
+      const { featuredProducts } = action
+      return { ...state, featuredProducts, isFetching: false }
     default:
       return state
   }
