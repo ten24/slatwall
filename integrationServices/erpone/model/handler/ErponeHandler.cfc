@@ -28,18 +28,18 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	
 	
 	public void function afterAccountSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity , pushAccountDataToErpOne);
+		addToQueue(arguments.entity , "pushAccountDataToErpOne");
 	}
 	
 	public void function afterAccountEmailAddressSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity.getAccount()  , pushAccountDataToErpOne);
+		addToQueue(arguments.entity.getAccount()  , "pushAccountDataToErpOne");
 	}
 	
 	public void function afterAccountPhoneNumberSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity.getAccount()  , pushAccountDataToErpOne);
+		addToQueue(arguments.entity.getAccount()  , "pushAccountDataToErpOne");
 	}
 	
 	public void function afterAccountAddressSaveSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity.getAccount()  , pushAccountDataToErpOne);
+		addToQueue(arguments.entity.getAccount()  , "pushAccountDataToErpOne");
 	}
 }
