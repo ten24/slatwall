@@ -1,2 +1,0 @@
-(this.webpackJsonpswreact=this.webpackJsonpswreact||[]).push([[17],{128:function(e,n,t){"use strict";t.r(n);var r=t(4),o=(t(0),t(71)),s=t(28);n.default=Object(s.b)((function(e){return e.preload.home}))((function(e){return Object(r.jsxs)(o.i,{children:[Object(r.jsx)(o.f,{homeMainBanner:e.homeMainBanner,featuredSlider:e.featuredSlider}),Object(r.jsx)(o.h,{homeContent:e.homeContent}),Object(r.jsx)(o.g,{homeBrand:e.homeBrand,shopBy:e.shopBy})]})}))}}]);
-//# sourceMappingURL=17.d93e420c.chunk.js.map
