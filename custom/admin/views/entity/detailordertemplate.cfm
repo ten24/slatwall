@@ -56,7 +56,7 @@
 <cfparam name="rc.orderTemplate" type="any" />
 
 <cfset local.orderTemplateTotalProperties = "calculatedFulfillmentTotal,calculatedFulfillmentDiscount,calculatedCommissionableVolumeTotal,calculatedPersonalVolumeTotal,calculatedSubTotal,calculatedTotal" />
-<cfset local.defaultCountryCode = 'US' />
+<cfset local.defaultCountryCode = rc.orderTemplate.getAccount().getCountryCode() />
 <cfset local.stateCollectionList = getHibachiScope().getService('AddressService').getStateCollectionList() />
 <cfset stateCollectionList.addFilter('countryCode', defaultCountryCode) />
 <cfset stateCollectionList.addOrderBy('stateName|ASC') />
@@ -135,7 +135,7 @@
 														data-shipping-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getShippingMethodOptions()))#" 
 														data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(stateCollectionList.getRecords()))#"
 														data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').getCountryCollectionList().getRecords()))#"	
-														data-default-country-code="US"
+														data-default-country-code="#local.defaultCountryCode#"
 														>
 					</sw-account-shipping-address-card>
 				</div>	
@@ -159,7 +159,7 @@
 															data-expiration-year-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationYearOptions()))#"
 															data-base-entity-name="OrderTemplate" 
 															data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation(orderTemplateTotalProperties)#"
-															data-default-country-code="US"
+															data-default-country-code="#local.defaultCountryCode#"
 															data-properties-to-display-list="#orderTemplateTotalProperties#"
 															>
 					</sw-customer-account-payment-method-card>
