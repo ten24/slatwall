@@ -239,9 +239,7 @@ property name="sapItemCode" ormtype="string";
 	
 
  property name="displayOnlyFlag" ormtype="boolean" hb_formatType="yesno" default="0";
- property name="cbdFlag" ormtype="boolean" hb_formatType="yesno";
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
-
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";
  property name="cbdFlag" ormtype="boolean" hb_formatType="yesno";
  property name="dangerousGoodsFlag" ormtype="boolean" hb_formatType="yesno";//CUSTOM PROPERTIES END

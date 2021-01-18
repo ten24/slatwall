@@ -1519,7 +1519,9 @@ component extends="Slatwall.model.service.OrderService" {
 			if(arguments.order.isNew()){
 				this.saveOrder(order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag(), updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag());
 			}
-
+			if(arguments.processObject.getOfyFlag()){
+				newOrderItem.setOfyFlag(arguments.processObject.getOfyFlag());
+			}
 			// Save the new order items don't update order amounts we'll do it at the end of this process
 			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true, updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag());
 

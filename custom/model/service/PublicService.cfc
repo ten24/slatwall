@@ -952,7 +952,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderService = getService("OrderService");
         var currentOrderItemList = orderService.getOrderItemCollectionList();
         currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
-        currentOrderItemList.addFilter('sku.product.productType.systemCode', arguments.data.protectedSystemCodeList, 'IN');
+        if(structKeyExists(arguments.data,'ofyFlag') && arguments.data.ofyFlag){
+            currentOrderItemList.addFilter('ofyFlag',true);
+        }else{
+            currentOrderItemList.addFilter('sku.product.productType.systemCode', arguments.data.protectedSystemCodeList, 'IN');
+        }
         currentOrderItemList.addDisplayProperties('orderItemID');
         var orderItems = currentOrderItemList.getRecords();
         var orderData = {};
@@ -2666,7 +2670,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function addOFYProduct(required struct data){
-        arguments.data['protectedSystemCodeList'] = 'PromotionalItems';
+        arguments.data['ofyFlag'] = true;
+        
         this.addProtectedProductType(arguments.data);
     }
     
