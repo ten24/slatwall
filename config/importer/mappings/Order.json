@@ -1,6 +1,6 @@
 {
     "entityName": "Order",
-    
+    "mappingCode": "Order",
     "properties": {
         
         "remoteOrderID": {
@@ -67,6 +67,7 @@
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
+            "mappingCode"            : "Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "billingAddress",
             "sourceDataKeysPrefix"   : "BillingAddress_"
@@ -74,6 +75,7 @@
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
+            "mappingCode"            : "Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "shippingAddress",
             "sourceDataKeysPrefix"   : "ShippingAddress_"
@@ -81,9 +83,8 @@
         {
             "type"                   : "oneToMany",
             "entityName"             : "OrderFulfillment",
+            "hasMapping"             : false,
             "propertyIdentifier"     : "orderFulfillments",
-            "excludeFromTemplate"    : true,
-            "excludeFromValidation"  : true,
             "generatorFunction"      : "generateOrderOrderFulfillments"
         }
     ],
@@ -101,7 +102,6 @@
             "entityName"            : "Type",
             "defaultValue"          : "444df2df9f923d6c6fd0942a466e84cc",
             "__hint"                : "this defaultValue for order-type is `otSale`.",
-            "excludeFromValidation" : true,
             "propertyIdentifier"    : "orderType"
         },
         {
@@ -110,12 +110,10 @@
             "entityName"            : "Type",
             "defaultValue"          : "444df2b5c8f9b37338229d4f7dd84ad1",
             "__hint"                : "this defaultValue for order-type is `ostNew`.",
-            "excludeFromValidation" : true,
             "propertyIdentifier"    : "orderStatusType"
         },
         {
             "key"                   : "remoteOrderOriginID",
-            "isNullable"            : true,
             "lookupKey"             : "remoteID",
             "entityName"            : "OrderOrigin",
             "defaultValue"          : "2c918082626f886001627251f01a00ab",
@@ -124,7 +122,6 @@
         },
         {
             "key"                   : "orderSiteCode",
-            "isNullable"            : true,
             "lookupKey"             : "siteID",
             "entityName"            : "Site",
             "defaultValue"          : "2c9680847491ce86017491f46ec50036",

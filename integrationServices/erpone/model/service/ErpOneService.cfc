@@ -48,7 +48,6 @@ Notes:
 */
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
-	property name="integrationService";
 	property name="erpOneIntegrationCFC";
 	property name="hibachiCacheService";
 	property name="hibachiDataService";
@@ -64,20 +63,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
 	
 	public struct function getAvailableSampleCsvFilesIndex(){
-  	    
-  	    if( !structKeyExists(variables, 'availableSampleCsvFilesIndex') ){
-  	        
-            //creating struct for fast-lookups
-            variables.sampleCSVFilesOptions = {
-                "Sku"   		: "sku",
-                "Product"		: "product"
-                
-            };
-            // TODO, need a way to figureout which entity-mappings are allowed to be import, 
-            // Account vs account-phone-number
-  	    }
-  	    
-  	    return variables.sampleCSVFilesOptions;
+  	    return this.getImporterMappingService().getMappingNamesIndex();
   	}
   	
   	public any function uploadCSVFile( required any data ){
@@ -112,7 +98,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 			if( result.query.recordCount ){
 
-			    var batch = this.pushRecordsIntoImportQueue( data.entityName, result.query );
+			    var batch = this.pushRecordsIntoImportQueue( data.mappingCode, result.query );
 			    
 			    if( batch.getEntityQueueItemsCount() == batch.getInitialEntityQueueItemsCount() ){
 				    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");
@@ -147,16 +133,16 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
     public any function getGrantToken(){
 		if( !this.getHibachiCacheService().hasCachedValue('grantToken') ){
-			createAndSetGrantToken();
+			this.createAndSetGrantToken();
 		}
-		return getHibachiCacheService().getCachedValue('grantToken');
+		return this.getHibachiCacheService().getCachedValue('grantToken');
     }
     
     public any function getAccessToken(){
-		if(!getHibachiCacheService().hasCachedValue('accessToken')){
-			createAndSetAccessToken();
+		if(!this.getHibachiCacheService().hasCachedValue('accessToken')){
+			this.createAndSetAccessToken();
 		}
-		return getHibachiCacheService().getCachedValue('accessToken');
+		return this.getHibachiCacheService().getCachedValue('accessToken');
     }
     
     public any function createAndSetGrantToken(){

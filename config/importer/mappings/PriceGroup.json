@@ -1,6 +1,6 @@
 {
     "entityName": "PriceGroup",
-    
+    "mappingCode": "PriceGroup",
     "properties": {
         
         "remotePriceGroupID": {
