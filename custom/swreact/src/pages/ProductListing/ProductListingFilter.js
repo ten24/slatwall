@@ -1,9 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { FeaturedProductCard, Layout } from '../../components'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getUser } from '../../actions/userActions'
 import { search, setKeyword, setSort, addFilter, removeFilter, updateAttribute } from '../../actions/productSearchActions'
-import _ from 'lodash'
 
 const AttributeFacet = ({ name, count, sub, filterName, updateAttributeAction, isSelected, searchWithFilters }) => {
   const token = filterName.replace(/\s/g, '') + name.replace(/\s/g, '') + 'input'

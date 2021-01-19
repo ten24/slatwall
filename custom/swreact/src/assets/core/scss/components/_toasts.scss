@@ -1,0 +1,103 @@
+//
+// Toasts
+// --------------------------------------------------
+
+.toast-header {
+  [class*='czi-'] { font-size: 1.25em; }
+  &:not([class*='bg-']) {
+    border-bottom: $border-width solid rgba($border-color, .75);
+  }
+}
+
+// Toast container
+.toast-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: {
+    right: 1.5rem;
+    left: 1.5rem;
+  }
+  z-index: $zindex-toast;
+  @include media-breakpoint-down(xs) {
+    padding: {
+      right: 1rem;
+      left: 1rem;
+    }
+  }
+}
+
+// Position
+.toast-top-left,
+.toast-top-center,
+.toast-top-right {
+  top: 1.5rem;
+}
+.toast-bottom-left,
+.toast-bottom-center,
+.toast-bottom-right {
+  bottom: 1.5rem;
+}
+.toast-top-left .toast,
+.toast-bottom-left .toast {
+  margin: {
+    right: auto;
+    left: 0;
+  }
+}
+.toast-top-center .toast,
+.toast-bottom-center .toast {
+  margin: {
+    right: auto;
+    left: auto;
+  }
+}
+.toast-top-right .toast,
+.toast-bottom-right .toast {
+  margin: {
+    right: 0;
+    left: auto;
+  }
+}
+
+// Override default toast transition effect
+.toast {
+  display: none;
+  opacity: 0;
+}
+.toast-top-left,
+.toast-top-center,
+.toast-top-right {
+  .toast.show {
+    animation: slideBottom .25s ease-in-out;
+  }
+}
+.toast-bottom-left,
+.toast-bottom-center,
+.toast-bottom-right {
+  .toast.show {
+    animation: slideTop .25s ease-in-out;
+  }
+}
+
+@keyframes slideBottom {
+  from {
+    transform: translateY(-.875rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideTop {
+  from {
+    transform: translateY(.875rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
