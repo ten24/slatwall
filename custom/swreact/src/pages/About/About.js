@@ -2,8 +2,11 @@ import React from 'react'
 // import PropTypes from 'prop-types'
 import { Layout } from '../../components'
 import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 const About = ({ title, customBody }) => {
+  let history = useHistory()
+
   return (
     <Layout>
       <div className="bg-light p-0">
@@ -17,6 +20,10 @@ const About = ({ title, customBody }) => {
 
         <div
           className="container bg-light box-shadow-lg rounded-lg p-5"
+          onClick={event => {
+            event.preventDefault()
+            history.push(event.target.getAttribute('href'))
+          }}
           dangerouslySetInnerHTML={{
             __html: customBody,
           }}

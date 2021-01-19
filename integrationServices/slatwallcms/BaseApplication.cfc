@@ -335,7 +335,7 @@ Notes:
 	}
 	
 	/** Returns the content given a urlTitle or the default content if no urlTitle is given. */
-    public any function getContentByUrlTitlePath(urlTitlePath){
+    public any function getContentByUrlTitlePath(required string urlTitlePath){
 
         var currentSite = getHibachiScope().getCurrentRequestSite();
 
@@ -349,6 +349,39 @@ Notes:
 
             return contentEntity;
         }
+    }
+    
+
+    /** Returns json representation of the urlTitles provided **/
+	public string function getStackedContent(required struct urlTitlePathConfiguration){
+		var columns = [];
+		var urlTitlePaths = '';
+		
+		var stackedContent = {};
+	
+		for(var urlTitlePath in urlTitlePathConfiguration){
+			ArrayAppend(columns,urlTitlePathConfiguration[urlTitlePath],true);
+			urlTitlePaths = listAppend(urlTitlePaths, urlTitlePath);
+		}
+		var columnsList = listRemoveDuplicates('c.'&ArrayToList(columns, ', c.')); //add prefix
+		
+		var currentSite = getHibachiScope().getCurrentRequestSite();
+		
+		if(!isNull(currentSite) && len(urlTitlePaths) && len(columnsList)){
+			var contentData = getHibachiScope().getService("ContentService").getAllContentBySiteIDAndUrlTitlePaths(currentSite.getSiteID(),urlTitlePaths, columnsList);
+			for(var content in contentData){
+				if(isArray(arguments.urlTitlePathConfiguration[content['urlTitlePath']])){
+					stackedContent[content['urlTitlePath']] = {};
+					for(var column in arguments.urlTitlePathConfiguration[content['urlTitlePath']]){
+						stackedContent[content['urlTitlePath']][column] = content[column];
+					}
+				}else{
+					stackedContent[content['urlTitlePath']] = content[arguments.urlTitlePathConfiguration[content['urlTitlePath']]];
+				}
+				
+			}
+		}
+        return serializeJson(stackedContent);
     }
 
 	public string function dspForm(

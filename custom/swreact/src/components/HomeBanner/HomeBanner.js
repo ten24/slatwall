@@ -6,6 +6,7 @@ import { FeaturedProductCard } from '..'
 import { getUser } from '../../actions/userActions'
 import { getFeaturedItems } from '../../actions/productSearchActions'
 import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 const FeaturedProducts = ({ sliderData }) => {
   const settings = {
@@ -52,10 +53,18 @@ const FeaturedProducts = ({ sliderData }) => {
 }
 
 const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
+  let history = useHistory()
+
   return (
     <div index={slideKey} className="repeater">
       <h2 className="h2">{title}</h2>
-      <p dangerouslySetInnerHTML={{ __html: customBody }} />
+      <p
+        onClick={event => {
+          event.preventDefault()
+          history.push(event.target.getAttribute('href'))
+        }}
+        dangerouslySetInnerHTML={{ __html: customBody }}
+      />
       <a href={linkUrl} className="btn btn-light btn-long">
         {linkLabel}
       </a>

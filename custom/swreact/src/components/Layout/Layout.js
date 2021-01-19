@@ -5,8 +5,8 @@ import SEO from '../SEO/SEO'
 const Layout = ({ children, actionBannerDisable }) => {
   return (
     <>
-      <SEO />
-      <Header />
+      {/* <SEO />
+      <Header /> */}
       {children}
       <Footer actionBannerDisable={actionBannerDisable} />
     </>
