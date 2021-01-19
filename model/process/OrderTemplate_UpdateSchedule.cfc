@@ -85,4 +85,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return getService('settingService').getTerm(getFrequencyTermID());
 		}
 	}
+	
+	public boolean function isValidScheduleDayFlag(){
+		return DateDiff("d",now(),variables.scheduleOrderNextPlaceDateTime) <= 60;
+	}
 }

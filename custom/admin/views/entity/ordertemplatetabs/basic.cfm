@@ -63,7 +63,7 @@
 																data-order-template-schedule-date-change-reason-type-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions()))#"	
 																data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
 																data-end-day-of-the-month="25" 
-																data-end-date-string="#dateFormat( dateAdd('d', now(), 90), 'yyyy-mm-dd')#">
+																data-end-date-string="#dateFormat( dateAdd('d', now(), 60), 'yyyy-mm-dd')#">
 						</sw-order-template-update-schedule-modal>
 					</div> 
 				<cfelse>

@@ -127,7 +127,8 @@ class monatFlexshipScheduleModalController {
     	var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
     	//format mm/dd/yyyy
         this.nextPlaceDateTime = (date.getMonth() +1) + '/' + date.getDate() + '/' + date.getFullYear();
-	    this.endDate = new Date(date.setMonth(date.getMonth()+2)); //next one month
+        let today = new Date();
+	    this.endDate = new Date(today.setDate(today.getDate()+60)); 
     }
     
     public updateDelayOrSkip = (delayOrSkip:string) =>{
