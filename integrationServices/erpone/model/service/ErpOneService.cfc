@@ -53,6 +53,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="hibachiCacheService";
 	property name="hibachiDataService";
 	property name="hibachiUtilityService";
+	property name="skuService";
 	
 	property name="accountDAO" type="any";
 	
@@ -262,9 +263,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	return httpRequest;
     }
     
-    public any function callErpOneGetDataApi( required struct requestData, string endpoint="read" ){
+    public any function callErpOneGetDataApi( required struct requestData, string endpoint="data/read" ){
 		getService('hibachiTagService').cfsetting(requesttimeout=100000);
-    	var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint);
+    	var httpRequest = this.createHttpRequest('distone/rest/service/'&arguments.endpoint);
 		
 		// Authentication headers
 		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
@@ -386,6 +387,27 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
     }
 	
+	public any function getItemInventoryData( items ){
+    	logHibachi("ERPONE - called getItemInventoryData");
+		
+    	var InventoryArray = this.callErpOneGetDataApi({
+    	    "items"			: arguments.items,
+    	    "warehouses"	: "*",
+    	    "format"		: "array"
+    	},"item/availability")
+
+		if( InventoryArray.len() > 0 ){
+
+		    this.logHibachi("ERPONE - Start pushing Inventory to import-queue ");
+			var batch = this.pushRecordsIntoImportQueue( "Inventory", InventoryArray );
+			this.logHibachi("ERPONE - Finish pushing Inventory to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
+
+		} else {
+		    this.logHibachi("ERPONE - No data recieve from getItemInventoryData API");
+		}
+
+    }
+    
 	// Importer Functions - Paginated data API call
 	
 	public any function importErpOneAccounts(){
@@ -489,6 +511,33 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    this.logHibachi("ERPONE - Finish importing ErpOneOrderItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
 	
+	public any function importErpOneInventoryItems(){
+
+		logHibachi("ERPONE - Starting importing ErpOneInventoryItems");
+		
+		var skuCollection = getSkuService().getSkuCollectionList();
+		skuCollection.setDisplayProperties(displayPropertiesList='skuCode');
+		skuCollection.setPageRecordsShow(100);
+		var skuCollectionRecords = skuCollection.getRecords();
+		var totalRecordsCount = arrayLen(skuCollectionRecords);
+		var skus = skuCollection.getPageRecords(formatRecords=false, refresh=true);
+		try {
+			var skuData = [];
+			for(var sku in skus) {
+				sku['skuCode']=reReplace(reReplace(sku['skuCode'], "--" , "/", "all" ),"__", " ", "all");
+				skuData.append(sku['skuCode']);
+			}
+			this.getItemInventoryData(arrayToList(skuData));
+			this.logHibachi("Successfully called getItemInventoryData for CurrentPage");
+
+		} catch(e){
+
+			this.logHibachi("Got error while trying to call getItemInventoryData for CurrentPage");
+			this.getHibachiUtilityService().logException(e);
+		}
+			
+	    this.logHibachi("ERPONE - Finish importing ErpOneInventoryItems for totalRecordsCount: #totalRecordsCount#");
+	}
 	/**
 	 * @hint helper function to create a struct of properties+values from @entity/Account.cfc.
 	 * 
@@ -865,5 +914,23 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 	    	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
 		    return transformedItem;
+	}
+	
+	public any function preProcessInventoryData(required struct data ){
+	var erponeMapping = {
+	        "item" 			: "remoteSkuID",
+	        "warehouse"		: "remoteInventoryID",
+	        "available"		: "quantityIn"
+	    };
+
+	var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
+	if( !structKeyExists(transformedItem, 'remoteLocationID') || this.hibachiIsEmpty(transformedItem.remoteLocationID) ) {
+		transformedItem["remoteLocationID"]=transformedItem.remoteInventoryID;
+	}
+	if( structKeyExists(transformedItem, 'remoteSkuID') ){
+			
+			transformedItem.remoteSkuID=reReplace(reReplace(transformedItem.remoteSkuID, "(\\|/)", "--", "all" ),"\s", "__", "all");
+	}
+    return transformedItem;
 	}
 }
