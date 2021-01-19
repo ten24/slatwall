@@ -1,6 +1,6 @@
 {
     "entityName": "Order",
-    "mappingCode": "Order",
+    "mappingCode": "_Order",
 
     "properties": {
         
@@ -68,7 +68,7 @@
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
-            "mappingCode"            : "Address",
+            "mappingCode"            : "_Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "billingAddress",
             "sourceDataKeysPrefix"   : "BillingAddress_"
@@ -76,7 +76,7 @@
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
-            "mappingCode"            : "Address",
+            "mappingCode"            : "_Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "shippingAddress",
             "sourceDataKeysPrefix"   : "ShippingAddress_"

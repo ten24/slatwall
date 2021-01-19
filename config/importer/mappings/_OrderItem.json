@@ -1,6 +1,6 @@
 {
     "entityName": "OrderItem",
-    "mappingCode": "OrderItem",
+    "mappingCode": "_OrderItem",
     "properties": {
         "remoteOrderItemID": {
             "propertyIdentifier": "remoteID",

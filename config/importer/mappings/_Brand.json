@@ -1,6 +1,6 @@
 {
     "entityName": "Brand",
-    "mappingCode": "Brand",
+    "mappingCode": "_Brand",
 
     "properties": {
         

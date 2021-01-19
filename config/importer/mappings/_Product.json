@@ -1,6 +1,6 @@
 {
     "entityName": "Product",
-    "mappingCode": "Product",
+    "mappingCode": "_Product",
     "properties": {
         
         "remoteProductID": {
@@ -60,14 +60,14 @@
             "type": "manyToOne",
             "isVolatile": true,
             "entityName": "Brand",
-            "mappingCode": "Brand",
+            "mappingCode": "_Brand",
             "propertyIdentifier": "brand"
         },
         {
             "type": "manyToOne",
             "isVolatile": true,
             "entityName": "ProductType",
-            "mappingCode": "ProductType",
+            "mappingCode": "_ProductType",
             "propertyIdentifier": "productType",
             "generatorFunction"  : "generateProductProductType"
         },

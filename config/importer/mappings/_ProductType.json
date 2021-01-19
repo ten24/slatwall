@@ -1,6 +1,6 @@
 {
     "entityName": "ProductType",
-    "mappingCode": "ProductType",
+    "mappingCode": "_ProductType",
     "properties": {
 
         "remoteProductTypeID": {

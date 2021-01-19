@@ -79,6 +79,7 @@
             "type": "manyToOne",
             "isNullable": true,
             "entityName": "AccountAddress",
+            "mappingCode": "AccountAddress",
             "propertyIdentifier": "primaryAddress"
         }
     ],

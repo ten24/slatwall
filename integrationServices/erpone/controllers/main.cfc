@@ -68,11 +68,11 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
    		
    		var index = this.getService("erpOneService").getAvailableSampleCsvFilesIndex();
    		
-   		if( structKeyExists(index, arguments.rc.entityName) ){
+   		if( structKeyExists(index, arguments.rc.mappingCode) ){
    		    
-   		    var header = this.getService('erpOneService').getEntityCSVHeaderMetaData( arguments.rc.entityName );
-            
-            var tmpFileName = "#arguments.rc.entityName#_Import_Sample.csv";
+   		    var header = this.getService('erpOneService').getMappingCSVHeaderMetaData( arguments.rc.mappingCode );
+
+            var tmpFileName = "#arguments.rc.mappingCode#_Import_Sample.csv";
             var tmpFile = getTempFile( this.getVirtualFileSystemPath(), tmpFileName);
             
    		    fileWrite( filePath=tmpFile, data=header.columns );

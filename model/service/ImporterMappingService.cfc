@@ -80,20 +80,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    return index;
 	}
 	
-	public any function saveImporterMapping(required any importerMapping, required struct data) {
-		 arguments.importerMapping = super.saveImporterMapping(argumentCollection=arguments);
+	public any function deleteImporterMapping(required any importerMapping ){
+	    var deleteOK = super.deleteImporterMapping( argumentCollection=arguments );
+	    if(deleteOK){
+	        this.removeMappingFromCache(arguments.importerMapping.getMappingCode());
+	    }
+	    return deleteOK;
+	}
+
+	
+	public any function saveImporterMapping( required any importerMapping, required struct data ){
+	    
+	    if( !isNull(arguments.data) && !this.hibachiIsEmpty(arguments.data) ){
+	        arguments.importerMapping.populate(arguments.data);
+    	    var mappingStruct = deSerializeJSON( arguments.importerMapping.getMapping() );
+            mappingStruct['name']        = arguments.importerMapping.getName();
+            mappingStruct['entityName']  = arguments.importerMapping.getBaseObject();
+            mappingStruct['mappingCode'] = arguments.importerMapping.getMappingCode();
+            arguments.importerMapping.setMapping(serializeJson(mappingStruct));
+	    }
+	    
+        arguments.importerMapping = super.saveImporterMapping(argumentCollection=arguments);
+        if( !arguments.importerMapping.hasErrors() ){
+            this.putMappingIntoCache(mappingStruct);
+        }
 		 
-		 if( !arguments.importerMapping.hasErrors() ){
-		     
-            var mappingStruct = DeSerializeJson( arguments.importerMapping.getMapping() );
-		    mappingStruct['name']        = arguments.importerMapping.getName();
-	        mappingStruct['entityName']  = arguments.importerMapping.getBaseObject();
-	        mappingStruct['mappingCode'] = arguments.importerMapping.getMappingCode();
-	        
-	        this.putMappingIntoCache(mappingStruct);
-		 }
-		 
-		 return arguments.importerMapping;
+		return arguments.importerMapping;
 	}
 	
 	public void function reloadMappings(){
@@ -114,7 +126,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	        
 	        var validation = this.isValidImporterMappingConfig(mappingJson);
 	        if(!validation.isValid){
-	            throw("Importer Mapping File #arguments.fileName# is not valid \n, mapping: #mappingJson#  \n errors: #serializeJson(validation.errors)#" );
+	            throw("Importer Mapping File #baseDir#/#arguments.fileName# is not valid \n, mapping: #mappingJson#  \n errors: #serializeJson(validation.errors)#" );
 	        }
 	        
 	        var mappingStruct = deSerializeJSON(mappingJson);
@@ -164,120 +176,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    this.removeMappingPropertiesValidationsFromCache(arguments.mapping.mappingCode);
 	}
 	
-	public struct function isValidImporterMappingConfig(required string mapping){
+	public void function removeMappingFromCache(required string mappingCode){
+	    var mappings = this.getCachedMappings();
+	    mappings.delete( arguments.mappingCode );
+	    this.setCachedMappings(mappings);
 	    
-	    var validation = {
-	        'isValid' = true,
-	        "errors" = []
-	    };
-	    
-        if( !IsJSON( arguments.mapping )){
-            // TODO rb-keys
-            validation.isValid = false;
-            validation.errors.append('Mapping is not a valid json String');
-            return validation;
-        }
-        
-        var mappingStruct = deSerializeJSON(arguments.mapping);
-        
-        if(!structKeyExists(mappingStruct, 'mappingCode')){
-            validation.isValid = false;
-            validation.errors.append('Mapping should have a `mappingCode` property');       
-        }
-        
-        if(!structKeyExists(mappingStruct, 'entityName')){
-            validation.isValid = false;
-            validation.errors.append('Mapping should have a `entityName` property');       
-        }
-        
-        if(structKeyExists(mappingStruct, 'relations')){
-            for(var relation in mappingStruct.relations){
-                if(!structKeyExists(relation, 'entityName') ){
-                    validation.isValid = false;
-                    validation.errors.append('Mapping relation should have a `entityName` : #serializeJson(relation)#'); 
-                }
-                
-                if(!structKeyExists(relation, 'mappingCode') ){
-                    if( !structKeyExists(relation, 'hasMapping') || relation.hasMapping == true ){
-                        validation.isValid = false;
-                        validation.errors.append('Mapping relation should have a `mappingCode` : #serializeJson(relation)#'); 
-                    }
-                }
-            }
-        }
-        
-	    // TODO: add more checks, for properties, generator-functions
-        
-        return validation;
+	    // removed cached validations for this mapping, it will get re-calculated when required next time;
+	    this.removeMappingPropertiesValidationsFromCache(arguments.mapping.mappingCode);
 	}
 	
+    public struct function getCachedMappingPropertiesValidations(){
+	    return this.getHibachiCacheService().getCachedValue('cachedMappingPropertiesValidations') ?: {};
+	}
 	
+	public void function setCachedMappingPropertiesValidations( required struct validations){
+	    this.getHibachiCacheService().setCachedValue('cachedMappingPropertiesValidations', arguments.validations);
+	}
 	
-	public struct function createMappingCSVHeaderMetaDataRecursively( required string mappingCode, string sourceDataKeysPrefix = '' ){
-  	    
-        var headers = {};
-        var mapping = this.getMappingByMappingCode( arguments.mappingCode );
-    
-        if(structKeyExists(mapping, 'properties') ){
-            for( var sourcePropertyName in mapping.properties ){
-                if( !this.hibachiIsEmpty(arguments.sourceDataKeysPrefix) ){
-                    sourcePropertyName = arguments.sourceDataKeysPrefix & sourcePropertyName;
-                }
-                // we can add a way to either define or infer data-type if needed
-                headers[ ucFirst(sourcePropertyName, true) ] = "VarChar"; 
-            }
-        }
-  	    
-  	    if( structKeyExists(mapping, 'relations') ){
-  	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
-  	        for(var thisRelation in mapping.relations){
-  	            // includeInCSVTemplate is a flag in thisRelation mappings; 
-  	            // being used to handle recursive-relations, like productType and parentProductType
-  	            if( !structKeyExists(thisRelation, 'excludeFromTemplate') || !thisRelation.excludeFromTemplate ){
-  	                headers.append( this.createMappingCSVHeaderMetaDataRecursively(
-                        mappingCode          = thisRelation.mappingCode ?: thisRelation.entityName,
-                        sourceDataKeysPrefix = thisRelation.sourceDataKeysPrefix ?: ''
-                    ));
-  	            }
-	        }
-  	    }
-  	    
-  	    if( structKeyExists(mapping, 'dependencies') ){
-  	        for(var dependency in mapping.dependencies ){
-  	            // add prefix if needed
-  	            var sourcePropertyName = dependency.key;
-  	            if( !this.hibachiIsEmpty(arguments.sourceDataKeysPrefix) ){
-                    sourcePropertyName = arguments.sourceDataKeysPrefix & sourcePropertyName;
-                }
-                
-  	            headers[ ucFirst(sourcePropertyName, true) ] = 'VarChar';
-	        }
-  	    }
-  	    
-  	    return headers;
-    }
+	public void function putMappingPropertiesValidationsIntoCache(required string mappingCode, required struct mappingValodations ){
+	    var cachedValidations = this.getCachedMappingPropertiesValidations();
+	    cachedValidations[arguments.mappingCode] = arguments.mappingValodations;
+	    this.setCachedMappingPropertiesValidations(cachedValidations);
+	}
+	
+	public void function removeMappingPropertiesValidationsFromCache(required string mappingCode){
+	    var cachedValidations = this.getCachedMappingPropertiesValidations();
+	    cachedValidations.delete( arguments.mappingCode );
+	    this.setCachedMappingPropertiesValidations(cachedValidations);
+	}
 
-	public struct function getMappingCSVHeaderMetaData( required string mappingCode ){
-	    
-	    var cacheKey = "getMappingCSVHeaderMetaData_" &arguments.mappingCode;
-	    
-	    if( !structKeyExists(variables, cacheKey) ){
-	        
-      	    var columnNamesAndTypes = this.createMappingCSVHeaderMetaDataRecursively( arguments.mappingCode );
-      	    
-      	    var columns = columnNamesAndTypes.keyArray().sort('textNoCase');
-      	    var columnTypes = columns.map( function( column ){ 
-      	        return columnNamesAndTypes[ column ]; 
-      	    });
-      	    
-      	    variables[ cacheKey ] = { "columns": columns.toList(), "columnTypes": columnTypes.toList() };
-	    }
-	    
-  	    return variables[ cacheKey ];
-  	}
-  	
-  	
-  	public struct function getMappingPropertiesValidations( required string mappingCode ){
+	public struct function getMappingPropertiesValidations( required string mappingCode ){
         
         var cachedMappingPropertiesValidations = this.getCachedMappingPropertiesValidations();
 
@@ -334,28 +262,118 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	    return propertiesValidations;
     }
-    
-    public struct function getCachedMappingPropertiesValidations(){
-	    return this.getHibachiCacheService().getCachedValue('cachedMappingPropertiesValidations') ?: {};
-	}
-	
-	public void function setCachedMappingPropertiesValidations( required struct validations){
-	    this.getHibachiCacheService().setCachedValue('cachedMappingPropertiesValidations', arguments.validations);
-	}
-	
-	public void function putMappingPropertiesValidationsIntoCache(required string mappingCode, required struct mappingValodations ){
-	    var cachedValidations = this.getCachedMappingPropertiesValidations();
-	    cachedValidations[arguments.mappingCode] = arguments.mappingValodations;
-	    this.setCachedMappingPropertiesValidations(cachedValidations);
-	}
-	
-	public void function removeMappingPropertiesValidationsFromCache(required string mappingCode){
-	    var cachedValidations = this.getCachedMappingPropertiesValidations();
-	    cachedValidations.delete( arguments.mappingCode );
-	    this.setCachedMappingPropertiesValidations(cachedValidations);
-	}
 
 	
+	public struct function isValidImporterMappingConfig(required string mapping){
+	    
+	    var validation = {
+	        'isValid' = true,
+	        "errors" = []
+	    };
+	    
+        if( !IsJSON( arguments.mapping )){
+            // TODO rb-keys
+            validation.isValid = false;
+            validation.errors.append('Mapping is not a valid json String');
+            return validation;
+        }
+        
+        var mappingStruct = deSerializeJSON(arguments.mapping);
+        
+        if(!structKeyExists(mappingStruct, 'mappingCode')){
+            validation.isValid = false;
+            validation.errors.append('Mapping should have a `mappingCode` property');       
+        }
+        
+        if(!structKeyExists(mappingStruct, 'entityName')){
+            validation.isValid = false;
+            validation.errors.append('Mapping should have a `entityName` property');       
+        }
+        
+        if(structKeyExists(mappingStruct, 'relations')){
+            for(var relation in mappingStruct.relations){
+                if(!structKeyExists(relation, 'entityName') ){
+                    validation.isValid = false;
+                    validation.errors.append('Mapping relation should have a `entityName` : #serializeJson(relation)#'); 
+                }
+                
+                if(!structKeyExists(relation, 'mappingCode') ){
+                    if( !structKeyExists(relation, 'hasMapping') || relation.hasMapping == true ){
+                        validation.isValid = false;
+                        validation.errors.append('Mapping relation should have a `mappingCode` : #serializeJson(relation)#'); 
+                    }
+                }
+            }
+        }
+        
+	    // TODO: add more checks, for properties, generator-functions
+        
+        return validation;
+	}
+	
+	public struct function createMappingCSVHeaderMetaDataRecursively( required string mappingCode, string sourceDataKeysPrefix = '' ){
+  	    
+        var headers = {};
+        var mapping = this.getMappingByMappingCode( arguments.mappingCode );
+    
+        if(structKeyExists(mapping, 'properties') ){
+            for( var sourcePropertyName in mapping.properties ){
+                if( !this.hibachiIsEmpty(arguments.sourceDataKeysPrefix) ){
+                    sourcePropertyName = arguments.sourceDataKeysPrefix & sourcePropertyName;
+                }
+                // we can add a way to either define or infer data-type if needed
+                headers[ ucFirst(sourcePropertyName, true) ] = "VarChar"; 
+            }
+        }
+  	    
+  	    if( structKeyExists(mapping, 'relations') ){
+  	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
+  	        for(var thisRelation in mapping.relations){
+  	            // includeInCSVTemplate is a flag in thisRelation mappings; 
+  	            // being used to handle recursive-relations, like productType and parentProductType
+  	            if( !structKeyExists(thisRelation, 'excludeFromTemplate') || !thisRelation.excludeFromTemplate ){
+  	                headers.append( this.createMappingCSVHeaderMetaDataRecursively(
+                        mappingCode          = thisRelation.mappingCode,
+                        sourceDataKeysPrefix = thisRelation.sourceDataKeysPrefix ?: ''
+                    ));
+  	            }
+	        }
+  	    }
+  	    
+  	    if( structKeyExists(mapping, 'dependencies') ){
+  	        for(var dependency in mapping.dependencies ){
+  	            // add prefix if needed
+  	            var sourcePropertyName = dependency.key;
+  	            if( !this.hibachiIsEmpty(arguments.sourceDataKeysPrefix) ){
+                    sourcePropertyName = arguments.sourceDataKeysPrefix & sourcePropertyName;
+                }
+                
+  	            headers[ ucFirst(sourcePropertyName, true) ] = 'VarChar';
+	        }
+  	    }
+  	    
+  	    return headers;
+    }
+
+	public struct function getMappingCSVHeaderMetaData( required string mappingCode ){
+	    
+	    var cacheKey = "getMappingCSVHeaderMetaData_" &arguments.mappingCode;
+	    
+	    if( !structKeyExists(variables, cacheKey) ){
+	        
+      	    var columnNamesAndTypes = this.createMappingCSVHeaderMetaDataRecursively( arguments.mappingCode );
+      	    
+      	    var columns = columnNamesAndTypes.keyArray().sort('textNoCase');
+      	    var columnTypes = columns.map( function( column ){ 
+      	        return columnNamesAndTypes[ column ]; 
+      	    });
+      	    
+      	    variables[ cacheKey ] = { "columns": columns.toList(), "columnTypes": columnTypes.toList() };
+	    }
+	    
+  	    return variables[ cacheKey ];
+  	}
+  	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================

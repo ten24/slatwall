@@ -14,7 +14,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="mappingCode" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="description" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="baseObject" edit="#rc.edit#">
-                    <hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="mapping" edit="#rc.edit#">
+                    <hb:HibachiPropertyDisplay object="#rc.importerMapping#" property="mapping" edit="#rc.edit#" fieldType="json" fieldAttributes="rows='20'">
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>
 		</div>

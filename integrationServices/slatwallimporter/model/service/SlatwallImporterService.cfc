@@ -48,7 +48,6 @@ Notes:
 */
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
-	property name="integrationServices";
 	property name="hibachiDataService";
 	property name="hibachiUtilityService";
 

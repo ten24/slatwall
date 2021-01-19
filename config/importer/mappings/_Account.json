@@ -1,6 +1,6 @@
 {
     "entityName": "Account",
-    "mappingCode": "Account",
+    "mappingCode": "_Account",
 
     "properties": {
         

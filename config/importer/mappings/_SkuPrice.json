@@ -1,6 +1,6 @@
 {
     "entityName": "SkuPrice",
-    "mappingCode": "SkuPrice",
+    "mappingCode": "_SkuPrice",
     "properties": {
         
         "remoteSkuPriceID": {
@@ -56,7 +56,7 @@
         {
             "type": "manyToOne",
             "entityName": "PriceGroup",
-            "mappingCode": "PriceGroup",
+            "mappingCode": "_PriceGroup",
             "propertyIdentifier": "priceGroup",
             "generatorFunction": "generateSkuPricePriceGroup"
         }
