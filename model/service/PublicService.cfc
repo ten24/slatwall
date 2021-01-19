@@ -108,7 +108,7 @@ component  accessors="true" output="false"
 
   
         var stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
-        getHibachiScope().addActionResult("public:getSlatwallContent", true);
+        getHibachiScope().addActionResult("public:getSlatwallContent", false);
 
         arguments.data['ajaxResponse']['content'] = stackedContent;
         
