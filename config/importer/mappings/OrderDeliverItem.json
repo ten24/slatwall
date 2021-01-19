@@ -1,6 +1,6 @@
 {
-	"entityName": "OrderDelivery",
-
+	"entityName": "OrderDeliveryItem",
+    "mappingCode": "OrderDeliveryItem",
 	"properties": {
 
 		"remoteOrderDeliveryItemID": {

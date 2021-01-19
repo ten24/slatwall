@@ -1,6 +1,6 @@
 {
     "entityName": "AccountPhoneNumber",
-    
+    "mappingCode": "AccountPhoneNumber",
     "properties": {
         "phone": {
             "propertyIdentifier": "phoneNumber",
