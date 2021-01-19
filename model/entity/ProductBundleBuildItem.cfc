@@ -92,7 +92,29 @@ component entityname="SlatwallProductBundleBuildItem" table="SwProductBundleBuil
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
-	
+	public boolean function hasQuantityWithinMaxOrderQuantity(boolean forceMaxOrderSettingFlag=false){
+		var quantity = getQuantity();
+		//if forceMaxOrderSettingFlag is true and the quantity is > than the maxOrderQuantitySettting
+		//then we'll want to return true so that we validate against that instead
+		if ( quantity ){
+			if (arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity')) {
+				return true;
+			}
+	        return quantity <= getMaximumOrderQuantitySetting();
+		}
+        return true;
+    }
+    
+    public boolean function hasQuantityWithinMinOrderQuantity() {
+    	return ( this.getQuantity() ?: 0 ) >= this.getSku().setting('skuOrderMinimumQuantity');
+    }
+ 	
+ 	public numeric function getMaximumOrderQuantitySetting() {
+		if( this.getSku().getActiveFlag() && this.getSku().getProduct().getActiveFlag() ){
+			return getSku().setting('skuOrderMaximumQuantity');
+		}
+		return 0;
+	}
 	// ===============  END: Custom Validation Methods =====================
 	
 	// =============== START: Custom Formatting Methods ====================

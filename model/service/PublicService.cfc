@@ -317,7 +317,8 @@ component  accessors="true" output="false"
             productBundleBuildItem = getProductService().saveProductBundleBuildItem( productBundleBuildItem );
             
             if( productBundleBuildItem.hasErrors() ) {
-                getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+                this.addErrors(arguments.data, productBundleBuildItem.getErrors()); //add the basic errors
+                getHibachiScope().addActionResult("public:product.createProductBundleBuild", productBundleBuildItem.hasErrors());
                 return;
             }
         }
