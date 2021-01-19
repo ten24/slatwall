@@ -1,7 +1,4 @@
 <cfscript>
-    local.mainNavigation = $.renderContent($.getContentByUrlTitlePath('header/main-navigation').getContentID(), 'customBody');
-    local.themePath= $.getThemePath()
-
     local.productsMainNav = $.slatwall.getService('contentService').getContentCollectionList();
     local.productsMainNav.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,parentContent.contentID,parentContent.urlTitle,parentContent.title,parentContent.linkUrl');
     local.productsMainNav.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode());
@@ -13,10 +10,6 @@
     local.productsMainNav.setPageRecordsShow(100) ;
     local.productCategories = local.productsMainNav.getPageRecords();
 
-    local.navigation = {
-      "mainNavigation": '#reReplace(local.mainNavigation,"#chr(13)#|#chr(9)#|\n|\r","","ALL")#',
-      "productCategories": #local.productCategories#,
-      }
 
 </cfscript>
 

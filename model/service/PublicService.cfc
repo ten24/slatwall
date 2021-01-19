@@ -90,7 +90,79 @@ component  accessors="true" output="false"
 		
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
+     /**
+     * 
+     * /api/scope/getSlatwallContent
+     * 
+     */
+    public void function getSlatwallContent(required struct data){
+        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.content" default={
+              'header/main-navigation' : 'customBody',
+              'footer/contact-us' : 'customBody',
+              'footer/get-in-touch' : 'customBody',
+              'footer/site-links' : 'customBody',
+              'footer/stay-informed' : 'customBody',
+            };
+        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
+
+  
+        var stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
+        getHibachiScope().addActionResult("public:getSlatwallContent", true);
+
+        arguments.data['ajaxResponse']['content'] = stackedContent;
+        
+    }
     
+    public void function getHomePageContent(required struct data){
+        param name="arguments.data.siteCode" default="stoneAndBerg";
+        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
+
+
+          local.homeMainBanner = getService('contentService').getContentCollectionList()
+        local.homeMainBanner.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,linkUrl,linkLabel')
+        local.homeMainBanner.addFilter("site.siteCode",arguments.data.siteCode)
+        local.homeMainBanner.addFilter("activeFlag", true)
+        local.homeMainBanner.addFilter("urlTitlePath","%main-banner-slider/%","LIKE")
+        local.homeMainBanner.addOrderBy("sortOrder|ASC")
+        local.homeBanner = local.homeMainBanner.getPageRecords()
+
+        local.homeContentColumns = getService('contentService').getContentCollectionList()
+        local.homeContentColumns.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,associatedImage')
+        local.homeContentColumns.addFilter("site.siteCode",arguments.data.siteCode)
+        local.homeContentColumns.addFilter("activeFlag", true)
+        local.homeContentColumns.addFilter("urlTitlePath","%content-columns/%","LIKE")
+        local.homeContentColumns.addOrderBy("sortOrder|ASC")
+        local.homeContent = local.homeContentColumns.getPageRecords()
+
+
+        local.homeBrands = getService('contentService').getContentCollectionList()
+        local.homeBrands.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,linkUrl,associatedImage')
+        local.homeBrands.addFilter("site.siteCode",arguments.data.siteCode)
+        local.homeBrands.addFilter("activeFlag", true)
+        local.homeBrands.addFilter("urlTitlePath","%shop-by/%","LIKE")
+        local.homeBrands.addOrderBy("sortOrder|ASC")
+        local.homeBrand = local.homeBrands.getPageRecords()
+
+      	var productCollectionList = getService('ProductService').getProductCollectionList();
+		productCollectionList.setDisplayProperties("productID,productClearance,urlTitle,productFeatured,brand.brandName,brand.urlTitle,calculatedTitle,calculatedSalePrice,listPrice,livePrice,productName,calculatedSalePrice,defaultProductImageFiles");
+		productCollectionList.addFilter('productFeatured',1,'=');
+        local.featuredProductCollectionList = productCollectionList.getRecords(formatRecords=false);
+
+
+            local.contentForHomePage = getService('siteService').getStackedContent({
+              'home/shop-by' : ['linkUrl', 'title', 'customBody']
+            })
+            
+        local.contentForHomePage['featuredSlider'] = #local.featuredProductCollectionList#
+        local.contentForHomePage['homeMainBanner'] = #local.homeBanner#
+        local.contentForHomePage['homeContent'] = #local.homeContent#
+        local.contentForHomePage['homeBrand'] = #local.homeBrand#
+
+        getHibachiScope().addActionResult("public:getHomePageContent", true);
+
+        arguments.data['ajaxResponse']['content'] = serializeJson(local.contentForHomePage);
+    }
     /**
      * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
      * and a 'profile name' that determines the size of that image.

@@ -408,6 +408,37 @@ component  extends="HibachiService" accessors="true" {
 		return delete( arguments.site );
 
 	}
+	
+	public struct function getStackedContent(required struct urlTitlePathConfiguration, boolean sanitizeOutput = true){
+		var columns = [];
+		var urlTitlePaths = '';
+		
+		var stackedContent = {};
+	
+		for(var urlTitlePath in urlTitlePathConfiguration){
+			ArrayAppend(columns,urlTitlePathConfiguration[urlTitlePath],true);
+			urlTitlePaths = listAppend(urlTitlePaths, urlTitlePath);
+		}
+		var columnsList = listRemoveDuplicates('c.'&ArrayToList(columns, ', c.')); //add prefix
+		
+		var currentSite = getCurrentRequestSite();
+		
+		if(!isNull(currentSite) && len(urlTitlePaths) && len(columnsList)){
+			var contentData = getHibachiScope().getService("ContentService").getAllContentBySiteIDAndUrlTitlePaths(currentSite.getSiteID(),urlTitlePaths, columnsList);
+			for(var content in contentData){
+				if(isArray(arguments.urlTitlePathConfiguration[content['urlTitlePath']])){
+					stackedContent[content['urlTitlePath']] = {};
+					for(var column in arguments.urlTitlePathConfiguration[content['urlTitlePath']]){
+						stackedContent[content['urlTitlePath']][column] = reReplace(content[column],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
+					}
+				}else{
+					stackedContent[content['urlTitlePath']] = reReplace(content[arguments.urlTitlePathConfiguration[content['urlTitlePath']]],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
+				}
+				
+			}
+		}
+        return stackedContent
+    }
 
 	// ======================  END: Save Overrides ============================
 
