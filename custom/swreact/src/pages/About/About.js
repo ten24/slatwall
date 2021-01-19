@@ -1,12 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // import PropTypes from 'prop-types'
 import { Layout } from '../../components'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { getContent } from '../../actions/contentActions'
 
 const About = ({ title, customBody }) => {
-  let history = useHistory()
+  const dispatch = useDispatch()
 
+  let history = useHistory()
+  useEffect(() => {
+    dispatch(
+      getContent({
+        content: {
+          about: ['customBody', 'customSummary', 'title'],
+        },
+      })
+    )
+  }, [dispatch])
   return (
     <Layout>
       <div className="bg-light p-0">
