@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import { search } from '../../actions/productSearchActions'
-import _ from 'lodash'
 
 const ProductListingPagination = () => {
   return (

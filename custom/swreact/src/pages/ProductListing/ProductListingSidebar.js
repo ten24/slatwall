@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { getUser } from '../../actions/userActions'
 import { search, setKeyword, setSort, removeFilter } from '../../actions/productSearchActions'
-import _ from 'lodash'
+import debounce from 'lodash/debounce'
 import ProductListingFilter from './ProductListingFilter'
 
 const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordAction, keyword, potentialFilters, attributes, resultCount = '287' }) => {
@@ -12,7 +12,7 @@ const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordA
   }
 
   const slowlyRequest = useCallback(
-    _.debounce(value => {
+    debounce(value => {
       setKeywordAction(value)
       searchWithFilters()
     }, 500),

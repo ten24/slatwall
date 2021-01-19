@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import merge from 'lodash/merge'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
@@ -8,7 +8,7 @@ import rootReducer from './reducers'
 import devData from './preload'
 // Grab the state from a global variable injected into the server-generated HTML
 let preloadedState = JSON.parse(window.__PRELOADED_STATE__)
-preloadedState.preload = _.merge(devData,preloadedState.preload)
+preloadedState.preload = merge(devData, preloadedState.preload)
 // preloadedState.preload = {...devData,...preloadedState.preload}
 // Allow the passed state to be garbage-collected
 delete window.__PRELOADED_STATE__

@@ -1,0 +1,18 @@
+//
+// Modal
+// --------------------------------------------------
+
+// Vertically Align close button in modal header
+.modal-header {
+  align-items: center;
+}
+
+// Quick view modal
+.modal-quick-view {
+  .modal-dialog {
+    max-width: $modal-xl !important;
+  }
+  @include media-breakpoint-up(sm) {
+    padding-left: $spacer;
+  }
+}
