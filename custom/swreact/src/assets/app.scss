@@ -1,0 +1,30 @@
+/*
+ * Cartzilla | Bootstrap E-Commerce Template
+ * Copyright 2019 Createx Studio
+ * Theme Styles
+ */
+
+// Theme Helpers: Variables, Mixins and Placeholders
+@import './core/scss/helpers';
+
+// Bootstrap Core
+@import 'bootstrap/scss/bootstrap';
+
+// Tiny Slider
+// @import "node_modules/tiny-slider/src/tiny-slider";
+
+// Theme Core
+@import './core/scss/reboot';
+@import './core/scss/components';
+@import './core/scss/utilities';
+
+// Slick Slider
+@import 'slick-carousel/slick/slick.scss';
+
+// Icons
+$fa-font-path: '../webfonts';
+@import './core/fontawesome/fontawesome.scss';
+
+.apple {
+  background-color: aqua;
+}
