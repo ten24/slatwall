@@ -509,7 +509,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		messageStruct['message'] = arguments.message;
 		messageStruct['messageType'] = arguments.messageType;
 		arrayAppend(request.context['messages'], messageStruct);
-		this.logHibachi("HibachiScope::showMessage - #arguments.messageType# - #arguments.message#");
 	}
 
 	// ========================== HELPER DELIGATION METHODS ===============================
