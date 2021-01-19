@@ -592,22 +592,39 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// The amount of the credit is allowed to exceed the original charge with proper configuration in the external Nexio admin dashboard
 		
 		if ( !isNull(arguments.requestBean.getProviderToken()) ) {
+			var blindCredit = false;
+			var endpoint = 'refund';
 			// Request Data
-			var requestData = {
-				'data' = {
-					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
-					'currency': arguments.requestBean.getTransactionCurrencyCode()
-		    	},
-		    	'tokenex': {
-					'token': arguments.requestBean.getProviderToken()
-				},
-			    "card" = {
-			    	"expirationMonth" = arguments.requestBean.getExpirationMonth(),
-			    	"expirationYear" = arguments.requestBean.getExpirationYear()
-			    }
+			
+			if(setting(settingName='allowBlindCreditsFlag',requestBean=arguments.requestBean)){
+				blindCredit = true;
 			}
 			
-			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
+			if(blindCredit){
+				var requestData = {
+					'data' = {
+						'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
+						'currency': arguments.requestBean.getTransactionCurrencyCode()
+			    	},
+			    	'tokenex': {
+						'token': arguments.requestBean.getProviderToken()
+					},
+				    "card" = {
+				    	"expirationMonth" = arguments.requestBean.getExpirationMonth(),
+				    	"expirationYear" = arguments.requestBean.getExpirationYear()
+				    }
+				};
+				var endpoint = 'credit';
+			}else{
+				var requestData = {
+					'data' = {
+						'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount())
+			    	},
+			    	'id' = arguments.requestBean.getOriginalChargeProviderTransactionID()
+				}
+			}
+			
+			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, endpoint, requestData);
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -691,6 +708,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			apiUrl &= '/pay/v3/capture';
 		} else if (arguments.transactionName == 'credit') {
 			apiUrl &= '/pay/v3/credit';
+		} else if (arguments.transactionName == 'refund') {
+			apiUrl &= '/pay/v3/refund';
 		} else if (arguments.transactionName == 'void') {
 			apiUrl &= '/pay/v3/void';
 		} else if(arguments.transactionName == 'transactionStatus'){
