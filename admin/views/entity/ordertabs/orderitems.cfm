@@ -56,7 +56,7 @@ Notes:
 	<!--- Order item collection list --->
 	<cfset orderItemCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList()>
 	<cfset orderItemCollectionList.addFilter("order.orderID", "#rc.order.getOrderID()#","=")>
-	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode,orderItemType.typeName, price, quantity, calculatedDiscountAmount,extendedPrice,taxAmount,extendedPriceAfterDiscount"/>
+	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode,orderItemType.typeName, price, quantity, calculatedDiscountAmount,extendedPrice,calculatedExtendedPersonalVolume,calculatedExtendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
 	<cfset orderItemCollectionList.setDisplayProperties(serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
