@@ -151,7 +151,7 @@
 											<cfset emailCollection.addDisplayProperty(displayProperty="createdDateTime",columnConfig={isVisible=true} ) />
 											<cfset emailCollection.addDisplayProperty(displayProperty="emailID",columnConfig={isVisible=false,isDeletable=false} ) />
 											
-											<cfif !isNull(attributes.object.getEmailAddress()) && attributes.object.getClassName() EQ 'Account'>
+											<cfif (attributes.object.getClassName() EQ 'Account') AND NOT isNull(attributes.object.getEmailAddress()) >
 												<cfset emailCollection.addFilter(propertyIdentifier='emailTo',value=attributes.object.getEmailAddress() )/>
 											<cfelse>
 												<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue() )/>
