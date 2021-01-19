@@ -12,7 +12,7 @@
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<cfset displayPropertyList = "name,description,baseObject"/>
+<cfset displayPropertyList = "name,mappingCode,baseObject"/>
 <cfset rc.importerMappingCollectionList.setDisplayProperties(
 	displayPropertyList,
 	{

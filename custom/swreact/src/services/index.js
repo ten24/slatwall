@@ -1,1 +1,1 @@
-export { default as SlatwalApiService } from './SlatwalApiService'
+export { sdkURL, SlatwalApiService } from './SlatwalApiService'
