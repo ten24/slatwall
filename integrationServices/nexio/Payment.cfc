@@ -498,7 +498,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    },
 			    'data' = this.getExtraData(arguments.requestBean),
 			    "processingOptions" = {
-			    	"check3ds" = false,
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
