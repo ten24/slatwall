@@ -1,0 +1,13 @@
+//
+// Popover
+// --------------------------------------------------
+
+.popover {
+  box-shadow: $popover-box-shadow;
+}
+.popover-header {
+  @include font-size($popover-header-font-size);
+}
+.popover.bs-popover-bottom .arrow::after {
+  border-bottom-color: $popover-header-bg;
+}

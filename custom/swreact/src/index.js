@@ -2,11 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
 import './i18n'
-import '@slatwall/slatwallassetlibrary/dist/app.bundle.css'
-import '@slatwall/slatwallassetlibrary/dist/app.bundle.js'
 import { Provider } from 'react-redux'
 import store from './createStore'
 import App from './App'
+
+import './assets/theme'
 
 ReactDOM.render(
   // <React.StrictMode>
