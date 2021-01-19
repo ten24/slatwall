@@ -1238,7 +1238,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		logHibachi("importMonatProducts - Done!", true); 
 	}
     
-    public any function importInventoryUpdates(){
+    public any function importInventoryUpdates(required struct rc){
+		param name="arguments.rc.intervalType" default='h';
+		param name="arguments.rc.interval" default=1;
+
         //get the api key from integration settings.
 		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
 		var index=0;
@@ -1265,23 +1268,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var pageMax = 2;
 		
 		/**
-		 * The date and time from an hour ago.
+		 * The date and time from a time ago.
 		 **/
-		var sixtyMinutesAgo = DateAdd(HOURS, -intervalOverride, now());
-		
-		/**
-		 * The string representation for the date twenty HOURS ago. 
-		 * Uses number format to make sure each minute, second will use 2 places.
-		 * This checks for the last hour of deliveries every 15 HOURS.
-		 * This only adds a delivery IF its not already delivered, so we can do that.
-		 * 
-		 **/
-	    var dateFilterStart = "#year(sixtyMinutesAgo)#-#numberFormat(month(sixtyMinutesAgo),'00')#-#numberFormat(day(sixtyMinutesAgo),'00')#T#numberformat(hour(sixtyMinutesAgo),'00')#:#numberformat(minute(sixtyMinutesAgo), '00')#:#numberformat(second(sixtyMinutesAgo), '00')#.693Z";
+	    var dateFilterStart = DateTimeFormat( DateAdd(arguments.rc.intervalType, arguments.rc.interval * -1, now()), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" );
 	
 		/**
 		 * This should always equal now.
 		 **/
-        var dateFilterEnd =  "#year(now())#-#numberFormat(month(now()),'00')#-#numberFormat(day(now()),'00')#T#numberFormat(hour(now()),'00')#:#numberformat(minute(now()), '00')#:#numberformat(second(now()), '00')#.693Z";
+        var dateFilterEnd =  DateTimeFormat( now(), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" );
 	
 	    //Get the totals
 		var inventoryResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetInventoryAdjustments");
