@@ -1,5 +1,6 @@
 {
     "entityName": "Account",
+    "mappingCode": "Account",
     
     "properties": {
         
@@ -63,12 +64,14 @@
         {
             "type": "oneToOne",
             "isNullable": true,
+            "mappingCode": "AccountPhoneNumber",
             "entityName": "AccountPhoneNumber",
             "propertyIdentifier": "primaryPhoneNumber"
         },
         {
             "type": "oneToOne",
             "isNullable": true,
+            "mappingCode": "AccountEmailAddress",
             "entityName": "AccountEmailAddress",
             "propertyIdentifier": "primaryEmailAddress"
         },
@@ -76,6 +79,7 @@
             "type": "manyToOne",
             "isNullable": true,
             "entityName": "AccountAddress",
+            "mappingCode": "AccountAddress",
             "propertyIdentifier": "primaryAddress"
         }
     ],

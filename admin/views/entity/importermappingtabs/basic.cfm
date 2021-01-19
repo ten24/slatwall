@@ -5,14 +5,13 @@
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<div class="col-md-6">
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="name" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="description" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="baseObject" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="mapping" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-	</div>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="name" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="mappingCode" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="description" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="baseObject" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.importermapping#" property="mapping" edit="#rc.edit#" fieldType="json" fieldAttributes="rows='20'">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 </cfoutput>
