@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { Header, Layout, SEO } from './components'
 const Home = React.lazy(() => import('./pages/Home/Home'))
 const MyAccount = React.lazy(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = React.lazy(() => import('./pages/ProductListing/ProductListing'))
@@ -15,13 +16,16 @@ const About = React.lazy(() => import('./pages/About/About'))
 const Testing = React.lazy(() => import('./pages/Testing/Testing'))
 
 const Loading = () => {
-  return <span>Loading...</span>
+  return <Layout></Layout>
 }
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
   return (
-    <Suspense fallback={<Loading />}>
-      <Router>
+    <Router>
+      <Suspense fallback={<Loading />}>
+        <SEO />
+        <Header />
+        {/* TODO: We need a spinner */}
         {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
         <Switch>
@@ -36,7 +40,7 @@ export default function App() {
           <Route path="/testing" component={Testing} />
           <Route path="/" render={() => <Home />} />
         </Switch>
-      </Router>
-    </Suspense>
+      </Suspense>
+    </Router>
   )
 }

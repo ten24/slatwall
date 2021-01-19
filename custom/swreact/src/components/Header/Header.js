@@ -7,22 +7,25 @@ import { setKeyword } from '../../actions/productSearchActions'
 import { getUser } from '../../actions/userActions'
 import { useHistory } from 'react-router-dom'
 import SWImage from '../SWImage/SWImage'
+import { filterLinks } from '../../utils'
 
 const CartMenuItem = ({ orderCount, total }) => {
   return (
     <div className="navbar-tool ml-3">
-      <a className="navbar-tool-icon-box bg-secondary" href="##">
+      <Link className="navbar-tool-icon-box bg-secondary" to="/cart">
         {orderCount > 0 && <span className="navbar-tool-label">{orderCount}</span>}
         <i className="far fa-shopping-cart"></i>
-      </a>
-      <a className="navbar-tool-text" href="shop-cart.html">
+      </Link>
+      <Link className="navbar-tool-text" to="/cart">
         <small>My Cart</small>${total}
-      </a>
+      </Link>
     </div>
   )
 }
 
 const MegaMenu = props => {
+  let history = useHistory()
+
   return (
     <li className="nav-item dropdown">
       <a className="nav-link dropdown-toggle" href={props.linkUrl} data-toggle="dropdown">
@@ -41,6 +44,10 @@ const MegaMenu = props => {
               <div key={index} className="mega-dropdown-column py-4 px-3">
                 <div
                   className="widget widget-links mb-3"
+                  onClick={event => {
+                    event.preventDefault()
+                    history.push(event.target.getAttribute('href'))
+                  }}
                   dangerouslySetInnerHTML={{
                     __html: productCategory['customBody'],
                   }}
@@ -91,18 +98,17 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
     }, 500),
     []
   )
-
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
         <div className="navbar navbar-expand-lg navbar-light">
           <div className="container">
-            <a className="navbar-brand d-none d-md-block mr-3 flex-shrink-0" href="/">
+            <Link className="navbar-brand d-none d-md-block mr-3 flex-shrink-0" to="/">
               <SWImage src={logo} alt="Stone & Berg Logo" />
-            </a>
-            <a className="navbar-brand d-md-none mr-2" href="/">
+            </Link>
+            <Link className="navbar-brand d-md-none mr-2" to="/">
               <SWImage src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
-            </a>
+            </Link>
 
             <div className="navbar-right">
               <div className="navbar-topright">
@@ -138,7 +144,7 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
                   <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
                     <span className="navbar-toggler-icon"></span>
                   </button>
-                  <a className="navbar-tool navbar-stuck-toggler" href="##">
+                  <a className="navbar-tool navbar-stuck-toggler" href="#">
                     <span className="navbar-tool-tooltip">Expand menu</span>
                     <div className="navbar-tool-icon-box">
                       <i className="far fa-bars"></i>
@@ -154,6 +160,10 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
 
               <div
                 className="navbar-main-links"
+                onClick={event => {
+                  event.preventDefault()
+                  history.push(event.target.getAttribute('href'))
+                }}
                 dangerouslySetInnerHTML={{
                   __html: mainNavigation,
                 }}
@@ -181,9 +191,9 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
               </ul>
               <ul className="navbar-nav mega-nav ml-lg-2">
                 <li className="nav-item">
-                  <a className="nav-link" href="##">
+                  <Link className="nav-link" to="/">
                     <i className="far fa-industry-alt mr-2"></i>Shop by Manufacturer
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
