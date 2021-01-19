@@ -385,6 +385,8 @@ Notes:
 				<div class="col-md-12">
 					<cfif structKeyExists(url, 'ng')>
 						<ng-view></ng-view>
+					<cfelseif structKeyExists(url, 'ngRedirectURL')>
+						<script>window.location.href = "/?ng##!#EncodeForURL(url.ngRedirectURL)#";</script>
 					<cfelse>
 							#body#
 					</cfif>
