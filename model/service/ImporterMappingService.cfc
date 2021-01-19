@@ -182,7 +182,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    this.setCachedMappings(mappings);
 	    
 	    // removed cached validations for this mapping, it will get re-calculated when required next time;
-	    this.removeMappingPropertiesValidationsFromCache(arguments.mapping.mappingCode);
+	    this.removeMappingPropertiesValidationsFromCache(arguments.mappingCode);
 	}
 	
     public struct function getCachedMappingPropertiesValidations(){
@@ -298,10 +298,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 }
                 
                 if(!structKeyExists(relation, 'mappingCode') ){
-                    if( !structKeyExists(relation, 'hasMapping') || relation.hasMapping == true ){
+                    if( !structKeyExists(relation, 'hasMapping') || relation.hasMapping ){
                         validation.isValid = false;
                         validation.errors.append('Mapping relation should have a `mappingCode` : #serializeJson(relation)#'); 
                     }
+                }
+            }
+        }
+        
+        if(structKeyExists(mappingStruct, 'dependencies')){
+            for(var dependency in mappingStruct.dependencies){
+                if(!structKeyExists(dependency, 'entityName') ){
+                    validation.isValid = false;
+                    validation.errors.append('Mapping dependency should have key `entityName` : #serializeJson(dependency)#'); 
                 }
             }
         }
@@ -331,7 +340,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
   	        for(var thisRelation in mapping.relations){
   	            // includeInCSVTemplate is a flag in thisRelation mappings; 
   	            // being used to handle recursive-relations, like productType and parentProductType
-  	            if( !structKeyExists(thisRelation, 'excludeFromTemplate') || !thisRelation.excludeFromTemplate ){
+  	            if( !structKeyExists(thisRelation, 'hasMapping') || thisRelation.hasMapping ){
   	                headers.append( this.createMappingCSVHeaderMetaDataRecursively(
                         mappingCode          = thisRelation.mappingCode,
                         sourceDataKeysPrefix = thisRelation.sourceDataKeysPrefix ?: ''

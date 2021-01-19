@@ -71,8 +71,6 @@
             "entityName": "Stock",
             "propertyIdentifier": "stock",
             "hasMapping"         : false,
-            "excludeFromTemplate" : true,
-            "excludeFromValidation"  : true,
             "generatorFunction": "generateInventoryStock"
         }
         

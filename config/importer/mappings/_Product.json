@@ -74,7 +74,7 @@
         {
             "type": "manyToOne",
             "entityName": "Sku",
-            "mappingCode": "Sku",
+            "mappingCode": "_Sku",
             "propertyIdentifier": "defaultSku"
         }
     ],

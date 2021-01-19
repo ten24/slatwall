@@ -80,10 +80,6 @@
             "entityName": "Option",
             "hasMapping"         : false,
             "propertyIdentifier": "options",
-            "excludeFromPostPopulateMethod" : true,
-            "excludeFromPostSaveMethod" : true,
-            "excludeFromTemplate" : true,
-            "excludeFromValidation"  : true,
             "generatorFunction": "generateSkuOptions"
         }
     ],

@@ -378,8 +378,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	       
 	        for(var related in arguments.mapping.relations ){
 	        	
-	            if(structKeyExists(related, 'excludeFromPostPopulateMethod') && related.excludeFromPostPopulateMethod ){
-	               // TODO use better naming-convention  or find a different solution
+	            if(structKeyExists(related, 'hasMapping') && !related.hasMapping ){
 	                continue;
 	            }
 
@@ -416,8 +415,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	       
 	        for(var related in arguments.mapping.relations ){
 	        	
-	        	if(structKeyExists(related, 'excludeFromPostSaveMethod') && related.excludeFromPostSaveMethod ){
-	               // TODO use better naming-convention  or find a different solution
+	        	if(structKeyExists(related, 'hasMapping') && !related.hasMapping ){
 	                continue;
 	            }
 	            
@@ -613,7 +611,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	       
 	        for(var thisRelation in arguments.mapping.relations ){
 	        
-	           	if( structKeyExists(thisRelation, 'excludeFromValidation') && thisRelation.excludeFromValidation){
+	           	if( structKeyExists(thisRelation, 'hasMapping') && !thisRelation.hasMapping ){
 	           	    continue;
 	           	}
 	           	

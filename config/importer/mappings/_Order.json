@@ -96,7 +96,6 @@
             "entityName"            : "Type",
             "defaultValue"          : "444df2df9f923d6c6fd0942a466e84cc",
             "__hint"                : "this defaultValue for order-type is `otSale`.",
-            "excludeFromValidation" : true,
             "propertyIdentifier"    : "orderType"
         },
         {
@@ -105,7 +104,6 @@
             "entityName"            : "Type",
             "defaultValue"          : "444df2b5c8f9b37338229d4f7dd84ad1",
             "__hint"                : "this defaultValue for order-type is `ostNew`.",
-            "excludeFromValidation" : true,
             "propertyIdentifier"    : "orderStatusType"
         },
         {

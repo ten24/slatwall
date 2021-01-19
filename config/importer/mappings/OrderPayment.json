@@ -97,10 +97,6 @@
             "hasMapping"         : false,
             "generatorFunction" : "generateOrderPaymentTransactions",
             "propertyIdentifier" : "paymentTransactions",
-            "excludeFromTemplate" : true,
-            "excludeFromValidation"  : true,
-            "excludeFromPostSaveMethod" : true,
-            "excludeFromPostPopulateMethod" : true
     	}
 	],
 
