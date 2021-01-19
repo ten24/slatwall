@@ -14,6 +14,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     property name="retailCommission";
     property name="retailValueVolume";
     property name="taxableAmount";
+    property name="ofyFlag";
     
     // Data Properties (Related Entity Populate)
     
@@ -36,6 +37,13 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     // ==================  END: New Property Helpers =======================
     
     // ===================== START: Helper Methods =========================
+    
+    public boolean function getOfyFlag(){
+        if(!structKeyExists(variables, 'ofyFlag')){
+            variables.ofyFlag = false;
+        }
+        return variables.ofyFlag;
+    }
 
     public boolean function getIsPurchasableItemFlag(){
         var account = this.getAccount();

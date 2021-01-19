@@ -157,6 +157,7 @@ property name="personalVolume" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
     property name="listPrice" ormtype="big_decimal" hb_formatType="currency";
+    property name="ofyFlag" ormtype="boolean" default="0";
         
     property name="manualPersonalVolume" ormtype="big_decimal";
     property name="manualTaxableAmount" ormtype="big_decimal";
