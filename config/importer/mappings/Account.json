@@ -14,7 +14,6 @@
         "firstName": {
             "propertyIdentifier": "firstName",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },
@@ -75,6 +74,12 @@
             "mappingCode": "AccountEmailAddress",
             "entityName": "AccountEmailAddress",
             "propertyIdentifier": "primaryEmailAddress"
+        },
+        {
+            "type": "manyToOne",
+            "isNullable": true,
+            "entityName": "AccountAddress",
+            "propertyIdentifier": "primaryAddress"
         }
     ],
     

@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
 import { FeaturedProductCard } from '..'
+import { getUser } from '../../actions/userActions'
+import { getFeaturedItems } from '../../actions/productSearchActions'
+import { connect } from 'react-redux'
 
 const FeaturedProducts = ({ sliderData }) => {
   const settings = {
@@ -80,11 +83,15 @@ const MainBanner = props => {
   )
 }
 
-function HomeBanner(props) {
+function HomeBanner({ getFeaturedItemsAction, featuredSlider, homeMainBanner }) {
+  useEffect(() => {
+    getFeaturedItemsAction()
+  }, [])
+
   return (
     <div className="hero mt-2" style={{ backgroundImage: `url(${Background})` }}>
-      <FeaturedProducts sliderData={props.featuredSlider} />
-      <MainBanner sliderData={props.homeMainBanner} />
+      <FeaturedProducts sliderData={featuredSlider} />
+      <MainBanner sliderData={homeMainBanner} />
     </div>
   )
 }
@@ -94,4 +101,15 @@ HomeBanner.propTypes = {
   featuredSlider: PropTypes.array,
 }
 
-export default HomeBanner
+function mapStateToProps(state) {
+  const { productSearchReducer } = state
+  return { ...productSearchReducer }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: async () => dispatch(getUser()),
+    getFeaturedItemsAction: async () => dispatch(getFeaturedItems()),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(HomeBanner)

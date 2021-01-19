@@ -7,5 +7,4 @@ delete window.__SDK_URL__
 let SlatwalApiService = SlatwalSDK.init({
   host: sdkURL,
 })
-
-export default SlatwalApiService
+export { sdkURL, SlatwalApiService }
