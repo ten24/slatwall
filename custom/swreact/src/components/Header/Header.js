@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import _ from 'lodash'
+import debounce from 'lodash/debounce'
 import { setKeyword } from '../../actions/productSearchActions'
 import { getUser } from '../../actions/userActions'
 import { useHistory } from 'react-router-dom'
@@ -86,7 +86,7 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
   let history = useHistory()
 
   const slowlyRequest = useCallback(
-    _.debounce(value => {
+    debounce(value => {
       setKeywordAction(value)
     }, 500),
     []
