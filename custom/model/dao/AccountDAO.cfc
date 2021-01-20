@@ -83,7 +83,7 @@
 						acc.activeFlag = 1 AND
 						acc.accountStatusTypeID = '2c9180836dacb117016dad11ebf2000e' AND
 						acc.rank >= 7 AND 
-						a.postalCode IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.Zipcodes.zipcodeList#" list="true" />)
+						a.shortPostalCode IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.Zipcodes.zipcodeList#" list="true" />)
 						
 					GROUP BY 
 						acc.accountID

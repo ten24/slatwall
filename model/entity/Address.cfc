@@ -59,6 +59,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="city" hb_populateEnabled="public" ormtype="string";
 	property name="stateCode" hb_populateEnabled="public" ormtype="string";
 	property name="postalCode" hb_populateEnabled="public" ormtype="string";
+	property name="shortPostalCode" hb_populateEnabled="public" ormtype="string" hint="Store Only 5 digits ZIPCODE for US Addresses";
 	property name="countryCode" hb_populateEnabled="public" ormtype="string";
 	
 	property name="salutation" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
@@ -253,7 +254,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 		
 		return variables.addressName;
 	}
-		
+	
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Attribute Values (one-to-many)    
@@ -317,11 +318,23 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	public void function preInsert(){
 		getAddressName();
+		
+		if(getCountryCode() == 'US'){
+			variables.shortPostalCode = left(getPostalCode(), 5);
+		}else{
+			variables.shortPostalCode = getPostalCode();
+		}
 	}
 	
 	public void function preUpdate(){
 		structDelete(variables,'addressName');
 		getAddressName();
+		
+		if(getCountryCode() == 'US'){
+			variables.shortPostalCode = left(getPostalCode(), 5);
+		}else{
+			variables.shortPostalCode = getPostalCode();
+		}
 	}
 	
 	// ===================  END:  ORM Event Hooks  =========================

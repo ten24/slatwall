@@ -1202,7 +1202,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if( !len(arguments.data.sponsorID) ){
             
             arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(
-                zipcode = account.getPrimaryAddress().getAddress().getPostalCode(),
+                zipcode = account.getPrimaryAddress().getAddress().getShortPostalCode(),
                 countryCode = account.getPrimaryAddress().getAddress().getCountryCode()
             );
                 
