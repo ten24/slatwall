@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
-import { getUser } from '../../actions/userActions'
-import { search, setKeyword, setSort, addFilter, removeFilter, updateAttribute } from '../../actions/productSearchActions'
+import { connect, useDispatch } from 'react-redux'
+import { search, addFilter, updateAttribute } from '../../actions/productSearchActions'
 
-const AttributeFacet = ({ name, count, sub, filterName, updateAttributeAction, isSelected, searchWithFilters }) => {
+const AttributeFacet = ({ name, count, sub, filterName, isSelected }) => {
+  const dispatch = useDispatch()
+
   const token = filterName.replace(/\s/g, '') + name.replace(/\s/g, '') + 'input'
   return (
     <li className="widget-list-item cz-filter-item">
-      <a
-        className="widget-list-link d-flex justify-content-between align-items-center"
-        // onClick={event => {
-        //   console.log('updateAttributeAction', { name, filterName })
-        //   // updateAttributeAction({ name, filterItem })
-        //   // searchWithFilters()
-        // }}
-      >
+      <div className="widget-list-link d-flex justify-content-between align-items-center">
         <span className="cz-filter-item-text">
           <div className="custom-control custom-checkbox">
             <input
@@ -22,8 +16,8 @@ const AttributeFacet = ({ name, count, sub, filterName, updateAttributeAction, i
               type="checkbox"
               checked={isSelected}
               onChange={event => {
-                updateAttributeAction({ name, filterName })
-                searchWithFilters()
+                dispatch(updateAttribute({ name, filterName }))
+                dispatch(search())
               }}
               id={token}
             />
@@ -33,19 +27,21 @@ const AttributeFacet = ({ name, count, sub, filterName, updateAttributeAction, i
           </div>
         </span>
         {count && <span className="font-size-xs text-muted ml-3">{count}</span>}
-      </a>
+      </div>
     </li>
   )
 }
 
-const DrillDownFacet = ({ searchWithFilters, addFilterAction, name, count, filterName }) => {
+const DrillDownFacet = ({ name, count, filterName }) => {
+  const dispatch = useDispatch()
+
   return (
     <li className="widget-list-item cz-filter-item">
       <a
         className="widget-list-link d-flex justify-content-between align-items-center"
         onClick={event => {
-          addFilterAction({ name, filterName })
-          searchWithFilters()
+          dispatch(addFilter({ name, filterName }))
+          dispatch(search())
         }}
       >
         <span className="cz-filter-item-text">{name}</span>
@@ -76,10 +72,9 @@ const FacetSearch = ({ searchTerm, search }) => {
   )
 }
 
-const ProductListingFilter = ({ updateAttributeAction, searchWithFilters, appliedFilters, addFilterAction, filterName, type, options, index }) => {
+const ProductListingFilter = ({ appliedFilters, key, filterName, options, index, type }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
-
   useEffect(() => {
     const validFilters = appliedFilters.filter(appliedFilter => appliedFilter.filterName === filterName)
     let results = options.filter(({ name: id1 }) => !validFilters.some(({ name: id2 }) => id2 !== id1))
@@ -106,10 +101,10 @@ const ProductListingFilter = ({ updateAttributeAction, searchWithFilters, applie
             <ul className="widget-list cz-filter-list pt-1" style={{ height: '12rem' }} data-simplebar data-simplebar-auto-hide="false">
               {searchResults &&
                 searchResults.map((result, index) => {
-                  if (type === 'single') {
-                    return <DrillDownFacet searchWithFilters={searchWithFilters} addFilterAction={addFilterAction} {...result} key={index} filterName={filterName} />
+                  if (type === 'attribute') {
+                    return <AttributeFacet {...result} key={index} filterName={filterName} />
                   } else {
-                    return <AttributeFacet updateAttributeAction={updateAttributeAction} searchWithFilters={searchWithFilters} {...result} key={index} filterName={filterName} />
+                    return <DrillDownFacet {...result} key={index} filterName={filterName} />
                   }
                 })}
             </ul>
@@ -121,18 +116,6 @@ const ProductListingFilter = ({ updateAttributeAction, searchWithFilters, applie
 }
 
 function mapStateToProps(state) {
-  const { preload, productSearchReducer } = state
-  return { ...preload.productListing, ...productSearchReducer }
+  return { ...state.productSearchReducer }
 }
-const mapDispatchToProps = dispatch => {
-  return {
-    getUser: async () => dispatch(getUser()),
-    sortByAction: async sortBy => dispatch(setSort(sortBy)),
-    setKeywordAction: async keyword => dispatch(setKeyword(keyword)),
-    removeFilterAction: async filter => dispatch(removeFilter(filter)),
-    addFilterAction: async filter => dispatch(addFilter(filter)),
-    updateAttributeAction: async filter => dispatch(updateAttribute(filter)),
-    searchWithFilters: async () => dispatch(search()),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ProductListingFilter)
+export default connect(mapStateToProps)(ProductListingFilter)

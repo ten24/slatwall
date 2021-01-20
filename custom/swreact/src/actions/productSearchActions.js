@@ -149,12 +149,13 @@ export const getProductListingOptions = () => {
     })
     if (response.status === 200) {
       if (!getState().productSearchReducer.sortBy.length) {
-        dispatch(setSort('brand.brandName|DESC'))
+        dispatch(setSort(response.data.sortingOptions[0].value))
       }
       dispatch(
         reciveOptions({
           sortingOptions: response.data.sortingOptions,
           possibleFilters: response.data.possibleFilters,
+          attributes: response.data.attributes,
         })
       )
     } else {

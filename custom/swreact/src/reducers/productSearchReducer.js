@@ -10,36 +10,8 @@ const initState = {
   pageRecordsStart: '',
   recordsCount: '',
   totalPages: '',
-  potentialFilters: [],
-  attributes: [
-    {
-      filterName: 'Finish',
-      type: 'multi',
-      options: [
-        {
-          name: 'Lifetime Brass',
-          sub: '505',
-          isSelected: true,
-          link: '',
-          count: '',
-        },
-        {
-          name: 'Bright Brass',
-          sub: '605 | US3',
-          isSelected: false,
-          link: '',
-          count: '',
-        },
-        {
-          name: 'Satin Brass',
-          sub: '606 | US4',
-          isSelected: false,
-          link: '',
-          count: '',
-        },
-      ],
-    },
-  ],
+  possibleFilters: [],
+  attributes: [],
   appliedFilters: [],
   keyword: '',
   sortBy: '',
