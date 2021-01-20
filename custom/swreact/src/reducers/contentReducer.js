@@ -1,6 +1,26 @@
 import { REQUEST_CONTENT, RECIVE_CONTENT } from '../actions/contentActions'
 
 const initState = {
+  about: {
+    customBody: '',
+    title: '',
+    customSummary: '',
+  },
+  contact: {
+    customBody: '',
+    title: '',
+    customSummary: '',
+  },
+  featuredSlider: [],
+  homeMainBanner: [],
+  homeBrand: [],
+  homeContent: [],
+  'home/shop-by': {
+    customBody: '',
+    linkUrl: '',
+    title: '',
+  },
+  'footer/contact-application': '',
   isFetching: false,
   err: null,
 }

@@ -45,8 +45,7 @@ const About = ({ title, customBody }) => {
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return preload.about
+  return { ...state.content.about }
 }
 
 About.propTypes = {}

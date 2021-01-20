@@ -17,20 +17,40 @@ export const reciveContent = content => {
   }
 }
 
+export const getHomePageContent = (content = {}) => {
+  return async (dispatch, getState) => {
+    dispatch(requestContent())
+    const response = await axios({
+      method: 'GET',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/getHomePageContent`,
+    })
+    if (response.status === 200) {
+      dispatch(reciveContent(response.data.content))
+    } else {
+      dispatch(reciveContent({}))
+    }
+  }
+}
+
 export const getContent = (content = {}) => {
   return async (dispatch, getState) => {
     dispatch(requestContent())
-
-    const req = await axios({
-      method: 'GET',
+    const response = await axios({
+      method: 'POST',
       withCredentials: true, // default
 
       url: `${sdkURL}api/scope/getSlatwallContent`,
+      headers: {
+        // Overwrite Axios's automatically set Content-Type
+        'Content-Type': 'application/json',
+      },
       data: content,
-    }).then(response => {
-      return response.status === 200 ? response.data : ''
     })
-
-    dispatch(reciveContent(req.content))
+    if (response.status === 200) {
+      dispatch(reciveContent(response.data.content))
+    } else {
+      dispatch(reciveContent({}))
+    }
   }
 }

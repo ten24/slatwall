@@ -1,14 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // import PropTypes from 'prop-types'
 import { ActionBanner, Layout } from '../../components'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { getContent } from '../../actions/contentActions'
 
 // TODO:  https://stoneandberg.ten24dev.com/contact?submitted=true
 
 const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
   let history = useHistory()
-
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(
+      getContent({
+        content: {
+          contact: ['customBody', 'customSummary', 'title'],
+          'footer/contact-application': 'customBody',
+        },
+      })
+    )
+  }, [dispatch])
   return (
     <Layout actionBannerDisable={actionBanner.display}>
       <div className="page-title-overlap bg-lightgray pt-4 pb-5">
@@ -84,8 +95,15 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return preload.contact
+  const { contact, 'footer/contact-application': markup } = state.content
+  return {
+    ...contact,
+    actionBanner: {
+      display: markup.length > 0,
+      markup,
+    },
+    form: '',
+  }
 }
 
 Contact.propTypes = {}
