@@ -1,5 +1,6 @@
 {
     "entityName": "Stock",
+    "mappingCode": "Stock",
     
     "properties": {
 

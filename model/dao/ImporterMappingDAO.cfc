@@ -46,37 +46,23 @@
 Notes:
 
 --->
-<cfparam name="attributes.fieldName" type="string" default="accountID" />
-<cfparam name="attributes.edit" type="boolean" default="false"/>
-<cfparam name="attributes.placeholderText" type="string" default="Search Accounts" />
-<cfparam name="attributes.required" type="boolean" default="false"/>
-<cfparam name="attributes.typeaheadID" type="string" default=""/>
-<cfparam name="attributes.propertiesToSearch" type="string" default="firstName,lastName,company"/>
-<cfparam name="attributes.propertiesToLoad" type="string" default="accountID,calculatedFullName,firstName,lastName,company,calculatedAdminIcon,accountCreatedSite.siteID"/>
-
-<cfif thisTag.executionMode is "start">
-	<cfoutput>
-		<sw-typeahead-input-field
-				data-typeahead-data-key="#attributes.typeaheadID#"
-				data-entity-name="Account"
-				data-field-name="#attributes.fieldName#"
-				data-property-to-save="accountID"
-				data-property-to-show="calculatedFullName"
-				data-properties-to-search="#attributes.propertiesToSearch#"
-				data-properties-to-load="#attributes.propertiesToLoad#"
-				data-show-add-button="false"
-				data-show-view-button="false"
-				data-placeholder-text="#attributes.placeholderText#"
-				data-multiselect-mode="false"
-				data-validate-required="#attributes.required#"
-				data-order-by-list="firstName|ASC" >
-					<div class="row">
-						<span class="adminIcon col-xs-2 col-sm-1 " sw-typeahead-search-line-item bind-html="true" data-property-identifier="calculatedAdminIcon" data-right-content-property-identifier="company"></span>
-						<div class="col-xs-10 col-sm-offset-1">
-							<p class="fullName first" sw-typeahead-search-line-item data-property-identifier="calculatedFullName"></p>
-							<p class="company" sw-typeahead-search-line-item data-property-identifier="company"></p>
-						</div>
-					</div>
-			</sw-typeahead-input-field>
-	</cfoutput>
-</cfif> 
+<cfcomponent extends="HibachiDAO" accessors="true" output="false">
+	 
+	
+	<cffunction name="getImporterMappings" output="false">
+		
+		<cfset var potentialRelationships = "accountID,attributeID,categoryID,contentID,brandID,emailID,emailTemplateID,fulfillmentMethodID,locationID,locationConfigurationID,paymentMethodID,productID,productTypeID,shippingMethodID,shippingMethodRateID,siteID,skuID,subscriptionTermID,subscriptionUsageID,taskID" />
+		<cfset var relationship = "">
+		<cfset var rs = "">
+		
+		<cfquery name="rs" >
+			SELECT
+				mappingCode,name,mapping,baseObject
+			FROM
+				SwImporterMapping
+		</cfquery>
+		
+		<cfreturn rs />		
+	</cffunction>
+	
+</cfcomponent>

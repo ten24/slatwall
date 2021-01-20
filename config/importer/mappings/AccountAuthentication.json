@@ -1,6 +1,7 @@
 {
     "entityName": "AccountAuthentication",
-    
+    "mappingCode": "AccountAuthentication",
+
     "properties": {
         "email": {
             "validations": {
