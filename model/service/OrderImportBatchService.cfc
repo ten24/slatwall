@@ -191,72 +191,89 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderImportBatch_process(required any orderImportBatch){
 		var placedOrders = 0;
 		var origin = getOrderService().getOrderOriginByOrderOriginName('Batch Import');
-
+		var accountOrdersMap = {};
 		for(var orderImportBatchItem in arguments.orderImportBatch.getOrderImportBatchItems()){
 
 			//Create Order
-			var order = getOrderService().newOrder();
 			var account = orderImportBatchItem.getAccount();
-			order.setAccount(account);
-			var site = account.getAccountCreatedSite();
-			orderImportBatchItem.setProcessingErrors('');
-			if(!isNull(site)){
-				order.setOrderCreatedSite(account.getAccountCreatedSite());
-				var currencyCode = site.getCurrencyCode();
-			}
-			if(!structKeyExists(local,'currencyCode')){
-				var currencyCode = 'USD';
-			}
-			order.setOrderType(arguments.orderImportBatch.getOrderType());
-			order.setCurrencyCode(currencyCode);
-			order.setOrderImportBatch(arguments.orderImportBatch);
-			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
-			order.setSendEmailNotificationsFlag(arguments.orderImportBatch.getSendEmailNotificationsFlag());
-			if(!isNull(origin)){
-				order.setOrderOrigin(origin);
-			}
+			var accountID = account.getAccountID();
 			
-			if(!isNull(orderImportBatchItem.getOriginalOrder())){
-				order.setReferencedOrder(orderImportBatchItem.getOriginalOrder());
-			}
-			//Save Order
-			getOrderService().saveOrder(order);
-			orderImportBatchItem.setOrder(order);
-			
-			if(!isNull(arguments.orderImportBatch.getComment())){
-				var comment = getService('CommentService').newComment();
-				var data = {
-					'commentID':'',
-					'comment':arguments.orderImportBatch.getComment(),
-					'commentRelationships':[
-						{
-							'commentRelationshipID':'',
-							'order':{
-								orderID:order.getOrderID()
-							}
-						}
-					],
-					'publicFlag':0
-				};
-				comment = getService('CommentService').saveComment(comment, data);
-			}
-
-			//Create Order Fulfillment
-			var orderFulfillment = getOrderService().newOrderFulfillment();
-			orderFulfillment.setOrder(order);
-			orderFulfillment.setFulfillmentMethod(getService('fulfillmentService').getFulfillmentMethodByFulfillmentMethodName('Shipping'));
-			orderFulfillment.setShippingAddress(orderImportBatchItem.getShippingAddress());
-			orderFulfillment.setFulfillmentCharge(0);
-			orderFulfillment.setManualFulfillmentChargeFlag(true);
-			this.saveOrderFulfillment(orderFulfillment);
-
-			//Save Order Fulfillment
-			if(orderFulfillment.hasErrors()){
-				order.addErrors(orderFulfillment.getErrors())
+			if( structKeyExists(accountOrdersMap,accountID) ){
+				var order = accountOrdersMap[accountID]['order'];
+				arrayAppend(accountOrdersMap[accountID]['orderImportBatchItems'],orderImportBatchItem);
 			}else{
-				if(!isNull(arguments.orderImportBatch.getShippingMethod())){
+				//Create new order
+				var order = getOrderService().newOrder();
+				order.setAccount(account);
+				var site = account.getAccountCreatedSite();
+				orderImportBatchItem.setProcessingErrors('');
+				if(!isNull(site)){
+					order.setOrderCreatedSite(account.getAccountCreatedSite());
+					var currencyCode = site.getCurrencyCode();
+				}
+				if(!structKeyExists(local,'currencyCode')){
+					var currencyCode = 'USD';
+				}
+				order.setOrderType(arguments.orderImportBatch.getOrderType());
+				order.setCurrencyCode(currencyCode);
+				order.setOrderImportBatch(arguments.orderImportBatch);
+				order.setShippingAddress(orderImportBatchItem.getShippingAddress());
+				order.setSendEmailNotificationsFlag(arguments.orderImportBatch.getSendEmailNotificationsFlag());
+				if(!isNull(origin)){
+					order.setOrderOrigin(origin);
+				}
+				
+				if(!isNull(orderImportBatchItem.getOriginalOrder())){
+					order.setReferencedOrder(orderImportBatchItem.getOriginalOrder());
+				}
+				//Save Order
+				getOrderService().saveOrder(order);
+				accountOrdersMap[accountID] = {
+					'order':order,
+					'orderImportBatchItems':[]
+				};
+				arrayAppend(accountOrdersMap[accountID]['orderImportBatchItems'],orderImportBatchItem);
+				if(!isNull(arguments.orderImportBatch.getComment())){
+					var comment = getService('CommentService').newComment();
+					var data = {
+						'commentID':'',
+						'comment':arguments.orderImportBatch.getComment(),
+						'commentRelationships':[
+							{
+								'commentRelationshipID':'',
+								'order':{
+									orderID:order.getOrderID()
+								}
+							}
+						],
+						'publicFlag':0
+					};
+					comment = getService('CommentService').saveComment(comment, data);
+				}
+				//Create Order Fulfillment
+				var orderFulfillment = getOrderService().newOrderFulfillment();
+				orderFulfillment.setOrder(order);
+				orderFulfillment.setFulfillmentMethod(getService('fulfillmentService').getFulfillmentMethodByFulfillmentMethodName('Shipping'));
+				orderFulfillment.setShippingAddress(orderImportBatchItem.getShippingAddress());
+				orderFulfillment.setFulfillmentCharge(0);
+				orderFulfillment.setManualFulfillmentChargeFlag(true);
+				this.saveOrderFulfillment(orderFulfillment);
+	
+				//Save Order Fulfillment
+				if(orderFulfillment.hasErrors()){
+					order.addErrors(orderFulfillment.getErrors())
+				}else if(!isNull(arguments.orderImportBatch.getShippingMethod())){
 					orderFulfillment.setShippingMethod(arguments.orderImportBatch.getShippingMethod());
 				}
+			}
+			
+			orderImportBatchItem.setOrder(order);
+			
+			if(!StructKeyExists(local,'orderFulfillment')){
+				var orderFulfillment = order.getOrderFulfillments()[1];
+			}
+			
+			if(!order.hasErrors()){
 				
 				//Create Order Item
 				var orderItem = getOrderService().newOrderItem();
@@ -285,29 +302,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(!order.hasErrors()){
 						orderImportBatchItem.setOrderItem(orderItem);
 						getHibachiScope().flushORMSession();
-						order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
-						
-						if(!order.hasErrors()){
-							orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstPlaced'));	
-							placedOrders += 1;
-						}
 					}
 				}
 			}
-	
-			if(order.hasErrors()){
-				orderImportBatchItem.setProcessingErrors(serialize(order.getErrors()));
-				orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstError'))
+		}
+		for(var accountID in accountOrdersMap){
+			var order = accountOrdersMap[accountID]['order'];
+			order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
+						
+			if(!order.hasErrors()){
+				for(var orderImportBatchItem in accountOrdersMap[accountID]['orderImportBatchItems']){
+					orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstPlaced'));
+					getDAO('OrderImportBatchDao').updateOrderImportBatchItem(
+						typeID = orderImportBatchItem.getOrderImportBatchItemStatusType().getTypeID(), 
+						orderImportBatchItemID = orderImportBatchItem.getOrderImportBatchItemID(), 
+						processingErrors = orderImportBatchItem.getProcessingErrors()
+					)
+				}
+				placedOrders += 1;
+			}else{
+				for(var orderImportBatchItem in accountOrdersMap[accountID]['orderImportBatchItems']){
+					orderImportBatchItem.setProcessingErrors(serialize(order.getErrors()));
+					orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstError'))
+					getDAO('OrderImportBatchDao').updateOrderImportBatchItem(
+						typeID = orderImportBatchItem.getOrderImportBatchItemStatusType().getTypeID(), 
+						orderImportBatchItemID = orderImportBatchItem.getOrderImportBatchItemID(), 
+						processingErrors = orderImportBatchItem.getProcessingErrors()
+					)
+				}
 				getService('orderService').deleteOrder(order);
 			}
-			
-			getDAO('OrderImportBatchDao').updateOrderImportBatchItem(
-				typeID = orderImportBatchItem.getOrderImportBatchItemStatusType().getTypeID(), 
-				orderImportBatchItemID = orderImportBatchItem.getOrderImportBatchItemID(), 
-				processingErrors = orderImportBatchItem.getProcessingErrors()
-			)
-			
-			
 		}
 		
 		
