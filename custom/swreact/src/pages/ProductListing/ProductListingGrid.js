@@ -1,32 +1,14 @@
-import React, { useEffect } from 'react'
-import { FeaturedProductCard } from '../../components'
 import { connect } from 'react-redux'
-import { SlatwalApiService } from '../../services'
+import ProductCard from './ProductCard'
 
-const ProductListingGrid = () => {
-  let products = []
-  useEffect(() => {
-    SlatwalApiService.products
-      .list('token', {
-        perPage: 20,
-        page: 1,
-        filter: {
-          urlTitle: 'h-money-money-h',
-          productName: '',
-        },
-      })
-      .then(function (response) {
-        console.log(response)
-      })
-  }, [products, SlatwalApiService])
-
+const ProductListingGrid = ({ pageRecords }) => {
   return (
     <div className="row mx-n2">
-      {products &&
-        products.map((product, index) => {
+      {pageRecords &&
+        pageRecords.map((product, index) => {
           return (
             <div key={index} className="col-md-4 col-sm-6 px-2 mb-4">
-              <FeaturedProductCard {...product} />
+              <ProductCard {...product} />
             </div>
           )
         })}

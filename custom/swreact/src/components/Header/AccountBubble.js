@@ -1,5 +1,12 @@
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react'
+import { connect, useDispatch } from 'react-redux'
+import { getUser } from '../../actions/userActions'
 const AccountBubble = ({ isAuthenticated, name }) => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getUser())
+  }, [dispatch])
   return (
     <>
       <div className="navbar-tool-icon-box">
@@ -18,8 +25,8 @@ const AccountBubble = ({ isAuthenticated, name }) => {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: state.accountID,
-    name: state.userReducer.name,
+    isAuthenticated: state.userReducer.accountID,
+    name: `${state.userReducer.firstName} ${state.userReducer.lastName}`,
   }
 }
 export default connect(mapStateToProps)(AccountBubble)

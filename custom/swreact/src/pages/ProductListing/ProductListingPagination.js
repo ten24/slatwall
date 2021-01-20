@@ -1,7 +1,13 @@
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react'
+import { connect, useDispatch } from 'react-redux'
 import { search } from '../../actions/productSearchActions'
 
-const ProductListingPagination = () => {
+const ProductListingPagination = props => {
+  const dispatch = useDispatch()
+  console.log('ProductListingPagination', props)
+  // useEffect(() => {
+  //   dispatch(search())
+  // }, [dispatch])
   return (
     <nav className="d-flex justify-content-between pt-2" aria-label="Page navigation">
       <ul className="pagination">
@@ -52,12 +58,7 @@ const ProductListingPagination = () => {
   )
 }
 function mapStateToProps(state) {
-  const { preload, productSearchReducer } = state
-  return { ...preload.productListing, ...productSearchReducer }
+  return state.productSearchReducer
 }
-const mapDispatchToProps = dispatch => {
-  return {
-    searchWithFilters: async () => dispatch(search()),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ProductListingPagination)
+
+export default connect(mapStateToProps)(ProductListingPagination)

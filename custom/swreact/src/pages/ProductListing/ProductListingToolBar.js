@@ -1,7 +1,8 @@
-import { connect } from 'react-redux'
-import { search, setKeyword, setSort, removeFilter } from '../../actions/productSearchActions'
+import { connect, useDispatch } from 'react-redux'
+import { search, setSort, removeFilter } from '../../actions/productSearchActions'
 
-const ProductListingToolBar = ({ removeFilterAction, searchWithFilters, sortByAction, sortOptions, appliedFilters, sortBy }) => {
+const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy }) => {
+  const dispatch = useDispatch()
   return (
     <div className="d-flex justify-content-center justify-content-sm-between align-items-center pt-2 pb-4 pb-sm-5">
       <div className="d-flex flex-wrap">
@@ -14,7 +15,7 @@ const ProductListingToolBar = ({ removeFilterAction, searchWithFilters, sortByAc
                 <span key={index} className="badge badge-light border p-2 mr-2">
                   <a
                     onClick={event => {
-                      removeFilterAction({ name, filterName })
+                      dispatch(removeFilter({ name, filterName }))
                     }}
                   >
                     <i className="far fa-times"></i>
@@ -34,14 +35,14 @@ const ProductListingToolBar = ({ removeFilterAction, searchWithFilters, sortByAc
           id="sorting"
           value={sortBy}
           onChange={event => {
-            sortByAction(event.target.value)
-            searchWithFilters()
+            dispatch(setSort(event.target.value))
+            dispatch(search())
           }}
         >
-          {sortOptions &&
-            sortOptions.map((name, index) => {
+          {sortingOptions &&
+            sortingOptions.map(({ name, value }, index) => {
               return (
-                <option key={index} value={name}>
+                <option key={index} value={value}>
                   {name}
                 </option>
               )
@@ -56,12 +57,5 @@ function mapStateToProps(state) {
   const { preload, productSearchReducer } = state
   return { ...preload.productListing, ...productSearchReducer }
 }
-const mapDispatchToProps = dispatch => {
-  return {
-    sortByAction: async sortBy => dispatch(setSort(sortBy)),
-    setKeywordAction: async keyword => dispatch(setKeyword(keyword)),
-    removeFilterAction: async filter => dispatch(removeFilter(filter)),
-    searchWithFilters: async () => dispatch(search()),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ProductListingToolBar)
+
+export default connect(mapStateToProps)(ProductListingToolBar)

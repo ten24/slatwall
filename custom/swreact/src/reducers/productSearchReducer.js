@@ -1,75 +1,16 @@
-import { RECIVE_FEATURED_PRODUCTS, REQUEST_FEATURED_PRODUCTS, UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
+import { REQUEST_OPTIONS, RECIVE_OPTIONS, RECIVE_FEATURED_PRODUCTS, REQUEST_FEATURED_PRODUCTS, UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
 
 const initState = {
-  products: [],
-  potentialFilters: [
-    {
-      filterName: 'Product Type',
-      type: 'single',
-      options: [
-        {
-          name: 'View all',
-          link: '#',
-          count: '1,953',
-        },
-        {
-          name: 'Pumps & High Heels',
-          link: '#',
-          count: '247',
-        },
-        {
-          name: 'Ballerinas & Flats',
-          link: '#',
-          count: '156',
-        },
-      ],
-    },
-    {
-      filterName: 'Brand',
-      type: 'single',
-      options: [
-        {
-          name: 'View all',
-          link: '#',
-          sub: '',
-          count: '1,953',
-        },
-        {
-          name: 'Pumps & High Heels',
-          link: '#',
-          sub: '',
-          count: '247',
-        },
-        {
-          name: 'Ballerinas & Flats',
-          link: '#',
-          sub: '',
-          count: '156',
-        },
-      ],
-    },
-    {
-      filterName: 'Stye',
-      type: 'single',
-      options: [
-        {
-          name: 'View all',
-          link: '#',
-          count: '1,953',
-        },
-        {
-          name: 'Pumps & High Heels',
-          link: '#',
-          count: '247',
-        },
-        {
-          name: 'Ballerinas & Flats',
-          link: '#',
-          count: '156',
-        },
-      ],
-    },
-  ],
+  pageRecords: [],
+  limitCountTotal: '',
+  currentPage: '',
+  pageRecordsCount: '',
+  pageRecordsEnd: '',
+  pageRecordsShow: '',
+  pageRecordsStart: '',
+  recordsCount: '',
+  totalPages: '',
+  potentialFilters: [],
   attributes: [
     {
       filterName: 'Finish',
@@ -101,10 +42,8 @@ const initState = {
   ],
   appliedFilters: [],
   keyword: '',
-  sortBy: 'Popularity',
-  sortOptions: ['Popularity', 'Low - High Price', 'High - Low Price', 'Average Rating', 'A - Z Order', 'Z - A Order'],
-  page: 1,
-  pageLimit: 8,
+  sortBy: '',
+  sortingOptions: [],
   isFetching: false,
   err: null,
 }
@@ -135,8 +74,13 @@ const productSearch = (state = initState, action) => {
       return { ...state, isFetching: true }
 
     case RECIVE_PRODUCTS:
-      const { products } = action
-      return { ...state, products, isFetching: false }
+      return { ...state, ...action.payload, isFetching: false }
+
+    case REQUEST_OPTIONS:
+      return { ...state, isFetching: true }
+
+    case RECIVE_OPTIONS:
+      return { ...state, ...action.payload, isFetching: false }
 
     case REQUEST_FEATURED_PRODUCTS:
       return { ...state, isFetching: true }

@@ -1,7 +1,20 @@
 import { BreadCrumb } from '../../components'
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react'
+import { connect, useDispatch } from 'react-redux'
+import { getContent } from '../../actions/contentActions'
 
 const ProductListingHeader = ({ title, crumbs }) => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(
+      getContent({
+        content: {
+          products: ['customBody', 'customSummary', 'title'],
+        },
+      })
+    )
+  }, [dispatch])
   return (
     <div className="page-title-overlap bg-lightgray pt-4">
       <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
@@ -17,7 +30,6 @@ const ProductListingHeader = ({ title, crumbs }) => {
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return { ...preload.productListing }
+  return { ...state.content.products }
 }
 export default connect(mapStateToProps)(ProductListingHeader)
