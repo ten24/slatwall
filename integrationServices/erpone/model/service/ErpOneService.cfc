@@ -515,28 +515,43 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		logHibachi("ERPONE - Starting importing ErpOneInventoryItems");
 		
+		var currentPage = 1;
+		var pageSize = 100;
+		var recordsFetched = 0;
+		
 		var skuCollection = getSkuService().getSkuCollectionList();
 		skuCollection.setDisplayProperties(displayPropertiesList='skuCode');
-		skuCollection.setPageRecordsShow(100);
-		var skuCollectionRecords = skuCollection.getRecords();
-		var totalRecordsCount = arrayLen(skuCollectionRecords);
-		var skus = skuCollection.getPageRecords(formatRecords=false, refresh=true);
-		try {
-			var skuData = [];
-			for(var sku in skus) {
-				sku['skuCode']=reReplace(reReplace(sku['skuCode'], "--" , "/", "all" ),"__", " ", "all");
-				skuData.append(sku['skuCode']);
+		var totalRecordsCount = skuCollection.getRecordsCount();
+		skuCollection.setPageRecordsShow(pageSize);
+
+		while ( recordsFetched < totalRecordsCount ){
+			try {
+				var skuCollection = getSkuService().getSkuCollectionList();
+				skuCollection.setDisplayProperties(displayPropertiesList='skuCode');
+				var totalRecordsCount = skuCollection.getRecordsCount();
+				skuCollection.setPageRecordsShow(pageSize);
+				skuCollection.setCurrentPageDeclaration(currentPage);
+				var skus = skuCollection.getPageRecords();
+				var skuData = [];
+				for(var sku in skus) {
+					sku['skuCode']=reReplace(reReplace(sku['skuCode'], "--" , "/", "all" ),"__", " ", "all");
+					skuData.append(sku['skuCode']);
+				}
+				this.getItemInventoryData(arrayToList(skuData));
+				this.logHibachi("Successfully called getItemInventoryData for CurrentPage: #currentPage# #arrayLen(skuData)# and PageSize: #pageSize# ");
+	
+			} catch(e){
+	
+				this.logHibachi("Got error while trying to call getItemInventoryData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+				this.getHibachiUtilityService().logException(e);
 			}
-			this.getItemInventoryData(arrayToList(skuData));
-			this.logHibachi("Successfully called getItemInventoryData for CurrentPage");
-
-		} catch(e){
-
-			this.logHibachi("Got error while trying to call getItemInventoryData for CurrentPage");
-			this.getHibachiUtilityService().logException(e);
+		
+			//increment regardless of success or failure;
+			recordsFetched += pageSize;
+			currentPage += 1;
 		}
 			
-	    this.logHibachi("ERPONE - Finish importing ErpOneInventoryItems for totalRecordsCount: #totalRecordsCount#");
+	    this.logHibachi("ERPONE - Finish importing ErpOneInventoryItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
 	/**
 	 * @hint helper function to create a struct of properties+values from @entity/Account.cfc.
@@ -919,17 +934,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public any function preProcessInventoryData(required struct data ){
 	var erponeMapping = {
 	        "item" 			: "remoteSkuID",
-	        "warehouse"		: "remoteInventoryID",
+	        "warehouse"		: "remoteLocationID",
 	        "available"		: "quantityIn"
 	    };
 
 	var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
-	if( !structKeyExists(transformedItem, 'remoteLocationID') || this.hibachiIsEmpty(transformedItem.remoteLocationID) ) {
-		transformedItem["remoteLocationID"]=transformedItem.remoteInventoryID;
-	}
 	if( structKeyExists(transformedItem, 'remoteSkuID') ){
 			
 			transformedItem.remoteSkuID=reReplace(reReplace(transformedItem.remoteSkuID, "(\\|/)", "--", "all" ),"\s", "__", "all");
+			transformedItem.remoteInventoryID=transformedItem.remoteLocationID&"--"&reReplace(reReplace(transformedItem.remoteSkuID, "(\\|/)", "--", "all" ),"\s", "__", "all");
 	}
     return transformedItem;
 	}
