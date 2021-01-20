@@ -17,6 +17,7 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
           contact: ['customBody', 'customSummary', 'title'],
           'footer/contact-application': 'customBody',
         },
+        formCode: 'contact-us',
       })
     )
   }, [dispatch])
@@ -46,14 +47,7 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
                   __html: customSummary,
                 }}
               />
-              {/* <!--- UK Storage Signup Form ---> */}
-              {/* <cfif isDefined("url.submitted")> */}
-              {/* <div className="alert alert-success" role="alert">
-                Thank you for contacting us, we will get back to you as soon as
-                possible.
-              </div> */}
-              {/* </cfif> */}
-              {/* <div className="contactForm mt-4 <cfif IsDefined("url.submitted")>hide</cfif>"> */}
+              {/* TODO: do a custom submut */}
               <div className="contactForm mt-4">
                 <div
                   onClick={event => {
@@ -95,14 +89,14 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
 }
 
 function mapStateToProps(state) {
-  const { contact, 'footer/contact-application': markup } = state.content
+  const { contact, 'footer/contact-application': markup, form } = state.content
   return {
     ...contact,
     actionBanner: {
       display: markup.length > 0,
       markup,
     },
-    form: '',
+    form,
   }
 }
 

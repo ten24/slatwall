@@ -21,6 +21,9 @@ const initState = {
     title: '',
   },
   'footer/contact-application': '',
+  form: {
+    markup: '',
+  },
   isFetching: false,
   err: null,
 }

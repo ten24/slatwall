@@ -1,7 +1,25 @@
+import React, { useEffect } from 'react'
 import { FeaturedProductCard } from '../../components'
 import { connect } from 'react-redux'
+import { SlatwalApiService } from '../../services'
 
-const ProductListingGrid = ({ products }) => {
+const ProductListingGrid = () => {
+  let products = []
+  useEffect(() => {
+    SlatwalApiService.products
+      .list('token', {
+        perPage: 20,
+        page: 1,
+        filter: {
+          urlTitle: 'h-money-money-h',
+          productName: '',
+        },
+      })
+      .then(function (response) {
+        console.log(response)
+      })
+  }, [products, SlatwalApiService])
+
   return (
     <div className="row mx-n2">
       {products &&

@@ -38,7 +38,7 @@ export default function App() {
           <Route path="/my-account" component={MyAccount} />
           <Route path="/MyAccount" component={MyAccount} />
           <Route path="/testing" component={Testing} />
-          <Route path="/" render={() => <Home />} />
+          <Route path="/" component={Home} />
         </Switch>
       </Suspense>
     </Router>

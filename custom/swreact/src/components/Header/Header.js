@@ -1,28 +1,14 @@
 import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import debounce from 'lodash/debounce'
 import { setKeyword } from '../../actions/productSearchActions'
-import { getUser } from '../../actions/userActions'
 import { useHistory } from 'react-router-dom'
-import SWImage from '../SWImage/SWImage'
-import { filterLinks } from '../../utils'
-
-const CartMenuItem = ({ orderCount, total }) => {
-  return (
-    <div className="navbar-tool ml-3">
-      <Link className="navbar-tool-icon-box bg-secondary" to="/cart">
-        {orderCount > 0 && <span className="navbar-tool-label">{orderCount}</span>}
-        <i className="far fa-shopping-cart"></i>
-      </Link>
-      <Link className="navbar-tool-text" to="/cart">
-        <small>My Cart</small>${total}
-      </Link>
-    </div>
-  )
-}
-
+import CartMenuItem from './CartMenuItem'
+import AccountBubble from './AccountBubble'
+import logo from '../../assets/images/sb-logo.png'
+import mobileLogo from '../../assets/images/sb-logo-mobile.png'
 const MegaMenu = props => {
   let history = useHistory()
 
@@ -33,10 +19,10 @@ const MegaMenu = props => {
       </a>
       <div className="dropdown-menu pt-0 pb-3">
         <div className="nav-shop-all">
-          <a href={props.linkUrl}>
+          <Link to={props.linkUrl}>
             Shop All {props.title}
             <i className="far fa-arrow-right ml-2"></i>
-          </a>
+          </Link>
         </div>
         <div className="d-flex flex-wrap flex-lg-nowrap px-2">
           {props.subMenu.map((productCategory, index) => {
@@ -61,24 +47,9 @@ const MegaMenu = props => {
   )
 }
 
-const AccountBubble = ({ isAuthenticated, name }) => {
-  return (
-    <>
-      <div className="navbar-tool-icon-box">
-        <i className="far fa-user"></i>
-      </div>
-      <div className="navbar-tool-text ml-n3">
-        <small>
-          Hello, {isAuthenticated && name}
-          {!isAuthenticated && 'Sign in'}
-        </small>
-        My Account
-      </div>
-    </>
-  )
-}
+function Header({ productCategories, mainNavigation }) {
+  const dispatch = useDispatch()
 
-function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, mainNavigation, orderCount, total }) {
   let menuItems = new Map()
   productCategories.forEach(item => {
     if (menuItems.has(item.parentContent_title)) {
@@ -94,7 +65,7 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
 
   const slowlyRequest = useCallback(
     debounce(value => {
-      setKeywordAction(value)
+      dispatch(setKeyword(value))
     }, 500),
     []
   )
@@ -104,10 +75,10 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
         <div className="navbar navbar-expand-lg navbar-light">
           <div className="container">
             <Link className="navbar-brand d-none d-md-block mr-3 flex-shrink-0" to="/">
-              <SWImage src={logo} alt="Stone & Berg Logo" />
+              <img src={logo} alt="Stone & Berg Logo" />
             </Link>
             <Link className="navbar-brand d-md-none mr-2" to="/">
-              <SWImage src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
+              <img src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
             </Link>
 
             <div className="navbar-right">
@@ -151,10 +122,10 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
                     </div>
                   </a>
                   <Link className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" to="/my-account" data-toggle="modal">
-                    <AccountBubble isAuthenticated={user.accountID} name={user.firstName} />
+                    <AccountBubble />
                   </Link>
 
-                  <CartMenuItem orderCount={orderCount} total={total} />
+                  <CartMenuItem />
                 </div>
               </div>
 
@@ -206,21 +177,12 @@ function Header({ mobileLogo, logo, setKeywordAction, productCategories, user, m
 Header.propTypes = {
   mainNavigation: PropTypes.string,
   productCategories: PropTypes.array,
-  orderCount: PropTypes.number,
 }
 function mapStateToProps(state) {
-  const { preload, cartReducer } = state
   return {
-    ...preload.navigation,
-    orderCount: cartReducer.orderItems.length,
-    total: cartReducer.total,
-    user: state.userReducer,
+    productCategories: state.preload.stackedContent['header/productCategories'],
+    mainNavigation: state.preload.stackedContent['header/main-navigation'],
   }
 }
-const mapDispatchToProps = dispatch => {
-  return {
-    getUser: async () => dispatch(getUser()),
-    setKeywordAction: async keyword => dispatch(setKeyword(keyword)),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Header)
+
+export default connect(mapStateToProps)(Header)
