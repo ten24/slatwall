@@ -113,7 +113,7 @@ component extends="HibachiService" accessors="true" {
 				}
 				
 	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( isEmpty(imageFile) ) {
+	            if( this.hibachiIsEmpty(imageFile) ) {
 	            	continue;
 	            }
 	            var imageArray = [];
