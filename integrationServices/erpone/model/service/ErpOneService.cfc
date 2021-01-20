@@ -416,7 +416,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		var response = this.callErpOneGetDataApi({
     	    "table" : "customer"
-    	}, "count");
+    	}, "data/count");
     	
 		var totalRecordsCount = response.count;
 		var currentPage = 1;
@@ -451,7 +451,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 		var response = this.getErpOneData({
     	    "table" : "oe_head"
-    	}, "count");
+    	}, "data/count");
     	
 		var totalRecordsCount = response.count;
 		var currentPage = 1;
@@ -484,7 +484,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		var response = this.getErpOneData({
     	    "table" : "oe_line"
-    	}, "count");
+    	}, "data/count");
 		
 		var totalRecordsCount = response.count;
 		var currentPage = 1;
