@@ -361,31 +361,8 @@ Notes:
 		required string formCode,
 		string sRedirectUrl="/"
 	){
-		request.context.newFormResponse = getHibachiScope().getService('formService').newFormResponse();
-		request.context.requestedForm = getHibachiScope().getService('formService').getFormByFormCode(arguments.formCode);
-		var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
-		var specificFormTemplateFileName = "form_"  & formCode & ".cfm";
-		var defaultFormTemplateFileName = "slatwall-form.cfm";
-
-		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
-		var siteTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
-		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/templates/";
-
-		if(fileExists(ExpandPath(specificFormTemplateFilePath))){
-			var templatePath = siteTemplatePath & specificFormTemplateFileName;
-		} else if(fileExists(ExpandPath(baseTemplatePath) & specificFormTemplateFileName)){
-			var templatePath = baseTemplatePath & specificFormTemplateFileName;
-		} else if(fileExists(ExpandPath(siteTemplatePath) & defaultFormTemplateFileName)){
-			var templatePath = siteTemplatePath & defaultFormTemplateFileName;
-		} else {
-			var templatePath = baseTemplatePath & defaultFormTemplateFileName;
-		}
-
-		savecontent variable="local.formHTML"{
-			include templatePath;
-		};
-
-		return formHtml;
+	
+		return getHibachiScope().getService('siteService').dspForm(argumentcollection=arguments);
 	}
 
 	public string function renderNav(

@@ -409,6 +409,35 @@ component  extends="HibachiService" accessors="true" {
 
 	}
 	
+	public string function dspForm(required string formCode, string sRedirectUrl="/"){
+		request.context.newFormResponse = getHibachiScope().getService('formService').newFormResponse();
+		request.context.requestedForm = getHibachiScope().getService('formService').getFormByFormCode(arguments.formCode);
+		var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
+		var specificFormTemplateFileName = "form_"  & formCode & ".cfm";
+		var defaultFormTemplateFileName = "slatwall-form.cfm";
+
+		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
+		var siteTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
+		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/templates/";
+
+		if(fileExists(ExpandPath(specificFormTemplateFilePath))){
+			var templatePath = siteTemplatePath & specificFormTemplateFileName;
+		} else if(fileExists(ExpandPath(baseTemplatePath) & specificFormTemplateFileName)){
+			var templatePath = baseTemplatePath & specificFormTemplateFileName;
+		} else if(fileExists(ExpandPath(siteTemplatePath) & defaultFormTemplateFileName)){
+			var templatePath = siteTemplatePath & defaultFormTemplateFileName;
+		} else {
+			var templatePath = baseTemplatePath & defaultFormTemplateFileName;
+		}
+
+		savecontent variable="local.formHTML"{
+			include templatePath;
+		};
+
+		return reReplace(formHtml,"#chr(13)#|#chr(9)#|\n|\r","","ALL");
+	}
+
+	
 	public struct function getStackedContent(required struct urlTitlePathConfiguration, boolean sanitizeOutput = true){
 		var columns = [];
 		var urlTitlePaths = '';

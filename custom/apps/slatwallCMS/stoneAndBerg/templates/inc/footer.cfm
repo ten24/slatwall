@@ -4,8 +4,7 @@
       'footer/contact-us' : 'customBody',
       'footer/get-in-touch' : 'customBody',
       'footer/site-links' : 'customBody',
-      'footer/stay-informed' : 'customBody',
-      'home/shop-by' : ['linkUrl', 'title', 'customBody']
+      'footer/stay-informed' : 'customBody'
     })
     local.stackedContent['header/productCategories'] = #StructKeyExists(local, "productCategories")? local.productCategories : {}#
     local.stackedContent['footer/copywriteDate'] = #year(now())#
