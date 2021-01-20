@@ -12,6 +12,24 @@
 			</div>			
 		</div>
 	</div>
+	<div class="container notifications-container">
+		
+		<div ng-cloak
+			class="notifications"
+		>
+			<!--- purchase plus messaging for flexship --->
+			<div ng-cloak
+				class="alert-message promo"
+				ng-if="flexshipFlow.orderTemplateService.showPurchasePlusMessage"
+			>
+				<div class="messaging">
+					{{ flexshipFlow.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message }}
+				</div>
+				<img src="/themes/monat/assets/images/icon-promo.svg" alt="Promotion" width="30px" height="30px">
+			</div>
+			
+		</div><!--- end .notifications --->
+	</div>
 </header>
 
 <toaster-container></toaster-container>
