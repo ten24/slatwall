@@ -1779,14 +1779,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	function updateSelectTableUI( selectField ) {
 		var inputValue = jQuery('input[name="' + selectField + '"]').val().trim();
 		
-		console.log('updateSelectTableUI', selectField, inputValue);
-	
 		if(inputValue !== undefined && inputValue.length > 0) {
-			console.log('CHECKING!', jQuery('table[data-selectfield="' + selectField  + '"]').find('tr[id=' + inputValue + '] .hibachi-ui-radio'))
-			setTimeout(function(){
-				jQuery('table[data-selectfield="' + selectField  + '"]').find('tr[id=' + inputValue + '] .hibachi-ui-radio').addClass('hibachi-ui-radio-checked').removeClass('hibachi-ui-radio');
-			}, 100);
-			
+			jQuery('table[data-selectfield="' + selectField  + '"]').find('tr[id=' + inputValue + '] .hibachi-ui-radio').addClass('hibachi-ui-radio-checked').removeClass('hibachi-ui-radio');
 		}
 	}
 	
