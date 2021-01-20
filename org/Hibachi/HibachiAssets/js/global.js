@@ -1778,7 +1778,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 	function updateSelectTableUI( selectField ) {
 		var inputValue = jQuery('input[name="' + selectField + '"]').val().trim();
-	
+		
 		if(inputValue !== undefined && inputValue.length > 0) {
 			jQuery('table[data-selectfield="' + selectField  + '"]').find('tr[id=' + inputValue + '] .hibachi-ui-radio').addClass('hibachi-ui-radio-checked').removeClass('hibachi-ui-radio');
 		}
@@ -1993,10 +1993,12 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
 
 				//angular should work
-				AngularHelper.Compile($('#'+tabID),htmlToCompile);
-				//jquery should work
-				initUIElements($('#'+tabID));
-				$('body').trigger('lazyLoadComplete');
+				AngularHelper.Compile($('#'+tabID),htmlToCompile, function(){
+					//jquery should work
+					initUIElements($('#'+tabID));
+					$('body').trigger('lazyLoadComplete');
+				});
+				
 			});
 		}
 	}
@@ -2016,7 +2018,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	         * @$targetDom : The dom in which the compiled html should be placed
 	         * @htmlToCompile : The html to compile using angular
 	         */
-	    AngularHelper.Compile = function ($targetDom, htmlToCompile) {
+	    AngularHelper.Compile = function ($targetDom, htmlToCompile, callback) {
 	        
 	        try {
 	        	var $injector = angular.element(document).injector();
@@ -2027,7 +2029,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
             catch(err){
 			   console.warn("Will retry in 1 sec: error->", err);
                setTimeout(function(){
-                    AngularHelper.Compile( $targetDom, htmlToCompile);
+                    AngularHelper.Compile( $targetDom, htmlToCompile, callback);
                }, 500);
 			   return; 
             }
@@ -2038,6 +2040,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
     	            //Get the scope of the target, use the rootScope if it does not exists
     	            var $scope = $targetDom.html(htmlToCompile).scope();
     	            $compile($targetDom)($scope || $rootScope);
+    	            if(typeof callback === "function"){
+    	            	callback();
+    	            }
 	            }, 0);
 	        }]);
 	   }
