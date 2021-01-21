@@ -406,7 +406,12 @@ component output="false" accessors="true" extends="HibachiService" {
 							
 							// Make sure that this property should be added as a property that can have permissions
 							if( (!structKeyExists(entityMetaData.properties[p], "fieldtype") || entityMetaData.properties[p].fieldtype neq "ID")
-								&& (!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") || entityMetaData.properties[p].hb_populateEnabled neq "false")) {
+								&& (
+									!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") 
+									|| entityMetaData.properties[p].hb_populateEnabled neq "false"
+									|| ListFindNoCase('createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID', entityMetaData.properties[p].name) 
+									)
+								) {
 								
 								// Add to ManyToMany Properties
 								if(structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "many-to-one") {
