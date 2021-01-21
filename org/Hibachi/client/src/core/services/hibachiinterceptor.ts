@@ -198,7 +198,7 @@ class HibachiInterceptor implements IInterceptor{
     	
 		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
 			var message;
-
+			
 			if (rejection.data && rejection.data.messages && rejection.data.errors) {
 				var msg = '';
 				var errorList = rejection.data.errors;
@@ -218,11 +218,11 @@ class HibachiInterceptor implements IInterceptor{
 						type:'error'
 					};
 				this.alertService.addAlert(messages);
-			} else if(rejection.data && rejection.data.messages){
+			} else if (rejection.data && rejection.data.messages) {
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
 				this.alertService.addAlerts(alerts);
 			}else{
-			message = {
+				message = {
 					msg:'there was error retrieving data',
 					type:'error'
 				};
