@@ -4,19 +4,17 @@ import { search, setKeyword } from '../../actions/productSearchActions'
 import debounce from 'lodash/debounce'
 import ProductListingFilter from './ProductListingFilter'
 
-const ProductListingSidebar = ({ keyword, possibleFilters, attributes, resultCount = '287' }) => {
+const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCount }) => {
   const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState(keyword)
-  if (searchTerm !== keyword) {
-    setSearchTerm(keyword)
-  }
 
+  // TODO: Shouls this be an auto search or should you have to click enter
   const slowlyRequest = useCallback(
     debounce(value => {
       dispatch(setKeyword(value))
       dispatch(search())
     }, 500),
-    []
+    [debounce, dispatch]
   )
 
   const handleInputChange = e => {
@@ -37,7 +35,7 @@ const ProductListingSidebar = ({ keyword, possibleFilters, attributes, resultCou
         <div className="widget widget-categories mb-3">
           <div className="row">
             <h3 className="widget-title col">Filters</h3>
-            <span className="text-right col">{resultCount} Results</span>
+            <span className="text-right col">{recordsCount} Results</span>
           </div>
           <div className="input-group-overlay input-group-sm mb-2">
             <input className="cz-filter-search form-control form-control-sm appended-form-control" type="text" value={searchTerm} onChange={handleInputChange} placeholder="Search by product title or SKU" />

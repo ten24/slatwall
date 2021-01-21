@@ -1,4 +1,4 @@
-import { REQUEST_OPTIONS, RECIVE_OPTIONS, RECIVE_FEATURED_PRODUCTS, REQUEST_FEATURED_PRODUCTS, UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
+import { SET_PAGE, REQUEST_OPTIONS, RECIVE_OPTIONS, RECIVE_FEATURED_PRODUCTS, REQUEST_FEATURED_PRODUCTS, UPDATE_ATTRIBUTE, ADD_FILTER, REMOVE_FILTER, SET_SORT, SET_KEYWORD, CLEAR_KEYWORD, REQUEST_PRODUCTS, RECIVE_PRODUCTS } from '../actions/productSearchActions'
 
 const initState = {
   pageRecords: [],
@@ -14,7 +14,7 @@ const initState = {
   attributes: [],
   appliedFilters: [],
   keyword: '',
-  sortBy: '',
+  sortBy: 'calculatedSalePrice|ASC',
   sortingOptions: [],
   isFetching: false,
   err: null,
@@ -22,6 +22,10 @@ const initState = {
 
 const productSearch = (state = initState, action) => {
   switch (action.type) {
+    case SET_PAGE:
+      const { pageNumber } = action
+      return { ...state, currentPage: pageNumber }
+
     case SET_SORT:
       const { sortBy } = action
       return { ...state, sortBy }

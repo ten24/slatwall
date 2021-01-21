@@ -4,6 +4,8 @@ export const ADD_FILTER = 'ADD_FILTER'
 export const REMOVE_FILTER = 'REMOVE_FILTER'
 export const UPDATE_ATTRIBUTE = 'UPDATE_ATTRIBUTE'
 
+export const SET_PAGE = 'SET_PAGE'
+
 export const SET_SORT = 'SET_SORT'
 
 export const SET_KEYWORD = 'SET_KEYWORD'
@@ -17,6 +19,13 @@ export const RECIVE_FEATURED_PRODUCTS = 'RECIVE_FEATURED_PRODUCTS'
 
 export const REQUEST_OPTIONS = 'REQUEST_OPTIONS'
 export const RECIVE_OPTIONS = 'RECIVE_OPTIONS'
+
+export const setCurrentPage = pageNumber => {
+  return {
+    type: SET_PAGE,
+    pageNumber,
+  }
+}
 
 export const setSort = sortBy => {
   return {
@@ -95,22 +104,27 @@ export const reciveOptions = payload => {
 
 export const search = () => {
   return async (dispatch, getState) => {
-    const { appliedFilters, keyword, sortBy, products } = getState().productSearchReducer
+    const { keyword, sortBy, currentPage } = getState().productSearchReducer
     dispatch(requestProducts())
     const loginToken = localStorage.getItem('loginToken')
+    const sortCriteria = sortBy.split('|')
+    const params = {
+      perPage: 9,
+      page: currentPage,
+      sort: sortCriteria[0],
+      sortOrder: sortCriteria[1],
+      filter: {
+        publishedFlag: true,
+        'productName:like': `%${keyword}%`,
+      },
+    }
+
     const response = await SlatwalApiService.products.list(
       {
         bearerToken: loginToken,
         contentType: 'application/json',
       },
-      {
-        perPage: 20,
-        page: 1,
-        // filter: {
-        //   urlTitle: 'sargent-spindle-kit-2-1-4-door579-3',
-        //   productName: '',
-        // },
-      }
+      params
     )
 
     if (!response.isFail()) {
