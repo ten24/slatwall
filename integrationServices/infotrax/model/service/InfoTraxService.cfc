@@ -377,7 +377,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var autoshipData = { 
 			'distId'            = arguments.orderTemplate.getAccount().getAccountNumber(), //Distributor ID
 			'autoshipNumber'    = arguments.orderTemplate.getOrderTemplateNumber(), //Autoship Number
-			'salesVolume'       = arguments.orderTemplate.getCalculatedSubTotal(),//Autoship SalesVolume
+			'salesVolume'       = arguments.orderTemplate.getCalculatedTotal(),//Autoship SalesVolume
 			'qualifyingVolume'  = arguments.orderTemplate.getCalculatedPersonalVolumeTotal(),//Autoship Qualifying Volume
 			'commissionVolume'  = arguments.orderTemplate.getCalculatedCommissionableVolumeTotal()//Autoship Commission Volume
 		};
