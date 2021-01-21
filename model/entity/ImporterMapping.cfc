@@ -48,4 +48,9 @@ component displayname="ImporterMapping" entityname="SlatwallImporterMapping" tab
 	    
 	    return validation.isValid;
 	}
+	
+		
+	public string function getSimpleRepresentationPropertyName() {
+	    return "name";
+	}
 }
