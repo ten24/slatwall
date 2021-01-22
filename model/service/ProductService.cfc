@@ -113,7 +113,7 @@ component extends="HibachiService" accessors="true" {
 				}
 				
 	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( isEmpty(imageFile) ) {
+	            if( this.hibachiIsEmpty(imageFile) ) {
 	            	continue;
 	            }
 	            var imageArray = [];
@@ -143,46 +143,43 @@ component extends="HibachiService" accessors="true" {
 	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
 	 * */
 	public any function appendCategoriesAndOptionsToProduct(required array products) {
-		if(arrayLen(arguments.products)) {
-			for(var product in arguments.products) {
-				
-				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-					continue;
-				}
-				
-				var currentProduct = this.getProduct(product.productID);
-				if( isNull( currentProduct ) ) {
-					continue;
-				}
-				var categories = [];
-				if( arrayLen(currentProduct.getCategories()) ) {
-					var productCategories = currentProduct.getCategories();
-					for( var i=1; i<= arrayLen(productCategories); i++ ) {
-						categories[i]['categoryID'] = productCategories[i].getCategoryID();
-						categories[i]['categoryName'] = productCategories[i].getCategoryName();
-						categories[i]['urlTitle'] = productCategories[i].getUrlTitle();
-					}
-				}
-				
-				product['categories'] = categories;
-				
-				//Append Option Groups
-				var optionGroups = [];
-				if( arrayLen(currentProduct.getOptionGroups()) ) {
-					for(var optionGroup in currentProduct.getOptionGroups()){
-						ArrayAppend( optionGroups, {
-							"optionGroupdID" : optionGroup.getOptionGroupID(),
-							"optionGroupName" : optionGroup.getOptionGroupName(),
-						} )
-					}
-				}
-				product['optionGroups'] =  optionGroups;
-				
-				//Append base product type system code
-				product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
-			}
-		}
 		
+		for(var product in arguments.products) {
+			if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
+				continue;
+			}
+			
+			var currentProduct = this.getProduct(product.productID);
+			if( isNull( currentProduct ) ) {
+				continue;
+			}
+			
+			var categories = [];
+			var currentProductCategories = currentProduct.getCategories();
+			for(var category in currentProductCategories){
+				ArrayAppend( categories, {
+					"urlTitle"      : category.getUrlTitle(),
+					"categoryID"    : category.getCategoryID(),
+					"categoryName"  : category.getCategoryName(),
+				});
+			}
+			product['categories'] = categories;
+			
+			//Append Option Groups
+			var optionGroups = [];
+			var currentProductoptionGroups = currentProduct.getOptionGroups();
+			for(var optionGroup in currentProductoptionGroups){
+				ArrayAppend( optionGroups, {
+					"optionGroupdID"    : optionGroup.getOptionGroupID(),
+					"optionGroupName"   : optionGroup.getOptionGroupName()
+				});
+			}
+			product['optionGroups'] =  optionGroups;
+			
+			//Append base product type system code
+			product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
+		}
+	
 		return arguments.products;
 	}
 	

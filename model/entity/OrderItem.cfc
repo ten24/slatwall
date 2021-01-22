@@ -244,7 +244,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
-			if(isEmpty(maxQTY)){
+			if(this.hibachiIsEmpty(maxQTY)){
 				//Set maximum quantity by global setting
 				maxQTY = setting('skuOrderMaximumQuantity');		
 			}
