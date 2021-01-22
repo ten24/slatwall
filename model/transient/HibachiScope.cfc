@@ -137,6 +137,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public any function getCurrentRequestSiteLocation(){
+		
 		if(!structKeyExists(variables,'currentRequestSiteLocation')){
 			var site = getCurrentRequestSite();
 			if ( !isNull(site) ){
@@ -148,9 +149,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		}
 		
 		if(!StructKeyExists(variables, 'currentRequestSiteLocation') || isNull(variables.currentRequestSiteLocation)){
-		return;
-
+		    return;
 		}
+		
 		return variables.currentRequestSiteLocation;
 	}
 	

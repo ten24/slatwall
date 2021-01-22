@@ -84,6 +84,9 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
+	// Calculated properties
+	property name="calculatedTotalQuantityDelivered" ormtype="numeric";
+	
 	// Non-Persistent Properties
 	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";
 	
