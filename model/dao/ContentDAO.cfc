@@ -139,6 +139,41 @@ Notes:
 		
 		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND c.urlTitlePath = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
 	</cffunction>
+	
+	
+	<cffunction name="getAllContentBySiteIDAndUrlTitlePaths" access="public">
+		<cfargument name="siteID" type="string" required="true">
+		<cfargument name="urlTitlePaths" type="string" required="true">
+		<cfargument name="columnList" type="string" required="true">
+		
+		<cfset var rs = "" />
+
+		<cfquery name="rs" result="local.contents">
+			SELECT c.urlTitlePath, #arguments.columnList# FROM SwContent c
+			INNER JOIN SwSite s ON c.siteID = s.siteID
+			WHERE s.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" /> 
+			AND c.urlTitlePath IN (<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#arguments.urlTitlePaths#" />)
+		</cfquery>
+		
+		<cfreturn rs />
+	</cffunction>
+	
+	<cffunction name="getAllContentBySiteIDAndUrlTitlePathPrefix" access="public">
+		<cfargument name="siteID" type="string" required="true">
+		<cfargument name="urlTitlePathPrefix" type="string" required="true">
+		<cfargument name="columnList" type="string" required="true">
+		
+		<cfset var rs = "" />
+
+		<cfquery name="rs" result="local.contents">
+			SELECT c.urlTitlePath, #arguments.columnList# FROM SwContent c
+			INNER JOIN SwSite s ON c.siteID = s.siteID
+			WHERE s.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" /> 
+			AND c.urlTitlePath REGEXP <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.urlTitlePathPrefix#" />
+		</cfquery>
+		
+		<cfreturn rs />
+	</cffunction>
 
 	<cffunction name="getCategoryBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">

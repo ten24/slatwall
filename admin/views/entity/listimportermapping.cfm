@@ -8,7 +8,7 @@
 
 	<!--- Create --->
 	<hb:HibachiEntityActionBarButtonGroup>
-		<hb:HibachiActionCaller action="admin:entity.createimportermapping" class="btn btn-primary" icon="plus icon-white" />
+		<hb:HibachiActionCaller action="admin:entity.createimportermapping" class="btn btn-primary" icon="plus icon-white" modal=1 />
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
@@ -30,6 +30,6 @@
 <hb:HibachiListingDisplay 
 	collectionList="#rc.importerMappingCollectionList#"
 	recordEditAction="admin:entity.editImporterMapping"
-	recordDetailAction="admin:entity.editImporterMapping"
+	recordDetailAction="admin:entity.detailImporterMapping"
 >
 </hb:HibachiListingDisplay>

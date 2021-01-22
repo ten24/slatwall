@@ -3296,4 +3296,53 @@ component  accessors="true" output="false"
         }
     }
     
+    
+    /**
+     * 
+     * /api/scope/getSlatwallContent
+     * 
+     */
+    public void function getSlatwallContent(required struct data){
+        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.content" default={};
+        param name="arguments.data.formCode" default='';
+        param name="arguments.data.formPostfix" default="/";
+        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
+        getStackedContentForPage
+        var stackedContent= {}
+        if(Len(arguments.data.content)> 1){
+            stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
+        }else{
+            stackedContent =  getService('siteService').getStackedContentForPage(arguments.data.content)
+        }
+
+        if(!isEmpty(arguments.data.formCode)){
+            stackedContent['form'] ={
+                "type": arguments.data.formCode,
+                "markup": getService('siteService').dspForm(arguments.data.formCode,arguments.data.formPostfix)
+                }
+        }
+
+        getHibachiScope().addActionResult("public:getSlatwallContent", false);
+
+        arguments.data['ajaxResponse']['content'] = stackedContent;
+
+    }
+
+    public void function getSlatwallForm(required struct data){
+        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.formCode" default="contact-us";
+        param name="arguments.data.formPostfix" default="?submitted=true";
+
+        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
+
+        var markup =  getService('siteService').dspForm(arguments.data.formCode,arguments.data.formPostfix)
+        getHibachiScope().addActionResult("public:getSlatwallForm", false);
+
+        arguments.data['ajaxResponse']['content'] = {"form": {
+            "type": arguments.data.formCode,
+            "markup": markup
+        }};
+
+    }
 }
