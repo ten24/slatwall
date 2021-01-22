@@ -468,6 +468,34 @@ component  extends="HibachiService" accessors="true" {
 		}
         return stackedContent
     }
+    
+    public struct function getStackedContentForPage(required struct urlTitlePathConfiguration, boolean sanitizeOutput = true){
+		var columns = [];
+		var urlTitlePathPrefix = '';
+		
+		var stackedContent = {};
+	
+		for(var urlTitlePath in urlTitlePathConfiguration){
+			ArrayAppend(columns,urlTitlePathConfiguration[urlTitlePath],true);
+			urlTitlePathPrefix = listAppend(urlTitlePathPrefix, urlTitlePath);
+		}
+		var columnsList = listRemoveDuplicates('c.'&ArrayToList(columns, ', c.')); //add prefix
+		
+		var currentSite = getCurrentRequestSite();
+		
+		if(!isNull(currentSite) && len(urlTitlePathPrefix) && len(columnsList)){
+			var contentData = getHibachiScope().getService("ContentService").getAllContentBySiteIDAndUrlTitlePathPrefix(currentSite.getSiteID(),urlTitlePathPrefix, columnsList);
+			for(var content in contentData){
+					stackedContent[content['urlTitlePath']] = {};
+					for(var column in arguments.urlTitlePathConfiguration[urlTitlePathPrefix]){
+						stackedContent[content['urlTitlePath']][column] = reReplace(content[column],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
+					}
+
+				
+			}
+		}
+        return stackedContent
+    }
 
 	// ======================  END: Save Overrides ============================
 

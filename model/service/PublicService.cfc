@@ -101,8 +101,13 @@ component  accessors="true" output="false"
         param name="arguments.data.formCode" default='';
         param name="arguments.data.formPostfix" default="/";
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        
-        var stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
+        getStackedContentForPage
+        var stackedContent= {}
+        if(Len(arguments.data.content)> 1){
+            stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
+        }else{
+            stackedContent =  getService('siteService').getStackedContentForPage(arguments.data.content)
+        }
         
         if(!isEmpty(arguments.data.formCode)){
             stackedContent['form'] ={
