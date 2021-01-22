@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../services'
 import { requestUser, receiveUser, clearUser } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
@@ -34,6 +35,7 @@ export const logout = () => {
   return async dispatch => {
     dispatch(requestLogOut())
     dispatch(clearUser())
+    toast.success('Logout Successful')
   }
 }
 
@@ -51,9 +53,11 @@ export const login = (email, password) => {
 
       if (req.isFail()) {
         dispatch(errorLogin(req.toString()))
+        toast.error('Incorrect Username or Password')
       } else {
         dispatch(receiveLogin(req.success().token))
         dispatch(receiveUser(req))
+        toast.success('Login Successful')
       }
     }
   }
