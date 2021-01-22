@@ -2,11 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { ActionBanner, SignUpForm } from '..'
-import SWImage from '../SWImage/SWImage'
 import styles from './Footer.module.css'
-// import * as Yup from 'yup'
+import logo from '../../assets/images/sb-logo-white.png'
 
-function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink, logo }) {
+function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
   return (
     <footer className="pt-5">
       {actionBanner.display && !actionBannerDisable && <ActionBanner {...actionBanner} />}
@@ -33,7 +32,7 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
         <div className="container">
           <div className="row">
             <div className="col-md-6 text-center text-md-left mb-4 text-light">
-              <SWImage className="w-50" src={logo} alt="Stone and Berg logo" />
+              <img className="w-50" src={logo} alt="Stone & Berg Logo" />
             </div>
             <div className="col-md-6 font-size-xs text-center text-md-right mb-4">{`@${copywriteDate} `} All rights reserved. Stone and Berg Company Inc</div>
           </div>
@@ -47,10 +46,9 @@ Footer.propTypes = {
   getInTouch: PropTypes.string,
   siteLinks: PropTypes.string,
   stayInformed: PropTypes.string,
-  copywriteDate: PropTypes.string,
+  copywriteDate: PropTypes.number,
   formLink: PropTypes.string,
   actionBannerDisable: PropTypes.bool,
-  logo: PropTypes.string,
 }
 
 Footer.defaultProps = {
@@ -67,8 +65,17 @@ Footer.defaultProps = {
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return { ...preload.footer }
+  return {
+    actionBanner: {
+      display: true,
+      markup: state.preload.stackedContent['footer/contact-us'],
+    },
+    getInTouch: state.preload.stackedContent['footer/get-in-touch'],
+    siteLinks: state.preload.stackedContent['footer/site-links'],
+    stayInformed: state.preload.stackedContent['footer/stay-informed'],
+    copywriteDate: state.preload.stackedContent['footer/copywriteDate'],
+    formLink: state.preload.footer.formLink,
+  }
 }
 
 export default connect(mapStateToProps)(Footer)

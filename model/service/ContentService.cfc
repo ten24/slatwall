@@ -210,6 +210,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDAO().getContentByCMSContentIDAndCMSSiteID( argumentCollection=arguments );
 	}
 
+	public any function getAllContentBySiteIDAndUrlTitlePaths( required string siteID, required string urlTitlePaths, string columnList = '*' ) {
+		return getContentDAO().getAllContentBySiteIDAndUrlTitlePaths( argumentCollection=arguments );
+	}
+		public any function getAllContentBySiteIDAndUrlTitlePathPrefix( required string siteID, required string urlTitlePathPrefix, string columnList = '*' ) {
+		return getContentDAO().getAllContentBySiteIDAndUrlTitlePathPrefix( argumentCollection=arguments );
+	}
+
+
 	public any function getContentBySiteIDAndUrlTitlePath(required string siteID, required string urlTitlePath){
 		return getContentDao().getContentBySiteIDAndUrlTitlePath(argumentCollection=arguments);
 	}

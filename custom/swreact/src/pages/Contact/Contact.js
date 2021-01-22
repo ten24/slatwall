@@ -1,11 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // import PropTypes from 'prop-types'
 import { ActionBanner, Layout } from '../../components'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { getContent } from '../../actions/contentActions'
 
 // TODO:  https://stoneandberg.ten24dev.com/contact?submitted=true
 
 const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
+  let history = useHistory()
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(
+      getContent({
+        content: {
+          contact: ['customBody', 'customSummary', 'title'],
+          'footer/contact-application': 'customBody',
+        },
+        formCode: 'contact-us',
+      })
+    )
+  }, [dispatch])
   return (
     <Layout actionBannerDisable={actionBanner.display}>
       <div className="page-title-overlap bg-lightgray pt-4 pb-5">
@@ -24,20 +39,21 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
             {/* <!-- Summary Content--> */}
             <div className="mt-5 pt-5">
               <div
+                onClick={event => {
+                  event.preventDefault()
+                  history.push(event.target.getAttribute('href'))
+                }}
                 dangerouslySetInnerHTML={{
                   __html: customSummary,
                 }}
               />
-              {/* <!--- UK Storage Signup Form ---> */}
-              {/* <cfif isDefined("url.submitted")> */}
-              {/* <div className="alert alert-success" role="alert">
-                Thank you for contacting us, we will get back to you as soon as
-                possible.
-              </div> */}
-              {/* </cfif> */}
-              {/* <div className="contactForm mt-4 <cfif IsDefined("url.submitted")>hide</cfif>"> */}
+              {/* TODO: do a custom submut */}
               <div className="contactForm mt-4">
                 <div
+                  onClick={event => {
+                    event.preventDefault()
+                    history.push(event.target.getAttribute('href'))
+                  }}
                   dangerouslySetInnerHTML={{
                     __html: form.markup,
                   }}
@@ -51,6 +67,10 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
           <aside className="col-lg-4 pt-4 pt-lg-0">
             <div className="cz-sidebar-static rounded-lg box-shadow-lg p-4 mb-5">
               <div
+                onClick={event => {
+                  event.preventDefault()
+                  history.push(event.target.getAttribute('href'))
+                }}
                 dangerouslySetInnerHTML={{
                   __html: customBody,
                 }}
@@ -69,8 +89,15 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return preload.contact
+  const { contact, 'footer/contact-application': markup, form } = state.content
+  return {
+    ...contact,
+    actionBanner: {
+      display: markup.length > 0,
+      markup,
+    },
+    form,
+  }
 }
 
 Contact.propTypes = {}

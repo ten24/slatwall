@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Slider from 'react-slick'
 import { SWImage } from '..'
+import { connect } from 'react-redux'
 
 const BandSlide = ({ associatedImage, linkUrl, title, slideKey }) => {
   return (
@@ -15,7 +16,7 @@ const BandSlide = ({ associatedImage, linkUrl, title, slideKey }) => {
   )
 }
 
-function HomeBrand(props) {
+function HomeBrand({ homeBrand, 'home/shop-by': shopBy }) {
   const settings = {
     dots: false,
     infinite: true,
@@ -46,13 +47,14 @@ function HomeBrand(props) {
   }
   return (
     <div style={{ height: 'fit-content' }} className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
-      <h3 className="h3">Shop by Manufacturer</h3>
+      <h3 className="h3">{shopBy.title}</h3>
       <Slider {...settings}>
-        {props.homeBrand.map((slide, index) => {
-          return <BandSlide {...slide} key={index} slideKey={index} />
-        })}
+        {homeBrand &&
+          homeBrand.map((slide, index) => {
+            return <BandSlide {...slide} key={index} slideKey={index} />
+          })}
       </Slider>
-      <a className="btn btn-primary mt-3 btn-long" href={props.shopBy}>
+      <a className="btn btn-primary mt-3 btn-long" href={shopBy.linkUrl}>
         More Brands
       </a>
     </div>
@@ -61,7 +63,10 @@ function HomeBrand(props) {
 
 HomeBrand.propTypes = {
   homeBrand: PropTypes.array,
-  shopBy: PropTypes.string,
+  shopBy: PropTypes.object,
 }
 
-export default HomeBrand
+function mapStateToProps(state) {
+  return state.content
+}
+export default connect(mapStateToProps)(HomeBrand)

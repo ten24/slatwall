@@ -1,14 +1,14 @@
-import { FeaturedProductCard } from '../../components'
 import { connect } from 'react-redux'
+import ProductCard from './ProductCard'
 
-const ProductListingGrid = ({ products }) => {
+const ProductListingGrid = ({ pageRecords }) => {
   return (
     <div className="row mx-n2">
-      {products &&
-        products.map((product, index) => {
+      {pageRecords &&
+        pageRecords.map((product, index) => {
           return (
             <div key={index} className="col-md-4 col-sm-6 px-2 mb-4">
-              <FeaturedProductCard {...product} />
+              <ProductCard {...product} />
             </div>
           )
         })}

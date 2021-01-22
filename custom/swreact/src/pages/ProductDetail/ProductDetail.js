@@ -4,6 +4,10 @@ import { Layout } from '../../components'
 import { connect } from 'react-redux'
 
 const ProductPageHeader = () => {
+  //Product Details
+  // slatwall.products.get(bearerToken, "2c91808770608725017069a73fa9033b").then(function (response) {
+  //     console.log(response);
+  // });
   return (
     <div className="page-title-overlap bg-lightgray pt-4">
       <div className="container d-lg-flex justify-content-between py-2 py-lg-3">

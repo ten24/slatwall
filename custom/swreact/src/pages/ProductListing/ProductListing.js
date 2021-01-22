@@ -1,12 +1,22 @@
+import React, { useEffect } from 'react'
 import { Layout } from '../../components'
+import { useDispatch } from 'react-redux'
 
 import ProductListingHeader from './ProductListingHeader'
 import ProductListingGrid from './ProductListingGrid'
 import ProductListingToolBar from './ProductListingToolBar'
 import ProductListingPagination from './ProductListingPagination'
 import ProductListingSidebar from './ProductListingSidebar'
+import { getProductListingOptions, search } from '../../actions/productSearchActions'
 
 const ProductListing = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(search())
+    dispatch(getProductListingOptions())
+  }, [dispatch])
+
   return (
     <Layout>
       <ProductListingHeader />

@@ -1,0 +1,2 @@
+(this.webpackJsonpswreact=this.webpackJsonpswreact||[]).push([[15],{256:function(t,c,e){"use strict";e.r(c);var s=e(0),j=e(1),n=e(33),b=e(6),r=e(44);c.default=function(){var t=Object(b.c)();return Object(j.useEffect)((function(){t(Object(r.d)())}),[t]),Object(s.jsxs)(n.i,{children:[Object(s.jsx)(n.f,{}),Object(s.jsx)(n.h,{}),Object(s.jsx)(n.g,{})]})}}}]);
+//# sourceMappingURL=15.828de106.chunk.js.map

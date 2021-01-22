@@ -1,31 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { HomeBanner, HomeBrand, HomeDetails, Layout } from '../../components'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-
-const Home = props => {
+import { useDispatch } from 'react-redux'
+import { getHomePageContent, getContent } from '../../actions/contentActions'
+const Home = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getHomePageContent())
+    dispatch(
+      getContent({
+        content: {
+          'home/': ['title', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel'],
+        },
+      })
+    )
+  }, [dispatch])
   return (
     <Layout>
-      <HomeBanner
-        homeMainBanner={props.homeMainBanner}
-        featuredSlider={props.featuredSlider}
-      />
-      <HomeDetails homeContent={props.homeContent} />
-      <HomeBrand homeBrand={props.homeBrand} shopBy={props.shopBy} />
+      <HomeBanner />
+      <HomeDetails />
+      <HomeBrand />
     </Layout>
   )
 }
-Home.propTypes = {
-  homeMainBanner: PropTypes.array,
-  featuredSlider: PropTypes.array,
-  homeContent: PropTypes.array,
-  homeBrand: PropTypes.array,
-  shopBy: PropTypes.string,
-}
 
-function mapStateToProps(state) {
-  const { preload } = state
-  return preload.home
-}
-
-export default connect(mapStateToProps)(Home)
+export default Home
