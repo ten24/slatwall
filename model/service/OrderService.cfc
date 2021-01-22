@@ -111,7 +111,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
     	///Order Items Information
 		var ordersItemsCollectionList = this.getOrderItemCollectionList();
-		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle');
+		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle, quantity, calculatedQuantityDelivered');
 		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
@@ -136,7 +136,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// //Order Promotions Information
 		var orderPromotionCollectionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
-		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount')
+		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount');
 		orderPromotionCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			orderPromotionCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
@@ -146,7 +146,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		///Order Fulfillment Information
 		var ordersFulfillmentCollectionList = this.getOrderItemCollectionList();
-		ordersFulfillmentCollectionList.setDisplayProperties('orderItemID,order.orderID,orderDeliveryItems.orderDelivery.trackingNumber,orderDeliveryItems.orderDelivery.createdDateTime,orderDeliveryItems.orderDelivery.invoiceNumber,sku.skuID, orderFulfillment.fulfillmentCharge, orderFulfillment.currencyCode, orderFulfillment.estimatedDeliveryDateTime, orderFulfillment.estimatedFulfillmentDateTime, orderFulfillment.fulfillmentMethod.fulfillmentMethodName, orderFulfillment.fulfillmentMethod.fulfillmentMethodType, orderFulfillment.pickupLocation.locationName, orderFulfillment.shippingAddress.streetAddress, orderFulfillment.shippingAddress.street2Address, orderFulfillment.shippingAddress.city, orderFulfillment.shippingAddress.stateCode, orderFulfillment.shippingAddress.postalCode, orderFulfillment.shippingAddress.name, orderFulfillment.shippingAddress.countryCode, orderFulfillment.shippingMethod.shippingMethodName, orderFulfillment.shippingMethod.shippingMethodCode');
+		ordersFulfillmentCollectionList.setDisplayProperties('orderItemID,order.orderID,orderDeliveryItems.quantity,orderDeliveryItems.orderDelivery.trackingNumber,orderDeliveryItems.orderDelivery.createdDateTime,orderDeliveryItems.orderDelivery.invoiceNumber,orderDeliveryItems.orderDelivery.calculatedTotalQuantityDelivered,sku.skuID, orderFulfillment.fulfillmentCharge, orderFulfillment.currencyCode, orderFulfillment.estimatedDeliveryDateTime, orderFulfillment.estimatedFulfillmentDateTime, orderFulfillment.fulfillmentMethod.fulfillmentMethodName, orderFulfillment.fulfillmentMethod.fulfillmentMethodType, orderFulfillment.pickupLocation.locationName, orderFulfillment.shippingAddress.streetAddress, orderFulfillment.shippingAddress.street2Address, orderFulfillment.shippingAddress.city, orderFulfillment.shippingAddress.stateCode, orderFulfillment.shippingAddress.postalCode, orderFulfillment.shippingAddress.name, orderFulfillment.shippingAddress.countryCode, orderFulfillment.shippingMethod.shippingMethodName, orderFulfillment.shippingMethod.shippingMethodCode');
 		ordersFulfillmentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			ordersFulfillmentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
@@ -155,6 +155,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderDetails['orderFulfillments'] = ordersFulfillmentCollectionList.getRecords(formatRecords = false);
 		
 		return orderDetails;
+    }
+    
+    /**
+     * Required list property
+     * It's a hard coded list of options that can be available with order requirements list
+     * This method is added to handle frontend side of wordpress plugin
+     * @param -  order object
+     * @return - list of steps
+     * */
+    public string function getOrderRequiredStepsList(required any order) {
+    	var orderRequiredStepsList = "account";
+    	
+    	// Check each of the order Items and set fulfillment for non gift card items
+		var orderItemsCount = arrayLen(arguments.order.getOrderItems());
+		for(var i = 1; i <= orderItemsCount; i++) {
+			if( arguments.order.getOrderItems()[i].getSku().getProduct().getBaseProductType() != "gift-card" ) {
+				orderRequiredStepsList = listAppend(orderRequiredStepsList, "fulfillment");
+				break;
+			}
+		}
+    	
+    	orderRequiredStepsList = listAppend(orderRequiredStepsList, "payment");
+    	
+    	return orderRequiredStepsList;
     }
 	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
@@ -260,7 +284,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
-		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+		return { 
+			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
+			"recordsCount": ordersList.getRecordsCount()
+		};
 	}
     
     /**
@@ -281,7 +308,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
 		
-		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+		return { 
+			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
+			"recordsCount": ordersList.getRecordsCount()
+		};
 	}
 	
 	/**
@@ -302,7 +332,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
 		
-		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+		return { 
+			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
+			"recordsCount": ordersList.getRecordsCount()
+		};
 	}
 	
 	
