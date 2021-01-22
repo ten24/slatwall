@@ -221,6 +221,9 @@ class MonatCheckoutController {
 				screen = Screen.SPONSOR;
 			}else if(!reqList.length && next && this.hasSponsor){
 				screen = Screen.REVIEW;
+				if(this.$scope.slatwall.requests['placeOrder']){
+					this.$scope.slatwall.requests['placeOrder'].failureActions = [];
+				}
 			}else if(reqList.indexOf('fulfillment') === -1 && reqList.indexOf('account') === -1){ 
 				screen = Screen.PAYMENT;
 			}else if(reqList.indexOf('account') === -1 && this.currentShippingAddress){
