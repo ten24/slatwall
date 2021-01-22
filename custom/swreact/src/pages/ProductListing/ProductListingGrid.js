@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ProductCard from './ProductCard'
+import ProductCard from '../../components/Account/ProductCard/ProductCard'
 
 const ProductListingGrid = ({ pageRecords }) => {
   return (

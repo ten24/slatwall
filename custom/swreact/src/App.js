@@ -32,6 +32,7 @@ export default function App() {
           <Route path="/products" component={ProductListing} />
           <Route path="/product-detail" component={ProductDetail} />
           <Route path="/sp/:id" component={ProductDetail} />
+          <Route path="/product/:id" component={ProductDetail} />
           <Route path="/category-listing" component={CategoryListing} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />

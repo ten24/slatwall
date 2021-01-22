@@ -18,15 +18,15 @@ const HeartButton = ({ isSaved }) => {
   }
 }
 
-const FeaturedProductCard = ({  productClearance, brand_brandName,brand_urlTitle ='', calculatedTitle, calculatedSalePrice, listPrice,  urlTitle, defaultProductImageFiles }) => {
-  const imgUrl = (defaultProductImageFiles && defaultProductImageFiles.length > 0) ? defaultProductImageFiles[0].imageFile : ''
+const FeaturedProductCard = ({ productClearance, brand_brandName, brand_urlTitle = '', calculatedTitle, calculatedSalePrice, listPrice, urlTitle, defaultProductImageFiles }) => {
+  const imgUrl = defaultProductImageFiles && defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
   const isSpecial = productClearance === true
   return (
     <div>
       <div className="card product-card">
         {isSpecial && <span className="badge badge-primary">On Special</span>}
         <HeartButton isSaved={false} />
-        <Link className="card-img-top d-block overflow-hidden" to={`/sp/${urlTitle}`}>
+        <Link className="card-img-top d-block overflow-hidden" to={`/product/${urlTitle}`}>
           <SWImage src={imgUrl} alt="Product" />
         </Link>
         <div className="card-body py-2 text-left">
@@ -34,7 +34,7 @@ const FeaturedProductCard = ({  productClearance, brand_brandName,brand_urlTitle
             {brand_brandName}
           </Link>
           <h3 className="product-title font-size-sm">
-            <Link to={`/sp/${urlTitle}`}>{calculatedTitle}</Link>
+            <Link to={`/product/${urlTitle}`}>{calculatedTitle}</Link>
           </h3>
           <div className="d-flex justify-content-between">
             <div className="product-price">

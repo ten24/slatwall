@@ -1,7 +1,7 @@
-import { SWImage } from '../../components'
+import { SWImage } from '../..'
 import { Link } from 'react-router-dom'
 
-const ProductCard = ({ calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance }) => {
+const ProductCard = ({ productID, productCode, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance }) => {
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
   const isSpecial = productClearance === true
 
@@ -10,7 +10,17 @@ const ProductCard = ({ calculatedSalePrice, urlTitle, brand_brandName, brand_url
       <div className="card product-card">
         {isSpecial && <span className="badge badge-primary">On Special</span>}
         {/* <HeartButton isSaved={false} /> */}
-        <Link className="card-img-top d-block overflow-hidden" to={`/sp/${urlTitle}`}>
+        <Link
+          className="card-img-top d-block overflow-hidden"
+          to={{
+            pathName: `/sp/${urlTitle}`,
+            state: {
+              productID,
+              calculatedTitle,
+              productCode,
+            },
+          }}
+        >
           <SWImage src={imgUrl} alt="Product" />
         </Link>
         <div className="card-body py-2 text-left">
@@ -18,7 +28,7 @@ const ProductCard = ({ calculatedSalePrice, urlTitle, brand_brandName, brand_url
             {brand_brandName}
           </Link>
           <h3 className="product-title font-size-sm">
-            <Link to={`/sp/${urlTitle}`}>{calculatedTitle}</Link>
+            <Link to={`/product/${urlTitle}`}>{calculatedTitle}</Link>
           </h3>
           <div className="d-flex justify-content-between">
             <div className="product-price">
