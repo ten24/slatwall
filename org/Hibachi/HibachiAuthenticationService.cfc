@@ -408,7 +408,7 @@ component output="false" accessors="true" extends="HibachiService" {
 							if( (!structKeyExists(entityMetaData.properties[p], "fieldtype") || entityMetaData.properties[p].fieldtype neq "ID")
 								&& (
 									!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") 
-									|| entityMetaData.properties[p].hb_populateEnabled neq "false"
+									|| entityMetaData.properties[p].hb_populateEnabled != "false"
 									|| ListFindNoCase('createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID', entityMetaData.properties[p].name) 
 									)
 								) {
