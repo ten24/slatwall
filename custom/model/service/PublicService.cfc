@@ -871,7 +871,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			sku.skuPrices.price,
 			sku.skuPrices.personalVolume,
 			sku.product.listingPages.sortOrder,
-			sku.listPrice
+			sku.product.defaultSku.listPrice
 		');
 
 		var visibleColumnConfigWithArguments = {
@@ -917,7 +917,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'sortOrder': skuBundle.sku_product_listingPages_sortOrder,
 					'sortDirection': content.getProductSortDefaultDirection() ?: 'ASC',
 					'recordSort': recordCount,
-					'listPrice' : skuBundle.sku_listPrice
+					'listPrice' : skuBundle.sku_product_defaultSku_listPrice
 					}
 			}
 			
