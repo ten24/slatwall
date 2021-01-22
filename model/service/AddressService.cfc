@@ -196,14 +196,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		var addressVerificationStruct = {};
 		
 		if(structKeyExists(arguments.addressStruct,'addressID')){
-			var address = this.getAddress(arguments.addressStruct['addressID']);
+			var thisAddress = this.getAddress(arguments.addressStruct['addressID']);
 			
-			if( !isNull(address) && 
-				!isNull(address.getVerificationCacheKey()) &&
-				len(address.getVerificationCacheKey()) && 
-				compare(address.getVerificationCacheKey(),cacheKey) == 0
+			if( !isNull(thisAddress) && 
+				!isNull(thisAddress.getVerificationCacheKey()) &&
+				len(thisAddress.getVerificationCacheKey()) && 
+				compare(thisAddress.getVerificationCacheKey(),cacheKey) == 0
 			) {
-				addressVerificationStruct = deserializeJson(address.getVerificationJson());
+				addressVerificationStruct = deserializeJson(thisAddress.getVerificationJson());
 			} 
 		}
 		 			
@@ -219,19 +219,19 @@ component extends="HibachiService" accessors="true" output="false" {
 			addressVerificationStruct['address'] = arguments.addressStruct;
 		}
 		
-		if(!isNull(address)){
-			
-			address.setVerificationJson(serializeJSON(addressVerificationStruct));
-			address.setVerificationCacheKey(cacheKey);
+		if(!isNull(thisAddress)){
+		    
+			thisAddress.setVerificationJson(serializeJSON(addressVerificationStruct));
+			thisAddress.setVerificationCacheKey(cacheKey);
 			
 			if (structKeyExists(addressVerificationStruct, 'success')) {
-				address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
+				thisAddress.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
 			
 				if(!addressVerificationStruct['success']){
-					address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
+					thisAddress.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
 				}
 			}
-			this.saveAddress(address);
+			this.saveAddress(thisAddress);
 		}
 		
 		return addressVerificationStruct;
