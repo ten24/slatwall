@@ -68,6 +68,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderNotes" ormtype="text";
 	property name="addToEntityQueueFlag" ormtype="boolean";
 	property name="taxCommitDateTime" ormtype="timestamp";
+	property name="taxCommitResponse" ormtype="string";
 	property name="taxTransactionReferenceNumber" ormtype="string";
 	
 	//used to check whether tax calculations should be run again
@@ -113,7 +114,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// Related Object Properties (many-to-many - inverse)
 
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -1891,6 +1893,16 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return savedAccountPaymentMethod;
 	}
+	
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
 
 	// =================== START: ORM Event Hooks  =========================
 
@@ -1905,9 +1917,21 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public void function preUpdate(Struct oldData){
+		var orderStatusType = getOrderStatusType();
+		if( orderStatusType.getSystemCode() == 'ostNotPlaced' 
+			&& structKeyExists(arguments.oldData, 'orderStatusType')
+			&& !isNull(arguments.oldData['orderStatusType'])
+			&& arguments.oldData.orderStatusType.getSystemCode() != 'ostNotPlaced'){
+			//Log that this occurred in the Slatwall Log
+			logHibachi("Order: #this.getOrderID()# tried to update it's order status type to Not Placed. This change has been prevented. Old Order Status Type ID: #arguments.oldData.orderStatusType.getTypeID()#", true);
+			throw("Order: #this.getOrderID()# tried to update it's order status type to Not Placed. This change has been prevented. Old Order Status Type ID: #arguments.oldData.orderStatusType.getTypeID()#");
+			}
+
 		super.preUpdate(argumentCollection=arguments);
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
+
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================
+			
 }

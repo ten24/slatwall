@@ -356,8 +356,8 @@ component extends="HibachiService" accessors="true" {
 					
 				// Add empty primaryIDProperyName primaryID key/value paid to represent old null value
 				} else if (structKeyExists(auditablePropertiesStruct[propertyName], "cfc")) {
-					propertyChangeData.oldPropertyData[propertyName] = {'#getPrimaryIDPropertyNameByEntityName(auditablePropertiesStruct[propertyName].cfc)#'=""};
-					structInsert(oldPropertyValueMappingData, '#propertyName#-#getPrimaryIDPropertyNameByEntityName(auditablePropertiesStruct[propertyName].cfc)#', "", true);
+					propertyChangeData.oldPropertyData[propertyName] = {'#getService("HibachiService").getPrimaryIDPropertyNameByEntityName(auditablePropertiesStruct[propertyName].cfc)#'=""};
+					structInsert(oldPropertyValueMappingData, '#propertyName#-#getService("HibachiService").getPrimaryIDPropertyNameByEntityName(auditablePropertiesStruct[propertyName].cfc)#', "", true);
 				}
 			}
 		}
@@ -431,7 +431,7 @@ component extends="HibachiService" accessors="true" {
 			structInsert(arguments.mappingData, '#arguments.mappingPath#', standardizedValue, true);
 		// Entity
 		} else if (structKeyExists(arguments.propertyMetaData, "cfc")) {
-			var entityPrimaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.propertyMetaData.cfc);
+			var entityPrimaryIDPropertyName = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(arguments.propertyMetaData.cfc);
 			
 			standardizedValue = {};
 			standardizedValue['#entityPrimaryIDPropertyName#'] = "";
@@ -624,8 +624,8 @@ component extends="HibachiService" accessors="true" {
 		if (listFindNoCase('update,rollback,archive', arguments.audit.getAuditType())) {
 			changeDetails.columnList = listAppend(changeDetails.columnList, 'old');
 		}
-		
-		for (var currentProperty in getEntityObject(arguments.audit.getBaseObject()).getAuditableProperties()) {
+		var entityObject = getService('hibachiService').getEntityObject(arguments.audit.getBaseObject());
+		for (var currentProperty in entityObject.getAuditableProperties()) {
 			var changeDetail = {};
 			changeDetail['propertyName'] = currentProperty.name;
 			changeDetail['attributeFlag'] = false;
@@ -651,7 +651,7 @@ component extends="HibachiService" accessors="true" {
 					} else if (structKeyExists(currentProperty, 'cfc')) {
 						if (isStruct(dataValue)) {
 							// Get actual reference to entity
-							var entityPrimaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
+							var entityPrimaryIDPropertyName = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
 							var entityService = getServiceByEntityName(currentProperty.cfc);
 							if (structKeyExists(dataValue, entityPrimaryIDPropertyName)) {
 								columnValue = entityService.invokeMethod( 'get#listLast(currentProperty.cfc,'.')#', {1=dataValue[entityPrimaryIDPropertyName],2=false});

@@ -451,7 +451,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				orderItem.setAppliedPriceGroup(javaCast("null",""));
 			
-				if(!isNull(arguments.order.getAccount()) && isNull(orderItem.getOrder().getPriceGroup())){
+				if( !isNull(arguments.order.getAccount()) ){
 					
 					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
 						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
@@ -467,11 +467,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						orderItem.setPrice( priceGroupDetails.price );
 						orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
 					}
-					
-				}else if(!isNull(orderItem.getOrder().getPriceGroup())){
-					orderItem.setPrice(orderItem.getSku().getPriceByCurrencyCode(currencyCode=arguments.order.getCurrencyCode(), priceGroups=[arguments.order.getPriceGroup()]));
-					orderItem.setAppliedPriceGroup( orderItem.getOrder().getPriceGroup() );
 				}
+				
 			}
 		}
 	}

@@ -12,10 +12,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		config[ 'applicationKey' ] = getApplicationValue('applicationKey');
 		config[ 'baseURL' ] = getApplicationValue('baseURL');
 
-		if( right(config['baseURL'], 1) != '/'){
-			config['baseURL'] = config['baseURL']&'/'; 
-		}
-
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = 'mmm dd, yyyy';
 		config[ 'timeFormat' ] = 'hh:mm tt';

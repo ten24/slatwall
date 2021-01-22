@@ -70,7 +70,6 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="total" persistent="false" hb_formatType="currency"; 
 	property name="taxableAmountTotal" persistent="false";  
 	
-	
 
 	public numeric function getTotal(){
 		
@@ -119,5 +118,4 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 		}
 		structDelete(variables, "orderTemplate");
 	}		
-	
 }

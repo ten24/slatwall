@@ -63,17 +63,17 @@ Notes:
 			<cfif !isNull(integrationCFC)>
     			<cfloop array="#integrationCFC.getDetailActions()#" index="local.detailAction">
     			    <hb:HibachiActionCaller 
-    			        action="#detailAction.action#" 
+    			        action="#local.detailAction.action#" 
     			        type="list" 
-    			        modal="#structKeyExists(detailAction,'modal')?detailAction.modal:false#"
+    			        modal="#structKeyExists(local.detailAction, 'modal' ) ? local.detailAction.modal : false #"
     			    />
     			</cfloop>
-			</cfif>
+    		</cfif>
 		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiEntityDetailGroup object="#rc.integration#">
 			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif !isNull(integrationCFC)>
+			<cfif !isNull(integrationCFC) >
 			    <hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
 			</cfif>
 		</hb:HibachiEntityDetailGroup>

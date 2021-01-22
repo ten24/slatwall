@@ -53,7 +53,7 @@ class SWProductBundleGroupController {
 	public refreshProductBundleGroup;
     public productBundleGroups; 
 
-    //@ngInject
+    // @ngInject
 	constructor(private $log:ng.ILogService,
                 private $timeout:ng.ITimeoutService,
 				private collectionConfigService,

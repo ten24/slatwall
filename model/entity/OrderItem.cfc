@@ -77,7 +77,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="orderItemStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemStatusType" fetch="join";
 	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true" fetch="join";
 	property name="stock" hb_populateEnabled="public" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
-	property name="order" hb_populateEnabled="false" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
+	property name="order" hb_populateEnabled="private" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
 	property name="parentOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="parentOrderItemID";
@@ -107,7 +107,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	// Remote properties
 	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
-	property name="remoteID" ormtype="string";
+    property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -243,7 +244,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
-			if(isEmpty(maxQTY)){
+			if(this.hibachiIsEmpty(maxQTY)){
 				//Set maximum quantity by global setting
 				maxQTY = setting('skuOrderMaximumQuantity');		
 			}
@@ -474,7 +475,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			var price = 0;
 		
 			//get bundle price
-			if(!isnull(getSku()) && !isNull(getSku().getProduct()) && !isNull(getSku().getProduct().getProductType()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(!isnull(getSku()) && getDAO('skuDAO').getProductTypeSystemCodeBySkuID(getSku().getSkuID()) == 'productBundle'){
 				price = getProductBundlePrice();
 			}else if(!isNull(getPrice())){
 				price = getPrice();
@@ -1190,6 +1191,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		return variables.assignedAttributeSetSmartList;
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1204,5 +1214,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	}
 
-	// ===================  END:  ORM Event Hooks  =========================
+
+	// ===================  END:  ORM Event Hooks  =========================	
+		
 }

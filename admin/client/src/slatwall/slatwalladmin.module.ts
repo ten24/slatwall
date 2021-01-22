@@ -5,6 +5,8 @@ import {workflowmodule} from "../../../../org/Hibachi/client/src/workflow/workfl
 import {collectionmodule} from "../../../../org/Hibachi/client/src/collection/collection.module";
 import {listingmodule} from "../../../../org/Hibachi/client/src/listing/listing.module";
 import {cardmodule} from "../../../../org/Hibachi/client/src/card/card.module";
+import {widgetmodule} from "../../../../org/Hibachi/client/src/widget/widget.module";
+
 
 import {accountmodule} from "../account/account.module";
 import {addressmodule} from "../address/address.module";
@@ -43,6 +45,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   collectionmodule.name,
   listingmodule.name,
   cardmodule.name,
+  widgetmodule.name,
   //custom modules
   accountmodule.name,
   addressmodule.name,
@@ -77,7 +80,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      datepickerPopupConfig.toggleWeeksText = null;
 
 
-
      // route provider configuration
 
 
@@ -100,7 +102,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }])
  //services
 //directives
-
 //controllers
 .controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',($scope:any, $compile)=> {
     //Define the different payment types used here
@@ -170,7 +171,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }
 }])
 //filters
-
 ;
 export{
     slatwalladminmodule

@@ -61,6 +61,6 @@ Notes:
 	        edit="#rc.edit#" 
 	        displaytype="plainTitle"
 	        showSimpleListingControls="false"
-	        hideUnfilteredResults="true"/>
+	        hideAllResults="true"/>
 	</div>
 </cfoutput>

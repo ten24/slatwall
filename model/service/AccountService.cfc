@@ -171,6 +171,102 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Process Methods ===========================
 	
+	public any function getAllOrdersOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        param name="arguments.data.orderID" default= "";
+        
+		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
+
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			calculatedTotal,
+			createdDateTime,
+			orderStatusType.typeName,
+			orderFulfillments.shippingAddress.streetAddress,
+			orderFulfillments.shippingAddress.street2Address,
+			orderFulfillments.shippingAddress.city,
+			orderFulfillments.shippingAddress.stateCode,
+			orderFulfillments.shippingAddress.postalCode	
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		
+		if( len(arguments.data.orderID) ){
+		    ordersList.addFilter( 'orderID', arguments.data.orderID );
+		}
+		ordersList.addGroupBy('orderID');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		var orderRecords = ordersList.getPageRecords(formatRecord = false);
+		
+		var orderIDs = [];
+		for( var order in orderRecords) {
+			ArrayAppend( orderIDs, order['orderID']);
+		}
+		
+		//get orders with delivery tracking numbers
+		var orderDeliveriesCollectionList = getOrderService().getOrderDeliveryCollectionList();
+		orderDeliveriesCollectionList.setDisplayProperties('order.orderID, trackingNumber');
+		orderDeliveriesCollectionList.addFilter( 'order.orderID', ArrayToList(orderIDs), 'IN');
+		
+		return { 
+			"ordersOnAccount": orderRecords, 
+			"orderDeliveries": orderDeliveriesCollectionList.getRecords(formatRecord = true),
+			"records": ordersList.getRecordsCount()
+		};
+	}
+	
+	/**
+	 * Function to get All Parents on Account
+	 * */
+	public any function getAllParentsOnAccount(required any account) {
+		var parentAccountCollectionList = this.getAccountRelationshipCollectionList();
+		parentAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												parentAccount.emailAddress, 
+												parentAccount.firstName, 
+												parentAccount.lastName, 
+												parentAccount.accountID');
+		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.account.getAccountID() );
+		parentAccountCollectionList.addFilter( 'activeFlag', 1);
+		return parentAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	/**
+	 * Function to get All Childs on Account
+	 * */
+	public any function getAllChildsOnAccount(required any account) {
+		
+		var childAccountCollectionList = this.getAccountRelationshipCollectionList();
+		childAccountCollectionList.setDisplayProperties('accountRelationshipID, 
+												childAccount.emailAddress, 
+												childAccount.firstName, 
+												childAccount.lastName, 
+												childAccount.accountID');
+		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.account.getAccountID() );
+		childAccountCollectionList.addFilter( 'activeFlag', 1 );
+		return childAccountCollectionList.getRecords(formatRecord = false);
+	}
+	
+	public any function getAvailablePaymentMethods(required any account, struct data = {}) {
+		
+		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
+		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
+		accountPaymentMethodList.addFilter("account.accountID", arguments.account.getAccountID() );
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
+		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
+		accountPaymentMethodList.addFilter('activeFlag', 1);
+		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
+
+		return accountPaymentMethodList;
+	}
+	
+	
 	public struct function getAccountPaymentTransactionData(required any accountPayment){
 		var transactionData = {
 				amount = arguments.accountPayment.getAmount()

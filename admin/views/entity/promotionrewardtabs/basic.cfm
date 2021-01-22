@@ -13,6 +13,7 @@
 			<cfif rc.rewardType NEQ "canPlaceOrder">
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="amountType" fieldType="select" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="amount" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="publishedFlag" edit="#rc.edit#" />
 				<hb:HibachiDisplayToggle selector="select[name=amountType]" showValues="percentageOff" loadVisable="#rc.promotionReward.getNewFlag() || rc.promotionReward.getValueByPropertyIdentifier('amountType') eq 'percentageOff'#">
 					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="roundingRule" edit="#rc.edit#" />
 				</hb:HibachiDisplayToggle>

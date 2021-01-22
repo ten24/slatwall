@@ -22,7 +22,9 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 	public any function getServerInstanceByServerInstanceKey(required string serverInstanceKey, boolean returnNewIfNotFound, string serverInstanceIPAddress){
+		getHibachiScope().setValue('dirtyReadAllowed',true);
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceKey',missingMethodArguments=arguments);
+		getHibachiScope().setValue('dirtyReadAllowed',false);
 		
 		if(isNull(serverInstance)){
 			lock name="create_serverinstance_#arguments.serverInstanceKey#" type="exclusive" timeout="10"  {
@@ -128,7 +130,6 @@ component accessors="true" output="false" extends="HibachiService" {
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	
-
 	public any function getCachedValue( required string key ) {
 		verifyCacheKey(arguments.key);
 

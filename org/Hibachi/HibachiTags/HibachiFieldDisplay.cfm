@@ -101,6 +101,10 @@
 								
 									<cfif attributes.fieldType EQ "password" AND len(attributes.value) GT 0 >
 									    <p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">****</p>
+									<cfelseif attributes.fieldType EQ "json" >
+									    <pre class="#attributes.fieldClass#">
+                					        #attributes.value#
+                					    </pre>
 									<cfelse>
 										<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 									</cfif>

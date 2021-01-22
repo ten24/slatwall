@@ -66,7 +66,8 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-	
+	property name="expirationDate" hb_populateEnabled="true" ormtype="timestamp";
+
 	
 	property name="governmentIdentificationNumber" persistent="false";
 	
@@ -143,5 +144,5 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	
 }

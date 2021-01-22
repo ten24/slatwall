@@ -76,6 +76,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesMQATSBOMFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuStockHold" settingObject="#rc.sku#"/>
 		<swa:SlatwallSetting settingName="skuStockHoldTime" settingObject="#rc.sku#"/>
 		<swa:SlatwallSetting settingName="skuDisableAverageCostCalculation" settingObject="#rc.sku#"/>

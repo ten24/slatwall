@@ -79,7 +79,84 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	/**
+	 * Function to return order details - it includes following 
+	 * - order items
+	 * - order fulfillment
+	 * - order payments
+	 * */
+	public any function getOrderDetails(required string orderID, string accountID) {
+		
+        param name="arguments.accountID" default=getHibachiScope().getAccount().getAccountID();
+        //check if user is a superUser, if yes then we won't check for Account ID with order
+        var superUser = false;
+        var account = getAccountService().getAccount(arguments.accountID);
+        if(!isNull(account)) {
+        	superUser = getAccountService().getAccount(arguments.accountID).getSuperUserFlag();
+        }
+        
+        
+        var orderDetails = {}; //return object
+        
+        //Order Information
+        var orderCollectionList = this.getOrderCollectionList();
+        orderCollectionList.setDisplayProperties('orderID, calculatedTotalQuantity, estimatedFulfillmentDateTime, currencyCode, calculatedSubTotalAfterItemDiscounts, orderCloseDateTime, calculatedDiscountTotal, calculatedTaxTotal, quoteFlag, calculatedTotalItems, calculatedTotal, calculatedSubTotal, orderOpenDateTime, calculatedFulfillmentTotal, orderNumber, modifiedDateTime, orderStatusType.typeName, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode');
+        orderCollectionList.addFilter( 'orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderCollectionList.addFilter( 'account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderInfo'] = orderCollectionList.getRecords(formatRecords = false);
+        
+    	///Order Items Information
+		var ordersItemsCollectionList = this.getOrderItemCollectionList();
+		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle');
+		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		var orderItems = ordersItemsCollectionList.getRecords(formatRecords = false);
+		//Append images to products
+		orderItems = getService("productService").appendImagesToProduct(orderItems, "sku_imageFile", false);
+		
+        orderDetails['orderItems'] = orderItems;
+		
+		//Order Payments Information
+		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();
+		orderPaymentCollectionList.setDisplayProperties('order.orderID,paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
+		orderPaymentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderPaymentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		
+		orderDetails['orderPayments'] = orderPaymentCollectionList.getRecords(formatRecords = false);
+		
+		// //Order Promotions Information
+		var orderPromotionCollectionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
+		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount')
+		orderPromotionCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderPromotionCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderPromotions'] = orderPromotionCollectionList.getRecords(formatRecords = false);
+		
+		///Order Fulfillment Information
+		var ordersFulfillmentCollectionList = this.getOrderItemCollectionList();
+		ordersFulfillmentCollectionList.setDisplayProperties('orderItemID,order.orderID,orderDeliveryItems.orderDelivery.trackingNumber,orderDeliveryItems.orderDelivery.createdDateTime,orderDeliveryItems.orderDelivery.invoiceNumber,sku.skuID, orderFulfillment.fulfillmentCharge, orderFulfillment.currencyCode, orderFulfillment.estimatedDeliveryDateTime, orderFulfillment.estimatedFulfillmentDateTime, orderFulfillment.fulfillmentMethod.fulfillmentMethodName, orderFulfillment.fulfillmentMethod.fulfillmentMethodType, orderFulfillment.pickupLocation.locationName, orderFulfillment.shippingAddress.streetAddress, orderFulfillment.shippingAddress.street2Address, orderFulfillment.shippingAddress.city, orderFulfillment.shippingAddress.stateCode, orderFulfillment.shippingAddress.postalCode, orderFulfillment.shippingAddress.name, orderFulfillment.shippingAddress.countryCode, orderFulfillment.shippingMethod.shippingMethodName, orderFulfillment.shippingMethod.shippingMethodCode');
+		ordersFulfillmentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			ordersFulfillmentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderFulfillments'] = ordersFulfillmentCollectionList.getRecords(formatRecords = false);
+		
+		return orderDetails;
+    }
+	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
 		var orderRequirementsList = "";
 
@@ -144,6 +221,90 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return orderRequirementsList;
 	}
+	
+	//Function get all available order paymentss
+	public any function getAppliedOrderPayments(required any order) {
+		var appliedPaymentMethods = this.getOrderPaymentCollectionList();
+		appliedPaymentMethods.setDisplayProperties('expirationYear, purchaseOrderNumber, nameOnCreditCard, expirationMonth, creditCardLastFour, currencyCode, orderPaymentID, amount, creditCardType');
+	    appliedPaymentMethods.addFilter("order.orderID",arguments.order.getOrderID());
+	    appliedPaymentMethods.addFilter("orderPaymentStatusType.systemCode","opstActive");
+	    //writeDump("#appliedPaymentMethods.getHQL()#");
+	    return appliedPaymentMethods.getRecords(formatRecords = false);
+	}
+	
+	/**
+     * Function to get all carts and quotes for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllCartsAndQuotesOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderCollectionList();
+
+		ordersList.addOrderBy('createdDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			orderStatusType.typeName,
+			calculatedTotal,
+			createdDateTime
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+    
+    /**
+     * Function to get all order fulfillments for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderFulfillmentsOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderFulfillmentCollectionList();
+		ordersList.setDisplayProperties(' orderFulfillmentID, estimatedShippingDate, pickupDate, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderFulfillmentStatusType.typeName');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+	
+	/**
+     * Function to get all order deliveries for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderDeliveryOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderDeliveryCollectionList();
+		ordersList.setDisplayProperties(' orderDeliveryID, invoiceNumber, trackingNumber, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber'); //TODO: not included property yet orderDeliveryStatusType.typeName
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+		
+		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
+	}
+	
 	
 	public string function getProductsScheduledForDelivery(required any currentDateTime){
 		
@@ -836,6 +997,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name");
 		list.addFilter("account.accountID",arguments.accountID);
 		list.addFilter("orderTemplateType.typeID","2c9280846b712d47016b75464e800014");
+		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
 		return list.getRecords();
 	}
 	
@@ -903,14 +1065,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !structKeyExists(arguments.data, 'removalSkuID') ){
 			arguments.orderTemplate.addError('removalSku',getHibachiScope().rbKey('validate.orderTemplate_removeSku.removalSkuID'));
 		}
-		var orderTemplateItemCollection = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
-		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID');
-		var itemRecords = orderTemplateItemCollection.getRecords();
-		for(var itemRecord in itemRecords){
-			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
-			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
-			this.saveOrderTemplate(arguments.orderTemplate);
+		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
+		getOrderDAO().removeOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID);
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			getService('HibachiEntityQueueService').insertEntityQueueItem(baseID=orderTemplateID, baseObject="OrderTemplate", processMethod='processOrderTemplate_updateCalculatedProperties');
 		}
 		return arguments.orderTemplate;
 	}
@@ -922,20 +1080,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !structKeyExists(arguments.data, 'replacementSkuID') ){
 			arguments.orderTemplate.addError('replacementSku',getHibachiScope().rbKey('validate.orderTemplate_replaceSku.replacementSkuID'));
 		}
-		var orderTemplateItemCollection = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
-		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
-		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,quantity');
-		var itemRecords = orderTemplateItemCollection.getRecords();
-		for(var itemRecord in itemRecords){
-			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
-			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
-			
-			var addOrderTemplateItemProcessData = {
-				'skuID':arguments.data.replacementSkuID,
-				'quantity':itemRecord['quantity']
-			};
-			arguments.orderTemplate = this.processOrderTemplate(arguments.orderTemplate, addOrderTemplateItemProcessData, 'addOrderTemplateItem');
+		
+		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
+		getOrderDAO().replaceOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID, arguments.data.replacementSkuID);
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			getService('HibachiEntityQueueService').insertEntityQueueItem(baseID=orderTemplateID, baseObject="OrderTemplate", processMethod='processOrderTemplate_updateCalculatedProperties');
 		}
+		
 		return arguments.orderTemplate;
 	}
 
@@ -1333,7 +1484,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 * 
 	 */ 
 	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
-		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
+		var orderTemplateOrderDetailsKey = arguments.orderTemplate.getOrderTemplateOrderDetailsKey();
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
 			return request[orderTemplateOrderDetailsKey];
@@ -1400,6 +1551,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
+			
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
 			ormFlush();	
@@ -1413,7 +1565,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
 			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
+		}
 		
 		return request[orderTemplateOrderDetailsKey];
 	} 
@@ -1621,12 +1773,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//if the ScheduleOrderDayOfTheMonth has already passed this month, set it to next month
 		if(arguments.orderTemplate.getScheduleOrderDayOfTheMonth() <= day(now())){
-		    var month = month(now) + 1;
+		    var month = (month(now) + 1) MOD 12;
 		}else{
 			var month = month(now);
 		}
 		
 	    var scheduleOrderNextPlaceDateTime = createDate(year, month, day);
+		arguments.orderTemplate.setActivationDateTime(now());
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(scheduleOrderNextPlaceDateTime);
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
 		if( isNull(arguments.data.context)){
@@ -1808,7 +1961,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
 
-			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from orderTemplate success: #!newOrder.hasErrors()#');
+			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from order-template success: #!newOrder.hasErrors()#');
 
 			var processOrderTemplateRemovePromotionCode = arguments.orderTemplate.getProcessObject('removePromotionCode');
 			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
@@ -2184,8 +2337,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} 
 		}
 		return arguments.orderTemplateItem;
-	}  
-
+	} 
 
 	public any function processOrderTemplate_addWishlistItem(required any orderTemplate, required any processObject, required struct data={}){
 
@@ -3576,17 +3728,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var n = ArrayLen(orderItemsToRemove); n >=1; n--)	{
 				var orderItem = this.getOrderItem(orderItemsToRemove[n]);
 
-				if(arraylen(orderItem.getStockHolds())){
-					//currently only supporting singular stockholds
-					var stockHold = orderItem.getStockHolds()[1];
-					if(stockHold.isExpired()){
-						getService('stockService').deleteStockHold(stockHold);
-						arguments.order.removeOrderItem(orderItem);
-						continue;
-					}
-				}
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(!isNull(orderItem) && arrayFindNoCase(orderItemsToRemove, orderItem.getOrderItemID())) {
+					if(arraylen(orderItem.getStockHolds())){
+						//currently only supporting singular stockholds
+						var stockHold = orderItem.getStockHolds()[1];
+						if(stockHold.isExpired()){
+							getService('stockService').deleteStockHold(stockHold);
+							arguments.order.removeOrderItem(orderItem);
+							continue;
+						}
+					}
 
 					var okToRemove = true;
 
@@ -5656,9 +5808,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Check delete validation
 		if(arguments.order.isDeletable()) {
-
+			var sessionOrder = getHibachiScope().getSession().getOrder(false);
 			// If the order is the order in this session, then set this sessions order to null
-			if(arguments.order.getOrderID() eq getHibachiScope().getSession().getOrder().getOrderID()) {
+			if(!isNull(sessionOrder) && arguments.order.getOrderID() == sessionOrder.getOrderID()) {
 				getHibachiScope().getSession().setOrder( javaCast("null", "") );
 			}
 
@@ -5670,7 +5822,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return delete( arguments.order );
 	}
 
-	public any function deleteOrderItem( required any orderItem, updateOrderAmounts = true ) {
+	public any function deleteOrderItem( required any orderItem, boolean updateOrderAmounts = true, boolean setDropSkuRemovedFlag = true ) {
 	
 		getHibachiEventService().announceEvent("beforeOrderItemDelete", arguments);
 
@@ -5680,7 +5832,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Remove the primary fields so that we can delete this entity
 			var order = arguments.orderItem.getOrder();
 		
-			if(arguments.orderItem.getRewardSkuFlag()){
+			if(arguments.orderItem.getRewardSkuFlag() && arguments.setDropSkuRemovedFlag){
 				order.setDropSkuRemovedFlag(true);	
 			}
 			
@@ -5779,7 +5931,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
 			}
 			thisOption['publishedFlag'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getPublishedFlag();
-			thisOption['shippingMethodDescription'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodDescription();
+			thisOption['shippingMethodDescription'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getFormattedValue('shippingMethodDescription');
 			
 			var inserted = false;
 
@@ -6039,4 +6191,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================  END: Deprecated Functions =========================
 
+    public string function getSimpleRepresentation(required any order){
+		if(!isNull(arguments.order.getOrderNumber()) && len(arguments.order.getOrderNumber())) {
+			var representation = arguments.order.getOrderNumber();
+		} else {
+			var representation = rbKey('define.cart');
+		}
+
+		if(!isNull(arguments.order.getAccount())) {
+			representation &= " - #arguments.order.getAccount().getSimpleRepresentation()#";
+		}
+
+		return representation;
+	}
 }

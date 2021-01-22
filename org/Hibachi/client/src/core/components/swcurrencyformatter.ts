@@ -2,7 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 interface SWScope extends ng.IScope{
     ngModel:any,
-    currencyCode:string
+    currencyCode:string,
+    locale:string
 }
 
 class SWCurrencyFormatter {
@@ -11,7 +12,8 @@ class SWCurrencyFormatter {
     public require = "ngModel";
     public scope = {
         ngModel:'=',
-        currencyCode:'@?'
+        currencyCode:'@?',
+        locale:'@?'
     }
 
     // @ngInject;
@@ -19,9 +21,11 @@ class SWCurrencyFormatter {
 	}
 
     public link:ng.IDirectiveLinkFn = ($scope:SWScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
-        
+        if(element[0].nodeName == 'INPUT'){
+            $scope.locale = 'en-us';
+        }
         modelCtrl.$parsers.push((data)=>{
-            
+
             var currencyFilter:any = this.$filter('swcurrency');
             
             if(this._timeoutPromise){
@@ -31,7 +35,7 @@ class SWCurrencyFormatter {
             this._timeoutPromise = this.$timeout(()=>{
                 
                 modelCtrl.$setViewValue(
-                    currencyFilter(data, $scope.currencyCode, 2, false)
+                    currencyFilter(data, $scope.currencyCode, 2, false, $scope.locale)
                 );
                 
                 modelCtrl.$render();
@@ -42,10 +46,11 @@ class SWCurrencyFormatter {
         });
         
         modelCtrl.$formatters.push((data)=>{
+
             var currencyFilter:any = this.$filter('swcurrency');
             
             modelCtrl.$setViewValue(
-                currencyFilter(data, $scope.currencyCode, 2, false)
+                currencyFilter(data, $scope.currencyCode, 2, false, $scope.locale)
             );
             modelCtrl.$render();
 

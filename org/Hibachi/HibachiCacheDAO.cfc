@@ -113,11 +113,13 @@ component extends="HibachiDAO" {
 
 	public void function deleteStaleServerInstance(){
 		var queryService = new query();
+		queryService.addParam(name='clusterName', value='#getHibachiScope().getApplicationValue("applicationCluster")#', CFSQLTYPE='cf_sql_varchar');
 		queryService.addParam(name='datetimebefore', value='#DateAdd("n",-10,now())#', CFSQLTYPE='cf_sql_timestamp');
 			
 		var sql =	"DELETE FROM SwServerInstance
 					 WHERE lastRequestDateTime < :datetimebefore
 					 AND lastRequestDateTime IS NOT NULL
+					 AND serverInstanceClusterName = :clusterName
 					";
 						
 		queryService.execute(sql=sql);

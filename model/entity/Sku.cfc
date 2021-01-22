@@ -78,6 +78,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
 	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
+	property name="defaultImageModifiedDateTime" ormtype="timestamp" description="This field can be set to for image cache.";
+
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
@@ -136,7 +138,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
 
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -1065,6 +1069,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+	
+	/**
+	 * Helper method to populate Eligible Fulfillment methods for SKU
+	 * */
+	public array function getEligibleFulfillmentMethodsWithShippingMethods() {
+		if(!structKeyExists(variables, "eligibleFulfillmentMethodsWithShippingMethods")) {
+			var fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethodCollectionList();
+			fulfillmentMethod.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType")
+			fulfillmentMethod.addFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'), "IN");
+			fulfillmentMethod.addOrderBy('sortOrder');
+			variables.eligibleFulfillmentMethodsWithShippingMethods = fulfillmentMethod.getRecords(formatRecord = false);
+		}
+		return variables.eligibleFulfillmentMethodsWithShippingMethods;
 	}
 
 	public any function getBundledSkusCount() {
@@ -2058,5 +2076,5 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return !getDefaultFlag();
     }
 
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	
 }

@@ -190,7 +190,7 @@ component output="false" update="true" extends="HibachiService" {
 	
 	public any function getEntityEventNameOptions(string eventfilter=""){
 		var opArr = [];
-		var emd = getEntitiesMetaData();
+		var emd = getService("hibachiService").getEntitiesMetaData();
 		var entityNameArr = listToArray(structKeyList(emd));
 		arraySort(entityNameArr, "text");
 		for(var i=1; i<=arrayLen(entityNameArr); i++) {
@@ -249,29 +249,6 @@ component output="false" update="true" extends="HibachiService" {
 		return opArr;
 	}
 	
-	private struct function getEventNameOptionsStruct(required string entityName, string position="before", string process="save", string status=""){
-		var optionStruct = {};
-		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#arguments.entityName#')# - ";
-		
-		var processPrefix = "";
-		if(lcase(arguments.process) != 'save' && lcase(arguments.process) != 'delete' && lcase(arguments.process) != 'create'){
-			processPrefix = "Process_";
-			optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('entity.#arguments.entityName#.process.#arguments.process#')#";
-		}else{
-			optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('define.#arguments.process#')#"; 
-		}
-		if(len(arguments.status)){
-			optionStruct['name'] &= " #getHibachiScope().rbKey('define.#arguments.status#')# | #arguments.position##entityName##processPrefix##arguments.process##arguments.status#";
-		}else{
-			optionStruct['name'] &= " | #arguments.position##arguments.entityName##processPrefix##arguments.process#";	
-		}
-		
-		optionStruct['value'] = "#arguments.position##entityName##processPrefix##arguments.process##arguments.status#";
-		optionStruct['entityName'] = arguments.entityName;
-		
-		return optionStruct;
-	}
-	
 	public struct function getTriggerEventRBKeyHashMapByEntityName(required string entityName){
 		
 		if(!structKeyExists(variables.triggerEventRBKeyHashMap,arguments.entityName)){
@@ -282,47 +259,16 @@ component output="false" update="true" extends="HibachiService" {
 	
 	public any function getEventNameOptionsForObject(required string objectName, boolean doOneToManyOptions = true) {
 		if(!structKeyExists(variables.EventNameOptions,arguments.objectName)){
-			var opArr = [];
 			
-			var emd = getEntityMetaData(arguments.objectName);
+			var entityService = getServiceByEntityName(arguments.objectName); 	
 			
-			var entityName = arguments.objectName;
+			variables.EventNameOptions[arguments.objectName] = entityService.invokeMethod('get#arguments.objectName#EventOptions', {"1":arguments.doOneToManyOptions});
 			
-			var positions = ['before','after'];
-			var processes = ['Save','Delete','Create'];
-			var statuses = ['','Success','Failure'];
-			
-			if(structKeyExists(emd, "hb_processContexts")) {
-				
-				for(var c=1; c<=listLen(emd.hb_processContexts); c++) {
-					var thisContext = listGetAt(emd.hb_processContexts, c);
-					arrayAppend(processes,thisContext);	
-				}
+			for(var optionStruct in variables.EventNameOptions[arguments.objectName]){	
+				variables.triggerEventRBKeyHashMap[arguments.objectName] = {};
+				variables.triggerEventRBKeyHashMap[arguments.objectName][optionStruct['value']] = optionStruct['name'];
 			}
 			
-			for(var process in processes){
-				for(var position in positions){
-					for(var status in statuses){
-						var optionStruct = getEventNameOptionsStruct(arguments.objectName,position,process,status);
-					
-						arrayAppend(opArr, optionStruct);
-						variables.triggerEventRBKeyHashMap[arguments.objectName] = {};
-						variables.triggerEventRBKeyHashMap[arguments.objectName][optionStruct['value']] = optionStruct['name'];
-					}
-				}
-			}
-			
-			if(arguments.doOneToManyOptions){
-				var propertiesArrayLength = arrayLen(emd.properties);
-				for(var d=1; d<=propertiesArrayLength;d++){
-					var property = emd.properties[d];
-					if(structKeyExists(property,'fieldType') && property.fieldType == 'one-to-many' && property.cfc != arguments.objectName){
-						var relationshipOptions = getEventNameOptionsForObject(property.CFC,false);
-						opArr = getService('hibachiUtilityService').arrayConcat(opArr,relationshipOptions);
-					}
-				}
-			}
-			variables.EventNameOptions[arguments.objectName] = opArr;
 		}
 		
 		return variables.EventNameOptions[arguments.objectName];

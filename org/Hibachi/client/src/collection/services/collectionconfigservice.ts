@@ -134,7 +134,6 @@ class CollectionConfig {
                 this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
             }
         }
-        
     }
 
     public clearFilterGroups=():CollectionConfig=>{

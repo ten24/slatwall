@@ -59,7 +59,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	public string function getDisplayName() {
 		return "Nexio";
 	}
-
+	
 	public struct function getSettings() {
 		var settings = {
 			apiUrlLive = {fieldType="text", defaultValue="https://api.nexiopay.com"},
@@ -74,6 +74,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			testMode = {fieldType="yesno", defaultValue="1"},
 			usernameLive = {fieldType="text"},
 			usernameTest = {fieldType="text"},
+			allowCBDFlag = {fieldType="yesno", defaultValue="0"},
 			verifyAvsSetting = {fieldType="select", defaultValue="3",
 			valueOptions=[
 				{name="Do not perform AVS check", value=0},
@@ -94,6 +95,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	}
 
 	public string function getAllowedSiteSettingNames() {
-		return "checkFraud,verifyAvsSetting,verifyCvcFlag";
+		return "checkFraud,verifyAvsSetting,verifyCvcFlag,allowCBDFlag";
 	}
 }

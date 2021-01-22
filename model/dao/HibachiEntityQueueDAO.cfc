@@ -48,5 +48,19 @@ Notes:
 --->
 <cfcomponent extends="Slatwall.org.Hibachi.HibachiEntityQueueDAO">
 
-
+	<cffunction name="deleteBatchItems" returntype="void" access="public">
+		<cfargument name="batchID" type="string" required="true" />
+		
+		<cfquery name="rs">
+			DELETE FROM Swentityqueue 
+			WHERE batchID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.batchID#" />
+		</cfquery>
+		
+		<cfquery name="rs">
+			DELETE FROM swentityqueuefailure 
+			WHERE batchID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.batchID#" />
+		</cfquery>
+		
+	</cffunction>
+	
 </cfcomponent>

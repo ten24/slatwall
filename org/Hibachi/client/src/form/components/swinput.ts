@@ -266,7 +266,8 @@ class SWInputController{
 
 		var dateFieldTypes = ['date','datetime','time'];
 		if(dateFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
-			template = template + 'datetime-picker ';
+		    this.$scope.elementScope = this.$scope;
+			template = template + 'datetime-picker element-scope="swInput.$scope.elementScope" ';
 		}
 		if(this.fieldType === 'time'){
 			template = template + 'data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" ng-blur="swInput.pushBindings()"';

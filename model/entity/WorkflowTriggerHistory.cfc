@@ -94,6 +94,24 @@ component entityname="SlatwallWorkflowTriggerHistory" table="SwWorkflowTriggerHi
 	
 	// ============= START: Bidirectional Helper Methods ===================
 
+	// workflowTrigger (many-to-one)
+	public void function setWorkflowTrigger(required any workflowTrigger) {
+		variables.workflowTrigger = arguments.workflowTrigger;
+		if(isNew() or !arguments.workflowTrigger.hasWorkflowTriggerHistory( this )) {
+			arrayAppend(arguments.workflowTrigger.getWorkflowTriggerHistories(), this);
+		}
+	}
+	public void function removeWorkflowTrigger(any workflowTrigger) {
+		if(!structKeyExists(arguments, "workflowTrigger")) {
+			arguments.workflowTrigger = variables.workflowTrigger;
+		}
+		var index = arrayFind(arguments.workflowTrigger.getWorkflowTriggerHistories(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.workflowTrigger.getWorkflowTriggerHistories(), index);
+		}
+		structDelete(variables, "workflowTrigger");
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================

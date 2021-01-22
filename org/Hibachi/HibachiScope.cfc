@@ -7,8 +7,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="content" type="any";
 	property name="session" type="any";
 	property name="loggedInAsAdminFlag" type="boolean";
-	property name="publicPopulateFlag" type="boolean";
-	property name="workflowPopulateFlag" type="boolean";
+	property name="objectPopulateMode" type="string" default="default"; // default, private, public
 	property name="persistSessionFlag" type="boolean";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
@@ -31,8 +30,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public any function init() {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
-		setPublicPopulateFlag( false );
-		setWorkflowPopulateFlag( false );
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
@@ -236,7 +233,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	// @hint facade method to set values in the session scope
-	public void function setSessionValue(required any key, required any value) {
+	public void function setSessionValue(required any key, required any value) localmode = "modern"{
 		var sessionKey = "";
 		if(structKeyExists(COOKIE, "JSESSIONID")) {
 			sessionKey = COOKIE.JSESSIONID;
@@ -245,11 +242,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		} else if (structKeyExists(COOKIE, "CFID")) {
 			sessionKey = COOKIE.CFID;
 		}
-		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_#arguments.key#" timeout="10" {
-			if(!structKeyExists(session, getHibachiInstanceApplicationScopeKey())) {
-				session[ getHibachiInstanceApplicationScopeKey() ] = {};
+		var instanceApplicationScopeKey = getHibachiInstanceApplicationScopeKey();
+		lock name="#sessionKey#_#instanceApplicationScopeKey#_#arguments.key#" timeout="10" {
+			if(!structKeyExists(session, instanceApplicationScopeKey)) {
+				session[ instanceApplicationScopeKey ] = {};
 			}
-			session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ] = arguments.value;
+			session[ instanceApplicationScopeKey ][ arguments.key ] = arguments.value;
 		}
 	}
 	

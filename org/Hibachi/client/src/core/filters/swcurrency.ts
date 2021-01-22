@@ -8,8 +8,11 @@ class SWCurrency{
     public static Factory($sce,$log,$hibachi,$filter){
         var data = null, serviceInvoked = false,locale='en-us';
         
-        function realFilter(value, currencyCode:string, decimalPlace:number = 2, returnStringFlag = true) {
-         
+        function realFilter(value, currencyCode:string, decimalPlace:number = 2, returnStringFlag = true,localeOverride?) {
+            let useLocale = locale;
+            if(localeOverride){
+                useLocale = localeOverride
+            }
             if( isNaN( parseFloat(value) )  ){
                 return returnStringFlag ? "--" : undefined; 
             } 
@@ -19,7 +22,7 @@ class SWCurrency{
             }
    
             try{
-                let newValue = parseFloat(value).toLocaleString(locale,{minimumFractionDigits:2,maximumFractionDigits:2});
+                let newValue = parseFloat(value).toLocaleString(useLocale,{minimumFractionDigits:2,maximumFractionDigits:2});
                 value = newValue;
             }catch(e){
             }
@@ -47,7 +50,7 @@ class SWCurrency{
             return value;
         }
 
-        var filterStub: any = function(value, currencyCode:string, decimalPlace:number, returnStringFlag =true) {
+        var filterStub: any = function(value, currencyCode:string, decimalPlace:number, returnStringFlag =true,localeOverride) {
             if( data == null && returnStringFlag) {
                 if( !serviceInvoked ) {
                     serviceInvoked = true;
@@ -59,7 +62,7 @@ class SWCurrency{
                 return  "--" + value;
             }
             else {
-                return realFilter(value,currencyCode,decimalPlace,returnStringFlag);
+                return realFilter(value,currencyCode,decimalPlace,returnStringFlag,localeOverride);
             }
         }
         

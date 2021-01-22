@@ -240,7 +240,7 @@ export class BaseBootStrapper{
         
         return this.getInstantiationKey()
         .then( (instantiationKey) => {
-            return this.$http.get( urlString + 'custom/system/config.json?instantiationKey=' + instantiationKey ) 
+            return this.$http.get( urlString + '/custom/system/config.json?instantiationKey=' + instantiationKey ) 
         })
         .then( (resp: any) => resp.data.data )
         .then( (data) => {
@@ -276,7 +276,7 @@ export class BaseBootStrapper{
             return this._resourceBundle[locale];
         }
 
-        var urlString = this.appConfig.baseURL + 'custom/system/resourceBundles/' + locale + '.json?instantiationKey=' + this.appConfig.instantiationKey;
+        var urlString = this.appConfig.baseURL + '/custom/system/resourceBundles/' + locale + '.json?instantiationKey=' + this.appConfig.instantiationKey;
         this.$http({ url:urlString,  method:"GET" })
         .success( (response:any, status, headersGetter ) => {
             this._resourceBundle[locale] = response;

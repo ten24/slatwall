@@ -72,6 +72,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if( (left(itemname,10) == 'preprocess'  || left(itemname,7) == 'process' )
 			&& structKeyExists(arguments, 'processContext') 
 			&& len(arguments.processContext)
+			&& right(itemName, len(arguments.processContext)) != arguments.processContext
 		){
 			itemName &= '_#arguments.processContext#';
 		}
@@ -396,7 +397,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						
 						// If for some reason this entities permissions are managed by a parent entity then define it as such
 						if(entityMetaData.hb_permission neq "this") {
-							entityPermissions[ entityName ]['inheritPermissionEntityName'] = getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
+							entityPermissions[ entityName ]['inheritPermissionEntityName'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
 							entityPermissions[ entityName ]['inheritPermissionPropertyName'] = listLast(entityMetaData.hb_permission, ".");	
 						}
 						
@@ -645,14 +646,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 
-
-
-		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
+		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == getService("HibachiService").getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
 			return true;
 		}
-
-
-				// Check first to see if this entity was defined
+		
+		// Check first to see if this entity was defined
 		if(structKeyExists(permissions.entity.entities, arguments.entityName) && structKeyExists(permissions.entity.entities[arguments.entityName].properties, arguments.propertyName) && !isNull(permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag"))) {
 			if( permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag") ) {
 				return true;
@@ -662,11 +660,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 		}
 		
-		var permissionDetails = getEntityPermissionDetails();
+		var entityPropertiesStruct = getPropertiesStructByEntityName(arguments.entityName);
 		//  check other locations for propertyName
-		if(structKeyExists(permissionDetails, arguments.entityName) && 	( structKeyExists(permissionDetails[arguments.entityName].otmproperties, arguments.propertyName) ||	structKeyExists(permissionDetails[arguments.entityName].mtoproperties, arguments.propertyName) || structKeyExists(permissionDetails[arguments.entityName].mtmproperties, arguments.propertyName))
-		) {
-			return authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, permissionGroup=arguments.permissionGroup);
+		if(structKeyExists(entityPropertiesStruct, arguments.propertyName) && structKeyExists(entityPropertiesStruct[arguments.propertyName],'cfc')) {
+			return authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=entityPropertiesStruct[arguments.propertyName].cfc, permissionGroup=arguments.permissionGroup);
 		}	
 		
 		// If there was an entity defined, and special property values have been defined then we need to return false

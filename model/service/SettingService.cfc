@@ -1317,7 +1317,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	private void function updateBaseEntityCalculations(required any setting ){
 		if( !isNull(arguments.setting.getBaseObject()) ){
 			var entityService = getServiceByEntityName(entityName=arguments.setting.getBaseObject());
-			var primaryIDProperty = getPrimaryIDPropertyNameByEntityName(arguments.setting.getBaseObject());
+			var primaryIDProperty = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(arguments.setting.getBaseObject());
 			var updateEntity = entityService.invokeMethod( "get#arguments.setting.getBaseObject()#", {1=arguments.setting.invokeMethod("get#primaryIDProperty#")} );
 			getHibachiScope().addModifiedEntity(updateEntity); 
 		}

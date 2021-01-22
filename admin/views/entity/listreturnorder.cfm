@@ -104,11 +104,6 @@ Notes:
 			isDeletable=true
 		},prepend=true)/>
 		
-		<cfset local.allOrderCollectionList.addDisplayProperty(displayProperty='account.accountNumber',columnConfig={
-			isVisible=true,
-			isSearchable=true,
-			isDeletable=true
-		})/>	
 		<cfset local.allOrderCollectionList.addDisplayProperty(displayProperty='account.firstName',columnConfig={
 			isVisible=true,
 			isSearchable=true,
