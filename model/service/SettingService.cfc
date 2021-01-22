@@ -642,11 +642,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "globalTranslateLocales":
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
-				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
+				var optionSL = getMeasurementService().getMeasurementUnitCollectionList();
 				optionSL.addFilter('measurementType', 'weight');
-				optionSL.addSelect('unitName', 'name');
-				optionSL.addSelect('unitCode', 'value');
-				return optionSL.getRecords();
+				optionSL.setDisplayProperties('unitName|name,unitCode|value');
+				return optionSL.getRecords(formatRecords=true);
 			case "orderTemplateDefaultFrequencyTerm" :
 				var termCollection = this.getTermCollectionList();
 				termCollection.setDisplayProperties('termID|value,termName|name');
