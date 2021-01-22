@@ -1,105 +1,17 @@
 import { login } from '../../../actions/authActions'
 import { getUser } from '../../../actions/userActions'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 
-// const NewAccountForm = () => {
-//   return (
-//     <div className="col-md-8 pt-4 mt-3 mt-md-0 card box-shadow">
-//       <h2 className="h4 mb-3">Request Account</h2>
-//       <p className="font-size-sm text-muted mb-4">
-//         Already have an account. <a href="##">Sign in here</a>.
-//       </p>
-//       <form onSubmit={formik.handleSubmit}>
-//         <div className="row mb-3">
-//           <div className="col-sm-6">
-//             <div className="form-group">
-//               <label htmlFor="reg-fn">First Name</label>
-//               <input className="form-control" type="text" required="" id="reg-fn" />
-//               <div className="invalid-feedback">Please enter your first name!</div>
-//             </div>
-//           </div>
-//           <div className="col-sm-6">
-//             <div className="form-group">
-//               <label htmlFor="reg-ln">Last Name</label>
-//               <input className="form-control" type="text" required="" id="reg-ln" />
-//               <div className="invalid-feedback">Please enter your last name!</div>
-//             </div>
-//           </div>
-//           <div className="col-sm-6">
-//             <div className="form-group">
-//               <label htmlFor="reg-email">E-mail Address</label>
-//               <input className="form-control" type="email" required="" id="reg-email" />
-//               <div className="invalid-feedback">Please enter valid email address!</div>
-//             </div>
-//           </div>
-//           <div className="col-sm-6">
-//             <div className="form-group">
-//               <label htmlFor="company">Company</label>
-//               <input className="form-control" type="text" required="" id="company" />
-//             </div>
-//           </div>
-//           <div className="col-sm-6">
-//             <div className="form-group">
-//               <label htmlFor="reg-password">Password</label>
-//               <input className="form-control" type="password" required="" id="reg-password" />
-//               <div className="invalid-feedback">Please enter password!</div>
-//             </div>
-//           </div>
-//           <div className="col-sm-6">
-//             <div className="form-group">
-//               <label htmlFor="reg-password-confirm">Confirm Password</label>
-//               <input className="form-control" type="password" required="" id="reg-password-confirm" />
-//               <div className="invalid-feedback">Passwords do not match!</div>
-//             </div>
-//           </div>
-//           <div className="col-sm-4">
-//             <div className="form-group">
-//               <label htmlFor="reg-phone">Phone Number</label>
-//               <input className="form-control" type="text" required="" id="reg-phone" />
-//               <div className="invalid-feedback">Please enter your phone number!</div>
-//             </div>
-//           </div>
-//           <div className="col-sm-2">
-//             <div className="form-group">
-//               <label fhtmlForor="ext-phone">Ext.</label>
-//               <input className="form-control" type="text" required="" id="ext-phone" />
-//             </div>
-//           </div>
-//         </div>
-//         <hr />
-//         <ol className="p-3 mt-3">
-//           <li>
-//             <p className="mb-2">Download the application form</p>
-//             <p className="font-size-sm text-muted mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes.</p>
-//             <p className="font-size-sm text-muted">
-//               <a href="##">Download Application Here</a>.
-//             </p>
-//           </li>
-//           <li>
-//             <p className="mb-2">Upload your filled out form</p>
-//             <input type="file" id="application" name="application" accept="image/png, image/jpeg" />
-//           </li>
-//         </ol>
-//         <hr />
-//         <div className="text-right mb-4 mt-3">
-//           <button className="btn btn-primary" type="submit">
-//             Request Account
-//           </button>
-//         </div>
-//       </form>
-//     </div>
-//   )
-// }
-
-const LoginForm = ({ login }) => {
+const LoginForm = () => {
+  const dispatch = useDispatch()
   const formik = useFormik({
     initialValues: {
       loginEmail: '',
       loginPassword: '',
     },
     onSubmit: values => {
-      login(values.loginEmail, values.loginPassword)
+      dispatch(login(values.loginEmail, values.loginPassword))
     },
   })
   return (
@@ -137,35 +49,11 @@ const LoginForm = ({ login }) => {
   )
 }
 
-const AccountLogin = ({ login, auth }) => {
+const AccountLogin = ({ auth }) => {
   return (
     <div className="container py-4 py-lg-5 my-4">
       <div className="row d-flex justify-content-center">
-        <LoginForm login={login} />
-        {/* <input
-        value={email}
-        onChange={event => {
-          setEmail(event.target.value)
-        }}
-      />
-      <span>Password</span>
-      <input
-        value={password}
-        type="password"
-        onChange={event => {
-          setPassword(event.target.value)
-        }}
-      />
-      <button
-        type="button"
-        className="btn btn-outline-primary"
-        disabled={auth.isFetching}
-        onClick={() => {
-          login(email, password)
-        }}
-      >
-        use SDK
-      </button> */}
+        <LoginForm />
       </div>
     </div>
   )
@@ -177,10 +65,4 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getUser: async () => dispatch(getUser()),
-    login: async (email, password) => dispatch(login(email, password)),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(AccountLogin)
+export default connect(mapStateToProps)(AccountLogin)
