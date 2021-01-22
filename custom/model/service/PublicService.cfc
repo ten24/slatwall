@@ -871,7 +871,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			sku.skuPrices.price,
 			sku.skuPrices.personalVolume,
 			sku.product.listingPages.sortOrder,
-			sku.product.defaultSku.listPrice
+			sku.skuPrices.listPrice
 		');
 
 		var visibleColumnConfigWithArguments = {
@@ -889,7 +889,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         bundlePersistentCollectionList.addFilter('bundledSku.skuPrices.priceGroup.priceGroupCode',1);
         
 		var skuBundles = bundlePersistentCollectionList.getRecords();
-	    
+
 		// Build out bundles struct
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
@@ -917,7 +917,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'sortOrder': skuBundle.sku_product_listingPages_sortOrder,
 					'sortDirection': content.getProductSortDefaultDirection() ?: 'ASC',
 					'recordSort': recordCount,
-					'listPrice' : skuBundle.sku_product_defaultSku_listPrice
+					'listPrice' : skuBundle.sku_skuPrices_listPrice
 					}
 			}
 			
