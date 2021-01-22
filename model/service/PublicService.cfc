@@ -59,6 +59,7 @@ component  accessors="true" output="false"
     property name="hibachiSessionService" type="any";
     property name="hibachiUtilityService" type="any";
     property name="productService" type="any";
+    property name="skuService" type="any";
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
     property name="hibachiService" type="any";
@@ -90,6 +91,51 @@ component  accessors="true" output="false"
 		
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
+	
+	/**
+	 * Get Product List (an alternative to generic entity api call for products)
+	 * */
+	public void function getProductList( required struct data ) {
+	    param name="arguments.data.includeChildProductType" default= 0;
+	    param name="arguments.data.productTypeUrlTitle" default= "";
+	    arguments.data.entityName = "Product";
+	    arguments.data.restRequestFlag = 1;
+	    //Set an In filter for child types
+	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
+	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
+
+	       //Append filter in URL
+	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
+	    }
+
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
+
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(result.pageRecords);
+	    }
+
+	    arguments.data.ajaxResponse = result;
+	}
+
+	/**
+	 * Get Sku List (an alternative to generic entity api call for products)
+	 * */
+	public void function getSkuList( required struct data ) {
+	    arguments.data.entityName = "Sku";
+	    arguments.data.restRequestFlag = 1;
+
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
+	    }
+
+	    arguments.data.ajaxResponse = result;
+
+	}
+
 	
 	
 	/***
@@ -124,6 +170,7 @@ component  accessors="true" output="false"
                 //get sku list form collection config
                 var skuCollections = getSkuService().getSkuCollectionList();
                 skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+                skuCollections.addDisplayProperties("calculatedSkuDefinition");
                 skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
 	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
                 var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
@@ -154,108 +201,132 @@ component  accessors="true" output="false"
 	 * */
 	public void function getProductBundleBuild( required struct data ) {
 	    param name="arguments.data.skuID";
-	    
+
 	    var account = getHibachiScope().getAccount();
 	    var sku = getProductService().getSku( arguments.data.skuID );
-	    
+
 	    if( isNull( sku ) ) {
 	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
 	        return;
 	    }
-	    
+
+	    var productBundleBuildCollectionList = getProductService().getProductBundleBuildCollectionList();
+	    productBundleBuildCollectionList.setDisplayProperties('productBundleBuildID');
 	    if( !account.isNew() ) {
-	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        var productBundleBuild = getProductService().getProductBundleBuildByProductBundleSkuANDSession( [sku, getHibachiScope().getSession()] );
+	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
 	    }
-	    
-    
-        if( isNull( productBundleBuild ) ) {
+	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', sku.getSkuID() );
+	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
+	    var productBundle = productBundleBuildCollectionList.getRecords();
+
+        //return false if there are no active builds
+        if( !ArrayLen( productBundle ) ) {
 	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
 	        return;
 	    }
-    
+
         var productBundleBuildItemCollectionList = getProductService().getProductBundleBuildItemCollectionList();
         productBundleBuildItemCollectionList.setDisplayProperties("quantity, productBundleBuildItemID, sku.skuID")
-        productBundleBuildItemCollectionList.addFilter( "productBundleBuild.productBundleBuildID",  productBundleBuild.getProductBundleBuildID() );
-        
+        productBundleBuildItemCollectionList.addFilter( "productBundleBuild.productBundleBuildID",  productBundle[1]['productBundleBuildID'] );
+
         var bundleBuildResponse = {
-            "productBundleBuildID" : productBundleBuild.getProductBundleBuildID(),
-            "productBundleSkuID" : productBundleBuild.getProductBundleSkuID(),
+            "productBundleBuildID" : productBundle[1]['productBundleBuildID'],
+            "productBundleSkuID" : sku.getSkuID(),
             "bundleItems" : productBundleBuildItemCollectionList.getRecords( formatRecords = false )
         };
-	    
+
 	    arguments.data.ajaxResponse['data'] = bundleBuildResponse;
         getHibachiScope().addActionResult("public:product.getProductBundleBuilds",false);
 	}
-	
-	/**
+
+		/**
 	 * Method to create product bundle build
 	 * 
-	 * @param - skuID
+	 * @param - skuID (can also accept comma separated list)
 	 * @param - default skuID (from bundle product)
-	 * @param - quantity
+	 * @param - quantity (can also accept comma separated list)
+	 * @param - productBundleGroupID
 	 * */
 	public void function createProductBundleBuild( required struct data ) {
 	    param name="arguments.data.skuID";
 	    param name="arguments.data.quantity";
 	    param name="arguments.data.productBundleGroupID";
 	    param name="arguments.data.defaultSkuID";
-	    
+
 	    var bundleSku = getProductService().getSku( arguments.data.defaultSkuID );
 	    var account = getHibachiScope().getAccount();
-	    var sku = getProductService().getSku( arguments.data.skuID );
-	    
-	    if( isNull( sku ) || isNull( bundleSku ) ) {
+
+	    if( isNull( bundleSku ) ) {
 	        getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
 	        return;
 	    }
-	    
+
+	    var productBundleBuildCollectionList = getProductService().getProductBundleBuildCollectionList();
+	    productBundleBuildCollectionList.setDisplayProperties('productBundleBuildID');
 	    if( !account.isNew() ) {
-	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, bundleSku] );
+	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        var productBundleBuild = getProductService().getProductBundleBuildBySessionANDProductBundleSku( [ getHibachiScope().getSession(), bundleSku] );
+	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
 	    }
-        
-        if( isNull( productBundleBuild ) ) {
-            
-            productBundleBuild = getProductService().newProductBundleBuild();
+	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', bundleSku.getSkuID() );
+	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
+	    var productBundle = productBundleBuildCollectionList.getRecords();
+
+        if( !ArrayLen( productBundle ) ) {
+            var productBundleBuild = getProductService().newProductBundleBuild();
             productBundleBuild.setProductBundleSku( bundleSku );
-            
+
             if( !isNull( getHibachiScope().getSession() ) ) {
                 productBundleBuild.setSession( getHibachiScope().getSession() );
             }
-            
+
             if( !account.isNew() ) {
                 productBundleBuild.setAccount( account );
             }
-            
+            productBundleBuild.setActiveFlag(true);
             productBundleBuild = getProductService().saveProductBundleBuild( productBundleBuild );
-            
+
             if( productBundleBuild.hasErrors() ) {
                 getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
 	            return;
             }
-            
+        } else {
+            var productBundleBuild = getProductService().getProductBundleBuild( productBundle[1]['productBundleBuildID'] );
         }
-        
+
         //Check & update bundle items
-        var productBundleBuildItem = getProductService().getProductBundleBuildItemBySkuANDProductBundleBuild( [sku, productBundleBuild] );
-        
-        if( isNull( productBundleBuildItem ) ) {
-            productBundleBuildItem = getProductService().newProductBundleBuildItem();
+        var skuList = ListToArray( arguments.data.skuID );
+        var quantities = ListToArray( arguments.data.quantity );
+
+        var index = 1;
+        for( var skuID in skuList ) {
+            var sku = getProductService().getSku( skuID );
+
+            if( isNull( sku ) ) {
+    	        getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+    	        return;
+    	    }
+
+            var productBundleBuildItem = getProductService().getProductBundleBuildItemBySkuANDProductBundleBuild( [sku, productBundleBuild] );
+
+            if( isNull( productBundleBuildItem ) ) {
+                productBundleBuildItem = getProductService().newProductBundleBuildItem();
+            }
+            productBundleBuildItem.setQuantity( quantities[ index++ ] );
+            productBundleBuildItem.setSku( sku );
+            productBundleBuildItem.setProductBundleBuild( productBundleBuild );
+            productBundleBuildItem.setProductBundleGroup( getProductService().getProductBundleGroup( arguments.data.productBundleGroupID ) );
+            productBundleBuildItem = getProductService().saveProductBundleBuildItem( productBundleBuildItem );
+
+            if( productBundleBuildItem.hasErrors() ) {
+                this.addErrors(arguments.data, productBundleBuildItem.getErrors()); //add the basic errors
+                getHibachiScope().addActionResult("public:product.createProductBundleBuild", productBundleBuildItem.hasErrors());
+                return;
+            }
         }
-        productBundleBuildItem.setQuantity( arguments.data.quantity );
-        productBundleBuildItem.setSku( sku );
-        productBundleBuildItem.setProductBundleBuild( productBundleBuild );
-        productBundleBuildItem.setProductBundleGroup( getProductService().getProductBundleGroup( arguments.data.productBundleGroupID ) );
-        productBundleBuildItem = getProductService().saveProductBundleBuildItem( productBundleBuildItem );
-        
-        if( productBundleBuildItem.hasErrors() ) {
-            getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
-            return;
-        }
-        
+
         getHibachiScope().addActionResult("public:product.createProductBundleBuild",false);
 	}
 	
@@ -270,7 +341,7 @@ component  accessors="true" output="false"
 	    
 	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
         
-        if( isNull( productBundleBuild ) || ( ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) || ( !isNull(productBundleBuild.getSession()) && productBundleBuild.getSession().getSessionID() != getHibachiScope().getSession().getSessionID() ) ) ) {
+        if( isNull( productBundleBuild ) || ( ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) && ( !isNull(productBundleBuild.getSession()) && productBundleBuild.getSession().getSessionID() != getHibachiScope().getSession().getSessionID() ) ) ) {
             getHibachiScope().addActionResult("public:product.removeProductBundleBuild",true);
             return;
         }
@@ -289,7 +360,7 @@ component  accessors="true" output="false"
 	    
 	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
         
-        if( isNull( productBundleBuild ) || productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) {
+        if( isNull( productBundleBuild ) || ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) ) {
             getHibachiScope().addActionResult("public:product.addProductBundleToCart",true);
             return;
         }
@@ -313,6 +384,12 @@ component  accessors="true" output="false"
         
         //Call Add Order Item
         this.addOrderItem(data= arguments.data);
+        
+        
+        //set bundle build to false
+        productBundleBuild.setActiveFlag(false);
+        getProductService().saveProductBundleBuild( productBundleBuild );
+
 	 }
 	
 	
@@ -857,11 +934,18 @@ component  accessors="true" output="false"
 
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
-        
+        param name="arguments.data.returnTokenFlag" default="0";        
+
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
 
         if(account.hasErrors()){
             addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
+        } else if(arguments.data.returnTokenFlag) {
+            //Attempt Login
+            var accountProcess = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
+            if ( !accountProcess.hasErrors() && getHibachiScope().getLoggedinFlag() ){
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
+            }
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
@@ -916,6 +1000,35 @@ component  accessors="true" output="false"
         //let's hard code the action to always be successful. Indicating failure exposes if the account exists and is a security issue
         getHibachiScope().addActionResult( "public:account.forgotPassword", false );
         return account;
+    }
+    
+    /**
+      * @method resetPasswordUpdate
+      * @http-context resetPasswordUpdate
+      * @http-verb POST
+      * @description  Reset User Password based on reset token - This method to be used as API end point
+      * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
+      * @param accountID {string}
+      * @param emailAddress {string}
+      * @ProcessMethod Account_ResetPassword
+      **/
+    public void function resetPasswordUpdate( required struct data ) {
+        param name="data.swprid";
+
+        var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
+
+        //Check if account is not null and has correct reset token
+        if(!isNull(account) && getAccountService().getPasswordResetID(account, false) == arguments.data.swprid ) {
+            var account = getService("AccountService").processAccount(account, data, "resetPassword");
+            if (account.hasErrors()) {
+                addErrors(arguments.data, account.getProcessObject('resetPassword').getErrors());
+            }
+
+            getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
+
+        } else {
+            getHibachiScope().addActionResult( "public:account.resetPassword", true );
+        }
     }
     
     /**
@@ -1277,7 +1390,14 @@ component  accessors="true" output="false"
                   }
                 }
                 if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
-                  orderFulfillment.setShippingAddress(savedAddress);
+                    orderFulfillment.setShippingAddress(savedAddress);
+                    //Add Shiping Method on Order Fulfillment
+                    if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                        var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
+                        if(!isNull(shippingMethod)) {
+                            orderFulfillment.setShippingMethod(shippingMethod);
+                        }
+                    }
                 }
                 if (structKeyExists(data, "saveShippingAsBilling") && data.saveShippingAsBilling){
                     order.setBillingAddress(savedAddress);
@@ -1331,6 +1451,7 @@ component  accessors="true" output="false"
             }else{
                 var order = getHibachiScope().getCart();
             }
+            
             if(structKeyExists(data,'fulfillmentID')){
                 
                 var orderFulfillment = getOrderService().getOrderFulfillment(arguments.data.fulfillmentID);
@@ -1796,6 +1917,13 @@ component  accessors="true" output="false"
     public void function clearOrder( required struct data ) {
         var cart = getService("OrderService").processOrder( getHibachiScope().cart(), arguments.data, 'clear');
         
+        if( !cart.hasErrors() ) {
+            //create new session with blank orderid
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
+            }
+        }
+        
         getHibachiScope().addActionResult( "public:cart.clear", cart.hasErrors() );
     }
     
@@ -1923,6 +2051,11 @@ component  accessors="true" output="false"
             // Also make sure that this cart gets set in the session as the order
             getHibachiScope().getSession().setOrder( cart );
             
+            //create new token with cart information
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
+            }
+            
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession(true);
             
@@ -1989,20 +2122,26 @@ component  accessors="true" output="false"
         
         
         if(!cart.hasErrors()) {
+            
+            //Persist the quantity change
             getService("OrderService").saveOrder(cart);
+            
             // Insure that all items in the cart are within their max constraint
-     	    	if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
-    	 	        cart = getService("OrderService").processOrder(cart, 'forceItemQuantityUpdate');
-    	 	        if(!cart.hasErrors()) {
-                      getService("OrderService").saveOrder(cart);
-                    }
-    	 	    } 
-    	 	    
+ 	    	if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
+	 	        cart = getService("OrderService").processOrder(cart, 'forceItemQuantityUpdate');
+	 	        if(!cart.hasErrors()) {
+                  getService("OrderService").saveOrder(cart);
+                }
+	 	    } 
+	 	    
             // Also make sure that this cart gets set in the session as the order
             getHibachiScope().getSession().setOrder( cart );
             
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
+            
+        } else {
+            addErrors(data, getHibachiScope().getCart().getErrors());
         }
         
         getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
@@ -2033,6 +2172,66 @@ component  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
     }
+    
+    /**
+     * Method To change fulfillment method on existing order items
+     * @param - orderItemIDList
+     * @param - fulfillmentMethodID
+     * */
+    public void function changeOrderFulfillment(required any data) {
+        param name="orderItemIDList";
+        param name="fulfillmentMethodID";
+
+        var cart = getHibachiScope().getCart();
+
+        var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
+
+        var existingOrderFulfillment = "";
+
+        //check if fulfillment method already exists on order
+        var allOrderFulfillments = cart.getOrderFulfillments();
+        for(var orderFulfillment in allOrderFulfillments) {
+
+            //get existing fulfillment method based on fulfillment method ID
+            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodID() == arguments.data.fulfillmentMethodID ) {
+                existingOrderFulfillment = orderFulfillment;
+            }
+        }
+
+        var orderItems = cart.getOrderItems();
+        for(var orderItem in orderItems) {
+
+            //Get List of eligible methods
+            var eligibleFulfillmentMethods = listToArray(orderItem.getSku().setting("skuEligibleFulfillmentMethods"));
+
+            //Check if item id exists, existing fulfillment method is different than the one we're passing, and new fulfillment should be eligible
+            if( ArrayContains(orderItemIDList, orderItem.getOrderItemID()) && orderItem.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() != arguments.data.fulfillmentMethodID &&  ArrayContains(eligibleFulfillmentMethods, arguments.data.fulfillmentMethodID) ) {
+
+                //Remove existing method
+                orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
+
+                if( !isEmpty(existingOrderFulfillment) ) {
+                    orderItem.setOrderFulfillment( existingOrderFulfillment );
+                } else {
+                    //get fulfillment method
+                    var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
+
+                    //create new method
+                    var orderFulfillment = getService("OrderService").newOrderFulfillment();
+                    orderFulfillment.setOrder( cart );
+                    orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
+    				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
+
+                    orderItem.setOrderFulfillment( orderFulfillment );
+                }
+            }
+        }
+
+        getService("OrderService").saveOrder(getHibachiScope().getCart());
+
+        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
+    }
+
 
 
     /** 
@@ -2175,26 +2374,38 @@ component  accessors="true" output="false"
 
         
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
-            // Only create a new billing address here if its not being created later using the account payment method.
-            if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
-                && (!structKeyExists(data, "accountPaymentMethodID") 
-                && len(data.accountPaymentMethodID))) {
+            
+            //If we have saveShippingAsBilling
+             if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
 
-                var orderPayment = getPaymentService().newOrderPayment();
-                orderPayment.populate(data.newOrderPayment);
-                orderPayment.setOrder(getHibachiScope().getCart());
-                if (orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment') {
-                    orderPayment.setTermPaymentAccount(getHibachiScope().getAccount());
+                 var addressData = {
+                    address=order.getShippingAddress()
+                };
+
+                 var newBillingAddress = this.addBillingAddress(addressData, "billing");
+
+             } else {
+                // Only create a new billing address here if its not being created later using the account payment method.
+                if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
+                    && (!structKeyExists(data, "accountPaymentMethodID") 
+                    && len(data.accountPaymentMethodID))) {
+    
+                    var orderPayment = getPaymentService().newOrderPayment();
+                    orderPayment.populate(data.newOrderPayment);
+                    orderPayment.setOrder(getHibachiScope().getCart());
+                    if (orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment') {
+                        orderPayment.setTermPaymentAccount(getHibachiScope().getAccount());
+                    }
+                    //Add billing address error
+                    orderPayment.addError('addBillingAddress', getHibachiScope().rbKey('validate.processOrder_addOrderPayment.billingAddress'));
+                    //Validate to get all errors
+                    orderPayment.validate('save');
+    
+                    this.addErrors(data, orderPayment.getErrors());
+    
+                    getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
+                    return;
                 }
-                //Add billing address error
-                orderPayment.addError('addBillingAddress', getHibachiScope().rbKey('validate.processOrder_addOrderPayment.billingAddress'));
-                //Validate to get all errors
-                orderPayment.validate('save');
-
-                this.addErrors(data, orderPayment.getErrors());
-
-                getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
-                return;
             }
             
             if (structKeyExists(data, "accountPaymentMethodID") && len(data.accountPaymentMethodID)){
@@ -2302,9 +2513,14 @@ component  accessors="true" output="false"
             if(!order.hasErrors()) {
                 getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
                 getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
-            }else{
+                
+                //create new session with blank orderid
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
+                
+            } else {
               this.addErrors(data,order.getErrors());
             }
+            
             if(getHibachiScope().getAccount().getGuestAccountFlag()){
                 getHibachiScope().getSession().removeAccount();
             }
