@@ -493,10 +493,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        arguments.mapping['validationContext'] = 'save';
 	    }
 	    
+	       // the onMissingSaveMethod in HibachiService does not like named arguments :(
 	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
-	        // "#entityName#" needs to be unwrapped, as variables are not allowed as keys in stucts
-	        "#entityName#"  : arguments.entity, 
-	        "context"       : arguments.mapping.validationContext
+	        1 : arguments.entity, 
+	        2 : arguments.entityQueueData,
+	        3 : arguments.mapping.validationContext
 	    });
 	    
 	    

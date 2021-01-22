@@ -2990,8 +2990,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				reportCacheKey &= getIgnorePeriodInterval();
 			}
 			
-			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
-				return getService('HibachiCacheService').getCachedValue(reportCacheKey);
+			if(!this.hibachiIsEmpty(reportCacheKey)){
+    			if(getService('HibachiCacheService').hasCachedValue(reportCacheKey)){
+    				return getService('HibachiCacheService').getCachedValue(reportCacheKey);
+    			}
 			}
 			
 			arguments.formatRecords=false;

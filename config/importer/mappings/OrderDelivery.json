@@ -61,7 +61,7 @@
 			"entityName": "Location",
 			"isNullable": true,
 			"lookupKey": "remoteID",
-			"propertyIdentifier": "pickupLocation"
+			"propertyIdentifier": "location"
 		},
 		{
 			"key": "remoteFulfillmentMethodID",
@@ -92,7 +92,7 @@
 		"propertyIdentifier": "importRemoteID",
 		"type": "composite",
 		"keys": [
-			"remoteOrderFulfillmentID"
+			"remoteOrderDeliveryID"
 		]
 	}
 }
