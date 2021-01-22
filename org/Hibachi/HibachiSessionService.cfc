@@ -34,23 +34,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 
 	public boolean function verifyCSRFToken(required string requestToken,string tokenName='hibachiCSRFToken'){
-	    
-	   dump(arguments.requestToken); 
-	   dump(arguments.tokenName); 
-	   dump( this.getHibachiScope().getHibachiInstanceApplicationScopeKey() );
-	   dump(session);
 	   
-
 		if(!this.getHibachiScope().hasSessionValue(arguments.tokenName)){
-		    this.logHibachi("verifyCSRFToken:: does not have CSRF session value for token #arguments.tokenName#");
-		    	   abort;
-
-			return false; 
+		    this.logHibachi("verifyCSRFToken:: does not have CSRF session value for tokenName: #arguments.tokenName#; csrf-value: #arguments.requestToken#. approving this request");
+			return true; 
 		}
-		
-		this.logHibachi("verifyCSRFToken:: #arguments.requestToken# == #arguments.tokenName#; #getSessionValue(arguments.tokenName)#");
-		
-			   abort;
 
 		return arguments.requestToken == this.getHibachiScope().getSessionValue(arguments.tokenName); 
 	} 

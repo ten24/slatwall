@@ -208,7 +208,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 
 	// @hint facade method to check the application scope for a value
 	public void function clearSessionValue(required any key) {
-	    this.logHibachi("Called: clearSessionValue for kry: #arguments.key# ");
 		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
 			structDelete(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key);
 		}
@@ -246,9 +245,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		var instanceApplicationScopeKey = getHibachiInstanceApplicationScopeKey();
 		lock name="#sessionKey#_#instanceApplicationScopeKey#_#arguments.key#" timeout="10" {
 			if(!structKeyExists(session, instanceApplicationScopeKey)) {
-			    dump("session");
-			    dump(session);
-			    this.logHibachi("creating new session[ #instanceApplicationScopeKey# ]");
 				session[ instanceApplicationScopeKey ] = {};
 			}
 			session[ instanceApplicationScopeKey ][ arguments.key ] = arguments.value;
