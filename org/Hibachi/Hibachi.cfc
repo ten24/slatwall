@@ -401,10 +401,6 @@ component extends="framework.one" {
             }
         }
         
-
-		
-		
-		
 		// Verify that the session is setup
 		if(!structKeyExists(arguments, "managesession") || arguments.managesession == true){
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
@@ -412,14 +408,9 @@ component extends="framework.one" {
 			getHibachiScope().setPersistSessionFlag(false);
 		}
 		
-		// CSRF / Duplicate Request Handling
-		if(structKeyExists(request, "context")){
-			getHibachiScope().getService("hibachiSessionService").verifyCSRF(request.context, this); 
-		}	
-
 		var AuthToken = "";
-		if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
-			AuthToken = GetHttpRequestData().Headers['Auth-Token'];
+		if(structKeyExists(httpRequestData.Headers,'Auth-Token')){
+			AuthToken = httpRequestData.Headers['Auth-Token'];
 		}
 
 		// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
@@ -658,7 +649,10 @@ component extends="framework.one" {
 
 		// Setup structured Data if a request context exists meaning that a full action was called
 		getHibachiScope().getService("hibachiUtilityService").buildFormCollections(request.context);
-
+		
+		// CSRF / Duplicate Request Handling
+		getHibachiScope().getService("hibachiSessionService").verifyCSRF(request.context, this); 
+	
 		// Setup a $ in the request context, and the hibachiScope shortcut
 		request.context.fw = getHibachiScope().getApplicationValue("application");
 		request.context.$ = {};
@@ -1361,7 +1355,8 @@ component extends="framework.one" {
 
 	public void function onError(any exception, string event){
 		ORMClearSession();
-		writeLog(file="#variables.framework.applicationKey#", text="General Log - ORM Session Cleared on error");
+	    getHibachiScope().logHibachiException(arguments.exception);
+		writeLog(file="#variables.framework.applicationKey#", text="General Log - ORM Session Cleared on error; Event: #arguments.event#");
 
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
 		var context = getPageContext();
