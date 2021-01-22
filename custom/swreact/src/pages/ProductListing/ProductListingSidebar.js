@@ -1,22 +1,20 @@
 import React, { useState, useCallback } from 'react'
-import { connect } from 'react-redux'
-import { getUser } from '../../actions/userActions'
-import { search, setKeyword, setSort, removeFilter } from '../../actions/productSearchActions'
+import { connect, useDispatch } from 'react-redux'
+import { search, setKeyword } from '../../actions/productSearchActions'
 import debounce from 'lodash/debounce'
 import ProductListingFilter from './ProductListingFilter'
 
-const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordAction, keyword, potentialFilters, attributes, resultCount = '287' }) => {
+const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCount }) => {
+  const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState(keyword)
-  if (searchTerm !== keyword) {
-    setSearchTerm(keyword)
-  }
 
+  // TODO: Shouls this be an auto search or should you have to click enter
   const slowlyRequest = useCallback(
     debounce(value => {
-      setKeywordAction(value)
-      searchWithFilters()
+      dispatch(setKeyword(value))
+      dispatch(search())
     }, 500),
-    []
+    [debounce, dispatch]
   )
 
   const handleInputChange = e => {
@@ -37,7 +35,7 @@ const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordA
         <div className="widget widget-categories mb-3">
           <div className="row">
             <h3 className="widget-title col">Filters</h3>
-            <span className="text-right col">{resultCount} Results</span>
+            <span className="text-right col">{recordsCount} Results</span>
           </div>
           <div className="input-group-overlay input-group-sm mb-2">
             <input className="cz-filter-search form-control form-control-sm appended-form-control" type="text" value={searchTerm} onChange={handleInputChange} placeholder="Search by product title or SKU" />
@@ -48,13 +46,13 @@ const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordA
             </div>
           </div>
           <div className="accordion mt-3 border-top" id="shop-categories">
-            {potentialFilters &&
-              potentialFilters.map((filter, index) => {
+            {possibleFilters &&
+              possibleFilters.map((filter, index) => {
                 return <ProductListingFilter key={index} index={`filter${index}`} {...filter} />
               })}
             {attributes &&
               attributes.map((filter, index) => {
-                return <ProductListingFilter key={index} index={`attr${index}`} {...filter} />
+                return <ProductListingFilter key={index} type="attribute" index={`attr${index}`} {...filter} />
               })}
           </div>
         </div>
@@ -63,16 +61,7 @@ const ProductListingSidebar = ({ setFilterAction, searchWithFilters, setKeywordA
   )
 }
 function mapStateToProps(state) {
-  const { preload, productSearchReducer } = state
-  return { ...preload.productListing, ...productSearchReducer }
+  return state.productSearchReducer
 }
-const mapDispatchToProps = dispatch => {
-  return {
-    getUser: async () => dispatch(getUser()),
-    sortByAction: async sortBy => dispatch(setSort(sortBy)),
-    setKeywordAction: async keyword => dispatch(setKeyword(keyword)),
-    removeFilterAction: async filter => dispatch(removeFilter(filter)),
-    searchWithFilters: async () => dispatch(search()),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ProductListingSidebar)
+
+export default connect(mapStateToProps)(ProductListingSidebar)

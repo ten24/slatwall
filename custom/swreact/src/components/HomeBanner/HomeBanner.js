@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
 import { FeaturedProductCard } from '..'
-import { getUser } from '../../actions/userActions'
 import { getFeaturedItems } from '../../actions/productSearchActions'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 const FeaturedProducts = ({ sliderData }) => {
   const settings = {
@@ -52,10 +52,18 @@ const FeaturedProducts = ({ sliderData }) => {
 }
 
 const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
+  let history = useHistory()
+
   return (
     <div index={slideKey} className="repeater">
       <h2 className="h2">{title}</h2>
-      <p dangerouslySetInnerHTML={{ __html: customBody }} />
+      <p
+        onClick={event => {
+          event.preventDefault()
+          history.push(event.target.getAttribute('href'))
+        }}
+        dangerouslySetInnerHTML={{ __html: customBody }}
+      />
       <a href={linkUrl} className="btn btn-light btn-long">
         {linkLabel}
       </a>
@@ -83,9 +91,10 @@ const MainBanner = props => {
   )
 }
 
-function HomeBanner({ getFeaturedItemsAction, featuredSlider, homeMainBanner }) {
+function HomeBanner({ featuredSlider, homeMainBanner }) {
+  const dispatch = useDispatch()
   useEffect(() => {
-    getFeaturedItemsAction()
+    dispatch(getFeaturedItems())
   }, [])
 
   return (
@@ -102,14 +111,7 @@ HomeBanner.propTypes = {
 }
 
 function mapStateToProps(state) {
-  const { productSearchReducer } = state
-  return { ...productSearchReducer }
+  return state.content
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getUser: async () => dispatch(getUser()),
-    getFeaturedItemsAction: async () => dispatch(getFeaturedItems()),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(HomeBanner)
+export default connect(mapStateToProps)(HomeBanner)

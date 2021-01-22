@@ -33,7 +33,7 @@ const MyForm = ({ status, message, onValidated }) => {
             <input className={`${styles.customInput} form-control prepended-form-control rounded-right-0`} type="email" ref={node => (email = node)} placeholder="Your email" required />
             <div className="input-group-append">
               <button className="btn btn-primary rounded-left-0" type="submit" onClick={submit}>
-                <i class="fal fa-envelope"></i> Subscribe
+                <i className="fal fa-envelope"></i> Subscribe
               </button>
             </div>
           </div>

@@ -680,7 +680,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				var accountUpdation = getAccountDAO().getUpdateRemoteIDForNewAccount(
 					accountID = arguments.entity.getAccountID() , 
 					remoteID = response.rowids[1] , 
-					importRemoteID = this.genericCreateEntityImportRemoteID( arguments.data.payload , this.getEntityMapping( 'Account' )) );
+					importRemoteID = this.genericCreateMappingImportRemoteID( arguments.data.payload , this.getEntityMapping( 'Account' )) );
 					
 				logHibachi("ERPOne - Successfully updated Slatwall account with accountID #arguments.entity.getAccountID()#");
 				
