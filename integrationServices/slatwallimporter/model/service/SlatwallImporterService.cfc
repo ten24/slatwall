@@ -48,10 +48,9 @@ Notes:
 */
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
-	property name="integrationServices";
 	property name="hibachiDataService";
 	property name="hibachiUtilityService";
-	
+
 	public any function getIntegration(){
 	    
 	    if( !structKeyExists( variables, 'integration') ){
@@ -62,25 +61,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     
   	public struct function getAvailableSampleCsvFilesIndex(){
-  	    
-  	    if( !structKeyExists(variables, 'availableSampleCsvFilesIndex') ){
-  	        
-            //creating struct for fast-lookups
-            variables.sampleCSVFilesOptions = {
-                "Account"		    : "account",
-                "Inventory"         : "inventory",
-                "Order"             : "order",
-                "OrderItem"         : "orderItem",
-                "OrderPayment"      : "orderPayment",
-                "OrderFulfillment"  : "orderFulfillment",
-                "Product"		    : "product",
-                "Sku"   		    : "sku"
-            };
-            // TODO, need a way to figureout which entity-mappings are allowed to be import, 
-            // account vs account-phone-number
-  	    }
-  	    
-  	    return variables.sampleCSVFilesOptions;
+  	    return this.getImporterMappingService().getMappingNamesIndex();
   	}
   	
   	public any function uploadCSVFile( required any data ){
@@ -94,7 +75,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
     	    }
     	    
-    	    var header = this.getEntityCSVHeaderMetaData( data.entityName );
+    	    var header = this.getMappingCSVHeaderMetaData( arguments.data.mappingCode );
+
     	    var uploadedFilePath = uploadData.serverdirectory & '/' & uploadData.serverfile;
 			
 	    	var result = this.getHibachiDataService().csvFileToQuery(
@@ -118,8 +100,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 			
 			if( result.query.recordCount ){
-
-    		    var batch = this.pushRecordsIntoImportQueue( data.entityName, result.query );
+    		    var batch = this.pushRecordsIntoImportQueue( data.mappingCode, result.query );
     		    
     		    if( batch.getEntityQueueItemsCount() == batch.getInitialEntityQueueItemsCount() ){
     			    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");

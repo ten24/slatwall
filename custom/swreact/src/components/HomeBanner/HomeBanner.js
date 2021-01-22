@@ -1,61 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import pi1 from '../../assets/images/product-img-1.png'
-import pi2 from '../../assets/images/product-img-2.png'
-import pi3 from '../../assets/images/product-img-3.png'
-import pi4 from '../../assets/images/product-img-4.png'
 import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
-
-const FeaturedProductCard = ({
-  brand,
-  productTile,
-  price,
-  displayPrice,
-  linkUrl,
-  imgKey,
-}) => {
-  const imgStack = [pi1, pi2, pi3, pi4, pi2, pi1, pi4]
-  const styler = { width: '100%', display: 'inline-block' }
-
-  return (
-    <div style={styler}>
-      <div className="card product-card">
-        <span className="badge badge-primary">On Special</span>
-        <button
-          className="btn-wishlist btn-sm"
-          type="button"
-          data-toggle="tooltip"
-          data-placement="left"
-          title=""
-          data-original-title="Add to wishlist"
-        >
-          <i className="far fa-heart"></i>
-        </button>
-        <a
-          className="card-img-top d-block overflow-hidden"
-          href="shop-single-v1.html"
-        >
-          <img src={imgStack[imgKey]} alt="Product" />
-        </a>
-        <div className="card-body py-2 text-left">
-          <a className="product-meta d-block font-size-xs pb-1" href="#">
-            {brand}
-          </a>
-          <h3 className="product-title font-size-sm">
-            <a href={linkUrl}>{productTile}</a>
-          </h3>
-          <div className="d-flex justify-content-between">
-            <div className="product-price">
-              <span className="text-accent">{displayPrice}</span>
-              {price}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+import { FeaturedProductCard } from '..'
+import { getUser } from '../../actions/userActions'
+import { getFeaturedItems } from '../../actions/productSearchActions'
+import { connect } from 'react-redux'
 
 const FeaturedProducts = ({ sliderData }) => {
   const settings = {
@@ -91,11 +41,7 @@ const FeaturedProducts = ({ sliderData }) => {
         <a href="/All" className="text-link">
           Shop All Specials
         </a>
-        <Slider
-          style={{ margin: '0 4rem', height: 'fit-content' }}
-          className="row mt-4"
-          {...settings}
-        >
+        <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
           {sliderData.map((slide, index) => {
             return <FeaturedProductCard {...slide} key={index} imgKey={index} />
           })}
@@ -126,10 +72,7 @@ const MainBanner = props => {
   }
   return (
     <div className="container">
-      <div
-        style={{ height: 'fit-content' }}
-        className="main-banner text-white text-center mr-5 ml-5"
-      >
+      <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mr-5 ml-5">
         <Slider className="slider-dark" {...settings}>
           {props.sliderData.map((slideData, index) => {
             return <BannerSlide {...slideData} key={index} slideKey={index} />
@@ -140,14 +83,15 @@ const MainBanner = props => {
   )
 }
 
-function HomeBanner(props) {
+function HomeBanner({ getFeaturedItemsAction, featuredSlider, homeMainBanner }) {
+  useEffect(() => {
+    getFeaturedItemsAction()
+  }, [])
+
   return (
-    <div
-      className="hero mt-2"
-      style={{ backgroundImage: `url(${Background})` }}
-    >
-      <FeaturedProducts sliderData={props.featuredSlider} />
-      <MainBanner sliderData={props.homeMainBanner} />
+    <div className="hero mt-2" style={{ backgroundImage: `url(${Background})` }}>
+      <FeaturedProducts sliderData={featuredSlider} />
+      <MainBanner sliderData={homeMainBanner} />
     </div>
   )
 }
@@ -157,4 +101,15 @@ HomeBanner.propTypes = {
   featuredSlider: PropTypes.array,
 }
 
-export default HomeBanner
+function mapStateToProps(state) {
+  const { productSearchReducer } = state
+  return { ...productSearchReducer }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: async () => dispatch(getUser()),
+    getFeaturedItemsAction: async () => dispatch(getFeaturedItems()),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(HomeBanner)

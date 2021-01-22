@@ -269,6 +269,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productPackageQty" ormtype="string";
  property name="productListingTitle" ormtype="string";
  property name="productWeight" ormtype="string";
+ property name="productFeatured" ormtype="boolean" hb_formatType="yesno" default="0";
  property name="productLength" ormtype="string";
  property name="productHeight" ormtype="string";
  property name="productWidth" ormtype="string";

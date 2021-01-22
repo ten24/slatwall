@@ -1,4 +1,3 @@
-import validator from 'validator'
 import { SlatwalApiService } from '../services'
 import { requestUser, receiveUser, clearUser } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
@@ -39,21 +38,23 @@ export const logout = () => {
 }
 
 export const login = (email, password) => {
-  console.log('login', email)
-  return async dispatch => {
-    dispatch(requestLogin())
-    dispatch(requestUser())
+  return async (dispatch, getState) => {
+    let { accountID } = getState().userReducer
+    if (!accountID.length) {
+      dispatch(requestLogin())
+      dispatch(requestUser())
 
-    const req = await SlatwalApiService.auth.login({
-      emailAddress: email,
-      password: password,
-    })
+      const req = await SlatwalApiService.auth.login({
+        emailAddress: email,
+        password: password,
+      })
 
-    if (req.isFail()) {
-      dispatch(errorLogin(req.toString()))
-    } else {
-      dispatch(receiveLogin(req.success().token))
-      dispatch(receiveUser(req))
+      if (req.isFail()) {
+        dispatch(errorLogin(req.toString()))
+      } else {
+        dispatch(receiveLogin(req.success().token))
+        dispatch(receiveUser(req))
+      }
     }
   }
 }

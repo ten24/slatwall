@@ -27,52 +27,14 @@
        local.homeBrand = local.homeBrands.getPageRecords()
 
        local.shopBy = $.renderContent($.getContentByUrlTitlePath('home/shop-by').getContentID(), 'linkUrl');
-local.featuredSlider = [
-      {
-        "brand": 'Brand A',
-        "productTile": 'Title 1',
-        "price": '$209.24',
-        "displayPrice": '$156.99',
-        "linkUrl": '/hop-single-v1.html',
-      },
-      {
-        "brand": 'Brand A',
-        "productTile": 'Title 1',
-        "price": '$209.24',
-        "displayPrice": '$156.99',
-        "linkUrl": '/shop-single-v1.html',
-      },
-      {
-        "brand": 'Brand A',
-        "productTile": 'Title 1',
-        "price": '$209.24',
-        "displayPrice": '$156.99',
-        "linkUrl": '/shop-single-v1.html',
-      },
-      {
-        "brand": 'Brand A',
-        "productTile": 'Title 1',
-        "price": '$209.24',
-        "displayPrice": '$156.99',
-        "linkUrl": '/shop-single-v1.html',
-      },
-      {
-        "brand": 'Brand A',
-        "productTile": 'Title 1',
-        "price": '$209.24',
-        "displayPrice": '$156.99',
-        "linkUrl": '/shop-single-v1.html',
-      },
-      {
-        "brand": 'Brand A',
-        "productTile": 'Title 1',
-        "price": '$209.24',
-        "displayPrice": '$156.99',
-        "linkUrl": '/shop-single-v1.html',
-      },
-    ];
+       
+       	    var productCollectionList = $.slatwall.getService('ProductService').getProductCollectionList();
+		productCollectionList.setDisplayProperties("productID,productClearance,urlTitle,productFeatured,brand.brandName,brand.urlTitle,calculatedTitle,calculatedSalePrice,listPrice,livePrice,productName,calculatedSalePrice,defaultProductImageFiles");
+		productCollectionList.addFilter('productFeatured',1,'=');
+local.featuredProductCollectionList = productCollectionList.getRecords(formatRecords=false);
+
  local.home = {
-        "featuredSlider": #local.featuredSlider#,
+        "featuredSlider": #local.featuredProductCollectionList#,
         "homeMainBanner": #local.homeBanner#,
         "homeContent": #local.homeContent#,
         "homeBrand": #local.homeBrand#,

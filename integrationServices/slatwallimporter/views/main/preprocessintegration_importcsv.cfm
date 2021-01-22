@@ -9,7 +9,7 @@
     </hb:HibachiEntityActionBar>
         <hb:HibachiPropertyRow>
             <hb:HibachiPropertyList>
-                <hb:HibachiPropertyDisplay object="#rc.processObject#" property="entityName" edit="#rc.edit#">
+                <hb:HibachiPropertyDisplay object="#rc.processObject#" property="mappingCode" edit="#rc.edit#">
                 </hb:HibachiPropertyDisplay>
                 <hb:HibachiPropertyDisplay object="#rc.processObject#" property="uploadFile" edit="#rc.edit#">
                 </hb:HibachiPropertyDisplay>

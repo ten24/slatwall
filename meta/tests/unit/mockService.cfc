@@ -46,8 +46,17 @@ component extends="testbox.system.BaseSpec"{
         baseImporterServiceMock.setHibachiValidationService(this.getHibachiValidationServiceMock());
         baseImporterServiceMock.setHibachiEntityQueueService(this.getHibachiEntityQueueServiceMock());
 		baseImporterServiceMock.setHibachiEntityQueueDAO( this.getHibachiEntityQueueDAOMock() );
-
+        baseImporterServiceMock.setImporterMappingService(this.getImporterMappingServiceMock());
+        baseImporterServiceMock.setOptionDAO( this.getOptionDAOMock() );
         return baseImporterServiceMock;
+	}
+	
+	public any function getImporterMappingServiceMock(){
+        var importerMappingServiceMock = createMock('Slatwall.model.service.ImporterMappingService');
+	    importerMappingServiceMock.init();
+		importerMappingServiceMock.setHibachiCacheService( this.getHibachiCacheServiceMock() );
+		importerMappingServiceMock.setImporterMappingDAO( this.getImporterMappingDAOMock() );
+		return importerMappingServiceMock;
 	}
 	
 	public any function getHibachiEntityQueueServiceMock(){

@@ -16,12 +16,9 @@ const ProductPageHeader = () => {
                 </a>
               </li>
               <li className="breadcrumb-item text-nowrap">
-                <a href="##">Shop</a>
+                <a href="#">Shop</a>
               </li>
-              <li
-                className="breadcrumb-item text-nowrap active"
-                aria-current="page"
-              >
+              <li className="breadcrumb-item text-nowrap active" aria-current="page">
                 Product Page v.1
               </li>
             </ol>
@@ -41,13 +38,7 @@ const ProductDetailGallery = () => {
       <div className="cz-product-gallery">
         <div className="cz-preview order-sm-2">
           <div className="cz-preview-item active" id="first">
-            <img
-              className="cz-image-zoom w-100 mx-auto"
-              src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png"
-              data-zoom="#$.getThemePath()#/custom/client/assets/images/product-img-1.png"
-              alt="Product image"
-              style={{ maxWidth: '500px' }}
-            />
+            <img className="cz-image-zoom w-100 mx-auto" src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" data-zoom="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product image" style={{ maxWidth: '500px' }} />
             <div className="cz-image-zoom-pane"></div>
           </div>
         </div>
@@ -63,23 +54,13 @@ const ProductPagePanels = () => {
       <div className="card">
         <div className="card-header">
           <h3 className="accordion-heading">
-            <a
-              href="##productInfo"
-              role="button"
-              data-toggle="collapse"
-              aria-expanded="true"
-              aria-controls="productInfo"
-            >
+            <a href="#productInfo" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="productInfo">
               <i className="far fa-key font-size-lg align-middle mt-n1 mr-2"></i>
               Product info<span className="accordion-indicator"></span>
             </a>
           </h3>
         </div>
-        <div
-          className="collapse show"
-          id="productInfo"
-          data-parent="##productPanels"
-        >
+        <div className="collapse show" id="productInfo" data-parent="#productPanels">
           <div className="card-body">
             <div className="font-size-sm row">
               <div className="col-6">
@@ -105,36 +86,21 @@ const ProductPagePanels = () => {
       <div className="card">
         <div className="card-header">
           <h3 className="accordion-heading">
-            <a
-              className="collapsed"
-              href="##technicalinfo"
-              role="button"
-              data-toggle="collapse"
-              aria-expanded="true"
-              aria-controls="technicalinfo"
-            >
+            <a className="collapsed" href="#technicalinfo" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="technicalinfo">
               <i className="far fa-drafting-compass align-middle mt-n1 mr-2"></i>
               Technical Info<span className="accordion-indicator"></span>
             </a>
           </h3>
         </div>
-        <div
-          className="collapse"
-          id="technicalinfo"
-          data-parent="##productPanels"
-        >
+        <div className="collapse" id="technicalinfo" data-parent="#productPanels">
           <div className="card-body font-size-sm">
             <div className="d-flex justify-content-between border-bottom py-2">
-              <div className="font-weight-semibold text-dark">
-                Document Title
-              </div>
-              <a href="##">Download</a>
+              <div className="font-weight-semibold text-dark">Document Title</div>
+              <a href="#">Download</a>
             </div>
             <div className="d-flex justify-content-between border-bottom py-2">
-              <div className="font-weight-semibold text-dark">
-                Document Title
-              </div>
-              <a href="##">Download</a>
+              <div className="font-weight-semibold text-dark">Document Title</div>
+              <a href="#">Download</a>
             </div>
           </div>
         </div>
@@ -142,20 +108,13 @@ const ProductPagePanels = () => {
       <div className="card">
         <div className="card-header">
           <h3 className="accordion-heading">
-            <a
-              className="collapsed"
-              href="##questions"
-              role="button"
-              data-toggle="collapse"
-              aria-expanded="true"
-              aria-controls="questions"
-            >
+            <a className="collapsed" href="#questions" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="questions">
               <i className="far fa-question-circle font-size-lg align-middle mt-n1 mr-2"></i>
               Questions?<span className="accordion-indicator"></span>
             </a>
           </h3>
         </div>
-        <div className="collapse" id="questions" data-parent="##productPanels">
+        <div className="collapse" id="questions" data-parent="#productPanels">
           <div className="card-body">
             <p>Have questions about this product?</p>
             <a href="/contact">Contact Us</a>
@@ -176,40 +135,22 @@ const ProductPageContent = () => {
           <div className="col-lg-6 pt-0">
             <div className="product-details pb-3">
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light">
-                  On Special
-                </span>
-                <button
-                  className="btn-wishlist mr-0 mr-lg-n3"
-                  type="button"
-                  data-toggle="tooltip"
-                  title="Add to wishlist"
-                >
+                <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light">On Special</span>
+                <button className="btn-wishlist mr-0 mr-lg-n3" type="button" data-toggle="tooltip" title="Add to wishlist">
                   {/* TODO: The heart shold be its own component */}
                   <i className="far fa-heart fa-circle"></i>
                 </button>
               </div>
               <div className="mb-2">
                 <span className="text-small text-muted">product: </span>
-                <span className="h4 font-weight-normal text-large text-accent mr-1">
-                  1812
-                </span>
+                <span className="h4 font-weight-normal text-large text-accent mr-1">1812</span>
               </div>
               <h2 className="h4 mb-2">Product Title Here</h2>
-              <div className="mb-3 font-weight-light font-size-small text-muted">
-                After finding the item they want and clicking the box to go to
-                the product detail page, that page should be configured to the
-                item that was clicked back on the product listing page. AKA,
-                Click on Gardall 1812-G-E, should be brought to the 1812 series
-                page with a grey safe w/ electronic lock already configured.
-              </div>
+              <div className="mb-3 font-weight-light font-size-small text-muted">After finding the item they want and clicking the box to go to the product detail page, that page should be configured to the item that was clicked back on the product listing page. AKA, Click on Gardall 1812-G-E, should be brought to the 1812 series page with a grey safe w/ electronic lock already configured.</div>
               <form className="mb-grid-gutter" method="post">
                 <div className="form-group">
                   <div className="d-flex justify-content-between align-items-center pb-1">
-                    <label
-                      className="font-weight-medium"
-                      htmlFor="product-size"
-                    >
+                    <label className="font-weight-medium" htmlFor="product-size">
                       Finish & Lock Type
                     </label>
                   </div>
@@ -223,16 +164,10 @@ const ProductPageContent = () => {
                   </select>
                 </div>
                 <div className="mb-3">
-                  <span className="h4 text-accent font-weight-light">
-                    $48.00
-                  </span>{' '}
-                  <span className="font-size-sm ml-1">$59.95 list</span>
+                  <span className="h4 text-accent font-weight-light">$48.00</span> <span className="font-size-sm ml-1">$59.95 list</span>
                 </div>
                 <div className="form-group d-flex align-items-center">
-                  <select
-                    className="custom-select mr-3"
-                    style={{ width: '5rem' }}
-                  >
+                  <select className="custom-select mr-3" style={{ width: '5rem' }}>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -245,8 +180,7 @@ const ProductPageContent = () => {
                   </button>
                 </div>
                 <div className="alert alert-danger" role="alert">
-                  <i className="far fa-exclamation-circle"></i> This item is not
-                  eligable for free freight
+                  <i className="far fa-exclamation-circle"></i> This item is not eligable for free freight
                 </div>
               </form>
               {/* <!-- Product panels--> */}
@@ -271,32 +205,16 @@ const ProductDetailSlider = () => {
             <div className="col-md-4 col-sm-6 px-2">
               <div className="card product-card">
                 {/* <!--- only display heart when user is logged in ---> */}
-                <button
-                  className="btn-wishlist btn-sm"
-                  type="button"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  title=""
-                  data-original-title="Add to wishlist"
-                >
+                <button className="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
                   <i className="far fa-heart"></i>
                   {/* <!--- For solid heart (when product has been added to wishlist)
                 <i className="far fa-heart"></i> ---> */}
                 </button>
-                <a
-                  className="card-img-top d-block overflow-hidden"
-                  href="shop-single-v1.html"
-                >
-                  <img
-                    src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png"
-                    alt="Product"
-                  />
+                <a className="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product" />
                 </a>
                 <div className="card-body py-2 text-left">
-                  <a
-                    className="product-meta d-block font-size-xs pb-1"
-                    href="##"
-                  >
+                  <a className="product-meta d-block font-size-xs pb-1" href="#">
                     Brand Here
                   </a>
                   <h3 className="product-title font-size-sm">
@@ -316,32 +234,16 @@ const ProductDetailSlider = () => {
               <div className="card product-card">
                 <span className="badge badge-primary">On Special</span>
                 {/* <!--- only display heart when user is logged in ---> */}
-                <button
-                  className="btn-wishlist btn-sm"
-                  type="button"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  title=""
-                  data-original-title="Add to wishlist"
-                >
+                <button className="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
                   <i className="far fa-heart"></i>
                   {/* <!--- For solid heart (when product has been added to wishlist)
                 <i className="far fa-heart"></i> ---> */}
                 </button>
-                <a
-                  className="card-img-top d-block overflow-hidden"
-                  href="shop-single-v1.html"
-                >
-                  <img
-                    src="#$.getThemePath()#/custom/client/assets/images/product-img-2.png"
-                    alt="Product"
-                  />
+                <a className="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-2.png" alt="Product" />
                 </a>
                 <div className="card-body py-2 text-left">
-                  <a
-                    className="product-meta d-block font-size-xs pb-1"
-                    href="##"
-                  >
+                  <a className="product-meta d-block font-size-xs pb-1" href="#">
                     Brand Here
                   </a>
                   <h3 className="product-title font-size-sm">
@@ -359,30 +261,14 @@ const ProductDetailSlider = () => {
 
             <div className="col-md-4 col-sm-6 px-2">
               <div className="card product-card">
-                <button
-                  className="btn-wishlist btn-sm"
-                  type="button"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  title=""
-                  data-original-title="Add to wishlist"
-                >
+                <button className="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
                   <i className="far fa-heart"></i>
                 </button>
-                <a
-                  className="card-img-top d-block overflow-hidden"
-                  href="shop-single-v1.html"
-                >
-                  <img
-                    src="#$.getThemePath()#/custom/client/assets/images/product-img-3.png"
-                    alt="Product"
-                  />
+                <a className="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-3.png" alt="Product" />
                 </a>
                 <div className="card-body py-2 text-left">
-                  <a
-                    className="product-meta d-block font-size-xs pb-1"
-                    href="##"
-                  >
+                  <a className="product-meta d-block font-size-xs pb-1" href="#">
                     Brand Here
                   </a>
                   <h3 className="product-title font-size-sm">
@@ -400,31 +286,15 @@ const ProductDetailSlider = () => {
 
             <div className="col-md-4 col-sm-6 px-2">
               <div className="card product-card">
-                <button
-                  className="btn-wishlist btn-sm"
-                  type="button"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  title=""
-                  data-original-title="Add to wishlist"
-                >
+                <button className="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
                   <i className="far fa-heart"></i>
                 </button>
 
-                <a
-                  className="card-img-top d-block overflow-hidden"
-                  href="shop-single-v1.html"
-                >
-                  <img
-                    src="#$.getThemePath()#/custom/client/assets/images/product-img-4.png"
-                    alt="Product"
-                  />
+                <a className="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-4.png" alt="Product" />
                 </a>
                 <div className="card-body py-2 text-left">
-                  <a
-                    className="product-meta d-block font-size-xs pb-1"
-                    href="##"
-                  >
+                  <a className="product-meta d-block font-size-xs pb-1" href="#">
                     Brand Here
                   </a>
                   <h3 className="product-title font-size-sm">
@@ -442,30 +312,14 @@ const ProductDetailSlider = () => {
 
             <div className="col-md-4 col-sm-6 px-2">
               <div className="card product-card">
-                <button
-                  className="btn-wishlist btn-sm"
-                  type="button"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  title=""
-                  data-original-title="Add to wishlist"
-                >
+                <button className="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
                   <i className="far fa-heart"></i>
                 </button>
-                <a
-                  className="card-img-top d-block overflow-hidden"
-                  href="shop-single-v1.html"
-                >
-                  <img
-                    src="#$.getThemePath()#/custom/client/assets/images/product-img-3.png"
-                    alt="Product"
-                  />
+                <a className="card-img-top d-block overflow-hidden" href="shop-single-v1.html">
+                  <img src="#$.getThemePath()#/custom/client/assets/images/product-img-3.png" alt="Product" />
                 </a>
                 <div className="card-body py-2 text-left">
-                  <a
-                    className="product-meta d-block font-size-xs pb-1"
-                    href="##"
-                  >
+                  <a className="product-meta d-block font-size-xs pb-1" href="#">
                     Brand Here
                   </a>
                   <h3 className="product-title font-size-sm">

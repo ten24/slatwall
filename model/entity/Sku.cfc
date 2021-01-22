@@ -1813,14 +1813,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// @hint this method validates that this skus has a unique option combination that no other sku has
 	public any function hasUniqueOptions() {
 		var optionsList = "";
-
-		for(var i=1; i<=arrayLen(getOptions()); i++){
-			optionsList = listAppend(optionsList, getOptions()[i].getOptionID());
+		
+		var options = getOptions();
+		
+		if( !arrayLen(options) ){
+		    return true;
 		}
-
 		if(isNull(getProduct()) || getProduct().getNewFlag()) {
 			return true;
 		}
+
+		for(var i=1; i<=arrayLen(options); i++){
+			optionsList = listAppend(optionsList, options[i].getOptionID());
+		}
+		
 		var skus = getProduct().getSkusBySelectedOptions(selectedOptions=optionsList);
 		if(!arrayLen(skus) || (arrayLen(skus) == 1 && skus[1].getSkuID() == getSkuID() )) {
 			return true;

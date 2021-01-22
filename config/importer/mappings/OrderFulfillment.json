@@ -1,6 +1,6 @@
 {
     "entityName": "OrderFulfillment",
-    
+    "mappingCode": "OrderFulfillment",
     "properties": {
         
         "remoteOrderFulfillmentID": {
@@ -40,6 +40,7 @@
          {
             "type"               : "manyToOne",
             "entityName"         : "Address",
+            "mappingCode"        : "Address",
             "isNullable"         : true,
             "propertyIdentifier" : "shippingAddress"
         }

@@ -3,6 +3,8 @@ import React from 'react'
 import { ActionBanner, Layout } from '../../components'
 import { connect } from 'react-redux'
 
+// TODO:  https://stoneandberg.ten24dev.com/contact?submitted=true
+
 const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
   return (
     <Layout actionBannerDisable={actionBanner.display}>
@@ -55,16 +57,7 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
               />
 
               {/* <!--- google maps embed code ---> */}
-              <iframe
-                title="location Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2953.180159000361!2d-71.84762278454714!3d42.25332507919407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e4041d31deb0af%3A0xeb395499aba6c944!2sStone%20%26%20Berg%20Wholesale!5e0!3m2!1sen!2sus!4v1602162888268!5m2!1sen!2sus"
-                width="400"
-                height="250"
-                frameBorder="0"
-                style={{ border: 0 }}
-                aria-hidden="false"
-                tabIndex="0"
-              />
+              <iframe title="location Map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2953.180159000361!2d-71.84762278454714!3d42.25332507919407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e4041d31deb0af%3A0xeb395499aba6c944!2sStone%20%26%20Berg%20Wholesale!5e0!3m2!1sen!2sus!4v1602162888268!5m2!1sen!2sus" width="400" height="250" frameBorder="0" style={{ border: 0 }} aria-hidden="false" tabIndex="0" />
             </div>
           </aside>
         </div>

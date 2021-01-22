@@ -1,6 +1,6 @@
 {
 	"entityName": "OrderPayment",
-
+    "mappingCode": "OrderPayment",
 	"properties": {
 
 		"remoteOrderPaymentID": {
@@ -88,17 +88,15 @@
 	    {
     		"type": "manyToOne",
     		"entityName": "Address",
+    		"mappingCode": "Address",
     		"propertyIdentifier": "billingAddress"
     	},
     	{
     	    "type" : "oneToMany",
             "entityName" : "PaymentTransaction",
+            "hasMapping"         : false,
             "generatorFunction" : "generateOrderPaymentTransactions",
             "propertyIdentifier" : "paymentTransactions",
-            "excludeFromTemplate" : true,
-            "excludeFromValidation"  : true,
-            "excludeFromPostSaveMethod" : true,
-            "excludeFromPostPopulateMethod" : true
     	}
 	],
 

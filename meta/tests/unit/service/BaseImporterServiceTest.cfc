@@ -92,9 +92,107 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
+	private struct function getSampleAccountMapping(){
+	    return {
+            "entityName": "Account",
+            "mappingCode": "_Account",
+        
+            "properties": {
+                
+                "remoteAccountID": {
+                    "propertyIdentifier": "remoteID",
+                    "validations": {
+                        "required": true,
+                        "dataType": "string"
+                    }
+                },
+                "firstName": {
+                    "propertyIdentifier": "firstName",
+                    "validations": {
+                        "required": true,
+                        "dataType": "string"
+                    }
+                },
+                "lastName": {
+                    "propertyIdentifier": "lastName",
+                    "validations": {
+                        "dataType": "string"
+                    }
+                },
+                "username": {
+                    "propertyIdentifier": "username",
+                    "validations": {
+                        "dataType": "string",
+                        "required": true
+                    }
+                },
+                "companyName": {
+                    "propertyIdentifier": "company",
+                    "validations": {
+                        "dataType": "string"
+                    }
+                },
+                "organizationFlag": {
+                    "propertyIdentifier": "organizationFlag",
+                    "defaultValue": false,
+                    "validations": {
+                        "dataType": "boolean"
+                    }
+                },
+                "accountActiveFlag": {
+                    "propertyIdentifier": "activeFlag"
+                }
+            },
+            
+            "generatedProperties": [
+                {
+                    "propertyIdentifier": "urtTitle",
+                    "allowUpdate": false
+                }    
+            ],
+            
+            "relations": [
+                {
+                    "type": "oneToOne",
+                    "isNullabel": true,
+                    "entityName": "AccountPhoneNumber",
+                    "mappingCode": "AccountPhoneNumber",
+                    "propertyIdentifier": "primaryPhoneNumber"
+                },
+                {
+                    "type": "oneToOne",
+                    "isNullabel": true,
+                    "entityName": "AccountEmailAddress",
+                    "mappingCode": "AccountEmailAddress",
+                    "propertyIdentifier": "primaryEmailAddress"
+                },
+                {
+                    "type": "oneToMany",
+                    "entityName": "AccountAuthentication",
+                    "mappingCode": "AccountAuthentication",
+                    "propertyIdentifier": "accountAuthentications",
+                }
+            ],
+            
+            "importIdentifier": {
+                "propertyIdentifier": "importRemoteID",
+                "type": "composite",
+                "keys": [
+                    "remoteAccountID"
+                ]
+            },
+            
+            "validationContext": "save",
+            
+            "postPopulateMethods": [ "updateCalculatedProperties" ]
+            
+        };
+	}
+	
 	private struct function getAccountEmailAddressMapping(){
         return {
             "entityName": "AccountEmailAddress",
+            "mappingCode": "AccountEmailAddress",
             "properties": {
                 "email": {
                     "propertyIdentifier": "emailAddress",
@@ -293,22 +391,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
     }
     
-    
-    /**
-     * @test 
-    */
-    public void function getAccountCSVHeaderMetaData_should_match_with_given_columns(){
-        var header = this.getService().getEntityCSVHeaderMetaData( 'Account' );
-        debug( header );
-        
-        $assert.isEqual("AccountActiveFlag,CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,RemoteAccountID,Username", header.columns );
-    }
-    
     /**
      * @test 
     */
     public void function getOrderCSVHeaderMetaData_should_include_address_prefixes(){
-        var header = this.getService().getEntityCSVHeaderMetaData( 'Order' );
+        var header = this.getService().getMappingCSVHeaderMetaData( 'Order' );
         debug( header );
         
         $assert.isTrue( ListFind(header.columns, "BillingAddress_city") );
@@ -322,32 +409,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
 	
 	
-	 /**
-     * @test
-    */
-    public void function getEntityMapping_should_call_extention_point_when_declared(){
-        
-        // declare a mock finction on the target-service
-        function getAccountMapping_spy(){
-            this['getAccountMapping_spy_called'] = "it works";
-            return {};
-        }
-        
-        variables.service['getAccountMapping'] = getAccountMapping_spy;
-        
-        this.getService().getEntityMapping( "Account" );
-        
-        expect( variables.service ).toHaveKey('getAccountMapping_spy_called');
-        expect( variables.service.getAccountMapping_spy_called ).toBe('it works');
-        
-        debug(variables.service.getAccountMapping_spy_called);
-        
-        // cleanup
-        structDelete( variables.service, 'getAccountMapping_spy_called');
-        structDelete( variables.service, 'getAccountMapping');
-    }
-
-	
 	/*****************************.  Validation.  .******************************/
 	
 	/**
@@ -355,7 +416,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	*/
 	public void function validateAccountData_should_fail_for_no_data(){
 	    
-	    var validation = this.getService().validateEntityData( entityName="Account", data={}, collectErrors=false );
+	    var validation = this.getService().validateMappingData( mappingCode="Account", data={}, collectErrors=false );
 	    
 	    debug(validation);
 	    $assert.isFalse(validation.isValid);
@@ -369,8 +430,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
 	    
-	    var validation = this.getService().validateEntityData(
-	        entityName="Account", 
+	    var validation = this.getService().validateMappingData(
+	        mapping= getSampleAccountMapping(), 
 	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
@@ -388,8 +449,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData['email'] = "Invalid Email Address";
 	    
-	    var validation = this.getService().validateEntityData(
-	        entityName="Account", 
+	    var validation = this.getService().validateMappingData(
+	        mappingCode="Account", 
 	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
@@ -406,8 +467,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 
-	    var validation = this.getService().validateEntityData(
-	        entityName="Account", 
+	    var validation = this.getService().validateMappingData(
+	        mappingCode="Account", 
 	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
@@ -427,8 +488,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    sampleAccountData.delete('lastName');
 	    sampleAccountData.delete('countryCode');
 
-	    var validation = this.getService().validateEntityData(
-	        entityName="Account", 
+	    var validation = this.getService().validateMappingData(
+	        mappingCode="Account", 
 	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
@@ -444,13 +505,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     */
     public void function validateAccountData_should_throw_for_invalid_validation_constraint(){
         var sampleAccountData = getSampleAccountData();
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
 
         mapping.properties.remoteAccountID.validations["invalidConstraint"] = "whaever";
-
+        
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+        var propertiesValidations = this.getService().getImporterMappingService().getMappingPropertiesValidations( mapping.mappingCode );
+        debug(propertiesValidations);
+    
         $assert.throws( function() {
-            this.getService().validateEntityData(
-                entityName="Account",
+            this.getService().validateMappingData(
                 data = sampleAccountData,
                 collectErrors = true,
                 mapping = mapping
@@ -464,8 +528,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     public void function validateAccountData_should_call_overriden_validation_function(){
         
         var sampleAccountData = getSampleAccountData();
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.properties.remoteAccountID.validations["testConstraint"] = "whaever";
+        
+        
+        
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+        var propertiesValidations = this.getService().getImporterMappingService().getMappingPropertiesValidations( mapping.mappingCode );
+        debug(propertiesValidations);
         
         // declare a mock validation-finction on the target-service
         function validate_testConstraint_value_spy(any propertyValue, any constraintValue){
@@ -475,8 +545,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         variables.service['validate_testConstraint_value'] = validate_testConstraint_value_spy;
 
-        this.getService().validateEntityData(
-            entityName="Account",
+        this.getService().validateMappingData(
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -501,14 +570,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var sampleAccountData = getSampleAccountData();
 
         // declare a mock validation-finction on the target-service
-        function validateAccountData_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
+        function validateAccountData_spy(required struct data, required struct mapping, boolean collectErrors){
             this['validateAccountData_spy_called'] = "it works";
             return {isValid:true, errors:[] };
         }
         
         variables.service['validateAccountData'] = validateAccountData_spy;
         
-        this.getService().validateEntityData( entityName="Account", data=sampleAccountData );
+        this.getService().validateMappingData( mappingCode="Account", data=sampleAccountData );
         
         expect( variables.service ).toHaveKey('validateAccountData_spy_called');
         expect( variables.service.validateAccountData_spy_called ).toBe('it works');
@@ -523,18 +592,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function validateEntityData_should_not_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_exist_in_source_data(){
+    public void function validateMappingData_should_not_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_exist_in_source_data(){
 
         var sampleAccountData = getSampleAccountData();
 	    sampleAccountData['email'] = "Invalid Email Address";
 	    
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
 
-	    var validation = this.getService().validateEntityData(
-            entityName="Account",
+	    var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -548,18 +617,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function validateEntityData_should_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_not_exist_in_source_data(){
+    public void function validateMappingData_should_ignre_validation_errors_for_nullabe_relation_when_required_properties_does_not_exist_in_source_data(){
 
         var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('email');
 	    
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
 
-	    var validation = this.getService().validateEntityData(
-            entityName="Account",
+	    var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -575,18 +644,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function validateEntityData_should_not_return_empty_relations_for_failed_validation_when_data_does_have_all_required_properties(){
+    public void function validateMappingData_should_not_return_empty_relations_for_failed_validation_when_data_does_have_all_required_properties(){
 
         var sampleAccountData = getSampleAccountData();
 	    sampleAccountData['email'] = "Invalid Email Address"; // the validation will fail for email type
 	    
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
 
-	    var validation = this.getService().validateEntityData(
-            entityName="Account",
+	    var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -602,18 +671,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
      /**
      * @test
     */
-    public void function validateEntityData_should_return_empty_relations_when_data_doesnot_have_all_required_properties(){
+    public void function validateMappingData_should_return_empty_relations_when_data_doesnot_have_all_required_properties(){
 
         var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('email');
 	    
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
 
-	    var validation = this.getService().validateEntityData(
-            entityName="Account",
+	    var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -632,18 +701,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function validateEntityData_should_ignre_validation_errors_for_relations_having_excludeFromValidation_flag(){
+    public void function validateMappingData_should_ignre_validation_errors_for_relations_having_hasMapping_flag(){
 
         var sampleAccountData = getSampleAccountData();
 	    sampleAccountData['email'] = "Invalid Email Address";
 	    
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.relations.each(function(rel){
-            rel['excludeFromValidation'] = true;
+            rel['hasMapping'] = false;
         })
 
-	    var validation = this.getService().validateEntityData(
-            entityName="Account",
+	    var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -657,20 +726,21 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function validateEntityData_should_fail_validate_for_sourceDataKeysPrefix_for_invalid_data(){
+    public void function validateMappingData_should_fail_validate_for_sourceDataKeysPrefix_for_invalid_data(){
 
         var sampleAccountData = getSampleAccountData();
         
-        var mapping  = this.getService().getEntityMapping( "Account" );
+        var mapping  = getSampleAccountMapping();
         mapping.relations = [{
             "type"                  : "oneToOne",
             "entityName"            : "AccountPhoneNumber",
+            "mappingCode"           : "AccountPhoneNumber",
             "propertyIdentifier"    : "primaryPhoneNumber",
             "sourceDataKeysPrefix"  : "testPrefix--"
         }];
 
-	    var validation = this.getService().validateEntityData(
-            entityName="Account",
+	    var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -686,14 +756,15 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function validateEntityData_should_pass_validate_for_sourceDataKeysPrefix_for_valid_data(){
+    public void function validateMappingData_should_pass_validate_for_sourceDataKeysPrefix_for_valid_data(){
 
         var sampleAccountData = getSampleAccountData();
         
-        var mapping  = this.getService().getEntityMapping( "Account" );
+        var mapping  = getSampleAccountMapping();
         mapping.relations = [{
             "type"                  : "oneToOne",
             "entityName"            : "AccountPhoneNumber",
+            "mappingCode"           : "AccountPhoneNumber",
             "propertyIdentifier"    : "primaryPhoneNumber",
             "sourceDataKeysPrefix"  : "testPrefix--"
         }];
@@ -702,8 +773,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         sampleAccountData['testPrefix--phone'] = sampleAccountData['phone'];
         sampleAccountData['testPrefix--remoteAccountID'] = sampleAccountData['remoteAccountID'];
         
-	    var validation = this.getService().validateEntityData(
-            entityName="Account",
+	    var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -759,7 +830,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    sampleAccountData['extraProp'] = "132432543";
 
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 	    debug(data);
 	    
 	    expect( StructKeyExists(data, 'extraProp') ).toBeFalse("transformed data should not contain key 'extraProp'");
@@ -772,7 +843,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 	    debug(data);
 	    
 	    expect(data).toHaveKey('accountID', "transformed data should have key 'accountID' ");
@@ -785,7 +856,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 	    debug(data);
 	    
 	    expect(data).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
@@ -794,14 +865,17 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_importRemoteID_should_match_with_createEntityImportRemoteID(){
+    public void function transformAccountDataTest_importRemoteID_should_match_with_createMappingImportRemoteID(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 	    debug(data);
 	    
-	    var importRemoteID = this.getService().createEntityImportRemoteID( "Account", sampleAccountData );
+	    var importRemoteID = this.getService().createMappingImportRemoteID( 
+	        mapping = getSampleAccountMapping(), 
+	        data = sampleAccountData 
+	    );
 	    
 	    expect(data.importRemoteID).toBe( importRemoteID, "importRemoteID in transformed data should match with generated-id ");
     }
@@ -809,19 +883,22 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function createEntityImportRemoteID_should_call_extention_point_when_declared(){
+    public void function createMappingImportRemoteID_should_call_extention_point_when_declared(){
         
         var sampleAccountData = getSampleAccountData();
 
         // declare a mock validation-finction on the target-service
-        function createAccountImportRemoteID_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
+        function createAccountImportRemoteID_spy(required struct data, required struct mapping){
             this['createAccountImportRemoteID_spy_called'] = "it works";
             return true;
         }
         
+        var mapping  = getSampleAccountMapping();
+        mapping.importIdentifier['generatorFunction'] = 'createAccountImportRemoteID';
+        
         variables.service['createAccountImportRemoteID'] = createAccountImportRemoteID_spy;
         
-        variables.service.createEntityImportRemoteID( "Account", sampleAccountData );
+        variables.service.createMappingImportRemoteID( mapping=mapping, data=sampleAccountData );
 
         expect( variables.service ).toHaveKey('createAccountImportRemoteID_spy_called');
         expect( variables.service.createAccountImportRemoteID_spy_called ).toBe('it works');
@@ -844,7 +921,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    sampleAccountData.delete('organizationFlag');
 
 	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(
+	        mapping = getSampleAccountMapping(), 
+	        data = sampleAccountData
+	    );
+	    
 	    debug(data);
 	    
 	    expect(data).toHaveKey('organizationFlag', "key organizationFlag should exist in transformed data");
@@ -859,7 +940,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         var sampleAccountData = getSampleAccountData();
         
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.properties.activeFlag = {
             "propertyIdentifier": "activeFlag",
             "generatorFunction":  "generateAccountActiveFlag_spy"
@@ -874,7 +955,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         variables.service['generateAccountActiveFlag_spy'] = generateAccountActiveFlag_spy;
 
 
-        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        var data = this.getService().transformMappingData(mapping, sampleAccountData);
         debug(data);
 
         expect( variables.service )
@@ -896,53 +977,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         structDelete( variables.service, 'generateAccountActiveFlag_spy_called');
     }
     
-    /** 
-	 * @test
-	*/
-    public void function transformAccountDataTest_should_use_conventional_generator_function_for_properties_when_declared_in_service(){
-        
-        var sampleAccountData = getSampleAccountData();
-        
-        var mapping = this.getService().getEntityMapping( 'Account' );
-        mapping.properties['exampleProperty'] = {
-            "propertyIdentifier": "examplePropertyIdentifier",
-        };
-
-        function generateAccountExamplePropertyIdentifier_spy(struct data, struct mapping, struct propertyMetaData){
-            // puting something in the THIS scope of the SERVICE so it can be verified later
-            this['generateAccountExamplePropertyIdentifier_spy_called'] = 'it-does-not-matter'; 
-            return 'example_value';
-        }
-        
-        
-        // declare a mock generator-finction on the target-service
-        // it follows the pattern `generate[entityName][PropertyIdentifier]`
-        variables.service['generateAccountExamplePropertyIdentifier'] = generateAccountExamplePropertyIdentifier_spy;
-
-
-        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
-        debug(data);
-
-        expect( variables.service )
-            .toHaveKey('generateAccountExamplePropertyIdentifier_spy_called');
-            
-        debug( variables.service.generateAccountExamplePropertyIdentifier_spy_called );
-        
-        expect( variables.service.generateAccountExamplePropertyIdentifier_spy_called )
-            .toBe('it-does-not-matter');
-            
-	    expect( data )
-	        .toHaveKey('examplePropertyIdentifier', "key examplePropertyIdentifier should exist in transformed data");
-	        
-	    expect( data.examplePropertyIdentifier )
-	        .toBe( 'example_value', "the defaule value for examplePropertyIdentifier should get generated and should be 'example_value' ");
-       
-        // cleanup
-        structDelete( variables.service, 'generateAccountExamplePropertyIdentifier_spy_called');
-        structDelete( variables.service, 'generateAccountExamplePropertyIdentifier');
-    }
-    
-    
     
     
     /** 
@@ -952,7 +986,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         var sampleAccountData = getSampleAccountData();
         
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.relations = [{
             "entityName": "Account",
             "propertyIdentifier": "exampleRelationProperty",
@@ -968,7 +1002,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         variables.service['getAccountExampleRelationProperty_spy'] = getAccountExampleRelationProperty_spy;
 
 
-        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        var data = this.getService().transformMappingData(mapping, sampleAccountData);
         debug(data);
 
         expect( variables.service ).toHaveKey('getAccountExampleRelationProperty_spy_called');
@@ -984,51 +1018,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
     
     
-    /** 
-	 * @test
-	*/
-    public void function transformAccountDataTest_should_use_conventional_generator_function_for_relations_when_declared_in_service(){
-        
-        var sampleAccountData = getSampleAccountData();
-        
-        var mapping = this.getService().getEntityMapping( 'Account' );
-        mapping.relations = [{
-            "entityName": "Account",
-            "propertyIdentifier": "exampleRelationXXXYYYProperty",
-        }];
-
-        function getAccountExampleRelationXXXYYYProperty_spy( struct data, struct parentEntityMapping, struct relationMetaData){
-            // puting something in the THIS scope of the SERVICE so it can be verified later
-            variables.this['getAccountExampleRelationXXXYYYProperty_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
-            return {"keyxx": 'valuexx', 'accountID': '12345'};
-        }
-        // declare a mock generator-finction on the target-service
-        variables.service['generateAccountExampleRelationXXXYYYProperty'] = getAccountExampleRelationXXXYYYProperty_spy;
-
-
-        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
-        debug(data);
-
-        expect( variables.service ).toHaveKey('getAccountExampleRelationXXXYYYProperty_spy_called');
-        expect( variables.service.getAccountExampleRelationXXXYYYProperty_spy_called ).toBe('xxxxx-yyyyy-does-not-matter');
-            
-	    expect( data ).toHaveKey( 'exampleRelationXXXYYYProperty' );
-	    expect( data.exampleRelationXXXYYYProperty ).toHaveKey( 'keyxx' );
-	    expect( data.exampleRelationXXXYYYProperty.keyxx ).toBe( 'valuexx' );
-       
-        // cleanup
-        structDelete( variables.service, 'getAccountExampleRelationXXXYYYProperty_spy');
-        structDelete( variables.service, 'getAccountExampleRelationXXXYYYProperty_spy_called');
-    }
-    
-    
-     /**
+    /**
      * @test
     */
-    public void function transformEntityData_should_resolve__generated__properties(){
+    public void function transformMappingData_should_resolve__generated__properties(){
         var sampleProductData = getSampleProductData();
         
-        var mapping = this.getService().getEntityMapping( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( 'Product' );
         mapping['generatedProperties'] = [{
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateProductUrlTitle"
@@ -1036,7 +1032,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         mapping.delete('relations');
         
-        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        var data = this.getService().transformMappingData(mapping, sampleProductData);
         debug(data);
         expect( data ).toHaveKey( 'urlTitle' );
     }
@@ -1044,10 +1040,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_resolve__create_only__properties__when_creating_new_entity(){
+    public void function transformMappingData_should_resolve__create_only__properties__when_creating_new_entity(){
         var sampleProductData = getSampleProductData();
         
-        var mapping = this.getService().getEntityMapping( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( 'Product' );
         mapping['generatedProperties'] = [{
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateProductUrlTitle",
@@ -1056,7 +1052,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         mapping.delete('relations');
         
-        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        var data = this.getService().transformMappingData(mapping, sampleProductData);
         debug(data);
         expect( data ).toHaveKey( 'urlTitle' );
     }
@@ -1065,13 +1061,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_not_resolve__create_only__properties__when_updating_existing_entity(){
+    public void function transformMappingData_should_not_resolve__create_only__properties__when_updating_existing_entity(){
         var sampleProductData = getSampleProductData();
         
         // simulates updating existing product
         sampleProductData['productID'] = '123456789078765';
         
-        var mapping = this.getService().getEntityMapping( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( 'Product' );
         mapping['generatedProperties'] = [{
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateProductUrlTitle",
@@ -1080,7 +1076,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         mapping.delete('relations');
         
-        var data = this.getService().transformEntityData("Product", sampleProductData, mapping);
+        var data = this.getService().transformMappingData(mapping, sampleProductData);
         debug(data);
         
         expect( structKeyExists(data, 'urlTitle') ).toBeFalse();
@@ -1132,7 +1128,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     	};
              
              
-        var data = this.getService().transformEntityData( entityName="Product", data=sampleProductData );
+        var data = this.getService().transformMappingData( mapping=this.getService().getMappingByMappingCode("Product"), data=sampleProductData );
         debug(data);
         
     }
@@ -1149,7 +1145,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 	    debug(data);
 	    
 	    expect(data).toHaveKey('firstName',  "transformed data should have key 'firstName' ");
@@ -1168,7 +1164,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 	    debug(data);
 	    
 	    expect(data).toHaveKey('primaryPhoneNumber', "transformed data should have key 'primaryPhoneNumber' ");
@@ -1185,7 +1181,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 	    debug(data);
 	    
 	    expect(data).toHaveKey('primaryPhoneNumber', "transformed data should have key 'primaryPhoneNumber' ");
@@ -1207,7 +1203,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    var data = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 	    debug(data);
 	    
 	    expect(data).toHaveKey('primaryEmailAddress', "transformed data should have key 'primaryEmailAddress' ");
@@ -1222,46 +1218,49 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_call_extention_point_when_declared(){
+    public void function transformMappingData_should_call_extention_point_when_declared(){
         
         var sampleAccountData = getSampleAccountData();
 
+        var mapping = getSampleAccountMapping();
+        mapping.mappingCode = "TestMapping";
+
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+        debug(mapping);
+
         // declare a mock validation-finction on the target-service
-        function transformAccountData_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
-            this['transformAccountData_spy_called'] = "it works";
+        function transformTestMappingData(required struct data, required struct mapping, boolean collectErrors){
+            this['transformTestMappingData_called'] = "it works";
             return {};
         }
         
-        variables.service['transformAccountData'] = transformAccountData_spy;
+        this.getService()['transformTestMappingData'] = transformTestMappingData;
         
-        this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        this.getService().transformMappingData( mapping=mapping, data=sampleAccountData );
         
-        expect( variables.service ).toHaveKey('transformAccountData_spy_called');
-        expect( variables.service.transformAccountData_spy_called ).toBe('it works');
+        expect( variables.service ).toHaveKey('transformTestMappingData_called');
+        expect( variables.service.transformTestMappingData_called ).toBe('it works');
         
-        debug(variables.service.transformAccountData_spy_called);
-        
-        // cleanup
-        structDelete( variables.service, 'transformAccountData_spy_called');
-        structDelete( variables.service, 'transformAccountData');
+        debug(variables.service.transformTestMappingData_called);
+            
     }
     
     
     /**
      * @test
     */
-    public void function transformEntityData_should_not_generate_data_for_relation_when_source_data_doesnot_have_all_required_properties(){
+    public void function transformMappingData_should_not_generate_data_for_relation_when_source_data_doesnot_have_all_required_properties(){
 
         var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('email');
 	    
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
         
-        var validation = this.getService().validateEntityData(
-            entityName="Account",
+        var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -1269,10 +1268,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         debug(validation);
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Account", 
-            data = sampleAccountData, 
+        var transformedData = this.getService().transformMappingData(
             mapping = mapping, 
+            data = sampleAccountData, 
             emptyRelations = validation.emptyRelations
         );
 	    
@@ -1284,17 +1282,17 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_generate_data_for_relation_when_source_data_does_have_all_required_properties(){
+    public void function transformMappingData_should_generate_data_for_relation_when_source_data_does_have_all_required_properties(){
 
         var sampleAccountData = getSampleAccountData();
 
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
         
-        var validation = this.getService().validateEntityData(
-            entityName="Account",
+        var validation = this.getService().validateMappingData(
+            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -1302,10 +1300,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         debug(validation);
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Account", 
-            data = sampleAccountData, 
+        var transformedData = this.getService().transformMappingData(
             mapping = mapping, 
+            data = sampleAccountData, 
             emptyRelations = validation.emptyRelations
         );
 	    
@@ -1318,14 +1315,15 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_be_able_to_use_prefixed_properties_for_relations(){
+    public void function transformMappingData_should_be_able_to_use_prefixed_properties_for_relations(){
 
         var sampleAccountData = getSampleAccountData();
         
-        var mapping  = this.getService().getEntityMapping( "Account" );
+        var mapping  = getSampleAccountMapping();
         mapping.relations = [{
             "type"                  : "oneToOne",
             "entityName"            : "AccountPhoneNumber",
+            "mappingCode"           : "AccountPhoneNumber",
             "propertyIdentifier"    : "primaryPhoneNumber",
             "sourceDataKeysPrefix"  : "testPrefix--"
         }];
@@ -1334,10 +1332,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         sampleAccountData['testPrefix--phone'] = sampleAccountData['phone'];
         sampleAccountData['testPrefix--remoteAccountID'] = sampleAccountData['remoteAccountID'];
         
-	    var transformedData = this.getService().transformEntityData(
-            entityName = "Account", 
-            data = sampleAccountData, 
-            mapping = mapping
+	    var transformedData = this.getService().transformMappingData(
+            mapping = mapping,
+            data = sampleAccountData 
         );
         
         debug(transformedData);
@@ -1364,9 +1361,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var batchID = hash("123xxxunittest"&now(), 'MD5');
         insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
         
+        var mapping  = getSampleAccountMapping();
+
 	    var validation = this.getService().pushRecordIntoImportQueue( 
-	            entityName="Account", 
-	            data = sampleAccountData,
+	            mapping = mapping, 
+	            data    = sampleAccountData,
 	            batchID = batchID
 	    );
 	    
@@ -1403,8 +1402,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
         
 	    var validation = this.getService().pushRecordIntoImportQueue( 
-	            entityName="Account", 
-	            data = sampleAccountData,
+	            mapping = getSampleAccountMapping(), 
+	            data    = sampleAccountData,
 	            batchID = batchID
 	    );
 	    debug(validation);
@@ -1437,10 +1436,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var batchID = hash("123xxxunittest"&now(), 'MD5');
         insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
         
+        var mapping  = getSampleAccountMapping();
+
 	    var validation = this.getService().pushRecordIntoImportQueue( 
-	            entityName="Account", 
-	            data = sampleAccountData,
-	            batchID = batchID
+            mapping = mapping, 
+            data    = sampleAccountData,
+            batchID = batchID
 	    );
 	    
         // get and format failure-queue-data
@@ -1485,13 +1486,19 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    var transformedData = this.getService().transformEntityData("Account", sampleAccountData);
+	    var mapping = getSampleAccountMapping();
+	    
+	    var transformedData = this.getService().transformMappingData(mapping=mapping, data=sampleAccountData);
 	    debug(transformedData);
 	    
 	    var tempAccount = this.getService().getHibachiService().newAccount();
 	    
 	    // try to import
-	    tempAccount = this.getService().processEntityImport( tempAccount, transformedData );
+	    tempAccount = this.getService().processEntityImport( 
+	        mapping         = mapping, 
+	        entity          = tempAccount, 
+	        entityQueueData = transformedData 
+	    );
 	
 	    debug(tempAccount.getErrors()); 
 	    
@@ -1507,7 +1514,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
 	    
-	    var transformedData = this.getService().transformEntityData("Account", sampleAccountData);
+	    var transformedData = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
 
 	    debug(transformedData);
 	    
@@ -1530,10 +1537,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var tempAccount = this.getService().getHibachiService().newAccount();
 	    var sampleAccountData = getSampleAccountData();
 	    
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping.postPopulateMethods = ['postPopulateExampleMethod'];
         
-        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        var data = this.getService().transformMappingData(mapping, sampleAccountData);
         debug(data);
 
 
@@ -1574,7 +1581,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         variables.service['processAccount_import'] = processAccount_import_spy;
         
-        var data = this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        var data = this.getService().transformMappingData( mapping=getSampleAccountMapping(), data=sampleAccountData );
         
         var tempAccount = this.getService().getHibachiService().newAccount();
 	    tempAccount = this.getService().processEntityImport( tempAccount, data );
@@ -1599,26 +1606,34 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var sampleAccountData = getSampleAccountData();
 
         // declare a mock validation-finction on the target-service
-        function resolveAccountDependencies_spy(required any entity, required struct entityQueueData, ){
-            this['resolveAccountDependencies_spy_called'] = "it works";
+        function resolveAccountEmailAddressDependencies_spy(required any entity, required struct entityQueueData, ){
+            this['resolveAccountEmailAddressDependencies_spy_called'] = "it works";
         }
         
-        variables.service['resolveAccountDependencies'] = resolveAccountDependencies_spy;
+        variables.service['resolveAccountEmailAddressDependencies'] = resolveAccountEmailAddressDependencies_spy;
         
-        var data = this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        var mapping = getAccountEmailAddressMapping();
+        debug(mapping);
         
-        var tempAccount = this.getService().getHibachiService().newAccount();
-	    tempAccount = this.getService().resolveEntityDependencies( tempAccount, data );
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+        var propertiesValidations = this.getService().getImporterMappingService().getMappingPropertiesValidations( mapping.mappingCode );
+        debug(propertiesValidations);
+        
+        var data = this.getService().transformMappingData( mapping=mapping, data=sampleAccountData );
+        debug(data);
+        
+        var tempAccountEmailAddress = this.getService().getHibachiService().newAccountEmailAddress();
+	    tempAccountEmailAddress = this.getService().resolveEntityDependencies( entity=tempAccountEmailAddress, entityQueueData=data, mapping=mapping );
 
         
-        expect( variables.service ).toHaveKey('resolveAccountDependencies_spy_called');
-        expect( variables.service.resolveAccountDependencies_spy_called ).toBe('it works');
+        expect( variables.service ).toHaveKey('resolveAccountEmailAddressDependencies_spy_called');
+        expect( variables.service.resolveAccountEmailAddressDependencies_spy_called ).toBe('it works');
         
-        debug(variables.service.resolveAccountDependencies_spy_called);
+        debug(variables.service.resolveAccountEmailAddressDependencies_spy_called);
         
         // cleanup
-        structDelete( variables.service, 'resolveAccountDependencies_spy_called');
-        structDelete( variables.service, 'resolveAccountDependencies');
+        structDelete( variables.service, 'resolveAccountEmailAddressDependencies_spy_called');
+        structDelete( variables.service, 'resolveAccountEmailAddressDependencies');
     }
     
     
@@ -1627,7 +1642,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     
     private struct function getAccountEmailAddressMapping(){
         return {
-            "entityName": "AccountEmailAddress",
+            "entityName"  : "AccountEmailAddress",
+            "mappingCode" : "AccountEmailAddress",
             "properties": {
                 "email": {
                     "propertyIdentifier": "emailAddress",
@@ -1657,6 +1673,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     public void function processEntityImport_check_transform_data(){
         
         var sampleProductData = {
+                "mappingCode" : "Inventory",
             	"__dependancies": [{
             		"key": "remoteSkuID",
             		"entityName": "Sku",
@@ -1687,7 +1704,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             };
         var tempInventory = this.getService().getHibachiService().newInventory();
 	    tempAccountData = this.getService().processEntityImport( tempInventory, sampleProductData );
-        //var data = this.getService().transformEntityData( entityName="Inventory", data=sampleProductData );
+        //var data = this.getService().transformMappingData( mapping=this.getService().getMappingByMappingCode("Inventory"), data=sampleProductData );
 
         debug(tempInventory);
         debug(tempAccountData);
@@ -1707,10 +1724,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         };
         
 
-        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+        var transformedData = variables.service.transformMappingData( data=data, mapping=getAccountEmailAddressMapping());
         debug(transformedData);
         
-        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        variables.service.resolveEntityDependencies( emailAddress, transformedData, getAccountEmailAddressMapping());
         
         debug( emailAddress.getErrors() );
         
@@ -1735,11 +1752,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         insertRow("swAccount", { 'accountID': accountID, 'remoteID': remoteAccountID });
         
         
-        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+        var transformedData = variables.service.transformMappingData( data=data, mapping=getAccountEmailAddressMapping());
 
         debug(transformedData);
         
-        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        variables.service.resolveEntityDependencies( emailAddress, transformedData, getAccountEmailAddressMapping() );
         
         debug( emailAddress.getErrors() );
         expect( emailAddress.getErrors() ).toBeEmpty();
@@ -1765,11 +1782,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         insertRow("swAccount", { 'accountID': accountID, 'remoteID': remoteAccountID });
         
         
-        var transformedData = variables.service.transformEntityData( "AccountEmailAddress", data, getAccountEmailAddressMapping());
+        var transformedData = variables.service.transformMappingData( data=data, mapping=getAccountEmailAddressMapping());
 
         debug(transformedData);
         
-        variables.service.resolveEntityDependencies( emailAddress, transformedData );
+        variables.service.resolveEntityDependencies( emailAddress, transformedData, getAccountEmailAddressMapping() );
         
         debug( transformedData );
         
@@ -1791,17 +1808,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_not_generate_lazy_evaluated__properties(){
+    public void function transformMappingData_should_not_generate_lazy_evaluated__properties(){
 
         var sampleData = getSampleProductData();
 
-        var mapping = this.getService().getEntityMapping( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( 'Product' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Product", 
+        var transformedData = this.getService().transformMappingData(
             data = sampleData, 
             mapping = mapping
         );
@@ -1819,17 +1835,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__properties(){
+    public void function transformMappingData_should_generate_data_to_carry_forward_for_lazy_evaluated__properties(){
 
          var sampleData = getSampleProductData();
 
-        var mapping = this.getService().getEntityMapping( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( 'Product' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Product", 
+        var transformedData = this.getService().transformMappingData(
             data = sampleData, 
             mapping = mapping
         );
@@ -1850,24 +1865,26 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__properties(){
+    public void function resolveMappingLazyProperties_should_resolve_lazy_evaluated__properties(){
 
         var sampleData = getSampleProductData();
 
-        var mapping = this.getService().getEntityMapping( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( 'Product' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Product", 
-            data = sampleData, 
-            mapping = mapping
+        var transformedData = this.getService().transformMappingData(
+            mapping = mapping,
+            data = sampleData 
         );
 	    
 	    debug(transformedData);
 	    
-	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
+	    var resolvedData = this.getService().resolveMappingLazyProperties( 
+	        mapping         = mapping, 
+	        transformedData = transformedData 
+	    );
         
         debug( resolvedData );
 	    
@@ -1880,19 +1897,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_not_generate_lazy_evaluated__generated_properties(){
+    public void function transformMappingData_should_not_generate_lazy_evaluated__generated_properties(){
 
         var sampleAccountData = getSampleAccountData();
 
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping["generatedProperties"] = [{
             "propertyIdentifier"    : "urtTitle",
             "allowUpdate"           : false,
             "evaluationMode"        : "lazy",
         }];
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Account", 
+        var transformedData = this.getService().transformMappingData(
             data = sampleAccountData, 
             mapping = mapping
         );
@@ -1905,19 +1921,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__generated_properties(){
+    public void function transformMappingData_should_generate_data_to_carry_forward_for_lazy_evaluated__generated_properties(){
 
         var sampleAccountData = getSampleAccountData();
 
-        var mapping = this.getService().getEntityMapping( 'Account' );
+        var mapping = getSampleAccountMapping();
         mapping["generatedProperties"] = [{
             "propertyIdentifier"    : "urtTitle",
             "allowUpdate"           : false,
             "evaluationMode"        : "lazy",
         }];
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Account", 
+        var transformedData = this.getService().transformMappingData(
             data = sampleAccountData, 
             mapping = mapping
         );
@@ -1932,11 +1947,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__generated_properties(){
+    public void function resolveMappingLazyProperties_should_resolve_lazy_evaluated__generated_properties(){
 
         var sampleData = getSampleProductData();
 
-        var mapping = this.getService().getEntityMapping( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( 'Product' );
         mapping["generatedProperties"] = [{
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateProductTypeUrlTitle",
@@ -1945,15 +1960,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "__hint"             : "lazy evaluation means, the value for this property will get generted just before populating the object"
         }];
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Product", 
+        var transformedData = this.getService().transformMappingData(
             data = sampleData, 
             mapping = mapping
         );
 	    
 	    debug(transformedData);
 	    
-	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
+	    
+	    var resolvedData = this.getService().resolveMappingLazyProperties( 
+	        mapping         = mapping, 
+	        transformedData = transformedData 
+	    );
         
         debug( resolvedData );
 	    
@@ -1967,21 +1985,20 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_not_generate_lazy_evaluated__relations_properties(){
+    public void function transformMappingData_should_not_generate_lazy_evaluated__relations_properties(){
 
         var sampleData = getSampleProductData();
 
         // modify brand mapping, temporarly
-        var mapping = this.getService().getEntityMapping( 'Brand' );
+        var mapping = this.getService().getMappingByMappingCode( 'Brand' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Product", 
+        var transformedData = this.getService().transformMappingData(
             data = sampleData, 
-            mapping = this.getService().getEntityMapping( 'Product' )
+            mapping = this.getService().getMappingByMappingCode( 'Product' )
         );
 	    
 	    debug(transformedData);
@@ -1997,21 +2014,20 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test
     */
-    public void function transformEntityData_should_generate_data_to_carry_forward_for_lazy_evaluated__relations_properties(){
+    public void function transformMappingData_should_generate_data_to_carry_forward_for_lazy_evaluated__relations_properties(){
 
         var sampleData = getSampleProductData();
 
         // modify brand mapping, temporarly
-        var mapping = this.getService().getEntityMapping( 'Brand' );
+        var mapping = this.getService().getMappingByMappingCode( 'Brand' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Product", 
+        var transformedData = this.getService().transformMappingData(
             data = sampleData, 
-            mapping = this.getService().getEntityMapping( 'Product' )
+            mapping = this.getService().getMappingByMappingCode( 'Product' )
         );
 	    
 	    debug(transformedData);
@@ -2021,34 +2037,36 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         expect( transformedData.__lazy ).toHaveKey('relations');
         
         
-        expext(transformedData.brand).toHaveKey('__lazy');
-        expext(transformedData.brand.__lazy).toHaveKey('properties');
+        expect(transformedData.brand).toHaveKey('__lazy');
+        expect(transformedData.brand.__lazy).toHaveKey('properties');
     }
 
     /**
      * @test
     */
-    public void function resolveEntityLazyProperties_should_resolve_lazy_evaluated__generated_properties(){
+    public void function resolveMappingLazyProperties_should_resolve_lazy_evaluated__generated_properties(){
 
         var sampleData = getSampleProductData();
 
         // modify brand mapping, temporarly
-        var mapping = this.getService().getEntityMapping( 'Brand' );
+        var mapping = this.getService().getMappingByMappingCode( 'Brand' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
         
-        var transformedData = this.getService().transformEntityData(
-            entityName = "Product", 
+        var transformedData = this.getService().transformMappingData(
             data = sampleData, 
-            mapping = this.getService().getEntityMapping( 'Product' )
+            mapping = this.getService().getMappingByMappingCode( 'Product' )
         );
 	    
 	    debug(transformedData);
 	    
-	    var resolvedData = this.getService().resolveEntityLazyProperties( 'Product', transformedData );
-        
+        var resolvedData = this.getService().resolveMappingLazyProperties( 
+	        mapping         = mapping, 
+	        transformedData = transformedData 
+	    );
+                
         debug( resolvedData );
 	    
         expect( StructKeyExists(resolvedData.brand, 'brandName') ).toBeTrue();

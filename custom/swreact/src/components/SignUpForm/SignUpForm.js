@@ -1,4 +1,5 @@
 import MailchimpSubscribe from 'react-mailchimp-subscribe'
+import styles from './SignUpForm.module.css'
 
 const MyForm = ({ status, message, onValidated }) => {
   let email, fName, lName, company
@@ -9,10 +10,10 @@ const MyForm = ({ status, message, onValidated }) => {
       company &&
       email.value.indexOf('@') > -1 &&
       onValidated({
-        EMAIL: email.value,
-        LNAME: lName.value,
-        FNAME: fName.value,
-        COMPANY: company.value,
+        MERGE0: email.value,
+        MERGE2: lName.value,
+        MERGE1: fName.value,
+        MERGE3: company.value,
       })
   }
 
@@ -24,15 +25,15 @@ const MyForm = ({ status, message, onValidated }) => {
         </div>
         <div className="row">
           <div className="col-12 d-flex">
-            <input className="form-control prepended-form-control mr-2" type="text" ref={node => (fName = node)} placeholder="First Name" required />
-            <input className="form-control prepended-form-control mr-2" type="text" ref={node => (lName = node)} placeholder="Last Name" required />
-            <input className="form-control prepended-form-control" type="text" ref={node => (company = node)} placeholder="Company" required />
+            <input className={`${styles.customInput} form-control prepended-form-control mr-3`} type="text" ref={node => (fName = node)} placeholder="First Name" required />
+            <input className={`${styles.customInput} form-control prepended-form-control mr-3`} type="text" ref={node => (lName = node)} placeholder="Last Name" required />
+            <input className={`${styles.customInput} form-control prepended-form-control`} type="text" ref={node => (company = node)} placeholder="Company" required />
           </div>
-          <div className="col-12 d-flex pt-2">
-            <input className="form-control prepended-form-control" type="email" ref={node => (email = node)} placeholder="Your email" required />
+          <div className="col-12 d-flex pt-3">
+            <input className={`${styles.customInput} form-control prepended-form-control rounded-right-0`} type="email" ref={node => (email = node)} placeholder="Your email" required />
             <div className="input-group-append">
-              <button className="btn btn-primary" type="submit" onClick={submit}>
-                Subscribe*
+              <button className="btn btn-primary rounded-left-0" type="submit" onClick={submit}>
+                <i class="fal fa-envelope"></i> Subscribe
               </button>
             </div>
           </div>
@@ -50,8 +51,7 @@ const MyForm = ({ status, message, onValidated }) => {
   )
 }
 
-const SignUpForm = () => {
-  const url = 'https://jster.us7.list-manage.com/subscribe/post?u=XXXX&id=XXXXXX'
+const SignUpForm = ({ url }) => {
   return (
     <MailchimpSubscribe
       url={url}

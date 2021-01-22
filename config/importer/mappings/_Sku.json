@@ -1,5 +1,6 @@
 {
     "entityName": "Sku",
+    "mappingCode": "_Sku",
     "properties": {
         "remoteSkuID": {
             "propertyIdentifier": "remoteID",
@@ -71,6 +72,7 @@
         {
             "type": "oneToMany",
             "entityName": "SkuPrice",
+            "mappingCode": "_SkuPrice",
             "propertyIdentifier": "skuPrices"
         }
     ],
