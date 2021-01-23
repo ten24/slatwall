@@ -1,6 +1,5 @@
 import Slider from 'react-slick'
 import ProductCard from '../Account/ProductCard/ProductCard'
-
 const ProductSlider = ({ children, sliderData, settings, title }) => {
   settings = settings
     ? settings

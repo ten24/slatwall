@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { SlatwalApiService } from '../../services'
 import ProductSlider from '../../components/ProductSlider/ProductSlider'
+import { renameKeysInArrayOfObjects } from '../../utils'
 
 const ProductDetailSlider = ({ productID }) => {
-  const [relatedProducts, setRelatedProducts] = useState({ products: [], isLoaded: false, err: '' })
+  const [relatedProducts, setRelatedProducts] = useState({ products: [], isLoaded: false, err: '', productID })
+  if (relatedProducts.productID !== productID) {
+    setRelatedProducts({ products: [], isLoaded: false, err: '', productID })
+  }
   useEffect(() => {
     let didCancel = false
     const loginToken = localStorage.getItem('loginToken')
@@ -20,15 +24,8 @@ const ProductDetailSlider = ({ productID }) => {
           if (response.isSuccess() && !didCancel) {
             let newProducts = response.success().products
             // TODO: Fix this.....
-            newProducts.forEach(product => {
-              Object.keys(product).forEach(ele => {
-                const newKey = ele.replace('relatedProduct_', '')
-                product[newKey] = product[ele]
-                delete product[ele]
-              })
-            })
+            renameKeysInArrayOfObjects(newProducts, 'relatedProduct_', '')
 
-            console.log('newProducts', newProducts)
             setRelatedProducts({
               ...relatedProducts,
               isLoaded: true,

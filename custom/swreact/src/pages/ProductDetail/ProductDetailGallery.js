@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { SlatwalApiService } from '../../services'
 
 const ProductDetailGallery = ({ productID }) => {
-  const [productImageGallery, setProductImageGallery] = useState({ imageGallery: {}, isLoaded: false })
-
+  const [productImageGallery, setProductImageGallery] = useState({ imageGallery: {}, isLoaded: false, productID })
+  if (productImageGallery.productID !== productID) {
+    setProductImageGallery({ imageGallery: [], isLoaded: false, err: '', productID })
+  }
   useEffect(() => {
     let didCancel = false
     const loginToken = localStorage.getItem('loginToken')

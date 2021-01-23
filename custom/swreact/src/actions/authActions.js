@@ -35,7 +35,6 @@ export const logout = () => {
   return async dispatch => {
     dispatch(requestLogOut())
     dispatch(clearUser())
-    toast.success('Logout Successful')
   }
 }
 

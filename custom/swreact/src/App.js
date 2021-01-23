@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { Header, Layout, SEO } from './components'
+import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 const Home = React.lazy(() => import('./pages/Home/Home'))
 const MyAccount = React.lazy(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = React.lazy(() => import('./pages/ProductListing/ProductListing'))
@@ -22,6 +23,7 @@ const Loading = () => {
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Suspense fallback={<Loading />}>
         <SEO />
         <Header />
@@ -30,9 +32,9 @@ export default function App() {
               renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/products" component={ProductListing} />
-          <Route path="/product-detail" component={ProductDetail} />
-          <Route path="/sp/:id" component={ProductDetail} />
           <Route path="/product/:id" component={ProductDetail} />
+          <Route path="/product" component={ProductListing} />
+          <Route path="/sp/:id" component={ProductDetail} />
           <Route path="/category-listing" component={CategoryListing} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />

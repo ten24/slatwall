@@ -1,9 +1,12 @@
 import ProductDetailGallery from './ProductDetailGallery'
 import ProductPagePanels from './ProductPagePanels'
-import React, { useEffect, useState } from 'react'
-import { SlatwalApiService } from '../../services'
+import React, { useState } from 'react'
+import { addToCart } from '../../actions/cartActions'
+import { useDispatch } from 'react-redux'
 
 const ProductPageContent = ({ productID, calculatedTitle, productClearance, productCode, productDescription, calculatedSalePrice, listPrice = 'MISSING' }) => {
+  const dispatch = useDispatch()
+  const [quantity, setQuantity] = useState(1)
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
       <div className="px-lg-3">
@@ -13,7 +16,7 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
           <div className="col-lg-6 pt-0">
             <div className="product-details pb-3">
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {productClearance && ' On Special'}</span>
+                <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {productClearance == true && ' On Special'}</span>
                 <button className="btn-wishlist mr-0 mr-lg-n3" type="button" data-toggle="tooltip" title="Add to wishlist">
                   {/* TODO: The heart shold be its own component */}
                   <i className="far fa-heart fa-circle"></i>
@@ -24,8 +27,19 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                 <span className="h4 font-weight-normal text-large text-accent mr-1">{productCode}</span>
               </div>
               <h2 className="h4 mb-2">{calculatedTitle}</h2>
-              <div className="mb-3 font-weight-light font-size-small text-muted">{productDescription}</div>
-              <form className="mb-grid-gutter" method="post">
+              <div
+                className="mb-3 font-weight-light font-size-small text-muted"
+                dangerouslySetInnerHTML={{
+                  __html: productDescription,
+                }}
+              />
+              <form
+                className="mb-grid-gutter"
+                onSubmit={event => {
+                  event.preventDefault()
+                  dispatch(addToCart('2c92808476e1c29f0176e1e2c4561186', quantity))
+                }}
+              >
                 <div className="form-group">
                   <div className="d-flex justify-content-between align-items-center pb-1">
                     <label className="font-weight-medium" htmlFor="product-size">
@@ -45,7 +59,14 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                   <span className="h4 text-accent font-weight-light">{calculatedSalePrice}</span> <span className="font-size-sm ml-1">{`${listPrice} list`}</span>
                 </div>
                 <div className="form-group d-flex align-items-center">
-                  <select className="custom-select mr-3" style={{ width: '5rem' }}>
+                  <select
+                    value={quantity}
+                    onChange={event => {
+                      setQuantity(event.target.value)
+                    }}
+                    className="custom-select mr-3"
+                    style={{ width: '5rem' }}
+                  >
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>

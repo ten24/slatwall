@@ -1,22 +1,6 @@
-import { SWImage } from '../index'
+import { HeartButton, SWImage } from '../index'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-
-const HeartButton = ({ isSaved }) => {
-  if (isSaved) {
-    return (
-      <button className="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
-        <i className="far fa-heart" style={{ color: '#5f1018' }}></i>
-      </button>
-    )
-  } else {
-    return (
-      <button className="btn-wishlist btn-sm" type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
-        <i className="far fa-heart"></i>
-      </button>
-    )
-  }
-}
 
 const FeaturedProductCard = ({ productClearance, brand_brandName, brand_urlTitle = '', calculatedTitle, calculatedSalePrice, listPrice, urlTitle, defaultProductImageFiles }) => {
   const imgUrl = defaultProductImageFiles && defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
