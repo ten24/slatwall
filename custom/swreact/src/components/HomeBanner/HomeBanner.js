@@ -95,7 +95,7 @@ function HomeBanner({ featuredSlider, homeMainBanner }) {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getFeaturedItems())
-  }, [])
+  }, [dispatch])
 
   return (
     <div className="hero mt-2" style={{ backgroundImage: `url(${Background})` }}>

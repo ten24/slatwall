@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import { BreadCrumb } from '../..'
 import { logout } from '../../../actions/authActions'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 
-const AccountSidebar = ({ logout, user }) => {
+const AccountSidebar = ({ user }) => {
+  const dispatch = useDispatch()
   return (
     <aside className="col-lg-4 pt-4 pt-lg-0">
       <div className="cz-sidebar-static rounded-lg box-shadow-lg px-0 pb-0 mb-5 mb-lg-0">
@@ -14,13 +15,13 @@ const AccountSidebar = ({ logout, user }) => {
               <a
                 href="#"
                 onClick={() => {
-                  logout()
+                  dispatch(logout())
                 }}
                 className="text-accent font-size-sm"
               >
                 Logout
               </a>
-              <br/>
+              <br />
               <Link to="/testing"></Link>
             </div>
           </div>
@@ -79,13 +80,13 @@ const AccountHeader = ({ crumbs, title }) => {
   )
 }
 
-const AccountLayout = ({ crumbs, children, title, logout, user }) => {
+const AccountLayout = ({ crumbs, children, title, user }) => {
   return (
     <>
       <AccountHeader crumbs={crumbs} title={title} />
       <div className="container pb-5 mb-2 mb-md-3">
         <div className="row">
-          <AccountSidebar logout={logout} user={user} />
+          <AccountSidebar user={user} />
           <section className="col-lg-8">{children}</section>
         </div>
       </div>
@@ -95,9 +96,4 @@ const AccountLayout = ({ crumbs, children, title, logout, user }) => {
 const mapStateToProps = state => {
   return { user: state.userReducer }
 }
-const mapDispatchToProps = dispatch => {
-  return {
-    logout: async () => dispatch(logout()),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(AccountLayout)
+export default connect(mapStateToProps)(AccountLayout)

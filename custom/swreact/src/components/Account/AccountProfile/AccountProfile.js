@@ -1,4 +1,3 @@
-import { logout } from '../../../actions/authActions'
 import { connect } from 'react-redux'
 import AccountLayout from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
@@ -84,9 +83,4 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    logout: async () => dispatch(logout()),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(AccountProfile)
+export default connect(mapStateToProps)(AccountProfile)

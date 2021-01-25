@@ -1,5 +1,4 @@
 import { login } from '../../../actions/authActions'
-import { getUser } from '../../../actions/userActions'
 import { connect, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 
