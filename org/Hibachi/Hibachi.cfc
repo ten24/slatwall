@@ -1159,15 +1159,14 @@ component extends="framework.one" {
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
 
-		if(getHibachiScope().getPersistSessionFlag()) {
-			getHibachiScope().getService("hibachiSessionService").persistSession();
-		}
-		
-		if(!getHibachiScope().getORMHasErrors()) {
+		if( !getHibachiScope().getORMHasErrors() ){
+		    
+    		if(getHibachiScope().getPersistSessionFlag()) {
+    			getHibachiScope().getService("hibachiSessionService").persistSession();
+    		}
+    		
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}
-		
-		
 
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
