@@ -118,7 +118,7 @@ class SWSkuPriceModalController{
 		    });
     }
 
-    public initData (pageRecord?:any) {
+    public initData = (pageRecord?:any) => {
         this.pageRecord = pageRecord;
         
         if(pageRecord){
