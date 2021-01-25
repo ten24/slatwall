@@ -121,7 +121,31 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['content'] = stackedContent;
         
     }
-    
+    public void function getRelatedProducts(required struct data){
+        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.productID" default="";
+                getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
+        
+        var currentProduct = getService('productService').getProduct(arguments.data.productID);
+        var relatedProductCollectionList = currentProduct.getRelatedProductsCollectionList()
+        relatedProductCollectionList.setDisplayProperties('relatedProduct.productID,relatedProduct.urlTitle,relatedProduct.calculatedTitle,relatedProduct.productCode,relatedProduct.productClearance,relatedProduct.calculatedSalePrice,relatedProduct.listPrice,relatedProduct.brand.brandID,relatedProduct.brand.brandName,relatedProduct.brand.urlTitle')
+        var relatedProductRecords = relatedProductCollectionList.getRecords()
+        
+        getHibachiScope().addActionResult("public:getRelatedProducts", true);
+
+        arguments.data['ajaxResponse']['products'] = relatedProductRecords
+    }
+        public void function getProductImageGallery(required struct data){
+        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.productID" default="";
+        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
+        
+
+        getHibachiScope().addActionResult("public:getProductImageGallery", true);
+
+        arguments.data['ajaxResponse']['productImageGallery'] = {}
+    }
+
     public void function getSlatwallForm(required struct data){
         param name="arguments.data.siteCode" default="stoneAndBerg";
         param name="arguments.data.formCode" default="contact-us";

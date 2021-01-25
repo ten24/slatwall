@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 import { ActionBanner, Layout } from '../../components'
 import { connect, useDispatch } from 'react-redux'
@@ -11,19 +11,24 @@ import { toast } from 'react-toastify'
 // TODO:  https://stoneandberg.ten24dev.com/contact?submitted=true
 
 const ContactForm = ({ form }) => {
+  const [submitted, setSubmitted] = useState(false)
   let location = useLocation()
   const encodeForm = data => {
     return Object.keys(data)
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
   }
+  console.log('submitted', submitted)
+  if(submitted){
+    return null
+  }
 
   return (
     <div className="contactForm mt-4">
       <div
         onClick={event => {
-          event.preventDefault()
           if (event.target.value === 'Submit') {
+            event.preventDefault()
             const form = event.target.closest('form')
             const formData = new FormData(form)
             var bodyFormData = {}
@@ -39,11 +44,10 @@ const ContactForm = ({ form }) => {
                 'Content-Type': `application/x-www-form-urlencoded`,
               },
             }).then(response => {
-              if (response.status === 200) {
                 toast.success('Thank you for contacting us, we will get back to you as soon as possible.')
-              } else {
-                toast.error('Failed to submit form.')
-              }
+                setSubmitted(true)
+            }).catch((error)=>{
+               toast.error(error.message)
             })
           }
         }}
