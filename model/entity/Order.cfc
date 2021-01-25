@@ -217,6 +217,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 	property name="calculatedFulfillmentHandlingFeeTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedPaymentAmountDue" ormtype="big_decimal";
 
 	
 	public void function init(){
