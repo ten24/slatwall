@@ -33,8 +33,15 @@ export const requestLogOut = () => {
 }
 export const logout = () => {
   return async dispatch => {
+    const bearerToken = localStorage.getItem('loginToken')
+    const response = await SlatwalApiService.auth.removeToken(bearerToken)
     dispatch(requestLogOut())
     dispatch(clearUser())
+    if (response.isSuccess()) {
+      toast.success('Logout Successful')
+    } else {
+      toast.error('Logout failed. Please close your browser')
+    }
   }
 }
 

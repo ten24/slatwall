@@ -96,7 +96,7 @@ component  accessors="true" output="false"
      * 
      */
     public void function getSlatwallContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.content" default={};
         param name="arguments.data.formCode" default='';
         param name="arguments.data.formPostfix" default="/";
@@ -122,7 +122,7 @@ component  accessors="true" output="false"
         
     }
     public void function getRelatedProducts(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.productID" default="";
                 getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
         
