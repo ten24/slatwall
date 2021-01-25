@@ -20,10 +20,15 @@ export const reciveContent = content => {
 export const getHomePageContent = (content = {}) => {
   return async (dispatch, getState) => {
     dispatch(requestContent())
+    const {siteCode} = getState().preload.site
+    console.log('siteCode', siteCode)
     const response = await axios({
-      method: 'GET',
+      method: 'POST',
       withCredentials: true, // default
       url: `${sdkURL}api/scope/getHomePageContent`,
+      data: {
+        siteCode
+      }
     })
     if (response.status === 200) {
       dispatch(reciveContent(response.data.content))
@@ -35,6 +40,7 @@ export const getHomePageContent = (content = {}) => {
 
 export const getContent = (content = {}) => {
   return async (dispatch, getState) => {
+    const {siteCode} = getState().preload.site
     dispatch(requestContent())
     const response = await axios({
       method: 'POST',
@@ -45,7 +51,7 @@ export const getContent = (content = {}) => {
         // Overwrite Axios's automatically set Content-Type
         'Content-Type': 'application/json',
       },
-      data: content,
+      data: {...content, siteCode},
     })
     if (response.status === 200) {
       dispatch(reciveContent(response.data.content))
