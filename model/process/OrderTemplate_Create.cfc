@@ -193,7 +193,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getCurrencyCode() {
 		if(!StructKeyExists(variables, 'currencyCode') || IsNull(variables.currencyCode) ) {
-			variables['currencyCode'] = getSite().setting('skuCurrency');
+			if(!isNull(getSite())) {
+				variables['currencyCode'] = getSite().setting('skuCurrency');
+			} else {
+				variables['currencyCode'] = getHibachiScope().setting('skuCurrency');
+			}
 		}
 		return variables['currencyCode'];
 	}
