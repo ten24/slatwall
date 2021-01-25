@@ -54,6 +54,10 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<!--- Default to ottSchedule --->
+<cfset rc.processObject.setOrderTemplateTypeID('2c948084697d51bd01697d5725650006') />
+<cfset rc.typeaheadID = 'otAccount' & createUUID() />
+
 <hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editordertemplate">
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderTemplate#">
 	</hb:HibachiEntityActionBar>
@@ -89,15 +93,23 @@ Notes:
 			</cfif> 
 
 
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="ng-model='orderTemplateTypeID'">
+			<!--- Always use schedule order template type for order template ---> 
+			<input type="hidden" name="orderTemplateTypeID" value="2c948084697d51bd01697d5725650006" />
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="disabled='true'">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="siteID" edit="#rc.edit#">
 
 			<hr> 
 			
 			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="scheduleOrderNextPlaceDateTime" edit="#rc.edit#" fieldAttributes="required">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
+										property="scheduleOrderNextPlaceDateTime" 
+										edit="#rc.edit#" 
+										fieldType="text" 
+										fieldAttributes="sw-date-picker 
+														required
+														ng-model=""scheduleOrderNextPlaceDateTime""
+														autocomplete=""off""">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 										property="frequencyTermID" 
 										valueDefault="#getHibachiScope().getService('settingService').getSettingValue('orderTemplateDefaultFrequencyTerm')#"

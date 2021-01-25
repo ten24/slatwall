@@ -55,7 +55,6 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="temporaryFlag" ormtype="boolean" default="false";
 
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency"; 
-	property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="currency";  
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -68,8 +67,7 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 
 	//non-persistents	
 	property name="total" persistent="false" hb_formatType="currency"; 
-	property name="taxableAmountTotal" persistent="false";  
-	
+
 
 	public numeric function getTotal(){
 		
@@ -88,20 +86,6 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 		return variables.total;
 	} 
 	
-	public numeric function getTaxableAmountTotal(string currencyCode, string accountID){
-		if(!structKeyExists(variables, 'taxableAmountTotal')){
-			variables.taxableAmountTotal = 0; 	
-			
-			if( !isNull(this.getSku()) && 
-				!isNull(this.getQuantity())
-			){
-				variables.taxableAmountTotal += (this.getSku().getTaxableAmountByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
-			}
-		}
-		return variables.taxableAmountTotal; 	
-
-	} 
-
 	public void function setOrderTemplate(required any orderTemplate) {
 		variables.orderTemplate = arguments.orderTemplate;
 		if(isNew() or !arguments.orderTemplate.hasOrderTemplateItem( this )) {
