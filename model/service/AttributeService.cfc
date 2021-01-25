@@ -255,7 +255,12 @@ component  extends="HibachiService" accessors="true" {
 		}
 
 		arguments.attribute = super.save(arguments.attribute, arguments.data);
-
+		
+		if(arguments.attribute.hasErrors()){
+			arguments.attribute.getAttributeSet().addErrors(arguments.attribute.getErrors());
+			return arguments.attribute;
+		}
+		
 		if(!arguments.attribute.hasErrors() && !isNull(arguments.attribute.getAttributeSet())) {
 			getHibachiDAO().flushORMSession();
 
