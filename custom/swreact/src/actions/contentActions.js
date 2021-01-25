@@ -54,3 +54,25 @@ export const getContent = (content = {}) => {
     }
   }
 }
+
+// export const addFormResponse = (content = {}) => {
+//   return async (dispatch, getState) => {
+//     dispatch(requestContent())
+//     const response = await axios({
+//       method: 'POST',
+//       withCredentials: true, // default
+
+//       url: `${sdkURL}api/scope/getSlatwallContent`,
+//       headers: {
+//         // Overwrite Axios's automatically set Content-Type
+//         'Content-Type': 'application/json',
+//       },
+//       data: content,
+//     })
+//     if (response.status === 200) {
+//       dispatch(reciveContent(response.data.content))
+//     } else {
+//       dispatch(reciveContent({}))
+//     }
+//   }
+// }

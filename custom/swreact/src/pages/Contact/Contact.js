@@ -2,10 +2,58 @@ import React, { useEffect } from 'react'
 // import PropTypes from 'prop-types'
 import { ActionBanner, Layout } from '../../components'
 import { connect, useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { getContent } from '../../actions/contentActions'
 
+import axios from 'axios'
+import { toast } from 'react-toastify'
+
 // TODO:  https://stoneandberg.ten24dev.com/contact?submitted=true
+
+const ContactForm = ({ form }) => {
+  let location = useLocation()
+  const encodeForm = data => {
+    return Object.keys(data)
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+      .join('&')
+  }
+
+  return (
+    <div className="contactForm mt-4">
+      <div
+        onClick={event => {
+          event.preventDefault()
+          if (event.target.value === 'Submit') {
+            const form = event.target.closest('form')
+            const formData = new FormData(form)
+            var bodyFormData = {}
+            for (var pair of formData.entries()) {
+              bodyFormData[pair[0]] = pair[1]
+            }
+            axios({
+              method: 'POST',
+              withCredentials: true, // default
+              url: `${location.pathname}?slatAction=public:form.addFormResponse`,
+              data: encodeForm(bodyFormData),
+              headers: {
+                'Content-Type': `application/x-www-form-urlencoded`,
+              },
+            }).then(response => {
+              if (response.status === 200) {
+                toast.success('Thank you for contacting us, we will get back to you as soon as possible.')
+              } else {
+                toast.error('Failed to submit form.')
+              }
+            })
+          }
+        }}
+        dangerouslySetInnerHTML={{
+          __html: form.markup,
+        }}
+      />
+    </div>
+  )
+}
 
 const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
   let history = useHistory()
@@ -47,19 +95,8 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
                   __html: customSummary,
                 }}
               />
-              {/* TODO: do a custom submut */}
-              <div className="contactForm mt-4">
-                <div
-                  onClick={event => {
-                    event.preventDefault()
-                    history.push(event.target.getAttribute('href'))
-                  }}
-                  dangerouslySetInnerHTML={{
-                    __html: form.markup,
-                  }}
-                />
-                {/* #dspForm('contact-us','?submitted=true')# */}
-              </div>
+
+              <ContactForm form={form} />
             </div>
           </section>
 
