@@ -26,18 +26,25 @@ export const clearCart = loginToken => {
   }
 }
 
-export const addToCart = () => {
+export const addToCart = (skuID, quantity = 1) => {
   return async dispatch => {
     const loginToken = localStorage.getItem('loginToken')
 
     dispatch(requestCart(loginToken))
 
-    const req = await SlatwalApiService.cart.get({
-      bearerToken: loginToken,
-      contentType: 'application/json',
-    })
+    const req = await SlatwalApiService.cart.addOrderItem(
+      {
+        bearerToken: loginToken,
+        contentType: 'application/json',
+      },
+      {
+        skuID,
+        quantity,
+        returnJSONObjects: 'cart',
+      }
+    )
 
-    if (req.success()) {
+    if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))
     }
   }

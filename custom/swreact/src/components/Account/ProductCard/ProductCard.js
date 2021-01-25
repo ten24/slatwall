@@ -1,16 +1,22 @@
-import { SWImage } from '../../components'
+import { HeartButton, SWImage } from '../..'
 import { Link } from 'react-router-dom'
 
-const ProductCard = ({ calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance }) => {
+const ProductCard = props => {
+  const { calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance } = props
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
-  const isSpecial = productClearance === true
 
   return (
     <div>
       <div className="card product-card">
-        {isSpecial && <span className="badge badge-primary">On Special</span>}
-        {/* <HeartButton isSaved={false} /> */}
-        <Link className="card-img-top d-block overflow-hidden" to={`/sp/${urlTitle}`}>
+        {productClearance === true && <span className="badge badge-primary">On Special</span>}
+        <HeartButton isSaved={false} />
+        <Link
+          className="card-img-top d-block overflow-hidden"
+          to={{
+            pathname: `/product/${urlTitle}`,
+            state: { ...props },
+          }}
+        >
           <SWImage src={imgUrl} alt="Product" />
         </Link>
         <div className="card-body py-2 text-left">
@@ -18,12 +24,19 @@ const ProductCard = ({ calculatedSalePrice, urlTitle, brand_brandName, brand_url
             {brand_brandName}
           </Link>
           <h3 className="product-title font-size-sm">
-            <Link to={`/sp/${urlTitle}`}>{calculatedTitle}</Link>
+            <Link
+              to={{
+                pathname: `/product/${urlTitle}`,
+                state: { ...props },
+              }}
+            >
+              {calculatedTitle}
+            </Link>
           </h3>
           <div className="d-flex justify-content-between">
             <div className="product-price">
               <span className="text-accent">${calculatedSalePrice.toFixed(2)}</span>
-              {isSpecial && (
+              {productClearance && (
                 <span style={{ marginLeft: '5px' }}>
                   <small>{`${listPrice} LIST`}</small>
                 </span>
@@ -43,7 +56,7 @@ ProductCard.defaultProps = {
   calculatedSalePrice: 0,
   productCode: '',
   productID: '',
-  productName: 'Test',
+  productName: '',
   urlTitle: '',
   productClearance: false,
   brand_brandName: '',
