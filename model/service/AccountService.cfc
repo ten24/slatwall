@@ -966,7 +966,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					};
 
 					email = getEmailService().processEmail(email, emailData, 'createFromTemplate');
-
+					
 					email.setEmailTo( arguments.processObject.getEmailAddress() );
 
 					email = getEmailService().processEmail(email, {}, 'addToQueue');
@@ -975,11 +975,11 @@ component extends="HibachiService" accessors="true" output="false" {
 					throw("No email template could be found.  Please update the site settings to define an 'Forgot Password Email Template'.");
 				}
 			} else {
-				arguments.processObject.addError('emailAddress', rbKey('validate.account_forgotPassword.loginblocked'));
+				arguments.account.addError('emailAddress', rbKey('validate.account_forgotPassword.loginblocked'));
 			}
 
 		} else {
-			arguments.processObject.addError('emailAddress', rbKey('validate.account_forgotPassword.emailAddress.notfound'));
+			arguments.account.addError('emailAddress', rbKey('validate.account_forgotPassword.emailAddress.notfound'));
 		}
 
 		return arguments.account;
