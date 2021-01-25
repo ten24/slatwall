@@ -19,24 +19,28 @@
 	},
 
 	"dependencies": [{
-			"key": "remoteOrderDeliveryID",
-			"entityName": "OrderDelivery",
-			"lookupKey": "remoteID",
-			"propertyIdentifier": "orderDelivery"
-		},
-		{
 			"key": "remoteOrderItemID",
 			"entityName": "OrderItem",
 			"lookupKey": "remoteID",
 			"propertyIdentifier": "orderItem"
 		}
 	],
-
+	
+	"relations": [
+        {
+            "type": "manyToOne",
+            "isVolatile": true,
+            "entityName": "OrderDelivery",
+            "mappingCode": "OrderDelivery",
+            "propertyIdentifier": "orderDelivery"
+        }
+    ],
+    
 	"importIdentifier": {
 		"propertyIdentifier": "importRemoteID",
 		"type": "composite",
 		"keys": [
-			"remoteOrderFulfillmentID"
+			"remoteOrderDeliveryItemID"
 		]
 	}
 }
