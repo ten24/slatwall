@@ -136,7 +136,7 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['products'] = relatedProductRecords
     }
         public void function getProductImageGallery(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.productID" default="";
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
         
@@ -147,8 +147,8 @@ component  accessors="true" output="false"
     }
 
     public void function getSlatwallForm(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        param name="arguments.data.formCode" default="contact-us";
+        param name="arguments.data.siteCode" default="";
+        param name="arguments.data.formCode" default="";
         param name="arguments.data.formPostfix" default="?submitted=true";
         
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
@@ -162,10 +162,8 @@ component  accessors="true" output="false"
         }};
         
     }
-    //https://github.com/ten24/StoneAndBerg/blob/develop/org/Hibachi/HibachiCollectionService.cfc#L486
-    ///dev-ops/projects/StoneAndBerg/public/views/templates/slatwall-productlisting.cfm
     public void function getProductListingOptions(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
         var filters = []
 
@@ -263,7 +261,7 @@ component  accessors="true" output="false"
     }
     
     public void function getHomePageContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
 
 
@@ -312,335 +310,7 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['content'] = local.contentForHomePage;
     }
     
-     public void function getCategoryListingContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-
-
-        var categoryListing=  {
-  "template":"category-listing",
-  "title":"Shop Door Hardware",
-  "crumbs":[
-    {"slug":"/","title":"Home"},
-    {"slug":"/products","title":"Products"},
-    {"slug":"/products/door-hardware","title":"Door Hardware"}
-  ],
-  "categories":[
-    {
-      "heading":"Door Closers & Operators",
-      "items":[
-        {"title":"Automatic Operators","link":"/"},
-        {"title":"Heavy Duty","link":"/"},
-        {"title":"Medium Duty","link":"/"},
-        {"title":"Light Duty","link":"/"},
-        {"title":"Heavy Duty","link":"/"},
-        {"title":"Door Closer Parts","link":"/"}
-      ]
-    },
-    {
-      "heading":"Storefront Hardware",
-      "items":[
-        {"title":"Deadlatches","link":"/"},
-        {"title":"Deadbolts","link":"/"},
-        {"title":"Hookbolts","link":"/"},
-        {"title":"Paddles/Levers","link":"/"},
-        {"title":"Parts & Accessories","link":"/"}
-      ]
-    },
-    {
-      "heading":"Electric Strikes",
-      "items":[
-        {"title":"Surface Mount Style","link":"/"},
-        {"title":"In-Frame Style","link":"/"},
-        {"title":"For Rim Exits","link":"/"},
-        {"title":"For Cylindrical Locksets","link":"/"},
-        {"title":"For Mortise Locks","link":"/"},
-        {"title":"Fire Rated","link":"/"}
-      ]
-    }
-  ],
-  "customBody":"<p><strong>Stone &amp; Berg</strong><br /> 239 Mill Street<br /> Worcester MA 01602</p> <p>Phone: (508) 753-3551<br /> Toll Free: (800) 225-7405<br /> Fax: (800) 535-5625</p> <p><strong>Email</strong><br /> orders@stoneandberg.com</p> <p><strong>Hours</strong><br /> Monday - Friday<br /> 8AM - 5PM</p>",
-  "customSummary":"<h2>We are here to help. Contact us with any questions.</h2> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo.</p>"
-}
-
-        getHibachiScope().addActionResult("public:getCategoryListingContent", true);
-
-        arguments.data['ajaxResponse']['content'] = categoryListing;
-    }
-    
-     public void function getAccountOverviewContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        var content = {
-                "crumbs":[{"slug":"/","title":"Home"},{"slug":"/my-account","title":"Account"}],
-    "template":"account-dashboard",
-    "title":"My Dashboard",
-    "contentTitle":"Welcome to Stone and Berg",
-    "customBody":"<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget.</p> <p><a href=\"/shop\">Start Shopping</a></p>",
-    "customSummary":""
-        }
-
-        getHibachiScope().addActionResult("public:getAccountOverviewContent", true);
-
-        arguments.data['ajaxResponse']['content'] = content;
-    }
-    
-         public void function getAccountProfileContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        var content = {
-                "crumbs":[
-      {"slug":"/","title":"Home"},
-      {"slug":"/my-account","title":"Account"},
-      {"slug":"/my-account/profile","title":"Profile"}
-    ],
-    "template":"account-profile",
-    "title":"My Profile",
-    "contentTitle":"Update your profile details below:",
-    "customBody":"",
-    "customSummary":""
-        }
-
-        getHibachiScope().addActionResult("public:getAccountProfileContent", true);
-
-        arguments.data['ajaxResponse']['content'] = content;
-    }
-    
-         public void function getAccountOrderHistoryContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        var content = {
-                "crumbs":[
-      {"slug":"/","title":"Home"},
-      {"slug":"/my-account","title":"Account"},
-      {"slug":"/my-account/order-history","title":"Order History"}
-    ],
-    "template":"order-history",
-    "title":"My Orders",
-    "contentTitle":"",
-    "customBody":"",
-    "customSummary":"",
-    "orders":[
-      {
-        "number":"34VB5540K83",
-        "location":"PO: 51705",
-        "datePurchased":"May 21, 2019",
-        "status":"New",
-        "statusType":"info",
-        "total":"$358.75",
-        "trackingNumbers":["573289573802","643068306672"]
-      },
-      {
-        "number":"78A643CD409",
-        "location":"",
-        "datePurchased":"December 09, 2018",
-        "status":"Canceled",
-        "statusType":"danger",
-        "total":"$760.50",
-        "trackingNumbers":["573289573802","643068306672"]
-      },
-      {
-        "number":"112P45A90V2",
-        "location":"",
-        "datePurchased":"October 15, 2018",
-        "status":"Partially Shipped",
-        "statusType":"warning",
-        "total":"$1,264.00",
-        "trackingNumbers":["573289573802","643068306672"]
-      },
-      {
-        "number":"28BA67U0981",
-        "location":"",
-        "datePurchased":"July 19, 2018",
-        "status":"Complete",
-        "statusType":"success",
-        "total":"$198.35",
-        "trackingNumbers":["573289573802","643068306672"]
-      },
-      {
-        "number":"502TR872W2",
-        "location":"",
-        "datePurchased":"April 04, 2018",
-        "status":"Complete",
-        "statusType":"success",
-        "total":"$2,133.90",
-        "trackingNumbers":["573289573802","643068306672"]
-      },
-      {
-        "number":"47H76G09F33",
-        "location":"",
-        "datePurchased":"March 30, 2018",
-        "status":"Complete",
-        "statusType":"success",
-        "total":"$86.40",
-        "trackingNumbers":["573289573802","643068306672"]
-      }
-    ]
-        }
-
-        getHibachiScope().addActionResult("public:getAccountOrderHistoryContent", true);
-
-        arguments.data['ajaxResponse']['content'] = content;
-    }
-    
-         public void function getAccountFavoritesContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        var content = {
-                "crumbs":[
-      {"slug":"/","title":"Home"},
-      {"slug":"/my-account","title":"Account"},
-      {"slug":"/my-account/favorites","title":"Favorites"}
-    ],
-    "template":"order-history",
-    "title":"My Favorites",
-    "contentTitle":"",
-    "customBody":"",
-    "customSummary":"",
-    "items":[
-      {
-        "brand":"Brand A",
-        "productTile":"Title 1",
-        "price":"$209.24",
-        "displayPrice":"$156.99",
-        "linkUrl":"/hop-single-v1.html"
-      },
-      {
-        "brand":"Brand A",
-        "productTile":"Title 1",
-        "price":"$209.24",
-        "displayPrice":"$156.99",
-        "linkUrl":"/shop-single-v1.html"
-      },
-      {
-        "brand":"Brand A",
-        "productTile":"Title 1",
-        "price":"$209.24",
-        "displayPrice":"$156.99",
-        "linkUrl":"/shop-single-v1.html"
-      },
-      {
-        "brand":"Brand A",
-        "productTile":"Title 1",
-        "price":"$209.24",
-        "displayPrice":"$156.99",
-        "linkUrl":"/shop-single-v1.html"
-      }
-    ]
-        }
-
-        getHibachiScope().addActionResult("public:getAccountFavoritesContent", true);
-
-        arguments.data['ajaxResponse']['content'] = content;
-    }
-    
- 
-    
-         
-             public void function getAccountAddressesContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        var content = {
-             "crumbs":[
-      {"slug":"/","title":"Home"},
-      {"slug":"/my-account","title":"Account"},
-      {"slug":"/my-account/addresses","title":"Addresses"}
-    ],
-    "template":"account-address",
-    "title":"My Addresses",
-    "contentTitle":"List of your registered addresses:",
-    "customBody":"",
-    "customSummary":"",
-    "addresses":[
-      {"location":"396 Lillian Blvd, Holbrook, NY 11741, USA","isPrimary":true},
-      {
-        "location":"769, Industrial, West Chicago, IL 60185, USA",
-        "isPrimary":false
-      },
-      {
-        "location":"514 S. Magnolia St. Orlando, FL 32806, USA",
-        "isPrimary":false
-      }
-    ]
-        }
-
-        getHibachiScope().addActionResult("public:getAccountAddressesContent", true);
-
-        arguments.data['ajaxResponse']['content'] = content;
-    }
-    
-             public void function getAccountPaymentMethodsContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        var content = {
-             "crumbs":[
-      {"slug":"/","title":"Home"},
-      {"slug":"/my-account","title":"Account"},
-      {"slug":"/my-account/cards","title":"Payment Methods"}
-    ],
-    "template":"cards",
-    "title":"Payment Methods",
-    "contentTitle":"Primary payment method is used by default",
-    "customBody":"",
-    "customSummary":"",
-    "paymentMethods":[
-      {
-        "type":"Visa",
-        "ending":"ending in 4999",
-        "isPrimary":true,
-        "name":"Susan Gardner",
-        "expirationDate":"08 / 2019"
-      },
-      {
-        "type":"MasterCard",
-        "ending":"ending in 0015",
-        "isPrimary":false,
-        "name":"Susan Gardner",
-        "expirationDate":"11 / 2021"
-      },
-      {
-        "type":"Visa",
-        "ending":"ending in 6073",
-        "isPrimary":false,
-        "name":"Susan Gardner",
-        "expirationDate":"09 / 2021"
-      },
-      {
-        "type":"Visa",
-        "ending":"ending in 9791",
-        "isPrimary":false,
-        "name":"Susan Gardner",
-        "expirationDate":"05 / 2021"
-      }
-    ]
-        }
-
-        getHibachiScope().addActionResult("public:getAccountPaymentMethodsContent", true);
-
-        arguments.data['ajaxResponse']['content'] = content;
-    }
-    
-    public void function getProductListingContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
-        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-
-        var content = {
-            "crumbs":[
-      {"slug":"/","title":"Home"},
-      {"slug":"/products","title":"Shop"},
-      {"slug":"/products","title":"Door Closers & Operators"}
-    ],
-    "template":"product-listing",
-    "title":"Door Closers & Operators",
-    "contentTitle":"",
-    "customBody":"",
-    "customSummary":""
-        }
-        getHibachiScope().addActionResult("public:getProductListingContent", true);
-
-        arguments.data['ajaxResponse']['content'] = content;
-    }
-    /**
+  /**
      * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
      * and a 'profile name' that determines the size of that image.
      * /api/scope/getResizedImageByProfileName&profileName=large&skuIDs=8a8080834721af1a0147220714810083,4028818d4b31a783014b5653ad5d00d2,4028818d4b05b871014b102acb0700d5
