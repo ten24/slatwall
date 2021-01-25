@@ -1,4 +1,4 @@
-import { logout } from './authActions'
+import { softLogout } from './authActions'
 import { SlatwalApiService } from '../services'
 
 export const REQUEST_USER = 'REQUEST_USER'
@@ -41,13 +41,6 @@ export const receiveCreateUser = user => {
   }
 }
 
-const errorCreateUser = err => {
-  return {
-    type: ERROR_CREATE_USER,
-    err,
-  }
-}
-
 export const getUser = () => {
   return async dispatch => {
     const loginToken = localStorage.getItem('loginToken')
@@ -60,10 +53,10 @@ export const getUser = () => {
     })
 
     if (req.isFail()) {
-      dispatch(logout())
+      dispatch(softLogout())
     } else {
       if (req.success().account.accountID === '') {
-        dispatch(logout())
+        dispatch(softLogout())
       } else {
         dispatch(receiveUser(req.success().account))
       }

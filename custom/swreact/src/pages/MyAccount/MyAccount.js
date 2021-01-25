@@ -3,7 +3,7 @@ import { Layout } from '../../components'
 import { getUser } from '../../actions/userActions'
 // import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
 
 const AccountLogin = React.lazy(() => import('../../components/Account/AccountLogin/AccountLogin'))
 const AccountOverview = React.lazy(() => import('../../components/Account/AccountOverview/AccountOverview'))

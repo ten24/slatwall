@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { search, setCurrentPage } from '../../actions/productSearchActions'
 const LEFT_PAGE = 'LEFT'
@@ -89,9 +88,9 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
           if (page === LEFT_PAGE)
             return (
               <li key={index} className="page-item">
-                <a
+                <div
                   className="page-link"
-                  href="#"
+                  href=""
                   aria-label="Previous"
                   onClick={evt => {
                     evt.preventDefault()
@@ -100,16 +99,15 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
                 >
                   <span aria-hidden="true">&laquo;</span>
                   <span className="sr-only">Previous</span>
-                </a>
+                </div>
               </li>
             )
 
           if (page === RIGHT_PAGE)
             return (
               <li key={index} className="page-item">
-                <a
+                <div
                   className="page-link"
-                  href="#"
                   aria-label="Next"
                   onClick={evt => {
                     evt.preventDefault()
@@ -118,15 +116,14 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
                 >
                   <span aria-hidden="true">&raquo;</span>
                   <span className="sr-only">Next</span>
-                </a>
+                </div>
               </li>
             )
 
           return (
             <li key={index} className={`page-item${currentPage === page ? ' active' : ''}`}>
-              <a
+              <div
                 className="page-link"
-                href="#"
                 onClick={evt => {
                   evt.preventDefault()
                   const newPage = Math.max(0, Math.min(page, totalPages))
@@ -135,7 +132,7 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
                 }}
               >
                 {page}
-              </a>
+              </div>
             </li>
           )
         })}

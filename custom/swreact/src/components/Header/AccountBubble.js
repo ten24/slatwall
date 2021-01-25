@@ -9,7 +9,7 @@ const AccountBubble = ({ isAuthenticated, name }) => {
   }, [dispatch])
   return (
     <>
-      <div className="navbar-tool-icon-box">
+      <div className="navbar-tool-icon-box d-flex justify-content-center align-items-center">
         <i className="far fa-user"></i>
       </div>
       <div className="navbar-tool-text ml-n3">
