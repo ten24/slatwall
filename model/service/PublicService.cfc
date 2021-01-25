@@ -301,9 +301,7 @@ component  accessors="true" output="false"
             })
             
         local.contentForHomePage['featuredSlider'] = #local.featuredProductCollectionList#
-        local.contentForHomePage['homeMainBanner'] = #local.homeBanner#
-        local.contentForHomePage['homeContent'] = #local.homeContent#
-        local.contentForHomePage['homeBrand'] = #local.homeBrand#
+      
 
         getHibachiScope().addActionResult("public:getHomePageContent", true);
 

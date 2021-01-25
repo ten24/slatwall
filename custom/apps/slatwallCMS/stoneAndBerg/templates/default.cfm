@@ -1,8 +1,5 @@
-<cfinclude template="_slatwall-header.cfm" />
-default template
-${{now()}}
-${site.siteID}
-${site.siteName}
-${contentBody}
-
-
+<cfinclude template="inc/header/header.cfm" />
+<cfoutput>
+    <div id="app" />
+</cfoutput>
+<cfinclude template="inc/footer.cfm" />
