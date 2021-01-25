@@ -312,20 +312,7 @@ Notes:
 			arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
 			arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
 			arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
-		
-			arguments.email.setEmailSubject( 
-    			templateObject.stringReplace( 
-    			    emailTemplate.setting(settingName='emailSubject',formatValue=true,formatDetails={locale=local.locale}), 
-    			    true, 
-    			    true 
-    			) 
-			);
-			
-			if(isNull(arguments.email.getEmailSubject()) || this.hibachiIsEmpty(arguments.email.getEmailSubject()) ){
-			    arguments.email.setEmailSubject( emailTemplate.getEmailTemplateName() );
-			}
-		
-		
+			arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting(settingName='emailSubject',formatValue=true,formatDetails={locale=local.locale}), true, true ) );
 			arguments.email.setEmailBodyHTML( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyHTML',locale=local.locale), formatValues = true, templateContextPathList = templateContextPathList) );
 			arguments.email.setEmailBodyText( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyText',locale=local.locale), formatValues = true, templateContextPathList = templateContextPathList) );
 			arguments.email.setRelatedObject( templateObject.getClassName() );
@@ -401,13 +388,10 @@ Notes:
 
 	public any function processEmail_addToQueue(required any email, required struct data) {
 		// Populate the email with any data that came in
-		if( !this.hibachiIsEmpty(arguments.data) ){
-		    arguments.email.populate( arguments.data );
-		}
-		
+		arguments.email.populate( arguments.data );
+
 		// Make sure that the email isn't voided, and that it has a To, CC, or BCC, as well as a subject
-		if( 
-		    ( !isBoolean(arguments.email.getVoidSendFlag()) || !arguments.email.getVoidSendFlag() )
+		if( ( !isBoolean(arguments.email.getVoidSendFlag()) || !arguments.email.getVoidSendFlag() )
 			&&
 			(
 				(!isNull(arguments.email.getEmailTo()) && len(arguments.email.getEmailTo()))
@@ -417,8 +401,10 @@ Notes:
 			  	(!isNull(arguments.email.getEmailBCC()) && len(arguments.email.getEmailBCC()))
 			)
 			&&
-			( !isNull(arguments.email.getEmailSubject()) && len(arguments.email.getEmailSubject()) )
-		){
+			!isNull(arguments.email.getEmailSubject())
+			&&
+			len(arguments.email.getEmailSubject())
+		) {
 			// Append the email to the email queue
 			var queueData = {};
 			queueData['email'] = arguments.email;
