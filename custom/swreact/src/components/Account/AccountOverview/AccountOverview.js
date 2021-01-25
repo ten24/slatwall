@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { getUser } from '../../../actions/userActions'
-import { logout } from '../../../actions/authActions'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import AccountLayout from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 
@@ -35,10 +34,11 @@ const AccountRecentOrders = () => {
   )
 }
 
-const AccountOverview = ({ customBody, crumbs, title, contentTitle, getUser }) => {
+const AccountOverview = ({ customBody, crumbs, title, contentTitle }) => {
+  const dispatch = useDispatch()
   useEffect(() => {
-    getUser()
-  }, [])
+    dispatch(getUser())
+  }, [dispatch])
 
   return (
     <AccountLayout crumbs={crumbs} title={title}>
@@ -54,10 +54,4 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getUser: async () => dispatch(getUser()),
-    logout: async () => dispatch(dispatch(logout())),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(AccountOverview)
+export default connect(mapStateToProps)(AccountOverview)
