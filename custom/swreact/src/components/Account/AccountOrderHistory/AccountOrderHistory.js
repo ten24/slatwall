@@ -1,14 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 // import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import Pagination from '../../Listing/Pagination'
 import AccountLayout from '../AccountLayout/AccountLayout'
 
-const AccountOrderHistoryToolBar = () => {
+const ToolBar = ({ term, updateTerm }) => {
   return (
     <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
       <div className="d-flex justify-content-between w-100">
         <div className="input-group-overlay d-lg-flex mr-3 w-50">
-          <input className="form-control appended-form-control" type="text" placeholder="Search item ##, order ##, or PO" />
+          <input
+            className="form-control appended-form-control"
+            type="text"
+            value={term}
+            onChange={event => {
+              updateTerm(event.target.value)
+            }}
+            placeholder="Search item ##, order ##, or PO"
+          />
           <div className="input-group-append-overlay">
             <span className="input-group-text">
               <i className="far fa-search" />
@@ -42,25 +51,25 @@ const AccountOrderHistoryListItemTracking = ({ trackingNumbers }) => {
   )
 }
 
-const Status = ({ type, text }) => {
+const OrderStatus = ({ type = 'info', text }) => {
   return <span className={`badge badge-${type} m-0`}>{text}</span>
 }
 
-const AccountOrderHistoryListItem = ({ number, location, datePurchased, status, total, trackingNumbers, statusType }) => {
+const OrderListItem = ({ orderNumber, createdDateTime, orderStatusType_typeName, calculatedTotal, trackingNumbers }) => {
   return (
     <tr>
       <td className="py-3">
         <a className="nav-link-style font-weight-medium font-size-sm" href="##" data-toggle="modal">
-          {number}
+          {orderNumber}
         </a>
         <br />
-        {location}
+        {/* {location} */}
       </td>
-      <td className="py-3">{datePurchased}</td>
+      <td className="py-3">{createdDateTime}</td>
       <td className="py-3">
-        <Status type={statusType} text={status} />
+        <OrderStatus text={orderStatusType_typeName} />
       </td>
-      <td className="py-3">{total}</td>
+      <td className="py-3">{calculatedTotal}</td>
       <td className="py-3">
         <AccountOrderHistoryListItemTracking trackingNumbers={trackingNumbers} />
       </td>
@@ -68,22 +77,56 @@ const AccountOrderHistoryListItem = ({ number, location, datePurchased, status, 
   )
 }
 // TODO: THis is so not right but fine for now. Should move to a library
-const SortArrows = () => {
+const SortArrows = ({ sortDirection = '', setSortDirection }) => {
   return (
-    <a href="" className="s-sort-arrows">
-      <svg data-ng-show="swListingDisplay.showOrderBy" className="nc-icon outline" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+    <span className="s-sort-arrows">
+      <svg className="nc-icon outline" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
         <g transform="translate(0.5, 0.5)">
-          <polygon className="s-ascending" data-ng-class="{'s-active':swListingDisplay.columnOrderByIndex(column) == 'DESC'}" fill="none" stroke="##cccccc" strokeWidth="3" strokeLinecap="square" strokeMiterlimit="10" points="20,26 44,26 32,12 " strokeLinejoin="round"></polygon>
-          <polygon className="s-descending" data-ng-class="{'s-active':swListingDisplay.columnOrderByIndex(column) == 'ASC'}" fill="none" stroke="##cccccc" strokeWidth="3" strokeLinecap="square" strokeMiterlimit="10" points="44,38 20,38 32,52 " strokeLinejoin="round"></polygon>
+          <polygon
+            onClick={() => {
+              if (setSortDirection) {
+                setSortDirection('ASC')
+              }
+            }}
+            className="s-ascending"
+            fill={sortDirection === 'ASC' ? 'black' : 'gray'}
+            stroke="#cccccc"
+            strokeWidth="3"
+            strokeLinecap="square"
+            strokeMiterlimit="10"
+            points="20,26 44,26 32,12 "
+            strokeLinejoin="round"
+          ></polygon>
+          <polygon
+            onClick={() => {
+              if (setSortDirection) {
+                setSortDirection('DESC')
+              }
+            }}
+            className="s-descending"
+            fill={sortDirection === 'DESC' ? 'black' : 'gray'}
+            stroke="#cccccc"
+            strokeWidth="3"
+            strokeLinecap="square"
+            strokeMiterlimit="10"
+            points="44,38 20,38 32,52 "
+            strokeLinejoin="round"
+          ></polygon>
         </g>
       </svg>
-    </a>
+    </span>
   )
 }
 
-const AccountOrderHistoryList = ({ orders }) => {
+const OrderHistoryList = ({ orders }) => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [dateSort, setDateSort] = useState('ASC')
+  const [statusSort, setStatusSort] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
   return (
     <>
+      <ToolBar term={searchTerm} updateTerm={setSearchTerm} />
+
       <div className="table-responsive font-size-md">
         <table className="table table-hover mb-0">
           <thead>
@@ -91,11 +134,11 @@ const AccountOrderHistoryList = ({ orders }) => {
               <th>Order #</th>
               <th>
                 Date Purchased
-                <SortArrows />
+                <SortArrows sortDirection={dateSort} setSortDirection={setDateSort} />
               </th>
               <th>
                 Status
-                <SortArrows />
+                <SortArrows sortDirection={statusSort} setSortDirection={setStatusSort} />
               </th>
               <th>Order Total</th>
               <th></th>
@@ -104,68 +147,22 @@ const AccountOrderHistoryList = ({ orders }) => {
           <tbody>
             {orders &&
               orders.map((order, index) => {
-                return <AccountOrderHistoryListItem key={index} {...order} />
+                return <OrderListItem key={index} {...order} />
               })}
           </tbody>
         </table>
       </div>
 
       <hr className="pb-4" />
-      <nav className="d-flex justify-content-between pt-2" aria-label="Page navigation">
-        <ul className="pagination">
-          <li className="page-item">
-            <a className="page-link" href="##">
-              <i className="far fa-chevron-left mr-2"></i> Prev
-            </a>
-          </li>
-        </ul>
-        <ul className="pagination">
-          <li className="page-item d-sm-none">
-            <span className="page-link page-link-static">1 / 5</span>
-          </li>
-          <li className="page-item active d-none d-sm-block" aria-current="page">
-            <span className="page-link">
-              1<span className="sr-only">(current)</span>
-            </span>
-          </li>
-          <li className="page-item d-none d-sm-block">
-            <a className="page-link" href="##">
-              2
-            </a>
-          </li>
-          <li className="page-item d-none d-sm-block">
-            <a className="page-link" href="##">
-              3
-            </a>
-          </li>
-          <li className="page-item d-none d-sm-block">
-            <a className="page-link" href="##">
-              4
-            </a>
-          </li>
-          <li className="page-item d-none d-sm-block">
-            <a className="page-link" href="##">
-              5
-            </a>
-          </li>
-        </ul>
-        <ul className="pagination">
-          <li className="page-item">
-            <a className="page-link" href="##" aria-label="Next">
-              Next <i className="far fa-chevron-right ml-2"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <Pagination recordsCount={30} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={20} />
     </>
   )
 }
 
 const AccountOrderHistory = ({ crumbs, title, orders }) => {
   return (
-    <AccountLayout crumbs={crumbs} title={title}>
-      <AccountOrderHistoryToolBar />
-      <AccountOrderHistoryList orders={orders} />
+    <AccountLayout title={'Account Order History'}>
+      <OrderHistoryList orders={orders} />
     </AccountLayout>
   )
 }

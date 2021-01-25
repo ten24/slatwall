@@ -16,7 +16,7 @@ const BandSlide = ({ associatedImage, linkUrl, title, slideKey }) => {
   )
 }
 
-function HomeBrand({ homeBrand, 'home/shop-by': shopBy }) {
+function HomeBrand(props) {
   const settings = {
     dots: false,
     infinite: true,
@@ -45,16 +45,23 @@ function HomeBrand({ homeBrand, 'home/shop-by': shopBy }) {
       },
     ],
   }
+  let homeBrand = []
+  Object.keys(props).map(key => {
+    if (key.includes('shop-by/')) {
+      homeBrand.push(props[key])
+    }
+  })
+
   return (
     <div style={{ height: 'fit-content' }} className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
-      <h3 className="h3">{shopBy.title}</h3>
+      <h3 className="h3">{props['home/shop-buy'] && props['home/shop-buy'].title}</h3>
       <Slider {...settings}>
         {homeBrand &&
           homeBrand.map((slide, index) => {
             return <BandSlide {...slide} key={index} slideKey={index} />
           })}
       </Slider>
-      <a className="btn btn-primary mt-3 btn-long" href={shopBy.linkUrl}>
+      <a className="btn btn-primary mt-3 btn-long" href={props['home/shop-buy'] && props['home/shop-buy'].linkUrl}>
         More Brands
       </a>
     </div>

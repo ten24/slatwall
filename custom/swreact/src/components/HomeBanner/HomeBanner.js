@@ -91,15 +91,21 @@ const MainBanner = props => {
   )
 }
 
-function HomeBanner({ featuredSlider, homeMainBanner }) {
+function HomeBanner(props) {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getFeaturedItems())
   }, [dispatch])
+  let homeMainBanner = []
+  Object.keys(props).map(key => {
+    if (key.includes('main-banner-slider/')) {
+      homeMainBanner.push(props[key])
+    }
+  })
 
   return (
     <div className="hero mt-2" style={{ backgroundImage: `url(${Background})` }}>
-      <FeaturedProducts sliderData={featuredSlider} />
+      <FeaturedProducts sliderData={props.featuredSlider} />
       <MainBanner sliderData={homeMainBanner} />
     </div>
   )
