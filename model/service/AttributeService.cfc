@@ -263,6 +263,8 @@ component  extends="HibachiService" accessors="true" {
 
 			//attributeModelCache
 			clearAttributeMetaDataCache(arguments.attribute.getAttributeSet());
+		} else {
+		    this.getHibachiScope().setORMHasErrors(true);
 		}
 		
 		//if we are turning this into a custom property, we want to reload all servers to make sure things work properly
