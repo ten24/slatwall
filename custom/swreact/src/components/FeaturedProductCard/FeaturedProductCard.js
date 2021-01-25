@@ -10,8 +10,8 @@ const FeaturedProductCard = ({ productClearance, brand_brandName, brand_urlTitle
       <div className="card product-card">
         {isSpecial && <span className="badge badge-primary">On Special</span>}
         <HeartButton isSaved={false} />
-        <Link className="card-img-top d-block overflow-hidden" to={`/product/${urlTitle}`}>
-          <SWImage src={imgUrl} alt="Product" />
+        <Link className="card-img-top d-block overflow-hidden" to={`/product/${urlTitle}`} title={`link to product ${calculatedTitle}`}>
+          <SWImage src={imgUrl} alt={`product image ${calculatedTitle}`} />
         </Link>
         <div className="card-body py-2 text-left">
           <Link className="product-meta d-block font-size-xs pb-1" to={`/brand/${brand_urlTitle}`}>
