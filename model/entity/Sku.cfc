@@ -658,9 +658,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
-		
-		for(var priceGroup in arguments.priceGroups){
-			cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
+
+		if(!isNull(arguments.priceGroups) && arrayLen(arguments.priceGroups) > 0) {
+			for(var priceGroup in arguments.priceGroups){
+				cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
+			}
 		}
 		
 

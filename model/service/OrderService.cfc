@@ -6151,16 +6151,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private any function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {
 	
 		var priceByCurrencyCodeArgs = {
-			'currencyCode' : arguments.order.getCurrencyCode(),
-			'quantity' : arguments.processObject.getQuantity()
-		};
-		
-		if(!isNull(	newOrderItem.getOrder().getAccount() ) && !newOrderItem.getOrder().getAccount().getNewFlag()){
-			priceByCurrencyCodeArgs['accountID'] = newOrderItem.getOrder().getAccount().getAccountID();
+			'currencyCode' : arguments.newOrderItem.getCurrencyCode(),
+			'quantity' : arguments.newOrderItem.getQuantity(),
+			'priceGroups': [ arguments.newOrderItem.getAppliedPriceGroup() ?: arguments.processObject.getPriceGroup() ]
 		}
 		
 		return arguments.processObject.getSku()
-		.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) 
+				.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs );
 	}
 	
 	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
@@ -6232,7 +6229,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getBestApplicablePriceGroup(required any order){
-		var priceGroupCode =  2;
+		var priceGroupCode =  "";
         if(!isNull(arguments.order.getPriceGroup())){ //order price group
             return arguments.order.getPriceGroup();
         }else if(!isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups())){ //account price group
