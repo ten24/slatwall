@@ -18,7 +18,17 @@ const DefaultImage = () => {
 const SWImage = ({ className, host, customPath, src, alt, basePath }) => {
   basePath = customPath ? customPath : basePath
   if (src) {
-    return <img className={className} src={basePath ? host + basePath + src : host + src} alt={alt} />
+    return (
+      <img
+        className={className}
+        src={basePath ? host + basePath + src : host + src}
+        alt={alt}
+        onError={e => {
+          e.target.onerror = null
+          e.target.src = defaultImg
+        }}
+      />
+    )
   }
   return <DefaultImage />
 }
