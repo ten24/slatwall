@@ -171,6 +171,57 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Process Methods ===========================
 	
+	
+	public any function getAllOrdersOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        param name="arguments.data.orderID" default= "";
+        
+		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
+
+		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			calculatedTotal,
+			createdDateTime,
+			orderStatusType.typeName,
+			orderFulfillments.shippingAddress.streetAddress,
+			orderFulfillments.shippingAddress.street2Address,
+			orderFulfillments.shippingAddress.city,
+			orderFulfillments.shippingAddress.stateCode,
+			orderFulfillments.shippingAddress.postalCode	
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		
+		if( len(arguments.data.orderID) ){
+		    ordersList.addFilter( 'orderID', arguments.data.orderID );
+		}
+		ordersList.addGroupBy('orderID');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		var orderRecords = ordersList.getPageRecords(formatRecord = false);
+		
+		var orderIDs = [];
+		for( var order in orderRecords) {
+			ArrayAppend( orderIDs, order['orderID']);
+		}
+		
+		//get orders with delivery tracking numbers
+		var orderDeliveriesCollectionList = getOrderService().getOrderDeliveryCollectionList();
+		orderDeliveriesCollectionList.setDisplayProperties('order.orderID, trackingNumber');
+		orderDeliveriesCollectionList.addFilter( 'order.orderID', ArrayToList(orderIDs), 'IN');
+		
+		return { 
+			"ordersOnAccount": orderRecords, 
+			"orderDeliveries": orderDeliveriesCollectionList.getRecords(formatRecord = true),
+			"records": ordersList.getRecordsCount()
+		};
+	}
+	
 	public struct function getAccountPaymentTransactionData(required any accountPayment){
 		var transactionData = {
 				amount = arguments.accountPayment.getAmount()

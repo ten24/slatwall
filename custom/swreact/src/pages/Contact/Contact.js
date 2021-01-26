@@ -7,6 +7,7 @@ import { getContent } from '../../actions/contentActions'
 
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { sdkURL } from '../../services/SlatwalApiService'
 
 // TODO:  https://stoneandberg.ten24dev.com/contact?submitted=true
 
@@ -35,10 +36,11 @@ const ContactForm = ({ form }) => {
             for (var pair of formData.entries()) {
               bodyFormData[pair[0]] = pair[1]
             }
+
             axios({
               method: 'POST',
               withCredentials: true, // default
-              url: `${location.pathname}?slatAction=public:form.addFormResponse`,
+              url: `${sdkURL}api/scope/addFormResponse`,
               data: encodeForm(bodyFormData),
               headers: {
                 'Content-Type': `application/x-www-form-urlencoded`,

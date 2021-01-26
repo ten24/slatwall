@@ -146,6 +146,29 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['productImageGallery'] = {}
     }
 
+	/**
+     * Function to get all orders for user
+     * adds ordersOnAccount in ajaxResponse
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * @return none
+     **/ 
+    public void function getAllOrdersOnAccount(required any data){
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getAccountService().getAllOrdersOnAccount(
+            argumentCollection=arguments );
+        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
+    }
+	public void function addFormResponse(required struct data){
+		 param name="arguments.data.formResponse.formID" default="";
+
+    	var formToProcess = getService('formService').getForm(arguments.data.formResponse.formID);
+        formToProcess = getFormService().process(formToProcess,arguments.data,"addFormResponse");
+    	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
+
+    }
     public void function getSlatwallForm(required struct data){
         param name="arguments.data.siteCode" default="";
         param name="arguments.data.formCode" default="";
