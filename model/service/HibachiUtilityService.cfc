@@ -55,8 +55,8 @@ Notes:
 		public void function deleteStaleData(numeric days = 7){
 			var olderThanDate = dateAdd('d', arguments.days * -1, now()); 
 			
-			getDAO('HibachiDataDAO').deleteStaleData(tableName = 'SwApiLog', olderDate = olderThanDate);
-			getDAO('HibachiDataDAO').deleteStaleData(tableName = 'SwWorkflowTriggerHistory', olderDate = olderThanDate);
+			getDAO('HibachiDataDAO').deleteStaleData(tableName = 'SwApiLog', olderThanDate = olderThanDate);
+			getDAO('HibachiDataDAO').deleteStaleData(tableName = 'SwWorkflowTriggerHistory', olderThanDate = olderThanDate);
 		}
 		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {

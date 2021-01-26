@@ -98,8 +98,8 @@ Notes:
 	
 	<cffunction name="deleteStaleData" returntype="any" access="public">
 		<cfargument name="tableName" type="string" required="true" />
-		<cfargument name="olderThanDate" type="datetime" required="true" />
-
+		<cfargument name="olderThanDate" type="any" required="true" />
+		
 		<cfif listFindNoCase('SwApiLog,SwWorkflowTriggerHistory', arguments.tableName)>
 			<cfset var rs = "" />
 			<cfquery name="rs" result="local.deleteOldApiLogs">
