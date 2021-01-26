@@ -6150,10 +6150,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private any function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {
 	
+		var priceGroups = [];
+		var priceGroup = arguments.newOrderItem.getAppliedPriceGroup() ?: arguments.processObject.getPriceGroup();
+		if(!isNull(priceGroup)) {
+			priceGroups = [priceGroup];
+		}
+		
 		var priceByCurrencyCodeArgs = {
 			'currencyCode' : arguments.newOrderItem.getCurrencyCode(),
 			'quantity' : arguments.newOrderItem.getQuantity(),
-			'priceGroups': [ arguments.newOrderItem.getAppliedPriceGroup() ?: arguments.processObject.getPriceGroup() ]
+			'priceGroups': priceGroups
 		}
 		
 		return arguments.processObject.getSku()
