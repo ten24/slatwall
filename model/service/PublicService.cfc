@@ -161,7 +161,14 @@ component  accessors="true" output="false"
             argumentCollection=arguments );
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
-	
+	public void function addFormResponse(required struct data){
+		 param name="arguments.data.formResponse.formID" default="";
+
+    	var formToProcess = getService('formService').getForm(arguments.data.formResponse.formID);
+        formToProcess = getFormService().process(formToProcess,arguments.data,"addFormResponse");
+    	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
+
+    }
     public void function getSlatwallForm(required struct data){
         param name="arguments.data.siteCode" default="";
         param name="arguments.data.formCode" default="";
