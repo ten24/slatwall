@@ -68,7 +68,7 @@
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
-            "mappingCode"            : "_Address",
+            "mappingCode"            : "Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "billingAddress",
             "sourceDataKeysPrefix"   : "BillingAddress_"
@@ -76,7 +76,7 @@
         {
             "type"                   : "manyToOne",
             "entityName"             : "Address",
-            "mappingCode"            : "_Address",
+            "mappingCode"            : "Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "shippingAddress",
             "sourceDataKeysPrefix"   : "ShippingAddress_"
