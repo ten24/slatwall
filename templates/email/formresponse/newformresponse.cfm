@@ -141,7 +141,7 @@ Notes:
 			<tr>
 				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: left;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
 					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: left;line-height: inherit;min-width: 0 !important;">
+					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: left;line-height: inherit;min-width: 0 !important;">
 						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 							<tbody>
 								<tr>

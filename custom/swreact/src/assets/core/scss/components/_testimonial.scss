@@ -1,0 +1,34 @@
+//
+// Testimonial
+// --------------------------------------------------
+
+
+// Testimonial
+
+.cz-testimonial {
+  margin-bottom: 0;
+  padding-top: $testimonial-mark-size / 2.5;
+
+  .card-body { padding-top: $card-spacer-y * 2.1; }
+
+  .cz-testimonial-mark {
+    position: absolute;
+    top: -($testimonial-mark-size / 2.5);
+    left: $card-spacer-x;
+    width: $testimonial-mark-size;
+    height: $testimonial-mark-size;
+    @include border-radius($testimonial-mark-border-radius);
+    background-color: $testimonial-mark-bg;
+    color: $testimonial-mark-color;
+    font: {
+      size: $testimonial-mark-size;
+      weight: 500;
+    }
+    text-align: center;
+    box-shadow: $testimonial-box-shadow;
+    z-index: 5;
+    &::before {
+      content: "''";
+    }
+  }
+}

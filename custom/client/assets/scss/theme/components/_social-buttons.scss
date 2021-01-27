@@ -1,0 +1,230 @@
+//
+// Social buttons
+// --------------------------------------------------
+
+
+// Base styles
+
+.social-btn {
+  display: inline-block;
+  width: $social-btn-size;
+  height: $social-btn-size;
+  padding: 0;
+  border: $social-btn-border-width solid transparent;
+  transition: $social-btn-transition;
+  @include border-radius($social-btn-border-radius);
+  background-color: $social-btn-dark-bg;
+  color: $social-btn-dark-color;
+  font-size: $social-btn-font-size;
+  text: {
+    align: center;
+    decoration: none !important;
+  }
+  > i {
+    line-height: $social-btn-size - .125rem;
+  }
+
+  &:hover { color: $social-btn-dark-hover-color; }
+  &:focus { outline: none; }
+  &:active {
+    transition: none;
+    box-shadow: none !important;
+  }
+
+  &.sb-light {
+    background-color: $social-btn-light-bg;
+    color: $social-btn-light-color;
+    &:hover {
+      background-color: $social-btn-light-hover-bg !important;
+      box-shadow: none !important;
+    }
+  }
+}
+
+
+// Sizing
+
+.sb-lg {
+  width: $social-btn-size-lg;
+  height: $social-btn-size-lg;
+  @include border-radius($social-btn-border-radius-lg);
+  font-size: $social-btn-font-size-lg;
+  > i {
+    line-height: $social-btn-size-lg - .125rem;
+  }
+}
+.sb-sm {
+  width: $social-btn-size-sm;
+  height: $social-btn-size-sm;
+  @include border-radius($social-btn-border-radius-sm);
+  font-size: $social-btn-font-size-sm;
+  > i {
+    line-height: $social-btn-size-sm - .125rem;
+  }
+}
+
+
+// Outline variant
+
+.sb-outline {
+  border-color: $social-btn-dark-border-color;
+  background-color: transparent;
+  &.sb-light {
+    border-color: $social-btn-light-border-color;
+    background-color: transparent;
+  }
+  &:hover { border-color: transparent; }
+}
+
+
+// Round shape
+
+.sb-round {
+  border-radius: 50% !important;
+}
+
+
+// Brand colors
+
+.sb-facebook:hover {
+  background-color: #3b5998;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#3b5998, .9);
+  &.sb-light { color: #3b5998; }
+}
+.sb-twitter:hover {
+  background-color: #1da1f2;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#1da1f2, .9);
+  &.sb-light { color: #1da1f2; }
+}
+.sb-instagram:hover {
+  background-color: #5851db;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#5851db, .9);
+  &.sb-light { color: #5851db; }
+}
+.sb-google:hover {
+  background-color: #ea4335;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#ea4335, .9);
+  &.sb-light { color: #ea4335; }
+}
+.sb-linkedin:hover {
+  background-color: #0077b5;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#0077b5, .9);
+  &.sb-light { color: #0077b5; }
+}
+.sb-pinterest:hover {
+  background-color: #bd081c;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#bd081c, .9);
+  &.sb-light { color: #bd081c; }
+}
+.sb-tumblr:hover {
+  background-color: #35465c;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#35465c, .9);
+  &.sb-light { color: #35465c; }
+}
+.sb-behance:hover {
+  background-color: #1769ff;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#1769ff, .9);
+  &.sb-light { color: #1769ff; }
+}
+.sb-dribbble:hover {
+  background-color: #ea4c89;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#ea4c89, .9);
+  &.sb-light { color: #ea4c89; }
+}
+.sb-vk:hover {
+  background-color: #45668e;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#45668e, .9);
+  &.sb-light { color: #45668e; }
+}
+.sb-odnoklassniki:hover {
+  background-color: #ed812b;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#ed812b, .9);
+  &.sb-light { color: #ed812b; }
+}
+.sb-skype:hover {
+  background-color: #00aff0;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#00aff0, .9);
+  &.sb-light { color: #00aff0; }
+}
+.sb-hangouts:hover {
+  background-color: #0f9d58;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#0f9d58, .9);
+  &.sb-light { color: #0f9d58; }
+}
+.sb-messenger:hover {
+  background-color: #0084ff;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#0084ff, .9);
+  &.sb-light { color: #0084ff; }
+}
+.sb-viber:hover {
+  background-color: #59267c;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#59267c, .9);
+  &.sb-light { color: #59267c; }
+}
+.sb-telegram:hover {
+  background-color: #0088cc;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#0088cc, .9);
+  &.sb-light { color: #0088cc; }
+}
+.sb-youtube:hover {
+  background-color: #ff0000;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#ff0000, .9);
+  &.sb-light { color: #ff0000; }
+}
+.sb-vimeo:hover {
+  background-color: #1ab7ea;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#1ab7ea, .9);
+  &.sb-light { color: #1ab7ea; }
+}
+.sb-wechat:hover {
+  background-color: #7bb32e;
+  box-shadow: 0 .5rem 1.125rem -.5rem rgba(#7bb32e, .9);
+  &.sb-light { color: #7bb32e; }
+}
+
+
+// Share buttons
+
+.share-btn {
+  display: inline-block;
+  padding: $share-btn-padding-y $share-btn-padding-x;
+  transition: $share-btn-transition;
+  @include border-radius($share-btn-border-radius);
+  font-size: $share-btn-font-size;
+  text-decoration: none !important;
+  vertical-align: middle;
+  > i {
+    margin: {
+      top: -.125rem;
+      right: .3125rem;
+    }
+    font-size: 1.1em;
+    vertical-align: middle;
+  }
+
+  // Twitter
+  &.sb-twitter {
+    background-color: rgba(#1da1f2, .08);
+    color:#1da1f2;
+    &:hover { background-color: #1da1f2; }
+  }
+
+  // Instagram
+  &.sb-instagram {
+    background-color: rgba(#5851db, .08);
+    color:#5851db;
+    &:hover { background-color: #5851db; }
+  }
+
+  // Facebook
+  &.sb-facebook {
+    background-color: rgba(#3b5998, .08);
+    color:#3b5998;
+    &:hover { background-color: #3b5998; }
+  }
+
+  &:hover {
+    color: $white;
+    box-shadow: none;
+  }
+}

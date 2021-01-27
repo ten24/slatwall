@@ -1,0 +1,10 @@
+.customInput{
+    padding-left: 12px !important;
+    background-color: #fff;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.customInput::placeholder{
+    color: #C2C7CE;
+}

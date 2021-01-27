@@ -1,0 +1,11 @@
+{
+    "es_mx": {
+        "translation": {
+            "frontend": {
+                "global": {
+                    "cart": "Cart"
+                }
+            }
+        }
+    }
+}
