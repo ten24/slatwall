@@ -32,6 +32,7 @@
     "html-loader": "^0.5.5",
     "html-webpack-link-type-plugin": "^1.0.3",
     "html-webpack-plugin": "^4.3.0",
+    "install-changed": "^1.1.0",
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.8.0",
     "json-loader": "^0.5.4",
@@ -57,9 +58,9 @@
     "webpackbar": "^4.0.0"
   },
   "scripts": {
-    "prestart": "npm install",
-    "prebuildHibachi": "npm install",
-    "prebuildSlatwall": "npm install",
+    "prestart": "install-changed",
+    "prebuildHibachi": "install-changed",
+    "prebuildSlatwall": "install-changed",
     "start": "http-server -a localhost -p 8000",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",
