@@ -1484,28 +1484,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	transformedDeliveryData.delete('__sourceData');
     	transformedDeliveryData.delete('__dependencies');
     	return transformedDeliveryData;
-    	
-    	// //create new OrderDelivery
-	    // return [{
-	    // 	"OrderDeliveryID"	   : "",
-     //       "remoteOrderDeliveryID" : arguments.data.remoteOrderID,
-     //       //this defaultValue for FulfillmentMethod is `Shipping`
-     //       "fulfillmentMethod"        : {
-     //       	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
-     //       },
-     //       "shippingAddress"		   : {
-     //       		  "name"		   : arguments.data.name,
-	    //               "streetAddress"  : arguments.data.streetAddress,
-	    //               "street2Address" : arguments.data.street2Address,
-	    //               "city"           : arguments.data.city,
-	    //               "countryCode"	   : arguments.data.countryCode,
-	    //               "stateCode"	   : arguments.data.stateCode,
-	    //               "postalCode"	   : arguments.data.postalCode,
-	    //       },
-	    //     "location"				   : {
-     //       		  "locationID"	   : arguments.data.PickupLocationRemoteID
-	    //       },
-     //   }];
     }
     
     public any function generateOrderDeliveryItemStock( struct data, struct mapping, struct propertyMetaData ){
