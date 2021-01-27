@@ -555,7 +555,7 @@ component  accessors="true" output="false"
     public void function getProductReviews(required struct data){
         param name="arguments.data.productID" default="";
         
-        var productReviews = getService('productService').getAllProductReviews(productID = arguments.data.productID);
+        var productReviews = getProductService().getAllProductReviews(productID = arguments.data.productID);
         arguments.data.ajaxResponse['productReviews'] = productReviews;
     }
     
@@ -567,10 +567,10 @@ component  accessors="true" output="false"
     */
     public void function getRelatedProducts(required struct data){
         param name="arguments.data.productID" default="";
-        var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
+        var relatedProducts = getProductService().getAllRelatedProducts(productID = arguments.data.productID);
         //add images
         if(arrayLen(relatedProducts)) {
-            relatedProducts = getService('productService').appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
+            relatedProducts = getProductService().appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
         }
         arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
@@ -587,7 +587,7 @@ component  accessors="true" output="false"
         param name="arguments.data.productID" default="";
         param name="arguments.data.defaultSkuOnlyFlag" default="false";
         
-        var product = getService('productService').getProduct(arguments.data.productID);
+        var product = getProductService().getProduct(arguments.data.productID);
         if(structKeyExists(arguments.data,'resizeSizes')){
             var sizeArray = [];
             for(var size in arguments.data.resizeSizes){
