@@ -25,8 +25,8 @@
 																
 																<!-- FOOTER COPY -->
 																<p class="mb_xxs" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;">
-																	&copy; <cfoutput>#year(Now())#</cfoutput>Stone and Berg Company Inc<br>
-																	<small style="font-size: 14px;">239 Mill Street, Worcester, MA 01602</small>
+																	&copy; <cfoutput>#year(Now())#</cfoutput> Your Company<br>
+																	<small style="font-size: 14px;">2603 Woodridge Lane, Memphis, TN 38104, USA</small>
 																</p>
 																
 																<p class="small mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
@@ -48,7 +48,16 @@
 													<tbody>
 														<tr>
 															<td class="column_cell px pt_xs pb_0 ord_cell tr" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 8px;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorLighterText#;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
-															<!---- reserved for content footer column 2--->
+																<p class="fsocial mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 100%;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
+																	
+																	<!-- FACEBOOK ICON/LINK -->
+																	<a href="##" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="/assets/images/social-facebook_white.png" width="24" height="24" alt="facebook" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> &nbsp;&nbsp; 
+																	
+																	<!-- TWITTER ICON/LINK -->
+																	<a href="##" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="/assets/images/social-twitter_white.png" width="24" height="24" alt="twitter" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a> &nbsp;&nbsp; 
+																	
+																	<!-- INSTAGRAM ICON/LINK -->
+																	<a href="##" style="text-decoration: underline;line-height: inherit;color: #colorLighterText#;"><img src="/assets/images/social-instagram_white.png" width="24" height="24" alt="instagram" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 24px;height: auto !important;"></a></p>
 															</td>
 														</tr>
 													</tbody>
