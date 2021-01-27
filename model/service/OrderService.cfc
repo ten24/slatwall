@@ -1873,10 +1873,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		else {
 			var account = getHibachiScope().getAccount();
 		}
-	
-		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
-			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
-			return arguments.orderTemplate; 
+		
+		var site = arguments.processObject.getSite();
+		
+        if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+			arguments.data.orderTemplateName = "My Order Template, Created on " & dateFormat(now(), "long");
+        }
+        
+		//Set the first shipping method as default
+		var shippingMethod = getService('ShippingService').getShippingMethod( 
+		            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
+			   );
+		if(!isNull(shippingMethod)){
+			orderTemplate.setShippingMethod(shippingMethod);
 		}
 		
 		arguments.orderTemplate.setAccount(account);
@@ -1884,9 +1893,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( arguments.processObject.getFrequencyTerm() );
+		var date = arguments.processObject.getScheduleOrderNextPlaceDateTime() ?: arguments.data.scheduleOrderNextPlaceDateTime;
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(date));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(parseDateTime(date));
 		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
 		
@@ -2392,6 +2402,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate; 	
 	} 
 
+	public any function processOrderTemplate_shareWishlist(required any orderTemplate, any processObject, struct data={}){
+
+		this.sendEmail(
+			emailAddress = arguments.processObject.getReceiverEmailAddress(), 
+			emailTemplateID =  arguments.ordertemplate.getSite().setting('siteWishlistShareEmailTemplate'),
+			emailTemplateObject = arguments.orderTemplate
+		);
+		
+		return arguments.orderTemplate; 		
+	}
 
 	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
 		
@@ -6130,17 +6150,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private any function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {
 	
-		var priceByCurrencyCodeArgs = {
-			'currencyCode' : arguments.order.getCurrencyCode(),
-			'quantity' : arguments.processObject.getQuantity()
-		};
+		var priceGroups = [];
+		var priceGroup = arguments.newOrderItem.getAppliedPriceGroup() ?: arguments.processObject.getPriceGroup();
+		if(!isNull(priceGroup)) {
+			priceGroups = [priceGroup];
+		}
 		
-		if(!isNull(	newOrderItem.getOrder().getAccount() ) && !newOrderItem.getOrder().getAccount().getNewFlag()){
-			priceByCurrencyCodeArgs['accountID'] = newOrderItem.getOrder().getAccount().getAccountID();
+		var priceByCurrencyCodeArgs = {
+			'currencyCode' : arguments.newOrderItem.getCurrencyCode(),
+			'quantity' : arguments.newOrderItem.getQuantity(),
+			'priceGroups': priceGroups
 		}
 		
 		return arguments.processObject.getSku()
-		.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) 
+				.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs );
 	}
 	
 	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
@@ -6212,7 +6235,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getBestApplicablePriceGroup(required any order){
-		var priceGroupCode =  2;
+		var priceGroupCode =  "";
         if(!isNull(arguments.order.getPriceGroup())){ //order price group
             return arguments.order.getPriceGroup();
         }else if(!isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups())){ //account price group

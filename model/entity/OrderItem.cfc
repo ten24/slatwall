@@ -844,9 +844,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Applied Price Group (many-to-one)
-	public void function setAppliedPriceGroup(required any appliedPriceGroup) {
+	public void function setAppliedPriceGroup(any appliedPriceGroup) {
 		variables.appliedPriceGroup = arguments.appliedPriceGroup;
-		if(isNew() or !arguments.appliedPriceGroup.hasAppliedOrderItem( this )) {
+		if(!isNull(arguments.appliedPriceGroup) && (isNew() || !arguments.appliedPriceGroup.hasAppliedOrderItem( this ))) {
 			arrayAppend(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
 		}
 	}
