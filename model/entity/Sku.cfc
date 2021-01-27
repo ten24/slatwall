@@ -647,7 +647,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if( ! IsNull(arguments.priceGroupCode) ) {
 			arguments.priceGroups = [ getService('priceGroupService').getPriceGroupByPriceGroupCode(arguments.priceGroupCode) ];
 		}
-		
+
 		if( !structKeyExists(arguments,'priceGroups') ) {
 			
 			if(structKeyExists(arguments, 'accountID') && len(arguments.accountID)){
@@ -657,10 +657,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 			
 			arguments.priceGroups = account.getPriceGroups(); 
-		}
 		
-		for(var priceGroup in arguments.priceGroups){
-			cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
+		}
+
+		if(!isNull(arguments.priceGroups)) {
+			for(var priceGroup in arguments.priceGroups){
+				cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
+			}
 		}
 		
 

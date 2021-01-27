@@ -20,7 +20,40 @@
                         <sw-sku-thumbnail ng-if="swSkuPriceModal.sku.data" data-sku-data="swSkuPriceModal.sku.data">
                         </sw-sku-thumbnail>
                     </div>
+                    
                     <div class="col-sm-8">
+                         <div class="row">
+                            <div class="col-sm-12">
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.Sku'">
+                                        
+                                </label>
+                                <sw-typeahead-search    data-collection-config="swSkuPriceModal.skuCollectionConfig"
+                                                        data-disabled="swSkuPriceModal.isDefaultSkuPrice()"
+                                                        data-placeholder-text="Select Sku"
+                                                        data-search-text="swSkuPriceModal.selectedSku['skuCode']"
+                                                        data-add-function="swSkuPriceModal.setSelectedSku"
+                                                        data-property-to-show="skuCode">
+                                    <span sw-typeahead-search-line-item data-property-identifier="skuCode" ng-bind="item.skuCode"></span>
+                                </sw-typeahead-search>
+                                <input type="hidden" readonly style="display:none" name="sku" ng-model="swSkuPriceModal.submittedSku" />
+                            </div>
+                            <div class="col-sm-12">
+                                
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.PriceGroup'">
+                                        
+                                </label>
+                                <select class="form-control" 
+                                        ng-model="swSkuPriceModal.selectedPriceGroup"
+                                        ng-options="item as item.priceGroupName for item in swSkuPriceModal.priceGroupOptions track by item.priceGroupID"
+                                        ng-change="swSkuPriceModal.setSelectedPriceGroup(swSkuPriceModal.selectedPriceGroup)"
+                                        ng-disabled="swSkuPriceModal.isDefaultSkuPrice() || swSkuPriceModal.priceGroupEditable == false"
+                                        >
+                                </select>
+                                <input type="hidden" readonly style="display:none" name="priceGroup" ng-model="swSkuPriceModal.submittedPriceGroup" />
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-sm-4">
                                 <label  class="control-label"
@@ -80,38 +113,7 @@
                                 />
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <label  class="control-label"
-                                        sw-rbKey="'entity.Sku'">
-                                        
-                                </label>
-                                <sw-typeahead-search    data-collection-config="swSkuPriceModal.skuCollectionConfig"
-                                                        data-disabled="swSkuPriceModal.isDefaultSkuPrice()"
-                                                        data-placeholder-text="Select Sku"
-                                                        data-search-text="swSkuPriceModal.selectedSku['skuCode']"
-                                                        data-add-function="swSkuPriceModal.setSelectedSku"
-                                                        data-property-to-show="skuCode">
-                                    <span sw-typeahead-search-line-item data-property-identifier="skuCode" ng-bind="item.skuCode"></span>
-                                </sw-typeahead-search>
-                                <input type="hidden" readonly style="display:none" name="sku" ng-model="swSkuPriceModal.submittedSku" />
-                            </div>
-                            <div class="col-sm-6">
-                                
-                                <label  class="control-label"
-                                        sw-rbKey="'entity.PriceGroup'">
-                                        
-                                </label>
-                                <select class="form-control" 
-                                        ng-model="swSkuPriceModal.selectedPriceGroup"
-                                        ng-options="item as item.priceGroupName for item in swSkuPriceModal.priceGroupOptions track by item.priceGroupID"
-                                        ng-change="swSkuPriceModal.setSelectedPriceGroup(swSkuPriceModal.selectedPriceGroup)"
-                                        ng-disabled="swSkuPriceModal.isDefaultSkuPrice() || swSkuPriceModal.priceGroupEditable == false"
-                                        >
-                                </select>
-                                <input type="hidden" readonly style="display:none" name="priceGroup" ng-model="swSkuPriceModal.submittedPriceGroup" />
-                            </div>
-                        </div>
+                       
                         <!-- BEGIN HIDDEN FIELDS -->
                         
                         <!-- END HIDDEN FIELDS -->

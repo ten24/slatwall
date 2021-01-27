@@ -63,5 +63,6 @@ Notes:
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteOrderTemplateEligibleShippingMethods" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteWishlistShareEmailTemplate" settingObject="#rc.site#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
