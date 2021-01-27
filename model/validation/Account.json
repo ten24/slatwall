@@ -8,15 +8,12 @@
 		},
 		"isNotOrganizationAccount": {
 			"organizationFlag": { "neq": true }
-		},
-		"doesNotHasRemoteID": {
-			"remoteID": {"eq" : "NULL" }
 		}
 	},
 	"properties": {
 		"firstName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true }],
 		"lastName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true }],
-		"company": [{ "conditions": "isOrganizationAccount", "contexts": "save", "required": true }],
+		"company": [{ "conditions": "isNotOrganizationAccount", "contexts": "save"}],
 		"accountCode": [
 			{
 				"conditions": "isOrganizationAccount",
@@ -44,18 +41,16 @@
 		"emailAddress": [
 			{
 				"contexts": "save,updateAccount",
-				"conditions": "doesNotHasRemoteID",
 				"dataType": "email",
 				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			},
 			{
 				"contexts": "createPassword",
-			    "conditions": "doesNotHasRemoteID",
 				"required": true
 			}
 		],
-		"orders": [{ "contexts": "delete", "maxCollection": 0 }],
-		"productReviews": [{ "contexts": "delete", "maxCollection": 0 }],
+		"orders": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
+		"productReviews": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
 		"cmsAccountID": [{ "contexts": "save", "uniqueOrNull": true }],
 		"nonIntegrationAuthenticationExistsFlag": [
 			{ "contexts": "createPassword", "eq": false },
@@ -65,7 +60,7 @@
 		"primaryEmailAddress": [
 			{
 				"contexts": "save",
-				"conditions": "nonIntegrationAuthenticatedAccount,doesNotHasRemoteID",
+				"conditions": "nonIntegrationAuthenticatedAccount",
 				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			}
 		],
@@ -75,8 +70,12 @@
 				"method": "isPrimaryMethodExpired"
 			}
 		],
-		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minCollection": 1 }],
+		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minPersistedCollection": 1 }],
 		"ownerAccount": [{ "contexts": "delete", "method": "canDeleteByOwner" }],
-		"childAccountRelationships": [{ "contexts": "delete", "maxCollection": 0 }]
+		"childAccountRelationships": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
+		"username": [
+			{ "contexts": "save", "required": true, "method": "getUsernameNotInUseFlag" },
+			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount" }
+		]
 	}
 }

@@ -97,7 +97,7 @@ Notes:
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 							</cfif>
 							<input type="hidden" name="oldQuantity" value="#rc.processObject.getQuantity()#">
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit && $.slatwall.getService('HibachiAuthenticationService').authenticateEntityPropertyCrudByAccount(crudType='update', entityName='OrderItem', propertyName='price', account=$.slatwall.getAccount())#">
 
 							<!--- Manual Gift Card Code Entry --->
 							<cfif rc.processObject.getSku().isGiftCardSku() && !rc.processObject.getSku().getGiftCardRecipientRequiredFlag() && !rc.processObject.getSku().getGiftCardAutoGenerateCodeFlag()>

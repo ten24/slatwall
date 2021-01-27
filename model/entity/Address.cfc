@@ -51,6 +51,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	// Persistent Properties
 	property name="addressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="name" hb_populateEnabled="public" ormtype="string";
+	property name="addressName" hb_populateEnabled="public" ormtype="string" length="1024"; 
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="streetAddress" hb_populateEnabled="public" ormtype="string";
 	property name="street2Address" hb_populateEnabled="public" ormtype="string";
@@ -58,6 +59,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="city" hb_populateEnabled="public" ormtype="string";
 	property name="stateCode" hb_populateEnabled="public" ormtype="string";
 	property name="postalCode" hb_populateEnabled="public" ormtype="string";
+	property name="shortPostalCode" hb_populateEnabled="public" ormtype="string" hint="Store Only 5 digits ZIPCODE for US Addresses";
 	property name="countryCode" hb_populateEnabled="public" ormtype="string";
 	
 	property name="salutation" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
@@ -75,16 +77,11 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="verificationCacheKey" ormtype="string" hb_auditable="false";
 	property name="verificationJson" ormtype="string" length="8000" hb_formFieldType="json" hb_auditable="false"; //Avalara returns a big json
 	
-	//Calculated Properties
-	property name="calculatedAddressName" ormtype="string" length="1024"; 
-	
 	//one-to-many
   	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="addressID" cascade="all-delete-orphan" inverse="true";
 	
 	// Remote properties
-	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
-	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
-
+	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -97,10 +94,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="countryCodeOptions" persistent="false" type="array";
 	property name="salutationOptions" persistent="false" type="array";
 	property name="stateCodeOptions" persistent="false" type="array";
-	property name="addressName" persistent="false" type="string";
 	
 	// ==================== START: Logical Methods =========================
-
+		
 	public boolean function getAddressMatchFlag( required any address ) {
 		if(
 			nullReplace(getCountryCode(),"") != nullReplace(arguments.address.getCountryCode(),"")
@@ -253,7 +249,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 		
 		return variables.addressName;
 	}
-		
+	
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Attribute Values (one-to-many)    
@@ -308,12 +304,33 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentationPropertyName() {
-		return 'calculatedAddressName';
+		return 'addressName';
 	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
+	
+	public void function preInsert(){
+		getAddressName();
+		
+		if(getCountryCode() == 'US'){
+			variables.shortPostalCode = left(getPostalCode(), 5);
+		}else{
+			variables.shortPostalCode = getPostalCode();
+		}
+	}
+	
+	public void function preUpdate(){
+		structDelete(variables,'addressName');
+		getAddressName();
+		
+		if(getCountryCode() == 'US'){
+			variables.shortPostalCode = left(getPostalCode(), 5);
+		}else{
+			variables.shortPostalCode = getPostalCode();
+		}
+	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
 	

@@ -299,6 +299,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
 			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
+			globalIntegrationRequestLog = {fieldType="yesno",defaultValue=0},
+			globalIntegrationRequestLogExpirationDays = {fieldtype="text", defaultValue=30, validate={dataType="numeric",required=true,maxValue=180}},
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -642,11 +644,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "globalTranslateLocales":
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
-				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
+				var optionSL = getMeasurementService().getMeasurementUnitCollectionList();
 				optionSL.addFilter('measurementType', 'weight');
-				optionSL.addSelect('unitName', 'name');
-				optionSL.addSelect('unitCode', 'value');
-				return optionSL.getRecords();
+				optionSL.setDisplayProperties('unitName|name,unitCode|value');
+				return optionSL.getRecords(formatRecords=true);
 			case "orderTemplateDefaultFrequencyTerm" :
 				var termCollection = this.getTermCollectionList();
 				termCollection.setDisplayProperties('termID|value,termName|name');
