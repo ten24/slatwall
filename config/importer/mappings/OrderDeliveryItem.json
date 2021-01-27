@@ -11,7 +11,7 @@
 			}
 		},
 		"quantity": {
-			"propertyIdentifier": "invoiceNumber",
+			"propertyIdentifier": "quantity",
 			"validations": {
 				"dataType": "numeric"
 			}
@@ -32,7 +32,17 @@
             "isVolatile": true,
             "entityName": "OrderDelivery",
             "mappingCode": "OrderDelivery",
-            "propertyIdentifier": "orderDelivery"
+            "propertyIdentifier": "orderDelivery",
+            "generatorFunction"  : "generateOrderDeliveryItemOrderDelivery"
+        },
+        {
+        	
+        	"type": "manyToOne",
+            "isVolatile": true,
+            "entityName": "Stock",
+            "hasMapping": false,
+            "propertyIdentifier": "stock",
+            "generatorFunction"  : "generateOrderDeliveryItemStock"
         }
     ],
     
