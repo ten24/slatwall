@@ -92,6 +92,14 @@ component  accessors="true" output="false"
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
 	
+	public void function addFormResponse(required struct data){
+		 param name="arguments.data.formResponse.formID" default="";
+
+    	var formToProcess = getService('formService').getForm(arguments.data.formResponse.formID);
+        formToProcess = getFormService().process(formToProcess,arguments.data,"addFormResponse");
+    	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
+    }
+
 	/**
 	 * Get Product List (an alternative to generic entity api call for products)
 	 * */
