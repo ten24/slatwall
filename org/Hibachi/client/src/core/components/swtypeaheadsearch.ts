@@ -46,6 +46,7 @@ class SWTypeaheadSearchController {
     public titleText;
     public loading:boolean;
     public searchOnLoad:boolean;
+    public onClickSearch=false;
 
     private _timeoutPromise;
     
@@ -199,8 +200,9 @@ class SWTypeaheadSearchController {
         this.dropdownOpen = !this.dropdownOpen;    
     }
 
-    public toggleOptions = () =>{
-        if(this.hideSearch && (!this.searchText || !this.searchText.length)){
+    public toggleOptions = (onClickSearch) =>{
+        this.onClickSearch=onClickSearch;
+        if(this.hideSearch && (!this.searchText || !this.searchText.length || this.onClickSearch)){
             this.search(this.searchText, true);
         }
         

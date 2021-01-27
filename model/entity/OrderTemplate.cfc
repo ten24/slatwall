@@ -94,7 +94,6 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentDiscount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedRecalculationCacheKey" ormtype="string" length="32";
 	
@@ -276,18 +275,6 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 			}
 		}
 		return variables.discountTotal; 
-	}
-
-	public numeric function getTaxableAmountTotal() {
-		var orderTemplateOrderDetailsKey = getOrderTemplateOrderDetailsKey();
-		if(!structKeyExists(variables, 'taxableAmountTotal')){
-			if( !matchRecalculationCacheKey() || structKeyExists( request, orderTemplateOrderDetailsKey ) ){
-				variables.taxableAmountTotal = getService('OrderService').getTaxableAmountTotalForOrderTemplate(this); 
-			}else{
-				variables.taxableAmountTotal = getCalculatedTaxableAmountTotal();
-			}
-		}
-		return variables.taxableAmountTotal;
 	}
 
 	public numeric function getTotal(){

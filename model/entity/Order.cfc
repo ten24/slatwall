@@ -93,6 +93,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderCreatedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderCreatedSiteID";
 	property name="orderPlacedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderPlacedSiteID";
 	property name="orderImportBatch" cfc="OrderImportBatch" fieldtype="many-to-one" fkColumn="orderImportBatchID";
+    property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
 
 	// Related Object Properties (one-To-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
@@ -153,6 +154,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderPaymentCreditAmountNeeded" persistent="false" hb_formatType="currency";
 	property name="orderPaymentRefundOptions" persistent="false";
 	property name="orderRequirementsList" persistent="false";
+	property name="orderRequiredStepsList" persistent="false";
 	property name="orderTypeOptions" persistent="false";
 	property name="defaultStockLocationOptions" persistent="false";
 	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
@@ -216,6 +218,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 	property name="calculatedFulfillmentHandlingFeeTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedPaymentAmountDue" ormtype="big_decimal";
 
 	
 	public void function init(){
@@ -809,6 +812,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public any function getOrderRequirementsList() {
 		return getService("orderService").getOrderRequirementsList(order=this);
+	}
+	
+	/**
+     * It's a hard coded list of options that can be available with order requirements list
+     * This method is added to handle frontend side of wordpress plugin
+     * */
+	public any function getOrderRequiredStepsList() {
+		return getService("orderService").getOrderRequiredStepsList(order=this);
 	}
 
 	public numeric function getOrderPaymentAmountNeeded() {

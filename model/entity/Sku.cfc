@@ -647,7 +647,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if( ! IsNull(arguments.priceGroupCode) ) {
 			arguments.priceGroups = [ getService('priceGroupService').getPriceGroupByPriceGroupCode(arguments.priceGroupCode) ];
 		}
-		
+
 		if( !structKeyExists(arguments,'priceGroups') ) {
 			
 			if(structKeyExists(arguments, 'accountID') && len(arguments.accountID)){
@@ -657,10 +657,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 			
 			arguments.priceGroups = account.getPriceGroups(); 
-		}
 		
-		for(var priceGroup in arguments.priceGroups){
-			cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
+		}
+
+		if(!isNull(arguments.priceGroups)) {
+			for(var priceGroup in arguments.priceGroups){
+				cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
+			}
 		}
 		
 
@@ -1069,6 +1072,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+	
+	/**
+	 * Helper method to populate Eligible Fulfillment methods for SKU
+	 * */
+	public array function getEligibleFulfillmentMethodsWithShippingMethods() {
+		if(!structKeyExists(variables, "eligibleFulfillmentMethodsWithShippingMethods")) {
+			var fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethodCollectionList();
+			fulfillmentMethod.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType");
+			fulfillmentMethod.addFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'), "IN");
+			fulfillmentMethod.addOrderBy('sortOrder');
+			variables.eligibleFulfillmentMethodsWithShippingMethods = fulfillmentMethod.getRecords(formatRecord = false);
+		}
+		return variables.eligibleFulfillmentMethodsWithShippingMethods;
 	}
 
 	public any function getBundledSkusCount() {
