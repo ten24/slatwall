@@ -37,7 +37,7 @@ const FeaturedProducts = ({ sliderData, bannerHead }) => {
   return (
     <div className="container">
       <div className="featured-products bg-white text-center pb-5 pt-5">
-        {bannerHead && <div dangerouslySetInnerHTML={{ __html: customBody }} />}
+        {bannerHead && <div dangerouslySetInnerHTML={{ __html: bannerHead.customBody }} />}
         
         <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
           {sliderData.map((slide, index) => {
