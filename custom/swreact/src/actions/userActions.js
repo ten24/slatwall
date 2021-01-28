@@ -3,6 +3,10 @@ import { SlatwalApiService } from '../services'
 
 export const REQUEST_USER = 'REQUEST_USER'
 export const RECEIVE_USER = 'RECEIVE_USER'
+
+export const RECEIVE_ACCOUNT_ORDERS = 'RECEIVE_ACCOUNT_ORDERS'
+export const REQUEST_ACCOUNT_ORDERS = 'REQUEST_ACCOUNT_ORDERS'
+
 export const CLEAR_USER = 'CLEAR_USER'
 export const REQUEST_CREATE_USER = 'REQUEST_CREATE_USER'
 export const RECEIVE_CREATE_USER = 'RECEIVE_CREATE_USER'
@@ -41,6 +45,19 @@ export const receiveCreateUser = user => {
   }
 }
 
+export const requestAccountOrders = () => {
+  return {
+    type: REQUEST_ACCOUNT_ORDERS,
+  }
+}
+
+export const receiveAccountOrders = ordersOnAccount => {
+  return {
+    type: RECEIVE_ACCOUNT_ORDERS,
+    ordersOnAccount,
+  }
+}
+
 export const getUser = () => {
   return async dispatch => {
     const loginToken = localStorage.getItem('loginToken')
@@ -60,6 +77,38 @@ export const getUser = () => {
       } else {
         dispatch(receiveUser(req.success().account))
       }
+    }
+  }
+}
+
+export const getAccountOrders = () => {
+  return async dispatch => {
+    const loginToken = localStorage.getItem('loginToken')
+    dispatch(requestAccountOrders())
+    const req = await SlatwalApiService.account.accountOrders({
+      bearerToken: loginToken,
+      contentType: 'application/json',
+    })
+
+    if (req.isFail()) {
+      dispatch(receiveAccountOrders([]))
+    } else {
+      dispatch(receiveAccountOrders(req.success().ordersOnAccount.ordersOnAccount))
+    }
+  }
+}
+
+export const orderDeliveries = () => {
+  return async dispatch => {
+    const loginToken = localStorage.getItem('loginToken')
+
+    const req = await SlatwalApiService.account.orderDeliveries({
+      bearerToken: loginToken,
+      contentType: 'application/json',
+    })
+
+    if (req.isFail()) {
+    } else {
     }
   }
 }
