@@ -17,7 +17,11 @@ class SWWorkflowTaskActionsController {
     private showProcessOptions;
     private processOptions;
     private getProcessOptions;
+    private getUtilityOptions;
+    private showUtilityOptions;
+    private utilityOptions;
     private selectProcess;
+    private selectUtility;
     private selectEmailTemplate;
     private finished;
     private workflow;
@@ -149,6 +153,7 @@ class SWWorkflowTaskActionsController {
                 angular.element('a[href="/##j-basic-2"]').click();
                 console.warn(err);
             });
+            
         }//<--end save
 
         /**
@@ -270,7 +275,35 @@ class SWWorkflowTaskActionsController {
             this.showProcessOptions = true;
 
         };
+        
+        this.showUtilityOptions = false;
+        this.utilityOptions = [];
+        
+        /**
+         * Retrieves the utility options for a workflow trigger action.
+         */
+        this.getUtilityOptions = () =>{
+            if(!this.utilityOptions.length){
+                this.$hibachi.getUtilityOptions().then((value)=>{
+                    this.utilityOptions = value.data;
+                });
+            }
+            this.showUtilityOptions = true;
 
+        };
+
+        /**
+         * Changes the selected utility option value.
+         */
+        this.selectUtility = (utilityOption)=>{
+            this.workflowTaskActions.selectedTaskAction.data.processMethod = utilityOption.value;
+            this.searchProcess.name = utilityOption.value;
+            this.workflowTaskActions.selectedTaskAction.forms.selectedTaskAction.$setDirty();
+            //this.searchProcess = processOption.name;
+            this.showUtilityOptions = false;
+
+        };
+        
         /**
          * Changes the selected process option value.
          */

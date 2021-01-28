@@ -83,7 +83,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 			Print || Email || Update || Process || Import || Export || Delete
 		*/
 		var actionTypeOptions = [];
-		var valuesList = 'print,email,delete,process,processByQueue,processEmailByQueue,webhook';
+		var valuesList = 'print,email,utility,delete,process,processByQueue,processEmailByQueue,webhook';
 		var valuesArray = ListToArray(valuesList);
 		
 		for(var value in valuesArray){
@@ -160,6 +160,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		switch(variables.actionType){
 			case 'delete':
 			case 'process':
+			case 'utility':
 			case 'processByQueue':
 				var crudType = 'delete';
 				break;
