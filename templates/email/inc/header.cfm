@@ -220,11 +220,7 @@ table.tr { margin-left: auto; margin-right: 0; }
 															
 															
 															<!------- LOGO IMAGE ------->
-															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
-																	<a href="#local.siteLink#" style="text-decoration: none;line-height: inherit;">
-																		<img src="#local.siteLink#/custom/client/assets/images/sb-logo.png" alt="logo" style=" height:50px; width: auto; outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 200px;">
-																	</a>																
-															</td>
+															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;"><img src="/assets/images/ten24-yourlogo.png" width="100" height="49" alt="logo" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;height: auto !important;"></td>
 														</tr>
 													</tbody>
 												</table>
