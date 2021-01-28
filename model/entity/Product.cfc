@@ -1432,11 +1432,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeRelatedProduct(required any relatedProduct) {
 		arguments.relatedProduct.removeProduct( this );
 	}
-	
-	// Default-Sku (many-to-one)
-	public void function setDefaultSku(required any sku) {
-		arguments.sku.setProduct( this );
-	}
 
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
@@ -1610,6 +1605,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.assignedAttributeSetSmartList;
+	}
+	
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList=""){
+
+		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, defaultSku.price, defaultSku.listPrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, productType.productTypeID, productType.productTypeIDPath, defaultSku.imageFile, brand.brandID, brand.brandName, brand.urlTitle, productType.urlTitle";
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 
 	// ==================  END:  Overridden Methods ========================

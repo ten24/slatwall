@@ -61,7 +61,7 @@ Notes:
 			edit="#rc.edit#" 
 			backQueryString="?ng##!/entity/Content/" 
 			showDelete="#!rc.content.hasChildContent()#"
-			deleteQueryString="?ngRedirectQS=/entity/Content/"
+			deleteQueryString="sRedirectURL=#URLEncode('/?slatAction=entity.listcontent&ngRedirectURL=/entity/Content/')#"
 			
 		>
 			<!---<hb:HibachiProcessCaller entity="#rc.content#" action="admin:entity.preprocesscontent" processContext="create" type="list" modal="true" />--->

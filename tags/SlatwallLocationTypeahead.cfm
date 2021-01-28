@@ -14,7 +14,7 @@
 	
 	<cfparam name="attributes.fieldName" type="string" default="" />						<!--- hint: This can be used to override the default field name" --->
 
-	<cfparam name="attributes.selectedFormatString" type="string" default="Store Locations >> ${locationName}"/><!--- Store Locations >> ${locationName} --->
+	<cfparam name="attributes.selectedFormatString" type="string" default="Locations >> ${locationName}"/><!--- Locations >> ${locationName} --->
 	<cfparam name="attributes.rbKey" type="string" default="entity.location" />		<!--- entity.location --->
 	<cfparam name="attributes.showActiveLocationsFlag" type="boolean" default="false" />
 	<cfparam name="attributes.ignoreParentLocationsFlag" type="boolean" default="false" />
@@ -43,8 +43,8 @@
 			</cfif>
 			
 			<cfset attributes.location = attributes.object.getValueByPropertyIdentifier( attributes.property ) />
-			
-			<cfif attributes.selectedLocationID eq "">
+
+			<cfif attributes.selectedLocationID eq "" AND NOT isNull(attributes.location) AND isObject(attributes.location) >
 				<cfset attributes.selectedLocationID = attributes.location.getLocationID()>
 			</cfif>
 			

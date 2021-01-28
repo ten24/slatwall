@@ -68,6 +68,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="calculatedTaxAmountNotRefunded" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedItemTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedQuantityDelivered" ormtype="integer";
 	property name="calculatedQuantityDeliveredMinusReturns" column="calcQtyDeliveredMinusReturns" ormtype="integer";
 	
 	
@@ -841,6 +842,28 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Applied Price Group (many-to-one)
+	public void function setAppliedPriceGroup(any appliedPriceGroup) {
+		variables.appliedPriceGroup = arguments.appliedPriceGroup;
+		if(!isNull(arguments.appliedPriceGroup) && (isNew() || !arguments.appliedPriceGroup.hasAppliedOrderItem( this ))) {
+			arrayAppend(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
+		}
+	}
+	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
+		if(!structKeyExists(arguments, "appliedPriceGroup")) {
+			if(!structKeyExists(variables, "appliedPriceGroup")){
+				return;
+			}
+			arguments.appliedPriceGroup = variables.appliedPriceGroup;
+		}
+		var index = arrayFind(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.appliedPriceGroup.getAppliedOrderItems(), index);
+			this.setPrice(this.getSkuPrice());
+		}
+		structDelete(variables, "appliedPriceGroup");
+	}
 	
 	// Order (many-to-one)
 	public void function setOrder(required any order) {

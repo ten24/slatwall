@@ -343,6 +343,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				listingMultiselectEntityName="ShippingMethod"
 			},
 			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=1},
+			orderTemplateDaysAllowedToEditNextOrderTemplate = {fieldtype="text", defaultValue="2", validate={dataType="numeric",required=true}},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 
@@ -398,6 +399,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
 			siteOrderTemplateEligibleShippingMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="ShippingMethod"},
+			siteWishlistShareEmailTemplate = { fieldtype="select", defaultValue="" },
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
@@ -675,6 +677,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('orderOriginName', 'name');
 				optionSL.addSelect('orderOriginID', 'value');
 				return optionSL.getRecords();
+			case "siteWishlistShareEmailTemplate":
+			    return getEmailService().getEmailTemplateOptions( "OrderTemplate" );
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "ShippingMethodRateHandlingFeeType" :
