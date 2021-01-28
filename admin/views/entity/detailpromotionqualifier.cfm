@@ -86,7 +86,11 @@ Notes:
 							  cancelQueryString="#local.cancelQueryString#" 
 							  backAction="admin:entity.detailpromotionperiod" 
 							  backQueryString="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()###tabpromotionqualifiers" 
-							  deleteQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#&redirectAction=admin:entity.detailpromotionperiod&promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()###tabpromotionqualifiers" />
+							  deleteQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#&redirectAction=admin:entity.detailpromotionperiod&promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()###tabpromotionqualifiers" >
+			
+			<hb:HibachiProcessCaller action="admin:entity.processPromotionQualifier" entity="#rc.promotionQualifier#" processContext="clearCache" type="list" />
+			
+		</hb:HibachiEntityActionBar>
 		
 		<input type="hidden" name="qualifierType" value="#rc.qualifierType#" />
 		

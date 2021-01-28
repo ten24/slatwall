@@ -14,6 +14,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getFilterPropertiesByBaseEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessObject');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessMethodOptionsByEntityName');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getUtilityMethods');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
@@ -535,6 +536,26 @@ component output="false" accessors="true" extends="HibachiController" {
 			}
 		
 		arguments.rc.apiResponse.content['data'] = processOptions;
+	}
+	
+	public void function getUtilityMethods(required struct rc){
+		var utilityOptions = [];
+
+        if(!arrayLen(utilityOptions)){
+		    var utilityMethods = getMetaData(getService("HibachiUtilityService")).functions;
+			for(var utilityMethod in utilityMethods){
+			    
+			    if(structKeyExists(utilityMethod, 'access') && utilityMethod.access =='private'){
+			        continue;
+			    }
+				arrayAppend(utilityOptions, {
+					'name' = utilityMethod.name,
+					'value' = utilityMethod.name
+				});
+			}
+        }
+		
+		arguments.rc.apiResponse.content['data'] = utilityOptions;
 	}
 
     private void function formatEntity(required any entity, required any model){
