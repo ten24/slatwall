@@ -13,6 +13,7 @@
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumItemPrice" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumItemPrice" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="rewardMatchingType" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="cacheDuration" edit="#rc.edit#" />
 			<cfelseif rc.qualifierType eq "fulfillment">
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumFulfillmentWeight" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumFulfillmentWeight" edit="#rc.edit#" />

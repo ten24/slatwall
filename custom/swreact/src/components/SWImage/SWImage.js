@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import defaultImg from '../../assets/images/default.png'
 
 const LoadingImage = () => {
   return (
@@ -11,13 +12,25 @@ const LoadingImage = () => {
     </svg>
   )
 }
-
+const DefaultImage = () => {
+  return <img src={defaultImg} placeholder="Default" />
+}
 const SWImage = ({ className, host, customPath, src, alt, basePath }) => {
   basePath = customPath ? customPath : basePath
   if (src) {
-    return <img className={className} src={basePath ? host + basePath + src : host + src} alt={alt} />
+    return (
+      <img
+        className={className}
+        src={basePath ? host + basePath + src : host + src}
+        alt={alt}
+        onError={e => {
+          e.target.onerror = null
+          e.target.src = defaultImg
+        }}
+      />
+    )
   }
-  return <LoadingImage />
+  return <DefaultImage />
 }
 SWImage.propTypes = {
   src: PropTypes.string,

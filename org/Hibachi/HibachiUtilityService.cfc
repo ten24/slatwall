@@ -80,6 +80,7 @@
 			}
 		}
 		
+		
 		public function formatStructKeyList(required string str){
  		    if (!structKeyExists(server, "lucee")){
  		        return str;
