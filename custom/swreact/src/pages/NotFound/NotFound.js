@@ -34,10 +34,6 @@ const NotFound = ({ title, customBody, customSummary }) => {
       <div class="row justify-content-center">
         <div class="col-xl-8 col-lg-10">
           <div
-            onClick={event => {
-              event.preventDefault()
-              history.push(event.target.getAttribute('href'))
-            }}
             dangerouslySetInnerHTML={{
               __html: customBody,
             }}
