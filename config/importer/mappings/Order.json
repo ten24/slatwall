@@ -70,6 +70,7 @@
             "mappingCode"            : "Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "billingAddress",
+            "isNullable"             : true,
             "sourceDataKeysPrefix"   : "BillingAddress_"
         },
         {
@@ -78,6 +79,7 @@
             "mappingCode"            : "Address",
             "isNullable"             : true,
             "propertyIdentifier"     : "shippingAddress",
+            "isNullable"             : true,
             "sourceDataKeysPrefix"   : "ShippingAddress_"
         },
         {

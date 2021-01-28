@@ -7,7 +7,7 @@ import { getFeaturedItems } from '../../actions/productSearchActions'
 import { connect, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-const FeaturedProducts = ({ sliderData }) => {
+const FeaturedProducts = ({ sliderData, bannerHead }) => {
   const settings = {
     dots: false,
     infinite: true,
@@ -37,10 +37,8 @@ const FeaturedProducts = ({ sliderData }) => {
   return (
     <div className="container">
       <div className="featured-products bg-white text-center pb-5 pt-5">
-        <h3 className="h3 mb-0">Featured Products</h3>
-        <a href="/All" className="text-link">
-          Shop All Specials
-        </a>
+        {bannerHead && <div dangerouslySetInnerHTML={{ __html: bannerHead.customBody }} />}
+        
         <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
           {sliderData.map((slide, index) => {
             return <FeaturedProductCard {...slide} key={index} imgKey={index} />
@@ -80,7 +78,7 @@ const MainBanner = props => {
   }
   return (
     <div className="container">
-      <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mr-5 ml-5">
+      <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mr-5 ml-5 pb-4">
         <Slider className="slider-dark" {...settings}>
           {props.sliderData.map((slideData, index) => {
             return <BannerSlide {...slideData} key={index} slideKey={index} />
@@ -105,7 +103,7 @@ function HomeBanner(props) {
 
   return (
     <div className="hero mt-2" style={{ backgroundImage: `url(${Background})` }}>
-      <FeaturedProducts sliderData={props.featuredSlider} />
+      <FeaturedProducts sliderData={props.featuredSlider} bannerHead={props.home} />
       <MainBanner sliderData={homeMainBanner} />
     </div>
   )
