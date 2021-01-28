@@ -65,7 +65,7 @@
 		"primaryEmailAddress": [
 			{
 				"contexts": "save",
-				"conditions": "nonIntegrationAuthenticatedAccount",
+				"conditions": "nonIntegrationAuthenticatedAccount,doesNotHasRemoteID",
 				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			}
 		],
@@ -80,7 +80,7 @@
 		"childAccountRelationships": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
 		"username": [
 			{ "contexts": "save", "required": true, "method": "getUsernameNotInUseFlag" },
-			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount,doesNotHasRemoteID" }
+			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount" }
 		]
 	}
 }
