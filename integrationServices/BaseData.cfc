@@ -43,31 +43,8 @@
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
 
-Notes:
-
 */
+
 component extends="Slatwall.integrationServices.BaseIntegrationType" {
-	
-	public any function init() {
-		return this;
-	}
-	
-	public any function getTaxRates(required any requestBean) {
-		return getTransient("TaxRatesResponseBean");
-	}
-	
-	public any function testIntegration() {
- 		var requestBean = new Slatwall.model.transient.tax.TaxRatesRequestBean();
- 		requestBean.setAccount(getHibachiScope().getAccount());
- 		requestBean.setOrder(getHibachiScope().getCart());
- 		
- 		var testAddress = getHibachiScope().getAccount().getAddress();
- 		requestbean.setBillToStreetAddress(testAddress.getStreetAddress());
- 		requestbean.setBillToCity(testAddress.getCity());
- 		requestbean.setBillToStateCode(testAddress.getStateCode());
- 		requestbean.setBillToPostalCode(testAddress.getPostalCode());
- 		requestbean.setBillToCountryCode(testAddress.getCountryCode());
- 		
- 		return getTaxRates(requestBean);
- 	}
+
 }

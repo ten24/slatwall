@@ -52,6 +52,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		return "creditCard";
 	}
 
+	public string function getBlacklistedKeys(){
+		return 'token|password|creditcard|Authorization|encryptedNumber';
+	}
+
 	public boolean function isAdminRequest() {
 		return structKeyExists(request,'context') 
 			&& structKeyExists(request.context,'fw')
@@ -584,7 +588,15 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// The amount of the credit is allowed to exceed the original charge with proper configuration in the external Nexio admin dashboard
 		
 		if ( !isNull(arguments.requestBean.getProviderToken()) ) {
+			var blindCredit = false;
+			var endpoint = 'refund';
 			// Request Data
+			
+			if(setting(settingName='allowBlindCreditsFlag',requestBean=arguments.requestBean)){
+				blindCredit = true;
+			}
+			
+			if(blindCredit){
 			var requestData = {
 				'data' = {
 					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
@@ -597,9 +609,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    	"expirationMonth" = arguments.requestBean.getExpirationMonth(),
 			    	"expirationYear" = arguments.requestBean.getExpirationYear()
 			    }
+				};
+				var endpoint = 'credit';
+			}else{
+				var requestData = {
+					'data' = {
+						'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount())
+			    	},
+			    	'id' = arguments.requestBean.getOriginalChargeProviderTransactionID()
+				}
 			}
 			
-			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
+			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, endpoint, requestData);
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -683,6 +704,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			apiUrl &= '/pay/v3/capture';
 		} else if (arguments.transactionName == 'credit') {
 			apiUrl &= '/pay/v3/credit';
+		} else if (arguments.transactionName == 'refund') {
+			apiUrl &= '/pay/v3/refund';
 		} else if (arguments.transactionName == 'void') {
 			apiUrl &= '/pay/v3/void';
 		} else if(arguments.transactionName == 'transactionStatus'){
@@ -690,79 +713,53 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if(arguments.transactionName == "cardView") {
 			apiUrl &= '/pay/v3/vault/card/#arguments.requestBean.getProviderToken()#';
 		}
-		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
-		var httpRequest = new http();
-		httpRequest.setTimeout(10);
-		httpRequest.setUrl(apiUrl);
+		
+		var postData = {};
+		var requestMethod = 'POST';
+		var headers = {
+			'Authorization' : 'Basic ' & toBase64('#username#:#password#') // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
+		};
+
 		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
-			httpRequest.setMethod('GET');
-		}else{
-			httpRequest.setMethod('POST');
-		}
-		httpRequest.setCharset('UTF-8');
-		httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#"); // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
-		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
-			httpRequest.addParam(type="header", name="Accept", value="application/json");
+			requestMethod = 'GET';
+			headers['Accept'] = 'application/json';
 		} else {
-			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
-			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
+			headers['Content-Type'] = 'application/json';
+			postData = arguments.data;
 		}
 
-		// ---> Comment Out:
-		// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
-		// if (!directoryExists(logPath)){
-		// 	directoryCreate(logPath);
-		// }
-		// var timeSufix = getTickCount() & createHibachiUUID(); 
-		
-		// var httpRequestData = {
-		// 	'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
-		// 	'apiUrl'=apiUrl,
-		// 	'username' = username,
-		// 	'password' = password,
-		// 	'httpContentTypeHeader' = 'application/json',
-		// 	'publicKey' = getPublicKey(arguments.requestBean),
-		// 	'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
-		// };
-
-		// fileWrite('#logPath#/#timeSufix#_AVS_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
-		// Comment Out: <---
-		
 		// Make HTTP request to endpoint
-		var httpResponse = httpRequest.send().getPrefix();
+		var httpResponse = request(
+			url      = apiUrl, 
+			method   = requestMethod, 
+			data     = postData, 
+			dataType = 'json', 
+			headers  = headers, 
+			timeout  = 10
+		);
+
 
 		if (arguments.transactionName == 'deleteToken') {
-			var responseData = {};
-			if(isJSON(httpResponse.fileContent)){
-				responseData = deserializeJSON(httpResponse.fileContent);
-			}else{
-				responseData = httpResponse.fileContent;
-			}
-			return responseData;
+			return httpResponse.fileContent;
 		} else {
 			var responseData = {};
 			// Server error handling - Unavailable or Communication Problem
 			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
-				
-				// Public error message
-				if(isJSON(httpResponse.fileContent)){
-					responseData = deserializeJSON(httpResponse.fileContent);
-				}else{
 					responseData = httpResponse.fileContent;
-				}
+				// Public error message
 				if ( isStruct( responseData ) && structKeyExists( responseData, 'message' ) ) {
 					arguments.responseBean.addError( 'serverCommunicationFault', responseData.message );
 				} else {
-					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#" );
+					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.status_code#" );
 				}
 				
 				// Only for admin purposes
-				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
+				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.status_code#. Check the payment transaction for more details.");
 				
 				// No response from server
 				if (httpResponse.status_code == 0) {
-					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.statuscode#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
+					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.status_code#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
 	
 				// Error response
 				} else {
@@ -784,7 +781,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 							responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";
 						}
 	
-						arguments.responseBean.addMessage('errorMessage', "#httpResponse.statuscode#. #responseData.message#");
+						arguments.responseBean.addMessage('errorMessage', "#httpResponse.status_code#. #responseData.message#");
 					}
 				}
 	
@@ -792,7 +789,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			} else {
 				arguments.responseBean.setStatusCode(httpResponse.status_code);
 				// Convert JSON response
-				responseData = deserializeJSON(httpResponse.fileContent);
+				
+				responseData = httpResponse.fileContent;
+				
 				if(structKeyExists(responseData, 'gatewayResponse') && structKeyExists(responseData['gatewayResponse'], 'refNumber')){
 					arguments.responseBean.setReferenceNumber(responseData.gatewayResponse.refNumber)
 				}

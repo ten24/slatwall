@@ -18,7 +18,7 @@ class SWAccountPaymentMethodModalController{
 	public processObject;
 	public baseEntityPrimaryID:string;
 	
-	public defaultCountryCode:string='US';	
+	public defaultCountryCode:string;	
 	
 	public swCustomerAccountPaymentMethodCard;
 	
@@ -66,6 +66,8 @@ class SWAccountPaymentMethodModalController{
 		
 		this.accountAddressOptions = this.swCustomerAccountPaymentMethodCard.accountAddressOptions;
 		this.accountPaymentMethodOptions = this.swCustomerAccountPaymentMethodCard.accountPaymentMethodOptions;
+		
+		this.defaultCountryCode = this.swCustomerAccountPaymentMethodCard.defaultCountryCode;
 
 		this.countryCodeOptions = this.swCustomerAccountPaymentMethodCard.countryCodeOptions;
 		this.expirationMonthOptions = this.swCustomerAccountPaymentMethodCard.expirationMonthOptions;
