@@ -8,31 +8,22 @@ const ProductDetailGallery = ({ productID }) => {
   }
   useEffect(() => {
     let didCancel = false
-    const loginToken = localStorage.getItem('loginToken')
     if (!productImageGallery.isLoaded) {
-      SlatwalApiService.products
-        .productGallery(
-          {
-            bearerToken: loginToken,
-            contentType: 'application/json',
-          },
-          { productID }
-        )
-        .then(response => {
-          if (response.isSuccess() && !didCancel) {
-            setProductImageGallery({
-              ...productImageGallery,
-              isLoaded: true,
-              products: response.success().productImageGallery,
-            })
-          } else if (response.isFail() && !didCancel) {
-            setProductImageGallery({
-              ...productImageGallery,
-              isLoaded: true,
-              err: 'opps',
-            })
-          }
-        })
+      SlatwalApiService.products.getGallery({ productID }).then(response => {
+        if (response.isSuccess() && !didCancel) {
+          setProductImageGallery({
+            ...productImageGallery,
+            isLoaded: true,
+            products: response.success().productImageGallery,
+          })
+        } else if (response.isFail() && !didCancel) {
+          setProductImageGallery({
+            ...productImageGallery,
+            isLoaded: true,
+            err: 'opps',
+          })
+        }
+      })
     }
 
     return () => {

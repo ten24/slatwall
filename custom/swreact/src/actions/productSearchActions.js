@@ -106,9 +106,9 @@ export const search = () => {
   return async (dispatch, getState) => {
     const { keyword, sortBy, currentPage } = getState().productSearchReducer
     dispatch(requestProducts())
-    const loginToken = localStorage.getItem('loginToken')
     const sortCriteria = sortBy.split('|')
-    const params = {
+
+    const response = await SlatwalApiService.products.list({
       perPage: 9,
       page: currentPage,
       sort: sortCriteria[0],
@@ -117,15 +117,7 @@ export const search = () => {
         publishedFlag: true,
         'productName:like': `%${keyword}%`,
       },
-    }
-
-    const response = await SlatwalApiService.products.list(
-      {
-        bearerToken: loginToken,
-        contentType: 'application/json',
-      },
-      params
-    )
+    })
 
     if (!response.isFail()) {
       const { pageRecords, limitCountTotal, currentPage, pageRecordsCount, pageRecordsEnd, pageRecordsShow, pageRecordsStart, recordsCount, totalPages } = response.success()
