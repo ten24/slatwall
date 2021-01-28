@@ -53,7 +53,7 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	property name="quantity" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
-	property name="orderDelivery" cfc="OrderDelivery" hb_populateEnabled="public" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
+	property name="orderDelivery" cfc="OrderDelivery" hb_populateEnabled="private" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID" hb_cascadeCalculate="true";
 

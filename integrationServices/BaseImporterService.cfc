@@ -1488,7 +1488,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     
     public any function generateOrderDeliveryItemStock( struct data, struct mapping, struct propertyMetaData ){
 		
-	    var skuID = getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.RemoteOrderItemID).skuID;
+	    var skuID = getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID).skuID;
         var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
             	        "entityName"  : 'Location',
             	        "uniqueKey"   : 'remoteID',
