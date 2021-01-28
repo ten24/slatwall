@@ -492,6 +492,7 @@ Notes:
 			</span>
 		</span>
 
+
 		<cfif
 			(structKeyExists(request,'isWysiwygPage') AND request.isWysiwygPage)
 			|| (structKeyExists(rc,'edit'))
@@ -500,11 +501,11 @@ Notes:
 			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></hb:HibachiScript>
 			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></hb:HibachiScript>
 		</cfif>
-
-		<!--- Webpack bundles--->
-		<cfinclude template="#request.slatwallScope.getBaseURL()#/admin/client/dist/SlatwallAdminBundle.cfm" />
 		
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
+		
+		<!--- Webpack bundles--->
+		<cfinclude template="#request.slatwallScope.getBaseURL()#/admin/client/dist/SlatwallAdminBundle.cfm" />
 
 	</body>
 </html>

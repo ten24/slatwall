@@ -378,7 +378,12 @@
 			
 			<cfset request.isWysiwygPage = true />
 			<cfoutput>
-				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# wysiwyg form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
+				<cfif len(trim(attributes.fieldClass))>
+					<cfset attributes.fieldClass &= ' wysiwyg form-control'/>
+				<cfelse>
+					<cfset attributes.fieldClass = 'wysiwyg form-control'/>
+				</cfif> 
+				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass#" #attributes.fieldAttributes#>#attributes.value#</textarea>
 				<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
 					<cfset attributes.translateAttributes.entity = "Translation" />
 					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
