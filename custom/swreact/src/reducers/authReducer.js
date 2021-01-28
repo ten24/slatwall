@@ -1,5 +1,7 @@
 import { REQUEST_LOGIN, RECEIVE_LOGIN, ERROR_LOGIN, LOGOUT } from '../actions/authActions'
 
+const token = localStorage.getItem('token')
+
 const initState = {
   isAuthenticanted: false,
   isFetching: false,
@@ -21,9 +23,11 @@ const auth = (state = initState, action) => {
 
     case LOGOUT:
       return { ...state, isAuthenticanted: false, isFetching: false }
+    case '@@INIT':
+      return { ...state, isAuthenticanted: token ? true : false }
 
     default:
-      return state
+      return { ...state }
   }
 }
 

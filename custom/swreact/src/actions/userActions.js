@@ -12,10 +12,9 @@ export const REQUEST_CREATE_USER = 'REQUEST_CREATE_USER'
 export const RECEIVE_CREATE_USER = 'RECEIVE_CREATE_USER'
 export const ERROR_CREATE_USER = 'ERROR_CREATE_USER'
 
-export const requestUser = loginToken => {
+export const requestUser = () => {
   return {
     type: REQUEST_USER,
-    loginToken,
   }
 }
 
@@ -60,14 +59,9 @@ export const receiveAccountOrders = ordersOnAccount => {
 
 export const getUser = () => {
   return async dispatch => {
-    const loginToken = localStorage.getItem('loginToken')
+    dispatch(requestUser())
 
-    dispatch(requestUser(loginToken))
-
-    const req = await SlatwalApiService.account.get({
-      bearerToken: loginToken,
-      contentType: 'application/json',
-    })
+    const req = await SlatwalApiService.account.get()
 
     if (req.isFail()) {
       dispatch(softLogout())
@@ -83,13 +77,8 @@ export const getUser = () => {
 
 export const getAccountOrders = () => {
   return async dispatch => {
-    const loginToken = localStorage.getItem('loginToken')
     dispatch(requestAccountOrders())
-    const req = await SlatwalApiService.account.accountOrders({
-      bearerToken: loginToken,
-      contentType: 'application/json',
-    })
-
+    const req = await SlatwalApiService.account.accountOrders()
     if (req.isFail()) {
       dispatch(receiveAccountOrders([]))
     } else {
@@ -100,12 +89,7 @@ export const getAccountOrders = () => {
 
 export const orderDeliveries = () => {
   return async dispatch => {
-    const loginToken = localStorage.getItem('loginToken')
-
-    const req = await SlatwalApiService.account.orderDeliveries({
-      bearerToken: loginToken,
-      contentType: 'application/json',
-    })
+    const req = await SlatwalApiService.account.orderDeliveries()
 
     if (req.isFail()) {
     } else {

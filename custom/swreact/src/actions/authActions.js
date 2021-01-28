@@ -35,6 +35,7 @@ export const logout = () => {
   return async dispatch => {
     const response = await SlatwalApiService.auth.revokeToken()
     dispatch(softLogout())
+
     if (response.isSuccess()) {
       toast.success('Logout Successful')
     } else {
