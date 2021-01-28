@@ -1489,26 +1489,25 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     public any function generateOrderDeliveryItemStock( struct data, struct mapping, struct propertyMetaData ){
 		
 	    var skuID = getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID).skuID;
-        var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-            	        "entityName"  : 'Location',
-            	        "uniqueKey"   : 'remoteID',
-            	        "uniqueValue" : arguments.data.PickupLocationRemoteID
-            	    ); 
-            	    
         if (!isNull(skuID) && !this.hibachiIsEmpty(skuID) ){
+	        var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	            	        "entityName"  : 'Location',
+	            	        "uniqueKey"   : 'remoteID',
+	            	        "uniqueValue" : arguments.data.PickupLocationRemoteID
+	            	    ); 
+	            
+	        if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
+	            // fallback to `Default Location` 
+	            locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
+	        }
             
-            if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
-                // fallback to `Default Location` 
-                locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
-            }
-            
-    	    //Find if we have a stock for this sku and location.
-		    var stock = this.getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
-		    
+	    //Find if we have a stock for this sku and location.
+	    var stock = this.getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
+	    
 		    if( !isNull(stock) ){
 		    	return { "stockID" : stock.getstockID() };
 		    }
-		    
+			    
 		    //create new stock
 		    return {
 	            "stockID" : "",
@@ -1520,6 +1519,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            }
 	        };
         }
+        return {};
         
         //dont create stock if there is no locationID / skuID
 	}
