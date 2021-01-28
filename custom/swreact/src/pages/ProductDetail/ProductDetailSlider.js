@@ -36,7 +36,6 @@ const ProductDetailSlider = ({ productID }) => {
       didCancel = true
     }
   }, [relatedProducts, setRelatedProducts, productID])
-  console.log('relatedProducts.products', relatedProducts.products)
   return <ProductSlider title="Related Products" sliderData={relatedProducts.products} />
 }
 export default ProductDetailSlider
