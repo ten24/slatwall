@@ -126,23 +126,17 @@ const OrderHistoryList = () => {
   const [dateSort, setDateSort] = useState('ASC')
   const [statusSort, setStatusSort] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
-  const [ordersOnAccount, setOrdersOnAccount] = useState({ orders: [], isLoaded: false })
+  const [ordersOnAccount, setOrdersOnAccount] = useState({ orders: [], records: 0, isLoaded: false })
 
   useEffect(() => {
     if (!ordersOnAccount.isLoaded) {
-      const loginToken = localStorage.getItem('loginToken')
-      SlatwalApiService.account
-        .accountOrders({
-          bearerToken: loginToken,
-          contentType: 'application/json',
-        })
-        .then(req => {
-          if (req.isFail()) {
-            setOrdersOnAccount({ ...ordersOnAccount, isLoaded: true })
-          } else {
-            setOrdersOnAccount({ orders: req.success().ordersOnAccount.ordersOnAccount, isLoaded: true })
-          }
-        })
+      SlatwalApiService.account.orders().then(req => {
+        if (req.isFail()) {
+          setOrdersOnAccount({ ...ordersOnAccount, isLoaded: true })
+        } else {
+          setOrdersOnAccount({ orders: req.success().ordersOnAccount.ordersOnAccount, records: req.success().ordersOnAccount.records, isLoaded: true })
+        }
+      })
     }
   }, [ordersOnAccount, SlatwalApiService])
 
@@ -168,15 +162,16 @@ const OrderHistoryList = () => {
             </tr>
           </thead>
           <tbody>
-            {ordersOnAccount.orders.map((order, index) => {
-              return <OrderListItem key={index} {...order} />
-            })}
+            {ordersOnAccount &&
+              ordersOnAccount.orders.map((order, index) => {
+                return <OrderListItem key={index} {...order} />
+              })}
           </tbody>
         </table>
       </div>
 
       <hr className="pb-4" />
-      <Pagination recordsCount={30} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={20} />
+      <Pagination recordsCount={ordersOnAccount.records} currentPage={currentPage} setCurrentPage={setCurrentPage} />
     </>
   )
 }

@@ -14,7 +14,7 @@ const range = (from, to, step = 1) => {
   return range
 }
 
-const Pagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 1, setCurrentPage }) => {
+const Pagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 0, setCurrentPage }) => {
   const calculatePageNumbers = () => {
     /**
      * totalNumbers: the total page numbers to show on the control

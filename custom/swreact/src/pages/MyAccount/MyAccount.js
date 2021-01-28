@@ -1,7 +1,5 @@
 import React from 'react'
 import { Layout } from '../../components'
-import { getUser } from '../../actions/userActions'
-// import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Switch, Route, useRouteMatch } from 'react-router-dom'
 
@@ -18,12 +16,11 @@ const AccountPaymentMethods = React.lazy(() => import('../../components/Account/
 
 const AccountOrderHistory = React.lazy(() => import('../../components/Account/AccountOrderHistory/AccountOrderHistory'))
 
-const MyAccount = props => {
-  const { auth } = props
+const MyAccount = ({ auth }) => {
   let match = useRouteMatch()
   return (
     <Layout>
-      {auth.loginToken && (
+      {auth.isAuthenticanted && (
         <Switch>
           <Route path={`${match.path}/addresses`}>
             <AccountAddresses />
@@ -40,13 +37,10 @@ const MyAccount = props => {
           <Route path={`${match.path}/profile`}>
             <AccountProfile />
           </Route>
-          <Route path={match.path}>
-            {auth.loginToken && <AccountOverview />}
-            {!auth.loginToken && <AccountLogin />}
-          </Route>
+          <Route path={match.path}>{auth.isAuthenticanted && <AccountOverview />}</Route>
         </Switch>
       )}
-      {!auth.loginToken && <AccountLogin />}
+      {!auth.isAuthenticanted && <AccountLogin />}
     </Layout>
   )
 }
@@ -54,13 +48,7 @@ const MyAccount = props => {
 const mapStateToProps = state => {
   return {
     auth: state.authReducer,
-    user: state.userReducer,
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getUser: async () => dispatch(getUser()),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(MyAccount)
+export default connect(mapStateToProps)(MyAccount)
