@@ -5,7 +5,7 @@ import { SWImage } from '..'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-const BandSlide = ({ associatedImage, linkUrl, title, slideKey }) => {
+const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
   return (
     <div index={slideKey} className="repeater">
       <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
