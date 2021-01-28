@@ -8,12 +8,15 @@
 		},
 		"isNotOrganizationAccount": {
 			"organizationFlag": { "neq": true }
+		},
+		"doesNotHasRemoteID": {
+			"remoteID": {"eq" : "NULL" }
 		}
 	},
 	"properties": {
 		"firstName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true }],
 		"lastName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true }],
-		"company": [{ "conditions": "isNotOrganizationAccount", "contexts": "save"}],
+		"company": [{ "conditions": "isOrganizationAccount", "contexts": "save", "required": true }],
 		"accountCode": [
 			{
 				"conditions": "isOrganizationAccount",
@@ -41,11 +44,13 @@
 		"emailAddress": [
 			{
 				"contexts": "save,updateAccount",
+				"conditions": "doesNotHasRemoteID",
 				"dataType": "email",
 				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			},
 			{
 				"contexts": "createPassword",
+				"conditions": "doesNotHasRemoteID",
 				"required": true
 			}
 		],
@@ -75,7 +80,7 @@
 		"childAccountRelationships": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
 		"username": [
 			{ "contexts": "save", "required": true, "method": "getUsernameNotInUseFlag" },
-			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount" }
+			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount,doesNotHasRemoteID" }
 		]
 	}
 }

@@ -10,8 +10,10 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	public void function init(){
 		//declared custom strings
 
-		variables.customPropertyBeginString = '';
-		variables.customFunctionBeginString = chr(9) &'';
+		variables.customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN';
+		variables.customPropertyEndString = '//CUSTOM PROPERTIES END';
+		variables.customFunctionBeginString = chr(9) &'//CUSTOM FUNCTIONS BEGIN';
+		variables.customFunctionEndString = '//CUSTOM FUNCTIONS END';
 		variables.lineBreak = getHibachiScope().getService('HibachiUtilityService').getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
 	}
 	
