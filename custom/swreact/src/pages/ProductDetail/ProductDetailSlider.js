@@ -16,7 +16,7 @@ const ProductDetailSlider = ({ productID }) => {
           let newProducts = response.success().relatedProducts
 
           renameKeysInArrayOfObjects(newProducts, 'relatedProduct_', '')
-
+          console.log('newProducts', newProducts)
           setRelatedProducts({
             ...relatedProducts,
             isLoaded: true,
@@ -36,7 +36,7 @@ const ProductDetailSlider = ({ productID }) => {
       didCancel = true
     }
   }, [relatedProducts, setRelatedProducts, productID])
-
+  console.log('relatedProducts.products', relatedProducts.products)
   return <ProductSlider title="Related Products" sliderData={relatedProducts.products} />
 }
 export default ProductDetailSlider

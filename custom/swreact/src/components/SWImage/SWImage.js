@@ -2,10 +2,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import defaultImg from '../../assets/images/default.png'
 
-const DefaultImage = ({ alt = 'Missing' }) => {
-  return <img src={defaultImg} alt={alt} />
+const DefaultImage = ({ alt = 'Missing', style }) => {
+  return <img style={style} src={defaultImg} alt={alt} />
 }
-const SWImage = ({ className, host, customPath, src, alt = '', basePath }) => {
+const SWImage = ({ className, host, customPath, src, alt = '', basePath, style = {} }) => {
   basePath = customPath ? customPath : basePath
   if (src) {
     return (
@@ -13,6 +13,7 @@ const SWImage = ({ className, host, customPath, src, alt = '', basePath }) => {
         className={className}
         src={basePath ? host + basePath + src : host + src}
         alt={alt}
+        style={style}
         onError={e => {
           e.preventDefault()
           e.target.onerror = null
@@ -21,7 +22,7 @@ const SWImage = ({ className, host, customPath, src, alt = '', basePath }) => {
       />
     )
   }
-  return <DefaultImage />
+  return <DefaultImage style={style} />
 }
 SWImage.propTypes = {
   src: PropTypes.string,
@@ -33,7 +34,6 @@ SWImage.propTypes = {
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return preload.theme
+  return state.preload.theme
 }
 export default connect(mapStateToProps)(SWImage)

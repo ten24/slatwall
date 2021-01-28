@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { SWImage } from '../../components'
 import { SlatwalApiService } from '../../services'
 
 const ProductDetailGallery = ({ productID }) => {
@@ -36,7 +37,7 @@ const ProductDetailGallery = ({ productID }) => {
       <div className="cz-product-gallery">
         <div className="cz-preview order-sm-2">
           <div className="cz-preview-item active" id="first">
-            <img className="cz-image-zoom w-100 mx-auto" src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" data-zoom="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product" style={{ maxWidth: '500px' }} />
+            <SWImage className="cz-image-zoom w-100 mx-auto" alt="Product" style={{ maxWidth: '500px' }} />
             <div className="cz-image-zoom-pane"></div>
           </div>
         </div>
