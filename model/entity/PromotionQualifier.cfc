@@ -63,6 +63,8 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	property name="includedOrdersCollectionConfig" ormtype="text";
 	property name="excludedOrdersCollectionConfig" ormtype="text";
 	
+	property name="cacheDuration" ormtype="integer"; // in seconds
+	
 	// Related Entities (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	
@@ -365,15 +367,33 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		if(isNull(arguments.orderCollection)){
 			return false;
 		}
-
+		
     	arguments.orderCollection.setDisplayProperties('orderID'); 
 		arguments.orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
 		return !arrayIsEmpty(arguments.orderCollection.getPageRecords(formatRecords=false,refresh=true));
 	}
 	
+	private string function getQualifiedSkuList(required any skuCollection){
+		
+		var skuList = '';
+		var cacheKey = "promotionQualifier_#variables.promotionQualifierID#_getCollectionHasSkuBySkuID_CacheKey";
+		if(getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			skuList = getService('HibachiCacheService').getCachedValue(cacheKey);
+		}else{
+			skuList = skuCollection.getPrimaryIDList();
+			getService('HibachiCacheService').setCachedValue(cacheKey, skuList, dateAdd('s', val(getCacheDuration()), now()));
+		}
+		return skuList;
+	}
+	
 	private boolean function getCollectionHasSkuBySkuID( required any skuCollection, required string skuID ){
+		
 		if(isNull(arguments.skuCollection)){
 			return false;
+		}
+		
+		if(structKeyExists(variables, 'cacheDuration') && variables.cacheDuration > 0){
+			return listFind(getQualifiedSkuList(arguments.skuCollection), arguments.skuID);
 		}
 		arguments.skuCollection.setDisplayProperties('skuID');
 		arguments.skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');

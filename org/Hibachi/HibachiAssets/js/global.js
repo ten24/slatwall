@@ -2093,11 +2093,12 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
 
 				//angular should work
-				AngularHelper.Compile( $('#'+tabID), htmlToCompile.trim(), function(){
-					//jquery should work
-					initUIElements($('#'+tabID));
-					$('body').trigger('lazyLoadComplete');
-				});
+				AngularHelper.Compile($('#'+tabID),htmlToCompile, function(){
+				//jquery should work
+				initUIElements($('#'+tabID));
+				$('body').trigger('lazyLoadComplete');
+			});
+				
 			});
 		}
 	}
@@ -2139,11 +2140,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
     	            //Get the scope of the target, use the rootScope if it does not exists
     	            var $scope = $targetDom.html(htmlToCompile).scope();
     	            $compile($targetDom)($scope || $rootScope);
-    	            
-    	            if(typeof callback === 'function' ){
+    	            if(typeof callback === "function"){
     	            	callback();
     	            }
-    	            
 	            }, 0);
 	        }]);
 	   }

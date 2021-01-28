@@ -84,7 +84,8 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				{name="Do not save the card if either the address match fails OR the postal code match fails", value=4},
 				{name="Do not save the card if both the address match AND the postal code match fail",value="5"}
 			]},
-			verifyCvcFlag = {fieldType="yesno", defaultValue="1"}
+			verifyCvcFlag = {fieldType="yesno", defaultValue="1"},
+			allowBlindCreditsFlag = {fieldType="yesno", defaultValue="0"}
 		};
 		
 		return settings;
@@ -95,6 +96,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	}
 
 	public string function getAllowedSiteSettingNames() {
-		return "checkFraud,verifyAvsSetting,verifyCvcFlag,allowCBDFlag";
+		return "checkFraud,verifyAvsSetting,verifyCvcFlag,allowCBDFlag,allowBlindCreditsFlag";
 	}
 }
