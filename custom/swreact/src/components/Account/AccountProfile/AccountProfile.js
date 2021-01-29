@@ -3,14 +3,14 @@ import AccountLayout from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import { useFormik } from 'formik'
 
-const AccountProfile = ({ crumbs, title, customBody, contentTitle, getMyUser, user }) => {
+const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       accountFirstName: user.firstName,
       accountLastName: user.lastName,
-      accountEmailAddress: user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : '',
-      accountPhoneNumber: user.primaryPhoneNumber ? user.primaryPhoneNumber.phoneNumber : '',
+      accountEmailAddress: user.primaryEmailAddress.emailAddress,
+      accountPhoneNumber: user.primaryPhoneNumber.phoneNumber,
       accountExt: '',
       accountCompany: user.company,
     },
@@ -78,7 +78,6 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, getMyUser, us
 }
 const mapStateToProps = state => {
   return {
-    ...state.preload.accountProfile,
     user: state.userReducer,
   }
 }
