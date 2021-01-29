@@ -85,7 +85,7 @@
 	<cfparam name="attributes.tableclass" type="string" default="" />  <!--- Pass in additional classes for the table --->
 	<cfparam name="attributes.adminattributes" type="string" default="" />
 	<cfparam name="attributes.recordAlias" type="string" default="" /> <!--- Optional record alias for process object injection --->
-
+	<cfparam name="attributes.sortable" type="boolean" default="false" />
 	<!--- Settings --->
 	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
 	<cfparam name="attributes.hideUnfilteredResults" type="boolean" default="false" /> <!--- If true, collection will only show records when filtered or searched --->
@@ -151,7 +151,7 @@
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
-				
+				data-sortable="#attributes.sortable#"
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
 				</cfif>
