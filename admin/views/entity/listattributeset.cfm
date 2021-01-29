@@ -60,31 +60,6 @@ Notes:
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<cfset attributeSetCollectionList = getHibachiScope().getService('attributeService').getattributeSetCollectionList()>
-	<cfset serchableDisplayProperties = "attributeSetName,attributeSetObject"/>
-	<cfset attributeSetCollectionList.setDisplayProperties(
-	serchableDisplayProperties,
-	{
-		isVisible=true
-	})/>
-	
-	<cfset nonSerchableDisplayProperties = "globalFlag,activeFlag"/>
-	<cfset attributeSetCollectionList.addDisplayProperties(
-		nonSerchableDisplayProperties, 
-		{
-			isVisible=false
-		}
-	)/>
-	
-	<cfset attributeSetCollectionList.addDisplayProperty(
-	displayProperty='attributeSetID',
-	columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-		
 	<hb:HibachiListingDisplay smartlist="#rc.attributeSetSmartList#" 
 	                           recordeditaction="admin:entity.editAttributeSet"
 							   recordeditmodal=true 
