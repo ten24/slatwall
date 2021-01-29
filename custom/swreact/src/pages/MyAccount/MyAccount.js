@@ -15,6 +15,7 @@ const AccountAddresses = React.lazy(() => import('../../components/Account/Accou
 const AccountPaymentMethods = React.lazy(() => import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods'))
 
 const AccountOrderHistory = React.lazy(() => import('../../components/Account/AccountOrderHistory/AccountOrderHistory'))
+const CreateOrEditAccountPaymentMethod = React.lazy(() => import('../../components/Account/AccountPaymentMethods/CreateOrEditAccountPaymentMethod'))
 
 const MyAccount = ({ auth }) => {
   let match = useRouteMatch()
@@ -30,6 +31,9 @@ const MyAccount = ({ auth }) => {
           </Route>
           <Route path={`${match.path}/cards`}>
             <AccountPaymentMethods />
+          </Route>
+          <Route path={`${match.path}/card/:id`}>
+            <CreateOrEditAccountPaymentMethod />
           </Route>
           <Route path={`${match.path}/order-history`}>
             <AccountOrderHistory />
