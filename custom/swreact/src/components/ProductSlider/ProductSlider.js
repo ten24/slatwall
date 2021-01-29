@@ -29,7 +29,6 @@ const ProductSlider = ({ children, sliderData, settings, title, slidesToShow = 4
           },
         ],
       }
-  console.log('sliderData', sliderData)
 
   return (
     <div className="container">
