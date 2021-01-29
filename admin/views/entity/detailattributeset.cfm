@@ -62,7 +62,7 @@ Notes:
 	
 	<hb:HibachiEntityDetailGroup object="#rc.attributeSet#">
 		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" />
+		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" count="#rc.attributeSet.getAttributesCount()#"/>
 		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/description" />
 		<cfif not rc.attributeSet.getGlobalFlag()>
 			<cfif listFindNoCase("OrderItem,ProductType,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
