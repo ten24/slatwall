@@ -65,18 +65,14 @@ Notes:
 	<cfset attributeSetCollectionList.setDisplayProperties(
 	serchableDisplayProperties,
 	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
+		isVisible=true
 	})/>
 	
 	<cfset nonSerchableDisplayProperties = "globalFlag,activeFlag"/>
 	<cfset attributeSetCollectionList.addDisplayProperties(
 		nonSerchableDisplayProperties, 
 		{
-			isVisible=true,
-			isSearchable=false,
-			isDeletable=true
+			isVisible=false
 		}
 	)/>
 	
@@ -88,11 +84,12 @@ Notes:
 		isDeletable=false
 	})/>
 	
-	<hb:HibachiListingDisplay 
-		collectionList="#attributeSetCollectionList#"
-		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(attributeSetCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(attributeSetCollectionList.getCollectionObject())#"
-	>
+		
+	<hb:HibachiListingDisplay smartlist="#rc.attributeSetSmartList#" 
+	                           recordeditaction="admin:entity.editAttributeSet"
+							   recordeditmodal=true 
+	                           recorddetailaction="admin:entity.detailAttributeSet"
+							   sortproperty="sortOrder">
+		<hb:HibachiListingColumn propertyidentifier="attributeSetName" tdclass="primary" />
+		<hb:HibachiListingColumn propertyidentifier="attributeSetCode" />
 	</hb:HibachiListingDisplay>
