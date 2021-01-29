@@ -12,10 +12,10 @@ export const requestLogin = () => {
   }
 }
 
-export const receiveLogin = loginToken => {
+export const receiveLogin = isAuthenticanted => {
   return {
     type: RECEIVE_LOGIN,
-    loginToken,
+    isAuthenticanted,
   }
 }
 
@@ -33,9 +33,9 @@ export const requestLogOut = () => {
 }
 export const logout = () => {
   return async dispatch => {
-    const bearerToken = localStorage.getItem('loginToken')
-    const response = await SlatwalApiService.auth.removeToken(bearerToken)
+    const response = await SlatwalApiService.auth.revokeToken()
     dispatch(softLogout())
+
     if (response.isSuccess()) {
       toast.success('Logout Successful')
     } else {
@@ -67,7 +67,7 @@ export const login = (email, password) => {
         dispatch(errorLogin(req.toString()))
         toast.error('Incorrect Username or Password')
       } else {
-        dispatch(receiveLogin(req.success().token))
+        dispatch(receiveLogin({ isAuthenticanted: true }))
         dispatch(receiveUser(req))
         toast.success('Login Successful')
       }

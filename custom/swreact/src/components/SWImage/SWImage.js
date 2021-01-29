@@ -2,20 +2,10 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import defaultImg from '../../assets/images/default.png'
 
-const LoadingImage = () => {
-  return (
-    <svg width="100%" height="100%" viewBox="0 0 100 100">
-      <rect width="100" height="100" rx="10" ry="10" fill="#CCC" />
-      <text fill="rgba(0,0,0,0.5)" fontSize="12" dy="10.5" fontWeight="bold" x="50%" y="50%" textAnchor="middle">
-        Coming Soon...
-      </text>
-    </svg>
-  )
+const DefaultImage = ({ alt = 'Missing', style }) => {
+  return <img style={style} src={defaultImg} alt={alt} />
 }
-const DefaultImage = () => {
-  return <img src={defaultImg} placeholder="Default" />
-}
-const SWImage = ({ className, host, customPath, src, alt, basePath }) => {
+const SWImage = ({ className, host, customPath, src, alt = '', basePath, style = {} }) => {
   basePath = customPath ? customPath : basePath
   if (src) {
     return (
@@ -23,14 +13,16 @@ const SWImage = ({ className, host, customPath, src, alt, basePath }) => {
         className={className}
         src={basePath ? host + basePath + src : host + src}
         alt={alt}
+        style={style}
         onError={e => {
+          e.preventDefault()
           e.target.onerror = null
           e.target.src = defaultImg
         }}
       />
     )
   }
-  return <DefaultImage />
+  return <DefaultImage style={style} />
 }
 SWImage.propTypes = {
   src: PropTypes.string,
@@ -42,7 +34,6 @@ SWImage.propTypes = {
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return preload.theme
+  return state.preload.theme
 }
 export default connect(mapStateToProps)(SWImage)

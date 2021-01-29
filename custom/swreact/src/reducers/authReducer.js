@@ -1,14 +1,9 @@
-import {
-  REQUEST_LOGIN,
-  RECEIVE_LOGIN,
-  ERROR_LOGIN,
-  LOGOUT,
-} from '../actions/authActions'
+import { REQUEST_LOGIN, RECEIVE_LOGIN, ERROR_LOGIN, LOGOUT } from '../actions/authActions'
 
-const loginToken = localStorage.getItem('loginToken')
+const token = localStorage.getItem('token')
 
 const initState = {
-  loginToken,
+  isAuthenticanted: false,
   isFetching: false,
   err: null,
 }
@@ -19,22 +14,20 @@ const auth = (state = initState, action) => {
       return { ...state, isFetching: true }
 
     case RECEIVE_LOGIN:
-      const { loginToken } = action
-      localStorage.setItem('loginToken', loginToken)
-
-      return { ...state, loginToken, isFetching: false, err: null }
+      const { isAuthenticanted } = action
+      return { ...state, isAuthenticanted, isFetching: false, err: null }
 
     case ERROR_LOGIN:
       const { err } = action
       return { ...state, err, isFetching: false }
 
     case LOGOUT:
-      localStorage.removeItem('loginToken')
-
-      return { ...state, loginToken: null, isFetching: false }
+      return { ...state, isAuthenticanted: false, isFetching: false }
+    case '@@INIT':
+      return { ...state, isAuthenticanted: token ? true : false }
 
     default:
-      return state
+      return { ...state }
   }
 }
 

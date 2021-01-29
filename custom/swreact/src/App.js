@@ -15,6 +15,7 @@ const Contact = React.lazy(() => import('./pages/Contact/Contact'))
 const About = React.lazy(() => import('./pages/About/About'))
 
 const Testing = React.lazy(() => import('./pages/Testing/Testing'))
+const Brand = React.lazy(() => import('./pages/Brand/Brand'))
 
 const Loading = () => {
   return <Layout></Layout>
@@ -35,6 +36,8 @@ export default function App() {
           <Route path="/product/:id" component={ProductDetail} />
           <Route path="/product" component={ProductListing} />
           <Route path="/sp/:id" component={ProductDetail} />
+          <Route path="/shop/:id" component={Brand} />
+          <Route path="/brand/:id" component={Brand} />
           <Route path="/category-listing" component={CategoryListing} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />

@@ -34,7 +34,7 @@ const productSearch = (state = initState, action) => {
       state.attributes.map(attribute => attribute.options.map(option => (option.isSelected = option.name === action.attribute.name ? !option.isSelected : option.isSelected))) //.filter(filter => filter.name !== action.filter.name)
       return { ...state, attributes: [...state.attributes] }
     case ADD_FILTER:
-      return { ...state, appliedFilters: [...state.appliedFilters, action.filter] }
+      return { ...state, appliedFilters: [...state.appliedFilters, action.filter].filter((v, i, a) => a.findIndex(t => JSON.stringify(t) === JSON.stringify(v)) === i) }
 
     case REMOVE_FILTER:
       return { ...state, appliedFilters: state.appliedFilters.filter(filter => filter.name !== action.filter.name) }

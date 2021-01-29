@@ -83,7 +83,7 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
   if (!recordsCount || totalPages === 1) return null
   return (
     <nav className="d-flex justify-content-between pt-2" aria-label="Page navigation">
-      <ul className="pagination">
+      <ul className="mx-auto pagination">
         {pages.map((page, index) => {
           if (page === LEFT_PAGE)
             return (
