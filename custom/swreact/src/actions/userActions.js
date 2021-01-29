@@ -3,15 +3,18 @@ import { SlatwalApiService } from '../services'
 
 export const REQUEST_USER = 'REQUEST_USER'
 export const RECEIVE_USER = 'RECEIVE_USER'
+
+export const RECEIVE_ACCOUNT_ORDERS = 'RECEIVE_ACCOUNT_ORDERS'
+export const REQUEST_ACCOUNT_ORDERS = 'REQUEST_ACCOUNT_ORDERS'
+
 export const CLEAR_USER = 'CLEAR_USER'
 export const REQUEST_CREATE_USER = 'REQUEST_CREATE_USER'
 export const RECEIVE_CREATE_USER = 'RECEIVE_CREATE_USER'
 export const ERROR_CREATE_USER = 'ERROR_CREATE_USER'
 
-export const requestUser = loginToken => {
+export const requestUser = () => {
   return {
     type: REQUEST_USER,
-    loginToken,
   }
 }
 
@@ -41,16 +44,24 @@ export const receiveCreateUser = user => {
   }
 }
 
+export const requestAccountOrders = () => {
+  return {
+    type: REQUEST_ACCOUNT_ORDERS,
+  }
+}
+
+export const receiveAccountOrders = ordersOnAccount => {
+  return {
+    type: RECEIVE_ACCOUNT_ORDERS,
+    ordersOnAccount,
+  }
+}
+
 export const getUser = () => {
   return async dispatch => {
-    const loginToken = localStorage.getItem('loginToken')
+    dispatch(requestUser())
 
-    dispatch(requestUser(loginToken))
-
-    const req = await SlatwalApiService.account.get({
-      bearerToken: loginToken,
-      contentType: 'application/json',
-    })
+    const req = await SlatwalApiService.account.get()
 
     if (req.isFail()) {
       dispatch(softLogout())
@@ -60,6 +71,28 @@ export const getUser = () => {
       } else {
         dispatch(receiveUser(req.success().account))
       }
+    }
+  }
+}
+
+export const getAccountOrders = () => {
+  return async dispatch => {
+    dispatch(requestAccountOrders())
+    const req = await SlatwalApiService.account.accountOrders()
+    if (req.isFail()) {
+      dispatch(receiveAccountOrders([]))
+    } else {
+      dispatch(receiveAccountOrders(req.success().ordersOnAccount.ordersOnAccount))
+    }
+  }
+}
+
+export const orderDeliveries = () => {
+  return async dispatch => {
+    const req = await SlatwalApiService.account.orderDeliveries()
+
+    if (req.isFail()) {
+    } else {
     }
   }
 }

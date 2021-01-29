@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
+import { getAccountOrders } from '../../../actions/userActions'
+import { SlatwalApiService } from '../../../services'
 import Pagination from '../../Listing/Pagination'
 import AccountLayout from '../AccountLayout/AccountLayout'
 
@@ -39,13 +41,14 @@ const AccountOrderHistoryListItemTracking = ({ trackingNumbers }) => {
       </button>
       <div className="dropdown-menu dropdown-menu-right">
         <span>Tracking Numbers:</span>
-        {trackingNumbers.map((trackingNumber, index) => {
-          return (
-            <a key={index} className="dropdown-item" href="##">
-              {trackingNumber}
-            </a>
-          )
-        })}
+        {trackingNumbers &&
+          trackingNumbers.map((trackingNumber, index) => {
+            return (
+              <a key={index} className="dropdown-item" href="##">
+                {trackingNumber}
+              </a>
+            )
+          })}
       </div>
     </div>
   )
@@ -118,11 +121,25 @@ const SortArrows = ({ sortDirection = '', setSortDirection }) => {
   )
 }
 
-const OrderHistoryList = ({ orders }) => {
+const OrderHistoryList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [dateSort, setDateSort] = useState('ASC')
   const [statusSort, setStatusSort] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [ordersOnAccount, setOrdersOnAccount] = useState({ orders: [], records: 0, isLoaded: false })
+
+  useEffect(() => {
+    if (!ordersOnAccount.isLoaded) {
+      SlatwalApiService.account.orders().then(req => {
+        if (req.isFail()) {
+          setOrdersOnAccount({ ...ordersOnAccount, isLoaded: true })
+        } else {
+          setOrdersOnAccount({ orders: req.success().ordersOnAccount.ordersOnAccount, records: req.success().ordersOnAccount.records, isLoaded: true })
+        }
+      })
+    }
+  }, [ordersOnAccount, SlatwalApiService])
+
   return (
     <>
       <ToolBar term={searchTerm} updateTerm={setSearchTerm} />
@@ -145,8 +162,8 @@ const OrderHistoryList = ({ orders }) => {
             </tr>
           </thead>
           <tbody>
-            {orders &&
-              orders.map((order, index) => {
+            {ordersOnAccount &&
+              ordersOnAccount.orders.map((order, index) => {
                 return <OrderListItem key={index} {...order} />
               })}
           </tbody>
@@ -154,7 +171,7 @@ const OrderHistoryList = ({ orders }) => {
       </div>
 
       <hr className="pb-4" />
-      <Pagination recordsCount={30} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={20} />
+      <Pagination recordsCount={ordersOnAccount.records} currentPage={currentPage} setCurrentPage={setCurrentPage} />
     </>
   )
 }

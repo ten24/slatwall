@@ -4,11 +4,11 @@ import { connect } from 'react-redux'
 import AccountLayout from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 
-const Address = ({ location, isPrimary }) => {
+const Address = ({ streetAddress, city, stateCode, postalCode, isPrimary }) => {
   return (
     <tr>
       <td className="py-3 align-middle">
-        {location} {isPrimary && <span className="align-middle badge badge-info ml-2">Primary</span>}
+        {`${streetAddress} ${city},${stateCode} ${postalCode}`} {isPrimary && <span className="align-middle badge badge-info ml-2">Primary</span>}
       </td>
       <td className="py-3 align-middle">
         <a className="nav-link-style mr-2" href="##" data-toggle="tooltip" title="" data-original-title="Edit">
@@ -22,9 +22,9 @@ const Address = ({ location, isPrimary }) => {
   )
 }
 
-const AccountAddresses = ({ crumbs, title, customBody, contentTitle, addresses }) => {
+const AccountAddresses = ({ primaryAddress, accountAddresses, title, customBody, contentTitle }) => {
   return (
-    <AccountLayout crumbs={crumbs} title={title}>
+    <AccountLayout title={title}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
 
       <div className="table-responsive font-size-md">
@@ -36,9 +36,9 @@ const AccountAddresses = ({ crumbs, title, customBody, contentTitle, addresses }
             </tr>
           </thead>
           <tbody>
-            {addresses &&
-              addresses.map((address, index) => {
-                return <Address key={index} {...address} />
+            {accountAddresses &&
+              accountAddresses.map((address, index) => {
+                return <Address key={index} {...address.address} isPrimary={address.accountAddressID === primaryAddress.accountAddressID} />
               })}
           </tbody>
         </table>
@@ -54,8 +54,7 @@ const AccountAddresses = ({ crumbs, title, customBody, contentTitle, addresses }
 }
 
 function mapStateToProps(state) {
-  const { preload } = state
-  return preload.accountAddresses
+  return state.userReducer
 }
 
 AccountAddresses.propTypes = {}

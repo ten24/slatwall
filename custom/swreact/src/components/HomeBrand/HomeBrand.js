@@ -3,14 +3,15 @@ import PropTypes from 'prop-types'
 import Slider from 'react-slick'
 import { SWImage } from '..'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-const BandSlide = ({ associatedImage, linkUrl, title, slideKey }) => {
+const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
   return (
     <div index={slideKey} className="repeater">
       <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
-        <a className="d-block p-4" href={linkUrl}>
+        <Link className="d-block p-4" to={linkUrl}>
           <SWImage className="d-block mx-auto" customPath="/custom/assets/files/associatedimage/" src={associatedImage} alt={title} />
-        </a>
+        </Link>
       </div>
     </div>
   )
@@ -61,9 +62,9 @@ function HomeBrand(props) {
             return <BandSlide {...slide} key={index} slideKey={index} />
           })}
       </Slider>
-      <a className="btn btn-primary mt-3 btn-long" href={props['home/shop-buy'] && props['home/shop-buy'].linkUrl}>
+      <Link className="btn btn-primary mt-3 btn-long" to={props['home/shop-buy'] && props['home/shop-buy'].linkUrl}>
         More Brands
-      </a>
+      </Link>
     </div>
   )
 }

@@ -96,7 +96,7 @@ const AccountFavorites = ({ crumbs, title, items }) => {
 }
 
 const mapStateToProps = state => {
-  return state.preload.accountFavorites
+  return state
 }
 AccountFavorites.propTypes = {}
 export default connect(mapStateToProps)(AccountFavorites)
