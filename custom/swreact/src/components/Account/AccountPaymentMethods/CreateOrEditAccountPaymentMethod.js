@@ -13,7 +13,7 @@ const CreateOrEditAccountPaymentMethod = ({ isEdit, customBody, contentTitle, ac
       value: '444df303dedc6dab69dd7ebcc9b8036a',
     },
   ]
-  const monsths = Array.from({ length: 12 }, (_, i) => {
+  const months = Array.from({ length: 12 }, (_, i) => {
     return { key: i + 1, value: i + 1 }
   })
   const years = Array(10)
@@ -80,7 +80,7 @@ const CreateOrEditAccountPaymentMethod = ({ isEdit, customBody, contentTitle, ac
             </div>
             <div className="form-group">
               <label htmlFor="expirationMonth">Expiration Month</label>
-              <SwSelect id="expirationMonth" value={formik.values.expirationMonth} onChange={formik.handleChange} options={monsths} />
+              <SwSelect id="expirationMonth" value={formik.values.expirationMonth} onChange={formik.handleChange} options={months} />
             </div>
             <div className="form-group">
               <label htmlFor="expirationYear">Expiration Year</label>
