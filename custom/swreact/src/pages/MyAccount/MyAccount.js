@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Layout } from '../../components'
-import { connect } from 'react-redux'
-import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import { connect, useDispatch } from 'react-redux'
+import { Switch, Route, useRouteMatch, useLocation } from 'react-router-dom'
+import { getUser } from '../../actions/userActions'
 
 const AccountLogin = React.lazy(() => import('../../components/Account/AccountLogin/AccountLogin'))
 const AccountOverview = React.lazy(() => import('../../components/Account/AccountOverview/AccountOverview'))
@@ -17,8 +18,17 @@ const AccountPaymentMethods = React.lazy(() => import('../../components/Account/
 const AccountOrderHistory = React.lazy(() => import('../../components/Account/AccountOrderHistory/AccountOrderHistory'))
 const CreateOrEditAccountPaymentMethod = React.lazy(() => import('../../components/Account/AccountPaymentMethods/CreateOrEditAccountPaymentMethod'))
 
-const MyAccount = ({ auth }) => {
+const MyAccount = ({ auth, user }) => {
   let match = useRouteMatch()
+  let loc = useLocation()
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (auth.isAuthenticanted && !user.isFetching && !user.accountID.length) {
+      dispatch(getUser())
+    }
+  }, [dispatch, auth])
+
+  const path = loc.pathname.split('/').reverse()
   return (
     <Layout>
       {auth.isAuthenticanted && (
@@ -29,17 +39,12 @@ const MyAccount = ({ auth }) => {
           <Route path={`${match.path}/favorites`}>
             <AccountFavorites />
           </Route>
+          <Route path={`${match.path}/cards/:id`}>
+            <CreateOrEditAccountPaymentMethod path={path[0]} />
+          </Route>
           <Route path={`${match.path}/cards`}>
             <AccountPaymentMethods />
           </Route>
-
-          <Route path={`${match.path}/card/:id`}>
-            <CreateOrEditAccountPaymentMethod />
-          </Route>
-          <Route path={`${match.path}/card`}>
-            <CreateOrEditAccountPaymentMethod />
-          </Route>
-
           <Route path={`${match.path}/order-history`}>
             <AccountOrderHistory />
           </Route>
@@ -57,6 +62,7 @@ const MyAccount = ({ auth }) => {
 const mapStateToProps = state => {
   return {
     auth: state.authReducer,
+    user: state.userReducer,
   }
 }
 

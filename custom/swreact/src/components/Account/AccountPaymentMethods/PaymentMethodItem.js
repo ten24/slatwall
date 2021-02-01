@@ -22,7 +22,7 @@ const PaymentMethodItem = props => {
         <Link
           className="nav-link-style mr-2"
           to={{
-            pathname: `/my-account/card/${accountPaymentMethodID}`,
+            pathname: `/my-account/cards/${accountPaymentMethodID}`,
             state: { ...props },
           }}
           data-toggle="tooltip"

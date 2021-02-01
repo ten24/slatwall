@@ -30,7 +30,7 @@ const AccountPaymentMethods = ({ primaryPaymentMethod, accountPaymentMethods, ti
       </div>
       <hr className="pb-4" />
       <div className="text-sm-right">
-        <Link className="btn btn-primary" to="/my-account/card/">
+        <Link className="btn btn-primary" to="/my-account/cards/new">
           Add new address
         </Link>
       </div>
