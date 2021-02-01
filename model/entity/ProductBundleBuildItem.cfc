@@ -105,7 +105,7 @@ component entityname="SlatwallProductBundleBuildItem" table="SwProductBundleBuil
     }
     
     public boolean function hasQuantityWithinMinOrderQuantity() {
-    	if ( this.getProductBundleGroup().getMinimumQuantity() ) {
+    	if ( !isNull(this.getProductBundleGroup().getMinimumQuantity()) ) {
 			return quantity >= this.getProductBundleGroup().getMinimumQuantity();
 		}
     	return ( this.getQuantity() ?: 0 ) >= this.getSku().setting('skuOrderMinimumQuantity');
