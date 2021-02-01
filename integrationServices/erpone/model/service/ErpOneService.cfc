@@ -410,7 +410,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		var recordsFetched = 0;
 		
-		 //while ( recordsFetched < totalRecordsCount ){
+		 while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				
@@ -424,9 +424,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 			
 			//increment rgardless of success or failure;
-		// 	recordsFetched += pageSize;
-		// 	currentPage += 1;
-		// }
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -444,7 +444,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var pageSize = 100;
 		var recordsFetched = 0;
 		
-		//while ( recordsFetched < totalRecordsCount ){
+		while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				this.getOrderData( currentPage, pageSize );
@@ -457,9 +457,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 			
 			//increment regardless of success or failure;
-		// 	recordsFetched += pageSize;
-		// 	currentPage += 1;
-		// }
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -477,7 +477,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var pageSize = 100;
 		var recordsFetched = 0;
 
-		//while ( recordsFetched < totalRecordsCount ){
+		while ( recordsFetched < totalRecordsCount ){
 
 			try {
 				this.getOrderItemData( currentPage, pageSize );
@@ -490,9 +490,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 
 			//increment regardless of success or failure;
-		// 	recordsFetched += pageSize;
-		// 	currentPage += 1;
-		// }
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
 
 	    this.logHibachi("ERPONE - Finish importing ErpOneOrderItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -510,7 +510,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var totalRecordsCount = skuCollection.getRecordsCount();
 		skuCollection.setPageRecordsShow(pageSize);
 
-		//while ( recordsFetched < totalRecordsCount ){
+		while ( recordsFetched < totalRecordsCount ){
 			try {
 				var skuCollection = getSkuService().getSkuCollectionList();
 				skuCollection.setDisplayProperties(displayPropertiesList='skuCode');
@@ -533,9 +533,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 		
 			//increment regardless of success or failure;
-		// 	recordsFetched += pageSize;
-		// 	currentPage += 1;
-		// }
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
 			
 	    this.logHibachi("ERPONE - Finish importing ErpOneInventoryItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
