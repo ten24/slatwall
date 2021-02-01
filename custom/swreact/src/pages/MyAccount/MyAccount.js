@@ -32,9 +32,14 @@ const MyAccount = ({ auth }) => {
           <Route path={`${match.path}/cards`}>
             <AccountPaymentMethods />
           </Route>
+
           <Route path={`${match.path}/card/:id`}>
             <CreateOrEditAccountPaymentMethod />
           </Route>
+          <Route path={`${match.path}/card`}>
+            <CreateOrEditAccountPaymentMethod />
+          </Route>
+
           <Route path={`${match.path}/order-history`}>
             <AccountOrderHistory />
           </Route>

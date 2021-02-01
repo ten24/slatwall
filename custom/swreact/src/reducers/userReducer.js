@@ -5,6 +5,7 @@ const initialState = {
   firstName: '',
   lastName: '',
   accountAddresses: [],
+  accountPaymentMethods: [],
   primaryEmailAddress: {
     emailAddress: '',
   },

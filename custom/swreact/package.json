@@ -12,6 +12,7 @@
     "formik": "^2.2.6",
     "i18next": "^19.8.4",
     "jquery": "^3.5.1",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.20",
     "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",
@@ -33,6 +34,8 @@
     "simplebar": "^4.3.0-alpha.1",
     "slick-carousel": "^1.8.1",
     "source-map-explorer": "^2.5.2",
+    "sweetalert2": "^10.14.0",
+    "sweetalert2-react-content": "^3.2.2",
     "validator": "^13.5.2",
     "web-vitals": "^0.2.4",
     "yup": "^0.32.8"

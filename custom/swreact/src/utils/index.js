@@ -1,3 +1,5 @@
+import jwt_decode from 'jwt-decode'
+
 export const cleanHTML = data => data.replace('class=', 'className=')
 export const renameKeys = (obj, find, replace = '') => {
   Object.keys(obj).forEach(key => {
@@ -10,4 +12,13 @@ export const renameKeysInArrayOfObjects = (arr, find, replace) => {
   arr.forEach(obj => {
     renameKeys(obj, find, replace)
   })
+}
+
+export const isTokenValid = () => {
+  let token = localStorage.getItem('token')
+  if (token) {
+    token = jwt_decode(localStorage.getItem('token'))
+    return token.exp && token.exp * 1000 > Date.now()
+  }
+  return false
 }

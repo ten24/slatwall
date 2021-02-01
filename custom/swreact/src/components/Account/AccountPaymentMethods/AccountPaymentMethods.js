@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import AccountLayout from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import PaymentMethodItem from './PaymentMethodItem'
+import { Link } from 'react-router-dom'
 
 const AccountPaymentMethods = ({ primaryPaymentMethod, accountPaymentMethods, title, customBody, contentTitle }) => {
   return (
@@ -29,9 +30,9 @@ const AccountPaymentMethods = ({ primaryPaymentMethod, accountPaymentMethods, ti
       </div>
       <hr className="pb-4" />
       <div className="text-sm-right">
-        <a className="btn btn-primary" href="##add-address" data-toggle="modal">
+        <Link className="btn btn-primary" to="/my-account/card/">
           Add new address
-        </a>
+        </Link>
       </div>
     </AccountLayout>
   )
