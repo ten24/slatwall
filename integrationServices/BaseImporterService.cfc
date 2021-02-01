@@ -1442,18 +1442,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	struct mapping, 
     	struct propertyMetaData
     ){
-    	
 		//create new fullfillment
 	    return [{
 	    	"orderFulfillmentID"	   : "",
-            "remoteOrderFulfillmentID" : arguments.data.remoteOrderID,
+            "remoteID"				   : arguments.data.remoteOrderID,
             "currencyCode"			   : arguments.data.currency_code,
             //this defaultValue for FulfillmentMethod is `Shipping`
             "fulfillmentMethod"        : {
             	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
             },
             "shippingAddress"		   : {
-            		  "name"		   : this.getAddressService().getAddressName(arguments.data.Address),
+            		  "name"		   : this.getAddressService().getAddressName(arguments.data.FullAddress),
 	                  "streetAddress"  : arguments.data.ShippingAddress_streetAddress,
 	                  "street2Address" : arguments.data.ShippingAddress_street2Address,
 	                  "city"           : arguments.data.ShippingAddress_city,
