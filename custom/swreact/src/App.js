@@ -17,6 +17,8 @@ const About = React.lazy(() => import('./pages/About/About'))
 const Testing = React.lazy(() => import('./pages/Testing/Testing'))
 const Brand = React.lazy(() => import('./pages/Brand/Brand'))
 
+const NotFound = React.lazy(() => import('./pages/NotFound/NotFound'))
+
 const Loading = () => {
   return <Layout></Layout>
 }
@@ -44,7 +46,8 @@ export default function App() {
           <Route path="/my-account" component={MyAccount} />
           <Route path="/MyAccount" component={MyAccount} />
           <Route path="/testing" component={Testing} />
-          <Route path="/" component={Home} />
+          <Route exact path="/" component={Home} />
+          <Route path="" component={NotFound} />
         </Switch>
       </Suspense>
     </Router>
