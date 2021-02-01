@@ -1,27 +1,40 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { Header, Layout, SEO } from './components'
+import lazyWithPreload from './components/lazyWithPreload/lazyWithPreload'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
-const Home = React.lazy(() => import('./pages/Home/Home'))
-const MyAccount = React.lazy(() => import('./pages/MyAccount/MyAccount'))
-const ProductListing = React.lazy(() => import('./pages/ProductListing/ProductListing'))
+const Home = lazyWithPreload(() => import('./pages/Home/Home'))
+const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
+const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
 
-const ProductDetail = React.lazy(() => import('./pages/ProductDetail/ProductDetail'))
+const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/ProductDetail'))
 
-const CategoryListing = React.lazy(() => import('./pages/CategoryListing/CategoryListing'))
+const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
 
-const Contact = React.lazy(() => import('./pages/Contact/Contact'))
+const Contact = lazyWithPreload(() => import('./pages/Contact/Contact'))
 
-const About = React.lazy(() => import('./pages/About/About'))
+const About = lazyWithPreload(() => import('./pages/About/About'))
 
-const Testing = React.lazy(() => import('./pages/Testing/Testing'))
-const Brand = React.lazy(() => import('./pages/Brand/Brand'))
+const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
+const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
 
 const Loading = () => {
   return <Layout></Layout>
 }
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
+  useEffect(() => {
+    Home.preload()
+    MyAccount.preload()
+    ProductListing.preload()
+    ProductDetail.preload()
+    CategoryListing.preload()
+    Contact.preload()
+    About.preload()
+    Testing.preload()
+    Brand.preload()
+  }, [Home, About, Brand])
+
   return (
     <Router>
       <ScrollToTop />
