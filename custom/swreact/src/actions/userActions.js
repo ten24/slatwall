@@ -1,5 +1,6 @@
 import { softLogout } from './authActions'
 import { SlatwalApiService } from '../services'
+import { toast } from 'react-toastify'
 
 export const REQUEST_USER = 'REQUEST_USER'
 export const RECEIVE_USER = 'RECEIVE_USER'
@@ -71,6 +72,21 @@ export const getUser = () => {
       } else {
         dispatch(receiveUser(req.success().account))
       }
+    }
+  }
+}
+
+export const updateUser = user => {
+  return async dispatch => {
+    dispatch(requestUser())
+
+    const response = await SlatwalApiService.account.update(user)
+
+    if (response.isSuccess()) {
+      toast.success('Update Successful')
+      dispatch(receiveUser(response.success().account))
+    } else {
+      toast.error('Update Failed')
     }
   }
 }
