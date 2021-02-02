@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,26 +45,52 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component entityname="SlatwallApiLog" table="SwApiLog" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiService" {
+
+	// Persistent Properties
+	property name="apiLogID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="requestIdentifier" ormType="string" length="32";
+	property name="accountID" ormType="string" length="32";
+	property name="apiLogType" ormtype="string" length="10"; // request or response
+	property name="source" ormType="string" length="25"; // integration name
+	
+	property name="targetUrl" ormtype="string" length="600";
+	property name="data" ormtype="string" length="4000";
+	property name="header" ormtype="string" length="4000";
+	
+	property name="response" ormtype="string" length="8000" hb_auditable="false";
+	property name="statusCode" ormType="integer";
+	property name="responseTime" ormType="integer";
+	
+	property name="createdDateTime" ormType="timestamp";
+
+	// Related Object Properties (many-to-one)
 
 
-<cfparam name="rc.attributeSetSmartList" type="any" />
+	// Related Object Properties (one-to-many)
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.attributeSetSmartList#" showCreate="false">
+	// Related Object Properties (many-to-many)
 
-	<!--- Create --->
-	<hb:HibachiEntityActionBarButtonGroup>
-		<hb:HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn btn-primary" icon="plus icon-white"  modal="true" />
-	</hb:HibachiEntityActionBarButtonGroup>
-</hb:HibachiEntityActionBar>
+	// Remote Properties
 
-	<hb:HibachiListingDisplay smartlist="#rc.attributeSetSmartList#" 
-	                           recordeditaction="admin:entity.editAttributeSet"
-							   recordeditmodal=true 
-	                           recorddetailaction="admin:entity.detailAttributeSet"
-							   sortproperty="sortOrder">
-		<hb:HibachiListingColumn propertyidentifier="attributeSetName" tdclass="primary" />
-		<hb:HibachiListingColumn propertyidentifier="attributeSetCode" />
-	</hb:HibachiListingDisplay>
+	// Audit Properties
+
+	// Non-Persistent Properties
+
+	// ============ START: Non-Persistent Property Methods =================
+
+	// ============  END:  Non-Persistent Property Methods =================
+
+	// ============= START: Bidirectional Helper Methods ===================
+
+	// =============  END:  Bidirectional Helper Methods ===================
+
+	// ================== START: Overridden Methods ========================
+
+	// ==================  END:  Overridden Methods ========================
+
+	// =================== START: ORM Event Hooks  =========================
+
+	// ===================  END:  ORM Event Hooks  =========================
+}

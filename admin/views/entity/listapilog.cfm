@@ -50,21 +50,40 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.attributeSetSmartList" type="any" />
+<cfparam name="rc.apiLogSmartList" type="any" />
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.attributeSetSmartList#" showCreate="false">
+<cfoutput>
 
-	<!--- Create --->
-	<hb:HibachiEntityActionBarButtonGroup>
-		<hb:HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn btn-primary" icon="plus icon-white"  modal="true" />
-	</hb:HibachiEntityActionBarButtonGroup>
-</hb:HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.apiLogSmartList#" showCreate="false" />
 
-	<hb:HibachiListingDisplay smartlist="#rc.attributeSetSmartList#" 
-	                           recordeditaction="admin:entity.editAttributeSet"
-							   recordeditmodal=true 
-	                           recorddetailaction="admin:entity.detailAttributeSet"
-							   sortproperty="sortOrder">
-		<hb:HibachiListingColumn propertyidentifier="attributeSetName" tdclass="primary" />
-		<hb:HibachiListingColumn propertyidentifier="attributeSetCode" />
+
+    <cfset local.apiLogCollectionList = getHibachiScope().getService('hibachiService').getApiLogCollectionList()>
+
+
+	<cfset apiLogCollectionList.setDisplayProperties(
+	'apiLogType,source,targetUrl,statusCode,responseTime',
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+
+	<cfset apiLogCollectionList.addDisplayProperty(
+	displayProperty='apiLogID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	<cfset apiLogCollectionList.addOrderBy('createdDateTime|DESC') />
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#apiLogCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordDetailAction="admin:entity.detail#lcase(apiLogCollectionList.getCollectionObject())#"
+	>
 	</hb:HibachiListingDisplay>
+
+</cfoutput>

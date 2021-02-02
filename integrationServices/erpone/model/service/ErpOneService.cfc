@@ -406,7 +406,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	
 		var totalRecordsCount = response.count;
 		var currentPage = 1;
-		var pageSize = 100;
+		var pageSize = 10;
 
 		var recordsFetched = 0;
 		
@@ -444,7 +444,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var pageSize = 100;
 		var recordsFetched = 0;
 		
-		//while ( recordsFetched < totalRecordsCount ){
+		while ( recordsFetched < totalRecordsCount ){
 			
 			try {
 				this.getOrderData( currentPage, pageSize );
@@ -457,9 +457,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 			
 			//increment regardless of success or failure;
-		// 	recordsFetched += pageSize;
-		// 	currentPage += 1;
-		// }
+			recordsFetched += pageSize;
+			currentPage += 1;
+		}
 		
 	    this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -502,7 +502,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		logHibachi("ERPONE - Starting importing ErpOneInventoryItems");
 		
 		var currentPage = 1;
-		var pageSize = 100;
+		var pageSize = 10;
 		var recordsFetched = 0;
 		
 		var skuCollection = getSkuService().getSkuCollectionList();
@@ -943,7 +943,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    
 		var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
     	transformedItem.remoteOrderID = transformedItem.OrderNumber;
-		transformedItem.FullAddress = {
+		transformedItem["FullAddress"] = {
 				  "streetAddress"  : transformedItem.Address[2],
                   "street2Address" : transformedItem.Address[1],
                   "city"           : transformedItem.Address[4],
