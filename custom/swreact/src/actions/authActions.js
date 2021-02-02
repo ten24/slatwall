@@ -74,3 +74,7 @@ export const login = (email, password) => {
     }
   }
 }
+
+export const createAccount = user => {
+  return async dispatch => {}
+}

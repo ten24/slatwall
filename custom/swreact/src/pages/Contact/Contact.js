@@ -16,7 +16,6 @@ const ContactForm = ({ form }) => {
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
   }
-  console.log('submitted', submitted)
   if (submitted) {
     return null
   }

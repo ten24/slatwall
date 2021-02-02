@@ -1,11 +1,12 @@
 import { useFormik } from 'formik'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import AccountContent from '../AccountContent/AccountContent'
 import AccountLayout from '../AccountLayout/AccountLayout'
 import AccountAddressForm from './AccountAddressForm'
-import SwSelect from './SwSelect'
 import { toast } from 'react-toastify'
 import useRedirect from '../../../hooks/useRedirect'
+import SwSelect from '../../SwSelect/SwSelect'
+import { addPaymentMethod } from '../../../actions/userActions'
 
 const months = Array.from({ length: 12 }, (_, i) => {
   return { key: i + 1, value: i + 1 }
@@ -17,36 +18,46 @@ const years = Array(10)
   })
 
 const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, contentTitle, accountAddresses, accountPaymentMethods }) => {
-  const [redirect, setRedirect] = useRedirect({ location: '/my-account/card' })
-
+  const [redirect, setRedirect] = useRedirect({ location: '/my-account/cards' })
+  const dispatch = useDispatch()
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      accountPaymentMethodName: cardData.accountPaymentMethodName,
-      'paymentMethod.paymentMethodID': cardData.accountPaymentMethodID,
+      paymentMethodName: cardData.accountPaymentMethodName,
+      paymentMethodType: 'creditCard',
       creditCardNumber: ``,
       nameOnCreditCard: cardData.nameOnCreditCard,
-      expirationMonth: cardData.expirationMonth || new Date().getMonth(),
-      expirationYear: cardData.expirationYear ? `20${cardData.expirationYear}` : new Date().getFullYear(),
+      expirationMonth: cardData.expirationMonth || new Date().getMonth() + 1,
+      expirationYear: cardData.expirationYear ? `${cardData.expirationYear}` : new Date().getFullYear().toString().substring(2),
       securityCode: '',
       'billingAccountAddress.accountAddressID': '',
-      'billingAccountAddress.countryCode': '',
-      'billingAccountAddress.name': '',
-      'billingAccountAddress.company': '',
-      'billingAccountAddress.phoneNumber': '',
-      'billingAccountAddress.streetAddress': '',
-      'billingAccountAddress.street2Address': '',
-      'billingAccountAddress.city': '',
-      'billingAccountAddress.stateCode': '',
-      'billingAccountAddress.postalCode': '',
+      'billingAddress.countryCode': 'US',
+      'billingAddress.name': '',
+      'billingAddress.company': '',
+      'billingAddress.phoneNumber': '',
+      'billingAddress.streetAddress': '',
+      'billingAddress.street2Address': '',
+      'billingAddress.city': '',
+      'billingAddress.stateCode': '',
+      'billingAddress.postalCode': '',
     },
     onSubmit: values => {
       // TODO: Dispatch Actions
-      console.log('values', values)
-      if (isEdit) {
-        toast.success('Card Updated')
-      } else {
-        toast.success('New Card Saved')
+      if (values['billingAccountAddress.accountAddressID'].length) {
+        delete values['billingAddress.countryCode']
+        delete values['billingAddress.name']
+        delete values['billingAddress.company']
+        delete values['billingAddress.phoneNumber']
+        delete values['billingAddress.streetAddress']
+        delete values['billingAddress.street2Address']
+        delete values['billingAddress.city']
+        delete values['billingAddress.stateCode']
+        delete values['billingAddress.postalCode']
+      }
+
+      if (!isEdit) {
+        delete values['paymentMethod.paymentMethodID']
+        dispatch(addPaymentMethod(values))
       }
       setRedirect({ ...redirect, shouldRedirect: true })
     },
@@ -54,17 +65,16 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
   return (
     <AccountLayout title={'Add Account Payment Method'}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
-      <h1>{isEdit ? 'Edit' : 'New'}</h1>
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
           <div className={`col-sm-${isEdit ? 12 : 6}`}>
             <div className="form-group">
-              <label htmlFor="accountPaymentMethodName">Nickname</label>
-              <input className="form-control" type="text" id="accountPaymentMethodName" value={formik.values.accountPaymentMethodName} onChange={formik.handleChange} />
+              <label htmlFor="paymentMethodName">Nickname</label>
+              <input className="form-control" type="text" id="paymentMethodName" value={formik.values.paymentMethodName} onChange={formik.handleChange} />
             </div>
             <div className="form-group">
-              <label htmlFor="paymentMethod.paymentMethodID">Payment Method</label>
-              <SwSelect id="paymentMethod.paymentMethodID" value={formik.values['paymentMethodID']} onChange={formik.handleChange} options={accountPaymentMethods} />
+              <label htmlFor="paymentMethodType">Payment Method</label>
+              <SwSelect id="paymentMethodType" value={formik.values['paymentMethodType']} onChange={formik.handleChange} options={accountPaymentMethods} />
             </div>
             <hr />
             <h2>Credit Card Details</h2>
@@ -102,7 +112,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
         <div className="col-12">
           <hr className="mt-2 mb-3" />
           <div className="d-flex flex-wrap justify-content-end">
-            <button type="submit" className="btn btn-primary mt-3 mt-sm-0">
+            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit}>
               {isEdit ? 'Save Credit Card Details' : 'Save New Card'}
             </button>
           </div>
@@ -121,7 +131,7 @@ const mapStateToProps = (state, ownProps) => {
   let cardData = state.userReducer.accountPaymentMethods.filter(card => {
     return card.accountPaymentMethodID === ownProps.path
   })
-
+  //1: "Payment Method Type must be in list cash,check,creditCard,external,giftCard,termPayment"
   return {
     accountAddresses: [...accountAddresses, { key: 'New', value: '' }],
     cardData: cardData.length
@@ -141,7 +151,7 @@ const mapStateToProps = (state, ownProps) => {
     accountPaymentMethods: [
       {
         key: 'Credit Card',
-        value: 'credit_card',
+        value: 'creditCard',
       },
     ],
   }

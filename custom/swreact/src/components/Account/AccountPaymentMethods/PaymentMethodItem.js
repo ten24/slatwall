@@ -1,10 +1,14 @@
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { deletePaymentMethod } from '../../../actions/userActions'
 
 const PaymentMethodItem = props => {
   const { accountPaymentMethodID, accountPaymentMethodName, nameOnCreditCard, isPrimary = false, creditCardType, activeFlag, expirationYear, expirationMonth } = props
   const MySwal = withReactContent(Swal)
+  const dispatch = useDispatch()
+
   return (
     <tr>
       <td className="py-3 align-middle">
@@ -35,8 +39,16 @@ const PaymentMethodItem = props => {
           className="nav-link-style text-primary"
           onClick={() => {
             MySwal.fire({
-              title: <p>Remove Address?</p>,
-              didOpen: () => {},
+              icon: 'info',
+              title: <p>Remove Card?</p>,
+              showCloseButton: true,
+              showCancelButton: true,
+              focusConfirm: false,
+              confirmButtonText: 'Delete',
+            }).then(data => {
+              if (data.isConfirmed) {
+                dispatch(deletePaymentMethod(accountPaymentMethodID))
+              }
             })
           }}
           data-toggle="tooltip"

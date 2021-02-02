@@ -1,45 +1,45 @@
 import { connect } from 'react-redux'
-import SwSelect from './SwSelect'
+import SwSelect from '../../SwSelect/SwSelect'
 
 const AccountAddressForm = ({ formik, states, countries }) => {
   return (
     <>
       <h2>Billing Address</h2>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.countryCode">Country</label>
-        <SwSelect id="billingAccountAddress.countryCode" value={formik.values['countryCode']} onChange={formik.handleChange} options={countries} />
+        <label htmlFor="billingAddress.countryCode">Country</label>
+        <SwSelect id="billingAddress.countryCode" name="['billingAddress.countryCode']" value={formik.values['billingAddress.countryCode']} onChange={formik.handleChange} options={countries} />
       </div>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.name">Name</label>
-        <input className="form-control" type="text" id="billingAccountAddress.name" value={formik.values['name']} onChange={formik.handleChange} />
+        <label htmlFor="billingAddress.name">Name</label>
+        <input className="form-control" name="['billingAddress.name']" type="text" id="billingAddress.name" value={formik.values['billingAddress.name']} onChange={formik.handleChange} />
       </div>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.company">Company</label>
-        <input className="form-control" type="text" id="billingAccountAddress.company" value={formik.values['company']} onChange={formik.handleChange} />
+        <label htmlFor="billingAddress.company">Company</label>
+        <input className="form-control" name="['billingAddress.company']" type="text" id="billingAddress.company" value={formik.values['billingAddress.company']} onChange={formik.handleChange} />
       </div>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.phoneNumber">Phone Number</label>
-        <input className="form-control" type="text" id="billingAccountAddress.phoneNumber" value={formik.values['phoneNumber']} onChange={formik.handleChange} />
+        <label htmlFor="billingAddress.phoneNumber">Phone Number</label>
+        <input className="form-control" name="['billingAddress.phoneNumber']" type="text" id="billingAddress.phoneNumber" value={formik.values['billingAddress.phoneNumber']} onChange={formik.handleChange} />
       </div>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.streetAddress">Street Address</label>
-        <input className="form-control" type="text" id="billingAccountAddress.streetAddress" value={formik.values['streetAddress']} onChange={formik.handleChange} />
+        <label htmlFor="billingAddress.streetAddress">Street Address</label>
+        <input className="form-control" name="['billingAddress.streetAddress']" type="text" id="billingAddress.streetAddress" value={formik.values['billingAddress.streetAddress']} onChange={formik.handleChange} />
       </div>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.street2Address">Street Address 2</label>
-        <input className="form-control" type="text" id="billingAccountAddress.street2Address" value={formik.values['street2Address']} onChange={formik.handleChange} />
+        <label htmlFor="billingAddress.street2Address">Street Address 2</label>
+        <input className="form-control" name="['billingAddress.street2Address']" type="text" id="billingAddress.street2Address" value={formik.values['billingAddress.street2Address']} onChange={formik.handleChange} />
       </div>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.city">City</label>
-        <input className="form-control" type="text" id="billingAccountAddress.city" value={formik.values['city']} onChange={formik.handleChange} />
+        <label htmlFor="billingAddress.city">City</label>
+        <input className="form-control" name="['billingAddress.city']" type="text" id="billingAddress.city" value={formik.values['billingAddress.city']} onChange={formik.handleChange} />
       </div>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.stateCode">State</label>
-        <SwSelect id="billingAccountAddress.stateCode" value={formik.values['paymentMethod.stateCode']} onChange={formik.handleChange} options={states} />
+        <label htmlFor="billingAddress.stateCode">State</label>
+        <SwSelect id="billingAddress.stateCode" name="['billingAddress.stateCode']" value={formik.values['billingAddress.paymentMethod.stateCode']} onChange={formik.handleChange} options={states} />
       </div>
       <div className="form-group">
-        <label htmlFor="billingAccountAddress.postalCode">Postal Code</label>
-        <input className="form-control" type="text" id="billingAccountAddress.postalCode" value={formik.values['billingAccountAddress.postalCode']} onChange={formik.handleChange} />
+        <label htmlFor="billingAddress.postalCode">Postal Code</label>
+        <input className="form-control" name="['billingAddress.postalCode']" type="text" id="billingAddress.postalCode" value={formik.values['billingAddress.postalCode']} onChange={formik.handleChange} />
       </div>
     </>
   )
@@ -49,6 +49,7 @@ const mapStateToProps = state => {
   return {
     states: state.preload.states,
     countries: state.preload.countries,
+    isEdit: false,
   }
 }
 export default connect(mapStateToProps)(AccountAddressForm)

@@ -15,5 +15,5 @@ delete window.__PRELOADED_STATE__
 // Create Redux store with initial state
 
 const store = createStore(rootReducer, preloadedState, composeWithDevTools(applyMiddleware(thunkMiddleware)))
-// console.log(store.getState())
+
 export default store

@@ -14,6 +14,7 @@ const AccountProfile = React.lazy(() => import('../../components/Account/Account
 const AccountFavorites = React.lazy(() => import('../../components/Account/AccountFavorites/AccountFavorites'))
 
 const AccountAddresses = React.lazy(() => import('../../components/Account/AccountAddresses/AccountAddresses'))
+const CreateOrEditAccountAddress = React.lazy(() => import('../../components/Account/AccountAddresses/CreateOrEditAccountAddress'))
 
 const AccountPaymentMethods = React.lazy(() => import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods'))
 
@@ -37,7 +38,7 @@ const MyAccount = ({ auth, user }) => {
       {auth.isAuthenticanted && (
         <Switch>
           <Route path={`${match.path}/addresses/:id`}>
-            <AccountAddresses path={path[0]} />
+            <CreateOrEditAccountAddress path={path[0]} />
           </Route>
           <Route path={`${match.path}/addresses`}>
             <AccountAddresses />
