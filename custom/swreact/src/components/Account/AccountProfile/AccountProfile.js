@@ -34,6 +34,42 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
     },
   })
 
+  const updatePassword = event => {
+    event.preventDefault()
+    MySwal.fire({
+      title: 'Update Password',
+      html: '<input id="accountPassword" placeholder="Password" class="swal2-input"><input id="accountPasswordConfirm" placeholder="Confirm Password" class="swal2-input">',
+      focusConfirm: false,
+      showCancelButton: true,
+      preConfirm: () => {
+        return [document.getElementById('accountPassword').value, document.getElementById('accountPasswordConfirm').value]
+      },
+    }).then(data => {
+      if (data.isConfirmed) {
+        if (data.value.length === 2 && data.value[0] === data.value[1]) {
+          SlatwalApiService.account
+            .changePassword({
+              password: data.value[0],
+              passwordConfirm: data.value[1],
+            })
+            .then(response => {
+              if (response.isSuccess()) {
+                if (response.success().successfulActions.length) {
+                  toast.success('Password Update Successful')
+                } else {
+                  toast.error(response.success().errors.password.join(' '))
+                }
+              } else {
+                toast.error('Network Error')
+              }
+            })
+        } else {
+          toast.error('Password Mismatch')
+        }
+      }
+    })
+  }
+
   return (
     <AccountLayout crumbs={crumbs} title={title}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
@@ -78,45 +114,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
           <div className="col-12">
             <hr className="mt-2 mb-3" />
             <div className="d-flex flex-wrap justify-content-end">
-              <button
-                className="btn btn-secondary mt-3 mt-sm-0 mr-3"
-                onClick={event => {
-                  event.preventDefault()
-                  MySwal.fire({
-                    title: 'Update Password',
-                    html: '<input id="accountPassword" placeholder="Password" class="swal2-input">' + '<input id="accountPasswordConfirm" placeholder="Confirm Password" class="swal2-input">',
-                    focusConfirm: false,
-                    showCancelButton: true,
-                    preConfirm: () => {
-                      return [document.getElementById('accountPassword').value, document.getElementById('accountPasswordConfirm').value]
-                    },
-                  }).then(data => {
-                    if (data.isConfirmed) {
-                      if (data.value.length === 2 && data.value[0] === data.value[1]) {
-                        SlatwalApiService.account
-                          .changePassword({
-                            password: data.value[0],
-                            passwordConfirm: data.value[1],
-                          })
-                          .then(response => {
-                            if (response.isSuccess()) {
-                              if (response.success().successfulActions.length) {
-                                toast.success('Password Update Successful')
-                              } else {
-                                toast.error(response.success().errors.password.join(' '))
-                              }
-                            } else {
-                              toast.error('Network Error')
-                            }
-                          })
-                      } else {
-                        toast.error('Password Mismatch')
-                      }
-                    }
-                  })
-                }}
-                type="submit"
-              >
+              <button className="btn btn-secondary mt-3 mt-sm-0 mr-3" onClick={updatePassword} type="submit">
                 Update password
               </button>
               <button type="submit" className="btn btn-primary mt-3 mt-sm-0">
