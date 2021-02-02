@@ -6,7 +6,7 @@ const Layout = ({ children, actionBannerDisable }) => {
   return (
     <>
       <ToastContainer />
-      {children}
+      <div style={{ minHeight: '800px' }}>{children}</div>
       <Footer actionBannerDisable={actionBannerDisable} />
     </>
   )

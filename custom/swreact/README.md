@@ -1,73 +1,131 @@
-# Getting Started with Create React App
+# Getting Started
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Setup
 
-## Available Scripts
+- navigate to custom/swreact
+- Allow npm to access ssh keys: `ssh-agent -s` ssh-add
+- npm install
+- npm run start
+- PROJECT_NAME:3006 Ex: http://stoneandberg:3006/
 
-In the project directory, you can run:
+Building
 
-### `yarn start`
+- npm run build
+- Access built app: PROJECT_NAME:8906 Ex: http://stoneandberg:8906/
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+# About React
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The docs are really good: https://reactjs.org/docs/hello-world.html
 
-### `yarn test`
+## useState
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- used to call data after the component is rendered. you dont want to block here and is only called once per render.
+- docs: https://reactjs.org/docs/hooks-state.html#declaring-a-state-variable
 
-### `yarn build`
+## useEffect
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- used to call data after the component is rendered. you dont want to block here and is only called once per render.
+- docs: https://reactjs.org/docs/hooks-effect.html
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# About Redux
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Study the concepts: https://redux.js.org/tutorials/essentials/part-1-overview-concepts
+Primary concepts: https://redux.js.org/tutorials/fundamentals/part-3-state-actions-reducers
+** The redux store is cleared on every full page reload **
 
-### `yarn eject`
+- Make sure to use the Link component from react-router-dom instead of an a tag.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Dev Tools
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Chrome: https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en
+- Firefox: https://addons.mozilla.org/en-US/firefox/addon/react-devtools/
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Actions
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+An action as an event that describes something that happened in the application.
 
-## Learn More
+## Reducers
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Reducers are functions that take the current state and an action as arguments, and return a new state result.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Thunk
 
-### Code Splitting
+An action that returns a function
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## mapStateToProps
 
-### Analyzing the Bundle Size
+Docs: https://react-redux.js.org/using-react-redux/connect-mapstate
+This will allow you to map data in the store to a Component Prop.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### useSelector
 
-### Making a Progressive Web App
+A hook version of mapStateToProps which I find messy.
+Docs: https://react-redux.js.org/api/hooks#useselector
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## useDispatch
 
-### Advanced Configuration
+A React hook that allows you to call an Action
+Docs: https://react-redux.js.org/api/hooks#usedispatch
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+# Getting Content
 
-### Deployment
+Example: custom/swreact/src/pages/About/About.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+The key of the content object will tell the API to get all content that matches that regex
 
-### `yarn build` fails to minify
+- Key "about" will get ["about", "about/1", "about/2"] ==> Like "%about%"
+- Key "about/" will get ["about/1", "about/2"]
+  The value object will be an array of db columns you want.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Setting HTML
 
+- dangerouslySetInnerHTML
+- Intercept onClick and push
 
-eval `ssh-agent -s` ssh-add
+# Getting Custom Data in Redux
+
+Dispatch Lifecycle
+
+- requestXXXX() --> This mostly sets isFetching for UI blocking
+- receiveXXXX() --> This will update the store. dont forget to set isFetching to false.
+
+## Example: Add to Cart
+
+- Action: custom/swreact/src/actions/cartActions.js
+- Reducer: custom/swreact/src/reducers/cartReducer.js
+- addToCart Action Is a Thunk.
+- requestCart() ==> Call API ==> receiveCart()
+  -- requestCart() will tell the reducer isFetching = true
+  -- receiveCart() will tell the reducer isFetching = false and add the cart to the reducer state
+
+## Example: Logout
+
+- File: custom/swreact/src/actions/authActions.js
+- Logout Action Is a Thunk because it returns a function
+- It calls a standard Action "softLogout" which cleans up some of the state and localstorage data.
+
+# Getting Custom Data for local component state
+
+- Example: custom/swreact/src/pages/ProductDetail/ProductDetailGallery.js
+- the useState hook will allow us to set data local to this component.
+
+# Forms
+
+## Slatwall content forms
+
+Example: custom/swreact/src/pages/About/About.js
+
+## Formik Form
+
+Example: custom/swreact/src/components/Account/AccountProfile/AccountProfile.js
+Docs: https://formik.org/docs/tutorial#overview-what-is-formik
+
+# ES6 Notes
+
+## destructuring
+
+Here are some example: https://www.educative.io/edpresso/what-is-object-destructuring-in-javascript
+
+## Spreading "..."
+
+Here are some good examples: https://blog.bitsrc.io/6-tricks-with-resting-and-spreading-javascript-objects-68d585bdc83

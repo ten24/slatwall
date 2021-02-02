@@ -37,6 +37,8 @@ export const addToCart = (skuID, quantity = 1) => {
 
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))
+    } else {
+      dispatch(receiveCart())
     }
   }
 }

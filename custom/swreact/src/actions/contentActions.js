@@ -60,6 +60,21 @@ export const getContent = (content = {}) => {
   }
 }
 
+export const getStatesCountryCode = (content = {}) => {
+  return async (dispatch, getState) => {
+    dispatch(requestContent())
+    //location.states
+    dispatch(reciveContent({}))
+  }
+}
+export const getCountries = (content = {}) => {
+  return async (dispatch, getState) => {
+    dispatch(requestContent())
+    //location.countries
+    dispatch(reciveContent({}))
+  }
+}
+
 // export const addFormResponse = (content = {}) => {
 //   return async (dispatch, getState) => {
 //     dispatch(requestContent())

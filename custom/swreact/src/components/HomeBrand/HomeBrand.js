@@ -46,13 +46,13 @@ function HomeBrand(props) {
       },
     ],
   }
-  let homeBrand = []
-  Object.keys(props).map(key => {
-    if (key.includes('shop-by/')) {
-      homeBrand.push(props[key])
-    }
-  })
-
+  let homeBrand = Object.keys(props)
+    .filter(key => {
+      return key.includes('shop-by/')
+    })
+    .map(key => {
+      return props[key]
+    })
   return (
     <div style={{ height: 'fit-content' }} className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
       <h3 className="h3">{props['home/shop-buy'] && props['home/shop-buy'].title}</h3>
@@ -62,7 +62,7 @@ function HomeBrand(props) {
             return <BandSlide {...slide} key={index} slideKey={index} />
           })}
       </Slider>
-      <Link className="btn btn-primary mt-3 btn-long" to={props['home/shop-buy'] && props['home/shop-buy'].linkUrl}>
+      <Link className="btn btn-primary mt-3 btn-long" to={props['home/shop-by'].linkUrl}>
         More Brands
       </Link>
     </div>

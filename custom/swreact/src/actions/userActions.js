@@ -1,5 +1,6 @@
 import { softLogout } from './authActions'
 import { SlatwalApiService } from '../services'
+import { toast } from 'react-toastify'
 
 export const REQUEST_USER = 'REQUEST_USER'
 export const RECEIVE_USER = 'RECEIVE_USER'
@@ -18,7 +19,7 @@ export const requestUser = () => {
   }
 }
 
-export const receiveUser = user => {
+export const receiveUser = (user = {}) => {
   return {
     type: RECEIVE_USER,
     user,
@@ -75,6 +76,21 @@ export const getUser = () => {
   }
 }
 
+export const updateUser = user => {
+  return async dispatch => {
+    dispatch(requestUser())
+
+    const response = await SlatwalApiService.account.update(user)
+
+    if (response.isSuccess()) {
+      toast.success('Update Successful')
+      dispatch(receiveUser(response.success().account))
+    } else {
+      toast.error('Update Failed')
+    }
+  }
+}
+
 export const getAccountOrders = () => {
   return async dispatch => {
     dispatch(requestAccountOrders())
@@ -93,6 +109,94 @@ export const orderDeliveries = () => {
 
     if (req.isFail()) {
     } else {
+    }
+  }
+}
+
+export const addNewAccountAddress = address => {
+  return async dispatch => {
+    dispatch(requestUser())
+
+    const response = await SlatwalApiService.account.addAddress({ ...address, returnJSONObjects: 'account' })
+
+    if (response.isSuccess()) {
+      toast.success('Update Successful')
+      dispatch(receiveUser(response.success().account))
+    } else {
+      dispatch(receiveUser({}))
+      toast.error('Error')
+    }
+  }
+}
+
+export const updateAccountAddress = user => {
+  return async dispatch => {
+    dispatch(requestUser())
+
+    const response = await SlatwalApiService.account.updateAddress({ ...user, returnJSONObjects: 'account' })
+
+    if (response.isSuccess()) {
+      toast.success('Update Successful')
+      dispatch(receiveUser(response.success().account))
+    } else {
+      toast.error('Update Failed')
+    }
+  }
+}
+
+export const deleteAccountAddress = accountAddressID => {
+  return async dispatch => {
+    const response = await SlatwalApiService.account.deleteAddress({ accountAddressID, returnJSONObjects: 'account' })
+
+    if (response.isSuccess()) {
+      toast.success('Update Successful')
+      dispatch(receiveUser(response.success().account))
+    } else {
+      toast.error('Update Failed')
+    }
+  }
+}
+
+export const addPaymentMethod = paymentMethod => {
+  return async dispatch => {
+    const response = await SlatwalApiService.account.addPaymentMethod({ ...paymentMethod, returnJSONObjects: 'account' })
+
+    if (response.isSuccess()) {
+      if (response.success().failureActions.length) {
+        dispatch(receiveUser())
+        toast.error(JSON.stringify(response.success().errors))
+      } else {
+        toast.success('New Card Saved')
+        dispatch(receiveUser(response.success().account))
+      }
+    } else {
+      toast.error('Save Failed')
+    }
+  }
+}
+
+export const updatePaymentMethod = paymentMethod => {
+  return async dispatch => {
+    const response = await SlatwalApiService.account.updatePaymentMethod({ paymentMethod, returnJSONObjects: 'account' })
+
+    if (response.isSuccess()) {
+      toast.success('Update Successful')
+      dispatch(receiveUser(response.success().account))
+    } else {
+      toast.error('Update Failed')
+    }
+  }
+}
+
+export const deletePaymentMethod = accountPaymentMethodID => {
+  return async dispatch => {
+    const response = await SlatwalApiService.account.deletePaymentMethod({ accountPaymentMethodID, returnJSONObjects: 'account' })
+
+    if (response.isSuccess()) {
+      toast.success('Delete Successful')
+      dispatch(receiveUser(response.success().account))
+    } else {
+      toast.error('Delete Failed')
     }
   }
 }
