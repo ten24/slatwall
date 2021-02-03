@@ -154,7 +154,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 			requestData.setRefTransID(requestBean.getOriginalProviderTransactionID());
 		}
 
-		var createTransactionRequest = getTransient('AuthorizeNetCreateTransactionRequest', {loginID=setting('loginID'), transKey=setting('transKey')});
+		var createTransactionRequest = getTransient('AuthorizeNetCreateTransactionRequest', {loginID=setting(settingName='loginID', requestBean=arguments.requestBean), transKey=setting(settingName='transKey', requestBean=arguments.requestBean)});
 		createTransactionRequest.setTransactionRequest(requestData);
 		return createTransactionRequest.getData();
 	}
@@ -293,7 +293,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 			requestData.setEmail(requestBean.getAccountPrimaryEmailAddress());
 		}
 
-		var createCustomerProfileRequest = getTransient('AuthorizeNetCreateCustomerProfileRequest', {loginID=setting('loginID'), transKey=setting('transKey')});
+		var createCustomerProfileRequest = getTransient('AuthorizeNetCreateCustomerProfileRequest', {loginID=setting(settingName='loginID', requestBean=arguments.requestBean), transKey=setting(settingName='transKey', requestBean=arguments.requestBean)});
 		createCustomerProfileRequest.setCustomerProfile(requestData);
 
 		return createCustomerProfileRequest.getData();

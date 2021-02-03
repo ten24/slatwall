@@ -93,7 +93,14 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	}
 	
 	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false, any requestBean) {
+		// Allows settings to be requested in the context of the site where the order was created
+		if (!isNull(arguments.requestBean) && !isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
+			arguments.filterEntities = [arguments.requestBean.getOrder().getOrderCreatedSite()];
+		} else if (!isNull(arguments.requestBean) && !isNull(arguments.requestBean.getAccount()) && !isNull(arguments.requestBean.getAccount().getAccountCreatedSite())) {
+			arguments.filterEntities = [arguments.requestBean.getAccount().getAccountCreatedSite()];
+		}
+
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
 			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
 		}

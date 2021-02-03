@@ -75,4 +75,12 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		
 		return settings;
 	}
+
+	public boolean function getAllowSiteSpecificSettingsFlag() {
+		return true;
+	}
+
+	public string function getAllowedSiteSettingNames() {
+		return "vendorID,partnerID,username,password";
+	}
 }

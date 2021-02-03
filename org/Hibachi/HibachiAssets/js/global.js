@@ -159,7 +159,10 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				jQuery( this ).removeClass('hide');
 			}
 			*/
-	
+			if( jQuery( '#' + bindData.id ).hasClass('hide') ){
+				$('#' + bindData.id).find('*').attr('disabled', true);
+			}
+			
 			jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
 				
 	            var selectedValue = jQuery(this).val() || '';

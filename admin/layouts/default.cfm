@@ -231,6 +231,7 @@ Notes:
 									</cfloop>
 								</hb:HibachiActionCallerDropdown>
 							</cfif>
+						
 						</ul>
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
@@ -271,7 +272,7 @@ Notes:
 										</cfif>--->
 									</hb:HibachiDividerHider>
 								</hb:HibachiActionCallerDropdown>
-							
+								
 								<hb:HibachiActionCallerDropdown title="" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-tools.svg" dropdownclass="pull-right" type="nav">
 									<hb:HibachiDividerHider>
 										<!---<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">--->
@@ -349,6 +350,8 @@ Notes:
 				<div class="col-md-12">
 					<cfif structKeyExists(url, 'ng')>
 						<ng-view></ng-view>
+					<cfelseif structKeyExists(url, 'ngRedirectURL')>
+						<script>window.location.href = "/?ng##!#EncodeForURL(url.ngRedirectURL)#";</script>
 					<cfelse>
 							#body#
 					</cfif>

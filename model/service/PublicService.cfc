@@ -89,6 +89,50 @@ component  accessors="true" output="false"
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
 	
+	/**
+	 * Get Product List (an alternative to generic entity api call for products)
+	 * */
+	public void function getProductList( required struct data ) {
+	    param name="arguments.data.includeChildProductType" default= 0;
+	    param name="arguments.data.productTypeUrlTitle" default= "";
+	    arguments.data.entityName = "Product";
+	    arguments.data.restRequestFlag = 1;
+	    //Set an In filter for child types
+	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
+	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
+	       
+	       //Append filter in URL
+	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
+	    }
+	    
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
+	        
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(result.pageRecords);
+	    }
+	    
+	    arguments.data.ajaxResponse = result;
+	}
+	
+	/**
+	 * Get Sku List (an alternative to generic entity api call for products)
+	 * */
+	public void function getSkuList( required struct data ) {
+	    arguments.data.entityName = "Sku";
+	    arguments.data.restRequestFlag = 1;
+	    
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
+	    }
+	    
+	    arguments.data.ajaxResponse = result;
+	    
+	}
+	
 	
 	/***
 	 * Method to return list of bundle groups and sku list for product
@@ -122,6 +166,7 @@ component  accessors="true" output="false"
                 //get sku list form collection config
                 var skuCollections = getSkuService().getSkuCollectionList();
                 skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+                skuCollections.addDisplayProperties("calculatedSkuDefinition");
                 skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
 	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
                 var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
@@ -161,25 +206,30 @@ component  accessors="true" output="false"
 	        return;
 	    }
 	    
+	    var productBundleBuildCollectionList = getProductService().getProductBundleBuildCollectionList();
+	    productBundleBuildCollectionList.setDisplayProperties('productBundleBuildID');
 	    if( !account.isNew() ) {
-	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, sku] );
+	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        var productBundleBuild = getProductService().getProductBundleBuildByProductBundleSkuANDSession( [sku, getHibachiScope().getSession()] );
+	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
 	    }
-	    
-    
-        if( isNull( productBundleBuild ) ) {
+	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', sku.getSkuID() );
+	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
+	    var productBundle = productBundleBuildCollectionList.getRecords();
+        
+        //return false if there are no active builds
+        if( !ArrayLen( productBundle ) ) {
 	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
 	        return;
 	    }
     
         var productBundleBuildItemCollectionList = getProductService().getProductBundleBuildItemCollectionList();
         productBundleBuildItemCollectionList.setDisplayProperties("quantity, productBundleBuildItemID, sku.skuID")
-        productBundleBuildItemCollectionList.addFilter( "productBundleBuild.productBundleBuildID",  productBundleBuild.getProductBundleBuildID() );
+        productBundleBuildItemCollectionList.addFilter( "productBundleBuild.productBundleBuildID",  productBundle[1]['productBundleBuildID'] );
         
         var bundleBuildResponse = {
-            "productBundleBuildID" : productBundleBuild.getProductBundleBuildID(),
-            "productBundleSkuID" : productBundleBuild.getProductBundleSkuID(),
+            "productBundleBuildID" : productBundle[1]['productBundleBuildID'],
+            "productBundleSkuID" : sku.getSkuID(),
             "bundleItems" : productBundleBuildItemCollectionList.getRecords( formatRecords = false )
         };
 	    
@@ -190,9 +240,10 @@ component  accessors="true" output="false"
 	/**
 	 * Method to create product bundle build
 	 * 
-	 * @param - skuID
+	 * @param - skuID (can also accept comma separated list)
 	 * @param - default skuID (from bundle product)
-	 * @param - quantity
+	 * @param - quantity (can also accept comma separated list)
+	 * @param - productBundleGroupID
 	 * */
 	public void function createProductBundleBuild( required struct data ) {
 	    param name="arguments.data.skuID";
@@ -202,22 +253,25 @@ component  accessors="true" output="false"
 	    
 	    var bundleSku = getProductService().getSku( arguments.data.defaultSkuID );
 	    var account = getHibachiScope().getAccount();
-	    var sku = getProductService().getSku( arguments.data.skuID );
 	    
-	    if( isNull( sku ) || isNull( bundleSku ) ) {
+	    if( isNull( bundleSku ) ) {
 	        getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
 	        return;
 	    }
 	    
+	    var productBundleBuildCollectionList = getProductService().getProductBundleBuildCollectionList();
+	    productBundleBuildCollectionList.setDisplayProperties('productBundleBuildID');
 	    if( !account.isNew() ) {
-	        var productBundleBuild = getProductService().getProductBundleBuildByAccountANDProductBundleSku( [account, bundleSku] );
+	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        var productBundleBuild = getProductService().getProductBundleBuildBySessionANDProductBundleSku( [ getHibachiScope().getSession(), bundleSku] );
+	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
 	    }
+	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', bundleSku.getSkuID() );
+	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
+	    var productBundle = productBundleBuildCollectionList.getRecords();
         
-        if( isNull( productBundleBuild ) ) {
-            
-            productBundleBuild = getProductService().newProductBundleBuild();
+        if( !ArrayLen( productBundle ) ) {
+            var productBundleBuild = getProductService().newProductBundleBuild();
             productBundleBuild.setProductBundleSku( bundleSku );
             
             if( !isNull( getHibachiScope().getSession() ) ) {
@@ -227,31 +281,46 @@ component  accessors="true" output="false"
             if( !account.isNew() ) {
                 productBundleBuild.setAccount( account );
             }
-            
+            productBundleBuild.setActiveFlag(true);
             productBundleBuild = getProductService().saveProductBundleBuild( productBundleBuild );
             
             if( productBundleBuild.hasErrors() ) {
                 getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
 	            return;
             }
-            
+        } else {
+            var productBundleBuild = getProductService().getProductBundleBuild( productBundle[1]['productBundleBuildID'] );
         }
         
         //Check & update bundle items
-        var productBundleBuildItem = getProductService().getProductBundleBuildItemBySkuANDProductBundleBuild( [sku, productBundleBuild] );
+        var skuList = ListToArray( arguments.data.skuID );
+        var quantities = ListToArray( arguments.data.quantity );
         
-        if( isNull( productBundleBuildItem ) ) {
-            productBundleBuildItem = getProductService().newProductBundleBuildItem();
-        }
-        productBundleBuildItem.setQuantity( arguments.data.quantity );
-        productBundleBuildItem.setSku( sku );
-        productBundleBuildItem.setProductBundleBuild( productBundleBuild );
-        productBundleBuildItem.setProductBundleGroup( getProductService().getProductBundleGroup( arguments.data.productBundleGroupID ) );
-        productBundleBuildItem = getProductService().saveProductBundleBuildItem( productBundleBuildItem );
-        
-        if( productBundleBuildItem.hasErrors() ) {
-            getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
-            return;
+        var index = 1;
+        for( var skuID in skuList ) {
+            var sku = getProductService().getSku( skuID );
+            
+            if( isNull( sku ) ) {
+    	        getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+    	        return;
+    	    }
+    	    
+            var productBundleBuildItem = getProductService().getProductBundleBuildItemBySkuANDProductBundleBuild( [sku, productBundleBuild] );
+            
+            if( isNull( productBundleBuildItem ) ) {
+                productBundleBuildItem = getProductService().newProductBundleBuildItem();
+            }
+            productBundleBuildItem.setQuantity( quantities[ index++ ] );
+            productBundleBuildItem.setSku( sku );
+            productBundleBuildItem.setProductBundleBuild( productBundleBuild );
+            productBundleBuildItem.setProductBundleGroup( getProductService().getProductBundleGroup( arguments.data.productBundleGroupID ) );
+            productBundleBuildItem = getProductService().saveProductBundleBuildItem( productBundleBuildItem );
+            
+            if( productBundleBuildItem.hasErrors() ) {
+                this.addErrors(arguments.data, productBundleBuildItem.getErrors()); //add the basic errors
+                getHibachiScope().addActionResult("public:product.createProductBundleBuild", productBundleBuildItem.hasErrors());
+                return;
+            }
         }
         
         getHibachiScope().addActionResult("public:product.createProductBundleBuild",false);
@@ -268,7 +337,7 @@ component  accessors="true" output="false"
 	    
 	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
         
-        if( isNull( productBundleBuild ) || ( ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) || ( !isNull(productBundleBuild.getSession()) && productBundleBuild.getSession().getSessionID() != getHibachiScope().getSession().getSessionID() ) ) ) {
+        if( isNull( productBundleBuild ) || ( ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) && ( !isNull(productBundleBuild.getSession()) && productBundleBuild.getSession().getSessionID() != getHibachiScope().getSession().getSessionID() ) ) ) {
             getHibachiScope().addActionResult("public:product.removeProductBundleBuild",true);
             return;
         }
@@ -287,7 +356,7 @@ component  accessors="true" output="false"
 	    
 	    var productBundleBuild = getProductService().getProductBundleBuild( arguments.data.productBundleBuildID );
         
-        if( isNull( productBundleBuild ) || productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) {
+        if( isNull( productBundleBuild ) || ( !isNull(productBundleBuild.getAccount()) && productBundleBuild.getAccount().getAccountID() != account.getAccountID() ) ) {
             getHibachiScope().addActionResult("public:product.addProductBundleToCart",true);
             return;
         }
@@ -311,6 +380,11 @@ component  accessors="true" output="false"
         
         //Call Add Order Item
         this.addOrderItem(data= arguments.data);
+        
+        //set bundle build to false
+        productBundleBuild.setActiveFlag(false);
+        getProductService().saveProductBundleBuild( productBundleBuild );
+        
 	 }
 	
 	
@@ -1347,10 +1421,18 @@ component  accessors="true" output="false"
                 }
               }
               
-              getService("OrderService").saveOrderFulfillment(orderFulfillment);
+              orderFulfillment = getService("OrderService").saveOrderFulfillment(orderFulfillment);
+              
+              if( orderFulfillment.hasErrors() ) {
+                this.addErrors(arguments.data, orderFulfillment.getErrors()); //add the basic errors
+                getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", orderFulfillment.hasErrors());
+                return;
+              }
+              
             }
             
             getService("OrderService").saveOrder(order);
+            
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
             if(!isNull(accountAddress)){
