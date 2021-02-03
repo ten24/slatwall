@@ -46,8 +46,10 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+    
+    property name="service";
+    
 	public void function setUp() {
 		super.setup();
 		//variables.service = request.slatwallScope.getService("productService");
@@ -268,6 +270,34 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var productToAssert2 = variables.service.saveProduct(product, serviceData2);
 
 		assert(arrayLen(productToAssert2.getListingPages()), 3);
+	}
+	
+	
+	
+	/**
+	* @test
+	*/
+	public void function getPotentialFiltersTest(){
+		
+		expect( this.getService()
+            .getHibachiCacheService()
+            .hasCachedValue('calculated_potential_product_listing_filters')
+        ).toBeFalse();
+		
+		var filters = this.getService().getPotentialFilters();
+		
+// 		debug(filters);
+		
+        expect( filters ).toHaveKey('brands');
+        expect( filters ).toHaveKey('options');
+        expect( filters ).toHaveKey('optionGroups');
+        expect( filters ).toHaveKey('productTypes');
+        
+        expect( this.getService()
+            .getHibachiCacheService()
+            .hasCachedValue('calculated_potential_product_listing_filters')
+        ).toBeTrue();
+        
 	}
 }
 

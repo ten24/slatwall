@@ -65,6 +65,7 @@ component extends="HibachiService" accessors="true" {
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
 	property name="typeService" type="any";
+	property name="hibachiCacheService" type="any";
 
 	// ===================== START: Logical Methods ===========================
 	
@@ -1535,7 +1536,124 @@ component extends="HibachiService" accessors="true" {
 		return this.getImageService().getResizedImageByProfileName(arguments.skuIDList,arguments.profileName);
 	}
 	
+	
+	// ===================== :Product Filters: =================================
+	
+	public struct function getPotentialFilters(){
+	    
+	    if(this.getHibachiCacheService().hasCachedValue('calculated_potential_product_listing_filters') ){
+	        return this.getHibachiCacheService().getCachedValue('calculated_potential_product_listing_filters');
+	    }
+	    
+	    var potentialFilters = {
+	        'options' : {},
+	        'optionGroups' : {},
+	        'brands'  :	{},
+	        'productTypes' : {}
+	    };
+	    
+	    var rawFilters = this.getProductDAO().getRawPotentialFilters();
+	    
+	    for( var row in rawFilters ){
+	        
+	        // ****** Option - Filter
+	        if( structKeyExists(potentialFilters.options, row.optionID ) ){
+	           var thisOptionFilter =  potentialFilters.options[ row.optionID ]; 
+	        } else {
+	            var thisOptionFilter = {
+	                'optionID'              : row.optionID,
+	                'optionCode'            : row.optionCode,
+	                'optionName'            : row.optionName,
+	                'optionGroupID'         : row.optionGroupID,
+	                'optionSortOrder'       : row.optionSortOrder,
+	                'optionBrands'          : {},
+	                'optionProductTypes'    : {}
+	            };
+	            
+	            potentialFilters.options[ row.optionID ] = thisOptionFilter;
+	        }
+	        
+	        // we're using hash-maps for :
+	        // - duplicate-removal [ the brandID and productTypeID will Refelect themselves ]
+	        // - faster lookups
+	        thisOptionFilter.optionBrands[ row.brandID ] = row.brandID;
+	        thisOptionFilter.optionProductTypes[ row.productTypeID ] = row.productTypeID;
+	        
+	        
+	        
+	        // ****** Option Groups - Filter
+	        if( structKeyExists(potentialFilters.optionGroups, row.optionGroupID ) ){
+	           var thisOptionGroupFilter =  potentialFilters.optionGroups[ row.optionGroupID ]; 
+	        } else {
+	            var thisOptionGroupFilter = {
+	                'optionGroupID'             : row.optionGroupID,
+	                'optionGroupName'           : row.optionGroupName,
+	                'optionGroupSortOrder'      : row.optionGroupSortOrder,
+	                'optionGroupBrands'         : {},
+	                'optionGroupOptions'        : {},
+	                'optionGroupProductTypes'   : {}
+	            };
+	            
+	            potentialFilters.optionGroups[ row.optionGroupID ] = thisOptionGroupFilter;
+	        }
+	        
+	        thisOptionGroupFilter.optionGroupOptions[ row.brandID ]  = row.brandID;
+	        thisOptionGroupFilter.optionGroupOptions[ row.optionID ] = row.optionID;
+	        thisOptionGroupFilter.optionGroupProductTypes[ row.productTypeID ] = row.productTypeID;
+	        
+	        
+	        // ****** Brand - Filter
+	        if( structKeyExists(potentialFilters.brands, row.brandID ) ){
+	           var thisBrandFilter =  potentialFilters.brands[ row.brandID ]; 
+	        } else {
+	            var thisBrandFilter = {
+	                'brandID'              : row.brandID,
+	                'brandName'            : row.brandName,
+	                'brandOptions'         : {},
+	                'brandOptionGroups'    : {},
+	                'brandProductTypes'    : {}
+	            };
+	            
+	            potentialFilters.brands[ row.brandID ] = thisBrandFilter;
+	        }
+	        
+	        thisBrandFilter.brandOptions[ row.optionID ] = row.optionID;
+	        thisBrandFilter.brandOptionGroups[ row.optionGroupID ] = row.optionGroupID;
+	        thisBrandFilter.brandProductTypes[ row.productTypeID ] = row.productTypeID;
+	        
+	        
+	        
+	        // ****** ProductType - Filter
+	        if( structKeyExists(potentialFilters.productTypes, row.productTypeID ) ){
+	           var thisProductTypeFilter =  potentialFilters.productTypes[ row.productTypeID ]; 
+	        } else {
+	            var thisProductTypeFilter = {
+	                'productTypeID'              : row.productTypeID,
+	                'productTypeName'            : row.productTypeName,
+	                'productTypeURLTitle'        : row.productTypeURLTitle,
+	                'parentProductTypeID'        : row.parentProductTypeID,
+	                'productTypeBrands'          : {},
+	                'productTypeOptions'         : {},
+	                'productTypeOptionGroups'    : {}
+	            };
+	            
+	            potentialFilters.productTypes[ row.productTypeID ] = thisProductTypeFilter;
+	        }
+	        
+	        thisProductTypeFilter.productTypeBrands[ row.brandID ] = row.brandID;
+	        thisProductTypeFilter.productTypeOptions[ row.optionID ] = row.optionID;
+	        thisProductTypeFilter.productTypeOptionGroups[ row.optionGroupID ] = row.optionGroupID;
+	        
+	    }
+	    
+	    this.getHibachiCacheService().setCachedValue('calculated_potential_product_listing_filters', potentialFilters);
 
+	    return potentialFilters;
+	}
+
+	
+	// ===================== :Product Filters: =================================
+	
 	//  ====================  END: Wrapper Methods ========================
 
 	// ====================== START: Get Overrides ============================

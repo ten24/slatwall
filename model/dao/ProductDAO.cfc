@@ -595,5 +595,42 @@ Notes:
 			true
 			)>
 	</cffunction>
+	
+	
+	<cffunction name="getRawPotentialFilters" access="public">
+		<cfquery name="local.query" >
+			SELECT
+            	o.optionID, o.optionName, o.optionCode, o.sortOrder as optionSortOrder
+            	, br.brandID, br.brandName
+            	, pt.productTypeID, pt.productTypeName, pt.urlTitle as productTypeURLTitle, pt.parentProductTypeID
+            	, og.optionGroupID, og.optionGroupName, og.sortOrder as optionGroupSortOrder
+            	
+            FROM swProduct p
+            
+            INNER JOIN swSku sk 
+            	ON sk.productID = p.productID 
+            	AND ( p.activeFlag = 1 AND p.publishedFlag=1 AND sk.activeFlag=1 AND sk.publishedFlag=1 )
+            
+            INNER JOIN swProductType pt 
+            	ON pt.productTypeID = p.productTypeID 
+            	AND ( pt.activeFlag=1 AND pt.publishedFlag=1)
+            	
+            INNER JOIN swBrand br 
+            	ON br.brandID = p.brandID
+            	AND ( br.activeFlag=1 AND br.publishedFlag=1)
+            
+            INNER JOIN swSkuOption so 
+            	ON so.skuID = sk.skuID
+            
+            INNER JOIN swOption o 
+            	ON o.optionID = so.optionID
+            	AND o.activeFlag = 1
+            	
+            INNER JOIN swOptionGroup og 
+            	ON og.optionGroupID = o.optionGroupID
+		</cfquery>
+		<cfreturn local.query>
+	</cffunction>
+	
 </cfcomponent>
 
