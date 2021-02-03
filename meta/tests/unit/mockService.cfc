@@ -99,7 +99,6 @@ component accessors="true" extends="testbox.system.BaseSpec"{
             
             function resetBeanFactory(){
                 structDelete( variables, 'loadExecutedOnce' );
-                structDelete( variables, 'loadExecutedOnce' );
             }
             
             function mockConstructor(string dottedPath){
