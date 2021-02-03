@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
-import { getUser } from '../../../actions/userActions'
-import { connect, useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import AccountLayout from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
+import { isTokenValid } from '../../../utils'
 
 const AccountRecentOrders = () => {
+  //console.log('isTokenValid()', isTokenValid())
   return (
     <>
       <h3 className="h4 mt-5 mb-3">Most Recent Order</h3>
@@ -35,11 +35,6 @@ const AccountRecentOrders = () => {
 }
 
 const AccountOverview = ({ customBody, crumbs, title, contentTitle }) => {
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(getUser())
-  }, [dispatch])
-
   return (
     <AccountLayout crumbs={crumbs} title={title}>
       <AccountContent contentTitle={contentTitle} customBody={customBody} />

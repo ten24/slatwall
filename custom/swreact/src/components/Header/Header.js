@@ -133,7 +133,9 @@ function Header({ productCategories, mainNavigation }) {
                 className="navbar-main-links"
                 onClick={event => {
                   event.preventDefault()
-                  history.push(event.target.getAttribute('href'))
+                  if (event.target.getAttribute('href')) {
+                    history.push(event.target.getAttribute('href'))
+                  }
                 }}
                 dangerouslySetInnerHTML={{
                   __html: mainNavigation,

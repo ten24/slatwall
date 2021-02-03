@@ -4,8 +4,10 @@ import { connect } from 'react-redux'
 import { ActionBanner, SignUpForm } from '..'
 import styles from './Footer.module.css'
 import logo from '../../assets/images/sb-logo-white.png'
+import { useHistory } from 'react-router-dom'
 
 function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
+  let history = useHistory()
   return (
     <footer className="pt-5">
       {actionBanner.display && !actionBannerDisable && <ActionBanner {...actionBanner} />}
@@ -14,7 +16,14 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
         <div className="container">
           <div className="row pt-2">
             <div className="col-md-2 col-sm-6">
-              <div className="widget widget-links pb-2 mb-4" dangerouslySetInnerHTML={{ __html: siteLinks }} />
+              <div
+                className="widget widget-links pb-2 mb-4"
+                onClick={event => {
+                  event.preventDefault()
+                  history.push(event.target.getAttribute('href'))
+                }}
+                dangerouslySetInnerHTML={{ __html: siteLinks }}
+              />
             </div>
             <div className="col-md-4 col-sm-6">
               <div className="widget widget-links pb-2 mb-4" dangerouslySetInnerHTML={{ __html: getInTouch }} />

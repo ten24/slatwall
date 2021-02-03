@@ -704,7 +704,7 @@ export default {
     { key: 'Ukraine', value: 'UA' },
     { key: 'United Arab Emirates', value: 'AE' },
     { key: 'United Kingdom', value: 'GB' },
-    { key: 'elected="selected">United States', value: 'US' },
+    { key: 'United States', value: 'US' },
     { key: 'United States Minor Outlying Islands', value: 'UM' },
     { key: 'Uruguay', value: 'UY' },
     { key: 'Uzbekistan', value: 'UZ' },

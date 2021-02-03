@@ -2,52 +2,10 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
-import { FeaturedProductCard } from '..'
 import { getFeaturedItems } from '../../actions/productSearchActions'
 import { connect, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-
-const FeaturedProducts = ({ sliderData, bannerHead }) => {
-  const settings = {
-    dots: false,
-    infinite: true,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 800,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
-  }
-  return (
-    <div className="container">
-      <div className="featured-products bg-white text-center pb-5 pt-5">
-        {bannerHead && <div dangerouslySetInnerHTML={{ __html: bannerHead.customBody }} />}
-        
-        <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
-          {sliderData.map((slide, index) => {
-            return <FeaturedProductCard {...slide} key={index} imgKey={index} />
-          })}
-        </Slider>
-      </div>
-    </div>
-  )
-}
+import ProductSlider from '../ProductSlider/ProductSlider'
 
 const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
   let history = useHistory()
@@ -103,7 +61,7 @@ function HomeBanner(props) {
 
   return (
     <div className="hero mt-2" style={{ backgroundImage: `url(${Background})` }}>
-      <FeaturedProducts sliderData={props.featuredSlider} bannerHead={props.home} />
+      <ProductSlider sliderData={props.featuredSlider}>{props.home && <div dangerouslySetInnerHTML={{ __html: props.home.customBody }} />}</ProductSlider>
       <MainBanner sliderData={homeMainBanner} />
     </div>
   )
