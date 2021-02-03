@@ -16,22 +16,15 @@ const ProductDetail = props => {
   }
   useEffect(() => {
     let didCancel = false
-    const loginToken = localStorage.getItem('loginToken')
 
     if (product.productID == null && !product.isLoaded) {
       const urlTitle = pathname.split('/').reverse()
       SlatwalApiService.products
-        .list(
-          {
-            bearerToken: loginToken,
-            contentType: 'application/json',
+        .list({
+          filter: {
+            urlTitle: urlTitle[0],
           },
-          {
-            filter: {
-              urlTitle: urlTitle[0],
-            },
-          }
-        )
+        })
         .then(response => {
           if (response.isSuccess() && !didCancel) {
             const records = response.success().pageRecords

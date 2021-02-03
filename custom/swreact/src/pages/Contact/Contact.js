@@ -2,25 +2,21 @@ import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 import { ActionBanner, Layout } from '../../components'
 import { connect, useDispatch } from 'react-redux'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { getContent } from '../../actions/contentActions'
 
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { sdkURL } from '../../services/SlatwalApiService'
 
-// TODO:  https://stoneandberg.ten24dev.com/contact?submitted=true
-
 const ContactForm = ({ form }) => {
   const [submitted, setSubmitted] = useState(false)
-  let location = useLocation()
   const encodeForm = data => {
     return Object.keys(data)
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&')
   }
-  console.log('submitted', submitted)
-  if(submitted){
+  if (submitted) {
     return null
   }
 
@@ -45,12 +41,14 @@ const ContactForm = ({ form }) => {
               headers: {
                 'Content-Type': `application/x-www-form-urlencoded`,
               },
-            }).then(response => {
+            })
+              .then(response => {
                 toast.success('Thank you for contacting us, we will get back to you as soon as possible.')
                 setSubmitted(true)
-            }).catch((error)=>{
-               toast.error(error.message)
-            })
+              })
+              .catch(error => {
+                toast.error(error.message)
+              })
           }
         }}
         dangerouslySetInnerHTML={{

@@ -17,9 +17,9 @@ const cart = (state = initState, action) => {
       return { ...state, isFetching: true }
 
     case RECEIVE_CART:
-      const { loginToken } = action
+      const { cart } = action
 
-      return { ...state, loginToken, isFetching: false, err: null }
+      return { ...state, ...cart, isFetching: false, err: null }
 
     case CLEAR_CART:
       return { ...state, loginToken: null, isFetching: false }
