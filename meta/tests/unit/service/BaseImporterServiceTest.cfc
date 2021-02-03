@@ -54,6 +54,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     
 	public void function setUp() {
 		super.setup();
+		
 		variables.service = variables.mockService.getBaseImporterServiceMock();
 		this.initMockFunctions();
 	}
@@ -95,7 +96,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	private struct function getSampleAccountMapping(){
 	    return {
             "entityName": "Account",
-            "mappingCode": "_Account",
+            "mappingCode": "_unit_test_Account",
         
             "properties": {
                 
@@ -430,8 +431,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
 	    
+	    debug(getSampleAccountMapping());
+	    
+	    var mapping = getSampleAccountMapping();
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+
 	    var validation = this.getService().validateMappingData(
-	        mapping= getSampleAccountMapping(), 
+	        mapping= mapping, 
 	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
@@ -543,7 +549,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             return true;
         }
         
-        variables.service['validate_testConstraint_value'] = validate_testConstraint_value_spy;
+        this.getService()['validate_testConstraint_value'] = validate_testConstraint_value_spy;
 
         this.getService().validateMappingData(
             data = sampleAccountData,
@@ -601,9 +607,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
+        
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
 
 	    var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -627,8 +634,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             rel['isNullable'] = true;
         })
 
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+
 	    var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -654,8 +662,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             rel['isNullable'] = true;
         })
 
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+        
 	    var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -681,8 +690,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             rel['isNullable'] = true;
         })
 
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+        
 	    var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -711,8 +721,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             rel['hasMapping'] = false;
         })
 
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+        
 	    var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -739,8 +750,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "sourceDataKeysPrefix"  : "testPrefix--"
         }];
 
+	    this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+        
 	    var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -772,9 +784,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
         sampleAccountData['testPrefix--phone'] = sampleAccountData['phone'];
         sampleAccountData['testPrefix--remoteAccountID'] = sampleAccountData['remoteAccountID'];
+
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
         
 	    var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -1258,9 +1271,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
+
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
         
         var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -1290,9 +1304,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         mapping.relations.each(function(rel){
             rel['isNullable'] = true;
         })
+
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
         
         var validation = this.getService().validateMappingData(
-            mappingCode="Account",
             data = sampleAccountData,
             collectErrors = true,
             mapping = mapping
@@ -1362,6 +1377,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
         
         var mapping  = getSampleAccountMapping();
+        
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
 
 	    var validation = this.getService().pushRecordIntoImportQueue( 
 	            mapping = mapping, 
@@ -1401,8 +1418,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var batchID = hash("123xxxunittest"&now(), 'MD5');
         insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
         
+        var mapping  = getSampleAccountMapping();
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+
 	    var validation = this.getService().pushRecordIntoImportQueue( 
-	            mapping = getSampleAccountMapping(), 
+	            mapping = mapping, 
 	            data    = sampleAccountData,
 	            batchID = batchID
 	    );
@@ -1437,6 +1457,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
         
         var mapping  = getSampleAccountMapping();
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
 
 	    var validation = this.getService().pushRecordIntoImportQueue( 
             mapping = mapping, 
@@ -1487,7 +1508,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var sampleAccountData = getSampleAccountData();
 	    
 	    var mapping = getSampleAccountMapping();
-	    
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+
 	    var transformedData = this.getService().transformMappingData(mapping=mapping, data=sampleAccountData);
 	    debug(transformedData);
 	    
@@ -1514,7 +1536,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
 	    
-	    var transformedData = this.getService().transformMappingData(getSampleAccountMapping(), sampleAccountData);
+	    var mapping  = getSampleAccountMapping();
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+
+	    var transformedData = this.getService().transformMappingData(mapping, sampleAccountData);
 
 	    debug(transformedData);
 	    
@@ -1539,7 +1564,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
         var mapping = getSampleAccountMapping();
         mapping.postPopulateMethods = ['postPopulateExampleMethod'];
-        
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
+
         var data = this.getService().transformMappingData(mapping, sampleAccountData);
         debug(data);
 
@@ -1580,6 +1606,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         }
         
         variables.service['processAccount_import'] = processAccount_import_spy;
+        
+        
+        var mapping = getSampleAccountMapping();
+        debug(mapping);
+        
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
         
         var data = this.getService().transformMappingData( mapping=getSampleAccountMapping(), data=sampleAccountData );
         
@@ -1812,7 +1844,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
         var sampleData = getSampleProductData();
 
-        var mapping = this.getService().getMappingByMappingCode( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( '_Product' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
@@ -1839,7 +1871,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
          var sampleData = getSampleProductData();
 
-        var mapping = this.getService().getMappingByMappingCode( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( '_Product' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
@@ -1869,7 +1901,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
         var sampleData = getSampleProductData();
 
-        var mapping = this.getService().getMappingByMappingCode( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( '_Product' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
@@ -1951,7 +1983,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
         var sampleData = getSampleProductData();
 
-        var mapping = this.getService().getMappingByMappingCode( 'Product' );
+        var mapping = this.getService().getMappingByMappingCode( '_Product' );
         mapping["generatedProperties"] = [{
             "propertyIdentifier" : "urlTitle",
             "generatorFunction"  : "generateProductTypeUrlTitle",
@@ -1959,6 +1991,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "evaluationMode"     : "lazy",
             "__hint"             : "lazy evaluation means, the value for this property will get generted just before populating the object"
         }];
+        
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
         
         var transformedData = this.getService().transformMappingData(
             data = sampleData, 
@@ -1990,15 +2024,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var sampleData = getSampleProductData();
 
         // modify brand mapping, temporarly
-        var mapping = this.getService().getMappingByMappingCode( 'Brand' );
+        var mapping = this.getService().getMappingByMappingCode( '_Brand' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
         
         var transformedData = this.getService().transformMappingData(
             data = sampleData, 
-            mapping = this.getService().getMappingByMappingCode( 'Product' )
+            mapping = this.getService().getMappingByMappingCode( '_Product' )
         );
 	    
 	    debug(transformedData);
@@ -2019,15 +2054,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var sampleData = getSampleProductData();
 
         // modify brand mapping, temporarly
-        var mapping = this.getService().getMappingByMappingCode( 'Brand' );
+        var mapping = this.getService().getMappingByMappingCode( '_Brand' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
         
         var transformedData = this.getService().transformMappingData(
             data = sampleData, 
-            mapping = this.getService().getMappingByMappingCode( 'Product' )
+            mapping = this.getService().getMappingByMappingCode( '_Product' )
         );
 	    
 	    debug(transformedData);
@@ -2049,15 +2085,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var sampleData = getSampleProductData();
 
         // modify brand mapping, temporarly
-        var mapping = this.getService().getMappingByMappingCode( 'Brand' );
+        var mapping = this.getService().getMappingByMappingCode( '_Brand' );
         mapping.properties.each( function( propName ){ 
             mapping.properties[propName]['evaluationMode'] = 'lazy';
         });
         
+        this.getService().getImporterMappingService().putMappingIntoCache(mapping);
         
         var transformedData = this.getService().transformMappingData(
             data = sampleData, 
-            mapping = this.getService().getMappingByMappingCode( 'Product' )
+            mapping = this.getService().getMappingByMappingCode( '_Product' )
         );
 	    
 	    debug(transformedData);
