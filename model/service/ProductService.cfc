@@ -1539,10 +1539,44 @@ component extends="HibachiService" accessors="true" {
 	
 	// ===================== :Product Filters: =================================
 	
-	public struct function getPotentialFilters(){
+	/**
+	 * Function to return some meta-data about product-listing filter facets
+	 * Meant to be overriden for different use-cases, Keeping is asside from `getProductFilterFacetOptions`, for that reason only
+	 * 
+	*/
+	public array function getProductFilterFacets(){
+	    return [
+    	        {   'id'            : 'productTypes',
+    	            'priority'      : 1,
+    	            'selectType'    : 'multi'
+    	        },
+	            {   'id'            : 'brands',
+    	            'priority'      : 2,
+    	            'selectType'    : 'multi'
+    	        },
+	            {   'id'            : 'optionGroups',
+    	            'priority'      : 3,
+    	            'selectType'    : 'multi'
+    	        },
+    	        {   'id'            : 'options',
+    	            'priority'      : 4,
+    	            'selectType'    : 'single'
+    	        }
+    	   ];
+	}
+	
+	
+    /**
+	 * Function to fetch, Brand, ProductType, OptionGroups, and Options 
+	 * [ only then ones which are active and published including the active and published products ]
+	 * and then construct some hashmaps for faster lookup;
+	 * this function caches the calculated meta-data which is supposed to be cleared, every time any one of the given entity is saved in the DB;
+	 * 
+	*/
+	public struct function getProductFilterFacetOptions(){
 	    
-	    if(this.getHibachiCacheService().hasCachedValue('calculated_potential_product_listing_filters') ){
-	        return this.getHibachiCacheService().getCachedValue('calculated_potential_product_listing_filters');
+	    if(this.getHibachiCacheService().hasCachedValue('calculated_product_filter_facet_options') ){
+	        return this.getHibachiCacheService().getCachedValue('calculated_product_filter_facet_options');
 	    }
 	    
 	    var potentialFilters = {
@@ -1566,8 +1600,10 @@ component extends="HibachiService" accessors="true" {
 	                'optionName'            : row.optionName,
 	                'optionGroupID'         : row.optionGroupID,
 	                'optionSortOrder'       : row.optionSortOrder,
-	                'optionBrands'          : {},
-	                'optionProductTypes'    : {}
+	                'relations' : {
+    	                'brands'         : {},
+    	                'productTypes'   : {}
+	                }
 	            };
 	            
 	            potentialFilters.options[ row.optionID ] = thisOptionFilter;
@@ -1576,8 +1612,8 @@ component extends="HibachiService" accessors="true" {
 	        // we're using hash-maps for :
 	        // - duplicate-removal [ the brandID and productTypeID will Refelect themselves ]
 	        // - faster lookups
-	        thisOptionFilter.optionBrands[ row.brandID ] = row.brandID;
-	        thisOptionFilter.optionProductTypes[ row.productTypeID ] = row.productTypeID;
+	        thisOptionFilter.relations.brands[ row.brandID ] = row.brandID;
+	        thisOptionFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
 	        
 	        
 	        
@@ -1589,17 +1625,19 @@ component extends="HibachiService" accessors="true" {
 	                'optionGroupID'             : row.optionGroupID,
 	                'optionGroupName'           : row.optionGroupName,
 	                'optionGroupSortOrder'      : row.optionGroupSortOrder,
-	                'optionGroupBrands'         : {},
-	                'optionGroupOptions'        : {},
-	                'optionGroupProductTypes'   : {}
+	                'relations' : {
+    	                'brands'         : {},
+    	                'options'        : {},
+    	                'productTypes'   : {}
+	                }
 	            };
 	            
 	            potentialFilters.optionGroups[ row.optionGroupID ] = thisOptionGroupFilter;
 	        }
 	        
-	        thisOptionGroupFilter.optionGroupOptions[ row.brandID ]  = row.brandID;
-	        thisOptionGroupFilter.optionGroupOptions[ row.optionID ] = row.optionID;
-	        thisOptionGroupFilter.optionGroupProductTypes[ row.productTypeID ] = row.productTypeID;
+	        thisOptionGroupFilter.relations.brands[ row.brandID ]  = row.brandID;
+	        thisOptionGroupFilter.relations.options[ row.optionID ] = row.optionID;
+	        thisOptionGroupFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
 	        
 	        
 	        // ****** Brand - Filter
@@ -1609,17 +1647,19 @@ component extends="HibachiService" accessors="true" {
 	            var thisBrandFilter = {
 	                'brandID'              : row.brandID,
 	                'brandName'            : row.brandName,
-	                'brandOptions'         : {},
-	                'brandOptionGroups'    : {},
-	                'brandProductTypes'    : {}
+	                'relations' : {
+    	                'options'         : {},
+    	                'optionGroups'    : {},
+    	                'productTypes'    : {}
+	                }
 	            };
 	            
 	            potentialFilters.brands[ row.brandID ] = thisBrandFilter;
 	        }
 	        
-	        thisBrandFilter.brandOptions[ row.optionID ] = row.optionID;
-	        thisBrandFilter.brandOptionGroups[ row.optionGroupID ] = row.optionGroupID;
-	        thisBrandFilter.brandProductTypes[ row.productTypeID ] = row.productTypeID;
+	        thisBrandFilter.relations.options[ row.optionID ] = row.optionID;
+	        thisBrandFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+	        thisBrandFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
 	        
 	        
 	        
@@ -1632,23 +1672,118 @@ component extends="HibachiService" accessors="true" {
 	                'productTypeName'            : row.productTypeName,
 	                'productTypeURLTitle'        : row.productTypeURLTitle,
 	                'parentProductTypeID'        : row.parentProductTypeID,
-	                'productTypeBrands'          : {},
-	                'productTypeOptions'         : {},
-	                'productTypeOptionGroups'    : {}
+	                'relations' : {
+    	                'brands'          : {},
+    	                'options'         : {},
+    	                'optionGroups'    : {}
+	                }
 	            };
 	            
 	            potentialFilters.productTypes[ row.productTypeID ] = thisProductTypeFilter;
 	        }
 	        
-	        thisProductTypeFilter.productTypeBrands[ row.brandID ] = row.brandID;
-	        thisProductTypeFilter.productTypeOptions[ row.optionID ] = row.optionID;
-	        thisProductTypeFilter.productTypeOptionGroups[ row.optionGroupID ] = row.optionGroupID;
+	        thisProductTypeFilter.relations.brands[ row.brandID ] = row.brandID;
+	        thisProductTypeFilter.relations.options[ row.optionID ] = row.optionID;
+	        thisProductTypeFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
 	        
 	    }
 	    
-	    this.getHibachiCacheService().setCachedValue('calculated_potential_product_listing_filters', potentialFilters);
+	    this.getHibachiCacheService().setCachedValue('calculated_product_filter_facet_options', potentialFilters);
 
 	    return potentialFilters;
+	}
+	
+	
+	public struct function calculatePopentialFilterFacates(required struct selectedFacets ){
+	    param name="arguments.selectedFacets.brands" default={};
+	    param name="arguments.selectedFacets.options" default={};
+	    param name="arguments.selectedFacets.optionGroups" default={};
+	    param name="arguments.selectedFacets.productTypes" default={};
+
+	    
+        var facets = this.getProductFilterFacets();
+
+        // creating a new struct here and merging with the old one, as we don't want to modify the cached data;
+        var potentialFecetOptions = {};
+        potentialFecetOptions.append( this.getProductFilterFacetOptions() );
+        
+        for(var thisFacet in facets){
+            
+            // calculate available options for this-facet
+            var thisFacetOptions =  potentialFecetOptions[ thisFacet.id ];
+            if( !structKeyExists(arguments.selectedFacets, thisFacet.id) || arguments.selectedFacets[thisFacet.id].isEmpty() ){
+                
+                // creating a copy here so we accidently update the cached options;
+                potentialFecetOptions[ thisFacet.id ] = structCopy( thisFacetOptions ); 
+                
+            } else {
+                var filteredOptions = {};
+                for(var optionID in arguments.selectedFacets[thisFacet.id] ){
+                    if(structKeyExists(thisFacetOptions, optionID) ){
+                        filteredOptions[ optionID ] = structCopy( thisFacetOptions[ optionID ] );
+                    }
+                }
+                
+                potentialFecetOptions[ thisFacet.id ] = filteredOptions;
+            }
+            
+            
+            // now calculate options for remainig facets
+            thisFacetOptions = potentialFecetOptions[ thisFacet.id ];
+            
+            for( var otherFacet in facets ){
+                
+                if(otherFacet.id == thisFacet.id ){
+                    continue;
+                }
+                
+                for(var thisOptionID in thisFacetOptions){
+                    
+                    var thisFacetOption = thisFacetOptions[ thisOptionID ];
+                    
+                    // if this option has a relation with other facet, filter them out
+                    if( structKeyExists(thisFacetOption.relations, otherFacet.id) ){
+                        
+                        var thisOptionRelationsWithOtherFacet = thisFacetOption.relations[ otherFacet.id ];
+                        
+                        //copying... as we don't want to modify the cached structs
+                        var filteredOtherFacetOptions = structCopy( potentialFecetOptions[ otherFacet.id ]);
+
+                        // now filterout other-facet options relations with this-facet
+                        for(var relatedOptionID in thisOptionRelationsWithOtherFacet ){
+                            
+                            //this check is needed as some-other facet can also have a relation with this-other-facet, and can filterout more potential-options. 
+                            if(!structKeyExists(filteredOtherFacetOptions, relatedOptionID) ){
+                                thisOptionRelationsWithOtherFacet.delete(relatedOptionID);
+                                continue; // nothing else to do
+                            }
+                                
+                            var otherRelatedFacetOption = filteredOtherFacetOptions[ relatedOptionID ];
+                            //if related facet-option also has a relationship with this facet, filter them out
+                            if( structKeyExists(otherRelatedFacetOption.relations, thisFacet.id) ){
+                                
+                                var otherRelatedOptionRelationsWithThisFacet = otherRelatedFacetOption.relations[ thisFacet.id ] ;
+                                //delete the relations back relation with this option, if they does not qualify
+                                for(var relatedOptionRelationID in otherRelatedOptionRelationsWithThisFacet ){
+                                    if(!structKeyExists(thisFacetOptions, relatedOptionRelationID) ){
+                                       otherRelatedOptionRelationsWithThisFacet.delete(relatedOptionRelationID);
+                                    }
+                                }
+                            }
+                            
+                        }
+                        
+                        potentialFecetOptions[ otherFacet.id ] = filteredOtherFacetOptions;
+                    }
+                }    
+            
+            }
+            
+            
+        }
+        
+        return potentialFecetOptions;
+        
 	}
 
 	

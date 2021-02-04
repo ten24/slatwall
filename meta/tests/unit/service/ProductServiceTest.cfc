@@ -277,16 +277,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function getPotentialFiltersTest(){
+	public void function getProductFilterFacetOptions_should_have_required_filter_types(){
 		
 		expect( this.getService()
             .getHibachiCacheService()
-            .hasCachedValue('calculated_potential_product_listing_filters')
+            .hasCachedValue('calculated_product_filter_facet_options')
         ).toBeFalse();
 		
-		var filters = this.getService().getPotentialFilters();
+		var filters = this.getService().getProductFilterFacetOptions();
 		
-// 		debug(filters);
+        // 		debug(filters);
 		
         expect( filters ).toHaveKey('brands');
         expect( filters ).toHaveKey('options');
@@ -295,10 +295,276 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         expect( this.getService()
             .getHibachiCacheService()
-            .hasCachedValue('calculated_potential_product_listing_filters')
+            .hasCachedValue('calculated_product_filter_facet_options')
         ).toBeTrue();
-        
 	}
+	
+	/**
+	* @test
+	*/
+	public void function getProductFilterFacets_should_have_required_metadata(){
+	    
+	    var facets = this.getService().getProductFilterFacets();
+	    debug(facets);
+	    
+	    expect(facets).toBeTypeOf('array');
+	    
+	    facets.each( function(facet){
+            expect( facet ).toHaveKey('priority');
+            expect( facet ).toHaveKey('selectType');
+	        
+	    });
+	}
+	
+	public struct function makeRandomSelectedFilters(){
+	    
+	    var selectedFacets = {
+	        "brands"        : [],
+	        "options"       : [],
+	        "optionGroups"  : [],
+	        "productTypes"  : []
+	    };
+	    
+	    var facetOptions = this.getService().getProductFilterFacetOptions();
+	   // dump(facetOptions);
+
+
+	    var brandIDs = StructKeyList(facetOptions.brands);
+	    var brandIDsLen = listLen(brandIDs);
+	    
+	    var optionIDs = StructKeyList(facetOptions.options);
+	    var optionIDsLen = listLen(optionIDs);
+	    
+	    var optionGroupIDs = StructKeyList(facetOptions.optionGroups);
+	    var optionGroupIDsLen = listLen(optionGroupIDs);
+	    
+	    var productTypeIDs = StructKeyList(facetOptions.productTypes);
+	    var optionGroupIDsLen = listLen(optionGroupIDs);
+	    
+	    var count = RandRange( 1, 10 );
+	    for(var i=1; i<=count; i++){
+	        
+	        if( RandRange(1, brandIDsLen)  > RandRange(1, brandIDsLen) ){
+    	        selectedFacets.brands.append(
+    	            listGetAt(brandIDs, RandRange(1, brandIDsLen) )
+    	        );
+	        }
+	        
+	        if( RandRange(1, optionIDsLen)  > RandRange(1, optionIDsLen) ){
+    	        selectedFacets.options.append(
+    	            listGetAt(optionIDs, RandRange(1, optionIDsLen) )
+    	        );
+	        }
+	        
+	        if( RandRange(1, optionGroupIDsLen)  > RandRange(1, optionGroupIDsLen) ){
+    	        selectedFacets.optionGroups.append(
+    	            listGetAt(optionGroupIDs, RandRange(1, optionGroupIDsLen) )
+    	        );
+	        }
+	    }
+	    
+	    return selectedFacets;
+	}
+	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
+	*/
+	public void function calculateActualPopentialFilterFacates_should_not_modify_cached_calculated_facet_options(){
+	    
+	    
+	    var oldFacetOptions = structCopy( this.getService().getProductFilterFacetOptions() );
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    dump(selectedFacets);
+	    
+	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacates(selectedFacets);
+	    var newFacetOptions = this.getService().getProductFilterFacetOptions();
+	    
+	    dump(
+	      this.StructEquals(oldFacetOptions, newFacetOptions )  
+	    );
+	    
+	    dump(newFacetOptions);
+	}
+	
+	
+    /**
+	 * Returns whether two structures are equal, going deep.
+	 * 
+	 * CF-Script version of https://stackoverflow.com/a/48290726/6443429
+	 * 
+	*/
+	public boolean function StructEquals(
+    	required struct stc1, 
+    	required struct stc2, 
+    	boolean blnCaseSensitive=false, 
+    	boolean blnCaseSensitiveKeys=false
+	){
+    
+    	if(StructCount(stc1) != StructCount(stc2))
+          return false;
+    
+        var arrKeys1 = StructKeyArray(stc1);
+        var arrKeys2 = StructKeyArray(stc2);
+    
+        ArraySort(arrKeys1, 'text');
+        ArraySort(arrKeys2, 'text');
+    
+        if(!ArrayEquals(arrKeys1, arrKeys2, blnCaseSensitiveKeys, blnCaseSensitiveKeys))
+          return false;
+    
+        for(var i = 1; i <= ArrayLen(arrKeys1); i++) {
+          var strKey = arrKeys1[i];
+    
+          if(IsStruct(stc1[strKey])) {
+            if(!IsStruct(stc2[strKey]))
+              return false;
+            if(!StructEquals(stc1[strKey], stc2[strKey], blnCaseSensitive, blnCaseSensitiveKeys))
+              return false;
+          }
+          else if(IsArray(stc1[strKey])) {
+            if(!IsArray(stc2[strKey]))
+              return false;
+            if(!ArrayEquals(stc1[strKey], stc2[strKey], blnCaseSensitive, blnCaseSensitiveKeys))
+              return false;
+          }
+          else if(IsSimpleValue(stc1[strKey]) && IsSimpleValue(stc2[strKey])) {
+            if(blnCaseSensitive) {
+              if(Compare(stc1[strKey], stc2[strKey]) != 0)
+                return false;
+            }
+            else {
+              if(CompareNoCase(stc1[strKey], stc2[strKey]) != 0)
+                return false;
+            }
+          }
+          else {
+            throw("Can only compare structures, arrays, and simple values. No queries or complex objects.");
+          }
+        }
+    
+        return true;
+    }
+    
+    /**
+	 * Returns whether two arrays are equal, including deep comparison if the arrays contain structures or sub-arrays.
+	 * 
+	 * CF-Script version of https://stackoverflow.com/a/48290726/6443429
+	 * 
+	*/
+    public boolean function ArrayEquals(
+        required array arr1, 
+        required array arr2, 
+        boolean blnCaseSensitive="false", 
+        boolean blnCaseSensitiveKeys="false"
+    ){
+    
+    	if(ArrayLen(arr1) != ArrayLen(arr2))
+          return false;
+    
+        for(var i = 1; i <= ArrayLen(arr1); i++) {
+          if(IsStruct(arr1[i])) {
+            if(!IsStruct(arr2[i]))
+              return false;
+            if(!StructEquals(arr1[i], arr2[i], blnCaseSensitive, blnCaseSensitiveKeys))
+              return false;
+          }
+          else if(IsArray(arr1[i])) {
+            if(!IsArray(arr2[i]))
+              return false;
+            if(!ArrayEquals(arr1[i], arr2[i], blnCaseSensitive, blnCaseSensitiveKeys))
+              return false;
+          }
+          else if(IsSimpleValue(arr1[i]) && IsSimpleValue(arr2[i])) {
+            if(blnCaseSensitive) {
+              if(Compare(arr1[i], arr2[i]) != 0)
+                return false;
+            }
+            else {
+              if(CompareNoCase(arr1[i], arr2[i]) != 0)
+                return false;
+            }
+          }
+          else {
+            throw("Can only compare structures, arrays, and simple values. No queries or complex objects.");
+          }
+        }
+        return true;
+    }
+
+	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
+	*/
+	public void function calculateActualPopentialFilterFacates_should_return_the_right_facet_option_IDs(){
+	    
+	    
+	    var facetOptions = this.getService().getProductFilterFacetOptions();
+	    var selectedFacets = this.makeRandomSelectedFilters();
+
+	    dump(selectedFacets);
+	    
+
+	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacates(selectedFacets);
+	    
+	    potentialFacetOptions.each( function(thisFacetName){
+	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
+	        var thisFacetAllAvailableOptions = facetOptions[ thisFacetName ];
+	        
+	        thisFacetPotentialOptions.each( function(optionID){
+	            expect(thisFacetAllAvailableOptions).toHaveKey( optionID );
+	        });
+	    });
+
+	   // dump(potentialFacetOptions);
+	}
+	
+	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
+	*/
+	public void function calculateActualPopentialFilterFacates_should_return_the_right_facet_option_relatations_option_IDs(){
+	    
+	    
+	    var facetOptions = this.getService().getProductFilterFacetOptions();
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    dump(selectedFacets);
+	    
+	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacates(selectedFacets);
+	    
+	    potentialFacetOptions.each( function(thisFacetName){
+	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
+            // dump("thisFacetName");
+	        // dump(thisFacetName);
+	        // dump(thisFacetPotentialOptions);
+	        thisFacetPotentialOptions.each( function(optionID){
+	            var potentialFacetOption = thisFacetPotentialOptions[ optionID ];
+                // dump("porential-facet-option");
+	            // dump(optionID);
+	            // dump(potentialFacetOption);
+	            potentialFacetOption.relations.each( function(relatedFacetName){
+	                var relatedFacetPotentialOptions = potentialFacetOption.relations[ relatedFacetName ];
+	                var relatedFacetAllAvailableOptions = facetOptions[ relatedFacetName ];
+                    // dump("porential-facet-option's related facet");
+                    // dump(relatedFacetName);
+    	            // dump(relatedFacetPotentialOptions);
+                    relatedFacetPotentialOptions.each( function(optionID){
+        	            expect(relatedFacetAllAvailableOptions).toHaveKey( optionID );
+        	        });
+	            });
+	        });
+	    });
+
+	   // dump(potentialFacetOptions);
+	}
+	
+	
+	
 }
 
 
