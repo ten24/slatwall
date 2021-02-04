@@ -464,7 +464,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// Process: Order
 	public any function processOrder_addOrderItem(required any order, required any processObject){
-
 		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
 
@@ -714,11 +713,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var childOrderItemData in arguments.processObject.getChildOrderItems()) {
 						var childOrderItem = this.newOrderItem();
 						populateChildOrderItems(newOrderItem,childOrderItem,childOrderItemData,arguments.order,orderFulfillment);
+						childOrderItem.validate(context='save');
+
+						if(childOrderItem.hasErrors()) {
+							//String replace the max order qty to give user feedback (with 0 as the minimum)
+							var messageReplaceKeys = {
+								quantityAvailable =  childOrderItem.getMaximumOrderQuantity(),
+								maxQuantity = childOrderItem.getSku().setting('skuOrderMaximumQuantity')
+							};
+							
+							for (var error in childOrderItem.getErrors()){
+								for (var errorMessage in childOrderItem.getErrors()[error]){
+									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+									message = childOrderItem.stringReplace(message);
+									
+									childOrderItem.addError('addOrderItem', message, true);
+									arguments.order.addError('addOrderItem', message, true);
+								}
+							}
+						}
 					}
 				}
 
 			}
-
 			// Setup the Sku / Quantity / Price details
 			newOrderItem.setSku( arguments.processObject.getSku() );
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
