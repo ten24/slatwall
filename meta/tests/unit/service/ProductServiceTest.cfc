@@ -56,221 +56,221 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		variables.service = variables.mockService.getProductServiceMock();
 	}
 
-	/**
-	* @test
-	*/
-	public void function getProductCollectionListTest(){
-		var collection = variables.service.getProductCollectionList();
-		assertEquals(collection.getCollectionObject(),'Product');
-	}
+// 	/**
+// 	* @test
+// 	*/
+// 	public void function getProductCollectionListTest(){
+// 		var collection = variables.service.getProductCollectionList();
+// 		assertEquals(collection.getCollectionObject(),'Product');
+// 	}
 
-	/**
-	* @test
-	*/
-	public void function createSingleSkuTest(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
+// 	/**
+// 	* @test
+// 	*/
+// 	public void function createSingleSkuTest(){
+// 		var productData = {
+// 			productID="",
+// 			productName="unitTestProduct" & createUUID(),
+// 			productCode="unitTestProductCode" & createUUID()
+// 		};
+// 		var product = createPersistedTestEntity('product',productData);
 
-		var processObject = product.getProcessObject('create');
-		product = variables.service.createSingleSku(product,processObject);
-		//assert a single sku was created
-		assertEquals(arrayLen(product.getSkus()),1);
-	}
+// 		var processObject = product.getProcessObject('create');
+// 		product = variables.service.createSingleSku(product,processObject);
+// 		//assert a single sku was created
+// 		assertEquals(arrayLen(product.getSkus()),1);
+// 	}
 
-	/**
-	* @test
-	*/
-	public void function createGiftCardProduct_sameAsPrice(){
+// 	/**
+// 	* @test
+// 	*/
+// 	public void function createGiftCardProduct_sameAsPrice(){
 
-		var productData = {
-			productID="",
-			productName="unitTestProductSameAsPrice" & createUUID(),
-			productCode="unitTestProductCodeSameAsPrice" & createUUID()
-		};
-		var product = createTestEntity('product',productData);
-		var processObject = product.getProcessObject('create');
+// 		var productData = {
+// 			productID="",
+// 			productName="unitTestProductSameAsPrice" & createUUID(),
+// 			productCode="unitTestProductCodeSameAsPrice" & createUUID()
+// 		};
+// 		var product = createTestEntity('product',productData);
+// 		var processObject = product.getProcessObject('create');
 
-		processObject.setPrice(20);
-		processObject.setRedemptionAmountType('sameAsPrice');
-		processObject.setRedemptionAmount(10);
+// 		processObject.setPrice(20);
+// 		processObject.setRedemptionAmountType('sameAsPrice');
+// 		processObject.setRedemptionAmount(10);
 
-		product = variables.service.createGiftCardProduct(product,processObject);
+// 		product = variables.service.createGiftCardProduct(product,processObject);
 
-		addEntityForTearDown(product);
+// 		addEntityForTearDown(product);
 
-		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
-		assertEquals(product.getDefaultSku().getRedemptionAmount(),20);
+// 		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
+// 		assertEquals(product.getDefaultSku().getRedemptionAmount(),20);
 
-	}
+// 	}
 
-	/**
-	* @test
-	*/
-	public void function createGiftCardProduct_fixedAmount(){
-		var someMoreProductData = {
-			productID="",
-			productName="unitTestProduct2FixedAmount" & createUUID(),
-			productCode="unitTestProductCode2FixedAmount" & createUUID()
-		};
-		var anotherProduct = createTestEntity('product',someMoreProductData);
-		var anotherProcessObject = anotherProduct.getProcessObject('create');
+// 	/**
+// 	* @test
+// 	*/
+// 	public void function createGiftCardProduct_fixedAmount(){
+// 		var someMoreProductData = {
+// 			productID="",
+// 			productName="unitTestProduct2FixedAmount" & createUUID(),
+// 			productCode="unitTestProductCode2FixedAmount" & createUUID()
+// 		};
+// 		var anotherProduct = createTestEntity('product',someMoreProductData);
+// 		var anotherProcessObject = anotherProduct.getProcessObject('create');
 
-		anotherProcessObject.setPrice(20);
-		anotherProcessObject.setRedemptionAmountType('fixedAmount');
-		anotherProcessObject.setRedemptionAmount(10);
+// 		anotherProcessObject.setPrice(20);
+// 		anotherProcessObject.setRedemptionAmountType('fixedAmount');
+// 		anotherProcessObject.setRedemptionAmount(10);
 
-		anotherProduct = variables.service.createGiftCardProduct(anotherProduct,anotherProcessObject);
+// 		anotherProduct = variables.service.createGiftCardProduct(anotherProduct,anotherProcessObject);
 
-		addEntityForTearDown(anotherProduct);
+// 		addEntityForTearDown(anotherProduct);
 
-		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmountType(),'fixedAmount');
-		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmount(),10);
-	}
+// 		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmountType(),'fixedAmount');
+// 		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmount(),10);
+// 	}
 
-	/**
-	* @test
-	*/
-	public void function createGiftCardProduct_percentage(){
-		var evenMoreProductData = {
-			productID="",
-			productName="unitTestProduct3Percentage" & createUUID(),
-			productCode="unitTestProductCode3Percentage" & createUUID()
-		};
-		var yetAnotherProduct = createTestEntity('product',evenMoreProductData);
-		var yetAnotherProcessObject = yetAnotherProduct.getProcessObject('create');
+// 	/**
+// 	* @test
+// 	*/
+// 	public void function createGiftCardProduct_percentage(){
+// 		var evenMoreProductData = {
+// 			productID="",
+// 			productName="unitTestProduct3Percentage" & createUUID(),
+// 			productCode="unitTestProductCode3Percentage" & createUUID()
+// 		};
+// 		var yetAnotherProduct = createTestEntity('product',evenMoreProductData);
+// 		var yetAnotherProcessObject = yetAnotherProduct.getProcessObject('create');
 
-		yetAnotherProcessObject.setPrice(20);
-		yetAnotherProcessObject.setRedemptionAmountType('percentage');
-		yetAnotherProcessObject.setRedemptionAmount(10);
+// 		yetAnotherProcessObject.setPrice(20);
+// 		yetAnotherProcessObject.setRedemptionAmountType('percentage');
+// 		yetAnotherProcessObject.setRedemptionAmount(10);
 
-		yetAnotherProduct = variables.service.createGiftCardProduct(yetAnotherProduct, yetAnotherProcessObject);
+// 		yetAnotherProduct = variables.service.createGiftCardProduct(yetAnotherProduct, yetAnotherProcessObject);
 
-		addEntityForTearDown(yetAnotherProduct);
+// 		addEntityForTearDown(yetAnotherProduct);
 
-		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmountType(),'percentage');
-		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmount(),2);
-	}
+// 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmountType(),'percentage');
+// 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmount(),2);
+// 	}
  
-	/**
-	* @test
-	*/
-	public void function saveProductTest_checkifSkusAreSetToInactive(){
-		var productData = {
-			productID="",
-			productName="myproduct"& createUUID(),
-			productCode="myproductcode" & createUUID(),
-			activeFlag=1,
-			publishedFlag=1,
-			productType={
-				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
-			}
-		};
-		var product = createPersistedTestEntity('Product',productData);
+// 	/**
+// 	* @test
+// 	*/
+// 	public void function saveProductTest_checkifSkusAreSetToInactive(){
+// 		var productData = {
+// 			productID="",
+// 			productName="myproduct"& createUUID(),
+// 			productCode="myproductcode" & createUUID(),
+// 			activeFlag=1,
+// 			publishedFlag=1,
+// 			productType={
+// 				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+// 			}
+// 		};
+// 		var product = createPersistedTestEntity('Product',productData);
 
 
-		//start of with an active product
-		assert(product.getActiveFlag());
-		assert(product.getPublishedFlag());
+// 		//start of with an active product
+// 		assert(product.getActiveFlag());
+// 		assert(product.getPublishedFlag());
 
-		//add some active skus
-		var skuData = {
-			skuID="",
-			skuCode="skucode"&createUUID(),
-			activeFlag=1,
-			publishedFlag=1,
-			product={
-				productID=product.getProductID()
-			}
-		};
-		var sku = createPersistedTestEntity('Sku',skuData);
+// 		//add some active skus
+// 		var skuData = {
+// 			skuID="",
+// 			skuCode="skucode"&createUUID(),
+// 			activeFlag=1,
+// 			publishedFlag=1,
+// 			product={
+// 				productID=product.getProductID()
+// 			}
+// 		};
+// 		var sku = createPersistedTestEntity('Sku',skuData);
 
-		var skuData2 = {
-			skuID="",
-			skuCode="skucode"&createUUID(),
-			activeFlag=1,
-			publishedFlag=1,
-			product={
-				productID=product.getProductID()
-			}
-		};
-		var sku2 = createPersistedTestEntity('Sku',skuData2);
+// 		var skuData2 = {
+// 			skuID="",
+// 			skuCode="skucode"&createUUID(),
+// 			activeFlag=1,
+// 			publishedFlag=1,
+// 			product={
+// 				productID=product.getProductID()
+// 			}
+// 		};
+// 		var sku2 = createPersistedTestEntity('Sku',skuData2);
 
-		//assert that all skus are active
-		var skus = product.getSkus();
-		for(var sku in skus){
-			assert(sku.getActiveFlag());
-		}
+// 		//assert that all skus are active
+// 		var skus = product.getSkus();
+// 		for(var sku in skus){
+// 			assert(sku.getActiveFlag());
+// 		}
 
-		//set the product as inactive via the service
-		product = variables.service.saveProduct(product,{activeFlag=0});
+// 		//set the product as inactive via the service
+// 		product = variables.service.saveProduct(product,{activeFlag=0});
 
-		//assert that we set it as inactive
-		assertFalse(product.getActiveFlag());
+// 		//assert that we set it as inactive
+// 		assertFalse(product.getActiveFlag());
 
-		assertFalse(product.getPublishedFlag());
+// 		assertFalse(product.getPublishedFlag());
 
-		//and therefore we should be able to asssume that all skus were set to inactive as well if there were no validation errors
-		//because the dao does the update we need to retrieve the data via dao method as well
-		var skusquery = new Query();
-		skusquery.addParam(name="productID",value=product.getProductID(),cfsqltype="cf_sql_varchar");
-		var skus = skusquery.execute(
-			sql='select s.activeFlag,s.publishedFlag from SwSku s where s.productID=:productID'
-		).getResult();
+// 		//and therefore we should be able to asssume that all skus were set to inactive as well if there were no validation errors
+// 		//because the dao does the update we need to retrieve the data via dao method as well
+// 		var skusquery = new Query();
+// 		skusquery.addParam(name="productID",value=product.getProductID(),cfsqltype="cf_sql_varchar");
+// 		var skus = skusquery.execute(
+// 			sql='select s.activeFlag,s.publishedFlag from SwSku s where s.productID=:productID'
+// 		).getResult();
 
 
-		for(var sku in skus){
-			assertFalse(sku.activeFlag);
-			assertFalse(sku.publishedFlag);
-		}
-	}
+// 		for(var sku in skus){
+// 			assertFalse(sku.activeFlag);
+// 			assertFalse(sku.publishedFlag);
+// 		}
+// 	}
 
-	public void function saveProductWithProductListingPages(){
+// 	public void function saveProductWithProductListingPages(){
 
-		var productData = {
-			productID= '',
-			productName="product"& createUUID(),
-			productCode="productcode" & createUUID(),
-			activeFlag=1,
-			publishedFlag=1,
-			productType={
-				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
-			}
-		};
-		var product = createPersistedTestEntity('Product',productData);
+// 		var productData = {
+// 			productID= '',
+// 			productName="product"& createUUID(),
+// 			productCode="productcode" & createUUID(),
+// 			activeFlag=1,
+// 			publishedFlag=1,
+// 			productType={
+// 				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+// 			}
+// 		};
+// 		var product = createPersistedTestEntity('Product',productData);
 
-		var contentData1 = {
-			contentID=''
-		};
-		var content1 = createPersistedTestEntity('Content',contentData1);
-		var contentData2 = {
-			contentID=''
-		};
-		var content2 = createPersistedTestEntity('Content',contentData2);
-		var contentData3 = {
-			contentID=''
-		};
-		var content3 = createPersistedTestEntity('Content',contentData3);
+// 		var contentData1 = {
+// 			contentID=''
+// 		};
+// 		var content1 = createPersistedTestEntity('Content',contentData1);
+// 		var contentData2 = {
+// 			contentID=''
+// 		};
+// 		var content2 = createPersistedTestEntity('Content',contentData2);
+// 		var contentData3 = {
+// 			contentID=''
+// 		};
+// 		var content3 = createPersistedTestEntity('Content',contentData3);
 
-		var serviceData = {
-			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID(), content3.getContentID()])
-		};
+// 		var serviceData = {
+// 			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID(), content3.getContentID()])
+// 		};
 
-		var productToAssert = variables.service.saveProduct(product, serviceData);
+// 		var productToAssert = variables.service.saveProduct(product, serviceData);
 
-		assert(arrayLen(productToAssert.getListingPages()), 3);
+// 		assert(arrayLen(productToAssert.getListingPages()), 3);
 
-		var serviceData2 = {
-			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID()])
-		};
+// 		var serviceData2 = {
+// 			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID()])
+// 		};
 
-		var productToAssert2 = variables.service.saveProduct(product, serviceData2);
+// 		var productToAssert2 = variables.service.saveProduct(product, serviceData2);
 
-		assert(arrayLen(productToAssert2.getListingPages()), 3);
-	}
+// 		assert(arrayLen(productToAssert2.getListingPages()), 3);
+// 	}
 	
 	
 	
@@ -316,7 +316,260 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    });
 	}
 	
-	public struct function makeRandomSelectedFilters(){
+	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
+	*/
+	public void function calculatePopentialFilterFacetes_should_not_modify_cached_calculated_facet_options(){
+	    
+	    
+	    var oldFacetOptions = structCopy( this.getService().getProductFilterFacetOptions() );
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    dump(selectedFacets);
+	    
+	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
+	    var newFacetOptions = this.getService().getProductFilterFacetOptions();
+	    
+	    dump(
+	      this.StructEquals(oldFacetOptions, newFacetOptions )  
+	    );
+	    
+	    dump(newFacetOptions);
+	}
+	
+	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
+	*/
+	public void function calculatePopentialFilterFacetes_should_return_the_right_facet_option_IDs(){
+	    
+	    
+	    var facetOptions = this.getService().getProductFilterFacetOptions();
+	    var selectedFacets = this.makeRandomSelectedFilters();
+
+	    dump(selectedFacets);
+	    
+
+	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
+	    
+	    potentialFacetOptions.each( function(thisFacetName){
+	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
+	        var thisFacetAllAvailableOptions = facetOptions[ thisFacetName ];
+	        
+	        thisFacetPotentialOptions.each( function(optionID){
+	            expect(thisFacetAllAvailableOptions).toHaveKey( optionID );
+	        });
+	    });
+
+	   // dump(potentialFacetOptions);
+	}
+	
+	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
+	*/
+	public void function calculatePopentialFilterFacetes_should_return_the_right_facet_option_relatations_option_IDs(){
+	    
+	    
+	    var facetOptions = this.getService().getProductFilterFacetOptions();
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    dump(selectedFacets);
+	    
+	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
+	    
+	    potentialFacetOptions.each( function(thisFacetName){
+	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
+            // dump("thisFacetName");
+	        // dump(thisFacetName);
+	        // dump(thisFacetPotentialOptions);
+	        thisFacetPotentialOptions.each( function(optionID){
+	            var potentialFacetOption = thisFacetPotentialOptions[ optionID ];
+                // dump("porential-facet-option");
+	            // dump(optionID);
+	            // dump(potentialFacetOption);
+	            potentialFacetOption.relations.each( function(relatedFacetName){
+	                var relatedFacetPotentialOptions = potentialFacetOption.relations[ relatedFacetName ];
+	                var relatedFacetAllAvailableOptions = facetOptions[ relatedFacetName ];
+                    // dump("porential-facet-option's related facet");
+                    // dump(relatedFacetName);
+    	            // dump(relatedFacetPotentialOptions);
+                    relatedFacetPotentialOptions.each( function(optionID){
+        	            expect(relatedFacetAllAvailableOptions).toHaveKey( optionID );
+        	        });
+	            });
+	        });
+	    });
+
+	   // dump(potentialFacetOptions);
+	}
+	
+	
+	
+	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
+	*/
+	public void function calculatePopentialFilterFacetes_should_return_all_facet_options_when_no_filters_are_applied(){
+	    
+	    var oldFacetOptions = structCopy( this.getService().getProductFilterFacetOptions() );
+
+	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes({});
+	    
+	     dump(
+	      this.StructEquals(oldFacetOptions, potentialFacetOptions )  
+	    );
+	}
+	
+	
+	/**
+	 * @test
+	 * 
+	 * This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
+	*/
+	public void function calculatePopentialFilterFacetes_should_only_return_the_selected_brands_at_max(){
+	    
+	    
+	    var allFacetOptions = this.getService().getProductFilterFacetOptions();
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    var selectedBrands = selectedFacets.brands;
+	    
+	    // dump('selectedBrands:');
+	    // dump(selectedBrands);
+	    
+	    var calculatedPotentialFacetOptions = this.getService().calculatePopentialFilterFacetes({
+	        'brands': selectedBrands
+	    });
+	    
+        // dump('calculatedPotentialFacetOptions:');
+	    // dump(calculatedPotentialFacetOptions);
+	    
+        if( selectedBrands.isEmpty() ){
+            // creating a copy here so we accidently update the cached options;
+            var potentialBrandsOptions = structCopy( allFacetOptions['brands'] ); 
+        } else {
+            var potentialBrandsOptions = {};
+            for(var thisBrandID in selectedBrands ){
+                if(structKeyExists(allFacetOptions.brands, thisBrandID) ){
+                    potentialBrandsOptions[ thisBrandID ] = structCopy( allFacetOptions.brands[ thisBrandID ] );
+                }
+            }
+        }
+        
+        // dump('potentialBrandsOptions:');
+        // dump(potentialBrandsOptions);
+        
+        calculatedPotentialFacetOptions.brands.each(function(thisBandID){
+            dump(thisBandID);
+            expect(potentialBrandsOptions).toHaveKey( thisBandID );
+        });
+	}
+	
+	
+	        
+	/**
+	* @test
+	* 
+	* This test times the calculatePopentialFilterFacetes
+	*/
+	public void function calculatePopentialFilterFacetes_should_be_fast(){
+	    
+	    
+	    var facetOptions = this.getService().getProductFilterFacetOptions();
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    dump(selectedFacets);
+	    
+	    var start = getTickCount();
+	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
+	   // sleep(1);
+	    expect( (getTickCount()-start) < 1 ).toBeTrue('it should take less than 1 ms ;)');
+    }
+	
+	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
+	*/
+	public void function calculatePopentialFilterFacetes_should_only_return_selected_brands_possible_relations_at_max(){
+	    
+	    
+	    var allFacetOptions = this.getService().getProductFilterFacetOptions();
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    var selectedBrands = selectedFacets.brands;
+	    
+	   // dump('selectedBrands:');
+	   // dump(selectedBrands);
+	    
+	    var calculatedPotentialFacetOptions = this.getService().calculatePopentialFilterFacetes({
+	        'brands': selectedBrands
+	    });
+	    
+        if( selectedBrands.isEmpty() ){
+            // creating a copy here so we accidently update the cached options;
+            var potentialBrandsOptions = structCopy( allFacetOptions['brands'] ); 
+        } else {
+            var potentialBrandsOptions = {};
+            for(var thisBrandID in selectedBrands ){
+                if(structKeyExists(allFacetOptions.brands, thisBrandID) ){
+                    potentialBrandsOptions[ thisBrandID ] = structCopy( allFacetOptions.brands[ thisBrandID ] );
+                }
+            }
+        }
+        
+        // dump('potentialBrandsOptions:');
+        // dump(potentialBrandsOptions);
+        
+        // dump('calculatedPotentialFacetOptions:');
+        // dump(calculatedPotentialFacetOptions);
+        
+        var expectedBrandRelations = {};
+        
+        //calculate pottential-brand-facet-relations
+        potentialBrandsOptions.each( function(thisBrandOptionID){
+            
+            var thisBrandOption = allFacetOptions.brands[thisBrandOptionID];
+            
+            thisBrandOption.relations.each( function(brandOptionRelationName){
+               if(!structKeyExists(expectedBrandRelations, brandOptionRelationName)){
+                   expectedBrandRelations[ brandOptionRelationName ] = {};
+               } 
+               expectedBrandRelations[brandOptionRelationName].append(thisBrandOption.relations[brandOptionRelationName]);
+            });
+        });
+        
+        
+        // dump('expectedBrandRelations:');
+        // dump(expectedBrandRelations);
+        
+        calculatedPotentialFacetOptions.each(function(thisFacetName){
+            if(thisFacetName == 'brands'){
+                return;    
+            }
+            
+            var calculatedThisFacetNameOptions = calculatedPotentialFacetOptions[ thisFacetName ];
+            calculatedThisFacetNameOptions.each(function(thisOptionID){
+                expect( expectedBrandRelations[thisFacetName] ).toHaveKey( thisOptionID );
+            });
+        });
+        
+	}
+	
+	
+	
+	
+	
+	/**************** Utilitis ****************/
+	
+	
+		public struct function makeRandomSelectedFilters(){
 	    
 	    var selectedFacets = {
 	        "brands"        : [],
@@ -364,28 +617,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    }
 	    
 	    return selectedFacets;
-	}
-	
-	/**
-	* @test
-	* 
-	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
-	*/
-	public void function calculateActualPopentialFilterFacates_should_not_modify_cached_calculated_facet_options(){
-	    
-	    
-	    var oldFacetOptions = structCopy( this.getService().getProductFilterFacetOptions() );
-	    var selectedFacets = this.makeRandomSelectedFilters();
-	    dump(selectedFacets);
-	    
-	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacates(selectedFacets);
-	    var newFacetOptions = this.getService().getProductFilterFacetOptions();
-	    
-	    dump(
-	      this.StructEquals(oldFacetOptions, newFacetOptions )  
-	    );
-	    
-	    dump(newFacetOptions);
 	}
 	
 	
@@ -492,79 +723,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         }
         return true;
     }
-
-	
-	/**
-	* @test
-	* 
-	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
-	*/
-	public void function calculateActualPopentialFilterFacates_should_return_the_right_facet_option_IDs(){
-	    
-	    
-	    var facetOptions = this.getService().getProductFilterFacetOptions();
-	    var selectedFacets = this.makeRandomSelectedFilters();
-
-	    dump(selectedFacets);
-	    
-
-	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacates(selectedFacets);
-	    
-	    potentialFacetOptions.each( function(thisFacetName){
-	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
-	        var thisFacetAllAvailableOptions = facetOptions[ thisFacetName ];
-	        
-	        thisFacetPotentialOptions.each( function(optionID){
-	            expect(thisFacetAllAvailableOptions).toHaveKey( optionID );
-	        });
-	    });
-
-	   // dump(potentialFacetOptions);
-	}
-	
-	
-	/**
-	* @test
-	* 
-	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
-	*/
-	public void function calculateActualPopentialFilterFacates_should_return_the_right_facet_option_relatations_option_IDs(){
-	    
-	    
-	    var facetOptions = this.getService().getProductFilterFacetOptions();
-	    var selectedFacets = this.makeRandomSelectedFilters();
-	    dump(selectedFacets);
-	    
-	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacates(selectedFacets);
-	    
-	    potentialFacetOptions.each( function(thisFacetName){
-	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
-            // dump("thisFacetName");
-	        // dump(thisFacetName);
-	        // dump(thisFacetPotentialOptions);
-	        thisFacetPotentialOptions.each( function(optionID){
-	            var potentialFacetOption = thisFacetPotentialOptions[ optionID ];
-                // dump("porential-facet-option");
-	            // dump(optionID);
-	            // dump(potentialFacetOption);
-	            potentialFacetOption.relations.each( function(relatedFacetName){
-	                var relatedFacetPotentialOptions = potentialFacetOption.relations[ relatedFacetName ];
-	                var relatedFacetAllAvailableOptions = facetOptions[ relatedFacetName ];
-                    // dump("porential-facet-option's related facet");
-                    // dump(relatedFacetName);
-    	            // dump(relatedFacetPotentialOptions);
-                    relatedFacetPotentialOptions.each( function(optionID){
-        	            expect(relatedFacetAllAvailableOptions).toHaveKey( optionID );
-        	        });
-	            });
-	        });
-	    });
-
-	   // dump(potentialFacetOptions);
-	}
-	
-	
-	
 }
 
 

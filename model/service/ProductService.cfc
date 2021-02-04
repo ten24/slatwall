@@ -1694,96 +1694,89 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	
-	public struct function calculatePopentialFilterFacates(required struct selectedFacets ){
+	public struct function calculatePopentialFilterFacetes(required struct selectedFacets ){
 	    param name="arguments.selectedFacets.brands" default={};
 	    param name="arguments.selectedFacets.options" default={};
 	    param name="arguments.selectedFacets.optionGroups" default={};
 	    param name="arguments.selectedFacets.productTypes" default={};
 
-	    
         var facets = this.getProductFilterFacets();
 
-        // creating a new struct here and merging with the old one, as we don't want to modify the cached data;
-        var potentialFecetOptions = {};
-        potentialFecetOptions.append( this.getProductFilterFacetOptions() );
+        // creating a copy here as we don't want to modify the cached data;
+        var potentialFacetOptions =  structCopy( this.getProductFilterFacetOptions() );
         
         for(var thisFacet in facets){
             
             // calculate available options for this-facet
-            var thisFacetOptions =  potentialFecetOptions[ thisFacet.id ];
-            if( !structKeyExists(arguments.selectedFacets, thisFacet.id) || arguments.selectedFacets[thisFacet.id].isEmpty() ){
-                
-                // creating a copy here so we accidently update the cached options;
-                potentialFecetOptions[ thisFacet.id ] = structCopy( thisFacetOptions ); 
-                
-            } else {
-                var filteredOptions = {};
+            if( structKeyExists(arguments.selectedFacets, thisFacet.id) && arguments.selectedFacets[thisFacet.id].isEmpty() ){
+                var filteredThisOptions = {};
+                var potentialThisFacetOptions =  potentialFacetOptions[ thisFacet.id ];
                 for(var optionID in arguments.selectedFacets[thisFacet.id] ){
-                    if(structKeyExists(thisFacetOptions, optionID) ){
-                        filteredOptions[ optionID ] = structCopy( thisFacetOptions[ optionID ] );
+                    if(structKeyExists(potentialThisFacetOptions, optionID) ){
+                        filteredThisOptions[ optionID ] = potentialThisFacetOptions[ optionID ];
                     }
                 }
                 
-                potentialFecetOptions[ thisFacet.id ] = filteredOptions;
-            }
+                potentialFacetOptions[ thisFacet.id ] = filteredThisOptions;
+            } 
+            // else nothing to do, and all of the available facet options are potential options
             
             
-            // now calculate options for remainig facets
-            thisFacetOptions = potentialFecetOptions[ thisFacet.id ];
-            
+            // now calculate options for remainig facets, by eliminating whatever non-related facet-options
             for( var otherFacet in facets ){
                 
                 if(otherFacet.id == thisFacet.id ){
                     continue;
                 }
                 
-                for(var thisOptionID in thisFacetOptions){
-                    
-                    var thisFacetOption = thisFacetOptions[ thisOptionID ];
+                var filteredOtherFacetOptions = {};
+                
+                var potentialThisFacetOptions = potentialFacetOptions[ thisFacet.id ];
+                for(var thisOptionID in potentialThisFacetOptions){
+
+                    var thisFacetOption = potentialThisFacetOptions[ thisOptionID ];
                     
                     // if this option has a relation with other facet, filter them out
                     if( structKeyExists(thisFacetOption.relations, otherFacet.id) ){
                         
-                        var thisOptionRelationsWithOtherFacet = thisFacetOption.relations[ otherFacet.id ];
+                        var thisOptionRelationsWithOtherFacet = thisFacetOption.relations[ otherFacet.id ]; // e.g. this productType's brands
+            
+                        var availableOtherFacetOptions = potentialFacetOptions[ otherFacet.id ]; // e.g. potential-remaining brand options
                         
-                        //copying... as we don't want to modify the cached structs
-                        var filteredOtherFacetOptions = structCopy( potentialFecetOptions[ otherFacet.id ]);
-
                         // now filterout other-facet options relations with this-facet
-                        for(var relatedOptionID in thisOptionRelationsWithOtherFacet ){
+                        for(var relatedOhterFacetOptionID in thisOptionRelationsWithOtherFacet ){
                             
-                            //this check is needed as some-other facet can also have a relation with this-other-facet, and can filterout more potential-options. 
-                            if(!structKeyExists(filteredOtherFacetOptions, relatedOptionID) ){
-                                thisOptionRelationsWithOtherFacet.delete(relatedOptionID);
+                            // this check is needed as some-other facet can also have a relation with this-other-facet, 
+                            // and can filterout more potential-options.
+                            if(!structKeyExists(availableOtherFacetOptions, relatedOhterFacetOptionID) ){
+                                thisOptionRelationsWithOtherFacet.delete(relatedOhterFacetOptionID);
                                 continue; // nothing else to do
                             }
                                 
-                            var otherRelatedFacetOption = filteredOtherFacetOptions[ relatedOptionID ];
+                            var relatedOtherFacetOption = availableOtherFacetOptions[ relatedOhterFacetOptionID ]; // to get the full option-struct instead of an ID
+                            
                             //if related facet-option also has a relationship with this facet, filter them out
-                            if( structKeyExists(otherRelatedFacetOption.relations, thisFacet.id) ){
+                            if( structKeyExists(relatedOtherFacetOption.relations, thisFacet.id) ){
                                 
-                                var otherRelatedOptionRelationsWithThisFacet = otherRelatedFacetOption.relations[ thisFacet.id ] ;
+                                var otherFacetOptionRelationsWithThisFacet = relatedOtherFacetOption.relations[ thisFacet.id ] ;
                                 //delete the relations back relation with this option, if they does not qualify
-                                for(var relatedOptionRelationID in otherRelatedOptionRelationsWithThisFacet ){
-                                    if(!structKeyExists(thisFacetOptions, relatedOptionRelationID) ){
-                                       otherRelatedOptionRelationsWithThisFacet.delete(relatedOptionRelationID);
+                                for(var relatedThisfacetOptionID in otherFacetOptionRelationsWithThisFacet ){
+                                    if(!structKeyExists(potentialThisFacetOptions, relatedThisfacetOptionID) ){
+                                       otherFacetOptionRelationsWithThisFacet.delete(relatedThisfacetOptionID);
                                     }
                                 }
                             }
                             
+                            filteredOtherFacetOptions[ relatedOhterFacetOptionID ] = relatedOtherFacetOption;
                         }
-                        
-                        potentialFecetOptions[ otherFacet.id ] = filteredOtherFacetOptions;
                     }
                 }    
-            
+                
+                potentialFacetOptions[ otherFacet.id ] = filteredOtherFacetOptions;
             }
-            
-            
         }
-        
-        return potentialFecetOptions;
-        
+
+        return potentialFacetOptions;
 	}
 
 	
