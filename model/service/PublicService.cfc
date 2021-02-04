@@ -2566,5 +2566,49 @@ component  accessors="true" output="false"
         var sku = getSkuService().getSku(arguments.data.skuID);
         data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
     }
-    
+ 
+    /***
+	 * Method to return combined list of category, producttype, brand, option
+	 * @param - pageRecordsShow
+	 * @param - allowProductAssignmentFlag
+	 * @param - activeFlag
+	 * @return - filterOptionsResponse - custom array of keys
+	 **/
+    public void function getProductFilterOptions() {
+	    param name="arguments.data.allowProductAssignmentFlag" default=1;
+	    param name="arguments.data.activeFlag" default=1;
+        param name="arguments.data.pageRecordsShow" default=1000;
+        
+        // Category Collection List
+        var categoryCollectionList = getService("ContentService").getCategoryCollectionList();
+        categoryCollectionList.addFilter("allowProductAssignmentFlag", arguments.data.allowProductAssignmentFlag );
+        categoryCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        var categories = categoryCollectionList.getRecords(formatRecords=false);
+        
+        // Product Type Collection List
+        var productTypeCollectionList = getProductService().getProductTypeCollectionList();
+        productTypeCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        productTypeCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        var productTypes = productTypeCollectionList.getRecords(formatRecords=false);
+        
+        // Brand Collection List
+        var brandCollectionList = getProductService().getBrandCollectionList();
+        brandCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        brandCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        var brands = brandCollectionList.getRecords(formatRecords=false);
+        
+        // Option Collection List
+        var optionCollectionList = getProductService().getOptionCollectionList();
+        optionCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        optionCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+        var options = optionCollectionList.getRecords(formatRecords=false);
+        
+        arguments.data.ajaxResponse['data'] = {
+           'category'   : categories, 
+           'productType': productTypes,
+           'brand'      : brands,
+           'option'     : options
+        };
+        getHibachiScope().addActionResult("public:scope.getProductFilterOptions",false);
+    }   
 }
