@@ -35,7 +35,7 @@ const AccountSidebar = ({ user }) => {
         </div>
         <ul className="list-unstyled mb-0">
           <li className="border-bottom mb-0">
-            <Link to="/my-account/order-history" className="nav-link-style d-flex align-items-center px-4 py-3">
+            <Link to="/my-account/orders" className="nav-link-style d-flex align-items-center px-4 py-3">
               <i className="far fa-shopping-bag pr-2" /> Order History
             </Link>
           </li>

@@ -15,6 +15,7 @@ const AccountFavorites = React.lazy(() => import('../../components/Account/Accou
 
 const AccountAddresses = React.lazy(() => import('../../components/Account/AccountAddresses/AccountAddresses'))
 const CreateOrEditAccountAddress = React.lazy(() => import('../../components/Account/AccountAddresses/CreateOrEditAccountAddress'))
+const AccountOrderDetail = React.lazy(() => import('../../components/Account/AccountOrderDetail/AccountOrderDetail'))
 
 const AccountPaymentMethods = React.lazy(() => import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods'))
 
@@ -52,7 +53,10 @@ const MyAccount = ({ auth, user }) => {
           <Route path={`${match.path}/favorites`}>
             <AccountFavorites />
           </Route>
-          <Route path={`${match.path}/order-history`}>
+          <Route path={`${match.path}/orders/:id`}>
+            <AccountOrderDetail path={path[0]} forwardState={loc.state} />
+          </Route>
+          <Route path={`${match.path}/orders`}>
             <AccountOrderHistory />
           </Route>
           <Route path={`${match.path}/profile`}>
