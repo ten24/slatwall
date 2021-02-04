@@ -13,7 +13,7 @@ const NotFound = ({ title, customBody, customSummary }) => {
     dispatch(
       getContent({
         content: {
-          notfound: ['customBody', 'customSummary', 'title'],
+          "404": ['customBody', 'customSummary', 'title'],
         },
       })
     )
@@ -46,7 +46,7 @@ const NotFound = ({ title, customBody, customSummary }) => {
 }
 
 function mapStateToProps(state) {
-  return { ...state.content.notfound }
+  return { ...state.content["404"] }
 }
 
 NotFound.propTypes = {}
