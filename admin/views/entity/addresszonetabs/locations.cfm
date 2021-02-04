@@ -51,11 +51,10 @@ Notes:
 
 
 <cfparam name="rc.addressZone" type="any" />
-
 <cfscript>
     var locationCollectionList = getHibachiScope().getService('addressService').getAddressZoneCollectionList();
     locationCollectionList.addFilter('addressZoneID',rc.addressZone.getAddressZoneID(),'=');
-    
+    locationCollectionList.addFilter('addressZoneLocations.addressID','NOT NULL','IS');
     locationCollectionList.setDisplayProperties('addressZoneLocations.countryCode,addressZoneLocations.stateCode,addressZoneLocations.city,addressZoneLocations.postalCode', {
     	isSearchable=true,
 		isVisible=true,
@@ -68,7 +67,6 @@ Notes:
 		isDeletable=false
 	});
 </cfscript>
-
 <cfoutput>
 	<hb:HibachiListingDisplay 
 	        collectionList ="#locationCollectionList#"
