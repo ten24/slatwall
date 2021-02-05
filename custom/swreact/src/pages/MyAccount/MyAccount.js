@@ -3,6 +3,8 @@ import { Layout } from '../../components'
 import { connect, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, useLocation } from 'react-router-dom'
 import { getUser } from '../../actions/userActions'
+import CreateAccount from '../../components/Account/CreateAccount/CreateAccount'
+import ForgotPassword from '../../components/Account/ForgotPassword/ForgotPassword'
 
 // I think we should be prelaoding these https://medium.com/maxime-heckel/react-lazy-a-take-on-preloading-views-cc90be869f14
 
@@ -65,7 +67,19 @@ const MyAccount = ({ auth, user }) => {
           <Route path={match.path}>{auth.isAuthenticanted && <AccountOverview />}</Route>
         </Switch>
       )}
-      {!auth.isAuthenticanted && <AccountLogin />}
+      {!auth.isAuthenticanted && (
+        <Switch>
+          <Route path={`${match.path}/createAccount`}>
+            <CreateAccount />
+          </Route>
+          <Route path={`${match.path}/forgotPassword`}>
+            <ForgotPassword />
+          </Route>
+          <Route path={match.path}>
+            <AccountLogin />
+          </Route>
+        </Switch>
+      )}
     </Layout>
   )
 }

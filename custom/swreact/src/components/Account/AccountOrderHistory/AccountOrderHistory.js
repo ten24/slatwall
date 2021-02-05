@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
-import { connect, useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getAccountOrders } from '../../../actions/userActions'
 import { SlatwalApiService } from '../../../services'
 import Pagination from '../../Listing/Pagination'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 
 const ToolBar = ({ term, updateTerm }) => {
   return (

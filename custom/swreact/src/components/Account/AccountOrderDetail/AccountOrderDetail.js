@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { SlatwalApiService } from '../../../services'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import OrderShipments from './OrderShipments'
 import OrderNav from './OrderNav'
 import OrderToolbar from './OrderToolbar'

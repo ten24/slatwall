@@ -1,7 +1,7 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 
 const ProductTile = ({ brand, productTile, price, displayPrice, linkUrl }) => {
   return (

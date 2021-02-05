@@ -80,7 +80,7 @@ const AccountHeader = ({ crumbs, title }) => {
   )
 }
 
-const AccountLayout = ({ crumbs, children, title, user }) => {
+const MyAccountLayout = ({ crumbs, children, title, user }) => {
   return (
     <>
       <AccountHeader crumbs={crumbs} title={title} />
@@ -93,7 +93,22 @@ const AccountLayout = ({ crumbs, children, title, user }) => {
     </>
   )
 }
+
+const PromptLayout = ({ children }) => {
+  return (
+    <div className="container py-4 py-lg-5 my-4">
+      <div className="row d-flex justify-content-center">
+        <div className="col-md-6">
+          <div className="card box-shadow">
+            <div className="card-body">{children}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 const mapStateToProps = state => {
   return { user: state.userReducer }
 }
-export default connect(mapStateToProps)(AccountLayout)
+const AccountLayout = connect(mapStateToProps)(MyAccountLayout)
+export { AccountLayout, PromptLayout }
