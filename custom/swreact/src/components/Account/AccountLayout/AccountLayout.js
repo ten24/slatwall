@@ -46,7 +46,7 @@ const AccountSidebar = ({ user }) => {
           </li>
           <li className="border-bottom mb-0">
             <Link to="/my-account/favorites" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-heart pr-2" /> Favorties
+              <i className="far fa-heart pr-2" /> favorites
             </Link>
           </li>
           <li className="border-bottom mb-0">

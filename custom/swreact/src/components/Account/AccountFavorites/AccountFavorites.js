@@ -30,7 +30,7 @@ const ProductTile = ({ brand, productTile, price, displayPrice, linkUrl }) => {
   )
 }
 
-const AccountFavorites = ({ crumbs, title, items }) => {
+const AccountFavorites = ({ crumbs, title = 'My Favorites', items }) => {
   return (
     <AccountLayout crumbs={crumbs} title={title}>
       <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
