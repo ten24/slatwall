@@ -332,11 +332,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
 	    var newFacetOptions = this.getService().getProductFilterFacetOptions();
 	    
-	    dump(
+	    expect(
 	      this.StructEquals(oldFacetOptions, newFacetOptions )  
-	    );
-	    
-	    dump(newFacetOptions);
+	    ).toBeTrue("calculatePopentialFilterFacetes modified the cached facet options");
 	}
 	
 	
@@ -423,9 +421,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
 	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes({});
 	    
-	     dump(
-	      this.StructEquals(oldFacetOptions, potentialFacetOptions )  
-	    );
+	     expect( this.StructEquals(oldFacetOptions, potentialFacetOptions )  )
+	     .toBeTrue("calculatePopentialFilterFacetes didn't return all facet's all options when no filters are applied");
 	}
 	
 	
@@ -467,7 +464,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         // dump(potentialBrandsOptions);
         
         calculatedPotentialFacetOptions.brands.each(function(thisBandID){
-            dump(thisBandID);
             expect(potentialBrandsOptions).toHaveKey( thisBandID );
         });
 	}

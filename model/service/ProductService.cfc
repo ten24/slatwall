@@ -1695,10 +1695,10 @@ component extends="HibachiService" accessors="true" {
 	
 	
 	public struct function calculatePopentialFilterFacetes(required struct selectedFacets ){
-	    param name="arguments.selectedFacets.brands" default={};
-	    param name="arguments.selectedFacets.options" default={};
-	    param name="arguments.selectedFacets.optionGroups" default={};
-	    param name="arguments.selectedFacets.productTypes" default={};
+	    param name="arguments.selectedFacets.brands" default=[];
+	    param name="arguments.selectedFacets.options" default=[];
+	    param name="arguments.selectedFacets.optionGroups" default=[];
+	    param name="arguments.selectedFacets.productTypes" default=[];
 
         var facets = this.getProductFilterFacets();
 
@@ -1706,9 +1706,9 @@ component extends="HibachiService" accessors="true" {
         var potentialFacetOptions =  structCopy( this.getProductFilterFacetOptions() );
         
         for(var thisFacet in facets){
-            
+            var thisFacetHasSelectedFilters = structKeyExists(arguments.selectedFacets, thisFacet.id) && !arguments.selectedFacets[thisFacet.id].isEmpty();
             // calculate available options for this-facet
-            if( structKeyExists(arguments.selectedFacets, thisFacet.id) && arguments.selectedFacets[thisFacet.id].isEmpty() ){
+            if( thisFacetHasSelectedFilters ){
                 var filteredThisOptions = {};
                 var potentialThisFacetOptions =  potentialFacetOptions[ thisFacet.id ];
                 for(var optionID in arguments.selectedFacets[thisFacet.id] ){
@@ -1718,8 +1718,11 @@ component extends="HibachiService" accessors="true" {
                 }
                 
                 potentialFacetOptions[ thisFacet.id ] = filteredThisOptions;
-            } 
-            // else nothing to do, and all of the available facet options are potential options
+                
+            } else {
+                continue;
+                // else nothing to do, and all of the other available facet options are potential options
+            }
             
             
             // now calculate options for remainig facets, by eliminating whatever non-related facet-options
@@ -1730,12 +1733,12 @@ component extends="HibachiService" accessors="true" {
                 }
                 
                 var filteredOtherFacetOptions = {};
-                
                 var potentialThisFacetOptions = potentialFacetOptions[ thisFacet.id ];
+                
                 for(var thisOptionID in potentialThisFacetOptions){
 
                     var thisFacetOption = potentialThisFacetOptions[ thisOptionID ];
-                    
+            
                     // if this option has a relation with other facet, filter them out
                     if( structKeyExists(thisFacetOption.relations, otherFacet.id) ){
                         

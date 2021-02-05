@@ -598,6 +598,10 @@ Notes:
 	
 	
 	<cffunction name="getRawPotentialFilters" access="public">
+	
+        <!--- 
+            TODO: add categories and site-filters 
+        --->	
 		<cfquery name="local.query" >
 			SELECT
             	o.optionID, o.optionName, o.optionCode, o.sortOrder as optionSortOrder
