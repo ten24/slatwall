@@ -7,7 +7,7 @@ const SWForm = ({ formik, children, title = '', subTitle = '', primaryButtontext
     <>
       <h2 className="h4 mb-1">{title}</h2>
       <p
-        class="font-size-sm text-muted mb-4"
+        className="font-size-sm text-muted mb-4"
         onClick={event => {
           event.preventDefault()
           if (event.target) {
