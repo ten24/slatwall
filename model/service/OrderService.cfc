@@ -1881,11 +1881,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         }
         
 		//Set the first shipping method as default
-		var shippingMethod = getService('ShippingService').getShippingMethod( 
-		            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
-			   );
-		if(!isNull(shippingMethod)){
-			orderTemplate.setShippingMethod(shippingMethod);
+		if(!isNull(site)){
+			var shippingMethod = getService('ShippingService').getShippingMethod( 
+			            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
+				   );
+			if(!isNull(shippingMethod)){
+				orderTemplate.setShippingMethod(shippingMethod);
+			}
 		}
 		
 		arguments.orderTemplate.setAccount(account);
