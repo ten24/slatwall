@@ -2233,12 +2233,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	public boolean function deleteAccountPhoneNumber(required any accountPhoneNumber) {
 
 		// Check delete validation
+		
 		if(arguments.accountPhoneNumber.isDeletable()) {
 
 			// If the primary phone number is this phone number then set the primary to null
 			if(arguments.accountPhoneNumber.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID() eq arguments.accountPhoneNumber.getAccountPhoneNumberID()) {
-				arguments.accountPhoneNumber.getAccount().setPrimaryPhoneNumber(javaCast("null",""));
-				arguments.accountPhoneNumber.removeAccount();
+				getAccountDAO().removePrimaryPhoneNumber(arguments.accountPhoneNumber.getAccount().getAccountID());
 			}
 
 		}
