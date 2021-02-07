@@ -590,6 +590,8 @@ component extends="HibachiService" accessors="true" output="false" {
 						payloadDataStruct = deserializeJSON(payloadData);
 						if(structKeyExists(payloadDataStruct,'data')){
 							payload['data'] = payloadDataStruct['data'];
+						} else if(structKeyExists(payloadDataStruct,'custom')){
+							payload = payloadDataStruct['custom'];
 						} else {
 							payload['extraData'] = payloadDataStruct;
 						}
@@ -598,7 +600,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					}
 				}
 				
-				if(!isStruct(payload['data']) && !len(payload['data'])){
+				if(structKeyExists(payload, 'data') && !isStruct(payload['data']) && !len(payload['data'])){
 					payload['data'] = arguments.entity.getStructRepresentation();
 				}
 				
