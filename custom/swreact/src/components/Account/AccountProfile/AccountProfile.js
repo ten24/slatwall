@@ -1,5 +1,5 @@
 import { connect, useDispatch } from 'react-redux'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import { useFormik } from 'formik'
 import { updateUser } from '../../../actions/userActions'

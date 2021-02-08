@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
-import { connect, useDispatch } from 'react-redux'
-import { getAccountOrders } from '../../../actions/userActions'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { SlatwalApiService } from '../../../services'
 import Pagination from '../../Listing/Pagination'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 
 const ToolBar = ({ term, updateTerm }) => {
   return (
@@ -58,13 +58,20 @@ const OrderStatus = ({ type = 'info', text }) => {
   return <span className={`badge badge-${type} m-0`}>{text}</span>
 }
 
-const OrderListItem = ({ orderNumber, createdDateTime, orderStatusType_typeName, calculatedTotal, trackingNumbers }) => {
+const OrderListItem = props => {
+  const { orderNumber, orderID, createdDateTime, orderStatusType_typeName, calculatedTotal, trackingNumbers } = props
   return (
     <tr>
       <td className="py-3">
-        <a className="nav-link-style font-weight-medium font-size-sm" href="##" data-toggle="modal">
+        <Link
+          className="nav-link-style font-weight-medium font-size-sm"
+          to={{
+            pathname: `/my-account/orders/${orderID}`,
+            state: { ...props },
+          }}
+        >
           {orderNumber}
-        </a>
+        </Link>
         <br />
         {/* {location} */}
       </td>

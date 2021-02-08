@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 const ProductCard = props => {
   const { calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance } = props
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
+  console.log('props', props)
 
   return (
     <div>
