@@ -53,6 +53,7 @@ Notes:
 <cfparam name="attributes.typeaheadID" type="string" default=""/>
 <cfparam name="attributes.propertiesToSearch" type="string" default="firstName,lastName,company"/>
 <cfparam name="attributes.propertiesToLoad" type="string" default="accountID,calculatedFullName,firstName,lastName,company,calculatedAdminIcon,accountCreatedSite.siteID"/>
+<cfparam name="attributes.initialAccountID" type="string" default=""/>
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
@@ -69,7 +70,8 @@ Notes:
 				data-placeholder-text="#attributes.placeholderText#"
 				data-multiselect-mode="false"
 				data-validate-required="#attributes.required#"
-				data-order-by-list="firstName|ASC" >
+				data-order-by-list="firstName|ASC"
+				data-initial-entity-id="#attributes.initialAccountID#">
 					<div class="row">
 						<span class="adminIcon col-xs-2 col-sm-1 " sw-typeahead-search-line-item bind-html="true" data-property-identifier="calculatedAdminIcon" data-right-content-property-identifier="company"></span>
 						<div class="col-xs-10 col-sm-offset-1">

@@ -96,16 +96,18 @@ component entityname="SlatwallProductBundleBuildItem" table="SwProductBundleBuil
 		var quantity = getQuantity();
 		//if forceMaxOrderSettingFlag is true and the quantity is > than the maxOrderQuantitySettting
 		//then we'll want to return true so that we validate against that instead
-		if ( quantity ){
-			if (arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity')) {
-				return true;
-			}
-	        return quantity <= getMaximumOrderQuantitySetting();
+		if ( arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity') ) {
+			return true;
+		} else if ( quantity <= this.getProductBundleGroup().getMaximumQuantity() && quantity <= getMaximumOrderQuantitySetting() ) {
+			return true;
 		}
-        return true;
+		return false;
     }
     
     public boolean function hasQuantityWithinMinOrderQuantity() {
+    	if ( !isNull(this.getProductBundleGroup().getMinimumQuantity()) ) {
+			return quantity >= this.getProductBundleGroup().getMinimumQuantity();
+		}
     	return ( this.getQuantity() ?: 0 ) >= this.getSku().setting('skuOrderMinimumQuantity');
     }
  	

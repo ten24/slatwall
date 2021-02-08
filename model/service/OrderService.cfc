@@ -1881,11 +1881,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         }
         
 		//Set the first shipping method as default
-		var shippingMethod = getService('ShippingService').getShippingMethod( 
-		            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
-			   );
-		if(!isNull(shippingMethod)){
-			orderTemplate.setShippingMethod(shippingMethod);
+		if(!isNull(site)){
+			var shippingMethod = getService('ShippingService').getShippingMethod( 
+			            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
+				   );
+			if(!isNull(shippingMethod)){
+				orderTemplate.setShippingMethod(shippingMethod);
+			}
 		}
 		
 		arguments.orderTemplate.setAccount(account);
@@ -4200,6 +4202,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
 				orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
 				orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
+				this.saveOrderDeliveryItem( orderDeliveryItem );
 			}
 
 			// Add a message to the orderDelivery to inform that items were skipped. It was not an error with intial gift card functionality, and allows other orderItems to auto-fulfill
@@ -4493,11 +4496,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Save the orderDelivery
-			arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
-			this.saveOrderFulfillment( arguments.processObject.getOrderFulfillment() );
+			this.saveOrderDelivery( arguments.orderDelivery );
+			this.saveOrderFulfillment( orderFulfillment=arguments.processObject.getOrderFulfillment(), updateOrderAmounts=false, updateShippingMethodOptions=false );
 			
 			//must flush otherwise the dao won't get the correct amount.
-			if (!arguments.processObject.getOrderFulfillment().hasErrors()){
+			if (!arguments.processObject.getOrderFulfillment().hasErrors() && !arguments.orderDelivery.hasErrors()){
 				ormFlush();
 			}
 			

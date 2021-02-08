@@ -91,4 +91,9 @@ component extends="HibachiDAO" {
 			,{locationID=arguments.locationID},true
 		);
 	}
+	
+	public any function removePrimaryAddress(required any locationID){
+		return 	ormExecuteQuery("UPDATE SlatwallLocation SET locationAddressID = NULL WHERE locationID = :locationID",{locationID=arguments.locationID});
+	}
+	
 }
