@@ -174,6 +174,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="mechanicalKeying" ormtype="string" hb_formFieldType="select";
  property name="mechanicalStyle" ormtype="string";
  property name="productBumpStop" ormtype="boolean" hb_formatType="yesno";
+ property name="mechnicalKeyway" ormtype="string";
+ property name="productTumblerType" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalKeyway" ormtype="string";
  property name="mechanicalRekeyable" ormtype="boolean" hb_formatType="yesno";
  property name="mechanicalBodyMaterial" ormtype="string" hb_formFieldType="select";
  property name="mechanicalShackleMaterial" ormtype="string" hb_formFieldType="select";
@@ -211,6 +214,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productHingeMaterial" ormtype="string";
  property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
  property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
+ property name="productAutoMake" ormtype="string" hb_formFieldType="select";
+ property name="productAutoLockCompatibility" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachineType" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachineCutByCode" ormtype="boolean" hb_formatType="yesno";
  property name="productKeyMachineDuplicate" ormtype="boolean" hb_formatType="yesno";
@@ -1611,6 +1616,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, defaultSku.price, defaultSku.listPrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, productType.productTypeID, productType.productTypeIDPath, defaultSku.imageFile, brand.brandID, brand.brandName, brand.urlTitle, productType.urlTitle";
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
+	
+	
+	public void function setDefaultSku(any sku){
+		if( !isNull(arguments.sku) ){
+			arguments.sku.setProduct(this);
+			variables.defaultSku = arguments.sku;
+		} else{
+			variables.delete('defaultSku');
+		}
 	}
 
 	// ==================  END:  Overridden Methods ========================
