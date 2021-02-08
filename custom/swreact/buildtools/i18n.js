@@ -1,5 +1,6 @@
 const fs = require('fs')
 var _ = require('lodash')
+const glob = require('glob')
 
 const propertiesToJSON = properties => {
   return properties
@@ -36,7 +37,8 @@ const propertiesToJSONObject = properties => {
   let globalTranlations = {}
   properties
     .split('\n')
-    .filter(line => '' !== line.trim())
+    .filter(line => '' !== line.trim()) //
+    .filter(line => line.trim().substring(0, 1) !== '#') //
     .map(line => line.split('='))
     .map(tokens => {
       let obj,
@@ -54,22 +56,34 @@ const rootPropertiesPath = `${__dirname}/../../../config/resourceBundles`
 const items = fs.readdirSync(rootPropertiesPath)
 
 items.forEach(fileName => {
-  const name = fileName.split('.')
-  const translationFile = fs.readFileSync(
-    `${rootPropertiesPath}/${fileName}`,
-    'utf8'
-  )
-  const newTranslations = propertiesToJSONObject(translationFile)
-  const translationValues = { [name[0]]: { translation: newTranslations } }
-  fs.mkdirSync(`./src/locales/${name[0]}`, { recursive: true }, err => {
-    if (err) throw err
-  })
-  fs.writeFile(
-    `./src/locales/${name[0]}/translation.json`,
-    JSON.stringify(translationValues, null, 4),
-    err => {
+  glob(__dirname + `/../../../**/${fileName}`, {}, (err, files) => {
+    const name = fileName.split('.')
+    fs.mkdirSync(`./src/locales/${name[0]}`, { recursive: true }, err => {
+      if (err) throw err
+    })
+    fs.writeFile(`./src/locales/${name[0]}/translation.json`, '', err => {
       // throws an error, you could also catch it here
       if (err) throw err
-    }
-  )
+    })
+    let fileData = {}
+
+    files.forEach(file => {
+      const translationFile = fs.readFileSync(file, 'utf8')
+      const newTranslations = propertiesToJSONObject(translationFile)
+
+      const translationValues = { [name[0]]: { translation: newTranslations } }
+      try {
+        let newFile = _.merge(fileData, translationValues)
+        console.log('translationValues', JSON.stringify(translationValues, null, 4))
+        console.log('newFile', JSON.stringify(newFile, null, 4))
+      } catch (e) {
+        console.log(`Invalid File: ${file}`)
+      }
+    })
+
+    fs.writeFile(`./src/locales/${name[0]}/translation.json`, JSON.stringify(fileData, null, 4), err => {
+      // throws an error, you could also catch it here
+      if (err) throw err
+    })
+  })
 })
