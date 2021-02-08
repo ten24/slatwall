@@ -322,19 +322,19 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	* 
 	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
 	*/
-	public void function calculatePopentialFilterFacetes_should_not_modify_cached_calculated_facet_options(){
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_not_modify_cached_calculated_facet_options(){
 	    
 	    
 	    var oldFacetOptions = structCopy( this.getService().getProductFilterFacetOptions() );
 	    var selectedFacets = this.makeRandomSelectedFilters();
 	    dump(selectedFacets);
 	    
-	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
+	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
 	    var newFacetOptions = this.getService().getProductFilterFacetOptions();
 	    
 	    expect(
 	      this.StructEquals(oldFacetOptions, newFacetOptions )  
-	    ).toBeTrue("calculatePopentialFilterFacetes modified the cached facet options");
+	    ).toBeTrue("calculatePopentialFaceteOptionsForSelectedFacetOptions modified the cached facet options");
 	}
 	
 	
@@ -343,7 +343,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	* 
 	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
 	*/
-	public void function calculatePopentialFilterFacetes_should_return_the_right_facet_option_IDs(){
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_return_the_right_facet_option_IDs(){
 	    
 	    
 	    var facetOptions = this.getService().getProductFilterFacetOptions();
@@ -352,7 +352,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    dump(selectedFacets);
 	    
 
-	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
+	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
 	    
 	    potentialFacetOptions.each( function(thisFacetName){
 	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
@@ -372,14 +372,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	* 
 	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
 	*/
-	public void function calculatePopentialFilterFacetes_should_return_the_right_facet_option_relatations_option_IDs(){
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_return_the_right_facet_option_relatations_option_IDs(){
 	    
 	    
 	    var facetOptions = this.getService().getProductFilterFacetOptions();
 	    var selectedFacets = this.makeRandomSelectedFilters();
 	    dump(selectedFacets);
 	    
-	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
+	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
 	    
 	    potentialFacetOptions.each( function(thisFacetName){
 	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
@@ -415,14 +415,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	* 
 	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
 	*/
-	public void function calculatePopentialFilterFacetes_should_return_all_facet_options_when_no_filters_are_applied(){
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_return_all_facet_options_when_no_filters_are_applied(){
 	    
 	    var oldFacetOptions = structCopy( this.getService().getProductFilterFacetOptions() );
 
-	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes({});
+	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions({});
 	    
 	     expect( this.StructEquals(oldFacetOptions, potentialFacetOptions )  )
-	     .toBeTrue("calculatePopentialFilterFacetes didn't return all facet's all options when no filters are applied");
+	     .toBeTrue("calculatePopentialFaceteOptionsForSelectedFacetOptions didn't return all facet's all options when no filters are applied");
 	}
 	
 	
@@ -431,40 +431,30 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	 * 
 	 * This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
 	*/
-	public void function calculatePopentialFilterFacetes_should_only_return_the_selected_brands_at_max(){
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_only_return_all_brands_regardless_selected(){
 	    
 	    
 	    var allFacetOptions = this.getService().getProductFilterFacetOptions();
+	    
+        var potentialBrandsOptions = structCopy( allFacetOptions['brands'] ); 
+        // dump('potentialBrandsOptions:');
+        // dump(potentialBrandsOptions);
+        
 	    var selectedFacets = this.makeRandomSelectedFilters();
 	    var selectedBrands = selectedFacets.brands;
 	    
-	    // dump('selectedBrands:');
-	    // dump(selectedBrands);
+	    dump('selectedBrands:');
+	    dump(selectedBrands);
 	    
-	    var calculatedPotentialFacetOptions = this.getService().calculatePopentialFilterFacetes({
+	    var calculatedPotentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions({
 	        'brands': selectedBrands
 	    });
 	    
         // dump('calculatedPotentialFacetOptions:');
 	    // dump(calculatedPotentialFacetOptions);
-	    
-        if( selectedBrands.isEmpty() ){
-            // creating a copy here so we accidently update the cached options;
-            var potentialBrandsOptions = structCopy( allFacetOptions['brands'] ); 
-        } else {
-            var potentialBrandsOptions = {};
-            for(var thisBrandID in selectedBrands ){
-                if(structKeyExists(allFacetOptions.brands, thisBrandID) ){
-                    potentialBrandsOptions[ thisBrandID ] = structCopy( allFacetOptions.brands[ thisBrandID ] );
-                }
-            }
-        }
         
-        // dump('potentialBrandsOptions:');
-        // dump(potentialBrandsOptions);
-        
-        calculatedPotentialFacetOptions.brands.each(function(thisBandID){
-            expect(potentialBrandsOptions).toHaveKey( thisBandID );
+        potentialBrandsOptions.each(function(thisBandID){
+            expect(calculatedPotentialFacetOptions.brands).toHaveKey( thisBandID );
         });
 	}
 	
@@ -473,17 +463,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	* 
-	* This test times the calculatePopentialFilterFacetes
+	* This test times the calculatePopentialFaceteOptionsForSelectedFacetOptions
 	*/
-	public void function calculatePopentialFilterFacetes_should_be_fast(){
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_be_fast(){
 	    
 	    
-	    var facetOptions = this.getService().getProductFilterFacetOptions();
 	    var selectedFacets = this.makeRandomSelectedFilters();
 	    dump(selectedFacets);
 	    
 	    var start = getTickCount();
-	    var potentialFacetOptions = this.getService().calculatePopentialFilterFacetes(selectedFacets);
+	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
 	   // sleep(1);
 	    expect( (getTickCount()-start) < 1 ).toBeTrue('it should take less than 1 ms ;)');
     }
@@ -494,7 +483,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	* 
 	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
 	*/
-	public void function calculatePopentialFilterFacetes_should_only_return_selected_brands_possible_relations_at_max(){
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_only_return_selected_brands_possible_relations_at_max(){
 	    
 	    
 	    var allFacetOptions = this.getService().getProductFilterFacetOptions();
@@ -504,7 +493,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	   // dump('selectedBrands:');
 	   // dump(selectedBrands);
 	    
-	    var calculatedPotentialFacetOptions = this.getService().calculatePopentialFilterFacetes({
+	    var calculatedPotentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions({
 	        'brands': selectedBrands
 	    });
 	    
@@ -559,13 +548,129 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 	
 	
+	/**
+	* @test
+	* 
+	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
+	*/
+	public void function validateFacetOptionsForInvalidIDs_should_return_false_for_invalid_optionIDs(){
+	    
+	    
+	    var allFacetOptions = this.getService().getProductFilterFacetOptions();
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    
+	    var availableFcets = this.getService().getProductFilterFacets();
+	    var availableFacetsIndex =  {};
+	    availableFcets.each( function(facet){
+	        availableFacetsIndex[ facet.id ] = facet;
+	    })
+	    
+	   selectedFacets.each( function(facetName){ 
+
+	       var invalidOptions = selectedFacets[ facetName ].map( function(optionID){
+               return hash(optionID, 'md5'); //changing it to something invalid
+            });
+            
+            if(invalidOptions.isEmpty()){
+                expect( 
+                    this.getService().validateFacetOptionsForInvalidIDs( availableFacetsIndex[facetName], invalidOptions )
+                )
+                .toBeTrue();
+            } else{
+                expect( 
+                    this.getService().validateFacetOptionsForInvalidIDs( availableFacetsIndex[facetName], invalidOptions )
+                )
+                .toBeFalse();
+            }
+	   });
+	    
+	}
 	
 	
+	/**
+	* @test	
+	* 
+	*/
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_collectionTest(){
+	    
+	    
+	    var selectedFacets = this.makeRandomSelectedFilters();
+	    dump("selectedFacets : ");
+	    dump(selectedFacets);
+	    
+	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
+	   // dump("potentialFacetOptions : ");
+	   // dump(potentialFacetOptions);
+	    
+	    var skuCollectionList = this.getService().getSkuCollectionList();
+		skuCollectionList.setDisplayProperties("");
+		skuCollectionList.addDisplayProperty("price");
+		skuCollectionList.addDisplayProperty("skuID");	
+		skuCollectionList.addDisplayProperty("imageFile");
+	    skuCollectionList.addDisplayProperty("product.productID");
+		skuCollectionList.addDisplayProperty('product.productName');
+		skuCollectionList.addDisplayProperty("product.calculatedQATS");
+		skuCollectionList.addDisplayProperty("calculatedSkuDefinition");
+		skuCollectionList.addDisplayProperty('product.calculatedSalePrice');
+	    
+	    
+	    skuCollectionList.addFilter("product.activeFlag",1);
+		skuCollectionList.addFilter("product.publishedFlag",1);
+		skuCollectionList.addFilter("publishedFlag",1);
+		
+		for(var thisFacetName in selectedFacets ){
+		    var potentialThisFacetOptions = potentialFacetOptions[ thisFacetName ];
+		    var filteredFacetOptions = selectedFacets[thisFacetName].filter( function(optionID){
+		        return structKeyExists(potentialThisFacetOptions, optionID);
+		    });
+		    selectedFacets[thisFacetName] = filteredFacetOptions;
+		}
+		
+		dump("Filtered selectedFacets: ");
+		dump(selectedFacets);
+		
+		for(var thisFacetName in selectedFacets ){
+		    if(selectedFacets[thisFacetName].isEmpty() ){
+		        continue;    
+		    }
+		    
+		    var filterIDsList = selectedFacets[thisFacetName].toList();
+		    
+		    switch (thisFacetName) {
+	               case 'brands':
+		                skuCollectionList.addFilter('product.brand.brandID', filterIDsList, 'IN' );
+		            break;
+    	           case 'productTypes':
+		                skuCollectionList.addFilter('product.productType.productTypeID', filterIDsList, 'IN' );
+    	            break;
+    	           case 'options':
+    	               	skuCollectionList.addFilter('options.optionID', filterIDsList, 'IN' );
+		            break;
+		           case 'optionGroups':
+		            // TODO: figure-out [either options and/or option-groups ] 
+		            break;
+		    }
+		}
+		
+		
+		dump("collection hql : ");
+		dump( skuCollectionList.getHQL() );
+		
+		dump("collection hql-params : ");
+		dump( skuCollectionList.getHQLParams() );
+		
+		dump("collection sql : ");
+		dump( skuCollectionList.getSQL() );
+        
+        // dump( getCollectionConfig.getRecords() );
+	
+    }
+
 	
 	/**************** Utilitis ****************/
 	
 	
-		public struct function makeRandomSelectedFilters(){
+	public struct function makeRandomSelectedFilters(){
 	    
 	    var selectedFacets = {
 	        "brands"        : [],
@@ -590,7 +695,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var productTypeIDs = StructKeyList(facetOptions.productTypes);
 	    var optionGroupIDsLen = listLen(optionGroupIDs);
 	    
-	    var count = RandRange( 1, 10 );
+	    var count = RandRange( 1, 2 );
 	    for(var i=1; i<=count; i++){
 	        
 	        if( RandRange(1, brandIDsLen)  > RandRange(1, brandIDsLen) ){

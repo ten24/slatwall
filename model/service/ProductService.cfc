@@ -1546,9 +1546,11 @@ component extends="HibachiService" accessors="true" {
 	*/
 	public array function getProductFilterFacets(){
 	    return [
-    	        {   'id'            : 'productTypes',
-    	            'priority'      : 1,
-    	            'selectType'    : 'multi'
+    	        {   'id'                : 'productTypes',
+    	            'priority'          : 1,
+    	            'selectType'        : 'multi',
+    	            'parentFacetName'   : 'productTypes',
+    	            'parentFacetOptionIDKey': 'productTypeID'
     	        },
 	            {   'id'            : 'brands',
     	            'priority'      : 2,
@@ -1560,7 +1562,9 @@ component extends="HibachiService" accessors="true" {
     	        },
     	        {   'id'            : 'options',
     	            'priority'      : 4,
-    	            'selectType'    : 'single'
+    	            'selectType'    : 'single',
+    	            'parentFacetName' : 'optionFroups',
+    	            'parentFacetOptionIDKey' : 'optionGroupID'
     	        }
     	   ];
 	}
@@ -1580,9 +1584,9 @@ component extends="HibachiService" accessors="true" {
 	    }
 	    
 	    var potentialFilters = {
+	        'brands'  :	{},
 	        'options' : {},
 	        'optionGroups' : {},
-	        'brands'  :	{},
 	        'productTypes' : {}
 	    };
 	    
@@ -1599,10 +1603,11 @@ component extends="HibachiService" accessors="true" {
 	                'optionCode'            : row.optionCode,
 	                'optionName'            : row.optionName,
 	                'optionGroupID'         : row.optionGroupID,
-	                'optionSortOrder'       : row.optionSortOrder,
+	                'sortOrder'             : row.optionSortOrder,
 	                'relations' : {
     	                'brands'         : {},
-    	                'productTypes'   : {}
+    	                'productTypes'   : {},
+    	                'optionGroups'   : {}
 	                }
 	            };
 	            
@@ -1610,10 +1615,11 @@ component extends="HibachiService" accessors="true" {
 	        }
 	        
 	        // we're using hash-maps for :
-	        // - duplicate-removal [ the brandID and productTypeID will Refelect themselves ]
-	        // - faster lookups
+	        // - duplicate-removal 
+	        // - faster lookups 
 	        thisOptionFilter.relations.brands[ row.brandID ] = row.brandID;
 	        thisOptionFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+	        thisOptionFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
 	        
 	        
 	        
@@ -1624,7 +1630,7 @@ component extends="HibachiService" accessors="true" {
 	            var thisOptionGroupFilter = {
 	                'optionGroupID'             : row.optionGroupID,
 	                'optionGroupName'           : row.optionGroupName,
-	                'optionGroupSortOrder'      : row.optionGroupSortOrder,
+	                'sortOrder'                 : row.optionGroupSortOrder,
 	                'relations' : {
     	                'brands'         : {},
     	                'options'        : {},
@@ -1662,7 +1668,6 @@ component extends="HibachiService" accessors="true" {
 	        thisBrandFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
 	        
 	        
-	        
 	        // ****** ProductType - Filter
 	        if( structKeyExists(potentialFilters.productTypes, row.productTypeID ) ){
 	           var thisProductTypeFilter =  potentialFilters.productTypes[ row.productTypeID ]; 
@@ -1694,7 +1699,91 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	
-	public struct function calculatePopentialFilterFacetes(required struct selectedFacets ){
+	/**
+	 * Helper function to validate if passed-in facet-options are availabe in availableFacetOptions
+	*/
+	public struct function validateSelectedFacetOptions(required struct selectedFacets ){
+	    param name="arguments.selectedFacets.brands" default=[];
+	    param name="arguments.selectedFacets.options" default=[];
+	    param name="arguments.selectedFacets.optionGroups" default=[];
+	    param name="arguments.selectedFacets.productTypes" default=[];
+	    
+	    if( this.hibachiIsStructEmpty(arguments.selectedFacets) ){
+	        return true; // nothing is selected so nothing to validate;
+	    }
+	    
+	    var availableFcets = this.getProductFilterFacets();
+
+        var invalidOptionFound = false;
+	    for(var thisFacet in arguments.availableFcets ){
+	        var selectedThisFacetOptions = arguments.selectedFacets[ thisFacet.id ];
+	        
+	        if(selectedThisFacetOptions.isEmpty() ){
+	            continue; // again nothing to validate
+	        }
+	        
+	        var invalidOptionFound = this.validateFacetOptionsForInvalidIDs(thisFacet, selectedThisFacetOptions);
+	        
+	        if(!invalidOptionFound && thisFacet.selectType == 'single' ){
+	            invalidOptionFound = !this.areSelectedFacetOptionsValidForSingleSelect(thisFacet, selectedThisFacetOptions);
+	        }
+	        
+	        if(invalidOptionFound){
+	            return false;
+	        }
+	    }
+	    
+	    return true;
+	}
+	
+	public boolean function validateFacetOptionsForInvalidIDs(required struct facet, required array selectedOptions ){
+        
+        var availabelThisFacetOptions = this.getProductFilterFacetOptions();[ arguments.facet.id ];
+        for(var optionID in arguments.selectedOptions ){
+            if(!structKeyExists(availabelThisFacetOptions, optionID) ){
+                return false;
+            }
+        }
+        
+        return true;
+	}
+
+	
+	// TODO: 
+	public boolean function validateFacetOptionsForSingleSelect(required struct facet, required array selectedOptions){
+        
+        var availablefacetOptions = this.getProductFilterFacetOptions();
+        
+        var invalidOptionFound = false;
+        var selectedChildOptionsCount  = 0;
+        for(var optionID in arguments.selectedOptions ){
+
+            var selectedThisFacetOption = availablefacetOptions[ arguments.facet.id ][ optionID ];
+            var parentFacetOptionsID = selectedThisFacetOption[ arguments.facet.parentFacetOptionIDKey ];
+            var parentFacetOption = availableFacetOptions[ arguments.facet.parentFacetName ][ parentFacetOptionsID ];
+            var parentFacetRelationsWithThisFacet = parentFacetOption.relations[ arguments.facet.id  ];
+            
+            selectedChildOptionsCount  = 0; //reset
+            for(var optionID2 in arguments.selectedOptions ){
+                if(structKeyExists(parentFacetRelationsWithThisFacet, optionID2) ){
+                    selectedChildOptionsCount++;
+                    if( selectedChildOptionsCount>1 ){
+                        invalidOptionFound = true;
+                        break;
+                    }   
+                }
+            }
+            
+            if(invalidOptionFound){
+                return false;
+            }
+        }
+
+	    return true;
+	}
+	
+	
+	public struct function calculatePopentialFaceteOptionsForSelectedFacetOptions(required struct selectedFacets ){
 	    param name="arguments.selectedFacets.brands" default=[];
 	    param name="arguments.selectedFacets.options" default=[];
 	    param name="arguments.selectedFacets.optionGroups" default=[];
@@ -1707,71 +1796,79 @@ component extends="HibachiService" accessors="true" {
         
         for(var thisFacet in facets){
             var thisFacetHasSelectedFilters = structKeyExists(arguments.selectedFacets, thisFacet.id) && !arguments.selectedFacets[thisFacet.id].isEmpty();
+
             // calculate available options for this-facet
-            if( thisFacetHasSelectedFilters ){
-                var filteredThisOptions = {};
-                var potentialThisFacetOptions =  potentialFacetOptions[ thisFacet.id ];
-                for(var optionID in arguments.selectedFacets[thisFacet.id] ){
-                    if(structKeyExists(potentialThisFacetOptions, optionID) ){
-                        filteredThisOptions[ optionID ] = potentialThisFacetOptions[ optionID ];
-                    }
-                }
-                
-                potentialFacetOptions[ thisFacet.id ] = filteredThisOptions;
-                
-            } else {
+            if( !thisFacetHasSelectedFilters ){
                 continue;
-                // else nothing to do, and all of the other available facet options are potential options
+                // nothing to do, and all of the other available facet options are potential options
             }
             
+            // get the selected-option's structs, so we can calculate the relatated facet-options
+            var selectedThisFacetOptions = {};
             
-            // now calculate options for remainig facets, by eliminating whatever non-related facet-options
+            var potentialThisFacetOptions =  potentialFacetOptions[ thisFacet.id ];
+            for(var optionID in arguments.selectedFacets[thisFacet.id] ){
+                if(structKeyExists(potentialThisFacetOptions, optionID) ){
+                    selectedThisFacetOptions[ optionID ] = potentialThisFacetOptions[ optionID ];
+                }
+            }
+
+            // now calculate options for remainig facets, by eliminating whatever is not-related to selected-facet-options
             for( var otherFacet in facets ){
                 
                 if(otherFacet.id == thisFacet.id ){
                     continue;
                 }
                 
-                var filteredOtherFacetOptions = {};
-                var potentialThisFacetOptions = potentialFacetOptions[ thisFacet.id ];
-                
-                for(var thisOptionID in potentialThisFacetOptions){
+                var potentialOtherFacetOptions = potentialFacetOptions[ otherFacet.id ]; // e.g. potential-remaining brands or options
 
-                    var thisFacetOption = potentialThisFacetOptions[ thisOptionID ];
+                var filteredOtherFacetOptions = {}; // e.g. potential-brands, related to selected product-types
+
+                //e.g. selected product-types/brands
+                for(var thisOptionID in selectedThisFacetOptions){
+
+                    var selectedThisFacetOption = selectedThisFacetOptions[ thisOptionID ]; // e.g. selected ptoducy-type
             
-                    // if this option has a relation with other facet, filter them out
-                    if( structKeyExists(thisFacetOption.relations, otherFacet.id) ){
+                    // // if this option has a relation with other facet, filter them out // e.g. caclulate the brands related to this product-type
+                    // if( !structKeyExists(selectedThisFacetOption.relations, otherFacet.id) ){
+                    //     // if this facet does not have a relation with other facet, we'll drop other facte from potential options
+                    //     // which should never happen as of now;
+                    //     continue;
+                    // }
+                    
+                    var thisOptionRelationsWithOtherFacet = selectedThisFacetOption.relations[ otherFacet.id ]; // e.g. this productType's brands, or this-brand's options
+        
+                    // now filterout other-facet options relations with this-facet
+                    for(var relatedOhterFacetOptionID in thisOptionRelationsWithOtherFacet ){
                         
-                        var thisOptionRelationsWithOtherFacet = thisFacetOption.relations[ otherFacet.id ]; // e.g. this productType's brands
-            
-                        var availableOtherFacetOptions = potentialFacetOptions[ otherFacet.id ]; // e.g. potential-remaining brand options
-                        
-                        // now filterout other-facet options relations with this-facet
-                        for(var relatedOhterFacetOptionID in thisOptionRelationsWithOtherFacet ){
-                            
-                            // this check is needed as some-other facet can also have a relation with this-other-facet, 
-                            // and can filterout more potential-options.
-                            if(!structKeyExists(availableOtherFacetOptions, relatedOhterFacetOptionID) ){
-                                thisOptionRelationsWithOtherFacet.delete(relatedOhterFacetOptionID);
-                                continue; // nothing else to do
-                            }
-                                
-                            var relatedOtherFacetOption = availableOtherFacetOptions[ relatedOhterFacetOptionID ]; // to get the full option-struct instead of an ID
-                            
-                            //if related facet-option also has a relationship with this facet, filter them out
-                            if( structKeyExists(relatedOtherFacetOption.relations, thisFacet.id) ){
-                                
-                                var otherFacetOptionRelationsWithThisFacet = relatedOtherFacetOption.relations[ thisFacet.id ] ;
-                                //delete the relations back relation with this option, if they does not qualify
-                                for(var relatedThisfacetOptionID in otherFacetOptionRelationsWithThisFacet ){
-                                    if(!structKeyExists(potentialThisFacetOptions, relatedThisfacetOptionID) ){
-                                       otherFacetOptionRelationsWithThisFacet.delete(relatedThisfacetOptionID);
-                                    }
-                                }
-                            }
-                            
-                            filteredOtherFacetOptions[ relatedOhterFacetOptionID ] = relatedOtherFacetOption;
+                        // this check is needed as some-other facet can also have a relation with this-other-facet, 
+                        // and can filterout more potential-options.
+                        if(!structKeyExists(potentialOtherFacetOptions, relatedOhterFacetOptionID) ){
+                            // if the option does not exist in available opther facet options, then delete the relations
+                            thisOptionRelationsWithOtherFacet.delete(relatedOhterFacetOptionID); 
+                            //e.g  if selected-product-type's this-brand-id is not available in potential-brands, delete the relation.
+                            continue; // nothing else to do
                         }
+                            
+                        // to get the full option-struct instead of an ID
+                        var relatedOtherFacetOption = potentialOtherFacetOptions[ relatedOhterFacetOptionID ];  // e.g. selected product-type's related-brand
+                        
+                        //related facet-option also has a relation with this facet, filter them out
+                        var otherFacetOptionRelationsWithThisFacet = relatedOtherFacetOption.relations[ thisFacet.id ]; // e.g. related-brand's related product-types
+                        //delete the relations back relation with this option, if they does not qualify
+                        for(var relatedThisfacetOptionID in otherFacetOptionRelationsWithThisFacet ){
+                            
+                            if(!structKeyExists(potentialThisFacetOptions, relatedThisfacetOptionID) ){
+                                // if other facte optin has a back relation with this facet, which does not exist in potential options, then delete the relation.
+                              otherFacetOptionRelationsWithThisFacet.delete(relatedThisfacetOptionID);
+                              // e.g. we're looping over product type, and then product-type-brands, 
+                              // one of the brand in the loop can be associsted with more than one product type, 
+                              // but we've only selected only a few of them, 
+                              // so we gotta delete the relation
+                            }
+                        }
+                        
+                        filteredOtherFacetOptions[ relatedOhterFacetOptionID ] = relatedOtherFacetOption;
                     }
                 }    
                 
