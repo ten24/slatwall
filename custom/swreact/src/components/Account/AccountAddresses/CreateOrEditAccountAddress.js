@@ -1,9 +1,8 @@
 import { connect, useDispatch } from 'react-redux'
 import SwSelect from '../../SwSelect/SwSelect'
 import { useFormik } from 'formik'
-import { toast } from 'react-toastify'
 import useRedirect from '../../../hooks/useRedirect'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import { addNewAccountAddress, updateAccountAddress } from '../../../actions/userActions'
 // TODO: Make this component reusable

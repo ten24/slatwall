@@ -5,7 +5,8 @@ const ProductSlider = ({ children, sliderData, settings, title, slidesToShow = 4
     ? settings
     : {
         dots: false,
-        infinite: sliderData && sliderData >= slidesToShow,
+        infinite: sliderData && sliderData.length >= slidesToShow,
+        // infinite: true,
         slidesToShow: slidesToShow,
         slidesToScroll: 1,
         responsive: [

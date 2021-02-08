@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import { isTokenValid } from '../../../utils'
 

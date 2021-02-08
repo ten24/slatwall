@@ -1,9 +1,13 @@
 import { login } from '../../../actions/authActions'
 import { connect, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
+import { Link } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
+  let match = useRouteMatch()
+
   const formik = useFormik({
     initialValues: {
       loginEmail: '',
@@ -19,7 +23,7 @@ const LoginForm = () => {
         <div className="card-body">
           <h2 className="h4 mb-1">Sign in</h2>
           <p className="font-size-sm text-muted mb-4">
-            Don't have an account? <a href="##">Request account</a>.
+            Don't have an account? <Link to={`${match.path}/createAccount`}>Request account</Link>.
           </p>
           <form onSubmit={formik.handleSubmit}>
             <div className="form-group">
@@ -31,9 +35,9 @@ const LoginForm = () => {
               <input value={formik.values.loginPassword} onChange={formik.handleChange} autoComplete="current-password" required className="form-control" type="password" id="loginPassword" />
             </div>
             <div className="text-right">
-              <a className="nav-link-inline font-size-sm" href="account-password-recovery.html">
+              <Link to={`${match.path}/forgotPassword`} className="nav-link-inline font-size-sm">
                 Forgot password?
-              </a>
+              </Link>
             </div>
             <hr className="mt-4" />
             <div className="text-right pt-4">
