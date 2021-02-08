@@ -37,9 +37,10 @@ const propertiesToJSONObject = properties => {
   let globalTranlations = {}
   properties
     .split('\n')
-    .filter(line => '' !== line.trim()) //
-    .filter(line => line.trim().substring(0, 1) !== '#') //
+    .filter(line => '' !== line.trim())
+    .filter(line => line.trim().substring(0, 1) !== '#')
     .map(line => line.split('='))
+    // .filter(tokens => tokens[0].includes('frontend.'))
     .map(tokens => {
       let obj,
         o = (obj = {})
@@ -72,16 +73,10 @@ items.forEach(fileName => {
       const newTranslations = propertiesToJSONObject(translationFile)
 
       const translationValues = { [name[0]]: { translation: newTranslations } }
-      try {
-        let newFile = _.merge(fileData, translationValues)
-        console.log('translationValues', JSON.stringify(translationValues, null, 4))
-        console.log('newFile', JSON.stringify(newFile, null, 4))
-      } catch (e) {
-        console.log(`Invalid File: ${file}`)
-      }
+      fileData = _.merge(fileData, translationValues)
     })
 
-    fs.writeFile(`./src/locales/${name[0]}/translation.json`, JSON.stringify(fileData, null, 4), err => {
+    fs.writeFile(`./src/locales/${name[0]}/translation.json`, JSON.stringify(fileData), err => {
       // throws an error, you could also catch it here
       if (err) throw err
     })
