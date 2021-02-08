@@ -127,12 +127,9 @@ Notes:
 			SELECT
 				SwOptionGroup.optionGroupID,
 				SwOptionGroup.optionGroupName
-			FROM
-				SwOptionGroup
-			LEFT OUTER JOIN
-				SwOptionGroupProductType
-   			 ON
-       			SwOptionGroup.optionGroupID = SwOptionGroupProductType.optionGroupID
+			FROM SwOptionGroup
+			INNER JOIN SwOption ON SwOptionGroup.optionGroupID = SwOption.optionGroupID
+			LEFT OUTER JOIN SwOptionGroupProductType ON SwOptionGroup.optionGroupID = SwOptionGroupProductType.optionGroupID
 			WHERE
 				SwOptionGroup.optionGroupID NOT IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
 			AND

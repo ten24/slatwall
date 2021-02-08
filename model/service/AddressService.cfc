@@ -55,7 +55,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public any function saveAddress(required any address, struct data={}, string context="save", boolean verifyAddressFlag=false){
-		
 		arguments.address = super.saveAddress(address,data,context);
 		if(structKeyExists(arguments.data, 'verifyAddressFlag') && arguments.data.verifyAddressFlag == true){
 			arguments.verifyAddressFlag = true;
@@ -190,10 +189,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function verifyAddressStruct(required struct addressStruct){
 		
 		var integrationID = getHibachiScope().setting('globalIntegrationForAddressVerification');
-		
+
 		var cacheKey = hash(serializeJSON(arguments.addressStruct),'md5');
 		
-		var addressVerificationStruct = {};
+		var addressVerificationStruct = {
+			'success' : true,
+			'message' : "not-verified, no address-verification Integration selected, returned from internal verification",
+		};
+			
 		
 		if(structKeyExists(arguments.addressStruct,'addressID')){
 			var thisAddress = this.getAddress(arguments.addressStruct['addressID']);
@@ -207,19 +210,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			} 
 		}
 		 			
-		if( StructIsEmpty(addressVerificationStruct) &&
-			!isNull(integrationID) && 
-			len(integrationID) && 
-			integrationID != 'internal' 
-		){
+		if( StructIsEmpty(addressVerificationStruct) && !isNull(integrationID) &&  len(integrationID) && integrationID != 'internal' ){
+			
 			addressVerificationStruct = getService("IntegrationService")
-											.getIntegrationByIntegrationPackage(integrationID)
-												.getIntegrationCFC("Address")
-													.verifyAddress(arguments.addressStruct);
-			addressVerificationStruct['address'] = arguments.addressStruct;
+										.getIntegrationByIntegrationPackage(integrationID)
+										.getIntegrationCFC("Address")
+										.verifyAddress(arguments.addressStruct);
 		}
 		
-		if(!isNull(thisAddress)){
+		addressVerificationStruct['address'] = arguments.addressStruct;
+		
+		if( !isNull(thisAddress) ){
 		    
 			thisAddress.setVerificationJson(serializeJSON(addressVerificationStruct));
 			thisAddress.setVerificationCacheKey(cacheKey);
@@ -231,6 +232,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					thisAddress.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
 				}
 			}
+			
 			this.saveAddress(thisAddress);
 		}
 		
@@ -263,7 +265,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	 * @addressID id, of the Address to verify
 	*/ 
 	public any function verifyAddressByID(required string addressID){
-		
 			var data = getDAO("AddressDAO").getAddressStruct(addressID);
 		
 			if(len(data)){
@@ -278,9 +279,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	 * @accountAddressID id, of the AccountAddress to verify
 	 */ 
 	public any function verifyAccountAddressByID(required string accountAddressID){
-
 			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
-			
+		
 			if(len(data)){
 				return this.verifyAddressStruct(data[1]);
 			} 

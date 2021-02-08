@@ -710,6 +710,30 @@
             "validations": {
                 "dataType": "string"
             }
+        },
+        "TumblerType": {
+            "propertyIdentifier": "productTumblerType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoMake": {
+            "propertyIdentifier": "productAutoMake",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "LockCompatibility": {
+            "propertyIdentifier": "productAutoLockCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "MechanicalKeyway": {
+            "propertyIdentifier": "mechanicalKeyway",
+            "validations": {
+                "dataType": "string"
+            }
         }
     },
     
