@@ -197,7 +197,22 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
-		<cffunction name="removeOwnerAccount">
+	<cffunction name="removePrimaryPhoneNumber">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				primaryPhoneNumberID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="removeOwnerAccount">
 		<cfargument name="accountID" type="string" required="true" >
 
 		<cfset var rs = "" />

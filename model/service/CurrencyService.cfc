@@ -219,6 +219,14 @@ component  extends="HibachiService" accessors="true" {
 
 	// ====================== START: Save Overrides ===========================
 
+	public any function saveCurrency(required any currency, required struct data) {
+		if( (isNull(arguments.currency.getCurrencyCode()) || !len(arguments.currency.getCurrencyCode())) && (structKeyExists(arguments.data, "CurrencyCode") && len(arguments.data.CurrencyCode)) ) {
+			arguments.currency.setCurrencyCode(arguments.data.CurrencyCode);
+		}
+		
+		return super.save(arguments.currency, arguments.data);
+	}
+	
 	// ======================  END: Save Overrides ============================
 
 	// ==================== START: Smart List Overrides =======================

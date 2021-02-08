@@ -87,7 +87,7 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 			}
 		}else{
 			if(!getNewFlag()){
-				return hash(serializeJson(getService('hibachiJsonService').getPermissionJsonStruct(permissionGroup.getPermissionsByDetails(true))),'md5');
+				return hash(serializeJson(getService('hibachiJsonService').getPermissionJsonStruct(getPermissionsByDetails(true))),'md5');
 			}
 		}
 		
