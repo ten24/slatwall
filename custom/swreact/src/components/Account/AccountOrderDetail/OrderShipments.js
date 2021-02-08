@@ -1,9 +1,11 @@
-const OrderItem = ({ Quantity, ProductTitle, BrandName, isSeries, ProductSeries, totalPrice, listPrice, price, skuCode }) => {
+import { SWImage } from '../..'
+
+const OrderItem = ({ Quantity, ProductTitle, BrandName, isSeries, ProductSeries, totalPrice, listPrice, price, skuCode, imgUrl }) => {
   return (
     <div className="d-sm-flex justify-content-between align-items-center my-4 pb-3 border-bottom">
       <div className="media media-ie-fix d-block d-sm-flex align-items-center text-center text-sm-left">
-        <a className="d-inline-block mx-auto mr-sm-4" href="shop-single-v1.html" style={{ width: '10rem' }}>
-          <img src="#$.getThemePath()#/custom/client/assets/images/product-img-2.png" alt="Product" />
+        <a className="d-inline-block mx-auto mr-sm-4" style={{ width: '10rem' }}>
+          <SWImage src={imgUrl} alt="Product" />
         </a>
         <div className="media-body pt-2">
           {isSeries && <span className="product-meta d-block font-size-xs pb-1">{ProductSeries}</span>}
