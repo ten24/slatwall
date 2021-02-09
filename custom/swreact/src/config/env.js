@@ -1,3 +1,3 @@
 export default {
-  apiUrl: '',
+  apiUrl: 'http://stoneandberg.local:8906/index.cfm/',
 }
