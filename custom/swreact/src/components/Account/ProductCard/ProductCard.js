@@ -1,14 +1,16 @@
 import { HeartButton, SWImage } from '../..'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const ProductCard = props => {
   const { calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance } = props
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
+  const { t, i18n } = useTranslation()
 
   return (
     <div>
       <div className="card product-card">
-        {productClearance === true && <span className="badge badge-primary">On Special</span>}
+        {productClearance === true && <span className="badge badge-primary">{t('frontend.core.special')}</span>}
         <HeartButton isSaved={false} />
         <Link
           className="card-img-top d-block overflow-hidden"

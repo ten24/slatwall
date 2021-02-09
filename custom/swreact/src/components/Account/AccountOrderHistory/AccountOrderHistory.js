@@ -5,8 +5,11 @@ import { getAccountOrders } from '../../../actions/userActions'
 import { SlatwalApiService } from '../../../services'
 import Pagination from '../../Listing/Pagination'
 import AccountLayout from '../AccountLayout/AccountLayout'
+import { useTranslation } from 'react-i18next'
 
 const ToolBar = ({ term, updateTerm }) => {
+  const { t, i18n } = useTranslation()
+
   return (
     <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
       <div className="d-flex justify-content-between w-100">
@@ -27,20 +30,22 @@ const ToolBar = ({ term, updateTerm }) => {
           </div>
         </div>
         <a href="##" className="btn btn-outline-secondary">
-          <i className="far fa-file-alt mr-2"></i> Request Statement
+          <i className="far fa-file-alt mr-2"></i> {t('frontend.account.request_statement')}
         </a>
       </div>
     </div>
   )
 }
 const AccountOrderHistoryListItemTracking = ({ trackingNumbers }) => {
+  const { t, i18n } = useTranslation()
+
   return (
     <div className="btn-group">
       <button type="button" className="btn bg-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i className="far fa-shipping-fast"></i>
       </button>
       <div className="dropdown-menu dropdown-menu-right">
-        <span>Tracking Numbers:</span>
+        <span>{t('frontend.account.tracking_numbers')}:</span>
         {trackingNumbers &&
           trackingNumbers.map((trackingNumber, index) => {
             return (
@@ -148,16 +153,16 @@ const OrderHistoryList = () => {
         <table className="table table-hover mb-0">
           <thead>
             <tr>
-              <th>Order #</th>
+              <th>{t('frontend.account.order.heading')} #</th>
               <th>
-                Date Purchased
+                {t('frontend.account.order.date')}
                 <SortArrows sortDirection={dateSort} setSortDirection={setDateSort} />
               </th>
               <th>
-                Status
+                {t('frontend.account.order.status')}
                 <SortArrows sortDirection={statusSort} setSortDirection={setStatusSort} />
               </th>
-              <th>Order Total</th>
+              <th> {t('frontend.account.order.total')}</th>
               <th></th>
             </tr>
           </thead>
@@ -178,7 +183,7 @@ const OrderHistoryList = () => {
 
 const AccountOrderHistory = ({ crumbs, title, orders }) => {
   return (
-    <AccountLayout title={'Account Order History'}>
+    <AccountLayout title={t('frontend.account.account_order_history')}>
       <OrderHistoryList orders={orders} />
     </AccountLayout>
   )

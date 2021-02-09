@@ -2,8 +2,11 @@ import { Link } from 'react-router-dom'
 import { BreadCrumb } from '../..'
 import { logout } from '../../../actions/authActions'
 import { connect, useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 
 const AccountSidebar = ({ user }) => {
+  const { t, i18n } = useTranslation()
+
   const dispatch = useDispatch()
   return (
     <aside className="col-lg-4 pt-4 pt-lg-0">
@@ -19,7 +22,7 @@ const AccountSidebar = ({ user }) => {
                 }}
                 className="text-accent font-size-sm"
               >
-                Logout
+                {t('frontend.core.logout')}
               </a>
               <br />
               <Link to="/testing"></Link>
@@ -29,34 +32,35 @@ const AccountSidebar = ({ user }) => {
         <div className="bg-secondary px-4 py-3">
           <h3 className="font-size-sm mb-0 text-muted">
             <Link to="/my-account" className="nav-link-style active">
-              Overview
+              {t('frontend.account.overview')}
             </Link>
           </h3>
         </div>
         <ul className="list-unstyled mb-0">
           <li className="border-bottom mb-0">
             <Link to="/my-account/order-history" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-shopping-bag pr-2" /> Order History
+              <i className="far fa-shopping-bag pr-2" /> {t('frontend.account.order_history')}
             </Link>
           </li>
           <li className="border-bottom mb-0">
             <Link to="/my-account/profile" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-user pr-2" /> Profile Info
+              <i className="far fa-user pr-2" /> {t('frontend.account.profile_info')}
             </Link>
           </li>
           <li className="border-bottom mb-0">
             <Link to="/my-account/favorites" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-heart pr-2" /> Favorties
+              <i className="far fa-heart pr-2" /> {t('frontend.account.favorties')}
             </Link>
           </li>
           <li className="border-bottom mb-0">
             <Link to="/my-account/addresses" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-map-marker-alt pr-2" /> Addresses
+              <i className="far fa-map-marker-alt pr-2" /> {t('frontend.account.addresses')}
             </Link>
           </li>
           <li className="mb-0">
             <Link to="/my-account/cards" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-credit-card pr-2" /> Payment Methods
+              <i className="far fa-credit-card pr-2" />
+              {t('frontend.account.payment_methods')}
             </Link>
           </li>
         </ul>

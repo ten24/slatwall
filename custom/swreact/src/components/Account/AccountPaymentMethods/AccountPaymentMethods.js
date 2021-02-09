@@ -14,9 +14,9 @@ const AccountPaymentMethods = ({ primaryPaymentMethod, accountPaymentMethods, ti
         <table className="table table-hover mb-0">
           <thead>
             <tr>
-              <th>Your credit / debit cards</th>
-              <th>Name on card</th>
-              <th>Expires on</th>
+              <th>{t('frontend.account.payment_method.types')}</th>
+              <th>{t('frontend.account.payment_method.name')}</th>
+              <th>{t('frontend.account.payment_method.expires')}</th>
               <th></th>
             </tr>
           </thead>
@@ -31,7 +31,7 @@ const AccountPaymentMethods = ({ primaryPaymentMethod, accountPaymentMethods, ti
       <hr className="pb-4" />
       <div className="text-sm-right">
         <Link className="btn btn-primary" to="/my-account/cards/new">
-          Add new Payment
+          {t('frontend.account.payment_method.add')}
         </Link>
       </div>
     </AccountLayout>
