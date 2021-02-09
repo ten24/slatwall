@@ -1,9 +1,7 @@
 import * as SlatwalSDK from '@slatwall/slatwall-sdk/dist/client/index'
+import config from '../config/env'
 
-const sdkURL = window.__SDK_URL__ && process.env.NODE_ENV !== 'development' ? window.__SDK_URL__ : 'http://stoneandberg.local:8906/index.cfm/'
-
-delete window.__SDK_URL__
-
+const sdkURL = config.apiUrl
 let SlatwalApiService = SlatwalSDK.init({
   host: sdkURL,
 })
