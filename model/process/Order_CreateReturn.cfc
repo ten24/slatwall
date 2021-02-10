@@ -55,11 +55,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="copyFromType" ormtype="string" hb_rbKey="entity.copyFromType" hb_formFieldType="select";
 	property name="accountPaymentMethodID" hb_rbKey="entity.accountPaymentMethod" hb_formFieldType="select";
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
-
+	
 	// Data Properties
 	property name="location" cfc="Location";
 	property name="orderItems" type="array" hb_populateArray="true";
 	property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";
+	property name="orderPayments" type="array" hb_populateArray="true";
+    property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID";
 	
 	property name="fulfillmentRefundAmount";
 	property name="fulfillmentRefundPreTax";
@@ -77,11 +79,19 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Option Properties
     property name="returnReasonTypeOptions";
     property name="locationIDOptions";
-	
+    
+	// Helper Properties
+    property name="orderTypeName";
 
 	variables.orderItems = [];
 
-	
+	public any function getOrderTypeName(){
+        var type= getService('TypeService').getTypeBySystemCode(getOrderTypeCode());
+        if(!isNull(type)){
+            return type.getTypeName();
+        }
+    }
+    
 	public any function setupDefaults() {
 		if(arrayLen(getRefundOrderPaymentIDOptions())){
 			variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
@@ -198,6 +208,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
         return variables.returnReasonTypeOptions;
     }
 	
+    public array function getSecondaryReturnReasonTypeOptions() {
+        if (!structKeyExists(variables, 'secondaryReturnReasonTypeOptions')) {
+            var typeCollection = getService('typeService').getTypeCollectionList();
+		    typeCollection.setDisplayProperties('typeName|name,typeID|value');
+		    typeCollection.addFilter('parentType.systemCode','orderReturnReasonType');
+            typeCollection.addOrderBy('sortOrder|ASC');
+            
+            variables.secondaryReturnReasonTypeOptions = typeCollection.getRecords();
+            arrayPrepend(variables.secondaryReturnReasonTypeOptions, {name=rbKey('define.select'), value=""});
+        }
+
+        return variables.secondaryReturnReasonTypeOptions;
+    }
+    
 	// ======================  END: Data Options ===========================
 	
 	public numeric function getFulfillmentRefundAmount(boolean refresh=false) {

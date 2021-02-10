@@ -38,7 +38,7 @@ const AccountSidebar = ({ user }) => {
         </div>
         <ul className="list-unstyled mb-0">
           <li className="border-bottom mb-0">
-            <Link to="/my-account/order-history" className="nav-link-style d-flex align-items-center px-4 py-3">
+            <Link to="/my-account/orders" className="nav-link-style d-flex align-items-center px-4 py-3">
               <i className="far fa-shopping-bag pr-2" /> {t('frontend.account.order_history')}
             </Link>
           </li>
@@ -84,7 +84,7 @@ const AccountHeader = ({ crumbs, title }) => {
   )
 }
 
-const AccountLayout = ({ crumbs, children, title, user }) => {
+const MyAccountLayout = ({ crumbs, children, title, user }) => {
   return (
     <>
       <AccountHeader crumbs={crumbs} title={title} />
@@ -97,7 +97,22 @@ const AccountLayout = ({ crumbs, children, title, user }) => {
     </>
   )
 }
+
+const PromptLayout = ({ children }) => {
+  return (
+    <div className="container py-4 py-lg-5 my-4">
+      <div className="row d-flex justify-content-center">
+        <div className="col-md-6">
+          <div className="card box-shadow">
+            <div className="card-body">{children}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 const mapStateToProps = state => {
   return { user: state.userReducer }
 }
-export default connect(mapStateToProps)(AccountLayout)
+const AccountLayout = connect(mapStateToProps)(MyAccountLayout)
+export { AccountLayout, PromptLayout }

@@ -7,6 +7,7 @@ const ProductCard = props => {
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
   const { t, i18n } = useTranslation()
 
+
   return (
     <div>
       <div className="card product-card">
