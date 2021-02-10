@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import defaultImg from '../../assets/images/default.png'
 
-const DefaultImage = ({ alt = 'Missing', style }) => {
+const DefaultImage = ({ alt = '', style }) => {
   return <img style={style} src={defaultImg} alt={alt} />
 }
 const SWImage = ({ className, host, customPath, src, alt = '', basePath, style = {} }) => {

@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 const LEFT_PAGE = 'LEFT'
 const RIGHT_PAGE = 'RIGHT'
 // Built from here: https://www.digitalocean.com/community/tutorials/how-to-build-custom-pagination-with-react
@@ -15,6 +17,8 @@ const range = (from, to, step = 1) => {
 }
 
 const Pagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 0, setCurrentPage }) => {
+  const { t, i18n } = useTranslation()
+
   const calculatePageNumbers = () => {
     /**
      * totalNumbers: the total page numbers to show on the control
@@ -72,7 +76,7 @@ const Pagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages 
   const pages = calculatePageNumbers()
   if (!recordsCount || totalPages === 1) return null
   return (
-    <nav className="d-flex justify-content-between pt-2" aria-label="Page navigation">
+    <nav className="d-flex justify-content-between pt-2" aria-label={t('frontend.pagination.nav')}>
       <ul className="mx-auto pagination">
         {pages.map((page, index) => {
           if (page === LEFT_PAGE)
@@ -81,14 +85,14 @@ const Pagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages 
                 <div
                   className="page-link"
                   href=""
-                  aria-label="Previous"
+                  aria-label={t('frontend.pagination.previous')}
                   onClick={evt => {
                     evt.preventDefault()
                     gotoPage(currentPage - pageNeighbours * 2 - 1)
                   }}
                 >
                   <span aria-hidden="true">&laquo;</span>
-                  <span className="sr-only">Previous</span>
+                  <span className="sr-only">{t('frontend.pagination.previous')}</span>
                 </div>
               </li>
             )
@@ -98,14 +102,14 @@ const Pagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages 
               <li key={index} className="page-item">
                 <div
                   className="page-link"
-                  aria-label="Next"
+                  aria-label={t('frontend.pagination.next')}
                   onClick={evt => {
                     evt.preventDefault()
                     gotoPage(currentPage + pageNeighbours * 2 + 1)
                   }}
                 >
                   <span aria-hidden="true">&raquo;</span>
-                  <span className="sr-only">Next</span>
+                  <span className="sr-only">{t('frontend.pagination.next')}</span>
                 </div>
               </li>
             )

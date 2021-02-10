@@ -7,7 +7,7 @@ i18n
 
   .init({
     resources,
-    lng: window.localStorage.getItem('i18nextLng'),
+    lng: 'en',
     supportedLngs: ['de', 'en', 'en_gb', 'es', 'es_mx', 'fr', 'ga', 'ga'],
     nonExplicitSupportedLngs: true,
     fallbackLng: 'en',
