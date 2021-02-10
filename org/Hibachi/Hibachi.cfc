@@ -449,31 +449,7 @@ component extends="framework.one" {
 		}
 		//check if we have the authorization header
 		if(len(AuthToken)){
-
-			var authorizationHeader = AuthToken;
-			var prefix = 'Bearer ';
-			//get token by stripping prefix
-			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
-			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-
-			if(jwt.verify()){
-
-				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
-				if(!isNull(jwtAccount)){
-					jwtAccount.setJwtToken(jwt);
-					getHibachiScope().getSession().setAccount( jwtAccount );
-					
-					if(structKeyExists(url,'token')){
-						var accountAuthentication = getHibachiScope().getDAO('accountDAO').getActivePasswordByAccountID(jwtAccount.getAccountID());
-						if(!isNull(accountAuthentication)){
-							getHibachiScope().getSession().setAccountAuthentication( accountAuthentication );
-						}
-						getHibachiScope().getService("hibachiSessionService").persistSession(true);
-			      location(replace(REReplaceNoCase(CGI['request_url'], '&?token=[^&]+', ''), '/index.cfm', ''), false, 301);
-					}
-				}
-			}
-
+			getHibachiScope().getService("hibachiSessionService").setAccountSessionByAuthToken(AuthToken);
 		}
 
 		// Call the onEveryRequest() Method for the parent Application.cfc

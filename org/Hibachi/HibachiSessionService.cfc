@@ -282,6 +282,25 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
+	/**
+	 * Method to create account session using Bearer Token
+	 * */
+	public void function setAccountSessionByAuthToken(required string authToken){
+		var authorizationHeader = arguments.authToken;
+		var prefix = 'Bearer ';
+		//get token by stripping prefix
+		var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+		var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
+
+		if(jwt.verify()){
+			var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+			if(!isNull(jwtAccount)){
+				jwtAccount.setJwtToken(jwt);
+				getHibachiScope().getSession().setAccount( jwtAccount );
+			}
+		}
+	}
+	
 	public any function getSessionBySessionCookie(required any cookieName, required any cookieValue,boolean isNew=false){
 		var sessionEntity = getDAO('accountDAO').getSessionBySessionCookie(argumentCollection=arguments);
 		if(isNew && isNull(sessionEntity)){

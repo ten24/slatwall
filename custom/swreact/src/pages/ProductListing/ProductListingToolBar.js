@@ -1,13 +1,16 @@
 import { connect, useDispatch } from 'react-redux'
 import { search, setSort, removeFilter } from '../../actions/productSearchActions'
+import { useTranslation } from 'react-i18next'
 
 const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy }) => {
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
+
   return (
     <div className="d-flex justify-content-center justify-content-sm-between align-items-center pt-2 pb-4 pb-sm-5">
       <div className="d-flex flex-wrap">
         <div className="form-inline flex-nowrap mr-3 mr-sm-4 pb-sm-3">
-          <label className="text-dark opacity-75 text-nowrap mr-2 d-none d-sm-block">Applied Filters:</label>
+          <label className="text-dark opacity-75 text-nowrap mr-2 d-none d-sm-block">{t('frontend.plp.search.applied_filters')}</label>
 
           {appliedFilters &&
             appliedFilters.map(({ name, filterName }, index) => {

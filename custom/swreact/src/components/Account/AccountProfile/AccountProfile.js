@@ -7,9 +7,12 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../../../services'
+import { useTranslation } from 'react-i18next'
+
 const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
   const dispatch = useDispatch()
   const MySwal = withReactContent(Swal)
+  const { t, i18n } = useTranslation()
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -36,6 +39,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
 
   const updatePassword = event => {
     event.preventDefault()
+
     MySwal.fire({
       title: 'Update Password',
       html: '<input id="accountPassword" placeholder="Password" class="swal2-input"><input id="accountPasswordConfirm" placeholder="Confirm Password" class="swal2-input">',
@@ -69,6 +73,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
       }
     })
   }
+  //                    {t('token')}
 
   return (
     <AccountLayout crumbs={crumbs} title={title}>
@@ -77,19 +82,19 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
         <div className="row">
           <div className="col-sm-6">
             <div className="form-group">
-              <label htmlFor="accountFirstName">First Name</label>
+              <label htmlFor="accountFirstName">{t('frontend.account.first_name')}</label>
               <input className="form-control" type="text" id="accountFirstName" value={formik.values.accountFirstName} onChange={formik.handleChange} />
             </div>
           </div>
           <div className="col-sm-6">
             <div className="form-group">
-              <label htmlFor="accountLastName">Last Name</label>
+              <label htmlFor="accountLastName">{t('frontend.account.last_name')}</label>
               <input className="form-control" type="text" id="accountLastName" value={formik.values.accountLastName} onChange={formik.handleChange} />
             </div>
           </div>
           <div className="col-sm-6">
             <div className="form-group">
-              <label htmlFor="accountEmailAddress">Email Address</label>
+              <label htmlFor="accountEmailAddress">{t('frontend.account.email')}</label>
               <input className="form-control" type="accountEmailAddress" id="accountEmailAddress" value={formik.values.accountEmailAddress} onChange={formik.handleChange} disabled="" />
             </div>
           </div>
@@ -107,7 +112,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
           </div> */}
           <div className="col-sm-6">
             <div className="form-group">
-              <label htmlFor="accountCompany">Company</label>
+              <label htmlFor="accountCompany">{t('frontend.account.company')}</label>
               <input className="form-control" value={formik.values.accountCompany} type="text" onChange={formik.handleChange} id="accountCompany" />
             </div>
           </div>
@@ -115,10 +120,10 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
             <hr className="mt-2 mb-3" />
             <div className="d-flex flex-wrap justify-content-end">
               <button className="btn btn-secondary mt-3 mt-sm-0 mr-3" onClick={updatePassword} type="submit">
-                Update password
+                {t('frontend.account.password_update')}
               </button>
               <button type="submit" className="btn btn-primary mt-3 mt-sm-0">
-                Update profile
+                {t('frontend.account.profile_update')}
               </button>
             </div>
           </div>

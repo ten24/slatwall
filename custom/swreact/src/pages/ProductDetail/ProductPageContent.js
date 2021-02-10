@@ -1,12 +1,50 @@
 import ProductDetailGallery from './ProductDetailGallery'
 import ProductPagePanels from './ProductPagePanels'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { addToCart } from '../../actions/cartActions'
 import { useDispatch } from 'react-redux'
+import axios from 'axios'
+import { sdkURL } from '../../services'
+import { HeartButton } from '../../components'
 
 const ProductPageContent = ({ productID, calculatedTitle, productClearance, productCode, productDescription, calculatedSalePrice, listPrice = 'MISSING' }) => {
   const dispatch = useDispatch()
   const [quantity, setQuantity] = useState(1)
+  const [skus, setSksus] = useState({ list: [], isLoaded: false })
+  const [sku, setSku] = useState({ skuID: '' })
+
+  if (skus.list.length && !sku.skuID.length) {
+    setSku(skus.list[0])
+  }
+
+  useEffect(() => {
+    let didCancel = false
+    if (!skus.isLoaded) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+
+        url: `${sdkURL}api/scope/getProductSkus`,
+        data: {
+          productID: productID,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && !didCancel) {
+          setSksus({ list: response.data.skus, isLoaded: true })
+        } else if (!didCancel) {
+          setSksus({ ...skus, isLoaded: true })
+        }
+      })
+    }
+
+    return () => {
+      didCancel = true
+    }
+  }, [setSksus, skus, productID])
+
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
       <div className="px-lg-3">
@@ -17,10 +55,7 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
             <div className="product-details pb-3">
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {productClearance === true && ' On Special'}</span>
-                <button className="btn-wishlist mr-0 mr-lg-n3" type="button" data-toggle="tooltip" title="Add to wishlist">
-                  {/* TODO: The heart shold be its own component */}
-                  <i className="far fa-heart fa-circle"></i>
-                </button>
+                <HeartButton className={'btn-wishlist mr-0 mr-lg-n3'} />
               </div>
               <div className="mb-2">
                 <span className="text-small text-muted">product: </span>
@@ -37,26 +72,32 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                 className="mb-grid-gutter"
                 onSubmit={event => {
                   event.preventDefault()
-                  dispatch(addToCart('2c92808476e1c29f0176e1e2c4561186', quantity))
+                  dispatch(addToCart(sku.skuID, quantity))
                 }}
               >
-                <div className="form-group">
-                  <div className="d-flex justify-content-between align-items-center pb-1">
-                    <label className="font-weight-medium" htmlFor="product-size">
-                      Finish & Lock Type
-                    </label>
+                {skus.list.length > 1 && (
+                  <div className="form-group">
+                    <div className="d-flex justify-content-between align-items-center pb-1">
+                      <label className="font-weight-medium" htmlFor="product-size">
+                        Option
+                      </label>
+                    </div>
+
+                    <select className="custom-select" required id="product-size">
+                      {skus.list &&
+                        skus.list.map(({ skuID, calculatedSkuDefinition }, index) => {
+                          return (
+                            <option key={index} value={skuID}>
+                              {calculatedSkuDefinition}
+                            </option>
+                          )
+                        })}
+                    </select>
                   </div>
-                  <select className="custom-select" required id="product-size">
-                    <option value="">Select size</option>
-                    <option value="xs">XS</option>
-                    <option value="s">S</option>
-                    <option value="m">M</option>
-                    <option value="l">L</option>
-                    <option value="xl">XL</option>
-                  </select>
-                </div>
+                )}
+
                 <div className="mb-3">
-                  <span className="h4 text-accent font-weight-light">{calculatedSalePrice}</span> <span className="font-size-sm ml-1">{`${listPrice} list`}</span>
+                  <span className="h4 text-accent font-weight-light">{sku.price || ''}</span> <span className="font-size-sm ml-1">{`${sku.listPrice || ''} list`}</span>
                 </div>
                 <div className="form-group d-flex align-items-center">
                   <select

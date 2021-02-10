@@ -5,8 +5,11 @@ import { ActionBanner, SignUpForm } from '..'
 import styles from './Footer.module.css'
 import logo from '../../assets/images/sb-logo-white.png'
 import { useHistory } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
+  const { t, i18n } = useTranslation()
+
   let history = useHistory()
   return (
     <footer className="pt-5">
@@ -41,9 +44,9 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
         <div className="container">
           <div className="row">
             <div className="col-md-6 text-center text-md-left mb-4 text-light">
-              <img className="w-50" src={logo} alt="Stone & Berg Logo" />
+              <img className="w-50" src={logo} alt={t('frontend.logo')} />
             </div>
-            <div className="col-md-6 font-size-xs text-center text-md-right mb-4">{`@${copywriteDate} `} All rights reserved. Stone and Berg Company Inc</div>
+            <div className="col-md-6 font-size-xs text-center text-md-right mb-4">{`@${copywriteDate} ${t('frontend.copywrite')}`}</div>
           </div>
         </div>
       </div>

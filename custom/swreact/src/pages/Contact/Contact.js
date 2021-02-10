@@ -8,9 +8,12 @@ import { getContent } from '../../actions/contentActions'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { sdkURL } from '../../services/SlatwalApiService'
+import { useTranslation } from 'react-i18next'
 
 const ContactForm = ({ form }) => {
   const [submitted, setSubmitted] = useState(false)
+  const { t, i18n } = useTranslation()
+
   const encodeForm = data => {
     return Object.keys(data)
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
@@ -43,7 +46,7 @@ const ContactForm = ({ form }) => {
               },
             })
               .then(response => {
-                toast.success('Thank you for contacting us, we will get back to you as soon as possible.')
+                toast.success(t('frontend.contact.success'))
                 setSubmitted(true)
               })
               .catch(error => {
