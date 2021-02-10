@@ -1,7 +1,7 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import { useTranslation } from 'react-i18next'
 
 const ProductTile = ({ brand, productTile, price, displayPrice, linkUrl }) => {
@@ -62,7 +62,7 @@ const AccountFavorites = ({ crumbs, title, items }) => {
           <li className="page-item d-sm-none">
             <span className="page-link page-link-static">1 / 5</span>
           </li>
-          <li className="page-item active d-none d-sm-block" aria-current={frontend.core.page}>
+          <li className="page-item active d-none d-sm-block" aria-current={t('frontend.core.page')}>
             <span className="page-link">
               1<span className="sr-only">({t('frontend.core.current')})</span>
             </span>

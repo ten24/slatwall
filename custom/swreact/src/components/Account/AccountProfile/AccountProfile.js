@@ -7,9 +7,12 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../../../services'
+import { useTranslation } from 'react-i18next'
+
 const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
   const dispatch = useDispatch()
   const MySwal = withReactContent(Swal)
+  const { t, i18n } = useTranslation()
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -36,6 +39,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
 
   const updatePassword = event => {
     event.preventDefault()
+
     MySwal.fire({
       title: 'Update Password',
       html: '<input id="accountPassword" placeholder="Password" class="swal2-input"><input id="accountPasswordConfirm" placeholder="Confirm Password" class="swal2-input">',

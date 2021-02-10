@@ -33,7 +33,6 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
         },
       }).then(response => {
         if (response.status === 200 && !didCancel) {
-          console.log(response.data)
           setSksus({ list: response.data.skus, isLoaded: true })
         } else if (!didCancel) {
           setSksus({ ...skus, isLoaded: true })

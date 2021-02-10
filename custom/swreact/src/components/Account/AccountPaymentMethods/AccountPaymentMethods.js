@@ -5,8 +5,11 @@ import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import PaymentMethodItem from './PaymentMethodItem'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const AccountPaymentMethods = ({ primaryPaymentMethod, accountPaymentMethods, title, customBody, contentTitle }) => {
+  const { t, i18n } = useTranslation()
+
   return (
     <AccountLayout title={title}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />

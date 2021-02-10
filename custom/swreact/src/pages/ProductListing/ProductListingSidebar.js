@@ -3,10 +3,12 @@ import { connect, useDispatch } from 'react-redux'
 import { search, setKeyword } from '../../actions/productSearchActions'
 import debounce from 'lodash/debounce'
 import ProductListingFilter from './ProductListingFilter'
+import { useTranslation } from 'react-i18next'
 
 const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCount }) => {
   const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState(keyword)
+  const { t, i18n } = useTranslation()
 
   // TODO: Shouls this be an auto search or should you have to click enter
   const slowlyRequest = useCallback(

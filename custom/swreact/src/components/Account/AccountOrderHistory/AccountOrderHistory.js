@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { SlatwalApiService } from '../../../services'
 import Pagination from '../../Listing/Pagination'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import { useTranslation } from 'react-i18next'
-
 
 const ToolBar = ({ term, updateTerm }) => {
   const { t, i18n } = useTranslation()
@@ -140,6 +139,7 @@ const OrderHistoryList = () => {
   const [statusSort, setStatusSort] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [ordersOnAccount, setOrdersOnAccount] = useState({ orders: [], records: 0, isLoaded: false })
+  const { t, i18n } = useTranslation()
 
   useEffect(() => {
     if (!ordersOnAccount.isLoaded) {
@@ -190,6 +190,8 @@ const OrderHistoryList = () => {
 }
 
 const AccountOrderHistory = ({ crumbs, title, orders }) => {
+  const { t, i18n } = useTranslation()
+
   return (
     <AccountLayout title={t('frontend.account.account_order_history')}>
       <OrderHistoryList orders={orders} />
