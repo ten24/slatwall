@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import { connect, useDispatch } from 'react-redux'
 import AccountContent from '../AccountContent/AccountContent'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountAddressForm from './AccountAddressForm'
 import { toast } from 'react-toastify'
 import useRedirect from '../../../hooks/useRedirect'
