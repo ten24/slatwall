@@ -2577,31 +2577,26 @@ component  accessors="true" output="false"
     public void function getProductFilterOptions(struct data={}) {
 	    param name="arguments.data.allowProductAssignmentFlag" default=true;
 	    param name="arguments.data.activeFlag" default=true;
-        param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        
+
         // Category Collection List
         var categoryCollectionList = getService("ContentService").getCategoryCollectionList();
         categoryCollectionList.addFilter("allowProductAssignmentFlag", arguments.data.allowProductAssignmentFlag );
-        categoryCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
-        var categories = categoryCollectionList.getPageRecords(formatRecords=false);
+        var categories = categoryCollectionList.getRecords(formatRecords=false);
         
         // Product Type Collection List
         var productTypeCollectionList = getProductService().getProductTypeCollectionList();
         productTypeCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
-        productTypeCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
-        var productTypes = productTypeCollectionList.getPageRecords(formatRecords=false);
+        var productTypes = productTypeCollectionList.getRecords(formatRecords=false);
         
         // Brand Collection List
         var brandCollectionList = getProductService().getBrandCollectionList();
         brandCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
-        brandCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
-        var brands = brandCollectionList.getPageRecords(formatRecords=false);
+        var brands = brandCollectionList.getRecords(formatRecords=false);
         
         // Option Collection List
         var optionCollectionList = getProductService().getOptionCollectionList();
         optionCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
-        optionCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
-        var options = optionCollectionList.getPageRecords(formatRecords=false);
+        var options = optionCollectionList.getRecords(formatRecords=false);
         
         arguments.data.ajaxResponse['data'] = {
            'category'   : categories, 
