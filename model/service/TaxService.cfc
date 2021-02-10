@@ -273,8 +273,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								var newAppliedTax = this.newTaxApplied();
 								newAppliedTax.setAppliedType("orderItem");
 								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
+								if(!IsNull(taxRateItemResponse)){
 								newAppliedTax.setVATPrice( taxRateItemResponse.getVATPrice() );
 								newAppliedTax.setVATAmount( taxRateItemResponse.getVATAmount() );
+								}
 								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 								newAppliedTax.setOrderItem( orderItem );
 								newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
@@ -662,9 +664,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}else{
 										var price = orderFulfillment.getHandlingFee();
 									}
+									if(!IsNull(price)){
 									//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
 									newAppliedTax.setTaxLiabilityAmount( round(price * taxCategoryRate.getTaxRate()) / 100 );
-						
+									}
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
 									newAppliedTax.setTaxLocality( taxAddress.getLocality() );

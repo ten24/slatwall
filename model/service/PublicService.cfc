@@ -1930,6 +1930,7 @@ component  accessors="true" output="false"
             if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
             }
+
         }
         
         getHibachiScope().addActionResult( "public:cart.clear", cart.hasErrors() );
