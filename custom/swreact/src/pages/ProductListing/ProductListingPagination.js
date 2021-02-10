@@ -1,5 +1,7 @@
 import { connect, useDispatch } from 'react-redux'
 import { search, setCurrentPage } from '../../actions/productSearchActions'
+import { useTranslation } from 'react-i18next'
+
 const LEFT_PAGE = 'LEFT'
 const RIGHT_PAGE = 'RIGHT'
 
@@ -23,6 +25,7 @@ const range = (from, to, step = 1) => {
 
 const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 1 }) => {
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
 
   const calculatePageNumbers = () => {
     /**
@@ -98,7 +101,7 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
                   }}
                 >
                   <span aria-hidden="true">&laquo;</span>
-                  <span className="sr-only">Previous</span>
+                  <span className="sr-only">{t('frontend.pagination.previous')}</span>
                 </div>
               </li>
             )
@@ -115,7 +118,7 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
                   }}
                 >
                   <span aria-hidden="true">&raquo;</span>
-                  <span className="sr-only">Next</span>
+                  <span className="sr-only">{t('frontend.pagination.next')}</span>
                 </div>
               </li>
             )
@@ -136,48 +139,6 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
             </li>
           )
         })}
-        {/* <li className="page-item">
-          <a className="page-link" href="#">
-            <i className="far fa-chevron-left mr-2"></i> Prev
-          </a>
-        </li>
-      </ul>
-      <ul className="pagination">
-        <li className="page-item d-sm-none">
-          <span className="page-link page-link-static">1 / 5</span>
-        </li>
-        <li className="page-item active d-none d-sm-block" aria-current="page">
-          <span className="page-link">
-            1<span className="sr-only">(current)</span>
-          </span>
-        </li>
-        <li className="page-item d-none d-sm-block">
-          <a className="page-link" href="#">
-            2
-          </a>
-        </li>
-        <li className="page-item d-none d-sm-block">
-          <a className="page-link" href="#">
-            3
-          </a>
-        </li>
-        <li className="page-item d-none d-sm-block">
-          <a className="page-link" href="#">
-            4
-          </a>
-        </li>
-        <li className="page-item d-none d-sm-block">
-          <a className="page-link" href="#">
-            5
-          </a>
-        </li>
-      </ul>
-      <ul className="pagination">
-        <li className="page-item">
-          <a className="page-link" href="#" aria-label="Next">
-            Next <i className="far fa-chevron-right ml-2"></i>
-          </a>
-        </li> */}
       </ul>
     </nav>
   )
