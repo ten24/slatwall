@@ -1,2 +1,0 @@
-(this.webpackJsonpswreact=this.webpackJsonpswreact||[]).push([[22],{262:function(t,e,c){"use strict";c.r(e);var s=c(0),n=c(1),r=c(24),i=c(8),a=c(46);e.default=function(){var t=Object(i.c)();return Object(n.useEffect)((function(){t(Object(a.d)()),t(Object(a.c)({content:{home:["title","customBody","contentID","urlTitlePath","urlTitle","sortOrder","linkUrl","linkLabel","associatedImage"]}}))}),[t]),Object(s.jsxs)(r.i,{children:[Object(s.jsx)(r.f,{}),Object(s.jsx)(r.h,{}),Object(s.jsx)(r.g,{})]})}}}]);
-//# sourceMappingURL=22.30d8d1ad.chunk.js.map
