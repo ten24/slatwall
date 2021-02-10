@@ -2574,7 +2574,7 @@ component  accessors="true" output="false"
 	 * @param - activeFlag
 	 * @return - filterOptionsResponse - custom array of keys
 	 **/
-    public void function getProductFilterOptions() {
+    public void function getProductFilterOptions(struct data={}) {
 	    param name="arguments.data.allowProductAssignmentFlag" default=true;
 	    param name="arguments.data.activeFlag" default=true;
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
@@ -2610,5 +2610,5 @@ component  accessors="true" output="false"
            'option'     : options
         };
         getHibachiScope().addActionResult("public:scope.getProductFilterOptions",false);
-    }   
+    }
 }
