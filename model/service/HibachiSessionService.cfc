@@ -161,19 +161,20 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		var jwtPayload = currentSession.getAccount().getJwtToken().getPayload();
 
 		//if order id exists in payload then use that to get recent order else get most recent not placed order order
-		if( !isNull(jwtPayload.orderID) && !this.hibachiIsEmpty(jwtPayload.orderID) ){
+		if( !this.hibachiIsEmpty(jwtPayload.orderID) ){
 			
-			this.getHibachiScope().getSession().setOrder( 
+			currentSession.setOrder( 
 			    this.getOrderService().getOrder( jwtPayload.orderID) 
 			);
-
-			this.saveSession(getHibachiScope().getSession());
+			this.saveSession(currentSession);
 			
 			// Q: do we really need to flush here?
 			// if we're using the jwt we will always get the cart from the token, 
 			// Force persistance
 			this.getHibachiDAO().flushORMSession();
 		}
+		
+		return currentSession;
 	}
 	
 }
