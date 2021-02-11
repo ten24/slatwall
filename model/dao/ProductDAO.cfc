@@ -597,44 +597,145 @@ Notes:
 	</cffunction>
 	
 	
-	<cffunction name="getRawPotentialFilters" access="public">
-	
-        <!--- 
-            TODO: add categories and site-filters 
-        --->	
+	<cffunction name="getProductAndSkuSelectTypeAttributes" access="public">
+	    <cfset local.startTicks = getTickCount() /> 
 		<cfquery name="local.query" >
-			SELECT
-            	o.optionID, o.optionName, o.optionCode, o.sortOrder as optionSortOrder
-            	, br.brandID, br.brandName
-            	, pt.productTypeID, pt.productTypeName, pt.urlTitle as productTypeURLTitle, pt.parentProductTypeID
-            	, og.optionGroupID, og.optionGroupName, og.sortOrder as optionGroupSortOrder
-            	
+    		SELECT 
+                att.attributeID, att.attributeCode, att.attributeInputType, ast.attributeSetObject
+            
             FROM swProduct p
             
-            INNER JOIN swSku sk 
-            	ON sk.productID = p.productID 
-            	AND ( p.activeFlag = 1 AND p.publishedFlag=1 AND sk.activeFlag=1 AND sk.publishedFlag=1 )
-            
-            INNER JOIN swProductType pt 
-            	ON pt.productTypeID = p.productTypeID 
-            	AND ( pt.activeFlag=1 AND pt.publishedFlag=1)
-            	
-            INNER JOIN swBrand br 
-            	ON br.brandID = p.brandID
-            	AND ( br.activeFlag=1 AND br.publishedFlag=1)
-            
-            INNER JOIN swSkuOption so 
-            	ON so.skuID = sk.skuID
-            
-            INNER JOIN swOption o 
-            	ON o.optionID = so.optionID
-            	AND o.activeFlag = 1
-            	
-            INNER JOIN swOptionGroup og 
-            	ON og.optionGroupID = o.optionGroupID
+            INNER JOIN swSku sk
+            	ON sk.productID = p.productID
+                    AND ( p.activeFlag = 1
+                                AND p.publishedFlag = 1
+                                AND sk.activeflag = 1
+                                AND sk.publishedFlag = 1 )
+                INNER JOIN swSkuPrice sp
+                       ON sp.skuID = sk.skuID
+                          AND ( sp.activeFlag = 1 )
+                          
+                LEFT JOIN swAttributeSet ast
+                	ON ( ast.attributeSetObject = 'product' OR ast.attributeSetObject = 'sku' ) 
+                	    AND ast.activeFlag = 1
+                	    
+                INNER JOIN SwAttribute att
+                    ON att.attributeInputType IN ('select', 'multiSelect') 
+                        AND att.attributeSetID = ast.attributeSetID  
+                        AND att.activeFlag = 1
+                    
+                GROUP By att.attributeID
 		</cfquery>
+		<cfset this.logHibachi("ProductDAO:: getProductAndSkuSelectTypeAttributes took #getTickCount()-local.startTicks# ms.; and fetched #local.query.recordCount# records ") />
 		<cfreturn local.query>
 	</cffunction>
+	
+	<cffunction name="getRawPotentialFilters" access="public">
+	    <!--- NOTE: using the cfm syntas, was causing issues ny changing every single quotes into a pair of single-quotes --->
+	    
+	    <cfscript>
+            local.productAndSkuSelectTypeAttributes = this.getProductAndSkuSelectTypeAttributes();
+	        
+	        local.startTicks = getTickCount();
+	        
+            local.attributeIDs = local.productAndSkuSelectTypeAttributes.reduce( function(ids,row){
+                            	        return listAppend(arguments.ids, "'#arguments.row.attributeID#'" );
+                            	    }, "");
+                            	    
+            local.selectTypeAttributeOptionJoinParts = local.productAndSkuSelectTypeAttributes.reduce( function(joins,row){
+                // TODO: multi-selet type
+                if( arguments.row.attributeInputType != 'select' ){
+                    return arguments.joins;
+                }
+                
+                if( arguments.row.attributeSetObject == 'sku'){
+                    return listAppend(joins, "(att.attributeCode = `#arguments.row.attributeCode#` AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue)", '$' );
+                } 
+                
+                return listAppend(joins, "(att.attributeCode = `#arguments.row.attributeCode#` AND p.#arguments.row.attributeCode# = atto.attributeOptionValue)", '$' );
+                
+            }, "");
+            
+            
+            local.selectTypeAttributeOptionJoinParts = local.selectTypeAttributeOptionJoinParts.replace(")$(", ") OR (", "ALL");
+             	
+            local.mainSql = "SELECT 
+    		       br.brandID, br.brandName,
+                   cr.categoryID, cr.categoryName, cr.parentCategoryID, cr.urlTitle AS categoryUrlTitle,
+                   o.optionID, o.optionName, o.optionCode, o.sortOrder AS optionSortOrder,
+                   og.optionGroupID, og.optionGroupName, og.sortOrder AS optionGroupSortOrder,
+                   pt.productTypeID, pt.productTypeName, pt.parentProductTypeID, pt.urlTitle AS productTypeURLTitle,
+                   st.siteID, st.siteName, st.siteCode, st.currencyCode,
+                   att.attributeID, att.attributeName, att.attributeCode, att.attributeInputType,
+                   att.urltitle AS attributeUrlTitle,
+                   att.sortOrder AS attributeSortOrder,
+                   atst.attributeSetID, atst.attributeSetCode, atst.attributeSetName, atst.attributeSetObject,
+                   atst.sortOrder AS attributeSetSortOrder,
+                   atto.attributeOptionID, atto.attributeOptionValue, atto.attributeOptionLabel,
+                   atto.urltitle AS attributeOptionUrlTitle,
+                   atto.sortOrder AS attributeOptionSortOrder
+                   
+            FROM swProduct p
+            
+               -- INNER JOIN because if any product does not have at least one sku, then we can't sell anything for that product, so we don't need filter options specific to that product           
+               INNER JOIN swSku sk
+                       ON sk.productID = p.productID
+                          AND ( p.activeFlag = 1
+                                AND p.publishedFlag = 1
+                                AND sk.activeflag = 1
+                                AND sk.publishedFlag = 1 )
+                
+                -- INNER JOIN because if any SKU does not have a price, then we can't sell it  
+               INNER JOIN swSkuPrice sp
+                       ON sp.skuID = sk.skuID
+                          AND ( sp.activeFlag = 1 )
+                                
+               LEFT JOIN swProductType pt
+                      ON pt.productTypeID = p.productTypeID
+                         AND ( pt.activeFlag = 1 AND pt.publishedFlag = 1 )
+                               
+               LEFT JOIN swBrand br
+                      ON br.brandID = p.brandID
+                         AND ( br.activeFlag = 1 AND br.publishedFlag = 1 )
+                               
+                LEFT JOIN swCategory cr
+                        ON cr.categoryID IN (SELECT DISTINCT categoryID FROM swProductCategory)
+                      
+                LEFT JOIN swProductSite pst
+                        ON pst.productID = p.productID
+                LEFT JOIN swSite st
+                        ON st.siteID = pst.siteID
+                          
+                 -- LEFT JOIN because we can have SKUs which are not associated with any options
+                LEFT JOIN swSkuOption so
+                        ON so.skuID = sk.skuID
+                LEFT JOIN swOption o
+                        ON o.optionID = so.optionID
+                            AND o.activeFlag = 1
+                         
+                LEFT JOIN swOptionGroup og
+                        ON og.optionGroupID = o.optionGroupID
+                      
+                LEFT JOIN SwAttribute att
+                	  ON att.attributeID IN (#local.attributeIDs#)
+                  -- attributes are already filtered on activeFlag
+                
+                LEFT JOIN SwAttributeSet atst
+                    ON atst.attributeSetID = att.attributeSetID AND atst.activeFlag = 1
+                	
+                LEFT JOIN swAttributeOption atto
+                	ON(#local.selectTypeAttributeOptionJoinParts#)";
+            
+            
+            local.q = new Query();
+	        local.q.setSQL(local.mainSql);
+	        local.q = q.execute().getResult();
+	        
+	        this.logHibachi("ProductDAO:: getRawPotentialFilters took #getTickCount()-local.startTicks# ms.; and fetched #local.q.recordCount# records ");
+
+	        return local.q;
+	    </cfscript>
+    </cffunction>
 	
 </cfcomponent>
 

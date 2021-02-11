@@ -284,14 +284,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             .hasCachedValue('calculated_product_filter_facet_options')
         ).toBeFalse();
 		
-		var filters = this.getService().getProductFilterFacetOptions();
-		
-        // 		debug(filters);
-		
-        expect( filters ).toHaveKey('brands');
-        expect( filters ).toHaveKey('options');
-        expect( filters ).toHaveKey('optionGroups');
-        expect( filters ).toHaveKey('productTypes');
+	    var facets = this.getService().getProductFilterFacets();
+		var facetOptions = this.getService().getProductFilterFacetOptions();
+
+        dump(facetOptions);
+        
+        facets.each( function(thisFacet){
+            expect( facetOptions ).toHaveKey(thisFacet.id);
+        });
         
         expect( this.getService()
             .getHibachiCacheService()
@@ -312,7 +312,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    facets.each( function(facet){
             expect( facet ).toHaveKey('priority');
             expect( facet ).toHaveKey('selectType');
-	        
 	    });
 	}
 	
@@ -431,7 +430,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	 * 
 	 * This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
 	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_only_return_all_brands_regardless_selected(){
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_return_all_brands_regardless_selected(){
 	    
 	    
 	    var allFacetOptions = this.getService().getProductFilterFacetOptions();
@@ -450,8 +449,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	        'brands': selectedBrands
 	    });
 	    
-        // dump('calculatedPotentialFacetOptions:');
-	    // dump(calculatedPotentialFacetOptions);
+    //     dump('calculatedPotentialFacetOptions:');
+	   // dump(calculatedPotentialFacetOptions);
         
         potentialBrandsOptions.each(function(thisBandID){
             expect(calculatedPotentialFacetOptions.brands).toHaveKey( thisBandID );
@@ -474,7 +473,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var start = getTickCount();
 	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
 	   // sleep(1);
-	    expect( (getTickCount()-start) < 1 ).toBeTrue('it should take less than 1 ms ;)');
+	   var timeTook = getTickCount()-start;
+	   
+	    expect( timeTook < 2 ).toBeTrue('it should take ~1 ms ;) but it took #timeTook#');
     }
 	
 	
@@ -587,6 +588,55 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 	
 	
+	
+	/**
+	 *  @test
+	 *  
+	*/
+	public void function make_sql_query(){
+
+        
+        var start = getTickCount();
+        
+        var facetOptions = this.getService().getProductFilterFacetOptions();
+		
+		dump("took #getTickCount() - start#");
+		
+		dump(facetOptions);
+	}
+	
+	
+	/**
+	* @test	
+	* 
+	*/
+	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_test(){
+	    
+	    
+	    var selectedFacets = {
+	        'brands': [
+	            '2c988084760a65cb01760a728e7a0776', 
+	            '2c99808475ffd5200175ffd7e4660009', 
+	            '2c938084760493a2017604a0da590006'
+	        ],
+	        'options': [
+	            '2c928084760415380176045d4fad0113',
+	            '2c91808372e5f4500172e6e495db0077',
+	            '2c91808372e5f4500172e6e6e05a0071',
+	            '2c91808575d3a357017606e194fa009c',
+	            '2c91808372e5f4500172e6e495db0091'
+	       ]
+	    };
+	    dump("selectedFacets : ");
+	    dump(selectedFacets);
+	    
+	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
+	    dump("potentialFacetOptions : ");
+	    dump(potentialFacetOptions);
+	    
+	}
+	
+	
 	/**
 	* @test	
 	* 
@@ -599,8 +649,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    dump(selectedFacets);
 	    
 	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
-	   // dump("potentialFacetOptions : ");
-	   // dump(potentialFacetOptions);
+	    dump("potentialFacetOptions : ");
+	    dump(potentialFacetOptions);
 	    
 	    var skuCollectionList = this.getService().getSkuCollectionList();
 		skuCollectionList.setDisplayProperties("");
@@ -682,20 +732,31 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var facetOptions = this.getService().getProductFilterFacetOptions();
 	   // dump(facetOptions);
 
+        
+	   // var productTypeIDs = StructKeyList(facetOptions.productTypes);
+	   // var productTypeIDsLen = listLen(productTypeIDs);
+        
+	    var count = RandRange( 1, RandRange(5,10) );
+	    
+	   // for(var i=1; i<=count; i++){
+	   //     if( RandRange(1, productTypeIDsLen)  > RandRange(1, productTypeIDsLen) ){
+    // 	        selectedFacets.productTypes.append(
+    // 	            listGetAt(productTypeIDs, RandRange(1, productTypeIDsLen) )
+    // 	        );
+	   //     }
+	   // }
+	    
+	   // dump(selectedFacets);
 
+    //     // get the remaining ontions for selections
+	   // facetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
+	   // dump("facetOptions for Brands: ");
+	   // dump(facetOptions.brands);
+
+        
 	    var brandIDs = StructKeyList(facetOptions.brands);
 	    var brandIDsLen = listLen(brandIDs);
 	    
-	    var optionIDs = StructKeyList(facetOptions.options);
-	    var optionIDsLen = listLen(optionIDs);
-	    
-	    var optionGroupIDs = StructKeyList(facetOptions.optionGroups);
-	    var optionGroupIDsLen = listLen(optionGroupIDs);
-	    
-	    var productTypeIDs = StructKeyList(facetOptions.productTypes);
-	    var optionGroupIDsLen = listLen(optionGroupIDs);
-	    
-	    var count = RandRange( 1, 2 );
 	    for(var i=1; i<=count; i++){
 	        
 	        if( RandRange(1, brandIDsLen)  > RandRange(1, brandIDsLen) ){
@@ -703,19 +764,46 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     	            listGetAt(brandIDs, RandRange(1, brandIDsLen) )
     	        );
 	        }
-	        
-	        if( RandRange(1, optionIDsLen)  > RandRange(1, optionIDsLen) ){
-    	        selectedFacets.options.append(
-    	            listGetAt(optionIDs, RandRange(1, optionIDsLen) )
-    	        );
-	        }
-	        
-	        if( RandRange(1, optionGroupIDsLen)  > RandRange(1, optionGroupIDsLen) ){
-    	        selectedFacets.optionGroups.append(
-    	            listGetAt(optionGroupIDs, RandRange(1, optionGroupIDsLen) )
-    	        );
-	        }
 	    }
+	    
+	   // dump(selectedFacets);
+
+	    // get the remaining ontions for selections
+	    facetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
+    //     dump("facetOptions for Options: ");
+	   // dump(facetOptions.options);
+	    
+	    var optionIDs = StructKeyList(facetOptions.options);
+	    var optionIDsLen = listLen(optionIDs);
+	    if(optionIDsLen>0){
+    	    for(var i=1; i<=count; i++){
+    	        
+    	        if( RandRange(1, optionIDsLen)  > RandRange(1, optionIDsLen) ){
+        	        selectedFacets.options.append(
+        	            listGetAt(optionIDs, RandRange(1, optionIDsLen) )
+        	        );
+    	        }
+    	    }
+	    }
+
+	   // dump(selectedFacets);
+	   // // get the remaining ontions for selections
+	   // facetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
+        
+    //     dump("facetOptions for Option Groups: ");
+	   // dump(facetOptions.optionGroups);
+	    
+	   // var optionGroupIDs = StructKeyList(facetOptions.optionGroups);
+	   // var optionGroupIDsLen = listLen(optionGroupIDs);
+	    
+	   // for(var i=1; i<=count; i++){
+	        
+	   //     if( RandRange(1, optionGroupIDsLen)  > RandRange(1, optionGroupIDsLen) ){
+    // 	        selectedFacets.optionGroups.append(
+    // 	            listGetAt(optionGroupIDs, RandRange(1, optionGroupIDsLen) )
+    // 	        );
+	   //     }
+	   // }
 	    
 	    return selectedFacets;
 	}
