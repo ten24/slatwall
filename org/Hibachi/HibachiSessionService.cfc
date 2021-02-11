@@ -290,7 +290,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 	 * */
 	public any function setAccountSessionByAuthToken(required string authToken){
 		//get token by stripping prefix
-		var token = right( replace(arguments.authToken, 'Bearer ', '');
+		var token = replace(arguments.authToken, 'Bearer ', '');
 		
 		if(this.hibachiIsEmpty(token) ){
 		    return;
