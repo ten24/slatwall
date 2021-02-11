@@ -3392,20 +3392,24 @@ component  accessors="true" output="false"
      * Promotion engine will evaluate discounts based on cart data passed in. Cart data
      * will create a transient order to do the calculation and delete the order after response
      * example data struct: 
-     * {"skus":[{"skucode":"item1","quantity":"1"}, {"skucode":"item2","quantity":"1"}],"promotionCode":"123"}
+     * {
+     *  "skus":[{"skucode":"item1","quantity":"1"}, {"skucode":"item2","quantity":"1"}],
+     *  "promotionCode":"123",
+     *  "account":{"firstName": "", "lastName": "", "emailAddress": ""}
+     * }
      */
-     public void function getDiscountsByCartData(required struct data){
-         param name="data.skus" default=[];
-         data["updateOrderAmountFlag"] = false;
+     public void function getDiscountsByCartData(required struct data) {
+         param name="arguments.data.skus" default=[];
+         arguments.data["updateOrderAmountFlag"] = false;
 
          var cart = getOrderService().newOrder();
          getHibachiScope().getSession().setOrder( cart );
          
-         if(structKeyExists(data, "promotionCode")){
+         if(structKeyExists(arguments.data, "promotionCode")) {
              addPromotionCode(arguments.data);
          }
          
-         for(var sku in data.skus){
+         for(var sku in arguments.data.skus) {
              var cartData = {};
              cartData["updateShippingMethodOptionsFlag"] = false;
              cartData["updateOrderAmountFlag"] = false;
@@ -3417,6 +3421,17 @@ component  accessors="true" output="false"
                  cartData["quantity"] = sku["quantity"];
                  addOrderItem( cartData );
              }
+         }
+         
+         if(structKeyExists(arguments.data, "account")) {
+            var account = getAccountService().newAccount();
+            getAccountService().saveAccount( account, arguments.data.account );
+            if(!account.hasErrors()){
+                cart.setAccount( account );
+            } else {
+                cart.addErrors( account.getErrors() );
+                getHibachiScope().setORMHasErrors( true );
+            }
          }
          
          // save order and update amounts
