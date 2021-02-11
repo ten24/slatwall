@@ -3357,6 +3357,8 @@ component  accessors="true" output="false"
      */
      public void function getDiscountsByCartData(required struct data){
          param name="data.skus" default=[];
+         // disable shipping option lookup
+         data["updateShippingMethodOptionsFlag"] = false;
          
          var cart = getOrderService().newOrder();
          getHibachiScope().getSession().setOrder( cart );
