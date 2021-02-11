@@ -570,13 +570,45 @@ component extends="HibachiService" accessors="true" output="false" {
 			//EXPORT
 			case 'webhook' :
 				
-				var req = new http();
-		        req.setMethod("POST"); 
-		        req.setUrl(workflowTaskAction.getWebhookURL());
-		        req.addParam(type="header",name="Content-Type", value="application/json");
-		        req.addParam(type="body", value="#arguments.entity.getJsonRepresentation()#"); 
-		        var res = req.send().getPrefix();
-		        actionSuccess = left(res.status_code, 1) == "2";
+				var payload = {
+					"eventName": "",
+					"eventTimeStamp": now(),
+					"entity": arguments.entity.getClassName(),
+					"data": ""
+				};
+				
+				if(!isNull(arguments.data.workflowTrigger)){
+					payload['eventName'] = arguments.data.workflowTrigger.getTriggerEventTitle();
+				}
+				
+				var payloadData = arguments.workflowTaskAction.getProcessMethodData();
+				
+				if(!isNull(payloadData) && len(payloadData)){
+					var payloadData = arguments.entity.stringReplace(payloadData,false,true);
+					// if root key is data, override, otherwise append
+					if(isJSON(payloadData)){
+						payloadDataStruct = deserializeJSON(payloadData);
+						if(structKeyExists(payloadDataStruct,'data')){
+							payload['data'] = payloadDataStruct['data'];
+						} else if(structKeyExists(payloadDataStruct,'custom')){
+							payload = payloadDataStruct['custom'];
+						} else {
+							payload['extraData'] = payloadDataStruct;
+						}
+					} else {
+						payload['extraData'] = payloadData;
+					}
+				}
+				
+				if(structKeyExists(payload, 'data') && !isStruct(payload['data']) && !len(payload['data'])){
+					payload['data'] = arguments.entity.getStructRepresentation();
+				}
+				
+				if(arguments.type == 'Event'){
+					runWebhookInThread(arguments.workflowTaskAction.getWebhookURL(), payload);
+				} else {
+					runWebhook(arguments.workflowTaskAction.getWebhookURL(), payload);
+				}
 
 				break;
 
@@ -591,7 +623,33 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return actionSuccess;
 	}
+	
+	private void function runWebhookInThread(required any webhookURL, required struct payload){
+		var currentThreadName = hash(serializeJSON(arguments));
+		this.logHibachi('Invoking weblook with thread name: #currentThreadName#');
+		thread action="run" name="#currentThreadName#" threadData="#arguments#"{
+			// removing this log line stops webhook from working, need to figure out why.
+			this.logHibachi('call webhook inside thread');
+			this.runWebhook(argumentCollection=threadData);
+		}
+	}
 
+	private void function runWebhook(required any webhookURL, required struct payload){
+
+		var req = new http();
+        req.setMethod("POST"); 
+        req.setUrl(arguments.webhookURL);
+        req.addParam(type="header",name="Content-Type", value="application/json");
+        req.addParam(type="body", value="#serializeJSON(arguments.payload)#"); 
+        var res = req.send().getPrefix();
+        actionSuccess = left(res.status_code, 1) == "2";
+		this.logHibachi('Webhook finished with status code : #res.status_code#');
+		
+		if(!actionSuccess){
+			//TODO: Add to reetry queue with 3 retries
+		}
+	}
+	
 	private boolean function bulkEntityQueueInsertByEntityQueueFlagProperty( required any workflowTaskAction, required any entity, string processEntityQueueFlagPropertyName, string processMethod, struct data = {}, struct entityQueueData = {}){
 
 
