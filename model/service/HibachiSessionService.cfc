@@ -150,33 +150,30 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	/**
 	 * Method override to setup cart information on session
 	 * */
-	public void function setAccountSessionByAuthToken(required string authToken) {
-		super.setAccountSessionByAuthToken(arguments.authToken);
-
-		//Set Cart on Session
-		if(!isNull(getHibachiScope().getSession()) && getHibachiScope().getSession().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccount()) && !isNull( getHibachiScope().getAccount().getAccountID() ) ) {
-
-			var bearerTokenLength = 7;
-			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(right(arguments.authToken,len(arguments.authToken) - bearerTokenLength));
-			//don't need to call verify as it's being verified in super
-			var jwtPayload = jwt.getPayload();
-
-			//if order id exists in payload then use that to get recent order else get most recent not placed order order
-			if( structKeyExists(jwtPayload, 'orderid') && !isNull(jwtPayload.orderid)) {
-				var mostRecentCart = getOrderService().getOrder( jwtPayload.orderid );
-			}
-
-			if(!isNull(mostRecentCart)) {
-
-				getHibachiScope().getSession().setOrder( mostRecentCart );
-
-				this.saveSession(getHibachiScope().getSession());
-
-				// Force persistance
-				getHibachiDAO().flushORMSession();
-			}
+	public any function setAccountSessionByAuthToken(required string authToken) {
+		var currentSession = super.setAccountSessionByAuthToken(arguments.authToken);
+		
+		if( isNull(currentSession) ){
+		    return;
 		}
 
+		//Set Cart on Session
+		var jwtPayload = currentSession.getAccount().getJwtToken().getPayload();
+
+		//if order id exists in payload then use that to get recent order else get most recent not placed order order
+		if( !isNull(jwtPayload.orderID) && !this.hibachiIsEmpty(jwtPayload.orderID) ){
+			
+			this.getHibachiScope().getSession().setOrder( 
+			    this.getOrderService().getOrder( jwtPayload.orderID) 
+			);
+
+			this.saveSession(getHibachiScope().getSession());
+			
+			// Q: do we really need to flush here?
+			// if we're using the jwt we will always get the cart from the token, 
+			// Force persistance
+			this.getHibachiDAO().flushORMSession();
+		}
 	}
 	
 }

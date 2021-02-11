@@ -1,10 +1,13 @@
 component output="false" accessors="true" extends="HibachiService"  {
 
-	property name="accountService" type="any";
 	property name="orderService" type="any";
-	property name="hibachiAuditService" type="any";
+	property name="accountService" type="any";
+	property name="hibachiJWTService" type="any";
 	property name="hibachiTagService" type="any";
+	property name="hibachiAuditService" type="any";
 	property name="hibachiUtilityService" type="any";
+	
+	
 
 	// ===================== START: Logical Methods ===========================
 	public struct function getConfig(){
@@ -285,19 +288,29 @@ component output="false" accessors="true" extends="HibachiService"  {
 	/**
 	 * Method to create account session using Bearer Token
 	 * */
-	public void function setAccountSessionByAuthToken(required string authToken){
-		var authorizationHeader = arguments.authToken;
-		var prefix = 'Bearer ';
+	public any function setAccountSessionByAuthToken(required string authToken){
 		//get token by stripping prefix
-		var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
-		var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
+		var token = right( replace(arguments.authToken, 'Bearer ', '');
+		
+		if(this.hibachiIsEmpty(token) ){
+		    return;
+		}
+		
+		var jwt = this.getHibachiJWTService().getJwtByToken(token);
 
-		if(jwt.verify()){
-			var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountID);
-			if(!isNull(jwtAccount)){
-				jwtAccount.setJwtToken(jwt);
-				getHibachiScope().getSession().setAccount( jwtAccount );
-			}
+		if( jwt.verify() ){
+		    var payload = jwt.getPayload();
+		    
+		    if( !this.hibachiIsEmpty(payload.accountID) ){
+		        var jwtAccount = this.getAccountService().getAccountByAccountID(payload.accountID);
+    			if(!isNull(jwtAccount)){
+    				jwtAccount.setJwtToken(jwt);
+    				this.getHibachiScope().setAccount(jwtAccount);
+    				this.getHibachiScope().getSession().setAccount( jwtAccount );
+    			}
+		    }
+		    
+		    return this.getHibachiScope().getSession();
 		}
 	}
 	
