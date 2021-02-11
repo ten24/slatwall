@@ -1628,6 +1628,8 @@ component extends="HibachiService" accessors="true" {
 	        return this.getHibachiCacheService().getCachedValue('calculated_product_filter_facet_options');
 	    }
 	    
+	    var rawFilters = this.getProductDAO().getRawProductFilterFacetOprions();
+
 	    var startTicks = getTickCount();
 	    
         // we're using hash-maps for :
@@ -1644,8 +1646,6 @@ component extends="HibachiService" accessors="true" {
 	        'attributeSets'     : {},
 	        'attributeOptions'  : {}
 	    };
-	    
-	    var rawFilters = this.getProductDAO().getRawPotentialFilters();
 	    
 	    for( var row in rawFilters ){
 	        

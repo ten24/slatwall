@@ -478,6 +478,27 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect( timeTook < 2 ).toBeTrue('it should take ~1 ms ;) but it took #timeTook#');
     }
 	
+	/**
+	 *  @test
+	 *  
+	*/
+	public void function getProductFilterFacetOptions_should_be_fast(){
+
+        
+        var start = getTickCount();
+        
+        // this.getService().getProductDAO().dropProductFilterFacetOptionsTable();
+        var facetOptions = this.getService().getProductFilterFacetOptions();
+		
+		var timeTook = getTickCount()-start;
+
+		dump("getProductFilterFacetOptions took #timeTook#");
+		
+		expect( timeTook < 10*1000 ).toBeTrue('it should take less than 10 sec. ;) but it took #timeTook#');
+
+		
+	}
+	
 	
 	/**
 	* @test
@@ -589,22 +610,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	
 	
 	
-	/**
-	 *  @test
-	 *  
-	*/
-	public void function make_sql_query(){
 
-        
-        var start = getTickCount();
-        
-        var facetOptions = this.getService().getProductFilterFacetOptions();
-		
-		dump("took #getTickCount() - start#");
-		
-		dump(facetOptions);
-	}
-	
 	
 	/**
 	* @test	

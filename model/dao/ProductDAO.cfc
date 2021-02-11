@@ -630,8 +630,16 @@ Notes:
 		<cfreturn local.query>
 	</cffunction>
 	
-	<cffunction name="getRawPotentialFilters" access="public">
-	    <!--- NOTE: using the cfm syntas, was causing issues ny changing every single quotes into a pair of single-quotes --->
+	<!--- TODO: call this function --->
+	<cffunction name="dropProductFilterFacetOptionsTable" access="public">
+		<cfquery name="local.query" >
+    		DROP TABLE IF EXISTS sw_profuct_filter_facet_options
+		</cfquery>
+		<cfset this.logHibachi("ProductDAO:: dropped sw_profuct_filter_facet_options table") />
+	</cffunction>
+	
+	<cffunction name="getRawProductFilterFacetOprions" access="public">
+	    <!--- NOTE: using the cfm syntax, was causing issues ny changing every single quotes into a pair of single-quotes --->
 	    
 	    <cfscript>
             local.productAndSkuSelectTypeAttributes = this.getProductAndSkuSelectTypeAttributes();
@@ -659,7 +667,11 @@ Notes:
             
             local.selectTypeAttributeOptionJoinParts = local.selectTypeAttributeOptionJoinParts.replace(")$(", ") OR (", "ALL");
              	
-            local.mainSql = "SELECT 
+            local.mainSql = "
+            
+            CREATE TABLE IF NOT EXISTS sw_profuct_filter_facet_options AS 
+
+            (   SELECT DISTINCT
     		       br.brandID, br.brandName,
                    cr.categoryID, cr.categoryName, cr.parentCategoryID, cr.urlTitle AS categoryUrlTitle,
                    o.optionID, o.optionName, o.optionCode, o.sortOrder AS optionSortOrder,
@@ -675,63 +687,67 @@ Notes:
                    atto.urltitle AS attributeOptionUrlTitle,
                    atto.sortOrder AS attributeOptionSortOrder
                    
-            FROM swProduct p
-            
-               -- INNER JOIN because if any product does not have at least one sku, then we can't sell anything for that product, so we don't need filter options specific to that product           
-               INNER JOIN swSku sk
-                       ON sk.productID = p.productID
-                          AND ( p.activeFlag = 1
-                                AND p.publishedFlag = 1
-                                AND sk.activeflag = 1
-                                AND sk.publishedFlag = 1 )
+                FROM swProduct p
                 
-                -- INNER JOIN because if any SKU does not have a price, then we can't sell it  
-               INNER JOIN swSkuPrice sp
-                       ON sp.skuID = sk.skuID
-                          AND ( sp.activeFlag = 1 )
-                                
-               LEFT JOIN swProductType pt
-                      ON pt.productTypeID = p.productTypeID
-                         AND ( pt.activeFlag = 1 AND pt.publishedFlag = 1 )
-                               
-               LEFT JOIN swBrand br
-                      ON br.brandID = p.brandID
-                         AND ( br.activeFlag = 1 AND br.publishedFlag = 1 )
-                               
-                LEFT JOIN swCategory cr
-                        ON cr.categoryID IN (SELECT DISTINCT categoryID FROM swProductCategory)
-                      
-                LEFT JOIN swProductSite pst
-                        ON pst.productID = p.productID
-                LEFT JOIN swSite st
-                        ON st.siteID = pst.siteID
+                   -- INNER JOIN because if any product does not have at least one sku, then we can't sell anything for that product, so we don't need filter options specific to that product           
+                   INNER JOIN swSku sk
+                           ON sk.productID = p.productID
+                              AND ( p.activeFlag = 1
+                                    AND p.publishedFlag = 1
+                                    AND sk.activeflag = 1
+                                    AND sk.publishedFlag = 1 )
+                    
+                    -- INNER JOIN because if any SKU does not have a price, then we can't sell it  
+                   INNER JOIN swSkuPrice sp
+                           ON sp.skuID = sk.skuID
+                              AND ( sp.activeFlag = 1 )
+                                    
+                   LEFT JOIN swProductType pt
+                          ON pt.productTypeID = p.productTypeID
+                             AND ( pt.activeFlag = 1 AND pt.publishedFlag = 1 )
+                                   
+                   LEFT JOIN swBrand br
+                          ON br.brandID = p.brandID
+                             AND ( br.activeFlag = 1 AND br.publishedFlag = 1 )
+                                   
+                    LEFT JOIN swCategory cr
+                            ON cr.categoryID IN (SELECT DISTINCT categoryID FROM swProductCategory)
                           
-                 -- LEFT JOIN because we can have SKUs which are not associated with any options
-                LEFT JOIN swSkuOption so
-                        ON so.skuID = sk.skuID
-                LEFT JOIN swOption o
-                        ON o.optionID = so.optionID
-                            AND o.activeFlag = 1
-                         
-                LEFT JOIN swOptionGroup og
-                        ON og.optionGroupID = o.optionGroupID
-                      
-                LEFT JOIN SwAttribute att
-                	  ON att.attributeID IN (#local.attributeIDs#)
-                  -- attributes are already filtered on activeFlag
-                
-                LEFT JOIN SwAttributeSet atst
-                    ON atst.attributeSetID = att.attributeSetID AND atst.activeFlag = 1
-                	
-                LEFT JOIN swAttributeOption atto
-                	ON(#local.selectTypeAttributeOptionJoinParts#)";
+                    LEFT JOIN swProductSite pst
+                            ON pst.productID = p.productID
+                    LEFT JOIN swSite st
+                            ON st.siteID = pst.siteID
+                              
+                     -- LEFT JOIN because we can have SKUs which are not associated with any options
+                    LEFT JOIN swSkuOption so
+                            ON so.skuID = sk.skuID
+                    LEFT JOIN swOption o
+                            ON o.optionID = so.optionID
+                                AND o.activeFlag = 1
+                             
+                    LEFT JOIN swOptionGroup og
+                            ON og.optionGroupID = o.optionGroupID
+                          
+                    LEFT JOIN SwAttribute att
+                    	  ON att.attributeID IN (#local.attributeIDs#)
+                      -- attributes are already filtered on activeFlag
+                    
+                    LEFT JOIN SwAttributeSet atst
+                        ON atst.attributeSetID = att.attributeSetID AND atst.activeFlag = 1
+                    	
+                    LEFT JOIN swAttributeOption atto
+                    	ON(#local.selectTypeAttributeOptionJoinParts#)
+            );
             
+            SELECT  * FROM sw_profuct_filter_facet_options;
+            ";
+                
             
             local.q = new Query();
 	        local.q.setSQL(local.mainSql);
 	        local.q = q.execute().getResult();
 	        
-	        this.logHibachi("ProductDAO:: getRawPotentialFilters took #getTickCount()-local.startTicks# ms.; and fetched #local.q.recordCount# records ");
+	        this.logHibachi("ProductDAO:: getRawProductFilterFacetOprions took #getTickCount()-local.startTicks# ms.; and fetched #local.q.recordCount# records ");
 
 	        return local.q;
 	    </cfscript>
