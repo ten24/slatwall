@@ -3345,4 +3345,40 @@ component  accessors="true" output="false"
         }};
 
     }
+    
+    
+    /** 
+     * @http-context getDiscountsByCartData
+     * @description This method exposes Slatwall promotion engine to be used standalone
+     * Promotion engine will evaluate discounts based on cart data passed in. Cart data
+     * will create a transient order to do the calculation and delete the order after response
+     * example data struct: 
+     * {"skus":[{"skucode":"item1","qty":"1"}, {"skucode":"item2","qty":"1"}],"promotionCode":"123"}
+     */
+     public void function getDiscountsByCartData(required struct data){
+         param name="data.skus" default=[];
+         
+         var cart = getOrderService().newOrder();
+         getHibachiScope().getSession().setOrder( cart );
+         
+         if(structKeyExists(data, "promotionCode")){
+             addPromotionCode(arguments.data);
+         }
+         
+         for(var sku in data.skus){
+             var cartData = {};
+             if(structKeyExists(sku, "skucode")){
+                 param name="sku.qty" default=1;
+                 cartData["skuCode"] = sku["skuCode"];
+                 cartData["qty"] = sku["qty"];
+                 addOrderItem( cartData );
+             }
+         }
+         
+         var cartData = {"cartDataOptions": "order,orderitem"};
+         getCartData( arguments.data );
+         
+         getOrderService().deleteOrder( cart );
+     }
+    
 }
