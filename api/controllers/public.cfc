@@ -67,7 +67,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
            	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
         }
         // serialize json data based on content-type
-        if( arguments.rc.requestHeaderData['headers']['Content-Type'] == 'application/json' && isJSON(arguments.rc.requestHeaderData['content'])){
+        if( !isNull(arguments.rc.requestHeaderData['headers']['Content-Type']) && arguments.rc.requestHeaderData['headers']['Content-Type'] == 'application/json' && isJSON(arguments.rc.requestHeaderData['content'])){
             structAppend(arguments.rc, deserializeJSON(arguments.rc.requestHeaderData['content']));
         }
         
