@@ -165,6 +165,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productDoorKnobSeries" ormtype="string" hb_formFieldType="select";
  property name="productBoredLockGrade" ormtype="string" hb_formFieldType="select";
  property name="productBoredLockStyle" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalFaceplate" ormtype="string" hb_formFieldType="select";
+ property name="productPaddleOrientation" ormtype="string" hb_formFieldType="select";
+ property name="productJambType" ormtype="string" hb_formFieldType="select";
+ property name="productAudit" ormtype="string";
+ property name="productProx" ormtype="boolean" hb_formatType="yesno";
+ property name="productScheduledEvents" ormtype="string";
+ property name="productPower" ormtype="string";
+ property name="productWeatherproof" ormtype="boolean" hb_formatType="yesno";
  property name="mechanicalHardwareFunction" ormtype="string" hb_formFieldType="select";
  property name="mechanicalHardwareBoltLatch" ormtype="string";
  property name="merchanicalLockSeries" ormtype="string";
@@ -214,6 +222,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productHingeMaterial" ormtype="string";
  property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
  property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
+ property name="productAutoModel" ormtype="string" hb_formFieldType="select";
+ property name="productModelYear" ormtype="string" hb_formFieldType="select";
+ property name="productAutoLockType" ormtype="string" hb_formFieldType="select";
+ property name="productAutoPartType" ormtype="string" hb_formFieldType="select";
  property name="productAutoMake" ormtype="string" hb_formFieldType="select";
  property name="productAutoLockCompatibility" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachineType" ormtype="string" hb_formFieldType="select";
@@ -227,6 +239,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productToolMaterial" ormtype="string";
  property name="productMaterialThickness" ormtype="string";
  property name="productLock" ormtype="string" hb_formFieldType="select";
+ property name="productLockCompatibility" ormtype="string";
  property name="productMachineCompatibility" ormtype="string";
  property name="productPinSize" ormtype="string";
  property name="productLockBrand" ormtype="string";
