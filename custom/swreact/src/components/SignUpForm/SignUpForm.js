@@ -1,7 +1,10 @@
 import MailchimpSubscribe from 'react-mailchimp-subscribe'
 import styles from './SignUpForm.module.css'
+import { useTranslation } from 'react-i18next'
 
 const MyForm = ({ status, message, onValidated }) => {
+  const { t, i18n } = useTranslation()
+
   let email, fName, lName, company
   const submit = () => {
     email &&
@@ -25,25 +28,25 @@ const MyForm = ({ status, message, onValidated }) => {
         </div>
         <div className="row">
           <div className="col-12 d-flex">
-            <input className={`${styles.customInput} form-control prepended-form-control mr-3`} type="text" ref={node => (fName = node)} placeholder="First Name" required />
-            <input className={`${styles.customInput} form-control prepended-form-control mr-3`} type="text" ref={node => (lName = node)} placeholder="Last Name" required />
-            <input className={`${styles.customInput} form-control prepended-form-control`} type="text" ref={node => (company = node)} placeholder="Company" required />
+            <input className={`${styles.customInput} form-control prepended-form-control mr-3`} type="text" ref={node => (fName = node)} placeholder={t('frontend.account.first_name')} required />
+            <input className={`${styles.customInput} form-control prepended-form-control mr-3`} type="text" ref={node => (lName = node)} placeholder={t('frontend.account.last_name')} required />
+            <input className={`${styles.customInput} form-control prepended-form-control`} type="text" ref={node => (company = node)} placeholder={t('frontend.account.company')} required />
           </div>
           <div className="col-12 d-flex pt-3">
-            <input className={`${styles.customInput} form-control prepended-form-control rounded-right-0`} type="email" ref={node => (email = node)} placeholder="Your email" required />
+            <input className={`${styles.customInput} form-control prepended-form-control rounded-right-0`} type="email" ref={node => (email = node)} placeholder={t('frontend.account.email')} required />
             <div className="input-group-append">
               <button className="btn btn-primary rounded-left-0" type="submit" onClick={submit}>
-                <i className="fal fa-envelope"></i> Subscribe
+                <i className="fal fa-envelope"></i> {t('frontend.core.subscribe')}
               </button>
             </div>
           </div>
         </div>
       </div>
       <small className="form-text text-light opacity-50" id="mc-helper">
-        *Subscribe to our newsletter to receive early discount offers, updates and new products info.
+        {t('frontend.mc.info')}
       </small>
       <div className="subscribe-status">
-        {status === 'sending' && <div style={{ color: 'blue' }}>sending...</div>}
+        {status === 'sending' && <div style={{ color: 'blue' }}>{t('frontend.mc.sending')}</div>}
         {status === 'error' && <div style={{ color: 'red' }} dangerouslySetInnerHTML={{ __html: message }} />}
         {status === 'success' && <div style={{ color: 'green' }} dangerouslySetInnerHTML={{ __html: message }} />}
       </div>

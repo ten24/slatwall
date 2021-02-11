@@ -4,6 +4,7 @@ import Slider from 'react-slick'
 import { SWImage } from '..'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
   return (
@@ -18,6 +19,8 @@ const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
 }
 
 function HomeBrand(props) {
+  const { t, i18n } = useTranslation()
+
   const settings = {
     dots: false,
     infinite: true,
@@ -63,7 +66,7 @@ function HomeBrand(props) {
           })}
       </Slider>
       <Link className="btn btn-primary mt-3 btn-long" to={props['home/shop-by'].linkUrl}>
-        More Brands
+        {t('frontend.home.more_brands')}{' '}
       </Link>
     </div>
   )

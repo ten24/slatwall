@@ -104,31 +104,6 @@ component extends="Slatwall.model.service.PublicService" {
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
 
 
-        local.homeMainBanner = getService('contentService').getContentCollectionList()
-        local.homeMainBanner.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,linkUrl,linkLabel')
-        local.homeMainBanner.addFilter("site.siteCode",arguments.data.siteCode)
-        local.homeMainBanner.addFilter("activeFlag", true)
-        local.homeMainBanner.addFilter("urlTitlePath","%main-banner-slider/%","LIKE")
-        local.homeMainBanner.addOrderBy("sortOrder|ASC")
-        local.homeBanner = local.homeMainBanner.getPageRecords()
-
-        local.homeContentColumns = getService('contentService').getContentCollectionList()
-        local.homeContentColumns.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,associatedImage')
-        local.homeContentColumns.addFilter("site.siteCode",arguments.data.siteCode)
-        local.homeContentColumns.addFilter("activeFlag", true)
-        local.homeContentColumns.addFilter("urlTitlePath","%content-columns/%","LIKE")
-        local.homeContentColumns.addOrderBy("sortOrder|ASC")
-        local.homeContent = local.homeContentColumns.getPageRecords()
-
-
-        local.homeBrands = getService('contentService').getContentCollectionList()
-        local.homeBrands.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,linkUrl,associatedImage')
-        local.homeBrands.addFilter("site.siteCode",arguments.data.siteCode)
-        local.homeBrands.addFilter("activeFlag", true)
-        local.homeBrands.addFilter("urlTitlePath","%shop-by/%","LIKE")
-        local.homeBrands.addOrderBy("sortOrder|ASC")
-        local.homeBrand = local.homeBrands.getPageRecords()
-
       	var productCollectionList = getService('ProductService').getProductCollectionList();
 		productCollectionList.setDisplayProperties("productID,productClearance,urlTitle,productFeatured,brand.brandName,brand.urlTitle,calculatedTitle,calculatedSalePrice,listPrice,livePrice,productName,calculatedSalePrice,defaultProductImageFiles");
 		productCollectionList.addFilter('productFeatured',1,'=');
@@ -146,5 +121,22 @@ component extends="Slatwall.model.service.PublicService" {
 
         arguments.data['ajaxResponse']['content'] = local.contentForHomePage;
      }
-	
+     
+     public void function getProductSkus( required struct data ) {
+	    param name="arguments.data.productID";
+	    param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+      
+      var skuCollectionList = getService('SkuService').getSkuCollectionList();
+	    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
+         skuCollectionList.addFilter('product.productID',trim(arguments.data.productID));
+		 skuCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		var results = skuCollectionList.getRecords()
+    
+        getHibachiScope().addActionResult("public:getProductSkus");
+
+        arguments.data['ajaxResponse']['skus'] = results;
+         
+     }
 }
