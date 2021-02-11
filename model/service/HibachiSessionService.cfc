@@ -154,15 +154,15 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		super.setAccountSessionByAuthToken(arguments.authToken);
 
 		//Set Cart on Session
-		if(!isNull(getHibachiScope().getSession()) && getHibachiScope().getSession().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+		if(!isNull(getHibachiScope().getSession()) && getHibachiScope().getSession().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccount()) && !isNull( getHibachiScope().getAccount().getAccountID() ) ) {
 
-			var authorizationHeader = arguments.authToken;
-			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(right(authorizationHeader,len(authorizationHeader) - len('Bearer ')));
+			var bearerTokenLength = 7;
+			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(right(arguments.authToken,len(arguments.authToken) - bearerTokenLength));
 			//don't need to call verify as it's being verified in super
 			var jwtPayload = jwt.getPayload();
 
 			//if order id exists in payload then use that to get recent order else get most recent not placed order order
-			if( structKeyExists(jwtPayload, 'orderid') && !isEmpty(jwtPayload.orderid)) {
+			if( structKeyExists(jwtPayload, 'orderid') && !isNull(jwtPayload.orderid)) {
 				var mostRecentCart = getOrderService().getOrder( jwtPayload.orderid );
 			}
 

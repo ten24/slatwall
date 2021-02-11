@@ -293,7 +293,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
 
 		if(jwt.verify()){
-			var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+			var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountID);
 			if(!isNull(jwtAccount)){
 				jwtAccount.setJwtToken(jwt);
 				getHibachiScope().getSession().setAccount( jwtAccount );
