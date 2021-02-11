@@ -3353,13 +3353,12 @@ component  accessors="true" output="false"
      * Promotion engine will evaluate discounts based on cart data passed in. Cart data
      * will create a transient order to do the calculation and delete the order after response
      * example data struct: 
-     * {"skus":[{"skucode":"item1","qty":"1"}, {"skucode":"item2","qty":"1"}],"promotionCode":"123"}
+     * {"skus":[{"skucode":"item1","quantity":"1"}, {"skucode":"item2","quantity":"1"}],"promotionCode":"123"}
      */
      public void function getDiscountsByCartData(required struct data){
          param name="data.skus" default=[];
-         // disable shipping option lookup
-         data["updateShippingMethodOptionsFlag"] = false;
-         
+         data["updateOrderAmountFlag"] = false;
+
          var cart = getOrderService().newOrder();
          getHibachiScope().getSession().setOrder( cart );
          
@@ -3369,13 +3368,20 @@ component  accessors="true" output="false"
          
          for(var sku in data.skus){
              var cartData = {};
+             cartData["updateShippingMethodOptionsFlag"] = false;
+             cartData["updateOrderAmountFlag"] = false;
+             cartData["saveOrderFlag"] = false;
+         
              if(structKeyExists(sku, "skucode")){
-                 param name="sku.qty" default=1;
+                 param name="sku.quantity" default=1;
                  cartData["skuCode"] = sku["skuCode"];
-                 cartData["qty"] = sku["qty"];
+                 cartData["quantity"] = sku["quantity"];
                  addOrderItem( cartData );
              }
          }
+         
+         // save order and update amounts
+         getOrderService().saveOrder( order=cart, updateOrderAmounts=true, updateShippingMethodOptions=false);
          
          var cartData = {"cartDataOptions": "order,orderitem"};
          getCartData( arguments.data );
