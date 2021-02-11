@@ -472,7 +472,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getExtendedPrice() {
-		if(!structKeyExists(variables,'extendedPrice')){
+		if(!structKeyExists(variables,'extendedPrice_price')){
 			var price = 0;
 		
 			//get bundle price
@@ -481,8 +481,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			}else if(!isNull(getPrice())){
 				price = getPrice();
 			}
-			variables.extendedPrice = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
+			variables.extendedPrice_price = price;
 		}
+		variables.extendedPrice = val(getService('HibachiUtilityService').precisionCalculate(round(variables.extendedPrice_price * val(getQuantity()) * 100) / 100));
 		return variables.extendedPrice;
 	}
 	
