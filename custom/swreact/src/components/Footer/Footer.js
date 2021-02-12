@@ -82,12 +82,12 @@ function mapStateToProps(state) {
   return {
     actionBanner: {
       display: true,
-      markup: state.content['footer/contact-us'] || '',
+      markup: state.content['footer/contact-us'] ? state.content['footer/contact-us'].customBody : '',
     },
-    getInTouch: state.content['footer/get-in-touch'] || '',
-    siteLinks: state.content['footer/site-links'] || '',
-    stayInformed: state.content['footer/stay-informed'] || '',
-    copywriteDate: state.content['footer/copywriteDate'] || '',
+    getInTouch: state.content['footer/get-in-touch'] ? state.content['footer/get-in-touch'].customBody : '',
+    siteLinks: state.content['footer/site-links'] ? state.content['footer/site-links'].customBody : '',
+    stayInformed: state.content['footer/stay-informed'] ? state.content['footer/stay-informed'].customBody : '',
+    copywriteDate: new Date().getFullYear(),
     formLink: state.preload.footer.formLink,
   }
 }

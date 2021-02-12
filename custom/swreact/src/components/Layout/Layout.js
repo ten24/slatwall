@@ -13,8 +13,8 @@ const Layout = ({ children, actionBannerDisable }) => {
     dispatch(
       getContent({
         content: {
-          footer: ['contentID', 'urlTitle', 'title', 'sortOrder', 'customBody'],
-          header: ['contentID', 'urlTitle', 'title', 'sortOrder', 'customBody'],
+          footer: ['contentID', 'urlTitle', 'title', 'sortOrder', 'customBody', 'parentContentID'],
+          header: ['contentID', 'urlTitle', 'title', 'sortOrder', 'customBody', 'parentContentID'],
         },
       })
     )
