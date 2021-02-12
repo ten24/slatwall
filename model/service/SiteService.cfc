@@ -463,7 +463,6 @@ component  extends="HibachiService" accessors="true" {
 				}else{
 					stackedContent[content['urlTitlePath']] = reReplace(content[arguments.urlTitlePathConfiguration[content['urlTitlePath']]],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
 				}
-				
 			}
 		}
         return stackedContent
@@ -490,8 +489,7 @@ component  extends="HibachiService" accessors="true" {
 					for(var column in arguments.urlTitlePathConfiguration[urlTitlePathPrefix]){
 						stackedContent[content['urlTitlePath']][column] = reReplace(content[column],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
 					}
-
-				
+				stackedContent[content['urlTitlePath']] = getService("ContentService").appendSettingsAndOptionsToContent([stackedContent[content['urlTitlePath']]]);
 			}
 		}
         return stackedContent

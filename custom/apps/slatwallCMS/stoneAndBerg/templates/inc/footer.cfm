@@ -1,17 +1,32 @@
 <cfscript>
-    local.stackedContent = $.getStackedContent({
-      'header/main-navigation' : 'customBody',
-      'footer/contact-us' : 'customBody',
-      'footer/get-in-touch' : 'customBody',
-      'footer/site-links' : 'customBody',
-      'footer/stay-informed' : 'customBody'
-    })
-    local.stackedContent['header/productCategories'] = #StructKeyExists(local, "productCategories")? local.productCategories : {}#
-    local.stackedContent['footer/copywriteDate'] = #year(now())#
+
     local.site["siteID"] = $.slatwall.getCurrentRequestSite().getSiteID()
     local.site["siteCode"] = $.slatwall.getCurrentRequestSite().getSiteCode()
     local.site["siteName"] = $.slatwall.getCurrentRequestSite().getSiteName()
     local.site["hibachiInstanceApplicationScopeKey"] = $.slatwall.getCurrentRequestSite().getHibachiInstanceApplicationScopeKey()
+    local.site["hibachiConfig"] = $.slatwall.getHibachiConfig()
+    local.router["globalURLKeyProduct"] = {
+      "URLKey": $.slatwall.setting('globalURLKeyProduct'),
+      "URLKeyType": 'Product' }
+    local.router["globalURLKeyProductType"] = {
+      "URLKey": $.slatwall.setting('globalURLKeyProductType'),
+      "URLKeyType": 'ProductType' }
+    local.router["globalURLKeyCategory"] = {
+      "URLKey": $.slatwall.setting('globalURLKeyCategory'),
+      "URLKeyType": 'Category' }
+    local.router["globalURLKeyBrand"] = {
+      "URLKey": $.slatwall.setting('globalURLKeyBrand'),
+      "URLKeyType": 'Brand' }
+    local.router["globalURLKeyAccount"] = {
+      "URLKey": $.slatwall.setting('globalURLKeyAccount'),
+      "URLKeyType": 'Account' }
+    local.router["globalURLKeyAddress"] = {
+      "URLKey": $.slatwall.setting('globalURLKeyAddress'),
+      "URLKeyType": 'Address' }
+    local.router["globalURLKeyAttribute"] = {
+      "URLKey": $.slatwall.setting('globalURLKeyAttribute'),
+      "URLKeyType": 'Attribute' }
+      
 </cfscript>
 <cfoutput>
 <script>
@@ -19,7 +34,7 @@
         window.__PRELOADED_STATE__ = JSON.stringify({
           preload: {
             site: #serializeJson( local.site)#,
-            stackedContent: #serializeJson(local.stackedContent)#
+            router: #serializeJson( local.router)#,
           },
           home: {} ,
         }).replace(/</g, '\\u003c')

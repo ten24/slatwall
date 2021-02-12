@@ -139,4 +139,22 @@ component extends="Slatwall.model.service.PublicService" {
         arguments.data['ajaxResponse']['skus'] = results;
          
      }
+     
+       public void function getConfiguration( required struct data ) {
+	    param name="arguments.data.productID";
+	    param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+      
+      var skuCollectionList = getService('SkuService').getSkuCollectionList();
+	    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
+         skuCollectionList.addFilter('product.productID',trim(arguments.data.productID));
+		 skuCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		var results = skuCollectionList.getRecords()
+    
+        getHibachiScope().addActionResult("public:getProductSkus");
+
+        arguments.data['ajaxResponse']['skus'] = results;
+         
+     }
 }

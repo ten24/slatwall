@@ -328,7 +328,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return arguments.processObject.getNewContent();
 	}
-
+	/** 
+	 * Function append settings value and options to existing sku List
+	 * @param - array of skus
+	 * @return - updated array of skus
+	 **/
+	public array function appendSettingsAndOptionsToContent(required array contents) {
+		if(arrayLen(arguments.contents)) {
+			for(var content in arguments.contents) {
+				if(structKeyExists(content, "contentID")){
+					var currentContent = this.getContent(content.contentID);
+	            	content["setting"]['contentHTMLTitleString'] = currentContent.setting('contentHTMLTitleString');
+	            	content["setting"]['contentMetaDescriptionString'] = currentContent.setting('contentMetaDescriptionString');
+	            	content["setting"]['contentMetaKeywordsString'] = currentContent.setting('contentMetaKeywordsString');
+	            	content["setting"]['contentRestrictAccessFlag'] = currentContent.setting('contentRestrictAccessFlag');
+	            	content["setting"]['contentRequirePurchaseFlag'] = currentContent.setting('contentRequirePurchaseFlag');
+	            	content["setting"]['contentRequireSubscriptionFlag'] = currentContent.setting('contentRequireSubscriptionFlag');
+	            	content["setting"]['contentEnableTrackingFlag'] = currentContent.setting('contentEnableTrackingFlag');
+				}
+	        }
+		}
+		return arguments.contents;
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
