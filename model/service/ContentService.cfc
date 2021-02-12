@@ -329,13 +329,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.processObject.getNewContent();
 	}
 	/** 
-	 * Function append settings value and options to existing sku List
-	 * @param - array of skus
-	 * @return - updated array of skus
+	 * Function append settings values to existing Content
+	 * @param - Content
+	 * @return - updated Content
 	 **/
-	public array function appendSettingsAndOptionsToContent(required array contents) {
-		if(arrayLen(arguments.contents)) {
-			for(var content in arguments.contents) {
+	public any function appendSettingsAndOptionsToContent(required any content) {
 				if(structKeyExists(content, "contentID")){
 					var currentContent = this.getContent(content.contentID);
 	            	content["setting"]['contentHTMLTitleString'] = currentContent.setting('contentHTMLTitleString');
@@ -346,9 +344,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	            	content["setting"]['contentRequireSubscriptionFlag'] = currentContent.setting('contentRequireSubscriptionFlag');
 	            	content["setting"]['contentEnableTrackingFlag'] = currentContent.setting('contentEnableTrackingFlag');
 				}
-	        }
-		}
-		return arguments.contents;
+
+		return arguments.content;
 	}
 	// =====================  END: Process Methods ============================
 
