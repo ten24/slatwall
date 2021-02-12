@@ -15,7 +15,9 @@ const ActionBanner = ({ display, markup }) => {
               className="col-md-8 text-center"
               onClick={event => {
                 event.preventDefault()
-                history.push(event.target.getAttribute('href'))
+                if (event.target.getAttribute('href')) {
+                  history.push(event.target.getAttribute('href'))
+                }
               }}
               dangerouslySetInnerHTML={{ __html: markup }}
             />

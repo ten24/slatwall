@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-// import PropTypes from 'prop-types'
 import { Layout } from '../../components'
 import { connect, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -33,7 +32,9 @@ const About = ({ title, customBody }) => {
           className="container bg-light box-shadow-lg rounded-lg p-5"
           onClick={event => {
             event.preventDefault()
-            history.push(event.target.getAttribute('href'))
+            if (event.target.getAttribute('href')) {
+              history.push(event.target.getAttribute('href'))
+            }
           }}
           dangerouslySetInnerHTML={{
             __html: customBody,

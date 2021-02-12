@@ -3312,17 +3312,15 @@ component  accessors="true" output="false"
      * 
      */
     public void function getSlatwallContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.content" default={};
         param name="arguments.data.formCode" default='';
         param name="arguments.data.formPostfix" default="/";
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        getStackedContentForPage
+        
         var stackedContent= {}
-        if(Len(arguments.data.content)> 1){
-            stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
-        }else{
-            stackedContent =  getService('siteService').getStackedContentForPage(arguments.data.content)
+        for(var content in arguments.data.content) {
+            StructAppend(stackedContent, getService('siteService').getStackedContentForPage({"#content#":arguments.data.content[content] }),"true")
         }
 
         if(!isEmpty(arguments.data.formCode)){

@@ -35,7 +35,9 @@ const MegaMenu = props => {
                   className="widget widget-links mb-3"
                   onClick={event => {
                     event.preventDefault()
-                    history.push(event.target.getAttribute('href'))
+                    if (event.target.getAttribute('href')) {
+                      history.push(event.target.getAttribute('href'))
+                    }
                   }}
                   dangerouslySetInnerHTML={{
                     __html: productCategory['customBody'],
@@ -50,9 +52,12 @@ const MegaMenu = props => {
   )
 }
 
-function Header({ productCategories, mainNavigation }) {
+function Header(props) {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
+
+  const productCategories = props.content['header/productCategories'] || []
+  const mainNavigation = props.content['header/main-navigation']
 
   let menuItems = new Map()
   productCategories.forEach(item => {
@@ -187,8 +192,7 @@ Header.propTypes = {
 }
 function mapStateToProps(state) {
   return {
-    productCategories: state.preload.stackedContent['header/productCategories'],
-    mainNavigation: state.preload.stackedContent['header/main-navigation'],
+    content: state.content,
   }
 }
 

@@ -96,7 +96,9 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
               <div
                 onClick={event => {
                   event.preventDefault()
-                  history.push(event.target.getAttribute('href'))
+                  if (event.target.getAttribute('href')) {
+                    history.push(event.target.getAttribute('href'))
+                  }
                 }}
                 dangerouslySetInnerHTML={{
                   __html: customSummary,
@@ -113,7 +115,9 @@ const Contact = ({ title, customSummary, form, customBody, actionBanner }) => {
               <div
                 onClick={event => {
                   event.preventDefault()
-                  history.push(event.target.getAttribute('href'))
+                  if (event.target.getAttribute('href')) {
+                    history.push(event.target.getAttribute('href'))
+                  }
                 }}
                 dangerouslySetInnerHTML={{
                   __html: customBody,

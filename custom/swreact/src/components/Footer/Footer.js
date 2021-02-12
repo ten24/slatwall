@@ -23,7 +23,9 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
                 className="widget widget-links pb-2 mb-4"
                 onClick={event => {
                   event.preventDefault()
-                  history.push(event.target.getAttribute('href'))
+                  if (event.target.getAttribute('href')) {
+                    history.push(event.target.getAttribute('href'))
+                  }
                 }}
                 dangerouslySetInnerHTML={{ __html: siteLinks }}
               />
@@ -80,12 +82,12 @@ function mapStateToProps(state) {
   return {
     actionBanner: {
       display: true,
-      markup: state.preload.stackedContent['footer/contact-us'],
+      markup: state.content['footer/contact-us'] || '',
     },
-    getInTouch: state.preload.stackedContent['footer/get-in-touch'],
-    siteLinks: state.preload.stackedContent['footer/site-links'],
-    stayInformed: state.preload.stackedContent['footer/stay-informed'],
-    copywriteDate: state.preload.stackedContent['footer/copywriteDate'],
+    getInTouch: state.content['footer/get-in-touch'] || '',
+    siteLinks: state.content['footer/site-links'] || '',
+    stayInformed: state.content['footer/stay-informed'] || '',
+    copywriteDate: state.content['footer/copywriteDate'] || '',
     formLink: state.preload.footer.formLink,
   }
 }
