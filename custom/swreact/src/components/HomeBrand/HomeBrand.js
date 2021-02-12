@@ -65,7 +65,7 @@ function HomeBrand(props) {
             return <BandSlide {...slide} key={index} slideKey={index} />
           })}
       </Slider>
-      <Link className="btn btn-primary mt-3 btn-long" to={props['home/shop-by'].linkUrl}>
+      <Link className="btn btn-primary mt-3 btn-long" to={props['home/shop-by'].linkUrl || '/'}>
         {t('frontend.home.more_brands')}{' '}
       </Link>
     </div>

@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next'
 
 function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
   const { t, i18n } = useTranslation()
-
   let history = useHistory()
   return (
     <footer className="pt-5">

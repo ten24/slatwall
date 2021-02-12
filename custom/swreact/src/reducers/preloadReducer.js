@@ -8,6 +8,9 @@ const reducer = (state = initialState, action) => {
       return { ...state, isPreloaded: true }
     case 'PRELOAD_ACTION_EXAMPLE':
       return { ...state, isPreloaded: false }
+    case 'SET_TITLE':
+      const { title } = action
+      return { ...state, title }
     default:
       return { ...state }
   }
