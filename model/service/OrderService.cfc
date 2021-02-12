@@ -4583,10 +4583,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
 			for(var recipient in orderDeliveryItem.getOrderItem().getOrderItemGiftRecipients()){
 				for(var giftCard in recipient.getGiftCards()){
-					sendEmail(giftCard.getOwnerEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
+					if( !isNull(giftCard.getOwnerEmailAddress()) ) {
+						sendEmail(giftCard.getOwnerEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
+					}
 				}
 			}
-		} else {
+		} else if( !isNull(arguments.orderDelivery.getOrderFulfillment().getEmailAddress()) ) {
 			sendEmail(arguments.orderDelivery.getOrderFulfillment().getEmailAddress(), getSettingService().getSettingValue(settingName='skuEmailFulfillmentTemplate', object=orderDeliveryItem.getSku()), orderDeliveryItem.getSku());
 		}
 	}
