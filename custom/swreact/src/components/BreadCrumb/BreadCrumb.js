@@ -1,25 +1,49 @@
 import React from 'react'
+import { useLocation } from 'react-router'
+import { Link } from 'react-router-dom'
 // import PropTypes from 'prop-types'
 
-const Crumb = ({ slug, title, index }) => {
+const Crumb = ({ path, name, index }) => {
   if (index > 0) {
     return (
       <li className="breadcrumb-item text-nowrap">
-        <a href={slug}>{title}</a>
+        <Link to={path}>{name}</Link>
       </li>
     )
   }
   return (
     <li className="breadcrumb-item ">
-      <a className="text-nowrap" href={slug}>
+      <Link className="text-nowrap" to={path}>
         <i className="far fa-home" />
-        {title}
-      </a>
+        {name}
+      </Link>
     </li>
   )
 }
+const titleizeWord = str => `${str[0].toUpperCase()}${str.slice(1)}`
+const kebabToTitle = str => str.split('-').map(titleizeWord).join(' ')
+const toBreadcrumbs = (link, { rootName = 'Home', nameTransform = s => s } = {}) =>
+  link
+    .split('/')
+    .filter(Boolean)
+    .reduce(
+      (acc, curr, idx, arr) => {
+        acc.path += `/${curr}`
+        acc.crumbs.push({
+          path: acc.path,
+          name: nameTransform(curr),
+        })
 
-const BreadCrumb = ({ crumbs }) => {
+        if (idx === arr.length - 1) return acc.crumbs
+        else return acc
+      },
+      { path: '', crumbs: [{ path: '/', name: rootName }] }
+    )
+
+const BreadCrumb = () => {
+  let location = useLocation()
+  let crumbs = toBreadcrumbs(location.pathname, { nameTransform: kebabToTitle })
+  crumbs.pop()
   return (
     <>
       {crumbs && (
@@ -34,7 +58,5 @@ const BreadCrumb = ({ crumbs }) => {
     </>
   )
 }
-BreadCrumb.defaultProps = {
-  crumbs: [],
-}
+
 export default BreadCrumb

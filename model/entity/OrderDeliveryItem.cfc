@@ -53,7 +53,7 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	property name="quantity" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
-	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
+	property name="orderDelivery" cfc="OrderDelivery" hb_populateEnabled="private" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID" hb_cascadeCalculate="true";
 
@@ -215,7 +215,9 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	}
 
 	public void function preUpdate(struct oldData){
-		throw("Updates to Order Delivery Items are not allowed because this illustrates a fundamental flaw in inventory tracking.");
+		if(arguments.oldData["quantity"] != getQuantity()){
+			throw("Updates to Order Delivery Items are not allowed because this illustrates a fundamental flaw in inventory tracking.");
+		}
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================

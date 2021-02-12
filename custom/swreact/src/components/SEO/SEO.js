@@ -6,14 +6,7 @@ import { connect } from 'react-redux'
 
 const SEO = ({ title, description, image, article, site, pathname }) => {
   //  const { pathname } = useLocation()
-  const {
-    defaultTitle,
-    titleTemplate,
-    defaultDescription,
-    siteUrl,
-    defaultImage,
-    twitterUsername,
-  } = site.siteMetadata
+  const { defaultTitle, titleTemplate, defaultDescription, siteUrl, defaultImage, twitterUsername } = site.siteMetadata
 
   const seo = {
     title: title || defaultTitle,
@@ -33,37 +26,32 @@ const SEO = ({ title, description, image, article, site, pathname }) => {
 
       {seo.title && <meta property="og:title" content={seo.title} />}
 
-      {seo.description && (
-        <meta property="og:description" content={seo.description} />
-      )}
+      {seo.description && <meta property="og:description" content={seo.description} />}
 
       {seo.image && <meta property="og:image" content={seo.image} />}
 
       <meta name="twitter:card" content="summary_large_image" />
 
-      {twitterUsername && (
-        <meta name="twitter:creator" content={twitterUsername} />
-      )}
+      {twitterUsername && <meta name="twitter:creator" content={twitterUsername} />}
 
       {seo.title && <meta name="twitter:title" content={seo.title} />}
 
-      {seo.description && (
-        <meta name="twitter:description" content={seo.description} />
-      )}
+      {seo.description && <meta name="twitter:description" content={seo.description} />}
 
       {seo.image && <meta name="twitter:image" content={seo.image} />}
     </Helmet>
   )
 }
 function mapStateToProps(state) {
-  const dummy = {
+  const { site } = state.preload
+  return {
     title: '',
     description: '',
     image: '',
     article: false,
     site: {
       siteMetadata: {
-        defaultTitle: '',
+        defaultTitle: site.siteName,
         titleTemplate: '',
         defaultDescription: '',
         siteUrl: '',
@@ -73,7 +61,6 @@ function mapStateToProps(state) {
     },
     pathname: '',
   }
-  return dummy
 }
 
 export default connect(mapStateToProps)(SEO)

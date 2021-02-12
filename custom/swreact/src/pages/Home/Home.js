@@ -9,7 +9,7 @@ const Home = () => {
     dispatch(
       getContent({
         content: {
-          'home/': ['title', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel'],
+          home: ['title', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage'],
         },
       })
     )

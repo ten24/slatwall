@@ -9,8 +9,11 @@ import CartMenuItem from './CartMenuItem'
 import AccountBubble from './AccountBubble'
 import logo from '../../assets/images/sb-logo.png'
 import mobileLogo from '../../assets/images/sb-logo-mobile.png'
+import { useTranslation } from 'react-i18next'
+
 const MegaMenu = props => {
   let history = useHistory()
+  const { t, i18n } = useTranslation()
 
   return (
     <li className="nav-item dropdown">
@@ -20,7 +23,7 @@ const MegaMenu = props => {
       <div className="dropdown-menu pt-0 pb-3">
         <div className="nav-shop-all">
           <Link to={props.linkUrl}>
-            Shop All {props.title}
+            {`${t('frontend.nav.shopall')} ${props.title}`}
             <i className="far fa-arrow-right ml-2"></i>
           </Link>
         </div>
@@ -49,6 +52,7 @@ const MegaMenu = props => {
 
 function Header({ productCategories, mainNavigation }) {
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
 
   let menuItems = new Map()
   productCategories.forEach(item => {
@@ -75,10 +79,10 @@ function Header({ productCategories, mainNavigation }) {
         <div className="navbar navbar-expand-lg navbar-light">
           <div className="container">
             <Link className="navbar-brand d-none d-md-block mr-3 flex-shrink-0" to="/">
-              <img src={logo} alt="Stone & Berg Logo" />
+              <img src={logo} alt={t('frontend.logo')} />
             </Link>
             <Link className="navbar-brand d-md-none mr-2" to="/">
-              <img src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
+              <img src={mobileLogo} style={{ minWidth: '90px' }} alt={t('frontend.logo')} />
             </Link>
 
             <div className="navbar-right">
@@ -97,7 +101,7 @@ function Header({ productCategories, mainNavigation }) {
                       setSearchTerm(e.target.value)
                       slowlyRequest(e.target.value)
                     }}
-                    placeholder="Search for products"
+                    placeholder={t('frontend.search.placeholder')}
                   />
                   <div className="input-group-append-overlay">
                     <span className="input-group-text">
@@ -116,7 +120,7 @@ function Header({ productCategories, mainNavigation }) {
                     <span className="navbar-toggler-icon"></span>
                   </button>
                   <a className="navbar-tool navbar-stuck-toggler" href="#">
-                    <span className="navbar-tool-tooltip">Expand menu</span>
+                    <span className="navbar-tool-tooltip">{t('frontend.nav.expand')}</span>
                     <div className="navbar-tool-icon-box">
                       <i className="far fa-bars"></i>
                     </div>
@@ -133,7 +137,9 @@ function Header({ productCategories, mainNavigation }) {
                 className="navbar-main-links"
                 onClick={event => {
                   event.preventDefault()
-                  history.push(event.target.getAttribute('href'))
+                  if (event.target.getAttribute('href')) {
+                    history.push(event.target.getAttribute('href'))
+                  }
                 }}
                 dangerouslySetInnerHTML={{
                   __html: mainNavigation,
@@ -152,7 +158,7 @@ function Header({ productCategories, mainNavigation }) {
                     <i className="far fa-search"></i>
                   </span>
                 </div>
-                <input className="form-control prepended-form-control" type="text" placeholder="Search for products" />
+                <input className="form-control prepended-form-control" type="text" placeholder={t('frontend.search.placeholder')} />
               </div>
 
               <ul className="navbar-nav nav-categories">
@@ -163,7 +169,8 @@ function Header({ productCategories, mainNavigation }) {
               <ul className="navbar-nav mega-nav ml-lg-2">
                 <li className="nav-item">
                   <Link className="nav-link" to="/">
-                    <i className="far fa-industry-alt mr-2"></i>Shop by Manufacturer
+                    <i className="far fa-industry-alt mr-2"></i>
+                    {t('frontend.nav.manufacturer')}
                   </Link>
                 </li>
               </ul>

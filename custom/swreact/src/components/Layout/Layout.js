@@ -1,4 +1,3 @@
-import React from 'react'
 import { Footer } from '..'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -7,7 +6,7 @@ const Layout = ({ children, actionBannerDisable }) => {
   return (
     <>
       <ToastContainer />
-      {children}
+      <div style={{ minHeight: '800px' }}>{children}</div>
       <Footer actionBannerDisable={actionBannerDisable} />
     </>
   )

@@ -87,25 +87,28 @@ class SWSkuPriceModalController{
 			entityName: 'SkuPrice',
 			entityID : pageRecord['skuPriceID'],
 			context: 'save',
-			propertyIdentifiersList: ''
+			serializedJsonData: '{}'
 		};
 		
+		var data = {};
+		
 		for(var key in pageRecord){
-        if(key.indexOf("$") > -1 || key.indexOf("skuPriceID") > -1){
+            if(key.indexOf("$") > -1 || key.indexOf("skuPriceID") > -1 || pageRecord[key] == " "){
 		        continue;
 		    } else if(key.indexOf("_") > -1){
 		        if(key.indexOf("ID") == -1){
 		            continue;
 		        }
 		        var property = key.split("_");
-		        formDataToPost[property[0]] = { };
-		        formDataToPost[property[0]][property[1]] = pageRecord[key];
+		        data[property[0]] = { };
+		        data[property[0]][property[1]] = pageRecord[key];
 		          
 		    } else {
-		        formDataToPost[key] = pageRecord[key];
+		        data[key] = pageRecord[key];
 		    }
 		}
 		
+		formDataToPost['serializedJsonData'] = JSON.stringify(data);
 		
 		var processUrl = this.$hibachi.buildUrl('api:main.post');
 		
@@ -118,7 +121,7 @@ class SWSkuPriceModalController{
 		    });
     }
 
-    public initData (pageRecord?:any) {
+    public initData = (pageRecord?:any) => {
         this.pageRecord = pageRecord;
         
         if(pageRecord){

@@ -8,7 +8,7 @@
     
 	<sw-order-template-items 
     	data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#" 
-    	data-site-id="#rc.orderTemplate.getSite().getSiteID()#"
+    	data-site-id="#!isNull(rc.orderTemplate.getSite())?rc.orderTemplate.getSite().getSiteID():''#"
     	data-edit="#rc.edit#"
 	></sw-order-template-items>
 </cfoutput>	

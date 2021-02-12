@@ -1,10 +1,5 @@
-<cfimport prefix="swc" taglib="../tags" />
 <cfinclude template="inc/header/header.cfm" />
-
 <cfoutput>
-  
-      <div id="app"></div>
-
+    <div id="app" />
 </cfoutput>
-
 <cfinclude template="inc/footer.cfm" />

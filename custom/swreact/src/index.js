@@ -5,7 +5,6 @@ import './i18n'
 import { Provider } from 'react-redux'
 import store from './createStore'
 import App from './App'
-
 import './assets/theme'
 
 ReactDOM.render(

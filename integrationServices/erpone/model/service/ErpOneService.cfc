@@ -55,6 +55,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="skuService";
 	
 	property name="accountDAO" type="any";
+	property name= "addressService";
 	
 	public any function getIntegration(){
 	    if( !structKeyExists( variables, 'integration') ){
@@ -332,13 +333,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public any function getOrderData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getOrderData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
 		//still working to get order numbers without hyphen so pass one order for testing
-    	var OrdersArray = this.getErpOneData({
+    	var OrdersArray = this.callErpOneGetDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
     	    "query": "FOR EACH oe_head",
     	    "columns" : "order,ord_date,customer,adr,currency_code,country_code,postal_code,state"
     	})
-
 		if( OrdersArray.len() > 0 ){
 
 		    this.logHibachi("ERPONE - Start pushing Orders to import-queue ");
@@ -354,7 +354,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     public any function getOrderItemData(numeric pageNumber = 1, numeric pageSize = 50 ){
     	logHibachi("ERPONE - called getOrderItemData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
 		//still working to get order numbers without hyphen so pass one order for testing
-    	var OrdersArray = this.getErpOneData({
+    	var OrdersArray = this.callErpOneGetDataApi({
     	    "skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
     	    "take" : arguments.pageSize,
     	    "query": "FOR EACH oe_line",
@@ -406,7 +406,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	
 		var totalRecordsCount = response.count;
 		var currentPage = 1;
-		var pageSize = 100;
+		var pageSize = 10;
 
 		var recordsFetched = 0;
 		
@@ -435,7 +435,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		logHibachi("ERPONE - Starting importing importErpOneOrders");
 			
-		var response = this.getErpOneData({
+		var response = this.callErpOneGetDataApi({
     	    "table" : "oe_head"
     	}, "data/count");
     	
@@ -468,7 +468,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		logHibachi("ERPONE - Starting importing ErpOneOrderItems");
 
-		var response = this.getErpOneData({
+		var response = this.callErpOneGetDataApi({
     	    "table" : "oe_line"
     	}, "data/count");
 		
@@ -502,7 +502,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		logHibachi("ERPONE - Starting importing ErpOneInventoryItems");
 		
 		var currentPage = 1;
-		var pageSize = 100;
+		var pageSize = 10;
 		var recordsFetched = 0;
 		
 		var skuCollection = getSkuService().getSkuCollectionList();
@@ -600,6 +600,51 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return erponeAccount;			
 	}
 	
+	public any function convertSwOrderToErponeOrder(required any order){
+		var orderPropList =  "orderID,orderNumber,remoteID,orderOpenDateTime,currencyCode,account.companyCode";
+		
+		var addressPropList = 	this.getHibachiUtilityService().prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "billingAddress.");
+
+		orderPropList = orderPropList & ',' & addressPropList;
+		var swOrderStruct = arguments.order.getStructRepresentation( orderPropList );
+		var mapping = {
+			
+		 "orderNumber"					: "order",
+		 "orderOpenDateTime"			: "ord_date",
+		 "account_companyCode"			: "customer",
+		 "currencyCode"					: "currency_code",
+		 "billingAddress_countryCode"	: "country_code",
+		 "billingAddress_postalCode"	: "postal_code",
+		 "billingAddress_stateCode"	    : "state"
+		};
+		var erponeOrder = {};
+		var address = [];
+		for(var fromKey in mapping){
+			if( StructKeyExists( swOrderStruct, fromKey ) && !IsNull(swOrderStruct[fromKey]) ){
+				erponeOrder[mapping[fromKey]] = swOrderStruct[fromKey];
+			}
+		}
+		if( StructKeyExists( swOrderStruct, "billingAddress_street2Address" ) && !IsNull(swOrderStruct["billingAddress_street2Address"]) ){
+				address.append(swOrderStruct["billingAddress_street2Address"]);
+			}
+		if( StructKeyExists( swOrderStruct, "billingAddress_streetAddress" ) && !IsNull(swOrderStruct["billingAddress_streetAddress"]) ){
+			address.append(swOrderStruct["billingAddress_streetAddress"]);
+		}
+		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress3" )){
+			address.append("");
+		}
+		if( StructKeyExists( swOrderStruct, "billingAddress_city" ) && !IsNull(swOrderStruct["billingAddress_city"]) ){
+			address.append(swOrderStruct["billingAddress_city"]);
+		}
+		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress4" )){
+			address.append("");
+		}
+		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress5" )){
+			address.append("");
+		}
+		erponeOrder["adr"]=address;
+		return erponeOrder;			
+	}
 	/**
 	 * @hint helper function, to push Data into @thisIntegration/Data.cfc for further processing, from EntityQueue
 	 * 
@@ -680,7 +725,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				var accountUpdation = getAccountDAO().getUpdateRemoteIDForNewAccount(
 					accountID = arguments.entity.getAccountID() , 
 					remoteID = response.rowids[1] , 
-					importRemoteID = this.genericCreateEntityImportRemoteID( arguments.data.payload , this.getEntityMapping( 'Account' )) );
+					importRemoteID = this.genericCreateMappingImportRemoteID( arguments.data.payload , this.getEntityMapping( 'Account' )) );
 					
 				logHibachi("ERPOne - Successfully updated Slatwall account with accountID #arguments.entity.getAccountID()#");
 				
@@ -847,46 +892,87 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return transformedItem;
 	}
 	
-	public any function preProcessOrderData(required struct data ){
+	public void function pushOrderDataToErpOne(required any entity, any data ={}){
+		logHibachi("ERPOne - Start pushData - Order: #arguments.entity.getOrderID()#");
 		
+		arguments.data.payload = this.convertSwOrderToErponeOrder(arguments.entity);
+		arguments.create = false;
+		//push to remote endpoint
+        var payload = {
+		  "table"	 : "oe_head",
+		  "triggers" : "true",
+		  "changes"	 : [ arguments.data.payload ]
+		};
+			
+		if( !this.hibachiIsEmpty(arguments.entity.getRemoteID()) ){
+			var response = this.callErpOneUpdateDataApi(payload, "update" );
+		} else {
+			var response = this.callErpOneUpdateDataApi(payload, "create" );
+		}
+		
+		
+		/** Format error:
+		 * typical error response: { "errordetail": "error", "filecontent": "null"};
+		 * typical successful response: {"table":"customer","updated":1,"triggers":false}
+		*/
+	
+		if( structKeyExists(response, 'updated') && response.updated > 0 ){
+			logHibachi("ERPOne - Successfully updated Order Data");
+		}
+		else {
+			throw("ERPONE - callErpOnePushOrderApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+		}
+		logHibachi("ERPOne - End Order pushData");
+	}
+	
+	public any function preProcessOrderData(required struct data ){
+		//dump(data);abort;
 		if( left(arguments.data.order, 1) == '-' ){
 			return;
 		}
-			var erponeMapping = {
-		        "order" 		: "orderNumber",
-		        "ord_date"		: "orderOpenDateTime",
-		        "customer"		: "RemoteAccountID",
-		        "currency_code" : "currency_code",
-		        "country_code"  : "BillingAddress_countryCode",
-		        "postal_code"	: "BillingAddress_postalCode",
-		        "adr"			: "Address",
-		        "state" 		: "BillingAddress_stateCode"
-		    };
-
-	    	var transformedItem = {};
-
-	    	for( var sourceKey in erponeMapping ){
-	    		var destinationKey = erponeMapping[ sourceKey ];
-
-	    		if( structKeyExists(arguments.data, sourceKey) ){
-	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
-	    		}
-
-	    	}
-
-	    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
-	    	transformedItem.BillingAddress_streetAddress = transformedItem.Address[2];
-	    	transformedItem.BillingAddress_street2Address = transformedItem.Address[1];
-	    	transformedItem.BillingAddress_city = transformedItem.Address[4];
-			transformedItem.Address = {
-					  "streetAddress"  : transformedItem.Address[2],
-	                  "street2Address" : transformedItem.Address[1],
-	                  "city"           : transformedItem.Address[4],
-	                  "countryCode"	   : transformedItem.BillingAddress_countryCode,
-	                  "stateCode"	   : transformedItem.BillingAddress_stateCode,
-	                  "postalCode"	   : transformedItem.BillingAddress_postalCode,
-			};
-		    return transformedItem;
+		var erponeMapping = {
+	        "order" 		: "orderNumber",
+	        "ord_date"		: "orderOpenDateTime",
+	        "customer"		: "RemoteAccountID",
+	        "currency_code" : "currency_code",
+	        "country_code"  : "countryCode",
+	        "postal_code"	: "postalCode",
+	        "adr"			: "Address",
+	        "state" 		: "stateCode"
+	    };
+	    
+		var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
+    	transformedItem.remoteOrderID = transformedItem.OrderNumber;
+		transformedItem["FullAddress"] = {
+				  "streetAddress"  : transformedItem.Address[2],
+                  "street2Address" : transformedItem.Address[1],
+                  "city"           : transformedItem.Address[4],
+                  "countryCode"	   : transformedItem.countryCode,
+                  "stateCode"	   : transformedItem.stateCode,
+                  "postalCode"	   : transformedItem.postalCode,
+		};
+		
+		//Billing address transform data
+		transformedItem["BillingAddress_remoteAddressID"] = "bill_"&transformedItem.OrderNumber;
+		transformedItem["BillingAddress_name"]			  = getAddressService().getAddressName(transformedItem.FullAddress);
+		transformedItem["BillingAddress_streetAddress"]   = transformedItem.Address[2];
+        transformedItem["BillingAddress_street2Address"]  = transformedItem.Address[1];
+        transformedItem["BillingAddress_city"]     	      = transformedItem.Address[4];
+        transformedItem["BillingAddress_countryCode"]     = transformedItem.countryCode;
+        transformedItem["BillingAddress_stateCode"]	      = transformedItem.stateCode;
+        transformedItem["BillingAddress_postalCode"]	  = transformedItem.postalCode;
+        
+        //Shipping address transform data
+		transformedItem["ShippingAddress_remoteAddressID"] 		= "ship_"&transformedItem.OrderNumber;
+		transformedItem["ShippingAddress_name"]					= getAddressService().getAddressName(transformedItem.FullAddress);
+		transformedItem["ShippingAddress_streetAddress"]   		= transformedItem.Address[2];
+        transformedItem["ShippingAddress_street2Address"]  		= transformedItem.Address[1];
+        transformedItem["ShippingAddress_city"]     			= transformedItem.Address[4];
+        transformedItem["ShippingAddress_countryCode"]	    	= transformedItem.countryCode;
+        transformedItem["ShippingAddress_stateCode"]	    	= transformedItem.stateCode;
+        transformedItem["ShippingAddress_postalCode"] 			= transformedItem.postalCode;
+	    
+	    return transformedItem;
 	}
 	
 	public any function preProcessOrderItemData(required struct data ){
@@ -894,27 +980,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		if( left(arguments.data.order, 1) == '-' ){
 			return;
 		}
-			var erponeMapping = {
-		        "order" : "RemoteOrderID",
-		        "price" : "Price",
-		        "list_price" : "SkuPrice",
-		        "item" : "RemoteSkuID",
-		        "line" : "Line"
-		    };
+		var erponeMapping = {
+	        "order" : "RemoteOrderID",
+	        "price" : "Price",
+	        "list_price" : "SkuPrice",
+	        "item" : "RemoteSkuID",
+	        "line" : "Line"
+	    };
 
-	    	var transformedItem = {};
-
-	    	for( var sourceKey in erponeMapping ){
-	    		var destinationKey = erponeMapping[ sourceKey ];
-
-	    		if( structKeyExists(arguments.data, sourceKey) ){
-	        	    transformedItem[ destinationKey ] = arguments.data[ sourceKey ];
-	    		}
-
-	    	}
-
-	    	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
-		    return transformedItem;
+    	var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
+    	
+    	transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
+	    return transformedItem;
 	}
 	
 	public any function preProcessInventoryData(required struct data ){

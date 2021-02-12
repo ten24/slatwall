@@ -82,7 +82,7 @@ const ProductListingFilter = ({ appliedFilters, key, filterName, options, index,
       results = options.filter(option => option.name.toLowerCase().includes(searchTerm.toLowerCase()))
     }
     setSearchResults(results)
-  }, [searchTerm, options, appliedFilters])
+  }, [searchTerm, options, appliedFilters, filterName])
 
   return (
     <div className="card border-bottom pt-1 pb-2 my-1">

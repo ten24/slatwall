@@ -710,6 +710,114 @@
             "validations": {
                 "dataType": "string"
             }
+        },
+        "TumblerType": {
+            "propertyIdentifier": "productTumblerType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoMake": {
+            "propertyIdentifier": "productAutoMake",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoModel": {
+            "propertyIdentifier": "productAutoModel",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoModelYear": {
+            "propertyIdentifier": "productModelYear",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoLockType": {
+            "propertyIdentifier": "productAutoLockType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoPartType": {
+            "propertyIdentifier": "productAutoPartType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "LockCompatibility": {
+            "propertyIdentifier": "productAutoLockCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ProdLockCompatibility": {
+            "propertyIdentifier": "productLockCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ElectronicUsers": {
+            "propertyIdentifier": "productElectronicUsers",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Audit": {
+            "propertyIdentifier": "productAudit",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Prox": {
+            "propertyIdentifier": "productProx",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ScheduledEvents": {
+            "propertyIdentifier": "productScheduledEvents",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "MechFaceplate": {
+            "propertyIdentifier": "mechanicalFaceplate",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "PaddleOrientation": {
+            "propertyIdentifier": "productPaddleOrientation",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "JambType": {
+            "propertyIdentifier": "productJambType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Weatherproof": {
+            "propertyIdentifier": "productWeatherproof",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Power": {
+            "propertyIdentifier": "productPower",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "MechanicalKeyway": {
+            "propertyIdentifier": "mechanicalKeyway",
+            "validations": {
+                "dataType": "string"
+            }
         }
     },
     

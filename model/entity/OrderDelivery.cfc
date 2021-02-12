@@ -58,7 +58,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	
 	// Related Object Properties (Many-To-One)
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="location" cfc="Location" hb_populateEnabled="public" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="orderDeliveryStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderDeliveryStatusTypeID";
 	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
@@ -83,6 +83,9 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	// Calculated properties
+	property name="calculatedTotalQuantityDelivered" ormtype="numeric";
 	
 	// Non-Persistent Properties
 	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";

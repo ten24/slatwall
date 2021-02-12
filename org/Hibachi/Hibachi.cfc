@@ -128,6 +128,9 @@ component extends="framework.one" {
 	}
 
 	public string function getEnvironment() {
+		if ( isServerNameAnIP() ) {
+			return '';
+		}
 		for(var i = 1; i <= arrayLen(variables.framework.hibachi.availableEnvironments); i++){
 			if( structKeyExists(variables.framework.hibachi, '#variables.framework.hibachi.availableEnvironments[i]#UrlPattern')){
 				var currentEnvironmentUrlPattern = variables.framework.hibachi['#variables.framework.hibachi.availableEnvironments[i]#UrlPattern'];
@@ -378,6 +381,13 @@ component extends="framework.one" {
 			
 		}
 		
+		if( !getHibachiScope().hasApplicationValue("applicationEnvironment") || getHibachiScope().getApplicationValue("applicationEnvironment") == '' ){
+			var environment = getEnvironment();
+			if( environment != '' ) {
+				getHibachiScope().setApplicationValue("applicationEnvironment", environment);
+			}
+		}
+		
 		//Sets the correct site for api calls.
 		//set custom headers on rc
         if( StructKeyExists(httpRequestData, "headers") ) {
@@ -401,10 +411,6 @@ component extends="framework.one" {
             }
         }
         
-
-		
-		
-		
 		// Verify that the session is setup
 		if(!structKeyExists(arguments, "managesession") || arguments.managesession == true){
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
@@ -412,14 +418,9 @@ component extends="framework.one" {
 			getHibachiScope().setPersistSessionFlag(false);
 		}
 		
-		// CSRF / Duplicate Request Handling
-		if(structKeyExists(request, "context")){
-			getHibachiScope().getService("hibachiSessionService").verifyCSRF(request.context, this); 
-		}	
-
 		var AuthToken = "";
-		if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
-			AuthToken = GetHttpRequestData().Headers['Auth-Token'];
+		if(structKeyExists(httpRequestData.Headers,'Auth-Token')){
+			AuthToken = httpRequestData.Headers['Auth-Token'];
 		}
 
 		// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
@@ -448,31 +449,7 @@ component extends="framework.one" {
 		}
 		//check if we have the authorization header
 		if(len(AuthToken)){
-
-			var authorizationHeader = AuthToken;
-			var prefix = 'Bearer ';
-			//get token by stripping prefix
-			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
-			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-
-			if(jwt.verify()){
-
-				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
-				if(!isNull(jwtAccount)){
-					jwtAccount.setJwtToken(jwt);
-					getHibachiScope().getSession().setAccount( jwtAccount );
-					
-					if(structKeyExists(url,'token')){
-						var accountAuthentication = getHibachiScope().getDAO('accountDAO').getActivePasswordByAccountID(jwtAccount.getAccountID());
-						if(!isNull(accountAuthentication)){
-							getHibachiScope().getSession().setAccountAuthentication( accountAuthentication );
-						}
-						getHibachiScope().getService("hibachiSessionService").persistSession(true);
-			      location(replace(REReplaceNoCase(CGI['request_url'], '&?token=[^&]+', ''), '/index.cfm', ''), false, 301);
-					}
-				}
-			}
-
+			getHibachiScope().getService("hibachiSessionService").setAccountSessionByAuthToken(AuthToken);
 		}
 
 		// Call the onEveryRequest() Method for the parent Application.cfc
@@ -658,7 +635,10 @@ component extends="framework.one" {
 
 		// Setup structured Data if a request context exists meaning that a full action was called
 		getHibachiScope().getService("hibachiUtilityService").buildFormCollections(request.context);
-
+		
+		// CSRF / Duplicate Request Handling
+		getHibachiScope().getService("hibachiSessionService").verifyCSRF(request.context, this); 
+	
 		// Setup a $ in the request context, and the hibachiScope shortcut
 		request.context.fw = getHibachiScope().getApplicationValue("application");
 		request.context.$ = {};
@@ -1165,15 +1145,12 @@ component extends="framework.one" {
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
 
-		if(getHibachiScope().getPersistSessionFlag()) {
-			getHibachiScope().getService("hibachiSessionService").persistSession();
-		}
-		
-		if(!getHibachiScope().getORMHasErrors()) {
+		if( !getHibachiScope().getORMHasErrors() ){
+		    if( getHibachiScope().getPersistSessionFlag() ){
+	    		getHibachiScope().getService("hibachiSessionService").persistSession();
+			}
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}
-		
-		
 
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
@@ -1361,7 +1338,8 @@ component extends="framework.one" {
 
 	public void function onError(any exception, string event){
 		ORMClearSession();
-		writeLog(file="#variables.framework.applicationKey#", text="General Log - ORM Session Cleared on error");
+	    getHibachiScope().logHibachiException(arguments.exception);
+		writeLog(file="#variables.framework.applicationKey#", text="General Log - ORM Session Cleared on error; Event: #arguments.event#");
 
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
 		var context = getPageContext();

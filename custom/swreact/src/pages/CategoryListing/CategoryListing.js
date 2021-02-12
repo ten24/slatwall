@@ -9,39 +9,33 @@ const CategoryList = ({ categories }) => {
       {/* <!--- Categories grid ---> */}
       <div className="row pt-5">
         {/* <!--- Catogory ---> */}
-        {categories.map(({ heading, items }, index) => {
-          return (
-            <div className="col-md-4 col-sm-6 mb-3">
-              <div className="card border-0">
-                <a
-                  className="d-block overflow-hidden rounded-lg"
-                  href="shop-grid-ls.html"
-                >
-                  <img
-                    className="d-block w-100"
-                    src="#$.getThemePath()#/custom/client/assets/images/category-img-1.png"
-                    alt=""
-                  />
-                </a>
-                <div className="card-body">
-                  <h2 className="h5">{heading}</h2>
-                  <ul className="list-unstyled font-size-sm mb-0">
-                    {items.map(({ title, link }, index) => {
-                      return (
-                        <li className="d-flex align-items-center justify-content-between">
-                          <a className="nav-link-style" href={link}>
-                            <i className="far fa-chevron-circle-right pr-2"></i>
-                            {title}
-                          </a>
-                        </li>
-                      )
-                    })}
-                  </ul>
+        {categories &&
+          categories.map(({ heading, items }, index) => {
+            return (
+              <div className="col-md-4 col-sm-6 mb-3">
+                <div className="card border-0">
+                  <a className="d-block overflow-hidden rounded-lg" href="shop-grid-ls.html">
+                    <img className="d-block w-100" src="#$.getThemePath()#/custom/client/assets/images/category-img-1.png" alt="" />
+                  </a>
+                  <div className="card-body">
+                    <h2 className="h5">{heading}</h2>
+                    <ul className="list-unstyled font-size-sm mb-0">
+                      {items.map(({ title, link }, index) => {
+                        return (
+                          <li className="d-flex align-items-center justify-content-between">
+                            <a className="nav-link-style" href={link}>
+                              <i className="far fa-chevron-circle-right pr-2"></i>
+                              {title}
+                            </a>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
       </div>
     </div>
   )

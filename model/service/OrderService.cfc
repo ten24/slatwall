@@ -79,7 +79,108 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	/**
+	 * Function to return order details - it includes following 
+	 * - order items
+	 * - order fulfillment
+	 * - order payments
+	 * */
+	public any function getOrderDetails(required string orderID, string accountID) {
+		
+        param name="arguments.accountID" default=getHibachiScope().getAccount().getAccountID();
+        //check if user is a superUser, if yes then we won't check for Account ID with order
+        var superUser = false;
+        var account = getAccountService().getAccount(arguments.accountID);
+        if(!isNull(account)) {
+        	superUser = getAccountService().getAccount(arguments.accountID).getSuperUserFlag();
+        }
+        
+        
+        var orderDetails = {}; //return object
+        
+        //Order Information
+        var orderCollectionList = this.getOrderCollectionList();
+        orderCollectionList.setDisplayProperties('orderID, calculatedTotalQuantity, estimatedFulfillmentDateTime, currencyCode, calculatedSubTotalAfterItemDiscounts, orderCloseDateTime, calculatedDiscountTotal, calculatedTaxTotal, quoteFlag, calculatedTotalItems, calculatedTotal, calculatedSubTotal, orderOpenDateTime, calculatedFulfillmentTotal, orderNumber, modifiedDateTime, orderStatusType.typeName, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode');
+        orderCollectionList.addFilter( 'orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderCollectionList.addFilter( 'account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderInfo'] = orderCollectionList.getRecords(formatRecords = false);
+        
+    	///Order Items Information
+		var ordersItemsCollectionList = this.getOrderItemCollectionList();
+		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle, quantity, calculatedQuantityDelivered');
+		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		var orderItems = ordersItemsCollectionList.getRecords(formatRecords = false);
+		//Append images to products
+		orderItems = getService("productService").appendImagesToProduct(orderItems, "sku_imageFile", false);
+		
+        orderDetails['orderItems'] = orderItems;
+		
+		//Order Payments Information
+		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();
+		orderPaymentCollectionList.setDisplayProperties('order.orderID,paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
+		orderPaymentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderPaymentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		
+		orderDetails['orderPayments'] = orderPaymentCollectionList.getRecords(formatRecords = false);
+		
+		// //Order Promotions Information
+		var orderPromotionCollectionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
+		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount');
+		orderPromotionCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderPromotionCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderPromotions'] = orderPromotionCollectionList.getRecords(formatRecords = false);
+		
+		///Order Fulfillment Information
+		var ordersFulfillmentCollectionList = this.getOrderItemCollectionList();
+		ordersFulfillmentCollectionList.setDisplayProperties('orderItemID,order.orderID,orderDeliveryItems.quantity,orderDeliveryItems.orderDelivery.trackingNumber,orderDeliveryItems.orderDelivery.createdDateTime,orderDeliveryItems.orderDelivery.invoiceNumber,orderDeliveryItems.orderDelivery.calculatedTotalQuantityDelivered,sku.skuID, orderFulfillment.fulfillmentCharge, orderFulfillment.currencyCode, orderFulfillment.estimatedDeliveryDateTime, orderFulfillment.estimatedFulfillmentDateTime, orderFulfillment.fulfillmentMethod.fulfillmentMethodName, orderFulfillment.fulfillmentMethod.fulfillmentMethodType, orderFulfillment.pickupLocation.locationName, orderFulfillment.shippingAddress.streetAddress, orderFulfillment.shippingAddress.street2Address, orderFulfillment.shippingAddress.city, orderFulfillment.shippingAddress.stateCode, orderFulfillment.shippingAddress.postalCode, orderFulfillment.shippingAddress.name, orderFulfillment.shippingAddress.countryCode, orderFulfillment.shippingMethod.shippingMethodName, orderFulfillment.shippingMethod.shippingMethodCode');
+		ordersFulfillmentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			ordersFulfillmentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderFulfillments'] = ordersFulfillmentCollectionList.getRecords(formatRecords = false);
+		
+		return orderDetails;
+    }
+    
+    /**
+     * Required list property
+     * It's a hard coded list of options that can be available with order requirements list
+     * This method is added to handle frontend side of wordpress plugin
+     * @param -  order object
+     * @return - list of steps
+     * */
+    public string function getOrderRequiredStepsList(required any order) {
+    	var orderRequiredStepsList = "account";
+    	
+    	// Check each of the order Items and set fulfillment for non gift card items
+		var orderItemsCount = arrayLen(arguments.order.getOrderItems());
+		for(var i = 1; i <= orderItemsCount; i++) {
+			if( arguments.order.getOrderItems()[i].getSku().getProduct().getBaseProductType() != "gift-card" ) {
+				orderRequiredStepsList = listAppend(orderRequiredStepsList, "fulfillment");
+				break;
+			}
+		}
+    	
+    	orderRequiredStepsList = listAppend(orderRequiredStepsList, "payment");
+    	
+    	return orderRequiredStepsList;
+    }
+	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
 		var orderRequirementsList = "";
 
@@ -144,6 +245,99 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return orderRequirementsList;
 	}
+	
+	//Function get all available order paymentss
+	public any function getAppliedOrderPayments(required any order) {
+		var appliedPaymentMethods = this.getOrderPaymentCollectionList();
+		appliedPaymentMethods.setDisplayProperties('expirationYear, purchaseOrderNumber, nameOnCreditCard, expirationMonth, creditCardLastFour, currencyCode, orderPaymentID, amount, creditCardType');
+	    appliedPaymentMethods.addFilter("order.orderID",arguments.order.getOrderID());
+	    appliedPaymentMethods.addFilter("orderPaymentStatusType.systemCode","opstActive");
+	    //writeDump("#appliedPaymentMethods.getHQL()#");
+	    return appliedPaymentMethods.getRecords(formatRecords = false);
+	}
+	
+	/**
+     * Function to get all carts and quotes for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllCartsAndQuotesOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderCollectionList();
+
+		ordersList.addOrderBy('createdDateTime|DESC');
+		ordersList.setDisplayProperties('
+			orderID,
+			calculatedTotalItemQuantity,
+			orderNumber,
+			orderStatusType.typeName,
+			calculatedTotal,
+			createdDateTime
+		');
+		
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		
+		return { 
+			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
+			"recordsCount": ordersList.getRecordsCount()
+		};
+	}
+    
+    /**
+     * Function to get all order fulfillments for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderFulfillmentsOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderFulfillmentCollectionList();
+		ordersList.setDisplayProperties(' orderFulfillmentID, estimatedShippingDate, pickupDate, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderFulfillmentStatusType.typeName');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+		
+		return { 
+			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
+			"recordsCount": ordersList.getRecordsCount()
+		};
+	}
+	
+	/**
+     * Function to get all order deliveries for user
+     * @param accountID required
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of orders and total count
+     **/
+	public any function getAllOrderDeliveryOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var ordersList = this.getOrderDeliveryCollectionList();
+		ordersList.setDisplayProperties(' orderDeliveryID, invoiceNumber, trackingNumber, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber'); //TODO: not included property yet orderDeliveryStatusType.typeName
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
+		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
+		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+		
+		return { 
+			"ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), 
+			"recordsCount": ordersList.getRecordsCount()
+		};
+	}
+	
 	
 	public string function getProductsScheduledForDelivery(required any currentDateTime){
 		
@@ -1679,10 +1873,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		else {
 			var account = getHibachiScope().getAccount();
 		}
-	
-		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
-			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
-			return arguments.orderTemplate; 
+		
+		var site = arguments.processObject.getSite();
+		
+        if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+			arguments.data.orderTemplateName = "My Order Template, Created on " & dateFormat(now(), "long");
+        }
+        
+		//Set the first shipping method as default
+		if(!isNull(site)){
+			var shippingMethod = getService('ShippingService').getShippingMethod( 
+			            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
+				   );
+			if(!isNull(shippingMethod)){
+				orderTemplate.setShippingMethod(shippingMethod);
+			}
 		}
 		
 		arguments.orderTemplate.setAccount(account);
@@ -1690,9 +1895,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( arguments.processObject.getFrequencyTerm() );
+		var date = arguments.processObject.getScheduleOrderNextPlaceDateTime() ?: arguments.data.scheduleOrderNextPlaceDateTime;
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(date));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(parseDateTime(date));
 		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
 		
@@ -2198,6 +2404,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate; 	
 	} 
 
+	public any function processOrderTemplate_shareWishlist(required any orderTemplate, any processObject, struct data={}){
+
+		this.sendEmail(
+			emailAddress = arguments.processObject.getReceiverEmailAddress(), 
+			emailTemplateID =  arguments.ordertemplate.getSite().setting('siteWishlistShareEmailTemplate'),
+			emailTemplateObject = arguments.orderTemplate
+		);
+		
+		return arguments.orderTemplate; 		
+	}
 
 	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
 		
@@ -3986,6 +4202,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
 				orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
 				orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
+				this.saveOrderDeliveryItem( orderDeliveryItem );
 			}
 
 			// Add a message to the orderDelivery to inform that items were skipped. It was not an error with intial gift card functionality, and allows other orderItems to auto-fulfill
@@ -4279,11 +4496,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Save the orderDelivery
-			arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
-			this.saveOrderFulfillment( arguments.processObject.getOrderFulfillment() );
+			this.saveOrderDelivery( arguments.orderDelivery );
+			this.saveOrderFulfillment( orderFulfillment=arguments.processObject.getOrderFulfillment(), updateOrderAmounts=false, updateShippingMethodOptions=false );
 			
 			//must flush otherwise the dao won't get the correct amount.
-			if (!arguments.processObject.getOrderFulfillment().hasErrors()){
+			if (!arguments.processObject.getOrderFulfillment().hasErrors() && !arguments.orderDelivery.hasErrors()){
 				ormFlush();
 			}
 			
@@ -5936,17 +6153,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private any function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {
 	
-		var priceByCurrencyCodeArgs = {
-			'currencyCode' : arguments.order.getCurrencyCode(),
-			'quantity' : arguments.processObject.getQuantity()
-		};
+		var priceGroups = [];
+		var priceGroup = arguments.newOrderItem.getAppliedPriceGroup() ?: arguments.processObject.getPriceGroup();
+		if(!isNull(priceGroup)) {
+			priceGroups = [priceGroup];
+		}
 		
-		if(!isNull(	newOrderItem.getOrder().getAccount() ) && !newOrderItem.getOrder().getAccount().getNewFlag()){
-			priceByCurrencyCodeArgs['accountID'] = newOrderItem.getOrder().getAccount().getAccountID();
+		var priceByCurrencyCodeArgs = {
+			'currencyCode' : arguments.newOrderItem.getCurrencyCode(),
+			'quantity' : arguments.newOrderItem.getQuantity(),
+			'priceGroups': priceGroups
 		}
 		
 		return arguments.processObject.getSku()
-		.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) 
+				.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs );
 	}
 	
 	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
@@ -6018,7 +6238,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getBestApplicablePriceGroup(required any order){
-		var priceGroupCode =  2;
+		var priceGroupCode =  "";
         if(!isNull(arguments.order.getPriceGroup())){ //order price group
             return arguments.order.getPriceGroup();
         }else if(!isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups())){ //account price group

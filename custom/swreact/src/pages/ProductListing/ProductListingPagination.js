@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { search, setCurrentPage } from '../../actions/productSearchActions'
+import { useTranslation } from 'react-i18next'
+
 const LEFT_PAGE = 'LEFT'
 const RIGHT_PAGE = 'RIGHT'
 
@@ -24,6 +25,7 @@ const range = (from, to, step = 1) => {
 
 const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 1 }) => {
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
 
   const calculatePageNumbers = () => {
     /**
@@ -84,14 +86,14 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
   if (!recordsCount || totalPages === 1) return null
   return (
     <nav className="d-flex justify-content-between pt-2" aria-label="Page navigation">
-      <ul className="pagination">
+      <ul className="mx-auto pagination">
         {pages.map((page, index) => {
           if (page === LEFT_PAGE)
             return (
               <li key={index} className="page-item">
-                <a
+                <div
                   className="page-link"
-                  href="#"
+                  href=""
                   aria-label="Previous"
                   onClick={evt => {
                     evt.preventDefault()
@@ -99,17 +101,16 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
                   }}
                 >
                   <span aria-hidden="true">&laquo;</span>
-                  <span className="sr-only">Previous</span>
-                </a>
+                  <span className="sr-only">{t('frontend.pagination.previous')}</span>
+                </div>
               </li>
             )
 
           if (page === RIGHT_PAGE)
             return (
               <li key={index} className="page-item">
-                <a
+                <div
                   className="page-link"
-                  href="#"
                   aria-label="Next"
                   onClick={evt => {
                     evt.preventDefault()
@@ -117,16 +118,15 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
                   }}
                 >
                   <span aria-hidden="true">&raquo;</span>
-                  <span className="sr-only">Next</span>
-                </a>
+                  <span className="sr-only">{t('frontend.pagination.next')}</span>
+                </div>
               </li>
             )
 
           return (
             <li key={index} className={`page-item${currentPage === page ? ' active' : ''}`}>
-              <a
+              <div
                 className="page-link"
-                href="#"
                 onClick={evt => {
                   evt.preventDefault()
                   const newPage = Math.max(0, Math.min(page, totalPages))
@@ -135,52 +135,10 @@ const ProductListingPagination = ({ recordsCount, pageNeighbours = 2, currentPag
                 }}
               >
                 {page}
-              </a>
+              </div>
             </li>
           )
         })}
-        {/* <li className="page-item">
-          <a className="page-link" href="#">
-            <i className="far fa-chevron-left mr-2"></i> Prev
-          </a>
-        </li>
-      </ul>
-      <ul className="pagination">
-        <li className="page-item d-sm-none">
-          <span className="page-link page-link-static">1 / 5</span>
-        </li>
-        <li className="page-item active d-none d-sm-block" aria-current="page">
-          <span className="page-link">
-            1<span className="sr-only">(current)</span>
-          </span>
-        </li>
-        <li className="page-item d-none d-sm-block">
-          <a className="page-link" href="#">
-            2
-          </a>
-        </li>
-        <li className="page-item d-none d-sm-block">
-          <a className="page-link" href="#">
-            3
-          </a>
-        </li>
-        <li className="page-item d-none d-sm-block">
-          <a className="page-link" href="#">
-            4
-          </a>
-        </li>
-        <li className="page-item d-none d-sm-block">
-          <a className="page-link" href="#">
-            5
-          </a>
-        </li>
-      </ul>
-      <ul className="pagination">
-        <li className="page-item">
-          <a className="page-link" href="#" aria-label="Next">
-            Next <i className="far fa-chevron-right ml-2"></i>
-          </a>
-        </li> */}
       </ul>
     </nav>
   )

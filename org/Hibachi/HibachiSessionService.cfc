@@ -34,11 +34,13 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 
 	public boolean function verifyCSRFToken(required string requestToken,string tokenName='hibachiCSRFToken'){
-		if(!hasSessionValue(arguments.tokenName)){
-			return false; 
+	   
+		if(!this.getHibachiScope().hasSessionValue(arguments.tokenName)){
+		    this.logHibachi("verifyCSRFToken:: does not have CSRF session value for tokenName: #arguments.tokenName#; csrf-value: #arguments.requestToken#. approving this request");
+			return true; 
 		}
 
-		return arguments.requestToken == getSessionValue(arguments.tokenName); 
+		return arguments.requestToken == this.getHibachiScope().getSessionValue(arguments.tokenName); 
 	} 
 
 	public any function verifyCSRF(required any rc, required any framework){
@@ -278,6 +280,25 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
 		
+	}
+	
+	/**
+	 * Method to create account session using Bearer Token
+	 * */
+	public void function setAccountSessionByAuthToken(required string authToken){
+		var authorizationHeader = arguments.authToken;
+		var prefix = 'Bearer ';
+		//get token by stripping prefix
+		var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+		var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
+
+		if(jwt.verify()){
+			var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+			if(!isNull(jwtAccount)){
+				jwtAccount.setJwtToken(jwt);
+				getHibachiScope().getSession().setAccount( jwtAccount );
+			}
+		}
 	}
 	
 	public any function getSessionBySessionCookie(required any cookieName, required any cookieValue,boolean isNew=false){

@@ -245,11 +245,21 @@
 
 .featured-products {
   border-radius: 0 0 7px 7px;
+  .slick-track {
+    @extend .d-flex;
+  }
+  .slick-slide {
+    @extend .m-2;
+    @extend .h-auto;
+  }
+  .product-card {
+    height: 100%;
+  }
 }
 
 // Home Page Brand Slick Slider
 
-.brand-slider .repeater div {
+.brand-box {
   height: 120px;
   display: flex;
   align-items: center;
@@ -296,6 +306,7 @@
   outline: none;
   background-color: $gray-200;
   border-radius: 50px;
+  z-index: 1;
 }
 
 .slick-prev:before, .slick-next:before {

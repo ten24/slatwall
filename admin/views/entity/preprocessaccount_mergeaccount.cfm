@@ -65,29 +65,10 @@ Notes:
 				</div> 
 				<h4>From Account</h4>
 				<!--- General Details --->
-				<sw-typeahead-input-field data-field-name="fromAccountID"
-										  data-entity-name="Account"
-										  data-placeholder-rb-key="define.search"
-										  data-property-to-save="accountID"
-										  data-property-to-show="calculatedFullName"
-										  data-properties-to-load="accountID,primaryEmailAddress.emailAddress,calculatedFullName"
-										  data-initial-entity-id="#rc.account.getAccountID()#">
-				    
-                    <span sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress_emailAddress"> </span>&nbsp
-                    <span sw-typeahead-search-line-item data-property-identifier="calculatedFullName"> </span>
-				</sw-typeahead-input-field>	
-				
+				<swa:SlatwallAccountTypeahead fieldName="fromAccountID" required="true" initialAccountID="#rc.account.getAccountID()#" /> 	
 				<!--- General Details --->
 				<h4>To Account</h4>
-				<sw-typeahead-input-field data-field-name="toAccountID"
-										  data-entity-name="Account"
-										  data-placeholder-rb-key="define.search"
-										  data-property-to-save="accountID"
-										  data-property-to-show="calculatedFullName"
-										  data-properties-to-load="accountID,primaryEmailAddress.emailAddress,calculatedFullName">
-				
-					<span sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress_emailAddress"> </span>&nbsp<span sw-typeahead-search-line-item data-property-identifier="calculatedFullName"> </span>
-				</sw-typeahead-input-field>	
+				<swa:SlatwallAccountTypeahead fieldName="toAccountID" required="true" /> 	
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
