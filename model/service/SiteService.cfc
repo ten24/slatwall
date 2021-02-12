@@ -489,7 +489,7 @@ component  extends="HibachiService" accessors="true" {
 					for(var column in arguments.urlTitlePathConfiguration[urlTitlePathPrefix]){
 						stackedContent[content['urlTitlePath']][column] = reReplace(content[column],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
 					}
-				stackedContent[content['urlTitlePath']] = getService("ContentService").appendSettingsAndOptionsToContent([stackedContent[content['urlTitlePath']]]);
+				stackedContent[content['urlTitlePath']] = getService("ContentService").appendSettingsAndOptionsToContent(stackedContent[content['urlTitlePath']]);
 			}
 		}
         return stackedContent
