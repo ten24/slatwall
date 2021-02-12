@@ -397,16 +397,20 @@ component  accessors="true" output="false"
 	     param name="arguments.data.orderID";
 	     
 	     var account = getHibachiScope().getAccount();
+	     
 	     if(!isNull(account) && !isEmpty(account.getAccountID())) {
 	         var order = orderService.getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
 	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID());
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
 	         } else {
+	             
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	             arguments.data.ajaxResponse['error'] = "Invalid orderID";
 	         }
 	     } else {
 	         getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	         arguments.data.ajaxResponse['error'] = "Please login to getOrderDetails";
 	     }
 	 }
 	
@@ -1384,6 +1388,7 @@ component  accessors="true" output="false"
           var accountAddressId = data.accountAddressID;
         }else{
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+            arguments.data.ajaxResponse['error'] = "accountAddressID is required";
           return;
         }
 
@@ -1439,6 +1444,7 @@ component  accessors="true" output="false"
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
             }
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+            arguments.data.ajaxResponse['error'] = "accountAddressID is required";
         }
     }
 
@@ -1486,7 +1492,7 @@ component  accessors="true" output="false"
           var orderFulfillment = fulfillment;
         }
       }
-
+    
       if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
         orderFulfillment.setPickupLocation(getService('LocationService').getLocation(locationID));
         getService("OrderService").saveOrder(order);
@@ -1497,6 +1503,7 @@ component  accessors="true" output="false"
           this.addErrors(arguments.data, orderFulfillment.getErrors());
         }
         getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
+        arguments.data.ajaxResponse['error'] = "Invalid Params";
       }
     }
     
@@ -2083,6 +2090,22 @@ component  accessors="true" output="false"
         var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
         
         var existingOrderFulfillment = "";
+        var error = [];
+        
+        if(isEmpty(arguments.data.orderItemIDList)){
+            ArrayAppend(error, "orderItemIDList is required");
+        }
+        
+        
+        if(isEmpty(arguments.data.fulfillmentMethodID)){
+            ArrayAppend(error, "fulfillmentMethodID is required");
+        }
+        
+        if(!isEmpty(error)){
+            getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", true);
+            data['ajaxResponse']['errors'] = error;
+            return;
+        }
         
         //check if fulfillment method already exists on order
         var allOrderFulfillments = cart.getOrderFulfillments();
@@ -2124,7 +2147,6 @@ component  accessors="true" output="false"
         }
         
         getService("OrderService").saveOrder(getHibachiScope().getCart());
-        
         getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
     }
 
