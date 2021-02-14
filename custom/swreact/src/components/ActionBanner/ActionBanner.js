@@ -55,7 +55,11 @@ const ActionBanner = props => {
             onClick={event => {
               event.preventDefault()
               if (event.target.getAttribute('href')) {
-                history.push(event.target.getAttribute('href'))
+                if (event.target.getAttribute('href').includes('.pdf')) {
+                  window.location.href = event.target.getAttribute('href')
+                } else {
+                  history.push(event.target.getAttribute('href'))
+                }
               }
             }}
             dangerouslySetInnerHTML={{ __html: banner.customBody }}
