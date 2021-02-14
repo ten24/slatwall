@@ -1,6 +1,6 @@
 import BasicPage from '../BasicPage/BasicPage'
 
-const About = props => {
+const About = () => {
   return <BasicPage />
 }
 

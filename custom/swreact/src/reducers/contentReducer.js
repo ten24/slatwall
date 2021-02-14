@@ -1,22 +1,6 @@
 import { REQUEST_CONTENT, RECIVE_CONTENT } from '../actions/contentActions'
 
-const initState = {
-  featuredSlider: [],
-  homeMainBanner: [],
-  homeBrand: [],
-  homeContent: [],
-  'home/shop-by': {
-    customBody: '',
-    linkUrl: '',
-    title: '',
-  },
-  'footer/contact-application': '',
-  form: {
-    markup: '',
-  },
-  isFetching: false,
-  err: null,
-}
+const initState = {}
 
 const content = (state = initState, action) => {
   switch (action.type) {
