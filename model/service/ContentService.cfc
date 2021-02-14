@@ -343,6 +343,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	            	content["setting"]['contentRequirePurchaseFlag'] = currentContent.setting('contentRequirePurchaseFlag');
 	            	content["setting"]['contentRequireSubscriptionFlag'] = currentContent.setting('contentRequireSubscriptionFlag');
 	            	content["setting"]['contentEnableTrackingFlag'] = currentContent.setting('contentEnableTrackingFlag');
+	            	content["setting"]['contentTemplateFile'] = currentContent.setting('contentTemplateFile');
 				}
 
 		return arguments.content;
