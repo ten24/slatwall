@@ -116,7 +116,14 @@ export const getCountries = (content = {}) => {
     dispatch(reciveContent({}))
   }
 }
-
+export const addContent = (content = {}) => {
+  return async dispatch => {
+    if (content.setting) {
+      dispatch(setTitle(content.setting.contentHTMLTitleString))
+    }
+    dispatch(reciveContent(content))
+  }
+}
 // export const addFormResponse = (content = {}) => {
 //   return async (dispatch, getState) => {
 //     dispatch(requestContent())
