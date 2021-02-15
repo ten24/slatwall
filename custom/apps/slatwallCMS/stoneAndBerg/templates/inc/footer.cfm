@@ -5,27 +5,14 @@
     local.site["siteName"] = $.slatwall.getCurrentRequestSite().getSiteName()
     local.site["hibachiInstanceApplicationScopeKey"] = $.slatwall.getCurrentRequestSite().getHibachiInstanceApplicationScopeKey()
     local.site["hibachiConfig"] = $.slatwall.getHibachiConfig()
-    local.router["globalURLKeyProduct"] = {
-      "URLKey": $.slatwall.setting('globalURLKeyProduct'),
-      "URLKeyType": 'Product' }
-    local.router["globalURLKeyProductType"] = {
-      "URLKey": $.slatwall.setting('globalURLKeyProductType'),
-      "URLKeyType": 'ProductType' }
-    local.router["globalURLKeyCategory"] = {
-      "URLKey": $.slatwall.setting('globalURLKeyCategory'),
-      "URLKeyType": 'Category' }
-    local.router["globalURLKeyBrand"] = {
-      "URLKey": $.slatwall.setting('globalURLKeyBrand'),
-      "URLKeyType": 'Brand' }
-    local.router["globalURLKeyAccount"] = {
-      "URLKey": $.slatwall.setting('globalURLKeyAccount'),
-      "URLKeyType": 'Account' }
-    local.router["globalURLKeyAddress"] = {
-      "URLKey": $.slatwall.setting('globalURLKeyAddress'),
-      "URLKeyType": 'Address' }
-    local.router["globalURLKeyAttribute"] = {
-      "URLKey": $.slatwall.setting('globalURLKeyAttribute'),
-      "URLKeyType": 'Attribute' }
+    local.router = []
+    ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyProductType'),"URLKeyType": 'ProductType' })
+    ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyCategory'),"URLKeyType": 'Category' })
+    ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyBrand'),"URLKeyType": 'Brand' })
+    ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyAccount'),"URLKeyType": 'Account' })
+    ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyAddress'),"URLKeyType": 'Address' })
+    ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyAttribute'),"URLKeyType": 'Attribute' })
+    
       
 </cfscript>
 <cfoutput>
