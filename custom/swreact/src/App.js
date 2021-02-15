@@ -17,20 +17,27 @@ const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
 
 const NotFound = lazyWithPreload(() => import('./pages/NotFound/NotFound'))
 const ContentPage = lazyWithPreload(() => import('./pages/ContentPage/ContentPage'))
+const Product = lazyWithPreload(() => import('./pages/Product/Product'))
+const ProductType = lazyWithPreload(() => import('./pages/ProductType/ProductType'))
+const Category = lazyWithPreload(() => import('./pages/Category/Category'))
+const Account = lazyWithPreload(() => import('./pages/Account/Account'))
+const Address = lazyWithPreload(() => import('./pages/Address/Address'))
+const Attribute = lazyWithPreload(() => import('./pages/Attribute/Attribute'))
 const pageComponents = {
   Home,
   MyAccount,
   ProductListing,
   ProductDetail,
   Testing,
-  Brand,
   NotFound,
-  ProductType: NotFound,
-  Category: NotFound,
-  Account: MyAccount,
-  Address: NotFound,
-  Attribute: NotFound,
   ContentPage,
+  Product,
+  ProductType,
+  Category,
+  Brand,
+  Account,
+  Address,
+  Attribute,
 }
 const Loading = () => {
   return <Layout></Layout>
@@ -55,11 +62,7 @@ export default function App() {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
         <Route path="/products" component={ProductListing} />
-        <Route path="/product/:id" component={ProductDetail} />
-        <Route path="/product" component={ProductListing} />
         <Route path="/sp/:id" component={ProductDetail} />
-        <Route path="/shop/:id" component={Brand} />
-        <Route path="/brand/:id" component={Brand} />
         <Route path="/category-listing" component={CategoryListing} />
         <Route path="/my-account" component={MyAccount} />
         <Route path="/MyAccount" component={MyAccount} />

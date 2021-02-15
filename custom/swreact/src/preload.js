@@ -1,6 +1,7 @@
 export default {
   site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: 'stoneAndBerg' },
   router: [
+    { URLKeyType: 'Product', URLKey: 'product' },
     { URLKeyType: 'ProductType', URLKey: 'spt' },
     { URLKeyType: 'Category', URLKey: 'cat' },
     { URLKeyType: 'Brand', URLKey: 'sb' },
