@@ -6,6 +6,7 @@
     local.site["hibachiInstanceApplicationScopeKey"] = $.slatwall.getCurrentRequestSite().getHibachiInstanceApplicationScopeKey()
     local.site["hibachiConfig"] = $.slatwall.getHibachiConfig()
     local.router = []
+    ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyProduct'),"URLKeyType": 'Product' })
     ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyProductType'),"URLKeyType": 'ProductType' })
     ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyCategory'),"URLKeyType": 'Category' })
     ArrayAppend(local.router , {"URLKey": $.slatwall.setting('globalURLKeyBrand'),"URLKeyType": 'Brand' })
