@@ -139,4 +139,13 @@ component extends="Slatwall.model.service.OrderService" {
 	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=false,boolean updateCalculatedProperties=false, boolean updateShippingMethodOptions=true) {
 		return super.saveOrderItem(argumentCollection=arguments);
 	}
+	
+	public array function getAccountWishlistsProducts(string accountID=getHibachiSCope().getAccount().getAccountID()){
+		var list = this.getOrderTemplateCollectionList();
+		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name,orderTemplateItems.sku.skuName,orderTemplateItems.sku.skuID");
+		list.addFilter("account.accountID",arguments.accountID);
+		list.addFilter("orderTemplateType.typeName","Wish List");
+		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
+		return list.getRecords();
+}
 }
