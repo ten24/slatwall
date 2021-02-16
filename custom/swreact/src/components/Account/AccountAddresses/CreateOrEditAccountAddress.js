@@ -119,8 +119,8 @@ const mapStateToProps = (state, ownProps) => {
     return address.addressID === ownProps.path
   })
   return {
-    states: state.preload.states,
-    countries: state.preload.countries,
+    states: state.configuration.states,
+    countries: state.configuration.countries,
     isEdit: accountAddresses.length ? true : false,
     accountAddress: accountAddresses.length ? accountAddresses[0] : null,
   }

@@ -25,7 +25,9 @@ function HomeDetails(props) {
                 <p
                   onClick={event => {
                     event.preventDefault()
-                    history.push(event.target.getAttribute('href'))
+                    if (event.target.getAttribute('href')) {
+                      history.push(event.target.getAttribute('href'))
+                    }
                   }}
                   dangerouslySetInnerHTML={{ __html: section.customBody }}
                 />

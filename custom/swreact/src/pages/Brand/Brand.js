@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-const CategoryList = props => {
+const Brand = props => {
   const products = []
   const { t, i18n } = useTranslation()
 
@@ -46,4 +46,4 @@ const CategoryList = props => {
   )
 }
 
-export default CategoryList
+export default Brand
