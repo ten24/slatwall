@@ -9007,3 +9007,7 @@ pre.json .null {
 pre.json .key {
   color: #c056ddab;
 }
+a.form-control-feedback {
+    right: 15px;
+    pointer-events: auto;
+}
