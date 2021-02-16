@@ -5,8 +5,8 @@
     "static/js/1.72e13c86.chunk.js": "/custom/swreact/build/static/js/1.72e13c86.chunk.js",
     "static/js/1.72e13c86.chunk.js.map": "/custom/swreact/build/static/js/1.72e13c86.chunk.js.map",
     "main.css": "/custom/swreact/build/static/css/main.5d218d13.chunk.css",
-    "main.js": "/custom/swreact/build/static/js/main.7ab659da.chunk.js",
-    "main.js.map": "/custom/swreact/build/static/js/main.7ab659da.chunk.js.map",
+    "main.js": "/custom/swreact/build/static/js/main.a9c16cdf.chunk.js",
+    "main.js.map": "/custom/swreact/build/static/js/main.a9c16cdf.chunk.js.map",
     "runtime-main.js": "/custom/swreact/build/static/js/runtime-main.ee1da7e4.js",
     "runtime-main.js.map": "/custom/swreact/build/static/js/runtime-main.ee1da7e4.js.map",
     "static/css/4.83342f34.chunk.css": "/custom/swreact/build/static/css/4.83342f34.chunk.css",
@@ -79,6 +79,6 @@
     "static/css/4.83342f34.chunk.css",
     "static/js/4.10cdca33.chunk.js",
     "static/css/main.5d218d13.chunk.css",
-    "static/js/main.7ab659da.chunk.js"
+    "static/js/main.a9c16cdf.chunk.js"
   ]
 }
