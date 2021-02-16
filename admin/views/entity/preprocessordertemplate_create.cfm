@@ -89,7 +89,8 @@ Notes:
 				
 				<hr> 
 			<cfelse> 
-				<input type="hidden" name="accountID" value="#rc.accountID#" />
+				<hb:HibachiFormField fieldName="accountID" value="#rc.processObject.getAccountID()#" fieldType="hidden">
+				<hb:HibachiFormField fieldName="newAccountFlag" value="#rc.processObject.getNewAccountFlag()#" fieldType="hidden">	
 			</cfif> 
 
 
@@ -101,7 +102,7 @@ Notes:
 
 			<hr> 
 			
-			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 										property="scheduleOrderNextPlaceDateTime" 
 										edit="#rc.edit#" 
