@@ -139,9 +139,4 @@ component extends="Slatwall.model.service.PublicService" {
         arguments.data['ajaxResponse']['skus'] = results;
          
      }
-     
-     public void function getFavouriteProducts(required struct data){
-        var products = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
-        arguments.data.ajaxResponse["accountWishlistProducts"] = products;
-    }
 }

@@ -143,7 +143,23 @@ component  accessors="true" output="false"
 	    arguments.data.ajaxResponse = result;
 
 	}
-
+    
+    /**
+	 * Get Favourite Product List (List out all wishlist sku's )
+	 * */
+    public void function getFavouriteProducts(required struct data){
+         if( getHibachiScope().getLoggedInFlag()  && 
+             !isNull(getHibachiScope().getAccount()) && 
+             !this.getHibachiScope().hibachiIsEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+                
+                var products = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
+                arguments.data.ajaxResponse["accountWishlistProducts"] = products;
+                
+            }
+        
+        arguments.data.ajaxResponse['error'] = "Please logged in to get Favourite Products";
+        
+    }
 	
 	
 	/***
