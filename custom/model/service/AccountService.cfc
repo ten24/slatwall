@@ -64,7 +64,7 @@ component extends="Slatwall.model.service.AccountService" {
 		
 		var orderIDs = [];
 		for( var order in orderRecords) {
-			ArrayAppend( orderIDs, order['orderID']);
+			ArrayAppend( orderIDs, "'"&order['orderID']&"'");
 		}
 		
 		//get orders with delivery tracking numbers
@@ -75,7 +75,9 @@ component extends="Slatwall.model.service.AccountService" {
 		return { 
 			"ordersOnAccount": orderRecords, 
 			"orderDeliveries": orderDeliveriesCollectionList.getRecords(formatRecord = true),
-			"records": ordersList.getRecordsCount()
+			"records"		 : ordersList.getRecordsCount(),
+		    "pageRecordsShow": ordersList.getPageRecordsShow(),
+		    "currentPage"    : ordersList.getCurrentPage()
 		};
 	}
 	
