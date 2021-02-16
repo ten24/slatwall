@@ -6,7 +6,7 @@ component extends="Slatwall.model.service.AccountService" {
         param name="arguments.data.orderID" default= "";
         param name="arguments.data.keyword" default= "";
         
-		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
+		var ordersList = getService('OrderService').getOrderCollectionList();
 
 		ordersList.addOrderBy('orderOpenDateTime|DESC');
 		ordersList.setDisplayProperties('
