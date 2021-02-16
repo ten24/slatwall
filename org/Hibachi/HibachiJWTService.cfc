@@ -76,16 +76,18 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		payload['iat'] = javaCast( "int", currentTime );
 		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
 		payload['issuer'] = CGI['server_name'];
-		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
+		payload['accountID'] = this.getHibachiScope().getAccount().getAccountID();
 		
+		
+		// TODO: should be in modal/service/HibachiJWTService; hibachi should not know anything about order;
 		if( arguments.setOrder && !arguments.clearOrder ) {
 			//set cart order id on payload
 			var mostRecentCart = getService('orderService').getMostRecentNotPlacedOrderByAccountID(getHibachiScope().getAccount().getAccountID());
 			if( !isNull(mostRecentCart) ) {
-				payload['orderid'] = mostRecentCart.getOrderID();
+				payload['orderID'] = mostRecentCart.getOrderID();
 			}
 		} else if(arguments.clearOrder) {
-			payload['orderid'] = '';
+			payload['orderID'] = '';
 		}
 		
 		//add users role so we can make decisions on frontend permissions
