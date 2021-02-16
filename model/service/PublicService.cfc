@@ -197,12 +197,14 @@ component  accessors="true" output="false"
 	 * */
 	public void function getProductBundleBuild( required struct data ) {
 	    param name="arguments.data.skuID";
+	    var hibachiScope = this.getHibachiScope();
 	    
-	    var account = getHibachiScope().getAccount();
+	    var account = hibachiScope.getAccount();
 	    var sku = getProductService().getSku( arguments.data.skuID );
 	    
 	    if( isNull( sku ) ) {
-	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
+	        hibachiScope.addActionResult("public:product.getProductBundleBuilds",true);
+	        arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.product.getProductBundleBuild.skuID_invalid");
 	        return;
 	    }
 	    
@@ -211,7 +213,7 @@ component  accessors="true" output="false"
 	    if( !account.isNew() ) {
 	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
+	        productBundleBuildCollectionList.addFilter('session.sessionID', hibachiScope.getSession().getSessionID());
 	    }
 	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', sku.getSkuID() );
 	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
@@ -219,10 +221,10 @@ component  accessors="true" output="false"
         
         //return false if there are no active builds
         if( !ArrayLen( productBundle ) ) {
-	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
+	        hibachiScope.addActionResult("public:product.getProductBundleBuilds",true);
 	        return;
 	    }
-    
+        
         var productBundleBuildItemCollectionList = getProductService().getProductBundleBuildItemCollectionList();
         productBundleBuildItemCollectionList.setDisplayProperties("quantity, productBundleBuildItemID, sku.skuID")
         productBundleBuildItemCollectionList.addFilter( "productBundleBuild.productBundleBuildID",  productBundle[1]['productBundleBuildID'] );
@@ -234,7 +236,7 @@ component  accessors="true" output="false"
         };
 	    
 	    arguments.data.ajaxResponse['data'] = bundleBuildResponse;
-        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",false);
+        hibachiScope.addActionResult("public:product.getProductBundleBuilds",false);
 	}
 	
 	/**
@@ -396,22 +398,28 @@ component  accessors="true" output="false"
 	 public void function getOrderDetails(required struct data) {
 	     param name="arguments.data.orderID";
 	     
-	     var account = getHibachiScope().getAccount();
+	     var hibachiScope = this.getHibachiScope();
 	     
-	     if(!isNull(account) && !isEmpty(account.getAccountID())) {
-	         var order = orderService.getOrder(arguments.data.orderID);
-	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
-	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID());
-	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
-	         } else {
-	             
-	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
-	             arguments.data.ajaxResponse['error'] = "Invalid orderID";
-	         }
-	     } else {
+	     if( !hibachiScope.getLoggedInFlag() ){
 	         getHibachiScope().addActionResult("public:account.getOrderDetails",true);
-	         arguments.data.ajaxResponse['error'] = "Please login to getOrderDetails";
+	         arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("processAccount_logout");
+	         return;
 	     }
+	     
+    	 var order = orderService.getOrder(arguments.data.orderID);
+    	 if( isNull(order) ){
+    	      hibachiScope.addActionResult("public:account.getOrderDetails", true);
+    	      arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.account.getOrderDetails.orderID_invalid");
+    	      return;
+    	 }
+	     
+	     var account = hibachiScope.getAccount();
+    	 
+    	 // TODO: use permissions
+        if( order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ){
+            arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails( order.getOrderID(), account.getAccountID());
+            getHibachiScope().addActionResult("public:account.getOrderDetails", false);
+        }
 	 }
 	
 	/**
@@ -1388,7 +1396,7 @@ component  accessors="true" output="false"
           var accountAddressId = data.accountAddressID;
         }else{
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
-            arguments.data.ajaxResponse['error'] = "accountAddressID is required";
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.cart.accountAddressID_required");
           return;
         }
 
@@ -1444,7 +1452,7 @@ component  accessors="true" output="false"
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
             }
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
-            arguments.data.ajaxResponse['error'] = "accountAddressID is required";
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.cart.accountAddressID_required");
         }
     }
 
@@ -1503,7 +1511,7 @@ component  accessors="true" output="false"
           this.addErrors(arguments.data, orderFulfillment.getErrors());
         }
         getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
-        arguments.data.ajaxResponse['error'] = "Invalid Params";
+        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.apiRequest.params_invalid");
       }
     }
     
@@ -2084,25 +2092,25 @@ component  accessors="true" output="false"
     public void function changeOrderFulfillment(required any data) {
         param name="orderItemIDList";
         param name="fulfillmentMethodID";
+        var hibachiScope = this.getHibachiScope();
         
-        var cart = getHibachiScope().getCart();
+        var cart = hibachiScope.getCart();
         
         var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
         
         var existingOrderFulfillment = "";
         var error = [];
         
-        if(isEmpty(arguments.data.orderItemIDList)){
-            ArrayAppend(error, "orderItemIDList is required");
+        if( arguments.data.orderItemIDList == "" ){
+            ArrayAppend(error, hibachiScope.rbKey("validate.cart.orderItemIDList_required"));
         }
         
-        
-        if(isEmpty(arguments.data.fulfillmentMethodID)){
-            ArrayAppend(error, "fulfillmentMethodID is required");
+        if( arguments.data.fulfillmentMethodID == "" ){
+            ArrayAppend(error, hibachiScope.rbKey("validate.cart.fulfillmentMethodID_required"));
         }
         
-        if(!isEmpty(error)){
-            getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", true);
+        if( !arrayIsEmpty(error)){
+            hibachiScope.addActionResult( "public:cart.changeOrderFulfillment", true);
             data['ajaxResponse']['errors'] = error;
             return;
         }
@@ -2146,8 +2154,8 @@ component  accessors="true" output="false"
             }
         }
         
-        getService("OrderService").saveOrder(getHibachiScope().getCart());
-        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
+        getService("OrderService").saveOrder(hibachiScope.getCart());
+        hibachiScope.addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
     }
 
 
