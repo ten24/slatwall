@@ -50,8 +50,8 @@ const AccountAddressForm = ({ formik, states, countries }) => {
 
 const mapStateToProps = state => {
   return {
-    states: state.preload.states,
-    countries: state.preload.countries,
+    states: state.configuration.states,
+    countries: state.configuration.countries,
     isEdit: false,
   }
 }

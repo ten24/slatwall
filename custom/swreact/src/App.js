@@ -44,7 +44,7 @@ const Loading = () => {
 }
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
-  const routing = useSelector(state => state.preload.router)
+  const routing = useSelector(state => state.configuration.router)
   useEffect(() => {
     Object.keys(pageComponents).map(key => {
       return pageComponents[key].preload()

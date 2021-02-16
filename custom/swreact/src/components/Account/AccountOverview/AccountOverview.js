@@ -44,7 +44,7 @@ const AccountOverview = ({ customBody, crumbs, title, contentTitle }) => {
 }
 const mapStateToProps = state => {
   return {
-    ...state.preload.accountOverview,
+    ...state.configuration.accountOverview,
     user: state.userReducer,
   }
 }

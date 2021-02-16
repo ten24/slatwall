@@ -10,7 +10,7 @@ const ContactForm = () => {
   const [content, setContent] = useState({ form: null, isLoaded: false, submitted: false })
   const { t, i18n } = useTranslation()
   let loc = useLocation()
-  const siteCode = useSelector(state => state.preload.site.siteCode)
+  const siteCode = useSelector(state => state.configuration.site.siteCode)
   const path = loc.pathname.split('/').reverse()[0]
 
   let formsByPath = useSelector(state => {

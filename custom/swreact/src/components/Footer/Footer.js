@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 function Footer() {
   const { t, i18n } = useTranslation()
   let history = useHistory()
-  const formLink = useSelector(state => state.preload.footer.formLink)
+  const formLink = useSelector(state => state.configuration.footer.formLink)
   const contentStore = useSelector(state => {
     return Object.keys(state.content)
       .map(key => {

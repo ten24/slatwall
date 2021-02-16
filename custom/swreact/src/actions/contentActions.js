@@ -21,7 +21,7 @@ export const reciveContent = content => {
 export const getHomePageContent = (content = {}) => {
   return async (dispatch, getState) => {
     dispatch(requestContent())
-    const { siteCode } = getState().preload.site
+    const { siteCode } = getState().configuration.site
     const response = await axios({
       method: 'POST',
       withCredentials: true, // default
@@ -57,7 +57,7 @@ const shouldUseData = (content = {}, request = {}) => {
 
 export const getContent = (content = {}) => {
   return async (dispatch, getState) => {
-    const { siteCode } = getState().preload.site
+    const { siteCode } = getState().configuration.site
     dispatch(requestContent())
     if (shouldUseData(getState().content, content.content)) {
       const response = await axios({
@@ -80,7 +80,7 @@ export const getContent = (content = {}) => {
 
 export const getPageContent = (content = {}, slug = '') => {
   return async (dispatch, getState) => {
-    const { siteCode } = getState().preload.site
+    const { siteCode } = getState().configuration.site
     dispatch(requestContent())
     const response = await axios({
       method: 'POST',

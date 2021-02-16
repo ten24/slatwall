@@ -7,7 +7,7 @@ const ProductCard = props => {
   const { calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance } = props
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
   const { t, i18n } = useTranslation()
-  const routing = useSelector(state => state.preload.router)
+  const routing = useSelector(state => state.configuration.router)
   const product = routing
     .map(route => {
       return route.URLKeyType === 'Product' ? route.URLKey : null

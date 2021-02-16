@@ -57,8 +57,8 @@ const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy }) => {
 }
 
 function mapStateToProps(state) {
-  const { preload, productSearchReducer } = state
-  return { ...preload.productListing, ...productSearchReducer }
+  const { configuration, productSearchReducer } = state
+  return { ...configuration.productListing, ...productSearchReducer }
 }
 
 export default connect(mapStateToProps)(ProductListingToolBar)

@@ -34,6 +34,6 @@ SWImage.propTypes = {
 }
 
 function mapStateToProps(state) {
-  return state.preload.theme
+  return state.configuration.theme
 }
 export default connect(mapStateToProps)(SWImage)

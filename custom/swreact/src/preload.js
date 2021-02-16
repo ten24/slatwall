@@ -9,6 +9,10 @@ export default {
     { URLKeyType: 'Address', URLKey: 'ad' },
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
+  seo: {
+    title: 'Stone & Berg',
+    titleMeta: '',
+  },
   footer: {
     formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
   },

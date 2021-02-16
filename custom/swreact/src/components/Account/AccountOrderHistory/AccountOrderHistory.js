@@ -201,7 +201,7 @@ const AccountOrderHistory = ({ crumbs, title, orders }) => {
 
 const mapStateToProps = state => {
   return {
-    ...state.preload.accountOrderHistory,
+    ...state.configuration.accountOrderHistory,
     user: state.userReducer,
   }
 }

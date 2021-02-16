@@ -1,19 +1,17 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-// import { useLocation } from '@reach/router'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-const SEO = ({ title, description, article }) => {
-  //  const { pathname } = useLocation()
-
+const SEO = () => {
+  const configuration = useSelector(state => state.configuration)
+  const { site = {}, seo = {} } = configuration
   return (
-    <Helmet title={title}>
-      {description && <meta name="description" content={description} />}
+    <Helmet title={seo.title || site.siteName}>
+      {seo.description && <meta name="description" content={seo.description} />}
       {/* {seo.image && <meta name="image" content={seo.image} />}
       {seo.url && <meta property="og:url" content={seo.url} />} */}
 
-      {(article ? true : null) && <meta property="og:type" content="article" />}
+      {/* {(article ? true : null) && <meta property="og:type" content="article" />} */}
 
       {/* {title && <meta property="og:title" content={title} />} */}
 
@@ -33,27 +31,5 @@ const SEO = ({ title, description, article }) => {
     </Helmet>
   )
 }
-function mapStateToProps(state) {
-  const { site } = state.preload
-  const { seo } = state.configuration
-  return {
-    title: seo.title || site.siteName,
-    description: null,
-    // description: '',
-    // image: '',
-    article: false,
-    // site: {
-    //   siteMetadata: {
-    //     defaultTitle: seo.title || site.siteName,
-    //     // titleTemplate: '',
-    //     // defaultDescription: '',
-    //     // siteUrl: '',
-    //     // defaultImage: '',
-    //     // twitterUsername: '',
-    //   },
-    // },
-    // pathname: '',
-  }
-}
 
-export default connect(mapStateToProps)(SEO)
+export default SEO
