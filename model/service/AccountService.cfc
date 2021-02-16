@@ -175,7 +175,6 @@ component extends="HibachiService" accessors="true" output="false" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         param name="arguments.data.orderID" default= "";
-        param name="arguments.data.keyword" default= "";
         
 		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
 
@@ -199,11 +198,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		if( len(arguments.data.orderID) ){
 		    ordersList.addFilter( 'orderID', arguments.data.orderID );
-		}
-		if( len(arguments.data.keyword) ){
-		    ordersList.addFilter('orderNumber',arguments.data.keyword,'=','OR','','group1');
-		    // ordersList.addFilter('orderPayments.purchaseOrderNumber',arguments.data.keyword,'IN','OR','','group2');
-		    // ordersList.addFilter('order.orderItems',arguments.data.keyword,'IN','OR','','group3');
 		}
 		ordersList.addGroupBy('orderID');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
