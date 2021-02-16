@@ -1615,6 +1615,31 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	
+	// TODO: remove, not in use
+	public any function getProductFilterFacetOptionBaseCollectionList(){
+	   var facetOptionCollectionList = this.getProductFilterFacetOptionCollectionList();
+	   
+	   facetOptionCollectionList.addFilter('product.activeFlag', 1);
+	   facetOptionCollectionList.addFilter('product.publishedFlag', 1);
+	   
+	   facetOptionCollectionList.addFilter('sku.activeFlag', 1);
+	   facetOptionCollectionList.addFilter('sku.publishedFlag', 1);
+	   facetOptionCollectionList.addFilter('sku.skuPrices', "NULL", "IS NOT");
+	   facetOptionCollectionList.addFilter('sku.skuPrices.activeFlag', 1);
+	   
+	   facetOptionCollectionList.addFilter('brand.activeFlag', 1);
+	   facetOptionCollectionList.addFilter('brand.publishedFlag', 1);
+	   
+	   facetOptionCollectionList.addFilter('productType.activeFlag', 1);
+	   facetOptionCollectionList.addFilter('productType.publishedFlag', 1);
+	   
+	   facetOptionCollectionList.addFilter('attributeSet.activeFlag', 1);
+
+	   facetOptionCollectionList.setPageRecordsShow(10000);
+	   return facetOptionCollectionList;
+	}
+	
+	
     /**
 	 * Function to fetch, Brand, ProductType, OptionGroups, and Options 
 	 * [ only then ones which are active and published including the active and published products ]
@@ -1628,8 +1653,10 @@ component extends="HibachiService" accessors="true" {
 	        return this.getHibachiCacheService().getCachedValue('calculated_product_filter_facet_options');
 	    }
 	    
-	    var rawFilters = this.getProductDAO().getRawProductFilterFacetOprions();
+	    this.logHibachi("ProductService:: getProductFilterFacetOptions - fetching raw facet options ")
 
+	    var rawFilters = this.getProductDAO().getPotentialProductFilterFacetOprions();
+	   
 	    var startTicks = getTickCount();
 	    
         // we're using hash-maps for :
@@ -1647,477 +1674,500 @@ component extends="HibachiService" accessors="true" {
 	        'attributeOptions'  : {}
 	    };
 	    
-	    for( var row in rawFilters ){
-	        
-	        // ****** Site - Filter
-	        if( !this.hibachiIsEmpty(row.siteID) ){
-    	        if( structKeyExists(potentialFilters.sites, row.siteID ) ){
-    	           var thisSiteFilter =  potentialFilters.sites[ row.siteID ]; 
-    	        } else {
-    	            var thisSiteFilter = {
-    	                'siteID'              : row.siteID,
-    	                'siteName'            : row.siteName,
-    	                'siteCode'            : row.siteCode,
-    	                'currencyCode'        : row.currencyCode,
-    	                'relations' : {
-        	                'brands'          : {},
-        	                'options'         : {},
-        	                'categories'      : {},
-        	                'attributes'      : {},
-        	                'optionGroups'    : {},
-        	                'productTypes'    : {},
-        	                'attributeSets'   : {},
-        	                'attributeOptions': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.sites[ row.siteID ] = thisSiteFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.brandID)){
-    	            thisSiteFilter.relations.brands[ row.brandID ] = row.brandID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.optionID)){
-    	            thisSiteFilter.relations.options[ row.optionID ] = row.optionID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.categoryID)){
-    	            thisSiteFilter.relations.categories[ row.categoryID ] = row.categoryID;
-    	        }
-                if(!this.hibachiIsEmpty(row.productTypeID)){
-    	            thisSiteFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
-                }
-                if(!this.hibachiIsEmpty(row.optionGroupID)){
-    	            thisSiteFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeID)){
-    	            thisSiteFilter.relations.attributes[ row.attributeID ] = row.attributeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeOptionID)){
-    	            thisSiteFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeSetID)){
-    	            thisSiteFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
-                }
-	        }
-	        
-	        // ****** Category - Filter
-	        if( !this.hibachiIsEmpty(row.categoryID) ){
-    	        if( structKeyExists(potentialFilters.options, row.categoryID ) ){
-    	           var thisCategoryFilter =  potentialFilters.categories[ row.categoryID ]; 
-    	        } else {
-    	            var thisCategoryFilter = {
-    	                'categoryID'            : row.categoryID,
-    	                'categoryName'          : row.categoryName,
-    	                'categoryUrlTitle'      : row.categoryUrlTitle,
-    	                'parentCategoryID'      : row.parentCategoryID,
-    	                'relations' : {
-        	                'sites'           : {},
-        	                'brands'          : {},
-        	                'options'         : {},
-        	                'attributes'      : {},
-        	                'optionGroups'    : {},
-        	                'productTypes'    : {},
-        	                'attributeSets'   : {},
-        	                'attributeOptions': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.categories[ row.optionID ] = thisCategoryFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.siteID)){
-    	            thisCategoryFilter.relations.sites[ row.siteID ] = row.siteID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.brandID)){
-    	            thisCategoryFilter.relations.brands[ row.brandID ] = row.brandID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.optionID)){
-    	            thisCategoryFilter.relations.options[ row.optionID ] = row.optionID;
-    	        }
-                if(!this.hibachiIsEmpty(row.productTypeID)){
-    	            thisCategoryFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
-                }
-                if(!this.hibachiIsEmpty(row.optionGroupID)){
-    	            thisCategoryFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeID)){
-    	            thisCategoryFilter.relations.attributes[ row.attributeID ] = row.attributeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeOptionID)){
-    	            thisCategoryFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeSetID)){
-    	            thisCategoryFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
-                }
-	        }
-	        
-	        // ****** Brand - Filter
-	        if( !this.hibachiIsEmpty(row.brandID) ){
-    	        if( structKeyExists(potentialFilters.brands, row.brandID ) ){
-    	           var thisBrandFilter =  potentialFilters.brands[ row.brandID ]; 
-    	        } else {
-    	            var thisBrandFilter = {
-    	                'brandID'              : row.brandID,
-    	                'brandName'            : row.brandName,
-    	                'relations' : {
-        	                'sites'           : {},
-        	                'options'         : {},
-        	                'categories'      : {},
-        	                'attributes'      : {},
-        	                'optionGroups'    : {},
-        	                'productTypes'    : {},
-        	                'attributeSets'   : {},
-        	                'attributeOptions': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.brands[ row.brandID ] = thisBrandFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.optionID)){
-    	            thisBrandFilter.relations.options[ row.optionID ] = row.optionID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.siteID)){
-    	            thisBrandFilter.relations.sites[ row.siteID ] = row.siteID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.categoryID)){
-    	            thisBrandFilter.relations.categories[ row.categoryID ] = row.categoryID;
-    	        }
-                if(!this.hibachiIsEmpty(row.productTypeID)){
-    	            thisBrandFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
-                }
-                if(!this.hibachiIsEmpty(row.optionGroupID)){
-    	            thisBrandFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeID)){
-    	            thisBrandFilter.relations.attributes[ row.attributeID ] = row.attributeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeOptionID)){
-    	            thisBrandFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeSetID)){
-    	            thisBrandFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
-                }
-	        }
-	        
-	        // ****** Option - Filter
-	        if( !this.hibachiIsEmpty(row.optionID) ){
-    	        if( structKeyExists(potentialFilters.options, row.optionID ) ){
-    	           var thisOptionFilter =  potentialFilters.options[ row.optionID ]; 
-    	        } else {
-    	            var thisOptionFilter = {
-    	                'optionID'              : row.optionID,
-    	                'optionCode'            : row.optionCode,
-    	                'optionName'            : row.optionName,
-    	                'optionGroupID'         : row.optionGroupID,
-    	                'sortOrder'             : row.optionSortOrder,
-    	                'relations' : {
-        	                'sites'           : {},
-        	                'brands'          : {},
-        	                'categories'      : {},
-        	                'attributes'      : {},
-        	                'optionGroups'    : {},
-        	                'productTypes'    : {},
-        	                'attributeSets'   : {},
-        	                'attributeOptions': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.options[ row.optionID ] = thisOptionFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.siteID)){
-    	            thisOptionFilter.relations.sites[ row.siteID ] = row.siteID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.brandID)){
-    	            thisOptionFilter.relations.brands[ row.brandID ] = row.brandID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.categoryID)){
-    	            thisOptionFilter.relations.categories[ row.categoryID ] = row.categoryID;
-    	        }
-                if(!this.hibachiIsEmpty(row.productTypeID)){
-    	            thisOptionFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
-                }
-                if(!this.hibachiIsEmpty(row.optionGroupID)){
-    	            thisOptionFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeID)){
-    	            thisOptionFilter.relations.attributes[ row.attributeID ] = row.attributeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeOptionID)){
-    	            thisOptionFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeSetID)){
-    	            thisOptionFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
-                }
-	        }
-	        
-	        // ****** OptionGroups - Filter
-	        if( !this.hibachiIsEmpty(row.optionGroupID) ){
-    	        if( structKeyExists(potentialFilters.optionGroups, row.optionGroupID ) ){
-    	           var thisOptionGroupFilter =  potentialFilters.optionGroups[ row.optionGroupID ]; 
-    	        } else {
-    	            var thisOptionGroupFilter = {
-    	                'optionGroupID'             : row.optionGroupID,
-    	                'optionGroupName'           : row.optionGroupName,
-    	                'sortOrder'                 : row.optionGroupSortOrder,
-    	                'relations' : {
-        	                'sites'           : {},
-        	                'brands'          : {},
-        	                'options'         : {},
-        	                'categories'      : {},
-        	                'attributes'      : {},
-        	                'productTypes'    : {},
-        	                'attributeSets'   : {},
-        	                'attributeOptions': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.optionGroups[ row.optionGroupID ] = thisOptionGroupFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.siteID)){
-    	            thisOptionGroupFilter.relations.sites[ row.siteID ] = row.siteID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.brandID)){
-    	            thisOptionGroupFilter.relations.brands[ row.brandID ] = row.brandID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionID)){
-    	            thisOptionGroupFilter.relations.options[ row.optionID ] = row.optionID;
-                }
-    	        if(!this.hibachiIsEmpty(row.categoryID)){
-    	            thisOptionGroupFilter.relations.categories[ row.categoryID ] = row.categoryID;
-    	        }
-                if(!this.hibachiIsEmpty(row.productTypeID)){
-    	            thisOptionGroupFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeID)){
-    	            thisOptionGroupFilter.relations.attributes[ row.attributeID ] = row.attributeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeOptionID)){
-    	            thisOptionGroupFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeSetID)){
-    	            thisOptionGroupFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
-                }
-	        }
-	        
-	        // ****** ProductType - Filter
-	        if( !this.hibachiIsEmpty(row.productTypeID) ){
-    	        if( structKeyExists(potentialFilters.productTypes, row.productTypeID ) ){
-    	           var thisProductTypeFilter =  potentialFilters.productTypes[ row.productTypeID ]; 
-    	        } else {
-    	            var thisProductTypeFilter = {
-    	                'productTypeID'              : row.productTypeID,
-    	                'productTypeName'            : row.productTypeName,
-    	                'productTypeURLTitle'        : row.productTypeURLTitle,
-    	                'parentProductTypeID'        : row.parentProductTypeID,
-    	                'relations' : {
-    	                    'sites'           : {},
-        	                'brands'          : {},
-        	                'options'         : {},
-        	                'categories'      : {},
-        	                'attributes'      : {},
-        	                'optionGroups'    : {},
-        	                'attributeSets'   : {},
-        	                'attributeOptions': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.productTypes[ row.productTypeID ] = thisProductTypeFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.siteID)){
-    	            thisProductTypeFilter.relations.sites[ row.siteID ] = row.siteID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.brandID)){
-    	            thisProductTypeFilter.relations.brands[ row.brandID ] = row.brandID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionID)){
-    	            thisProductTypeFilter.relations.options[ row.optionID ] = row.optionID;
-                }
-    	        if(!this.hibachiIsEmpty(row.categoryID)){
-    	            thisProductTypeFilter.relations.categories[ row.categoryID ] = row.categoryID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionGroupID)){
-    	            thisProductTypeFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeID)){
-    	            thisProductTypeFilter.relations.attributes[ row.attributeID ] = row.attributeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeOptionID)){
-    	            thisProductTypeFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeSetID)){
-    	            thisProductTypeFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
-                }
-	        }
-	        
-	        
-	        // ****** Attribute - Filter
-	        if( !this.hibachiIsEmpty(row.attributeID) ){
-    	        if( structKeyExists(potentialFilters.attributes, row.attributeID ) ){
-    	           var thisAttributeFilter =  potentialFilters.attributes[ row.attributeID ]; 
-    	        } else {
-    	            var thisAttributeFilter = {
-    	                'attributeID'              : row.attributeID,
-    	                'attributeSetID'           : row.attributeSetID,
-    	                'attributeName'            : row.attributeName,
-    	                'attributeCode'            : row.attributeCode,
-    	                'urlTitle'                 : row.attributeUrlTitle,
-    	                'sortOrder'                : row.attributeSortOrder,
-    	                'attributeInputType'       : row.attributeInputType,
-    	                'relations' : {
-    	                    'sites'           : {},
-        	                'brands'          : {},
-        	                'options'         : {},
-        	                'categories'      : {},
-        	                'optionGroups'    : {},
-        	                'productTypes'    : {},
-        	                'attributeSets'   : {},
-        	                'attributeOptions': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.attributes[ row.attributeID ] = thisAttributeFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.siteID)){
-    	            thisAttributeFilter.relations.sites[ row.siteID ] = row.siteID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.brandID)){
-    	            thisAttributeFilter.relations.brands[ row.brandID ] = row.brandID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionID)){
-    	            thisAttributeFilter.relations.options[ row.optionID ] = row.optionID;
-                }
-    	        if(!this.hibachiIsEmpty(row.categoryID)){
-    	            thisAttributeFilter.relations.categories[ row.categoryID ] = row.categoryID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionGroupID)){
-    	            thisAttributeFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
-                }
-                if(!this.hibachiIsEmpty(row.productTypeID)){
-    	            thisAttributeFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeOptionID)){
-    	            thisAttributeFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeSetID)){
-    	            thisAttributeFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
-                }
-	        }
-	        
-	        
-	        // ****** Attribute-set - Filter
-	        if( !this.hibachiIsEmpty(row.attributeSetID) ){
-    	        if( structKeyExists(potentialFilters.attributeSets, row.attributeSetID ) ){
-    	           var thisAttributeSetFilter =  potentialFilters.attributeSets[ row.attributeSetID ]; 
-    	        } else {
-    	            var thisAttributeSetFilter = {
-    	                'attributeSetID'              : row.attributeSetID,
-    	                'attributeSetName'            : row.attributeSetName,
-    	                'attributeSetCode'            : row.attributeSetCode,
-    	                'attributeSetObject'          : row.attributeSetObject,
-    	                'sortOrder'                   : row.attributeSetSortOrder,
-    	                'relations' : {
-    	                    'sites'           : {},
-        	                'brands'          : {},
-        	                'options'         : {},
-        	                'categories'      : {},
-        	                'attributes'      : {},
-        	                'optionGroups'    : {},
-        	                'productTypes'    : {},
-        	                'attributeOptions': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.attributeSets[ row.attributeSetID ] = thisAttributeSetFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.siteID)){
-    	            thisAttributeSetFilter.relations.sites[ row.siteID ] = row.siteID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.brandID)){
-    	            thisAttributeSetFilter.relations.brands[ row.brandID ] = row.brandID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionID)){
-    	            thisAttributeSetFilter.relations.options[ row.optionID ] = row.optionID;
-                }
-    	        if(!this.hibachiIsEmpty(row.categoryID)){
-    	            thisAttributeSetFilter.relations.categories[ row.categoryID ] = row.categoryID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionGroupID)){
-    	            thisAttributeSetFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
-                }
-                if(!this.hibachiIsEmpty(row.productTypeID)){
-    	            thisAttributeSetFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeID)){
-    	            thisAttributeSetFilter.relations.attributes[ row.attributeID ] = row.attributeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeOptionID)){
-    	            thisAttributeSetFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
-                }
-	        }
-	        
-	        
-	        // ****** Attribute-option - Filter
-	        if( !this.hibachiIsEmpty(row.attributeOptionID) ){
-    	        if( structKeyExists(potentialFilters.attributeOptions, row.attributeOptionID ) ){
-    	           var thisAttributeOptionFilter =  potentialFilters.attributeOptions[ row.attributeOptionID ]; 
-    	        } else {
-    	            
-    	            var thisAttributeOptionFilter = {
-    	                'attributeID'                    : row.attributeID,
-    	                'attributeOptionID'              : row.attributeOptionID,
-    	                'attributeOptionLabel'           : row.attributeOptionLabel,
-    	                'attributeOptionValue'           : row.attributeOptionValue,
-    	                'urlTitle'                       : row.attributeOptionUrlTitle,
-    	                'sortOrder'                      : row.attributeOptionSortOrder,
-    	                'relations' : {
-    	                    'sites'           : {},
-        	                'brands'          : {},
-        	                'options'         : {},
-        	                'categories'      : {},
-        	                'attributes'      : {},
-        	                'optionGroups'    : {},
-        	                'productTypes'    : {},
-        	                'attributeSets': {}
-    	                }
-    	            };
-    	            
-    	            potentialFilters.attributeOptions[ row.attributeOptionID ] = thisAttributeOptionFilter;
-    	        }
-    	        
-    	        if(!this.hibachiIsEmpty(row.siteID)){
-    	            thisAttributeOptionFilter.relations.sites[ row.siteID ] = row.siteID;
-    	        }
-    	        if(!this.hibachiIsEmpty(row.brandID)){
-    	            thisAttributeOptionFilter.relations.brands[ row.brandID ] = row.brandID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionID)){
-    	            thisAttributeOptionFilter.relations.options[ row.optionID ] = row.optionID;
-                }
-    	        if(!this.hibachiIsEmpty(row.categoryID)){
-    	            thisAttributeOptionFilter.relations.categories[ row.categoryID ] = row.categoryID;
-    	        }
-                if(!this.hibachiIsEmpty(row.optionGroupID)){
-    	            thisAttributeOptionFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
-                }
-                if(!this.hibachiIsEmpty(row.productTypeID)){
-    	            thisAttributeOptionFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeID)){
-    	            thisAttributeOptionFilter.relations.attributes[ row.attributeID ] = row.attributeID;
-                }
-                if(!this.hibachiIsEmpty(row.attributeSetID)){
-    	            thisAttributeSetFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
-                }
-	        }
-	        
-	    }
 	    
+	   //var facetOptionCollectionList =  this.getProductFilterFacetOptionBaseCollectionList();
+	   
+	   //var total = facetOptionCollectionList.getRecordsCount();
+	   //dump("getRecordsCount: #total#");
+	   //var processed = 0;
+	   //var currentPage = 1;
+	   
+	   //while(processed<total){
+	       	
+	       	this.logHibachi("ProductService:: getProductFilterFacetOptions - processing - #rawFilters.recordCount# ");
+            
+        //     facetOptionCollectionList = this.getProductFilterFacetOptionBaseCollectionList();
+	        
+	       // facetOptionCollectionList.setCurrentPageDeclaration(currentPage); 
+	       // var records = facetOptionCollectionList.getPageRecords(formatRecord=false);
+	        
+    	    for( var row in rawFilters ){
+    	        
+    	        // ****** Site - Filter
+    	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID) ){
+        	        if( structKeyExists(potentialFilters.sites, row.siteID ) ){
+        	           var thisSiteFilter =  potentialFilters.sites[ row.siteID ]; 
+        	        } else {
+        	            var thisSiteFilter = {
+        	                'siteID'              : row.siteID,
+        	                'siteName'            : row.siteName,
+        	                'siteCode'            : row.siteCode,
+        	                'currencyCode'        : row.currencyCode,
+        	                'relations' : {
+            	                'brands'          : {},
+            	                'options'         : {},
+            	                'categories'      : {},
+            	                'attributes'      : {},
+            	                'optionGroups'    : {},
+            	                'productTypes'    : {},
+            	                'attributeSets'   : {},
+            	                'attributeOptions': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.sites[ row.siteID ] = thisSiteFilter;
+        	        }
+        	        
+        	        if(!isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID)){
+        	            thisSiteFilter.relations.brands[ row.brandID ] = row.brandID;
+        	        }
+        	        if(!isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID)){
+        	            thisSiteFilter.relations.options[ row.optionID ] = row.optionID;
+        	        }
+        	        if(!isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID)){
+        	            thisSiteFilter.relations.categories[ row.categoryID ] = row.categoryID;
+        	        }
+                    if(!isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID)){
+        	            thisSiteFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+                    }
+                    if(!isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID)){
+        	            thisSiteFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+                    }
+                    if(!isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID)){
+        	            thisSiteFilter.relations.attributes[ row.attributeID ] = row.attributeID;
+                    }
+                    if(!isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID)){
+        	            thisSiteFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
+                    }
+                    if(!isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID)){
+        	            thisSiteFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
+                    }
+    	        }
+    	        
+    	        // ****** Category - Filter
+    	        if( !isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID) ){
+        	        if( structKeyExists(potentialFilters.options, row.categoryID ) ){
+        	           var thisCategoryFilter =  potentialFilters.categories[ row.categoryID ]; 
+        	        } else {
+        	            var thisCategoryFilter = {
+        	                'categoryID'            : row.categoryID,
+        	                'categoryName'          : row.categoryName,
+        	                'categoryUrlTitle'      : row.categoryUrlTitle,
+        	                'parentCategoryID'      : row.parentCategoryID,
+        	                'relations' : {
+            	                'sites'           : {},
+            	                'brands'          : {},
+            	                'options'         : {},
+            	                'attributes'      : {},
+            	                'optionGroups'    : {},
+            	                'productTypes'    : {},
+            	                'attributeSets'   : {},
+            	                'attributeOptions': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.categories[ row.optionID ] = thisCategoryFilter;
+        	        }
+        	        
+        	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID)){
+        	            thisCategoryFilter.relations.sites[ row.siteID ] = row.siteID;
+        	        }
+        	        if(!isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID)){
+        	            thisCategoryFilter.relations.brands[ row.brandID ] = row.brandID;
+        	        }
+        	        if(!isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID)){
+        	            thisCategoryFilter.relations.options[ row.optionID ] = row.optionID;
+        	        }
+                    if(!isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID)){
+        	            thisCategoryFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+                    }
+                    if(!isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID)){
+        	            thisCategoryFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+                    }
+                    if(!isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID)){
+        	            thisCategoryFilter.relations.attributes[ row.attributeID ] = row.attributeID;
+                    }
+                    if(!isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID)){
+        	            thisCategoryFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
+                    }
+                    if(!isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID)){
+        	            thisCategoryFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
+                    }
+    	        }
+    	        
+    	        // ****** Brand - Filter
+    	        if( !isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID) ){
+        	        if( structKeyExists(potentialFilters.brands, row.brandID ) ){
+        	           var thisBrandFilter =  potentialFilters.brands[ row.brandID ]; 
+        	        } else {
+        	            var thisBrandFilter = {
+        	                'brandID'              : row.brandID,
+        	                'brandName'            : row.brandName,
+        	                'relations' : {
+            	                'sites'           : {},
+            	                'options'         : {},
+            	                'categories'      : {},
+            	                'attributes'      : {},
+            	                'optionGroups'    : {},
+            	                'productTypes'    : {},
+            	                'attributeSets'   : {},
+            	                'attributeOptions': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.brands[ row.brandID ] = thisBrandFilter;
+        	        }
+        	        
+        	        if(!isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID)){
+        	            thisBrandFilter.relations.options[ row.optionID ] = row.optionID;
+        	        }
+        	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID)){
+        	            thisBrandFilter.relations.sites[ row.siteID ] = row.siteID;
+        	        }
+        	        if(!isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID)){
+        	            thisBrandFilter.relations.categories[ row.categoryID ] = row.categoryID;
+        	        }
+                    if(!isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID)){
+        	            thisBrandFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+                    }
+                    if(!isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID)){
+        	            thisBrandFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+                    }
+                    if(!isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID)){
+        	            thisBrandFilter.relations.attributes[ row.attributeID ] = row.attributeID;
+                    }
+                    if(!isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID)){
+        	            thisBrandFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
+                    }
+                    if(!isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID)){
+        	            thisBrandFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
+                    }
+    	        }
+    	        
+    	        // ****** Option - Filter
+    	        if( !isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID) ){
+        	        if( structKeyExists(potentialFilters.options, row.optionID ) ){
+        	           var thisOptionFilter =  potentialFilters.options[ row.optionID ]; 
+        	        } else {
+        	            var thisOptionFilter = {
+        	                'optionID'              : row.optionID,
+        	                'optionCode'            : row.optionCode,
+        	                'optionName'            : row.optionName,
+        	                'optionGroupID'         : row.optionGroupID,
+        	                'sortOrder'             : row.optionSortOrder,
+        	                'relations' : {
+            	                'sites'           : {},
+            	                'brands'          : {},
+            	                'categories'      : {},
+            	                'attributes'      : {},
+            	                'optionGroups'    : {},
+            	                'productTypes'    : {},
+            	                'attributeSets'   : {},
+            	                'attributeOptions': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.options[ row.optionID ] = thisOptionFilter;
+        	        }
+        	        
+        	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID)){
+        	            thisOptionFilter.relations.sites[ row.siteID ] = row.siteID;
+        	        }
+        	        if(!isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID)){
+        	            thisOptionFilter.relations.brands[ row.brandID ] = row.brandID;
+        	        }
+        	        if(!isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID)){
+        	            thisOptionFilter.relations.categories[ row.categoryID ] = row.categoryID;
+        	        }
+                    if(!isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID)){
+        	            thisOptionFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+                    }
+                    if(!isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID)){
+        	            thisOptionFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+                    }
+                    if(!isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID)){
+        	            thisOptionFilter.relations.attributes[ row.attributeID ] = row.attributeID;
+                    }
+                    if(!isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID)){
+        	            thisOptionFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
+                    }
+                    if(!isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID)){
+        	            thisOptionFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
+                    }
+    	        }
+    	        
+    	        // ****** OptionGroups - Filter
+    	        if( !isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID) ){
+        	        if( structKeyExists(potentialFilters.optionGroups, row.optionGroupID ) ){
+        	           var thisOptionGroupFilter =  potentialFilters.optionGroups[ row.optionGroupID ]; 
+        	        } else {
+        	            var thisOptionGroupFilter = {
+        	                'optionGroupID'             : row.optionGroupID,
+        	                'optionGroupName'           : row.optionGroupName,
+        	                'sortOrder'                 : row.optionGroupSortOrder,
+        	                'relations' : {
+            	                'sites'           : {},
+            	                'brands'          : {},
+            	                'options'         : {},
+            	                'categories'      : {},
+            	                'attributes'      : {},
+            	                'productTypes'    : {},
+            	                'attributeSets'   : {},
+            	                'attributeOptions': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.optionGroups[ row.optionGroupID ] = thisOptionGroupFilter;
+        	        }
+        	        
+        	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID)){
+        	            thisOptionGroupFilter.relations.sites[ row.siteID ] = row.siteID;
+        	        }
+        	        if(!isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID)){
+        	            thisOptionGroupFilter.relations.brands[ row.brandID ] = row.brandID;
+        	        }
+                    if(!isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID)){
+        	            thisOptionGroupFilter.relations.options[ row.optionID ] = row.optionID;
+                    }
+        	        if(!isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID)){
+        	            thisOptionGroupFilter.relations.categories[ row.categoryID ] = row.categoryID;
+        	        }
+                    if(!isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID)){
+        	            thisOptionGroupFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+                    }
+                    if(!isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID)){
+        	            thisOptionGroupFilter.relations.attributes[ row.attributeID ] = row.attributeID;
+                    }
+                    if(!isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID)){
+        	            thisOptionGroupFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
+                    }
+                    if(!isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID)){
+        	            thisOptionGroupFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
+                    }
+    	        }
+    	        
+    	        // ****** ProductType - Filter
+    	        if( !isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID) ){
+        	        if( structKeyExists(potentialFilters.productTypes, row.productTypeID ) ){
+        	           var thisProductTypeFilter =  potentialFilters.productTypes[ row.productTypeID ]; 
+        	        } else {
+        	            var thisProductTypeFilter = {
+        	                'productTypeID'              : row.productTypeID,
+        	                'productTypeName'            : row.productTypeName,
+        	                'productTypeURLTitle'        : row.productTypeURLTitle,
+        	                'parentProductTypeID'        : row.parentProductTypeID,
+        	                'relations' : {
+        	                    'sites'           : {},
+            	                'brands'          : {},
+            	                'options'         : {},
+            	                'categories'      : {},
+            	                'attributes'      : {},
+            	                'optionGroups'    : {},
+            	                'attributeSets'   : {},
+            	                'attributeOptions': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.productTypes[ row.productTypeID ] = thisProductTypeFilter;
+        	        }
+        	        
+        	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID)){
+        	            thisProductTypeFilter.relations.sites[ row.siteID ] = row.siteID;
+        	        }
+        	        if(!isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID)){
+        	            thisProductTypeFilter.relations.brands[ row.brandID ] = row.brandID;
+        	        }
+                    if(!isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID)){
+        	            thisProductTypeFilter.relations.options[ row.optionID ] = row.optionID;
+                    }
+        	        if(!isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID)){
+        	            thisProductTypeFilter.relations.categories[ row.categoryID ] = row.categoryID;
+        	        }
+                    if(!isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID)){
+        	            thisProductTypeFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+                    }
+                    if(!isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID)){
+        	            thisProductTypeFilter.relations.attributes[ row.attributeID ] = row.attributeID;
+                    }
+                    if(!isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID)){
+        	            thisProductTypeFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
+                    }
+                    if(!isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID)){
+        	            thisProductTypeFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
+                    }
+    	        }
+    	        
+    	        
+    	        // ****** Attribute - Filter
+    	        if( !isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID) ){
+        	        if( structKeyExists(potentialFilters.attributes, row.attributeID ) ){
+        	           var thisAttributeFilter =  potentialFilters.attributes[ row.attributeID ]; 
+        	        } else {
+        	            var thisAttributeFilter = {
+        	                'attributeID'              : row.attributeID,
+        	                'attributeSetID'           : row.attributeSetID,
+        	                'attributeName'            : row.attributeName,
+        	                'attributeCode'            : row.attributeCode,
+        	                'urlTitle'                 : row.attributeUrlTitle,
+        	                'sortOrder'                : row.attributeSortOrder,
+        	                'attributeInputType'       : row.attributeInputType,
+        	                'relations' : {
+        	                    'sites'           : {},
+            	                'brands'          : {},
+            	                'options'         : {},
+            	                'categories'      : {},
+            	                'optionGroups'    : {},
+            	                'productTypes'    : {},
+            	                'attributeSets'   : {},
+            	                'attributeOptions': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.attributes[ row.attributeID ] = thisAttributeFilter;
+        	        }
+        	        
+        	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID)){
+        	            thisAttributeFilter.relations.sites[ row.siteID ] = row.siteID;
+        	        }
+        	        if(!isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID)){
+        	            thisAttributeFilter.relations.brands[ row.brandID ] = row.brandID;
+        	        }
+                    if(!isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID)){
+        	            thisAttributeFilter.relations.options[ row.optionID ] = row.optionID;
+                    }
+        	        if(!isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID)){
+        	            thisAttributeFilter.relations.categories[ row.categoryID ] = row.categoryID;
+        	        }
+                    if(!isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID)){
+        	            thisAttributeFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+                    }
+                    if(!isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID)){
+        	            thisAttributeFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+                    }
+                    if(!isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID)){
+        	            thisAttributeFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
+                    }
+                    if(!isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID)){
+        	            thisAttributeFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
+                    }
+    	        }
+    	        
+    	        
+    	        // ****** Attribute-set - Filter
+    	        if( !isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID) ){
+        	        if( structKeyExists(potentialFilters.attributeSets, row.attributeSetID ) ){
+        	           var thisAttributeSetFilter =  potentialFilters.attributeSets[ row.attributeSetID ]; 
+        	        } else {
+        	            var thisAttributeSetFilter = {
+        	                'attributeSetID'              : row.attributeSetID,
+        	                'attributeSetName'            : row.attributeSetName,
+        	                'attributeSetCode'            : row.attributeSetCode,
+        	                'attributeSetObject'          : row.attributeSetObject,
+        	                'sortOrder'                   : row.attributeSetSortOrder,
+        	                'relations' : {
+        	                    'sites'           : {},
+            	                'brands'          : {},
+            	                'options'         : {},
+            	                'categories'      : {},
+            	                'attributes'      : {},
+            	                'optionGroups'    : {},
+            	                'productTypes'    : {},
+            	                'attributeOptions': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.attributeSets[ row.attributeSetID ] = thisAttributeSetFilter;
+        	        }
+        	        
+        	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID)){
+        	            thisAttributeSetFilter.relations.sites[ row.siteID ] = row.siteID;
+        	        }
+        	        if(!isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID)){
+        	            thisAttributeSetFilter.relations.brands[ row.brandID ] = row.brandID;
+        	        }
+                    if(!isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID)){
+        	            thisAttributeSetFilter.relations.options[ row.optionID ] = row.optionID;
+                    }
+        	        if(!isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID)){
+        	            thisAttributeSetFilter.relations.categories[ row.categoryID ] = row.categoryID;
+        	        }
+                    if(!isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID)){
+        	            thisAttributeSetFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+                    }
+                    if(!isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID)){
+        	            thisAttributeSetFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+                    }
+                    if(!isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID)){
+        	            thisAttributeSetFilter.relations.attributes[ row.attributeID ] = row.attributeID;
+                    }
+                    if(!isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID)){
+        	            thisAttributeSetFilter.relations.attributeOptions[ row.attributeOptionID ] = row.attributeOptionID;
+                    }
+    	        }
+    	        
+    	        
+    	        // ****** Attribute-option - Filter
+    	        if( !isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID) ){
+        	        if( structKeyExists(potentialFilters.attributeOptions, row.attributeOptionID ) ){
+        	           var thisAttributeOptionFilter =  potentialFilters.attributeOptions[ row.attributeOptionID ]; 
+        	        } else {
+        	            
+        	            var thisAttributeOptionFilter = {
+        	                'attributeID'                    : row.attributeID,
+        	                'attributeOptionID'              : row.attributeOptionID,
+        	                'attributeOptionLabel'           : row.attributeOptionLabel,
+        	                'attributeOptionValue'           : row.attributeOptionValue,
+        	                'urlTitle'                       : row.attributeOptionUrlTitle,
+        	                'sortOrder'                      : row.attributeOptionSortOrder,
+        	                'relations' : {
+        	                    'sites'           : {},
+            	                'brands'          : {},
+            	                'options'         : {},
+            	                'categories'      : {},
+            	                'attributes'      : {},
+            	                'optionGroups'    : {},
+            	                'productTypes'    : {},
+            	                'attributeSets': {}
+        	                }
+        	            };
+        	            
+        	            potentialFilters.attributeOptions[ row.attributeOptionID ] = thisAttributeOptionFilter;
+        	        }
+        	        
+        	        if( !isNull(row.siteID) && !this.hibachiIsEmpty(row.siteID)){
+        	            thisAttributeOptionFilter.relations.sites[ row.siteID ] = row.siteID;
+        	        }
+        	        if(!isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID)){
+        	            thisAttributeOptionFilter.relations.brands[ row.brandID ] = row.brandID;
+        	        }
+                    if(!isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID)){
+        	            thisAttributeOptionFilter.relations.options[ row.optionID ] = row.optionID;
+                    }
+        	        if(!isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID)){
+        	            thisAttributeOptionFilter.relations.categories[ row.categoryID ] = row.categoryID;
+        	        }
+                    if(!isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID)){
+        	            thisAttributeOptionFilter.relations.optionGroups[ row.optionGroupID ] = row.optionGroupID;
+                    }
+                    if(!isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID)){
+        	            thisAttributeOptionFilter.relations.productTypes[ row.productTypeID ] = row.productTypeID;
+                    }
+                    if(!isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID)){
+        	            thisAttributeOptionFilter.relations.attributes[ row.attributeID ] = row.attributeID;
+                    }
+                    if(!isNull(row.attributeSetID) && !this.hibachiIsEmpty(row.attributeSetID)){
+        	            thisAttributeSetFilter.relations.attributeSets[ row.attributeSetID ] = row.attributeSetID;
+                    }
+    	        }
+    	       
+       	        // processed++;
+    	    }
+	        
+	   //     currentPage++;
+	   //}
+	   
+	   
+	  
 	    this.getHibachiCacheService().setCachedValue('calculated_product_filter_facet_options', potentialFilters);
 
 	    this.logHibachi("ProductService:: getProductFilterFacetOptions took #getTickCount() - startTicks# ms.")
@@ -2273,7 +2323,7 @@ component extends="HibachiService" accessors="true" {
                         //delete the relations back relation with this option, if they does not qualify
                         for(var relatedThisfacetOptionID in otherFacetOptionRelationsWithThisFacet ){
                             if(!structKeyExists(potentialThisFacetOptions, relatedThisfacetOptionID) ){
-                                // if other facte optin has a back relation with this facet, which does not exist in potential options, then delete the relation.
+                                // if other facet optin has a back relation with this facet, which does not exist in potential options, then delete the relation.
                                 // e.g. we're looping over product type, and then product-type-brands, 
                                 // one of the brand in the loop can be associsted with more than one product type, 
                                 // but we've only selected only a few of them, 

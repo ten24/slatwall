@@ -487,8 +487,15 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         var start = getTickCount();
         
-        // this.getService().getProductDAO().dropProductFilterFacetOptionsTable();
-        var facetOptions = this.getService().getProductFilterFacetOptions();
+        // this.getService().getProductDAO().rePopulateProductFilterFacetOptionTable();
+        // var facetOptions = this.getService().getProductFilterFacetOptions();
+		
+// 		var skuIDs = " '2c978084764d746e01764d786fa0005d', '2c9180847652606f0176526b605006a2' ";
+        // this.getService().getProductDAO().updateProductFilterFacetOprionsForProductsAndSkus(skuIDs=skuIDs);
+		
+		var productIDs = " '2c9480847650a077017650af142f0970', '402810847651d69c017651f51a890c2b' "; 
+        this.getService().getProductDAO().updateProductFilterFacetOprionsForProductsAndSkus(productIDs=productIDs);
+		
 		
 		var timeTook = getTickCount()-start;
 

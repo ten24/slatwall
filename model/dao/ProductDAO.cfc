@@ -631,85 +631,207 @@ Notes:
 	</cffunction>
 	
 	<!--- TODO: call this function --->
-	<cffunction name="dropProductFilterFacetOptionsTable" access="public">
+	<cffunction name="truncateProductFilterFacetOptionsTable" access="public">
 		<cfquery name="local.query" >
-    		DROP TABLE IF EXISTS sw_profuct_filter_facet_options
+    		TRUNCATE TABLE  swProductFilterFacetOption
 		</cfquery>
-		<cfset this.logHibachi("ProductDAO:: dropped sw_profuct_filter_facet_options table") />
+		<cfset this.logHibachi("ProductDAO:: cleared swProductFilterFacetOption table") />
 	</cffunction>
 	
-	<cffunction name="getRawProductFilterFacetOprions" access="public">
-	    <!--- NOTE: using the cfm syntax, was causing issues ny changing every single quotes into a pair of single-quotes --->
-	    
+	<cffunction name="rePopulateProductFilterFacetOptionTable" access="public">
+        <!---  NOTE:
+            1. this function us only supposed to called once [in project lifecycle]  to do the heavy-lifting, 
+            and oncethe table is populated, we'll keep it updated in real-time
+        
+            2. using the cfm syntax, was causing issues ny changing every single quotes into a pair of single-quotes 
+        --->
 	    <cfscript>
-            local.productAndSkuSelectTypeAttributes = this.getProductAndSkuSelectTypeAttributes();
+	    
+	        // first let's clear whatever wah already there
+	        this.truncateProductFilterFacetOptionsTable(); 
+	        
+    	    local.sql = "
+    	        INSERT INTO swProductFilterFacetOption (
+    	                #this.getProductFilterFacetOptionsSeletQueryColumnList()#
+    	            ) 
+                    #this.getProductFilterFacetOptionsSeletQuerySQL()#
+               ";
+    	    
+    	    local.startTicks = getTickCount();
+    	    
+    	    local.q = new Query();
+    	    local.q.setSQL(local.sql);
+    	    local.q.execute();
+    	    
+    	    this.logHibachi("ProductDAO:: rePopulateProductFilterFacetOptionsTable took #getTickCount()-local.startTicks# ms.");
+	    </cfscript>
+	</cffunction>
+	
+	<cffunction name="getProductFilterFacetOptionsSeletQueryColumnList" access="public">
+        <!--- just to save some maintenance, and remove duplicacy --->
+		<cfreturn "
+		    productFilterFacetOptionID,
+    	   
+            productID, 
+            productActiveFlag, 
+            productPublishedFlag,
+	        
+	        skuID, 
+	        skuActiveFlag, 
+	        skuPublishedFlag,
+            
+            brandID, brandName, 
+            brandActiveFlag, 
+            brandPublishedFlag,
+            
+            categoryID, categoryName, parentCategoryID, 
+            categoryUrlTitle,
+            
+            optionID, optionName, optionCode, 
+            optionSortOrder, 
+            optionActiveFlag,
+            
+            optionGroupID, optionGroupName, 
+            optionGroupSortOrder,
+            
+            productTypeID, productTypeName, parentProductTypeID, 
+            productTypeURLTitle, 
+            productTypeActiveFlag, 
+            productTypePublishedFlag,
+            
+            siteID, siteName, siteCode, currencyCode,
+       
+            attributeID, attributeName, attributeCode, attributeInputType, 
+            attributeUrlTitle, 
+            attributeSortOrder,
+       
+            attributeSetID, attributeSetCode, attributeSetName, attributeSetObject,
+            attributeSetSortOrder,
+            attributeSetActiveFlag,
+       
+            attributeOptionID, attributeOptionValue, attributeOptionLabel,
+            attributeOptionUrlTitle,
+            attributeOptionSortOrde
+		
+		" />
+	</cffunction>
+	
+	
+	
+	<cffunction name="getProductFilterFacetOptionsSeletQuerySQL" access="public">
+	    
+		<cfargument name="productIDs" type="string" default="" />
+		<cfargument name="skuIDs" type="string" default="">
+	    
+	    <!--- NOTE: using the cfm syntax, was causing issues ny changing every single quotes into a pair of single-quotes --->
+	    <cfscript>
 	        
 	        local.startTicks = getTickCount();
 	        
+	        local.productAndSkuSelectTypeAttributes = this.getProductAndSkuSelectTypeAttributes();
             local.attributeIDs = local.productAndSkuSelectTypeAttributes.reduce( function(ids,row){
-                            	        return listAppend(arguments.ids, "'#arguments.row.attributeID#'" );
-                            	    }, "");
-                            	    
+    	        return listAppend(arguments.ids, "'#arguments.row.attributeID#'" );
+    	    }, "");
+    	    
+            // TODO: multi-selet type
             local.selectTypeAttributeOptionJoinParts = local.productAndSkuSelectTypeAttributes.reduce( function(joins,row){
-                // TODO: multi-selet type
                 if( arguments.row.attributeInputType != 'select' ){
                     return arguments.joins;
                 }
-                
                 if( arguments.row.attributeSetObject == 'sku'){
                     return listAppend(joins, "(att.attributeCode = `#arguments.row.attributeCode#` AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue)", '$' );
                 } 
-                
                 return listAppend(joins, "(att.attributeCode = `#arguments.row.attributeCode#` AND p.#arguments.row.attributeCode# = atto.attributeOptionValue)", '$' );
-                
             }, "");
             
-            
             local.selectTypeAttributeOptionJoinParts = local.selectTypeAttributeOptionJoinParts.replace(")$(", ") OR (", "ALL");
-             	
-            local.mainSql = "
             
-            CREATE TABLE IF NOT EXISTS sw_profuct_filter_facet_options AS 
-
-            (   SELECT DISTINCT
-    		       br.brandID, br.brandName,
-                   cr.categoryID, cr.categoryName, cr.parentCategoryID, cr.urlTitle AS categoryUrlTitle,
-                   o.optionID, o.optionName, o.optionCode, o.sortOrder AS optionSortOrder,
-                   og.optionGroupID, og.optionGroupName, og.sortOrder AS optionGroupSortOrder,
-                   pt.productTypeID, pt.productTypeName, pt.parentProductTypeID, pt.urlTitle AS productTypeURLTitle,
+            // we'll use these to generate the records for perticular Products and SKUs
+            // which, then, will be used to update the `swProductFilterFacetOption` table;
+            
+            local.skuIDsQueryPart = '';
+            local.productIDsQueryPart = '';
+            if( !this.hibachiIsEmpty(arguments.productIDs) ){
+                local.productIDsQueryPart = " AND p.productID IN (#arguments.productIDs#) "
+            }
+            if( !this.hibachiIsEmpty(arguments.skuIDs) ){
+                local.skuIDsQueryPart = " AND sk.skuID IN (#arguments.skuIDs#) ";
+            }
+            
+	        local.sql = "
+	        
+	            SELECT DISTINCT
+	            
+					MD5( 
+                   		CONCAT(
+                   			COALESCE( p.productID, ''), 
+                   			COALESCE( sk.skuID, ''), 
+                   			COALESCE( br.brandID, ''), 
+                   			COALESCE( cr.categoryID, ''), 
+                   			COALESCE( o.optionID, ''), 
+                   			COALESCE( og.optionGroupID, ''), 
+                   			COALESCE( pt.productTypeID, ''), 
+                   			COALESCE( st.siteID, ''), 
+                   			COALESCE( att.attributeID, ''), 
+                   			COALESCE( atst.attributeSetID, ''), 
+                   			COALESCE( atto.attributeOptionID,  '')
+                   		)
+                   ) AS productFilterFacetOptionID,
+			
+				   p.productID, 
+				   p.activeFlag AS productActiveFlag, 
+				   p.publishedFlag AS productPublishedFlag,
+				   
+				   sk.skuID, 
+				   sk.activeFlag AS skuActiveFlag, 
+				   sk.publishedFlag AS skuPublishedFlag,
+				   
+    		       br.brandID, br.brandName, 
+    		       br.activeFlag AS brandActiveFlag, 
+    		       br.publishedFlag AS brandPublishedFlag,
+    		       
+                   cr.categoryID, cr.categoryName, cr.parentCategoryID, 
+                   cr.urlTitle AS categoryUrlTitle,
+                   
+                   o.optionID, o.optionName, o.optionCode, 
+                   o.sortOrder AS optionSortOrder, 
+                   o.activeFlag AS optionActiveFlag,
+                   
+                   og.optionGroupID, og.optionGroupName, 
+                   og.sortOrder AS optionGroupSortOrder,
+                   
+                   pt.productTypeID, pt.productTypeName, pt.parentProductTypeID, 
+                   pt.urlTitle AS productTypeURLTitle,
+                   pt.activeFlag AS productTypeActiveFlag, 
+                   pt.publishedFlag AS productTypePublishedFlag,
+                   
                    st.siteID, st.siteName, st.siteCode, st.currencyCode,
+                   
                    att.attributeID, att.attributeName, att.attributeCode, att.attributeInputType,
                    att.urltitle AS attributeUrlTitle,
                    att.sortOrder AS attributeSortOrder,
+                   
                    atst.attributeSetID, atst.attributeSetCode, atst.attributeSetName, atst.attributeSetObject,
                    atst.sortOrder AS attributeSetSortOrder,
+                   atst.activeFlag AS attributeSetActiveFlag,
+                   
                    atto.attributeOptionID, atto.attributeOptionValue, atto.attributeOptionLabel,
                    atto.urltitle AS attributeOptionUrlTitle,
-                   atto.sortOrder AS attributeOptionSortOrder
-                   
+                   atto.sortOrder AS attributeOptionSortOrde
+
                 FROM swProduct p
                 
-                   -- INNER JOIN because if any product does not have at least one sku, then we can't sell anything for that product, so we don't need filter options specific to that product           
                    INNER JOIN swSku sk
-                           ON sk.productID = p.productID
-                              AND ( p.activeFlag = 1
-                                    AND p.publishedFlag = 1
-                                    AND sk.activeflag = 1
-                                    AND sk.publishedFlag = 1 )
-                    
-                    -- INNER JOIN because if any SKU does not have a price, then we can't sell it  
-                   INNER JOIN swSkuPrice sp
-                           ON sp.skuID = sk.skuID
-                              AND ( sp.activeFlag = 1 )
+                            ON sk.productID = p.productID
+                                #local.productIDsQueryPart#
+                                #local.skuIDsQueryPart#
                                     
                    LEFT JOIN swProductType pt
                           ON pt.productTypeID = p.productTypeID
-                             AND ( pt.activeFlag = 1 AND pt.publishedFlag = 1 )
-                                   
+
                    LEFT JOIN swBrand br
                           ON br.brandID = p.brandID
-                             AND ( br.activeFlag = 1 AND br.publishedFlag = 1 )
-                                   
+
                     LEFT JOIN swCategory cr
                             ON cr.categoryID IN (SELECT DISTINCT categoryID FROM swProductCategory)
                           
@@ -718,37 +840,446 @@ Notes:
                     LEFT JOIN swSite st
                             ON st.siteID = pst.siteID
                               
-                     -- LEFT JOIN because we can have SKUs which are not associated with any options
                     LEFT JOIN swSkuOption so
                             ON so.skuID = sk.skuID
                     LEFT JOIN swOption o
                             ON o.optionID = so.optionID
-                                AND o.activeFlag = 1
-                             
+
                     LEFT JOIN swOptionGroup og
                             ON og.optionGroupID = o.optionGroupID
                           
                     LEFT JOIN SwAttribute att
                     	  ON att.attributeID IN (#local.attributeIDs#)
-                      -- attributes are already filtered on activeFlag
-                    
+
                     LEFT JOIN SwAttributeSet atst
-                        ON atst.attributeSetID = att.attributeSetID AND atst.activeFlag = 1
+                        ON atst.attributeSetID = att.attributeSetID
                     	
                     LEFT JOIN swAttributeOption atto
                     	ON(#local.selectTypeAttributeOptionJoinParts#)
-            );
+	        ";
+	        
+	        this.logHibachi("ProductDAO:: getProductFilterFacetOptionsSeletQuerySQL took #getTickCount()-local.startTicks# ms.");
+	        
+	        return local.sql;
+	   </cfscript>
+	</cffunction>
+	
+	<cffunction name="recalculateProductFilterFacetOprionsForProductsAndSkus" access="public">
+	    <cfargument name="skuIDs" type="string" default="" />
+	    <cfargument name="productIDs" type="string" default="" />
+
+	    <cfscript>
+            if( this.hibachiIsEmpty(arguments.skuIDs) && this.hibachiIsEmpty(arguments.productIDs) ){
+                return;
+            }
             
-            SELECT  * FROM sw_profuct_filter_facet_options;
-            ";
+            // Tric to call this function 2ice, first for Products and then for SKUs,
+            // as there can products and sku's without any relations and the underlying query to create new-optons, will not return right data
+            if( !this.hibachiIsEmpty(arguments.skuIDs) && !this.hibachiIsEmpty(arguments.productIDs){
+                this.updateProductFilterFacetOprionsForProductsAndSkus(productIDs = arguments.productIDs );
+                this.updateProductFilterFacetOprionsForProductsAndSkus(skuIDs = arguments.skuIDs );
+                return;
+            }
+            
+            local.startTicks = getTickCount();
+            local.getExistingOptionsSQL = "SELECT productFilterFacetOptionID from swProductFilterFacetOption WHERE";
+            
+            if( !this.hibachiIsEmpty(arguments.productIDs) ){
+               local.getExistingOptionsSQL &= " productID IN (#arguments.productIDs#)";
+            }
+            
+            if( !this.hibachiIsEmpty(arguments.skuIDs) ){
+                // if(!this.hibachiIsEmpty(arguments.productIDs) ){
+                //   local.getExistingOptionsSQL &= " OR"; 
+                // }
                 
+                local.getExistingOptionsSQL &= " skuID IN (#arguments.skuIDs#)";
+            }
+            
+            dump(local.getExistingOptionsSQL);
+            
+            local.getExistingOptionsQuery = new Query();
+	        local.getExistingOptionsQuery.setSQL( local.getExistingOptionsSQL );
+	        local.getExistingOptionsQuery = local.getExistingOptionsQuery.execute().getResult();
+	        
+	        this.logHibachi("ProductDAO:: updateProductFilterFacetOprionsForProductsAndSkus took #getTickCount()-local.startTicks# ms.; in fetching existing facet-options ");
+ 
+	        local.existingFFOsMap = {};
+	        for( var row in local.getExistingOptionsQuery ){
+	            local.existingFFOsMap[ row.productFilterFacetOptionID] = row.productFilterFacetOptionID;
+	        }
+	        
+ 	        dump("Existing ffos");
+	        dump(local.existingFFOsMap);
+	        
+	        
+	        
+	        local.getNewOptionsQuerySQL = this.getProductFilterFacetOptionsSeletQuerySQL(argumentCollection = arguments ); 
+	        
+	        dump("getNewOptionsQuerySQL: ");
+	        dump(local.getNewOptionsQuerySQL);
+	        
+	        local.getNewOptionsQuery = new Query();
+	        local.getNewOptionsQuery.setSQL(local.getNewOptionsQuerySQL);
+	        local.getNewOptionsQueryResult = local.getNewOptionsQuery.execute().getResult();
+            
+            local.newFFOsToInsert = {};
+	        for( var row in local.getNewOptionsQueryResult ){
+	            if( !structKeyExists(local.existingFFOsMap, row.productFilterFacetOptionID) ){
+	                local.newFFOsToInsert[ row.productFilterFacetOptionID ] = row.productFilterFacetOptionID;
+	            } else {
+	                // we don't need to insert/update/delete this record as it already exist
+	                local.existingFFOsMap.delete( row.productFilterFacetOptionID ); 
+	            }
+	        }
+	        
+	        dump(local.newFFOsToInsert);
+	        
+	        // now delete whatever is left from the old options as these are no-longer valid
+	        if( structCount(local.existingFFOsMap) > 0 ){
+    	        this.logHibachi("ProductDAO:: updateProductFilterFacetOprionsForProductsAndSkus deleting #structCount(local.existingFFOsMap)# old options");
+	        
+	            local.ffoIDsToDelete = "";
+	            for(var ffoID in local.existingFFOsMap ){
+	                local.ffoIDsToDelete = listAppend( local.ffoIDsToDelete, "'#ffoID#'" );
+	            }
+	            
+	            local.deleteQuery = new Query();
+	            local.deleteSQL = "
+	                DELETE 
+                    FROM swProductFilterFacetOption
+                    WHERE productFilterFacetOptionID IN (#local.ffoIDsToDelete#)
+	            ";
+	            
+	            local.deleteQuery.setSQL( local.deleteSQL );
+    	        local.deleteQuery = local.deleteQuery.execute().getResult();
+	        } else{
+	            this.logHibachi("ProductDAO:: updateProductFilterFacetOprionsForProductsAndSkus did not found any old options to delete");
+	        }
+	        
+	        // and insert any new filter-options
+	        if( structCount(local.newFFOsToInsert) > 0 ){
+    	        this.logHibachi("ProductDAO:: updateProductFilterFacetOprionsForProductsAndSkus inserting #structCount(local.newFFOsToInsert)# new options");
+
+	            local.ffoIDsToInsert = "";
+	            for(var ffoID in local.newFFOsToInsert ){
+	                local.ffoIDsToInsert = listAppend( local.ffoIDsToInsert, "'#ffoID#'" );
+	            }
+	            
+	            local.indertQuery = new Query();
+	            
+	            // we're doing another query on the DB to get the options, as doing that in the cf-code is 
+	            // - and it will be some complicated logic, can be buggy and hard to maintain
+	            // - a lot of string-manipulation, which will be slow
+	            // - it can create a really big string-query totransfer over the network, again slow
+	            local.indertSQL = "
+            	        INSERT INTO swProductFilterFacetOption ( 
+            	            #this.getProductFilterFacetOptionsSeletQueryColumnList()# 
+            	        ) 
+        	            SELECT * FROM ( 
+        	                #local.getNewOptionsQuerySQL# 
+        	            ) result_set 
+        	            WHERE result_set.productFilterFacetOptionID IN( #local.ffoIDsToInsert# )
+	                ";
+	            
+	            local.indertQuery.setSQL( local.indertSQL );
+    	        local.indertQuery = local.indertQuery.execute().getResult();
+	            
+	        } else {
+	            this.logHibachi("ProductDAO:: updateProductFilterFacetOprionsForProductsAndSkus did not found any new options to insert");
+	        }
+
+	        this.logHibachi("ProductDAO:: updateProductFilterFacetOprionsForProductsAndSkus took #getTickCount()-local.startTicks# ms.; in updating facte-options for Product: #arguments.productIDs#, SKU: #arguments.skuIDs# ");
+	        
+	    </cfscript>
+    </cffunction>
+	
+	<cffunction name="updateProductFilterFacetOprionsByEntityNameAndIDs" access="public">
+	    <cfargument name="entittyName" type="string" default="" />
+	    <cfargument name="entityIDs" type="string" default="" />
+
+	    <cfscript>
+            if( this.hibachiIsEmpty(arguments.entityIDs) ){
+                return;
+            }
+            
+            local.startTicks = getTickCount();
+            
+            local.sql = "
+                UPDATE swProductFilterFacetOption ffo
+                INNER JOIN
+            ";
+            
+            switch (arguments.entityName){
+                case 'product':
+                    local.sql &= " 
+                        swProduct p ON p.productID = ffo.productID AND p.productID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.productActiveFlag = p.activeFlag,
+                            ffo.productPublishedFlag = p.publishedFlag
+                    ";
+                break;
+                case 'sku':
+                    local.sql &= " 
+                        swSku sk ON sk.skuID = ffo.skuID AND sk.skuID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.skuActiveFlag = sk.activeFlag,
+                            ffo.skuPublishedFlag = sk.publishedFlag
+                    ";
+                break;
+                case 'brand':
+                    local.sql &= " 
+                        swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.brandName = br.brandName,
+                            ffo.brandActiveFlag = br.activeFlag,
+                            ffo.brandPublishedFlag = br.publishedFlag
+                    ";
+                break;
+                case 'category':
+                    local.sql &= " 
+                        swCategory ct ON ct.categoryID = ffo.categoryID AND ct.categoryID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.categoryName = ct.categoryName,
+                            ffo.parentCategoryID = ct.parentCategoryID,
+                            ffo.categoryUrlTitle = ct.urlTitle
+                    ";
+                break;
+                case 'option':
+                    local.sql &= " 
+                        swOption o ON o.optionID = ffo.optionID AND o.optionID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.optionName = o.optionName,
+                            ffo.optionCode = o.optionCode,
+                            ffo.optionSortOrder = o.sortOrder,
+                            ffo.optionActiveFlag = o.activeFlag
+                    ";
+                break;
+                case 'optionGroup':
+                    local.sql &= " 
+                        swOptionGroup og ON og.optionGroupID = ffo.optionGroupID AND og.optionGroupID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.optionGroupName = o.optionGroupName,
+                            ffo.optionGroupSortOrder = o.sortOrder
+                    ";
+                break;
+                case 'productType':
+                    local.sql &= " 
+                        swProductType pt ON pt.productTypeID = ffo.productTypeID AND pt.productTypeID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.productTypeName = pt.productTypeName,
+                            ffo.parentProductTypeID = pt.parentProductTypeID,
+                            ffo.productTypeURLTitle = pt.urlTitle,
+                            ffo.productTypeActiveFlag = pt.activeFlag,
+                            ffo.productTypePublishedFlag = pt.publishedFlag
+                    ";
+                break;
+                case 'site':
+                    local.sql &= " 
+                        swSite s ON s.siteID = ffo.siteID AND s.siteID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.siteName = s.siteName,
+                            ffo.siteCode = s.siteCode,
+                            ffo.currencyCode = s.currencyCode
+                    ";
+                break;
+                case 'attribute':
+                    local.sql &= " 
+                        swAttribute att ON att.attributeID = ffo.attributeID AND att.attributeID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.attributeName = att.attributeName,
+                            ffo.attributeCode = att.attributeCode,
+                            ffo.attributeInputType = att.attributeInputType,
+                            ffo.attributeUrlTitle = att.urltitle,
+                            ffo.attributeSortOrder = att.sortOrder
+                    ";
+                break;
+                case 'attributeSet':
+                    local.sql &= " 
+                        swAttributeSet atst ON atst.attributeSetID = ffo.attributeSetID AND atst.attributeSetID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.attributeSetName = atst.attributeSetName,
+                            ffo.attributeSetCode = atst.attributeSetCode,
+                            ffo.attributeSetObject = atst.attributeSetObject,
+                            ffo.attributeSetUrlTitle = atst.urltitle,
+                            ffo.attributeSetActiveFlag = atst.activeFlag
+                    ";
+                break;
+                case 'attributeOption':
+                    local.sql &= " 
+                        swAttributeOption atto ON atto.attributeOptionID = ffo.attributeOptionID AND atto.attributeOptionID IN (#arguments.entityIDs#)
+                        SET 
+                            ffo.attributeOptionLabel = atto.attributeOptionLabel,
+                            ffo.attributeOptionValue = atto.attributeOptionValue,
+                            ffo.attributeOptionUrlTitle = atto.urltitle,
+                            ffo.attributeOptionSortOrde = atto.sortOrder
+                    ";
+                break;
+                default:
+                    throw("not supported entity-name #arguments.entityName#");
+                break;
+            }
             
             local.q = new Query();
-	        local.q.setSQL(local.mainSql);
+	        local.q.setSQL( local.sql );
 	        local.q = q.execute().getResult();
 	        
-	        this.logHibachi("ProductDAO:: getRawProductFilterFacetOprions took #getTickCount()-local.startTicks# ms.; and fetched #local.q.recordCount# records ");
+	        this.logHibachi("ProductDAO:: updateProductFilterFacetOprionsByEntityNameAndIDs took #getTickCount()-local.startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
+	        
+	        return local.q;
+	    </cfscript>
+    </cffunction>
+    
+    <cffunction name="removeProductFilterFacetOprionsByEntityNameAndIDs" access="public">
+	    <cfargument name="entittyName" type="string" default="" />
+	    <cfargument name="entityIDs" type="string" default="" />
 
+	    <cfscript>
+            if( this.hibachiIsEmpty(arguments.entityIDs) ){
+                return;
+            }
+            
+            local.startTicks = getTickCount();
+
+            
+            local.sql = "
+                DELETE swProductFilterFacetOption FROM swProductFilterFacetOption as ffo
+                INNER JOIN
+            ";
+            
+            switch (arguments.entityName){
+                case 'product':
+                    local.sql &= " 
+                        swProduct p ON p.productID = ffo.productID AND p.productID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'sku':
+                    local.sql &= " 
+                        swSku sk ON sk.skuID = ffo.skuID AND sk.skuID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'brand':
+                    local.sql &= " 
+                        swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'category':
+                    local.sql &= " 
+                        swCategory ct ON ct.categoryID = ffo.categoryID AND ct.categoryID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'option':
+                    local.sql &= " 
+                        swOption o ON o.optionID = ffo.optionID AND o.optionID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'optionGroup':
+                    local.sql &= " 
+                        swOptionGroup og ON og.optionGroupID = ffo.optionGroupID AND og.optionGroupID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'productType':
+                    local.sql &= " 
+                        swProductType pt ON pt.productTypeID = ffo.productTypeID AND pt.productTypeID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'site':
+                    local.sql &= " 
+                        swSite s ON s.siteID = ffo.siteID AND s.siteID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'attribute':
+                    local.sql &= " 
+                        swAttribute att ON att.attributeID = ffo.attributeID AND att.attributeID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'attributeSet':
+                    local.sql &= " 
+                        swAttributeSet atst ON atst.attributeSetID = ffo.attributeSetID AND atst.attributeSetID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                case 'attributeOption':
+                    local.sql &= " 
+                        swAttributeOption atto ON atto.attributeOptionID = ffo.attributeOptionID AND atto.attributeOptionID IN (#arguments.entityIDs#)
+                    ";
+                break;
+                default:
+                    throw("not supported entity-name #arguments.entityName#");
+                break;
+            }
+            
+            local.q = new Query();
+	        local.q.setSQL( local.sql );
+	        local.q = q.execute().getResult();
+	        
+	        this.logHibachi("ProductDAO:: removeProductFilterFacetOprionsByEntityNameAndIDs took #getTickCount()-local.startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
+	        
+	        return local.q;
+	    </cfscript>
+    </cffunction>
+    
+    
+	
+	<cffunction name="getPotentialProductFilterFacetOprions" access="public">
+	    <cfargument name="productIDs" type="string" default="" />
+		<cfargument name="skuIDs" type="string" default="">
+		
+	    <cfscript>
+	        local.startTicks = getTickCount();
+	        // we'll use these to generate the records for perticular Products and SKUs
+            // which, then, will be used to update the `swProductFilterFacetOption` table;
+            
+            local.skuJoinFilterQueryPart = ' AND ffo.skuActiveflag = 1 AND ffo.skuPublishedFlag = 1';
+            local.productJoinFilterQueryPart = ' AND ffo.productActiveFlag = 1 AND ffo.productPublishedFlag = 1';
+            if( !this.hibachiIsEmpty(arguments.productIDs) ){
+                local.productJoinFilterQueryPart &= " AND ffo.productID IN (#arguments.productIDs#) "
+            }
+            if( !this.hibachiIsEmpty(arguments.skuIDs) ){
+                local.skuJoinFilterQueryPart &= " AND ffo.skuID IN (#arguments.skuIDs#) ";
+            }
+                
+            local.sql = "
+                SELECT   
+                   ffo.productFilterFacetOptionID,
+				   ffo.productID, ffo.skuID,
+    		       ffo.brandID, ffo.brandName,
+                   ffo.categoryID, ffo.categoryName, ffo.parentCategoryID, ffo.categoryUrlTitle,
+                   ffo.optionID, ffo.optionName, ffo.optionCode, ffo.optionSortOrder,
+                   ffo.optionGroupID, ffo.optionGroupName, ffo.optionGroupSortOrder,
+                   ffo.productTypeID, ffo.productTypeName, ffo.parentProductTypeID, ffo.productTypeURLTitle,
+                   ffo.siteID, ffo.siteName, ffo.siteCode, ffo.currencyCode,
+                   
+                   ffo.attributeID, ffo.attributeName, ffo.attributeCode, ffo.attributeInputType,
+                   ffo.attributeUrlTitle,ffo.attributeSortOrder,
+                   
+                   ffo.attributeSetID, ffo.attributeSetCode, ffo.attributeSetName, ffo.attributeSetObject, ffo.attributeSetSortOrder,
+
+                   ffo.attributeOptionID, ffo.attributeOptionValue, ffo.attributeOptionLabel,
+                   ffo.attributeOptionUrlTitle, ffo.attributeOptionSortOrde
+                
+                FROM swProductFilterFacetOption as ffo
+                
+                INNER JOIN swSkuPrice sp
+                    ON sp.skuID = ffo.skuID 
+                        AND sp.activeFlag = 1 
+                        
+                        #local.skuJoinFilterQueryPart#
+                        #local.productJoinFilterQueryPart#
+                        
+                		AND ffo.brandActiveFlag = 1 AND ffo.brandPublishedFlag = 1
+                		AND ffo.productTypeActiveflag = 1 AND ffo.productTypePublishedFlag = 1
+                        AND ffo.optionActiveFlag=1
+                        AND ffo.attributeSetActiveFlag = 1
+                
+                GROUP BY ffo.productFilterFacetOptionID
+            ";
+            
+            local.q = new Query();
+	        local.q.setSQL( local.sql );
+	        local.q = q.execute().getResult();
+	        
+	        this.logHibachi("ProductDAO:: getPotentialProductFilterFacetOprions took #getTickCount()-local.startTicks# ms.; and fetched #local.q.recordCount# records ");
+	        
 	        return local.q;
 	    </cfscript>
     </cffunction>
