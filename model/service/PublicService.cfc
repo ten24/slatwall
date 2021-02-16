@@ -410,7 +410,7 @@ component  accessors="true" output="false"
 	     param name="arguments.data.orderID";
 	     
 	     var account = getHibachiScope().getAccount();
-	     if(!isNull(account) && !isEmpty(account.getAccountID())) {
+	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
 	         var order = orderService.getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
 	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID());
@@ -1400,7 +1400,7 @@ component  accessors="true" output="false"
                 if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
                     orderFulfillment.setShippingAddress(savedAddress);
                     //Add Shiping Method on Order Fulfillment
-                    if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                    if(StructKeyExists(arguments.data, 'shippingMethodID') && !this.getHibachiScope().hibachiIsEmpty(arguments.data.shippingMethodID) ) {
                         var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
                         if(!isNull(shippingMethod)) {
                             orderFulfillment.setShippingMethod(shippingMethod);
@@ -1927,7 +1927,7 @@ component  accessors="true" output="false"
         
         if( !cart.hasErrors() ) {
             //create new session with blank orderid
-            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !this.getHibachiScope().hibachiIsEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
             }
 
@@ -2061,7 +2061,7 @@ component  accessors="true" output="false"
             getHibachiScope().getSession().setOrder( cart );
             
             //create new token with cart information
-            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !this.getHibachiScope().hibachiIsEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             }
             
@@ -2219,7 +2219,7 @@ component  accessors="true" output="false"
                 //Remove existing method
                 orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
 
-                if( !isEmpty(existingOrderFulfillment) ) {
+                if( !this.getHibachiScope().hibachiIsEmpty(existingOrderFulfillment) ) {
                     orderItem.setOrderFulfillment( existingOrderFulfillment );
                 } else {
                     //get fulfillment method
@@ -3312,24 +3312,22 @@ component  accessors="true" output="false"
      * 
      */
     public void function getSlatwallContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.content" default={};
         param name="arguments.data.formCode" default='';
         param name="arguments.data.formPostfix" default="/";
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        getStackedContentForPage
+        
         var stackedContent= {}
-        if(Len(arguments.data.content)> 1){
-            stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
-        }else{
-            stackedContent =  getService('siteService').getStackedContentForPage(arguments.data.content)
+        for(var content in arguments.data.content) {
+            StructAppend(stackedContent, getService('siteService').getStackedContentForPage({"#content#":arguments.data.content[content] }),"true")
         }
 
-        if(!isEmpty(arguments.data.formCode)){
-            stackedContent['form'] ={
+        if(!this.getHibachiScope().hibachiIsEmpty(arguments.data.formCode)){
+            stackedContent['form'] = {
                 "type": arguments.data.formCode,
                 "markup": getService('siteService').dspForm(arguments.data.formCode,arguments.data.formPostfix)
-                }
+            };
         }
 
         getHibachiScope().addActionResult("public:getSlatwallContent", false);
