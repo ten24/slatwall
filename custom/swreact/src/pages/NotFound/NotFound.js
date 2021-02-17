@@ -7,46 +7,44 @@ import { getContent } from '../../actions/contentActions'
 
 const NotFound = ({ title, customBody, customSummary }) => {
   const dispatch = useDispatch()
-
-  let history = useHistory()
   useEffect(() => {
     dispatch(
       getContent({
         content: {
-          notfound: ['customBody', 'customSummary', 'title'],
+          '404': ['customBody', 'customSummary', 'title'],
         },
       })
     )
   }, [dispatch])
   return (
     <Layout>
-      <div class="container py-5 mb-lg-3">
-      <div class="row justify-content-center pt-lg-4 text-center">
-        <div class="col-lg-5 col-md-7 col-sm-9">
-          <h1 class="display-404">{title}</h1>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: customSummary,
-            }}
-          ></div>
+      <div className="container py-5 mb-lg-3">
+        <div className="row justify-content-center pt-lg-4 text-center">
+          <div className="col-lg-5 col-md-7 col-sm-9">
+            <h1 className="display-404">{title}</h1>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: customSummary,
+              }}
+            ></div>
+          </div>
+        </div>
+        <div className="row justify-content-center">
+          <div className="col-xl-8 col-lg-10">
+            <div
+              dangerouslySetInnerHTML={{
+                __html: customBody,
+              }}
+            ></div>
+          </div>
         </div>
       </div>
-      <div class="row justify-content-center">
-        <div class="col-xl-8 col-lg-10">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: customBody,
-            }}
-          ></div>
-        </div>
-      </div>
-    </div>
     </Layout>
   )
 }
 
 function mapStateToProps(state) {
-  return { ...state.content.notfound }
+  return { ...state.content['404'] }
 }
 
 NotFound.propTypes = {}

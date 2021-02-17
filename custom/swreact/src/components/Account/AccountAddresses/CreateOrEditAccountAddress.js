@@ -1,12 +1,13 @@
 import { connect, useDispatch } from 'react-redux'
 import SwSelect from '../../SwSelect/SwSelect'
 import { useFormik } from 'formik'
-import { toast } from 'react-toastify'
 import useRedirect from '../../../hooks/useRedirect'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import { addNewAccountAddress, updateAccountAddress } from '../../../actions/userActions'
 // TODO: Make this component reusable
+import { useTranslation } from 'react-i18next'
+
 const init = [
   {
     key: 'name',
@@ -22,6 +23,7 @@ const init = [
 const CreateOrEditAccountAddress = ({ isEdit, heading, states, countries, initialValues = {}, accountAddress, redirectLocation = '/my-account/addresses', customBody, contentTitle, action = 'Account Address' }) => {
   const [redirect, setRedirect] = useRedirect({ location: redirectLocation })
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
 
   initialValues = {
     accountAddressID: accountAddress ? accountAddress.accountAddressID : '',
@@ -58,50 +60,50 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, states, countries, initia
         <div className="row"></div>
         <h2>{heading}</h2>
         <div className="form-group">
-          <label htmlFor="countryCode">Country</label>
+          <label htmlFor="countryCode">{t('frontend.account.countryCode')}</label>
           <SwSelect id="countryCode" value={formik.values.countryCode} onChange={formik.handleChange} options={countries} />
         </div>
         <div className="form-group">
-          <label htmlFor="accountAddressName">Nickname</label>
+          <label htmlFor="accountAddressName">{t('frontend.account.nickname')}</label>
           <input className="form-control" type="text" id="accountAddressName" value={formik.values['accountAddressName']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">{t('frontend.account.name')}</label>
           <input className="form-control" type="text" id="name" value={formik.values['name']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="company">Company</label>
+          <label htmlFor="company">{t('frontend.account.company')}</label>
           <input className="form-control" type="text" id="company" value={formik.values['company']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="phoneNumber">Phone Number</label>
+          <label htmlFor="phoneNumber">{t('frontend.account.phoneNumber')} </label>
           <input className="form-control" type="text" id="phoneNumber" value={formik.values['phoneNumber']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="streetAddress">Street Address</label>
+          <label htmlFor="streetAddress">{t('frontend.account.streetAddress')}</label>
           <input className="form-control" type="text" id="streetAddress" value={formik.values['streetAddress']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="street2Address">Street Address 2</label>
+          <label htmlFor="street2Address">{t('frontend.account.street2Address')}</label>
           <input className="form-control" type="text" id="street2Address" value={formik.values['street2Address']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="city">City</label>
+          <label htmlFor="city">{t('frontend.account.city')}</label>
           <input className="form-control" type="text" id="city" value={formik.values['city']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="stateCode">State</label>
+          <label htmlFor="stateCode">{t('frontend.account.stateCode')}</label>
           <SwSelect id="stateCode" value={formik.values['stateCode']} onChange={formik.handleChange} options={states} />
         </div>
         <div className="form-group">
-          <label htmlFor="postalCode">Postal Code</label>
+          <label htmlFor="postalCode">{t('frontend.account.postalCode')}</label>
           <input className="form-control" type="text" id="postalCode" value={formik.values['postalCode']} onChange={formik.handleChange} />
         </div>
         <div className="col-12">
           <hr className="mt-2 mb-3" />
           <div className="d-flex flex-wrap justify-content-end">
             <button type="submit" className="btn btn-primary mt-3 mt-sm-0">
-              {isEdit ? `Save ${action}` : `Save New ${action}`}
+              {isEdit ? `${t('frontend.core.save')} ${action}` : `${t('frontend.core.saveNew')} ${action}`}
             </button>
           </div>
         </div>
@@ -117,8 +119,8 @@ const mapStateToProps = (state, ownProps) => {
     return address.addressID === ownProps.path
   })
   return {
-    states: state.preload.states,
-    countries: state.preload.countries,
+    states: state.configuration.states,
+    countries: state.configuration.countries,
     isEdit: accountAddresses.length ? true : false,
     accountAddress: accountAddresses.length ? accountAddresses[0] : null,
   }

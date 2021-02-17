@@ -79,7 +79,7 @@
 		"ownerAccount": [{ "contexts": "delete", "method": "canDeleteByOwner" }],
 		"childAccountRelationships": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
 		"username": [
-			{ "contexts": "save", "required": true, "method": "getUsernameNotInUseFlag" },
+			{ "contexts": "save", "method": "getUsernameNotInUseFlag" },
 			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount" }
 		]
 	}

@@ -248,7 +248,7 @@ component extends="HibachiService" accessors="true" {
 			}
 
 			// Set publish flag based upon the response to sellIndividualSkuFlag
-			if( !arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
+			if( isBoolean(arguments.processObject.getSellIndividualSkuFlag()) && !arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
 				newSku.setPublishedFlag( false );
 			}
 
@@ -298,6 +298,9 @@ component extends="HibachiService" accessors="true" {
 			
 			this.saveSku(newSku);
 			
+			if( newSku.hasErrors() ){
+				newSku.getProduct().addErrors(newSku.getErrors());
+			}
 		// Single location configuration
 		} else {
 
@@ -327,7 +330,7 @@ component extends="HibachiService" accessors="true" {
 				}
 
 				// Set publish flag based upon the response to sellIndividualSkuFlag
-				if( arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
+				if( isBoolean(arguments.processObject.getSellIndividualSkuFlag()) && !arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
 					newSku.setPublishedFlag( true );
 				}
 
@@ -605,7 +608,7 @@ component extends="HibachiService" accessors="true" {
 				}
 				
 	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( isEmpty(imageFile) ) {
+	            if( this.hibachiIsEmpty(imageFile) ){
 	            	continue;
 	            }
 	            var imageArray = [];
@@ -1012,7 +1015,6 @@ component extends="HibachiService" accessors="true" {
 		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "event") {
 			arguments.product = this.saveProduct(arguments.product);
 			arguments.product = this.processProduct(arguments.product, arguments.data, 'addEventSchedule');
-
 
 		// GENERATE - MERCHANDISE SKUS
 		} else if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "merchandise") {

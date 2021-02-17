@@ -1,12 +1,13 @@
 import { useFormik } from 'formik'
 import { connect, useDispatch } from 'react-redux'
 import AccountContent from '../AccountContent/AccountContent'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountAddressForm from './AccountAddressForm'
 import { toast } from 'react-toastify'
 import useRedirect from '../../../hooks/useRedirect'
 import SwSelect from '../../SwSelect/SwSelect'
 import { addPaymentMethod } from '../../../actions/userActions'
+import { useTranslation } from 'react-i18next'
 
 const months = Array.from({ length: 12 }, (_, i) => {
   return { key: i + 1, value: i + 1 }
@@ -20,6 +21,8 @@ const years = Array(10)
 const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, contentTitle, accountAddresses, accountPaymentMethods }) => {
   const [redirect, setRedirect] = useRedirect({ location: '/my-account/cards' })
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -69,40 +72,40 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
         <div className="row">
           <div className={`col-sm-${isEdit ? 12 : 6}`}>
             <div className="form-group">
-              <label htmlFor="paymentMethodName">Nickname</label>
+              <label htmlFor="paymentMethodName">{t('frontend.account.payment_method.nickname')}</label>
               <input className="form-control" type="text" id="paymentMethodName" value={formik.values.paymentMethodName} onChange={formik.handleChange} />
             </div>
             <div className="form-group">
-              <label htmlFor="paymentMethodType">Payment Method</label>
+              <label htmlFor="paymentMethodType">{t('frontend.account.payment_method.heading')}</label>
               <SwSelect id="paymentMethodType" value={formik.values['paymentMethodType']} onChange={formik.handleChange} options={accountPaymentMethods} />
             </div>
             <hr />
-            <h2>Credit Card Details</h2>
+            <h2>{t('frontend.account.payment_method.cc_details')}</h2>
             <div className="form-group">
-              <label htmlFor="creditCardNumber">Credit Card Number</label>
+              <label htmlFor="creditCardNumber">{t('frontend.account.payment_method.ccn')}</label>
               <input className="form-control" type="text" id="creditCardNumber" placeholder={`************${cardData.creditCardLastFour}`} value={formik.values.creditCardNumber} onChange={formik.handleChange} />
             </div>
             <div className="form-group">
-              <label htmlFor="nameOnCreditCard">Name On Card</label>
+              <label htmlFor="nameOnCreditCard">{t('frontend.account.payment_method.name')}</label>
               <input className="form-control" type="text" id="nameOnCreditCard" value={formik.values.nameOnCreditCard} onChange={formik.handleChange} />
             </div>
             <div className="form-group">
-              <label htmlFor="expirationMonth">Expiration Month</label>
+              <label htmlFor="expirationMonth">{t('frontend.account.payment_method.expiration_month')}</label>
               <SwSelect id="expirationMonth" value={formik.values.expirationMonth} onChange={formik.handleChange} options={months} />
             </div>
             <div className="form-group">
-              <label htmlFor="expirationYear">Expiration Year</label>
+              <label htmlFor="expirationYear">{t('frontend.account.payment_method.expiration_year')}</label>
               <SwSelect id="expirationYear" value={formik.values.expirationYear} onChange={formik.handleChange} options={years} />
             </div>
             <div className="form-group">
-              <label htmlFor="securityCode">Security Code</label>
+              <label htmlFor="securityCode">{t('frontend.account.payment_method.cvv')}</label>
               <input className="form-control" type="text" placeholder={`***`} id="securityCode" value={formik.values.securityCode} onChange={formik.handleChange} />
             </div>
           </div>
           {!isEdit && (
             <div className="col-sm-6">
               <div className="form-group">
-                <label htmlFor="accountAddressID">Billing Account Address</label>
+                <label htmlFor="accountAddressID">{t('frontend.account.billing_address')}</label>
                 <SwSelect id="billingAccountAddress.accountAddressID" value={formik.values['billingAccountAddress.accountAddressID']} onChange={formik.handleChange} options={accountAddresses} />
               </div>
               {!formik.values['billingAccountAddress.accountAddressID'] && <AccountAddressForm formik={formik} />}

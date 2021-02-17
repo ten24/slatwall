@@ -3,10 +3,12 @@ import { connect, useDispatch } from 'react-redux'
 import { search, setKeyword } from '../../actions/productSearchActions'
 import debounce from 'lodash/debounce'
 import ProductListingFilter from './ProductListingFilter'
+import { useTranslation } from 'react-i18next'
 
 const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCount }) => {
   const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState(keyword)
+  const { t, i18n } = useTranslation()
 
   // TODO: Shouls this be an auto search or should you have to click enter
   const slowlyRequest = useCallback(
@@ -25,7 +27,7 @@ const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCo
     <div className="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
       <div className="cz-sidebar-header box-shadow-sm">
         <button className="close ml-auto" type="button" data-dismiss="sidebar" aria-label="Close">
-          <span className="d-inline-block font-size-xs font-weight-normal align-middle">Close sidebar</span>
+          <span className="d-inline-block font-size-xs font-weight-normal align-middle">{t('frontend.core.close_sidebar')} </span>
           <span className="d-inline-block align-middle ml-2" aria-hidden="true">
             <i className="far fa-times"></i>
           </span>
@@ -34,11 +36,11 @@ const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCo
       <div className="cz-sidebar-body" data-simplebar data-simplebar-auto-hide="true">
         <div className="widget widget-categories mb-3">
           <div className="row">
-            <h3 className="widget-title col">Filters</h3>
-            <span className="text-right col">{recordsCount} Results</span>
+            <h3 className="widget-title col">{t('frontend.core.filters')}</h3>
+            <span className="text-right col">{`${recordsCount} ${t('frontend.core.results')}`}</span>
           </div>
           <div className="input-group-overlay input-group-sm mb-2">
-            <input className="cz-filter-search form-control form-control-sm appended-form-control" type="text" value={searchTerm} onChange={handleInputChange} placeholder="Search by product title or SKU" />
+            <input className="cz-filter-search form-control form-control-sm appended-form-control" type="text" value={searchTerm} onChange={handleInputChange} placeholder={t('frontend.plp.search.placeholder')} />
             <div className="input-group-append-overlay">
               <span className="input-group-text">
                 <i className="fa fa-search"></i>

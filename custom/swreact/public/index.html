@@ -33,19 +33,5 @@
 
     <div id="app"></div>
 
-    <footer>
-      <script>
-        // WARNING: See the following for security issues around embedding JSON in HTML:
-        // https://redux.js.org/recipes/server-rendering/#security-considerations
-
-        /*
-        These keys will map to a reducer. 
-        */
-        window.__SDK_URL__ = 'http://stoneandberg.local:8906/index.cfm/';
-        window.__PRELOADED_STATE__ = JSON.stringify({
-          preload: {},
-        }).replace(/</g, '\\u003c')
-      </script>
-     </footer>
   </body>
 </html>

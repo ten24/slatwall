@@ -60,7 +60,7 @@ Notes:
 
 	<hb:HibachiEntityDetailGroup object="#rc.taxCategory#">
 		<hb:HibachiEntityDetailItem view="admin:entity/taxcategorytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<hb:HibachiEntityDetailItem view="admin:entity/taxcategorytabs/rates" />
+		<hb:HibachiEntityDetailItem view="admin:entity/taxcategorytabs/rates" count="#rc.taxCategory.getTaxCategoryRatesCount()#"/>
 	</hb:HibachiEntityDetailGroup>
 	
 </hb:HibachiEntityDetailForm>

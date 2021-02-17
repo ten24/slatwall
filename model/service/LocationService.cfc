@@ -177,25 +177,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// ====================== START: Delete Overrides =========================
 	
 	public boolean function deleteLocation(required any location) {
-		//Remove this location from all order defaultstocklocation assignments
-		var orderSmartList=getService("OrderService").getOrderSmartlist();
-		orderSmartList.addFilter('defaultstocklocation.locationID',arguments.location.getLocationID());
-		var defaultStockLocationOrders=orderSmartList.getRecords();
-		for(var i=1; i<=arrayLen(defaultStockLocationOrders); i++) {
-				defaultStockLocationOrders[i].setDefaultStockLocation(javaCast('null',''));
+		if(arguments.location.isDeletable()) {
+			//Remove this location from all order defaultstocklocation assignments
+			var orderSmartList=getService("OrderService").getOrderSmartlist();
+			orderSmartList.addFilter('defaultstocklocation.locationID',arguments.location.getLocationID());
+			var defaultStockLocationOrders=orderSmartList.getRecords();
+			for(var i=1; i<=arrayLen(defaultStockLocationOrders); i++) {
+					defaultStockLocationOrders[i].setDefaultStockLocation(javaCast('null',''));
+			}
+			arguments.location.setPrimaryAddress(javaCast("null", ""));
+			var data = getDAO("LocationDAO").removePrimaryAddress(arguments.location.getLocationID());
 		}
-		
-		arguments.location.setLocationAddresses(javaCast("null", ""));
-		var data = getDAO("LocationDAO").removeAssociatedLocationRecords(arguments.location.getLocationID());
-		
-		return super.delete(arguments.location);
+		return delete(arguments.location);
 	}
 	
 	public boolean function deleteLocationAddress(required any locationAddress) {
         // Check delete validation for batch
-        //writeDump(locationAddress);abort;
 		if(arguments.locationAddress.isDeletable()) {
-		  var data = getDAO("LocationDAO").removeAddressLocation(arguments.locationAddress.getLocationAddressID());
+			if(arguments.locationAddress.getLocation().getPrimaryAddress().getLocationAddressID() eq arguments.locationAddress.getLocationAddressID()) {
+				var data = getDAO("LocationDAO").removePrimaryAddress(arguments.locationAddress.getLocation().getLocationID());
+			}
 		}
 
 		return delete( arguments.locationAddress );

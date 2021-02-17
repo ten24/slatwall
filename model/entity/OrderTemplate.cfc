@@ -174,7 +174,9 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	public any function getShippingMethodOptions(){
 		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
 		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
-		shippingMethodCollection.addFilter('shippingMethodID',this.getSite().setting('siteOrderTemplateEligibleShippingMethods'),'in'); 
+		if(!isNull(getSite())){
+			shippingMethodCollection.addFilter('shippingMethodID',this.getSite().setting('siteOrderTemplateEligibleShippingMethods'),'in'); 
+		}
 		return shippingMethodCollection.getRecords();
 	}
 	

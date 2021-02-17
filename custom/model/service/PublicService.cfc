@@ -139,4 +139,35 @@ component extends="Slatwall.model.service.PublicService" {
         arguments.data['ajaxResponse']['skus'] = results;
          
      }
+     
+public void function getConfiguration( required struct data ) {
+        param name="arguments.data.siteCode" default="";
+        var siteLookup = getService('siteService').getSiteBySiteCode(arguments.data.siteCode);
+        getHibachiScope().setSite(siteLookup);
+        
+            var site = {};
+            site["siteID"] = siteLookup.getSiteID();
+            site["siteCode"] = siteLookup.getSiteCode();
+            site["siteName"] = siteLookup.getSiteName();
+            site["hibachiInstanceApplicationScopeKey"] = siteLookup.getHibachiInstanceApplicationScopeKey();
+            site["hibachiConfig"] = getHibachiScope().getHibachiConfig();
+            arguments.data['ajaxResponse']['config']['site'] = site;
+        
+
+
+        var router = []
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyProduct'),"URLKeyType": 'Product' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyProductType'),"URLKeyType": 'ProductType' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyCategory'),"URLKeyType": 'Category' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyBrand'),"URLKeyType": 'Brand' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAccount'),"URLKeyType": 'Account' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAddress'),"URLKeyType": 'Address' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAttribute'),"URLKeyType": 'Attribute' });
+        
+        getHibachiScope().addActionResult("public:getConfiguration");
+
+        arguments.data['ajaxResponse']['config']['router'] = router;
+        return 
+         
+     }
 }
