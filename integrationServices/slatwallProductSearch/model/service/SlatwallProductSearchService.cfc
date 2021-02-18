@@ -50,7 +50,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	property name="productDAO";
 	property name="hibachiCacheService";
-	property name="slatwallDefaultListingDAO";
+	property name="slatwallProductSearchDAO";
 
 	public struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters){
 
@@ -177,9 +177,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.getHibachiCacheService().getCachedValue('calculated_product_filter_facet_options');
 	    }
 	    
-	    this.logHibachi("SlatwallDefaultListingService:: getProductFilterFacetOptions - fetching raw facet options ")
+	    this.logHibachi("SlatwallProductSearchService:: getProductFilterFacetOptions - fetching raw facet options ")
 
-	    var rawFilters = this.getSlatwallDefaultListingDAO().getPotentialProductFilterFacetOprions();
+	    var rawFilters = this.getSlatwallProductSearchDAO().getPotentialProductFilterFacetOprions();
 	   
 	    var startTicks = getTickCount();
 	    
@@ -200,7 +200,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    
 	       	
-       	this.logHibachi("SlatwallDefaultListingService:: getProductFilterFacetOptions - processing - #rawFilters.recordCount# ");
+       	this.logHibachi("SlatwallProductSearchService:: getProductFilterFacetOptions - processing - #rawFilters.recordCount# ");
             
 	    for( var row in rawFilters ){
 	        
@@ -676,7 +676,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
    
 	    this.getHibachiCacheService().setCachedValue('calculated_product_filter_facet_options', potentialFilters);
 
-	    this.logHibachi("SlatwallDefaultListingService:: getProductFilterFacetOptions took #getTickCount() - startTicks# ms.")
+	    this.logHibachi("SlatwallProductSearchService:: getProductFilterFacetOptions took #getTickCount() - startTicks# ms.")
 
 	    return potentialFilters;
 	}

@@ -52,7 +52,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     
 	public void function setUp() {
 		super.setup();
-		variables.service = variables.mockService.getSlatwallDefaultListingServiceMock();
+		variables.service = variables.mockService.getSlatwallProductSearchServiceMock();
 	}
 
 	/**
@@ -268,17 +268,17 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
         var start = getTickCount();
         
-        // this.getService().getSlatwallDefaultListingDAO().rePopulateProductFilterFacetOptionTable();
+        // this.getService().getSlatwallProductSearchDAO().rePopulateProductFilterFacetOptionTable();
         // var facetOptions = this.getService().getProductFilterFacetOptions();
 		
 		var skuIDs = "2c978084764d746e01764d786fa0005d, 2c9180847652606f0176526b605006a2";
-        // this.getService().getSlatwallDefaultListingDAO().recalculateProductFilterFacetOprionsForProductsAndSkus(skuIDs=skuIDs);
+        // this.getService().getSlatwallProductSearchDAO().recalculateProductFilterFacetOprionsForProductsAndSkus(skuIDs=skuIDs);
 		
 		var productIDs = "2c9480847650a077017650af142f0970, 402810847651d69c017651f51a890c2b"; 
-        // this.getService().getSlatwallDefaultListingDAO().recalculateProductFilterFacetOprionsForProductsAndSkus(productIDs=productIDs);
+        // this.getService().getSlatwallProductSearchDAO().recalculateProductFilterFacetOprionsForProductsAndSkus(productIDs=productIDs);
 		
 		
-        this.getService().getSlatwallDefaultListingDAO()
+        this.getService().getSlatwallProductSearchDAO()
         .recalculateProductFilterFacetOprionsForProductsAndSkus(
             productIDs=productIDs,
             skuIDs=skuIDs

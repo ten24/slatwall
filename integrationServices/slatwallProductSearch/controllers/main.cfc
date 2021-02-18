@@ -2,8 +2,8 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 
 	property name="fw";
 	property name="integrationService";
-	property name="slatwallDefaultListingDAO";
-	property name="slatwallDefaultListingService";
+	property name="slatwallProductSearchDAO";
+	property name="slatwallProductSearchService";
 
 	this.publicMethods = "";
 
@@ -17,12 +17,12 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	
 	public function before( required struct rc ){
 		super.before(rc);
-    	arguments.rc.integration = this.getIntegrationService().getIntegrationByIntegrationPackage('slatwallDefaultListing');
+    	arguments.rc.integration = this.getIntegrationService().getIntegrationByIntegrationPackage('slatwallProductSearch');
 	}
 	
 	//rebuilds an algolia index
 	public void function reBuildIndex(required struct rc){
-	    this.getSlatwallDefaultListingDAO().rePopulateProductFilterFacetOptionTable();
+	    this.getSlatwallProductSearchDAO().rePopulateProductFilterFacetOptionTable();
             
 	    getFW().setView("main.blank");
 	}

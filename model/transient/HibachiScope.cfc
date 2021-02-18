@@ -68,6 +68,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// Slatwall Specific queue properties
 	property name="emailQueue" type="array";
 	
+	property name="integrationsData" type="struct" default={};
+	
 	// Deprecated Properties
 	property name="currentAccount";
 	property name="currentBrand";
@@ -700,6 +702,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			variables.isOnSlatwallCMS = !isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getSite().getApp());
 		}
 		return variables.isOnSlatwallCMS;
+	}
+	
+	
+	public struct function getIntegrationData(required struct integrationPackageName){
+	    var integrationsData = this.getIntegrationsData();
+	    
+	    if(!structKeyExists(integrationsData, arguments.integrationPackageName)){
+	        integrationsData[ integrationPackageName ] = {};
+	    }
+	    
+	    return integrationsData[ arguments.integrationPackageName ];
+	}
+	
+	public void function setIntegrationData(required struct integrationPackageName, required struct integrationData ){
+	    var integrationsData = this.getIntegrationsData();
+	    integrationsData[ arguments.integrationPackageName ] = arguments.integrationData;
 	}
 	
 }

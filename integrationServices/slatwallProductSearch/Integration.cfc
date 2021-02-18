@@ -49,7 +49,7 @@ Notes:
 component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
 	
 	public array function getEventHandlers(){
-		return ['Slatwall.integrationServices.slatwallDefaultListing.model.handler.SlatwallDefaultListingHandler'];
+		return ['Slatwall.integrationServices.slatwallProductSearch.model.handler.SlatwallProductSearchHandler'];
 	}
 	
 	
@@ -58,7 +58,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	}
 	
 	public string function getDisplayName() {
-		return "Slatwall Default Listing";
+		return "Slatwall Product Search";
 	}
 	
 }

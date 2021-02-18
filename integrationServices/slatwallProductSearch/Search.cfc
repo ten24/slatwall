@@ -48,9 +48,9 @@ Notes:
 */
 
 
-component accessors="true" output="false" displayname="SlatwallDefaultListingCFC" implements="Slatwall.integrationServices.ListingInterface" extends="Slatwall.integrationServices.BaseListing" {
+component accessors="true" output="false" displayname="SlatwallProductSearchCFC" implements="Slatwall.integrationServices.SearchInterface" extends="Slatwall.integrationServices.BaseSearch" {
 
-	property name="slatwallDefaultListingService" type="any" persistent="false";
+	property name="slatwallProductSearchService";
 
 
 	public any function testIntegration() {
@@ -58,11 +58,11 @@ component accessors="true" output="false" displayname="SlatwallDefaultListingCFC
 	}
 	
     public struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters){
-	    return this.getSlatwallDefaultListingService().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
+	    return this.getSlatwallProductSearchService().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
 	}
 
 	public struct function getProducts(requied struct appliedFilters){
-	    return this.getSlatwallDefaultListingService().getProducts( argumentCollection = arguments);
+	    return this.getSlatwallProductSearchService().getProducts( argumentCollection = arguments);
 	}
 
 }
