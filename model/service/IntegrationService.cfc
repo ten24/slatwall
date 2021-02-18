@@ -111,8 +111,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var beanName = "#arguments.integration.getIntegrationPackage()#IntegrationCFC";
 		if(this.hasBean(beanName)){
         	return this.getBean(beanName);
-		}
-		else{
+		} else {
 			// This should only happen when the integration is under development and source code is in some local env
 			logHibachi("Integration CFC #beanName# doesnot exists in the bean Factory");
 		}
@@ -285,13 +284,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     					    .instanceOf("Slatwall.integrationServices.#integrationPackage#.#integrationType#").asSingleton();
 				    }
 				    
-					
-					if(directoryExists( this.getApplicationValue('applicationRootMappingPath') & "/integrationServices/#integrationPackage#/model")) {
+				    
+				    var integrationDirectoryPath = this.getApplicationValue('applicationRootMappingPath') & "/integrationServices/#integrationPackage#";
+
+					if(directoryExists(  integrationDirectoryPath & "/model")) {
 						
-						//if we have entities then copy them into root model/entity
-						if( directoryExists( expandPath('/Slatwall') & "/integrationServices/#integrationPackage#/model/entity") ){
+						//if we have entities then copy them into root /model/entity
+						if( directoryExists(integrationDirectoryPath & "/model/entity") ){
 							
-							var modelList = directoryList( this.getApplicationValue('applicationRootMappingPath') & "/integrationServices/#integrationPackage#/model/entity" );
+							var modelList = directoryList( integrationDirectoryPath & "/model/entity" );
 							
 							for(var modelFilePath in modelList){
 								
