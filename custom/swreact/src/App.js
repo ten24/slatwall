@@ -7,6 +7,7 @@ import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
 const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
+const Checkout = lazyWithPreload(() => import('./pages/Checkout/Checkout'))
 
 const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/ProductDetail'))
 
@@ -25,6 +26,7 @@ const Address = lazyWithPreload(() => import('./pages/Address/Address'))
 const Attribute = lazyWithPreload(() => import('./pages/Attribute/Attribute'))
 const pageComponents = {
   Home,
+  Checkout,
   MyAccount,
   ProductListing,
   ProductDetail,
@@ -65,6 +67,7 @@ export default function App() {
         <Route path="/sp/:id" component={ProductDetail} />
         <Route path="/category-listing" component={CategoryListing} />
         <Route path="/my-account" component={MyAccount} />
+        <Route path="/checkout" component={Checkout} />
         <Route path="/MyAccount" component={MyAccount} />
         <Route path="/testing" component={Testing} />
         <Route exact path="/" component={Home} />
