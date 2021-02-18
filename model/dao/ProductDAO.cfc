@@ -595,7 +595,5 @@ Notes:
 			true
 			)>
 	</cffunction>
-	
-	
 </cfcomponent>
 

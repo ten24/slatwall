@@ -10,10 +10,6 @@
     	</cfif>
     </hb:HibachiEntityActionBar>
     
-    <!---
-    <hb:HibachiProcessCaller entity="#rc.integration#" action="slatwallimporter:main.preprocessintegration" processContext="importcsv" type="list" icon="upload icon-white" modal="true" />
-    --->
-    
     show some meanignful data here
     
 </cfoutput>

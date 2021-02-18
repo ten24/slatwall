@@ -48,8 +48,6 @@ Notes:
 */
 component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
 	
-	property name="algoliaService" type="any";
-	
 	public array function getEventHandlers(){
 		return ['Slatwall.integrationServices.slatwallDefaultListing.model.handler.SlatwallDefaultListingHandler'];
 	}

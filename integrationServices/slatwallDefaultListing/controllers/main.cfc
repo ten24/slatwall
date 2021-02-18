@@ -8,7 +8,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	this.publicMethods = "";
 
 
-	this.secureMethods="";
+	this.secureMethods="reBuildIndex";
 
 	public any function init(required any fw){
 		setFW(arguments.fw);

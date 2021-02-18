@@ -48,8 +48,9 @@ Notes:
 */
 component extends="Slatwall.model.service.HibachiService" persistent="false" accessors="true" output="false"{
 	
-	property name="slatwallDefaultListingDAO";
 	property name="productDAO";
+	property name="hibachiCacheService";
+	property name="slatwallDefaultListingDAO";
 
 	public struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters){
 
