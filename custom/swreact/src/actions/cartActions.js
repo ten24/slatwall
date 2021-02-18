@@ -1,5 +1,7 @@
 import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../services'
+import axios from 'axios'
+import { sdkURL } from '../services'
 
 export const REQUEST_CART = 'REQUEST_CART'
 export const RECEIVE_CART = 'RECEIVE_CART'
@@ -43,19 +45,42 @@ export const addToCart = (skuID, quantity = 1) => {
     }
   }
 }
-export const updateItemQuantity = (skuID, fulfillmentMethodID, quantity = 1) => {
+export const updateItemQuantity = (skuID, quantity = 1) => {
   return async dispatch => {
     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.updateItemQuantity({
-      'orderItem.sku.skuID': skuID,
-      'orderItem.qty': parseInt(quantity),
-      'orderItem.fulfillmentMethodID': fulfillmentMethodID,
-      returnJSONObjects: 'cart',
-    })
+    // const req = await SlatwalApiService.cart.updateItemQuantity({
+    //   'orderItem.sku.skuID': skuID,
+    //   'orderItem.qty': parseInt(quantity),
+    //   returnJSONObjects: 'cart',
+    // })
 
-    if (req.isSuccess()) {
-      dispatch(receiveCart(req.success().cart))
+    // if (req.isSuccess()) {
+    //   dispatch(receiveCart(req.success().cart))
+    // } else {
+    //   dispatch(receiveCart())
+    // }
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/updateOrderItemQuantity`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: {
+        orderItem: {
+          sku: {
+            skuID,
+          },
+          qty: quantity,
+        },
+        returnJSONObjects: 'cart',
+      },
+    })
+    if (response.status === 200) {
+      dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
     }

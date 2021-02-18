@@ -26,7 +26,7 @@ const CartLineItem = ({ orderItemID }) => {
   const { isFetching, orderItems, orderFulfillments } = useSelector(state => state.cart)
   const dispatch = useDispatch()
   const debounced = useDebouncedCallback(value => {
-    dispatch(updateItemQuantity(skuID, fulfillmentMethodID, value))
+    dispatch(updateItemQuantity(skuID, value))
   }, 1000)
   const orderItem = orderItems.filter(orderItem => {
     return orderItem.orderItemID === orderItemID
