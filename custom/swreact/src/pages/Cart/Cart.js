@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom'
 import { updateItemQuantity, removeItem, applyPromoCode, removePromoCode, getCart } from '../../actions/cartActions'
 import { useDebouncedCallback } from 'use-debounce'
 import { useEffect, useState } from 'react'
+import useFormatCurrency from '../../hooks/useFormatCurrency'
 
 const PageHeader = ({ title = 'Page Title' }) => {
   return (
@@ -23,23 +24,20 @@ const PageHeader = ({ title = 'Page Title' }) => {
 }
 
 const CartLineItem = ({ orderItemID }) => {
-  const { isFetching, orderItems, orderFulfillments } = useSelector(state => state.cart)
+  const { isFetching, orderItems } = useSelector(state => state.cart)
   const dispatch = useDispatch()
+  const [formatCurrency] = useFormatCurrency({})
+
   const debounced = useDebouncedCallback(value => {
     dispatch(updateItemQuantity(skuID, value))
   }, 1000)
   const orderItem = orderItems.filter(orderItem => {
     return orderItem.orderItemID === orderItemID
   })
-  const { price, quantity, sku, extendedPriceAfterDiscount, currencyCode, orderFulfillment } = orderItem[0]
+  const { price, quantity, sku, extendedPriceAfterDiscount, currencyCode } = orderItem[0]
   const { skuID, listPrice, imagePath, skuCode, product } = sku
   const { productName, urlTitle, brand } = product
   const { brandName } = brand
-  const fulfillmentMethodID = orderFulfillments
-    .filter(fulfillments => {
-      return fulfillments.orderFulfillmentID === orderFulfillment.orderFulfillmentID
-    })
-    .reduce((acc, orderFulfillment) => orderFulfillment.fulfillmentMethod.fulfillmentMethodID, '')
 
   const isBackordered = false
   const routing = useSelector(state => state.configuration.router)
@@ -71,10 +69,10 @@ const CartLineItem = ({ orderItemID }) => {
             <span className="text-muted mr-2">{skuCode}</span>
           </div>
           <div className="font-size-sm">
-            {`$${price} each `}
-            <span className="text-muted mr-2">{`($${listPrice} list)`}</span>
+            {`${formatCurrency(price)} each `}
+            <span className="text-muted mr-2">{`(${formatCurrency(listPrice)} list)`}</span>
           </div>
-          <div className="font-size-lg text-accent pt-2">{`$${extendedPriceAfterDiscount}`}</div>
+          <div className="font-size-lg text-accent pt-2">{formatCurrency(extendedPriceAfterDiscount)}</div>
         </div>
       </div>
       {isBackordered && (
@@ -205,12 +203,11 @@ const OrderNotes = () => {
 
 const Cart = () => {
   const { t, i18n } = useTranslation()
-
   const dispatch = useDispatch()
   const cart = useSelector(state => state.cart)
   let history = useHistory()
   const { subtotal, isFetching } = cart
-
+  const [formatCurrency] = useFormatCurrency({})
   useEffect(() => {
     dispatch(getCart())
   }, [dispatch])
@@ -243,7 +240,7 @@ const Cart = () => {
             <div className="cz-sidebar-static rounded-lg box-shadow-lg ml-lg-auto">
               <div className="text-center mb-4 pb-3 border-bottom">
                 <h2 className="h6 mb-3 pb-1">Subtotal</h2>
-                <h3 className="font-weight-normal">{`$${subtotal}`}</h3>
+                <h3 className="font-weight-normal">{formatCurrency(subtotal)}</h3>
               </div>
 
               <CartPromoBox />
