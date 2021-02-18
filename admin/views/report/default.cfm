@@ -48,25 +48,11 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfparam name="rc.report" type="any" />
 
 <cfoutput>
-	
-	<div class="row s-body-nav">
-	    <nav class="navbar navbar-default" role="navigation">
-	      	<div class="col-md-4 s-header-info">
-				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.report')#</h1>
-			</div>
-
-			<div class="col-md-8">
-
-			</div>
-		</nav>
-	</div>
-
-	<div class="row">
+	<div class="col-md-12">
 		<hb:HibachiMessageDisplay />
-		<hb:HibachiReportViewer report="#rc.report#" collectionList="#rc.orderCollectionList#" />
 	</div>
-		
-	</div>
+	<hb:HibachiReportViewer report="#rc.report#" collectionList="#rc.orderCollectionList#" />
 </cfoutput>

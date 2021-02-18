@@ -6,10 +6,9 @@ export const CLEAR_CART = 'CLEAR_CART'
 export const ADD_TO_CART = 'ADD_TO_CART'
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
 
-export const requestCart = loginToken => {
+export const requestCart = () => {
   return {
     type: REQUEST_CART,
-    loginToken,
   }
 }
 
@@ -20,7 +19,7 @@ export const receiveCart = cart => {
   }
 }
 
-export const clearCart = loginToken => {
+export const clearCart = () => {
   return {
     type: CLEAR_CART,
   }
@@ -28,54 +27,36 @@ export const clearCart = loginToken => {
 
 export const addToCart = (skuID, quantity = 1) => {
   return async dispatch => {
-    const loginToken = localStorage.getItem('loginToken')
+    dispatch(requestCart())
 
-    dispatch(requestCart(loginToken))
-
-    const req = await SlatwalApiService.cart.addOrderItem(
-      {
-        bearerToken: loginToken,
-        contentType: 'application/json',
-      },
-      {
-        skuID,
-        quantity,
-        returnJSONObjects: 'cart',
-      }
-    )
+    const req = await SlatwalApiService.cart.addItem({
+      skuID,
+      quantity,
+      returnJSONObjects: 'cart',
+    })
 
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))
+    } else {
+      dispatch(receiveCart())
     }
   }
 }
 export const removeFromCart = () => {
   return async dispatch => {
-    const loginToken = localStorage.getItem('loginToken')
-
-    dispatch(requestCart(loginToken))
-
-    const req = await SlatwalApiService.cart.get({
-      bearerToken: loginToken,
-      contentType: 'application/json',
-    })
-
-    if (req.success()) {
-      dispatch(receiveCart(req.success().cart))
-    }
+    // dispatch(requestCart(loginToken))
+    // const req = await SlatwalApiService.cart.removeItem()
+    // if (req.success()) {
+    //   dispatch(receiveCart(req.success().cart))
+    // }
   }
 }
 
 export const getCart = () => {
   return async dispatch => {
-    const loginToken = localStorage.getItem('loginToken')
+    dispatch(requestCart())
 
-    dispatch(requestCart(loginToken))
-
-    const req = await SlatwalApiService.cart.get({
-      bearerToken: loginToken,
-      contentType: 'application/json',
-    })
+    const req = await SlatwalApiService.cart.get()
 
     if (req.success()) {
       dispatch(receiveCart(req.success().cart))

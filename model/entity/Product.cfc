@@ -165,6 +165,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productDoorKnobSeries" ormtype="string" hb_formFieldType="select";
  property name="productBoredLockGrade" ormtype="string" hb_formFieldType="select";
  property name="productBoredLockStyle" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalFaceplate" ormtype="string" hb_formFieldType="select";
+ property name="productPaddleOrientation" ormtype="string" hb_formFieldType="select";
+ property name="productJambType" ormtype="string" hb_formFieldType="select";
+ property name="productAudit" ormtype="string";
+ property name="productProx" ormtype="boolean" hb_formatType="yesno";
+ property name="productScheduledEvents" ormtype="string";
+ property name="productPower" ormtype="string";
+ property name="productWeatherproof" ormtype="boolean" hb_formatType="yesno";
  property name="mechanicalHardwareFunction" ormtype="string" hb_formFieldType="select";
  property name="mechanicalHardwareBoltLatch" ormtype="string";
  property name="merchanicalLockSeries" ormtype="string";
@@ -174,6 +182,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="mechanicalKeying" ormtype="string" hb_formFieldType="select";
  property name="mechanicalStyle" ormtype="string";
  property name="productBumpStop" ormtype="boolean" hb_formatType="yesno";
+ property name="mechnicalKeyway" ormtype="string";
+ property name="productTumblerType" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalKeyway" ormtype="string";
  property name="mechanicalRekeyable" ormtype="boolean" hb_formatType="yesno";
  property name="mechanicalBodyMaterial" ormtype="string" hb_formFieldType="select";
  property name="mechanicalShackleMaterial" ormtype="string" hb_formFieldType="select";
@@ -211,6 +222,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productHingeMaterial" ormtype="string";
  property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
  property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
+ property name="productAutoModel" ormtype="string" hb_formFieldType="select";
+ property name="productModelYear" ormtype="string" hb_formFieldType="select";
+ property name="productAutoLockType" ormtype="string" hb_formFieldType="select";
+ property name="productAutoPartType" ormtype="string" hb_formFieldType="select";
+ property name="productAutoMake" ormtype="string" hb_formFieldType="select";
+ property name="productAutoLockCompatibility" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachineType" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachineCutByCode" ormtype="boolean" hb_formatType="yesno";
  property name="productKeyMachineDuplicate" ormtype="boolean" hb_formatType="yesno";
@@ -222,6 +239,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productToolMaterial" ormtype="string";
  property name="productMaterialThickness" ormtype="string";
  property name="productLock" ormtype="string" hb_formFieldType="select";
+ property name="productLockCompatibility" ormtype="string";
  property name="productMachineCompatibility" ormtype="string";
  property name="productPinSize" ormtype="string";
  property name="productLockBrand" ormtype="string";
@@ -1432,11 +1450,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeRelatedProduct(required any relatedProduct) {
 		arguments.relatedProduct.removeProduct( this );
 	}
-	
-	// Default-Sku (many-to-one)
-	public void function setDefaultSku(required any sku) {
-		arguments.sku.setProduct( this );
-	}
 
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
@@ -1610,6 +1623,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.assignedAttributeSetSmartList;
+	}
+	
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList=""){
+
+		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, defaultSku.price, defaultSku.listPrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, productType.productTypeID, productType.productTypeIDPath, defaultSku.imageFile, brand.brandID, brand.brandName, brand.urlTitle, productType.urlTitle";
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
+	
+	
+	public void function setDefaultSku(any sku){
+		if( !isNull(arguments.sku) ){
+			arguments.sku.setProduct(this);
+			variables.defaultSku = arguments.sku;
+		} else{
+			variables.delete('defaultSku');
+		}
 	}
 
 	// ==================  END:  Overridden Methods ========================

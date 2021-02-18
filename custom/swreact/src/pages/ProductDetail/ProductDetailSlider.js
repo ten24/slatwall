@@ -10,42 +10,31 @@ const ProductDetailSlider = ({ productID }) => {
   }
   useEffect(() => {
     let didCancel = false
-    const loginToken = localStorage.getItem('loginToken')
     if (!relatedProducts.isLoaded) {
-      SlatwalApiService.products
-        .getRelatedProducts(
-          {
-            bearerToken: loginToken,
-            contentType: 'application/json',
-          },
-          { productID }
-        )
-        .then(response => {
-          if (response.isSuccess() && !didCancel) {
-            let newProducts = response.success().products
-            // TODO: Fix this.....
-            renameKeysInArrayOfObjects(newProducts, 'relatedProduct_', '')
+      SlatwalApiService.products.getRelatedProducts({ productID }).then(response => {
+        if (response.isSuccess() && !didCancel) {
+          let newProducts = response.success().relatedProducts
 
-            setRelatedProducts({
-              ...relatedProducts,
-              isLoaded: true,
-              products: newProducts,
-            })
-          } else {
-            setRelatedProducts({
-              ...relatedProducts,
-              isLoaded: true,
-              err: 'oops',
-            })
-          }
-        })
+          renameKeysInArrayOfObjects(newProducts, 'relatedProduct_', '')
+          setRelatedProducts({
+            ...relatedProducts,
+            isLoaded: true,
+            products: newProducts,
+          })
+        } else {
+          setRelatedProducts({
+            ...relatedProducts,
+            isLoaded: true,
+            err: 'oops',
+          })
+        }
+      })
     }
 
     return () => {
       didCancel = true
     }
   }, [relatedProducts, setRelatedProducts, productID])
-
   return <ProductSlider title="Related Products" sliderData={relatedProducts.products} />
 }
 export default ProductDetailSlider

@@ -137,6 +137,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public any function getCurrentRequestSiteLocation(){
+		
 		if(!structKeyExists(variables,'currentRequestSiteLocation')){
 			var site = getCurrentRequestSite();
 			if ( !isNull(site) ){
@@ -148,9 +149,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		}
 		
 		if(!StructKeyExists(variables, 'currentRequestSiteLocation') || isNull(variables.currentRequestSiteLocation)){
-		return;
-
+		    return;
 		}
+		
 		return variables.currentRequestSiteLocation;
 	}
 	
@@ -444,8 +445,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var availablePropertyList = "";
 		
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'order')){
-			availablePropertyList &="orderItems.calculatedListPrice,orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,fulfillmentHandlingFeeTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";
-		}
+			availablePropertyList &="orderItems.orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,fulfillmentHandlingFeeTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";		}
 		
 		//orderItemData
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'orderItem')){

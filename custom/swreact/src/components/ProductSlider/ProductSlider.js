@@ -1,12 +1,13 @@
 import Slider from 'react-slick'
 import ProductCard from '../Account/ProductCard/ProductCard'
-const ProductSlider = ({ children, sliderData, settings, title }) => {
+const ProductSlider = ({ children, sliderData, settings, title, slidesToShow = 4 }) => {
   settings = settings
     ? settings
     : {
         dots: false,
-        infinite: true,
-        slidesToShow: 4,
+        infinite: sliderData && sliderData.length >= slidesToShow,
+        // infinite: true,
+        slidesToShow: slidesToShow,
         slidesToScroll: 1,
         responsive: [
           {
@@ -29,19 +30,17 @@ const ProductSlider = ({ children, sliderData, settings, title }) => {
           },
         ],
       }
+
   return (
     <div className="container">
       <div className="featured-products bg-white text-center pb-5 pt-5">
         <h3 className="h3 mb-0">{title}</h3>
-        {/* <a href="/All" className="text-link">
-                  Shop All Specials
-        </a> */}
         {children}
-
         <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
-          {sliderData.map((slide, index) => {
-            return <ProductCard {...slide} key={index} imgKey={index} />
-          })}
+          {sliderData &&
+            sliderData.map((slide, index) => {
+              return <ProductCard {...slide} key={index} />
+            })}
         </Slider>
       </div>
     </div>

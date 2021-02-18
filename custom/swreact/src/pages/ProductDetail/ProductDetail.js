@@ -6,9 +6,11 @@ import ProductPageHeader from './ProductPageHeader'
 import ProductPageContent from './ProductPageContent'
 import { SlatwalApiService } from '../../services'
 import ProductDetailSlider from './ProductDetailSlider'
+import { useLocation } from 'react-router-dom'
 
 const ProductDetail = props => {
-  const { state = {}, pathname } = props.location
+  let { pathname } = useLocation()
+  const { state = {} } = props.forwardState || props.location
   const [product, setProduct] = useState({ ...state, isLoaded: false })
 
   if (product.productID !== null && state.productID !== product.productID) {
@@ -16,22 +18,15 @@ const ProductDetail = props => {
   }
   useEffect(() => {
     let didCancel = false
-    const loginToken = localStorage.getItem('loginToken')
 
     if (product.productID == null && !product.isLoaded) {
       const urlTitle = pathname.split('/').reverse()
       SlatwalApiService.products
-        .list(
-          {
-            bearerToken: loginToken,
-            contentType: 'application/json',
+        .list({
+          filter: {
+            urlTitle: urlTitle[0],
           },
-          {
-            filter: {
-              urlTitle: urlTitle[0],
-            },
-          }
-        )
+        })
         .then(response => {
           if (response.isSuccess() && !didCancel) {
             const records = response.success().pageRecords
@@ -44,7 +39,7 @@ const ProductDetail = props => {
             setProduct({
               ...product,
               isLoaded: true,
-              err: 'opps',
+              err: 'oops',
             })
           }
         })

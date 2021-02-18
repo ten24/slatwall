@@ -221,9 +221,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!isNull(this.getPriceGroup())){
 			var priceGroup = this.getPriceGroup();
 		}else{
-			var priceGroup = getService("orderService").getBestApplicablePriceGroup();
+			var priceGroup = getService("orderService").getBestApplicablePriceGroup(getOrder());
 		}
 		
+		var priceGroupArray = [];
+		if(!isNull(priceGroup)){
+			var priceGroupArray = [priceGroup];
+		}
 		
 		if( IsNull(this.getSku()) ) {
 			return;
@@ -235,7 +239,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				currencyCode= arguments.currencyCode, 
 				quantity= arguments.quantity, 
 				accountID= this.getAccount().getAccountID(),
-				priceGroups = [priceGroup]
+				priceGroups = priceGroupArray
 			);
 			
 		} else {
@@ -243,7 +247,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return this.getSku().getPriceByCurrencyCode( 
 				currencyCode= this.getCurrencyCode(), 
 				quantity= arguments.quantity,
-				priceGroups = [priceGroup]
+				priceGroups = priceGroupArray
 			);
 			
 		}
@@ -640,7 +644,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ===================== START: Helper Methods =========================
 
 	public any function getAssignedOrderItemAttributeSets() {
-		if(!isNull(getSku())) {
+		
+		if(
+			!isNull(getSku()) 
+			&&structKeyExists(request,'context') 
+			&& structKeyExists(request.context,'fw')
+			&& request.context.fw.getSubsystem(request.context[request.context.fw.getAction()]) == 'admin'
+		) {
 			return getSku().getAssignedOrderItemAttributeSetSmartList().getRecords();
 		}
 

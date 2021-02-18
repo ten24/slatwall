@@ -73,6 +73,9 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 		
 		request.slatwallScope.getAccount().setSuperUserFlag(1);
 		request.slatwallScope.getAccount().setFirstName('BigBoy');
+		
+		variables.mockService.setupMockBeanFactory(request.slatwallScope);
+
 
 		// Setup a debugging output array
 		variables.debugArray = [];

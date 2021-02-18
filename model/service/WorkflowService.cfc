@@ -266,7 +266,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				getService('hibachiEventService').announceEvent('beforeWorkflowTriggerPopulate',{workflowTrigger=arguments.workflowTrigger,timeout=timeout});
 				
-				if(	!isNull(arguments.workflowTrigger.getCollection()) ){
+				if(	arguments.workflowTrigger.getCollectionBasedFlag() && !isNull(arguments.workflowTrigger.getCollection()) ){
 					
 					var scheduleCollection = arguments.workflowTrigger.getCollection();
 					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
@@ -409,8 +409,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	private string function getFormatedExecutionTime(required numeric start, required numeric end){
-		var millis = numberFormat( end - start );
-		var formatedValue = 'Duration: ' & millis & ' ms';
+		var millis = end - start;
+		var formatedValue = 'Duration: ' & numberFormat(millis) & ' ms';
 		
 		//tags to simplify search
 		if(millis > 300000){
@@ -543,6 +543,20 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				break; 
 
+			case 'utility' :
+				// Append extra data passed in the WorkflowAction
+				structAppend(arguments.data, arguments.workflowTaskAction.getProcessMethodDataStruct(), true);
+				
+				try{
+					var processMethod = getService('HibachiUtilityService').invokeMethod(arguments.workflowTaskAction.getProcessMethod(), arguments.data );
+					actionSuccess = true;
+				}catch(any e){
+					actionSuccess = false;
+				}
+				
+				
+				break;
+
 			//IMPORT
 			case 'import' :
 				// TODO: Impliment This
@@ -639,7 +653,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
 	   
-		getHibachiScope().setObjectPopulateMode( 'private' );;
+		getHibachiScope().setObjectPopulateMode( 'private' );
 		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {

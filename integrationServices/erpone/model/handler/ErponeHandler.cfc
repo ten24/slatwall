@@ -42,4 +42,8 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	public void function afterAccountAddressSaveSuccess(any slatwallScope, any entity, any eventData) {
 		addToQueue(arguments.entity.getAccount()  , "pushAccountDataToErpOne");
 	}
+	
+	public void function afterOrderSaveSuccess(any slatwallScope, any entity, any eventData) {
+		addToQueue(arguments.entity , "pushOrderDataToErpOne");
+	}
 }

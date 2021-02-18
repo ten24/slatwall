@@ -1,11 +1,10 @@
-import { useEffect } from 'react'
-import { getUser } from '../../../actions/userActions'
-import { logout } from '../../../actions/authActions'
 import { connect } from 'react-redux'
-import AccountLayout from '../AccountLayout/AccountLayout'
+import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
+import { isTokenValid } from '../../../utils'
 
 const AccountRecentOrders = () => {
+  //console.log('isTokenValid()', isTokenValid())
   return (
     <>
       <h3 className="h4 mt-5 mb-3">Most Recent Order</h3>
@@ -35,11 +34,7 @@ const AccountRecentOrders = () => {
   )
 }
 
-const AccountOverview = ({ customBody, crumbs, title, contentTitle, getUser }) => {
-  useEffect(() => {
-    getUser()
-  }, [])
-
+const AccountOverview = ({ customBody, crumbs, title, contentTitle }) => {
   return (
     <AccountLayout crumbs={crumbs} title={title}>
       <AccountContent contentTitle={contentTitle} customBody={customBody} />
@@ -49,15 +44,9 @@ const AccountOverview = ({ customBody, crumbs, title, contentTitle, getUser }) =
 }
 const mapStateToProps = state => {
   return {
-    ...state.preload.accountOverview,
+    ...state.configuration.accountOverview,
     user: state.userReducer,
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getUser: async () => dispatch(getUser()),
-    logout: async () => dispatch(dispatch(logout())),
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(AccountOverview)
+export default connect(mapStateToProps)(AccountOverview)

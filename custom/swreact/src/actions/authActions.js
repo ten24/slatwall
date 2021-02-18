@@ -12,10 +12,10 @@ export const requestLogin = () => {
   }
 }
 
-export const receiveLogin = loginToken => {
+export const receiveLogin = isAuthenticanted => {
   return {
     type: RECEIVE_LOGIN,
-    loginToken,
+    isAuthenticanted,
   }
 }
 
@@ -32,6 +32,19 @@ export const requestLogOut = () => {
   }
 }
 export const logout = () => {
+  return async dispatch => {
+    const response = await SlatwalApiService.auth.revokeToken()
+    dispatch(softLogout())
+
+    if (response.isSuccess()) {
+      toast.success('Logout Successful')
+    } else {
+      toast.error('Logout failed. Please close your browser')
+    }
+  }
+}
+
+export const softLogout = () => {
   return async dispatch => {
     dispatch(requestLogOut())
     dispatch(clearUser())
@@ -54,10 +67,14 @@ export const login = (email, password) => {
         dispatch(errorLogin(req.toString()))
         toast.error('Incorrect Username or Password')
       } else {
-        dispatch(receiveLogin(req.success().token))
+        dispatch(receiveLogin({ isAuthenticanted: true }))
         dispatch(receiveUser(req))
         toast.success('Login Successful')
       }
     }
   }
+}
+
+export const createAccount = user => {
+  return async dispatch => {}
 }

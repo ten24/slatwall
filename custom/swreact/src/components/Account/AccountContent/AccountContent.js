@@ -1,6 +1,6 @@
 import { useHistory } from 'react-router-dom'
 
-const AccountContent = ({ customBody, contentTitle }) => {
+const AccountContent = ({ customBody = '', contentTitle = '' }) => {
   let history = useHistory()
 
   return (
@@ -14,7 +14,9 @@ const AccountContent = ({ customBody, contentTitle }) => {
       <div
         onClick={event => {
           event.preventDefault()
-          history.push(event.target.getAttribute('href'))
+          if (event.target.getAttribute('href')) {
+            history.push(event.target.getAttribute('href'))
+          }
         }}
         dangerouslySetInnerHTML={{
           __html: customBody,

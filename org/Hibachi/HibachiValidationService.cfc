@@ -985,6 +985,57 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 
+
+	public boolean function validate_minPersistedCollection(required any object, required string propertyIdentifier, required numeric constraintValue ){
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		
+		if( !isNull(propertyObject) ){
+			
+			if(
+				!arguments.object.isProcessObject() 
+				&& getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(arguments.object.getClassName(), arguments.propertyIdentifier)
+			){
+				var propertyCollection = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#CollectionList");
+				propertyCollection.setPageRecordsShow(constraintValue + 1);
+				var propertyValue = propertyCollection.getPageRecords(formatRecords=false);
+
+			} else {
+				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			}
+		}
+
+		if( isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) >= arguments.constraintValue) ){
+			return true;
+		}
+
+		return false;
+	}
+
+
+	public boolean function validate_maxPersistedCollection(required any object, required string propertyIdentifier, required numeric constraintValue ){
+
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if( !isNull(propertyObject) ){
+			if(
+				!arguments.object.isProcessObject() 
+				&& getService('hibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(arguments.object.getClassName(), arguments.propertyIdentifier)
+			){
+				var propertyCollection = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#CollectionList");
+				propertyCollection.setPageRecordsShow(arguments.constraintValue+1);
+				var propertyValue = propertyCollection.getPageRecords(formatRecords=false);
+
+			} else {
+				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			}
+		}
+
+		if( isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) <= arguments.constraintValue) ){
+			return true;
+		}
+
+		return false;
+	}
+
 	public boolean function validate_unique(required any object, required string propertyIdentifier, boolean constraintValue=true) {
 		if(!arguments.constraintValue){
 			return true;

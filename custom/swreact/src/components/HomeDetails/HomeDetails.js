@@ -2,8 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
+//        local.homeContentColumns.addFilter("urlTitlePath","%content-columns/%","LIKE")
 
-function HomeDetails({ homeContent }) {
+function HomeDetails(props) {
+  let homeContent = []
+  Object.keys(props).map(key => {
+    if (key.includes('content-columns/')) {
+      homeContent.push(props[key])
+    }
+  })
   let history = useHistory()
 
   return (
@@ -18,7 +25,9 @@ function HomeDetails({ homeContent }) {
                 <p
                   onClick={event => {
                     event.preventDefault()
-                    history.push(event.target.getAttribute('href'))
+                    if (event.target.getAttribute('href')) {
+                      history.push(event.target.getAttribute('href'))
+                    }
                   }}
                   dangerouslySetInnerHTML={{ __html: section.customBody }}
                 />

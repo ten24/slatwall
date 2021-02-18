@@ -1,0 +1,6 @@
+{
+	"properties": {
+		"fromAccountID": [{ "required": true }],
+		"toAccountID": [{ "required": true }]
+	}
+}

@@ -1,21 +1,24 @@
 import React, { useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { getUser } from '../../actions/userActions'
+import { useTranslation } from 'react-i18next'
+
 const AccountBubble = ({ isAuthenticated, name }) => {
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
 
   useEffect(() => {
     dispatch(getUser())
   }, [dispatch])
   return (
     <>
-      <div className="navbar-tool-icon-box">
+      <div className="navbar-tool-icon-box d-flex justify-content-center align-items-center">
         <i className="far fa-user"></i>
       </div>
       <div className="navbar-tool-text ml-n3">
         <small>
           Hello, {isAuthenticated && name}
-          {!isAuthenticated && 'Sign in'}
+          {!isAuthenticated && t('frontend.account.sign_in')}
         </small>
         My Account
       </div>

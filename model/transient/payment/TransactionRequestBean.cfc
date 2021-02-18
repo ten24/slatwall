@@ -385,7 +385,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	
 	public string function getOriginalProviderTransactionID(){
 		if(structKeyExists(variables,'originalPaymentTransaction')){
-			return getOriginalPaymentTransaction.getProviderTransactionID();
+			return getOriginalPaymentTransaction().getProviderTransactionID();
 		}
 		if(structKeyExists(variables,'originalProviderTransactionID')){
 			return variables.originalProviderTransactionID;

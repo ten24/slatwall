@@ -1,20 +1,70 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { ActionBanner, SignUpForm } from '..'
 import styles from './Footer.module.css'
 import logo from '../../assets/images/sb-logo-white.png'
+import { useHistory } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
-function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDate, actionBannerDisable, formLink }) {
+function Footer() {
+  const { t, i18n } = useTranslation()
+  let history = useHistory()
+  const formLink = useSelector(state => state.configuration.footer.formLink)
+  const contentStore = useSelector(state => {
+    return Object.keys(state.content)
+      .map(key => {
+        if (state.content[key] && state.content[key].setting) {
+          state.content[key].key = key
+          return state.content[key]
+        }
+        return null
+      })
+      .filter(item => {
+        return item
+      })
+      .map(content => {
+        return content.key.includes(`footer`) ? content : null
+      })
+      .filter(item => {
+        return item
+      })
+      .sort((a, b) => {
+        return a.sortOrder - b.sortOrder
+      })
+  }, {})
+
+  // These will be required to be named the correct things
+  let getInTouch,
+    stayInformed,
+    siteLinks = ''
+  if (contentStore.length) {
+    getInTouch = contentStore.map(content => (content.key === 'footer/get-in-touch' ? content : null)).filter(item => item)
+    getInTouch = getInTouch.length ? getInTouch[0].customBody : ''
+
+    stayInformed = contentStore.map(content => (content.key === 'footer/stay-informed' ? content : null)).filter(item => item)
+    stayInformed = stayInformed.length ? stayInformed[0].customBody : ''
+
+    siteLinks = contentStore.map(content => (content.key === 'footer/site-links' ? content : null)).filter(item => item)
+    siteLinks = siteLinks.length ? siteLinks[0].customBody : ''
+  }
+
   return (
     <footer className="pt-5">
-      {actionBanner.display && !actionBannerDisable && <ActionBanner {...actionBanner} />}
-
+      <ActionBanner />
       <div className={`${styles.bottomBar} p-5`}>
         <div className="container">
           <div className="row pt-2">
             <div className="col-md-2 col-sm-6">
-              <div className="widget widget-links pb-2 mb-4" dangerouslySetInnerHTML={{ __html: siteLinks }} />
+              <div
+                className="widget widget-links pb-2 mb-4"
+                onClick={event => {
+                  event.preventDefault()
+                  if (event.target.getAttribute('href')) {
+                    history.push(event.target.getAttribute('href'))
+                  }
+                }}
+                dangerouslySetInnerHTML={{ __html: siteLinks }}
+              />
             </div>
             <div className="col-md-4 col-sm-6">
               <div className="widget widget-links pb-2 mb-4" dangerouslySetInnerHTML={{ __html: getInTouch }} />
@@ -32,50 +82,14 @@ function Footer({ actionBanner, getInTouch, siteLinks, stayInformed, copywriteDa
         <div className="container">
           <div className="row">
             <div className="col-md-6 text-center text-md-left mb-4 text-light">
-              <img className="w-50" src={logo} alt="Stone & Berg Logo" />
+              <img className="w-50" src={logo} alt={t('frontend.logo')} />
             </div>
-            <div className="col-md-6 font-size-xs text-center text-md-right mb-4">{`@${copywriteDate} `} All rights reserved. Stone and Berg Company Inc</div>
+            <div className="col-md-6 font-size-xs text-center text-md-right mb-4">{`@${new Date().getFullYear()} ${t('frontend.copywrite')}`}</div>
           </div>
         </div>
       </div>
     </footer>
   )
 }
-Footer.propTypes = {
-  actionBanner: PropTypes.object,
-  getInTouch: PropTypes.string,
-  siteLinks: PropTypes.string,
-  stayInformed: PropTypes.string,
-  copywriteDate: PropTypes.number,
-  formLink: PropTypes.string,
-  actionBannerDisable: PropTypes.bool,
-}
 
-Footer.defaultProps = {
-  actionBanner: {
-    display: true,
-    markup: '',
-  },
-  getInTouch: '',
-  siteLinks: '',
-  stayInformed: '',
-  copywriteDate: '',
-  formLink: 'https://jster.us7.list-manage.com/subscribe/post?u=XXXX&id=XXXXXX',
-  actionBannerDisable: false,
-}
-
-function mapStateToProps(state) {
-  return {
-    actionBanner: {
-      display: true,
-      markup: state.preload.stackedContent['footer/contact-us'],
-    },
-    getInTouch: state.preload.stackedContent['footer/get-in-touch'],
-    siteLinks: state.preload.stackedContent['footer/site-links'],
-    stayInformed: state.preload.stackedContent['footer/stay-informed'],
-    copywriteDate: state.preload.stackedContent['footer/copywriteDate'],
-    formLink: state.preload.footer.formLink,
-  }
-}
-
-export default connect(mapStateToProps)(Footer)
+export default Footer

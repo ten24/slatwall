@@ -133,10 +133,10 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
 	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save", boolean updateOrderAmounts=false, boolean updateShippingMethodOptions=false) {
-		super.saveOrderFulfillment(argumentCollection=arguments);
+		return super.saveOrderFulfillment(argumentCollection=arguments);
 	}
 
 	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=false,boolean updateCalculatedProperties=false, boolean updateShippingMethodOptions=true) {
-		super.saveOrderItem(argumentCollection=arguments);
+		return super.saveOrderItem(argumentCollection=arguments);
 	}
 }

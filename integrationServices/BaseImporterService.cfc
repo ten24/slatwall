@@ -60,7 +60,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiEntityQueueService";
 	property name = "hibachiEntityQueueDAO";
 	property name = "OptionDAO";
-	
+	property name = "OrderDAO";
 	
 	public any function init() {
 	    super.init(argumentCollection = arguments);
@@ -1442,18 +1442,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	struct mapping, 
     	struct propertyMetaData
     ){
-    	
 		//create new fullfillment
 	    return [{
 	    	"orderFulfillmentID"	   : "",
-            "remoteOrderFulfillmentID" : arguments.data.remoteOrderID,
+            "remoteID"				   : arguments.data.remoteOrderID,
             "currencyCode"			   : arguments.data.currency_code,
             //this defaultValue for FulfillmentMethod is `Shipping`
             "fulfillmentMethod"        : {
             	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
             },
             "shippingAddress"		   : {
-            		  "name"		   : this.getAddressService().getAddressName(arguments.data.Address),
+            		  "name"		   : this.getAddressService().getAddressName(arguments.data.FullAddress),
 	                  "streetAddress"  : arguments.data.ShippingAddress_streetAddress,
 	                  "street2Address" : arguments.data.ShippingAddress_street2Address,
 	                  "city"           : arguments.data.ShippingAddress_city,
@@ -1463,5 +1462,65 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	           },
         }];
     }
+    
+    /////////////////.                  Order Delivery
+
+    public struct function generateOrderDeliveryItemOrderDelivery( struct data, struct mapping, struct propertyMetaData ){
+    	var mapping = this.getMappingByMappingCode("orderDelivery");
+    	var transformedDeliveryData = this.transformMappingData(
+    			mapping = mapping,
+    			data = arguments.data
+    		);
+    		
+    	var tmpDelivery = this.newOrderDelivery();
+    	this.resolveEntityDependencies(entity = tmpDelivery, entityQueueData = transformedDeliveryData, mapping = mapping );
+  
+    	if(tmpDelivery.hasErrors()){
+			this.logHibachi("Unable to resolve OrderDelivery dependencies, Errors: #serializeJson(tmpDelivery.getErrors())#");
+			return {};
+    	}
+    	
+    	transformedDeliveryData.delete('__sourceData');
+    	transformedDeliveryData.delete('__dependencies');
+    	return transformedDeliveryData;
+    }
+    
+    public any function generateOrderDeliveryItemStock( struct data, struct mapping, struct propertyMetaData ){
+		
+	    var skuID = getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID).skuID;
+        if (!isNull(skuID) && !this.hibachiIsEmpty(skuID) ){
+	        var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	            	        "entityName"  : 'Location',
+	            	        "uniqueKey"   : 'remoteID',
+	            	        "uniqueValue" : arguments.data.PickupLocationRemoteID
+	            	    ); 
+	            
+	        if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
+	            // fallback to `Default Location` 
+	            locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
+	        }
+            
+	    //Find if we have a stock for this sku and location.
+	    var stock = this.getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
+	    
+		    if( !isNull(stock) ){
+		    	return { "stockID" : stock.getstockID() };
+		    }
+			    
+		    //create new stock
+		    return {
+	            "stockID" : "",
+	            "sku": {
+	                    "skuID": skuID
+	           },
+	            "location" :{
+	                "locationID" : locationID
+	            }
+	        };
+        }
+        return {};
+        
+        //dont create stock if there is no locationID / skuID
+	}
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 }

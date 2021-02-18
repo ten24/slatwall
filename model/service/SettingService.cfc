@@ -299,6 +299,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
 			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
+			globalIntegrationRequestLog = {fieldType="yesno",defaultValue=0},
+			globalIntegrationRequestLogExpirationDays = {fieldtype="text", defaultValue=30, validate={dataType="numeric",required=true,maxValue=180}},
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -343,6 +345,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				listingMultiselectEntityName="ShippingMethod"
 			},
 			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=1},
+			orderTemplateDaysAllowedToEditNextOrderTemplate = {fieldtype="text", defaultValue="2", validate={dataType="numeric",required=true}},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 
@@ -398,6 +401,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
 			siteOrderTemplateEligibleShippingMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="ShippingMethod"},
+			siteWishlistShareEmailTemplate = { fieldtype="select", defaultValue="" },
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
@@ -640,11 +644,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "globalTranslateLocales":
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
-				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
+				var optionSL = getMeasurementService().getMeasurementUnitCollectionList();
 				optionSL.addFilter('measurementType', 'weight');
-				optionSL.addSelect('unitName', 'name');
-				optionSL.addSelect('unitCode', 'value');
-				return optionSL.getRecords();
+				optionSL.setDisplayProperties('unitName|name,unitCode|value');
+				return optionSL.getRecords(formatRecords=true);
 			case "orderTemplateDefaultFrequencyTerm" :
 				var termCollection = this.getTermCollectionList();
 				termCollection.setDisplayProperties('termID|value,termName|name');
@@ -675,6 +678,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('orderOriginName', 'name');
 				optionSL.addSelect('orderOriginID', 'value');
 				return optionSL.getRecords();
+			case "siteWishlistShareEmailTemplate":
+			    return getEmailService().getEmailTemplateOptions( "OrderTemplate" );
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "ShippingMethodRateHandlingFeeType" :

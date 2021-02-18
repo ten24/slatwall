@@ -1,7 +1,10 @@
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const CartMenuItem = ({ orderCount, total }) => {
+  const { t, i18n } = useTranslation()
+
   return (
     <div className="navbar-tool ml-3">
       <Link className="navbar-tool-icon-box bg-secondary" to="/cart">
@@ -9,7 +12,7 @@ const CartMenuItem = ({ orderCount, total }) => {
         <i className="far fa-shopping-cart"></i>
       </Link>
       <Link className="navbar-tool-text" to="/cart">
-        <small>My Cart</small>${total}
+        <small>{t('frontend.cart.my')}</small>${total}
       </Link>
     </div>
   )

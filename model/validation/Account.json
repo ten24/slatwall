@@ -50,12 +50,12 @@
 			},
 			{
 				"contexts": "createPassword",
-			    "conditions": "doesNotHasRemoteID",
+				"conditions": "doesNotHasRemoteID",
 				"required": true
 			}
 		],
-		"orders": [{ "contexts": "delete", "maxCollection": 0 }],
-		"productReviews": [{ "contexts": "delete", "maxCollection": 0 }],
+		"orders": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
+		"productReviews": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
 		"cmsAccountID": [{ "contexts": "save", "uniqueOrNull": true }],
 		"nonIntegrationAuthenticationExistsFlag": [
 			{ "contexts": "createPassword", "eq": false },
@@ -75,8 +75,12 @@
 				"method": "isPrimaryMethodExpired"
 			}
 		],
-		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minCollection": 1 }],
+		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minPersistedCollection": 1 }],
 		"ownerAccount": [{ "contexts": "delete", "method": "canDeleteByOwner" }],
-		"childAccountRelationships": [{ "contexts": "delete", "maxCollection": 0 }]
+		"childAccountRelationships": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
+		"username": [
+			{ "contexts": "save", "method": "getUsernameNotInUseFlag" },
+			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount" }
+		]
 	}
 }

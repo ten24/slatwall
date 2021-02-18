@@ -128,6 +128,9 @@ component extends="framework.one" {
 	}
 
 	public string function getEnvironment() {
+		if ( isServerNameAnIP() ) {
+			return '';
+		}
 		for(var i = 1; i <= arrayLen(variables.framework.hibachi.availableEnvironments); i++){
 			if( structKeyExists(variables.framework.hibachi, '#variables.framework.hibachi.availableEnvironments[i]#UrlPattern')){
 				var currentEnvironmentUrlPattern = variables.framework.hibachi['#variables.framework.hibachi.availableEnvironments[i]#UrlPattern'];
@@ -378,6 +381,13 @@ component extends="framework.one" {
 			
 		}
 		
+		if( !getHibachiScope().hasApplicationValue("applicationEnvironment") || getHibachiScope().getApplicationValue("applicationEnvironment") == '' ){
+			var environment = getEnvironment();
+			if( environment != '' ) {
+				getHibachiScope().setApplicationValue("applicationEnvironment", environment);
+			}
+		}
+		
 		//Sets the correct site for api calls.
 		//set custom headers on rc
         if( StructKeyExists(httpRequestData, "headers") ) {
@@ -439,31 +449,7 @@ component extends="framework.one" {
 		}
 		//check if we have the authorization header
 		if(len(AuthToken)){
-
-			var authorizationHeader = AuthToken;
-			var prefix = 'Bearer ';
-			//get token by stripping prefix
-			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
-			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-
-			if(jwt.verify()){
-
-				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
-				if(!isNull(jwtAccount)){
-					jwtAccount.setJwtToken(jwt);
-					getHibachiScope().getSession().setAccount( jwtAccount );
-					
-					if(structKeyExists(url,'token')){
-						var accountAuthentication = getHibachiScope().getDAO('accountDAO').getActivePasswordByAccountID(jwtAccount.getAccountID());
-						if(!isNull(accountAuthentication)){
-							getHibachiScope().getSession().setAccountAuthentication( accountAuthentication );
-						}
-						getHibachiScope().getService("hibachiSessionService").persistSession(true);
-			      location(replace(REReplaceNoCase(CGI['request_url'], '&?token=[^&]+', ''), '/index.cfm', ''), false, 301);
-					}
-				}
-			}
-
+			getHibachiScope().getService("hibachiSessionService").setAccountSessionByAuthToken(AuthToken);
 		}
 
 		// Call the onEveryRequest() Method for the parent Application.cfc
@@ -1159,15 +1145,12 @@ component extends="framework.one" {
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
 
-		if(getHibachiScope().getPersistSessionFlag()) {
-			getHibachiScope().getService("hibachiSessionService").persistSession();
-		}
-		
-		if(!getHibachiScope().getORMHasErrors()) {
+		if( !getHibachiScope().getORMHasErrors() ){
+		    if( getHibachiScope().getPersistSessionFlag() ){
+	    		getHibachiScope().getService("hibachiSessionService").persistSession();
+			}
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}
-		
-		
 
 		// Commit audit queue
 		getHibachiScope().getService("hibachiAuditService").commitAudits();
