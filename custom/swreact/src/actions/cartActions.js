@@ -138,7 +138,7 @@ export const getCart = () => {
 
     const req = await SlatwalApiService.cart.get()
 
-    if (req.success()) {
+    if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))
     }
   }
