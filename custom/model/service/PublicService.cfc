@@ -126,8 +126,27 @@ component extends="Slatwall.model.service.PublicService" {
 	    param name="arguments.data.productID";
 	    param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        var optsList = []
+        var defaultSelectedOptions = ''
+        var product = getService("productService").getProduct( arguments.data.productID )
+        var optionGroupsArr = product.getOptionGroups()
+        var defaultSku = product.getDefaultSku()
+        if(!isNull(defaultSku)){
+        defaultSelectedOptions = defaultSku.getOptionsIDList()
+            for(var optionGroup in optionGroupsArr) {
+                var options = product.getOptionsByOptionGroup( optionGroup.getOptionGroupID() )
+                var group = []
+                for(var option in options) {
+                    ArrayAppend(group,{"optionID": option.getOptionID()
+                    ,"optionName": option.getOptionName()
+                    ,"optionGroupName": optionGroup.getOptionGroupName()} )
+                }
+                ArrayAppend(optsList, {"groupName": optionGroup.getOptionGroupName(),
+                "options": group})
+            }
+        }
+ 
         
-      
       var skuCollectionList = getService('SkuService').getSkuCollectionList();
 	    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
          skuCollectionList.addFilter('product.productID',trim(arguments.data.productID));
@@ -137,6 +156,7 @@ component extends="Slatwall.model.service.PublicService" {
         getHibachiScope().addActionResult("public:getProductSkus");
 
         arguments.data['ajaxResponse']['skus'] = results;
+        arguments.data['ajaxResponse']['options'] = optsList;
          
      }
      
