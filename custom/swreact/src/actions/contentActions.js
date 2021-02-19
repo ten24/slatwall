@@ -92,9 +92,6 @@ export const getPageContent = (content = {}, slug = '') => {
       data: { ...content, siteCode },
     })
     if (response.status === 200) {
-      if (response.data.content[slug]) {
-        dispatch(setTitle(response.data.content[slug].setting.contentHTMLTitleString))
-      }
       dispatch(reciveContent(response.data.content))
     } else {
       dispatch(reciveContent({}))
