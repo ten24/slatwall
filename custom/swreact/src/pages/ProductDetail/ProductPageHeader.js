@@ -1,6 +1,6 @@
 import { BreadCrumb } from '../../components'
 
-const ProductPageHeader = ({ title = 'Page Title' }) => {
+const ProductPageHeader = ({ title = '' }) => {
   return (
     <div className="page-title-overlap bg-lightgray pt-4">
       <div className="container d-lg-flex justify-content-between py-2 py-lg-3">

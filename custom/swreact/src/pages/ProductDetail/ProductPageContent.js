@@ -115,7 +115,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
   }, [setProductDetails, productDetails, productID, sku, getSkuDetails])
 
   // Leaving this here until this logic is proven solid. Uncomment for helpful debugging
-  console.log('sku', sku)
+  // console.log('sku', sku)
 
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
@@ -130,7 +130,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                 <HeartButton className={'btn-wishlist mr-0 mr-lg-n3'} />
               </div>
               <div className="mb-2">
-                <span className="text-small text-muted">product: </span>
+                <span className="text-small text-muted">{`${t('frontend.product.subhead')} `}</span>
                 <span className="h4 font-weight-normal text-large text-accent mr-1">{productCode}</span>
               </div>
               <h2 className="h4 mb-2">{productName}</h2>
@@ -188,7 +188,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                             filteredOptions.map(({ optionID, optionName }) => {
                               return (
                                 <option key={optionID} value={optionID}>
-                                  {optionName + ' - ' + optionID}
+                                  {optionName}
                                 </option>
                               )
                             })}
@@ -201,7 +201,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                   <div className="form-group">
                     <div className="d-flex justify-content-between align-items-center pb-1">
                       <label className="font-weight-medium" htmlFor="product-size">
-                        Option
+                        {t('frontend.product.option')}
                       </label>
                     </div>
 
@@ -240,11 +240,8 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
 
                   <button className="btn btn-primary btn-block" type="submit">
                     <i className="far fa-shopping-cart font-size-lg mr-2"></i>
-                    Add to Cart
+                    {t('frontend.product.add_to_cart')}
                   </button>
-                </div>
-                <div className="alert alert-danger" role="alert">
-                  <i className="far fa-exclamation-circle"></i> This item is not eligable for free freight
                 </div>
               </form>
               {/* <!-- Product panels--> */}
