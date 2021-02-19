@@ -340,6 +340,10 @@ class SWListingDisplayController{
         if(!this.reportAction && this.baseEntityName){
             this.reportAction = 'entity.reportlist'+this.baseEntityName.toLowerCase();
         }
+        
+        this.singleCollectionPromise.then(()=>{
+            this.processCollection();
+        });
     }
     
     public processCollection = () =>{
@@ -365,7 +369,7 @@ class SWListingDisplayController{
         this.$transclude(this.$scope,()=>{});
 
         this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
-        
+
         if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();

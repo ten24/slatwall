@@ -4,7 +4,7 @@ const initState = {
   orderID: null,
   orderItems: [],
   subtotal: 0,
-
+  promotionCodes: [],
   total: 0,
 
   isFetching: false,
@@ -25,7 +25,7 @@ const cart = (state = initState, action) => {
       return { ...state, loginToken: null, isFetching: false }
 
     default:
-      return state
+      return { ...state }
   }
 }
 
