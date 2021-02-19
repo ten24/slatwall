@@ -5,13 +5,11 @@ import { Header, Layout, SEO } from './components'
 import lazyWithPreload from './components/lazyWithPreload/lazyWithPreload'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
+const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
 const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
-
 const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/ProductDetail'))
-
 const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
-
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
 const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
 
@@ -25,6 +23,7 @@ const Address = lazyWithPreload(() => import('./pages/Address/Address'))
 const Attribute = lazyWithPreload(() => import('./pages/Attribute/Attribute'))
 const pageComponents = {
   Home,
+  Cart,
   MyAccount,
   ProductListing,
   ProductDetail,
@@ -66,6 +65,7 @@ export default function App() {
         <Route path="/my-account" component={MyAccount} />
         <Route path="/MyAccount" component={MyAccount} />
         <Route path="/testing" component={Testing} />
+        <Route path="/shopping-cart" component={Cart} />
         <Route exact path="/" component={Home} />
         <Route path="" component={ContentPage} />
       </Switch>
