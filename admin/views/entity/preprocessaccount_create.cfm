@@ -82,7 +82,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#">
 
 				<!--- Parent Account --->
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="parentAccountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber" edit="true">
 				
 				<!--- Account Custom Attributes --->
 				<cfloop array="#rc.account.getAttributeSets()#" index="attributeSet">
