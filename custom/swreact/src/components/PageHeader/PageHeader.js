@@ -6,7 +6,6 @@ const PageHeader = () => {
   let loc = useLocation()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const contentStore = useSelector(state => state.content[path]) || {}
-  console.log(contentStore)
   return (
     <div className="page-title-overlap bg-lightgray pt-4">
       <div className="container d-lg-flex justify-content-between py-2 py-lg-3">

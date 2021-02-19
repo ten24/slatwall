@@ -8,10 +8,6 @@ import ProductListingToolBar from './ProductListingToolBar'
 import ProductListingPagination from './ProductListingPagination'
 import ProductListingSidebar from './ProductListingSidebar'
 import { getProductListingOptions, search } from '../../actions/productSearchActions'
-<<<<<<< Updated upstream
-=======
-import PageHeader from '../../components/PageHeader/PageHeader'
->>>>>>> Stashed changes
 
 const ProductListing = () => {
   const dispatch = useDispatch()
@@ -23,7 +19,7 @@ const ProductListing = () => {
 
   return (
     <Layout>
-      <PageHeader />
+      <ProductListingHeader />
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <aside className="col-lg-4">

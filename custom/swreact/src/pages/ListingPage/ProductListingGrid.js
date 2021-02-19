@@ -1,4 +1,3 @@
-import { connect } from 'react-redux'
 import ProductCard from '../../components/Account/ProductCard/ProductCard'
 
 const ProductListingGrid = ({ pageRecords }) => {
@@ -15,10 +14,4 @@ const ProductListingGrid = ({ pageRecords }) => {
     </div>
   )
 }
-
-function mapStateToProps(state) {
-  const { productSearchReducer } = state
-  return { ...productSearchReducer }
-}
-
-export default connect(mapStateToProps)(ProductListingGrid)
+export default ProductListingGrid

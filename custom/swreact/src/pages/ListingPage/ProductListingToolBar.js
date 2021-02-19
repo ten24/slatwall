@@ -1,9 +1,6 @@
-import { connect, useDispatch } from 'react-redux'
-import { search, setSort, removeFilter } from '../../actions/productSearchActions'
 import { useTranslation } from 'react-i18next'
 
-const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy }) => {
-  const dispatch = useDispatch()
+const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy, removeFilter, setSort }) => {
   const { t, i18n } = useTranslation()
 
   return (
@@ -18,7 +15,8 @@ const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy }) => {
                 <span key={index} className="badge badge-light border p-2 mr-2">
                   <a
                     onClick={event => {
-                      dispatch(removeFilter({ name, filterName }))
+                      event.preventDefault()
+                      removeFilter({ name, filterName })
                     }}
                   >
                     <i className="far fa-times"></i>
@@ -38,8 +36,8 @@ const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy }) => {
           id="sorting"
           value={sortBy}
           onChange={event => {
-            dispatch(setSort(event.target.value))
-            dispatch(search())
+            event.preventDefault()
+            setSort(event.target.value)
           }}
         >
           {sortingOptions &&
@@ -56,9 +54,4 @@ const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy }) => {
   )
 }
 
-function mapStateToProps(state) {
-  const { configuration, productSearchReducer } = state
-  return { ...configuration.productListing, ...productSearchReducer }
-}
-
-export default connect(mapStateToProps)(ProductListingToolBar)
+export default ProductListingToolBar

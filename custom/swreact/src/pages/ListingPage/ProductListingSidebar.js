@@ -1,22 +1,18 @@
 import React, { useState, useCallback } from 'react'
-import { connect, useDispatch } from 'react-redux'
-import { search, setKeyword } from '../../actions/productSearchActions'
 import debounce from 'lodash/debounce'
 import ProductListingFilter from './ProductListingFilter'
 import { useTranslation } from 'react-i18next'
 
-const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCount }) => {
-  const dispatch = useDispatch()
+const ProductListingSidebar = ({ keyword, appliedFilters, possibleFilters, attributes, recordsCount, setKeyword, updateAttribute, addFilter }) => {
   const [searchTerm, setSearchTerm] = useState(keyword)
   const { t, i18n } = useTranslation()
 
   // TODO: Shouls this be an auto search or should you have to click enter
   const slowlyRequest = useCallback(
     debounce(value => {
-      dispatch(setKeyword(value))
-      dispatch(search())
+      setKeyword(value)
     }, 500),
-    [debounce, dispatch]
+    [debounce]
   )
 
   const handleInputChange = e => {
@@ -50,11 +46,11 @@ const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCo
           <div className="accordion mt-3 border-top" id="shop-categories">
             {possibleFilters &&
               possibleFilters.map((filter, index) => {
-                return <ProductListingFilter key={index} index={`filter${index}`} {...filter} />
+                return <ProductListingFilter appliedFilters={appliedFilters} key={index} index={`filter${index}`} {...filter} addFilter={addFilter} updateAttribute={updateAttribute} />
               })}
             {attributes &&
               attributes.map((filter, index) => {
-                return <ProductListingFilter key={index} type="attribute" index={`attr${index}`} {...filter} />
+                return <ProductListingFilter appliedFilters={appliedFilters} key={index} type="attribute" index={`attr${index}`} {...filter} addFilter={addFilter} updateAttribute={updateAttribute} />
               })}
           </div>
         </div>
@@ -62,8 +58,5 @@ const ProductListingSidebar = ({ keyword, possibleFilters, attributes, recordsCo
     </div>
   )
 }
-function mapStateToProps(state) {
-  return state.productSearchReducer
-}
 
-export default connect(mapStateToProps)(ProductListingSidebar)
+export default ProductListingSidebar
