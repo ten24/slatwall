@@ -1,25 +1,80 @@
 import ProductDetailGallery from './ProductDetailGallery'
 import ProductPagePanels from './ProductPagePanels'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { addToCart } from '../../actions/cartActions'
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
 import { sdkURL } from '../../services'
 import { HeartButton } from '../../components'
 
-const ProductPageContent = ({ productID, calculatedTitle, productClearance, productCode, productDescription, calculatedSalePrice, listPrice = 'MISSING' }) => {
+const ProductPageContent = ({ productID, calculatedTitle, productClearance, productCode, productDescription }) => {
   const dispatch = useDispatch()
   const [quantity, setQuantity] = useState(1)
-  const [skus, setSksus] = useState({ list: [], isLoaded: false })
+  const [productDetails, setProductDetails] = useState({ skus: [], options: [], defaultSelectedOptions: '', availableSkuOptions: '', currentGroupId: '', isLoaded: false })
   const [sku, setSku] = useState({ skuID: '' })
+  const refs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef()])
+  if (productDetails.skus.length && !sku.skuID.length) {
+    setSku(productDetails.skus[0])
+  }
+  console.log('productDetails', productDetails)
 
-  if (skus.list.length && !sku.skuID.length) {
-    setSku(skus.list[0])
+  const refreshOptions = (selectedOptionIDList = '', previousOption = '', currentGroupId) => {
+    axios({
+      method: 'POST',
+      withCredentials: true, // default
+
+      url: `${sdkURL}api/scope/productAvailableSkuOptions`,
+      data: {
+        productID,
+        selectedOptionIDList,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+      if (response.status === 200) {
+        const { availableSkuOptions } = response.data
+        let newDefault = ''
+        const newOptions = availableSkuOptions.split(',')
+        const legacyDefault = newOptions.reduce((acc, curr) => {
+          return productDetails.defaultSelectedOptions.includes(curr) ? curr : acc
+        }, '')
+        if (legacyDefault) {
+          newDefault = productDetails.defaultSelectedOptions.replace(previousOption, selectedOptionIDList)
+        } else {
+          newDefault = selectedOptionIDList
+        }
+
+        setProductDetails({ ...productDetails, defaultSelectedOptions: newDefault, availableSkuOptions, currentGroupId, isLoaded: true })
+      }
+    })
+  }
+
+  const getSku = () => {
+    const selectedOptionIDList = refs.current.reduce((acc, ref) => (ref.current ? [...acc, ref.current.value] : acc), [])
+
+    axios({
+      method: 'POST',
+      withCredentials: true, // default
+
+      url: `${sdkURL}api/scope/productSkuSelected`,
+      data: {
+        selectedOptionIDList: '2c91808277abbcd30177b6d1f49800df',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+      if (response.status === 200) {
+        console.log('refreshOptions', response.data)
+        // setProductDetails({ skus, options, defaultSelectedOptions, isLoaded: true })
+      }
+    })
   }
 
   useEffect(() => {
     let didCancel = false
-    if (!skus.isLoaded) {
+    if (!productDetails.isLoaded) {
       axios({
         method: 'POST',
         withCredentials: true, // default
@@ -33,9 +88,10 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
         },
       }).then(response => {
         if (response.status === 200 && !didCancel) {
-          setSksus({ list: response.data.skus, isLoaded: true })
+          const { options, skus, defaultSelectedOptions } = response.data
+          setProductDetails({ ...productDetails, skus, options, defaultSelectedOptions, isLoaded: true })
         } else if (!didCancel) {
-          setSksus({ ...skus, isLoaded: true })
+          setProductDetails({ ...productDetails, isLoaded: true })
         }
       })
     }
@@ -43,8 +99,7 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
     return () => {
       didCancel = true
     }
-  }, [setSksus, skus, productID])
-
+  }, [setProductDetails, productDetails, productID])
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
       <div className="px-lg-3">
@@ -75,7 +130,54 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                   dispatch(addToCart(sku.skuID, quantity))
                 }}
               >
-                {skus.list.length > 1 && (
+                {productDetails.options.length > 0 &&
+                  productDetails.options.map(({ optionGroupName, options, optionGroupID }, index) => {
+                    const selectOption = options.filter(option => {
+                      return productDetails.defaultSelectedOptions.includes(option.optionID)
+                    })
+                    let filteredOptions = options
+                    if (productDetails.currentGroupId !== '' && optionGroupID !== productDetails.currentGroupId) {
+                      filteredOptions = options.filter(opt => {
+                        return productDetails.availableSkuOptions.includes(opt.optionID)
+                      })
+                    }
+
+                    return (
+                      <div className="form-group" key={optionGroupID}>
+                        <div className="d-flex justify-content-between align-items-center pb-1">
+                          <label className="font-weight-medium" htmlFor={optionGroupID}>
+                            {optionGroupName}
+                          </label>
+                        </div>
+
+                        <select
+                          className="custom-select"
+                          required
+                          id={optionGroupID}
+                          ref={refs.current[index]}
+                          value={(selectOption.length > 0 && selectOption[0].optionID) || options[0]}
+                          onChange={e => {
+                            const previousOption = options.reduce((acc, curr) => {
+                              return productDetails.defaultSelectedOptions.includes(curr.optionID) ? curr.optionID : acc
+                            }, '')
+
+                            refreshOptions(e.target.value, previousOption, optionGroupID)
+                          }}
+                        >
+                          {filteredOptions &&
+                            filteredOptions.map(({ optionID, optionName }) => {
+                              return (
+                                <option key={optionID} value={optionID}>
+                                  {optionName + ' - ' + optionID}
+                                </option>
+                              )
+                            })}
+                        </select>
+                      </div>
+                    )
+                  })}
+
+                {productDetails.options.length === 0 && productDetails.skus.length > 1 && (
                   <div className="form-group">
                     <div className="d-flex justify-content-between align-items-center pb-1">
                       <label className="font-weight-medium" htmlFor="product-size">
@@ -84,10 +186,10 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                     </div>
 
                     <select className="custom-select" required id="product-size">
-                      {skus.list &&
-                        skus.list.map(({ skuID, calculatedSkuDefinition }, index) => {
+                      {productDetails.skus &&
+                        productDetails.skus.map(({ skuID, calculatedSkuDefinition }) => {
                           return (
-                            <option key={index} value={skuID}>
+                            <option key={skuID} value={skuID}>
                               {calculatedSkuDefinition}
                             </option>
                           )
@@ -114,6 +216,7 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                     <option value="4">4</option>
                     <option value="5">5</option>
                   </select>
+
                   <button className="btn btn-primary btn-block" type="submit">
                     <i className="far fa-shopping-cart font-size-lg mr-2"></i>
                     Add to Cart

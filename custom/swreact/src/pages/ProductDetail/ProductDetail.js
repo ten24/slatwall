@@ -10,16 +10,11 @@ import { useLocation } from 'react-router-dom'
 
 const ProductDetail = props => {
   let { pathname } = useLocation()
-  const { state = {} } = props.forwardState || props.location
-  const [product, setProduct] = useState({ ...state, isLoaded: false })
+  const [product, setProduct] = useState({ isLoaded: false })
 
-  if (product.productID !== null && state.productID !== product.productID) {
-    setProduct({ ...state })
-  }
   useEffect(() => {
     let didCancel = false
-
-    if (product.productID == null && !product.isLoaded) {
+    if (!product.isLoaded) {
       const urlTitle = pathname.split('/').reverse()
       SlatwalApiService.products
         .list({
@@ -39,7 +34,6 @@ const ProductDetail = props => {
             setProduct({
               ...product,
               isLoaded: true,
-              err: 'oops',
             })
           }
         })
