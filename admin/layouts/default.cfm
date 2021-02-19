@@ -185,16 +185,16 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listreturnorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listordertemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">
+									<!--<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">-->
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listfulfillmentbatch" type="list">	
 									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
-									<li class="divider"></li>
+									<!---<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listvendororderitem" type="list">--->
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listorderimportbatch" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventregistration" type="list">
@@ -220,6 +220,7 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.warehouse_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-warehouse.svg" type="nav">
 								<hb:HibachiDividerHider>
+									<hb:HibachiActionCaller action="admin:entity.listlocation" type="list">
 									<hb:HibachiActionCaller action="admin:entity.liststock" type="list">
 									<hb:HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
 									<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
@@ -232,6 +233,9 @@ Notes:
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listminmaxsetup" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listminmaxstocktransfer" type="list">
+									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.marketing_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-marketing.svg" menuitemclass="border" type="nav">
@@ -302,7 +306,7 @@ Notes:
 										<!---<hb:HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listform" type="list">--->
 										<hb:HibachiActionCaller action="admin:entity.listfulfillmentmethod" type="list">
-										<hb:HibachiActionCaller action="admin:entity.listlocation" type="list">
+										<!---<hb:HibachiActionCaller action="admin:entity.listlocation" type="list">--->
 										<hb:HibachiActionCaller action="admin:entity.listmeasurementunit" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listorderorigin" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listpaymentmethod" type="list">
@@ -329,22 +333,22 @@ Notes:
 										<!---<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 										<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">--->
 										<!---<hb:HibachiActionCaller action="admin:report" type="list">--->
-										<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
+										<!---<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">--->
 										<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
-										<hb:HibachiActionCaller action="admin:entity.listsession" type="list">
-										<hb:HibachiActionCaller action="admin:entity.listtask" type="list">
-										<hb:HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
+										<!---<hb:HibachiActionCaller action="admin:entity.listsession" type="list">--->
+										<!---<hb:HibachiActionCaller action="admin:entity.listtask" type="list">
+										<hb:HibachiActionCaller action="admin:entity.listtaskhistory" type="list">--->
 										<hb:HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true">
-										<hb:HibachiActionCaller action="admin:main.log" type="list">
+										<!---<hb:HibachiActionCaller action="admin:main.log" type="list">--->
 									<hb:HibachiActionCaller action="admin:entity.listapilog" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listaudit" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listemail" type="list">
-										<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">
-										<hb:HibachiActionCaller action="admin:main.update" type="list">
+										<!---<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">--->
+										<!---<hb:HibachiActionCaller action="admin:main.update" type="list">--->
 										<cfif $.slatwall.getAccount().getSuperUserFlag()>
-											<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
-											<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
-											<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">
+											<!---<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
+											<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">--->
+											<!---<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">--->
 											<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#&#getHibachiScope().getApplicationValue('applicationUpdateKey')#=#getHibachiScope().getApplicationValue('applicationUpdatePassword')#" type="list" text="Create Json">
 										</cfif>
 									</hb:HibachiDividerHider>
@@ -391,7 +395,8 @@ Notes:
 									</cfif>
 									<li><a title="User Docs" href="http://docs.getslatwall.com/##users-administrator-overview" target="_blank">#$.slatwall.rbKey('define.userGuide')#</a></li>
 									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">#$.slatwall.rbKey('define.developerDocs')#</a></li>
-									<hb:HibachiActionCaller action="admin:main.about" type="list">
+									<!---<hb:HibachiActionCaller action="admin:main.about" type="list">--->
+									<hb:HibachiActionCaller action="admin:main.system" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:main.changelanguage" 
 										queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
