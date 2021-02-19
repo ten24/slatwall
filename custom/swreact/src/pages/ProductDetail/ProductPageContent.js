@@ -4,19 +4,18 @@ import React, { useEffect, useRef, useState } from 'react'
 import { addToCart } from '../../actions/cartActions'
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
-import { sdkURL } from '../../services'
+import { sdkURL, SlatwalApiService } from '../../services'
 import { HeartButton } from '../../components'
+import { useTranslation } from 'react-i18next'
 
-const ProductPageContent = ({ productID, calculatedTitle, productClearance, productCode, productDescription }) => {
+const ProductPageContent = ({ productID, calculatedTitle, productClearance, productCode, productDescription, defaultSku_skuID = '' }) => {
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
+
   const [quantity, setQuantity] = useState(1)
   const [productDetails, setProductDetails] = useState({ skus: [], options: [], defaultSelectedOptions: '', availableSkuOptions: '', currentGroupId: '', isLoaded: false })
-  const [sku, setSku] = useState({ skuID: '' })
-  const refs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef()])
-  if (productDetails.skus.length && !sku.skuID.length) {
-    setSku(productDetails.skus[0])
-  }
-  console.log('productDetails', productDetails)
+  const [sku, setSku] = useState({ skuID: defaultSku_skuID, isLoaded: false })
+  const refs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef()])
 
   const refreshOptions = (selectedOptionIDList = '', previousOption = '', currentGroupId) => {
     axios({
@@ -44,36 +43,48 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
         } else {
           newDefault = selectedOptionIDList
         }
-
         setProductDetails({ ...productDetails, defaultSelectedOptions: newDefault, availableSkuOptions, currentGroupId, isLoaded: true })
+        getSku()
       }
     })
   }
 
   const getSku = () => {
-    const selectedOptionIDList = refs.current.reduce((acc, ref) => (ref.current ? [...acc, ref.current.value] : acc), [])
-
+    const selectedOptionIDList = refs.current.reduce((acc, ref) => (ref.current ? [...acc, ref.current.value] : acc), []).join()
     axios({
       method: 'POST',
       withCredentials: true, // default
 
       url: `${sdkURL}api/scope/productSkuSelected`,
       data: {
-        selectedOptionIDList: '2c91808277abbcd30177b6d1f49800df',
+        productID,
+        selectedOptionIDList: selectedOptionIDList,
       },
       headers: {
         'Content-Type': 'application/json',
       },
     }).then(response => {
       if (response.status === 200) {
-        console.log('refreshOptions', response.data)
-        // setProductDetails({ skus, options, defaultSelectedOptions, isLoaded: true })
+        const { skuID } = response.data
+        setSku({ skuID })
+        getSkuDetails(skuID)
+      }
+    })
+  }
+  const getSkuDetails = skuID => {
+    SlatwalApiService.products.getSku(skuID).then(response => {
+      if (response.isSuccess()) {
+        const sdkuDetails = response.success()
+        setSku({ ...sku, ...sdkuDetails, isLoaded: true })
       }
     })
   }
 
   useEffect(() => {
     let didCancel = false
+    if (!sku.isLoaded && sku.skuID.length) {
+      getSkuDetails(sku.skuID)
+    }
     if (!productDetails.isLoaded) {
       axios({
         method: 'POST',
@@ -90,6 +101,9 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
         if (response.status === 200 && !didCancel) {
           const { options, skus, defaultSelectedOptions } = response.data
           setProductDetails({ ...productDetails, skus, options, defaultSelectedOptions, isLoaded: true })
+          if (skus.length && !sku.skuID.length) {
+            getSkuDetails(skus[0].skuID)
+          }
         } else if (!didCancel) {
           setProductDetails({ ...productDetails, isLoaded: true })
         }
@@ -99,7 +113,11 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
     return () => {
       didCancel = true
     }
-  }, [setProductDetails, productDetails, productID])
+  }, [setProductDetails, productDetails, productID, sku])
+
+  // Leaving this here until this logic is proven solid. Uncomment for helpful debugging
+  // console.log('sku', sku)
+
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
       <div className="px-lg-3">
@@ -140,6 +158,9 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                       filteredOptions = options.filter(opt => {
                         return productDetails.availableSkuOptions.includes(opt.optionID)
                       })
+                    }
+                    if (!filteredOptions.length) {
+                      return <div key={optionGroupID}></div>
                     }
 
                     return (
@@ -199,7 +220,7 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                 )}
 
                 <div className="mb-3">
-                  <span className="h4 text-accent font-weight-light">{sku.price || ''}</span> <span className="font-size-sm ml-1">{`${sku.listPrice || ''} list`}</span>
+                  <span className="h4 text-accent font-weight-light">{sku.price ? sku.price : ''}</span> <span className="font-size-sm ml-1">{sku.listPrice ? `${sku.listPrice} ${t('frontend.core.list')}` : ''}</span>
                 </div>
                 <div className="form-group d-flex align-items-center">
                   <select
