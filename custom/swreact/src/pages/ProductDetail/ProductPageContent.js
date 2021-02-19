@@ -113,10 +113,10 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
     return () => {
       didCancel = true
     }
-  }, [setProductDetails, productDetails, productID, sku])
+  }, [setProductDetails, productDetails, productID, sku, getSkuDetails])
 
   // Leaving this here until this logic is proven solid. Uncomment for helpful debugging
-  // console.log('sku', sku)
+  console.log('sku', sku)
 
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
@@ -231,11 +231,12 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                     className="custom-select mr-3"
                     style={{ width: '5rem' }}
                   >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
+                    {sku.calculatedQATS > 0 &&
+                      [...Array(sku.calculatedQATS > 20 ? 20 : sku.calculatedQATS).keys()].map((value, index) => (
+                        <option key={index + 1} value={index + 1}>
+                          {index + 1}
+                        </option>
+                      ))}
                   </select>
 
                   <button className="btn btn-primary btn-block" type="submit">
