@@ -8,7 +8,7 @@ import { sdkURL, SlatwalApiService } from '../../services'
 import { HeartButton } from '../../components'
 import { useTranslation } from 'react-i18next'
 
-const ProductPageContent = ({ productID, calculatedTitle, productClearance, productCode, productDescription, defaultSku_skuID = '' }) => {
+const ProductPageContent = ({ productID, productName, productClearance, productCode, productDescription, defaultSku_skuID = '' }) => {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
 
@@ -20,8 +20,7 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
   const refreshOptions = (selectedOptionIDList = '', previousOption = '', currentGroupId) => {
     axios({
       method: 'POST',
-      withCredentials: true, // default
-
+      withCredentials: true,
       url: `${sdkURL}api/scope/productAvailableSkuOptions`,
       data: {
         productID,
@@ -134,7 +133,7 @@ const ProductPageContent = ({ productID, calculatedTitle, productClearance, prod
                 <span className="text-small text-muted">product: </span>
                 <span className="h4 font-weight-normal text-large text-accent mr-1">{productCode}</span>
               </div>
-              <h2 className="h4 mb-2">{calculatedTitle}</h2>
+              <h2 className="h4 mb-2">{productName}</h2>
               <div
                 className="mb-3 font-weight-light font-size-small text-muted"
                 dangerouslySetInnerHTML={{
