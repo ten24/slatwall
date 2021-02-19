@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Layout } from '../../components'
 import { useDispatch } from 'react-redux'
 
@@ -7,18 +7,15 @@ import ProductListingGrid from './ProductListingGrid'
 import ProductListingToolBar from './ProductListingToolBar'
 import ProductListingPagination from './ProductListingPagination'
 import ProductListingSidebar from './ProductListingSidebar'
-import { getProductListingOptions, search } from '../../actions/productSearchActions'
-<<<<<<< Updated upstream
-=======
 import PageHeader from '../../components/PageHeader/PageHeader'
->>>>>>> Stashed changes
 
-const ProductListing = () => {
+const ListingPage = () => {
   const dispatch = useDispatch()
+  const [products, setProducts] = useState([])
 
   useEffect(() => {
-    dispatch(search())
-    dispatch(getProductListingOptions())
+    // dispatch(search())
+    // dispatch(getProductListingOptions())
   }, [dispatch])
 
   return (
@@ -30,7 +27,7 @@ const ProductListing = () => {
             <ProductListingSidebar />
           </aside>
           <div className="col-lg-8">
-            <ProductListingToolBar />
+            <ProductListingToolBar r />
             <ProductListingGrid />
             <ProductListingPagination />
           </div>
@@ -40,4 +37,4 @@ const ProductListing = () => {
   )
 }
 
-export default ProductListing
+export default ListingPage
