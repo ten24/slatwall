@@ -236,12 +236,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				getHibachiDAO().save( integration );
 				getHibachiDAO().flushORMSession();
 				
-				
-				
 				// If this integration is active lets register all of its event handlers, and decorate the getBeanFactory() with it
 				if( integration.getEnabledFlag() ) {
 				    
-					
 					// register event-handlers
 					for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
 					
@@ -279,11 +276,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				            continue;
 				        }
 
-				        
 				        beanFactory.declare("#integrationPackage##integrationType#CFC")
     					    .instanceOf("Slatwall.integrationServices.#integrationPackage#.#integrationType#").asSingleton();
 				    }
-				    
 				    
 				    var integrationDirectoryPath = this.getApplicationValue('applicationRootMappingPath') & "/integrationServices/#integrationPackage#";
 

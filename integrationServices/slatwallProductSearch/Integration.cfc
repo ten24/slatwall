@@ -54,7 +54,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	
 	
 	public string function getIntegrationTypes() {
-		return "fw1,listing";
+		return "fw1,search";
 	}
 	
 	public string function getDisplayName() {

@@ -11,7 +11,7 @@
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
 
 	<!--- Action Callers (top buttons) --->
-	<cfparam name="attributes.showeback" type="boolean" default="true" />
+	<cfparam name="attributes.showback" type="boolean" default="true" />
 	<cfparam name="attributes.showcancel" type="boolean" default="true" />
 	<cfparam name="attributes.showcreate" type="boolean" default="true" />
 	<cfparam name="attributes.showedit" type="boolean" default="true" />

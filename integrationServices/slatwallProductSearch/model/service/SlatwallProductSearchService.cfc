@@ -53,7 +53,122 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name="slatwallProductSearchDAO";
 
 	public struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters){
+        param name="arguments.appliedFilters.siteID" default='';
+	    param name="arguments.appliedFilters.productTypeIDs" default='';
+	    param name="arguments.appliedFilters.categoryIDs" default='';
+	    param name="arguments.appliedFilters.brandIDs" default='';
+	    param name="arguments.appliedFilters.optionIDs" default='';
+	    
+	   
+	    
+	    var rawFilterOptions = this.getSlatwallProductSearchDAO().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
+	    
+	    var startTicks = getTickCount();
+	    
+        // we're using hash-maps for :
+        // - duplicate-removal 
+        // - faster lookups 
+	    var potentialFilters = {
+	        'brands'            : {},
+	        'categories'        : {},
+	        'attributes'        : {},
+	        'optionGroups'      : {},
+	        'productTypes'      : {}
+	    };
+	    
+       	this.logHibachi("SlatwallProductSearchService:: getProductFilterFacetOptions - processing - #rawFilterOptions.recordCount# ");
+            
+	    for( var row in rawFilterOptions ){
+	        
+	        // ****** ProductType - Filter
+	        if( !isNull(row.productTypeID) && !this.hibachiIsEmpty(row.productTypeID) && !structKeyExists(potentialFilters.productTypes, row.productTypeID) ){
+	            potentialFilters.productTypes[ row.productTypeID ] = {
+	                'productTypeID'              : row.productTypeID,
+	                'productTypeName'            : row.productTypeName,
+	                'productTypeURLTitle'        : row.productTypeURLTitle,
+	                'parentProductTypeID'        : row.parentProductTypeID
+	            };
+	        }
+	        
+	        // ****** Categories 
+	        if( !isNull(row.categoryID) && !this.hibachiIsEmpty(row.categoryID) && !structKeyExists(potentialFilters.categories, row.categoryID ) ){
+	            potentialFilters.categories[ row.categoryID ] = {
+	                'categoryID'            : row.categoryID,
+	                'categoryName'          : row.categoryName,
+	                'categoryUrlTitle'      : row.categoryUrlTitle,
+	                'parentCategoryID'      : row.parentCategoryID
+	            };
+	        }
+	        
+	        // ****** Brands
+	        if( !isNull(row.brandID) && !this.hibachiIsEmpty(row.brandID) && !structKeyExists(potentialFilters.brands, row.brandID )  ){
+	             potentialFilters.brands[ row.brandID ] = {
+	                'brandID'              : row.brandID,
+	                'brandName'            : row.brandName
+	            };
+	        }
 
+	        // ****** OptionGroups
+	        if( !isNull(row.optionGroupID) && !this.hibachiIsEmpty(row.optionGroupID) ){
+	            if(!structKeyExists(potentialFilters.optionGroups, row.optionGroupID ) ){
+        	          potentialFilters.optionGroups[ row.optionGroupID ] = {
+    	                'optionGroupID'             : row.optionGroupID,
+    	                'optionGroupName'           : row.optionGroupName,
+    	                'sortOrder'                 : row.optionGroupSortOrder,
+    	                'options'                   : {}
+    	             };
+	            }
+	            // ****** Options 
+    	        if( !isNull(row.optionID) && !this.hibachiIsEmpty(row.optionID) ){
+    	            var thisGroupsOptions = potentialFilters.optionGroups[ row.optionGroupID ].options;
+        	        if( !structKeyExists(thisGroupsOptions, row.optionID ) ){
+        	            thisGroupsOptions[ row.optionID ] = {
+        	                'optionID'              : row.optionID,
+        	                'optionCode'            : row.optionCode,
+        	                'optionName'            : row.optionName,
+        	                'sortOrder'             : row.optionSortOrder
+        	            };
+        	        }  
+    	        }
+    	        // ***
+	        }
+	        
+	        // ****** Attributes
+	        if( !isNull(row.attributeID) && !this.hibachiIsEmpty(row.attributeID) ){
+	            // This Attribute
+    	        if( !structKeyExists(potentialFilters.attributes, row.attributeID ) ){
+    	            potentialFilters.attributes[ row.attributeID ] = {
+    	                'attributeID'              : row.attributeID,
+    	                'attributeName'            : row.attributeName,
+    	                'attributeCode'            : row.attributeCode,
+    	                'urlTitle'                 : row.attributeUrlTitle,
+    	                'attributeEntity'          : row.attributeSetObject,
+    	                'sortOrder'                : row.attributeSortOrder,
+    	                'attributeInputType'       : row.attributeInputType,
+    	                'options'                  : {}
+    	            };
+    	        }
+    	        // ****** This Attribute's Options 
+    	        if( !isNull(row.attributeOptionID) && !this.hibachiIsEmpty(row.attributeOptionID) ){
+    	            var thisAttributesOptions = potentialFilters.attributes[ row.attributeID ].options;
+        	        if( !structKeyExists(thisAttributesOptions, row.attributeOptionID ) ){
+        	            thisAttributesOptions[ row.attributeOptionID ] = {
+        	                'attributeOptionID'              : row.attributeOptionID,
+        	                'attributeOptionLabel'           : row.attributeOptionLabel,
+        	                'attributeOptionValue'           : row.attributeOptionValue,
+        	                'urlTitle'                       : row.attributeOptionUrlTitle,
+        	                'sortOrder'                      : row.attributeOptionSortOrder
+        	            };
+        	        } 
+    	        }
+    	        // ***
+	        }
+	        
+	    } // END loop
+	    
+	    this.logHibachi("SlatwallProductSearchService:: getPotentialProductFilterFacetOptions took #getTickCount() - startTicks# ms.")
+
+	    return potentialFilters;
 	}
 
 	public struct function getProducts(requied struct appliedFilters){
@@ -137,6 +252,19 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	
+	
+	
+	/**
+     * 
+     *                              ********* NOT IN USE *********
+     * 
+     */
+	
+	
+	
+	
+	
+	
 	// TODO: remove, not in use
 	public any function getProductFilterFacetOptionBaseCollectionList(){
 	   var facetOptionCollectionList = this.getProductFilterFacetOptionCollectionList();
@@ -165,6 +293,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
     /**
+     * 
+     * ********* NOT IN USE *****
+     * 
+     * 
 	 * Function to fetch, Brand, ProductType, OptionGroups, and Options 
 	 * [ only then ones which are active and published including the active and published products ]
 	 * and then construct some hashmaps for faster lookup;
@@ -179,7 +311,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    this.logHibachi("SlatwallProductSearchService:: getProductFilterFacetOptions - fetching raw facet options ")
 
-	    var rawFilters = this.getSlatwallProductSearchDAO().getPotentialProductFilterFacetOprions();
+	    var rawFilters = this.getSlatwallProductSearchDAO().getPotentialProductFilterFacetOptions();
 	   
 	    var startTicks = getTickCount();
 	    

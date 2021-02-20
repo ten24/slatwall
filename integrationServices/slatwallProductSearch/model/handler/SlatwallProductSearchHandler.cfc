@@ -1,8 +1,6 @@
-component extends="Slatwall.integrationServices.BaseDataProviderHandler" implements="Slatwall.integrationServices.DataProviderHandlerInterface" {
-	
-	
-	property name="slatwallProductSearchSearchCFC";
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseDataProviderHandler"{
 
+	property name="slatwallProductSearchSearchCFC";
 
 
     public struct function getHibachiScopeData(){
