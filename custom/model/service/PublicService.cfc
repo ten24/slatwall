@@ -122,14 +122,53 @@ component extends="Slatwall.model.service.PublicService" {
         arguments.data['ajaxResponse']['content'] = local.contentForHomePage;
      }
      
+     public void function productAvailableSkuOptions( required struct data ) {
+		param name="arguments.data.productID" type="string" default="";
+		param name="arguments.data.selectedOptionIDList" type="string" default="";
+
+		var product = getProductService().getProduct( arguments.data.productID );
+
+		if(!isNull(product) && product.getActiveFlag() && product.getPublishedFlag()) {
+			arguments.data.ajaxResponse["availableSkuOptions"] = product.getAvailableSkuOptions( arguments.data.selectedOptionIDList );
+		}
+	}
+
+	public void function productSkuSelected(required struct data){
+		param name="arguments.data.productID" type="string" default="";
+		param name="arguments.data.selectedOptionIDList" type="string" default="";
+		var product = getProductService().getProduct( arguments.data.productID );
+		try{
+			var sku = product.getSkuBySelectedOptions(arguments.data.selectedOptionIDList);
+			arguments.data.ajaxResponse['skuID'] = sku.getSkuID();
+		}catch(any e){
+			arguments.data.ajaxResponse['skuID'] = '';
+		}
+	}
+	
+	public void function getSkuOptionDetails(required struct data){
+		param name="arguments.data.productID" type="string" default="";
+		param name="arguments.data.selectedOptionIDList" type="string" default="";
+		var product = getProductService().getProduct( arguments.data.productID );
+		try{
+			var skuOptionDetails = product.getSkuOptionDetails(arguments.data.selectedOptionIDList);
+			arguments.data.ajaxResponse['skuOptionDetails'] = skuOptionDetails;
+		}catch(any e){
+			arguments.data.ajaxResponse['skuOptionDetails'] = '';
+		}
+	}
+	
+	
+	
+     
      public void function getProductSkus( required struct data ) {
 	    param name="arguments.data.productID";
 	    param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        var optsList = []
-        var defaultSelectedOptions = ''
+        var optsList = [];
+        var defaultSelectedOptions = '';
         var product = getService("productService").getProduct( arguments.data.productID )
         var optionGroupsArr = product.getOptionGroups()
+        var skuOptionDetails = product.getSkuOptionDetails()
         var defaultSku = product.getDefaultSku()
         if(!isNull(defaultSku)){
         defaultSelectedOptions = defaultSku.getOptionsIDList()
@@ -138,11 +177,13 @@ component extends="Slatwall.model.service.PublicService" {
                 var group = []
                 for(var option in options) {
                     ArrayAppend(group,{"optionID": option.getOptionID()
-                    ,"optionName": option.getOptionName()
-                    ,"optionGroupName": optionGroup.getOptionGroupName()} )
+                    ,"optionName": option.getOptionName()})
                 }
-                ArrayAppend(optsList, {"groupName": optionGroup.getOptionGroupName(),
-                "options": group})
+                ArrayAppend(optsList, {
+                    "optionGroupName": optionGroup.getOptionGroupName(),
+                    "optionGroupID": optionGroup.getOptionGroupID(),
+                    "optionGroupCode": optionGroup.getOptionGroupCode(),
+                    "options": group })
             }
         }
  
@@ -157,7 +198,8 @@ component extends="Slatwall.model.service.PublicService" {
 
         arguments.data['ajaxResponse']['skus'] = results;
         arguments.data['ajaxResponse']['options'] = optsList;
-         
+                arguments.data['ajaxResponse']['defaultSelectedOptions'] = defaultSelectedOptions;
+     
      }
      
 public void function getConfiguration( required struct data ) {
