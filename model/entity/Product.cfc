@@ -1154,7 +1154,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public any function getBrandTypeAheadCollectionList(){
 		
-		var	collectionList = this.getHibachiScope().getService('brandService').getBrandCollectionList();
+		var	collectionList = this.getService('brandService').getBrandCollectionList();
 		collectionList.setDisplayProperties('brandID', {isVisible=false,isSearchable=false});
 		collectionList.addDisplayProperties('brandName', {isVisible=true,isSearchable=true});
 		collectionList.addOrderBy('brandName|ASC');
