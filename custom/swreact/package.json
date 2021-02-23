@@ -37,6 +37,7 @@
     "source-map-explorer": "^2.5.2",
     "sweetalert2": "^10.14.0",
     "sweetalert2-react-content": "^3.2.2",
+    "use-debounce": "^5.2.0",
     "validator": "^13.5.2",
     "web-vitals": "^0.2.4",
     "yup": "^0.32.8"

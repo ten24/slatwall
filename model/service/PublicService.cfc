@@ -143,7 +143,21 @@ component  accessors="true" output="false"
 	    arguments.data.ajaxResponse = result;
 
 	}
-
+    
+    /**
+	 * Get Favourite Product List (List out all wishlist sku's )
+	 * */
+    public void function getFavouriteProducts(required struct data){
+         if( getHibachiScope().getLoggedInFlag() ) {
+             
+                var products = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
+                arguments.data.ajaxResponse["accountWishlistProducts"] = products;
+                
+            }
+        
+        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.favouriteProduct ');
+        
+    }
 	
 	
 	/***

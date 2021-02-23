@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Slider from 'react-slick'
 import { SWImage } from '..'
 import { useSelector } from 'react-redux'

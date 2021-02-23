@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 // import PropTypes from 'prop-types'
 import { Layout } from '../../components'
 import { connect, useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import { getContent } from '../../actions/contentActions'
 
 const NotFound = ({ title, customBody, customSummary }) => {
