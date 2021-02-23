@@ -10,12 +10,12 @@ import { useLocation } from 'react-router'
 const Layout = ({ children, actionBannerDisable }) => {
   const dispatch = useDispatch()
   let loc = useLocation()
-  const path = loc.pathname.split('/').reverse()[0].toLowerCase()
+  let path = loc.pathname.split('/').reverse()[0].toLowerCase()
+  path = path.length ? path : 'home'
   let payload = {}
   payload.header = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
   payload.footer = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
   payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
-
   useEffect(() => {
     dispatch(
       getContent({

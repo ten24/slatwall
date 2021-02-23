@@ -60,8 +60,8 @@ export default function App() {
           routing.map(({ URLKey, URLKeyType }, index) => {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
+        <Route path="/product" component={ProductListing} />
         <Route path="/products" component={ProductListing} />
-        <Route path="/sp/:id" component={ProductDetail} />
         <Route path="/category-listing" component={CategoryListing} />
         <Route path="/my-account" component={MyAccount} />
         <Route path="/MyAccount" component={MyAccount} />
