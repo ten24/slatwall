@@ -65,7 +65,7 @@ const FacetSearch = ({ searchTerm, search }) => {
     </div>
   )
 }
-const ProductListingFilter = ({ appliedFilters, filterName, options, index, type, addFilter, updateAttribute }) => {
+const ListingFilter = ({ appliedFilters, filterName, options, index, type, addFilter, updateAttribute }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
   useEffect(() => {
@@ -108,4 +108,4 @@ const ProductListingFilter = ({ appliedFilters, filterName, options, index, type
   )
 }
 
-export default ProductListingFilter
+export default ListingFilter

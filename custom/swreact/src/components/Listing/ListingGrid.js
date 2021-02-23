@@ -1,6 +1,6 @@
-import ProductCard from '../../components/Account/ProductCard/ProductCard'
+import ProductCard from '../Account/ProductCard/ProductCard'
 
-const ProductListingGrid = ({ pageRecords }) => {
+const ListingGrid = ({ pageRecords }) => {
   return (
     <div className="row mx-n2">
       {pageRecords &&
@@ -14,4 +14,4 @@ const ProductListingGrid = ({ pageRecords }) => {
     </div>
   )
 }
-export default ProductListingGrid
+export default ListingGrid

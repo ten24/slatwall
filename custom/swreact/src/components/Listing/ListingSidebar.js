@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react'
 import debounce from 'lodash/debounce'
-import ProductListingFilter from './ProductListingFilter'
+import ProductListingFilter from './ListingFilter'
 import { useTranslation } from 'react-i18next'
 
-const ProductListingSidebar = ({ keyword, appliedFilters, possibleFilters, attributes, recordsCount, setKeyword, updateAttribute, addFilter }) => {
+const ListingSidebar = ({ keyword, appliedFilters, possibleFilters, attributes, recordsCount, setKeyword, updateAttribute, addFilter }) => {
   const [searchTerm, setSearchTerm] = useState(keyword)
   const { t, i18n } = useTranslation()
 
@@ -59,4 +59,4 @@ const ProductListingSidebar = ({ keyword, appliedFilters, possibleFilters, attri
   )
 }
 
-export default ProductListingSidebar
+export default ListingSidebar

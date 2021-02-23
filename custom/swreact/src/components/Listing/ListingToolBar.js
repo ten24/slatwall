@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy, removeFilter, setSort }) => {
+const ListingToolBar = ({ sortingOptions, appliedFilters, sortBy, removeFilter, setSort }) => {
   const { t, i18n } = useTranslation()
 
   return (
@@ -54,4 +54,4 @@ const ProductListingToolBar = ({ sortingOptions, appliedFilters, sortBy, removeF
   )
 }
 
-export default ProductListingToolBar
+export default ListingToolBar
