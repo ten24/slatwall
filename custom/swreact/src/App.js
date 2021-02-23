@@ -12,6 +12,7 @@ const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/Produc
 const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
 const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
+const ListingPage = lazyWithPreload(() => import('./pages/ListingPage/ListingPage'))
 
 const NotFound = lazyWithPreload(() => import('./pages/NotFound/NotFound'))
 const ContentPage = lazyWithPreload(() => import('./pages/ContentPage/ContentPage'))
@@ -60,6 +61,8 @@ export default function App() {
           routing.map(({ URLKey, URLKeyType }, index) => {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
+
+        <Route path="/lp" component={ListingPage} />
         <Route path="/product" component={ProductListing} />
         <Route path="/products" component={ProductListing} />
         <Route path="/category-listing" component={CategoryListing} />
