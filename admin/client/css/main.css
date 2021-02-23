@@ -6862,7 +6862,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 
 sw-typeahead-input-field[data-entity-name="Brand"] .s-select-list-wrapper .input-group{
-  padding-left: 0;
+  padding: 0;
 }
 
 /*-- Custom Modal Amount Change --*/
