@@ -476,6 +476,9 @@ a:hover {
   border-radius: 2px;
   line-height: 9px;
 }
+a.form-control-feedback.adminentitypreprocesstranslation{
+  right: 10px;
+}
 .btn,
 .dropdown-menu {
   font-size: 12px;
