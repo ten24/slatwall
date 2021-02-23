@@ -47,7 +47,7 @@ const ProductDetail = props => {
   return (
     <Layout>
       <div className="bg-light p-0">
-        <ProductPageHeader />
+        <ProductPageHeader title={product.calculatedTitle} />
         {product.productID && <ProductPageContent {...product} />}
         {product.productID && <ProductDetailSlider productID={product.productID} />}
       </div>
