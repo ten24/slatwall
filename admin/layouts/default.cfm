@@ -99,7 +99,6 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/metismenu/metismenu.css" rel="stylesheet">
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
-		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
         <hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/RetryProxy/lib/RetryProxyES5.js" charset="utf-8"></hb:HibachiScript>
         <script>
             function failSafeGlobalFunction(name) { //extra-args
@@ -163,20 +162,10 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listproducttype" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listbrand" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsku" type="list">
-									<!---<hb:HibachiActionCaller action="admin:entity.listproductreview" type="list">--->
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listoptiongroup" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
-									<!---
-									<hb:HibachiActionCaller action="admin:entity.listcategory" type="list">
-									<cfif $.slatwall.authenticateAction(action='admin:entity.listcontent')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/Content" text="#$.slatwall.rbKey('admin.entity.listcontent')#" type="list">
-									</cfif>
-									<li class="divider"></li>
-									<hb:HibachiActionCaller action="admin:entity.listpromotion" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listpricegroup" type="list">
-									--->
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-orders.svg"  type="nav">
@@ -185,16 +174,12 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listreturnorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listordertemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
-									<!--<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">-->
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listfulfillmentbatch" type="list">	
 									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
-									<!---<li class="divider"></li>
-									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listvendororderitem" type="list">--->
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listorderimportbatch" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventregistration" type="list">
@@ -208,11 +193,6 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listaccount" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionusage" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listpermissiongroup" type="list">
-									<!---
-									<li class="divider"></li>
-									<hb:HibachiActionCaller action="admin:entity.listloyalty" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
-									--->
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listledgeraccount" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendor" type="list">
@@ -295,56 +275,31 @@ Notes:
 										<hb:HibachiActionCaller action="admin:entity.listintegration" type="list">
 										<li class="divider"></li>
 										<hb:HibachiActionCaller action="admin:entity.listapp" type="list">
-										<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
-											<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
-										</cfif>--->
 										<hb:HibachiActionCaller action="admin:entity.listaddresszone" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listaccountrelationshiprole" type="list">
-										<!---<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">--->
 										<hb:HibachiActionCaller action="admin:entity.listcountry" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listcurrency" type="list">
-										<!---<hb:HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
-										<hb:HibachiActionCaller action="admin:entity.listform" type="list">--->
 										<hb:HibachiActionCaller action="admin:entity.listfulfillmentmethod" type="list">
-										<!---<hb:HibachiActionCaller action="admin:entity.listlocation" type="list">--->
 										<hb:HibachiActionCaller action="admin:entity.listmeasurementunit" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listorderorigin" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listpaymentmethod" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
-										<!---<hb:HibachiActionCaller action="admin:entity.listsite" type="list">--->
 										<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listfilegroup" type="list">
-										<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listworkflow')>
-											<hb:HibachiActionCaller queryString="ng##!/entity/Workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
-										</cfif>--->
 									</hb:HibachiDividerHider>
 								</hb:HibachiActionCallerDropdown>
 								
 								<hb:HibachiActionCallerDropdown title="" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-tools.svg" dropdownclass="pull-right" type="nav">
 									<hb:HibachiDividerHider>
-										<!---<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">--->
-										<!---deprecated--->
-										<!---<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
-										<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">--->
-										<!---<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
-										<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">--->
-										<!---<hb:HibachiActionCaller action="admin:report" type="list">--->
-										<!---<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">--->
 										<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
-										<!---<hb:HibachiActionCaller action="admin:entity.listsession" type="list">--->
-										<!---<hb:HibachiActionCaller action="admin:entity.listtask" type="list">
-										<hb:HibachiActionCaller action="admin:entity.listtaskhistory" type="list">--->
 										<hb:HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true">
-										<!---<hb:HibachiActionCaller action="admin:main.log" type="list">--->
 									<hb:HibachiActionCaller action="admin:entity.listapilog" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listaudit" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listemail" type="list">
-										<!---<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">--->
-										<!---<hb:HibachiActionCaller action="admin:main.update" type="list">--->
 										<cfif $.slatwall.getLoggedInAsAdminFlag()> 
 										<hb:HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
 										<hb:HibachiActionCaller action="admin:main.logout" type="list">
@@ -352,14 +307,7 @@ Notes:
 									</cfif>
 									<li><a title="User Docs" href="http://docs.getslatwall.com/##users-administrator-overview" target="_blank">#$.slatwall.rbKey('define.userGuide')#</a></li>
 									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">#$.slatwall.rbKey('define.developerDocs')#</a></li>
-									<!---<hb:HibachiActionCaller action="admin:main.about" type="list">--->
 									<hb:HibachiActionCaller action="admin:main.system" type="list">
-										<cfif $.slatwall.getAccount().getSuperUserFlag()>
-											<!---<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
-											<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">--->
-											<!---<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">--->
-											<!---<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#&#getHibachiScope().getApplicationValue('applicationUpdateKey')#=#getHibachiScope().getApplicationValue('applicationUpdatePassword')#" type="list" text="Create Json">--->
-										</cfif>
 									</hb:HibachiDividerHider>
 								</hb:HibachiActionCallerDropdown>
 
