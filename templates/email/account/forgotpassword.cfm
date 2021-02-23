@@ -78,7 +78,7 @@ Notes:
 <cfsilent>
 	
 	<!--  If acount has a site assigned, get the domain name -->
-	<cfif !isNull( account.getAccountCreatedSite() ) AND !isEmpty(account.getAccountCreatedSite().getDomainNames()) >
+	<cfif !isNull( account.getAccountCreatedSite() ) AND account.hibachiIsEmpty(account.getAccountCreatedSite().getDomainNames()) >
 		<cfset resetLink = ListFirst(account.getAccountCreatedSite().getDomainNames())>	
 	<cfelse>
 		<!-- create base URL -->
@@ -217,4 +217,3 @@ Notes:
 	</cfoutput>
 	
 </cfsavecontent>
-

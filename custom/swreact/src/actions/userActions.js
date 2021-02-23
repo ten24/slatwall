@@ -1,6 +1,7 @@
 import { softLogout } from './authActions'
 import { SlatwalApiService } from '../services'
 import { toast } from 'react-toastify'
+import { receiveCart } from './cartActions'
 
 export const REQUEST_USER = 'REQUEST_USER'
 export const RECEIVE_USER = 'RECEIVE_USER'
@@ -62,7 +63,7 @@ export const getUser = () => {
   return async dispatch => {
     dispatch(requestUser())
 
-    const req = await SlatwalApiService.account.get()
+    const req = await SlatwalApiService.account.get({ returnJSONObjects: 'cart' })
 
     if (req.isFail()) {
       dispatch(softLogout())
@@ -71,6 +72,7 @@ export const getUser = () => {
         dispatch(softLogout())
       } else {
         dispatch(receiveUser(req.success().account))
+        dispatch(receiveCart(req.success().cart))
       }
     }
   }

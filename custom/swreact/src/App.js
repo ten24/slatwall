@@ -1,68 +1,78 @@
 import React, { Suspense, useEffect } from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Header, Layout, SEO } from './components'
 import lazyWithPreload from './components/lazyWithPreload/lazyWithPreload'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
+const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
 const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
-
 const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/ProductDetail'))
-
 const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
-
-const Contact = lazyWithPreload(() => import('./pages/Contact/Contact'))
-
-const About = lazyWithPreload(() => import('./pages/About/About'))
-
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
 const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
+const ListingPage = lazyWithPreload(() => import('./pages/ListingPage/ListingPage'))
 
-const NotFound = React.lazy(() => import('./pages/NotFound/NotFound'))
-
+const NotFound = lazyWithPreload(() => import('./pages/NotFound/NotFound'))
+const ContentPage = lazyWithPreload(() => import('./pages/ContentPage/ContentPage'))
+const Product = lazyWithPreload(() => import('./pages/Product/Product'))
+const ProductType = lazyWithPreload(() => import('./pages/ProductType/ProductType'))
+const Category = lazyWithPreload(() => import('./pages/Category/Category'))
+const Account = lazyWithPreload(() => import('./pages/Account/Account'))
+const Address = lazyWithPreload(() => import('./pages/Address/Address'))
+const Attribute = lazyWithPreload(() => import('./pages/Attribute/Attribute'))
+const pageComponents = {
+  Home,
+  Cart,
+  MyAccount,
+  ProductListing,
+  ProductDetail,
+  Testing,
+  NotFound,
+  ContentPage,
+  Product,
+  ProductType,
+  Category,
+  Brand,
+  Account,
+  Address,
+  Attribute,
+}
 const Loading = () => {
   return <Layout></Layout>
 }
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
+  const routing = useSelector(state => state.configuration.router)
   useEffect(() => {
-    Home.preload()
-    MyAccount.preload()
-    ProductListing.preload()
-    ProductDetail.preload()
-    CategoryListing.preload()
-    Contact.preload()
-    About.preload()
-    Testing.preload()
-    Brand.preload()
-  }, [Home, About, Brand])
+    Object.keys(pageComponents).map(key => {
+      return pageComponents[key].preload()
+    })
+  }, [])
 
   return (
-    <Router>
+    <Suspense fallback={<Loading />}>
       <ScrollToTop />
-      <Suspense fallback={<Loading />}>
-        <SEO />
-        <Header />
-        {/* TODO: We need a spinner */}
-        {/* A <Switch> looks through its children <Route>s and
-              renders the first one that matches the current URL. */}
-        <Switch>
-          <Route path="/products" component={ProductListing} />
-          <Route path="/product/:id" component={ProductDetail} />
-          <Route path="/product" component={ProductListing} />
-          <Route path="/sp/:id" component={ProductDetail} />
-          <Route path="/shop/:id" component={Brand} />
-          <Route path="/brand/:id" component={Brand} />
-          <Route path="/category-listing" component={CategoryListing} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/my-account" component={MyAccount} />
-          <Route path="/MyAccount" component={MyAccount} />
-          <Route path="/testing" component={Testing} />
-          <Route exact path="/" component={Home} />
-          <Route path="" component={NotFound} />
-        </Switch>
-      </Suspense>
-    </Router>
+      <SEO />
+      <Header />
+      <Switch>
+        {routing.length &&
+          routing.map(({ URLKey, URLKeyType }, index) => {
+            return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
+          })}
+
+        <Route path="/lp" component={ListingPage} />
+        <Route path="/product" component={ProductListing} />
+        <Route path="/products" component={ProductListing} />
+        <Route path="/category-listing" component={CategoryListing} />
+        <Route path="/my-account" component={MyAccount} />
+        <Route path="/MyAccount" component={MyAccount} />
+        <Route path="/testing" component={Testing} />
+        <Route path="/shopping-cart" component={Cart} />
+        <Route exact path="/" component={Home} />
+        <Route path="" component={ContentPage} />
+      </Switch>
+    </Suspense>
   )
 }

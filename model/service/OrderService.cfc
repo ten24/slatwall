@@ -6263,4 +6263,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return representation;
 	}
+	
+	public array function getAccountWishlistsProducts(string accountID){
+		var list = this.getOrderTemplateCollectionList();
+		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name,orderTemplateItems.sku.skuName,orderTemplateItems.sku.skuID");
+		list.addFilter("account.accountID",arguments.accountID);
+		list.addFilter("orderTemplateType.typeCode","WishList");
+		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
+		return list.getRecords();
+	}
 }

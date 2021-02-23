@@ -16,7 +16,9 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
       <p
         onClick={event => {
           event.preventDefault()
-          history.push(event.target.getAttribute('href'))
+          if (event.target.getAttribute('href')) {
+            history.push(event.target.getAttribute('href'))
+          }
         }}
         dangerouslySetInnerHTML={{ __html: customBody }}
       />

@@ -26,7 +26,7 @@ const ProductListing = () => {
             <ProductListingSidebar />
           </aside>
           <div className="col-lg-8">
-            <ProductListingToolBar r />
+            <ProductListingToolBar />
             <ProductListingGrid />
             <ProductListingPagination />
           </div>

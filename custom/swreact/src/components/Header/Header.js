@@ -10,6 +10,38 @@ import AccountBubble from './AccountBubble'
 import logo from '../../assets/images/sb-logo.png'
 import mobileLogo from '../../assets/images/sb-logo-mobile.png'
 import { useTranslation } from 'react-i18next'
+import groupBy from 'lodash/groupBy'
+
+const extractMenuFromContent = content => {
+  let menu = Object.keys(content)
+    .map(key => {
+      return key.includes('productcategories') ? content[key] : null
+    })
+    .filter(item => {
+      return item
+    })
+    .sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
+  if (menu.length) {
+    const groupedItems = groupBy(menu, 'parentContentID')
+    menu = menu
+      .map(item => {
+        item.children = groupedItems.hasOwnProperty(item.contentID) ? groupedItems[item.contentID] : []
+        return item
+      })
+      .filter(item => {
+        return item.children.length
+      })
+      .filter(item => {
+        return item.urlTitle != 'productcategories'
+      })
+      .sort((a, b) => {
+        return a.sortOrder - b.sortOrder
+      })
+  }
+  return menu
+}
 
 const MegaMenu = props => {
   let history = useHistory()
@@ -17,12 +49,12 @@ const MegaMenu = props => {
 
   return (
     <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href={props.linkUrl} data-toggle="dropdown">
+      <a className="nav-link dropdown-toggle" href={props.linkUrl || '/'} data-toggle="dropdown">
         {props.title}
       </a>
       <div className="dropdown-menu pt-0 pb-3">
         <div className="nav-shop-all">
-          <Link to={props.linkUrl}>
+          <Link to={props.linkUrl || '/'}>
             {`${t('frontend.nav.shopall')} ${props.title}`}
             <i className="far fa-arrow-right ml-2"></i>
           </Link>
@@ -35,7 +67,9 @@ const MegaMenu = props => {
                   className="widget widget-links mb-3"
                   onClick={event => {
                     event.preventDefault()
-                    history.push(event.target.getAttribute('href'))
+                    if (event.target.getAttribute('href')) {
+                      history.push(event.target.getAttribute('href'))
+                    }
                   }}
                   dangerouslySetInnerHTML={{
                     __html: productCategory['customBody'],
@@ -50,20 +84,10 @@ const MegaMenu = props => {
   )
 }
 
-function Header({ productCategories, mainNavigation }) {
+function Header({ menuItems, mainNavigation }) {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
 
-  let menuItems = new Map()
-  productCategories.forEach(item => {
-    if (menuItems.has(item.parentContent_title)) {
-      let exisitingItems = menuItems.get(item.parentContent_title)
-      exisitingItems.push(item)
-      menuItems.set(item.parentContent_title, exisitingItems)
-    } else {
-      menuItems.set(item.parentContent_title, [item])
-    }
-  })
   const [searchTerm, setSearchTerm] = useState('')
   let history = useHistory()
 
@@ -162,8 +186,8 @@ function Header({ productCategories, mainNavigation }) {
               </div>
 
               <ul className="navbar-nav nav-categories">
-                {[...menuItems.values()].map((menuItem, index) => {
-                  return <MegaMenu key={index} subMenu={menuItem} title={menuItem[0]['parentContent_title']} linkUrl={menuItem[0]['linkUrl']} />
+                {menuItems.map((menuItem, index) => {
+                  return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} />
                 })}
               </ul>
               <ul className="navbar-nav mega-nav ml-lg-2">
@@ -182,13 +206,14 @@ function Header({ productCategories, mainNavigation }) {
   )
 }
 Header.propTypes = {
+  menuItems: PropTypes.array,
   mainNavigation: PropTypes.string,
-  productCategories: PropTypes.array,
 }
 function mapStateToProps(state) {
+  const menuItems = extractMenuFromContent(state.content)
   return {
-    productCategories: state.preload.stackedContent['header/productCategories'],
-    mainNavigation: state.preload.stackedContent['header/main-navigation'],
+    menuItems,
+    mainNavigation: state.content['header/main-navigation'] ? state.content['header/main-navigation'].customBody : '',
   }
 }
 
