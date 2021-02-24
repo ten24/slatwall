@@ -46,15 +46,23 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiProcess" {
-
-	// Injected Entity
-	property name="orderTemplate";
-	property name="sku";
+component accessors="true" extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
-	property name="skuID";
-
-	public any function getSku(){
-		return getService('SkuService').getSku(getSkuID());
+	property name="dao";
+	
+	public void function setUp() {
+		super.setup();
+		
+		variables.dao = variables.mockService.getProductDAOMock();
 	}
+	
+	/**
+	* @test
+	*/
+	public void function inst_ok() {
+		assert(isObject(variables.dao));
+	}
+	
 }
+
+

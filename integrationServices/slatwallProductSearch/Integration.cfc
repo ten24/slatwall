@@ -46,15 +46,19 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiProcess" {
-
-	// Injected Entity
-	property name="orderTemplate";
-	property name="sku";
+component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
 	
-	property name="skuID";
-
-	public any function getSku(){
-		return getService('SkuService').getSku(getSkuID());
+	public array function getEventHandlers(){
+		return ['Slatwall.integrationServices.slatwallProductSearch.model.handler.SlatwallProductSearchHandler'];
 	}
+	
+	
+	public string function getIntegrationTypes() {
+		return "fw1,search";
+	}
+	
+	public string function getDisplayName() {
+		return "Slatwall Product Search";
+	}
+	
 }

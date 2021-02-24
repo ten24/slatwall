@@ -11,6 +11,7 @@
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
 
 	<!--- Action Callers (top buttons) --->
+	<cfparam name="attributes.showback" type="boolean" default="true" />
 	<cfparam name="attributes.showcancel" type="boolean" default="true" />
 	<cfparam name="attributes.showcreate" type="boolean" default="true" />
 	<cfparam name="attributes.showedit" type="boolean" default="true" />
@@ -120,8 +121,9 @@
 							
 								<div class="btn-group btn-group-sm">
 									<!--- Detail: Back Button --->
-									<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
-	
+									<cfif attributes.showback>
+									    <hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
+	                                </cfif>
 									<!--- Detail: Actions --->
 									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1 || attributes.object.hasCalculatedProperties()>
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>

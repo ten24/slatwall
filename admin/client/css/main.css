@@ -6860,6 +6860,11 @@ a.disabled > i.hibachi-ui-radio-checked {
   border-radius: 0px;
   padding-right: 10px;
 }
+
+sw-typeahead-input-field[data-entity-name="Brand"] .s-select-list-wrapper .input-group{
+  padding: 0;
+}
+
 /*-- Custom Modal Amount Change --*/
 .s-modal-module-wrapper .s-modal-module {
   background: #F7F7F7;

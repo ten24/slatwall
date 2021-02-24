@@ -45,16 +45,15 @@
 
 Notes:
 
+TODO: currently this file is kept empty as we're only adding one address-validation integration.
+in future we'd abstract some more logic in here, for other Address-Integrations, like USPS 
+
 */
-component output="false" accessors="true" extends="HibachiProcess" {
-
-	// Injected Entity
-	property name="orderTemplate";
-	property name="sku";
+component extends="Slatwall.integrationServices.BaseIntegrationType" {
 	
-	property name="skuID";
-
-	public any function getSku(){
-		return getService('SkuService').getSku(getSkuID());
+	
+	public any function init() {
+		return this;
 	}
+	
 }

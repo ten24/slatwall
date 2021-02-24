@@ -1,4 +1,4 @@
-/*
+/**
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -46,15 +46,11 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiProcess" {
 
-	// Injected Entity
-	property name="orderTemplate";
-	property name="sku";
-	
-	property name="skuID";
+interface{
 
-	public any function getSku(){
-		return getService('SkuService').getSku(getSkuID());
-	}
+  
+    struct function getProducts(requied struct appliedFilters);
+    struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters);
+
 }

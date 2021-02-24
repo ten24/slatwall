@@ -251,11 +251,11 @@ component accessors="true" output="false" persistent="false" {
 	
     public boolean function hibachiIsEmpty( any input, boolean noTrim=false ){
 
-        if( !structKeyExists(arguments, 'input') || IsNull(arguments.input) ){
+        if( isNull(arguments.input) ){
             return true;
         }
 
-        if( IsSimpleValue(arguments.input) ){
+        if( isSimpleValue(arguments.input) ){
            return arguments.noTrim ? len( arguments.input ) == 0 : len( trim(arguments.input) ) == 0;
         }
 
@@ -273,6 +273,29 @@ component accessors="true" output="false" persistent="false" {
 
         // isObject | not-NULL | boolean
         return false;
+    }
+    
+    public boolean function hibachiIsStructEmpty( any input, boolean noTrim=false ){
+
+        if( isNull(arguments.input) ){
+            return true;
+        }
+
+        if( this.hibachiIsEmpty(argumentCollection=arguments) ){
+            return true;
+        }
+        
+        for(var key in arguments.input){
+            var foundNonEmpty = isStruct(arguments.input[ key ]) 
+                                ? !this.hibachiIsStructEmpty(arguments.input[ key ], arguments.noTrim) 
+                                : !this.hibachiIsEmpty(arguments.input[ key ], arguments.noTrim);
+
+            if(foundNonEmpty){
+                return false;
+            }
+        }
+
+        return true;
     }
 	
 	// =========================  END:  DELIGATION HELPERS ==========================================
