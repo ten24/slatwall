@@ -49,17 +49,84 @@ Notes:
 component extends="Slatwall.model.service.HibachiService" persistent="false" accessors="true" output="false"{
 	
 	property name="productDAO";
+	property name="siteService";
 	property name="hibachiCacheService";
 	property name="slatwallProductSearchDAO";
+	
+	public struct function getFacetsMetaData(){
+	    if(!structKeyExists(variables, 'facetsMetaData') ){
+	        variables['facetsMetaData'] = {
+	            
+    	        'categories' : {
+        	        'name'           : 'Categories',
+        	        'facetKey'       : 'category', 
+        	        'selectType'     : 'single',
+        	        
+        	        'optionNameKey'  : 'categoryName',
+        	        'optionValueKey' : 'categoryName'
+        	    },
+        	    
+                'productTypes': {
+        	        'name'           : 'ProductTypes',
+        	        'facetKey'       : 'productType', 
+        	        'selectType'     : 'single',
+        	        
+        	        'optionNameKey'  : 'productTypeName',
+        	        'optionValueKey' : 'productTypeName'
+        	    },
+        	    
+                'brands' : {
+        	        'name'           : 'Brands',
+        	        'facetKey'       : 'brands', 
+        	        'selectType'     : 'multi',
+        	        
+        	        'optionNameKey'  : 'brandName',
+        	        'optionValueKey' : 'brandName'
+        	    },
+        	    
+        	    'optionGroups' : {
+        	        'facetKey'       : 'options', 
+        	        'facetType'      : 'group',
+        	        'selectType'     : 'multi',
+        	        'subFacetNameKey'        : 'optionGroupName',
+        	        'subFacetOptionNameKey'  : 'optionName',
+        	        'subFacetOptionValueKey' : 'optionCode'
+        	    },
+        	    
+        	    'attributeOptions' : {
+            	    'facetKey'          : 'attributeOptions', 
+        	        'facetType'         : 'group',
+        	        'selectType'        : 'multi',
+        	        'subFacetNameKey'        : 'attributeName',
+        	        'subFacetOptionNameKey'  : 'attributeOptionLabel',
+        	        'subFacetOptionValueKey' : 'attributeOptionValue'
+        	    }
+        	    
+        	   // 'sorting' : {
+        	   //     'name'           : 'Sort By',
+        	   //     'facetKey'       : 'orderBy',
+        	   //     'selectType'     : 'multi'
+        	   // },
+        	    
+        	   // 'price' : {
+        	   //     'name'           : 'Price',
+        	   //     'facetKey'       : 'price',
+        	   //     'selectType'     : 'single'
+        	   // }
+    	    };
+	    }
+	    
+	    return variables['facetsMetaData'];
+	}
+	
 
 	public struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters){
-        param name="arguments.appliedFilters.siteID" default='';
-	    param name="arguments.appliedFilters.productTypeIDs" default='';
-	    param name="arguments.appliedFilters.categoryIDs" default='';
-	    param name="arguments.appliedFilters.brandIDs" default='';
-	    param name="arguments.appliedFilters.optionIDs" default='';
-	    
-	   
+	    param name="arguments.siteID" default='';
+	    param name="arguments.productType" default='';
+	    param name="arguments.category" default='';
+	    param name="arguments.brands" default='';
+	    param name="arguments.options" default='';
+	    param name="arguments.attributeOptions" default='';
 	    
 	    var rawFilterOptions = this.getSlatwallProductSearchDAO().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
 	    
@@ -166,16 +233,529 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	    } // END loop
 	    
+	    
+	    
 	    this.logHibachi("SlatwallProductSearchService:: getPotentialProductFilterFacetOptions took #getTickCount() - startTicks# ms.")
 
 	    return potentialFilters;
 	}
+	
+	
+	public struct function getFormattedFilterFacets(required struct potentialFilterFacets){
+	    var startTicks = getTickCount();
+	    
+	    var facetsMetaData = this.getFacetsMetaData();
+	    
+	    var formattedFacets = {};
+	    
+	    for(var facetName in facetsMetaData ){
+	        
+	        if(!structKeyExists(potentialFilterFacets, facetName) ){
+	            continue;
+	        }
+	        
+	        var thisFacetMetadata = facetsMetaData[ facetName ];
+	        
+	        if(structKeyExists(thisFacetMetadata, 'facetType') && thisFacetMetadata.facetType == 'group' ){
+	            var subFacets = [];
+	            var potentialSubFacets = potentialFilterFacets[ facetName ];
+	            
+	            for(var subFacetID in potentialSubFacets){
+	                var thisSubFacet = potentialSubFacets[subFacetID];
+	                
+        	        var formattedSubFacet = {
+        	            'name'      : thisSubFacet[ thisFacetMetadata.subFacetNameKey ],
+        	            'facetKey'  : thisFacetMetadata.facetKey,
+        	            'selectType' : thisFacetMetadata.selectType,
+        	            'options'   : []
+        	        };
+        	        
+        	        for(var sufFacetOptionID in thisSubFacet.options ){
+        	            var thisSubFacetOption = thisSubFacet.options[sufFacetOptionID];
+        	            var formattedSubFacetOption = {
+        	                'name'  : thisSubFacetOption[ thisFacetMetadata.subFacetOptionNameKey ],
+        	                'value' : thisSubFacetOption[ thisFacetMetadata.subFacetOptionValueKey ]
+        	            }
+    	                formattedSubFacet.options.append(formattedSubFacetOption);
+        	        }
+        	        
+        	        subFacets.append( formattedSubFacet );
+    	        }
+	           
+           	    formattedFacets[facetName] = subFacets;
+           	    
+           	    continue;
+	        }
+	        
+	        var formattedThisFacet = {
+	            'name'      : thisFacetMetadata.name,
+	            'facetKey'  : thisFacetMetadata.facetKey,
+	            'selectType' : thisFacetMetadata.selectType,
+	            'options'   : []
+	        };
+	        
+	        var potentialThisFacetOptions = potentialFilterFacets[ facetName ];
+	        for( var thisFacetOptionID in potentialThisFacetOptions ){
+	            
+	            var thisFacetOption = potentialThisFacetOptions[thisFacetOptionID];
+	            var formattedThisFacetOption = {
+	                'name'  : thisFacetOption[ thisFacetMetadata.optionNameKey ],
+	                'value' : thisFacetOption[ thisFacetMetadata.optionValueKey ]
+	            }
+	            
+	            formattedThisFacet.options.append(formattedThisFacetOption);
+	        }
 
-	public struct function getProducts(requied struct appliedFilters){
-
+	        formattedFacets[ facetName ] = formattedThisFacet;
+	    }
+	 
+	 
+	    formattedFacets['sorting'] = {
+	        'name'       : "Sort By",
+	        'facetKey'   : 'orderBy',
+	        'selectType' : 'multi',
+	        'options' : [{
+                "name": "Price Low To High",
+                "value": 'product.calculatedSalePrice|ASC',
+            },{
+                "name": "Price High To Low",
+                "value": 'product.calculatedSalePrice|DESC',
+            },{
+                "name": "Product Name A-Z",
+                "value": 'product.productName|ASC',
+            },{
+                "name": "Product Name Z-A",
+                "value": 'product.productName|DESC',
+            },{
+                "name": "Brand A-Z",
+                "value": 'brand.brandName|ASC',
+            },{
+                "name": "Brand Z-A",
+                "value": 'brand.brandName|DESC',
+            }]
+	    };
+	    
+	    formattedFacets['price'] = {
+	        'facetKey'      : 'price',
+	        'name'          : "Price",
+	        'selectType'    : 'single',
+            "options": [{
+                "name": 'less than $20.00',
+                "value": '^20'
+            },{
+                "name": '$20.00 - $50.00',
+                "value": '20^50'
+            },{
+                "name": '$50.00 - $100.00',
+                "value": '50^100'
+            },{
+                "name": '$100.00 - $250.00',
+                "value": '100^250'
+            },{
+                "name": 'over $250.00',
+                "value": '250^'
+            }]
+	    };
+	    
+	    this.logHibachi("SlatwallProductSearchService:: getFormattedFilterFacets took #getTickCount() - startTicks# ms.")
+	 
+	 /**   
+	    
+	    var categoryFacet = {
+	        'id':  'categories', 
+	        'name': "Categories",
+	        'selectType': "single",
+	        'optionValueKey' : 'categoryName',
+	        'options' : []
+	    };
+	    for(var categoryID in potentialFilterFacets.categories ){
+	        categoryFacet.options.append( potentialFilterFacets.categories[categoryID] );
+	    }
+	    formattedFacets['categories'] = categoryFacet;
+	    
+	    var productTypeFacet = {
+	        'id':  'productTypes', 
+	        'name': "ProductTypes",
+	        'selectType': "single",
+	        'optionValueKey' : 'productTypeName',
+	        'options' : []
+	    };
+	    for(var productTypeID in potentialFilterFacets.productTypes ){
+	        productTypeFacet.options.append( potentialFilterFacets.productTypes[productTypeID] );
+	    }
+	    formattedFacets['productTypes'] = productTypeFacet;
+	    
+	    
+	    var brandFacet = {
+	        'id':  'brands', 
+	        'name': "Brands",
+	        'selectType': "multi",
+	        'optionValueKey' : 'brandName',
+	        'options' : []
+	    };
+	    for(var brandID in potentialFilterFacets.brands ){
+	        brandFacet.options.append( potentialFilterFacets.brands[brandID] );
+	    }
+	    formattedFacets['brands'] = brandFacet;
+	    
+	    formattedFacets['optionGroups'] = [];
+	    for(var thisOptionGroupID in potentialFilterFacets.optionGroups ){
+	        var thisOptionGroupFacet = potentialFilterFacets.optionGroups[thisOptionGroupID];
+	        
+	        var formattedOptionGroupFacet = {
+    	        'id':  'options', 
+    	        'name': thisOptionGroupFacet.optionGroupName,
+    	        'selectType': 'multi',
+    	        'optionValueKey' : 'optionName',
+    	        'options' : []
+    	    };
+    	    for(var optionGroupOptionID in thisOptionGroupFacet.options ){
+	            formattedOptionGroupFacet.options.append( thisOptionGroupFacet.options[optionGroupOptionID] );
+    	    }
+    	    formattedFacets.optionGroups.append( formattedOptionGroupFacet );
+	    }
+	    
+	    formattedFacets['attributes'] = [];
+	    for(var thisAttributeID in potentialFilterFacets.attributes ){
+	        var thisAttributeFacet = potentialFilterFacets.attributes[thisAttributeID];
+	        
+	        var formattedAttributeFacet = {
+    	        'id':  'attributeOptions', 
+    	        'name': thisAttributeFacet.attributeName,
+    	        'optionKey': 'attributeOptionValue',
+    	        'selectType': 'multi',
+    	        'options' : []
+    	    };
+    	    for(var attributeOptionID in thisAttributeFacet.options ){
+	            formattedAttributeFacet.options.append( thisAttributeFacet.options[attributeOptionID] );
+    	    }
+    	    formattedFacets.attributes.append( formattedAttributeFacet );
+	    }
+	    
+	    formattedFacets['sorting'] = {
+	        'id': 'orderBy',
+	        'name': "Sort By"
+	        'selectType': 'multi',
+	        'optionValueKey' : 'value',
+	        
+	        'options' : [{
+                "name": "Price Low To High",
+                "value": 'product.calculatedSalePrice|ASC',
+            },{
+                "name": "Price High To Low",
+                "value": 'product.calculatedSalePrice|DESC',
+            },{
+                "name": "Product Name A-Z",
+                "value": 'product.productName|ASC',
+            },{
+                "name": "Product Name Z-A",
+                "value": 'product.productName|DESC',
+            },{
+                "name": "Brand A-Z",
+                "value": 'brand.brandName|ASC',
+            },{
+                "name": "Brand Z-A",
+                "value": 'brand.brandName|DESC',
+            }]
+	    };
+	    
+	    formattedFacets['price'] = {
+	        'id'            : 'price',
+	        'name'          : "Price",
+	        'selectType'    : 'single',
+	        'optionValueKey': 'value',
+	 
+            "options": [{
+                "name": 'less than $20.00',
+                "value": '^20'
+            },{
+                "name": '$20.00 - $50.00',
+                "value": '20^50'
+            },{
+                "name": '$50.00 - $100.00',
+                "value": '50^100'
+            },{
+                "name": '$100.00 - $250.00',
+                "value": '100^250'
+            },{
+                "name": 'over $250.00',
+                "value": '250^'
+            }]
+	    };
+	    
+	    */
+	    return formattedFacets;
 	}
 	
 	
+	public any function getBaseSearchCollectionData(){
+        var hibachiScope = this.getHibachiScope();
+        
+		param name="arguments.siteID" default='';
+    
+        // account, order, for pricing
+// 		param name="arguments.order" default=hibachiScope.getCart();
+// 		param name="arguments.account" default=hibachiScope.getAccount();
+		param name="arguments.priceGroupCode" default='';
+	
+		param name="arguments.currencyCode" default='USD';
+	    
+	    // facets-options	
+	    param name="arguments.productType" default='';
+	    param name="arguments.category" default='';
+	    param name="arguments.brands" default='';
+	    param name="arguments.options" default='';
+	    param name="arguments.attributeOptions" default='';
+	    
+        // search
+        param name="arguments.keyword" default=""; // TODO: multiple keywords ?
+        
+        // sorting
+        param name="arguments.orderBy" default="product.productName|DESC"; 
+
+        //TODO: pricing
+        param name="arguments.price" default=""; 
+        
+        // pagination
+	    param name="arguments.currentPage" default=1;
+	    param name="arguments.pageSize" default=10;
+	    
+	    
+		var collectionList = this.getProductFilterFacetOptionCollectionList();
+		
+		// product properties
+		collectionList.setDisplayProperties('product.productID,product.productName,product.urlTitle');
+		
+		// sku properties 
+		collectionList.addDisplayProperties('sku.skuID,sku.imageFile,sku.skuPrices.price');
+
+        // Product's filters
+        collectionList.addFilter('productActiveFlag',1);
+        collectionList.addFilter('productPublishedFlag',1);
+        
+        collectionList.addFilter('skuActiveFlag',1);
+        collectionList.addFilter('skuPublishedFlag',1);
+        
+        collectionList.addFilter('productTypeActiveFlag',1);
+        collectionList.addFilter('productTypePublishedFlag',1);
+        
+        collectionList.addFilter('brandActiveFlag',1);
+        collectionList.addFilter('brandPublishedFlag',1);
+        
+        collectionList.addFilter('optionActiveFlag',1);
+        collectionList.addFilter('attributeSetActiveFlag',1);
+        
+        collectionList.addFilter(
+            propertyIdentifier = 'product.publishedStartDateTime',
+            value='NULL',
+            comparisonOperator="IS",
+            filterGroupAlias = 'publishedStartDateTimeFilter');
+        collectionList.addFilter( 
+            propertyIdentifier = 'product.publishedStartDateTime',
+            value= dateTimeFormat(now(), 'short'), 
+            comparisonOperator="<=", 
+            logicalOperator="OR",
+            filterGroupAlias = 'publishedStartDateTimeFilter');
+
+        collectionList.addFilter(
+            propertyIdentifier = 'product.publishedEndDateTime',
+            value='NULL', 
+            comparisonOperator="IS", 
+            filterGroupAlias = 'publishedEndDateTimeFilter');
+        collectionList.addFilter(
+            propertyIdentifier = 'product.publishedEndDateTime',
+            value= dateTimeFormat(now(), 'short'), 
+            comparisonOperator=">",
+            logicalOperator="OR", 
+            filterGroupAlias = 'publishedEndDateTimeFilter');
+        
+
+        var site = this.getSiteService().getSite(arguments.siteID);
+        
+        if( !isNull(site) ){
+            // site's filters
+            collectionList.addFilter( 
+                propertyIdentifier = 'site.siteID',
+                value=site.getSiteID(), 
+                comparisonOperator="=", 
+                filterGroupAlias = 'productSiteFilter');
+            collectionList.addFilter(
+                propertyIdentifier = 'site',
+                value='NULL',
+                comparisonOperator="IS",
+                logicalOperator="OR",
+                filterGroupAlias = 'productSiteFilter');
+            
+            // STOCK, 
+            // Q: should we add a check for if quantities exists?
+            if( site.hasLocation() ){
+                collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
+                collectionList.addFilter('sku.stocks.location.locationID', site.getLocations()[1].getLocationID());
+            }
+		}
+        
+        // SKU-Price's filters
+        if( !len(arguments.currencyCode) ){
+            arguments.currencyCode = !isNUll(site) ? site.setting('skuCurrency') : 'USD';
+        }
+        if( len(arguments.currencyCode) ){
+            collectionList.addFilter(propertyIdentifier='sku.skuPrices.currencyCode', value=arguments.currencyCode, comparisonOperator="=");
+        }
+        
+        
+        
+        // TODO: Solve the pricegroups later
+        // var priceGroupCode =  2; // TODO: what's the default for slatwall?
+        // var holdingPriceGroups = arguments.account.getPriceGroups();
+        /*
+            Price group is prioritized as so: 
+                1. Order price group
+                2. Price group passed in as argument
+                3. Price group on account
+                4. Default to 2
+        */
+        // if( !isNull(arguments.order.getPriceGroup()) ){ //order price group
+        //     priceGroupCode = arguments.order.getPriceGroup().getPriceGroupCode();
+        // }else if( len(arguments.priceGroupCode) ){ //argument price group
+        //     priceGroupCode = arguments.priceGroupCode;
+        // }else if( !isNull(holdingPriceGroups) && arrayLen(holdingPriceGroups) ){ //account price group
+        //     priceGroupCode = holdingPriceGroups[1].getPriceGroupCode();
+        // }
+        // collectionList.addFilter(propertyIdentifier='sku.skuPrices.priceGroup.priceGroupCode', value=priceGroupCode);
+    
+    
+        // ProductType
+        if( len(arguments.productType) ){
+            collectionList.addFilter('productTypeName', arguments.productType );
+        }
+        // category
+        if( len(arguments.category) ){
+            collectionList.addFilter('categoryName', arguments.category );
+        }
+        // brands
+        if( len(arguments.brands) ){
+            collectionList.addFilter('brandName', arguments.brands, "IN" );
+        }
+        // options
+        if( len(arguments.options) ){
+            collectionList.addFilter('optionCode', arguments.options, "IN" );
+        }
+        // Attribute options
+        if( len(arguments.attributeOptions) ){
+            collectionList.addFilter('attributeOptionValue', arguments.attributeOptions, "IN" );
+        }
+        
+        // TODO: content products
+
+        // Searching
+        if ( len( arguments.keyword ) ) {
+            var locale = hibachiScope.getSession().getRbLocale();
+            var sql = "SELECT 
+                        baseID 
+                        FROM swTranslation 
+                        WHERE locale=:locale 
+                        AND baseObject='Product' 
+                        AND basePropertyName='productName'
+                        AND value like :keyword";
+            var params = {
+                locale=locale,
+                keyword='%#arguments.data.keyword#%'
+            };
+            var productIDQuery = queryExecute(sql,params);
+            var productIDs = ValueList(productIDQuery.baseID);
+            
+            collectionList.addFilter(
+                propertyIdentifier='product.productName', 
+                value='%#arguments.data.keyword#%', 
+                comparisonOperator='LIKE', 
+                filterGroupAlias='keyword');
+                
+            collectionList.addFilter(
+                propertyIdentifier='product.productID', 
+                value=productIDs,
+                comparisonOperator='IN',
+                logicalOperator='OR', 
+                filterGroupAlias='keyword');
+        }
+        
+        // TODO: other inline filters, like price-range, reviews ....
+        
+        
+        // Sorting
+        collectionList.setOrderBy(arguments.orderBy);
+        
+        // Pagination
+        collectionList.setPageRecordsShow( arguments.pageSize );
+        collectionList.setCurrentPageDeclaration(arguments.currentPage);
+        
+        return { 
+            'currencyCode': currencyCode,
+            'priceGroupCode': priceGroupCode,
+            'collectionList': collectionList
+        };
+    }
+
+
+	public struct function getProducts(){
+	    var hibachiScope = this.getHibachiScope();
+        
+		param name="arguments.siteID" default='';
+    
+        // account, order, for pricing
+// 		param name="arguments.order" default=hibachiScope.getCart();
+// 		param name="arguments.account" default=hibachiScope.getAccount();
+// 		param name="arguments.priceGroupCode" default='';
+	
+		param name="arguments.currencyCode" default='USD';
+	    
+	    // facets-options	
+	    param name="arguments.productType" default='';
+	    param name="arguments.category" default='';
+	    param name="arguments.brands" default='';
+	    param name="arguments.options" default='';
+	    param name="arguments.attributeOptions" default='';
+	    
+        // Search
+        param name="arguments.keyword" default="";
+        // Sorting
+        param name="arguments.orderBy" default="product.productName|DESC"; 
+        // Pricing
+        param name="arguments.price" default=""; 
+        // Pagination
+	    param name="arguments.currentPage" default=1;
+	    param name="arguments.pageSize" default=10;
+	    
+	    
+	    var potentialFilters = this.getPotentialFilterFacetsAndOptions(argumentCollection=arguments);
+	    var formattedFacets = this.getFormattedFilterFacets(potentialFilters);
+	    
+	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);
+	    
+	    return {
+	        'total' : collectionData.collectionList.getRecordsCount(),
+	        'pageSize': arguments.pageSize,
+	        'currentPage' : arguments.currentPage,
+	        'currencyCode': collectionData.currencyCode,
+	        'priceGroupCode': collectionData.priceGroupCode,
+	        
+	        'products' : collectionData.collectionList.getPageRecords(),
+	        'potentialFilters': formattedFacets,
+	    }
+
+	}
+	
+
+	
+	
+	
+	/**
+     * 
+     *                              ********* NOT IN USE *********
+     * 
+     */
+	
+	
+		
 	// ===================== :Product Filters: =================================
 	
 	/**
@@ -250,16 +830,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        }
     	   ];
 	}
-	
-	
-	
-	
-	/**
-     * 
-     *                              ********* NOT IN USE *********
-     * 
-     */
-	
 	
 	
 	

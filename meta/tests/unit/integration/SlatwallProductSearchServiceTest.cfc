@@ -267,38 +267,47 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	*/
 	public void function getPotentialProductFilterFacetOptions_should_be_fast(){
 
-	    var brandIDs = "2c9480847604f663017604f9f91804ca,2c99808475ffd5200175ffd7e4660009,2c9880847771e465017771e5695b0005";
+// 	    var brandIDs = "2c9480847604f663017604f9f91804ca,2c99808475ffd5200175ffd7e4660009,2c9880847771e465017771e5695b0005";
 
-		var optionIDs = "2c91808372e5f4500172e6e495db0045,2c91808372e5f4500172e6e495db0237,2c91808372e5f4500172e6e6e05a0078"; 
+// 		var optionIDs = "2c91808372e5f4500172e6e495db0045,2c91808372e5f4500172e6e495db0237,2c91808372e5f4500172e6e6e05a0078"; 
 		
-		var productTypeIDs = "2c99808475ffd5200175ffd7e43b0006,2c938084760493a2017604c68a331530,2c99808475ffd5200175ffd810cc0109";
+// 		var productTypeIDs = "2c99808475ffd5200175ffd7e43b0006,2c938084760493a2017604c68a331530,2c99808475ffd5200175ffd810cc0109";
 		
-		var args = {};
+// 		var args = {};
 		
-		if( RandRange(1,10) > RandRange(1,10) ){
-		    args['productTypeIDs'] = productTypeIDs;
-		}
+// 		if( RandRange(1,10) > RandRange(1,10) ){
+// 		    args['productTypeIDs'] = productTypeIDs;
+// 		}
 		
-		if( RandRange(1,10) > RandRange(1,10) ){
-		    args['brandIDs'] = brandIDs;
-		}
+// 		if( RandRange(1,10) > RandRange(1,10) ){
+// 		    args['brandIDs'] = brandIDs;
+// 		}
 		
-		if( RandRange(1,10) > RandRange(1,10) ){
-		    args['optionIDs'] = optionIDs;
-		}
+// 		if( RandRange(1,10) > RandRange(1,10) ){
+// 		    args['optionIDs'] = optionIDs;
+// 		}
 		
-		dump("args : ");
-		dump(args);
+// 		dump("args : ");
+// 		dump(args);
 		
         // var query = this.getService().getSlatwallProductSearchDAO().getPotentialProductFilterFacetOptions(
         //   argumentCollection = args 
         // );
         
-        var potentialFilters = this.getService().getPotentialFilterFacetsAndOptions(
-            appliedFilters = args 
-        );
+        // var potentialFilters = this.getService().getPotentialFilterFacetsAndOptions(
+        //     appliedFilters = args 
+        // );
+        // dump(potentialFilters);
         
-        dump(potentialFilters);
+        // var data = this.getService().getBaseSearchCollectionList(argumentCollection = args );
+        
+        // // dump( data.collectionList.getCollectionConfigStruct() );
+        // dump( data.collectionList.getSQL() );
+        
+        // dump( data.collectionList.getRecordsCount() );
+        // dump( data.collectionList.getPageRecords() );
+        
+        dump(this.getService().getProducts());
         
         abort;        
 	}

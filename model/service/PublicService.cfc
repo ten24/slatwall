@@ -99,6 +99,48 @@ component  accessors="true" output="false"
         formToProcess = getFormService().process(formToProcess,arguments.data,"addFormResponse");
     	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
     }
+    
+    /**
+	 *
+	 * 
+	 */
+    public void function getProducts( required struct data ) {
+        var hibachiScope = this.getHibachiScope();
+        
+		param name="arguments.data.siteID" default='';
+    
+        //      account, order, for pricing
+        // 		param name="arguments.data.order" default=hibachiScope.getCart();
+        // 		param name="arguments.data.account" default=hibachiScope.getAccount();
+        // 		param name="arguments.data.priceGroupCode" default='';
+        	
+		param name="arguments.data.currencyCode" default='USD';
+	    
+	    // facets-options	
+	    param name="arguments.data.productType" default='';
+	    param name="arguments.data.category" default='';
+	    param name="arguments.data.brands" default='';
+	    param name="arguments.data.options" default='';
+	    param name="arguments.data.attributeOptions" default='';
+	    
+        // Search
+        param name="arguments.data.keyword" default="";
+        // Sorting
+        param name="arguments.data.orderBy" default="product.productName|DESC"; 
+        // Pricing
+        param name="arguments.data.price" default=""; 
+        // Pagination
+	    param name="arguments.data.currentPage" default=1;
+	    param name="arguments.data.pageSize" default=10;
+	    
+	    // the integration needs to be enabled for this to work
+	    // TODO: create a site-level setting for defaule product-search integration
+        var slatwallProductSearchService = this.getService('slatwallProductSearchService');
+        
+        
+        return slatwallProductSearchService.getProducts(argumetCollection=data);
+    }
+
 
 	/**
 	 * Get Product List (an alternative to generic entity api call for products)

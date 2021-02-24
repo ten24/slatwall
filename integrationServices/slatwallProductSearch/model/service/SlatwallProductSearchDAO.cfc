@@ -652,51 +652,55 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         return q;   
 	}
 	
-	public any function getPotentialFilterFacetsAndOptions(required struct appliedFilters){
-	    param name="arguments.appliedFilters.siteID" default='';
-	    param name="arguments.appliedFilters.productTypeIDs" default='';
-	    param name="arguments.appliedFilters.categoryIDs" default='';
-	    param name="arguments.appliedFilters.brandIDs" default='';
-	    param name="arguments.appliedFilters.optionIDs" default='';
-	    
-	    
-	    // TODO: attributes and attribute-options
+	public any function getPotentialFilterFacetsAndOptions(){
+	    param name="arguments.siteID" default='';
+	    param name="arguments.productType" default='';
+	    param name="arguments.category" default='';
+	    param name="arguments.brands" default='';
+	    param name="arguments.options" default='';
+	    param name="arguments.attributeOptions" default='';
 	    
         var startTicks = getTickCount();
         
         var q = new Query();
 
         var siteJoinFilterQueryPart = "";
-        if( !this.hibachiIsEmpty(arguments.appliedFilters.siteID) ){
+        if( !this.hibachiIsEmpty(arguments.siteID) ){
             siteJoinFilterQueryPart = " AND ( ffo.siteID = :siteID OR ffo.siteID IS NULL )";
-            q.addParam(name='siteID', value=arguments.appliedFilters.siteID)
+            q.addParam(name='siteID', value=arguments.siteID)
         }
         
         var productTypeJoinFilterQueryPart = " AND ffo.productTypeActiveflag = 1 AND ffo.productTypePublishedFlag = 1";
-        if( !this.hibachiIsEmpty(arguments.appliedFilters.productTypeIDs) ){
-            productTypeJoinFilterQueryPart = " AND ffo.productTypeID IN ( :productTypeIDs )";
-            q.addParam( name='productTypeIDs', list="true", value=arguments.appliedFilters.productTypeIDs );
+        if( !this.hibachiIsEmpty(arguments.productType) ){
+            productTypeJoinFilterQueryPart = " AND ffo.productTypeName IN ( :productType )";
+            q.addParam( name='productType', list="true", value=arguments.productType );
         }
         
         var categoryJoinFilterQueryPart = "";
-        if( !this.hibachiIsEmpty(arguments.appliedFilters.categoryIDs) ){
-            categoryJoinFilterQueryPart = " AND ffo.categoryID IN ( :categoryIDs )";
-            q.addParam( name='categoryIDs', list="true", value=arguments.appliedFilters.categoryIDs );
+        if( !this.hibachiIsEmpty(arguments.category) ){
+            categoryJoinFilterQueryPart = " AND ffo.categoryName IN ( :category )";
+            q.addParam( name='category', list="true", value=arguments.category );
         }
         
         var brandJoinFilterQueryPart = " AND ffo.brandActiveFlag = 1 AND ffo.brandPublishedFlag = 1";
-        if( !this.hibachiIsEmpty(arguments.appliedFilters.brandIDs) ){
-            brandJoinFilterQueryPart = " AND ffo.brandID IN ( :brandIDs )";
-            q.addParam( name='brandIDs', list="true", value=arguments.appliedFilters.brandIDs );
+        if( !this.hibachiIsEmpty(arguments.brands) ){
+            brandJoinFilterQueryPart = " AND ffo.brandName IN ( :brands )";
+            q.addParam( name='brands', list="true", value=arguments.brands );
         }
         
         var optionJoinFilterQueryPart = " AND ffo.optionActiveFlag=1";
-        if( !this.hibachiIsEmpty(arguments.appliedFilters.optionIDs) ){
-            optionJoinFilterQueryPart = " AND ffo.optionID IN ( :optionIDs )";
-            q.addParam( name='optionIDs', list="true", value=arguments.appliedFilters.optionIDs );
+        if( !this.hibachiIsEmpty(arguments.options) ){
+            optionJoinFilterQueryPart = " AND ffo.optionName IN ( :options )";
+            q.addParam( name='options', list="true", value=arguments.options );
         }
         
         
+        var attributeOptionJoinFilterQueryPart = " AND ffo.attributeSetActiveFlag=1";
+        if( !this.hibachiIsEmpty(arguments.attributeOptions) ){
+            attributeOptionJoinFilterQueryPart = " AND ffo.attributeOptionValue IN ( :attributeOptions )";
+            q.addParam( name='attributeOptions', list="true", value=arguments.attributeOptions );
+        }
+
         var sql = "
             SELECT   
                ffo.productFilterFacetOptionID,
@@ -728,9 +732,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     #categoryJoinFilterQueryPart#
                     #brandJoinFilterQueryPart#
                     #optionJoinFilterQueryPart#
+                    #attributeOptionJoinFilterQueryPart#
                     
-                    AND ffo.attributeSetActiveFlag = 1
-            
             GROUP BY ffo.productFilterFacetOptionID
         ";
 	    
