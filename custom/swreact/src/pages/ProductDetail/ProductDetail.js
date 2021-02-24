@@ -19,6 +19,7 @@ const ProductDetail = props => {
       SlatwalApiService.products
         .list({
           filter: {
+            current: 1,
             urlTitle: urlTitle[0],
           },
         })

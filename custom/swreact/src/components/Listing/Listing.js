@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-
+import { useHistory, useLocation } from 'react-router-dom'
 import ProductListingGrid from './ListingGrid'
 import ProductListingToolBar from './ListingToolBar'
 import ProductListingPagination from './ListingPagination'
@@ -10,6 +10,11 @@ import axios from 'axios'
 import { sdkURL, SlatwalApiService } from '../../services/index'
 const ListingPage = ({ children, preFilter = {} }) => {
   const dispatch = useDispatch()
+  const loc = useLocation()
+  let history = useHistory()
+
+  console.log('loc', loc)
+
   const [data, setData] = useState({
     pageRecords: [],
     limitCountTotal: '',
@@ -54,6 +59,10 @@ const ListingPage = ({ children, preFilter = {} }) => {
   const removeFilter = filter => {
     //   return { ...state, appliedFilters: state.appliedFilters.filter(filter => filter.name !== action.filter.name) }
     console.log('removeFilter, filter')
+    history.push({
+      pathname: '',
+      search: '?color=blue',
+    })
   }
   const setKeyword = keyword => {
     //   return { ...state, appliedFilters: state.appliedFilters.filter(filter => filter.name !== action.filter.name) }
@@ -65,6 +74,10 @@ const ListingPage = ({ children, preFilter = {} }) => {
   }
   const addFilter = filter => {
     //      return { ...state, appliedFilters: [...state.appliedFilters, action.filter].filter((v, i, a) => a.findIndex(t => JSON.stringify(t) === JSON.stringify(v)) === i) }
+    history.push({
+      pathname: '',
+      search: '?color=blue',
+    })
     console.log('addFilter', filter)
   }
   const updateAttribute = attribute => {
