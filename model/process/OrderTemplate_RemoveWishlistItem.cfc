@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	property name="removalSkuID";
 
-	public any function getremovalSku(){
-		return getService('SkuService').getSku(getremovalSkuID());
+	public any function getRemovalSku(){
+		return getService('SkuService').getSku(getRemovalSkuID());
 	}
 }

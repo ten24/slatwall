@@ -1,5 +1,6 @@
 {
 	"properties": {
+		"orderTemplate" : [{ "required": true }],
 		"skuID": [{ "required": true }]
 	}
 }
