@@ -108,6 +108,7 @@ component  accessors="true" output="false"
 	    param name="arguments.data.productTypeUrlTitle" default= "";
 	    arguments.data.entityName = "Product";
 	    arguments.data.restRequestFlag = 1;
+	    
 	    //Set an In filter for child types
 	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
 	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
@@ -116,7 +117,11 @@ component  accessors="true" output="false"
 	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
 	    }
 
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
@@ -134,7 +139,11 @@ component  accessors="true" output="false"
 	    arguments.data.entityName = "Sku";
 	    arguments.data.restRequestFlag = 1;
 
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
