@@ -2406,10 +2406,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrderTemplate_removeWishlistItem(required any orderTemplate, required any processObject, required struct data={}){
 		
-		if( !structKeyExists(arguments.data, 'removalSkuID') ){
-					arguments.orderTemplate.addError('removalSku',getHibachiScope().rbKey('validate.orderTemplate_removeSku.removalSkuID'));
-		}
-		
 		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
 		getOrderDAO().removeOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID);
 		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){

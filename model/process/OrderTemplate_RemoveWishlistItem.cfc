@@ -52,9 +52,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderTemplate";
 	property name="sku";
 	
-	property name="skuID";
+	property name="removalSkuID";
 
-	public any function getSku(){
-		return getService('SkuService').getSku(getSkuID());
+	public any function getremovalSku(){
+		return getService('SkuService').getSku(getremovalSkuID());
 	}
 }
