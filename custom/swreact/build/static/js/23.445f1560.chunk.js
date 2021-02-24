@@ -1,2 +1,0 @@
-(this.webpackJsonpswreact=this.webpackJsonpswreact||[]).push([[23],{301:function(e,t,c){"use strict";c.r(t);var s=c(0),r=c(26);t.default=function(){return Object(s.jsx)(r.i,{children:Object(s.jsx)("h1",{children:"Category Page"})})}}}]);
-//# sourceMappingURL=23.445f1560.chunk.js.map
