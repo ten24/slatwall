@@ -3146,15 +3146,25 @@ component  accessors="true" output="false"
 	}
 	
 	public void function addWishlistItem(required any data) {
-        param name="data.orderTemplateID" default="";
-        param name="data.skuID" default="";
-
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.skuID" default="";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist ');
+        }
+        
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
 	    
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem'); 
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem');
+ 		
+ 		var processObject = orderTemplate.getProcessObject('addWishlistItem');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
         getHibachiScope().addActionResult( "public:orderTemplate.addWishlistItem", orderTemplate.hasErrors() );
             
         if(orderTemplate.hasErrors()) {
@@ -3162,6 +3172,33 @@ component  accessors="true" output="false"
         }
     }
 	
+	public void function removeWishlistItem(required any data) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.skuID" default="";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist ');
+        }
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'removeWishlistItem'); 
+ 		
+ 		var processObject = orderTemplate.getProcessObject('removeWishlistItem');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
+        getHibachiScope().addActionResult( "public:orderTemplate.removeWishlistItem", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+    
 	public void function addOrderTemplateItem(required any data) {
         param name="data.orderTemplateID" default="";
         param name="data.skuID" default="";
