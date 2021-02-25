@@ -115,7 +115,8 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
   }, [setProductDetails, productDetails, productID, sku, getSkuDetails])
 
   // Leaving this here until this logic is proven solid. Uncomment for helpful debugging
-  // console.log('sku', sku)
+  console.log('sku', sku)
+  console.log('productDetails', productDetails)
 
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">

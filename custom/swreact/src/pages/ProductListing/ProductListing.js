@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 import { Layout } from '../../components'
 import { useDispatch } from 'react-redux'
 
-import ProductListingHeader from './ProductListingHeader'
-import ProductListingGrid from './ProductListingGrid'
-import ProductListingToolBar from './ProductListingToolBar'
-import ProductListingPagination from './ProductListingPagination'
-import ProductListingSidebar from './ProductListingSidebar'
+import ProductListingGrid from '../../components/ProductListing/ProductListingGrid'
+import ProductListingToolBar from '../../components/ProductListing/ProductListingToolBar'
+import ProductListingPagination from '../../components/ProductListing/ProductListingPagination'
+import ProductListingSidebar from '../../components/ProductListing/ProductListingSidebar'
 import { getProductListingOptions, search } from '../../actions/productSearchActions'
+import ProductListingHeader from '../../components/ProductListing/ProductListingHeader'
 
 const ProductListing = () => {
   const dispatch = useDispatch()

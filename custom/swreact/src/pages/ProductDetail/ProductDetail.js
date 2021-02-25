@@ -7,10 +7,12 @@ import ProductPageContent from './ProductPageContent'
 import { SlatwalApiService } from '../../services'
 import ProductDetailSlider from './ProductDetailSlider'
 import { useLocation } from 'react-router-dom'
+import useRedirect from '../../hooks/useRedirect'
 
 const ProductDetail = props => {
   let { pathname } = useLocation()
   const [product, setProduct] = useState({ isLoaded: false })
+  const [redirect, setRedirect] = useRedirect({ location: '/notfound' })
 
   useEffect(() => {
     let didCancel = false
@@ -19,22 +21,23 @@ const ProductDetail = props => {
       SlatwalApiService.products
         .list({
           filter: {
+            current: 1,
             urlTitle: urlTitle[0],
           },
         })
         .then(response => {
-          if (response.isSuccess() && !didCancel) {
-            const records = response.success().pageRecords
+          if (response.isSuccess() && !didCancel && response.success().pageRecords && response.success().pageRecords.length) {
             setProduct({
               ...product,
               isLoaded: true,
-              ...records[0],
+              ...response.success().pageRecords[0],
             })
-          } else if (response.isFail() && !didCancel) {
-            setProduct({
-              ...product,
-              isLoaded: true,
-            })
+          } else if (!didCancel) {
+            // setRedirect({ ...redirect, shouldRedirect: true })
+            // setProduct({
+            //   ...product,
+            //   isLoaded: true,
+            // })
           }
         })
     }
