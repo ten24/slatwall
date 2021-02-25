@@ -71,7 +71,6 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="categoryName" ormtype="string";
 	property name="categoryUrlTitle" ormtype="string";
 	
-	property name="parentContentID" ormtype="string";
 	property name="contentTitle" ormtype="string";
 	property name="contentUrlTitle" ormtype="string";
     property name="contentSortOrder" ormtype="integer";
