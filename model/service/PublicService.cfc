@@ -886,13 +886,12 @@ component  accessors="true" output="false"
 		}
      	var accountPhoneNumber = getAccountService().getAccountPhoneNumber( arguments.data.accountPhoneNumberID );
      	
-        if (!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ){
-            var newAccountPhoneNumber = getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "update");
-            getHibachiScope().addActionResult( "public:cart.updateAccountPhoneNumber", accountPhoneNumber.hasErrors() );
+        if (isNull(accountPhoneNumber) || getHibachiScope().getAccount().getAccountID() != accountPhoneNumber.getAccount().getAccountID() ){
+            getHibachiScope().addActionResult( "public:account.updateAccountPhoneNumber", true);
+            return;
         }
-        else {
-    	        getHibachiScope().addActionResult( "public:cart.updateAddress", true);
-    	}
+        this.getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "update");
+        getHibachiScope().addActionResult( "public:account.updateAccountPhoneNumber", accountPhoneNumber.hasErrors() );
      }
     
     /**
