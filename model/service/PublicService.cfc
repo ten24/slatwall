@@ -879,7 +879,7 @@ component  accessors="true" output="false"
      	param name="arguments.data.countryCallingCode" default="";
      	
         if( !(getHibachiScope().getLoggedInFlag()) ) {
-            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist ');
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.updateAccount');
         }
         if( isNull(arguments.data.accountPhoneNumberID) ) {
 			return;
