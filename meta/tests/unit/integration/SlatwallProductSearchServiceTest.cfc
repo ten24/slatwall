@@ -307,10 +307,20 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         // dump( data.collectionList.getRecordsCount() );
         // dump( data.collectionList.getPageRecords() );
         
-        dump(this.getService().getProducts());
+        var data = {
+            "productType": "",
+            "category": "",
+            // "brands": "Yale,Lab",
+            "options": "",
+            "attributeOptions": "",
+            "keyword": "Serrated",
+        };
+        dump(data);
         
-        abort;        
-	}
+        var result = this.getService().getProducts(argumentCollection=data)
+        
+        dump(result);
+    }
 	
 	
 	/**

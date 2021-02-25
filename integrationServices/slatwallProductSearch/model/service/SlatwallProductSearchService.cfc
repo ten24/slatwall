@@ -120,7 +120,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 
-	public struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters){
+	public struct function getPotentialFilterFacetsAndOptions(){
 	    param name="arguments.siteID" default='';
 	    param name="arguments.productType" default='';
 	    param name="arguments.category" default='';
@@ -536,15 +536,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         collectionList.addFilter('skuActiveFlag',1);
         collectionList.addFilter('skuPublishedFlag',1);
         
-        collectionList.addFilter('productTypeActiveFlag',1);
-        collectionList.addFilter('productTypePublishedFlag',1);
-        
-        collectionList.addFilter('brandActiveFlag',1);
-        collectionList.addFilter('brandPublishedFlag',1);
-        
-        collectionList.addFilter('optionActiveFlag',1);
-        collectionList.addFilter('attributeSetActiveFlag',1);
-        
         collectionList.addFilter(
             propertyIdentifier = 'product.publishedStartDateTime',
             value='NULL',
@@ -626,6 +617,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     
         // ProductType
         if( len(arguments.productType) ){
+            collectionList.addFilter('productTypeActiveFlag',1);
+            collectionList.addFilter('productTypePublishedFlag',1);
             collectionList.addFilter('productTypeName', arguments.productType );
         }
         // category
@@ -634,14 +627,18 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
         // brands
         if( len(arguments.brands) ){
+            collectionList.addFilter('brandActiveFlag',1);
+            collectionList.addFilter('brandPublishedFlag',1);
             collectionList.addFilter('brandName', arguments.brands, "IN" );
         }
         // options
         if( len(arguments.options) ){
+            collectionList.addFilter('optionActiveFlag',1);
             collectionList.addFilter('optionCode', arguments.options, "IN" );
         }
         // Attribute options
         if( len(arguments.attributeOptions) ){
+            collectionList.addFilter('attributeSetActiveFlag',1);
             collectionList.addFilter('attributeOptionValue', arguments.attributeOptions, "IN" );
         }
         
@@ -649,6 +646,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
         // Searching
         if ( len( arguments.keyword ) ) {
+            
+            // TODO: check if product is translated entity
             var locale = hibachiScope.getSession().getRbLocale();
             var sql = "SELECT 
                         baseID 
@@ -659,17 +658,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                         AND value like :keyword";
             var params = {
                 locale=locale,
-                keyword='%#arguments.data.keyword#%'
+                keyword='%#arguments.keyword#%'
             };
             var productIDQuery = queryExecute(sql,params);
             var productIDs = ValueList(productIDQuery.baseID);
             
             collectionList.addFilter(
                 propertyIdentifier='product.productName', 
-                value='%#arguments.data.keyword#%', 
+                value='%#arguments.keyword#%', 
                 comparisonOperator='LIKE', 
                 filterGroupAlias='keyword');
-                
             collectionList.addFilter(
                 propertyIdentifier='product.productID', 
                 value=productIDs,
@@ -679,8 +677,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
         
         // TODO: other inline filters, like price-range, reviews ....
-        
-        
+ 
         // Sorting
         collectionList.setOrderBy(arguments.orderBy);
         
@@ -731,14 +728,22 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);
 	    
+	    var startTicks = getTickCount();
+	    var total = collectionData.collectionList.getRecordsCount();
+	    this.logHibachi("SlatwallProductSearchService:: getProducts/getRecordsCount took #getTickCount() - startTicks# ms.");
+        
+        startTicks = getTickCount();
+	    var records = collectionData.collectionList.getPageRecords();
+	    this.logHibachi("SlatwallProductSearchService:: getProducts/getPageRecords [p:#arguments.currentPage#(#arguments.pageSize#)] took #getTickCount() - startTicks# ms.");
+
 	    return {
-	        'total' : collectionData.collectionList.getRecordsCount(),
+	        'total' : total,
 	        'pageSize': arguments.pageSize,
 	        'currentPage' : arguments.currentPage,
 	        'currencyCode': collectionData.currencyCode,
 	        'priceGroupCode': collectionData.priceGroupCode,
 	        
-	        'products' : collectionData.collectionList.getPageRecords(),
+	        'products' : records,
 	        'potentialFilters': formattedFacets,
 	    }
 
