@@ -877,8 +877,7 @@ component  accessors="true" output="false"
      	param name="arguments.data.accountPhoneNumberID" default="";
      	param name="arguments.data.phoneNumber" default="";
      	param name="arguments.data.countryCallingCode" default="";
-        
-        var phoneNumberID = "";
+
      	var accountPhoneNumber = getAccountService().getAccountPhoneNumber( arguments.data.accountPhoneNumberID );
         
         var newAccountPhoneNumber = getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "UPDATE");
