@@ -871,6 +871,25 @@ component  accessors="true" output="false"
      }
     
     /**
+      * Updates an Account Phone Number.
+      */
+    public void function updateAccountPhoneNumber(required data){
+     	param name="arguments.data.accountPhoneNumberID" default="";
+     	param name="arguments.data.phoneNumber" default="";
+     	param name="arguments.data.countryCallingCode" default="";
+        
+        var phoneNumberID = "";
+     	var accountPhoneNumber = getAccountService().getAccountPhoneNumber( arguments.data.accountPhoneNumberID );
+        
+        var newAccountPhoneNumber = getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "UPDATE");
+        if(!newAccountPhoneNumber.hasErrors() && !newAccountPhoneNumber.hasErrors()) {
+  	     	getHibachiScope().addActionResult( "public:cart.updateAccountPhoneNumber", false );
+        }else {
+            getHibachiScope().addActionResult( "public:cart.updateAccountPhoneNumber", true ); 
+        }
+     }
+    
+    /**
      * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
      * and a 'profile name' that determines the size of that image.
      * /api/scope/getResizedImageByProfileName&profileName=large&skuIDs=8a8080834721af1a0147220714810083,4028818d4b31a783014b5653ad5d00d2,4028818d4b05b871014b102acb0700d5
