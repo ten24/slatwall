@@ -15,9 +15,8 @@ const ListingToolBar = ({ hide, sorting, orderBy, removeFilter, setSort }) => {
       return { filterName: key, name: qs[key] }
     })
     .filter(filter => {
-      return filter.filterName !== 'orderBy' && filter.filterName !== 'keyword' && filter.filterName !== hide
+      return filter.filterName !== 'pageSize' && filter.filterName !== 'currentPage' && filter.filterName !== 'orderBy' && filter.filterName !== 'keyword' && filter.filterName !== hide
     })
-
   return (
     <div className="d-flex justify-content-center justify-content-sm-between align-items-center pt-2 pb-4 pb-sm-5">
       <div className="d-flex flex-wrap">

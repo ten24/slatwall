@@ -65,13 +65,21 @@ const FacetSearch = ({ searchTerm, search }) => {
     </div>
   )
 }
-const ListingFilter = ({ qs, appliedFilters, name, facetKey, options, index, updateAttribute }) => {
+const ListingFilter = ({ qs, appliedFilters, name, facetKey, selectType, options, index, updateAttribute }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
   useEffect(() => {
     let results = options
     if (searchTerm.length) {
       results = options.filter(option => option.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    }
+    if (selectType === 'single') {
+      results = options.filter(option => {
+        return appliedFilters.includes(option.value)
+      })
+      if (results.length === 0) {
+        results = options
+      }
     }
     setSearchResults([...results])
   }, [searchTerm, options, appliedFilters, name])

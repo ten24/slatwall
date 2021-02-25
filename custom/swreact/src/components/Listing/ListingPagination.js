@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux'
-import { search, setCurrentPage } from '../../actions/productSearchActions'
 import { useTranslation } from 'react-i18next'
 
 const LEFT_PAGE = 'LEFT'
@@ -74,7 +72,6 @@ const calculatePageNumbers = (currentPage, pageNeighbours, totalPages) => {
 }
 
 const ListingPagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 1, setPage }) => {
-  const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
 
   const gotoPage = pageTo => {
