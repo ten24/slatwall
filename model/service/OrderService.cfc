@@ -3890,7 +3890,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Call saveOrder to recalculate all the orderTotal stuff
-		arguments.order = this.saveOrder(arguments.order);
+		arguments.order = this.saveOrder(arguments.order , { updateOrderAmounts : true } );
 		return arguments.order;
 	}
 
