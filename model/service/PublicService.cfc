@@ -874,18 +874,25 @@ component  accessors="true" output="false"
       * Updates an Account Phone Number.
       */
     public void function updateAccountPhoneNumber(required data){
-     	param name="arguments.data.accountPhoneNumberID" default="";
+     	param name="arguments.data.accountPhoneNumberID";
      	param name="arguments.data.phoneNumber" default="";
      	param name="arguments.data.countryCallingCode" default="";
-
-     	var accountPhoneNumber = getAccountService().getAccountPhoneNumber( arguments.data.accountPhoneNumberID );
-        
-        var newAccountPhoneNumber = getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "UPDATE");
-        if(!newAccountPhoneNumber.hasErrors() && !newAccountPhoneNumber.hasErrors()) {
-  	     	getHibachiScope().addActionResult( "public:cart.updateAccountPhoneNumber", false );
-        }else {
-            getHibachiScope().addActionResult( "public:cart.updateAccountPhoneNumber", true ); 
+     	
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist ');
         }
+        if( isNull(arguments.data.accountPhoneNumberID) ) {
+			return;
+		}
+     	var accountPhoneNumber = getAccountService().getAccountPhoneNumber( arguments.data.accountPhoneNumberID );
+     	
+        if (!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ){
+            var newAccountPhoneNumber = getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "update");
+            getHibachiScope().addActionResult( "public:cart.updateAccountPhoneNumber", accountPhoneNumber.hasErrors() );
+        }
+        else {
+    	        getHibachiScope().addActionResult( "public:cart.updateAddress", true);
+    	}
      }
     
     /**
