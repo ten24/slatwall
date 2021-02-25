@@ -887,7 +887,7 @@ component  accessors="true" output="false"
      	var accountPhoneNumber = getAccountService().getAccountPhoneNumber( arguments.data.accountPhoneNumberID );
      	
         if (!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ){
-            var newAccountPhoneNumber = getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "update");
+            this.getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "update");
             getHibachiScope().addActionResult( "public:cart.updateAccountPhoneNumber", accountPhoneNumber.hasErrors() );
         }
         else {
