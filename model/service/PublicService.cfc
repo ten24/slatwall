@@ -137,8 +137,9 @@ component  accessors="true" output="false"
 	    // TODO: create a site-level setting for defaule product-search integration
         var slatwallProductSearchService = this.getService('slatwallProductSearchService');
         
-        
-        return slatwallProductSearchService.getProducts(argumetCollection=data);
+        arguments.data.ajaxResponse = {
+            'data' : slatwallProductSearchService.getProducts(argumetCollection=data)
+        };
     }
 
 
