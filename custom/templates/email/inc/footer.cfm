@@ -26,15 +26,12 @@
 																<!-- FOOTER COPY -->
 																<p class="mb_xxs" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;">
 																	&copy; <cfoutput>#year(Now())#</cfoutput> Stone and Berg Company Inc<br>
-																	<small style="font-size: 14px;">239 Mill Street, Worcester, MA 01602</small>
+																	<small style="font-size: 14px;">#getService('contentService').getContentByUrlTitlePath('email-templates/footer').getContentBody()#</small>
 																</p>
 																
 																<p class="small mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">
 																	
-																	<!-- FOOTER LINKS -->
-																	<a href="##" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Products</span></a> <span style="line-height: inherit;">&nbsp; &bull; &nbsp;</span> 
-																	<a href="##" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Blog</span></a> <span style="line-height: inherit;">&nbsp; &bull; &nbsp;</span> 
-																	<a href="##" style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;"><span style="text-decoration: underline;line-height: inherit;color: #colorContainerAccent#;">Unsubscribe</span></a>
+															
 																	
 																</p>
 															</td>
