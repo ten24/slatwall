@@ -439,8 +439,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         
         var startTicks = getTickCount();
         
-        var arguments.entityIDs = listQualify(arguments.entityIDs, "'");
-            
         var sql = " 
             UPDATE swProductFilterFacetOption ffo
             INNER JOIN
@@ -449,7 +447,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         switch (arguments.entityName){
             case 'product':
                 sql &= " 
-                    swProduct p ON p.productID = ffo.productID AND p.productID IN (#arguments.entityIDs#)
+                    swProduct p ON p.productID = ffo.productID AND p.productID IN (:entityIDs)
                     SET 
                         ffo.productActiveFlag = p.activeFlag,
                         ffo.productPublishedFlag = p.publishedFlag
@@ -457,7 +455,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'sku':
                 sql &= " 
-                    swSku sk ON sk.skuID = ffo.skuID AND sk.skuID IN (#arguments.entityIDs#)
+                    swSku sk ON sk.skuID = ffo.skuID AND sk.skuID IN (:entityIDs)
                     SET 
                         ffo.skuActiveFlag = sk.activeFlag,
                         ffo.skuPublishedFlag = sk.publishedFlag
@@ -465,7 +463,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'brand':
                 sql &= " 
-                    swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (#arguments.entityIDs#)
+                    swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (:entityIDs)
                     SET 
                         ffo.brandName = br.brandName,
                         ffo.brandActiveFlag = br.activeFlag,
@@ -474,7 +472,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'category':
                 sql &= " 
-                    swCategory ct ON ct.categoryID = ffo.categoryID AND ct.categoryID IN (#arguments.entityIDs#)
+                    swCategory ct ON ct.categoryID = ffo.categoryID AND ct.categoryID IN (:entityIDs)
                     SET 
                         ffo.categoryName = ct.categoryName,
                         ffo.parentCategoryID = ct.parentCategoryID,
@@ -483,7 +481,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'option':
                 sql &= " 
-                    swOption o ON o.optionID = ffo.optionID AND o.optionID IN (#arguments.entityIDs#)
+                    swOption o ON o.optionID = ffo.optionID AND o.optionID IN (:entityIDs)
                     SET 
                         ffo.optionName = o.optionName,
                         ffo.optionCode = o.optionCode,
@@ -493,7 +491,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'optionGroup':
                 sql &= " 
-                    swOptionGroup og ON og.optionGroupID = ffo.optionGroupID AND og.optionGroupID IN (#arguments.entityIDs#)
+                    swOptionGroup og ON og.optionGroupID = ffo.optionGroupID AND og.optionGroupID IN (:entityIDs)
                     SET 
                         ffo.optionGroupName = o.optionGroupName,
                         ffo.optionGroupSortOrder = o.sortOrder
@@ -501,7 +499,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'productType':
                 sql &= " 
-                    swProductType pt ON pt.productTypeID = ffo.productTypeID AND pt.productTypeID IN (#arguments.entityIDs#)
+                    swProductType pt ON pt.productTypeID = ffo.productTypeID AND pt.productTypeID IN (:entityIDs)
                     SET 
                         ffo.productTypeName = pt.productTypeName,
                         ffo.parentProductTypeID = pt.parentProductTypeID,
@@ -512,7 +510,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'site':
                 sql &= " 
-                    swSite s ON s.siteID = ffo.siteID AND s.siteID IN (#arguments.entityIDs#)
+                    swSite s ON s.siteID = ffo.siteID AND s.siteID IN (:entityIDs)
                     SET 
                         ffo.siteName = s.siteName,
                         ffo.siteCode = s.siteCode,
@@ -521,7 +519,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'attribute':
                 sql &= " 
-                    swAttribute att ON att.attributeID = ffo.attributeID AND att.attributeID IN (#arguments.entityIDs#)
+                    swAttribute att ON att.attributeID = ffo.attributeID AND att.attributeID IN (:entityIDs)
                     SET 
                         ffo.attributeName = att.attributeName,
                         ffo.attributeCode = att.attributeCode,
@@ -532,7 +530,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'attributeSet':
                 sql &= " 
-                    swAttributeSet atst ON atst.attributeSetID = ffo.attributeSetID AND atst.attributeSetID IN (#arguments.entityIDs#)
+                    swAttributeSet atst ON atst.attributeSetID = ffo.attributeSetID AND atst.attributeSetID IN (:entityIDs)
                     SET 
                         ffo.attributeSetName = atst.attributeSetName,
                         ffo.attributeSetCode = atst.attributeSetCode,
@@ -543,7 +541,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             break;
             case 'attributeOption':
                 sql &= " 
-                    swAttributeOption atto ON atto.attributeOptionID = ffo.attributeOptionID AND atto.attributeOptionID IN (#arguments.entityIDs#)
+                    swAttributeOption atto ON atto.attributeOptionID = ffo.attributeOptionID AND atto.attributeOptionID IN (:entityIDs)
                     SET 
                         ffo.attributeOptionLabel = atto.attributeOptionLabel,
                         ffo.attributeOptionValue = atto.attributeOptionValue,
@@ -558,6 +556,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             
         var q = new Query();
         q.setSQL( sql );
+        q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q = q.execute().getResult();
         
         this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOprionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
@@ -573,8 +572,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         
         var startTicks = getTickCount();
         
-        var arguments.entityIDs = listQualify(arguments.entityIDs, "'");
-            
         var sql = " 
             DELETE swProductFilterFacetOption 
                 FROM swProductFilterFacetOption as ffo
@@ -584,57 +581,57 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         switch (arguments.entityName){
             case 'product':
                 sql &= " 
-                    swProduct p ON p.productID = ffo.productID AND p.productID IN (#arguments.entityIDs#)
+                    swProduct p ON p.productID = ffo.productID AND p.productID IN (:entityIDs)
                 ";
             break;
             case 'sku':
                 sql &= " 
-                    swSku sk ON sk.skuID = ffo.skuID AND sk.skuID IN (#arguments.entityIDs#)
+                    swSku sk ON sk.skuID = ffo.skuID AND sk.skuID IN (:entityIDs)
                 ";
             break;
             case 'brand':
                 sql &= " 
-                    swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (#arguments.entityIDs#)
+                    swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (:entityIDs)
                 ";
             break;
             case 'category':
                 sql &= " 
-                    swCategory ct ON ct.categoryID = ffo.categoryID AND ct.categoryID IN (#arguments.entityIDs#)
+                    swCategory ct ON ct.categoryID = ffo.categoryID AND ct.categoryID IN (:entityIDs)
                 ";
             break;
             case 'option':
                 sql &= " 
-                    swOption o ON o.optionID = ffo.optionID AND o.optionID IN (#arguments.entityIDs#)
+                    swOption o ON o.optionID = ffo.optionID AND o.optionID IN (:entityIDs)
                 ";
             break;
             case 'optionGroup':
                 sql &= " 
-                    swOptionGroup og ON og.optionGroupID = ffo.optionGroupID AND og.optionGroupID IN (#arguments.entityIDs#)
+                    swOptionGroup og ON og.optionGroupID = ffo.optionGroupID AND og.optionGroupID IN (:entityIDs)
                 ";
             break;
             case 'productType':
                 sql &= " 
-                    swProductType pt ON pt.productTypeID = ffo.productTypeID AND pt.productTypeID IN (#arguments.entityIDs#)
+                    swProductType pt ON pt.productTypeID = ffo.productTypeID AND pt.productTypeID IN (:entityIDs)
                 ";
             break;
             case 'site':
                 sql &= " 
-                    swSite s ON s.siteID = ffo.siteID AND s.siteID IN (#arguments.entityIDs#)
+                    swSite s ON s.siteID = ffo.siteID AND s.siteID IN (:entityIDs)
                 ";
             break;
             case 'attribute':
                 sql &= " 
-                    swAttribute att ON att.attributeID = ffo.attributeID AND att.attributeID IN (#arguments.entityIDs#)
+                    swAttribute att ON att.attributeID = ffo.attributeID AND att.attributeID IN (:entityIDs)
                 ";
             break;
             case 'attributeSet':
                 sql &= " 
-                    swAttributeSet atst ON atst.attributeSetID = ffo.attributeSetID AND atst.attributeSetID IN (#arguments.entityIDs#)
+                    swAttributeSet atst ON atst.attributeSetID = ffo.attributeSetID AND atst.attributeSetID IN (:entityIDs)
                 ";
             break;
             case 'attributeOption':
                 sql &= " 
-                    swAttributeOption atto ON atto.attributeOptionID = ffo.attributeOptionID AND atto.attributeOptionID IN (#arguments.entityIDs#)
+                    swAttributeOption atto ON atto.attributeOptionID = ffo.attributeOptionID AND atto.attributeOptionID IN (:entityIDs)
                 ";
             break;
             default:
@@ -645,6 +642,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
      
         var q = new Query();
         q.setSQL( sql );
+        q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q = q.execute().getResult();
         
         this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOprionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
