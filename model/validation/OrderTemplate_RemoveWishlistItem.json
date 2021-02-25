@@ -1,0 +1,6 @@
+{
+	"properties": {
+        "orderTemplate" : [{ "required": true }],
+		"removalSkuID": [{ "required": true }]
+	}
+}

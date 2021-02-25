@@ -2403,7 +2403,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate; 	
 	} 
-
+	
+	public any function processOrderTemplate_removeWishlistItem(required any orderTemplate, required any processObject, required struct data={}){
+		
+		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
+		getOrderDAO().removeOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID);
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			getService('HibachiEntityQueueService').insertEntityQueueItem(baseID=orderTemplateID, baseObject="OrderTemplate", processMethod='processOrderTemplate_updateCalculatedProperties');
+		}
+		return arguments.orderTemplate;
+			
+	}
+	
 	public any function processOrderTemplate_shareWishlist(required any orderTemplate, any processObject, struct data={}){
 
 		this.sendEmail(
@@ -3879,7 +3890,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Call saveOrder to recalculate all the orderTotal stuff
-		arguments.order = this.saveOrder(arguments.order);
+		arguments.order = this.saveOrder(arguments.order , { updateOrderAmounts : true } );
 		return arguments.order;
 	}
 
