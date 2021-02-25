@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import SimpleBar from 'simplebar-react'
 
-const AttributeFacet = ({ name, count, sub, filterName, isSelected, updateAttribute }) => {
-  const token = filterName.replace(/\s/g, '') + name.replace(/\s/g, '') + 'input'
+const AttributeFacet = ({ qs, facet, filterName, facetKey, updateAttribute, isSelected = false }) => {
+  const token = filterName.replace(/\s/g, '') + facet.name.replace(/\s/g, '') + 'input'
   return (
     <li className="widget-list-item cz-filter-item">
       <div className="widget-list-link d-flex justify-content-between align-items-center">
@@ -12,17 +13,16 @@ const AttributeFacet = ({ name, count, sub, filterName, isSelected, updateAttrib
               type="checkbox"
               checked={isSelected}
               onChange={event => {
-                event.preventDefault()
-                updateAttribute({ name, filterName })
+                updateAttribute({ name: facet.value, filterName: facetKey })
               }}
               id={token}
             />
             <label className="custom-control-label" htmlFor={token}>
-              {name} <span className="font-size-xs text-muted">{sub}</span>
+              {facet.name} {/* <span className="font-size-xs text-muted">{sub}</span> */}
             </label>
           </div>
         </span>
-        {count && <span className="font-size-xs text-muted ml-3">{count}</span>}
+        {/* {count && <span className="font-size-xs text-muted ml-3">{count}</span>} */}
       </div>
     </li>
   )
@@ -65,24 +65,22 @@ const FacetSearch = ({ searchTerm, search }) => {
     </div>
   )
 }
-const ListingFilter = ({ appliedFilters, filterName, options, index, type, addFilter, updateAttribute }) => {
+const ListingFilter = ({ qs, appliedFilters, name, facetKey, options, index, updateAttribute }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
   useEffect(() => {
-    const validFilters = appliedFilters.filter(appliedFilter => appliedFilter.filterName === filterName)
-    let results = options.filter(({ name: id1 }) => !validFilters.some(({ name: id2 }) => id2 !== id1))
+    let results = options
     if (searchTerm.length) {
       results = options.filter(option => option.name.toLowerCase().includes(searchTerm.toLowerCase()))
     }
-    setSearchResults(results)
-  }, [searchTerm, options, appliedFilters, filterName])
-
+    setSearchResults([...results])
+  }, [searchTerm, options, appliedFilters, name])
   return (
     <div className="card border-bottom pt-1 pb-2 my-1">
       <div className="card-header">
         <h3 className="accordion-heading">
           <a className="collapsed" href={`#filer${index}`} role="button" data-toggle="collapse" aria-expanded="false" aria-controls="productType">
-            {filterName}
+            {name}
             <span className="accordion-indicator"></span>
           </a>
         </h3>
@@ -91,16 +89,13 @@ const ListingFilter = ({ appliedFilters, filterName, options, index, type, addFi
         <div className="card-body">
           <div className="widget widget-links cz-filter">
             <FacetSearch searchTerm={searchTerm} search={setSearchTerm} />
-            <ul className="widget-list cz-filter-list pt-1" style={{ height: '12rem' }} data-simplebar data-simplebar-auto-hide="false">
+            <SimpleBar className="widget-list cz-filter-list pt-1" style={{ height: '12rem' }} forceVisible="y" autoHide={false}>
               {searchResults &&
-                searchResults.map((result, index) => {
-                  if (type === 'attribute') {
-                    return <AttributeFacet {...result} key={index} filterName={filterName} updateAttribute={updateAttribute} />
-                  } else {
-                    return <DrillDownFacet {...result} key={index} filterName={filterName} addFilter={addFilter} />
-                  }
+                searchResults.map((facet, index) => {
+                  const isSelected = appliedFilters.includes(facet.value)
+                  return <AttributeFacet qs={qs} isSelected={isSelected} facet={facet} key={`opt${facet.value}`} filterName={name} facetKey={facetKey} updateAttribute={updateAttribute} />
                 })}
-            </ul>
+            </SimpleBar>
           </div>
         </div>
       </div>

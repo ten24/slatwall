@@ -2,11 +2,17 @@ import React, { useState, useCallback } from 'react'
 import debounce from 'lodash/debounce'
 import ProductListingFilter from './ListingFilter'
 import { useTranslation } from 'react-i18next'
-
-const ListingSidebar = ({ keyword, appliedFilters, possibleFilters, attributes, recordsCount, setKeyword, updateAttribute, addFilter }) => {
+import queryString from 'query-string'
+const getAppliedFilters = (params, facetKey) => {
+  const qs = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+  if (qs[facetKey]) {
+    return Array.isArray(qs[facetKey]) ? qs[facetKey] : [qs[facetKey]]
+  }
+  return []
+}
+const ListingSidebar = ({ qs, hide, optionGroups, brands, categories, productTypes, keyword, recordsCount, setKeyword, updateAttribute }) => {
   const [searchTerm, setSearchTerm] = useState(keyword)
   const { t, i18n } = useTranslation()
-
   // TODO: Shouls this be an auto search or should you have to click enter
   const slowlyRequest = useCallback(
     debounce(value => {
@@ -14,7 +20,6 @@ const ListingSidebar = ({ keyword, appliedFilters, possibleFilters, attributes, 
     }, 500),
     [debounce]
   )
-
   const handleInputChange = e => {
     setSearchTerm(e.target.value)
     slowlyRequest(e.target.value)
@@ -44,13 +49,30 @@ const ListingSidebar = ({ keyword, appliedFilters, possibleFilters, attributes, 
             </div>
           </div>
           <div className="accordion mt-3 border-top" id="shop-categories">
-            {possibleFilters &&
-              possibleFilters.map((filter, index) => {
-                return <ProductListingFilter appliedFilters={appliedFilters} key={index} index={`filter${index}`} {...filter} addFilter={addFilter} updateAttribute={updateAttribute} />
+            {optionGroups &&
+              optionGroups.map((filter, index) => {
+                return <ProductListingFilter qs={qs} key={`attr${filter.name.replace(' ', '')}`} index={`attr${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
               })}
-            {attributes &&
-              attributes.map((filter, index) => {
-                return <ProductListingFilter appliedFilters={appliedFilters} key={index} type="attribute" index={`attr${index}`} {...filter} addFilter={addFilter} updateAttribute={updateAttribute} />
+
+            {brands &&
+              brands !== {} &&
+              brands.facetKey !== hide &&
+              [brands].map((filter, index) => {
+                return <ProductListingFilter qs={qs} key={`brand${filter.name.replace(' ', '')}`} index={`brand${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
+              })}
+            {categories &&
+              categories.options &&
+              categories.options.length > 0 &&
+              categories.facetKey !== hide &&
+              [categories].map((filter, index) => {
+                return <ProductListingFilter qs={qs} key={`cat${filter.name.replace(' ', '')}`} index={`cat${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
+              })}
+            {productTypes &&
+              productTypes.options &&
+              productTypes.options.length > 0 &&
+              productTypes.facetKey !== hide &&
+              [productTypes].map((filter, index) => {
+                return <ProductListingFilter qs={qs} key={`pt${filter.name.replace(' ', '')}`} index={`pt${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
               })}
           </div>
         </div>

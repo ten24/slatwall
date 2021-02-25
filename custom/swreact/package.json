@@ -34,6 +34,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "simplebar": "^4.3.0-alpha.1",
+    "simplebar-react": "^2.3.0",
     "slick-carousel": "^1.8.1",
     "source-map-explorer": "^2.5.2",
     "sweetalert2": "^10.14.0",

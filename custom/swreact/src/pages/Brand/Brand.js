@@ -5,12 +5,12 @@ import ListingPage from '../../components/Listing/Listing'
 const Brand = props => {
   const path = props.location.pathname.split('/').reverse()
   const brandFilter = {
-    'brand.urlTitle:eq': path[0],
+    brands: path[0],
   }
 
   return (
     <Layout>
-      <ListingPage preFilter={brandFilter}>
+      <ListingPage preFilter={brandFilter} hide={'brands'}>
         <BrandBanner brandCode={path[0]} />
       </ListingPage>
     </Layout>
