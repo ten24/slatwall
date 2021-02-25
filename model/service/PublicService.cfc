@@ -138,7 +138,7 @@ component  accessors="true" output="false"
         var slatwallProductSearchService = this.getService('slatwallProductSearchService');
         
         arguments.data.ajaxResponse = {
-            'data' : slatwallProductSearchService.getProducts(argumetCollection=data)
+            'data' : slatwallProductSearchService.getProducts(argumentCollection=arguments.data)
         };
     }
 

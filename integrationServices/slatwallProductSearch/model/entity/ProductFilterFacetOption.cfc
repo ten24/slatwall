@@ -71,6 +71,12 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="categoryName" ormtype="string";
 	property name="categoryUrlTitle" ormtype="string";
 	
+	property name="parentContentID" ormtype="string";
+	property name="contentTitle" ormtype="string";
+	property name="contentUrlTitle" ormtype="string";
+    property name="contentSortOrder" ormtype="integer";
+	property name="contentActiveFlag" ormtype="boolean";
+	
 	property name="optionName" ormtype="string";
 	property name="optionCode" ormtype="string" index="IDX_OPTION_CODE";
 	property name="optionSortOrder" ormtype="integer";
@@ -106,8 +112,11 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" index="IDX_BRAND_ID";
 	
 	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID" index="IDX_CATEGORY_ID";
-	property name="parentCategory" cfc="Category" fieldtype="many-to-one" fkcolumn="parentCategoryID" index="IDX_PARETN_CATEGORY_ID";
-	
+	property name="parentCategory" cfc="Category" fieldtype="many-to-one" fkcolumn="parentCategoryID" index="IDX_PARENT_CATEGORY_ID";
+
+	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID" index="IDX_CONTENT_ID";
+	property name="parentContent" cfc="Content" fieldtype="many-to-one" fkcolumn="parentContentID" index="IDX_PARENT_CONTENT_ID";
+
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" index="IDX_PRODUCT_TYPE_ID";
 	property name="parentProductType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="parentProductTypeID" index="IDX_PRENT_PRODUCT_TYPE_ID";
 
