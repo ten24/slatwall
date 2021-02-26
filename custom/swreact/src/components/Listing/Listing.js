@@ -6,7 +6,7 @@ import ProductListingPagination from './ListingPagination'
 import ProductListingSidebar from './ListingSidebar'
 import PageHeader from '../PageHeader/PageHeader'
 import axios from 'axios'
-import { sdkURL, SlatwalApiService } from '../../services/index'
+import { sdkURL } from '../../services/index'
 import queryString from 'query-string'
 
 const processQueryParamters = params => {

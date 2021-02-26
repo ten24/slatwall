@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18next from 'i18next'
 import { Layout } from '../../components'
+import { useGetSku } from '../../hooks/useAPI'
 
 const TranslationExmaple = () => {
   const { t } = useTranslation()
@@ -51,6 +52,38 @@ const CartTest = () => {
   )
 }
 
+const MakeCall = () => {
+  let [request, setRequest] = useGetSku()
+
+  useEffect(() => {
+    let didCancel = false
+    if (!request.isFetching && !request.isLoaded && !didCancel) {
+      setRequest({ ...request, isFetching: true, isLoaded: false, params: { 'f:skuID': '2c91808277abbcd30177b983c4990337' }, makeRequest: true })
+    } else {
+    }
+    return () => {
+      didCancel = true
+    }
+  }, [request, setRequest])
+
+  return (
+    <div>
+      <h1>Cart Tools</h1>
+      <p></p>
+      <button
+        className="btn btn-outline-primary"
+        onClick={e => {
+          e.preventDefault()
+
+          setRequest({ ...request, params: { 'f:skuID': '2c91808277abbcd30177b983c4990337' }, makeRequest: true, isFetching: true, isLoaded: false })
+        }}
+      >
+        Add To Cart
+      </button>
+    </div>
+  )
+}
+
 const Testing = props => {
   return (
     <Layout>
@@ -71,6 +104,12 @@ const Testing = props => {
             <div className="col-sm">
               <CartTest />
             </div>
+          </div>
+        </div>
+        <div className="row">
+          '<h1>CALLLL</h1>
+          <div className="col-sm">
+            <MakeCall />
           </div>
         </div>
       </div>

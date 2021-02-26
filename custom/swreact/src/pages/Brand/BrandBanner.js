@@ -1,44 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { SlatwalApiService } from '../../services'
+import React, { useEffect } from 'react'
 import { SWImage } from '../../components'
+import { useGetSku } from '../../hooks/useAPI'
 const BrandBanner = ({ brandCode }) => {
-  const [data, setData] = useState({ brand: {}, isLoaded: false, brandCode })
+  let [brand, setRequest] = useGetSku()
 
   useEffect(() => {
     let didCancel = false
-    if (!data.isLoaded) {
-      SlatwalApiService.brand
-        .list({
-          perPage: 20,
-          page: 1,
-          filter: {
-            urlTitle: data.brandCode,
-          },
-        })
-        .then(response => {
-          if (response.isSuccess() && response.success().pageRecords.length && !didCancel) {
-            setData({
-              brand: response.success().pageRecords[0],
-              isLoaded: true,
-            })
-          } else if (!didCancel) {
-            setData({
-              ...data,
-              isLoaded: true,
-            })
-          }
-        })
+    if (!brand.isFetching && !brand.isLoaded && !didCancel) {
+      setRequest({ ...brand, isFetching: true, isLoaded: false, params: { 'f:urlTitle': brandCode }, makeRequest: true })
+    } else {
     }
-
     return () => {
       didCancel = true
     }
-  }, [data, setData])
+  }, [brand, setRequest])
 
   return (
     <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
-      <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/files/associatedimage/" src={data.associatedImage} alt={data.brandCode} />
-      <p>{data.brand.brandName}</p>
+      <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/files/associatedimage/" src={brand.data.associatedImage} alt={brand.data.brandCode} />
+      <p>{brand.data.brandName}</p>
     </div>
   )
 }
