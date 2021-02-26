@@ -6,8 +6,9 @@ import ProductListingPagination from './ListingPagination'
 import ProductListingSidebar from './ListingSidebar'
 import PageHeader from '../PageHeader/PageHeader'
 import axios from 'axios'
-import { sdkURL, SlatwalApiService } from '../../services/index'
+import { sdkURL } from '../../services/index'
 import queryString from 'query-string'
+import { useGetSku } from '../../hooks/useAPI'
 
 const processQueryParamters = params => {
   return queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
@@ -20,6 +21,7 @@ const initalData = { brands: '', orderBy: 'product.productName|ASC', pageSize: 1
 const ListingPage = ({ children, preFilter, hide }) => {
   const loc = useLocation()
   let history = useHistory()
+  let [request, setRequest] = useGetSku()
   let params = processQueryParamters(loc.search)
   params = { ...initalData, ...params, ...preFilter }
   const [path, setPath] = useState(loc.search)

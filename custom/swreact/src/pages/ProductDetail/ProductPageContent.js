@@ -7,14 +7,15 @@ import axios from 'axios'
 import { sdkURL, SlatwalApiService } from '../../services'
 import { HeartButton } from '../../components'
 import { useTranslation } from 'react-i18next'
+import { useGetSku } from '../../hooks/useAPI'
 
 const ProductPageContent = ({ productID, productName, productClearance, productCode, productDescription, defaultSku_skuID = '' }) => {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
+  let [sku, setRequest] = useGetSku(defaultSku_skuID)
 
   const [quantity, setQuantity] = useState(1)
   const [productDetails, setProductDetails] = useState({ skus: [], options: [], defaultSelectedOptions: '', availableSkuOptions: '', currentGroupId: '', isLoaded: false })
-  const [sku, setSku] = useState({ skuID: defaultSku_skuID, isLoaded: false })
   const refs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef()])
 
   const refreshOptions = (selectedOptionIDList = '', previousOption = '', currentGroupId) => {
@@ -65,25 +66,16 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
     }).then(response => {
       if (response.status === 200) {
         const { skuID } = response.data
-        setSku({ skuID })
         getSkuDetails(skuID)
       }
     })
   }
   const getSkuDetails = skuID => {
-    SlatwalApiService.products.getSku(skuID).then(response => {
-      if (response.isSuccess()) {
-        const sdkuDetails = response.success()
-        setSku({ ...sku, ...sdkuDetails, isLoaded: true })
-      }
-    })
+    setRequest({ ...sku, params: { 'f:skuID': skuID }, makeRequest: true, isFetching: true, isLoaded: false })
   }
 
   useEffect(() => {
     let didCancel = false
-    if (!sku.isLoaded && sku.skuID.length) {
-      getSkuDetails(sku.skuID)
-    }
     if (!productDetails.isLoaded) {
       axios({
         method: 'POST',
@@ -100,7 +92,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
         if (response.status === 200 && !didCancel) {
           const { options, skus, defaultSelectedOptions } = response.data
           setProductDetails({ ...productDetails, skus, options, defaultSelectedOptions, isLoaded: true })
-          if (skus.length && !sku.skuID.length) {
+          if (skus.length && !sku.isLoaded) {
             getSkuDetails(skus[0].skuID)
           }
         } else if (!didCancel) {
@@ -115,8 +107,6 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
   }, [setProductDetails, productDetails, productID, sku, getSkuDetails])
 
   // Leaving this here until this logic is proven solid. Uncomment for helpful debugging
-  console.log('sku', sku)
-  console.log('productDetails', productDetails)
 
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
@@ -145,7 +135,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                 className="mb-grid-gutter"
                 onSubmit={event => {
                   event.preventDefault()
-                  dispatch(addToCart(sku.skuID, quantity))
+                  dispatch(addToCart(sku.data.skuID, quantity))
                 }}
               >
                 {productDetails.options.length > 0 &&
@@ -220,7 +210,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                 )}
 
                 <div className="mb-3">
-                  <span className="h4 text-accent font-weight-light">{sku.price ? sku.price : ''}</span> <span className="font-size-sm ml-1">{sku.listPrice ? `${sku.listPrice} ${t('frontend.core.list')}` : ''}</span>
+                  <span className="h4 text-accent font-weight-light">{sku.price ? sku.price : ''}</span> <span className="font-size-sm ml-1">{sku.data.listPrice ? `${sku.data.listPrice} ${t('frontend.core.list')}` : ''}</span>
                 </div>
                 <div className="form-group d-flex align-items-center">
                   <select
@@ -231,8 +221,8 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                     className="custom-select mr-3"
                     style={{ width: '5rem' }}
                   >
-                    {sku.calculatedQATS > 0 &&
-                      [...Array(sku.calculatedQATS > 20 ? 20 : sku.calculatedQATS).keys()].map((value, index) => (
+                    {sku.data.calculatedQATS > 0 &&
+                      [...Array(sku.data.calculatedQATS > 20 ? 20 : sku.data.calculatedQATS).keys()].map((value, index) => (
                         <option key={index + 1} value={index + 1}>
                           {index + 1}
                         </option>
