@@ -76,6 +76,8 @@ const ListingPage = ({ children, preFilter, hide }) => {
   useEffect(() => {
     let didCancel = false
     if (!didCancel && ((!request.isFetching && !request.isLoaded) || loc.search !== path)) {
+      console.log('Call', !request.isFetching, !request.isLoaded, loc.search !== path)
+      setPath(loc.search)
       setRequest({ ...request, params, makeRequest: true, isFetching: true, isLoaded: false })
     }
     return () => {
@@ -83,7 +85,6 @@ const ListingPage = ({ children, preFilter, hide }) => {
     }
   }, [request, setRequest, params])
 
-  console.log('request', request)
   return (
     <>
       <PageHeader> {children}</PageHeader>
