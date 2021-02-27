@@ -88,7 +88,7 @@ const ListingPage = ({ children, preFilter, hide }) => {
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <aside className="col-lg-4">
-            <ProductListingSidebar hide={hide} qs={loc.search} {...request.filtering} recordsCount={request.data.recordsCount} setKeyword={setKeyword} updateAttribute={updateAttribute} hideBrand={preFilter.brands.length > 0} />
+            <ProductListingSidebar hide={hide} qs={loc.search} {...request.filtering} recordsCount={request.data.recordsCount} setKeyword={setKeyword} updateAttribute={updateAttribute} />
           </aside>
           <div className="col-lg-8">
             <ProductListingToolBar hide={hide} {...request.filtering} removeFilter={updateAttribute} setSort={setSort} />

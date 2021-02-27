@@ -1,9 +1,14 @@
 import { Layout } from '../../components'
+import ListingPage from '../../components/Listing/Listing'
 
-const Attribute = () => {
+const Attribute = props => {
+  const path = props.location.pathname.split('/').reverse()
+  const filter = {
+    attributeOptions: path[0],
+  }
   return (
     <Layout>
-      <h1>Attribute Page</h1>
+      <ListingPage preFilter={filter} hide={'attributeOptions'} />
     </Layout>
   )
 }
