@@ -74,3 +74,56 @@ export const useGetBrand = () => {
 
   return [request, setRequest]
 }
+
+export const useGetProducts = params => {
+  let [request, setRequest] = useState({
+    isFetching: false,
+    isLoaded: false,
+    makeRequest: false,
+    params: {},
+    filtering: {
+      keyword: params.keyword,
+      orderBy: params.orderBy,
+    },
+    data: {
+      pageRecords: [],
+      limitCountTotal: '',
+      currentPage: '',
+      pageRecordsCount: '',
+      pageRecordsEnd: '',
+      pageRecordsShow: '',
+      pageRecordsStart: '',
+      recordsCount: '',
+      totalPages: '',
+    },
+  })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getProducts?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data && response.data.products && response.data.products.length === 1) {
+          const { currentPage, pageSize, potentialFilters, products, total } = response.data
+          const totalPages = Math.ceil(total / pageSize)
+          setRequest({
+            ...request,
+            filtering: { ...request.filtering, ...potentialFilters },
+            data: { ...request.data, currentPage, pageSize, recordsCount: total, totalPages, pageRecords: products },
+            isFetching: false,
+            isLoaded: true,
+            makeRequest: false,
+          })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
