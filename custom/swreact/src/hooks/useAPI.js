@@ -120,9 +120,6 @@ export const useGetProducts = params => {
         method: 'GET',
         withCredentials: true, // default
         url: `${sdkURL}api/scope/getProducts?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }).then(response => {
         if (response.status === 200 && response.data && response.data.products && response.data.products.length === 1) {
           const { currentPage, pageSize, potentialFilters, products, total } = response.data

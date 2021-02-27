@@ -43,29 +43,15 @@ const Loading = () => {
   return <Layout></Layout>
 }
 
-const LoadRouting = () => {
-  const routing = useSelector(state => state.configuration.router)
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(getConfiguration())
-  }, [])
-
-  return (
-    <>
-      {routing.length &&
-        routing.map(({ URLKey, URLKeyType }, index) => {
-          return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
-        })}
-    </>
-  )
-}
-
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
+  const routing = useSelector(state => state.configuration.router)
+  const dispatch = useDispatch()
   useEffect(() => {
     Object.keys(pageComponents).map(key => {
       return pageComponents[key].preload()
     })
+    dispatch(getConfiguration())
   }, [])
 
   return (
@@ -74,8 +60,10 @@ export default function App() {
       <SEO />
       <Header />
       <Switch>
-        <LoadRouting />
-
+        {routing.length &&
+          routing.map(({ URLKey, URLKeyType }, index) => {
+            return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
+          })}
         <Route path="/product" component={ProductListing} />
         <Route path="/products" component={ProductListing} />
         <Route path="/category-listing" component={CategoryListing} />
