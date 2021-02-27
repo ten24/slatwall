@@ -121,13 +121,14 @@ export const useGetProducts = params => {
         withCredentials: true, // default
         url: `${sdkURL}api/scope/getProducts?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
       }).then(response => {
-        if (response.status === 200 && response.data && response.data.products && response.data.products.length === 1) {
-          const { currentPage, pageSize, potentialFilters, products, total } = response.data
+        console.log('response', response)
+        if (response.status === 200 && response.data && response.data.data.products) {
+          const { currentPage, pageSize, potentialFilters, products, total } = response.data.data
           const totalPages = Math.ceil(total / pageSize)
           setRequest({
             ...request,
             filtering: { ...request.filtering, ...potentialFilters },
-            data: { ...request.data, currentPage, pageSize, recordsCount: total, totalPages, pageRecords: products },
+            data: { ...request.data.data, currentPage, pageSize, recordsCount: total, totalPages, pageRecords: products },
             isFetching: false,
             isLoaded: true,
             makeRequest: false,

@@ -82,6 +82,8 @@ const ListingPage = ({ children, preFilter, hide }) => {
       didCancel = true
     }
   }, [request, setRequest, params])
+
+  console.log('request', request)
   return (
     <>
       <PageHeader> {children}</PageHeader>

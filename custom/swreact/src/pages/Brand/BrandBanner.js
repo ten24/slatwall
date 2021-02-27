@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { SWImage } from '../../components'
-import { useGetSku } from '../../hooks/useAPI'
+import { useGetBrand } from '../../hooks/useAPI'
 const BrandBanner = ({ brandCode }) => {
-  let [brand, setRequest] = useGetSku()
+  let [brand, setRequest] = useGetBrand()
 
   useEffect(() => {
     let didCancel = false
