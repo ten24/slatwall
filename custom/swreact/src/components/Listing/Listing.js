@@ -5,8 +5,6 @@ import ProductListingToolBar from './ListingToolBar'
 import ProductListingPagination from './ListingPagination'
 import ProductListingSidebar from './ListingSidebar'
 import PageHeader from '../PageHeader/PageHeader'
-import axios from 'axios'
-import { sdkURL } from '../../services/index'
 import queryString from 'query-string'
 import { useGetProducts } from '../../hooks/useAPI'
 
@@ -76,7 +74,6 @@ const ListingPage = ({ children, preFilter, hide }) => {
   useEffect(() => {
     let didCancel = false
     if (!didCancel && ((!request.isFetching && !request.isLoaded) || loc.search !== path)) {
-      console.log('Call', !request.isFetching, !request.isLoaded, loc.search !== path)
       setPath(loc.search)
       setRequest({ ...request, params, makeRequest: true, isFetching: true, isLoaded: false })
     }

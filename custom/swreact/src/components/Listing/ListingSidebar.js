@@ -11,19 +11,8 @@ const getAppliedFilters = (params, facetKey) => {
   return []
 }
 const ListingSidebar = ({ qs, hide, optionGroups, brands, categories, productTypes, keyword, recordsCount, setKeyword, updateAttribute }) => {
-  const [searchTerm, setSearchTerm] = useState(keyword)
   const { t, i18n } = useTranslation()
-  // TODO: Shouls this be an auto search or should you have to click enter
-  const slowlyRequest = useCallback(
-    debounce(value => {
-      setKeyword(value)
-    }, 500),
-    [debounce]
-  )
-  const handleInputChange = e => {
-    setSearchTerm(e.target.value)
-    slowlyRequest(e.target.value)
-  }
+
   return (
     <div className="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
       <div className="cz-sidebar-header box-shadow-sm">
@@ -41,10 +30,27 @@ const ListingSidebar = ({ qs, hide, optionGroups, brands, categories, productTyp
             <span className="text-right col">{`${recordsCount} ${t('frontend.core.results')}`}</span>
           </div>
           <div className="input-group-overlay input-group-sm mb-2">
-            <input className="cz-filter-search form-control form-control-sm appended-form-control" type="text" value={searchTerm} onChange={handleInputChange} placeholder={t('frontend.plp.search.placeholder')} />
+            <input
+              className="cz-filter-search form-control form-control-sm appended-form-control"
+              type="text"
+              defaultValue={keyword}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  setKeyword(e.target.value)
+                }
+              }}
+              placeholder={t('frontend.plp.search.placeholder')}
+            />
             <div className="input-group-append-overlay">
               <span className="input-group-text">
-                <i className="fa fa-search"></i>
+                <i
+                  className="fa fa-search"
+                  onClick={e => {
+                    e.preventDefault()
+                    setKeyword(e.target.value)
+                  }}
+                />
               </span>
             </div>
           </div>

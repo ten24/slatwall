@@ -33,6 +33,7 @@ const ListingToolBar = ({ hide, sorting, orderBy, removeFilter, setSort }) => {
                 flt = [flt]
               }
               return flt.map((filter, index) => {
+                if (!filter.name || filter.name.length == 0) return
                 return (
                   <span key={index} className="badge badge-light border p-2 mr-2">
                     <a
