@@ -59,7 +59,6 @@ const MakeCall = () => {
     let didCancel = false
     if (!request.isFetching && !request.isLoaded && !didCancel) {
       setRequest({ ...request, isFetching: true, isLoaded: false, params: { 'f:skuID': '2c91808277abbcd30177b983c4990337' }, makeRequest: true })
-    } else {
     }
     return () => {
       didCancel = true
