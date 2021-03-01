@@ -1,12 +1,28 @@
 import { Link } from 'react-router-dom'
 import { BreadCrumb } from '../..'
 import { logout } from '../../../actions/authActions'
-import { connect, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
-const AccountSidebar = ({ user }) => {
-  const { t, i18n } = useTranslation()
+const getAccountData = (content, parentContentID = '2c9680847491ce86017491f46f9f0038') => {
+  return Object.keys(content)
+    .map(item => {
+      return content[item]
+    })
+    .filter(item => {
+      return item.parentContentID === parentContentID
+    })
+    .sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
+}
 
+const AccountSidebar = () => {
+  const { t, i18n } = useTranslation()
+  // const contentStore = useSelector(state => state.content)
+  const user = useSelector(state => state.userReducer)
+
+  // const pages = getAccountData(contentStore)
   const dispatch = useDispatch()
   return (
     <aside className="col-lg-4 pt-4 pt-lg-0">
@@ -25,7 +41,6 @@ const AccountSidebar = ({ user }) => {
                 {t('frontend.core.logout')}
               </a>
               <br />
-              <Link to="/testing"></Link>
             </div>
           </div>
         </div>
@@ -111,8 +126,6 @@ const PromptLayout = ({ children }) => {
     </div>
   )
 }
-const mapStateToProps = state => {
-  return { user: state.userReducer }
-}
-const AccountLayout = connect(mapStateToProps)(MyAccountLayout)
+
+const AccountLayout = MyAccountLayout
 export { AccountLayout, PromptLayout }

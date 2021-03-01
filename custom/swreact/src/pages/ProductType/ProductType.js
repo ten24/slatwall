@@ -1,11 +1,15 @@
 import { Layout } from '../../components'
-
-const Category = () => {
+import ListingPage from '../../components/Listing/Listing'
+const ProductType = props => {
+  const path = props.location.pathname.split('/').reverse()
+  const filter = {
+    productType: path[0],
+  }
   return (
     <Layout>
-      <h1>Category Page</h1>
+      <ListingPage preFilter={filter} hide={'productType'} />
     </Layout>
   )
 }
 
-export default Category
+export default ProductType

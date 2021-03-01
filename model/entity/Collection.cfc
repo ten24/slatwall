@@ -2231,6 +2231,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return updateHQL; 
 	}
+	
+	public string function getSQL(){
+	    return this.getService('hibachiUtilityService')
+	            .getSQLfromHQL( this.getHQL(), this.getHQLParams() );
+	}
+	
 	//Documentation: hql building gets triggered here; Possible TODO: pass limit from ui to here and add as a parameter
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false, recordsCountJoins=false){
 		
