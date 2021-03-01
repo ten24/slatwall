@@ -1,4 +1,4 @@
-<div class="col-md-3 ">
+<div class="col-sm-5 col-lg-4 p-0">
     <input type="hidden" name="{{swOrderByControls.sortDefaultDirectionFieldName}}" ng-value="swOrderByControls.sortCode" />
     <div class="s-select-wrapper s-titled-select-wrapper s-sort-by"
         data-ng-class="{'s-disabled':swOrderByControls.disabled || !swOrderByControls.edit}"
@@ -24,7 +24,7 @@
         role="group"
         aria-label="...">
         <button type="button"
-                class="btn btn-default"
+                class="btn btn-default mr-2"
                 data-ng-class="{'s-selected' : swOrderByControls.sortCode=='ASC'}"
                 data-ng-click="swOrderByControls.sortAscending()"
                 data-ng-disabled="!swOrderByControls.edit"
@@ -36,7 +36,7 @@
                 <i class="fas fa-sort-alpha-up" aria-hidden="true"></i>
         </button>
         <button type="button"
-                class="btn btn-default"
+                class="btn btn-default mr-2"
                 data-ng-class="{'s-selected' : swOrderByControls.sortCode=='DESC'}"
                 data-ng-click="swOrderByControls.sortDescending()"
                 data-ng-disabled="!swOrderByControls.edit"
@@ -48,7 +48,7 @@
                 <i class="fas fa-sort-alpha-down" aria-hidden="true"></i>
         </button>
         <button type="button"
-            class="btn btn-default"
+            class="btn btn-default mr-2"
             data-ng-class="{'s-selected' : swOrderByControls.sortCode=='MANUAL'}"
             data-ng-click="swOrderByControls.manualSort()"
             data-ng-disabled="!swOrderByControls.edit"

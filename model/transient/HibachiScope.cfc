@@ -447,7 +447,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var availablePropertyList = "";
 		
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'order')){
-			availablePropertyList &="orderItems.orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,fulfillmentHandlingFeeTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";		}
+			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,fulfillmentHandlingFeeTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";
+		}
 		
 		//orderItemData
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'orderItem')){
