@@ -84,7 +84,6 @@ const HomeBrand = (props) => {
       <Slider {...settings}>
         {homeBrand &&
           homeBrand.map((slide, index) => {
-          console.log('slide',slide);
             return <BandSlide {...slide} key={index} slideKey={index} />
           })}
       </Slider>
