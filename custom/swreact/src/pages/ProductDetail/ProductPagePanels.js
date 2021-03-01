@@ -2,6 +2,9 @@
 const ProductPagePanels = () => {
   return (
     <div className="accordion mb-4" id="productPanels">
+      <div className="alert alert-danger" role="alert">
+        <i className="far fa-exclamation-circle"></i> This item is not eligable for free freight
+      </div>
       <div className="card">
         <div className="card-header">
           <h3 className="accordion-heading">

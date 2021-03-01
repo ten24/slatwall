@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { SlatwalApiService } from '../../services'
 import ProductSlider from '../../components/ProductSlider/ProductSlider'
 import { renameKeysInArrayOfObjects } from '../../utils'
+import { useTranslation } from 'react-i18next'
 
 const ProductDetailSlider = ({ productID }) => {
+  const { t, i18n } = useTranslation()
   const [relatedProducts, setRelatedProducts] = useState({ products: [], isLoaded: false, err: '', productID })
   if (relatedProducts.productID !== productID) {
     setRelatedProducts({ products: [], isLoaded: false, err: '', productID })
@@ -35,6 +37,6 @@ const ProductDetailSlider = ({ productID }) => {
       didCancel = true
     }
   }, [relatedProducts, setRelatedProducts, productID])
-  return <ProductSlider title="Related Products" sliderData={relatedProducts.products} />
+  return <ProductSlider title={t('frontend.product.related')} sliderData={relatedProducts.products} />
 }
 export default ProductDetailSlider

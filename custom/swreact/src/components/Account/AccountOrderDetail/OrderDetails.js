@@ -1,5 +1,4 @@
 const OrderDetails = props => {
-  const { name, BusinessName, street, city, state, zip, PONumber, date } = props
   const { billingAddress_street, billingAddress_city, billingAddress_state, billingAddress_zip, billingAddress_Name, billingAddress_BuisnessName } = props
   const { name, BusinessName, street, city, state, zip, PONumber, date } = props
   const { total, subTotal, shipping, taxes, handlingFee, discounts } = props

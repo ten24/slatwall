@@ -59,22 +59,22 @@ export const getContent = (content = {}) => {
   return async (dispatch, getState) => {
     const { siteCode } = getState().configuration.site
     dispatch(requestContent())
-    if (shouldUseData(getState().content, content.content)) {
-      const response = await axios({
-        method: 'POST',
-        withCredentials: true,
-        url: `${sdkURL}api/scope/getSlatwallContent`,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { ...content, siteCode },
-      })
-      if (response.status === 200) {
-        dispatch(reciveContent(response.data.content))
-      } else {
-        dispatch(reciveContent({}))
-      }
+    // if (shouldUseData(getState().content, content.content)) {
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/getSlatwallContent`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: { ...content, siteCode },
+    })
+    if (response.status === 200) {
+      dispatch(reciveContent(response.data.content))
+    } else {
+      dispatch(reciveContent({}))
     }
+    // }
   }
 }
 
@@ -92,9 +92,6 @@ export const getPageContent = (content = {}, slug = '') => {
       data: { ...content, siteCode },
     })
     if (response.status === 200) {
-      if (response.data.content[slug]) {
-        dispatch(setTitle(response.data.content[slug].setting.contentHTMLTitleString))
-      }
       dispatch(reciveContent(response.data.content))
     } else {
       dispatch(reciveContent({}))

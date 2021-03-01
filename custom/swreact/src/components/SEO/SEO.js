@@ -1,12 +1,20 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router'
 
 const SEO = () => {
   const configuration = useSelector(state => state.configuration)
+  const contentStore = useSelector(state => state.content)
+  let loc = useLocation()
   const { site = {}, seo = {} } = configuration
+  const path = loc.pathname.split('/').reverse()[0].toLowerCase()
+  let title = site.siteName
+  if (contentStore[path]) {
+    title = contentStore[path].setting.contentHTMLTitleString
+  }
   return (
-    <Helmet title={seo.title || site.siteName}>
+    <Helmet title={title}>
       {seo.description && <meta name="description" content={seo.description} />}
       {/* {seo.image && <meta name="image" content={seo.image} />}
       {seo.url && <meta property="og:url" content={seo.url} />} */}

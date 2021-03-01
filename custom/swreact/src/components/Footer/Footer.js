@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { ActionBanner, SignUpForm } from '..'
 import styles from './Footer.module.css'
-import logo from '../../assets/images/sb-logo-white.png'
+import logo from '../../assets/images/logo-white.png'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 

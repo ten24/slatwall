@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { SlatwalApiService } from '../../../services'
-import Pagination from '../../Listing/Pagination'
+import Pagination from '../../ListingOld/Pagination'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import { useTranslation } from 'react-i18next'
 
