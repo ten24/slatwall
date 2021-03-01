@@ -53,7 +53,7 @@ Notes:
 
 <cfoutput>
 	<cfset rc.assignedAccounts = rc.$.slatwall.getService("AccountService").getCollectionList("Account")>
-    <cfset rc.assignedAccounts.addFilter("priceGroups.priceGroupCode", "#rc.priceGroup.getPriceGroupCode()#","=")>
+    <cfset rc.assignedAccounts.addFilter("priceGroups.priceGroupID", "#rc.priceGroup.getPriceGroupID()#","=")>
     <cfset local.displayPropertyList = 'firstName,lastName,accountCode,company,primaryPhoneNumber.phoneNumber,primaryEmailAddress.emailAddress,guestAccountFlag,organizationFlag'/>
     <cfset rc.assignedAccounts.setDisplayProperties(displayPropertyList,
     	{
