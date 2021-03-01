@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { getContent } from '../../actions/contentActions'
 
-const ProductListingHeader = ({ title, crumbs }) => {
+const ProductListingHeader = ({ title, crumbs, customTitle, children }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -22,9 +22,10 @@ const ProductListingHeader = ({ title, crumbs }) => {
           <BreadCrumb crumbs={crumbs} />
         </div>
         <div className="order-lg-1 pr-lg-4 text-center text-lg-left">
-          <h1 className="h3 text-dark mb-0">{title}</h1>
+          <h1 className="h3 text-dark mb-0">{customTitle ? customTitle : title}</h1>
         </div>
       </div>
+      {children}
     </div>
   )
 }
