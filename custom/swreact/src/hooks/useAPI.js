@@ -142,3 +142,37 @@ export const useGetProducts = params => {
 
   return [request, setRequest]
 }
+
+export const useGetAvailableShippingMethods = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      SlatwalApiService.cart.availableShippingMethods(request.params).then(response => {
+        if (response.isSuccess() && response.success().pageRecords && response.success().pageRecords.length) {
+          setRequest({ data: response.success().pageRecords[0], isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetAvailablePaymentMethods = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      SlatwalApiService.cart.availablePaymentMethods(request.params).then(response => {
+        if (response.isSuccess() && response.success().pageRecords && response.success().pageRecords.length) {
+          setRequest({ data: response.success().pageRecords[0], isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}

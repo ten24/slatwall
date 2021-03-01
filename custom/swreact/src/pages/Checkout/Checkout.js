@@ -1,75 +1,93 @@
-import { BreadCrumb, Layout } from '../../components'
+import { Layout } from '../../components'
 import { useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
+import PageHeader from '../../components/PageHeader/PageHeader'
+import queryString from 'query-string'
+import { useTranslation } from 'react-i18next'
 
 // https://www.digitalocean.com/community/tutorials/how-to-create-multistep-forms-with-react-and-semantic-ui
 // https://github.com/srdjan/react-multistep/blob/master/react-multistep.js
 // https://www.geeksforgeeks.org/how-to-create-multi-step-progress-bar-using-bootstrap/
+export const CART = 'cart'
+export const SHIPPING = 'shipping'
+export const PAYMENT = 'payment'
+export const REVIEW = 'review'
 
-const PageHead = () => {
-  return (
-    <div className="page-title-overlap bg-lightgray pt-4">
-      <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
-        <div className="order-lg-2 mb-3 mb-lg-0 pt-lg-2">
-          <nav aria-label="breadcrumb">
-            <ol className="breadcrumb breadcrumb-dark flex-lg-nowrap justify-content-center justify-content-lg-start">
-              <li className="breadcrumb-item">
-                <a className="text-nowrap" href="/">
-                  <i className="far fa-home"></i>Home
-                </a>
-              </li>
-              <li className="breadcrumb-item text-nowrap">
-                <a href="##">Shop</a>
-              </li>
-              <li className="breadcrumb-item text-nowrap active" aria-current="page">
-                Checkout
-              </li>
-            </ol>
-          </nav>
-        </div>
-        <div className="order-lg-1 pr-lg-4 text-center text-lg-left">
-          <h1 className="h3 mb-0">Checkout</h1>
-        </div>
-      </div>
-    </div>
-  )
+const checkOutSteps = [
+  {
+    key: CART,
+    progress: 1,
+    icon: 'shopping-cart',
+    name: 'frontend.checkout.cart',
+    state: '',
+    link: '/shopping-cart',
+  },
+  {
+    key: SHIPPING,
+    progress: 2,
+    icon: 'shipping-fast',
+    name: 'frontend.checkout.shipping',
+    state: '',
+    link: '/checkout?step=shipping',
+  },
+  {
+    key: PAYMENT,
+    progress: 3,
+    icon: 'credit-card',
+    name: 'frontend.checkout.payment',
+    state: '',
+    link: '/checkout?step=payment',
+  },
+  {
+    key: REVIEW,
+    progress: 4,
+    icon: 'check-circle',
+    name: 'frontend.checkout.review',
+    state: '',
+    link: '/checkout?step=review',
+  },
+]
+const getCurrentStep = params => {
+  return checkOutSteps.filter(step => {
+    return params.step ? step.key === params.step.toLowerCase() : step.key === CART
+  })[0]
 }
 
-const Steps = () => {
+const StepsHeader = () => {
+  const { t, i18n } = useTranslation()
+  const loc = useLocation()
+  let history = useHistory()
+
+  let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+  const current = getCurrentStep(params)
   return (
     <div className="steps steps-dark pt-2 pb-3 mb-5">
-      <a className="step-item active" href="/shopping-cart">
-        <div className="step-progress">
-          <span className="step-count">1</span>
-        </div>
-        <div className="step-label">
-          <i className="fal fa-shopping-cart"></i>Cart
-        </div>
-      </a>
-      <a className="step-item active current" href="#">
-        <div className="step-progress">
-          <span className="step-count">2</span>
-        </div>
-        <div className="step-label">
-          <i className="fal fa-shipping-fast"></i>Shipping
-        </div>
-      </a>
-      <a className="step-item" href="##">
-        <div className="step-progress">
-          <span className="step-count">3</span>
-        </div>
-        <div className="step-label">
-          <i className="fal fa-credit-card"></i>Payment
-        </div>
-      </a>
-      <a className="step-item" href="##">
-        <div className="step-progress">
-          <span className="step-count">4</span>
-        </div>
-        <div className="step-label">
-          <i className="fal fa-check-circle"></i>Review
-        </div>
-      </a>
+      {checkOutSteps.map(step => {
+        let progressSate = ''
+        if (step.progress < current.progress) {
+          progressSate = 'active'
+        } else if (step.progress === current.progress) {
+          progressSate = 'active current'
+        }
+        return (
+          <a
+            className={`step-item ${progressSate}`}
+            key={step.progress}
+            onClick={e => {
+              e.preventDefault()
+              history.push(step.link)
+            }}
+          >
+            <div className="step-progress">
+              <span className="step-count">{step.progress}</span>
+            </div>
+            <div className="step-label">
+              <i className={`fal fa-${step.icon}`}></i>
+              {t(step.name)}
+            </div>
+          </a>
+        )
+      })}
     </div>
   )
 }
@@ -77,25 +95,22 @@ const Steps = () => {
 const SlideBody = () => {
   return (
     <>
-      {' '}
       {/* <!-- Shipping address--> */}
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Shipping address</h2>
       <div className="row">
         <div className="col-sm-6">
           <div className="form-group">
-            <label for="checkout-country">Country</label>
-            <select className="form-control custom-select" id="checkout-country">
+            <label htmlFor="checkout-country">Country</label>
+            <select defaultValue="US" className="form-control custom-select" id="checkout-country">
               <option value="">Choose country</option>
               <option value="CA">Canada</option>
-              <option value="US" selected>
-                USA
-              </option>
+              <option value="US">USA</option>
             </select>
           </div>
         </div>
         <div className="col-sm-6">
           <div className="form-group">
-            <label for="checkout-n">Name</label>
+            <label htmlFor="checkout-n">Name</label>
             <input className="form-control" type="text" id="checkout-n" />
           </div>
         </div>
@@ -103,13 +118,13 @@ const SlideBody = () => {
       <div className="row">
         <div className="col-sm-6">
           <div className="form-group">
-            <label for="checkout-address-1">Address 1</label>
+            <label htmlFor="checkout-address-1">Address 1</label>
             <input className="form-control" type="text" id="checkout-address-1" />
           </div>
         </div>
         <div className="col-sm-6">
           <div className="form-group">
-            <label for="checkout-address-2">Address 2</label>
+            <label htmlFor="checkout-address-2">Address 2</label>
             <input className="form-control" type="text" id="checkout-address-2" />
           </div>
         </div>
@@ -117,13 +132,13 @@ const SlideBody = () => {
       <div className="row">
         <div className="col-sm-6">
           <div className="form-group">
-            <label for="checkout-address-1">City</label>
+            <label htmlFor="checkout-address-1">City</label>
             <input className="form-control" type="text" id="checkout-city" />
           </div>
         </div>
         <div className="col-sm-3">
           <div className="form-group">
-            <label for="checkout-country">State</label>
+            <label htmlFor="checkout-country">State</label>
             <select className="form-control custom-select" id="checkout-state">
               <option value="AL">Alabama</option>
               <option value="AK">Alaska</option>
@@ -181,24 +196,30 @@ const SlideBody = () => {
         </div>
         <div className="col-sm-3">
           <div className="form-group">
-            <label for="checkout-zip">ZIP Code</label>
+            <label htmlFor="checkout-zip">ZIP Code</label>
             <input className="form-control" type="text" id="checkout-zip" />
           </div>
         </div>
       </div>
       <div className="custom-control custom-checkbox">
-        <input className="custom-control-input" type="checkbox" checked="" id="save-address" />
-        <label className="custom-control-label" for="save-address">
+        <input className="custom-control-input" type="checkbox" id="save-address" />
+        <label className="custom-control-label" htmlFor="save-address">
           Save this address
         </label>
       </div>
       <div className="custom-control custom-checkbox">
         <input className="custom-control-input" type="checkbox" id="blind-ship" />
-        <label className="custom-control-label" for="blind-ship">
+        <label className="custom-control-label" htmlFor="blind-ship">
           Select for blind ship
         </label>
       </div>
-      {/* <!-- Navigation (desktop)--> */}
+    </>
+  )
+}
+
+const SlideNavigation = () => {
+  return (
+    <>
       <div className="d-lg-flex pt-4 mt-3">
         <div className="w-50 pr-3">
           <a className="btn btn-secondary btn-block" href="##">
@@ -218,6 +239,10 @@ const SlideBody = () => {
 }
 
 const CheckoutSideBar = () => {
+  const cart = useSelector(state => state.cart)
+  const loc = useLocation()
+  let history = useHistory()
+  let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
   return (
     <aside className="col-lg-4 pt-4 pt-lg-0">
       <div className="cz-sidebar-static rounded-lg box-shadow-lg ml-lg-auto">
@@ -249,7 +274,7 @@ const CheckoutSideBar = () => {
         <h3 className="font-weight-normal text-center my-4">
           $274.<small>50</small>
         </h3>
-        <form className="needs-validation" method="post" novalidate="">
+        <form className="needs-validation" method="post" noValidate="">
           <div className="form-group">
             <input className="form-control" type="text" placeholder="Promo code" required="" />
             <div className="invalid-feedback">Please provide promo code.</div>
@@ -263,32 +288,34 @@ const CheckoutSideBar = () => {
   )
 }
 const Checkout = () => {
-  let loc = useLocation()
-  const path = loc.pathname.split('/').reverse()[0].toLowerCase()
-
+  const cart = useSelector(state => state.cart)
+  const loc = useLocation()
+  let history = useHistory()
+  let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+  const currentStep = getCurrentStep(params)
   return (
     <Layout>
-      <PageHead />
+      <PageHeader />
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <section className="col-lg-8">
             {/* <!-- Steps--> */}
-            <Steps />
+            <StepsHeader />
             <div className="row mb-3">
               <div className="col-sm-12">
                 <div className="form-group">
-                  <label className="w-100" for="checkout-recieve">
+                  <label className="w-100" htmlFor="checkout-recieve">
                     How do you want to recieve your items?
                   </label>
                   <div className="form-check form-check-inline custom-control custom-radio d-inline-flex">
-                    <input className="custom-control-input" type="radio" name="inlineRadioOptions" id="ship" value="option1" checked />
-                    <label className="custom-control-label" for="ship">
+                    <input className="custom-control-input" type="radio" name="inlineRadioOptions" id="ship" value="option1" defaultChecked />
+                    <label className="custom-control-label" htmlFor="ship">
                       Ship my order
                     </label>
                   </div>
                   <div className="form-check form-check-inline custom-control custom-radio d-inline-flex">
                     <input className="custom-control-input" type="radio" name="inlineRadioOptions" id="pickup" value="option2" />
-                    <label className="custom-control-label" for="pickup">
+                    <label className="custom-control-label" htmlFor="pickup">
                       Pick up my order
                     </label>
                   </div>
@@ -296,6 +323,7 @@ const Checkout = () => {
               </div>
             </div>
             <SlideBody />
+            <SlideNavigation />
           </section>
           {/* <!-- Sidebar--> */}
           <CheckoutSideBar />

@@ -20,7 +20,7 @@ const OrderNotes = () => {
         disabled={isFetching}
         onClick={e => {
           e.preventDefault()
-          history.push('checkout')
+          history.push('/checkout?step=shipping')
         }}
       >
         {t('frontend.order.to_checkout')}
