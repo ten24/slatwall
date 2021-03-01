@@ -4,6 +4,9 @@ import { SWImage } from '..'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useGetBrands } from '../../hooks/useAPI'
+import { useEffect } from 'react'
+
 
 const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
   return (
@@ -17,17 +20,31 @@ const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
   )
 }
 
-function HomeBrand(props) {
+const HomeBrand = (props) => {
   const { t, i18n } = useTranslation()
+  let [brand, setRequest] = useGetBrands()
+  console.log(brand);
+  useEffect(() => {
+    let didCancel = false
+    if (!brand.isFetching && !brand.isLoaded && !didCancel) {
+      setRequest({ ...brand, isFetching: true, isLoaded: false, params: { 'f:featuredBrand': 1 , 'f:activeFlag' : 1}, makeRequest: true })
+    } 
+    return () => {
+      didCancel = true
+    }
+  }, [brand, setRequest])
+
   const homeBrand = useSelector(state => {
-    return Object.keys(state.content)
-      .filter(key => {
-        return key.includes('shop-by/')
-      })
+    return Object.keys(brand.data)
+      // .filter(key => {
+      //   return key.includes('shop-by/')
+      // })
       .map(key => {
-        return state.content[key]
+        console.log(brand.data[key])
+        return brand.data[key]
       })
   })
+
   const shopBy = useSelector(state => {
     return Object.keys(state.content)
       .filter(key => {
@@ -65,13 +82,13 @@ function HomeBrand(props) {
       },
     ],
   }
-
   return (
     <div style={{ height: 'fit-content' }} className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
       <h3 className="h3">{shopBy.length > 0 && shopBy[0].title}</h3>
       <Slider {...settings}>
         {homeBrand &&
           homeBrand.map((slide, index) => {
+          console.log('slide',slide);
             return <BandSlide {...slide} key={index} slideKey={index} />
           })}
       </Slider>
