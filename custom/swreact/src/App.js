@@ -9,11 +9,7 @@ const Home = lazyWithPreload(() => import('./pages/Home/Home'))
 const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
 const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
-<<<<<<< HEAD
 const Checkout = lazyWithPreload(() => import('./pages/Checkout/Checkout'))
-
-=======
->>>>>>> develop-team
 const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/ProductDetail'))
 const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
@@ -29,11 +25,8 @@ const Address = lazyWithPreload(() => import('./pages/Address/Address'))
 const Attribute = lazyWithPreload(() => import('./pages/Attribute/Attribute'))
 const pageComponents = {
   Home,
-<<<<<<< HEAD
   Checkout,
-=======
   Cart,
->>>>>>> develop-team
   MyAccount,
   ProductListing,
   ProductDetail,
