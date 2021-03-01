@@ -195,6 +195,23 @@ component  accessors="true" output="false"
 	    arguments.data.ajaxResponse = result;
 
 	}
+	
+		/**
+	 * Get Sku List (an alternative to generic entity api call for products)
+	 * */
+	public void function getBrandList( required struct data ) {
+	    arguments.data.entityName = "Brand";
+	    arguments.data.restRequestFlag = 1;
+
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
+
+	    arguments.data.ajaxResponse = result;
+
+	}
     
     /**
 	 * Get Favourite Product List (List out all wishlist sku's )

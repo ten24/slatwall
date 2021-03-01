@@ -2,12 +2,15 @@ import { HeartButton, SWImage } from '../..'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import useFormatCurrency from '../../../hooks/useFormatCurrency'
 
 const ProductCard = props => {
   const { calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance } = props
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
   const { t, i18n } = useTranslation()
   const routing = useSelector(state => state.configuration.router)
+  const [formatCurrency] = useFormatCurrency({})
+
   const product = routing
     .map(route => {
       return route.URLKeyType === 'Product' ? route.URLKey : null
@@ -53,10 +56,10 @@ const ProductCard = props => {
           </h3>
           <div className="d-flex justify-content-between">
             <div className="product-price">
-              {calculatedSalePrice && <span className="text-accent">${calculatedSalePrice.toFixed(2)}</span>}
+              {calculatedSalePrice && <span className="text-accent">{formatCurrency(calculatedSalePrice)}</span>}
               {productClearance && (
                 <span style={{ marginLeft: '5px' }}>
-                  <small>{`${listPrice} LIST`}</small>
+                  <small>{`${formatCurrency(listPrice)} LIST`}</small>
                 </span>
               )}
             </div>
@@ -71,7 +74,7 @@ const ProductCard = props => {
 ProductCard.defaultProps = {
   calculatedProductRating: null,
   calculatedQATS: null,
-  calculatedSalePrice: 0,
+  calculatedSalePrice: false,
   productCode: '',
   productID: '',
   productName: '',
@@ -80,7 +83,7 @@ ProductCard.defaultProps = {
   brand_brandName: '',
   brand_urlTitle: '',
   calculatedTitle: '',
-  listPrice: 0,
+  listPrice: false,
   defaultProductImageFiles: [],
 }
 
