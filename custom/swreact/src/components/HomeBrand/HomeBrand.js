@@ -36,11 +36,7 @@ const HomeBrand = (props) => {
 
   const homeBrand = useSelector(state => {
     return Object.keys(brand.data)
-      // .filter(key => {
-      //   return key.includes('shop-by/')
-      // })
       .map(key => {
-        console.log(brand.data[key])
         return brand.data[key]
       })
   })
