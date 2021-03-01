@@ -67,7 +67,9 @@ Notes:
     >--->
     <hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#" collectionEntity="#rc.collection#"  showdelete="false">
         <hb:HibachiEntityActionBarButtonGroup>
-        <hb:HibachiActionCaller action="admin:entity.deleteReport" querystring="collectionID=#rc.collection.getCollectionID()#" text="#$.slatwall.rbkey('define.delete')#" class="btn btn-default s-remove" icon="trash icon-white" confirm="true" confirmtext="#$.slatwall.rbkey('entity.Collection.process.deleteReport')#" >
+        <cfif !rc.collection.isNew()>
+            <hb:HibachiActionCaller action="admin:entity.deleteReport" querystring="collectionID=#rc.collection.getCollectionID()#" text="#$.slatwall.rbkey('define.delete')#" class="btn btn-default s-remove" icon="trash icon-white" confirm="true" confirmtext="#$.slatwall.rbkey('entity.Collection.process.deleteReport')#" >
+    	</cfif>
     	</hb:HibachiEntityActionBarButtonGroup>
     	<!--- Create ---> 
     	    <cfif structKeyExists(rc,'collection')>

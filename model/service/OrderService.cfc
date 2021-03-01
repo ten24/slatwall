@@ -600,7 +600,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					//Sets the status type
 					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
 					//we will update order amounts at the end of the process
-					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false );
+					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false, updateShippingMethodOptions=arguments.processObject.getupdateShippingMethodOptionsFlag() );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
                         arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
@@ -1005,7 +1005,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Call save order to place in the hibernate session and re-calculate all of the totals
-		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag() );
+		if( arguments.processObject.getSaveOrderFlag() ){
+			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag(), updateShippingMethodOptions=arguments.processObject.getupdateShippingMethodOptionsFlag() );
+		}
 
 		return arguments.order;
 	}
@@ -4592,10 +4594,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
 			for(var recipient in orderDeliveryItem.getOrderItem().getOrderItemGiftRecipients()){
 				for(var giftCard in recipient.getGiftCards()){
-					sendEmail(giftCard.getOwnerEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
+					if( !isNull(giftCard.getOwnerEmailAddress()) ) {
+						sendEmail(giftCard.getOwnerEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
+					}
 				}
 			}
-		} else {
+		} else if( !isNull(arguments.orderDelivery.getOrderFulfillment().getEmailAddress()) ) {
 			sendEmail(arguments.orderDelivery.getOrderFulfillment().getEmailAddress(), getSettingService().getSettingValue(settingName='skuEmailFulfillmentTemplate', object=orderDeliveryItem.getSku()), orderDeliveryItem.getSku());
 		}
 	}
