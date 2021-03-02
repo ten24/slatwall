@@ -174,6 +174,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productAlarmVolume" ormtype="string";
  property name="productRequiredCylinder" ormtype="string";
  property name="productDeviceCompatibility" ormtype="string";
+ property name="productKeyBoxStyle" ormtype="string";
  property name="productBoredLockGrade" ormtype="string" hb_formFieldType="select";
  property name="productBoredLockStyle" ormtype="string" hb_formFieldType="select";
  property name="mechanicalFaceplate" ormtype="string" hb_formFieldType="select";

@@ -76,6 +76,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return super.save(arguments.brand, arguments.data);
 	}
 	
+		/** 
+	 * Function append settings value and options to existing sku List
+	 * @param - array of skus
+	 * @return - updated array of skus
+	 **/
+	public array function appendSettingsAndOptions(required array brands) {
+		if(arrayLen(arguments.brands)) {
+			
+			for(var brand in arguments.brands) {
+	            
+	            var currentBrand = this.getBrand(brand.brandID);
+				var attributeSets = currentBrand.getAssignedAttributes()
+				var attributeStruct = currentBrand.getAttributeValuesByAttributeCodeStruct()
+			    var attributes = [];
+				for(var attribute in attributeSets) {
+					if(StructKeyExists(attributeStruct, attribute["attributeCode"])){
+						ArrayAppend( attributes, {
+							"attributeValueID" : attributeStruct[attribute["attributeCode"]].getAttributeValueID(),
+							"attributeID" : attributeStruct[attribute["attributeCode"]].getAttributeID(),
+							"attributeValue" : attributeStruct[attribute["attributeCode"]].getAttributeValue(),
+							"attributeCode" : attribute["attributeCode"],
+					} )
+					}
+					
+				}
+
+
+	            brand['attributes'] = attributes;
+	            
+	          //  brand['imagePath'] = currentBrand.getImagePath();
+	        }
+		}
+		return arguments.brands;
+	}
+	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
