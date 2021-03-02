@@ -731,6 +731,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									arguments.order.addError('addOrderItem', message, true);
 								}
 							}
+							return arguments.order;
 						}
 					}
 				}
