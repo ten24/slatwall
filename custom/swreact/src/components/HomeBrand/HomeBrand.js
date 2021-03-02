@@ -8,12 +8,12 @@ import { useGetBrands } from '../../hooks/useAPI'
 import { useEffect } from 'react'
 
 
-const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
+const BandSlide = ({ brandLogo, linkUrl = '/all', title, slideKey }) => {
   return (
     <div index={slideKey} className="repeater">
       <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
         <Link className="d-block p-4" to={linkUrl}>
-          <SWImage className="d-block mx-auto" customPath="/custom/assets/files/associatedimage/" src={associatedImage} alt={title} />
+          <SWImage className="d-block mx-auto" customPath="/custom/assets/files/associatedimage/" src={brandLogo} alt={title} />
         </Link>
       </div>
     </div>
@@ -23,11 +23,10 @@ const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
 const HomeBrand = (props) => {
   const { t, i18n } = useTranslation()
   let [brand, setRequest] = useGetBrands()
-  console.log(brand);
   useEffect(() => {
     let didCancel = false
     if (!brand.isFetching && !brand.isLoaded && !didCancel) {
-      setRequest({ ...brand, isFetching: true, isLoaded: false, params: { 'f:featuredBrand': 1 , 'f:activeFlag' : 1}, makeRequest: true })
+      setRequest({ ...brand, isFetching: true, isLoaded: false, params: { 'f:brandFeatured': 1 , 'f:activeFlag' : 1}, makeRequest: true })
     } 
     return () => {
       didCancel = true
@@ -40,7 +39,15 @@ const HomeBrand = (props) => {
         return brand.data[key]
       })
   })
-
+  
+  homeBrand.map((brandItem)=>{
+    brandItem['attributes'].map((attributes)=>{
+      if(attributes['attributeCode'] == 'brandLogo'){
+        return brandItem['brandLogo'] = attributes['attributeValue']
+      }
+    })
+  })
+  
   const shopBy = useSelector(state => {
     return Object.keys(state.content)
       .filter(key => {
