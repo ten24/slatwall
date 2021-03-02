@@ -681,7 +681,7 @@
 				if(slatwallCategory.isDeletable()) {
 					//cannot use ORM because slatwall orm behavior will cascade delete child categories
 					//$.slatwall.getService("contentService").deleteCategory( slatwallCategory );
-					//ormFlush();
+					//$.slatwall.hibachiORMFlush();
 					$.slatwall.getService('contentService').deleteCategoryByCMSCategoryID($.event('categoryID'));
 					
 				} else {

@@ -722,10 +722,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    param name="arguments.currentPage" default=1;
 	    param name="arguments.pageSize" default=10;
 	    
-	    
-	    var potentialFilters = this.getPotentialFilterFacetsAndOptions(argumentCollection=arguments);
-	    var formattedFacets = this.getFormattedFilterFacets(potentialFilters);
-	    
+	    param name="arguments.includePotentialFilters" default=true;
+
+	 
 	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);
 	    
 	    var startTicks = getTickCount();
@@ -736,16 +735,23 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var records = collectionData.collectionList.getPageRecords();
 	    this.logHibachi("SlatwallProductSearchService:: getProducts/getPageRecords [p:#arguments.currentPage#(#arguments.pageSize#)] took #getTickCount() - startTicks# ms.");
 
-	    return {
+	    var resultSet = {
 	        'total' : total,
 	        'pageSize': arguments.pageSize,
 	        'currentPage' : arguments.currentPage,
 	        'currencyCode': collectionData.currencyCode,
 	        'priceGroupCode': collectionData.priceGroupCode,
 	        
-	        'products' : records,
-	        'potentialFilters': formattedFacets,
+	        'products' : records
+	    };
+	    
+	        
+	    if( arguments.includePotentialFilters ){
+    	    var potentialFilters = this.getPotentialFilterFacetsAndOptions(argumentCollection=arguments);
+	        resultSet['potentialFilters'] = this.getFormattedFilterFacets(potentialFilters);
 	    }
+	    
+	    return resultSet;
 
 	}
 	

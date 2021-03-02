@@ -133,6 +133,9 @@ component  accessors="true" output="false"
 	    param name="arguments.data.currentPage" default=1;
 	    param name="arguments.data.pageSize" default=10;
 	    
+	    param name="arguments.data.includePotentialFilters" default=true;
+
+	    
 	    // the integration needs to be enabled for this to work
 	    // TODO: create a site-level setting for defaule product-search integration
         var slatwallProductSearchService = this.getService('slatwallProductSearchService');
