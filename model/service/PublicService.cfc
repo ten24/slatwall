@@ -167,6 +167,7 @@ component  accessors="true" output="false"
                 var skuCollections = getSkuService().getSkuCollectionList();
                 skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
                 skuCollections.addDisplayProperties("calculatedSkuDefinition");
+                skuCollections.addDisplayProperties("calculatedQATS");
                 skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
 	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
                 var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
@@ -382,7 +383,6 @@ component  accessors="true" output="false"
         
         //Call Add Order Item
         this.addOrderItem(data= arguments.data);
-        
         //set bundle build to false
         productBundleBuild.setActiveFlag(false);
         getProductService().saveProductBundleBuild( productBundleBuild );
@@ -1990,7 +1990,7 @@ component  accessors="true" output="false"
             }
             
         }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
+            addErrors(data, getHibachiScope().getCart().getErrors());
         }
     }
     
