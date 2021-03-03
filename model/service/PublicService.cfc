@@ -167,6 +167,7 @@ component  accessors="true" output="false"
                 var skuCollections = getSkuService().getSkuCollectionList();
                 skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
                 skuCollections.addDisplayProperties("calculatedSkuDefinition");
+                skuCollections.addDisplayProperties("calculatedQATS");
                 skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
 	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
                 var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
