@@ -5,8 +5,9 @@ const initState = {
   orderItems: [],
   subtotal: 0,
   promotionCodes: [],
+  appliedPromotionMessages: [{ message: "You're only $16 away from a 15% discount!", errors: {}, promotionRewards: [{ errors: {}, amountType: 'percentageOff', rewardType: 'merchandise', hasErrors: false, amount: 15 }], promotionName: 'Purchase Plus (USA)', qualifierProgress: 86, hasErrors: false }],
   total: 0,
-
+  checkoutStep: '',
   isFetching: false,
   err: null,
 }

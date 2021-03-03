@@ -55,7 +55,6 @@ export default function App() {
     })
     dispatch(getConfiguration())
   }, [])
-
   return (
     <Suspense fallback={<Loading />}>
       <ScrollToTop />
@@ -67,7 +66,6 @@ export default function App() {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
         <Route path="/product" component={ProductListing} />
-        <Route path="/products" component={ProductListing} />
         <Route path="/category-listing" component={CategoryListing} />
         <Route path="/my-account" component={MyAccount} />
         <Route path="/checkout" component={Checkout} />

@@ -71,6 +71,8 @@ export const useGetBrand = () => {
 export const useGetProductList = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
+    let didCancel = false
+    let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
         method: 'GET',
@@ -79,13 +81,20 @@ export const useGetProductList = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-      }).then(response => {
-        if (response.status === 200 && response.data && response.data.pageRecords) {
-          setRequest({ data: response.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
-        } else {
-          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
-        }
+        cancelToken: source.token,
       })
+        .then(response => {
+          if (response.status === 200 && response.data && response.data.pageRecords) {
+            setRequest({ data: response.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+      didCancel = true
     }
   }, [request, setRequest])
 

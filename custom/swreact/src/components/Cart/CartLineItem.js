@@ -6,7 +6,7 @@ import { updateItemQuantity, removeItem } from '../../actions/cartActions'
 import { useDebouncedCallback } from 'use-debounce'
 import useFormatCurrency from '../../hooks/useFormatCurrency'
 
-const CartLineItem = ({ orderItemID }) => {
+const CartLineItem = ({ orderItemID, isDisabled = false }) => {
   const { isFetching, orderItems } = useSelector(state => state.cart)
   const dispatch = useDispatch()
   const [formatCurrency] = useFormatCurrency({})
@@ -65,33 +65,47 @@ const CartLineItem = ({ orderItemID }) => {
         </div>
       )}
       <div className="pt-2 pt-sm-0 pl-sm-3 mx-auto mx-sm-0 text-center text-sm-left" style={{ maxWidth: '9rem' }}>
-        <div className="form-group mb-0">
-          <label className="font-weight-medium" htmlFor="quantity4">
-            {t('frontend.core.quantity')}
-          </label>
-          <input
-            className="form-control"
-            type="number"
-            id="quantity4"
-            defaultValue={quantity}
-            disabled={isFetching}
-            onChange={e => {
-              debounced.callback(e.target.value)
-            }}
-          />
-        </div>
-        <button
-          className="btn btn-link px-0 text-danger"
-          type="button"
-          disabled={isFetching}
-          onClick={event => {
-            event.preventDefault()
-            dispatch(removeItem(orderItemID))
-          }}
-        >
-          <i className="fal fa-times-circle"></i>
-          <span className="font-size-sm">{t('frontend.core.remove')}</span>
-        </button>
+        {isDisabled && (
+          <div className="form-group mb-0">
+            <div className="pt-2 pt-sm-0 pl-sm-3 mx-auto mx-sm-0 text-center text-sm-right" style={{ maxWidth: '9rem' }}>
+              <p className="mb-0">
+                <span className="text-muted font-size-sm"> {t('frontend.core.quantity')}:</span>
+                <span>{quantity}</span>
+              </p>
+            </div>
+          </div>
+        )}
+        {!isDisabled && (
+          <>
+            <div className="form-group mb-0">
+              <label className="font-weight-medium" htmlFor="quantity4">
+                {t('frontend.core.quantity')}
+              </label>
+              <input
+                className="form-control"
+                type="number"
+                id="quantity4"
+                defaultValue={quantity}
+                disabled={isFetching}
+                onChange={e => {
+                  debounced.callback(e.target.value)
+                }}
+              />
+            </div>
+            <button
+              className="btn btn-link px-0 text-danger"
+              type="button"
+              disabled={isFetching}
+              onClick={event => {
+                event.preventDefault()
+                dispatch(removeItem(orderItemID))
+              }}
+            >
+              <i className="fal fa-times-circle"></i>
+              <span className="font-size-sm">{t('frontend.core.remove')}</span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   )

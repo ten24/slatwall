@@ -6,7 +6,7 @@ const configuration = (state = {}, action) => {
       return { ...state, isFetching: true }
 
     case RECIVE_CONFIGURATION:
-      return { ...state, isFetching: false }
+      return { ...state, ...action.config, isFetching: false }
 
     case SET_TITLE:
       const { title } = action

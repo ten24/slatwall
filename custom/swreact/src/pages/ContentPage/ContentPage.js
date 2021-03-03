@@ -32,6 +32,7 @@ const ContentPage = () => {
   useEffect(() => {
     let payload = {}
     let didCancel = false
+    let source = axios.CancelToken.source()
 
     payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage']
     if (!content.isFetching && !content.isLoaded) {
@@ -43,24 +44,28 @@ const ContentPage = () => {
           'Content-Type': 'application/json',
         },
         data: { siteCode, content: payload },
-      }).then(response => {
-        if (response.status === 200 && response.data.content[path]) {
-          dispatch(addContent(response.data.content))
-          if (!didCancel) {
-            const template = response.data.content[path].setting.contentTemplateFile.replace('.cfm', '')
-
-            if (Object.keys(pageComponents).includes(template)) {
-              setContent({ component: pageComponents[template], isFetching: false, isLoaded: true, path })
-            } else {
-              setContent({ component: NotFound, isFetching: false, isLoaded: true, path })
-            }
-          }
-        } else {
-          setContent({ component: NotFound, isFetching: false, isLoaded: true, path })
-        }
+        cancelToken: source.token,
       })
+        .then(response => {
+          if (response.status === 200 && response.data.content[path]) {
+            dispatch(addContent(response.data.content))
+            if (!didCancel) {
+              const template = response.data.content[path].setting.contentTemplateFile.replace('.cfm', '')
+
+              if (Object.keys(pageComponents).includes(template)) {
+                setContent({ component: pageComponents[template], isFetching: false, isLoaded: true, path })
+              } else {
+                setContent({ component: NotFound, isFetching: false, isLoaded: true, path })
+              }
+            }
+          } else {
+            setContent({ component: NotFound, isFetching: false, isLoaded: true, path })
+          }
+        })
+        .catch(thrown => {})
     }
     return () => {
+      source.cancel()
       didCancel = true
     }
   }, [dispatch, setContent, content, siteCode, path])
