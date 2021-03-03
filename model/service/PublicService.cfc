@@ -65,6 +65,7 @@ component  accessors="true" output="false"
     property name="hibachiService" type="any";
     property name="typeService" type="any";
     property name="giftCardService";
+    property name="integrationService" type="any";
 
 
     variables.publicContexts = [];
@@ -138,11 +139,20 @@ component  accessors="true" output="false"
 	    
 	    // the integration needs to be enabled for this to work
 	    // TODO: create a site-level setting for defaule product-search integration
-        var slatwallProductSearchService = this.getService('slatwallProductSearchService');
+	    var integrationPackage = this.getIntegrationService().getIntegrationByIntegrationPackage("SlatwallProductSearch");
+	    if(!IsNull(integrationPackage)){
+	        var integrationCFC = integrationPackage.getIntegrationCFC("Search");
+	        
+	        arguments.data.ajaxResponse = {
+                'data' : integrationCFC.getProducts(argumentCollection=arguments.data)
+            };
+	    } else {
+	       var slatwallProductSearchService = this.getService('slatwallProductSearchService');
         
-        arguments.data.ajaxResponse = {
-            'data' : slatwallProductSearchService.getProducts(argumentCollection=arguments.data)
-        };
+            arguments.data.ajaxResponse = {
+                'data' : slatwallProductSearchService.getProducts(argumentCollection=arguments.data)
+            }; 
+	    }
     }
 
 
