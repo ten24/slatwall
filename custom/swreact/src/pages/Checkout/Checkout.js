@@ -1,4 +1,4 @@
-import { CartPromoBox, Layout, PromotionalMessaging } from '../../components'
+import { CartPromoBox, Layout, PromotionalMessaging, Spinner } from '../../components'
 import { useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -177,6 +177,7 @@ const CheckoutSideBar = ({ showPromo = true, showPlaceOrder = false }) => {
 }
 const Checkout = () => {
   const cart = useSelector(state => state.cart)
+  const { isFetching } = cart
   const loc = useLocation()
   let history = useHistory()
   let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
@@ -194,10 +195,10 @@ const Checkout = () => {
           <section className="col-lg-8">
             {/* <!-- Steps--> */}
             <StepsHeader />
-
-            {currentStep.key === SHIPPING && <ShippingSlide />}
-            {currentStep.key === PAYMENT && <PaymentSlide />}
-            {currentStep.key === REVIEW && <ReviewSlide />}
+            {isFetching && <Spinner />}
+            {!isFetching && currentStep.key === SHIPPING && <ShippingSlide />}
+            {!isFetching && currentStep.key === PAYMENT && <PaymentSlide />}
+            {!isFetching && currentStep.key === REVIEW && <ReviewSlide />}
             <SlideNavigation />
           </section>
           {/* <!-- Sidebar--> */}
