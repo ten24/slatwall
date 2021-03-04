@@ -3096,13 +3096,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function addExchangeOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
-		if(orderItemStruct.orderItemType == 'oitReturn'){
 			var returnOrderItem = addReturnOrderItemSetup(argumentCollection=arguments);
-		}else{
-			var returnOrderItem = addReplacementOrderItemSetup(argumentCollection=arguments);
-		}
-		
-		return returnOrderItem;
+			var replacementOrderItem = addReplacementOrderItemSetup(argumentCollection=arguments);
+			return returnOrderItem;
 	}
 	
 	public any function addReplacementOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
@@ -6145,15 +6141,120 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	public void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
-		var typeArgs={
-			'systemCode'=arguments.systemCode
-		};
-		if(!isNull(arguments.typeCode)){
-			typeArgs['typeCode'] = arguments.typeCode;
-		}
-		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(argumentCollection=typeArgs) );
-	}
+	public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode='') {
+
+        var orderType        = arguments.order.getOrderType();
+        var currentOrderStatusType  = arguments.order.getOrderStatusType();
+        
+        // All new sales and return orders will appear as "Entered"
+       
+        if (arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType)) {
+
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+        	
+        } else if (arguments.systemCode == 'ostOnHold') {
+
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+
+        } else if (arguments.systemCode == 'ostCanceled') {
+
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+
+        } else if (arguments.systemCode == 'ostClosed') {
+			
+			if(orderType.getSystemCode() == 'otSalesOrder' || orderType.getSystemCode() == 'otReplacementOrder') {
+				// closed(shipped) orders
+	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+			} else {
+				// RMA closed orders
+	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
+			}
+			
+        	getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_OrderCloseSuccess", eventData={ entity: arguments.order, order: arguments.order, data: {} });
+        	
+        } else if (arguments.systemCode == 'ostNew') {
+			if( currentOrderStatusType.getSystemCode() == 'ostProcessing' ){
+				try{
+					throw('Attempted to update order status from Processing to New - order #arguments.order.getOrderNumber()#');
+				}catch(any e){
+					logHibachi(e.stackTrace);
+				}
+				return;
+			}
+			//if the order is paid don't set to new, otherwise set to new
+			if (  arguments.order.getPaymentAmountDue() <= 0  && orderType.getSystemCode() == 'otSalesOrder' ){
+				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
+				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode='ostProcessing')); 
+			} else {
+				// type for newOrder systemCode=ostNew, typeCode=1
+				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode )); 
+			}
+				
+        } else if (arguments.systemCode == 'ostProcessing') {
+			
+			if (orderType.getSystemCode() == 'otSalesOrder'){
+				
+				if(currentOrderStatusType.getSystemCode() == 'ostNew' && arguments.order.getPaymentAmountDue() <= 0) {
+
+					arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode ));
+				
+				} else {
+					
+					// we should narrow down the flow of status here
+					if (len(arguments.typeCode) ) {
+						
+						// all processing status allowed when called with a specific typecode
+						arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode) );
+					
+					} else if( currentOrderStatusType.getSystemCode() == 'ostClosed') {
+						
+						//reopening closed-order, which is ostProcessing
+	                	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode='ostProcessing'));
+					}
+					
+	            }
+			        // Return Orders
+	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', orderType.getSystemCode()) ){
+	            
+	            if (arguments.typeCode == 'rmaApproved'){
+	
+	                arguments.order.setOrderStatusType(
+    	                    this.getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved")
+    	                );
+	               
+				} else if( listFindNoCase('otReplacementOrder,otExchangeOrder', orderType.getSystemCode()) ){
+					var args = {
+						'systemCode':arguments.systemCode
+					};
+					if(arguments.typeCode != ''){
+						args['typeCode'] = arguments.typeCode;
+					}
+	            	arguments.order.setOrderStatusType(
+    	            	    this.getTypeService().getTypeBySystemCode(argumentCollection=args)
+    	            	);
+	            	
+	            } else if( currentOrderStatusType.getSystemCode() == 'ostNew' // only if it's a new RMA order it can be received
+	                            && ( !len(arguments.typeCode) || arguments.typeCode == 'rmaReceived' ) 
+	            ){
+	                
+	                arguments.order.setOrderStatusType(
+    	                    this.getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived")
+    	               );
+	  
+	            }
+	        }
+
+        }
+        
+        if (arguments.systemCode != "ostNotPlaced" && !isNull(currentOrderStatusType) && currentOrderStatusType.getTypeID() != arguments.order.getOrderStatusType().getTypeID()){
+            // create status change history.
+            var orderStatusHistory = this.newOrderStatusHistory();
+            orderStatusHistory.setOrder(arguments.order);
+            orderStatusHistory.setChangeDateTime(now());
+			orderStatusHistory.setOrderStatusHistoryType(arguments.order.getOrderStatusType());
+            this.saveOrderStatusHistory(orderStatusHistory);
+        }
+    }
 	
 	private any function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {
 	
@@ -6210,6 +6311,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return arguments.newOrderItem;
+	}
+	
+	public any function processOrder_approveReturn(required any order, struct data={}){
+		
+	    this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "rmaApproved");
+
+	    return order;
 	}
 
 	// ==================  END:  Private Helper Functions =====================
