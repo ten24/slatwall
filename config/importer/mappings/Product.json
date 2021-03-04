@@ -981,6 +981,36 @@
                 "dataType": "string"
             }
         },
+         "MountingType": {
+            "propertyIdentifier": "productMountingType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Proprietary": {
+            "propertyIdentifier": "productProprietary",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+         "MechHardwareGrade": {
+            "propertyIdentifier": "mechanicalHardwareGrade",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "LockApplication": {
+            "propertyIdentifier": "productLockApplication",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "KeyThickness": {
+            "propertyIdentifier": "productKeyThickness",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "MechanicalKeyway": {
             "propertyIdentifier": "mechanicalKeyway",
             "validations": {
