@@ -92,11 +92,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			    var attributes = [];
 				for(var attribute in attributeSets) {
 					if(StructKeyExists(attributeStruct, attribute["attributeCode"])){
+						var thisAttributeObject = attributeStruct[attribute["attributeCode"]];
 						ArrayAppend( attributes, {
-							"attributeValueID" : attributeStruct[attribute["attributeCode"]].getAttributeValueID(),
-							"attributeID" : attributeStruct[attribute["attributeCode"]].getAttributeID(),
-							"attributeValue" : attributeStruct[attribute["attributeCode"]].getAttributeValue(),
-							"attributeCode" : attribute["attributeCode"],
+							"attributeValueID" : thisAttributeObject.getAttributeValueID(),
+							"attributeID" : thisAttributeObject.getAttributeID(),
+							"attributeValue" : thisAttributeObject.getAttributeValue(),
+							"attributeCode" : attribute["attributeCode"]
 					} )
 					}
 					
@@ -122,4 +123,3 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 	
 }
-
