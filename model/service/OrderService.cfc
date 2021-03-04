@@ -6148,18 +6148,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
         // All new sales and return orders will appear as "Entered"
        
-        if (arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType)) {
+        if ( listFindNoCase('ostOnHold,ostCanceled', arguments.systemCode) || ( arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType) ) ) {
 
             arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
         	
-        } else if (arguments.systemCode == 'ostOnHold') {
-
-            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
-
-        } else if (arguments.systemCode == 'ostCanceled') {
-
-            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
-
         } else if (arguments.systemCode == 'ostClosed') {
 			
 			if(orderType.getSystemCode() == 'otSalesOrder' || orderType.getSystemCode() == 'otReplacementOrder') {
