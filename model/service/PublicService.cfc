@@ -211,6 +211,10 @@ component  accessors="true" output="false"
 	        data=arguments.data, 
 	        enforceAuthorization=false
 	    );
+	    
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("brandService").appendSettingsAndOptions(result.pageRecords);
+	    }
 
 	    arguments.data.ajaxResponse = result;
 

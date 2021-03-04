@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
 
 const ProductCard = props => {
-  const { calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance } = props
+  const { productName, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance } = props
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
   const { t, i18n } = useTranslation()
   const routing = useSelector(state => state.configuration.router)
@@ -51,7 +51,7 @@ const ProductCard = props => {
                 state: { ...props },
               }}
             >
-              {calculatedTitle}
+              {productName}
             </Link>
           </h3>
           <div className="d-flex justify-content-between">
@@ -72,6 +72,7 @@ const ProductCard = props => {
 //ProductCard.propTypes = {
 //}
 ProductCard.defaultProps = {
+  productName: '',
   calculatedProductRating: null,
   calculatedQATS: null,
   calculatedSalePrice: false,
@@ -84,7 +85,7 @@ ProductCard.defaultProps = {
   brand_urlTitle: '',
   calculatedTitle: '',
   listPrice: false,
-  defaultProductImageFiles: [],
+  defaultProductImageFiles: []
 }
 
 export default ProductCard
