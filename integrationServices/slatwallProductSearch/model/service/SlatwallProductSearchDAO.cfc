@@ -335,7 +335,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	/**
 	 * 
 	*/
-	public any function recalculateProductFilterFacetOprionsForProductsAndSkus( string productIDs = "", string skuIDs = "" ){
+	public any function recalculateProductFilterFacetOptionsForProductsAndSkus( string productIDs = "", string skuIDs = "" ){
 	    
 	    if( this.hibachiIsEmpty(arguments.skuIDs) && this.hibachiIsEmpty(arguments.productIDs) ){
             return;
@@ -364,7 +364,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         getExistingOptionsQuery.setSQL( getExistingOptionsSQL );
         getExistingOptionsQuery = getExistingOptionsQuery.execute().getResult();
 	        
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOprionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in fetching existing facet-options ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in fetching existing facet-options ");
  
 	    var existingFFOsMap = {};
         for( var row in getExistingOptionsQuery ){
@@ -397,7 +397,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	        
         // now delete whatever is left from the old options as these are no-longer valid
         if( structCount(existingFFOsMap) > 0 ){
-	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOprionsForProductsAndSkus deleting #structCount(existingFFOsMap)# old options");
+	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus deleting #structCount(existingFFOsMap)# old options");
         
             var ffoIDsToDelete = existingFFOsMap.keyList();
             ffoIDsToDelete = listQualify( ffoIDsToDelete , "'");
@@ -412,12 +412,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             deleteQuery.setSQL( deleteSQL );
 	        deleteQuery.execute();
         } else {
-            this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOprionsForProductsAndSkus did not found any old options to delete");
+            this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus did not found any old options to delete");
         }
 	        
         // and insert any new filter-options
         if( structCount(newFFOsToInsert) > 0 ){
-	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOprionsForProductsAndSkus inserting #structCount(newFFOsToInsert)# new options");
+	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus inserting #structCount(newFFOsToInsert)# new options");
 
             var ffoIDsToInsert = newFFOsToInsert.keyList();
             ffoIDsToInsert = listQualify( ffoIDsToInsert , "'");
@@ -442,10 +442,10 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	        insertQuery.execute();
             
         } else {
-            this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOprionsForProductsAndSkus did not found any new options to insert");
+            this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus did not found any new options to insert");
         }
 
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOprionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in updating facte-options for Product: #arguments.productIDs#, SKU: #arguments.skuIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in updating facte-options for Product: #arguments.productIDs#, SKU: #arguments.skuIDs# ");
 	}
 
 	
@@ -567,6 +567,16 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                         ffo.attributeOptionSortOrde = atto.sortOrder
                 ";
             break;
+            case 'content':
+                sql &= " 
+                    swContent cont ON cont.contentID = ffo.contentID AND cont.contentID IN (:entityIDs)
+                    SET 
+                        ffo.parentContentID = cont.parentContentID,
+                        ffo.contentActiveFlag = cont.activeFlag,
+                        ffo.contentUrlTitle = cont.urlTitle,
+                        ffo.contentSortOrder = cont.sortOrder
+                ";
+            break;
             default:
                 throw("not supported entity-name #arguments.entityName#");
             break;
@@ -577,12 +587,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q = q.execute().getResult();
         
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOprionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
         
         return q;
 	}
 	
-	public any function removeProductFilterFacetOprionsByEntityNameAndIDs( required string entittyName, required string entityIDs ){
+	public any function removeProductFilterFacetOptionsByEntityNameAndIDs( required string entittyName, required string entityIDs ){
 	    
 	    if( this.hibachiIsEmpty(arguments.entityIDs) ){
             return;
@@ -652,6 +662,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     swAttributeOption atto ON atto.attributeOptionID = ffo.attributeOptionID AND atto.attributeOptionID IN (:entityIDs)
                 ";
             break;
+            case 'content':
+                sql &= " 
+                    swContent cont ON cont.contentID = ffo.contentID AND cont.contentID IN (:entityIDs)
+                ";
+            break;
+            
             default:
                 throw("not supported entity-name #arguments.entityName#");
             break;
@@ -663,7 +679,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q = q.execute().getResult();
         
-        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOprionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
         
         return q;   
 	}

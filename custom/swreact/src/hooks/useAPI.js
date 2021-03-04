@@ -68,6 +68,30 @@ export const useGetBrand = () => {
   return [request, setRequest]
 }
 
+export const useGetBrands = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest){
+      axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/getBrandList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data && response.data.pageRecords) {
+          setRequest({ data: response.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong'})
+        }
+      })
+    }
+  }, [request, setRequest])
+  
+  return [request, setRequest]
+  
+}
 export const useGetProductList = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {

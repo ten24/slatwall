@@ -4,30 +4,50 @@ import { SWImage } from '..'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useGetBrands } from '../../hooks/useAPI'
+import { useEffect } from 'react'
 
-const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
+
+const BandSlide = ({ brandLogo, linkUrl = '/all', title, slideKey }) => {
   return (
     <div index={slideKey} className="repeater">
       <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
         <Link className="d-block p-4" to={linkUrl}>
-          <SWImage className="d-block mx-auto" customPath="/custom/assets/files/associatedimage/" src={associatedImage} alt={title} />
+          <SWImage className="d-block mx-auto" customPath="/custom/assets/files/associatedimage/" src={brandLogo} alt={title} />
         </Link>
       </div>
     </div>
   )
 }
 
-function HomeBrand(props) {
+const HomeBrand = (props) => {
   const { t, i18n } = useTranslation()
+  let [brand, setRequest] = useGetBrands()
+  useEffect(() => {
+    let didCancel = false
+    if (!brand.isFetching && !brand.isLoaded && !didCancel) {
+      setRequest({ ...brand, isFetching: true, isLoaded: false, params: { 'f:brandFeatured': 1 , 'f:activeFlag' : 1}, makeRequest: true })
+    } 
+    return () => {
+      didCancel = true
+    }
+  }, [brand, setRequest])
+
   const homeBrand = useSelector(state => {
-    return Object.keys(state.content)
-      .filter(key => {
-        return key.includes('shop-by/')
-      })
+    return Object.keys(brand.data)
       .map(key => {
-        return state.content[key]
+        return brand.data[key]
       })
   })
+  
+  homeBrand.map((brandItem)=>{
+    brandItem['attributes'].map((attributes)=>{
+      if(attributes['attributeCode'] == 'brandLogo'){
+        return brandItem['brandLogo'] = attributes['attributeValue']
+      }
+    })
+  })
+  
   const shopBy = useSelector(state => {
     return Object.keys(state.content)
       .filter(key => {
@@ -65,7 +85,6 @@ function HomeBrand(props) {
       },
     ],
   }
-
   return (
     <div style={{ height: 'fit-content' }} className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
       <h3 className="h3">{shopBy.length > 0 && shopBy[0].title}</h3>

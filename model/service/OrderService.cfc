@@ -1589,7 +1589,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
-			ormFlush();	
+			this.getHibachiScope().hibachiORMFlush();
 			
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
 		}
@@ -2027,13 +2027,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.processOrder_updateOrderAmounts(newOrder);
 
 		newOrder.updateCalculatedProperties(runAgain=true); 
-		ormFlush();//flush so that the order exists
+		this.getHibachiScope().hibachiORMFlush();//flush so that the order exists
 		
 		var orderFulfillments = newOrder.getOrderFulfillments();
 		for( var orderFulfillment in orderFulfillments ){
 			getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
 		}
-		ormFlush();
+		this.getHibachiScope().hibachiORMFlush();
 		
 		newOrder.validate( context = 'placeOrder' );
 		
@@ -2054,7 +2054,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderProcessingFlag( false );
 		arguments.orderTemplate.setMostRecentError( javacast('null','') );
 		arguments.orderTemplate.setMostRecentErrorDateTime( javacast('null','') );
-		ormFlush();
+		this.getHibachiScope().hibachiORMFlush();
 		
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
         getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
@@ -2102,7 +2102,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				//keep going potentially the gift card is already applied to another order 
 				continue;
 			} else {
-				ormFlush(); 
+				this.getHibachiScope().hibachiORMFlush(); 
 			}
 		}  
 
@@ -2177,7 +2177,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrder.clearHibachiErrors();
 
 			newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
-			ormFlush(); 
+			this.getHibachiScope().hibachiORMFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
 			getHibachiEventService().announceEvent("afterOrderProcess_retryPaymentFailure", {"entity":newOrder, "order":newOrder});
 		} else {
@@ -2188,7 +2188,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		newOrder.setOrderOrigin(getSettingService().getOrderOrigin(getSettingService().getSettingValue('globalOrderTemplateOrderOrigin')));
 		// Flush everything before removing items so it doesn't persit the item in session after remove
-		ormFlush();
+		this.getHibachiScope().hibachiORMFlush();
 		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
 		
@@ -4514,7 +4514,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			//must flush otherwise the dao won't get the correct amount.
 			if (!arguments.processObject.getOrderFulfillment().hasErrors() && !arguments.orderDelivery.hasErrors()){
-				ormFlush();
+				this.getHibachiScope().hibachiORMFlush();
 			}
 			
 			// generate invoice number for this order delivery
