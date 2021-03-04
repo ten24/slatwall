@@ -171,7 +171,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	
 	
 	/**
-	 * 
+	 * This function is used to create a SQL query to create filter-option-relations [maximum possible]
 	*/
 	public any function getProductFilterFacetOptionsSeletQuerySQL( string productIDs = "", string skuIDs = "" ){
 	    
@@ -239,35 +239,35 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            ) AS productFilterFacetOptionID,
 	
 		   p.productID, 
-		   p.activeFlag AS productActiveFlag, 
-		   p.publishedFlag AS productPublishedFlag,
+		   COALESCE(p.activeFlag,1) AS productActiveFlag, 
+		   COALESCE(p.publishedFlag,1) AS productPublishedFlag,
 		   
 		   sk.skuID, 
-		   sk.activeFlag AS skuActiveFlag, 
-		   sk.publishedFlag AS skuPublishedFlag,
+		   COALESCE(sk.activeFlag,1) AS skuActiveFlag, 
+		   COALESCE(sk.publishedFlag,1) AS skuPublishedFlag,
 		   
 	       br.brandID, br.brandName, 
-	       br.activeFlag AS brandActiveFlag, 
-	       br.publishedFlag AS brandPublishedFlag,
+	       COALESCE(br.activeFlag,1) AS brandActiveFlag, 
+	       COALESCE(br.publishedFlag,1) AS brandPublishedFlag,
 	       
            cr.categoryID, cr.categoryName, cr.parentCategoryID, 
            cr.urlTitle AS categoryUrlTitle,
            
            o.optionID, o.optionName, o.optionCode, 
            o.sortOrder AS optionSortOrder, 
-           o.activeFlag AS optionActiveFlag,
+           COALESCE(o.activeFlag,1) AS optionActiveFlag,
            
            og.optionGroupID, og.optionGroupName, 
            og.sortOrder AS optionGroupSortOrder,
            
            pt.productTypeID, pt.productTypeName, pt.parentProductTypeID, 
            pt.urlTitle AS productTypeURLTitle,
-           pt.activeFlag AS productTypeActiveFlag, 
-           pt.publishedFlag AS productTypePublishedFlag,
+           COALESCE(pt.activeFlag,1) AS productTypeActiveFlag, 
+           COALESCE(pt.publishedFlag,1) AS productTypePublishedFlag,
            
            co.contentID, co.parentContentID,
            co.title AS contentTitle, 
-           co.activeFlag AS contentActiveFlag,
+           COALESCE(co.activeFlag,1) AS contentActiveFlag,
            co.urlTitle AS contentUrlTitle,
            co.sortOrder AS contentSortOrder,
            
@@ -279,7 +279,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            
            atst.attributeSetID, atst.attributeSetCode, atst.attributeSetName, atst.attributeSetObject,
            atst.sortOrder AS attributeSetSortOrder,
-           atst.activeFlag AS attributeSetActiveFlag,
+           COALESCE(atst.activeFlag,1) AS attributeSetActiveFlag,
            
            atto.attributeOptionID, atto.attributeOptionValue, atto.attributeOptionLabel,
            atto.urltitle AS attributeOptionUrlTitle,
@@ -289,12 +289,20 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         
            INNER JOIN swSku sk
                 ON sk.productID = p.productID #productAndSkuIDsQueryPart#
+                    AND ( p.activeFlag = 1 OR p.activeFlag IS NULL ) 
+                    AND ( p.publishedFlag = 1 OR p.publishedFlag IS NULL)
+                    AND ( sk.activeFlag = 1 OR sk.activeFlag IS NULL ) 
+                    AND ( sk.publishedFlag = 1 OR sk.publishedFlag IS NULL)
                             
            LEFT JOIN swProductType pt
-                ON pt.productTypeID = p.productTypeID
+                ON pt.productTypeID = p.productTypeID 
+                    AND ( pt.activeFlag = 1 OR pt.activeFlag IS NULL ) 
+                    AND ( pt.publishedFlag = 1 OR pt.publishedFlag IS NULL)
 
            LEFT JOIN swBrand br
                 ON br.brandID = p.brandID
+                    AND ( br.activeFlag = 1 OR br.activeFlag IS NULL ) 
+                    AND ( br.publishedFlag = 1 OR br.publishedFlag IS NULL)
 
             LEFT JOIN swCategory cr
                 ON cr.categoryID IN (SELECT DISTINCT categoryID FROM swProductCategory)
@@ -313,6 +321,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 ON so.skuID = sk.skuID
             LEFT JOIN swOption o
                 ON o.optionID = so.optionID
+                    AND ( o.activeFlag = 1 OR o.activeFlag IS NULL ) 
 
             LEFT JOIN swOptionGroup og
                 ON og.optionGroupID = o.optionGroupID
@@ -322,9 +331,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 
             LEFT JOIN SwAttributeSet atst
                 ON atst.attributeSetID = att.attributeSetID
-            	
+                    AND ( atst.activeFlag = 1 OR atst.activeFlag IS NULL ) 
+
             LEFT JOIN swAttributeOption atto
             	ON(#selectTypeAttributeOptionJoinParts#)
+            	
+            GROUP BY ffo.productFilterFacetOptionID
 	   ";
 	        
         this.logHibachi("SlatwallProductSearchDAO:: getProductFilterFacetOptionsSeletQuerySQL took #getTickCount()-startTicks# ms. in creating the SQL string");
@@ -333,9 +345,10 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	}
 	
 	/**
-	 * 
+	 * **** START ********************** Keep the Filter-Relations updated in realtime
 	*/
-	public any function recalculateProductFilterFacetOptionsForProductsAndSkus( string productIDs = "", string skuIDs = "" ){
+
+	public any function reCalculateProductFilterFacetOptionsForProductsAndSkus( string productIDs = "", string skuIDs = "" ){
 	    
 	    if( this.hibachiIsEmpty(arguments.skuIDs) && this.hibachiIsEmpty(arguments.productIDs) ){
             return;
@@ -366,13 +379,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	        
         this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in fetching existing facet-options ");
  
-	    var existingFFOsMap = {};
+	    var existingFFOsToDeletMap = {};
         for( var row in getExistingOptionsQuery ){
-            existingFFOsMap[ row.productFilterFacetOptionID] = row.productFilterFacetOptionID;
+            existingFFOsToDeletMap[ row.productFilterFacetOptionID] = row.productFilterFacetOptionID;
         }
 	        
         dump("Existing ffos");
-        dump(existingFFOsMap);
+        dump(existingFFOsToDeletMap);
 	        
         var getNewOptionsQuerySQL = this.getProductFilterFacetOptionsSeletQuerySQL(argumentCollection = arguments ); 
         
@@ -383,23 +396,25 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         getNewOptionsQuery.setSQL(getNewOptionsQuerySQL);
         var getNewOptionsQueryResult = getNewOptionsQuery.execute().getResult();
         
-        var newFFOsToInsert = {};
+        var newFFOsToInsertCount = 0;
+        // we're looping over the new options and, 
+        // checking if the new-option-id exists in the old options then we can exclude that option from deleting
+        // otherwise it's a relation which is no longer valid, and needs to be deleted
         for( var row in getNewOptionsQueryResult ){
-            if( !structKeyExists(existingFFOsMap, row.productFilterFacetOptionID) ){
-                newFFOsToInsert[ row.productFilterFacetOptionID ] = row.productFilterFacetOptionID;
+            if( structKeyExists(existingFFOsToDeletMap, row.productFilterFacetOptionID) ){
+                existingFFOsToDeletMap.delete( row.productFilterFacetOptionID ); 
             } else {
-                // we don't need to insert/update/delete this record as it already exist
-                existingFFOsMap.delete( row.productFilterFacetOptionID ); 
+                newFFOsToInsertCount++;
             }
         }
         
-        dump(newFFOsToInsert);
+        dump(newFFOsToInsertCount);
 	        
         // now delete whatever is left from the old options as these are no-longer valid
-        if( structCount(existingFFOsMap) > 0 ){
-	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus deleting #structCount(existingFFOsMap)# old options");
+        if( structCount(existingFFOsToDeletMap) > 0 ){
+	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus deleting #structCount(existingFFOsToDeletMap)# old options");
         
-            var ffoIDsToDelete = existingFFOsMap.keyList();
+            var ffoIDsToDelete = existingFFOsToDeletMap.keyList();
             ffoIDsToDelete = listQualify( ffoIDsToDelete , "'");
             
             var deleteQuery = new Query();
@@ -416,38 +431,34 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         }
 	        
         // and insert any new filter-options
-        if( structCount(newFFOsToInsert) > 0 ){
-	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus inserting #structCount(newFFOsToInsert)# new options");
+        if( newFFOsToInsertCount > 0 ){
+	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus inserting #newFFOsToInsertCount# new options");
 
-            var ffoIDsToInsert = newFFOsToInsert.keyList();
-            ffoIDsToInsert = listQualify( ffoIDsToInsert , "'");
-        
+
             var insertQuery = new Query();
             
-            // we're doing another query on the DB to get the options, as doing that in the cf-code is 
-            // - and it will be some complicated logic, can be buggy and hard to maintain
-            // - a lot of string-manipulation, which will be slow
-            // - it can create a really big string-query totransfer over the network, again slow
+            // we're doing another query on the DB to get create the options and insert/replace, as doing that in the cf-code 
+            // - will be some complicated logic, can be buggy and hard to maintain
+            // - and a lot of string-manipulation, which will be slow
+            // - and it can create a really big string-query to transfer over the network, which again will be slow
+            // - also the replace query will takecare of updating the existing-option-fields like, brand-name, category-name, which is what we need 
             var insertSQL = "
-        	        INSERT INTO swProductFilterFacetOption ( 
+        	        REPLACE INTO swProductFilterFacetOption ( 
         	            #this.getProductFilterFacetOptionsSeletQueryColumnList()# 
         	        ) 
     	            SELECT * FROM ( 
     	                #getNewOptionsQuerySQL# 
-    	            ) result_set 
-    	            WHERE result_set.productFilterFacetOptionID IN( #ffoIDsToInsert# )
+    	            ) result_set
                 ";
-            
+            dump(insertSQL);
             insertQuery.setSQL( insertSQL );
 	        insertQuery.execute();
-            
         } else {
             this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus did not found any new options to insert");
         }
 
         this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in updating facte-options for Product: #arguments.productIDs#, SKU: #arguments.skuIDs# ");
 	}
-
 	
 	public any function updateProductFilterFacetOptionsByEntityNameAndIDs( required string entittyName, required string entityIDs ){
 	    
@@ -684,6 +695,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         return q;   
 	}
 	
+	/**
+	 * **** END ********************** Keep the Filter-Relations updated in realtime
+	*/
+	
+	
+	
+	
 	public any function getPotentialFilterFacetsAndOptions(){
 	    param name="arguments.siteID" default='';
 	    param name="arguments.productType" default='';
@@ -702,10 +720,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             q.addParam(name='siteID', value=arguments.siteID)
         }
         
-        var productTypeJoinFilterQueryPart = " 
-            AND ( ffo.productTypeActiveflag = 1 OR ffo.productTypeActiveflag IS NULL ) 
-            AND ( ffo.productTypePublishedFlag = 1 OR ffo.productTypePublishedFlag IS NULL)
-        ";
+        var productTypeJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.productType) ){
             productTypeJoinFilterQueryPart = " AND ffo.productTypeName IN ( :productType )";
             q.addParam( name='productType', list="true", value=arguments.productType );
@@ -717,23 +732,19 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             q.addParam( name='category', list="true", value=arguments.category );
         }
         
-        var brandJoinFilterQueryPart = " 
-            AND ( ffo.brandActiveFlag = 1 OR ffo.brandActiveFlag IS NULL) 
-            AND ( ffo.brandPublishedFlag = 1 OR ffo.brandPublishedFlag IS NULL)
-        ";
+        var brandJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.brands) ){
             brandJoinFilterQueryPart = " AND ffo.brandName IN ( :brands )";
             q.addParam( name='brands', list="true", value=arguments.brands );
         }
         
-        var optionJoinFilterQueryPart = " AND (ffo.optionActiveFlag=1 OR ffo.optionActiveFlag IS NULL)";
+        var optionJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.options) ){
             optionJoinFilterQueryPart = " AND ffo.optionName IN ( :options )";
             q.addParam( name='options', list="true", value=arguments.options );
         }
         
-        
-        var attributeOptionJoinFilterQueryPart = " AND (ffo.attributeSetActiveFlag=1 OR ffo.attributeSetActiveFlag IS NULL)";
+        var attributeOptionJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.attributeOptions) ){
             attributeOptionJoinFilterQueryPart = " AND ffo.attributeOptionValue IN ( :attributeOptions )";
             q.addParam( name='attributeOptions', list="true", value=arguments.attributeOptions );
@@ -761,21 +772,18 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             
             INNER JOIN swSkuPrice sp
                 ON sp.skuID = ffo.skuID 
-                    AND sp.activeFlag = 1 
-                    AND ffo.skuActiveflag = 1 AND ffo.skuPublishedFlag = 1
-                    AND ffo.productActiveFlag = 1 AND ffo.productPublishedFlag = 1
+                    AND sp.activeFlag = 1
                     
-                    #siteJoinFilterQueryPart#
-            		#productTypeJoinFilterQueryPart#
-                    #categoryJoinFilterQueryPart#
-                    #brandJoinFilterQueryPart#
-                    #optionJoinFilterQueryPart#
-                    #attributeOptionJoinFilterQueryPart#
+                #siteJoinFilterQueryPart#
+        		#productTypeJoinFilterQueryPart#
+                #categoryJoinFilterQueryPart#
+                #brandJoinFilterQueryPart#
+                #optionJoinFilterQueryPart#
+                #attributeOptionJoinFilterQueryPart#
                     
             GROUP BY ffo.productFilterFacetOptionID
         ";
-	    
-	    
+
         q.setSQL( sql );
         q = q.execute().getResult();
         
