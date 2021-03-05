@@ -53,33 +53,32 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="siteCode" ormtype="string" index="IDX_SITE_CODE";
 	property name="currencyCode" ormtype="string" index="IDX_CURRENCY_CODE";
 	
-	property name="skuActiveFlag" ormtype="boolean";
-	property name="skuPublishedFlag" ormtype="boolean";
-	
-	property name="productActiveFlag" ormtype="boolean";
-	property name="productPublishedFlag" ormtype="boolean";
+	property name="skuPricePrice" ormtype="big_decimal" hb_formatType="currency";
+	property name="skuPriceListPrice" ormtype="big_decimal" hb_formatType="currency";
+	property name="skuPriceRenewalPrice" ormtype="big_decimal" hb_formatType="currency";
+	property name="skuPriceMinQuantity" ormtype="integer";
+	property name="skuPriceMaxQuantity" ormtype="integer";
+	property name="skuPriceCurrencyCode" ormtype="string" length="3" hb_formfieldType="select" index="IDX_SKU_PRICE_CURRENCY_CODE";
+	property name="skuPriceExpiresDateTime" ormtype="timestamp";
+
+    property name="priceGroupName" ormtype="string";
+	property name="priceGroupCode" ormtype="string" index="IDX_PRICEGROUPCODE";
 	
 	property name="brandName" ormtype="string";
-	property name="brandActiveFlag" ormtype="boolean";
-	property name="brandPublishedFlag" ormtype="boolean";
 	
 	property name="productTypeName" ormtype="string";
 	property name="productTypeURLTitle" ormtype="string";
-    property name="productTypeActiveFlag" ormtype="boolean";
-	property name="productTypePublishedFlag" ormtype="boolean";
-	
+
 	property name="categoryName" ormtype="string";
 	property name="categoryUrlTitle" ormtype="string";
 	
 	property name="contentTitle" ormtype="string";
 	property name="contentUrlTitle" ormtype="string";
     property name="contentSortOrder" ormtype="integer";
-	property name="contentActiveFlag" ormtype="boolean";
-	
+
 	property name="optionName" ormtype="string";
 	property name="optionCode" ormtype="string" index="IDX_OPTION_CODE";
 	property name="optionSortOrder" ormtype="integer";
-	property name="optionActiveFlag" ormtype="boolean";
 
     property name="optionGroupName" ormtype="string";
 	property name="optionGroupSortOrder" ormtype="integer";
@@ -94,7 +93,6 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
     property name="attributeSetCode" ormtype="string" index="IDX_ATTRIBUTE_SET_CODE";
 	property name="attributeSetObject" ormtype="string" index="IDX_ATTRIBUTE_SET_OBJECT";
 	property name="attributeSetSortOrder" ormtype="integer";
-	property name="attributeSetActiveFlag" ormtype="boolean";
 
     property name="attributeOptionValue" ormtype="string" index="IDX_ATTRIBUTE_CODE";
 	property name="attributeOptionLabel" ormtype="string";
@@ -108,6 +106,10 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" index="IDX_SKU_ID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" index="IDX_PRODUCT_ID";
 	
+	property name="skuPrice" cfc="SkuPrice" fieldtype="many-to-one" fkcolumn="skuPriceID" index="IDX_SKU_PRICE_ID";
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID" index="IDX_PRICE_GROUP_ID";
+	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" index="IDX_PARENT_PRICE_GROUP_ID";
+
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" index="IDX_BRAND_ID";
 	
 	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID" index="IDX_CATEGORY_ID";

@@ -343,7 +343,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		
 		
         this.getService().getSlatwallProductSearchDAO()
-        .recalculateProductFilterFacetOprionsForProductsAndSkus(
+        .recalculateProductFilterFacetOptionsForProductsAndSkus(
             productIDs=productIDs,
             skuIDs=skuIDs
         );
@@ -356,6 +356,26 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		expect( timeTook < 10*1000 ).toBeTrue('it should take less than 10 sec. ;) but it took #timeTook#');
 
 		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function query_test(){
+	   // this.getService().getSlatwallProductSearchDAO().rePopulateProductFilterFacetOptionTable();
+	    
+	    var sql = "
+	        Select DISTINCT optionID from swProductFilterFacetOption 
+            	WHERE brandID IS NOT NULL
+	    ";
+	   // UNION
+    //         Select DISTINCT NUll as optionID, optionGroupID from swProductFilterFacetOption 
+    //         	WHERE brandID IS NOT NULL
+	    var q = new Query();
+        q.setSQL( sql );
+        q = q.execute().getResult();
+        
+        dump(q);
 	}
 	
 	

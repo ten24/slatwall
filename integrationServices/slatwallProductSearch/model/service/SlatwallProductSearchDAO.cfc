@@ -111,42 +111,46 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	//just to save some maintenance, and remove duplicacy
 	public any function getProductFilterFacetOptionsSeletQueryColumnList(){
 	    
+	    // NOTE: the position of the keys should alwasy match with query in function **getProductFilterFacetOptionsSeletQuerySQL** below
+	    
 	    if( !structKeyExists(variables, 'cached_productFilterFacetOptionsSeletQueryColumnList') ){
 	        
 	        variables['cached_productFilterFacetOptionsSeletQueryColumnList'] = "
 	                        
 	                        productFilterFacetOptionID,
     	   
-                            productID, 
-                            productActiveFlag, 
-                            productPublishedFlag,
+                            productID,
                 	        
-                	        skuID, 
-                	        skuActiveFlag, 
-                	        skuPublishedFlag,
+                	        skuID,
+                	        
+                	        skuPriceID,
+                		    skuPricePrice,
+                		    skuPriceListPrice,
+                		    skuPriceMinQuantity,
+                		    skuPriceMaxQuantity,
+                		    skuPriceCurrencyCode,
+                		    skuPriceRenewalPrice,
+                		    skuPriceExpiresDateTime,
+                		    
+                		    priceGroupID, priceGroupName, 
+		                    priceGroupCode, parentPriceGroupID,
                             
-                            brandID, brandName, 
-                            brandActiveFlag, 
-                            brandPublishedFlag,
+                            brandID, brandName,
                             
                             categoryID, categoryName, parentCategoryID, 
                             categoryUrlTitle,
                             
                             optionID, optionName, optionCode, 
-                            optionSortOrder, 
-                            optionActiveFlag,
+                            optionSortOrder,
                             
                             optionGroupID, optionGroupName, 
                             optionGroupSortOrder,
                             
                             productTypeID, productTypeName, parentProductTypeID, 
-                            productTypeURLTitle, 
-                            productTypeActiveFlag, 
-                            productTypePublishedFlag,
+                            productTypeURLTitle,
                             
                             contentID, parentContentID,
                             contentTitle, 
-                            contentActiveFlag,
                             contentUrlTitle,
                             contentSortOrder,
                             
@@ -158,8 +162,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                        
                             attributeSetID, attributeSetCode, attributeSetName, attributeSetObject,
                             attributeSetSortOrder,
-                            attributeSetActiveFlag,
-                       
+
                             attributeOptionID, attributeOptionValue, attributeOptionLabel,
                             attributeOptionUrlTitle,
                             attributeOptionSortOrde
@@ -225,6 +228,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            		CONCAT(
            			COALESCE( p.productID, ''), 
            			COALESCE( sk.skuID, ''), 
+           			COALESCE( sp.skuPriceID, ''), 
+           			COALESCE( pg.priceGroupID, ''), 
            			COALESCE( br.brandID, ''), 
            			COALESCE( cr.categoryID, ''), 
            			COALESCE( o.optionID, ''), 
@@ -238,36 +243,38 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            		)
            ) AS productFilterFacetOptionID,
 	
-		   p.productID, 
-		   COALESCE(p.activeFlag,1) AS productActiveFlag, 
-		   COALESCE(p.publishedFlag,1) AS productPublishedFlag,
+		   p.productID,
 		   
-		   sk.skuID, 
-		   COALESCE(sk.activeFlag,1) AS skuActiveFlag, 
-		   COALESCE(sk.publishedFlag,1) AS skuPublishedFlag,
+		   sk.skuID,
 		   
-	       br.brandID, br.brandName, 
-	       COALESCE(br.activeFlag,1) AS brandActiveFlag, 
-	       COALESCE(br.publishedFlag,1) AS brandPublishedFlag,
+		   sp.skuPriceID,
+		   sp.price AS skuPricePrice,
+		   sp.listPrice AS skuPriceListPrice,
+		   sp.minQuantity AS skuPriceMinQuantity,
+		   sp.maxQuantity AS skuPriceMaxQuantity,
+		   sp.currencyCode AS skuPriceCurrencyCode,
+		   sp.renewalPrice AS skuPriceRenewalPrice,
+		   sp.expiresDateTime AS skuPriceExpiresDateTime,
+		   
+		   pg.priceGroupID, pg.priceGroupName, 
+		   pg.priceGroupCode, pg.parentPriceGroupID,
+		   
+	       br.brandID, br.brandName,
 	       
            cr.categoryID, cr.categoryName, cr.parentCategoryID, 
            cr.urlTitle AS categoryUrlTitle,
            
            o.optionID, o.optionName, o.optionCode, 
-           o.sortOrder AS optionSortOrder, 
-           COALESCE(o.activeFlag,1) AS optionActiveFlag,
+           o.sortOrder AS optionSortOrder,
            
            og.optionGroupID, og.optionGroupName, 
            og.sortOrder AS optionGroupSortOrder,
            
            pt.productTypeID, pt.productTypeName, pt.parentProductTypeID, 
            pt.urlTitle AS productTypeURLTitle,
-           COALESCE(pt.activeFlag,1) AS productTypeActiveFlag, 
-           COALESCE(pt.publishedFlag,1) AS productTypePublishedFlag,
            
            co.contentID, co.parentContentID,
-           co.title AS contentTitle, 
-           COALESCE(co.activeFlag,1) AS contentActiveFlag,
+           co.title AS contentTitle,
            co.urlTitle AS contentUrlTitle,
            co.sortOrder AS contentSortOrder,
            
@@ -279,7 +286,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            
            atst.attributeSetID, atst.attributeSetCode, atst.attributeSetName, atst.attributeSetObject,
            atst.sortOrder AS attributeSetSortOrder,
-           COALESCE(atst.activeFlag,1) AS attributeSetActiveFlag,
            
            atto.attributeOptionID, atto.attributeOptionValue, atto.attributeOptionLabel,
            atto.urltitle AS attributeOptionUrlTitle,
@@ -293,24 +299,33 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     AND ( p.publishedFlag = 1 OR p.publishedFlag IS NULL)
                     AND ( sk.activeFlag = 1 OR sk.activeFlag IS NULL ) 
                     AND ( sk.publishedFlag = 1 OR sk.publishedFlag IS NULL)
+                    
+            INNER JOIN swSkuPrice sp
+                ON sp.skuID = sk.skuID 
+                    AND ( sp.activeFlag = 1 OR sp.activeFlag IS NULL )
+            LEFT JOIN swPriceGroup pg
+                ON pg.priceGroupID = sp.priceGroupID
+                    AND ( pg.activeFlag = 1 OR pg.activeFlag IS NULL )
                             
            LEFT JOIN swProductType pt
                 ON pt.productTypeID = p.productTypeID 
                     AND ( pt.activeFlag = 1 OR pt.activeFlag IS NULL ) 
-                    AND ( pt.publishedFlag = 1 OR pt.publishedFlag IS NULL)
+                    AND ( pt.publishedFlag = 1 OR pt.publishedFlag IS NULL )
 
            LEFT JOIN swBrand br
                 ON br.brandID = p.brandID
                     AND ( br.activeFlag = 1 OR br.activeFlag IS NULL ) 
-                    AND ( br.publishedFlag = 1 OR br.publishedFlag IS NULL)
-
+                    AND ( br.publishedFlag = 1 OR br.publishedFlag IS NULL )
+            
+            LEFT JOIN swProductCategory pc
+                ON pc.productID = p.productID            
             LEFT JOIN swCategory cr
-                ON cr.categoryID IN (SELECT DISTINCT categoryID FROM swProductCategory)
+                ON cr.categoryID = pc.categoryID
             
             LEFT JOIN swProductListingPage plp
                 ON plp.productID = p.productID 
             LEFT JOIN swContent co
-                ON co.contentID = plp.contentID 
+                ON co.contentID = plp.contentID AND ( co.activeFlag = 1 OR co.activeFlag IS NULL )
                     
             LEFT JOIN swProductSite pst
                 ON pst.productID = p.productID
@@ -474,29 +489,11 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         ";
             
         switch (arguments.entityName){
-            case 'product':
-                sql &= " 
-                    swProduct p ON p.productID = ffo.productID AND p.productID IN (:entityIDs)
-                    SET 
-                        ffo.productActiveFlag = p.activeFlag,
-                        ffo.productPublishedFlag = p.publishedFlag
-                ";
-            break;
-            case 'sku':
-                sql &= " 
-                    swSku sk ON sk.skuID = ffo.skuID AND sk.skuID IN (:entityIDs)
-                    SET 
-                        ffo.skuActiveFlag = sk.activeFlag,
-                        ffo.skuPublishedFlag = sk.publishedFlag
-                ";
-            break;
             case 'brand':
                 sql &= " 
                     swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (:entityIDs)
                     SET 
-                        ffo.brandName = br.brandName,
-                        ffo.brandActiveFlag = br.activeFlag,
-                        ffo.brandPublishedFlag = br.publishedFlag
+                        ffo.brandName = br.brandName
                 ";
             break;
             case 'category':
@@ -514,8 +511,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     SET 
                         ffo.optionName = o.optionName,
                         ffo.optionCode = o.optionCode,
-                        ffo.optionSortOrder = o.sortOrder,
-                        ffo.optionActiveFlag = o.activeFlag
+                        ffo.optionSortOrder = o.sortOrder
                 ";
             break;
             case 'optionGroup':
@@ -532,9 +528,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     SET 
                         ffo.productTypeName = pt.productTypeName,
                         ffo.parentProductTypeID = pt.parentProductTypeID,
-                        ffo.productTypeURLTitle = pt.urlTitle,
-                        ffo.productTypeActiveFlag = pt.activeFlag,
-                        ffo.productTypePublishedFlag = pt.publishedFlag
+                        ffo.productTypeURLTitle = pt.urlTitle
                 ";
             break;
             case 'site':
@@ -564,8 +558,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                         ffo.attributeSetName = atst.attributeSetName,
                         ffo.attributeSetCode = atst.attributeSetCode,
                         ffo.attributeSetObject = atst.attributeSetObject,
-                        ffo.attributeSetUrlTitle = atst.urltitle,
-                        ffo.attributeSetActiveFlag = atst.activeFlag
+                        ffo.attributeSetUrlTitle = atst.urltitle
                 ";
             break;
             case 'attributeOption':
@@ -583,7 +576,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     swContent cont ON cont.contentID = ffo.contentID AND cont.contentID IN (:entityIDs)
                     SET 
                         ffo.parentContentID = cont.parentContentID,
-                        ffo.contentActiveFlag = cont.activeFlag,
                         ffo.contentUrlTitle = cont.urlTitle,
                         ffo.contentSortOrder = cont.sortOrder
                 ";
