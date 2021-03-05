@@ -5,9 +5,8 @@ import { useHistory, useLocation } from 'react-router-dom'
 const BasicPage = () => {
   let history = useHistory()
   let loc = useLocation()
-  const path = loc.pathname.split('/').reverse()[0].toLowerCase()
-  const contentStore = useSelector(state => state.content[path]) || {}
-  const { title, customBody } = contentStore
+  const content = useSelector(state => state.content[loc.pathname.substring(1)])
+  const { title, customBody } = content || {}
 
   return (
     <div className="bg-light p-0">

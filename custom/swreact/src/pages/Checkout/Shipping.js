@@ -1,4 +1,20 @@
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
+import SwSelect from '../../components/SwSelect/SwSelect'
+
 const ShippingSlide = () => {
+  const dispatch = useDispatch()
+  const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
+  let [countryCode, setCountryCode] = useState('US')
+  const stateCodeOptions = useSelector(state => state.content.stateCodeOptions[countryCode])
+  let [stateCode, setStateCode] = useState('')
+
+  useEffect(() => {
+    dispatch(getCountries())
+    dispatch(getStateCodeOptionsByCountryCode(countryCode))
+  }, [dispatch])
+
   return (
     <>
       {/* <!-- Shipping address--> */}
@@ -28,11 +44,16 @@ const ShippingSlide = () => {
         <div className="col-sm-6">
           <div className="form-group">
             <label htmlFor="checkout-country">Country</label>
-            <select defaultValue="US" className="form-control custom-select" id="checkout-country">
-              <option value="">Choose country</option>
-              <option value="CA">Canada</option>
-              <option value="US">USA</option>
-            </select>
+            <SwSelect
+              id="countryCode"
+              value={countryCode}
+              onChange={e => {
+                e.preventDefault()
+                dispatch(getStateCodeOptionsByCountryCode(e.target.value))
+                setCountryCode(e.target.value)
+              }}
+              options={countryCodeOptions}
+            />
           </div>
         </div>
         <div className="col-sm-6">
@@ -63,64 +84,23 @@ const ShippingSlide = () => {
             <input className="form-control" type="text" id="checkout-city" />
           </div>
         </div>
-        <div className="col-sm-3">
-          <div className="form-group">
-            <label htmlFor="checkout-country">State</label>
-            <select className="form-control custom-select" id="checkout-state">
-              <option value="AL">Alabama</option>
-              <option value="AK">Alaska</option>
-              <option value="AZ">Arizona</option>
-              <option value="AR">Arkansas</option>
-              <option value="CA">California</option>
-              <option value="CO">Colorado</option>
-              <option value="CT">Connecticut</option>
-              <option value="DE">Delaware</option>
-              <option value="DC">District Of Columbia</option>
-              <option value="FL">Florida</option>
-              <option value="GA">Georgia</option>
-              <option value="HI">Hawaii</option>
-              <option value="ID">Idaho</option>
-              <option value="IL">Illinois</option>
-              <option value="IN">Indiana</option>
-              <option value="IA">Iowa</option>
-              <option value="KS">Kansas</option>
-              <option value="KY">Kentucky</option>
-              <option value="LA">Louisiana</option>
-              <option value="ME">Maine</option>
-              <option value="MD">Maryland</option>
-              <option value="MA">Massachusetts</option>
-              <option value="MI">Michigan</option>
-              <option value="MN">Minnesota</option>
-              <option value="MS">Mississippi</option>
-              <option value="MO">Missouri</option>
-              <option value="MT">Montana</option>
-              <option value="NE">Nebraska</option>
-              <option value="NV">Nevada</option>
-              <option value="NH">New Hampshire</option>
-              <option value="NJ">New Jersey</option>
-              <option value="NM">New Mexico</option>
-              <option value="NY">New York</option>
-              <option value="NC">North Carolina</option>
-              <option value="ND">North Dakota</option>
-              <option value="OH">Ohio</option>
-              <option value="OK">Oklahoma</option>
-              <option value="OR">Oregon</option>
-              <option value="PA">Pennsylvania</option>
-              <option value="RI">Rhode Island</option>
-              <option value="SC">South Carolina</option>
-              <option value="SD">South Dakota</option>
-              <option value="TN">Tennessee</option>
-              <option value="TX">Texas</option>
-              <option value="UT">Utah</option>
-              <option value="VT">Vermont</option>
-              <option value="VA">Virginia</option>
-              <option value="WA">Washington</option>
-              <option value="WV">West Virginia</option>
-              <option value="WI">Wisconsin</option>
-              <option value="WY">Wyoming</option>
-            </select>
+        {stateCodeOptions.length > 0 && (
+          <div className="col-sm-3">
+            <div className="form-group">
+              <label htmlFor="checkout-country">State</label>
+              <SwSelect
+                id="checkout-state"
+                value={countryCode}
+                onChange={e => {
+                  e.preventDefault()
+                  setCountryCode(e.target.value)
+                }}
+                options={stateCodeOptions}
+              />
+            </div>
           </div>
-        </div>
+        )}
+
         <div className="col-sm-3">
           <div className="form-group">
             <label htmlFor="checkout-zip">ZIP Code</label>

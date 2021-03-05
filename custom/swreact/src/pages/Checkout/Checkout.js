@@ -1,62 +1,23 @@
 import { CartPromoBox, Layout, PromotionalMessaging, Spinner } from '../../components'
 import { useSelector } from 'react-redux'
-import { useHistory, useLocation } from 'react-router-dom'
+import { Link, Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import PageHeader from '../../components/PageHeader/PageHeader'
-import queryString from 'query-string'
 import { useTranslation } from 'react-i18next'
 import './checkout.css'
 import useFormatCurrency from '../../hooks/useFormatCurrency'
 import ShippingSlide from './Shipping'
 import PaymentSlide from './Payment'
 import ReviewSlide from './Review'
+import { checkOutSteps, REVIEW } from './steps'
 // https://www.digitalocean.com/community/tutorials/how-to-create-multistep-forms-with-react-and-semantic-ui
 // https://github.com/srdjan/react-multistep/blob/master/react-multistep.js
 // https://www.geeksforgeeks.org/how-to-create-multi-step-progress-bar-using-bootstrap/
-export const CART = 'cart'
-export const SHIPPING = 'shipping'
-export const PAYMENT = 'payment'
-export const REVIEW = 'review'
-
-const checkOutSteps = [
-  {
-    key: CART,
-    progress: 1,
-    icon: 'shopping-cart',
-    name: 'frontend.checkout.cart',
-    state: '',
-    link: '/shopping-cart',
-  },
-  {
-    key: SHIPPING,
-    progress: 2,
-    icon: 'shipping-fast',
-    name: 'frontend.checkout.shipping',
-    state: '',
-    link: '/checkout?step=shipping',
-  },
-  {
-    key: PAYMENT,
-    progress: 3,
-    icon: 'credit-card',
-    name: 'frontend.checkout.payment',
-    state: '',
-    link: '/checkout?step=payment',
-  },
-  {
-    key: REVIEW,
-    progress: 4,
-    icon: 'check-circle',
-    name: 'frontend.checkout.review',
-    state: '',
-    link: '/checkout?step=shipping',
-  },
-]
 
 //
-const getCurrentStep = params => {
-  return checkOutSteps.filter(step => {
-    return params.step ? step.key === params.step.toLowerCase() : step.key === CART
-  })[0]
+const getCurrentStep = path => {
+  return (checkOutSteps.filter(step => {
+    return step.key === path
+  }) || [checkOutSteps[1]])[0]
 }
 
 const StepsHeader = () => {
@@ -64,8 +25,8 @@ const StepsHeader = () => {
   const loc = useLocation()
   let history = useHistory()
 
-  let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
-  const current = getCurrentStep(params)
+  const path = loc.pathname.split('/').reverse()[0].toLowerCase()
+  const current = getCurrentStep(path)
   return (
     <div className="steps steps-dark pt-2 pb-3 mb-5">
       {checkOutSteps.map(step => {
@@ -99,32 +60,38 @@ const StepsHeader = () => {
 }
 
 const SlideNavigation = () => {
+  const loc = useLocation()
+  const path = loc.pathname.split('/').reverse()[0].toLowerCase()
+  const currentStep = getCurrentStep(path)
+
   return (
     <>
       <div className="d-lg-flex pt-4 mt-3">
         <div className="w-50 pr-3">
-          <a className="btn btn-secondary btn-block" href="##">
+          <Link className="btn btn-secondary btn-block" to={currentStep.previous}>
             <i className="far fa-chevron-left"></i> <span className="d-none d-sm-inline">Back</span>
             <span className="d-inline d-sm-none">Back</span>
-          </a>
+          </Link>
         </div>
-        <div className="w-50 pl-2">
-          <a className="btn btn-primary btn-block" href="##">
-            <span className="d-none d-sm-inline">Save & Continue</span>
-            <span className="d-inline d-sm-none">Next</span> <i className="far fa-chevron-right"></i>
-          </a>
-        </div>
+        {currentStep.next.length > 0 && (
+          <div className="w-50 pl-2">
+            <Link className="btn btn-primary btn-block" to={currentStep.next}>
+              <span className="d-none d-sm-inline">Save & Continue</span>
+              <span className="d-inline d-sm-none">Next</span> <i className="far fa-chevron-right"></i>
+            </Link>
+          </div>
+        )}
       </div>
     </>
   )
 }
 
-const CheckoutSideBar = ({ showPromo = true, showPlaceOrder = false }) => {
+const CheckoutSideBar = () => {
   const cart = useSelector(state => state.cart)
   const { isFetching, total, taxTotal, subtotal, discountTotal, fulfillmentChargeAfterDiscountTotal } = cart
   const loc = useLocation()
-  let history = useHistory()
-  let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+  const path = loc.pathname.split('/').reverse()[0].toLowerCase()
+  const currentStep = getCurrentStep(path)
   const [formatCurrency] = useFormatCurrency({})
   const { t, i18n } = useTranslation()
 
@@ -158,8 +125,8 @@ const CheckoutSideBar = ({ showPromo = true, showPlaceOrder = false }) => {
           <span>{total > 0 ? formatCurrency(total) : '--'}</span>
           {/* $274.<small>50</small> */}
         </h3>
-        {showPromo && <CartPromoBox />}
-        {showPlaceOrder && (
+        {currentStep.key !== REVIEW && <CartPromoBox />}
+        {currentStep.key !== REVIEW && (
           <button
             className="btn btn-primary btn-block mt-4"
             type="submit"
@@ -178,14 +145,10 @@ const CheckoutSideBar = ({ showPromo = true, showPlaceOrder = false }) => {
 const Checkout = () => {
   const cart = useSelector(state => state.cart)
   const { isFetching } = cart
+  let match = useRouteMatch()
   const loc = useLocation()
-  let history = useHistory()
-  let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
-  const currentStep = getCurrentStep(params)
-
-  if (currentStep.key === CART) {
-    history.push(currentStep.link)
-  }
+  const path = loc.pathname.split('/').reverse()[0].toLowerCase()
+  const currentStep = getCurrentStep(path)
 
   return (
     <Layout>
@@ -195,14 +158,29 @@ const Checkout = () => {
           <section className="col-lg-8">
             {/* <!-- Steps--> */}
             <StepsHeader />
-            {isFetching && <Spinner />}
-            {!isFetching && currentStep.key === SHIPPING && <ShippingSlide />}
-            {!isFetching && currentStep.key === PAYMENT && <PaymentSlide />}
-            {!isFetching && currentStep.key === REVIEW && <ReviewSlide />}
+
+            <Switch>
+              <Route path={`${match.path}/shipping`}>
+                <ShippingSlide />
+              </Route>
+              <Route path={`${match.path}/cart`}>
+                <Redirect to="/cart" />
+              </Route>
+              <Route path={`${match.path}/payment`}>
+                <PaymentSlide />
+              </Route>
+              <Route path={`${match.path}/review`}>
+                <ReviewSlide />
+              </Route>
+              <Route path={match.path}>
+                <Redirect to={`${match.path}/shipping`} />
+              </Route>
+            </Switch>
+
             <SlideNavigation />
           </section>
           {/* <!-- Sidebar--> */}
-          <CheckoutSideBar showPromo={currentStep.key !== REVIEW} showPlaceOrder={currentStep.key === REVIEW} />
+          <CheckoutSideBar />
         </div>
       </div>
     </Layout>
