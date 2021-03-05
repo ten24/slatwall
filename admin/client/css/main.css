@@ -8948,14 +8948,7 @@ table.s-detail-content-table tbody tr.s-done {
   background: #ffffff;
   margin: 2.5em 0;
 }
-/*.s-select-list-wrapper .input-group {*/
-/*  padding-left: 15px;*/
-/*  padding-right: 15px;*/
-/*}*/
-/*div[data-collection-config="productBundleGroupTypeCollection"] .s-select-list-wrapper .input-group {*/
-/*  padding-left: 0;*/
-/*  padding-right: 0;*/
-/*}*/
+
 .badge {
   color: #fff;
   background-color: #f1863b;
