@@ -3739,8 +3739,8 @@ table .s-table-header .table-section a.s-hint {
 }
 .s-table-inner-nav .s-display-options .s-close {
   position: absolute;
-  right: 5px;
-  top: 1px;
+  right: 22px;
+  top: 5px;
   font-size: 18px;
   color: #aaa;
   z-index: 2000;
@@ -8797,6 +8797,12 @@ table.s-detail-content-table tbody tr.s-done {
   align-items: flex-end;
   justify-content: space-between;
   padding: 0.75em 1em;
+  min-height: 100px;
+}
+
+.Mcard-body div:nth-child(2n){
+  position: absolute;
+  right: 22px;
 }
 .Mcard-body h1 {
   color: #666666;
@@ -8942,10 +8948,14 @@ table.s-detail-content-table tbody tr.s-done {
   background: #ffffff;
   margin: 2.5em 0;
 }
-.s-select-list-wrapper .input-group {
-  padding-left: 15px;
-  padding-right: 15px;
-}
+/*.s-select-list-wrapper .input-group {*/
+/*  padding-left: 15px;*/
+/*  padding-right: 15px;*/
+/*}*/
+/*div[data-collection-config="productBundleGroupTypeCollection"] .s-select-list-wrapper .input-group {*/
+/*  padding-left: 0;*/
+/*  padding-right: 0;*/
+/*}*/
 .badge {
   color: #fff;
   background-color: #f1863b;
