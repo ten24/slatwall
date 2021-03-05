@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.account" type="any" default="#rc.accountPaymentMethod.getAccount()#">
 <!--- If it's a new payment method, and the account isn't set, set to rc.account param --->
 <cfif rc.accountPaymentMethod.getNewFlag() && rc.accountPaymentMethod.getAccount().getNewFlag()>
-	<cfset rc.accountPaymentMethod.setAccount(rc.account) />
+	<cfset rc.accountPaymentMethod.setAccount(rc.account, true) />
 </cfif>
 <cfparam name="rc.edit" type="boolean">
 

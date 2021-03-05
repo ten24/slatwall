@@ -337,9 +337,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// ============= START: Bidirectional Helper Methods ===================
 
 	// Account (many-to-one)
-	public void function setAccount(required any account) {
+	public void function setAccount(required any account, boolean skipAddingPaymentMethodToAccount = false) {
 		variables.account = arguments.account;
-		if(isNew() or !arguments.account.hasAccountPaymentMethod( this )) {
+		if( skipAddingPaymentMethodToAccount == false && ( isNew() || !arguments.account.hasAccountPaymentMethod( this ) ) ) {
 			arrayAppend(arguments.account.getAccountPaymentMethods(), this);
 		}
 	}
