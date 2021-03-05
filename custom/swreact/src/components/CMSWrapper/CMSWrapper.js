@@ -31,7 +31,6 @@ const CMSWrapper = ({ children }) => {
           content: payload,
         })
       )
-      console.log(`You changed the page to: ${location.pathname}`)
     })
   }, [dispatch])
 
