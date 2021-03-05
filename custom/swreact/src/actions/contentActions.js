@@ -25,26 +25,6 @@ export const reciveStateCodes = codes => {
   }
 }
 
-export const getHomePageContent = (content = {}) => {
-  return async (dispatch, getState) => {
-    dispatch(requestContent())
-    const { siteCode } = getState().configuration.site
-    const response = await axios({
-      method: 'POST',
-      withCredentials: true, // default
-      url: `${sdkURL}api/scope/getHomePageContent`,
-      data: {
-        siteCode,
-      },
-    })
-    if (response.status === 200) {
-      dispatch(reciveContent(response.data.content))
-    } else {
-      dispatch(reciveContent({}))
-    }
-  }
-}
-
 const shouldUseData = (content = {}, request = {}) => {
   let hasAllContent = true
   Object.keys(request).map(requestKey => {
@@ -64,9 +44,9 @@ const shouldUseData = (content = {}, request = {}) => {
 
 export const getContent = (content = {}) => {
   return async (dispatch, getState) => {
+    // if (!getState().content.isFetching && shouldUseData(getState().content, content.content)) {
     const { siteCode } = getState().configuration.site
     dispatch(requestContent())
-    // if (shouldUseData(getState().content, content.content)) {
     const response = await axios({
       method: 'POST',
       withCredentials: true,
@@ -77,12 +57,12 @@ export const getContent = (content = {}) => {
       data: { ...content, siteCode },
     })
     if (response.status === 200) {
-      dispatch(reciveContent(response.data.content))
+      dispatch(reciveContent({ ...response.data.content }))
     } else {
       dispatch(reciveContent({}))
     }
-    // }
   }
+  // }
 }
 
 export const getPageContent = (content = {}, slug = '') => {

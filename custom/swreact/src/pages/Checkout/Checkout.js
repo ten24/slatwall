@@ -126,7 +126,7 @@ const CheckoutSideBar = () => {
           {/* $274.<small>50</small> */}
         </h3>
         {currentStep.key !== REVIEW && <CartPromoBox />}
-        {currentStep.key !== REVIEW && (
+        {currentStep.key === REVIEW && (
           <button
             className="btn btn-primary btn-block mt-4"
             type="submit"

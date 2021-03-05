@@ -3,6 +3,7 @@ import { REQUEST_CONTENT, RECIVE_CONTENT, RECIVE_STATE_CODES } from '../actions/
 const initState = {
   countryCodeOptions: [],
   stateCodeOptions: {},
+  isFetching: false,
 }
 
 const content = (state = initState, action) => {
