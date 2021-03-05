@@ -2436,6 +2436,26 @@ component extends="HibachiService" accessors="true" output="false" {
 		return false;
 	}
 	
+	public any function getBillingAccountAddressOptions(required string accountID){
+		var billingAccountAddressOptions = [];
+		var accountAddressCollectionList = getService("AddressService").getAccountAddressCollectionList();
+		accountAddressCollectionList.addFilter("account.accountID", accountID);
+		accountAddressCollectionList.setDisplayProperties("accountAddressName,accountAddressID,address.streetAddress,address.postalCode");
+		var options = accountAddressCollectionList.getRecords();
+		var index = 1;
+		for (var option in options){
+			if (index == 1){
+				arrayAppend(billingAccountAddressOptions, {selected="selected",value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+			}else{
+				arrayAppend(billingAccountAddressOptions, {value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+			}
+			index++;
+		}
+		
+		arrayPrepend(billingAccountAddressOptions, {value="new", name="New"});
+		return billingAccountAddressOptions;
+	}
+	
 	// =====================  END:  Private Helper Functions ==================
 
 }

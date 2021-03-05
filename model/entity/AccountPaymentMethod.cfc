@@ -337,9 +337,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// ============= START: Bidirectional Helper Methods ===================
 
 	// Account (many-to-one)
-	public void function setAccount(required any account, boolean skipAddingPaymentMethodToAccount = false) {
+	public void function setAccount(required any account) {
 		variables.account = arguments.account;
-		if( skipAddingPaymentMethodToAccount == false && ( isNew() || !arguments.account.hasAccountPaymentMethod( this ) ) ) {
+		if ( isNew() || !arguments.account.hasAccountPaymentMethod( this ) ) {
 			arrayAppend(arguments.account.getAccountPaymentMethods(), this);
 		}
 	}
@@ -391,28 +391,6 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
-	public any function getBillingAccountAddressOptions(){
-		if (isNull(variables.billingAccountAddressOptions)){
-			variables.billingAccountAddressOptions = [];
-			var accountAddressCollectionList = getService("AddressService").getAccountAddressCollectionList();
-			accountAddressCollectionList.addFilter("account.accountID", getAccount().getAccountID());
-			accountAddressCollectionList.setDisplayProperties("accountAddressName,accountAddressID,address.streetAddress,address.postalCode");
-			var options = accountAddressCollectionList.getRecords();
-			var index = 1;
-			for (var option in options){
-				if (index == 1){
-					arrayAppend(variables.billingAccountAddressOptions, {selected="selected",value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
-				}else{
-					arrayAppend(variables.billingAccountAddressOptions, {value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
-				}
-				index++;
-			}
-			
-			arrayPrepend(variables.billingAccountAddressOptions, {value="new", name="New"});
-		}
-		return variables.billingAccountAddressOptions;
-	}
-	
 	public any function getBillingAddressOptions(){
 		// Currently disable the edit option in paymentMethod for edit billing address in so return blank Array for billingAddress options.
 		return [];
