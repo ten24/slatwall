@@ -723,6 +723,28 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 		return variables.accountPaymentMethodOptions;
 	} 
+	
+	public any function getBillingAccountAddressOptions(){
+		if(!structKeyExists(variables, 'billingAccountAddressOptions')){
+			variables.billingAccountAddressOptions = [];
+			var accountAddressCollectionList = getService("AddressService").getAccountAddressCollectionList();
+			accountAddressCollectionList.addFilter("account.accountID", this.getAccountID());
+			accountAddressCollectionList.setDisplayProperties("accountAddressName,accountAddressID,address.streetAddress,address.postalCode");
+			var options = accountAddressCollectionList.getRecords();
+			var index = 1;
+			for (var option in options){
+				if (index == 1){
+					arrayAppend(variables.billingAccountAddressOptions, {selected="selected",value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+				}else{
+					arrayAppend(variables.billingAccountAddressOptions, {value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+				}
+				index++;
+			}
+			
+			arrayPrepend(variables.billingAccountAddressOptions, {value="new", name="New"});
+		}
+		return variables.billingAccountAddressOptions;
+	}
 
 	public any function getUnenrolledAccountLoyaltyOptions() {
 		if(!structKeyExists(variables, "unenrolledAccountLoyaltyOptions")) {
