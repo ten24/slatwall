@@ -1587,7 +1587,7 @@
     	
     public string function getSQLfromHQL(required string HQL, required struct hqlParams) {
 
-		var hidratedHQL = HQL; 
+		var hydratedHQL = HQL; 
 		cfloop(collection=hqlParams, item="key") {
 			hidratedHQL = replace(hidratedHQL, ":#key#", "'#hqlParams[key]#'");
 		}
@@ -1596,7 +1596,7 @@
 		var javaCollections = createObject("java", "java.util.Collections");
 		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hidratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
 		javaTranslator.compile(javaCollections.EMPTY_MAP, false);
-		var sqlstr = javaTranslator.getSQLString();
+		var sqlStr = javaTranslator.getSQLString();
 
 		// sqlstr = rereplace(sqlstr, "as .*?\d+_\d+_", '', "ALL"); //\sas\s\w+\d+_\d+_,
 

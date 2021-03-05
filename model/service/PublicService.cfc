@@ -216,7 +216,7 @@ component  accessors="true" output="false"
     /**
 	 * Get Favourite Product List (List out all wishlist sku's )
 	 * */
-    public void function getFavouriteProducts(required struct data){
+    public void function getFavoriteProducts(required struct data){
          if( getHibachiScope().getLoggedInFlag() ) {
              
                 var products = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
