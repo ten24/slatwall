@@ -220,19 +220,17 @@ component extends="HibachiService" accessors="true" {
 		}
 		
 		//Check if last sku is exist in skulist, return unique sku
-		var lastSku = ArrayLast(arguments.productSchedule.getSkus());
-		var newSku = lastSku.getSkuCode();
-		var skus;
-		var addon = 1;
-		for( var sku in arguments.productSchedule.getSkus() ){
-			addon++;
-			if( sku.getSkuCode() eq newSku ) {
-				returnValue = "#productCode#-#addon#";
-				newSku = getService('HibachiUtilityService').createUniqueProperty(propertyValue=returnValue, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=false );
+		var productScheduleSkus = arguments.productSchedule.getSkus();
+		var lastSku = ArrayLast(productScheduleSkus);
+		var newSkuCode = lastSku.getSkuCode();
+		for( var i=1; i<=ArrayLen(productScheduleSkus); i++ ){
+			if( productScheduleSkus[i].getSkuCode() == newSkuCode ) {
+				returnValue = "#productCode#-#i+1#";
+				newSkuCode = getService('HibachiUtilityService').createUniqueProperty(propertyValue=returnValue, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=false );
 				break;
 			}
 		}
-		return newSku;
+		return newSkuCode;
 	}
 	
 	// @help Generates an event sku stub. Used to replace repetitive code.
