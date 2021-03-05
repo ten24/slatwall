@@ -124,7 +124,7 @@ Notes:
 					<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment">
 					
 						<span ng-init="$root.slatwall.billingAccountAddress = ($root.slatwall.billingAccountAddress) ? $root.slatwall.billingAccountAddress : 'new' ">
-							<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#getHibachiSCope().getService('accountService').getBillingAccountAddressOptions(rc.account.getAccountID())#" edit="#rc.edit#" fieldAttributes="ng-model='$root.slatwall.billingAccountAddress'" />
+							<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.account.getBillingAccountAddressOptions()#" edit="#rc.edit#" fieldAttributes="ng-model='$root.slatwall.billingAccountAddress'" />
 						</span>
 							
 					</hb:HibachiDisplayToggle>
