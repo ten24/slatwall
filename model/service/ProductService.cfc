@@ -225,7 +225,7 @@ component extends="HibachiService" accessors="true" {
 		var newSkuCode = lastSku.getSkuCode();
 		for( var i=1; i<=ArrayLen(productScheduleSkus); i++ ){
 			if( productScheduleSkus[i].getSkuCode() == newSkuCode ) {
-				returnValue = "#productCode#-#i+1#";
+				var returnValue = "#productCode#-#i+1#";
 				newSkuCode = getService('HibachiUtilityService').createUniqueProperty(propertyValue=returnValue, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=false );
 				break;
 			}
