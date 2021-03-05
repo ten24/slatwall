@@ -7,7 +7,7 @@ const ShippingSlide = () => {
   const dispatch = useDispatch()
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
   let [countryCode, setCountryCode] = useState('US')
-  const stateCodeOptions = useSelector(state => state.content.stateCodeOptions[countryCode])
+  const stateCodeOptions = useSelector(state => state.content.stateCodeOptions[countryCode]) || []
   let [stateCode, setStateCode] = useState('')
 
   useEffect(() => {
