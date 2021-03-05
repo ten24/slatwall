@@ -1,8 +1,11 @@
-import { useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { useHistory, useLocation } from 'react-router-dom'
 
-const AccountContent = ({ customBody = '', contentTitle = '' }) => {
+const AccountContent = () => {
   let history = useHistory()
-
+  let loc = useLocation()
+  const content = useSelector(state => state.content[loc.pathname.substring(1)])
+  const { customBody = '', contentTitle = '' } = content || {}
   return (
     <>
       <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">

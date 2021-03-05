@@ -71,7 +71,7 @@ export const useGetBrand = () => {
 export const useGetBrands = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
-    if (request.makeRequest){
+    if (request.makeRequest) {
       axios({
         method: 'GET',
         withCredentials: true,
@@ -83,15 +83,15 @@ export const useGetBrands = () => {
         if (response.status === 200 && response.data && response.data.pageRecords) {
           setRequest({ data: response.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
         } else {
-          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong'})
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
         }
       })
     }
   }, [request, setRequest])
-  
+
   return [request, setRequest]
-  
 }
+
 export const useGetProductList = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
@@ -204,6 +204,109 @@ export const useGetAvailablePaymentMethods = () => {
           setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
         }
       })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useAddWishlistItem = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    let didCancel = false
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/addWishlistItem?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data && response.data.pageRecords) {
+            setRequest({ data: response.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+      didCancel = true
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetOrderDetails = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  const token = localStorage.getItem('token')
+  useEffect(() => {
+    let didCancel = false
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getOrderDetails?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-Token': `Bearer ${token}`,
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data && response.data.orderDetails) {
+            setRequest({ data: response.data.orderDetails, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+      didCancel = true
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetAllOrders = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {} })
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    let didCancel = false
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getAllOrdersOnAccount`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-Token': `Bearer ${token}`,
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data && response.data.ordersOnAccount) {
+            setRequest({ data: response.data.ordersOnAccount.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+      didCancel = true
     }
   }, [request, setRequest])
 

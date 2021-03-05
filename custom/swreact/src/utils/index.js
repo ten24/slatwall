@@ -14,7 +14,7 @@ export const renameKeysInArrayOfObjects = (arr, find, replace) => {
   })
 }
 
-export const isTokenValid = () => {
+export const isAuthenticated = () => {
   let token = localStorage.getItem('token')
   if (token) {
     token = jwt_decode(localStorage.getItem('token'))
