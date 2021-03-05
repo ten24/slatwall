@@ -391,22 +391,19 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
-	public any function getBillingAccountAddressOptions(string accountID){
-		if (!isNull(getAccount()) && !isNull(getAccount().getAccountID())){
-			arguments.accountID = getAccount().getAccountID();
-		}
+	public any function getBillingAccountAddressOptions(){
 		if (isNull(variables.billingAccountAddressOptions)){
 			variables.billingAccountAddressOptions = [];
 			var accountAddressCollectionList = getService("AddressService").getAccountAddressCollectionList();
-			accountAddressCollectionList.addFilter("account.accountID", "#arguments.accountID#");
+			accountAddressCollectionList.addFilter("account.accountID", getAccount().getAccountID());
 			accountAddressCollectionList.setDisplayProperties("accountAddressName,accountAddressID,address.streetAddress,address.postalCode");
 			var options = accountAddressCollectionList.getRecords();
 			var index = 1;
 			for (var option in options){
 				if (index == 1){
-					arrayAppend(variables.billingAccountAddressOptions, {selected="selected",value="#option['accountAddressID']#", name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+					arrayAppend(variables.billingAccountAddressOptions, {selected="selected",value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
 				}else{
-					arrayAppend(variables.billingAccountAddressOptions, {value="#option['accountAddressID']#", name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+					arrayAppend(variables.billingAccountAddressOptions, {value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
 				}
 				index++;
 			}
@@ -416,7 +413,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		return variables.billingAccountAddressOptions;
 	}
 	
-	public any function getBillingAddressOptions(string accountID){
+	public any function getBillingAddressOptions(){
 		// Currently disable the edit option in paymentMethod for edit billing address in so return blank Array for billingAddress options.
 		return [];
 	}
