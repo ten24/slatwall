@@ -5,6 +5,7 @@ import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/co
 import SwSelect from '../../components/SwSelect/SwSelect'
 import { useFormik } from 'formik'
 import SlideNavigation from './SlideNavigation'
+import { SwRadioSelect } from '../../components'
 
 const ShippingAddress = ({ formik }) => {
   const dispatch = useDispatch()
@@ -104,7 +105,7 @@ const ShippingSlide = ({ currentStep }) => {
   const dispatch = useDispatch()
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const orderFulfillments = useSelector(state => state.cart.orderFulfillments)
-
+  const [showAddress, setShowAddress] = useState(false)
   let initialValues = {}
   if (orderFulfillments && orderFulfillments[0] && orderFulfillments[0].shippingAddress) {
     const { streetAddress, street2Address, city, stateCode, postalCode, countrycode, name } = orderFulfillments[0].shippingAddress
@@ -139,67 +140,70 @@ const ShippingSlide = ({ currentStep }) => {
       console.log('values', values)
     },
   })
+  let selectedAccountID = ''
+  if (orderFulfillments[0]) {
+    const selectAccount = accountAddresses
+      .filter(({ address: { addressID } }) => {
+        return addressID === orderFulfillments[0].shippingAddress.addressID
+      })
+      .map(({ accountAddressID }) => {
+        return accountAddressID
+      })
+    selectedAccountID = selectAccount.length ? selectAccount[0] : ''
+  }
 
   return (
     <>
       {/* <!-- Shipping address--> */}
       <div className="row mb-3">
         <div className="col-sm-12">
-          <div className="form-group">
-            <label className="w-100" htmlFor="checkout-recieve">
-              How do you want to recieve your items?
-            </label>
-            {orderFulfillments.length > 0 &&
-              orderFulfillments[0].shippingMethodOptions.map(({ value, name, shippingMethodCode }) => {
-                return (
-                  <div key={value} className="form-check form-check-inline custom-control custom-radio d-inline-flex">
-                    <input className="custom-control-input" type="radio" name="inlineRadioOptions" id={shippingMethodCode} value={value} defaultChecked={orderFulfillments[0].shippingMethod && value === orderFulfillments[0].shippingMethod.shippingMethodID} />
-                    <label
-                      className="custom-control-label"
-                      htmlFor={shippingMethodCode}
-                      onClick={e => {
-                        e.preventDefault()
-                        dispatch(addShippingMethod(value))
-                      }}
-                    >
-                      {name}
-                    </label>
-                  </div>
+          {orderFulfillments.length > 0 && (
+            <SwRadioSelect
+              label="How do you want to recieve your items?"
+              options={orderFulfillments[0].shippingMethodOptions}
+              onChange={value => {
+                dispatch(
+                  addShippingMethod({
+                    shippingMethodID: value,
+                    fulfillmentID: orderFulfillments[0].orderFulfillmentID,
+                  })
                 )
-              })}
-          </div>
+              }}
+              selectedValue={orderFulfillments[0].shippingMethod.shippingMethodID}
+            />
+          )}
         </div>
       </div>
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Shipping address</h2>
       {accountAddresses && (
         <div className="row">
           <div className="col-sm-12">
-            <div className="form-group">
-              <label htmlFor="account-address">Account Address</label>
-              <SwSelect
-                id="account-address"
-                value={(orderFulfillments[0] && orderFulfillments[0].accountAddress && orderFulfillments[0].accountAddress.accountAddressID) || ''}
-                onChange={e => {
-                  e.preventDefault()
+            <SwRadioSelect
+              label="Account Address"
+              options={accountAddresses.map(({ accountAddressName, accountAddressID, address: { streetAddress } }) => {
+                return { name: `${accountAddressName} - ${streetAddress}`, value: accountAddressID }
+              })}
+              onChange={value => {
+                if (value === 'new') {
+                  setShowAddress(true)
+                } else {
                   dispatch(
                     addShippingAddressUsingAccountAddress({
-                      accountAddressID: '101be9e19bed5a70ab2f1dbb07638ff2',
-                      fulfillmentID: '',
-                      shippingMethodID: '2c91808678024adb01780f5035dc00b1',
+                      accountAddressID: value,
+                      fulfillmentID: orderFulfillments[0].orderFulfillmentID,
                     })
                   )
-
-                  console.log(e.target.value)
-                }}
-                options={accountAddresses.map(({ accountAddressName, accountAddressID, address: { streetAddress } }) => {
-                  return { key: `${accountAddressName} - ${streetAddress}`, value: accountAddressID }
-                })}
-              />
-            </div>
+                  setShowAddress(false)
+                }
+              }}
+              newLabel="Add Account Address"
+              selectedValue={showAddress ? 'new' : selectedAccountID}
+              displayNew={true}
+            />
           </div>
         </div>
       )}
-      <ShippingAddress formik={formik} />
+      {showAddress && <ShippingAddress formik={formik} />}
       <SlideNavigation currentStep={currentStep} handleSubmit={formik.handleSubmit} />
     </>
   )

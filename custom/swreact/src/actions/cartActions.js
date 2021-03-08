@@ -145,12 +145,12 @@ export const addShippingAddressUsingAccountAddress = (params = {}) => {
     }
   }
 }
-export const addShippingMethod = shippingMethodID => {
+export const addShippingMethod = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
 
     const req = await SlatwalApiService.cart.addShippingMethod({
-      shippingMethodID,
+      ...params,
       returnJSONObjects: 'cart',
     })
 
