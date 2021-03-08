@@ -3285,7 +3285,7 @@ component  accessors="true" output="false"
 	
 	public void function removeWishlistItem(required any data) {
         param name="arguments.data.orderTemplateID" default="";
-        param name="arguments.data.skuID" default="";
+        param name="arguments.data.removalSkuID" default="";
         
         if( !(getHibachiScope().getLoggedInFlag()) ) {
             arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
