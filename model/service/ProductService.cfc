@@ -85,6 +85,21 @@ component extends="HibachiService" accessors="true" {
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
 		return relatedProducts;
 	}
+	
+	public any function getAllRelatedProducts(required any productID) {
+		var relatedProducts = this.getProductRelationshipCollectionList();
+        
+        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.productClearance, relatedProduct.calculatedSalePrice";	
+        properties &= ",relatedProduct.brand.brandID, relatedProduct.brand.brandName, relatedProduct.brand.urlTitle";
+        properties &= ",relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID";
+        properties &= ",relatedProduct.defaultSku.imageFile, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.defaultSku.skuID";
+		
+		relatedProducts.setDisplayProperties(properties);
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		return relatedProducts.getRecords(formatRecords=false);
+	}
+
 
 	public any function getAllProductReviews(required any productID) {
 		var relatedProducts = this.getProductReviewCollectionList();
@@ -583,15 +598,6 @@ component extends="HibachiService" accessors="true" {
 		return result;
 	}
 	
-	public any function getAllRelatedProducts(required any productID) {
-		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile, relatedProduct.calculatedSalePrice, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID, relatedProduct.defaultSku.skuID");
-		relatedProducts.addFilter("product.productID",arguments.productID);
-		relatedProducts.addFilter("product.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=false);
-		return relatedProducts;
-	}
-
 	public any function getAllProductReviews(required any productID) {
 		var relatedProducts = this.getProductReviewCollectionList();
 		relatedProducts.setDisplayProperties("reviewerName, createdDateTime, review, reviewTitle, rating, activeFlag");
@@ -619,7 +625,7 @@ component extends="HibachiService" accessors="true" {
 				}
 				
 	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( isEmpty(imageFile) ) {
+	            if( this.hibachiIsEmpty(imageFile) ){
 	            	continue;
 	            }
 	            var imageArray = [];

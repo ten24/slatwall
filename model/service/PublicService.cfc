@@ -92,6 +92,57 @@ component  accessors="true" output="false"
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
 	
+	public void function addFormResponse(required struct data){
+		 param name="arguments.data.formResponse.formID" default="";
+
+    	var formToProcess = getService('formService').getForm(arguments.data.formResponse.formID);
+        formToProcess = getFormService().process(formToProcess,arguments.data,"addFormResponse");
+    	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
+    }
+    
+    /**
+	 *
+	 * 
+	 */
+    public void function getProducts( required struct data ) {
+        var hibachiScope = this.getHibachiScope();
+        
+		param name="arguments.data.siteID" default='';
+    
+        //      account, order, for pricing
+        // 		param name="arguments.data.order" default=hibachiScope.getCart();
+        // 		param name="arguments.data.account" default=hibachiScope.getAccount();
+        // 		param name="arguments.data.priceGroupCode" default='';
+        	
+		param name="arguments.data.currencyCode" default='USD';
+	    
+	    // facets-options	
+	    param name="arguments.data.productType" default='';
+	    param name="arguments.data.category" default='';
+	    param name="arguments.data.brands" default='';
+	    param name="arguments.data.options" default='';
+	    param name="arguments.data.attributeOptions" default='';
+	    
+        // Search
+        param name="arguments.data.keyword" default="";
+        // Sorting
+        param name="arguments.data.orderBy" default="product.productName|DESC"; 
+        // Pricing
+        param name="arguments.data.price" default=""; 
+        // Pagination
+	    param name="arguments.data.currentPage" default=1;
+	    param name="arguments.data.pageSize" default=10;
+	    
+	    // the integration needs to be enabled for this to work
+	    // TODO: create a site-level setting for defaule product-search integration
+        var slatwallProductSearchService = this.getService('slatwallProductSearchService');
+        
+        arguments.data.ajaxResponse = {
+            'data' : slatwallProductSearchService.getProducts(argumentCollection=arguments.data)
+        };
+    }
+
+
 	/**
 	 * Get Product List (an alternative to generic entity api call for products)
 	 * */
@@ -100,6 +151,7 @@ component  accessors="true" output="false"
 	    param name="arguments.data.productTypeUrlTitle" default= "";
 	    arguments.data.entityName = "Product";
 	    arguments.data.restRequestFlag = 1;
+	    
 	    //Set an In filter for child types
 	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
 	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
@@ -108,7 +160,11 @@ component  accessors="true" output="false"
 	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
 	    }
 
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
@@ -126,7 +182,11 @@ component  accessors="true" output="false"
 	    arguments.data.entityName = "Sku";
 	    arguments.data.restRequestFlag = 1;
 
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
@@ -135,7 +195,38 @@ component  accessors="true" output="false"
 	    arguments.data.ajaxResponse = result;
 
 	}
+	
+		/**
+	 * Get Sku List (an alternative to generic entity api call for products)
+	 * */
+	public void function getBrandList( required struct data ) {
+	    arguments.data.entityName = "Brand";
+	    arguments.data.restRequestFlag = 1;
 
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
+
+	    arguments.data.ajaxResponse = result;
+
+	}
+    
+    /**
+	 * Get Favourite Product List (List out all wishlist sku's )
+	 * */
+    public void function getFavoriteProducts(required struct data){
+         if( getHibachiScope().getLoggedInFlag() ) {
+             
+                var products = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
+                arguments.data.ajaxResponse["accountWishlistProducts"] = products;
+                
+            }
+        
+        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.favouriteProduct ');
+        
+    }
 	
 	
 	/***
@@ -402,7 +493,7 @@ component  accessors="true" output="false"
 	     param name="arguments.data.orderID";
 	     
 	     var account = getHibachiScope().getAccount();
-	     if(!isNull(account) && !isEmpty(account.getAccountID())) {
+	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
 	         var order = orderService.getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
 	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID());
@@ -547,7 +638,7 @@ component  accessors="true" output="false"
     public void function getProductReviews(required struct data){
         param name="arguments.data.productID" default="";
         
-        var productReviews = getService('productService').getAllProductReviews(productID = arguments.data.productID);
+        var productReviews = getProductService().getAllProductReviews(productID = arguments.data.productID);
         arguments.data.ajaxResponse['productReviews'] = productReviews;
     }
     
@@ -559,10 +650,10 @@ component  accessors="true" output="false"
     */
     public void function getRelatedProducts(required struct data){
         param name="arguments.data.productID" default="";
-        var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
+        var relatedProducts = getProductService().getAllRelatedProducts(productID = arguments.data.productID);
         //add images
         if(arrayLen(relatedProducts)) {
-            relatedProducts = getService('productService').appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
+            relatedProducts = getProductService().appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
         }
         arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
@@ -579,7 +670,7 @@ component  accessors="true" output="false"
         param name="arguments.data.productID" default="";
         param name="arguments.data.defaultSkuOnlyFlag" default="false";
         
-        var product = getService('productService').getProduct(arguments.data.productID);
+        var product = getProductService().getProduct(arguments.data.productID);
         if(structKeyExists(arguments.data,'resizeSizes')){
             var sizeArray = [];
             for(var size in arguments.data.resizeSizes){
@@ -795,6 +886,30 @@ component  accessors="true" output="false"
     	        getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.getErrors() );
     	    }
         }
+     }
+    
+    /**
+      * Updates an Account Phone Number.
+      */
+    public void function updateAccountPhoneNumber(required data){
+     	param name="arguments.data.accountPhoneNumberID";
+     	param name="arguments.data.phoneNumber" default="";
+     	param name="arguments.data.countryCallingCode" default="";
+     	
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.updateAccount');
+        }
+        if( isNull(arguments.data.accountPhoneNumberID) ) {
+			return;
+		}
+     	var accountPhoneNumber = getAccountService().getAccountPhoneNumber( arguments.data.accountPhoneNumberID );
+     	
+        if (isNull(accountPhoneNumber) || getHibachiScope().getAccount().getAccountID() != accountPhoneNumber.getAccount().getAccountID() ){
+            getHibachiScope().addActionResult( "public:account.updateAccountPhoneNumber", true);
+            return;
+        }
+        this.getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "update");
+        getHibachiScope().addActionResult( "public:account.updateAccountPhoneNumber", accountPhoneNumber.hasErrors() );
      }
     
     /**
@@ -1392,7 +1507,7 @@ component  accessors="true" output="false"
                 if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
                     orderFulfillment.setShippingAddress(savedAddress);
                     //Add Shiping Method on Order Fulfillment
-                    if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                    if(StructKeyExists(arguments.data, 'shippingMethodID') && !this.getHibachiScope().hibachiIsEmpty(arguments.data.shippingMethodID) ) {
                         var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
                         if(!isNull(shippingMethod)) {
                             orderFulfillment.setShippingMethod(shippingMethod);
@@ -1919,9 +2034,10 @@ component  accessors="true" output="false"
         
         if( !cart.hasErrors() ) {
             //create new session with blank orderid
-            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !this.getHibachiScope().hibachiIsEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
             }
+
         }
         
         getHibachiScope().addActionResult( "public:cart.clear", cart.hasErrors() );
@@ -2052,7 +2168,7 @@ component  accessors="true" output="false"
             getHibachiScope().getSession().setOrder( cart );
             
             //create new token with cart information
-            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !this.getHibachiScope().hibachiIsEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             }
             
@@ -2210,7 +2326,7 @@ component  accessors="true" output="false"
                 //Remove existing method
                 orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
 
-                if( !isEmpty(existingOrderFulfillment) ) {
+                if( !this.getHibachiScope().hibachiIsEmpty(existingOrderFulfillment) ) {
                     orderItem.setOrderFulfillment( existingOrderFulfillment );
                 } else {
                     //get fulfillment method
@@ -3072,15 +3188,25 @@ component  accessors="true" output="false"
 	}
 	
 	public void function addWishlistItem(required any data) {
-        param name="data.orderTemplateID" default="";
-        param name="data.skuID" default="";
-
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.skuID" default="";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist ');
+        }
+        
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
 	    
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem'); 
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem');
+ 		
+ 		var processObject = orderTemplate.getProcessObject('addWishlistItem');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
         getHibachiScope().addActionResult( "public:orderTemplate.addWishlistItem", orderTemplate.hasErrors() );
             
         if(orderTemplate.hasErrors()) {
@@ -3088,6 +3214,33 @@ component  accessors="true" output="false"
         }
     }
 	
+	public void function removeWishlistItem(required any data) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.skuID" default="";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist ');
+        }
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'removeWishlistItem'); 
+ 		
+ 		var processObject = orderTemplate.getProcessObject('removeWishlistItem');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
+        getHibachiScope().addActionResult( "public:orderTemplate.removeWishlistItem", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+    
 	public void function addOrderTemplateItem(required any data) {
         param name="data.orderTemplateID" default="";
         param name="data.skuID" default="";
@@ -3303,24 +3456,22 @@ component  accessors="true" output="false"
      * 
      */
     public void function getSlatwallContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.content" default={};
         param name="arguments.data.formCode" default='';
         param name="arguments.data.formPostfix" default="/";
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        getStackedContentForPage
+        
         var stackedContent= {}
-        if(Len(arguments.data.content)> 1){
-            stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
-        }else{
-            stackedContent =  getService('siteService').getStackedContentForPage(arguments.data.content)
+        for(var content in arguments.data.content) {
+            StructAppend(stackedContent, getService('siteService').getStackedContentForPage({"#content#":arguments.data.content[content] }),"true")
         }
 
-        if(!isEmpty(arguments.data.formCode)){
-            stackedContent['form'] ={
+        if(!this.getHibachiScope().hibachiIsEmpty(arguments.data.formCode)){
+            stackedContent['form'] = {
                 "type": arguments.data.formCode,
                 "markup": getService('siteService').dspForm(arguments.data.formCode,arguments.data.formPostfix)
-                }
+            };
         }
 
         getHibachiScope().addActionResult("public:getSlatwallContent", false);

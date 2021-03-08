@@ -1,0 +1,55 @@
+{
+	"entityName": "OrderDeliveryItem",
+    "mappingCode": "OrderDeliveryItem",
+	"properties": {
+
+		"remoteOrderDeliveryItemID": {
+			"propertyIdentifier": "remoteID",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		},
+		"quantity": {
+			"propertyIdentifier": "quantity",
+			"validations": {
+				"dataType": "numeric"
+			}
+		}
+	},
+
+	"dependencies": [{
+			"key": "remoteOrderItemID",
+			"entityName": "OrderItem",
+			"lookupKey": "remoteID",
+			"propertyIdentifier": "orderItem"
+		}
+	],
+	
+	"relations": [
+        {
+            "type": "manyToOne",
+            "isVolatile": true,
+            "entityName": "OrderDelivery",
+            "mappingCode": "OrderDelivery",
+            "propertyIdentifier": "orderDelivery",
+            "generatorFunction"  : "generateOrderDeliveryItemOrderDelivery"
+        },
+        {
+        	
+        	"type": "manyToOne",
+            "entityName": "Stock",
+            "hasMapping": false,
+            "propertyIdentifier": "stock",
+            "generatorFunction"  : "generateOrderDeliveryItemStock"
+        }
+    ],
+    
+	"importIdentifier": {
+		"propertyIdentifier": "importRemoteID",
+		"type": "composite",
+		"keys": [
+			"remoteOrderDeliveryItemID"
+		]
+	}
+}

@@ -662,9 +662,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}else{
 										var price = orderFulfillment.getHandlingFee();
 									}
+									if(!IsNull(price)){
 									//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
 									newAppliedTax.setTaxLiabilityAmount( round(price * taxCategoryRate.getTaxRate()) / 100 );
-						
+									}
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
 									newAppliedTax.setTaxLocality( taxAddress.getLocality() );

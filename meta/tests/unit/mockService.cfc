@@ -1,39 +1,166 @@
-component extends="testbox.system.BaseSpec"{
+component accessors="true" extends="testbox.system.BaseSpec"{
+    
+    
+    property name="mockBeanFactory"; 
+    
+/*
+    public void function setupMockBeanFactory(required any slatwallScope ){
+        writeLog("setting-up mock bean factory: started");
 
+        var beanFactory = arguments.slatwallScope.getBeanFactory();
+        var __testUUID = createUUID();
+        beanFactory['__testUUID'] = __testUUID;
+
+        if( !structKeyExists(beanFactory, '__isMockedFlag') ){
+            
+            beanFactory['realGetBeanFucntion'] = beanFactory.getBean;
+            beanFactory['mocker'] = this;
+
+            function getMockBeanFunction(required string beanName, struct constructorArgs = { }){
+                
+                var bean = this.realGetBeanFucntion(argumentCollection = arguments);
+                if( isSimpleValue(bean) ){
+                    return bean;
+                }
+                
+                // if we've already constructed this bean for this spec; don't create a new one. to reduce memory footprint;
+                if( structKeyExists(bean, '__testUUID' ) && bean.__testUUID == this.__testUUID ){
+                    return bean;
+                }
+               
+                // call get bean again to construct a new object
+                writeLog("getting from mock bean factory, #beanName#");
+                
+                //delete from cache
+                structDelete(variables.resolutionCache, arguments.beanName);
+                structDelete(variables.getBeanCache, arguments.beanName);
+                
+                if( structKeyExists(variables.accumulatorCache, arguments.beanName) ){
+                    variables.accumulatorCache[arguments.beanName]['injection'] = {};
+                }
+                
+                structDelete(variables.initMethodCache, arguments.beanName);
+            
+                var thisBeanInfo = variables.beanInfo[ arguments.beanName ];
+                if ( thisBeanInfo.isSingleton ) {
+                    var qualifiedName = arguments.beanName;
+                    if ( structKeyExists( thisBeanInfo, 'name' ) && structKeyExists( thisBeanInfo, 'qualifier' ) ) {
+                        qualifiedName = thisBeanInfo.name & thisBeanInfo.qualifier;
+                    }
+                    structDelete(variables.beanCache,  qualifiedName);
+                }
+                
+                // dump(thisBeanInfo);
+
+                bean =  this.realGetBeanFucntion(argumentCollection=arguments);
+                bean['__testUUID'] = this.__testUUID;
+                
+                //set the dependencies
+                thisBeanInfo.metadata.setters.each( function(propertyName){
+                    if(arguments.propertyName == 'BEANFACTORY' ){
+                        bean.setBeanFactory(this);
+                    } else{
+                        var setterFunction = "set#arguments.propertyName#";
+                        bean[setterFunction]( this.realGetBeanFucntion(arguments.propertyName) );
+                    }
+                });
+                
+                // dump(thisBeanInfo);
+                
+                return bean;
+            }
+            
+            function mockConstructor(string dottedPath){
+                writeLog("construction from mock bean: #dottedPath#");
+                return this.mocker.createMock(
+                    object=createObject( 'component', arguments.dottedPath )
+                );
+            }
+            
+            beanFactory['getBean'] = getMockBeanFunction;
+            beanFactory['construct'] = mockConstructor;
+            beanFactory['__isMockedFlag'] = true;
+        }
+            
+        this.setMockBeanFactory(beanFactory);
+        writeLog("setting-up mock bean factory: completed");
+    }
+*/
+
+
+   public void function setupMockBeanFactory(required any slatwallScope ){
+        writeLog("setting-up mock bean factory : ---- : started");
+
+        var beanFactory = arguments.slatwallScope.getBeanFactory();
+
+        if( !structKeyExists(beanFactory, 'isMockedFlag') ){
+            
+            beanFactory['mocker'] = this;
+            
+            function resetBeanFactory(){
+                structDelete( variables, 'loadExecutedOnce' );
+            }
+            
+            function mockConstructor(string dottedPath){
+                writeLog("construction of mock bean: #dottedPath#");
+                return this.mocker.createMock(
+                    object=createObject( 'component', arguments.dottedPath )
+                );
+            }
+            
+            beanFactory['construct'] = mockConstructor;
+            beanFactory['resetBeanFactory'] = resetBeanFactory;
+            
+            beanFactory['isMockedFlag'] = true;
+        }
+      
+        writeLog("setting-up mock bean factory : ---- : resetting");
+        beanFactory.resetBeanFactory();
+        
+        writeLog("setting-up mock bean factory : ---- : loading");
+        beanFactory.load();
+        
+        writeLog("setting-up mock bean factory : ---- : completed");
+        this.setMockBeanFactory(beanFactory);
+    }
 
 
 	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
+		
 		if(left(arguments.missingMethodName,3)=='get' && right(arguments.missingMethodName,len('ServiceMock')) == 'ServiceMock'){
-			//add basic hibachiService dependencies
-			var hibachiDao = this.getHibachiDAOMock();
-			var hibachiEventService = createMock('Slatwall.org.Hibachi.HibachiEventService');
-			var hibachiCacheService = createMock('Slatwall.org.Hibachi.HibachiCacheService');
-			hibachiCacheService.init();
-			var hibachiUtilityService=createMock('Slatwall.org.Hibachi.HibachiUtilityService');
-
+			
 			var serviceName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-len('ServiceMock')+4);
-			var ServiceMock = createMock('Slatwall.model.service.#serviceName#');
+			
+			return this.getMockBeanFactory().getBean(serviceName, missingMethodArguments);
 
-			ServiceMock.setHibachiDao(hibachiDao);
-			ServiceMock.setHibachiEventService(hibachiEventService);
-			ServiceMock.setHibachiCacheService(hibachiCacheService);
-			ServiceMock.setHibachiUtilityService(hibachiUtilityService);
-
-			return ServiceMock;
 		}else if(left(arguments.missingMethodName,3)=='get' && right(arguments.missingMethodName,len('DAOMock')) == 'DAOMock'){
 
 			var DAOName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-len('DAOMock'));
-			var DAOMock = createMock('Slatwall.model.dao.#daoName#');
+			
+			return this.getMockBeanFactory().getBean(DAOName, missingMethodArguments);
 
-			return DAOMock;
 		}else if(left(arguments.missingMethodName,3)=='get' && right(arguments.missingMethodName,len('TransientMock')) == 'TransientMock') {
 
 			var transientName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-len('TransientMock')-3);
-			var transientMock = createMock('Slatwall.model.transient.#transientName#');
-
-			return transientMock;
+			return this.getMockBeanFactory().getBean(transientName, missingMethodArguments);
 		}
 	}
+	
+	public any function getBaseImporterServiceMock(){
+	    
+	    if( !this.getMockBeanFactory().containsBean('BaseImporterService') ){
+	        this.getMockBeanFactory().declareBean(
+	            beanName = 'BaseImporterService', 
+	            dottedPath = 'Slatwall.integrationServices.BaseImporterService', 
+	            isSingleton = true     
+	        );
+	    }
+	    
+	    return this.getMockBeanFactory().getBean('BaseImporterService');
+	}
+
+	
+	/*
 	
 	public any function getBaseImporterServiceMock(){
 	    
@@ -822,5 +949,7 @@ component extends="testbox.system.BaseSpec"{
 
 		return  hibachiEntityParserMock;
 	}
+	
+	*/
 
 }

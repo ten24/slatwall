@@ -72,20 +72,22 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(signature != sign(signInput,getAlgorithmMap()[getHeader().alg])){
 			throw(type="Invalid Token", message="signature verification failed"); 
 		}
+		
+		var payload = this.getPayload();
 		/*need valid iat*/
-		if(!structKeyExists(getPayload(),'iat')){
+		if(!structKeyExists(payload,'iat')){
 			throw(type="No Valid issue at time date",message="No Valid issue at time date"); 
 		}
 		/*need valid iat*/
-		if(!structKeyExists(getPayload(),'issuer')){
+		if(!structKeyExists(payload,'issuer')){
 			throw(type="No Valid issuer",message="No Valid issuer"); 
 		}
 		/*need valid exp*/
-		if(!structKeyExists(getPayload(),'exp')){
+		if(!structKeyExists(payload,'exp')){
 			throw(type="No Valid expiration time date",message="No Valid expiration time date"); 
 		}
 		/*need valid account*/
-		if(!structKeyExists(getPayload(), 'accountID')){
+		if(!structKeyExists(payload, 'accountID')){
 			throw(type="No Account ID",message="No Account ID");
 		}
 
@@ -93,18 +95,18 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(
 			!isNull(getHibachiScope().getSession())
 			&& !getHibachiScope().getSession().getAccount().getNewFlag()
-			&& getHibachiScope().getSession().getAccount().getAccountID() != getPayload().accountID
+			&& getHibachiScope().getSession().getAccount().getAccountID() != payload.accountID
 		){
 			throw(type='AccountID is not valid',message='AccountID is not valid');
 		}
 
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		if(currentTime lt getPayload().iat || currentTime gt getPayload().exp){
+		if(currentTime lt payload.iat || currentTime gt payload.exp){
 			throw(type="Token is expired",message="Token is expired"); 
 		}
 		
 		var serverName = CGI['server_name'];
-		if(getPayload().issuer != serverName){
+		if(payload.issuer != serverName){
 			throw(type="Invalid token issuer",message="Invalid token issuer");
 		}
 		return this;
