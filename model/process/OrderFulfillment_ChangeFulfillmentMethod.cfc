@@ -64,7 +64,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="shippingMethodID" hb_formFieldType="select";
 	property name="fulfillmentMethodID" hb_formFieldType="select";
 	property name="shippingAccountAddressID" hb_formFieldType="select";
-	property name="pickupLocationID" hb_formFieldType="typeahead" hb_rbKey="entity.orderFulfillment.pickupLocation";
+	property name="pickupLocationID" hb_formFieldType="typeahead" cfc="Location" hb_rbKey="entity.orderFulfillment.pickupLocation"; 
 	property name="accountEmailAddressID" hb_formFieldType="select";
 
 	// Data Properties (Inputs)

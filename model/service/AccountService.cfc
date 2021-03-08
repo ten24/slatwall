@@ -1996,8 +1996,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function savePermissionGroup(required any permissionGroup, struct data={}, string context="save") {
-
 		arguments.permissionGroup.setPermissionGroupName( arguments.data.permissionGroupName );
+		if ( structKeyExists( arguments.data, 'permissionGroupCode' ) && len(arguments.data.permissionGroupCode) ) {
+			arguments.permissionGroup.setPermissionGroupCode( arguments.data.permissionGroupCode );
+		}
 		//transform namespaced permissions into a single array
 		if(!structKeyExists(arguments.data,'permissions')){
 			arguments.data.permissions=[];
