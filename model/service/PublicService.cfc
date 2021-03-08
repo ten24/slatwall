@@ -3194,6 +3194,27 @@ component  accessors="true" output="false"
  		arguments.data['ajaxResponse']['orderTemplateItem'] = orderTemplateItemCollection.getPageRecords()[1]; // there should be only one record;  
 	}
 	
+	/**
+	 * Wishlist API - get all wishlist Items
+	 * createWishlist
+     * getWishlist
+	 * getWishlistItems
+	 * addWishlistItem
+	 * removeWishlistItem
+	 * */
+	
+	public void function createWishlist(required any data) {
+        
+    }
+	
+	public void function getWishlist(required any data) {
+        
+    }
+    
+    public void function getWishlistItems(required any data) {
+        
+    }
+	
 	public void function addWishlistItem(required any data) {
         param name="arguments.data.orderTemplateID" default="";
         param name="arguments.data.skuID" default="";

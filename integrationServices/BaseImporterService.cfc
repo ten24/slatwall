@@ -1522,5 +1522,26 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         
         //dont create stock if there is no locationID / skuID
 	}
+	
+	/////////////////.                  Order Delivery
+	
+	public any function generateOptionOptionGroup( 
+	    required struct data, 
+        required struct parentEntityMapping,
+        required struct relationMetaData 
+    ){
+        var mapping = this.getMappingByMappingCode(arguments.relationMetaData.mappingCode );
+	   	var optionGroupImportRemoteID = lcase(hash(trim(arguments.data.OptionGroupName), 'MD5'));
+	    	    
+	    var optionGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  = 'OptionGroup',
+	        "uniqueKey"   = 'importRemoteID',
+	        "uniqueValue" = optionGroupImportRemoteID
+	    );
+
+    	if( !isNull(optionGroupID) && !this.hibachiIsEmpty(optionGroupID) ){
+    	    return { "optionGroupID" : optionGroupID }
+    	} 
+	}
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 }
