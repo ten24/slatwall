@@ -148,10 +148,10 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
 	    var product = getProductService().getProduct( arguments.data.productID );
-        
+	    
         if( isNull(product) || product.getBaseProductType() != "productBundle") {
             getHibachiScope().addActionResult("public:product.getProductBundles",true);
-            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.product.getProductBundles.productID_invalid");
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.product.getProductBundles.productID_invalid");
             return;
         }
         
@@ -245,14 +245,14 @@ component  accessors="true" output="false"
 	/**
 	 * Method to create product bundle build
 	 * 
-	 * @param - skuID (can also accept comma separated list)
+	 * @param - skuIDList (can also accept comma separated list)
 	 * @param - default skuID (from bundle product)
-	 * @param - quantity (can also accept comma separated list)
+	 * @param - quantities (can also accept comma separated list)
 	 * @param - productBundleGroupID
 	 * */
 	public void function createProductBundleBuild( required struct data ) {
-	    param name="arguments.data.skuID";
-	    param name="arguments.data.quantity";
+	    param name="arguments.data.skuIDList";
+	    param name="arguments.data.quantities";
 	    param name="arguments.data.productBundleGroupID";
 	    param name="arguments.data.defaultSkuID";
 	    
@@ -298,8 +298,8 @@ component  accessors="true" output="false"
         }
         
         //Check & update bundle items
-        var skuList = ListToArray( arguments.data.skuID );
-        var quantities = ListToArray( arguments.data.quantity );
+        var skuList = ListToArray( arguments.data.skuIDList );
+        var quantities = ListToArray( arguments.data.quantities );
         
         var index = 1;
         for( var skuID in skuList ) {
