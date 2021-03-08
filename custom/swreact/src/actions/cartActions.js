@@ -135,7 +135,10 @@ export const addShippingAddressUsingAccountAddress = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.addShippingAddressUsingAccountAddress(params)
+    const req = await SlatwalApiService.cart.addShippingAddressUsingAccountAddress({
+      ...params,
+      returnJSONObjects: 'cart',
+    })
 
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))
@@ -146,7 +149,10 @@ export const addShippingMethod = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.addShippingMethod(params)
+    const req = await SlatwalApiService.cart.addShippingMethod({
+      ...params,
+      returnJSONObjects: 'cart',
+    })
 
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))

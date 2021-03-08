@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Header, Layout, SEO } from './components'
+import { Loading, Header, SEO, CMSWrapper } from './components'
 import lazyWithPreload from './components/lazyWithPreload/lazyWithPreload'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import { getConfiguration } from './actions/configActions'
@@ -41,9 +41,6 @@ const pageComponents = {
   Address,
   Attribute,
 }
-const Loading = () => {
-  return <Layout></Layout>
-}
 
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
@@ -60,12 +57,14 @@ export default function App() {
       <ScrollToTop />
       <SEO />
       <Header />
+      <CMSWrapper />
       <Switch>
         {routing.length &&
           routing.map(({ URLKey, URLKeyType }, index) => {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
         <Route path="/product" component={ProductListing} />
+        <Route path="/search" component={ProductListing} />
         <Route path="/category-listing" component={CategoryListing} />
         <Route path="/my-account" component={MyAccount} />
         <Route path="/checkout" component={Checkout} />

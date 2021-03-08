@@ -4,6 +4,9 @@
  * Theme Styles
  */
 
+// Custom Colors
+@import './custom/custom-colors';
+
 // Theme Helpers: Variables, Mixins and Placeholders
 @import './core/scss/helpers';
 
@@ -24,3 +27,6 @@
 // Icons
 $fa-font-path: '../webfonts';
 @import './core/fontawesome/fontawesome.scss';
+
+// Custom Styles
+@import './custom/custom-client';
