@@ -149,46 +149,48 @@ component  accessors="true" output="false"
         
 	    var product = getProductService().getProduct( arguments.data.productID );
         
-        if( !isNull(product) && product.getBaseProductType() == "productBundle") {
-            //get product bundles
-            var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
-            bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
-            bundleProductCollectionList.addFilter("productBundleSku.skuID", product.getDefaultSku().getSkuID());
-            bundleProductCollectionList.addFilter("activeFlag", 1);
-            var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
-            
-            
-            //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
-            var bundleResponse = [];
-            
-            //populate bundle response
-            for( var bundle in bundleProducts) {
-                //get sku list form collection config
-                var skuCollections = getSkuService().getSkuCollectionList();
-                skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
-                skuCollections.addDisplayProperties("calculatedSkuDefinition");
-                skuCollections.addDisplayProperties("calculatedQATS");
-                skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
-	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
-                var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
-                
-                ArrayAppend(bundleResponse, {
-                  'minimumQuantity':  bundle['minimumQuantity'],
-                  'maximumQuantity': bundle['maximumQuantity'],
-                  'bundleType': bundle['productBundleGroupType_typeName'],
-                  'amount': bundle['amount'],
-                  'amountType': bundle['amountType'],
-                  'skuList': bundleSkuList,
-                  'defaultSkuID': product.getDefaultSku().getSkuID(),
-                  'productBundleGroupID': bundle['productBundleGroupID'],
-                });
-            }
-            
-            arguments.data.ajaxResponse['data'] = bundleResponse;
-            getHibachiScope().addActionResult("public:product.getProductBundles",false);
-        } else {
+        if( isNull(product) || product.getBaseProductType() != "productBundle") {
             getHibachiScope().addActionResult("public:product.getProductBundles",true);
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.product.getProductBundles.productID_invalid");
+            return;
         }
+        
+        //get product bundles
+        var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
+        bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
+        bundleProductCollectionList.addFilter("productBundleSku.skuID", product.getDefaultSku().getSkuID());
+        bundleProductCollectionList.addFilter("activeFlag", 1);
+        var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
+        
+        
+        //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
+        var bundleResponse = [];
+        
+        //populate bundle response
+        for( var bundle in bundleProducts) {
+            //get sku list form collection config
+            var skuCollections = getSkuService().getSkuCollectionList();
+            skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+            skuCollections.addDisplayProperties("calculatedSkuDefinition");
+            skuCollections.addDisplayProperties("calculatedQATS");
+            skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
+            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
+            var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
+            
+            ArrayAppend(bundleResponse, {
+              'minimumQuantity':  bundle['minimumQuantity'],
+              'maximumQuantity': bundle['maximumQuantity'],
+              'bundleType': bundle['productBundleGroupType_typeName'],
+              'amount': bundle['amount'],
+              'amountType': bundle['amountType'],
+              'skuList': bundleSkuList,
+              'defaultSkuID': product.getDefaultSku().getSkuID(),
+              'productBundleGroupID': bundle['productBundleGroupID'],
+            });
+        }
+        
+        arguments.data.ajaxResponse['data'] = bundleResponse;
+        getHibachiScope().addActionResult("public:product.getProductBundles",false);
 	}
 	
 	/**
