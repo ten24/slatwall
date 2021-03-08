@@ -1515,7 +1515,7 @@ component  accessors="true" output="false"
           this.addErrors(arguments.data, orderFulfillment.getErrors());
         }
         getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
-        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.apiRequest.params_invalid");
+        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.order.addPickupFulfillmentLocation.fulfillment_invalid");
       }
     }
     
