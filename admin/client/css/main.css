@@ -314,6 +314,14 @@ sw-listing-display-cell {
 td > sw-listing-display-cell sw-form-registrar sw-property-display {
   display: inline-block;
 }
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"],
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group,
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span{
+  display: block;
+}
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span .input-xs{
+  width: 100% !important;
+}
 .clearFixInline {
   display: inline-block;
   width: 100%;
@@ -3497,7 +3505,7 @@ table .s-table-header .table-section a.s-hint {
   top: -3px;
 }
 .s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-view-mode .s-controlls {
-  top: 11px;
+  top: 4px;
   margin-left: 8px;
   cursor: pointer;
 }
