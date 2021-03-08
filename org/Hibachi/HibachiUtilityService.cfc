@@ -1587,14 +1587,15 @@
     	
     public string function getSQLfromHQL(required string HQL, required struct hqlParams) {
 
-		var hydratedHQL = HQL; 
-		cfloop(collection=hqlParams, item="key") {
-			hidratedHQL = replace(hidratedHQL, ":#key#", "'#hqlParams[key]#'");
+		var hydratedHQL = arguments.HQL; 
+		for(var key in arguments.hqlParams ){
+			hydratedHQL = replace(hydratedHQL, ":#key#", "'#arguments.hqlParams[key]#'");
 		}
+		
 		// java magic
 		var javaTranslatorFactory = createObject("java", "org.hibernate.hql.ast.ASTQueryTranslatorFactory");
 		var javaCollections = createObject("java", "java.util.Collections");
-		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hidratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
+		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hydratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
 		javaTranslator.compile(javaCollections.EMPTY_MAP, false);
 		var sqlStr = javaTranslator.getSQLString();
 
