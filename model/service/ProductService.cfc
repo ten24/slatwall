@@ -213,6 +213,26 @@ component extends="HibachiService" accessors="true" {
 		return AvailableOptions;
 	}
 
+	public string function getNextSkuCode(required struct productSchedule={}, required struct product={}) {
+		var productCode = arguments.product.getProductCode();
+		if( ArrayIsEmpty(arguments.productSchedule.getSkus()) ) {
+			return getService('HibachiUtilityService').createUniqueProperty(propertyValue=productCode, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=true );
+		}
+		
+		//Check if last sku is exist in skulist, return unique sku
+		var productScheduleSkus = arguments.productSchedule.getSkus();
+		var lastSku = ArrayLast(productScheduleSkus);
+		var newSkuCode = lastSku.getSkuCode();
+		for( var i=1; i<=ArrayLen(productScheduleSkus); i++ ){
+			if( productScheduleSkus[i].getSkuCode() == newSkuCode ) {
+				var returnValue = "#productCode#-#i+1#";
+				newSkuCode = getService('HibachiUtilityService').createUniqueProperty(propertyValue=returnValue, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=false );
+				break;
+			}
+		}
+		return newSkuCode;
+	}
+	
 	// @help Generates an event sku stub. Used to replace repetitive code.
 	private any function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
 
@@ -295,7 +315,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
-				newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
+				newSku.setSkuCode( this.getNextSkuCode( arguments.productSchedule, newSku.getProduct() ) );
 				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
@@ -307,7 +327,6 @@ component extends="HibachiService" accessors="true" {
 				} else {
 					newSku.setEventCapacity(1);
 				}
-
 
 				// Set default Sku if its not already set
 				if( isNull( newSku.getProduct().getDefaultSku() ) ) {
@@ -420,9 +439,8 @@ component extends="HibachiService" accessors="true" {
 		var lastDay = 0;
 
 		do {
-
+			
 			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
-
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuStartDateTime,cursorPosition);
 			newSkuEndDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuEndDateTime,cursorPosition);
@@ -434,7 +452,6 @@ component extends="HibachiService" accessors="true" {
 			}
 
 		} while ( !latestSku.hasErrors() && newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
-		
 		if (latestSku.hasErrors()) {
 			arguments.product.addErrors(latestSku.getErrors());
 		}
@@ -801,7 +818,6 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 		}
-
 		// Return the product
 		return arguments.product;
 	}
@@ -1133,7 +1149,6 @@ component extends="HibachiService" accessors="true" {
 		
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
-
         // Return the product
 		return arguments.product;
 	}
@@ -1152,7 +1167,6 @@ component extends="HibachiService" accessors="true" {
 		arguments.product.getSkus()[1].setImageFile(sku.generateImageFileName());
 
 		arguments.product = this.saveProduct(arguments.product);
-
 
 		return arguments.product;
 	}
