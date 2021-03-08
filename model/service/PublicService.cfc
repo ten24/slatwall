@@ -155,10 +155,12 @@ component  accessors="true" output="false"
             return;
         }
         
+        var defaultSkuID = product.getDefaultSku().getSkuID();
+        
         //get product bundles
         var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
         bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
-        bundleProductCollectionList.addFilter("productBundleSku.skuID", product.getDefaultSku().getSkuID());
+        bundleProductCollectionList.addFilter("productBundleSku.skuID", defaultSkuID);
         bundleProductCollectionList.addFilter("activeFlag", 1);
         var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
         
@@ -184,7 +186,7 @@ component  accessors="true" output="false"
               'amount': bundle['amount'],
               'amountType': bundle['amountType'],
               'skuList': bundleSkuList,
-              'defaultSkuID': product.getDefaultSku().getSkuID(),
+              'defaultSkuID': defaultSkuID,
               'productBundleGroupID': bundle['productBundleGroupID'],
             });
         }
