@@ -2,7 +2,6 @@ const SwRadioSelect = ({ label, onChange, options, selectedValue, newLabel = '',
   if (displayNew) {
     options = [...options, { name: newLabel, value: 'new' }]
   }
-  console.log('selectedValue', selectedValue)
   return (
     <div className="form-group">
       <label className="w-100">{label}</label>

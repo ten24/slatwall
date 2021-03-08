@@ -6,6 +6,7 @@ import SwSelect from '../../components/SwSelect/SwSelect'
 import { useFormik } from 'formik'
 import SlideNavigation from './SlideNavigation'
 import { SwRadioSelect } from '../../components'
+import useRedirect from '../../hooks/useRedirect'
 
 const ShippingAddress = ({ formik }) => {
   const dispatch = useDispatch()
@@ -86,14 +87,14 @@ const ShippingAddress = ({ formik }) => {
         </div>
       </div>
       <div className="custom-control custom-checkbox">
-        <input className="custom-control-input" type="checkbox" id="save-address" value={formik.values.saveAddress} />
-        <label className="custom-control-label" htmlFor="save-address">
+        <input className="custom-control-input" type="checkbox" id="saveAddress" value={formik.values.saveAddress} onChange={formik.handleChange} />
+        <label className="custom-control-label" htmlFor="saveAddress">
           Save this address
         </label>
       </div>
       <div className="custom-control custom-checkbox">
-        <input className="custom-control-input" type="checkbox" id="blind-ship" value={formik.values.blindShip} />
-        <label className="custom-control-label" htmlFor="blind-ship">
+        <input className="custom-control-input" type="checkbox" id="blindShip" value={formik.values.blindShip} onChange={formik.handleChange} />
+        <label className="custom-control-label" htmlFor="blindShip">
           Select for blind ship
         </label>
       </div>
@@ -103,6 +104,7 @@ const ShippingAddress = ({ formik }) => {
 
 const ShippingSlide = ({ currentStep }) => {
   const dispatch = useDispatch()
+  const [redirect, setRedirect] = useRedirect({ location: currentStep.next, time: 300 })
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const orderFulfillments = useSelector(state => state.cart.orderFulfillments)
   const [showAddress, setShowAddress] = useState(false)
@@ -136,8 +138,11 @@ const ShippingSlide = ({ currentStep }) => {
       ...initialValues,
     },
     onSubmit: values => {
-      // TODO: Dispatch Actions
-      console.log('values', values)
+      if (showAddress) {
+        console.log('formik.onSubmit - showAddress', values)
+      }
+      console.log('formik.onSubmit', values)
+      setRedirect({ ...redirect, shouldRedirect: true })
     },
   })
   let selectedAccountID = ''
@@ -149,9 +154,9 @@ const ShippingSlide = ({ currentStep }) => {
       .map(({ accountAddressID }) => {
         return accountAddressID
       })
-    selectedAccountID = selectAccount.length ? selectAccount[0] : ''
+    selectedAccountID = selectAccount.length ? selectAccount[0] : null
   }
-
+  console.log('selectedAccountID', selectedAccountID)
   return (
     <>
       {/* <!-- Shipping address--> */}
@@ -197,13 +202,13 @@ const ShippingSlide = ({ currentStep }) => {
                 }
               }}
               newLabel="Add Account Address"
-              selectedValue={showAddress ? 'new' : selectedAccountID}
+              selectedValue={showAddress || !selectedAccountID ? 'new' : selectedAccountID}
               displayNew={true}
             />
           </div>
         </div>
       )}
-      {showAddress && <ShippingAddress formik={formik} />}
+      {showAddress || (!selectedAccountID && <ShippingAddress formik={formik} />)}
       <SlideNavigation currentStep={currentStep} handleSubmit={formik.handleSubmit} />
     </>
   )
