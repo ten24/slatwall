@@ -3265,8 +3265,12 @@ component  accessors="true" output="false"
         }
         
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
+		
+		//create wishlist if not found with OrderTemplateID
+		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
+		    arguments.data.messages = [];
+			var orderTemplate = getOrderService().newOrderTemplate();
+			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem');
