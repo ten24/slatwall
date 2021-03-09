@@ -1,4 +1,8 @@
-const PaymentSlide = () => {
+import { useSelector } from 'react-redux'
+import SlideNavigation from './SlideNavigation'
+
+const PaymentSlide = ({ currentStep }) => {
+  const cart = useSelector(state => state.cart)
   return (
     <>
       {/* <!-- Payment Method --> */}
@@ -105,6 +109,7 @@ const PaymentSlide = () => {
           Same as shipping address
         </label>
       </div>
+      <SlideNavigation currentStep={currentStep} nextActive={!cart.orderRequirementsList.includes('payment')} />
     </>
   )
 }

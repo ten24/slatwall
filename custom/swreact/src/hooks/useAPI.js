@@ -312,3 +312,37 @@ export const useGetAllOrders = () => {
 
   return [request, setRequest]
 }
+
+export const useAddOrderShippingAddress = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/addOrderShippingAddress`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-Token': `Bearer ${token}`,
+        },
+        data: request.params,
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data) {
+            setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}

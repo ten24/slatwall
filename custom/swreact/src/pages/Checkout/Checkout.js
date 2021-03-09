@@ -141,10 +141,10 @@ const Checkout = () => {
                 <Redirect to="/cart" />
               </Route>
               <Route path={`${match.path}/payment`}>
-                <PaymentSlide />
+                <PaymentSlide currentStep={currentStep} />
               </Route>
               <Route path={`${match.path}/review`}>
-                <ReviewSlide />
+                <ReviewSlide currentStep={currentStep} />
               </Route>
               <Route path={match.path}>
                 <Redirect to={`${match.path}/shipping`} />
