@@ -1531,8 +1531,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         required struct relationMetaData 
     ){
         var mapping = this.getMappingByMappingCode(arguments.relationMetaData.mappingCode );
-	   	var optionGroupImportRemoteID = lcase(hash(trim(arguments.data.OptionGroupName), 'MD5'));
-	    	    
+	   	var optionGroupImportRemoteID = lcase(hash(lcase(trim(arguments.data.OptionGroupCode)), 'MD5'));
 	    var optionGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
 	        "entityName"  = 'OptionGroup',
 	        "uniqueKey"   = 'importRemoteID',
