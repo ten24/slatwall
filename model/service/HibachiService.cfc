@@ -186,6 +186,28 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		attributeCollectionList.setDisplayProperties('attributeCode');
 		attributeCollectionList.addFilter('publicPropertyFlag', 1);
 		attributeCollectionList.addFilter('attributeSet.attributeSetObject', arguments.entityName);
-		return attributeCollectionList.getRecords();
+		var attributeRecords = attributeCollectionList.getRecords(formatRecords = false);
+		
+		var response = {};
+		
+		for( var attribute in attributeRecords) {
+			StructAppend( response , {'attributeCode' : attribute['attributeCode']});
+		}
+		
+		return response;
+	}
+	
+	
+	/***
+	 * OnMissing method override for public properties function
+	 ***/
+	public any function onMissingMethod( required string missingMethodName, required struct missingMethodArguments ) {
+		var lCaseMissingMethodName = lCase( arguments.missingMethodName );
+		if ( lCaseMissingMethodName.startsWith( 'get' ) && right(lCaseMissingMethodName, 16) == "publicproperties") {
+			var entityName = UcFirst( lCaseMissingMethodName.substring( 3, (len(lCaseMissingMethodName) - 16) ) );
+			return this.getPublicPropertiesByEntityName(entityName);
+		}
+	
+		return super.onMissingMethod(arguments.missingMethodName, arguments.missingMethodArguments);
 	}
 }
