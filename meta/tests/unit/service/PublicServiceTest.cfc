@@ -120,6 +120,43 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		dump(data);
 		
 	}
+	
+	
+	/**
+	* @test
+	*/
+	public void function parseProductSearchQuery_test(){
+	    var testSearchQuery = "option_language=english,spanish&option_size_slug=medium,small&attribute_testing=1,2,3&brand=nike,puma&brand_id=1,2,4&brand_slug=acb,pqr,1112233&category_name=c1,c2,c3&productType=p1,p2,p3";
+	 
+	    dump(testSearchQuery);
+	    
+	   // var testSearchStruct = createObject('java', 'coldfusion.util.HTMLTools').parseQueryString(testSearchQuery);
+	   // dump(testSearchStruct);
+	   
+	   //testSearchQuery = listRest(testSearchQuery, "?");
+	   //dump(testSearchQuery);
+	   
+	   var testSearchQueryArray = listToArray(testSearchQuery, '&');
+	   dump(testSearchQueryArray);
+	   
+	   var testSearchStruct = {};
+	   for(var pair in testSearchQueryArray){
+	       testSearchStruct[listFirst(pair, '=')] = listLast(pair, '=');
+	   }
+	   
+        dump(testSearchStruct);
+	    
+	    var parsed = this.getService().parseProductSearchQuery(testSearchStruct);
+	    dump(parsed);
+	}
+	  
+	
+	
+	
+	
+	
+
+
 }
 
 

@@ -362,7 +362,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	* @test
 	*/
 	public void function query_test(){
-	   // this.getService().getSlatwallProductSearchDAO().rePopulateProductFilterFacetOptionTable();
+	    this.getService().getSlatwallProductSearchDAO().rePopulateProductFilterFacetOptionTable();
 	    
 	    var sql = "
 	        Select DISTINCT optionID from swProductFilterFacetOption 

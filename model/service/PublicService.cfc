@@ -100,6 +100,121 @@ component  accessors="true" output="false"
     	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
     }
     
+    
+    /**
+     * Utility function to parse getProducts API query
+     * 
+     * it will create an struct of keys, and nested structs for facet key
+     * 
+     * - every facet can have multiple filter values `[ id, name, slug, code ]``
+     * - the facet-filters will fllow the following conventions forfilter-keys 
+     *      - `facetName_[facet_value_key]` i.e. brand_name, category_id, productType_slug
+     *      - for attributes, `attribute_[attributeGroupName]_[facet_value_key]` i.e. attribute_abc_name, attribute_abc_code
+     *      - for options, `option_[optionGroupCode]_[facet_value_key]` i.e. option_abc_name, option_abc_code
+     * 
+     * - the default facet-key is `name` i.e. if the last-part of the facet-keys is missing then the value will e treated as `name`
+     * - the value for filter-keys can be an array, or a single value 
+     * 
+     */
+    public struct function parseProductSearchQuery(struct urlScopeOrStruct = URL, string defaultFacetValueKey = 'name', string keyDelemiter='_'){
+        var parsed = {};
+        var allowedFacetKeys = {
+            'brand': '',
+            'category': '',
+            'productType': '',
+            'attribute': '',
+            'option': ''
+        };
+
+        for(var thisKey in arguments.urlScopeOrStruct){
+            var subKeys = listToArray(thisKey, arguments.keyDelemiter);
+            var subKeysLen = subKeys.len();
+            
+            // append default keys as needed
+            var firstSubKey = subKeys[ 1 ];
+            if( structKeyExists(allowedFacetKeys, firstSubKey) ){
+                if( subKeysLen == 1 ){
+                    subKeys.append(  arguments.defaultFacetValueKey ); 
+                } else if(subKeysLen == 2 && listFindNoCase('attribute,option', firstSubKey) ){
+                    subKeys.append(  arguments.defaultFacetValueKey ); 
+                }
+            }
+            
+            this.recursivelyInsertIntoNestedStruct( parsed, subKeys, arguments.urlScopeOrStruct[thisKey] )
+        }
+        return parsed;
+    }
+    
+    
+    /**
+     * Utility function to insert a value into nested structs
+     * 
+     * it loops over the keys and will create's nested structs if needed until the second-last sub key
+     * and then try to insert/append value into that struct using the last sub-key as the key and the givenValue as the value for that key
+     * however if there already is a vlaue for the last sub-key, then
+     * - if it's a simple value or a list then it will create a array, by adding the both old and the given value values
+     * - if it's an array then it will append the given value into it
+     * - if it's an struct and the given value is also an struct, then it will merge both structs
+     */
+    public void function recursivelyInsertIntoNestedStruct(required struct theStruct, required array keys, required any theValue , string listTypeValueDelimiter=','){
+        if(!arguments.keys.len() ){
+            return;
+        }
+        
+        var firstSubKey = arguments.keys[1];
+        if(!structKeyExists(arguments.theStruct, firstSubKey ) ){
+            arguments.theStruct[ firstSubKey ] = {};
+        }
+        
+        var lastSubKeyScope = theStruct[firstSubKey];
+        var subKeysLen = arguments.keys.len();
+        
+        // skip the first and created nested structs until the secondLast
+        for(var i=2; i<=subKeysLen-1; i++ ){
+            var nextSubKey = arguments.keys[i];
+            
+            if(!structKeyExists(lastSubKeyScope, nextSubKey) ){
+                lastSubKeyScope[nextSubKey] = {};
+            }
+            lastSubKeyScope = lastSubKeyScope[nextSubKey];
+        }
+        
+        var lastKeyToInsertOrAppend = arguments.keys[subKeysLen];
+        
+        // if it does not exist, add, else append into array
+        if( !structKeyExists(lastSubKeyScope, lastKeyToInsertOrAppend) ){
+            lastSubKeyScope[ lastKeyToInsertOrAppend ] = arguments.theValue;
+            return;
+        }
+        
+        var lastKeyValue = lastSubKeyScope[ lastKeyToInsertOrAppend ];
+        
+        // if it's a simple-value or a list turn it into an array and add the given-value into the array
+        if( isSimpleValue(lastKeyValue) ){
+            lastKeyValue = listToArray(lastKeyValue, arguments.listTypeValueDelimiter );
+            lastKeyValue.append(arguments.theValue);
+            lastSubKeyScope[ lastKeyToInsertOrAppend ] = lastKeyValue;
+            return;
+        }
+        
+        // if it's an array then try to add
+        if( isArray(lastKeyValue) ){
+            lastKeyValue.append(arguments.theValue, true); // merge-arrays
+            return;
+        }
+        
+        if( isStruct( lastKeyValue) ){
+            if( isStruct(arguments.theValue) ){
+                lastKeyValue.append(arguments.theValue); // add and override keys values from new struct
+            } else {
+                throw("can't merge a value into an struct without a key");
+            }
+            return;
+        }
+        
+        throw("Unsupported operation...");
+    }
+    
     /**
 	 *
 	 * 

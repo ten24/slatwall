@@ -351,7 +351,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             LEFT JOIN swAttributeOption atto
             	ON(#selectTypeAttributeOptionJoinParts#)
             	
-            GROUP BY ffo.productFilterFacetOptionID
+            GROUP BY productFilterFacetOptionID
 	   ";
 	        
         this.logHibachi("SlatwallProductSearchDAO:: getProductFilterFacetOptionsSeletQuerySQL took #getTickCount()-startTicks# ms. in creating the SQL string");
@@ -708,38 +708,44 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 
         var siteJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.siteID) ){
-            siteJoinFilterQueryPart = " AND ( ffo.siteID = :siteID OR ffo.siteID IS NULL )";
+            siteJoinFilterQueryPart = "( ffo.siteID = :siteID OR ffo.siteID IS NULL )";
             q.addParam(name='siteID', value=arguments.siteID)
         }
         
         var productTypeJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.productType) ){
-            productTypeJoinFilterQueryPart = " AND ffo.productTypeName IN ( :productType )";
+            productTypeJoinFilterQueryPart = "ffo.productTypeName IN ( :productType )";
             q.addParam( name='productType', list="true", value=arguments.productType );
         }
         
         var categoryJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.category) ){
-            categoryJoinFilterQueryPart = " AND ffo.categoryName IN ( :category )";
+            categoryJoinFilterQueryPart = "ffo.categoryName IN ( :category )";
             q.addParam( name='category', list="true", value=arguments.category );
         }
         
         var brandJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.brands) ){
-            brandJoinFilterQueryPart = " AND ffo.brandName IN ( :brands )";
+            brandJoinFilterQueryPart = "ffo.brandName IN ( :brands )";
             q.addParam( name='brands', list="true", value=arguments.brands );
         }
         
         var optionJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.options) ){
-            optionJoinFilterQueryPart = " AND ffo.optionName IN ( :options )";
+            optionJoinFilterQueryPart = "ffo.optionName IN ( :options )";
             q.addParam( name='options', list="true", value=arguments.options );
         }
         
         var attributeOptionJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.attributeOptions) ){
-            attributeOptionJoinFilterQueryPart = " AND ffo.attributeOptionValue IN ( :attributeOptions )";
+            attributeOptionJoinFilterQueryPart = "ffo.attributeOptionValue IN ( :attributeOptions )";
             q.addParam( name='attributeOptions', list="true", value=arguments.attributeOptions );
+        }
+        
+        var filterSql = "";
+        
+        if( len(siteJoinFilterQueryPart) ){
+            
         }
 
         var sql = "
@@ -761,18 +767,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                ffo.attributeOptionUrlTitle, ffo.attributeOptionSortOrde
             
             FROM swProductFilterFacetOption as ffo
-            
-            INNER JOIN swSkuPrice sp
-                ON sp.skuID = ffo.skuID 
-                    AND sp.activeFlag = 1
-                    
+            WHERE
                 #siteJoinFilterQueryPart#
         		#productTypeJoinFilterQueryPart#
                 #categoryJoinFilterQueryPart#
                 #brandJoinFilterQueryPart#
                 #optionJoinFilterQueryPart#
                 #attributeOptionJoinFilterQueryPart#
-                    
             GROUP BY ffo.productFilterFacetOptionID
         ";
 
