@@ -436,6 +436,17 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			getDAO( "hibachiDAO" ).flushORMSession(argumentCollection=arguments);
 		}
 	}
+	
+	/**
+	 * helper function, to be used instead of the CF's `ormFlush` 
+	 * so we can tap into those events
+	*/
+	public void function hibachiORMFlush(){
+        this.getService('hibachiEventService').announceEvent("beforeORMFlush", arguments);
+        ormFlush();
+        this.getService('hibachiEventService').announceEvent("afterORMFlush", arguments);
+    }
+
 
 	// ==================== SESSION / ACCOUNT SETUP ===========================
 

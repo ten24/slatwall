@@ -314,6 +314,14 @@ sw-listing-display-cell {
 td > sw-listing-display-cell sw-form-registrar sw-property-display {
   display: inline-block;
 }
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"],
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group,
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span{
+  display: block;
+}
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span .input-xs{
+  width: 100% !important;
+}
 .clearFixInline {
   display: inline-block;
   width: 100%;
@@ -475,6 +483,9 @@ a:hover {
   background-color: #ccc;
   border-radius: 2px;
   line-height: 9px;
+}
+a.form-control-feedback.adminentitypreprocesstranslation{
+  right: 10px;
 }
 .btn,
 .dropdown-menu {
@@ -3494,7 +3505,7 @@ table .s-table-header .table-section a.s-hint {
   top: -3px;
 }
 .s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-view-mode .s-controlls {
-  top: 11px;
+  top: 4px;
   margin-left: 8px;
   cursor: pointer;
 }
@@ -6857,6 +6868,11 @@ a.disabled > i.hibachi-ui-radio-checked {
   border-radius: 0px;
   padding-right: 10px;
 }
+
+sw-typeahead-input-field[data-entity-name="Brand"] .s-select-list-wrapper .input-group{
+  padding: 0;
+}
+
 /*-- Custom Modal Amount Change --*/
 .s-modal-module-wrapper .s-modal-module {
   background: #F7F7F7;

@@ -2405,7 +2405,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate; 	
 	} 
-
+	
+	public any function processOrderTemplate_removeWishlistItem(required any orderTemplate, required any processObject, required struct data={}){
+		
+		var orderTemplateID = arguments.orderTemplate.getOrderTemplateID();
+		getOrderDAO().removeOrderTemplateSku(orderTemplateID,arguments.data.removalSkuID);
+		if(arguments.orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
+			getService('HibachiEntityQueueService').insertEntityQueueItem(baseID=orderTemplateID, baseObject="OrderTemplate", processMethod='processOrderTemplate_updateCalculatedProperties');
+		}
+		return arguments.orderTemplate;
+			
+	}
+	
 	public any function processOrderTemplate_shareWishlist(required any orderTemplate, any processObject, struct data={}){
 
 		this.sendEmail(
@@ -3877,7 +3888,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Call saveOrder to recalculate all the orderTotal stuff
-		arguments.order = this.saveOrder(arguments.order);
+		arguments.order = this.saveOrder(arguments.order , { updateOrderAmounts : true } );
 		return arguments.order;
 	}
 
@@ -6366,5 +6377,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return representation;
+	}
+	
+	public array function getAccountWishlistsProducts(string accountID){
+		var list = this.getOrderTemplateCollectionList();
+		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name,orderTemplateItems.sku.skuName,orderTemplateItems.sku.skuID");
+		list.addFilter("account.accountID",arguments.accountID);
+		list.addFilter("orderTemplateType.typeCode","WishList");
+		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
+		return list.getRecords();
 	}
 }

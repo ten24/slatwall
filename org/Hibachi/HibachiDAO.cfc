@@ -2,6 +2,7 @@
 
 	<cfproperty name="applicationKey" type="string" />
 	<cfproperty name="hibachiAuditService" type="any" />
+	<cfproperty name="hibachiEventService" type="any">
 
 	<cfscript>
 		
@@ -119,27 +120,33 @@
 		public void function reloadEntity(required any entity) {
 	    	entityReload(arguments.entity);
 	    }
-
+	    
 	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
+	    	var hibachiScope = this.getHibachiScope();
+	    	
 	    	// Initate the first flush
-	    	ormFlush();
+	    	hibachiScope.hibachiORMFlush();
+	    	
 	    	// flush again to persist any changes done during ORM Event handler
-			ormFlush();	
+	    	hibachiScope.hibachiORMFlush();
+
 
 			// Use once and clear to avoid reprocessing in subsequent method invocation or through an infinite recursive loop.
-			var modifiedEntities = getHibachiScope().getModifiedEntities();
-			getHibachiScope().clearModifiedEntities();
+			var modifiedEntities = hibachiScope.getModifiedEntities();
+			hibachiScope.clearModifiedEntities();
 			// Loop over the modifiedEntities to add updateCalculatedProperties to entity queue
 	    	for(var entity in modifiedEntities){
 	    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName()) && !entity.getCalculatedUpdateRunFlag()){
-	    			getHibachiScope().addEntityQueueData(entity.getPrimaryIDValue(), entity.getClassName(), 'process#entity.getClassName()#_updateCalculatedProperties');
+	    			hibachiScope.addEntityQueueData(entity.getPrimaryIDValue(), entity.getClassName(), 'process#entity.getClassName()#_updateCalculatedProperties');
 	    		}
 	    	}
 	    	
 	    }
 
 	    public void function clearORMSession() {
+    		this.getHibachiEventService().announceEvent("beforeORMClearSession", arguments);
 	    	ormClearSession();
+    		this.getHibachiEventService().announceEvent("afterORMClearSession", arguments);
 	    }
 
 	    public any function getSmartList(required string entityName, struct data={}){

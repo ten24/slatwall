@@ -1,10 +1,13 @@
 component output="false" accessors="true" extends="HibachiService"  {
 
-	property name="accountService" type="any";
 	property name="orderService" type="any";
-	property name="hibachiAuditService" type="any";
+	property name="accountService" type="any";
+	property name="hibachiJWTService" type="any";
 	property name="hibachiTagService" type="any";
+	property name="hibachiAuditService" type="any";
 	property name="hibachiUtilityService" type="any";
+	
+	
 
 	// ===================== START: Logical Methods ===========================
 	public struct function getConfig(){
@@ -280,6 +283,35 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
 		
+	}
+	
+	/**
+	 * Method to create account session using Bearer Token
+	 * */
+	public any function setAccountSessionByAuthToken(required string authToken){
+		//get token by stripping prefix
+		var token = replace(arguments.authToken, 'Bearer ', '');
+		
+		if(this.hibachiIsEmpty(token) ){
+		    return;
+		}
+		
+		var jwt = this.getHibachiJWTService().getJwtByToken(token);
+
+		if( jwt.verify() ){
+		    var payload = jwt.getPayload();
+		    
+		    if( !this.hibachiIsEmpty(payload.accountID) ){
+		        var jwtAccount = this.getAccountService().getAccountByAccountID(payload.accountID);
+    			if(!isNull(jwtAccount)){
+    				jwtAccount.setJwtToken(jwt);
+    				this.getHibachiScope().setAccount(jwtAccount);
+    				this.getHibachiScope().getSession().setAccount( jwtAccount );
+    			}
+		    }
+		    
+		    return this.getHibachiScope().getSession();
+		}
 	}
 	
 	public any function getSessionBySessionCookie(required any cookieName, required any cookieValue,boolean isNew=false){

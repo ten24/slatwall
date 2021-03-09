@@ -134,6 +134,8 @@ Notes:
 				SwOptionGroup.optionGroupID NOT IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
 			AND
 				( SwOptionGroup.globalFLag = <cfqueryparam cfsqltype="cf_sql_bit" value="true"> OR SwOptionGroupProductType.productTypeID IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeIDPath#" list="true">)  )
+			GROUP BY 
+				SwOptionGroup.optionGroupName
 			ORDER BY
 				SwOptionGroup.optionGroupName
 		</cfquery>
