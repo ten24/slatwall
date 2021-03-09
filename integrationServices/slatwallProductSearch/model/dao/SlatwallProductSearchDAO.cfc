@@ -449,7 +449,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	}
 
 	
-	public any function updateProductFilterFacetOptionsByEntityNameAndIDs( required string entittyName, required string entityIDs ){
+	public any function updateProductFilterFacetOptionsByEntityNameAndIDs( required string entityName, required string entityIDs ){
 	    
 	    if( this.hibachiIsEmpty(arguments.entityIDs) ){
             return;
@@ -587,9 +587,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q = q.execute().getResult();
         
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName# : #arguments.entityIDs# ");
         
-        return q;
+        return q ? : {};
 	}
 	
 	public any function removeProductFilterFacetOptionsByEntityNameAndIDs( required string entittyName, required string entityIDs ){
