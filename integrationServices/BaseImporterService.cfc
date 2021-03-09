@@ -1532,8 +1532,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     ){
         var mapping = this.getMappingByMappingCode(arguments.relationMetaData.mappingCode );
 	   	var optionGroupImportRemoteID = lcase(hash(lcase(trim(arguments.data.OptionGroupCode)), 'MD5'));
-		dump(optionGroupImportRemoteID);
-		dump(arguments.data.OptionGroupCode);abort;
 	    var optionGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
 	        "entityName"  = 'OptionGroup',
 	        "uniqueKey"   = 'importRemoteID',
