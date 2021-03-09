@@ -906,6 +906,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================  END: Smart List Overrides ========================
 
 	// ====================== START: Get Overrides ============================
+	
+	public any function getSkuPublicProperties() {
+		return super.getSkuPublicProperties();
+	}
 
 	// ======================  END: Get Overrides =============================
 
