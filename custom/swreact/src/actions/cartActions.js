@@ -233,10 +233,14 @@ export const addPayment = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.addPayment(params)
+    const req = await SlatwalApiService.cart.addPayment({
+      ...params,
+      returnJSONObjects: 'cart',
+    })
 
     if (req.isSuccess()) {
-      dispatch(receiveCart(req.success().cart))
+      dispatch(receiveCart(req.success()))
+      dispatch(getCart())
     }
   }
 }
@@ -253,11 +257,11 @@ export const removePayment = (params = {}) => {
   }
 }
 
-export const placeOrder = (params = {}) => {
+export const placeOrder = () => {
   return async dispatch => {
     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.placeOrder(params)
+    const req = await SlatwalApiService.cart.placeOrder({ returnJSONObjects: 'cart' })
 
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))

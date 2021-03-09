@@ -2,6 +2,7 @@ import { Link, useHistory } from 'react-router-dom'
 
 const SlideNavigation = ({ currentStep, nextActive = true }) => {
   let history = useHistory()
+
   return (
     <>
       <div className="d-lg-flex pt-4 mt-3">

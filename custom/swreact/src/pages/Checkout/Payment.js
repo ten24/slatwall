@@ -1,105 +1,107 @@
-import { useSelector } from 'react-redux'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { SwRadioSelect } from '../../components'
 import SlideNavigation from './SlideNavigation'
+import { useFormik } from 'formik'
+import SwSelect from '../../components/SwSelect/SwSelect'
+import { useTranslation } from 'react-i18next'
+import { addPayment } from '../../actions/cartActions'
+const months = Array.from({ length: 12 }, (_, i) => {
+  return { key: i + 1, value: i + 1 }
+})
+const years = Array(10)
+  .fill(new Date().getFullYear())
+  .map((year, index) => {
+    return { key: year + index, value: year + index }
+  })
 
-const PaymentSlide = ({ currentStep }) => {
-  const cart = useSelector(state => state.cart)
+const CreditCardInfo = () => {
+  const [isEdit, setEdit] = useState(false)
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: '',
+      company: '',
+      streetAddress: '',
+      street2Address: '',
+      city: '',
+      stateCode: '',
+      postalCode: '',
+      countryCode: 'US',
+
+      creditCardNumber: '',
+      nameOnCreditCard: '',
+      expirationMonth: new Date().getMonth() + 1,
+      expirationYear: new Date().getFullYear().toString().substring(2),
+      securityCode: '',
+
+      returnJSONObjects: 'cart',
+    },
+    onSubmit: values => {
+      console.log('values', values)
+      setEdit(!isEdit)
+    },
+  })
   return (
     <>
-      {/* <!-- Payment Method --> */}
-      <div className="row mb-3">
-        <div className="col-sm-12">
-          <div className="form-group">
-            <label className="w-100" htmlFor="checkout-recieve">
-              Select Your Method of Payment
-            </label>
-            <div className="form-check form-check-inline custom-control custom-radio d-inline-flex">
-              <input className="custom-control-input" type="radio" name="inlineRadioOptions" id="card" value="option1" />
-              <label className="custom-control-label" htmlFor="card">
-                Credit Card
-              </label>
-            </div>
-            <div className="form-check form-check-inline custom-control custom-radio d-inline-flex">
-              <input className="custom-control-input" type="radio" name="inlineRadioOptions" id="cod" value="option2" />
-              <label className="custom-control-label" htmlFor="cod">
-                Cash on Delivery
-              </label>
-            </div>
-            <div className="form-check form-check-inline custom-control custom-radio d-inline-flex">
-              <input className="custom-control-input" type="radio" name="inlineRadioOptions" id="po" value="option2" />
-              <label className="custom-control-label" htmlFor="po">
-                Purchase Order
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* <!-- Credit Card --> */}
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Credit Card Information</h2>
-
       <div className="row">
         <div className="col-sm-6">
           <div className="form-group">
-            <label htmlFor="checkout-nc">Name on Card</label>
-            <input className="form-control" type="text" id="checkout-nc" />
+            <label htmlFor="nameOnCreditCard">{t('frontend.account.payment_method.name')}</label>
+            <input disabled={!isEdit} className="form-control" type="text" id="nameOnCreditCard" value={formik.values.nameOnCreditCard} onChange={formik.handleChange} />
           </div>
         </div>
         <div className="col-sm-6">
           <div className="form-group">
-            <label htmlFor="checkout-cn">Card Number</label>
-            <input className="form-control" type="text" id="checkout-cn" />
+            <label htmlFor="creditCardNumber">{t('frontend.account.payment_method.ccn')}</label>
+            <input disabled={!isEdit} className="form-control" type="text" id="creditCardNumber" value={formik.values.creditCardNumber} onChange={formik.handleChange} />
           </div>
         </div>
       </div>
-
       <div className="row">
         <div className="col-sm-6">
           <div className="form-group">
-            <label htmlFor="checkout-cvv">CVV</label>
-            <input className="form-control" type="text" id="checkout-cvv" />
+            <label htmlFor="securityCode">{t('frontend.account.payment_method.cvv')}</label>
+            <input disabled={!isEdit} className="form-control" type="text" id="securityCode" value={formik.values.securityCode} onChange={formik.handleChange} />
           </div>
         </div>
         <div className="col-sm-3">
           <div className="form-group">
-            <label htmlFor="checkout-expiration-m">Expiration Month</label>
-            <select className="form-control custom-select" id="checkout-expiration-m">
-              <option value="">Select Month</option>
-              <option value="01">01 - JAN</option>
-              <option value="02">02 - FEB</option>
-              <option value="03">03 - MAR</option>
-              <option value="04">04 - APR</option>
-              <option value="05">05 - MAY</option>
-              <option value="06">06 - JUN</option>
-              <option value="07">07 - JUL</option>
-              <option value="08">08 - AUG</option>
-              <option value="09">09 - SEP</option>
-              <option value="10">10 - OCT</option>
-              <option value="11">11 - NOV</option>
-              <option value="12">12 - DEC</option>
-            </select>
+            <label htmlFor="expirationMonth">{t('frontend.account.payment_method.expiration_month')}</label>
+            <SwSelect disabled={!isEdit} id="expirationMonth" value={formik.values.expirationMonth} onChange={formik.handleChange} options={months} />
           </div>
         </div>
         <div className="col-sm-3">
           <div className="form-group">
-            <label htmlFor="checkout-expiration-y">Expiration Year</label>
-            <select className="form-control custom-select" id="checkout-expiration-y">
-              <option value="">Select Year</option>
-              <option value="2020">2020</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-              <option value="2030">2030</option>
-            </select>
+            <label htmlFor="expirationYear">{t('frontend.account.payment_method.expiration_year')}</label>
+            <SwSelect disabled={!isEdit} id="expirationYear" value={formik.values.expirationYear} onChange={formik.handleChange} options={years} />
           </div>
         </div>
       </div>
-
+      <div className="row">
+        <div className="col-sm-6"></div>
+        <div className="col-sm-6">
+          {isEdit && (
+            <a className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
+              <span className="d-none d-sm-inline">Save</span>
+            </a>
+          )}
+          {!isEdit && (
+            <a
+              className="btn btn-outline-primary btn-block"
+              onClick={() => {
+                setEdit(!isEdit)
+              }}
+            >
+              <span className="d-none d-sm-inline">Edit</span>
+            </a>
+          )}
+        </div>
+      </div>
       {/* <!-- Billing Address --> */}
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Billing Address</h2>
 
@@ -109,7 +111,74 @@ const PaymentSlide = ({ currentStep }) => {
           Same as shipping address
         </label>
       </div>
-      <SlideNavigation currentStep={currentStep} nextActive={!cart.orderRequirementsList.includes('payment')} />
+    </>
+  )
+}
+
+const PaymentSlide = ({ currentStep }) => {
+  const orderRequirementsList = useSelector(state => state.cart.orderRequirementsList)
+  const eligiblePaymentMethodDetails = useSelector(state => state.cart.eligiblePaymentMethodDetails)
+  const orderPayments = useSelector(state => state.cart.orderPayments) || [{}]
+  const { paymentMethod, billingAddress, accountPaymentMethod, orderPaymentID } = orderPayments[0] || {}
+  const accountPaymentMethods = useSelector(state => state.userReducer.accountPaymentMethods)
+  const [showNewPayemnt, setShowNewPayemnt] = useState(false)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
+  const dispatch = useDispatch()
+
+  console.log('showNewPayemnt', showNewPayemnt ? 'true' : 'false')
+  console.log('selectedPaymentMethod', selectedPaymentMethod)
+  return (
+    <>
+      {/* <!-- Payment Method --> */}
+      <div className="row mb-3">
+        <div className="col-sm-12">
+          <SwRadioSelect
+            label="Select Your Method of Payment"
+            options={
+              eligiblePaymentMethodDetails &&
+              eligiblePaymentMethodDetails.map(({ paymentMethod }) => {
+                return { name: paymentMethod.paymentMethodName, value: paymentMethod.paymentMethodID }
+              })
+            }
+            onChange={value => {
+              setSelectedPaymentMethod(value)
+              console.log('Payment Method')
+            }}
+            selectedValue={paymentMethod ? paymentMethod.paymentMethodID : ''}
+          />
+        </div>
+      </div>
+      <div className="row mb-3">
+        <div className="col-sm-12">
+          <SwRadioSelect
+            label="Select Payment"
+            options={accountPaymentMethods.map(({ accountPaymentMethodName, creditCardType, creditCardLastFour, accountPaymentMethodID }) => {
+              return { name: `${accountPaymentMethodName} | ${creditCardType} - *${creditCardLastFour}`, value: accountPaymentMethodID }
+            })}
+            onChange={value => {
+              if (value === 'new') {
+                setShowNewPayemnt(true)
+              } else {
+                dispatch(
+                  addPayment({
+                    accountPaymentMethodID: value,
+                    copyFromType: 'accountPaymentMethod',
+                  })
+                )
+              }
+              console.log('Payment Method')
+            }}
+            newLabel="Add Payment Method"
+            selectedValue={showNewPayemnt || !accountPaymentMethod ? 'new' : accountPaymentMethod.accountPaymentMethodID}
+            displayNew={true}
+          />
+        </div>
+      </div>
+
+      {/* <!-- Credit Card --> */}
+      {showNewPayemnt || (!accountPaymentMethod && <CreditCardInfo />)}
+
+      <SlideNavigation currentStep={currentStep} nextActive={!orderRequirementsList.includes('payment')} />
     </>
   )
 }

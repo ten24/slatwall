@@ -1,4 +1,4 @@
-const SwRadioSelect = ({ label, onChange, options, selectedValue, newLabel = '', displayNew = false }) => {
+const SwRadioSelect = ({ label, onChange, options = [], selectedValue, newLabel = '', displayNew = false }) => {
   if (displayNew) {
     options = [...options, { name: newLabel, value: 'new' }]
   }
