@@ -136,23 +136,17 @@ component  accessors="true" output="false"
 	    
 	    param name="arguments.data.includePotentialFilters" default=true;
 
-	    
-	    // the integration needs to be enabled for this to work
-	    // TODO: create a site-level setting for defaule product-search integration
-	    var integrationPackage = this.getIntegrationService().getIntegrationByIntegrationPackage("SlatwallProductSearch");
-	    if(!IsNull(integrationPackage)){
-	        var integrationCFC = integrationPackage.getIntegrationCFC("Search");
-	        
-	        arguments.data.ajaxResponse = {
-                'data' : integrationCFC.getProducts(argumentCollection=arguments.data)
-            };
-	    } else {
-	       var slatwallProductSearchService = this.getService('slatwallProductSearchService');
+	    // TODO: Temporary placeholder, Nitin is working on it and update.
+	    var currentRequestSite = this.getHibachiScope().getCurrentRequestSite() ?: this.getService('SiteService').newSite();
         
-            arguments.data.ajaxResponse = {
-                'data' : slatwallProductSearchService.getProducts(argumentCollection=arguments.data)
-            }; 
-	    }
+	    var intigrationPackage = getService('SettingService').getSettingValue(currentRequestSite);
+	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
+        var integrationCFC = integrationEntity.getIntegrationCFC("Search");
+        
+        arguments.data.ajaxResponse = {
+            'data' : integrationCFC.getProducts(argumentCollection=arguments.data)
+        };
+	    
     }
 
 
