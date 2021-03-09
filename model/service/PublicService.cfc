@@ -148,47 +148,51 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
 	    var product = getProductService().getProduct( arguments.data.productID );
-        
-        if( !isNull(product) && product.getBaseProductType() == "productBundle") {
-            //get product bundles
-            var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
-            bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
-            bundleProductCollectionList.addFilter("productBundleSku.skuID", product.getDefaultSku().getSkuID());
-            bundleProductCollectionList.addFilter("activeFlag", 1);
-            var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
-            
-            
-            //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
-            var bundleResponse = [];
-            
-            //populate bundle response
-            for( var bundle in bundleProducts) {
-                //get sku list form collection config
-                var skuCollections = getSkuService().getSkuCollectionList();
-                skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
-                skuCollections.addDisplayProperties("calculatedSkuDefinition");
-                skuCollections.addDisplayProperties("calculatedQATS");
-                skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
-	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
-                var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
-                
-                ArrayAppend(bundleResponse, {
-                  'minimumQuantity':  bundle['minimumQuantity'],
-                  'maximumQuantity': bundle['maximumQuantity'],
-                  'bundleType': bundle['productBundleGroupType_typeName'],
-                  'amount': bundle['amount'],
-                  'amountType': bundle['amountType'],
-                  'skuList': bundleSkuList,
-                  'defaultSkuID': product.getDefaultSku().getSkuID(),
-                  'productBundleGroupID': bundle['productBundleGroupID'],
-                });
-            }
-            
-            arguments.data.ajaxResponse['data'] = bundleResponse;
-            getHibachiScope().addActionResult("public:product.getProductBundles",false);
-        } else {
+	    
+        if( isNull(product) || product.getBaseProductType() != "productBundle") {
             getHibachiScope().addActionResult("public:product.getProductBundles",true);
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.product.getProductBundles.productID_invalid");
+            return;
         }
+        
+        var defaultSkuID = product.getDefaultSku().getSkuID();
+        
+        //get product bundles
+        var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
+        bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
+        bundleProductCollectionList.addFilter("productBundleSku.skuID", defaultSkuID);
+        bundleProductCollectionList.addFilter("activeFlag", 1);
+        var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
+        
+        
+        //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
+        var bundleResponse = [];
+        
+        //populate bundle response
+        for( var bundle in bundleProducts) {
+            //get sku list form collection config
+            var skuCollections = getSkuService().getSkuCollectionList();
+            skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+            skuCollections.addDisplayProperties("calculatedSkuDefinition");
+            skuCollections.addDisplayProperties("calculatedQATS");
+            skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
+            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
+            var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
+            
+            ArrayAppend(bundleResponse, {
+              'minimumQuantity':  bundle['minimumQuantity'],
+              'maximumQuantity': bundle['maximumQuantity'],
+              'bundleType': bundle['productBundleGroupType_typeName'],
+              'amount': bundle['amount'],
+              'amountType': bundle['amountType'],
+              'skuList': bundleSkuList,
+              'defaultSkuID': defaultSkuID,
+              'productBundleGroupID': bundle['productBundleGroupID'],
+            });
+        }
+        
+        arguments.data.ajaxResponse['data'] = bundleResponse;
+        getHibachiScope().addActionResult("public:product.getProductBundles",false);
 	}
 	
 	/**
@@ -243,14 +247,14 @@ component  accessors="true" output="false"
 	/**
 	 * Method to create product bundle build
 	 * 
-	 * @param - skuID (can also accept comma separated list)
+	 * @param - skuIDList (can also accept comma separated list)
 	 * @param - default skuID (from bundle product)
-	 * @param - quantity (can also accept comma separated list)
+	 * @param - quantities (can also accept comma separated list)
 	 * @param - productBundleGroupID
 	 * */
 	public void function createProductBundleBuild( required struct data ) {
-	    param name="arguments.data.skuID";
-	    param name="arguments.data.quantity";
+	    param name="arguments.data.skuIDList";
+	    param name="arguments.data.quantities";
 	    param name="arguments.data.productBundleGroupID";
 	    param name="arguments.data.defaultSkuID";
 	    
@@ -296,8 +300,8 @@ component  accessors="true" output="false"
         }
         
         //Check & update bundle items
-        var skuList = ListToArray( arguments.data.skuID );
-        var quantities = ListToArray( arguments.data.quantity );
+        var skuList = ListToArray( arguments.data.skuIDList );
+        var quantities = ListToArray( arguments.data.quantities );
         
         var index = 1;
         for( var skuID in skuList ) {
@@ -1511,7 +1515,7 @@ component  accessors="true" output="false"
           this.addErrors(arguments.data, orderFulfillment.getErrors());
         }
         getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
-        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.apiRequest.params_invalid");
+        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.order.addPickupFulfillmentLocation.fulfillment_invalid");
       }
     }
     
