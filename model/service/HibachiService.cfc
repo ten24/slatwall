@@ -177,6 +177,15 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 
 		return getService('hibachiCacheService').getCachedValue(cacheKey);
 	}
-		
 	
+	/**
+	 * Method to return list of public attribute codes
+	 * */
+	public any function getPublicPropertiesByEntityName(required string entityName) {
+		var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
+		attributeCollectionList.setDisplayProperties('attributeCode');
+		attributeCollectionList.addFilter('publicPropertyFlag', 1);
+		attributeCollectionList.addFilter('attributeSet.attributeSetObject', arguments.entityName);
+		return attributeCollectionList.getRecords();
+	}
 }
