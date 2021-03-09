@@ -167,7 +167,7 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
                 sku.skuID,
                 brand.brandID, brandName,
                 category.categoryID, categoryName, parentCategoryID, categoryUrlTitle,
-                option.optionID,  optionName,optionCode, optionSortOrder,
+                option.optionID, optionName, optionCode, optionSortOrder,
                 optionGroup.optionGroupID, optionGroupName, optionGroupSortOrder,
                 productType.productTypeID, productTypeName, parentProductTypeID, productTypeURLTitle,
                 site.siteID, siteName, siteCode, currencyCode,

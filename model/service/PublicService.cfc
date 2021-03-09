@@ -116,7 +116,7 @@ component  accessors="true" output="false"
      * - the value for filter-keys can be an array, or a single value 
      * 
      */
-    public struct function parseProductSearchQuery(struct urlScopeOrStruct = URL, string defaultFacetValueKey = 'name', string keyDelemiter='_'){
+    public struct function parseProductSearchQuery(struct urlScopeOrStruct, string defaultFacetValueKey = 'name', string keyDelemiter='_'){
         var parsed = {};
         var allowedFacetKeys = {
             'brand': '',
@@ -149,6 +149,8 @@ component  accessors="true" output="false"
     /**
      * Utility function to insert a value into nested structs
      * 
+     * TODO: move to HibachiUtilityService
+     * 
      * it loops over the keys and will create's nested structs if needed until the second-last sub key
      * and then try to insert/append value into that struct using the last sub-key as the key and the givenValue as the value for that key
      * however if there already is a vlaue for the last sub-key, then
@@ -162,13 +164,18 @@ component  accessors="true" output="false"
         }
         
         var firstSubKey = arguments.keys[1];
+        var subKeysLen = arguments.keys.len();
+        
+        if( subKeysLen == 1 ){
+            arguments.theStruct[ firstSubKey ] = arguments.theValue;
+            return;
+        }
+
         if(!structKeyExists(arguments.theStruct, firstSubKey ) ){
             arguments.theStruct[ firstSubKey ] = {};
         }
         
         var lastSubKeyScope = theStruct[firstSubKey];
-        var subKeysLen = arguments.keys.len();
-        
         // skip the first and created nested structs until the secondLast
         for(var i=2; i<=subKeysLen-1; i++ ){
             var nextSubKey = arguments.keys[i];
@@ -184,6 +191,12 @@ component  accessors="true" output="false"
         // if it does not exist, add, else append into array
         if( !structKeyExists(lastSubKeyScope, lastKeyToInsertOrAppend) ){
             lastSubKeyScope[ lastKeyToInsertOrAppend ] = arguments.theValue;
+            
+            // if the value is a list type, convert it into an array
+            var valuesArray = listToArray(arguments.theValue, arguments.listTypeValueDelimiter );
+            if( valuesArray.len() > 1 ){
+                lastSubKeyScope[ lastKeyToInsertOrAppend ] = valuesArray;
+            }
             return;
         }
         
@@ -219,44 +232,49 @@ component  accessors="true" output="false"
 	 *
 	 * 
 	 */
-    public void function getProducts( required struct data ) {
+    public void function getProducts(required struct data, struct urlScope=url ){
         var hibachiScope = this.getHibachiScope();
         
-		param name="arguments.data.siteID" default='';
+        // we're not using RequestContext here, but the URL-scope
+        arguments.parsedQuery = this.parseProductSearchQuery(arguments.urlScope);
+        
+		param name="arguments.parsedQuery.siteID" default='';
+		param name="arguments.parsedQuery.currencyCode" default='USD';
     
-        //      account, order, for pricing
-        // 		param name="arguments.data.order" default=hibachiScope.getCart();
-        // 		param name="arguments.data.account" default=hibachiScope.getAccount();
-        // 		param name="arguments.data.priceGroupCode" default='';
-        	
-		param name="arguments.data.currencyCode" default='USD';
-	    
-	    // facets-options	
-	    param name="arguments.data.productType" default='';
-	    param name="arguments.data.category" default='';
-	    param name="arguments.data.brands" default='';
-	    param name="arguments.data.options" default='';
-	    param name="arguments.data.attributeOptions" default='';
+        //  account, order, for pricing
+		param name="arguments.parsedQuery.order" default=hibachiScope.getCart();
+		param name="arguments.parsedQuery.account" default=hibachiScope.getAccount();
+		param name="arguments.parsedQuery.priceGroupCode" default='';
+        
+	    // facets
+	    param name="arguments.parsedQuery.brand" default={};
+	    param name="arguments.parsedQuery.option" default={};
+	    param name="arguments.parsedQuery.category" default={};
+	    param name="arguments.parsedQuery.attribute" default={};
+	    param name="arguments.parsedQuery.productType" default={};
 	    
         // Search
-        param name="arguments.data.keyword" default="";
+        param name="arguments.parsedQuery.keyword" default="";
         // Sorting
-        param name="arguments.data.orderBy" default="product.productName|DESC"; 
+        param name="arguments.parsedQuery.orderBy" default="product.productName|DESC"; 
         // Pricing
-        param name="arguments.data.price" default=""; 
+        param name="arguments.parsedQuery.price" default=""; 
         // Pagination
-	    param name="arguments.data.currentPage" default=1;
-	    param name="arguments.data.pageSize" default=10;
-	    
-	    param name="arguments.data.includePotentialFilters" default=true;
-
-	    
+	    param name="arguments.parsedQuery.currentPage" default=1;
+	    param name="arguments.parsedQuery.pageSize" default=10;
+        // additional properties
+	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
+        
+        // currently it will set a transient site, but it need's to figure-out current-request-site 
+        // either form headers, or hibachi-scope
+        arguments.parsedQuery['site'] = this.getService('siteService').getSite(arguments.parsedQuery.siteID, true); 
+        
 	    // the integration needs to be enabled for this to work
 	    // TODO: create a site-level setting for defaule product-search integration
         var slatwallProductSearchService = this.getService('slatwallProductSearchService');
         
         arguments.data.ajaxResponse = {
-            'data' : slatwallProductSearchService.getProducts(argumentCollection=arguments.data)
+            'data' : slatwallProductSearchService.getProducts(argumentCollection=arguments.parsedQuery)
         };
     }
 

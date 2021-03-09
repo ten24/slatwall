@@ -75,50 +75,50 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         // dump(var=cart, top=1);
 	}
 	
+	public struct function setProductSearchQueryOnURLScope(){
+	   // var testSearchQuery = "option_language=english,spanish&option_size_slug=medium,small&attribute_testing=1,2,3&brand=nike,puma&brand_id=1,2,4&brand_slug=acb,pqr,1112233&category_name=c1,c2,c3&productType=p1,p2,p3";
+	 
+	   // dump(testSearchQuery);
+	    
+	   // var testSearchQueryArray = listToArray(testSearchQuery, '&');
+	   // dump(testSearchQueryArray);
+	    
+	    var testSearchQueryArray = [
+            'brand=nike,puma',
+            'brand_id=1,2,4',
+            'brand_slug=acb,pqr,1112233',
+            
+            'productType=p1,p2,p3',
+            
+            'category_name=c1,c2,c3',
+            
+            'attribute_testing=1,2,3',
+            
+            'option_language=english,spanish',
+            'option_size_slug=medium,small',
+            
+            'keyword=Serrated'
+        ];
+        
+	    var urlScope = URL ?: {};
+	    for(var pair in testSearchQueryArray){
+	        urlScope[listFirst(pair, '=')] = listLast(pair, '=');
+	    }
+	    
+	    return urlScope;
+	}
+	
 	/**
 	* @test
 	*/
 	public void function getProducts_test(){
 	    
-	    /*
-    	    param name="arguments.data.currencyCode" default='USD';
-    	    
-    	    // facets-options	
-    	    param name="arguments.data.productType" default='';
-    	    param name="arguments.data.category" default='';
-    	    param name="arguments.data.brands" default='';
-    	    param name="arguments.data.options" default='';
-    	    param name="arguments.data.attributeOptions" default='';
-    	    
-            // Search
-            param name="arguments.data.keyword" default="";
-            // Sorting
-            param name="arguments.data.orderBy" default="product.productName|DESC"; 
-            // Pricing
-            param name="arguments.data.price" default=""; 
-            // Pagination
-    	    param name="arguments.data.currentPage" default=1;
-    	    param name="arguments.data.pageSize" default=10;
-    	
-	    */
+	    var urlScope = this.setProductSearchQueryOnURLScope();
+	    urlScope['includePotentialFilters'] = false;
+	    var data = {};
 	    
-	    var brands = [];
-	    var productTypes = [];
-	    var options = [];
-	    
-		var data = {
-            "productType": "",
-            "category": "",
-            // "brands": "Yale,Lab",
-            "options": "",
-            "attributeOptions": "",
-            "keyword": "Serrated",
-        };
-		
-		this.getService().getProducts(data);
-		
+		this.getService().getProducts(data, urlScope);
 		dump(data);
-		
 	}
 	
 	
@@ -126,27 +126,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	* @test
 	*/
 	public void function parseProductSearchQuery_test(){
-	    var testSearchQuery = "option_language=english,spanish&option_size_slug=medium,small&attribute_testing=1,2,3&brand=nike,puma&brand_id=1,2,4&brand_slug=acb,pqr,1112233&category_name=c1,c2,c3&productType=p1,p2,p3";
-	 
-	    dump(testSearchQuery);
 	    
-	   // var testSearchStruct = createObject('java', 'coldfusion.util.HTMLTools').parseQueryString(testSearchQuery);
-	   // dump(testSearchStruct);
-	   
-	   //testSearchQuery = listRest(testSearchQuery, "?");
-	   //dump(testSearchQuery);
-	   
-	   var testSearchQueryArray = listToArray(testSearchQuery, '&');
-	   dump(testSearchQueryArray);
-	   
-	   var testSearchStruct = {};
-	   for(var pair in testSearchQueryArray){
-	       testSearchStruct[listFirst(pair, '=')] = listLast(pair, '=');
-	   }
-	   
-        dump(testSearchStruct);
+	    var urlScope = this.setProductSearchQueryOnURLScope();
+	    dump(urlScope);
 	    
-	    var parsed = this.getService().parseProductSearchQuery(testSearchStruct);
+	    var parsed = this.getService().parseProductSearchQuery(urlScope);
 	    dump(parsed);
 	}
 	  
