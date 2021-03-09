@@ -1325,7 +1325,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    for(var optionGroupCode in skuOptionGroups ){
 	    	if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
 	            
-	            var optionID = this.getOptionDAO().getOptionIDByOptionGroupIDAndOptionName( 
+	            var optionID = this.getOptionDAO().getOptionIDByOptionGroupIDAndOptionCode( 
 	                skuOptionGroups[optionGroupCode], 
 	                arguments.data[optionGroupCode] 
 	            );
@@ -1521,6 +1521,27 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         return {};
         
         //dont create stock if there is no locationID / skuID
+	}
+	
+	/////////////////.                  Order Delivery
+	
+	public any function generateOptionOptionGroup( 
+	    required struct data, 
+        required struct parentEntityMapping,
+        required struct relationMetaData 
+    ){
+        var mapping = this.getMappingByMappingCode(arguments.relationMetaData.mappingCode );
+	   	var optionGroupImportRemoteID = lcase(hash(trim(arguments.data.OptionGroupName), 'MD5'));
+	    	    
+	    var optionGroupID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  = 'OptionGroup',
+	        "uniqueKey"   = 'importRemoteID',
+	        "uniqueValue" = optionGroupImportRemoteID
+	    );
+
+    	if( !isNull(optionGroupID) && !this.hibachiIsEmpty(optionGroupID) ){
+    	    return { "optionGroupID" : optionGroupID }
+    	} 
 	}
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
 }
