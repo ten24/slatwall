@@ -162,7 +162,7 @@ component displayname="Option" entityname="SlatwallOption" table="SwOption" pers
 	public boolean function isUniqueInOptionGroup(){
 		var optionCode = this.getOptionCode();
 		var optionGroupID = this.getOptionGroup().getOptionGroupID();
-		var optionID = getDAO('optionDAO').getOptionIDByOptionGroupIDAndOptionName(optionGroupID,optionCode);
+		var optionID = getDAO('optionDAO').getOptionIDByOptionGroupIDAndOptionCode(optionGroupID,optionCode);
 		
 	   if(len(optionID) && optionID != this.getoptionID() ){
 	   		return false;

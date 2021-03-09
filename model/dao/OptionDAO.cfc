@@ -187,7 +187,7 @@ Notes:
 		return variables[cacheKey];
 	}
 	
-	public string function getOptionIDByOptionGroupIDAndOptionName(required string optionGroupID, required string optionCode){
+	public string function getOptionIDByOptionGroupIDAndOptionCode(required string optionGroupID, required string optionCode){
 	   
 	    var sql = "SELECT optionID 
             	   FROM SwOption 

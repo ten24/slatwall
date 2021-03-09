@@ -1325,7 +1325,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    for(var optionGroupCode in skuOptionGroups ){
 	    	if( structKeyExists(arguments.data, optionGroupCode) && !this.hibachiIsEmpty(arguments.data[optionGroupCode]) ){
 	            
-	            var optionID = this.getOptionDAO().getOptionIDByOptionGroupIDAndOptionName( 
+	            var optionID = this.getOptionDAO().getOptionIDByOptionGroupIDAndOptionCode( 
 	                skuOptionGroups[optionGroupCode], 
 	                arguments.data[optionGroupCode] 
 	            );
