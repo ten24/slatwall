@@ -166,7 +166,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productKeyMachinePartCompatibility" ormtype="string";
  property name="productKeyMachineCutterMaterial" ormtype="string";
  property name="productKeyMachineCutterAngle" ormtype="string";
- property name="productKeyMachineLockingMechanism" ormtype="string";
+ property name="productKeyMachineCutterWidth" ormtype="string";
  property name="productKeyMachineCutterCompatibility" ormtype="string";
  property name="productKeyMachineCompatibility" ormtype="string";
  property name="productBatteryCompatibility" ormtype="string";
