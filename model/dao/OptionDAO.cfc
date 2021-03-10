@@ -187,16 +187,16 @@ Notes:
 		return variables[cacheKey];
 	}
 	
-	public string function getOptionIDByOptionGroupIDAndOptionName(required string optionGroupID, required string optionName){
+	public string function getOptionIDByOptionGroupIDAndOptionCode(required string optionGroupID, required string optionCode){
 	   
 	    var sql = "SELECT optionID 
             	   FROM SwOption 
-            	   WHERE optionGroupID = :optionGroupID AND optionName = :optionName
+            	   WHERE optionGroupID = :optionGroupID AND optionCode = :optionCode
             	  ";
             	  
 	    var queryService = new query();
 	    queryService.addParam(name='optionGroupID', value=arguments.optionGroupID);
-	    queryService.addParam(name='optionName', value=arguments.optionName);
+	    queryService.addParam(name='optionCode', value=arguments.optionCode);
 
     	return queryService.execute(sql=sql).getResult()['optionID'];
 	}

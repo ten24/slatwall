@@ -1011,6 +1011,24 @@
                 "dataType": "string"
             }
         },
+        "KeyMachineCutterCompatibility": {
+            "propertyIdentifier": "productKeyMachineCutterCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "KeyMachineLockingMechanism": {
+            "propertyIdentifier": "productKeyMachineLockingMechanism",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "KeyMachineCutterWidth": {
+            "propertyIdentifier": "productKeyMachineCutterWidth",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "MechanicalKeyway": {
             "propertyIdentifier": "mechanicalKeyway",
             "validations": {
