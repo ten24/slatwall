@@ -66,7 +66,6 @@ const PaymentSlide = ({ currentStep }) => {
                       })
                     )
                   }
-                  console.log('Payment')
                 }}
                 newLabel="Add Payment Method"
                 selectedValue={newOrderPayment ? newOrderPayment : accountPaymentMethodID}

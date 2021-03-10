@@ -23,8 +23,6 @@ const ContentPage = () => {
   if (!content.isFetching && content[path]) {
     component = content[path].setting.contentTemplateFile.replace('.cfm', '')
   }
-  console.log('!content.isFetching', !content.isFetching)
-  console.log('component', component)
 
   return <Layout>{!content.isFetching && React.createElement(pageComponents[component])}</Layout>
 }

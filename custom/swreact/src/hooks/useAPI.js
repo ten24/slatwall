@@ -154,7 +154,6 @@ export const useGetProducts = params => {
         withCredentials: true, // default
         url: `${sdkURL}api/scope/getProducts?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
       }).then(response => {
-        console.log('response', response)
         if (response.status === 200 && response.data && response.data.data.products) {
           const { currentPage, pageSize, potentialFilters, products, total } = response.data.data
           const totalPages = Math.ceil(total / pageSize)
