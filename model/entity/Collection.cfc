@@ -146,6 +146,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
 	property name="listingSearchFiltersApplied" type="boolean" persistent="false" default="false";
 	
+	property name="availableSelectProperties" type="array" persistent="false";
+	
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function init(){
@@ -181,6 +183,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.checkDORPermissions = false;
 		variables.filterDataApplied = false;
 		variables.applyOrderBysToGroupBys=true;
+		variables.availableSelectProperties = [];
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 		setHibachiService(getService('HibachiService'));
 		setHibachiUtilityService(getService('HibachiUtilityService'));
@@ -255,7 +258,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public boolean function getApplyOrderBysToGroupBys(){
 		return variables.applyOrderBysToGroupBys;
 	}
-
+	
+	public any function getAvailableSelectProperties() {
+		return variables.availableSelectProperties;
+	}
+	
+	public void function setAvailableSelectProperties(required string columnList) {
+		ArrayAppend(variables.availableSelectProperties, ListToArray( arguments.columnList));
+	}
+	
+	public boolean function checkAvailableSelectProperties( required any columnName ) {
+		var availableSelectProperties = this.getAvailableSelectProperties();
+		return ArrayFindNoCase( availableSelectProperties, arguments.columnName);
+	}
+	
 	public void function setFilterByLeafNodesFlag(required boolean value) {
 		// Ensures exclusivity so that both types of leaf node filter flags cannot both be true
 		if (arguments.value && getFilterByNonLeafNodesFlag()) {
