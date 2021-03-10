@@ -285,7 +285,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_toggleActive(required any giftCard, required any processObject,struct data={}){
 
-		arguments.giftCard.setActiveFlag(data.activeFlag);
+		arguments.giftCard.setActiveFlag(arguments.data.activeFlag);
 
 		return this.saveGiftCard(arguments.giftCard);
 
