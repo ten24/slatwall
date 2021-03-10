@@ -2,13 +2,11 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addShippingAddressUsingAccountAddress, addShippingMethod } from '../../actions/cartActions'
 import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
-import SwSelect from '../../components/SwSelect/SwSelect'
 import { useFormik } from 'formik'
 import SlideNavigation from './SlideNavigation'
 import { SwRadioSelect } from '../../components'
-import useRedirect from '../../hooks/useRedirect'
 import { useAddOrderShippingAddress } from '../../hooks/useAPI'
-
+import ShippingAddressForm from './ShippingAddressForm'
 const ShippingAddress = ({ orderFulfillment = {} }) => {
   const dispatch = useDispatch()
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
@@ -40,7 +38,7 @@ const ShippingAddress = ({ orderFulfillment = {} }) => {
       city,
       stateCode,
       postalCode,
-      countryCode: countrycode,
+      countryCode: countrycode.length ? countrycode : 'US',
     }
   }
   const formik = useFormik({
@@ -59,77 +57,7 @@ const ShippingAddress = ({ orderFulfillment = {} }) => {
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <div className="row">
-          <div className="col-sm-6">
-            <div className="form-group">
-              <label htmlFor="checkout-country">Country</label>
-              <SwSelect
-                id="countryCode"
-                disabled={!isEdit}
-                value={formik.values.countryCode}
-                onChange={e => {
-                  e.preventDefault()
-                  dispatch(getStateCodeOptionsByCountryCode(e.target.value))
-                  formik.handleChange(e)
-                }}
-                options={countryCodeOptions}
-              />
-            </div>
-          </div>
-          <div className="col-sm-6">
-            <div className="form-group">
-              <label htmlFor="name">Name</label>
-              <input disabled={!isEdit} className="form-control" type="text" id="name" value={formik.values.name} onChange={formik.handleChange} />
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-6">
-            <div className="form-group">
-              <label htmlFor="streetAddress">Address 1</label>
-              <input disabled={!isEdit} className="form-control" type="text" id="streetAddress" value={formik.values.streetAddress} onChange={formik.handleChange} />
-            </div>
-          </div>
-          <div className="col-sm-6">
-            <div className="form-group">
-              <label htmlFor="street2Address">Address 2</label>
-              <input disabled={!isEdit} className="form-control" type="text" id="street2Address" value={formik.values.street2Address} onChange={formik.handleChange} />
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-6">
-            <div className="form-group">
-              <label htmlFor="city">City</label>
-              <input disabled={!isEdit} className="form-control" type="text" id="city" value={formik.values.city} onChange={formik.handleChange} />
-            </div>
-          </div>
-          {stateCodeOptions.length > 0 && (
-            <div className="col-sm-3">
-              <div className="form-group">
-                <label htmlFor="stateCode">State</label>
-                <SwSelect
-                  id="stateCode"
-                  disabled={!isEdit}
-                  value={formik.values.stateCode}
-                  onChange={e => {
-                    e.preventDefault()
-                    formik.handleChange(e)
-                  }}
-                  options={stateCodeOptions}
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="col-sm-3">
-            <div className="form-group">
-              <label htmlFor="postalCode">ZIP Code</label>
-              <input disabled={!isEdit} className="form-control" type="text" id="postalCode" value={formik.values.postalCode} onChange={formik.handleChange} />
-            </div>
-          </div>
-        </div>
-
+        <ShippingAddressForm formik={formik} isEdit={isEdit} countryCodeOptions={countryCodeOptions} stateCodeOptions={stateCodeOptions} />
         <div className="d-lg-flex pt-4 mt-3">
           <div className="w-50 pr-3">
             <div className="custom-control custom-checkbox">
@@ -170,15 +98,14 @@ const ShippingAddress = ({ orderFulfillment = {} }) => {
 
 const ShippingSlide = ({ currentStep }) => {
   const dispatch = useDispatch()
-  const [redirect, setRedirect] = useRedirect({ location: currentStep.next, time: 300 })
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const cart = useSelector(state => state.cart)
   const { orderFulfillments } = cart
   const [showAddress, setShowAddress] = useState(false)
-  let initialValues = {}
+  let selectedShippingMethodID = ''
 
   let selectedAccountID = ''
-  if (orderFulfillments[0]) {
+  if (orderFulfillments[0] && accountAddresses.length) {
     const selectAccount = accountAddresses
       .filter(({ address: { addressID } }) => {
         return addressID === orderFulfillments[0].shippingAddress.addressID
@@ -187,6 +114,9 @@ const ShippingSlide = ({ currentStep }) => {
         return accountAddressID
       })
     selectedAccountID = selectAccount.length ? selectAccount[0] : null
+  }
+  if (orderFulfillments[0] && orderFulfillments[0].shippingMethod) {
+    selectedShippingMethodID = orderFulfillments[0].shippingMethod.shippingMethodID
   }
 
   return (
@@ -206,7 +136,7 @@ const ShippingSlide = ({ currentStep }) => {
                   })
                 )
               }}
-              selectedValue={orderFulfillments[0].shippingMethod.shippingMethodID}
+              selectedValue={selectedShippingMethodID}
             />
           )}
         </div>

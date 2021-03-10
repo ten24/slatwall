@@ -21,7 +21,7 @@ const ReviewSlide = () => {
     shippingAddressNickname = shippingAddressNickname.length ? shippingAddressNickname[0] : null
   }
   let billingAddressNickname = ''
-  if (orderPayments.length) {
+  if (orderPayments.length && orderPayments[0].accountPaymentMethod) {
     billingAddressNickname = accountPaymentMethods
       .filter(({ accountPaymentMethodID }) => {
         return accountPaymentMethodID === orderPayments[0].accountPaymentMethod.accountPaymentMethodID
