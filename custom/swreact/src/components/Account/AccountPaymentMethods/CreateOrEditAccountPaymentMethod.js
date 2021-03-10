@@ -26,7 +26,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      paymentMethodName: cardData.accountPaymentMethodName,
+      accountPaymentMethodName: cardData.accountPaymentMethodName,
       paymentMethodType: 'creditCard',
       creditCardNumber: ``,
       nameOnCreditCard: cardData.nameOnCreditCard,
@@ -72,8 +72,8 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
         <div className="row">
           <div className={`col-sm-${isEdit ? 12 : 6}`}>
             <div className="form-group">
-              <label htmlFor="paymentMethodName">{t('frontend.account.payment_method.nickname')}</label>
-              <input className="form-control" type="text" id="paymentMethodName" value={formik.values.paymentMethodName} onChange={formik.handleChange} />
+              <label htmlFor="accountPaymentMethodName">{t('frontend.account.payment_method.nickname')}</label>
+              <input className="form-control" type="text" id="accountPaymentMethodName" value={formik.values.paymentMethodName} onChange={formik.handleChange} />
             </div>
             <div className="form-group">
               <label htmlFor="paymentMethodType">{t('frontend.account.payment_method.heading')}</label>

@@ -4,6 +4,7 @@ import { setTitle } from './configActions'
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
 export const RECIVE_CONTENT = 'RECIVE_CONTENT'
+export const RECIVE_STATE_CODES = 'RECIVE_STATE_CODES'
 
 export const requestContent = () => {
   return {
@@ -17,24 +18,10 @@ export const reciveContent = content => {
     content,
   }
 }
-
-export const getHomePageContent = (content = {}) => {
-  return async (dispatch, getState) => {
-    dispatch(requestContent())
-    const { siteCode } = getState().configuration.site
-    const response = await axios({
-      method: 'POST',
-      withCredentials: true, // default
-      url: `${sdkURL}api/scope/getHomePageContent`,
-      data: {
-        siteCode,
-      },
-    })
-    if (response.status === 200) {
-      dispatch(reciveContent(response.data.content))
-    } else {
-      dispatch(reciveContent({}))
-    }
+export const reciveStateCodes = codes => {
+  return {
+    type: RECIVE_STATE_CODES,
+    payload: codes,
   }
 }
 
@@ -57,9 +44,9 @@ const shouldUseData = (content = {}, request = {}) => {
 
 export const getContent = (content = {}) => {
   return async (dispatch, getState) => {
+    // if (!getState().content.isFetching && shouldUseData(getState().content, content.content)) {
     const { siteCode } = getState().configuration.site
     dispatch(requestContent())
-    // if (shouldUseData(getState().content, content.content)) {
     const response = await axios({
       method: 'POST',
       withCredentials: true,
@@ -70,12 +57,12 @@ export const getContent = (content = {}) => {
       data: { ...content, siteCode },
     })
     if (response.status === 200) {
-      dispatch(reciveContent(response.data.content))
+      dispatch(reciveContent({ ...response.data.content }))
     } else {
       dispatch(reciveContent({}))
     }
-    // }
   }
+  // }
 }
 
 export const getPageContent = (content = {}, slug = '') => {
@@ -99,18 +86,42 @@ export const getPageContent = (content = {}, slug = '') => {
   }
 }
 
-export const getStatesCountryCode = (content = {}) => {
+export const getStateCodeOptionsByCountryCode = (countryCode = 'US') => {
   return async (dispatch, getState) => {
     dispatch(requestContent())
-    //location.states
-    dispatch(reciveContent({}))
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/getStateCodeOptionsByCountryCode?countryCode=${countryCode}`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (response.status === 200) {
+      let payload = {}
+      payload[countryCode] = response.data.stateCodeOptions || []
+      dispatch(reciveStateCodes(payload))
+    } else {
+      dispatch(reciveStateCodes({}))
+    }
   }
 }
-export const getCountries = (content = {}) => {
+export const getCountries = () => {
   return async (dispatch, getState) => {
     dispatch(requestContent())
-    //location.countries
-    dispatch(reciveContent({}))
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/getCountries`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (response.status === 200) {
+      dispatch(reciveContent({ countryCodeOptions: response.data.countryCodeOptions }))
+    } else {
+      dispatch(reciveContent({}))
+    }
   }
 }
 export const addContent = (content = {}) => {

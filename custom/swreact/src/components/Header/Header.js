@@ -1,6 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
@@ -10,6 +8,7 @@ import mobileLogo from '../../assets/images/logo-mobile.png'
 import { useTranslation } from 'react-i18next'
 import groupBy from 'lodash/groupBy'
 import queryString from 'query-string'
+import { useSelector } from 'react-redux'
 
 const extractMenuFromContent = content => {
   let menu = Object.keys(content)
@@ -83,10 +82,12 @@ const MegaMenu = props => {
   )
 }
 
-function Header({ menuItems, mainNavigation }) {
+function Header() {
   const { t, i18n } = useTranslation()
   let history = useHistory()
-
+  const content = useSelector(state => state.content)
+  const menuItems = extractMenuFromContent(content)
+  const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -199,16 +200,5 @@ function Header({ menuItems, mainNavigation }) {
     </header>
   )
 }
-Header.propTypes = {
-  menuItems: PropTypes.array,
-  mainNavigation: PropTypes.string,
-}
-function mapStateToProps(state) {
-  const menuItems = extractMenuFromContent(state.content)
-  return {
-    menuItems,
-    mainNavigation: state.content['header/main-navigation'] ? state.content['header/main-navigation'].customBody : '',
-  }
-}
 
-export default connect(mapStateToProps)(Header)
+export default Header

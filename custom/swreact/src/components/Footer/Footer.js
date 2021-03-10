@@ -2,7 +2,6 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { ActionBanner, SignUpForm } from '..'
 import styles from './Footer.module.css'
-import logo from '../../assets/images/logo-white.png'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -78,14 +77,9 @@ function Footer() {
           </div>
         </div>
       </div>
-      <div className={`${styles.bgFooter} pt-4`}>
+      <div className={`${styles.bgFooter} p-4`}>
         <div className="container">
-          <div className="row">
-            <div className="col-md-6 text-center text-md-left mb-4 text-light">
-              <img className="w-50" src={logo} alt={t('frontend.logo')} />
-            </div>
-            <div className="col-md-6 font-size-xs text-center text-md-right mb-4">{`@${new Date().getFullYear()} ${t('frontend.copywrite')}`}</div>
-          </div>
+          <div className="text-center font-size-xs">{`@${new Date().getFullYear()} ${t('frontend.copywrite')}`}</div>
         </div>
       </div>
     </footer>
