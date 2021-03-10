@@ -31,8 +31,7 @@ const user = (state = initialState, action) => {
 
     case RECEIVE_USER:
       if (user.loginToken) delete user.loginToken
-      user.isFetching = false
-      return { ...state, ...user }
+      return { ...state, ...user, isFetching: false }
 
     case CLEAR_USER:
       return { ...initialState }

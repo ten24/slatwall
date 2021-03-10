@@ -1539,8 +1539,8 @@ component  accessors="true" output="false"
                 
                 getService("OrderService").saveOrder(order);
                 if(structKeyExists(arguments.data,'ajaxResponse')){
-                    var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
-                    arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
+                    // var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
+                    arguments.data.ajaxResponse['addressVerification'] = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
                 }
                 getHibachiScope().addActionResult( "public:cart.addShippingAddress", order.hasErrors());
             }else{
@@ -3554,7 +3554,7 @@ component  accessors="true" output="false"
     }
 
     public void function getSlatwallForm(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.formCode" default="contact-us";
         param name="arguments.data.formPostfix" default="?submitted=true";
 
