@@ -9,7 +9,6 @@ const initState = {
   total: 0,
   checkoutStep: '',
   orderPayments: [{}],
-  orderPayments: [{}],
   orderFulfillments: [],
   orderRequirementsList: '',
   isFetching: false,
