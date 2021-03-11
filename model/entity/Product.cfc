@@ -166,7 +166,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productKeyMachinePartCompatibility" ormtype="string";
  property name="productKeyMachineCutterMaterial" ormtype="string";
  property name="productKeyMachineCutterAngle" ormtype="string";
- property name="productKeyMachineLockingMechanism" ormtype="string";
+ property name="productKeyMachineCutterWidth" ormtype="string";
  property name="productKeyMachineCutterCompatibility" ormtype="string";
  property name="productKeyMachineCompatibility" ormtype="string";
  property name="productBatteryCompatibility" ormtype="string";
@@ -174,6 +174,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productAlarmVolume" ormtype="string";
  property name="productRequiredCylinder" ormtype="string";
  property name="productDeviceCompatibility" ormtype="string";
+ property name="productKeyBoxStyle" ormtype="string";
  property name="productBoredLockGrade" ormtype="string" hb_formFieldType="select";
  property name="productBoredLockStyle" ormtype="string" hb_formFieldType="select";
  property name="mechanicalFaceplate" ormtype="string" hb_formFieldType="select";
@@ -186,6 +187,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productWeatherproof" ormtype="boolean" hb_formatType="yesno";
  property name="mechanicalHardwareGrade" ormtype="string";
  property name="productMountingType" ormtype="string";
+ property name="productLockApplication" ormtype="string";
  property name="mechanicalHardwareFunction" ormtype="string" hb_formFieldType="select";
  property name="mechanicalHardwareBoltLatch" ormtype="string";
  property name="merchanicalLockSeries" ormtype="string";
@@ -279,6 +281,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productCylinderPins" ormtype="string";
  property name="productCylinderLength" ormtype="string";
  property name="productCylinderType" ormtype="string" hb_formFieldType="select";
+ property name="productKeyThickness" ormtype="string";
+ property name="productKeyIlcoEquivalent" ormtype="string";
  property name="productKeyApplication" ormtype="string";
  property name="productKeyDesign" ormtype="string";
  property name="productKeyMaterial" ormtype="string" hb_formFieldType="select";

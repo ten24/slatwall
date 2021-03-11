@@ -23,7 +23,7 @@ const CartPromoBox = () => {
           <form className="card-body needs-validation" method="post" noValidate="">
             <div className="form-group">
               <input className="form-control" type="text" placeholder="Promo code" value={promoCode} required onChange={e => setPromoCode(e.target.value)} />
-              <div className="invalid-feedback">{t('frontend.order.code.provide')}</div>
+              <div className="invalid-feedback">{t('frontend.order.promo.code.provide')}</div>
             </div>
             <button
               className="btn btn-outline-primary btn-block"

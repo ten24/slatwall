@@ -215,6 +215,10 @@ component  accessors="true" output="false"
 	        data=arguments.data, 
 	        enforceAuthorization=false
 	    );
+	    
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("brandService").appendSettingsAndOptions(result.pageRecords);
+	    }
 
 	    arguments.data.ajaxResponse = result;
 
@@ -1539,8 +1543,8 @@ component  accessors="true" output="false"
                 
                 getService("OrderService").saveOrder(order);
                 if(structKeyExists(arguments.data,'ajaxResponse')){
-                    var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
-                    arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
+                    // var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
+                    arguments.data.ajaxResponse['addressVerification'] = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
                 }
                 getHibachiScope().addActionResult( "public:cart.addShippingAddress", order.hasErrors());
             }else{
@@ -3194,17 +3198,83 @@ component  accessors="true" output="false"
  		arguments.data['ajaxResponse']['orderTemplateItem'] = orderTemplateItemCollection.getPageRecords()[1]; // there should be only one record;  
 	}
 	
+	/**
+	 * Wishlist API - get all wishlist Items
+	 * createWishlist
+     * getWishlist
+	 * getWishlistItems
+	 * addWishlistItem
+	 * removeWishlistItem
+	 * */
+	
+	public void function createWishlist(required any data) {
+	    
+        param name="arguments.data.orderTemplateTypeID" default="2c9280846b712d47016b75464e800014";
+        param name="arguments.data.currencyCode" default="USD";
+        param name="arguments.data.site" default="stoneAndBerg";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        
+		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
+		    arguments.data.messages = [];
+			var orderTemplate = getOrderService().newOrderTemplate();
+		}
+		
+		if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
+        }
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
+ 		
+ 		var processObject = orderTemplate.getProcessObject('createWishlist');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
+        getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+	
+	public void function getWishlist(required any data) {
+	    
+	    if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        var wishlist = getOrderService().getAccountWishlists(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistProducts"] = wishlist;
+        getHibachiScope().addActionResult( "public:order.getWishlist", false);
+    }
+    
+    public void function getWishlistItems(required any data) {
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        var wishlistItems = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistProducts"] = wishlistItems;
+        getHibachiScope().addActionResult( "public:order.getWishlistItems", false);
+    }
+	
 	public void function addWishlistItem(required any data) {
         param name="arguments.data.orderTemplateID" default="";
         param name="arguments.data.skuID" default="";
         
         if( !(getHibachiScope().getLoggedInFlag()) ) {
-            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist ');
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
         }
         
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
+		
+		//create wishlist if not found with OrderTemplateID
+		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
+		    arguments.data.messages = [];
+			var orderTemplate = getOrderService().newOrderTemplate();
+			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem');
@@ -3223,10 +3293,10 @@ component  accessors="true" output="false"
 	
 	public void function removeWishlistItem(required any data) {
         param name="arguments.data.orderTemplateID" default="";
-        param name="arguments.data.skuID" default="";
+        param name="arguments.data.removalSkuID" default="";
         
         if( !(getHibachiScope().getLoggedInFlag()) ) {
-            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist ');
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
         }
         
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
@@ -3488,7 +3558,7 @@ component  accessors="true" output="false"
     }
 
     public void function getSlatwallForm(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.formCode" default="contact-us";
         param name="arguments.data.formPostfix" default="?submitted=true";
 
