@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { SlatwalApiService } from '../../../services'
 import Pagination from '../../ListingOld/Pagination'
@@ -199,12 +198,4 @@ const AccountOrderHistory = ({ crumbs, title, orders }) => {
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    ...state.configuration.accountOrderHistory,
-    user: state.userReducer,
-  }
-}
-
-AccountOrderHistory.propTypes = {}
-export default connect(mapStateToProps)(AccountOrderHistory)
+export default AccountOrderHistory

@@ -59,6 +59,7 @@ const ListingToolBar = ({ hide, sorting, orderBy, removeFilter, setSort }) => {
           className="form-control custom-select"
           id="sorting"
           value={orderBy}
+          style={{ minWidth: '150' }}
           onChange={event => {
             setSort(event.target.value)
           }}

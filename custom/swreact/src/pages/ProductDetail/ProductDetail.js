@@ -11,17 +11,18 @@ import useRedirect from '../../hooks/useRedirect'
 import { useGetProductDetails } from '../../hooks/useAPI'
 
 const ProductDetail = props => {
-  let { pathname, search } = useLocation()
+  let loc = useLocation()
   const [redirect, setRedirect] = useRedirect({ location: '/404', time: 300 })
   let [request, setRequest] = useGetProductDetails()
-  const [path, setPath] = useState(search)
-  console.log('request', request)
+  const [path, setPath] = useState(loc.pathname)
   useEffect(() => {
     let didCancel = false
-    if (!didCancel && ((!request.isFetching && !request.isLoaded) || search !== path)) {
-      const urlTitle = pathname.split('/').reverse()
+    if (!didCancel && ((!request.isFetching && !request.isLoaded) || loc.pathname !== path)) {
+      const urlTitle = loc.pathname.split('/').reverse()
+      setPath(loc.pathname)
       setRequest({
         ...request,
+        data: {},
         params: {
           filter: {
             current: 1,
@@ -39,7 +40,7 @@ const ProductDetail = props => {
     return () => {
       didCancel = true
     }
-  }, [request, setRequest, pathname, search, path])
+  }, [request, setRequest, loc, path.setPath])
 
   return (
     <Layout>

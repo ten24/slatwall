@@ -4,6 +4,9 @@
  * Theme Styles
  */
 
+// Custom Colors
+@import './custom/custom-colors';
+
 // Theme Helpers: Variables, Mixins and Placeholders
 @import './core/scss/helpers';
 
@@ -25,6 +28,5 @@
 $fa-font-path: '../webfonts';
 @import './core/fontawesome/fontawesome.scss';
 
-.apple {
-  background-color: aqua;
-}
+// Custom Styles
+@import './custom/custom-client';

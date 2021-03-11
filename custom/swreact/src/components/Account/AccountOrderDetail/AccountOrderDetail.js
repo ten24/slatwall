@@ -4,36 +4,27 @@ import { AccountLayout } from '../AccountLayout/AccountLayout'
 import OrderShipments from './OrderShipments'
 import OrderNav from './OrderNav'
 import OrderToolbar from './OrderToolbar'
+import { useGetOrderDetails } from '../../../hooks/useAPI'
 
 const AccountOrderDetail = props => {
   const orderID = props.path
-  const orderReff = props.forwardState || { orderID: '' }
-  const [order, setOrder] = useState({ ...orderReff, isLoaded: false })
+  let [order, setRequest] = useGetOrderDetails()
 
   useEffect(() => {
     let didCancel = false
-    if (!order.isLoaded) {
-      SlatwalApiService.account.orders({ orderID }).then(response => {
-        if (response.isSuccess() && !didCancel) {
-          if (response.success().ordersOnAccount.ordersOnAccount.length) {
-            setOrder({ ...response.success().ordersOnAccount.ordersOnAccount[0], isLoaded: true })
-            return
-          }
-        }
-        setOrder({ ...order, isLoaded: true })
-      })
+    if (!order.isFetching && !order.isLoaded && !didCancel) {
+      setRequest({ ...order, isFetching: true, isLoaded: false, params: { orderID }, makeRequest: true })
     }
-
     return () => {
       didCancel = true
     }
-  }, [order, orderID, setOrder])
+  }, [order, setRequest])
 
   return (
-    <AccountLayout title={`Order: ${order.orderNumber || ''}`}>
-      <OrderToolbar delivered={order.orderStatusType_typeName} />
+    <AccountLayout title={`Order: ${(order.isLoaded && order.data.orderInfo[0].orderNumber) || ''}`}>
+      <OrderToolbar delivered={order.isLoaded && order.data.orderInfo[0].orderStatusType_typeName} />
       <OrderNav />
-      <OrderShipments order={order} />
+      {order.isLoaded && <OrderShipments order={order.data} />}{' '}
     </AccountLayout>
   )
 }

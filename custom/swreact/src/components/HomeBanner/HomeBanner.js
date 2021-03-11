@@ -80,7 +80,7 @@ const HomeBanner = () => {
     }
   }, [request, setRequest])
   return (
-    <div className="hero mt-2" style={{ backgroundImage: `url(${Background})` }}>
+    <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${Background})` }}>
       <ProductSlider sliderData={request.data}>{home && <div dangerouslySetInnerHTML={{ __html: home.customBody }} />}</ProductSlider>
       <MainBanner />
     </div>

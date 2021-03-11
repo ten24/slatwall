@@ -1,21 +1,8 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { BreadCrumb } from '../..'
 import { logout } from '../../../actions/authActions'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-
-const getAccountData = (content, parentContentID = '2c9680847491ce86017491f46f9f0038') => {
-  return Object.keys(content)
-    .map(item => {
-      return content[item]
-    })
-    .filter(item => {
-      return item.parentContentID === parentContentID
-    })
-    .sort((a, b) => {
-      return a.sortOrder - b.sortOrder
-    })
-}
 
 const AccountSidebar = () => {
   const { t, i18n } = useTranslation()
@@ -84,12 +71,15 @@ const AccountSidebar = () => {
   )
 }
 
-const AccountHeader = ({ crumbs, title }) => {
+const AccountHeader = () => {
+  let loc = useLocation()
+  const content = useSelector(state => state.content[loc.pathname.substring(1)])
+  const { title } = content || {}
   return (
     <div className="page-title-overlap bg-lightgray pt-4">
       <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
         <div className="order-lg-2 mb-3 mb-lg-0 pt-lg-2">
-          <BreadCrumb crumbs={crumbs} />
+          <BreadCrumb />
         </div>
         <div className="order-lg-1 pr-lg-4 text-center text-lg-left">
           <h1 className="h3 mb-0">{title}</h1>
@@ -99,13 +89,13 @@ const AccountHeader = ({ crumbs, title }) => {
   )
 }
 
-const MyAccountLayout = ({ crumbs, children, title, user }) => {
+const MyAccountLayout = ({ children }) => {
   return (
     <>
-      <AccountHeader crumbs={crumbs} title={title} />
+      <AccountHeader />
       <div className="container pb-5 mb-2 mb-md-3">
         <div className="row">
-          <AccountSidebar user={user} />
+          <AccountSidebar />
           <section className="col-lg-8">{children}</section>
         </div>
       </div>
