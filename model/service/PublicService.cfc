@@ -137,9 +137,9 @@ component  accessors="true" output="false"
 	    param name="arguments.data.includePotentialFilters" default=true;
 
 	    // TODO: Temporary placeholder, Nitin is working on it and update.
-	    var currentRequestSite = this.getHibachiScope().getCurrentRequestSite() ?: this.getService('SiteService').newSite();
+	    var currentRequestSite = !isNull(this.getHibachiScope().getCurrentRequestSite()) ?this.getHibachiScope().getCurrentRequestSite() : this.getService('SiteService').newSite();
         
-	    var intigrationPackage = getService('SettingService').getSettingValue(currentRequestSite);
+	    var intigrationPackage = getService('SettingService').getSettingValue('siteProductSearchIntegration');
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
         
