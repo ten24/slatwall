@@ -61,6 +61,7 @@ Notes:
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" />
 		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" />
 		<swa:SlatwallSetting settingName="siteWishlistShareEmailTemplate" />
+		<swa:SlatwallSetting settingName="siteProductSearchIntegration"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

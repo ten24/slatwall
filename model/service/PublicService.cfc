@@ -65,6 +65,7 @@ component  accessors="true" output="false"
     property name="hibachiService" type="any";
     property name="typeService" type="any";
     property name="giftCardService";
+    property name="integrationService" type="any";
 
 
     variables.publicContexts = [];
@@ -135,14 +136,17 @@ component  accessors="true" output="false"
 	    
 	    param name="arguments.data.includePotentialFilters" default=true;
 
-	    
-	    // the integration needs to be enabled for this to work
-	    // TODO: create a site-level setting for defaule product-search integration
-        var slatwallProductSearchService = this.getService('slatwallProductSearchService');
+	    // TODO: Temporary placeholder, Nitin is working on it and update.
+	    var currentRequestSite = this.getHibachiScope().getCurrentRequestSite() ?: this.getService('SiteService').newSite();
+        
+	    var intigrationPackage = getService('SettingService').getSettingValue(currentRequestSite);
+	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
+        var integrationCFC = integrationEntity.getIntegrationCFC("Search");
         
         arguments.data.ajaxResponse = {
-            'data' : slatwallProductSearchService.getProducts(argumentCollection=arguments.data)
+            'data' : integrationCFC.getProducts(argumentCollection=arguments.data)
         };
+	    
     }
 
 
