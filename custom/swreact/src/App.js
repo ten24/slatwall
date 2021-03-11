@@ -59,6 +59,7 @@ export default function App() {
       <Header />
       <CMSWrapper />
       <Switch>
+        <Route path="/404" component={NotFound} />
         {routing.length &&
           routing.map(({ URLKey, URLKeyType }, index) => {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />

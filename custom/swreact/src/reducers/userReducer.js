@@ -12,13 +12,17 @@ const initialState = {
   primaryPhoneNumber: {
     phoneNumber: '',
   },
-  accountWishlistProducts: false,
+  favouriteSkus: {
+    orderTemplateID: '',
+    skusList: [],
+    isLoaded: false,
+  },
   company: '',
   isFetching: false,
   isFetchingOrders: false,
 }
 const user = (state = initialState, action) => {
-  const { user, err, ordersOnAccount, accountWishlistProducts } = action
+  const { user, err, ordersOnAccount, favouriteSkus } = action
 
   switch (action.type) {
     case REQUEST_USER:
@@ -46,7 +50,7 @@ const user = (state = initialState, action) => {
       return { ...state, user }
 
     case RECEIVE_WISHLIST:
-      return { ...state, accountWishlistProducts }
+      return { ...state, favouriteSkus: { ...state.favouriteSkus, ...favouriteSkus, isLoaded: true } }
 
     case ERROR_CREATE_USER:
       return { ...state, err, isFetching: false }
