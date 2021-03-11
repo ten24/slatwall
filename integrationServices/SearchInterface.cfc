@@ -50,7 +50,7 @@ Notes:
 interface{
 
   
-    struct function getProducts(requied struct appliedFilters);
-    struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters);
+    struct function getProducts();
+    struct function getPotentialFilterFacetsAndOptions();
 
 }

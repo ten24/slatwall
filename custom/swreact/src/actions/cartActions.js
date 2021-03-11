@@ -27,7 +27,28 @@ export const clearCart = () => {
     type: CLEAR_CART,
   }
 }
+export const getCart = () => {
+  return async dispatch => {
+    dispatch(requestCart())
 
+    const req = await SlatwalApiService.cart.get()
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+export const clearCartData = () => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.clear()
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
 export const addToCart = (skuID, quantity = 1) => {
   return async dispatch => {
     dispatch(requestCart())
@@ -99,6 +120,70 @@ export const removeItem = orderItemID => {
   }
 }
 
+export const addShippingAddress = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.addShippingAddress(params)
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+export const addShippingAddressUsingAccountAddress = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.addShippingAddressUsingAccountAddress({
+      ...params,
+      returnJSONObjects: 'cart',
+    })
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+export const addShippingMethod = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.addShippingMethod({
+      ...params,
+      returnJSONObjects: 'cart',
+    })
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+
+export const addPickupLocation = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.addPickupLocation(params)
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+
+export const updateFulfillment = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.updateFulfillment(params)
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+
 export const applyPromoCode = promotionCode => {
   return async dispatch => {
     dispatch(requestCart())
@@ -132,11 +217,51 @@ export const removePromoCode = (promotionCode, promotionCodeID) => {
   }
 }
 
-export const getCart = () => {
+export const addBillingAddress = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.get()
+    const req = await SlatwalApiService.cart.addBillingAddress(params)
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+
+export const addPayment = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.addPayment({
+      ...params,
+      returnJSONObjects: 'cart',
+    })
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success()))
+      dispatch(getCart())
+    }
+  }
+}
+
+export const removePayment = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.removePayment(params)
+
+    if (req.isSuccess()) {
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+
+export const placeOrder = () => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.cart.placeOrder({ returnJSONObjects: 'cart' })
 
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))

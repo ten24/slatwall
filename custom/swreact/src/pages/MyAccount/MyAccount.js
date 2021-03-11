@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import { Layout } from '../../components'
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, useRouteMatch, useLocation } from 'react-router-dom'
 import { getUser } from '../../actions/userActions'
 import CreateAccount from '../../components/Account/CreateAccount/CreateAccount'
 import ForgotPassword from '../../components/Account/ForgotPassword/ForgotPassword'
+import { isAuthenticated } from '../../utils'
 
 // I think we should be prelaoding these https://medium.com/maxime-heckel/react-lazy-a-take-on-preloading-views-cc90be869f14
 const AccountLogin = React.lazy(() => import('../../components/Account/AccountLogin/AccountLogin'))
@@ -29,23 +30,22 @@ const pageComponents = {
   AccountOrderHistory,
   CreateOrEditAccountPaymentMethod,
 }
-const MyAccount = ({ auth, user }) => {
+const MyAccount = () => {
   let match = useRouteMatch()
   let loc = useLocation()
   const dispatch = useDispatch()
+  const user = useSelector(state => state.userReducer)
+
   useEffect(() => {
-    // Object.keys(pageComponents).map(key => {
-    //   return pageComponents[key].preload()
-    // })
-    if (auth.isAuthenticanted && !user.isFetching && !user.accountID.length) {
+    if (isAuthenticated() && !user.isFetching && !user.accountID.length) {
       dispatch(getUser())
     }
-  }, [dispatch, auth, user])
+  }, [dispatch, isAuthenticated, user])
 
   const path = loc.pathname.split('/').reverse()
   return (
     <Layout>
-      {auth.isAuthenticanted && (
+      {isAuthenticated() && (
         <Switch>
           <Route path={`${match.path}/addresses/:id`}>
             <CreateOrEditAccountAddress path={path[0]} />
@@ -71,10 +71,10 @@ const MyAccount = ({ auth, user }) => {
           <Route path={`${match.path}/profile`}>
             <AccountProfile />
           </Route>
-          <Route path={match.path}>{auth.isAuthenticanted && <AccountOverview />}</Route>
+          <Route path={match.path}>{isAuthenticated() && <AccountOverview />}</Route>
         </Switch>
       )}
-      {!auth.isAuthenticanted && (
+      {!isAuthenticated() && (
         <Switch>
           <Route path={`${match.path}/createAccount`}>
             <CreateAccount />
@@ -91,11 +91,4 @@ const MyAccount = ({ auth, user }) => {
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    auth: state.authReducer,
-    user: state.userReducer,
-  }
-}
-
-export default connect(mapStateToProps)(MyAccount)
+export default MyAccount
