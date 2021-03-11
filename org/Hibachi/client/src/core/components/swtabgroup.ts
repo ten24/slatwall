@@ -22,7 +22,13 @@ class SWTabGroupController {
         this.tabGroupID = "TG" + this.utilityService.createID(30);
         this.switchTabGroupEventName = "SwitchTabGroup" + this.tabGroupID;
         if(angular.isUndefined(this.initTabEventName)){
-            this.initTabEventName = "InitTabForTabGroup" + this.tabGroupID
+            this.initTabEventName = "InitTabForTabGroup" + this.tabGroupID;
+        }
+        
+        this.observerService.attach(this.initTab, this.initTabEventName);
+        
+        if(angular.isUndefined(this.switchTabEventName)){	
+            this.switchTabEventName = this.tabGroupID + "SwitchTabTo";	
         }
         if(angular.isDefined(this.resetTabEventName)){
             this.observerService.attach(this.reset, this.resetTabEventName);
@@ -30,7 +36,7 @@ class SWTabGroupController {
         if(angular.isDefined(this.switchToTabEventName)){
             this.observerService.attach(this.switchToTab, this.switchToTabEventName);
         }
-        this.observerService.attach(this.initTab, this.initTabEventName);
+        this.observerService.attach(this.switchTab, this.switchTabEventName);
     }
 
     public initTab = () =>{
@@ -60,9 +66,9 @@ class SWTabGroupController {
 
     public switchTab = (tabToActivate) => {
         this.observerService.notify(this.switchTabGroupEventName);
-        if(this.switchTabEventName){
-            this.observerService.notify(this.switchTabEventName, tabToActivate);
-        }
+        // if(this.switchTabEventName){
+        //     this.observerService.notify(this.switchTabEventName, tabToActivate);
+        // }
         for(var i = 0; i < this.tabs.length; i++){
             this.tabs[i].active = false; 
         }
