@@ -24,7 +24,8 @@ const CreditCardDetails = () => {
   const [isEdit, setEdit] = useState(false)
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
-  const { billingAddress, accountPaymentMethod, expirationYear, nameOnCreditCard, expirationMonth, creditCardLastFour } = useSelector(state => state.cart.orderPayments[0])
+  const orderPayments = useSelector(state => state.cart.orderPayments)
+  const { billingAddress, accountPaymentMethod, expirationYear, nameOnCreditCard, expirationMonth, creditCardLastFour } = orderPayments[0] || {}
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
   let defaultCountryCode = 'US'
