@@ -12,7 +12,8 @@ export const GIFT_CARD = '50d8cd61009931554764385482347f3a'
 const PaymentSlide = ({ currentStep }) => {
   const orderRequirementsList = useSelector(state => state.cart.orderRequirementsList)
   const eligiblePaymentMethodDetails = useSelector(state => state.cart.eligiblePaymentMethodDetails)
-  const { paymentMethod, accountPaymentMethod } = useSelector(state => state.cart.orderPayments[0])
+  const orderPayments = useSelector(state => state.cart.orderPayments)
+  const { paymentMethod, accountPaymentMethod } = orderPayments[0] || {}
   const { accountPaymentMethodID } = accountPaymentMethod || {}
   const accountPaymentMethods = useSelector(state => state.userReducer.accountPaymentMethods)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
