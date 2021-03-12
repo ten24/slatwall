@@ -8,6 +8,8 @@ import useFormatCurrency from '../../hooks/useFormatCurrency'
 import ShippingSlide from './Shipping'
 import PaymentSlide from './Payment'
 import ReviewSlide from './Review'
+import AccountAddress from './AccountAddress'
+
 import { checkOutSteps, REVIEW } from './steps'
 import SlideNavigation from './SlideNavigation'
 import { placeOrder } from '../../actions/cartActions'
@@ -145,6 +147,17 @@ const Checkout = () => {
               </Route>
               <Route path={`${match.path}/payment`}>
                 <PaymentSlide currentStep={currentStep} />
+              </Route>
+              <Route path={`${match.path}/aa`}>
+                <AccountAddress
+                  currentStep={currentStep}
+                  onSelect={value => {
+                    console.log('onSelect', value)
+                  }}
+                  onSave={values => {
+                    console.log('onSave', values)
+                  }}
+                />
               </Route>
               <Route path={`${match.path}/review`}>
                 <ReviewSlide currentStep={currentStep} />
