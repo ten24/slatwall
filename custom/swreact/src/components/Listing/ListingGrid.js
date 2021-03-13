@@ -27,10 +27,10 @@ const ListingGrid = ({ isFetching, pageRecords }) => {
       )}
       {!isFetching &&
         pageRecords &&
-        pageRecords.map(({ product_urlTitle, product_productID, product_productName, sku_imageFile, sku_skuPrices_price }) => {
+        pageRecords.map(({ product_urlTitle, product_productID, product_productName, sku_imageFile, sku_skuPrices_price, sku_skuID }) => {
           return (
             <div key={product_productID} className="col-md-4 col-sm-6 px-2 mb-4">
-              <ProductCard urlTitle={product_urlTitle} productID={product_productID} productName={product_productName} listPrice={sku_skuPrices_price} defaultProductImageFiles={[sku_imageFile]} />
+              <ProductCard urlTitle={product_urlTitle} productID={product_productID} productName={product_productName} listPrice={sku_skuPrices_price} skuID={sku_skuID} defaultProductImageFiles={[sku_imageFile]} />
             </div>
           )
         })}
