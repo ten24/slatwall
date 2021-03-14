@@ -30,7 +30,7 @@ const ProductCard = props => {
     <div>
       <div className="card product-card">
         {productClearance === true && <span className="badge badge-primary">{t('frontend.core.special')}</span>}
-        <HeartButton isSaved={false} />
+        <HeartButton skuID={skuID} />
         <Link className="card-img-top d-block overflow-hidden" to={`/${product[0]}/${urlTitle}?skuid=${skuID}`}>
           <SWImage src={imgUrl} alt="Product" />
         </Link>

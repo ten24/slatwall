@@ -16,8 +16,6 @@ const ProductDetail = props => {
   let [request, setRequest] = useGetProductDetails()
   const [path, setPath] = useState(pathname)
   const params = queryString.parse(search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
-  console.log('pathname', pathname)
-  console.log('path', path)
   useEffect(() => {
     let didCancel = false
     if (!didCancel && ((!request.isFetching && !request.isLoaded) || pathname !== path)) {
@@ -44,7 +42,6 @@ const ProductDetail = props => {
       didCancel = true
     }
   }, [request, setRequest, pathname, search, path])
-  console.log('ProductDetail', request)
 
   return (
     <Layout>

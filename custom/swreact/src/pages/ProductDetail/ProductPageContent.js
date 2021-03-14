@@ -9,15 +9,21 @@ import { HeartButton } from '../../components'
 import { useTranslation } from 'react-i18next'
 import { useGetSku, useGetProductSkus, useGetProductAvailableSkuOptions, useGetProductSkuSelected } from '../../hooks/useAPI'
 import { concat } from 'lodash'
+import { useHistory, useLocation } from 'react-router'
+import { usePush } from '../../hooks/useRedirect'
 
 const ProductPageContent = ({ productID, productName, productClearance, productCode, productDescription, skuID }) => {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
+  let loc = useLocation()
+  let history = useHistory()
   let [sku, setRequest] = useGetSku()
   let [skus, setSkusRequest] = useGetProductSkus()
   let [skuOptions, setOptionsRequest] = useGetProductAvailableSkuOptions()
   let [skuSelected, setSlectedRequest] = useGetProductSkuSelected()
   const [lastOptionGoupID, setLastOptionGoupID] = useState('')
+  let [push, setPush] = usePush({ location: loc.pathname })
+
   let productDetails = {}
   const [quantity, setQuantity] = useState(1)
   const refs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef()])
@@ -25,11 +31,8 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
   if (skuSelected.isLoaded) {
     setSlectedRequest({ data: {}, isFetching: false, isLoaded: false, params: {}, makeRequest: false })
     setRequest({ ...sku, isFetching: true, isLoaded: false, params: { 'f:skuID': skuSelected.data.skuID || skus.data.skus[0].skuID }, makeRequest: true })
+    setPush({ ...push, search: `?skuid=${skuSelected.data.skuID || skus.data.skus[0].skuID}`, shouldRedirect: true, time: 200 })
   }
-  console.log('sku', sku)
-  console.log('skus', skus)
-  console.log('skuOptions', skuOptions)
-  console.log('skuSelected', skuSelected)
 
   useEffect(() => {
     let didCancel = false
@@ -67,7 +70,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
             <div className="product-details pb-3">
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {productClearance === true && ' On Special'}</span>
-                <HeartButton className={'btn-wishlist mr-0 mr-lg-n3'} />
+                <HeartButton skuID={sku.data.skuID} className={'btn-wishlist mr-0 mr-lg-n3'} />
               </div>
               <div className="mb-2">
                 <span className="text-small text-muted">{`${t('frontend.product.subhead')} `}</span>
