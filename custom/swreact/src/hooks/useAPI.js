@@ -93,7 +93,7 @@ export const useGetBrands = () => {
 }
 
 export const useGetProductList = () => {
-  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, currentPage: 1, totalPages: 1 })
   useEffect(() => {
     let didCancel = false
     let source = axios.CancelToken.source()
@@ -109,7 +109,8 @@ export const useGetProductList = () => {
       })
         .then(response => {
           if (response.status === 200 && response.data && response.data.pageRecords) {
-            setRequest({ data: response.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+            const { pageRecords, currentPage, totalPages } = response.data
+            setRequest({ data: pageRecords, currentPage, totalPages, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
