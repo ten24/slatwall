@@ -19,6 +19,7 @@ export default {
   theme: {
     host: 'https://stoneandberg.ten24dev.com',
     basePath: '/custom/client/assets/images/',
+    primaryColor: '5f1018',
   },
   countries: [
     { key: 'Afghanistan', value: 'AF' },
