@@ -286,18 +286,19 @@ export const useGetAllOrders = () => {
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
-        method: 'GET',
+        method: 'POST',
         withCredentials: true, // default
         url: `${sdkURL}api/scope/getAllOrdersOnAccount`,
         headers: {
           'Content-Type': 'application/json',
           'Auth-Token': `Bearer ${token}`,
         },
+        data: request.params,
         cancelToken: source.token,
       })
         .then(response => {
           if (response.status === 200 && response.data && response.data.ordersOnAccount) {
-            setRequest({ data: response.data.ordersOnAccount.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+            setRequest({ data: response.data.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
