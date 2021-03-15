@@ -27,6 +27,7 @@ const CMSWrapper = ({ children }) => {
     history.listen(location => {
       payload = {}
       path = location.pathname.split('/').reverse()[0].toLowerCase()
+      path = path.length ? path : 'home'
       payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
       dispatch(getFavouriteProducts())
       dispatch(

@@ -2,6 +2,7 @@ import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../services'
 import axios from 'axios'
 import { sdkURL } from '../services'
+import { receiveUser, requestUser } from './userActions'
 
 export const REQUEST_CART = 'REQUEST_CART'
 export const RECEIVE_CART = 'RECEIVE_CART'
@@ -232,15 +233,15 @@ export const addBillingAddress = (params = {}) => {
 export const addPayment = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
-
+    console.log('params', params)
     const req = await SlatwalApiService.cart.addPayment({
       ...params,
-      returnJSONObjects: 'cart',
+      returnJSONObjects: 'cart,account',
     })
 
     if (req.isSuccess()) {
-      dispatch(receiveCart(req.success()))
-      dispatch(getCart())
+      dispatch(receiveCart(req.success().cart))
+      dispatch(receiveUser(req.success().account))
     }
   }
 }
@@ -265,6 +266,131 @@ export const placeOrder = () => {
 
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
+
+export const addAddressAndAttachAsShipping = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+    dispatch(requestUser())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/addEditAccountAddress,addShippingAddressUsingAccountAddress`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: { returnJsonObjects: 'cart,account', ...params },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveUser(response.data.account))
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+      dispatch(receiveCart())
+    }
+  }
+}
+
+export const addAddressAndAttachAsBilling = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+    dispatch(requestUser())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/addEditAccountAddress,addBillingAddressUsingAccountAddress`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: { returnJsonObjects: 'cart,account', ...params },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveUser(response.data.account))
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+      dispatch(receiveCart())
+    }
+  }
+}
+
+export const addBillingAddressUsingAccountAddress = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+    dispatch(requestUser())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/addBillingAddressUsingAccountAddress`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: { returnJsonObjects: 'cart', ...params },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveUser(response.data.account))
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+      dispatch(receiveCart())
+    }
+  }
+}
+
+export const addNewAccountAndSetAsBilling = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+    dispatch(requestUser())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/addNewAccountAddress,addBillingAddressUsingAccountAddress`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: { returnJsonObjects: 'cart,account', ...params },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveUser(response.data.account))
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+      dispatch(receiveCart())
+    }
+  }
+}
+
+export const addAddressAndPaymentAndAddToOrder = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+    dispatch(requestUser())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/addAccountPaymentMethod`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: { returnJsonObjects: 'cart,account', ...params },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveUser(response.data.account))
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+      dispatch(receiveCart())
     }
   }
 }

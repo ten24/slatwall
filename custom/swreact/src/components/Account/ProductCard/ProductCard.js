@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
 
 const ProductCard = props => {
-  const { productName, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, calculatedTitle, listPrice, defaultProductImageFiles, productClearance } = props
+  const { productName, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, listPrice, defaultProductImageFiles = [], productClearance, skuID = '' } = props
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
   const { t, i18n } = useTranslation()
   const routing = useSelector(state => state.configuration.router)
@@ -30,14 +30,8 @@ const ProductCard = props => {
     <div>
       <div className="card product-card">
         {productClearance === true && <span className="badge badge-primary">{t('frontend.core.special')}</span>}
-        <HeartButton isSaved={false} />
-        <Link
-          className="card-img-top d-block overflow-hidden"
-          to={{
-            pathname: `/${product[0]}/${urlTitle}`,
-            state: { ...props },
-          }}
-        >
+        <HeartButton skuID={skuID} />
+        <Link className="card-img-top d-block overflow-hidden" to={`/${product[0]}/${urlTitle}?skuid=${skuID}`}>
           <SWImage src={imgUrl} alt="Product" />
         </Link>
         <div className="card-body py-2 text-left">
@@ -45,47 +39,20 @@ const ProductCard = props => {
             {brand_brandName}
           </Link>
           <h3 className="product-title font-size-sm">
-            <Link
-              to={{
-                pathname: `/${product[0]}/${urlTitle}`,
-                state: { ...props },
-              }}
-            >
-              {productName}
-            </Link>
+            <Link to={`/${product[0]}/${urlTitle}?skuid=${skuID}`}>{productName}</Link>
           </h3>
           <div className="d-flex justify-content-between">
             <div className="product-price">
-              {calculatedSalePrice && <span className="text-accent">{formatCurrency(calculatedSalePrice)}</span>}
-              {productClearance && (
-                <span style={{ marginLeft: '5px' }}>
-                  <small>{`${formatCurrency(listPrice)} LIST`}</small>
-                </span>
-              )}
+              {calculatedSalePrice > 0 && <span className="text-accent">{formatCurrency(calculatedSalePrice)}</span>}
+              <span style={{ marginLeft: '5px' }}>
+                <small>{`${formatCurrency(listPrice)} LIST`}</small>
+              </span>
             </div>
           </div>
         </div>
       </div>
     </div>
   )
-}
-//ProductCard.propTypes = {
-//}
-ProductCard.defaultProps = {
-  productName: '',
-  calculatedProductRating: null,
-  calculatedQATS: null,
-  calculatedSalePrice: false,
-  productCode: '',
-  productID: '',
-  productName: '',
-  urlTitle: '',
-  productClearance: false,
-  brand_brandName: '',
-  brand_urlTitle: '',
-  calculatedTitle: '',
-  listPrice: false,
-  defaultProductImageFiles: []
 }
 
 export default ProductCard

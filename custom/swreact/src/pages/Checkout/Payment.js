@@ -20,6 +20,7 @@ const PaymentSlide = ({ currentStep }) => {
   const [paymentMethodOnOrder, setPaymentMethodOnOrder] = useState(false)
   const [newOrderPayment, setNewOrderPayment] = useState(false)
   const dispatch = useDispatch()
+  const { accountAddressID } = useSelector(state => state.cart.billingAccountAddress) || ''
 
   if (paymentMethod && paymentMethod.paymentMethodID && paymentMethodOnOrder != paymentMethod.paymentMethodID) {
     setPaymentMethodOnOrder(paymentMethod.paymentMethodID)
@@ -63,7 +64,6 @@ const PaymentSlide = ({ currentStep }) => {
                     dispatch(
                       addPayment({
                         accountPaymentMethodID: value,
-                        copyFromType: 'accountPaymentMethod',
                       })
                     )
                   }
@@ -74,7 +74,13 @@ const PaymentSlide = ({ currentStep }) => {
               />
             </div>
           </div>
-          {newOrderPayment === 'new' && <CreditCardDetails />}
+          {newOrderPayment === 'new' && (
+            <CreditCardDetails
+              onSubmit={() => {
+                setNewOrderPayment(false)
+              }}
+            />
+          )}
         </>
       )}
 
