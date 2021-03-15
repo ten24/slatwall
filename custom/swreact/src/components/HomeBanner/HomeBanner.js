@@ -38,7 +38,7 @@ const MainBanner = () => {
     }
   })
   const settings = {
-    dots: true,
+    dots: false,
     infinite: false,
     slidesToShow: 1,
     slidesToScroll: 1,
