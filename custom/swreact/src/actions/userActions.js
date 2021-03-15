@@ -224,6 +224,7 @@ export const deletePaymentMethod = accountPaymentMethodID => {
 export const getFavouriteProducts = () => {
   return async (dispatch, getState) => {
     dispatch(requestWishlist())
+
     if (!getState().userReducer.isLoaded && isAuthenticated()) {
       const response = await axios({
         method: 'GET',
@@ -253,10 +254,10 @@ export const getFavouriteProducts = () => {
 export const addWishlistItem = (skuID = '') => {
   return async (dispatch, getState) => {
     dispatch(requestWishlist())
-    let { isLoaded, orderTemplateID } = getState().userReducer.favouriteSkus.isLoaded
-    if (!isLoaded && isAuthenticated()) {
+    let { isLoaded, orderTemplateID } = getState().userReducer.favouriteSkus
+    if (isLoaded && isAuthenticated()) {
       const response = await axios({
-        method: 'GET',
+        method: 'POST',
         withCredentials: true,
         url: `${sdkURL}api/scope/addWishlistItem,getWishlistItems`,
         headers: {
@@ -284,12 +285,12 @@ export const addWishlistItem = (skuID = '') => {
 export const removeWishlistItem = (removalSkuID = '') => {
   return async (dispatch, getState) => {
     dispatch(requestWishlist())
-    let { isLoaded, orderTemplateID } = getState().userReducer.favouriteSkus.isLoaded
-    if (!isLoaded && isAuthenticated()) {
+    let { isLoaded, orderTemplateID } = getState().userReducer.favouriteSkus
+    if (isLoaded && isAuthenticated()) {
       const response = await axios({
-        method: 'GET',
+        method: 'POST',
         withCredentials: true,
-        url: `${sdkURL}api/scope/addWishlistItem,getWishlistItems`,
+        url: `${sdkURL}api/scope/removeWishlistItem,getWishlistItems`,
         headers: {
           'Content-Type': 'application/json',
           'Auth-Token': `Bearer ${localStorage.getItem('token')}`,

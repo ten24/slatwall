@@ -411,3 +411,77 @@ export const useGetSkuList = () => {
 
   return [request, setRequest]
 }
+
+export const useGetProductSkus = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getProductSkus?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetProductAvailableSkuOptions = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/productAvailableSkuOptions`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetProductSkuSelected = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/productSkuSelected`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
