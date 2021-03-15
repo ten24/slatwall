@@ -317,7 +317,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public void function updateCalculatedProperties(boolean runAgain=false) {
  		if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
  			super.updateCalculatedProperties(argumentCollection=arguments);
-			ormflush();
+			this.getHibachiScope().hibachiORMFlush();
  			getService("stockService").processStock(this, "updateInventoryCalculationsForLocations");
  			
  			

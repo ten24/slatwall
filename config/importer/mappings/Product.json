@@ -705,6 +705,18 @@
                 "dataType": "string"
             }
         },
+        "CylinderCamType": {
+            "propertyIdentifier": "productCylinderCamType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "CylinderBoltType": {
+            "propertyIdentifier": "productCylinderBoltType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "ProductSeries": {
             "propertyIdentifier": "productSeries",
             "validations": {
@@ -723,8 +735,296 @@
                 "dataType": "string"
             }
         },
+        "AutoModel": {
+            "propertyIdentifier": "productAutoModel",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoModelYear": {
+            "propertyIdentifier": "productModelYear",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoLockType": {
+            "propertyIdentifier": "productAutoLockType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AutoPartType": {
+            "propertyIdentifier": "productAutoPartType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "LockCompatibility": {
             "propertyIdentifier": "productAutoLockCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ProdLockCompatibility": {
+            "propertyIdentifier": "productLockCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ElectronicUsers": {
+            "propertyIdentifier": "productElectronicUsers",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Audit": {
+            "propertyIdentifier": "productAudit",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Prox": {
+            "propertyIdentifier": "productProx",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ScheduledEvents": {
+            "propertyIdentifier": "productScheduledEvents",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "MechFaceplate": {
+            "propertyIdentifier": "mechanicalFaceplate",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "PaddleOrientation": {
+            "propertyIdentifier": "productPaddleOrientation",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "JambType": {
+            "propertyIdentifier": "productJambType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Weatherproof": {
+            "propertyIdentifier": "productWeatherproof",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Power": {
+            "propertyIdentifier": "productPower",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "it_group": {
+            "propertyIdentifier": "productITGroup",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "PartCompatibility": {
+            "propertyIdentifier": "productPartCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "KeyBoxStyle": {
+            "propertyIdentifier": "productKeyBoxStyle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "LockingMechanism": {
+            "propertyIdentifier": "productLockingMechanism",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ElectronicIndoorOutdoor": {
+            "propertyIdentifier": "productElectronicIndoorOutdoor",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "ElectronicBacklit": {
+            "propertyIdentifier": "productElectronicBacklit",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "ElectronicOperatingVoltage": {
+            "propertyIdentifier": "productElectronicOperatingVoltage",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "Dimensions": {
+            "propertyIdentifier": "productDimensions",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "ElectronicLED": {
+            "propertyIdentifier": "productElectronicLED",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "ElectronicRelayOutputs": {
+            "propertyIdentifier": "productElectronicRelayOutputs",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "ElectronicReaderTechnology": {
+            "propertyIdentifier": "productElectronicReaderTechnology",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "AlarmVolume": {
+            "propertyIdentifier": "productAlarmVolume",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "OutputVoltage": {
+            "propertyIdentifier": "productOutputVoltage",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "InputVoltage": {
+            "propertyIdentifier": "productInputVoltage",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "VoltageRange": {
+            "propertyIdentifier": "productVoltageRange",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "BatteryCompatibility": {
+            "propertyIdentifier": "productBatteryCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "DeviceCompatibility": {
+            "propertyIdentifier": "productDeviceCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "MechMaterialThickness": {
+            "propertyIdentifier": "mechanicalMaterialThickness",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "AutoButtons": {
+            "propertyIdentifier": "productAutoButtons",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "AutoMake": {
+            "propertyIdentifier": "productAutoMake",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "PartType": {
+            "propertyIdentifier": "productPartType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "RequiredCylinder": {
+            "propertyIdentifier": "productRequiredCylinder",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "KeyMachineCompatibility": {
+            "propertyIdentifier": "productKeyMachineCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "KeyMachinePartCompatibility": {
+            "propertyIdentifier": "productKeyMachinePartCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "KeyMachineCutterMaterial": {
+            "propertyIdentifier": "productKeyMachineCutterMaterial",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "KeyMachineCutterAngle": {
+            "propertyIdentifier": "productKeyMachineCutterAngle",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "MountingType": {
+            "propertyIdentifier": "productMountingType",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "Proprietary": {
+            "propertyIdentifier": "productProprietary",
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+         "MechHardwareGrade": {
+            "propertyIdentifier": "mechanicalHardwareGrade",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "LockApplication": {
+            "propertyIdentifier": "productLockApplication",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+         "KeyThickness": {
+            "propertyIdentifier": "productKeyThickness",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "KeyMachineCutterCompatibility": {
+            "propertyIdentifier": "productKeyMachineCutterCompatibility",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "KeyMachineLockingMechanism": {
+            "propertyIdentifier": "productKeyMachineLockingMechanism",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "KeyMachineCutterWidth": {
+            "propertyIdentifier": "productKeyMachineCutterWidth",
             "validations": {
                 "dataType": "string"
             }

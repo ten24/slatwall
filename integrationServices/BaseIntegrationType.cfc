@@ -69,14 +69,17 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	 * 
 	 */
 	public any function getIntegration() {
-		return getService('integrationService').getIntegrationByIntegrationPackage(getPackageName());
+		return getService('integrationService').getIntegrationByIntegrationPackage( this.getPackageName() );
 	}
 
 	/**
 	 * Helper function to return the The Package-name, for this integration.
 	 */
 	public string function getPackageName() {
-		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	    if(!structKeyExists(variables, 'packageName') ){
+	        variables['packageName'] = lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.')) ;   
+	    }
+		return variables['packageName'];
 	}
 	
 	
@@ -157,6 +160,17 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		}
 		
 		return response;
+	}
+	
+	
+	// helper functions to be used by integration CFCs, to get and put some data on hibachi-scope[Different for each request]
+	// as all of these cfc's are singletons, we can't keep anything request-specific in their scopes
+	public struct function getHibachiScopeData(){
+	    return this.getHibachiScope().getIntegrationData( this.getPackageName() );
+	}
+	
+	public void function setHibachiScopeData( struct data = {} ){
+	    return this.getHibachiScope().setIntegrationData( this.getPackageName(), arguments.data );
 	}
 
 }

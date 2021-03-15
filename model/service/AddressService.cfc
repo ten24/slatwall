@@ -105,7 +105,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
 			",
 			{
-				addressZoneID=arguments.addressZone.getAddressZoneID(),
+				addressZoneID=arguments.addressZoneID,
 				postalCode=arguments.address.getPostalCode(),
 				city=arguments.address.getCity(),
 				stateCode=arguments.address.getStateCode(),

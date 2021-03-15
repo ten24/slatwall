@@ -1,6 +1,0 @@
-/** @preserve
-  * package: sweetalert2-react-content v3.2.2
-  * file: dist/sweetalert2-react-content.umd.js
-  * homepage: https://github.com/sweetalert2/sweetalert2-react-content#readme
-  * license: MIT
-  **/

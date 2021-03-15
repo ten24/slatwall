@@ -1,31 +1,9 @@
-import { REQUEST_CONTENT, RECIVE_CONTENT } from '../actions/contentActions'
+import { REQUEST_CONTENT, RECIVE_CONTENT, RECIVE_STATE_CODES } from '../actions/contentActions'
 
 const initState = {
-  about: {
-    customBody: '',
-    title: '',
-    customSummary: '',
-  },
-  contact: {
-    customBody: '',
-    title: '',
-    customSummary: '',
-  },
-  featuredSlider: [],
-  homeMainBanner: [],
-  homeBrand: [],
-  homeContent: [],
-  'home/shop-by': {
-    customBody: '',
-    linkUrl: '',
-    title: '',
-  },
-  'footer/contact-application': '',
-  form: {
-    markup: '',
-  },
+  countryCodeOptions: [],
+  stateCodeOptions: {},
   isFetching: false,
-  err: null,
 }
 
 const content = (state = initState, action) => {
@@ -36,6 +14,9 @@ const content = (state = initState, action) => {
     case RECIVE_CONTENT:
       const { content } = action
       return { ...state, ...content, isFetching: false }
+
+    case RECIVE_STATE_CODES:
+      return { ...state, stateCodeOptions: { ...state.stateCodeOptions, ...action.payload }, isFetching: false }
 
     default:
       return state

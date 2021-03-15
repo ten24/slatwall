@@ -161,10 +161,32 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productSafeTypeStyle" ormtype="string" hb_formFieldType="select";
  property name="productSafeFireRated" ormtype="string";
  property name="productSafeSafetyRating" ormtype="string";
- property name="productDoorKnobFunction" ormtype="string" hb_formFieldType="select";
  property name="productDoorKnobSeries" ormtype="string" hb_formFieldType="select";
+ property name="productKeyMachinePartCompatibility" ormtype="string";
+ property name="productKeyMachineCutterMaterial" ormtype="string";
+ property name="productKeyMachineCutterAngle" ormtype="string";
+ property name="productKeyMachineCutterWidth" ormtype="string";
+ property name="productKeyMachineCutterCompatibility" ormtype="string";
+ property name="productKeyMachineCompatibility" ormtype="string";
+ property name="productBatteryCompatibility" ormtype="string";
+ property name="productVoltageRange" ormtype="string";
+ property name="productAlarmVolume" ormtype="string";
+ property name="productRequiredCylinder" ormtype="string";
+ property name="productDeviceCompatibility" ormtype="string";
+ property name="productKeyBoxStyle" ormtype="string";
  property name="productBoredLockGrade" ormtype="string" hb_formFieldType="select";
  property name="productBoredLockStyle" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalFaceplate" ormtype="string" hb_formFieldType="select";
+ property name="productPaddleOrientation" ormtype="string" hb_formFieldType="select";
+ property name="productJambType" ormtype="string" hb_formFieldType="select";
+ property name="productAudit" ormtype="string";
+ property name="productProx" ormtype="boolean" hb_formatType="yesno";
+ property name="productScheduledEvents" ormtype="string";
+ property name="productPower" ormtype="string";
+ property name="productWeatherproof" ormtype="boolean" hb_formatType="yesno";
+ property name="mechanicalHardwareGrade" ormtype="string";
+ property name="productMountingType" ormtype="string";
+ property name="productLockApplication" ormtype="string";
  property name="mechanicalHardwareFunction" ormtype="string" hb_formFieldType="select";
  property name="mechanicalHardwareBoltLatch" ormtype="string";
  property name="merchanicalLockSeries" ormtype="string";
@@ -174,7 +196,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="mechanicalKeying" ormtype="string" hb_formFieldType="select";
  property name="mechanicalStyle" ormtype="string";
  property name="productBumpStop" ormtype="boolean" hb_formatType="yesno";
- property name="mechnicalKeyway" ormtype="string";
+ property name="productTrimStyle" ormtype="string";
+ property name="productBarrelDiameter" ormtype="string";
  property name="productTumblerType" ormtype="string" hb_formFieldType="select";
  property name="mechanicalKeyway" ormtype="string";
  property name="mechanicalRekeyable" ormtype="boolean" hb_formatType="yesno";
@@ -183,6 +206,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="mechanicalShackleDiameter" ormtype="string" hb_formFieldType="select";
  property name="mechanicalShackleClearance" ormtype="string" hb_formFieldType="select";
  property name="mechanicalBodyWidth" ormtype="string";
+ property name="productElectronicRelayOutputs" ormtype="string";
+ property name="productElectronicReaderTechnology" ormtype="string";
+ property name="productElectronicIndoorOutdoor" ormtype="string";
+ property name="productElectronicBacklit" ormtype="boolean" hb_formatType="yesno";
+ property name="productElectronicOperatingVoltage" ormtype="string";
+ property name="productElectronicLED" ormtype="boolean" hb_formatType="yesno";
+ property name="productOutputVoltage" ormtype="string";
+ property name="productInputVoltage" ormtype="string";
  property name="productElectronicAuditTrail" ormtype="boolean" hb_formatType="yesno";
  property name="productElectronicPin" ormtype="boolean" hb_formatType="yesno";
  property name="productElectronicProx" ormtype="boolean" hb_formatType="yesno";
@@ -196,6 +227,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productMfgWarranty" ormtype="string";
  property name="productHoldOpen" ormtype="boolean" hb_formatType="yesno";
  property name="productParallelArm" ormtype="boolean" hb_formatType="yesno";
+ property name="productHingeLength" ormtype="string";
+ property name="productCloserSize" ormtype="string";
  property name="productRegularArm" ormtype="boolean" hb_formatType="yesno";
  property name="productExtraDutyArm" ormtype="boolean" hb_formatType="yesno";
  property name="productCushNStopArm" ormtype="boolean" hb_formatType="yesno";
@@ -214,11 +247,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productHingeMaterial" ormtype="string";
  property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
  property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
+ property name="productAutoModel" ormtype="string" hb_formFieldType="select";
+ property name="productModelYear" ormtype="string" hb_formFieldType="select";
+ property name="productAutoLockType" ormtype="string" hb_formFieldType="select";
+ property name="productAutoPartType" ormtype="string" hb_formFieldType="select";
+ property name="productAutoButtons" ormtype="string";
  property name="productAutoMake" ormtype="string" hb_formFieldType="select";
  property name="productAutoLockCompatibility" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachineType" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachineCutByCode" ormtype="boolean" hb_formatType="yesno";
  property name="productKeyMachineDuplicate" ormtype="boolean" hb_formatType="yesno";
+ property name="productCylinderCamType" ormtype="string";
+ property name="productCylinderBoltType" ormtype="string";
  property name="productPickStyle" ormtype="string" hb_formFieldType="select";
  property name="productTension" ormtype="string";
  property name="productTensionWrenchStyle" ormtype="string";
@@ -227,6 +267,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productToolMaterial" ormtype="string";
  property name="productMaterialThickness" ormtype="string";
  property name="productLock" ormtype="string" hb_formFieldType="select";
+ property name="productLockCompatibility" ormtype="string";
  property name="productMachineCompatibility" ormtype="string";
  property name="productPinSize" ormtype="string";
  property name="productLockBrand" ormtype="string";
@@ -243,12 +284,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productCylinderPins" ormtype="string";
  property name="productCylinderLength" ormtype="string";
  property name="productCylinderType" ormtype="string" hb_formFieldType="select";
+ property name="productKeyThickness" ormtype="string";
+ property name="productKeyIlcoEquivalent" ormtype="string";
  property name="productKeyApplication" ormtype="string";
  property name="productKeyDesign" ormtype="string";
  property name="productKeyMaterial" ormtype="string" hb_formFieldType="select";
  property name="productKeySize" ormtype="string";
  property name="productKeyColor" ormtype="string";
  property name="productPinKitType" ormtype="string" hb_formFieldType="select";
+ property name="productDoorKnobFunction" ormtype="string" hb_formFieldType="select";
+ property name="productITGroup" ormtype="string";
+ property name="productDimensions" ormtype="string";
+ property name="productPartCompatibility" ormtype="string";
+ property name="productLockingMechanism" ormtype="string";
+ property name="productPartType" ormtype="string";
  property name="productTwinPack" ormtype="boolean" hb_formatType="yesno";
  property name="productResidential" ormtype="boolean" hb_formatType="yesno";
  property name="productBoxQuantity" ormtype="string";
@@ -1137,6 +1186,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.brandOptions;
+	}
+	
+	public any function getBrandTypeAheadCollectionList(){
+		
+		var	collectionList = this.getService('brandService').getBrandCollectionList();
+		collectionList.setDisplayProperties('brandID', {isVisible=false,isSearchable=false});
+		collectionList.addDisplayProperties('brandName', {isVisible=true,isSearchable=true});
+		collectionList.addOrderBy('brandName|ASC');
+		return collectionList;
 	}
 
 	public string function getNextSkuCode() {

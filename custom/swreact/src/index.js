@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
+import { BrowserRouter as Router } from 'react-router-dom'
+
 import './i18n'
 import { Provider } from 'react-redux'
 import store from './createStore'
@@ -9,8 +11,11 @@ import './assets/theme'
 
 ReactDOM.render(
   // <React.StrictMode>
+
   <Provider store={store}>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </Provider>,
   // </React.StrictMode>
   document.getElementById('app')

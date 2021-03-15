@@ -74,6 +74,52 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		var cart = request.slatwallScope.getCart();
         // dump(var=cart, top=1);
 	}
+	
+	/**
+	* @test
+	*/
+	public void function getProducts_test(){
+	    
+	    /*
+    	    param name="arguments.data.currencyCode" default='USD';
+    	    
+    	    // facets-options	
+    	    param name="arguments.data.productType" default='';
+    	    param name="arguments.data.category" default='';
+    	    param name="arguments.data.brands" default='';
+    	    param name="arguments.data.options" default='';
+    	    param name="arguments.data.attributeOptions" default='';
+    	    
+            // Search
+            param name="arguments.data.keyword" default="";
+            // Sorting
+            param name="arguments.data.orderBy" default="product.productName|DESC"; 
+            // Pricing
+            param name="arguments.data.price" default=""; 
+            // Pagination
+    	    param name="arguments.data.currentPage" default=1;
+    	    param name="arguments.data.pageSize" default=10;
+    	
+	    */
+	    
+	    var brands = [];
+	    var productTypes = [];
+	    var options = [];
+	    
+		var data = {
+            "productType": "",
+            "category": "",
+            // "brands": "Yale,Lab",
+            "options": "",
+            "attributeOptions": "",
+            "keyword": "Serrated",
+        };
+		
+		this.getService().getProducts(data);
+		
+		dump(data);
+		
+	}
 }
 
 

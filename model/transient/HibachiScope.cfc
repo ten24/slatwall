@@ -68,6 +68,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// Slatwall Specific queue properties
 	property name="emailQueue" type="array";
 	
+	property name="integrationsData" type="struct";
+	
 	// Deprecated Properties
 	property name="currentAccount";
 	property name="currentBrand";
@@ -445,7 +447,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var availablePropertyList = "";
 		
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'order')){
-			availablePropertyList &="orderItems.calculatedListPrice,orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,fulfillmentHandlingFeeTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";
+			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,fulfillmentHandlingFeeTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";
 		}
 		
 		//orderItemData
@@ -701,6 +703,28 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			variables.isOnSlatwallCMS = !isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getSite().getApp());
 		}
 		return variables.isOnSlatwallCMS;
+	}
+	
+	public struct function getIntegrationsData(){
+	    if( !structKeyExists(variables, 'integrationsData') || !isStruct(variables.integrationsData) ){
+	        variables.integrationsData = {};
+	    }
+	    return variables.integrationsData;
+	}
+	
+	public struct function getIntegrationData(required string integrationPackageName){
+	    var integrationsData = this.getIntegrationsData();
+	    
+	    if(!structKeyExists(integrationsData, arguments.integrationPackageName)){
+	        integrationsData[ arguments.integrationPackageName ] = {};
+	    }
+	    
+	    return integrationsData[ arguments.integrationPackageName ];
+	}
+	
+	public void function setIntegrationData(required string integrationPackageName, required struct integrationData ){
+	    var integrationsData = this.getIntegrationsData();
+	    integrationsData[ arguments.integrationPackageName ] = arguments.integrationData;
 	}
 	
 }

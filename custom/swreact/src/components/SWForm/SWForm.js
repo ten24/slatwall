@@ -10,7 +10,7 @@ const SWForm = ({ formik, children, title = '', subTitle = '', primaryButtontext
         className="font-size-sm text-muted mb-4"
         onClick={event => {
           event.preventDefault()
-          if (event.target) {
+          if (event.target.getAttribute('href')) {
             history.push(event.target.getAttribute('href'))
           }
         }}

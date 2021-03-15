@@ -3,11 +3,13 @@ import withReactContent from 'sweetalert2-react-content'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { deletePaymentMethod } from '../../../actions/userActions'
+import { useTranslation } from 'react-i18next'
 
 const PaymentMethodItem = props => {
   const { accountPaymentMethodID, accountPaymentMethodName, nameOnCreditCard, isPrimary = false, creditCardType, activeFlag, expirationYear, expirationMonth } = props
   const MySwal = withReactContent(Swal)
   const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
 
   return (
     <tr>
@@ -29,9 +31,6 @@ const PaymentMethodItem = props => {
             pathname: `/my-account/cards/${accountPaymentMethodID}`,
             state: { ...props },
           }}
-          data-toggle="tooltip"
-          title=""
-          data-original-title="Edit"
         >
           <i className="far fa-edit"></i>
         </Link>
@@ -40,11 +39,11 @@ const PaymentMethodItem = props => {
           onClick={() => {
             MySwal.fire({
               icon: 'info',
-              title: <p>Remove Card?</p>,
+              title: <p>{t('frontend.account.payment_method.remove')}</p>,
               showCloseButton: true,
               showCancelButton: true,
               focusConfirm: false,
-              confirmButtonText: 'Delete',
+              confirmButtonText: t('frontend.core.delete'),
             }).then(data => {
               if (data.isConfirmed) {
                 dispatch(deletePaymentMethod(accountPaymentMethodID))

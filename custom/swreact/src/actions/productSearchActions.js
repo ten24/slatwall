@@ -102,7 +102,7 @@ export const reciveOptions = payload => {
   }
 }
 
-export const search = () => {
+export const search = (payload = {}) => {
   return async (dispatch, getState) => {
     const { keyword, sortBy, currentPage } = getState().productSearchReducer
     dispatch(requestProducts())
@@ -116,6 +116,7 @@ export const search = () => {
       filter: {
         publishedFlag: true,
         'productName:like': `%${keyword}%`,
+        ...payload,
       },
     })
 

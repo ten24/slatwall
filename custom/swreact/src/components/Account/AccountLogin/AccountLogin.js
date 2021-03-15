@@ -1,12 +1,14 @@
 import { login } from '../../../actions/authActions'
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useRouteMatch } from 'react-router-dom'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
   let match = useRouteMatch()
+  const { t, i18n } = useTranslation()
 
   const formik = useFormik({
     initialValues: {
@@ -21,28 +23,28 @@ const LoginForm = () => {
     <div className="col-md-6">
       <div className="card box-shadow">
         <div className="card-body">
-          <h2 className="h4 mb-1">Sign in</h2>
+          <h2 className="h4 mb-1">{t('frontend.account.sign_in')}</h2>
           <p className="font-size-sm text-muted mb-4">
-            Don't have an account? <Link to={`${match.path}/createAccount`}>Request account</Link>.
+            {`${t('frontend.account.no_account')} `} <Link to={`${match.path}/createAccount`}>{t('frontend.account.request')}</Link>.
           </p>
           <form onSubmit={formik.handleSubmit}>
             <div className="form-group">
-              <label htmlFor="loginEmail">E-mail Address</label>
+              <label htmlFor="loginEmail">{t('frontend.account.email')}</label>
               <input value={formik.values.loginEmail} onChange={formik.handleChange} autoComplete="email" required className="form-control" type="email" id="loginEmail" />
             </div>
             <div className="form-group">
-              <label htmlFor="loginPassword">Password</label>
+              <label htmlFor="loginPassword">{t('frontend.account.password')}</label>
               <input value={formik.values.loginPassword} onChange={formik.handleChange} autoComplete="current-password" required className="form-control" type="password" id="loginPassword" />
             </div>
             <div className="text-right">
               <Link to={`${match.path}/forgotPassword`} className="nav-link-inline font-size-sm">
-                Forgot password?
+                {t('frontend.account.forgot_password')}
               </Link>
             </div>
             <hr className="mt-4" />
             <div className="text-right pt-4">
               <button className="btn btn-primary" type="submit">
-                Sign In
+                {t('frontend.account.sign_in')}
               </button>
             </div>
           </form>
@@ -52,7 +54,7 @@ const LoginForm = () => {
   )
 }
 
-const AccountLogin = ({ auth }) => {
+const AccountLogin = () => {
   return (
     <div className="container py-4 py-lg-5 my-4">
       <div className="row d-flex justify-content-center">
@@ -61,11 +63,5 @@ const AccountLogin = ({ auth }) => {
     </div>
   )
 }
-const mapStateToProps = state => {
-  return {
-    auth: state.authReducer,
-    user: state.userReducer,
-  }
-}
 
-export default connect(mapStateToProps)(AccountLogin)
+export default AccountLogin

@@ -1,20 +1,20 @@
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+
 import { Footer } from '..'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { getContent } from '../../actions/contentActions'
+import { useLocation } from 'react-router'
 
-const Layout = ({ children, actionBannerDisable }) => {
+const Layout = ({ children }) => {
   return (
     <>
       <ToastContainer />
       <div style={{ minHeight: '800px' }}>{children}</div>
-      <Footer actionBannerDisable={actionBannerDisable} />
+      <Footer />
     </>
   )
 }
-// function mapStateToProps(state) {
-
-//   return preload.navigation
-// }
 
 export default Layout
-// export default connect(mapStateToProps)(Layout)

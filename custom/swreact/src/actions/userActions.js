@@ -1,9 +1,15 @@
 import { softLogout } from './authActions'
-import { SlatwalApiService } from '../services'
+import { SlatwalApiService, sdkURL } from '../services'
 import { toast } from 'react-toastify'
+import { receiveCart } from './cartActions'
+import axios from 'axios'
+import { isAuthenticated } from '../utils'
 
 export const REQUEST_USER = 'REQUEST_USER'
 export const RECEIVE_USER = 'RECEIVE_USER'
+
+export const REQUEST_WISHLIST = 'REQUEST_WISHLIST'
+export const RECEIVE_WISHLIST = 'RECEIVE_WISHLIST'
 
 export const RECEIVE_ACCOUNT_ORDERS = 'RECEIVE_ACCOUNT_ORDERS'
 export const REQUEST_ACCOUNT_ORDERS = 'REQUEST_ACCOUNT_ORDERS'
@@ -12,6 +18,19 @@ export const CLEAR_USER = 'CLEAR_USER'
 export const REQUEST_CREATE_USER = 'REQUEST_CREATE_USER'
 export const RECEIVE_CREATE_USER = 'RECEIVE_CREATE_USER'
 export const ERROR_CREATE_USER = 'ERROR_CREATE_USER'
+
+export const requestWishlist = () => {
+  return {
+    type: REQUEST_WISHLIST,
+  }
+}
+
+export const receiveWishlist = (favouriteSkus = {}) => {
+  return {
+    type: RECEIVE_WISHLIST,
+    favouriteSkus,
+  }
+}
 
 export const requestUser = () => {
   return {
@@ -62,7 +81,7 @@ export const getUser = () => {
   return async dispatch => {
     dispatch(requestUser())
 
-    const req = await SlatwalApiService.account.get()
+    const req = await SlatwalApiService.account.get({ returnJSONObjects: 'cart' })
 
     if (req.isFail()) {
       dispatch(softLogout())
@@ -71,6 +90,7 @@ export const getUser = () => {
         dispatch(softLogout())
       } else {
         dispatch(receiveUser(req.success().account))
+        dispatch(receiveCart(req.success().cart))
       }
     }
   }
@@ -201,53 +221,94 @@ export const deletePaymentMethod = accountPaymentMethodID => {
   }
 }
 
-// export const createUser = (email, password, confirmPassword, accountNumber) => {
-//   return async dispatch => {
-//     dispatch(requestCreateUser())
+export const getFavouriteProducts = () => {
+  return async (dispatch, getState) => {
+    dispatch(requestWishlist())
 
-//     if (!accountNumber || !accountNumber.length)
-//       return dispatch(errorCreateUser('Account number is a required field!'))
+    if (!getState().userReducer.isLoaded && isAuthenticated()) {
+      const response = await axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/getWishlistItems`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
+        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
+          return orderTemplateItems_sku_skuID
+        })
+        const orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        dispatch(
+          receiveWishlist({
+            skusList,
+            orderTemplateID,
+          })
+        )
+      }
+    }
+  }
+}
 
-//     if (!email || !email.length)
-//       return dispatch(errorCreateUser('Email is a required field!'))
-//     if (!validator.isEmail(email))
-//       return dispatch(errorCreateUser('Email is invalid!'))
+export const addWishlistItem = (skuID = '') => {
+  return async (dispatch, getState) => {
+    dispatch(requestWishlist())
+    let { isLoaded, orderTemplateID } = getState().userReducer.favouriteSkus
+    if (isLoaded && isAuthenticated()) {
+      const response = await axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/addWishlistItem,getWishlistItems`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+        },
+        data: { skuID, orderTemplateID },
+      })
+      if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
+        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
+          return orderTemplateItems_sku_skuID
+        })
+        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        dispatch(
+          receiveWishlist({
+            skusList,
+            orderTemplateID,
+          })
+        )
+      }
+    }
+  }
+}
 
-//     if (!password || !password.length)
-//       return dispatch(errorCreateUser('Password is a required field!'))
-//     if (password.length < 8)
-//       return dispatch(
-//         errorCreateUser('Password must be 8 characters or longer!')
-//       )
-
-//     if (password !== confirmPassword)
-//       return dispatch(errorCreateUser(`Passwords don't match!`))
-
-//     const req = {}
-
-//     //Create Account
-//     // slatwall.account.createAccount( {
-//     //     emailAddress: newUserAccount + "@ten24web.com",
-//     //     emailAddressConfirm: newUserAccount + "@ten24web",
-//     //     password: "123456@ABC",
-//     //     passwordConfirm: "123456@ABC",
-//     //     username: newUserAccount,
-//     //     firstName: "Gaurav",
-//     //     lastName: "Singh",
-//     //     company: "",
-//     //     phoneNumber: "",
-//     //     organizationFlag: "",
-//     //     parentAccountID: "",
-//     // } ).then(function (response) {
-//     //     console.log("createAccount", response.isFail(), response.isSuccess() );
-//     // });
-//     if (false) {
-//       dispatch(errorCreateUser(err.toString()))
-//     } else {
-//       const { loginToken } = user
-//       dispatch(receiveCreateUser(user))
-//       dispatch(requestLogin())
-//       dispatch(receiveLogin(loginToken))
-//     }
-//   }
-// }
+export const removeWishlistItem = (removalSkuID = '') => {
+  return async (dispatch, getState) => {
+    dispatch(requestWishlist())
+    let { isLoaded, orderTemplateID } = getState().userReducer.favouriteSkus
+    if (isLoaded && isAuthenticated()) {
+      const response = await axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/removeWishlistItem,getWishlistItems`,
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+        },
+        data: { removalSkuID, orderTemplateID },
+      })
+      if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
+        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
+          return orderTemplateItems_sku_skuID
+        })
+        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        dispatch(
+          receiveWishlist({
+            skusList,
+            orderTemplateID,
+          })
+        )
+      }
+    }
+  }
+}

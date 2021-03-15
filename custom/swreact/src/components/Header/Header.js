@@ -1,26 +1,59 @@
-import React, { useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
-import { connect, useDispatch } from 'react-redux'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import debounce from 'lodash/debounce'
-import { setKeyword } from '../../actions/productSearchActions'
 import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
 import AccountBubble from './AccountBubble'
-import logo from '../../assets/images/sb-logo.png'
-import mobileLogo from '../../assets/images/sb-logo-mobile.png'
+import logo from '../../assets/images/logo.png'
+import mobileLogo from '../../assets/images/logo-mobile.png'
+import { useTranslation } from 'react-i18next'
+import groupBy from 'lodash/groupBy'
+import queryString from 'query-string'
+import { useSelector } from 'react-redux'
+
+const extractMenuFromContent = content => {
+  let menu = Object.keys(content)
+    .map(key => {
+      return key.includes('productcategories') ? content[key] : null
+    })
+    .filter(item => {
+      return item
+    })
+    .sort((a, b) => {
+      return a.sortOrder - b.sortOrder
+    })
+  if (menu.length) {
+    const groupedItems = groupBy(menu, 'parentContentID')
+    menu = menu
+      .map(item => {
+        item.children = groupedItems.hasOwnProperty(item.contentID) ? groupedItems[item.contentID] : []
+        return item
+      })
+      .filter(item => {
+        return item.children.length
+      })
+      .filter(item => {
+        return item.urlTitle != 'productcategories'
+      })
+      .sort((a, b) => {
+        return a.sortOrder - b.sortOrder
+      })
+  }
+  return menu
+}
+
 const MegaMenu = props => {
   let history = useHistory()
+  const { t, i18n } = useTranslation()
 
   return (
     <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href={props.linkUrl} data-toggle="dropdown">
+      <a className="nav-link dropdown-toggle" href={props.linkUrl || '/'} data-toggle="dropdown">
         {props.title}
       </a>
       <div className="dropdown-menu pt-0 pb-3">
         <div className="nav-shop-all">
-          <Link to={props.linkUrl}>
-            Shop All {props.title}
+          <Link to={props.linkUrl || '/'}>
+            {`${t('frontend.nav.shopall')} ${props.title}`}
             <i className="far fa-arrow-right ml-2"></i>
           </Link>
         </div>
@@ -32,7 +65,9 @@ const MegaMenu = props => {
                   className="widget widget-links mb-3"
                   onClick={event => {
                     event.preventDefault()
-                    history.push(event.target.getAttribute('href'))
+                    if (event.target.getAttribute('href')) {
+                      history.push(event.target.getAttribute('href'))
+                    }
                   }}
                   dangerouslySetInnerHTML={{
                     __html: productCategory['customBody'],
@@ -47,38 +82,22 @@ const MegaMenu = props => {
   )
 }
 
-function Header({ productCategories, mainNavigation }) {
-  const dispatch = useDispatch()
-
-  let menuItems = new Map()
-  productCategories.forEach(item => {
-    if (menuItems.has(item.parentContent_title)) {
-      let exisitingItems = menuItems.get(item.parentContent_title)
-      exisitingItems.push(item)
-      menuItems.set(item.parentContent_title, exisitingItems)
-    } else {
-      menuItems.set(item.parentContent_title, [item])
-    }
-  })
-  const [searchTerm, setSearchTerm] = useState('')
+function Header() {
+  const { t, i18n } = useTranslation()
   let history = useHistory()
-
-  const slowlyRequest = useCallback(
-    debounce(value => {
-      dispatch(setKeyword(value))
-    }, 500),
-    []
-  )
+  const content = useSelector(state => state.content)
+  const menuItems = extractMenuFromContent(content)
+  const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
         <div className="navbar navbar-expand-lg navbar-light">
           <div className="container">
             <Link className="navbar-brand d-none d-md-block mr-3 flex-shrink-0" to="/">
-              <img src={logo} alt="Stone & Berg Logo" />
+              <img src={logo} alt={t('frontend.logo')} />
             </Link>
             <Link className="navbar-brand d-md-none mr-2" to="/">
-              <img src={mobileLogo} style={{ minWidth: '90px' }} alt="Stone & Berg Logo" />
+              <img src={mobileLogo} style={{ minWidth: '90px' }} alt={t('frontend.logo')} />
             </Link>
 
             <div className="navbar-right">
@@ -87,24 +106,28 @@ function Header({ productCategories, mainNavigation }) {
                   <input
                     className="form-control appended-form-control"
                     type="text"
-                    value={searchTerm}
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
-                        history.push('/products')
+                        e.preventDefault()
+                        history.push({
+                          pathname: '/products',
+                          search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                        })
                       }
                     }}
-                    onChange={e => {
-                      setSearchTerm(e.target.value)
-                      slowlyRequest(e.target.value)
-                    }}
-                    placeholder="Search for products"
+                    // onChange={e => debounced.callback(e.target.value)}
+                    placeholder={t('frontend.search.placeholder')}
                   />
                   <div className="input-group-append-overlay">
                     <span className="input-group-text">
                       <i
                         style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          history.push('/products')
+                        onClick={e => {
+                          e.preventDefault()
+                          history.push({
+                            pathname: '/products',
+                            search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                          })
                         }}
                         className="far fa-search"
                       ></i>
@@ -116,7 +139,7 @@ function Header({ productCategories, mainNavigation }) {
                     <span className="navbar-toggler-icon"></span>
                   </button>
                   <a className="navbar-tool navbar-stuck-toggler" href="#">
-                    <span className="navbar-tool-tooltip">Expand menu</span>
+                    <span className="navbar-tool-tooltip">{t('frontend.nav.expand')}</span>
                     <div className="navbar-tool-icon-box">
                       <i className="far fa-bars"></i>
                     </div>
@@ -154,18 +177,19 @@ function Header({ productCategories, mainNavigation }) {
                     <i className="far fa-search"></i>
                   </span>
                 </div>
-                <input className="form-control prepended-form-control" type="text" placeholder="Search for products" />
+                <input className="form-control prepended-form-control" type="text" placeholder={t('frontend.search.placeholder')} />
               </div>
 
               <ul className="navbar-nav nav-categories">
-                {[...menuItems.values()].map((menuItem, index) => {
-                  return <MegaMenu key={index} subMenu={menuItem} title={menuItem[0]['parentContent_title']} linkUrl={menuItem[0]['linkUrl']} />
+                {menuItems.map((menuItem, index) => {
+                  return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} />
                 })}
               </ul>
               <ul className="navbar-nav mega-nav ml-lg-2">
                 <li className="nav-item">
                   <Link className="nav-link" to="/">
-                    <i className="far fa-industry-alt mr-2"></i>Shop by Manufacturer
+                    <i className="far fa-industry-alt mr-2"></i>
+                    {t('frontend.nav.manufacturer')}
                   </Link>
                 </li>
               </ul>
@@ -176,15 +200,5 @@ function Header({ productCategories, mainNavigation }) {
     </header>
   )
 }
-Header.propTypes = {
-  mainNavigation: PropTypes.string,
-  productCategories: PropTypes.array,
-}
-function mapStateToProps(state) {
-  return {
-    productCategories: state.preload.stackedContent['header/productCategories'],
-    mainNavigation: state.preload.stackedContent['header/main-navigation'],
-  }
-}
 
-export default connect(mapStateToProps)(Header)
+export default Header

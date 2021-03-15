@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
 import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
-import { getFeaturedItems } from '../../actions/productSearchActions'
-import { connect, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import ProductSlider from '../ProductSlider/ProductSlider'
+import { useGetProductList } from '../../hooks/useAPI'
 
 const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
   let history = useHistory()
@@ -16,7 +15,9 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
       <p
         onClick={event => {
           event.preventDefault()
-          history.push(event.target.getAttribute('href'))
+          if (event.target.getAttribute('href')) {
+            history.push(event.target.getAttribute('href'))
+          }
         }}
         dangerouslySetInnerHTML={{ __html: customBody }}
       />
@@ -27,9 +28,17 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
   )
 }
 
-const MainBanner = props => {
+const MainBanner = () => {
+  const contentStore = useSelector(state => state.content)
+
+  let homeMainBanner = []
+  Object.keys(contentStore).map(key => {
+    if (key.includes('main-banner-slider/')) {
+      homeMainBanner.push(contentStore[key])
+    }
+  })
   const settings = {
-    dots: true,
+    dots: false,
     infinite: false,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -38,42 +47,44 @@ const MainBanner = props => {
     <div className="container">
       <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mr-5 ml-5 pb-4">
         <Slider className="slider-dark" {...settings}>
-          {props.sliderData.map((slideData, index) => {
-            return <BannerSlide {...slideData} key={index} slideKey={index} />
-          })}
+          {homeMainBanner.length > 0 &&
+            homeMainBanner.map((slideData, index) => {
+              return <BannerSlide {...slideData} key={index} slideKey={index} />
+            })}
         </Slider>
       </div>
     </div>
   )
 }
 
-function HomeBanner(props) {
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(getFeaturedItems())
-  }, [dispatch])
-  let homeMainBanner = []
-  Object.keys(props).map(key => {
-    if (key.includes('main-banner-slider/')) {
-      homeMainBanner.push(props[key])
-    }
-  })
+const HomeBanner = () => {
+  const home = useSelector(state => state.content['home'])
+  let [request, setRequest] = useGetProductList()
 
+  useEffect(() => {
+    let didCancel = false
+    if (!didCancel && !request.isFetching && !request.isLoaded) {
+      setRequest({
+        ...request,
+        params: {
+          'f:publishedFlag': 1,
+          'f:productFeatured': 1,
+        },
+        makeRequest: true,
+        isFetching: true,
+        isLoaded: false,
+      })
+    }
+    return () => {
+      didCancel = true
+    }
+  }, [request, setRequest])
   return (
-    <div className="hero mt-2" style={{ backgroundImage: `url(${Background})` }}>
-      <ProductSlider sliderData={props.featuredSlider}>{props.home && <div dangerouslySetInnerHTML={{ __html: props.home.customBody }} />}</ProductSlider>
-      <MainBanner sliderData={homeMainBanner} />
+    <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${Background})` }}>
+      <ProductSlider sliderData={request.data}>{home && <div dangerouslySetInnerHTML={{ __html: home.customBody }} />}</ProductSlider>
+      <MainBanner />
     </div>
   )
 }
 
-HomeBanner.propTypes = {
-  homeMainBanner: PropTypes.array,
-  featuredSlider: PropTypes.array,
-}
-
-function mapStateToProps(state) {
-  return state.content
-}
-
-export default connect(mapStateToProps)(HomeBanner)
+export default HomeBanner

@@ -18,10 +18,11 @@
             <hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">
             <hb:HibachiActionCaller action="admin:main.log" type="list">
             <hb:HibachiActionCaller action="admin:entity.listsession" type="list">
-            <cfif $.slatwall.getAccount().getSuperUserFlag()>
+        	<cfif $.slatwall.getAccount().getSuperUserFlag()>
 				<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
 				<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
 				<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#" type="list" text="Reload Slatwall">
+				<hb:HibachiActionCaller action="admin:main.default" querystring="#getHibachiScope().getApplicationValue('applicationReloadKey')#=#getHibachiScope().getApplicationValue('applicationReloadPassword')#&#getHibachiScope().getApplicationValue('applicationUpdateKey')#=#getHibachiScope().getApplicationValue('applicationUpdatePassword')#" type="list" text="Create Json">
 			</cfif>
 	    </div><br>
 		<div class="svohelpabout">

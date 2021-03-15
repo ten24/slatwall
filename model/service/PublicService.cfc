@@ -65,6 +65,7 @@ component  accessors="true" output="false"
     property name="hibachiService" type="any";
     property name="typeService" type="any";
     property name="giftCardService";
+    property name="integrationService" type="any";
 
 
     variables.publicContexts = [];
@@ -99,6 +100,55 @@ component  accessors="true" output="false"
         formToProcess = getFormService().process(formToProcess,arguments.data,"addFormResponse");
     	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
     }
+    
+    /**
+	 *
+	 * 
+	 */
+    public void function getProducts( required struct data ) {
+        var hibachiScope = this.getHibachiScope();
+        
+		param name="arguments.data.siteID" default='';
+    
+        //      account, order, for pricing
+        // 		param name="arguments.data.order" default=hibachiScope.getCart();
+        // 		param name="arguments.data.account" default=hibachiScope.getAccount();
+        // 		param name="arguments.data.priceGroupCode" default='';
+        	
+		param name="arguments.data.currencyCode" default='USD';
+	    
+	    // facets-options	
+	    param name="arguments.data.productType" default='';
+	    param name="arguments.data.category" default='';
+	    param name="arguments.data.brands" default='';
+	    param name="arguments.data.options" default='';
+	    param name="arguments.data.attributeOptions" default='';
+	    
+        // Search
+        param name="arguments.data.keyword" default="";
+        // Sorting
+        param name="arguments.data.orderBy" default="product.productName|DESC"; 
+        // Pricing
+        param name="arguments.data.price" default=""; 
+        // Pagination
+	    param name="arguments.data.currentPage" default=1;
+	    param name="arguments.data.pageSize" default=10;
+	    
+	    param name="arguments.data.includePotentialFilters" default=true;
+
+	    // TODO: Temporary placeholder, Nitin is working on it and update.
+	    var currentRequestSite = !isNull(this.getHibachiScope().getCurrentRequestSite()) ?this.getHibachiScope().getCurrentRequestSite() : this.getService('SiteService').newSite();
+        
+	    var intigrationPackage = getService('SettingService').getSettingValue('siteProductSearchIntegration');
+	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
+        var integrationCFC = integrationEntity.getIntegrationCFC("Search");
+        
+        arguments.data.ajaxResponse = {
+            'data' : integrationCFC.getProducts(argumentCollection=arguments.data)
+        };
+	    
+    }
+
 
 	/**
 	 * Get Product List (an alternative to generic entity api call for products)
@@ -108,6 +158,7 @@ component  accessors="true" output="false"
 	    param name="arguments.data.productTypeUrlTitle" default= "";
 	    arguments.data.entityName = "Product";
 	    arguments.data.restRequestFlag = 1;
+	    
 	    //Set an In filter for child types
 	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
 	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
@@ -116,7 +167,11 @@ component  accessors="true" output="false"
 	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
 	    }
 
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
@@ -134,7 +189,11 @@ component  accessors="true" output="false"
 	    arguments.data.entityName = "Sku";
 	    arguments.data.restRequestFlag = 1;
 
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
@@ -143,7 +202,42 @@ component  accessors="true" output="false"
 	    arguments.data.ajaxResponse = result;
 
 	}
+	
+		/**
+	 * Get Sku List (an alternative to generic entity api call for products)
+	 * */
+	public void function getBrandList( required struct data ) {
+	    arguments.data.entityName = "Brand";
+	    arguments.data.restRequestFlag = 1;
 
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
+	    
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("brandService").appendSettingsAndOptions(result.pageRecords);
+	    }
+
+	    arguments.data.ajaxResponse = result;
+
+	}
+    
+    /**
+	 * Get Favourite Product List (List out all wishlist sku's )
+	 * */
+    public void function getFavouriteProducts(required struct data){
+         if( getHibachiScope().getLoggedInFlag() ) {
+             
+                var products = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
+                arguments.data.ajaxResponse["accountWishlistProducts"] = products;
+                
+            }
+        
+        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.favouriteProduct ');
+        
+    }
 	
 	
 	/***
@@ -410,7 +504,7 @@ component  accessors="true" output="false"
 	     param name="arguments.data.orderID";
 	     
 	     var account = getHibachiScope().getAccount();
-	     if(!isNull(account) && !isEmpty(account.getAccountID())) {
+	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
 	         var order = orderService.getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
 	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID());
@@ -803,6 +897,30 @@ component  accessors="true" output="false"
     	        getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.getErrors() );
     	    }
         }
+     }
+    
+    /**
+      * Updates an Account Phone Number.
+      */
+    public void function updateAccountPhoneNumber(required data){
+     	param name="arguments.data.accountPhoneNumberID";
+     	param name="arguments.data.phoneNumber" default="";
+     	param name="arguments.data.countryCallingCode" default="";
+     	
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.updateAccount');
+        }
+        if( isNull(arguments.data.accountPhoneNumberID) ) {
+			return;
+		}
+     	var accountPhoneNumber = getAccountService().getAccountPhoneNumber( arguments.data.accountPhoneNumberID );
+     	
+        if (isNull(accountPhoneNumber) || getHibachiScope().getAccount().getAccountID() != accountPhoneNumber.getAccount().getAccountID() ){
+            getHibachiScope().addActionResult( "public:account.updateAccountPhoneNumber", true);
+            return;
+        }
+        this.getAccountService().saveAccountPhoneNumber( accountPhoneNumber, arguments.data, "update");
+        getHibachiScope().addActionResult( "public:account.updateAccountPhoneNumber", accountPhoneNumber.hasErrors() );
      }
     
     /**
@@ -1400,7 +1518,7 @@ component  accessors="true" output="false"
                 if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
                     orderFulfillment.setShippingAddress(savedAddress);
                     //Add Shiping Method on Order Fulfillment
-                    if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                    if(StructKeyExists(arguments.data, 'shippingMethodID') && !this.getHibachiScope().hibachiIsEmpty(arguments.data.shippingMethodID) ) {
                         var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
                         if(!isNull(shippingMethod)) {
                             orderFulfillment.setShippingMethod(shippingMethod);
@@ -1425,8 +1543,8 @@ component  accessors="true" output="false"
                 
                 getService("OrderService").saveOrder(order);
                 if(structKeyExists(arguments.data,'ajaxResponse')){
-                    var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
-                    arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
+                    // var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
+                    arguments.data.ajaxResponse['addressVerification'] = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
                 }
                 getHibachiScope().addActionResult( "public:cart.addShippingAddress", order.hasErrors());
             }else{
@@ -1927,9 +2045,10 @@ component  accessors="true" output="false"
         
         if( !cart.hasErrors() ) {
             //create new session with blank orderid
-            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !this.getHibachiScope().hibachiIsEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
             }
+
         }
         
         getHibachiScope().addActionResult( "public:cart.clear", cart.hasErrors() );
@@ -2060,7 +2179,7 @@ component  accessors="true" output="false"
             getHibachiScope().getSession().setOrder( cart );
             
             //create new token with cart information
-            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !this.getHibachiScope().hibachiIsEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
                 arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             }
             
@@ -2218,7 +2337,7 @@ component  accessors="true" output="false"
                 //Remove existing method
                 orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
 
-                if( !isEmpty(existingOrderFulfillment) ) {
+                if( !this.getHibachiScope().hibachiIsEmpty(existingOrderFulfillment) ) {
                     orderItem.setOrderFulfillment( existingOrderFulfillment );
                 } else {
                     //get fulfillment method
@@ -3079,16 +3198,92 @@ component  accessors="true" output="false"
  		arguments.data['ajaxResponse']['orderTemplateItem'] = orderTemplateItemCollection.getPageRecords()[1]; // there should be only one record;  
 	}
 	
-	public void function addWishlistItem(required any data) {
-        param name="data.orderTemplateID" default="";
-        param name="data.skuID" default="";
-
+	/**
+	 * Wishlist API - get all wishlist Items
+	 * createWishlist
+     * getWishlist
+	 * getWishlistItems
+	 * addWishlistItem
+	 * removeWishlistItem
+	 * */
+	
+	public void function createWishlist(required any data) {
+	    
+        param name="arguments.data.orderTemplateTypeID" default="2c9280846b712d47016b75464e800014";
+        param name="arguments.data.currencyCode" default="USD";
+        param name="arguments.data.site" default="stoneAndBerg";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
+        
+		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
+		    arguments.data.messages = [];
+			var orderTemplate = getOrderService().newOrderTemplate();
+		}
+		
+		if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
+        }
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
+ 		
+ 		var processObject = orderTemplate.getProcessObject('createWishlist');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
+        getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+	
+	public void function getWishlist(required any data) {
+	    
+	    if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        var wishlist = getOrderService().getAccountWishlists(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistProducts"] = wishlist;
+        getHibachiScope().addActionResult( "public:order.getWishlist", false);
+    }
+    
+    public void function getWishlistItems(required any data) {
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        var wishlistItems = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistProducts"] = wishlistItems;
+        getHibachiScope().addActionResult( "public:order.getWishlistItems", false);
+    }
+	
+	public void function addWishlistItem(required any data) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.skuID" default="";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		
+		//create wishlist if not found with OrderTemplateID
+		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
+		    arguments.data.messages = [];
+			var orderTemplate = getOrderService().newOrderTemplate();
+			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
 		}
 	    
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem'); 
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem');
+ 		
+ 		var processObject = orderTemplate.getProcessObject('addWishlistItem');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
         getHibachiScope().addActionResult( "public:orderTemplate.addWishlistItem", orderTemplate.hasErrors() );
             
         if(orderTemplate.hasErrors()) {
@@ -3096,6 +3291,33 @@ component  accessors="true" output="false"
         }
     }
 	
+	public void function removeWishlistItem(required any data) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.removalSkuID" default="";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'removeWishlistItem'); 
+ 		
+ 		var processObject = orderTemplate.getProcessObject('removeWishlistItem');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
+        getHibachiScope().addActionResult( "public:orderTemplate.removeWishlistItem", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+    
 	public void function addOrderTemplateItem(required any data) {
         param name="data.orderTemplateID" default="";
         param name="data.skuID" default="";
@@ -3311,24 +3533,22 @@ component  accessors="true" output="false"
      * 
      */
     public void function getSlatwallContent(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.content" default={};
         param name="arguments.data.formCode" default='';
         param name="arguments.data.formPostfix" default="/";
         getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
-        getStackedContentForPage
+        
         var stackedContent= {}
-        if(Len(arguments.data.content)> 1){
-            stackedContent =  getService('siteService').getStackedContent(arguments.data.content)
-        }else{
-            stackedContent =  getService('siteService').getStackedContentForPage(arguments.data.content)
+        for(var content in arguments.data.content) {
+            StructAppend(stackedContent, getService('siteService').getStackedContentForPage({"#content#":arguments.data.content[content] }),"true")
         }
 
-        if(!isEmpty(arguments.data.formCode)){
-            stackedContent['form'] ={
+        if(!this.getHibachiScope().hibachiIsEmpty(arguments.data.formCode)){
+            stackedContent['form'] = {
                 "type": arguments.data.formCode,
                 "markup": getService('siteService').dspForm(arguments.data.formCode,arguments.data.formPostfix)
-                }
+            };
         }
 
         getHibachiScope().addActionResult("public:getSlatwallContent", false);
@@ -3338,7 +3558,7 @@ component  accessors="true" output="false"
     }
 
     public void function getSlatwallForm(required struct data){
-        param name="arguments.data.siteCode" default="stoneAndBerg";
+        param name="arguments.data.siteCode" default="";
         param name="arguments.data.formCode" default="contact-us";
         param name="arguments.data.formPostfix" default="?submitted=true";
 
@@ -3353,4 +3573,102 @@ component  accessors="true" output="false"
         }};
 
     }
+    
+    /***
+	 * Method to return combined list of category, producttype, brand, option
+	 * @param - pageRecordsShow
+	 * @param - allowProductAssignmentFlag
+	 * @param - activeFlag
+	 * @return - filterOptionsResponse - custom array of keys
+	 **/
+    public void function getProductFilterOptions(struct data={}) {
+	    param name="arguments.data.allowProductAssignmentFlag" default=true;
+	    param name="arguments.data.activeFlag" default=true;
+
+        // Category Collection List
+        var categoryCollectionList = getService("ContentService").getCategoryCollectionList();
+        categoryCollectionList.addFilter("allowProductAssignmentFlag", arguments.data.allowProductAssignmentFlag );
+        var categories = categoryCollectionList.getRecords(formatRecords=false);
+        
+        // Product Type Collection List
+        var productTypeCollectionList = getProductService().getProductTypeCollectionList();
+        productTypeCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        var productTypes = productTypeCollectionList.getRecords(formatRecords=false);
+        
+        // Brand Collection List
+        var brandCollectionList = getProductService().getBrandCollectionList();
+        brandCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        var brands = brandCollectionList.getRecords(formatRecords=false);
+        
+        // Option Collection List
+        var optionCollectionList = getProductService().getOptionCollectionList();
+        optionCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        var options = optionCollectionList.getRecords(formatRecords=false);
+        
+        arguments.data.ajaxResponse['data'] = {
+           'category'   : categories, 
+           'productType': productTypes,
+           'brand'      : brands,
+           'option'     : options
+        };
+        getHibachiScope().addActionResult("public:scope.getProductFilterOptions",false);
+    }
+    
+    /** 
+     * @http-context getDiscountsByCartData
+     * @description This method exposes Slatwall promotion engine to be used standalone
+     * Promotion engine will evaluate discounts based on cart data passed in. Cart data
+     * will create a transient order to do the calculation and delete the order after response
+     * example data struct: 
+     * {
+     *  "skus":[{"skucode":"item1","quantity":"1"}, {"skucode":"item2","quantity":"1"}],
+     *  "promotionCode":"123",
+     *  "account":{"firstName": "", "lastName": "", "emailAddress": ""}
+     * }
+     */
+     public void function getDiscountsByCartData(required struct data) {
+         param name="arguments.data.skus" default=[];
+         arguments.data["updateOrderAmountFlag"] = false;
+
+         var cart = getOrderService().newOrder();
+         getHibachiScope().getSession().setOrder( cart );
+         
+         if(structKeyExists(arguments.data, "promotionCode")) {
+             addPromotionCode(arguments.data);
+         }
+         
+         for(var sku in arguments.data.skus) {
+             var cartData = {};
+             cartData["updateShippingMethodOptionsFlag"] = false;
+             cartData["updateOrderAmountFlag"] = false;
+             cartData["saveOrderFlag"] = false;
+         
+             if(structKeyExists(sku, "skucode")){
+                 param name="sku.quantity" default=1;
+                 cartData["skuCode"] = sku["skuCode"];
+                 cartData["quantity"] = sku["quantity"];
+                 addOrderItem( cartData );
+             }
+         }
+         
+         if(structKeyExists(arguments.data, "account")) {
+            var account = getAccountService().newAccount();
+            getAccountService().saveAccount( account, arguments.data.account );
+            if(!account.hasErrors()){
+                cart.setAccount( account );
+            } else {
+                cart.addErrors( account.getErrors() );
+                getHibachiScope().setORMHasErrors( true );
+            }
+         }
+         
+         // save order and update amounts
+         getOrderService().saveOrder( order=cart, updateOrderAmounts=true, updateShippingMethodOptions=false);
+         
+         var cartData = {"cartDataOptions": "order,orderitem"};
+         getCartData( arguments.data );
+         
+         getOrderService().deleteOrder( cart );
+     }
+    
 }

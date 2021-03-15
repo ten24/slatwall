@@ -47,8 +47,8 @@
 						</div>
 		                <div class="col-xs-3 s-no-padding-right">
 							<!-- Documentation: Optional toggle flag to fetch all records  ng-show="swPaginationBar.paginationService.showToggleDisplayOptions" -->
-							<span sw-tooltip class="col-xs-5 tool-tip-item" data-text="Toggle Records Count" data-position="right">
-								<button class="btn btn-sm btn-default" type="button" data-ng-click="swPaginationBar.toggleCountLimit(); $event.stopPropagation();">
+							<span sw-tooltip class="tool-tip-item" data-text="Toggle Records Count" data-position="bottom">
+								<button class="btn btn-sm btn-default btn-white" type="button" data-ng-click="swPaginationBar.toggleCountLimit(); $event.stopPropagation();">
 									<i class="fa fa-list" ng-if="swPaginationBar.limitCountTotal > 0"></i>
 									<i class="fa fa-list-alt" ng-if="swPaginationBar.limitCountTotal === 0"></i>
 								</button>
