@@ -3,12 +3,9 @@ import ProductPagePanels from './ProductPagePanels'
 import React, { useEffect, useRef, useState } from 'react'
 import { addToCart } from '../../actions/cartActions'
 import { useDispatch } from 'react-redux'
-import axios from 'axios'
-import { sdkURL, SlatwalApiService } from '../../services'
 import { HeartButton } from '../../components'
 import { useTranslation } from 'react-i18next'
 import { useGetSku, useGetProductSkus, useGetProductAvailableSkuOptions, useGetProductSkuSelected } from '../../hooks/useAPI'
-import { concat } from 'lodash'
 import { useHistory, useLocation } from 'react-router'
 import { usePush } from '../../hooks/useRedirect'
 
@@ -59,7 +56,6 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
       didCancel = true
     }
   }, [setSkusRequest, skus, productID, productDetails, sku, setRequest, setOptionsRequest, skuOptions])
-  console.log('sku', sku)
 
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
