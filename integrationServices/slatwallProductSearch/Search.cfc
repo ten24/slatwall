@@ -57,11 +57,11 @@ component accessors="true" output="false" displayname="SlatwallProductSearchCFC"
 		// TODO ?
 	}
 	
-    public struct function getPotentialFilterFacetsAndOptions(requied struct appliedFilters){
+    public struct function getPotentialFilterFacetsAndOptions(){
 	    return this.getSlatwallProductSearchService().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
 	}
 
-	public struct function getProducts(requied struct appliedFilters){
+	public struct function getProducts(){
 	    return this.getSlatwallProductSearchService().getProducts( argumentCollection = arguments);
 	}
 

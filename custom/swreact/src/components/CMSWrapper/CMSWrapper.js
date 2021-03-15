@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { getContent } from '../../actions/contentActions'
 import { useHistory, useLocation } from 'react-router'
+import { getFavouriteProducts } from '../../actions/userActions'
 
 const CMSWrapper = ({ children }) => {
   const dispatch = useDispatch()
@@ -17,6 +18,7 @@ const CMSWrapper = ({ children }) => {
   payload['404'] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
 
   useEffect(() => {
+    dispatch(getFavouriteProducts())
     dispatch(
       getContent({
         content: payload,
@@ -25,7 +27,9 @@ const CMSWrapper = ({ children }) => {
     history.listen(location => {
       payload = {}
       path = location.pathname.split('/').reverse()[0].toLowerCase()
+      path = path.length ? path : 'home'
       payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
+      dispatch(getFavouriteProducts())
       dispatch(
         getContent({
           content: payload,
