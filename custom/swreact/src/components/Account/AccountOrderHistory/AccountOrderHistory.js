@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { SlatwalApiService } from '../../../services'
-import Pagination from '../../ListingOld/Pagination'
+
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import { useTranslation } from 'react-i18next'
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
-import useFormatDate from '../../../hooks/useFormatDate'
+import { useFormatDateTime } from '../../../hooks/useFormatDate'
 
 import { useGetAllOrders } from '../../../hooks/useAPI'
 import ListingPagination from '../../Listing/ListingPagination'
@@ -55,7 +54,7 @@ const OrderStatus = ({ type = 'info', text }) => {
 
 const OrderListItem = props => {
   const [formatCurrency] = useFormatCurrency({})
-  const [formateDate] = useFormatDate({})
+  const [formateDate] = useFormatDateTime()
 
   const { orderNumber, orderID, createdDateTime, orderStatusType_typeName, calculatedTotal } = props
   return (

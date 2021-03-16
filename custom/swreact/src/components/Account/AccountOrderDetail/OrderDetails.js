@@ -1,12 +1,12 @@
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
-import useFormatDate from '../../../hooks/useFormatDate'
+import { useFormatDateTime } from '../../../hooks/useFormatDate'
 
 const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   const { orderOpenDateTime, billingAddress_streetAddress, billingAddress_city, billingAddress_stateCode, billingAddress_postalCode, billingAddress_name } = orderInfo
   const { orderFulfillment_shippingAddress_name, orderFulfillment_shippingAddress_streetAddress, orderFulfillment_shippingAddress_city, orderFulfillment_shippingAddress_stateCode, orderFulfillment_shippingAddress_postalCode } = orderFulfillments
   const { calculatedTotal, calculatedSubTotal, calculatedTaxTotal, calculatedFulfillmentTotal, calculatedDiscountTotal } = orderInfo
   const { paymentMethod_paymentMethodName, creditCardLastFour } = orderPayments
-  const [formateDate] = useFormatDate({})
+  const [formateDate] = useFormatDateTime({})
   const [formatCurrency] = useFormatCurrency({})
 
   return (

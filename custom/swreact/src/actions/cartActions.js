@@ -317,6 +317,27 @@ export const addAddressAndAttachAsShipping = (params = {}) => {
   }
 }
 
+export const changeOrderFulfillment = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/changeOrderFulfillment`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: { returnJsonObjects: 'cart', ...params },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
 export const addAddressAndAttachAsBilling = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
