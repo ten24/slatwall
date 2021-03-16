@@ -1,9 +1,9 @@
 <cfoutput>
      
-        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/slatwallAdminVendor.b22b120eaab92bb1cc13.bundle.js"></script>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/slatwallAdminVendor.0d8f3fd68687cca37f97.bundle.js"></script>
      
-        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/hibachiAdmin.831db64b6c47d010aa6a.bundle.js"></script>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/hibachiAdmin.583e9e5aad5940e74b13.bundle.js"></script>
      
-        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/slatwallAdmin.61c1a8b5c1f00c956fe2.bundle.js"></script>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/dist/slatwallAdmin.c413fd89b0916a3ae9ef.bundle.js"></script>
     
 </cfoutput>
