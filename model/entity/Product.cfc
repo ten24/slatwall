@@ -1653,6 +1653,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
 
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
+			
+			variables.assignedAttributeSetSmartList.addOrder("sortOrder|ASC")
 
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";
