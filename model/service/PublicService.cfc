@@ -275,6 +275,7 @@ component  accessors="true" output="false"
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
         
+        arguments.parsedQuery.site = currentRequestSite;
         arguments.data.ajaxResponse = {
             'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
         };

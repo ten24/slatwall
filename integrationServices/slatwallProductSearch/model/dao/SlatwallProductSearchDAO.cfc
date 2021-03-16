@@ -143,7 +143,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                             optionID, optionName, optionCode, 
                             optionSortOrder,
                             
-                            optionGroupID, optionGroupName, 
+                            optionGroupID, optionGroupName, optionGroupCode,
                             optionGroupSortOrder,
                             
                             productTypeID, productTypeName, parentProductTypeID, 
@@ -192,9 +192,19 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 return arguments.joins;
             }
             if( arguments.row.attributeSetObject == 'sku'){
-                return listAppend(joins, "(att.attributeCode = `#arguments.row.attributeCode#` AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue)", '$' );
+                return listAppend(joins, "(
+                    att.attributeCode = `#arguments.row.attributeCode#` 
+                    AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue 
+                    AND sk.#arguments.row.attributeCode# != '' 
+                    AND sk.#arguments.row.attributeCode# IS NOT NULL
+                    )", '$' );
             } 
-            return listAppend(joins, "(att.attributeCode = `#arguments.row.attributeCode#` AND p.#arguments.row.attributeCode# = atto.attributeOptionValue)", '$' );
+            return listAppend(joins, "(
+                att.attributeCode = `#arguments.row.attributeCode#` 
+                AND p.#arguments.row.attributeCode# = atto.attributeOptionValue
+                AND p.#arguments.row.attributeCode# != '' 
+                AND p.#arguments.row.attributeCode# IS NOT NULL
+                )", '$' );
         }, "");
         selectTypeAttributeOptionJoinParts = selectTypeAttributeOptionJoinParts.replace(")$(", ") OR (", "ALL");
             
@@ -267,7 +277,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            o.optionID, o.optionName, o.optionCode, 
            o.sortOrder AS optionSortOrder,
            
-           og.optionGroupID, og.optionGroupName, 
+           og.optionGroupID, og.optionGroupName, og.optionGroupCode,
            og.sortOrder AS optionGroupSortOrder,
            
            pt.productTypeID, pt.productTypeName, pt.parentProductTypeID, 
@@ -518,8 +528,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 sql &= " 
                     swOptionGroup og ON og.optionGroupID = ffo.optionGroupID AND og.optionGroupID IN (:entityIDs)
                     SET 
-                        ffo.optionGroupName = o.optionGroupName,
-                        ffo.optionGroupSortOrder = o.sortOrder
+                        ffo.optionGroupName = og.optionGroupName,
+                        ffo.optionGroupCode = og.optionGroupCode,
+                        ffo.optionGroupSortOrder = og.sortOrder
                 ";
             break;
             case 'productType':
@@ -691,17 +702,324 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	 * **** END ********************** Keep the Filter-Relations updated in realtime
 	*/
 	
+	public string function getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
+	    if(arguments.facetName == 'brand'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'brandID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'brandName';
+	        }
+	    }
+	    
+	    if(arguments.facetName == 'category'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'categoryID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'categoryName';
+	        }  
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'categoryUrlTitle';
+	        }
+	    }
+	    
+	    if(arguments.facetName == 'productType'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'productTypeID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'productTypeName';
+	        }  
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'productTypeUrlTitle';
+	        }
+	    }
+	    
+	    if(arguments.facetName == 'attribute'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'attributeOptionID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'attributeOptionLabel';
+	        }  
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'attributeOptionUrlTitle';
+	        }
+	        if(arguments.facetValueKey == 'code' ){
+	            return 'attributeOptionValue';
+	        }
+	    }
+
+	    if(arguments.facetName == 'option'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'optionID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'optionName';
+	        }
+	        if(arguments.facetValueKey == 'code' ){
+	            return 'optionCode';
+	        }
+	    }
+	}
 	
+	public struct function getFacetsMetaData(){
+	    if( !structKeyExists(variables, 'cached_FacetsMetaData') ){
+	        variables['cached_FacetsMetaData'] = {
+    	        'brand' : {
+            	    'facet'                 : 'brand',
+    	            'facetIDKey'            : 'brandID',
+            	    'facetNameKey'          : 'brandName',
+            	    'subFacetKeyOrValue'    : 'NULL',
+            	    'subFacetNameKeyOrValue' : 'NULL',
+            	    'facetSlugKeyOrValue'   : 'NULL',
+            	    'facetCodeKeyOrValue'   : 'NULL',
+    	        },
+    	        'category' : {
+            	    'facet'                 : 'category',
+    	            'facetIDKey'            : 'categoryID',
+            	    'facetNameKey'          : 'categoryName',
+            	    'subFacetKeyOrValue'    : 'NULL',
+            	    'subFacetNameKeyOrValue' : 'NULL',
+            	    'facetSlugKeyOrValue'   : 'categoryURLTitle',
+            	    'facetCodeKeyOrValue'   : 'NULL',
+    	        },
+    	        'productType' : {
+            	    'facet'                 : 'productType',
+    	            'facetIDKey'            : 'productTypeID',
+            	    'facetNameKey'          : 'productTypeName',
+            	    'subFacetKeyOrValue'    : 'NULL',
+            	    'subFacetNameKeyOrValue' : 'NULL',
+            	    'facetSlugKeyOrValue'   : 'productTypeURLTitle',
+            	    'facetCodeKeyOrValue'   : 'NULL',
+    	        },
+    	        'option' : {
+            	    'facet'                 : 'option',
+    	            'facetIDKey'            : 'optionID',
+            	    'facetNameKey'          : 'optionName',
+            	    'subFacetKeyOrValue'    : 'optionGroupCode',
+            	    'subFacetNameKeyOrValue': 'optionGroupName',
+            	    'facetSlugKeyOrValue'   : 'NULL',
+            	    'facetCodeKeyOrValue'   : 'optionCode',
+    	        },
+    	        'attribute' : {
+            	    'facet'                 : 'attribute',
+    	            'facetIDKey'            : 'attributeOptionID',
+            	    'facetNameKey'          : 'attributeOptionLabel',
+            	    'subFacetKeyOrValue'    : 'attributeCode',
+            	    'subFacetNameKeyOrValue': 'attributeName',
+            	    'facetSlugKeyOrValue'   : 'attributeOptionUrlTitle',
+            	    'facetCodeKeyOrValue'   : 'attributeOptionValue',
+    	        }
+    	    }
+	    }
+	    
+	    return variables['cached_FacetsMetaData'];
+	}
+	
+	public string function makeGetFacetOptionQuery(required struct facetMetaData, required struct facetsFilterQueryFragments ){
+	    var facetQuery = "
+	        SELECT 
+	            id, 
+	            name, 
+	            facet, 
+	            subFacet, 
+	            subFacetName, 
+	            slug, 
+	            code, 
+	            COUNT(DISTINCT skuID) AS count 
+	        FROM
+    	        ( 
+    	            SELECT 
+        				skuID, 
+        				$facetIDKey$                as id, 
+        				$facetNameKey$              as name, 
+        				$facetSlugKeyOrValue$       as slug,
+        				$facetCodeKeyOrValue$       as code,
+        				'$facet$'                   as facet, 
+        				$subFacetKeyOrValue$        as subFacet,
+        				$subFacetNameKeyOrValue$    as subFacetName
+        				
+        			FROM swProductFilterFacetOption 
+        			WHERE $facetIDKey$ IS NOT NULL
+        			$filterQueryFragment$
+        			GROUP BY skuID, $facetIDKey$, $facetNameKey$
+        			
+    		    ) result_set
+    		    
+    	    GROUP BY id
+    	    HAVING COUNT(DISTINCT skuID) > 0
+	    ";
+	    
+        facetQuery = replace(facetQuery, '$facet$',              arguments.facetMetaData.facet );
+        facetQuery = replace(facetQuery, '$facetIDKey$',         arguments.facetMetaData.facetIDKey, 'all');
+        facetQuery = replace(facetQuery, '$facetNameKey$',       arguments.facetMetaData.facetNameKey, 'all');
+        facetQuery = replace(facetQuery, '$facetSlugKeyOrValue$', arguments.facetMetaData.facetSlugKeyOrValue );
+        facetQuery = replace(facetQuery, '$facetCodeKeyOrValue$', arguments.facetMetaData.facetCodeKeyOrValue );
+        facetQuery = replace(facetQuery, '$subFacetKeyOrValue$',  arguments.facetMetaData.subFacetKeyOrValue );
+        facetQuery = replace(facetQuery, '$subFacetNameKeyOrValue$',  arguments.facetMetaData.subFacetNameKeyOrValue );
+        
+        var filterQueryFragment = '';
+        if( !this.hibachiIsStructEmpty(arguments.facetsFilterQueryFragments) ){
+            for(var facetName in arguments.facetsFilterQueryFragments ){
+                if(facetName == arguments.facetMetaData.facet ){
+                    continue;
+                }
+                if( !len(arguments.facetsFilterQueryFragments[facetName]) ){
+                    continue;
+                }
+
+                if( len(filterQueryFragment) > 1 ){
+                    filterQueryFragment &= ' AND';
+                }
+                filterQueryFragment &= ' '&arguments.facetsFilterQueryFragments[facetName];
+            }
+            if(len(filterQueryFragment)){
+                filterQueryFragment = 'AND '&filterQueryFragment;
+            }
+        }
+        
+        facetQuery = replace(facetQuery, '$filterQueryFragment$', filterQueryFragment );
+        return facetQuery;
+	}
+	
+	public struct function makeFacteSqlFilterQueryFragments(){
+	    param name="arguments.site";
+	    param name="arguments.brand" default={};
+	    param name="arguments.option" default={};
+	    param name="arguments.category" default={};
+	    param name="arguments.attribute" default={};
+	    param name="arguments.productType" default={};
+	    
+	    var facetsSqlFilterQueryFragments = {};
+	    var facetsSqlFilterQueryParams = {};
+	    facetsSqlFilterQueryFragments['site'] = '';
+	    if( !isNull(arguments.site) && len(arguments.site.getSiteID()) ){
+	        facetsSqlFilterQueryFragments['site'] = '(siteID = #arguments.site.getSiteID()# OR siteID IS NULL)'
+	    }
+	    
+	    for(var facetName in ['brand', 'category', 'productType'] ){
+    	    facetsSqlFilterQueryFragments[facetName] = '';
+    	    var selectedFacetOptions = arguments[ facetName ];
+    	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
+    	        var queryFragment = '(';
+    	        for(var facteValueKey in selectedFacetOptions ){
+                    var filterValue = selectedFacetOptions[facteValueKey];
+                    var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facteValueKey);
+                    
+                    if( !isNUll(columnName) ){
+                        var filterValuePlaceholder = columnName&'_'&facteValueKey;
+                        facetsSqlFilterQueryParams[ filterValuePlaceholder ] = filterValue;
+                        
+                        if( len(queryFragment) > 1 ){
+                            queryFragment &= ' AND';
+                        }
+                        
+                        if( isArray(filterValue) ){
+                            queryFragment &= ' #columnName# IN (:#filterValuePlaceholder#)';
+                        } else{
+                            queryFragment &= ' #columnName# = :#filterValuePlaceholder#';
+                        }
+                    }
+                }
+                if( len(queryFragment) > 1){
+                    queryFragment &= ')';
+                    facetsSqlFilterQueryFragments[facetName] = queryFragment;
+                }
+    	    }
+	    }
+	    // TODO: refctor
+	    for(var facetName in ['option', 'attribute'] ){
+    	    facetsSqlFilterQueryFragments[facetName] = '';
+    	    var selectedFacetOptions = arguments[ facetName ];
+    	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
+    	        var queryFragment = '(';
+    	        for(var subFacetName in selectedFacetOptions ){
+    	            var selectedSubFacetOptions = selectedFacetOptions[ subFacetName ];
+    	            if(!this.hibachiIsStructEmpty(selectedSubFacetOptions) ){
+            	        for(var facteValueKey in selectedSubFacetOptions ){
+                            var filterValue = selectedSubFacetOptions[facteValueKey];
+                            var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facteValueKey);
+                            if( !isNUll(columnName) ){
+                                var filterValuePlaceholder = subFacetName&'_'&columnName&'_'&facteValueKey;
+                                facetsSqlFilterQueryParams[ filterValuePlaceholder ] = filterValue;
+                                
+                                if( len(queryFragment) > 1 ){
+                                    queryFragment &= ' AND';
+                                }
+                                
+                                if( isArray(filterValue) ){
+                                    queryFragment &= ' #columnName# IN (:#filterValuePlaceholder#)';
+                                } else{
+                                    queryFragment &= ' #columnName# = :#filterValuePlaceholder#';
+                                }
+                            }
+                        }
+    	            }
+    	        }
+                if( len(queryFragment) > 1){
+                    queryFragment &= ')';
+                    facetsSqlFilterQueryFragments[facetName] = queryFragment;
+                }
+    	    }
+	    }
+	    
+	    return {
+	        'params': facetsSqlFilterQueryParams,
+	        'fragments' : facetsSqlFilterQueryFragments
+	    };
+	}
+	
+	public any function getPotentialFilterFacetsAndOptions2(){
+        param name="arguments.site";
+        param name="arguments.brand" default={};
+        param name="arguments.option" default={};
+        param name="arguments.category" default={};
+        param name="arguments.attribute" default={};
+        param name="arguments.productType" default={};
+        
+        var startTicks = getTickCount();
+
+	    var facetsMetadata = this.getFacetsMetaData();
+    	var filterQueryFragmentsData = this.makeFacteSqlFilterQueryFragments(argumentCollection=arguments);
+
+        var getAllFacetOptionsSQL = '';
+        for(var facetName in facetsMetadata ){
+            if( len(getAllFacetOptionsSQL) ){
+               // union-all because there won't be any duplictes in the result-set, 
+               // so we can avoide some computation, by avoiding the sorting of result-set to remove duplicates [ behaviour of simple UNION]
+               getAllFacetOptionsSQL &= ' UNION ALL'; 
+            }
+            getAllFacetOptionsSQL &= this.makeGetFacetOptionQuery(facetsMetadata[facetName], filterQueryFragmentsData.fragments );
+        }
+                
+        var queryService = new Query();
+        queryService.setSQL(getAllFacetOptionsSQL);
+        for(var paramName in filterQueryFragmentsData.params ){
+            var paramValue = filterQueryFragmentsData.params[paramName];
+            if( isArray(paramValue) ){
+                queryService.addParam( name=paramName, list=true, value=arrayToList(paramValue) );
+            } else {
+                queryService.addParam( name=paramName, value=paramValue );
+            }
+        }
+        queryService = queryService.execute().getResult();
+        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions2 took #getTickCount()-startTicks# ms.; and fetched #queryService.recordCount# records ");
+        return queryService;
+	}
 	
 	
 	public any function getPotentialFilterFacetsAndOptions(){
-	    param name="arguments.siteID" default='';
-	    param name="arguments.productType" default='';
-	    param name="arguments.category" default='';
-	    param name="arguments.brands" default='';
-	    param name="arguments.options" default='';
-	    param name="arguments.attributeOptions" default='';
+	    param name="arguments.site";
+	    param name="arguments.brand" default={};
+	    param name="arguments.option" default={};
+	    param name="arguments.category" default={};
+	    param name="arguments.attribute" default={};
+	    param name="arguments.productType" default={};
 	    
+	    dump( this.getPotentialFilterFacetsAndOptions2(argumentCollection=arguments) );
+	    abort;
         var startTicks = getTickCount();
         
         var q = new Query();
@@ -709,7 +1027,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         var siteJoinFilterQueryPart = "";
         if( !this.hibachiIsEmpty(arguments.siteID) ){
             siteJoinFilterQueryPart = "( ffo.siteID = :siteID OR ffo.siteID IS NULL )";
-            q.addParam(name='siteID', value=arguments.siteID)
+            q.addParam(name='siteID', value=arguments.site.getSiteID() );
         }
         
         var productTypeJoinFilterQueryPart = "";
