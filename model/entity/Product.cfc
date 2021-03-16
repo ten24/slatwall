@@ -161,7 +161,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productSafeTypeStyle" ormtype="string" hb_formFieldType="select";
  property name="productSafeFireRated" ormtype="string";
  property name="productSafeSafetyRating" ormtype="string";
- property name="productDoorKnobFunction" ormtype="string" hb_formFieldType="select";
  property name="productDoorKnobSeries" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachinePartCompatibility" ormtype="string";
  property name="productKeyMachineCutterMaterial" ormtype="string";
@@ -197,6 +196,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="mechanicalKeying" ormtype="string" hb_formFieldType="select";
  property name="mechanicalStyle" ormtype="string";
  property name="productBumpStop" ormtype="boolean" hb_formatType="yesno";
+ property name="productTrimStyle" ormtype="string";
+ property name="productBarrelDiameter" ormtype="string";
  property name="productTumblerType" ormtype="string" hb_formFieldType="select";
  property name="mechanicalKeyway" ormtype="string";
  property name="mechanicalRekeyable" ormtype="boolean" hb_formatType="yesno";
@@ -226,6 +227,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productMfgWarranty" ormtype="string";
  property name="productHoldOpen" ormtype="boolean" hb_formatType="yesno";
  property name="productParallelArm" ormtype="boolean" hb_formatType="yesno";
+ property name="productHingeLength" ormtype="string";
+ property name="productCloserSize" ormtype="string";
  property name="productRegularArm" ormtype="boolean" hb_formatType="yesno";
  property name="productExtraDutyArm" ormtype="boolean" hb_formatType="yesno";
  property name="productCushNStopArm" ormtype="boolean" hb_formatType="yesno";
@@ -289,11 +292,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productKeySize" ormtype="string";
  property name="productKeyColor" ormtype="string";
  property name="productPinKitType" ormtype="string" hb_formFieldType="select";
+ property name="productDoorKnobFunction" ormtype="string" hb_formFieldType="select";
  property name="productITGroup" ormtype="string";
  property name="productDimensions" ormtype="string";
  property name="productPartCompatibility" ormtype="string";
  property name="productLockingMechanism" ormtype="string";
  property name="productPartType" ormtype="string";
+ property name="productDepth" ormtype="string";
  property name="productTwinPack" ormtype="boolean" hb_formatType="yesno";
  property name="productResidential" ormtype="boolean" hb_formatType="yesno";
  property name="productBoxQuantity" ormtype="string";

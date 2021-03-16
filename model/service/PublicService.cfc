@@ -270,7 +270,6 @@ component  accessors="true" output="false"
         // either form headers, or hibachi-scope
 	    // TODO: Nitin is working on it and will update.
 	    var currentRequestSite = this.getHibachiScope().getCurrentRequestSite() ?: this.getService('SiteService').newSite();
-                
 	    var intigrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");

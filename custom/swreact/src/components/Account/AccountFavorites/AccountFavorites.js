@@ -1,8 +1,10 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import { useTranslation } from 'react-i18next'
+import { useGetSkuList } from '../../../hooks/useAPI'
+import { useEffect } from 'react'
 
 const ProductTile = ({ brand, productTile, price, displayPrice, linkUrl }) => {
   const { t, i18n } = useTranslation()
@@ -35,7 +37,13 @@ const ProductTile = ({ brand, productTile, price, displayPrice, linkUrl }) => {
 
 const AccountFavorites = ({ crumbs, title, items }) => {
   const { t, i18n } = useTranslation()
+  const accountWishlistProducts = useSelector(state => state.userReducer.accountWishlistProducts)
+  let [skuList, setRequest] = useGetSkuList()
 
+  if (Array.isArray(accountWishlistProducts) && !skuList.isFetching && !skuList.isLoaded) {
+    setRequest({ ...skuList, params: { 'f:skuID': accountWishlistProducts.join() }, makeRequest: true, isFetching: true, isLoaded: false })
+  }
+  console.log('skuList', skuList)
   return (
     <AccountLayout crumbs={crumbs} title={title}>
       <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
@@ -100,8 +108,4 @@ const AccountFavorites = ({ crumbs, title, items }) => {
   )
 }
 
-const mapStateToProps = state => {
-  return state
-}
-AccountFavorites.propTypes = {}
-export default connect(mapStateToProps)(AccountFavorites)
+export default AccountFavorites
