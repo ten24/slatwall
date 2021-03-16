@@ -105,6 +105,10 @@ public void function getConfiguration( required struct data ) {
         ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAddress'),"URLKeyType": 'Address' });
         ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAttribute'),"URLKeyType": 'Attribute' });
         
+        arguments.data['ajaxResponse']['config']['theme'] = {
+            "dateFormat": UCase(getHibachiScope().setting('globalDateFormat')),
+            "timeFormat": Replace(UCase(getHibachiScope().setting('globalTimeFormat')), 'TT', 'ss', 'all')};
+
         getHibachiScope().addActionResult("public:getConfiguration");
 
         arguments.data['ajaxResponse']['config']['router'] = router;
@@ -154,5 +158,38 @@ public void function getConfiguration( required struct data ) {
         }
         
         super.addOrderPayment(argumentCollection = arguments);
+    }
+    
+    public any function getEligibleFulfillmentMethods() {
+        
+        if( getHibachiScope().getLoggedInFlag() ) {
+            var cart = getHibachiScope().cart();
+            var orderItems = cart.getOrderItems();
+
+
+            var sl = getService("fulfillmentService").getFulfillmentMethodSmartList();
+			sl.addFilter('activeFlag', 1);
+			sl.addSelect('fulfillmentMethodName', 'name');
+			sl.addSelect('fulfillmentMethodID', 'value');
+			sl.addSelect('fulfillmentMethodType', 'fulfillmentMethodType');
+			
+			var eligibleFulfillmentMethods = '';
+			for(var orderItem in orderItems){
+				var sku = orderItem.getSku();
+				if(!isNull(sku)) {
+					if(!len(eligibleFulfillmentMethods)){
+						eligibleFulfillmentMethods = sku.setting('skuEligibleFulfillmentMethods');
+					}else{
+						for(var fulfillmentMethod in eligibleFulfillmentMethods){
+							if(!listFind(sku.setting('skuEligibleFulfillmentMethods'), fulfillmentMethod)){
+								eligibleFulfillmentMethods = listDeleteAt(eligibleFulfillmentMethods, listFind(eligibleFulfillmentMethods,fulfillmentMethod));
+							}
+						}
+					}
+				}
+			}
+			sl.addInFilter('fulfillmentMethodID', eligibleFulfillmentMethods);
+			arguments.data.ajaxResponse['eligibleFulfillmentMethods'] = sl.getRecords();
+        }
     }
 }

@@ -2306,8 +2306,8 @@ component  accessors="true" output="false"
      * @param - fulfillmentMethodID
      * */
     public void function changeOrderFulfillment(required any data) {
-        param name="orderItemIDList";
-        param name="fulfillmentMethodID";
+        param name="data.orderItemIDList";
+        param name="data.fulfillmentMethodID";
 
         var cart = getHibachiScope().getCart();
 
