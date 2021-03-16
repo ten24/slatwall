@@ -63,7 +63,8 @@ Notes:
 								   backAction="admin:entity.detailpromotion"
 								   backQueryString="promotionID=#rc.promotion.getPromotionID()#"
 								   cancelAction="admin:entity.detailpromotion"
-								   cancelQueryString="promotionID=#rc.promotion.getPromotionID()#" />
+								   cancelQueryString="promotionID=#rc.promotion.getPromotionID()#"
+								   deleteQueryString="promotionID=#rc.promotion.getPromotionID()#&redirectAction=admin:entity.detailpromotion"/>
 		
 		<input type="hidden" name="promotion.promotionID" value="#rc.promotion.getPromotionID()#" />
 		
