@@ -1,12 +1,12 @@
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
-import { useFormatDateTime } from '../../../hooks/useFormatDate'
+import useFormatDate from '../../../hooks/useFormatDate'
 
 const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   const { orderOpenDateTime, billingAddress_streetAddress, billingAddress_city, billingAddress_stateCode, billingAddress_postalCode, billingAddress_name } = orderInfo
   const { orderFulfillment_shippingAddress_name, orderFulfillment_shippingAddress_streetAddress, orderFulfillment_shippingAddress_city, orderFulfillment_shippingAddress_stateCode, orderFulfillment_shippingAddress_postalCode } = orderFulfillments
   const { calculatedTotal, calculatedSubTotal, calculatedTaxTotal, calculatedFulfillmentTotal, calculatedDiscountTotal } = orderInfo
   const { paymentMethod_paymentMethodName, creditCardLastFour } = orderPayments
-  const [formateDateTime] = useFormatDateTime()
+  const [formateDate] = useFormatDate({})
   const [formatCurrency] = useFormatCurrency({})
 
   return (
@@ -29,7 +29,7 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
             <p className="text-sm">{'PONumber'}</p> */}
 
             <h3 className="h6">Date Placed</h3>
-            <p className="text-sm">{formateDateTime(orderOpenDateTime)}</p>
+            <p className="text-sm">{formateDate(orderOpenDateTime)}</p>
           </div>
           <div className="col-6">
             <h3 className="h6">Billing Address</h3>
