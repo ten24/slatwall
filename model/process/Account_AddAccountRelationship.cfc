@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="firstName" hb_rbKey="entity.account.firstName";
 	property name="lastName" hb_rbKey="entity.account.lastName";
 	property name="company" hb_rbKey="entity.account.company";
+	property name="username" hb_rbKey="entity.account.username";
 	property name="phoneNumber";
 	property name="emailAddress";
 	property name="emailAddressConfirm";

@@ -328,7 +328,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return arguments.processObject.getNewContent();
 	}
+	/** 
+	 * Function append settings values to existing Content
+	 * @param - Content
+	 * @return - updated Content
+	 **/
+	public any function appendSettingsAndOptionsToContent(required any content) {
+				if(structKeyExists(content, "contentID")){
+					var currentContent = this.getContent(content.contentID);
+	            	content["setting"]['contentHTMLTitleString'] = currentContent.setting('contentHTMLTitleString');
+	            	content["setting"]['contentMetaDescriptionString'] = currentContent.setting('contentMetaDescriptionString');
+	            	content["setting"]['contentMetaKeywordsString'] = currentContent.setting('contentMetaKeywordsString');
+	            	content["setting"]['contentRestrictAccessFlag'] = currentContent.setting('contentRestrictAccessFlag');
+	            	content["setting"]['contentRequirePurchaseFlag'] = currentContent.setting('contentRequirePurchaseFlag');
+	            	content["setting"]['contentRequireSubscriptionFlag'] = currentContent.setting('contentRequireSubscriptionFlag');
+	            	content["setting"]['contentEnableTrackingFlag'] = currentContent.setting('contentEnableTrackingFlag');
+	            	content["setting"]['contentTemplateFile'] = currentContent.setting('contentTemplateFile');
+				}
 
+		return arguments.content;
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================

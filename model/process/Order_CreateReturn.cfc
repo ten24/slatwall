@@ -327,10 +327,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public boolean function orderItemsWithinOriginalQuantity(){
+		var orderItems = this.getOrderItems();
+		if ( !isNull( orderItems ) ){
 		
-		if ( !isnull(this.getOrderItems()) ){
-		
-			for (var orderItem in this.getOrderItems()){
+			for (var orderItem in orderItems){
 
 				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
 				var quantity = val(orderItem.quantity);
@@ -342,6 +342,19 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		
 		return true;
+	}
+	
+	public boolean function hasOrderItemWithQuantity(){
+		var orderItems = this.getOrderItems();
+		
+		if(!isNull(orderItems)){
+			for(var orderItem in orderItems){
+				if(orderItem.quantity > 0){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public boolean function paymentAmountsWithinAllowedAmount(){

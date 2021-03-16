@@ -85,6 +85,21 @@ component extends="HibachiService" accessors="true" {
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
 		return relatedProducts;
 	}
+	
+	public any function getAllRelatedProducts(required any productID) {
+		var relatedProducts = this.getProductRelationshipCollectionList();
+        
+        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.productClearance, relatedProduct.calculatedSalePrice";	
+        properties &= ",relatedProduct.brand.brandID, relatedProduct.brand.brandName, relatedProduct.brand.urlTitle";
+        properties &= ",relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID";
+        properties &= ",relatedProduct.defaultSku.imageFile, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.defaultSku.skuID";
+		
+		relatedProducts.setDisplayProperties(properties);
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		return relatedProducts.getRecords(formatRecords=false);
+	}
+
 
 	public any function getAllProductReviews(required any productID) {
 		var relatedProducts = this.getProductReviewCollectionList();
@@ -213,6 +228,26 @@ component extends="HibachiService" accessors="true" {
 		return AvailableOptions;
 	}
 
+	public string function getNextSkuCode(required struct productSchedule={}, required struct product={}) {
+		var productCode = arguments.product.getProductCode();
+		if( ArrayIsEmpty(arguments.productSchedule.getSkus()) ) {
+			return getService('HibachiUtilityService').createUniqueProperty(propertyValue=productCode, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=true );
+		}
+		
+		//Check if last sku is exist in skulist, return unique sku
+		var productScheduleSkus = arguments.productSchedule.getSkus();
+		var lastSku = ArrayLast(productScheduleSkus);
+		var newSkuCode = lastSku.getSkuCode();
+		for( var i=1; i<=ArrayLen(productScheduleSkus); i++ ){
+			if( productScheduleSkus[i].getSkuCode() == newSkuCode ) {
+				var returnValue = "#productCode#-#i+1#";
+				newSkuCode = getService('HibachiUtilityService').createUniqueProperty(propertyValue=returnValue, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=false );
+				break;
+			}
+		}
+		return newSkuCode;
+	}
+	
 	// @help Generates an event sku stub. Used to replace repetitive code.
 	private any function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
 
@@ -295,7 +330,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
-				newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
+				newSku.setSkuCode( this.getNextSkuCode( arguments.productSchedule, newSku.getProduct() ) );
 				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
@@ -307,7 +342,6 @@ component extends="HibachiService" accessors="true" {
 				} else {
 					newSku.setEventCapacity(1);
 				}
-
 
 				// Set default Sku if its not already set
 				if( isNull( newSku.getProduct().getDefaultSku() ) ) {
@@ -420,9 +454,8 @@ component extends="HibachiService" accessors="true" {
 		var lastDay = 0;
 
 		do {
-
+			
 			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
-
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuStartDateTime,cursorPosition);
 			newSkuEndDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuEndDateTime,cursorPosition);
@@ -434,7 +467,6 @@ component extends="HibachiService" accessors="true" {
 			}
 
 		} while ( !latestSku.hasErrors() && newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
-		
 		if (latestSku.hasErrors()) {
 			arguments.product.addErrors(latestSku.getErrors());
 		}
@@ -566,15 +598,6 @@ component extends="HibachiService" accessors="true" {
 		return result;
 	}
 	
-	public any function getAllRelatedProducts(required any productID) {
-		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile, relatedProduct.calculatedSalePrice, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID, relatedProduct.defaultSku.skuID");
-		relatedProducts.addFilter("product.productID",arguments.productID);
-		relatedProducts.addFilter("product.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=false);
-		return relatedProducts;
-	}
-
 	public any function getAllProductReviews(required any productID) {
 		var relatedProducts = this.getProductReviewCollectionList();
 		relatedProducts.setDisplayProperties("reviewerName, createdDateTime, review, reviewTitle, rating, activeFlag");
@@ -602,7 +625,7 @@ component extends="HibachiService" accessors="true" {
 				}
 				
 	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( isEmpty(imageFile) ) {
+	            if( this.hibachiIsEmpty(imageFile) ){
 	            	continue;
 	            }
 	            var imageArray = [];
@@ -801,7 +824,6 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 		}
-
 		// Return the product
 		return arguments.product;
 	}
@@ -1133,7 +1155,6 @@ component extends="HibachiService" accessors="true" {
 		
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
-
         // Return the product
 		return arguments.product;
 	}
@@ -1152,7 +1173,6 @@ component extends="HibachiService" accessors="true" {
 		arguments.product.getSkus()[1].setImageFile(sku.generateImageFileName());
 
 		arguments.product = this.saveProduct(arguments.product);
-
 
 		return arguments.product;
 	}

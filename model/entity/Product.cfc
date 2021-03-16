@@ -154,9 +154,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	
-	
-	
 	 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
@@ -1010,6 +1007,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return variables.brandOptions;
 	}
+	
+	public any function getBrandTypeAheadCollectionList(){
+		
+		var	collectionList = this.getService('brandService').getBrandCollectionList();
+		collectionList.setDisplayProperties('brandID', {isVisible=false,isSearchable=false});
+		collectionList.addDisplayProperties('brandName', {isVisible=true,isSearchable=true});
+		collectionList.addOrderBy('brandName|ASC');
+		return collectionList;
+	}
 
 	public string function getNextSkuCode() {
 	
@@ -1309,7 +1315,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeRelatedProduct(required any relatedProduct) {
 		arguments.relatedProduct.removeProduct( this );
 	}
-	
+
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
 		//if sku code is null then create one automatically
@@ -1485,9 +1491,19 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList=""){
-		
+
 		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, defaultSku.price, defaultSku.listPrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, productType.productTypeID, productType.productTypeIDPath, defaultSku.imageFile, brand.brandID, brand.brandName, brand.urlTitle, productType.urlTitle";
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
+	
+	
+	public void function setDefaultSku(any sku){
+		if( !isNull(arguments.sku) ){
+			arguments.sku.setProduct(this);
+			variables.defaultSku = arguments.sku;
+		} else{
+			variables.delete('defaultSku');
+		}
 	}
 
 	// ==================  END:  Overridden Methods ========================
