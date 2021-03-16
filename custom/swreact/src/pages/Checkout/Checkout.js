@@ -11,8 +11,10 @@ import ReviewSlide from './Review'
 import AccountAddress from './AccountAddress'
 
 import { checkOutSteps, REVIEW } from './steps'
-import SlideNavigation from './SlideNavigation'
 import { placeOrder } from '../../actions/cartActions'
+import useRedirect from '../../hooks/useRedirect'
+import { isAuthenticated } from '../../utils'
+import { useEffect } from 'react'
 // https://www.digitalocean.com/community/tutorials/how-to-create-multistep-forms-with-react-and-semantic-ui
 // https://github.com/srdjan/react-multistep/blob/master/react-multistep.js
 // https://www.geeksforgeeks.org/how-to-create-multi-step-progress-bar-using-bootstrap/
@@ -126,8 +128,16 @@ const Checkout = () => {
   const { isFetching } = cart
   let match = useRouteMatch()
   const loc = useLocation()
+  const history = useHistory()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const currentStep = getCurrentStep(path)
+  const [redirect, setRedirect] = useRedirect({ location: 'login', time: 0 })
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      history.push('/my-account')
+    }
+  }, [isAuthenticated, history])
 
   return (
     <Layout>
@@ -137,27 +147,17 @@ const Checkout = () => {
           <section className="col-lg-8">
             {/* <!-- Steps--> */}
             <StepsHeader />
+            <Route path={`${match.path}/cart`}>
+              <Redirect to="/cart" />
+            </Route>
 
             <Switch>
               <Route path={`${match.path}/shipping`}>
                 <ShippingSlide currentStep={currentStep} />
               </Route>
-              <Route path={`${match.path}/cart`}>
-                <Redirect to="/cart" />
-              </Route>
+
               <Route path={`${match.path}/payment`}>
                 <PaymentSlide currentStep={currentStep} />
-              </Route>
-              <Route path={`${match.path}/aa`}>
-                <AccountAddress
-                  currentStep={currentStep}
-                  onSelect={value => {
-                    console.log('onSelect', value)
-                  }}
-                  onSave={values => {
-                    console.log('onSave', values)
-                  }}
-                />
               </Route>
               <Route path={`${match.path}/review`}>
                 <ReviewSlide currentStep={currentStep} />

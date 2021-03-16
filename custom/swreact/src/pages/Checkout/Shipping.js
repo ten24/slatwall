@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { addAddressAndAttachAsShipping, addShippingAddressUsingAccountAddress, addShippingMethod, changeOrderFulfillment, getEligibleFulfillmentMethods } from '../../actions/cartActions'
+import { addAddressAndAttachAsShipping, addPickupLocation, addShippingAddressUsingAccountAddress, addShippingMethod, changeOrderFulfillment, getEligibleFulfillmentMethods, getPickupLocations } from '../../actions/cartActions'
 import SlideNavigation from './SlideNavigation'
 import { SwRadioSelect } from '../../components'
 import AccountAddress from './AccountAddress'
 import { useEffect } from 'react'
-import { accountAddressSelector, fulfillmentMethodSelector, fulfillmentSelector, shippingMethodSelector } from '../../selectors/orderSelectors'
+import { accountAddressSelector, fulfillmentMethodSelector, fulfillmentSelector, pickupLocation, pickupLocationOptions, shippingMethodSelector } from '../../selectors/orderSelectors'
 
 const FulfillmentPicker = () => {
   const dispatch = useDispatch()
@@ -61,20 +61,48 @@ const ShippingMethodPicker = () => {
   )
 }
 
+const PickupLocationPicker = () => {
+  const dispatch = useDispatch()
+  const pickupLocations = useSelector(pickupLocationOptions)
+  const selectedLocation = useSelector(pickupLocation)
+  return (
+    <div className="row mb-3">
+      <div className="col-sm-12">
+        {pickupLocations.length > 0 && (
+          <SwRadioSelect
+            label="Which Location would you like to pickup from?"
+            options={pickupLocations}
+            onChange={value => {
+              dispatch(
+                addPickupLocation({
+                  value,
+                })
+              )
+            }}
+            selectedValue={selectedLocation.locationID}
+          />
+        )}
+      </div>
+    </div>
+  )
+}
+
 const ShippingSlide = ({ currentStep }) => {
   const dispatch = useDispatch()
-  const { isFetching, orderRequirementsList } = useSelector(state => state.cart)
+  const { orderRequirementsList } = useSelector(state => state.cart)
   let selectedFulfillmentMethod = useSelector(fulfillmentSelector)
   let selectedAccountID = useSelector(accountAddressSelector)
   const orderFulfillment = useSelector(fulfillmentSelector)
 
   useEffect(() => {
     dispatch(getEligibleFulfillmentMethods())
+    dispatch(getPickupLocations())
   }, [dispatch])
 
   return (
     <>
       <FulfillmentPicker />
+      {selectedFulfillmentMethod.fulfillmentMethod.fulfillmentMethodType === 'pickup' && <PickupLocationPicker />}
       {selectedFulfillmentMethod.fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
         <AccountAddress
           addressTitle={'Shipping address'}

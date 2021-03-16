@@ -88,6 +88,51 @@ export const getEligibleFulfillmentMethods = () => {
     }
   }
 }
+
+export const getPickupLocations = () => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'GET',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/getPickupLocations`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart({ pickupLocations: response.data.locations }))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
+
+export const addPickupLocation = params => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/addPickupFulfillmentLocation`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: {
+        ...params,
+        returnJSONObjects: 'cart',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
 export const updateItemQuantity = (skuID, quantity = 1) => {
   return async dispatch => {
     dispatch(requestCart())
@@ -183,17 +228,17 @@ export const addShippingMethod = (params = {}) => {
   }
 }
 
-export const addPickupLocation = (params = {}) => {
-  return async dispatch => {
-    dispatch(requestCart())
+// export const addPickupLocation = (params = {}) => {
+//   return async dispatch => {
+//     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.addPickupLocation(params)
+//     const req = await SlatwalApiService.cart.addPickupLocation(params)
 
-    if (req.isSuccess()) {
-      dispatch(receiveCart(req.success().cart))
-    }
-  }
-}
+//     if (req.isSuccess()) {
+//       dispatch(receiveCart(req.success().cart))
+//     }
+//   }
+// }
 
 export const updateFulfillment = (params = {}) => {
   return async dispatch => {

@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 
 export const getAllOrderFulfillments = state => state.cart.orderFulfillments
 export const getAllAccountAddresses = state => state.userReducer.accountAddresses
+export const getAllPickupLocations = state => state.cart.pickupLocations
 
 export const fulfillmentMethodSelector = createSelector(getAllOrderFulfillments, orderFulfillments => {
   let selectedFulfillmentMethod = { fulfillmentMethodID: '' }
@@ -41,4 +42,18 @@ export const accountAddressSelector = createSelector([getAllAccountAddresses, ge
   }
 
   return selectedAccountID
+})
+
+export const pickupLocationOptions = createSelector(getAllPickupLocations, (locations = []) => {
+  return locations.map(location => {
+    return { name: location['NAME'], value: location['VALUE'] }
+  })
+})
+
+export const pickupLocation = createSelector(fulfillmentSelector, fulfillment => {
+  let location = { locationID: '' }
+  if (fulfillment.pickupLocation) {
+    location = fulfillment.pickupLocation
+  }
+  return location
 })
