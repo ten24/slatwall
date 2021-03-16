@@ -64,19 +64,19 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
     property name="priceGroupName" ormtype="string";
 	property name="priceGroupCode" ormtype="string" index="IDX_PRICEGROUPCODE";
 	
-	property name="brandName" ormtype="string";
+	property name="brandName" ormtype="string" index="IDX_BRAND_NAME";
 	
-	property name="productTypeName" ormtype="string";
-	property name="productTypeURLTitle" ormtype="string";
+	property name="productTypeName" ormtype="string" index="IDX_PRODUCT_TYPE_NAME";
+	property name="productTypeURLTitle" ormtype="string" index="IDX_PRODUCT_TYPE_URL_TITLE";
 
-	property name="categoryName" ormtype="string";
-	property name="categoryUrlTitle" ormtype="string";
+	property name="categoryName" ormtype="string" index="IDX_CATEGORY_NAME";
+	property name="categoryUrlTitle" ormtype="string" index="IDX_CATEGORY_URL";
 	
 	property name="contentTitle" ormtype="string";
 	property name="contentUrlTitle" ormtype="string";
     property name="contentSortOrder" ormtype="integer";
 
-	property name="optionName" ormtype="string";
+	property name="optionName" ormtype="string" index="IDX_OPTION_NAME";
 	property name="optionCode" ormtype="string" index="IDX_OPTION_CODE";
 	property name="optionSortOrder" ormtype="integer";
 
@@ -95,10 +95,13 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="attributeSetObject" ormtype="string" index="IDX_ATTRIBUTE_SET_OBJECT";
 	property name="attributeSetSortOrder" ormtype="integer";
 
-    property name="attributeOptionValue" ormtype="string" index="IDX_ATTRIBUTE_CODE";
-	property name="attributeOptionLabel" ormtype="string";
-	property name="attributeOptionUrlTitle" ormtype="string";
+    property name="attributeOptionValue" ormtype="string" index="IDX_ATTRIBUTE_OPTION_VALUE";
+	property name="attributeOptionLabel" ormtype="string" index="IDX_ATTRIBUTE_OPTION_LABEL";
+	property name="attributeOptionUrlTitle" ormtype="string" index="IDX_ATTRIBUTE_OPTION_URL";
 	property name="attributeOptionSortOrde" ormtype="integer";
+	
+	property name="productPublishedStartDateTime" ormtype="timestamp";
+	property name="productPublishedEndDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	

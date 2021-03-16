@@ -120,6 +120,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	                        productFilterFacetOptionID,
     	   
                             productID,
+                            productPublishedStartDateTime,
+                            productPublishedEndDateTime,
                 	        
                 	        skuID,
                 	        
@@ -254,6 +256,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            ) AS productFilterFacetOptionID,
 	
 		   p.productID,
+		   p.publishedStartDateTime AS productPublishedStartDateTime,
+           p.publishedEndDateTime AS productPublishedEndDateTime,
 		   
 		   sk.skuID,
 		   
@@ -307,6 +311,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 ON sk.productID = p.productID #productAndSkuIDsQueryPart#
                     AND ( p.activeFlag = 1 OR p.activeFlag IS NULL ) 
                     AND ( p.publishedFlag = 1 OR p.publishedFlag IS NULL)
+                    AND ( p.publishedStartDateTime IS NULL OR p.publishedStartDateTime <= NOW() )
+                    AND ( p.publishedEndDateTime IS NULL OR p.publishedEndDateTime >= NOW() )
                     AND ( sk.activeFlag = 1 OR sk.activeFlag IS NULL ) 
                     AND ( sk.publishedFlag = 1 OR sk.publishedFlag IS NULL)
                     
@@ -497,8 +503,16 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             UPDATE swProductFilterFacetOption ffo
             INNER JOIN
         ";
-            
+                    
         switch (arguments.entityName){
+            case 'product':
+                sql &= " 
+                    swProduct p ON p.productID = ffo.productID AND p.productID IN (:entityIDs)
+                    SET 
+                        ffo.productPublishedStartDateTime = p.publishedStartDateTime,
+                        ffo.productPublishedEndDateTime = p.publishedEndDateTime
+                ";
+            break;
             case 'brand':
                 sql &= " 
                     swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (:entityIDs)
@@ -603,7 +617,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         
         this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName# : #arguments.entityIDs# ");
         
-        return q ? : {};
+        return q;
 	}
 	
 	public any function removeProductFilterFacetOptionsByEntityNameAndIDs( required string entittyName, required string entityIDs ){
@@ -701,6 +715,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	/**
 	 * **** END ********************** Keep the Filter-Relations updated in realtime
 	*/
+	
+	
+	
 	
 	public string function getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
 	    if(arguments.facetName == 'brand'){
@@ -818,39 +835,62 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    return variables['cached_FacetsMetaData'];
 	}
 	
-	public string function makeGetFacetOptionQuery(required struct facetMetaData, required struct facetsFilterQueryFragments ){
-	    var facetQuery = "
-	        SELECT 
-	            id, 
-	            name, 
-	            facet, 
-	            subFacet, 
-	            subFacetName, 
-	            slug, 
-	            code, 
-	            COUNT(DISTINCT skuID) AS count 
-	        FROM
-    	        ( 
-    	            SELECT 
-        				skuID, 
-        				$facetIDKey$                as id, 
-        				$facetNameKey$              as name, 
-        				$facetSlugKeyOrValue$       as slug,
-        				$facetCodeKeyOrValue$       as code,
-        				'$facet$'                   as facet, 
-        				$subFacetKeyOrValue$        as subFacet,
-        				$subFacetNameKeyOrValue$    as subFacetName
-        				
-        			FROM swProductFilterFacetOption 
-        			WHERE $facetIDKey$ IS NOT NULL
-        			$filterQueryFragment$
-        			GROUP BY skuID, $facetIDKey$, $facetNameKey$
-        			
-    		    ) result_set
-    		    
-    	    GROUP BY id
-    	    HAVING COUNT(DISTINCT skuID) > 0
-	    ";
+	public string function makeGetFacetOptionQuery(required struct facetMetaData, required struct facetsFilterQueryFragments, boolean includeSKUCount){
+	    
+	    var facetQuery = "";
+	    if(arguments.includeSKUCount){
+    	    facetQuery = "
+    	        SELECT 
+    	            id, 
+    	            name, 
+    	            facet, 
+    	            subFacet, 
+    	            subFacetName, 
+    	            slug, 
+    	            code, 
+    	            COUNT(DISTINCT skuID) AS count 
+    	        FROM
+        	        ( 
+        	            SELECT 
+            				skuID, 
+            				$facetIDKey$                as id, 
+            				$facetNameKey$              as name, 
+            				$facetSlugKeyOrValue$       as slug,
+            				$facetCodeKeyOrValue$       as code,
+            				'$facet$'                   as facet, 
+            				$subFacetKeyOrValue$        as subFacet,
+            				$subFacetNameKeyOrValue$    as subFacetName
+            				
+            			FROM swProductFilterFacetOption 
+            			WHERE $facetIDKey$ IS NOT NULL
+            			$filterQueryFragment$
+            			AND ( productPublishedStartDateTime IS NULL OR productPublishedStartDateTime <= NOW() )
+                        AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= NOW() )
+            			GROUP BY skuID, $facetIDKey$, $facetNameKey$
+            			
+        		    ) result_set
+        		    
+        	    GROUP BY id
+        	    HAVING COUNT(DISTINCT skuID) > 0
+    	    ";
+	    } else {
+	        facetQuery = "
+                SELECT 
+    				DISTINCT $facetIDKey$       as id, 
+    				$facetNameKey$              as name, 
+    				$facetSlugKeyOrValue$       as slug,
+    				$facetCodeKeyOrValue$       as code,
+    				'$facet$'                   as facet, 
+    				$subFacetKeyOrValue$        as subFacet,
+    				$subFacetNameKeyOrValue$    as subFacetName
+    				
+    			FROM swProductFilterFacetOption 
+    			WHERE $facetIDKey$ IS NOT NULL
+    			$filterQueryFragment$
+                AND ( productPublishedStartDateTime IS NULL OR productPublishedStartDateTime <= NOW() )
+                AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= NOW() )
+    		";
+	    }
 	    
         facetQuery = replace(facetQuery, '$facet$',              arguments.facetMetaData.facet );
         facetQuery = replace(facetQuery, '$facetIDKey$',         arguments.facetMetaData.facetIDKey, 'all');
@@ -896,7 +936,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    var facetsSqlFilterQueryParams = {};
 	    facetsSqlFilterQueryFragments['site'] = '';
 	    if( !isNull(arguments.site) && len(arguments.site.getSiteID()) ){
-	        facetsSqlFilterQueryFragments['site'] = '(siteID = #arguments.site.getSiteID()# OR siteID IS NULL)'
+	        facetsSqlFilterQueryFragments['site'] = '(siteID = #arguments.site.getSiteID()# OR siteID IS NULL)';
+	        // TODO: if site has location then stock count
 	    }
 	    
 	    for(var facetName in ['brand', 'category', 'productType'] ){
@@ -971,13 +1012,14 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    };
 	}
 	
-	public any function getPotentialFilterFacetsAndOptions2(){
+	public any function getPotentialFilterFacetsAndOptions(){
         param name="arguments.site";
         param name="arguments.brand" default={};
         param name="arguments.option" default={};
         param name="arguments.category" default={};
         param name="arguments.attribute" default={};
         param name="arguments.productType" default={};
+        param name="arguments.includeSKUCount" default=true;
         
         var startTicks = getTickCount();
 
@@ -989,9 +1031,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             if( len(getAllFacetOptionsSQL) ){
                // union-all because there won't be any duplictes in the result-set, 
                // so we can avoide some computation, by avoiding the sorting of result-set to remove duplicates [ behaviour of simple UNION]
-               getAllFacetOptionsSQL &= ' UNION ALL'; 
+               getAllFacetOptionsSQL &= " 
+                                        
+                                        UNION ALL
+                                        
+                                        "; 
             }
-            getAllFacetOptionsSQL &= this.makeGetFacetOptionQuery(facetsMetadata[facetName], filterQueryFragmentsData.fragments );
+            getAllFacetOptionsSQL &= this.makeGetFacetOptionQuery(facetsMetadata[facetName], filterQueryFragmentsData.fragments, arguments.includeSKUCount );
         }
                 
         var queryService = new Query();
