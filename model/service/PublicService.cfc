@@ -3670,5 +3670,23 @@ component  accessors="true" output="false"
          
          getOrderService().deleteOrder( cart );
      }
+     
+     /**
+	 * Generic Endpoint to get any entity
+	* */
+	public any function getEntity( required struct data ) {
+	    param name="arguments.data.entityName" default="Account";
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        param name="arguments.enforceAuthorization" default="false";
+        
+         //Todo : Add public Properties logic here to fetch default properties
+		
+		var collectionOptions = getService('hibachiCollectionService').getCollectionOptionsFromData(arguments.data);
+		var collectionEntity = getService('hibachiCollectionService').getTransientCollectionByEntityName(arguments.data.entityName,collectionOptions);
+		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
+	    
+	    return getService('hibachiCollectionService').getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
+	}
     
 }
