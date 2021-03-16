@@ -18,7 +18,7 @@ class SWTabGroupController {
         ){
         if(angular.isUndefined(this.tabs)){
             this.tabs = []; 
-        } 
+        }
         this.tabGroupID = "TG" + this.utilityService.createID(30);
         this.switchTabGroupEventName = "SwitchTabGroup" + this.tabGroupID;
         if(angular.isUndefined(this.initTabEventName)){
@@ -26,17 +26,15 @@ class SWTabGroupController {
         }
         
         this.observerService.attach(this.initTab, this.initTabEventName);
-        
-        if(angular.isUndefined(this.switchTabEventName)){	
-            this.switchTabEventName = this.tabGroupID + "SwitchTabTo";	
-        }
         if(angular.isDefined(this.resetTabEventName)){
             this.observerService.attach(this.reset, this.resetTabEventName);
+        }
+        if(angular.isUndefined(this.switchToTabEventName)){	
+            this.switchToTabEventName = this.tabGroupID + "SwitchTabTo";	
         }
         if(angular.isDefined(this.switchToTabEventName)){
             this.observerService.attach(this.switchToTab, this.switchToTabEventName);
         }
-        this.observerService.attach(this.switchTab, this.switchTabEventName);
     }
 
     public initTab = () =>{
@@ -61,14 +59,19 @@ class SWTabGroupController {
     }
     
     public switchToTab = (tabName)=>{
-        this.switchTab(this.getTabByName(tabName));
+        if(angular.isUndefined(this.getTabByName(tabName))){
+            this.switchTab(tabName);
+        } else {
+            this.switchTab(this.getTabByName(tabName));
+        }
+        
     }
 
     public switchTab = (tabToActivate) => {
         this.observerService.notify(this.switchTabGroupEventName);
-        // if(this.switchTabEventName){
-        //     this.observerService.notify(this.switchTabEventName, tabToActivate);
-        // }
+        if(this.switchTabEventName){
+            this.observerService.notify(this.switchTabEventName, tabToActivate);
+        }
         for(var i = 0; i < this.tabs.length; i++){
             this.tabs[i].active = false; 
         }
