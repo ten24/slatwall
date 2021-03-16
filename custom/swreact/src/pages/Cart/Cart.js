@@ -52,7 +52,16 @@ const Cart = () => {
 
               <CartPromoBox />
 
-              <OrderNotes />
+              <button
+                className="btn btn-primary btn-block mt-4"
+                disabled={cart.isFetching}
+                onClick={e => {
+                  e.preventDefault()
+                  history.push('/checkout')
+                }}
+              >
+                {t('frontend.order.to_checkout')}
+              </button>
             </div>
           </aside>
         </div>

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { SlatwalApiService } from '../../../services'
-import Pagination from '../../ListingOld/Pagination'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import { useTranslation } from 'react-i18next'
+
+import useFormatCurrency from '../../../hooks/useFormatCurrency'
+import { useFormatDateTime } from '../../../hooks/useFormatDate'
 
 const ToolBar = ({ term, updateTerm }) => {
   const { t, i18n } = useTranslation()
@@ -63,7 +64,11 @@ const OrderStatus = ({ type = 'info', text }) => {
 }
 
 const OrderListItem = props => {
-  const { orderNumber, orderID, createdDateTime, orderStatusType_typeName, calculatedTotal, trackingNumbers } = props
+  const { orderNumber, orderID, createdDateTime, orderStatusType_typeName, calculatedTotal } = props
+
+  const [formatCurrency] = useFormatCurrency({})
+  const [formateDateTime] = useFormatDateTime()
+
   return (
     <tr>
       <td className="py-3">
@@ -79,7 +84,7 @@ const OrderListItem = props => {
         <br />
         {/* {location} */}
       </td>
-      <td className="py-3">{createdDateTime}</td>
+      <td className="py-3">{formateDateTime(createdDateTime)}</td>
       <td className="py-3">
         <OrderStatus text={orderStatusType_typeName} />
       </td>

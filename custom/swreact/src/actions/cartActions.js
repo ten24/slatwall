@@ -67,6 +67,27 @@ export const addToCart = (skuID, quantity = 1) => {
     }
   }
 }
+
+export const getEligibleFulfillmentMethods = () => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/getEligibleFulfillmentMethods`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart({ eligibleFulfillmentMethods: response.data.eligibleFulfillmentMethods }))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
 export const updateItemQuantity = (skuID, quantity = 1) => {
   return async dispatch => {
     dispatch(requestCart())
@@ -108,6 +129,7 @@ export const updateItemQuantity = (skuID, quantity = 1) => {
     }
   }
 }
+
 export const removeItem = orderItemID => {
   return async dispatch => {
     dispatch(requestCart())
