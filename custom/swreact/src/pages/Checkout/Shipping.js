@@ -3,7 +3,7 @@ import { addAddressAndAttachAsShipping, addPickupLocation, addShippingAddressUsi
 import SlideNavigation from './SlideNavigation'
 import { SwRadioSelect } from '../../components'
 import AccountAddress from './AccountAddress'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { accountAddressSelector, fulfillmentMethodSelector, fulfillmentSelector, pickupLocation, pickupLocationOptions, shippingMethodSelector } from '../../selectors/orderSelectors'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'

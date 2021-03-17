@@ -1,4 +1,4 @@
-import { CartPromoBox, Layout, PromotionalMessaging, Spinner } from '../../components'
+import { CartPromoBox, Layout, OrderNotes, PromotionalMessaging, Spinner } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -102,9 +102,9 @@ const CheckoutSideBar = () => {
         </ul>
         <h3 className="font-weight-normal text-center my-4">
           <span>{total > 0 ? formatCurrency(total) : '--'}</span>
-          {/* $274.<small>50</small> */}
         </h3>
         {currentStep.key !== REVIEW && <CartPromoBox />}
+        {currentStep.key === REVIEW && <OrderNotes />}
         {currentStep.key === REVIEW && (
           <button
             className="btn btn-primary btn-block mt-4"

@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 
 export const getAllOrderFulfillments = state => state.cart.orderFulfillments
 export const getAllAccountAddresses = state => state.userReducer.accountAddresses
+export const getAllAccountPaymentMethods = state => state.userReducer.accountPaymentMethods
 export const getAllPickupLocations = state => state.cart.pickupLocations
 export const getAllOrderPayments = state => state.cart.orderPayments
 export const getAllEligiblePaymentMethodDetails = state => state.cart.eligiblePaymentMethodDetails
@@ -20,6 +21,10 @@ export const fulfillmentSelector = createSelector(getAllOrderFulfillments, order
     selectedFulfillment = orderFulfillments[0]
   }
   return selectedFulfillment
+})
+
+export const shippingAddressSelector = createSelector(fulfillmentSelector, orderFulfillment => {
+  return orderFulfillment.shippingAddress || {}
 })
 
 export const shippingMethodSelector = createSelector(getAllOrderFulfillments, orderFulfillments => {
@@ -88,4 +93,31 @@ export const billingAccountAddressSelector = createSelector([getAllAccountAddres
   }
 
   return selectedAccountID
+})
+
+export const billingAddressNickname = createSelector([getAllAccountPaymentMethods, orderPayment], (accountPaymentMethods, payment) => {
+  let billingAddressNickname = ''
+  if (payment && payment.accountPaymentMethod) {
+    billingAddressNickname = accountPaymentMethods
+      .filter(({ accountPaymentMethodID }) => {
+        return accountPaymentMethodID === payment.accountPaymentMethod.accountPaymentMethodID
+      })
+      .map(({ accountPaymentMethodName }) => {
+        return accountPaymentMethodName
+      })
+    billingAddressNickname = billingAddressNickname.length ? billingAddressNickname[0] : ''
+  }
+  return billingAddressNickname
+})
+export const shippingAddressNicknameSelector = createSelector([fulfillmentSelector, getAllAccountAddresses], (fulfillment, accountAddresses = []) => {
+  let shippingAddressNickname = accountAddresses
+    .filter(accountAddress => {
+      return fulfillment.shippingAddress && accountAddress.address.addressID === fulfillment.shippingAddress.addressID
+    })
+    .map(({ accountAddressName }) => {
+      return accountAddressName
+    })
+  shippingAddressNickname = shippingAddressNickname.length ? shippingAddressNickname[0] : ''
+
+  return shippingAddressNickname
 })

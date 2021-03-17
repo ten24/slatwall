@@ -157,6 +157,30 @@ export const setPickupDate = params => {
     }
   }
 }
+export const updateOrderNotes = params => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/updateOrderNotes`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: {
+        ...params,
+        returnJSONObjects: 'cart',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
 export const updateItemQuantity = (skuID, quantity = 1) => {
   return async dispatch => {
     dispatch(requestCart())

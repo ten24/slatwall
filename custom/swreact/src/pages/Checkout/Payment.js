@@ -17,7 +17,7 @@ export const TERM_PAYMENT = '2c918088783591e3017836350bd21385'
 const CreditCardPayemnt = () => {
   const paymentMethods = useSelector(accountPaymentMethods)
   const [newOrderPayment, setNewOrderPayment] = useState(false)
-  const { accountPaymentMethod } = useSelector(orderPayment)
+  const { accountPaymentMethod = { accountPaymentMethodID: '' } } = useSelector(orderPayment)
   const dispatch = useDispatch()
 
   return (
@@ -59,7 +59,7 @@ const CreditCardPayemnt = () => {
 const GiftCardPayemnt = () => {
   return (
     <>
-      <h1>Yummy Gift Cards</h1>
+      <h1>Gift Cards</h1>
     </>
   )
 }
@@ -89,27 +89,29 @@ const TermPayment = ({ method }) => {
           </div>
         </div>
       </div>
-      <AccountAddress
-        addressTitle={'Billing Address'}
-        selectedAccountID={selectedAccountID || accountAddressID}
-        onSelect={value => {
-          dispatch(
-            addPayment({
-              accountAddressID: value,
-              newOrderPayment: {
-                purchaseOrderNumber: termOrderNumber,
-                paymentMethod: {
-                  paymentMethodID: method,
+      {termOrderNumber.length > 0 && (
+        <AccountAddress
+          addressTitle={'Billing Address'}
+          selectedAccountID={selectedAccountID || accountAddressID}
+          onSelect={value => {
+            dispatch(
+              addPayment({
+                accountAddressID: value,
+                newOrderPayment: {
+                  purchaseOrderNumber: termOrderNumber,
+                  paymentMethod: {
+                    paymentMethodID: method,
+                  },
                 },
-              },
-            })
-          )
-          setAccountAddressID(value)
-        }}
-        onSave={values => {
-          dispatch(addNewAccountAndSetAsBilling({ ...values }))
-        }}
-      />
+              })
+            )
+            setAccountAddressID(value)
+          }}
+          onSave={values => {
+            dispatch(addNewAccountAndSetAsBilling({ ...values }))
+          }}
+        />
+      )}
     </>
   )
 }
