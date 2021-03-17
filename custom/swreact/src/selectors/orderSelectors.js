@@ -3,6 +3,8 @@ import { createSelector } from 'reselect'
 export const getAllOrderFulfillments = state => state.cart.orderFulfillments
 export const getAllAccountAddresses = state => state.userReducer.accountAddresses
 export const getAllPickupLocations = state => state.cart.pickupLocations
+export const getAllOrderPayments = state => state.cart.orderPayments
+export const getAllEligiblePaymentMethodDetails = state => state.cart.eligiblePaymentMethodDetails
 
 export const fulfillmentMethodSelector = createSelector(getAllOrderFulfillments, orderFulfillments => {
   let selectedFulfillmentMethod = { fulfillmentMethodID: '' }
@@ -56,4 +58,34 @@ export const pickupLocation = createSelector(fulfillmentSelector, fulfillment =>
     location = fulfillment.pickupLocation
   }
   return location
+})
+
+export const orderPayment = createSelector(getAllOrderPayments, orderPayments => {
+  let orderPayment = { paymentMethod: { paymentMethodID: '' }, accountPaymentMethod: { accountPaymentMethodID: '' } }
+  if (orderPayments.length) {
+    orderPayment = orderPayments[0]
+  }
+  return orderPayment
+})
+
+export const eligiblePaymentMethodDetailSelector = createSelector(getAllEligiblePaymentMethodDetails, (eligiblePaymentMethodDetails = []) => {
+  return eligiblePaymentMethodDetails.map(({ paymentMethod }) => {
+    return { name: paymentMethod.paymentMethodName, value: paymentMethod.paymentMethodID }
+  })
+})
+
+export const billingAccountAddressSelector = createSelector([getAllAccountAddresses, orderPayment], (accountAddresses, paymentOnOrder) => {
+  let selectedAccountID = ''
+  if (accountAddresses.length && paymentOnOrder && paymentOnOrder.billingAccountAddress) {
+    const selectAccount = accountAddresses
+      .filter(({ accountAddressID }) => {
+        return accountAddressID === paymentOnOrder.billingAccountAddress.accountAddressID
+      })
+      .map(({ accountAddressID }) => {
+        return accountAddressID
+      })
+    selectedAccountID = selectAccount.length ? selectAccount[0] : ''
+  }
+
+  return selectedAccountID
 })

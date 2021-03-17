@@ -357,7 +357,7 @@ export const addAddressAndAttachAsShipping = (params = {}) => {
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
-      dispatch(receiveCart())
+      dispatch(receiveUser())
     }
   }
 }
@@ -403,7 +403,7 @@ export const addAddressAndAttachAsBilling = (params = {}) => {
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
-      dispatch(receiveCart())
+      dispatch(receiveUser())
     }
   }
 }
@@ -427,7 +427,7 @@ export const addBillingAddressUsingAccountAddress = (params = {}) => {
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
-      dispatch(receiveCart())
+      dispatch(receiveUser())
       dispatch(receiveCart())
     }
   }
@@ -453,7 +453,7 @@ export const addNewAccountAndSetAsBilling = (params = {}) => {
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
-      dispatch(receiveCart())
+      dispatch(receiveUser())
     }
   }
 }
@@ -478,7 +478,7 @@ export const addAddressAndPaymentAndAddToOrder = (params = {}) => {
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
-      dispatch(receiveCart())
+      dispatch(receiveUser())
     }
   }
 }
