@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { SWImage } from '..'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 //        local.homeContentColumns.addFilter("urlTitlePath","%content-columns/%","LIKE")
@@ -20,7 +21,7 @@ function HomeDetails(props) {
           homeContent.map((section, index) => {
             return (
               <div key={index} className="col-md">
-                <img className="mb-3" src="" alt="" />
+                <SWImage className="mb-3" customPath="/custom/assets/files/associatedimage/" src={section.associatedImage} />
                 <h3 className="h3">{section.title}</h3>
                 <p
                   onClick={event => {
