@@ -794,7 +794,6 @@ component output="false" accessors="true" extends="HibachiService" {
 
 
 		collectionOptions.filterGroupsConfig = serializeJson(filterGroupsConfig);
-		dump(collectionOptions);
 		
 		var collectionResponse = getAPIResponseForCollection(collectionEntity,collectionOptions,arguments.data.enforceAuthorization);
 		var response = {};
