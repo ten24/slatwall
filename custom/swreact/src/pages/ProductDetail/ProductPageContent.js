@@ -85,6 +85,10 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                 onSubmit={event => {
                   event.preventDefault()
                   dispatch(addToCart(sku.data.skuID, quantity))
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  })
                 }}
               >
                 {skus.isLoaded &&
