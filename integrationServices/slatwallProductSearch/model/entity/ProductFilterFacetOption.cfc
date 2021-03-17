@@ -162,28 +162,6 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
-	
-	public any function getDefaultCollectionProperties(string includesList = "" ){
-	    if( this.hibachiIsEmpty(arguments.includesList) ){
-	        arguments.includesList  =  "
-	            productFilterFacetOptionID,
-                product.productID, 
-                sku.skuID,
-                brand.brandID, brandName,
-                category.categoryID, categoryName, parentCategoryID, categoryUrlTitle,
-                option.optionID, optionName, optionCode, optionSortOrder,
-                optionGroup.optionGroupID, optionGroupName, optionGroupSortOrder,
-                productType.productTypeID, productTypeName, parentProductTypeID, productTypeURLTitle,
-                site.siteID, siteName, siteCode, currencyCode,
-                attribute.attributeID, attributeName, attributeCode, attributeInputType, attributeUrlTitle, attributeSortOrder,
-                attributeSet.attributeSetID, attributeSetCode, attributeSetName, attributeSetObject, attributeSetSortOrder,
-                attributeOption.attributeOptionID,attributeOptionValue,attributeOptionLabel, attributeOptionUrlTitle, attributeOptionSortOrder
-	        ";
-	    }
-	    
-	    return super.getDefaultCollectionProperties(argumentCollection = arguments);
-	}
-
 
 	// ==================  END:  Overridden Methods ========================
 

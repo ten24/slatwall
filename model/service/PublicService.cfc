@@ -240,12 +240,11 @@ component  accessors="true" output="false"
         arguments.parsedQuery = this.parseProductSearchQuery(arguments.urlScope);
 
 		param name="arguments.parsedQuery.siteID" default='';
-		param name="arguments.parsedQuery.currencyCode" default='USD';
-    
+
         //  account, order, for pricing
 		param name="arguments.parsedQuery.order" default=hibachiScope.getCart();
 		param name="arguments.parsedQuery.account" default=hibachiScope.getAccount();
-		param name="arguments.parsedQuery.priceGroupCode" default='';
+        param name="arguments.parsedQuery.priceGroupCode" default='';
         
 	    // facets
 	    param name="arguments.parsedQuery.brand" default={};
@@ -263,14 +262,57 @@ component  accessors="true" output="false"
         // Pagination
 	    param name="arguments.parsedQuery.currentPage" default=1;
 	    param name="arguments.parsedQuery.pageSize" default=10;
+	    
         // additional properties
         param name="arguments.parsedQuery.includeSKUCount" default=true;
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
+	    
+	    // TODO: additional filters
+	    // product and sku properties/attributes -- need to figureout a convention/approach like product.featuredFlag=true
         
-        // currently it will set a transient site, but it need's to figure-out current-request-site 
-        // either form headers, or hibachi-scope
 	    // TODO: Nitin is working on it and will update.
-	    var currentRequestSite = hibachiScope.getCurrentRequestSite() ?: this.getService('SiteService').newSite();
+        // currently it will set a transient site, but it need's to figure-out current-request-site 
+	    var currentRequestSite = hibachiScope.getCurrentRequestSite();
+	    if(isNUll(currentRequestSite) ){
+	        // throw('current request site should never be null');
+	        hibachiScope.logHibachi('CurrentRequest site is null, which should never happen');
+	        var currentRequestSite = hibachiScope.getService('SiteService').newSite();
+	    }
+	    if( len(trim(arguments.parsedQuery.siteID)) && currentRequestSite.getSiteID() != arguments.parsedQuery.siteID ){
+	        currentRequestSite = hibachiScope.getService('siteService').getSiteBySiteID(arguments.parsedQuery.siteID);
+	    } else {
+	        // in case if it was not passed in from the frontend, and hibachi-scope figures-out the current-request-site
+	        arguments.parsedQuery.siteID = currentRequestSite.getSiteID();
+	    }
+	    
+	    if( isNull(arguments.parsedQuery.currencyCode) || !len(trim(arguments.parsedQuery.currencyCode)) ){
+	        arguments.parsedQuery.currencyCode = currentRequestSite.getCurrencyCode() ?: 'USD';
+	    }
+	    if( isNull(arguments.parsedQuery.locale) || !len(trim(arguments.parsedQuery.locale)) ){
+	        // it will figureout the locale from account-preffered locale 
+	        arguments.parsedQuery.locale = hibachiScope.getSession().getRbLocale(); 
+	    }
+	    
+        /*
+            Price group is prioritized as so: 
+                1. Order price group
+                2. Price group passed in as argument
+                3. Price group on account
+                4. Default to ''
+        */
+        if( !isNull(arguments.parsedQuery.order.getPriceGroup()) ){ 
+            //order price group
+            arguments.parsedQuery.priceGroupCode = arguments.parsedQuery.order.getPriceGroup().getPriceGroupCode();
+        }
+        // if nothing was passed-in, no price-group on order and the account is loggd-in
+	    if(!len(arguments.parsedQuery.priceGroupCode) && hibachiScope.getLoggedInFlag() ){
+            var holdingPriceGroups = arguments.parsedQuery.account.getPriceGroups();
+            if( !isNull(holdingPriceGroups) && arrayLen(holdingPriceGroups) ){ 
+                // then use First of account's price-group
+                arguments.parsedQuery.priceGroupCode = holdingPriceGroups[1].getPriceGroupCode();
+            }
+	    }
+
 	    var intigrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
@@ -279,7 +321,6 @@ component  accessors="true" output="false"
         arguments.data.ajaxResponse = {
             'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
         };
-	    
     }
 
 

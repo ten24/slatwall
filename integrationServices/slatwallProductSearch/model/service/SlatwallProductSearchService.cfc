@@ -249,14 +249,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	public any function getBaseSearchCollectionData(){
-        var hibachiScope = this.getHibachiScope();
-        
 		param name="arguments.site";
-		param name="arguments.currencyCode" default=arguments.site.getCurrencyCode() ?: 'USD';
-    
-        //  account, order, for pricing
-		param name="arguments.order" default=hibachiScope.getCart();
-		param name="arguments.account" default=hibachiScope.getAccount();
+		param name="arguments.locale";
+		param name="arguments.currencyCode";
 		param name="arguments.priceGroupCode" default='';
         
 	    // facets
@@ -333,86 +328,29 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 		}
         
         // SKU-Price's filters
-        if( !len(arguments.currencyCode) ){
-            arguments.currencyCode = !isNUll(site) ? site.setting('skuCurrency') : 'USD';
-        }
         if( len(arguments.currencyCode) ){
             collectionList.addFilter(propertyIdentifier='skuPriceCurrencyCode', value=arguments.currencyCode, comparisonOperator="=");
         }
-        
-        
-        
-        // TODO: Solve the pricegroups later
-        // var priceGroupCode =  2; // TODO: what's the default for slatwall?
-        // var holdingPriceGroups = arguments.account.getPriceGroups();
-        /*
-            Price group is prioritized as so: 
-                1. Order price group
-                2. Price group passed in as argument
-                3. Price group on account
-                4. Default to 2
-        */
-        // if( !isNull(arguments.order.getPriceGroup()) ){ //order price group
-        //     priceGroupCode = arguments.order.getPriceGroup().getPriceGroupCode();
-        // }else if( len(arguments.priceGroupCode) ){ //argument price group
-        //     priceGroupCode = arguments.priceGroupCode;
-        // }else if( !isNull(holdingPriceGroups) && arrayLen(holdingPriceGroups) ){ //account price group
-        //     priceGroupCode = holdingPriceGroups[1].getPriceGroupCode();
-        // }
-        // collectionList.addFilter(propertyIdentifier='sku.skuPrices.priceGroup.priceGroupCode', value=priceGroupCode);
-    
-    
-        // ProductType
-        if( !this.hibachiIsStructEmpty(arguments.productType) ){
-            for(var facteValueKey in arguments.productType ){
-                var filterValue = arguments.productType[facteValueKey];
-                var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay('productType', facteValueKey);
-                if( !isNUll(propertyIdentifier) ){
-                    var conditionalOpp = '=';
-                    if( isArray(filterValue) ){
-                        conditionalOpp = 'IN';
-                        filterValue = arrayToList(filterValue);
-                    }
-                    collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
-                }
-            }
+        // if there's a price-group then we wnat that sku-price
+        // otherwise we want the sku-price which does-not have a price-group associated with it
+        if( len(trim(arguments.priceGroupCode)) ){
+            collectionList.addFilter(propertyIdentifier='priceGroupCode', value=arguments.priceGroupCode);
+        } else {
+            collectionList.addFilter(propertyIdentifier='priceGroupCode', 'NULL', 'IS');
         }
-        // category
-        if( !this.hibachiIsStructEmpty(arguments.category) ){
-            for(var facteValueKey in arguments.category ){
-                var filterValue = arguments.category[facteValueKey];
-                var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay('category', facteValueKey);
-                if( !isNUll(propertyIdentifier) ){
-                    var conditionalOpp = '=';
-                    if( isArray(filterValue) ){
-                        conditionalOpp = 'IN';
-                        filterValue = arrayToList(filterValue);
-                    }
-                    collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
-                }
-            }
-        }
-        // brands
-        if( !this.hibachiIsStructEmpty(arguments.brand) ){
-            for(var facteValueKey in arguments.brand ){
-                var filterValue = arguments.brand[facteValueKey];
-                var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay('brand', facteValueKey);
-                if( !isNUll(propertyIdentifier) ){
-                    var conditionalOpp = '=';
-                    if( isArray(filterValue) ){
-                        conditionalOpp = 'IN';
-                        filterValue = arrayToList(filterValue);
-                    }
-                    collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
-                }
-            }
-        }
-        // options
-        if( !this.hibachiIsStructEmpty(arguments.option) ){
-            for(var optionGroupName in arguments.option ){
-                for(var facteValueKey in arguments.option[optionGroupName] ){
-                    var filterValue = arguments.option[optionGroupName][facteValueKey];
-                    var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay('option', facteValueKey);
+        // we also do not want sku-prices which have min-max quantities defined
+        // TODO: don't bring-in the sku-prices which have a min or max quantity defined ?
+        collectionList.addFilter(propertyIdentifier='skuPriceMinQuantity', 'NULL', 'IS');
+        collectionList.addFilter(propertyIdentifier='maxQuantity', 'NULL', 'IS');
+        
+
+
+	    for(var facetName in ['brand', 'category', 'productType'] ){
+    	    var selectedFacetOptions = arguments[ facetName ];
+            if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
+                for(var facteValueKey in selectedFacetOptions ){
+                    var filterValue = selectedFacetOptions[facteValueKey];
+                    var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(facetName, facteValueKey);
                     if( !isNUll(propertyIdentifier) ){
                         var conditionalOpp = '=';
                         if( isArray(filterValue) ){
@@ -425,31 +363,32 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             }
         }
         
-        // Attribute options
-        if( !this.hibachiIsStructEmpty(arguments.attribute) ){
-            for(var attributeCode in arguments.attribute ){
-                for(var facteValueKey in arguments.attribute[attributeCode] ){
-                    var filterValue = arguments.attribute[attributeCode][facteValueKey];
-                    var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay('attribute', facteValueKey);
-                    if( !isNUll(propertyIdentifier) ){
-                        var conditionalOpp = '=';
-                        if( isArray(filterValue) ){
-                            conditionalOpp = 'IN';
-                            filterValue = arrayToList(filterValue);
+	    for(var facetName in ['option', 'attribute'] ){
+    	    var selectedFacetOptions = arguments[ facetName ];
+    	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
+                for(var subFacetName in selectedFacetOptions ){
+                    for(var facteValueKey in selectedFacetOptions[subFacetName] ){
+                        var filterValue = selectedFacetOptions[subFacetName][facteValueKey];
+                        var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(facetName, facteValueKey);
+                        if( !isNUll(propertyIdentifier) ){
+                            var conditionalOpp = '=';
+                            if( isArray(filterValue) ){
+                                conditionalOpp = 'IN';
+                                filterValue = arrayToList(filterValue);
+                            }
+                            collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
                         }
-                        collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
                     }
                 }
             }
-        }
-        
-        // TODO: content products
+	    }
+
+        // TODO: content-filter
 
         // Searching
         if ( len( arguments.keyword ) ) {
             
             // TODO: check if product is translated entity
-            var locale = hibachiScope.getSession().getRbLocale();
             var sql = "SELECT 
                         baseID 
                         FROM swTranslation 
@@ -458,7 +397,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                         AND basePropertyName='productName'
                         AND value like :keyword";
             var params = {
-                locale=locale,
+                locale=arguments.locale,
                 keyword='%#arguments.keyword#%'
             };
             var productIDQuery = queryExecute(sql,params);
@@ -495,14 +434,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	public struct function getProducts(){
 	    this.logHibachi("Called: getProducts on service");
-	    var hibachiScope = this.getHibachiScope();
-	    
+
 	    param name="arguments.site";
-		param name="arguments.currencyCode" default=arguments.site.getCurrencyCode() ?: 'USD';
-    
-        //  account, order, for pricing
-		param name="arguments.order" default=hibachiScope.getCart();
-		param name="arguments.account" default=hibachiScope.getAccount();
+		param name="arguments.locale";
+		param name="arguments.currencyCode";
 		param name="arguments.priceGroupCode" default='';
         
 	    // facets
