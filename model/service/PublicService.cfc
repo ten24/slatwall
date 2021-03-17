@@ -3695,7 +3695,7 @@ component  accessors="true" output="false"
         }
         
 	    arguments.data.ajaxResponse['data'] = result;
-        getHibachiScope().addActionResult("public:scope.getEntity`",false);
+        getHibachiScope().addActionResult("public:scope.getEntity",false);
 	}
     
 }
