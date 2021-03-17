@@ -259,11 +259,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.applyOrderBysToGroupBys;
 	}
 	
-	public boolean function checkAvailableSelectProperties( required any columnName ) {
-		var availableSelectProperties = this.getAvailableSelectProperties();
-		return StructKeyExists( availableSelectProperties, arguments.columnName);
-	}
-	
 	public void function setFilterByLeafNodesFlag(required boolean value) {
 		// Ensures exclusivity so that both types of leaf node filter flags cannot both be true
 		if (arguments.value && getFilterByNonLeafNodesFlag()) {
