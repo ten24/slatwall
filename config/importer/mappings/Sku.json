@@ -99,5 +99,7 @@
         "keys": [
             "remoteSkuID"
         ]
-    }
+    },
+    
+    "postPopulateMethods": [ "updateCalculatedProperties" ]
 }

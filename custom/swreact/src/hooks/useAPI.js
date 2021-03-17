@@ -485,3 +485,28 @@ export const useGetProductSkuSelected = () => {
 
   return [request, setRequest]
 }
+
+export const useGetProductImageGallery = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getProductImageGallery`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}

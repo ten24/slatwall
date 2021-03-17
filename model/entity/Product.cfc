@@ -298,6 +298,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productPartCompatibility" ormtype="string";
  property name="productLockingMechanism" ormtype="string";
  property name="productPartType" ormtype="string";
+ property name="productDepth" ormtype="string";
  property name="productTwinPack" ormtype="boolean" hb_formatType="yesno";
  property name="productResidential" ormtype="boolean" hb_formatType="yesno";
  property name="productBoxQuantity" ormtype="string";
@@ -1652,6 +1653,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
 
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
+			
+			variables.assignedAttributeSetSmartList.addOrder("sortOrder|ASC");
 
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";

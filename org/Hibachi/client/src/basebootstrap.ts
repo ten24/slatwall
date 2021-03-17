@@ -5,6 +5,8 @@ declare var angular:any;
 declare var hibachiConfig:any;
 declare var window:any;
 var md5 = require('md5');
+const LZString = require('lz-string');
+
 //generic bootstrapper
 export class BaseBootStrapper{
     public myApplication:any;
@@ -55,9 +57,7 @@ export class BaseBootStrapper{
                 })
                 .then( () => {
                     
-                    if(localStorage.getItem('appConfig') != null) {
-                        this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                    }
+                    this.loadAppConfigFromLocalStorage();
                     
                     if(  this.instantiationKey === this.appConfig.instantiationKey ) {
                         // appConfig instantiation key is valid,
@@ -80,6 +80,21 @@ export class BaseBootStrapper{
                 });
            });
       }])
+    }
+    
+    loadAppConfigFromLocalStorage = () => {
+        if(localStorage.getItem('appConfig') != null) {
+            const compressedAppConfig = localStorage.getItem('appConfig');
+            // const deCompressedAppConfig = LZString.decompress(compressedAppConfig);    
+            const deCompressedAppConfig = LZString.decompressFromBase64(compressedAppConfig);            
+            this.appConfig = JSON.parse(deCompressedAppConfig);
+        }
+    }
+    saveAppConfigIntoLocalStorage = (config) => {
+        // var compressedAppConfig = LZString.compress( JSON.stringify(config) );
+        //encoding to base-64 otherwise the local-storage-UI in chrome crashes
+        var compressedAppConfig = LZString.compressToBase64( JSON.stringify(config) );
+        localStorage.setItem('appConfig', compressedAppConfig);
     }
     
     getBaseUrl = () => {
@@ -215,14 +230,14 @@ export class BaseBootStrapper{
             return this.$q( (resolve, reject) => {
                 this.isPrivateMode().then( (privateMode) => {
                     if(!privateMode) {
-                        var metadataSreing = JSON.stringify(data);
-                        localStorage.setItem('attributeMetaData', metadataSreing );
-                        localStorage.setItem('attributeChecksum', md5(metadataSreing) );
+                        var metadataString = JSON.stringify(data);
+                        localStorage.setItem('attributeMetaData', metadataString );
+                        localStorage.setItem('attributeChecksum', md5(metadataString) );
                         
                         // NOTE: at this point attributeChecksum == hibachiConfig.attributeCacheKey
                         // Keeps localStorage appConfig.attributeCacheKey consistent after attributeChecksum updates (even though it is not referenced apparently)
                         this.appConfig['attributeCacheKey'] = localStorage.getItem('attributeChecksum').toUpperCase();
-                        localStorage.setItem('appConfig', JSON.stringify(this.appConfig));
+                        this.saveAppConfigIntoLocalStorage(this.appConfig);
                     }
                     resolve(data);
                 });
@@ -247,7 +262,7 @@ export class BaseBootStrapper{
             return this.$q( (resolve, reject) => {
                 this.isPrivateMode().then( (privateMode) => {
                     if(!privateMode) {
-                        localStorage.setItem('appConfig', JSON.stringify(data) );
+                        this.saveAppConfigIntoLocalStorage(data);
                     }
                     resolve(data);
                 });
