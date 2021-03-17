@@ -3675,18 +3675,25 @@ component  accessors="true" output="false"
 	 * Generic Endpoint to get any entity
 	* */
 	public any function getEntity( required struct data ) {
-	    param name="arguments.data.entityName" default="Account";
+	    param name="arguments.data.entityName";
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         param name="arguments.enforceAuthorization" default="false";
-        
-         //Todo : Add public Properties logic here to fetch default properties
-		
-		var collectionOptions = getService('hibachiCollectionService').getCollectionOptionsFromData(arguments.data);
-		var collectionEntity = getService('hibachiCollectionService').getTransientCollectionByEntityName(arguments.data.entityName,collectionOptions);
-		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
-	    
-	    return getService('hibachiCollectionService').getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
+
+        if(!isNull(arguments.data.ID) && this.getHibachiScope().hibachiIsEmpty(arguments.data.ID)){
+            var result = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.ID,arguments.data );
+        } else {
+            //Todo : Add public Properties logic here to fetch default properties
+    		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && !structKeyExists(arguments.data,'defaultColumns')){
+    			arguments.data['defaultColumns'] = true;
+    		}
+    		var collectionOptions = getService('hibachiCollectionService').getCollectionOptionsFromData(arguments.data);
+    		var collectionEntity = getService('hibachiCollectionService').getTransientCollectionByEntityName(arguments.data.entityName,collectionOptions);
+    		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
+    	    var result =  getService('hibachiCollectionService').getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
+        }
+	    arguments.data.ajaxResponse['data'] = result;
+        getHibachiScope().addActionResult("public:scope.getEntity`",false);
 	}
     
 }
