@@ -97,7 +97,7 @@ const ListingFilter = ({ qs, appliedFilters, name, facetKey, selectType, options
         <div className="card-body">
           <div className="widget widget-links cz-filter">
             <FacetSearch searchTerm={searchTerm} search={setSearchTerm} />
-            <SimpleBar className="widget-list cz-filter-list pt-1" style={{ height: '12rem' }} forceVisible="y" autoHide={false}>
+            <SimpleBar className="widget-list cz-filter-list pt-1" style={{ 'max-height': '12rem' }} forceVisible="y" autoHide={false}>
               {searchResults &&
                 searchResults.map((facet, index) => {
                   const isSelected = appliedFilters.includes(facet.value)
