@@ -3839,9 +3839,9 @@ public void function getConfiguration( required struct data ) {
         ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAddress'),"URLKeyType": 'Address' });
         ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAttribute'),"URLKeyType": 'Attribute' });
         
-        arguments.data['ajaxResponse']['config']['theme'] = {
+        arguments.data['ajaxResponse']['config']['formatting'] = {
             "dateFormat": UCase(getHibachiScope().setting('globalDateFormat')),
-            "timeFormat": Replace(UCase(getHibachiScope().setting('globalTimeFormat')), 'TT', 'ss', 'all')};
+            "timeFormat": Replace(UCase(getHibachiScope().setting('globalTimeFormat')), 'TT', 'a', 'all')};
 
         getHibachiScope().addActionResult("public:getConfiguration");
 
