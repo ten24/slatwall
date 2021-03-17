@@ -1,44 +1,71 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import Slider from 'react-slick'
 import { SWImage } from '../../components'
-import { SlatwalApiService } from '../../services'
+import { useGetProductImageGallery } from '../../hooks/useAPI'
 
-const ProductDetailGallery = ({ productID }) => {
-  const [productImageGallery, setProductImageGallery] = useState({ imageGallery: {}, isLoaded: false, productID })
-  if (productImageGallery.productID !== productID) {
-    setProductImageGallery({ imageGallery: [], isLoaded: false, err: '', productID })
-  }
+/*
+
+Probably should move to this eventually 
+https://react-slick.neostack.com/docs/example/custom-paging
+*/
+const ProductDetailGallery = ({ productID, skuID }) => {
+  let [productImageGallery, setRequest] = useGetProductImageGallery()
+  const [sliders, setSliders] = useState({
+    nav1: null,
+    nav2: null,
+  })
+  const slider1 = useRef()
+  const slider2 = useRef()
   useEffect(() => {
     let didCancel = false
-    if (!productImageGallery.isLoaded) {
-      SlatwalApiService.products.getGallery({ productID }).then(response => {
-        if (response.isSuccess() && !didCancel) {
-          setProductImageGallery({
-            ...productImageGallery,
-            isLoaded: true,
-            products: response.success().productImageGallery,
-          })
-        } else if (response.isFail() && !didCancel) {
-          setProductImageGallery({
-            ...productImageGallery,
-            isLoaded: true,
-            err: 'opps',
-          })
-        }
-      })
+    setSliders({
+      nav1: slider1.current,
+      nav2: slider2.current,
+    })
+    if (!productImageGallery.isLoaded && !productImageGallery.isFetching) {
+      setRequest({ ...productImageGallery, isFetching: true, isLoaded: false, params: { productID }, makeRequest: true })
     }
-
     return () => {
       didCancel = true
     }
-  }, [productImageGallery, setProductImageGallery, productID])
+  }, [productImageGallery, setRequest, productID])
+  let filterImages = productImageGallery.isLoaded
+    ? productImageGallery.data.images.filter(({ ASSIGNEDSKUIDLIST = false, TYPE }) => {
+        return TYPE === 'skuDefaultImage' || (ASSIGNEDSKUIDLIST && ASSIGNEDSKUIDLIST.includes(skuID))
+      })
+    : []
+  if (filterImages.length === 0) {
+    filterImages = [{ ORIGINALPATH: '', NAME: '' }]
+  }
 
   return (
     <div className="col-lg-6 pr-lg-5 pt-0">
       <div className="cz-product-gallery">
         <div className="cz-preview order-sm-2">
           <div className="cz-preview-item active" id="first">
-            <SWImage className="cz-image-zoom w-100 mx-auto" alt="Product" style={{ maxWidth: '500px' }} />
+            <div>
+              <Slider arrows={false} asNavFor={sliders.nav2} ref={slider => (slider1.current = slider)}>
+                {productImageGallery.isLoaded &&
+                  filterImages.map(({ ORIGINALPATH, NAME }) => {
+                    return <SWImage key={NAME} customPath="/" src={ORIGINALPATH} className="cz-image-zoom w-100 mx-auto" alt="Product" style={{ maxWidth: '500px' }} />
+                  })}
+              </Slider>
+            </div>
             <div className="cz-image-zoom-pane"></div>
+          </div>
+        </div>
+      </div>
+      <div className="cz-product-gallery">
+        <div className="cz-preview order-sm-2">
+          <div className="cz-preview-item active" id="first">
+            <div>
+              <Slider arrows={false} infinite={filterImages.length > 1} asNavFor={sliders.nav1} ref={slider => (slider2.current = slider)} slidesToShow={3} swipeToSlide={true} focusOnSelect={true}>
+                {productImageGallery.isLoaded &&
+                  filterImages.map(({ ORIGINALPATH, NAME }) => {
+                    return <SWImage key={NAME} customPath="/" src={ORIGINALPATH} className="cz-image-zoom w-100 mx-auto" alt="Product" style={{ maxWidth: '100px' }} />
+                  })}
+              </Slider>
+            </div>
           </div>
         </div>
       </div>

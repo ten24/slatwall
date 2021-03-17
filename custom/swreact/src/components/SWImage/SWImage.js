@@ -1,17 +1,18 @@
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 import defaultImg from '../../assets/images/default.png'
 
 const DefaultImage = ({ alt = '', style }) => {
   return <img style={style} src={defaultImg} alt={alt} />
 }
-const SWImage = ({ className, host, customPath, src, alt = '', basePath, style = {} }) => {
-  basePath = customPath ? customPath : basePath
+const SWImage = ({ className, customPath, src, alt = '', style = {} }) => {
+  const { host, basePath } = useSelector(state => state.configuration.theme)
+
+  const path = customPath ? customPath : basePath
   if (src) {
     return (
       <img
         className={className}
-        src={basePath ? host + basePath + src : host + src}
+        src={path ? host + path + src : host + src}
         alt={alt}
         style={style}
         onError={e => {
@@ -24,16 +25,5 @@ const SWImage = ({ className, host, customPath, src, alt = '', basePath, style =
   }
   return <DefaultImage style={style} />
 }
-SWImage.propTypes = {
-  src: PropTypes.string,
-  alt: PropTypes.string,
-  className: PropTypes.string,
-  host: PropTypes.string,
-  basePath: PropTypes.string,
-  customPath: PropTypes.string,
-}
 
-function mapStateToProps(state) {
-  return state.configuration.theme
-}
-export default connect(mapStateToProps)(SWImage)
+export default SWImage
