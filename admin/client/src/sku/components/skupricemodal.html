@@ -78,13 +78,14 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="" class="control-label">Currency Code</label>
-                                    <select class="form-control" 
-                                            name="currencyCode"
+                                    <select class="form-control"
                                             ng-model="swSkuPriceModal.selectedCurrencyCode"
-                                            ng-options="item as item for item in swSkuPriceModal.currencyCodeOptions track by item"
+                                            ng-options="item as item.currencyCode for item in swSkuPriceModal.currencyCodeOptions track by item.currencyName"
+                                            ng-change="swSkuPriceModal.setSelectedCurrencyCode(swSkuPriceModal.selectedCurrencyCode)"
                                             ng-disabled="swSkuPriceModal.isDefaultSkuPrice()"
                                             >
                                     </select>
+                                    <input type="hidden" readonly style="display:none" name="currencyCode" ng-model="swSkuPriceModal.submittedCurrencyCode" />
                                 </div>
                             </div>
                         </div>
