@@ -38,14 +38,22 @@ const MainBanner = () => {
     }
   })
   const settings = {
-    dots: false,
+    dots: true,
     infinite: false,
     slidesToShow: 1,
     slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          arrows: false,
+        }
+      }
+    ]
   }
   return (
     <div className="container">
-      <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mr-5 ml-5 pb-4">
+      <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mx-md-5 pb-4">
         <Slider className="slider-dark" {...settings}>
           {homeMainBanner.length > 0 &&
             homeMainBanner.map((slideData, index) => {

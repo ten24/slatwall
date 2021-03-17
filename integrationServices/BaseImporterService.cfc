@@ -1238,7 +1238,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
-	  return {
+		
+	    var productTypeID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  = 'ProductType',
+	        "uniqueKey"   = 'RemoteID',
+	        "uniqueValue" = arguments.data.remoteProductTypeID
+	    );
+	    
+    	if( !isNull(productTypeID) && !this.hibachiIsEmpty(productTypeID) ){
+    	    return { "productTypeID" : productTypeID }
+    	} 
+	   return {
             'productTypeID' : '444df2f7ea9c87e60051f3cd87b435a1' // Merchandise is the default Parent-Product-type
         }
 	}
