@@ -8,7 +8,6 @@ import useFormatCurrency from '../../hooks/useFormatCurrency'
 import ShippingSlide from './Shipping'
 import PaymentSlide from './Payment'
 import ReviewSlide from './Review'
-import AccountAddress from './AccountAddress'
 
 import { checkOutSteps, REVIEW } from './steps'
 import { placeOrder } from '../../actions/cartActions'

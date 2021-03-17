@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { addAddressAndAttachAsShipping, addPickupLocation, addShippingAddressUsingAccountAddress, addShippingMethod, changeOrderFulfillment, getEligibleFulfillmentMethods, getPickupLocations } from '../../actions/cartActions'
+import { addAddressAndAttachAsShipping, addPickupLocation, addShippingAddressUsingAccountAddress, addShippingMethod, changeOrderFulfillment, getEligibleFulfillmentMethods, getPickupLocations, setPickupDate } from '../../actions/cartActions'
 import SlideNavigation from './SlideNavigation'
 import { SwRadioSelect } from '../../components'
 import AccountAddress from './AccountAddress'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { accountAddressSelector, fulfillmentMethodSelector, fulfillmentSelector, pickupLocation, pickupLocationOptions, shippingMethodSelector } from '../../selectors/orderSelectors'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const FulfillmentPicker = () => {
   const dispatch = useDispatch()
@@ -65,25 +67,54 @@ const PickupLocationPicker = () => {
   const dispatch = useDispatch()
   const pickupLocations = useSelector(pickupLocationOptions)
   const selectedLocation = useSelector(pickupLocation)
+  const { orderFulfillmentID, estimatedShippingDate } = useSelector(fulfillmentSelector)
+
   return (
-    <div className="row mb-3">
-      <div className="col-sm-12">
-        {pickupLocations.length > 0 && (
-          <SwRadioSelect
-            label="Which Location would you like to pickup from?"
-            options={pickupLocations}
-            onChange={value => {
-              dispatch(
-                addPickupLocation({
-                  value,
-                })
-              )
-            }}
-            selectedValue={selectedLocation.locationID}
-          />
-        )}
+    <>
+      <div className="row mb-3">
+        <div className="col-sm-12">
+          <div className="form-group">
+            <label htmlFor="locationPickupDate">Pickup Date</label>
+            <br />
+            <DatePicker
+              id="locationPickupDate"
+              selected={estimatedShippingDate ? new Date(estimatedShippingDate) : ''}
+              showTimeSelect
+              timeIntervals={60}
+              timeCaption="Time"
+              dateFormat="MM/dd/yyyy h:mm aa"
+              onChange={pickupDate => {
+                console.log('pickupDate', pickupDate.toLocaleString())
+                dispatch(
+                  setPickupDate({
+                    pickupDate: pickupDate.toLocaleString().replace(',', ''),
+                    orderFulfillmentID,
+                  })
+                )
+              }}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+      <div className="row mb-3">
+        <div className="col-sm-12">
+          {pickupLocations.length > 0 && (
+            <SwRadioSelect
+              label="Which Location would you like to pickup from?"
+              options={pickupLocations}
+              onChange={value => {
+                dispatch(
+                  addPickupLocation({
+                    value,
+                  })
+                )
+              }}
+              selectedValue={selectedLocation.locationID}
+            />
+          )}
+        </div>
+      </div>
+    </>
   )
 }
 

@@ -105,11 +105,9 @@ const TermPayment = ({ method }) => {
             })
           )
           setAccountAddressID(value)
-          console.log('onSelect', value)
         }}
         onSave={values => {
           dispatch(addNewAccountAndSetAsBilling({ ...values }))
-          console.log('onSave', values)
         }}
       />
     </>
