@@ -192,6 +192,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier, any collectionEntity){
 		//populate pageRecordStruct with pageRecord info based on the passed in property identifier
 		var pageRecordStruct = {};
+		
+		//Ignore additional properties if availableSelectProperties are defined 
+		if( !StructIsEmpty(arguments.collectionEntity.getAvailableSelectProperties()) && !arguments.collectionEntity.checkAvailableSelectProperties(arguments.propertyIdentifier) ) {
+			return pageRecordStruct;
+		}
+		
 
 		if(isObject(arguments.pageRecord)) {
 			try{
@@ -238,6 +244,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				pageRecordStruct[ arguments.propertyIdentifier ] = " ";
 			}
 		}
+		
 		return pageRecordStruct;
 	}
 
