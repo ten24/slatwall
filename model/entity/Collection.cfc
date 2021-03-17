@@ -4490,6 +4490,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//Override colummns if availableSelectProperties are set
 			if( !StructIsEmpty(this.getAvailableSelectProperties()) ) {
 				
+				var collectionColumns = [];
+				
 				//Add all available select properties
 				var availableSelectProperties = this.getAvailableSelectProperties();
 				for(var column in  availableSelectProperties) {
@@ -4498,6 +4500,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					for( var col in collectionConfig.columns ) {
 						if( col['propertyIdentifier'] == getBaseEntityAlias()&"."&column.trim() ) {
 							checkPropertyExist = true;
+							ArrayAppend(collectionColumns, col);
 							break;
 						}
 					}
@@ -4505,19 +4508,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					//Add column if not added
 					if( !checkPropertyExist ) {
 						addDisplayProperty(displayProperty=column.trim());
-					}
-				}
-				
-				//Remove additional columns
-				var collectionColumns = [];
-				for( var column in collectionConfig.columns ) {
-					var propertyIdentifier = Replace(column['propertyIdentifier'], getBaseEntityAlias(), "", "one");
-					if(left(propertyIdentifier,1) == '.'){
-						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
-					}
-					
-					if( this.checkAvailableSelectProperties(propertyIdentifier) ) {
-						ArrayAppend(collectionColumns, column);
 					}
 				}
 				
