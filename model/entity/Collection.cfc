@@ -146,7 +146,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
 	property name="listingSearchFiltersApplied" type="boolean" persistent="false" default="false";
 	
-	property name="availableSelectProperties" type="array" persistent="false";
+	property name="availableSelectProperties" type="struct" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -183,7 +183,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.checkDORPermissions = false;
 		variables.filterDataApplied = false;
 		variables.applyOrderBysToGroupBys=true;
-		variables.availableSelectProperties = [];
+		variables.availableSelectProperties = {};
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 		setHibachiService(getService('HibachiService'));
 		setHibachiUtilityService(getService('HibachiUtilityService'));
@@ -259,17 +259,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.applyOrderBysToGroupBys;
 	}
 	
-	public any function getAvailableSelectProperties() {
-		return variables.availableSelectProperties;
-	}
-	
-	public void function setAvailableSelectProperties(required string columnList) {
-		ArrayAppend(variables.availableSelectProperties, ListToArray( arguments.columnList));
-	}
-	
 	public boolean function checkAvailableSelectProperties( required any columnName ) {
 		var availableSelectProperties = this.getAvailableSelectProperties();
-		return ArrayFindNoCase( availableSelectProperties, arguments.columnName);
+		return StructKeyExists( availableSelectProperties, arguments.columnName);
 	}
 	
 	public void function setFilterByLeafNodesFlag(required boolean value) {
@@ -871,8 +863,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var collectionConfig = this.getCollectionConfigStruct();
 		collectionConfig["columns"] = [];
 		this.setCollectionConfigStruct(collectionConfig);
-
-
+		
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
 			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
@@ -1265,6 +1256,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		HibachiBaseEntity = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 
 		variables.collectionObject = HibachiBaseEntity;
+		
 		if(variables.collectionConfig == '{}' ){
 			var columnsArray = [];
 			
@@ -1283,6 +1275,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}else{
 						defaultProperties = newEntity.getDefaultCollectionProperties();
 					}
+					
+					
 					
 					//loop through all defaultProperties
 					for(var defaultProperty in defaultProperties){
@@ -4493,6 +4487,43 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				this.updateListingSearchFilters();
 			}
 			
+			//Override colummns if availableSelectProperties are set
+			if( !StructIsEmpty(this.getAvailableSelectProperties()) ) {
+				
+				//Add all available select properties
+				var availableSelectProperties = this.getAvailableSelectProperties();
+				for(var column in  availableSelectProperties) {
+					//check if column is already added
+					var checkPropertyExist = false;
+					for( var col in collectionConfig.columns ) {
+						if( col['propertyIdentifier'] == getBaseEntityAlias()&"."&column.trim() ) {
+							checkPropertyExist = true;
+							break;
+						}
+					}
+					
+					//Add column if not added
+					if( !checkPropertyExist ) {
+						addDisplayProperty(displayProperty=column.trim());
+					}
+				}
+				
+				//Remove additional columns
+				var collectionColumns = [];
+				for( var column in collectionConfig.columns ) {
+					var propertyIdentifier = Replace(column['propertyIdentifier'], getBaseEntityAlias(), "", "one");
+					if(left(propertyIdentifier,1) == '.'){
+						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+					}
+					
+					if( this.checkAvailableSelectProperties(propertyIdentifier) ) {
+						ArrayAppend(collectionColumns, column);
+					}
+				}
+				
+				//override columns with updated list
+				collectionConfig.columns = collectionColumns;
+			}
 
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
