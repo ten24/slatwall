@@ -159,7 +159,37 @@ public void function getConfiguration( required struct data ) {
         
         super.addOrderPayment(argumentCollection = arguments);
     }
+    public any function getPickupLocations() {
+		arguments.data.ajaxResponse['locations'] = getService('LocationService').getLocationParentOptions(false)
+    }
+    public any function setPickupDate(required any data) {
+        param name="data.pickupDate" default="";
+		param name="data.orderFulfillmentID" default="";
+        if( getHibachiScope().getLoggedInFlag() ) {
+            var cart = getHibachiScope().cart();
+
+            if(!len(arguments.data.orderFulfillmentID)){
+    			var orderFulfillment = cart.getOrderFulfillments()[1];
+    		}else{
+    			var orderFulfillment = getService("OrderService").getOrderFulfillment(arguments.data.orderFulfillmentID);
+    		}
+		    orderFulfillment.setEstimatedShippingDate(arguments.data.pickupDate);
+		    orderFulfillment.setPickupDate(arguments.data.pickupDate);
+
+		    getService("OrderService").saveOrderFulfillment(orderFulfillment);
+		    
+
+    		if(orderFulfillment.hasErrors()){
+			 getHibachiScope().addActionResult( "public:cart.setPickupDate", true);
+               arguments.data.ajaxResponse['errors'] = orderFulfillment.getErrors();
+		    }else{
+		        getHibachiScope().addActionResult( "public:cart.setPickupDate", false);
+		    }
     
+    		return cart;
+		}
+    } 
+
     public any function getEligibleFulfillmentMethods() {
         
         if( getHibachiScope().getLoggedInFlag() ) {
@@ -188,6 +218,7 @@ public void function getConfiguration( required struct data ) {
 					}
 				}
 			}
+			
 			sl.addInFilter('fulfillmentMethodID', eligibleFulfillmentMethods);
 			arguments.data.ajaxResponse['eligibleFulfillmentMethods'] = sl.getRecords();
         }
