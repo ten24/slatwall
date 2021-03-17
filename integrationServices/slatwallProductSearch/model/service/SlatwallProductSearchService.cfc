@@ -147,9 +147,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 
                 var thisOption = {
                    'id': row.id,
-                   'name': row.name,
-                   'count': row.count,
+                   'name': row.name
                 };
+                if( !isNull(row.count) ){
+                    thisOption['count'] = row.count;
+                }
                 if( len(row.code) ){
                     thisOption['code'] = row.code;
                 }
@@ -162,9 +164,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 
                 var thisOption = {
                    'id': row.id,
-                   'name': row.name,
-                   'count': row.count,
+                   'name': row.name
                 };
+                if( !isNull(row.count) ){
+                    thisOption['count'] = row.count;
+                }
                 if( len(row.code) ){
                     thisOption['code'] = row.code;
                 }
@@ -178,7 +182,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    this.logHibachi("SlatwallProductSearchService:: getPotentialFilterFacetsAndOptionsFormatted took #getTickCount() - startTicks# ms.")
 
-	    return potentialFilters;
+	    return potentialFacetsAndOption;
 	}
 
 	public string function getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
@@ -278,29 +282,29 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 		collectionList.setDisplayProperties('product.productID,product.productName,product.urlTitle');
 		
 		// sku properties 
-		collectionList.addDisplayProperties('sku.skuID,sku.imageFile,sku.skuPrices.price');
+		collectionList.addDisplayProperties('sku.skuID,sku.imageFile,skuPricePrice|price');
 
         // Product's filters
         
         collectionList.addFilter(
-            propertyIdentifier = 'product.publishedStartDateTime',
+            propertyIdentifier = 'productPublishedStartDateTime',
             value='NULL',
             comparisonOperator="IS",
             filterGroupAlias = 'publishedStartDateTimeFilter');
         collectionList.addFilter( 
-            propertyIdentifier = 'product.publishedStartDateTime',
+            propertyIdentifier = 'productPublishedStartDateTime',
             value= dateTimeFormat(now(), 'short'), 
             comparisonOperator="<=", 
             logicalOperator="OR",
             filterGroupAlias = 'publishedStartDateTimeFilter');
 
         collectionList.addFilter(
-            propertyIdentifier = 'product.publishedEndDateTime',
+            propertyIdentifier = 'productPublishedEndDateTime',
             value='NULL', 
             comparisonOperator="IS", 
             filterGroupAlias = 'publishedEndDateTimeFilter');
         collectionList.addFilter(
-            propertyIdentifier = 'product.publishedEndDateTime',
+            propertyIdentifier = 'productPublishedEndDateTime',
             value= dateTimeFormat(now(), 'short'), 
             comparisonOperator=">",
             logicalOperator="OR", 
@@ -333,7 +337,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             arguments.currencyCode = !isNUll(site) ? site.setting('skuCurrency') : 'USD';
         }
         if( len(arguments.currencyCode) ){
-            collectionList.addFilter(propertyIdentifier='sku.skuPrices.currencyCode', value=arguments.currencyCode, comparisonOperator="=");
+            collectionList.addFilter(propertyIdentifier='skuPriceCurrencyCode', value=arguments.currencyCode, comparisonOperator="=");
         }
         
         
@@ -490,6 +494,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     }
 
 	public struct function getProducts(){
+	    this.logHibachi("Called: getProducts on service");
 	    var hibachiScope = this.getHibachiScope();
 	    
 	    param name="arguments.site";
@@ -556,7 +561,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	
-		public struct function getPotentialFilterFacetsAndOptions(){
+	public struct function getPotentialFilterFacetsAndOptions(){
 	    param name="arguments.site" default='';
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};

@@ -238,7 +238,7 @@ component  accessors="true" output="false"
         
         // we're not using RequestContext here, but the URL-scope
         arguments.parsedQuery = this.parseProductSearchQuery(arguments.urlScope);
-        
+
 		param name="arguments.parsedQuery.siteID" default='';
 		param name="arguments.parsedQuery.currencyCode" default='USD';
     
@@ -264,12 +264,13 @@ component  accessors="true" output="false"
 	    param name="arguments.parsedQuery.currentPage" default=1;
 	    param name="arguments.parsedQuery.pageSize" default=10;
         // additional properties
+        param name="arguments.parsedQuery.includeSKUCount" default=true;
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
         
         // currently it will set a transient site, but it need's to figure-out current-request-site 
         // either form headers, or hibachi-scope
 	    // TODO: Nitin is working on it and will update.
-	    var currentRequestSite = this.getHibachiScope().getCurrentRequestSite() ?: this.getService('SiteService').newSite();
+	    var currentRequestSite = hibachiScope.getCurrentRequestSite() ?: this.getService('SiteService').newSite();
 	    var intigrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
