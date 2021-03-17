@@ -19,7 +19,7 @@ const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
         data-toggle="tooltip"
         data-placement="left"
         title=""
-        data-original-title="Add to wishlist"
+        data-original-title="Remove from wishlist"
       >
         <i className="fas fa-heart" style={{ color: `#${primaryColor}` }}></i>
       </button>

@@ -20,8 +20,10 @@ export default {
     host: 'https://stoneandberg.ten24dev.com',
     basePath: '/custom/client/assets/images/',
     primaryColor: '5f1018',
+  },
+  formatting: {
     dateFormat: 'MMM DD, YYYY',
-    timeFormat: 'HH:MM ss',
+    timeFormat: 'HH:MM a',
   },
   countries: [
     { key: 'Afghanistan', value: 'AF' },
