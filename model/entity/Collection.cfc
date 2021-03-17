@@ -2255,6 +2255,47 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
+		
+		
+		//Override colummns if availableSelectProperties are set
+		if( !StructIsEmpty(this.getAvailableSelectProperties()) ) {
+			
+			//Add all available select properties
+			var availableSelectProperties = this.getAvailableSelectProperties();
+			
+			for(var column in availableSelectProperties) {
+				//check if column is already added
+				var checkPropertyExist = false;
+				for( var col in this.getCollectionConfigStruct().columns) {
+					if( col['propertyIdentifier'] == getBaseEntityAlias()&"."&column.trim() ) {
+						checkPropertyExist = true;
+						break;
+					}
+				}
+				
+				//Add column if not added
+				if( !checkPropertyExist ) {
+					addDisplayProperty(displayProperty=column.trim());
+				}
+			}
+			
+			//prepare passed columns list
+			var collectionColumns = [];
+			for( var column in this.getCollectionConfigStruct().columns ) {
+				var propertyIdentifier = Replace(column['propertyIdentifier'], getBaseEntityAlias(), "", "one");
+				if(left(propertyIdentifier,1) == '.'){
+					propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+				}
+
+				if( StructKeyExists( this.getAvailableSelectProperties(), propertyIdentifier) ) {
+					ArrayAppend(collectionColumns, column);
+				}
+			}
+			
+			//override columns with updated list
+			this.getCollectionConfigStruct().columns = collectionColumns;
+		}
+		
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy,arguments.recordsCountJoins);
 	//Documentation: Here, var HQL returns the collection - columns list
@@ -4487,34 +4528,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				this.updateListingSearchFilters();
 			}
 			
-			//Override colummns if availableSelectProperties are set
-			if( !StructIsEmpty(this.getAvailableSelectProperties()) ) {
-				
-				var collectionColumns = [];
-				
-				//Add all available select properties
-				var availableSelectProperties = this.getAvailableSelectProperties();
-				for(var column in  availableSelectProperties) {
-					//check if column is already added
-					var checkPropertyExist = false;
-					for( var col in collectionConfig.columns ) {
-						if( col['propertyIdentifier'] == getBaseEntityAlias()&"."&column.trim() ) {
-							checkPropertyExist = true;
-							ArrayAppend(collectionColumns, col);
-							break;
-						}
-					}
-					
-					//Add column if not added
-					if( !checkPropertyExist ) {
-						addDisplayProperty(displayProperty=column.trim());
-					}
-				}
-				
-				//override columns with updated list
-				collectionConfig.columns = collectionColumns;
-			}
-
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
 				var isDistinct = false;
