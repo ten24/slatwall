@@ -3678,20 +3678,22 @@ component  accessors="true" output="false"
 	    param name="arguments.data.entityName";
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        param name="arguments.enforceAuthorization" default="false";
-
-        if(!isNull(arguments.data.ID) && this.getHibachiScope().hibachiIsEmpty(arguments.data.ID)){
+        param name="arguments.data.enforceAuthorization" default="false";
+        //Todo : Add public Properties logic here to fetch default properties
+		
+		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && !structKeyExists(arguments.data,'defaultColumns')){
+			arguments.data['defaultColumns'] = true;
+		}
+		
+        if(!isNull(arguments.data.ID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.ID)){
             var result = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.ID,arguments.data );
         } else {
-            //Todo : Add public Properties logic here to fetch default properties
-    		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && !structKeyExists(arguments.data,'defaultColumns')){
-    			arguments.data['defaultColumns'] = true;
-    		}
     		var collectionOptions = getService('hibachiCollectionService').getCollectionOptionsFromData(arguments.data);
     		var collectionEntity = getService('hibachiCollectionService').getTransientCollectionByEntityName(arguments.data.entityName,collectionOptions);
-    		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
+    		collectionEntity.setEnforceAuthorization(arguments.data.enforceAuthorization);
     	    var result =  getService('hibachiCollectionService').getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
         }
+        
 	    arguments.data.ajaxResponse['data'] = result;
         getHibachiScope().addActionResult("public:scope.getEntity`",false);
 	}
