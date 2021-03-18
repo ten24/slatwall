@@ -182,19 +182,25 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	 * Method to return list of public attribute codes
 	 * */
 	public any function getPublicPropertiesByEntityName(required string entityName) {
-		var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
-		attributeCollectionList.setDisplayProperties('attributeCode');
-		attributeCollectionList.addFilter('publicPropertyFlag', 1);
-		attributeCollectionList.addFilter('attributeSet.attributeSetObject', arguments.entityName);
-		var attributeRecords = attributeCollectionList.getRecords(formatRecords = false);
 		
-		var response = {};
-		
-		for( var attribute in attributeRecords) {
-			StructAppend( response , {'attributeCode' : attribute['attributeCode']});
+		var cacheKey = "getPublicPropertiesByEntityName#hash(arguments.entityName,'md5')#";
+		if(!getService('hibachiCacheService').hasCachedValue(cacheKey)) {
+			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
+			attributeCollectionList.setDisplayProperties('attributeCode');
+			attributeCollectionList.addFilter('publicPropertyFlag', 1);
+			attributeCollectionList.addFilter('attributeSet.attributeSetObject', arguments.entityName);
+			var attributeRecords = attributeCollectionList.getRecords(formatRecords = false);
+			
+			var response = {};
+			
+			for( var attribute in attributeRecords) {
+				StructAppend( response , {'attributeCode' : attribute['attributeCode']});
+			}
+			
+			getService('hibachiCacheService').setCachedValue(cacheKey, response);
 		}
-		
-		return response;
+			
+		return getService('hibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	
