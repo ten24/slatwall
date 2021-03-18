@@ -240,6 +240,7 @@ component  accessors="true" output="false"
         arguments.parsedQuery = this.parseProductSearchQuery(arguments.urlScope);
 
 		param name="arguments.parsedQuery.siteID" default='';
+	    param name="arguments.parsedQuery.locale" default=hibachiScope.getSession().getRbLocale(); 
 
         //  account, order, for pricing
 		param name="arguments.parsedQuery.order" default=hibachiScope.getCart();
@@ -288,10 +289,7 @@ component  accessors="true" output="false"
 	    if( isNull(arguments.parsedQuery.currencyCode) || !len(trim(arguments.parsedQuery.currencyCode)) ){
 	        arguments.parsedQuery.currencyCode = currentRequestSite.getCurrencyCode() ?: 'USD';
 	    }
-	    if( isNull(arguments.parsedQuery.locale) || !len(trim(arguments.parsedQuery.locale)) ){
-	        // it will figureout the locale from account-preffered locale 
-	        arguments.parsedQuery.locale = hibachiScope.getSession().getRbLocale(); 
-	    }
+	    
 	    
         /*
             Price group is prioritized as so: 
