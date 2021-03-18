@@ -3,12 +3,9 @@ import ProductPagePanels from './ProductPagePanels'
 import React, { useEffect, useRef, useState } from 'react'
 import { addToCart } from '../../actions/cartActions'
 import { useDispatch } from 'react-redux'
-import axios from 'axios'
-import { sdkURL, SlatwalApiService } from '../../services'
 import { HeartButton } from '../../components'
 import { useTranslation } from 'react-i18next'
 import { useGetSku, useGetProductSkus, useGetProductAvailableSkuOptions, useGetProductSkuSelected } from '../../hooks/useAPI'
-import { concat } from 'lodash'
 import { useHistory, useLocation } from 'react-router'
 import { usePush } from '../../hooks/useRedirect'
 
@@ -64,7 +61,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
       <div className="px-lg-3">
         <div className="row">
-          <ProductDetailGallery productID={productID} />
+          <ProductDetailGallery productID={productID} skuID={sku.data.skuID} />
           {/* <!-- Product details--> */}
           <div className="col-lg-6 pt-0">
             <div className="product-details pb-3">
@@ -72,11 +69,11 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                 <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {productClearance === true && ' On Special'}</span>
                 <HeartButton skuID={sku.data.skuID} className={'btn-wishlist mr-0 mr-lg-n3'} />
               </div>
-              <div className="mb-2">
-                <span className="text-small text-muted">{`${t('frontend.product.subhead')} `}</span>
-                <span className="h4 font-weight-normal text-large text-accent mr-1">{productCode}</span>
-              </div>
               <h2 className="h4 mb-2">{productName}</h2>
+              <div className="mb-2">
+                <span className="text-small text-muted">{`SKU: `}</span>
+                <span className="h4 font-weight-normal text-large text-accent mr-1">{sku.data.skuCode}</span>
+              </div>
               <div
                 className="mb-3 font-weight-light font-size-small text-muted"
                 dangerouslySetInnerHTML={{
@@ -88,6 +85,10 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                 onSubmit={event => {
                   event.preventDefault()
                   dispatch(addToCart(sku.data.skuID, quantity))
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  })
                 }}
               >
                 {skus.isLoaded &&
