@@ -105,7 +105,11 @@ component  accessors="true" output="false"
 	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
 	    }
 	    
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
 	    
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
@@ -123,7 +127,11 @@ component  accessors="true" output="false"
 	    arguments.data.entityName = "Sku";
 	    arguments.data.restRequestFlag = 1;
 	    
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data);
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
 	    
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
