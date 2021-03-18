@@ -1246,7 +1246,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'none';
 	}
 
-	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true, any availableSelectProperties = {}){
+	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true, struct availableSelectProperties = {}){
 		var HibachiBaseEntity = "";
 		HibachiBaseEntity = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 
@@ -1254,9 +1254,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(variables.collectionConfig == '{}' ){
 			var columnsArray = [];
-			
-			//check to see if we are supposed to add default columns
-			if(arguments.addDefaultColumns && ( !StructKeyExists(arguments, 'availableSelectProperties') || StructIsEmpty(arguments.availableSelectProperties) ) ) {
+			if( !StructIsEmpty( arguments.availableSelectProperties ) ) { 
+				//set available properties on object
+				this.setAvailableSelectProperties( arguments.availableSelectProperties );
+				
+				//Add select properties to columns
+				var availblePropertyArray = [];
+				for(var column in arguments.availableSelectProperties) {
+					ArrayAppend( availblePropertyArray, {'name': column} );
+				}
+				
+				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
+				
+				columnsArray = this.arrangeCollectionColumns( arguments.collectionObject, newEntity, availblePropertyArray );
+				
+			}
+			else if( arguments.addDefaultColumns ) { //check to see if we are supposed to add default columns
 					
 				var cacheKey = 'defaultColumns' & arguments.collectionObject & '#getReportFlag()#';
 				var cachedColumnsArray = getCollectionCacheValue(cacheKey);
@@ -1277,21 +1290,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					columnsArray = cachedColumnsArray;
 				}
-			} else if( !StructIsEmpty( arguments.availableSelectProperties ) ) { 
-				
-				//set available properties on object
-				this.setAvailableSelectProperties( arguments.availableSelectProperties );
-				
-				//Add select properties to columns
-				var availblePropertyArray = [];
-				for(var column in arguments.availableSelectProperties) {
-					ArrayAppend( availblePropertyArray, {'name': column} );
-				}
-				
-				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-				
-				columnsArray = this.arrangeCollectionColumns( arguments.collectionObject, newEntity, availblePropertyArray );
-				
 			}
 
 			var columnsJson = serializeJson(columnsArray);
