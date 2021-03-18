@@ -74,7 +74,11 @@
 			if(structKeyExists(arguments.data, 'defaultColumns')){
 				addDefaultColumns = arguments.data.defaultColumns;
 			}
-			collection.setCollectionObject(arguments.entityName,addDefaultColumns);
+			var availableSelectProperties = {};
+			if(structKeyExists(arguments.data, 'availableSelectProperties')){
+				availableSelectProperties = arguments.data.availableSelectProperties;
+			}
+			collection.setCollectionObject(arguments.entityName,addDefaultColumns, availableSelectProperties);
 			return collection;
 		}
 		
