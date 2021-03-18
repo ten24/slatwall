@@ -67,6 +67,120 @@ export const addToCart = (skuID, quantity = 1) => {
     }
   }
 }
+
+export const getEligibleFulfillmentMethods = () => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/getEligibleFulfillmentMethods`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart({ eligibleFulfillmentMethods: response.data.eligibleFulfillmentMethods }))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
+
+export const getPickupLocations = () => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'GET',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/getPickupLocations`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart({ pickupLocations: response.data.locations }))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
+
+export const addPickupLocation = params => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/addPickupFulfillmentLocation`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: {
+        ...params,
+        returnJSONObjects: 'cart',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
+export const setPickupDate = params => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/setPickupDate`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: {
+        ...params,
+        returnJSONObjects: 'cart',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
+export const updateOrderNotes = params => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/updateOrderNotes`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: {
+        ...params,
+        returnJSONObjects: 'cart',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
 export const updateItemQuantity = (skuID, quantity = 1) => {
   return async dispatch => {
     dispatch(requestCart())
@@ -108,6 +222,7 @@ export const updateItemQuantity = (skuID, quantity = 1) => {
     }
   }
 }
+
 export const removeItem = orderItemID => {
   return async dispatch => {
     dispatch(requestCart())
@@ -161,17 +276,17 @@ export const addShippingMethod = (params = {}) => {
   }
 }
 
-export const addPickupLocation = (params = {}) => {
-  return async dispatch => {
-    dispatch(requestCart())
+// export const addPickupLocation = (params = {}) => {
+//   return async dispatch => {
+//     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.addPickupLocation(params)
+//     const req = await SlatwalApiService.cart.addPickupLocation(params)
 
-    if (req.isSuccess()) {
-      dispatch(receiveCart(req.success().cart))
-    }
-  }
-}
+//     if (req.isSuccess()) {
+//       dispatch(receiveCart(req.success().cart))
+//     }
+//   }
+// }
 
 export const updateFulfillment = (params = {}) => {
   return async dispatch => {
@@ -290,11 +405,32 @@ export const addAddressAndAttachAsShipping = (params = {}) => {
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
-      dispatch(receiveCart())
+      dispatch(receiveUser())
     }
   }
 }
 
+export const changeOrderFulfillment = (params = {}) => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true, // default
+      url: `${sdkURL}api/scope/changeOrderFulfillment`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
+      },
+      data: { returnJsonObjects: 'cart', ...params },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
 export const addAddressAndAttachAsBilling = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
@@ -315,7 +451,7 @@ export const addAddressAndAttachAsBilling = (params = {}) => {
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
-      dispatch(receiveCart())
+      dispatch(receiveUser())
     }
   }
 }
@@ -339,7 +475,7 @@ export const addBillingAddressUsingAccountAddress = (params = {}) => {
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
-      dispatch(receiveCart())
+      dispatch(receiveUser())
       dispatch(receiveCart())
     }
   }
@@ -365,7 +501,7 @@ export const addNewAccountAndSetAsBilling = (params = {}) => {
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
-      dispatch(receiveCart())
+      dispatch(receiveUser())
     }
   }
 }
@@ -390,7 +526,7 @@ export const addAddressAndPaymentAndAddToOrder = (params = {}) => {
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
-      dispatch(receiveCart())
+      dispatch(receiveUser())
     }
   }
 }
