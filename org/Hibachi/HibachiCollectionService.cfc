@@ -194,7 +194,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		var pageRecordStruct = {};
 		
 		//Ignore additional properties if availableSelectProperties are defined 
-		if( !StructIsEmpty(arguments.collectionEntity.getAvailableSelectProperties()) && !StructKeyExists( arguments.collectionEntity.getAvailableSelectProperties(), arguments.propertyIdentifier) ) {
+		var availableSelectProperties = arguments.collectionEntity.getAvailableSelectProperties();
+		if( !StructIsEmpty(availableSelectProperties) && !StructKeyExists( availableSelectProperties, arguments.propertyIdentifier) ) {
 			return pageRecordStruct;
 		}
 		
