@@ -10,6 +10,7 @@ const initState = {
   checkoutStep: '',
   orderPayments: [],
   orderFulfillments: [],
+  eligibleFulfillmentMethods: [],
   orderRequirementsList: '',
   isFetching: false,
   err: null,
