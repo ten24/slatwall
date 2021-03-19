@@ -1,0 +1,39 @@
+name: Push commit on Merge
+on:
+  push:
+    branches:
+      - develop-team
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+      - name: Cache Node Modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: custom/swreact/node_modules
+          key: node-modules-${{ hashFiles('custom/swreact/package-lock.json') }}
+      - name: Install Dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: |
+          cd custom/swreact
+          npm install
+      - name: Build React Bundle
+        run: |
+          cd custom/swreact
+          npm run build
+      - name: Commit React Bundle
+        run: |
+          git config --global user.name 'ten24deploy'
+          git config --global user.email 'ten24deploy@slatwallcommerce.com'
+          git remote set-url origin https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}
+          git add .
+          git commit -am "Bot Build"
+          git push
