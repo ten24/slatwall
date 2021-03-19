@@ -2,7 +2,7 @@ name: Push commit on Merge
 on:
   push:
     branches:
-      - develop-team-ts-end
+      - develop-team
 jobs:
   report:
     runs-on: ubuntu-latest
