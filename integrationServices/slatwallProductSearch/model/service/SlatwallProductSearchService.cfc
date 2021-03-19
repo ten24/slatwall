@@ -320,9 +320,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 filterGroupAlias = 'productSiteFilter');
             
             // STOCK, 
-            // Q: should we add a check for if quantities exists?
             if( arguments.site.hasLocation() ){
                 collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
+                collectionList.addFilter('sku.stocks.calculatedQATS', 0, '>');
+                collectionList.addFilter('sku.stocks.location.sites.siteID', arguments.site.getSiteID());
                 collectionList.addFilter('sku.stocks.location.locationID', arguments.site.getLocations()[1].getLocationID());
             }
 		}
@@ -336,12 +337,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         if( len(trim(arguments.priceGroupCode)) ){
             collectionList.addFilter(propertyIdentifier='priceGroupCode', value=arguments.priceGroupCode);
         } else {
-            collectionList.addFilter(propertyIdentifier='priceGroupCode', 'NULL', 'IS');
+            collectionList.addFilter(propertyIdentifier='priceGroupCode', value='NULL', comparisonOperator='IS');
         }
         // we also do not want sku-prices which have min-max quantities defined
         // TODO: don't bring-in the sku-prices which have a min or max quantity defined ?
-        collectionList.addFilter(propertyIdentifier='skuPriceMinQuantity', 'NULL', 'IS');
-        collectionList.addFilter(propertyIdentifier='maxQuantity', 'NULL', 'IS');
+        collectionList.addFilter(propertyIdentifier='skuPriceMinQuantity', value='NULL', comparisonOperator='IS');
+        collectionList.addFilter(propertyIdentifier='skuPriceMaxQuantity', value='NULL', comparisonOperator='IS');
         
 
 

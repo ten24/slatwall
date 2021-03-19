@@ -217,16 +217,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         if( !this.hibachiIsEmpty(arguments.productIDs) ){
             arguments.productIDs =  listQualify(arguments.productIDs, "'");
             productAndSkuIDsQueryPart = "p.productID IN (#arguments.productIDs#)";
-            
             if( this.hibachiIsEmpty(arguments.skuIDs) ){
                 productAndSkuIDsQueryPart = " AND " & productAndSkuIDsQueryPart;
             }
         }
         if( !this.hibachiIsEmpty(arguments.skuIDs) ){
-            
             arguments.skuIDs =  listQualify(arguments.skuIDs, "'");
             var skuIDsQueryPart = "sk.skuID IN (#arguments.skuIDs#)";
-            
             if(!this.hibachiIsEmpty(arguments.productIDs)){
                 productAndSkuIDsQueryPart = " AND ( #productAndSkuIDsQueryPart# OR #skuIDsQueryPart# ) ";
             } else {
@@ -323,12 +320,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 ON pg.priceGroupID = sp.priceGroupID
                     AND ( pg.activeFlag = 1 OR pg.activeFlag IS NULL )
                             
-           LEFT JOIN swProductType pt
+            LEFT JOIN swProductType pt
                 ON pt.productTypeID = p.productTypeID 
                     AND ( pt.activeFlag = 1 OR pt.activeFlag IS NULL ) 
                     AND ( pt.publishedFlag = 1 OR pt.publishedFlag IS NULL )
 
-           LEFT JOIN swBrand br
+            LEFT JOIN swBrand br
                 ON br.brandID = p.brandID
                     AND ( br.activeFlag = 1 OR br.activeFlag IS NULL ) 
                     AND ( br.publishedFlag = 1 OR br.publishedFlag IS NULL )
@@ -402,8 +399,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             getExistingOptionsSQL &= " skuID IN (#qualifiedSkuIDs#)";
         }
             
-        dump(getExistingOptionsSQL);
-            
         var getExistingOptionsQuery = new Query();
         getExistingOptionsQuery.setSQL( getExistingOptionsSQL );
         getExistingOptionsQuery = getExistingOptionsQuery.execute().getResult();
@@ -414,15 +409,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         for( var row in getExistingOptionsQuery ){
             existingFFOsToDeletMap[ row.productFilterFacetOptionID] = row.productFilterFacetOptionID;
         }
-	        
-        dump("Existing ffos");
-        dump(existingFFOsToDeletMap);
-	        
+        
         var getNewOptionsQuerySQL = this.getProductFilterFacetOptionsSeletQuerySQL(argumentCollection = arguments ); 
-        
-        dump("getNewOptionsQuerySQL: ");
-        dump(getNewOptionsQuerySQL);
-        
+
         var getNewOptionsQuery = new Query();
         getNewOptionsQuery.setSQL(getNewOptionsQuerySQL);
         var getNewOptionsQueryResult = getNewOptionsQuery.execute().getResult();
@@ -439,8 +428,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             }
         }
         
-        dump(newFFOsToInsertCount);
-	        
         // now delete whatever is left from the old options as these are no-longer valid
         if( structCount(existingFFOsToDeletMap) > 0 ){
 	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus deleting #structCount(existingFFOsToDeletMap)# old options");
@@ -481,7 +468,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
     	                #getNewOptionsQuerySQL# 
     	            ) result_set
                 ";
-            dump(insertSQL);
             insertQuery.setSQL( insertSQL );
 	        insertQuery.execute();
         } else {
@@ -615,7 +601,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q = q.execute().getResult();
         
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName# : #arguments.entityIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
         
         return q;
 	}
@@ -707,7 +693,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q = q.execute().getResult();
         
-        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName#: #arguments.entityIDs#, SQL: #sql# ");
         
         return q;   
 	}
@@ -835,60 +821,76 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    return variables['cached_FacetsMetaData'];
 	}
 	
-	public string function makeGetFacetOptionQuery(required struct facetMetaData, required struct facetsFilterQueryFragments, boolean includeSKUCount){
+	public string function makeGetFacetOptionQuery(
+	    required struct facetMetaData, 
+	    required struct facetsFilterQueryFragments, 
+	    required any site,
+	    boolean includeSKUCount=true
+	){
 	    
 	    var facetQuery = "";
 	    if(arguments.includeSKUCount){
     	    facetQuery = "
     	        SELECT 
+    	            rs.id, 
+    	            rs.name, 
+    	            rs.facet, 
+    	            rs.subFacet, 
+    	            rs.subFacetName, 
+    	            rs.slug, 
+    	            rs.code, 
+    	            COUNT(DISTINCT rs.skuID) AS count 
+    	        FROM
+    	        ( 
+    	            SELECT 
+        				skuID, 
+        				$facetIDKey$                as id, 
+        				$facetNameKey$              as name, 
+        				$facetSlugKeyOrValue$       as slug,
+        				$facetCodeKeyOrValue$       as code,
+        				'$facet$'                   as facet, 
+        				$subFacetKeyOrValue$        as subFacet,
+        				$subFacetNameKeyOrValue$    as subFacetName
+        			FROM swProductFilterFacetOption 
+        			WHERE $facetIDKey$ IS NOT NULL
+        			$filterQueryFragment$
+        			GROUP BY skuID, $facetIDKey$, $facetNameKey$
+        		) rs
+        		
+        		$stockAvailabilitySQLFragment$
+        	    
+        	    GROUP BY rs.id
+        	    HAVING COUNT(DISTINCT rs.skuID) > 0
+    	    ";
+	    } else {
+	        facetQuery = "
+                SELECT 
     	            id, 
     	            name, 
     	            facet, 
     	            subFacet, 
     	            subFacetName, 
     	            slug, 
-    	            code, 
-    	            COUNT(DISTINCT skuID) AS count 
+    	            code 
     	        FROM
-        	        ( 
-        	            SELECT 
-            				skuID, 
-            				$facetIDKey$                as id, 
-            				$facetNameKey$              as name, 
-            				$facetSlugKeyOrValue$       as slug,
-            				$facetCodeKeyOrValue$       as code,
-            				'$facet$'                   as facet, 
-            				$subFacetKeyOrValue$        as subFacet,
-            				$subFacetNameKeyOrValue$    as subFacetName
-            				
-            			FROM swProductFilterFacetOption 
-            			WHERE $facetIDKey$ IS NOT NULL
-            			$filterQueryFragment$
-            			AND ( productPublishedStartDateTime IS NULL OR productPublishedStartDateTime <= NOW() )
-                        AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= NOW() )
-            			GROUP BY skuID, $facetIDKey$, $facetNameKey$
-            			
-        		    ) result_set
-        		    
+    	        ( 
+    	            SELECT 
+        				skuID, 
+        				$facetIDKey$                as id, 
+        				$facetNameKey$              as name, 
+        				$facetSlugKeyOrValue$       as slug,
+        				$facetCodeKeyOrValue$       as code,
+        				'$facet$'                   as facet, 
+        				$subFacetKeyOrValue$        as subFacet,
+        				$subFacetNameKeyOrValue$    as subFacetName
+        			FROM swProductFilterFacetOption 
+        			WHERE $facetIDKey$ IS NOT NULL
+        			$filterQueryFragment$
+        			GROUP BY skuID, $facetIDKey$, $facetNameKey$
+        		) rs
+        		
+        		$stockAvailabilitySQLFragment$
         	    GROUP BY id
-        	    HAVING COUNT(DISTINCT skuID) > 0
-    	    ";
-	    } else {
-	        facetQuery = "
-                SELECT 
-    				DISTINCT $facetIDKey$       as id, 
-    				$facetNameKey$              as name, 
-    				$facetSlugKeyOrValue$       as slug,
-    				$facetCodeKeyOrValue$       as code,
-    				'$facet$'                   as facet, 
-    				$subFacetKeyOrValue$        as subFacet,
-    				$subFacetNameKeyOrValue$    as subFacetName
-    				
-    			FROM swProductFilterFacetOption 
-    			WHERE $facetIDKey$ IS NOT NULL
-    			$filterQueryFragment$
-                AND ( productPublishedStartDateTime IS NULL OR productPublishedStartDateTime <= NOW() )
-                AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= NOW() )
     		";
 	    }
 	    
@@ -915,12 +917,27 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 }
                 filterQueryFragment &= ' '&arguments.facetsFilterQueryFragments[facetName];
             }
+            
             if(len(filterQueryFragment)){
                 filterQueryFragment = 'AND '&filterQueryFragment;
             }
         }
-        
         facetQuery = replace(facetQuery, '$filterQueryFragment$', filterQueryFragment );
+        
+        var stockAvailabilitySQLFragment = '';
+        if(arguments.site.hasLocation() ){
+            // the :siteID param should already be added
+	        // facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
+            stockAvailabilitySQLFragment = "
+    	        INNER JOIN swStock stk 
+    	            ON 
+	                stk.stockID IN (SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID )
+    	            AND stk.calculatedQATS > 0 
+    	            AND rs.skuID = stk.skuID 
+            ";
+	    }
+        facetQuery = replace(facetQuery, '$stockAvailabilitySQLFragment$', stockAvailabilitySQLFragment );
+        
         return facetQuery;
 	}
 	
@@ -934,12 +951,20 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    
 	    var facetsSqlFilterQueryFragments = {};
 	    var facetsSqlFilterQueryParams = {};
-	    facetsSqlFilterQueryFragments['site'] = '';
-	    if( !isNull(arguments.site) && len(arguments.site.getSiteID()) ){
-	        facetsSqlFilterQueryFragments['site'] = '(siteID = #arguments.site.getSiteID()# OR siteID IS NULL)';
-	        // TODO: if site has location then stock count
+	    
+	    facetsSqlFilterQueryFragments['productSite'] = '';
+	    if( len(arguments.site.getSiteID()) ){
+	        facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
+	        facetsSqlFilterQueryFragments['productSite'] = '(siteID = :siteID OR siteID IS NULL)';
 	    }
 	    
+	    // CF-Server's date-time instead of BD-Server's 
+	    facetsSqlFilterQueryParams['dateTimeNow'] = dateTimeFormat(now(), 'short');
+	    facetsSqlFilterQueryFragments['productPublishedPeriod'] = "
+	        ( productPublishedStartDateTime IS NULL OR productPublishedStartDateTime <= :dateTimeNow )
+            AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= :dateTimeNow )
+	    ";
+
 	    for(var facetName in ['brand', 'category', 'productType'] ){
     	    facetsSqlFilterQueryFragments[facetName] = '';
     	    var selectedFacetOptions = arguments[ facetName ];
@@ -1037,7 +1062,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                                         
                                         "; 
             }
-            getAllFacetOptionsSQL &= this.makeGetFacetOptionQuery(facetsMetadata[facetName], filterQueryFragmentsData.fragments, arguments.includeSKUCount );
+            getAllFacetOptionsSQL &= this.makeGetFacetOptionQuery(
+                facetMetaData = facetsMetadata[facetName], 
+                facetsFilterQueryFragments = filterQueryFragmentsData.fragments, 
+                includeSKUCount= arguments.includeSKUCount, 
+                site = arguments.site 
+            );
         }
                 
         var queryService = new Query();
@@ -1051,7 +1081,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             }
         }
         queryService = queryService.execute().getResult();
-        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions2 took #getTickCount()-startTicks# ms.; and fetched #queryService.recordCount# records ");
+        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.; and fetched #queryService.recordCount# records ");
         return queryService;
 	}
 
