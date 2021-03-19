@@ -62,56 +62,58 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processBrand_uploadBrandLogo(required any brand, required any processObject) {
 		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 		try {
-
 			// Get the upload directory for the current property
 			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
 			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/brand/logo";
-			
-			var brandID = arguments.brand.getBrandID();
+
 			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
 				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
 			}
 			
-			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getBrandLogo()#";
+			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
+			
 			// If the directory where this file is going doesn't exists, then create it
 			if(!directoryExists(uploadDirectory)) {
 				directoryCreate(uploadDirectory);
 			}
-
 			// Do the upload, and then move it to the new location
 			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
 			var fileSize = uploadData.fileSize;
+			
  			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
  				arguments.brand.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
- 				getImageService().clearImageCache(uploadDirectory, arguments.processObject.getBrandLogo());
- 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 				if(!IsNull(arguments.processObject.getImageFile())){
+ 					getService('ImageService').clearImageCache(uploadDirectory, arguments.processObject.getImageFile());	
+ 				}
+ 				
+ 				fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
  				if(getHibachiUtilityService().isS3Path(fullFilePath)){
  					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
  				}
+ 				arguments.brand.setImageFile( uploadData.serverFile );
  			}
 
 		} catch(any e) {
-			dump(label="uploadData Error Catched"); abort;
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
 		}
 
 		return arguments.brand;
 	}
 	
-	public any function processProduct_deleteBrandLogo(required any brand, required struct data) {
-		if(structKeyExists(arguments.data, "brandLogo")) {
+	public any function processBrand_deleteBrandLogo(required any brand, required struct data) {
+		if(structKeyExists(arguments.data, "imageFile")) {
 			var imageBasePath = getHibachiScope().setting('globalAssetsImageFolderPath') & '/brand/logo/';
 
 			if(getHibachiUtilityService().isS3Path(imageBasePath)){
 				imageBasePath = getHibachiUtilityService().formatS3Path(imageBasePath);
 			}
 
-			if(fileExists(imageBasePath&arguments.data.brandLogo)) {
-				fileDelete(imageBasePath&arguments.data.brandLogo);
+			if(fileExists(imageBasePath&arguments.data.imageFile)) {
+				fileDelete(imageBasePath&arguments.data.imageFile);
 			}
-			getImageService().clearImageCache(imageBasePath, arguments.data.brandLogo);
+			getService('ImageService').clearImageCache(imageBasePath, arguments.data.imageFile);
 		}
 
 		return arguments.brand;

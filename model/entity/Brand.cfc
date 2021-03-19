@@ -59,9 +59,6 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	property name="brandFeatured" ormtype="boolean" hb_formatType="yesno" default="0";
 	property name="imageFile" ormtype="string" length="250";
 	
-	// Related Object Properties (many-to-one)
-	property name="brandLogo" cfc="Image" fieldtype="one-to-one" fkcolumn="imageID" fetch="join";
-	
 	// Related Object Properties (one-to-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="brandID" cascade="all-delete-orphan" inverse="true";
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="one-to-many" fkcolumn="brandID" inverse="true";
