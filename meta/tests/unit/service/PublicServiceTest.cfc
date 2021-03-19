@@ -96,7 +96,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             // 'category_name=',
             
             // 'option_productFinish_id=2c91808e757ef05301758d90688b0a29,2c91808e757ef05301758d90688b0a12',
-            'option_productFinish_id=2c91808e757ef05301758d90688b0a29',
+            // 'option_productFinish_id=2c91808e757ef05301758d90688b0a29',
             
             // 'attribute_productKeyMachineType=1,2,3',
             

@@ -592,21 +592,22 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 ";
             break;
             default:
-                throw("not supported entity-name #arguments.entityName#");
+                this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs was called for not supported entity-name #arguments.entityName#");
+                return;
             break;
         }
             
         var q = new Query();
         q.setSQL( sql );
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
-        q = q.execute().getResult();
+        q.execute();
         
         this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
         
         return q;
 	}
 	
-	public any function removeProductFilterFacetOptionsByEntityNameAndIDs( required string entittyName, required string entityIDs ){
+	public any function removeProductFilterFacetOptionsByEntityNameAndIDs( required string entityName, required string entityIDs ){
 	    
 	    if( this.hibachiIsEmpty(arguments.entityIDs) ){
             return;
@@ -615,7 +616,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         var startTicks = getTickCount();
         
         var sql = " 
-            DELETE swProductFilterFacetOption 
+            DELETE ffo
                 FROM swProductFilterFacetOption as ffo
             INNER JOIN
         ";
@@ -691,9 +692,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         var q = new Query();
         q.setSQL( sql );
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
-        q = q.execute().getResult();
+        q.execute();
         
-        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName#: #arguments.entityIDs#, SQL: #sql# ");
+        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
         
         return q;   
 	}
