@@ -76,7 +76,7 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		payload['iat'] = javaCast( "int", currentTime );
 		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
 		payload['issuer'] = CGI['server_name'];
-		payload['accountID'] = this.getHibachiScope().getAccount().getAccountID();
+		payload['sessionID'] = this.getHibachiScope().getSession().getSessionID();
 		
 		
 		// TODO: should be in modal/service/HibachiJWTService; hibachi should not know anything about order;

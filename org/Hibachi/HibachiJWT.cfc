@@ -31,6 +31,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(!structKeyExists(variables,'payload')){
 			try{
 				decode(variables.tokenString);
+				Dump(decode(variables.tokenString));abort;
 			}catch(any e){
 				
 			}
