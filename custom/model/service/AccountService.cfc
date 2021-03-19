@@ -20,9 +20,7 @@ component extends="Slatwall.model.service.AccountService" {
 			orderFulfillments.shippingAddress.street2Address,
 			orderFulfillments.shippingAddress.city,
 			orderFulfillments.shippingAddress.stateCode,
-			orderFulfillments.shippingAddress.postalCode,
-			orderPayments.purchaseOrderNumber,
-			orderItems.sku.skuName
+			orderFulfillments.shippingAddress.postalCode
 		');
 		
 		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
