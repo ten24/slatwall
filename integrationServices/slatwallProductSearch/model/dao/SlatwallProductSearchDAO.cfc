@@ -592,14 +592,15 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 ";
             break;
             default:
-                throw("not supported entity-name #arguments.entityName#");
+                this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs was called for not supported entity-name #arguments.entityName#");
+                return;
             break;
         }
             
         var q = new Query();
         q.setSQL( sql );
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
-        q = q.execute().getResult();
+        q.execute();
         
         this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
         
@@ -691,7 +692,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         var q = new Query();
         q.setSQL( sql );
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
-        q = q.execute().getResult();
+        q.execute();
         
         this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName#: #arguments.entityIDs#, SQL: #sql# ");
         
