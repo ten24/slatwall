@@ -61,8 +61,7 @@ const calculatePageNumbers = (currentPage, pageNeighbours, totalPages) => {
       // handle: (1) < {4 5} [6] {7 8} > (10)
       case hasLeftSpill && hasRightSpill:
       default: {
-        const extraPage2 = range(currentPage - pageNeighbours, currentPage + pageNeighbours)
-        pages = [LEFT_PAGE, ...extraPage2, RIGHT_PAGE]
+        pages = [LEFT_PAGE, ...pages, RIGHT_PAGE]
         break
       }
     }
