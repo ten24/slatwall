@@ -61,7 +61,8 @@ const calculatePageNumbers = (currentPage, pageNeighbours, totalPages) => {
       // handle: (1) < {4 5} [6] {7 8} > (10)
       case hasLeftSpill && hasRightSpill:
       default: {
-        pages = [LEFT_PAGE, ...pages, RIGHT_PAGE]
+        const extraPage2 = range(currentPage - pageNeighbours, currentPage + pageNeighbours)
+        pages = [LEFT_PAGE, ...extraPage2, RIGHT_PAGE]
         break
       }
     }
@@ -73,6 +74,9 @@ const calculatePageNumbers = (currentPage, pageNeighbours, totalPages) => {
 
 const ListingPagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 1, setPage }) => {
   const { t, i18n } = useTranslation()
+  recordsCount = typeof recordsCount === 'string' || recordsCount instanceof String ? parseInt(recordsCount) : recordsCount
+  currentPage = typeof currentPage === 'string' || currentPage instanceof String ? parseInt(currentPage) : currentPage
+  totalPages = typeof totalPages === 'string' || totalPages instanceof String ? parseInt(totalPages) : totalPages
 
   const gotoPage = pageTo => {
     const newPage = Math.max(0, Math.min(pageTo, totalPages))
