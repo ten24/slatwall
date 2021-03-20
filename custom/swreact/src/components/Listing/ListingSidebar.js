@@ -79,25 +79,29 @@ const ListingSidebar = ({ isFetching, qs, hide, optionGroups, brands, categories
               </>
             )}
 
-            {optionGroups &&
+            {!isFetching &&
+              optionGroups &&
               optionGroups.map((filter, index) => {
                 return <ProductListingFilter qs={qs} key={`attr${filter.name.replace(' ', '')}`} index={`attr${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
               })}
 
-            {brands &&
+            {!isFetching &&
+              brands &&
               brands !== {} &&
               brands.facetKey !== hide &&
               [brands].map((filter, index) => {
                 return <ProductListingFilter qs={qs} key={`brand${filter.name.replace(' ', '')}`} index={`brand${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
               })}
-            {categories &&
+            {!isFetching &&
+              categories &&
               categories.options &&
               categories.options.length > 0 &&
               categories.facetKey !== hide &&
               [categories].map((filter, index) => {
                 return <ProductListingFilter qs={qs} key={`cat${filter.name.replace(' ', '')}`} index={`cat${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
               })}
-            {productTypes &&
+            {!isFetching &&
+              productTypes &&
               productTypes.options &&
               productTypes.options.length > 0 &&
               productTypes.facetKey !== hide &&

@@ -67,7 +67,7 @@ const TermPayment = ({ method }) => {
   const dispatch = useDispatch()
   const [accountAddressID, setAccountAddressID] = useState('')
   const { purchaseOrderNumber } = useSelector(orderPayment)
-  const [termOrderNumber, setTermOrderNumber] = useState(purchaseOrderNumber)
+  const [termOrderNumber, setTermOrderNumber] = useState(purchaseOrderNumber || '')
   const selectedAccountID = useSelector(billingAccountAddressSelector)
 
   return (
