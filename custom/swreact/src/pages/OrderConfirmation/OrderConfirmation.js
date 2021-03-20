@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { Layout } from '../../components'
 
-import { Redirect, useLocation } from 'react-router'
+import { Redirect, useHistory, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useGetAllOrders } from '../../hooks/useAPI'
 import { useEffect } from 'react'
@@ -13,6 +13,7 @@ const OrderConfirmation = () => {
   const { t, i18n } = useTranslation()
   let dispatch = useDispatch()
   let loc = useLocation()
+  let history = useHistory()
   const { customBody = '' } = useSelector(state => state.content[loc.pathname.substring(1)]) || {}
 
   useEffect(() => {
@@ -54,7 +55,7 @@ const OrderConfirmation = () => {
                     className="btn btn-primary btn-block"
                     onClick={e => {
                       e.preventDefault()
-                      //   history.push('/my-account')
+                      history.push('/my-account')
                     }}
                   >
                     {t('frontend.account.my')}
