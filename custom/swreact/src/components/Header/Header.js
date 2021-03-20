@@ -1,16 +1,14 @@
-import React, { useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
-import { connect, useDispatch } from 'react-redux'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import debounce from 'lodash/debounce'
-import { setKeyword } from '../../actions/productSearchActions'
 import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
 import AccountBubble from './AccountBubble'
-import logo from '../../assets/images/sb-logo.png'
-import mobileLogo from '../../assets/images/sb-logo-mobile.png'
+import logo from '../../assets/images/logo.png'
+import mobileLogo from '../../assets/images/logo-mobile.png'
 import { useTranslation } from 'react-i18next'
 import groupBy from 'lodash/groupBy'
+import queryString from 'query-string'
+import { useSelector } from 'react-redux'
 
 const extractMenuFromContent = content => {
   let menu = Object.keys(content)
@@ -84,19 +82,12 @@ const MegaMenu = props => {
   )
 }
 
-function Header({ menuItems, mainNavigation }) {
-  const dispatch = useDispatch()
+function Header() {
   const { t, i18n } = useTranslation()
-
-  const [searchTerm, setSearchTerm] = useState('')
   let history = useHistory()
-
-  const slowlyRequest = useCallback(
-    debounce(value => {
-      dispatch(setKeyword(value))
-    }, 500),
-    []
-  )
+  const content = useSelector(state => state.content)
+  const menuItems = extractMenuFromContent(content)
+  const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -115,24 +106,28 @@ function Header({ menuItems, mainNavigation }) {
                   <input
                     className="form-control appended-form-control"
                     type="text"
-                    value={searchTerm}
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
-                        history.push('/products')
+                        e.preventDefault()
+                        history.push({
+                          pathname: '/products',
+                          search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                        })
                       }
                     }}
-                    onChange={e => {
-                      setSearchTerm(e.target.value)
-                      slowlyRequest(e.target.value)
-                    }}
+                    // onChange={e => debounced.callback(e.target.value)}
                     placeholder={t('frontend.search.placeholder')}
                   />
                   <div className="input-group-append-overlay">
                     <span className="input-group-text">
                       <i
                         style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          history.push('/products')
+                        onClick={e => {
+                          e.preventDefault()
+                          history.push({
+                            pathname: '/products',
+                            search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                          })
                         }}
                         className="far fa-search"
                       ></i>
@@ -205,16 +200,5 @@ function Header({ menuItems, mainNavigation }) {
     </header>
   )
 }
-Header.propTypes = {
-  menuItems: PropTypes.array,
-  mainNavigation: PropTypes.string,
-}
-function mapStateToProps(state) {
-  const menuItems = extractMenuFromContent(state.content)
-  return {
-    menuItems,
-    mainNavigation: state.content['header/main-navigation'] ? state.content['header/main-navigation'].customBody : '',
-  }
-}
 
-export default connect(mapStateToProps)(Header)
+export default Header

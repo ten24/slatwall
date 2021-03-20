@@ -4,7 +4,7 @@ import { applyPromoCode, removePromoCode } from '../../actions/cartActions'
 import { useState } from 'react'
 
 const CartPromoBox = () => {
-  const { isFetching } = useSelector(state => state.cart.isFetching)
+  const isFetching = useSelector(state => state.cart.isFetching)
   const promotionCodes = useSelector(state => state.cart.promotionCodes)
   const dispatch = useDispatch()
   const [promoCode, setPromoCode] = useState('')
@@ -22,8 +22,8 @@ const CartPromoBox = () => {
         <div className="collapse show" id="promo-code" data-parent="#order-options">
           <form className="card-body needs-validation" method="post" noValidate="">
             <div className="form-group">
-              <input className="form-control" type="text" placeholder="Promo code" value={promoCode} required onChange={e => setPromoCode(e.target.value)} />
-              <div className="invalid-feedback">{t('frontend.order.code.provide')}</div>
+              <input disabled={isFetching} className="form-control" type="text" placeholder="Promo code" value={promoCode} required onChange={e => setPromoCode(e.target.value)} />
+              <div className="invalid-feedback">{t('frontend.order.promo.code.provide')}</div>
             </div>
             <button
               className="btn btn-outline-primary btn-block"

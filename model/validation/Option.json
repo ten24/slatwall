@@ -1,7 +1,7 @@
 {
 	"properties": {
 		"optionCode": [
-			{ "contexts": "save", "unique": true, "required": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$" }
+			{ "contexts": "save", "required": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$", "method": "isUniqueInOptionGroup" }
 		],
 		"optionName": [{ "contexts": "save", "required": true }],
 		"optionGroup": [{ "contexts": "save", "required": true }],

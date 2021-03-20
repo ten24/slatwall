@@ -684,7 +684,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			shippingMethodRate.addManualRateIntegrationMethod(shippingMethodRateIntegrationMethod);
 			this.saveShippingMethodRateIntegrationMethod(shippingMethodRateIntegrationMethod);
 			this.saveShippingMethodRate(shippingMethodRate);
-			ormflush();
+			this.getHibachiScope().hibachiORMFlush();
 		}
 	}
 

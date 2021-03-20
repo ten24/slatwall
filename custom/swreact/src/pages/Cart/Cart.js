@@ -1,4 +1,4 @@
-import { CartLineItem, CartPromoBox, Layout, OrderNotes } from '../../components'
+import { CartLineItem, CartPromoBox, Layout, OrderNotes, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -44,6 +44,7 @@ const Cart = () => {
 
           <aside className="col-lg-4 pt-4 pt-lg-0">
             <div className="cz-sidebar-static rounded-lg box-shadow-lg ml-lg-auto">
+              <PromotionalMessaging />
               <div className="text-center mb-4 pb-3 border-bottom">
                 <h2 className="h6 mb-3 pb-1">{t('frontend.order.subtotal')}</h2>
                 <h3 className="font-weight-normal">{formatCurrency(subtotal)}</h3>
@@ -51,7 +52,16 @@ const Cart = () => {
 
               <CartPromoBox />
 
-              <OrderNotes />
+              <button
+                className="btn btn-primary btn-block mt-4"
+                disabled={cart.isFetching}
+                onClick={e => {
+                  e.preventDefault()
+                  history.push('/checkout')
+                }}
+              >
+                {t('frontend.order.to_checkout')}
+              </button>
             </div>
           </aside>
         </div>

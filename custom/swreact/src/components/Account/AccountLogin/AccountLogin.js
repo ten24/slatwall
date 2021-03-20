@@ -1,10 +1,9 @@
 import { login } from '../../../actions/authActions'
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useRouteMatch } from 'react-router-dom'
-
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -27,7 +26,6 @@ const LoginForm = () => {
           <h2 className="h4 mb-1">{t('frontend.account.sign_in')}</h2>
           <p className="font-size-sm text-muted mb-4">
             {`${t('frontend.account.no_account')} `} <Link to={`${match.path}/createAccount`}>{t('frontend.account.request')}</Link>.
-
           </p>
           <form onSubmit={formik.handleSubmit}>
             <div className="form-group">
@@ -56,7 +54,7 @@ const LoginForm = () => {
   )
 }
 
-const AccountLogin = ({ auth }) => {
+const AccountLogin = () => {
   return (
     <div className="container py-4 py-lg-5 my-4">
       <div className="row d-flex justify-content-center">
@@ -65,11 +63,5 @@ const AccountLogin = ({ auth }) => {
     </div>
   )
 }
-const mapStateToProps = state => {
-  return {
-    auth: state.authReducer,
-    user: state.userReducer,
-  }
-}
 
-export default connect(mapStateToProps)(AccountLogin)
+export default AccountLogin

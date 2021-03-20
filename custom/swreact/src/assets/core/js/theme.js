@@ -186,7 +186,6 @@
                 image.onload = function () {
                   icon.className = 'cz-file-drop-preview img-thumbnail rounded'
                   icon.innerHTML = '<img src="' + image.src + '" alt="' + fileName + '">'
-                  console.log(this.width)
                 }
               } else if (fileData.startsWith('data:video')) {
                 icon.innerHTML = ''

@@ -107,11 +107,12 @@
 			// Add the entity by it's name to the arguments for calling events
 	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			
+			// Do delete validation
+			// validating before announcing the event, so that the handler can check for errors and do some conditional logic 
+			arguments.entity.validate(context="delete"); 
+			
 			// Announce Before Event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
-			
-			// Do delete validation
-			arguments.entity.validate(context="delete");
 			
 			// If the entity Passes validation
 			if(!arguments.entity.hasErrors()) {
@@ -1863,7 +1864,7 @@
 							entity.updateCalculatedProperties(true);
 							logHibachi('flushed',true);
 							//commit batch
-							ormFlush();
+							this.getHibachiScope().hibachiORMFlush();
 							
 						}catch(any e){
 							logHibachi('#attributes.entityID# - error #e.message#',true);

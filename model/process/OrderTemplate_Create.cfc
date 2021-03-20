@@ -52,7 +52,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderTemplate";
 
 	property name="newAccountFlag";
-	property name="accountID" hb_rbKey="entity.account" cfc="Account";
+	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="firstName" hb_rbKey="entity.account.firstName";
 	property name="lastName" hb_rbKey="entity.account.lastName";
 	property name="company" hb_rbKey="entity.account.company";
@@ -75,6 +75,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="site" hb_rbKey="entity.orderTemplate.site";  
 
 
+	property name="orderTemplateName" hb_rbKey="entity.orderTemplate.orderTemplateName";
 	property name="scheduleOrderDayOfTheMonth";
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
 	property name="priceGroup" cfc="PriceGroup";

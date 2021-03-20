@@ -1,39 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import { SlatwalApiService } from '../../../services'
+import React, { useEffect } from 'react'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import OrderShipments from './OrderShipments'
-import OrderNav from './OrderNav'
 import OrderToolbar from './OrderToolbar'
+import { useGetOrderDetails } from '../../../hooks/useAPI'
+import OrderDetails from './OrderDetails'
 
 const AccountOrderDetail = props => {
   const orderID = props.path
-  const orderReff = props.forwardState || { orderID: '' }
-  const [order, setOrder] = useState({ ...orderReff, isLoaded: false })
+  let [order, setRequest] = useGetOrderDetails()
 
   useEffect(() => {
     let didCancel = false
-    if (!order.isLoaded) {
-      SlatwalApiService.account.orders({ orderID }).then(response => {
-        if (response.isSuccess() && !didCancel) {
-          if (response.success().ordersOnAccount.ordersOnAccount.length) {
-            setOrder({ ...response.success().ordersOnAccount.ordersOnAccount[0], isLoaded: true })
-            return
-          }
-        }
-        setOrder({ ...order, isLoaded: true })
-      })
+    if (!order.isFetching && !order.isLoaded && !didCancel) {
+      setRequest({ ...order, isFetching: true, isLoaded: false, params: { orderID }, makeRequest: true })
     }
-
     return () => {
       didCancel = true
     }
-  }, [order, orderID, setOrder])
-
+  }, [order, setRequest])
   return (
-    <AccountLayout title={`Order: ${order.orderNumber || ''}`}>
-      <OrderToolbar delivered={order.orderStatusType_typeName} />
-      <OrderNav />
-      <OrderShipments order={order} />
+    <AccountLayout title={`Order: ${(order.isLoaded && order.data.orderInfo[0].orderNumber) || ''}`}>
+      <OrderToolbar delivered={order.isLoaded && order.data.orderInfo[0].orderStatusType_typeName} />
+      {order.isLoaded && <OrderDetails orderInfo={order.data.orderInfo[0]} orderFulfillments={order.data.orderFulfillments[0]} orderPayments={order.data.orderPayments[0]} />}
+      {order.isLoaded && <OrderShipments shipments={[{ orderItems: order.data.orderItems }]} orderFulfillments={order.data.orderFulfillments[0]} orderPayments={order.data.orderPayments[0]} />}
     </AccountLayout>
   )
 }

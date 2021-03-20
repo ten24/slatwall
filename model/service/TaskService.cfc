@@ -87,7 +87,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			// Loop over each record in the page and call update / flush
 			for(var r=1; r<=rc; r++) {
 				records[r].updateCalculatedProperties();
-				ormFlush();
+				this.getHibachiScope().hibachiORMFlush();
 			}
 		}
 		
