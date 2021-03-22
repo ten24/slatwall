@@ -2,6 +2,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 
 	property name="orderService" type="any";
 	property name="accountService" type="any";
+	property name="sessionService" type="any";
 	property name="hibachiJWTService" type="any";
 	property name="hibachiTagService" type="any";
 	property name="hibachiAuditService" type="any";
@@ -302,8 +303,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		    var payload = jwt.getPayload();
 		    
 		    if( !this.hibachiIsEmpty(payload.sessionID) ){
-		    	
-    				this.getHibachiScope().setSession(payload.sessionID);
+		    	var jwtSession = this.getSessionService().getSession(payload.sessionID);
+    			this.getHibachiScope().setSession(jwtSession);
 		    }
 		    
 		    return this.getHibachiScope().getSession();
