@@ -53,35 +53,35 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="siteCode" ormtype="string" index="IDX_SITE_CODE";
 	property name="currencyCode" ormtype="string" index="IDX_CURRENCY_CODE";
 	
-	property name="skuActiveFlag" ormtype="boolean";
-	property name="skuPublishedFlag" ormtype="boolean";
+	property name="skuPricePrice" ormtype="big_decimal" hb_formatType="currency";
+	property name="skuPriceListPrice" ormtype="big_decimal" hb_formatType="currency";
+	property name="skuPriceRenewalPrice" ormtype="big_decimal" hb_formatType="currency";
+	property name="skuPriceMinQuantity" ormtype="integer";
+	property name="skuPriceMaxQuantity" ormtype="integer";
+	property name="skuPriceCurrencyCode" ormtype="string" length="3" hb_formfieldType="select" index="IDX_SKU_PRICE_CURRENCY_CODE";
+	property name="skuPriceExpiresDateTime" ormtype="timestamp";
+
+    property name="priceGroupName" ormtype="string";
+	property name="priceGroupCode" ormtype="string" index="IDX_PRICEGROUPCODE";
 	
-	property name="productActiveFlag" ormtype="boolean";
-	property name="productPublishedFlag" ormtype="boolean";
+	property name="brandName" ormtype="string" index="IDX_BRAND_NAME";
 	
-	property name="brandName" ormtype="string";
-	property name="brandActiveFlag" ormtype="boolean";
-	property name="brandPublishedFlag" ormtype="boolean";
-	
-	property name="productTypeName" ormtype="string";
-	property name="productTypeURLTitle" ormtype="string";
-    property name="productTypeActiveFlag" ormtype="boolean";
-	property name="productTypePublishedFlag" ormtype="boolean";
-	
-	property name="categoryName" ormtype="string";
-	property name="categoryUrlTitle" ormtype="string";
+	property name="productTypeName" ormtype="string" index="IDX_PRODUCT_TYPE_NAME";
+	property name="productTypeURLTitle" ormtype="string" index="IDX_PRODUCT_TYPE_URL_TITLE";
+
+	property name="categoryName" ormtype="string" index="IDX_CATEGORY_NAME";
+	property name="categoryUrlTitle" ormtype="string" index="IDX_CATEGORY_URL";
 	
 	property name="contentTitle" ormtype="string";
 	property name="contentUrlTitle" ormtype="string";
     property name="contentSortOrder" ormtype="integer";
-	property name="contentActiveFlag" ormtype="boolean";
-	
-	property name="optionName" ormtype="string";
+
+	property name="optionName" ormtype="string" index="IDX_OPTION_NAME";
 	property name="optionCode" ormtype="string" index="IDX_OPTION_CODE";
 	property name="optionSortOrder" ormtype="integer";
-	property name="optionActiveFlag" ormtype="boolean";
 
     property name="optionGroupName" ormtype="string";
+    property name="optionGroupCode" ormtype="string";
 	property name="optionGroupSortOrder" ormtype="integer";
 	
 	property name="attributeCode" ormtype="string" index="IDX_ATTRIBUTE_CODE";
@@ -94,12 +94,14 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
     property name="attributeSetCode" ormtype="string" index="IDX_ATTRIBUTE_SET_CODE";
 	property name="attributeSetObject" ormtype="string" index="IDX_ATTRIBUTE_SET_OBJECT";
 	property name="attributeSetSortOrder" ormtype="integer";
-	property name="attributeSetActiveFlag" ormtype="boolean";
 
-    property name="attributeOptionValue" ormtype="string" index="IDX_ATTRIBUTE_CODE";
-	property name="attributeOptionLabel" ormtype="string";
-	property name="attributeOptionUrlTitle" ormtype="string";
+    property name="attributeOptionValue" ormtype="string" index="IDX_ATTRIBUTE_OPTION_VALUE";
+	property name="attributeOptionLabel" ormtype="string" index="IDX_ATTRIBUTE_OPTION_LABEL";
+	property name="attributeOptionUrlTitle" ormtype="string" index="IDX_ATTRIBUTE_OPTION_URL";
 	property name="attributeOptionSortOrde" ormtype="integer";
+	
+	property name="productPublishedStartDateTime" ormtype="timestamp";
+	property name="productPublishedEndDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	
@@ -108,6 +110,10 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" index="IDX_SKU_ID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" index="IDX_PRODUCT_ID";
 	
+	property name="skuPrice" cfc="SkuPrice" fieldtype="many-to-one" fkcolumn="skuPriceID" index="IDX_SKU_PRICE_ID";
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID" index="IDX_PRICE_GROUP_ID";
+	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" index="IDX_PARENT_PRICE_GROUP_ID";
+
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" index="IDX_BRAND_ID";
 	
 	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID" index="IDX_CATEGORY_ID";
@@ -156,28 +162,6 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
-	
-	public any function getDefaultCollectionProperties(string includesList = "" ){
-	    if( this.hibachiIsEmpty(arguments.includesList) ){
-	        arguments.includesList  =  "
-	            productFilterFacetOptionID,
-                product.productID, 
-                sku.skuID,
-                brand.brandID, brandName,
-                category.categoryID, categoryName, parentCategoryID, categoryUrlTitle,
-                option.optionID,  optionName,optionCode, optionSortOrder,
-                optionGroup.optionGroupID, optionGroupName, optionGroupSortOrder,
-                productType.productTypeID, productTypeName, parentProductTypeID, productTypeURLTitle,
-                site.siteID, siteName, siteCode, currencyCode,
-                attribute.attributeID, attributeName, attributeCode, attributeInputType, attributeUrlTitle, attributeSortOrder,
-                attributeSet.attributeSetID, attributeSetCode, attributeSetName, attributeSetObject, attributeSetSortOrder,
-                attributeOption.attributeOptionID,attributeOptionValue,attributeOptionLabel, attributeOptionUrlTitle, attributeOptionSortOrder
-	        ";
-	    }
-	    
-	    return super.getDefaultCollectionProperties(argumentCollection = arguments);
-	}
-
 
 	// ==================  END:  Overridden Methods ========================
 
