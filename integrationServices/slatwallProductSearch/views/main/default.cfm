@@ -10,6 +10,6 @@
     	</cfif>
     </hb:HibachiEntityActionBar>
     
-    show some meanignful data here
+    show some meaningful data here
     
 </cfoutput>
