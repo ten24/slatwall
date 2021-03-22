@@ -12,7 +12,7 @@ const Cart = () => {
   const dispatch = useDispatch()
   const cart = useSelector(state => state.cart)
   let history = useHistory()
-  const { subtotal, isFetching } = cart
+  const { total, isFetching } = cart
   const [formatCurrency] = useFormatCurrency({})
   useEffect(() => {
     dispatch(getCart())
@@ -47,7 +47,7 @@ const Cart = () => {
               <PromotionalMessaging />
               <div className="text-center mb-4 pb-3 border-bottom">
                 <h2 className="h6 mb-3 pb-1">{t('frontend.order.subtotal')}</h2>
-                <h3 className="font-weight-normal">{formatCurrency(subtotal)}</h3>
+                <h3 className="font-weight-normal">{formatCurrency(total)}</h3>
               </div>
 
               <CartPromoBox />

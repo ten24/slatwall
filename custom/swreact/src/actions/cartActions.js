@@ -6,6 +6,7 @@ import { receiveUser, requestUser } from './userActions'
 
 export const REQUEST_CART = 'REQUEST_CART'
 export const RECEIVE_CART = 'RECEIVE_CART'
+export const CONFIRM_ORDER = 'CONFIRM_ORDER'
 export const CLEAR_CART = 'CLEAR_CART'
 export const ADD_TO_CART = 'ADD_TO_CART'
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
@@ -20,6 +21,12 @@ export const receiveCart = cart => {
   return {
     type: RECEIVE_CART,
     cart,
+  }
+}
+export const confirmOrder = (isPlaced = true) => {
+  return {
+    type: CONFIRM_ORDER,
+    isPlaced,
   }
 }
 
@@ -368,7 +375,7 @@ export const removePayment = (params = {}) => {
     const req = await SlatwalApiService.cart.removePayment(params)
 
     if (req.isSuccess()) {
-      dispatch(receiveCart(req.success().cart))
+      dispatch(receiveCart({ ...req.success().cart }))
     }
   }
 }
@@ -381,6 +388,7 @@ export const placeOrder = () => {
 
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))
+      dispatch(confirmOrder())
     }
   }
 }
