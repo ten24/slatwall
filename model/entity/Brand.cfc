@@ -63,8 +63,6 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="brandID" cascade="all-delete-orphan" inverse="true";
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="one-to-many" fkcolumn="brandID" inverse="true";
 	
-	// Related Object Properties (many-to-many - owner)
-	
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" hb_populateEnabled="false" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
 	property name="promotionRewardExclusions" hb_populateEnabled="false" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
@@ -86,7 +84,6 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-	
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

@@ -49,7 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="hibachiDataService" type="any";
-	
+	property name="imageService" type="any";
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
@@ -78,14 +78,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				directoryCreate(uploadDirectory);
 			}
 			// Do the upload, and then move it to the new location
-			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
+			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'overwrite', 'makeUnique' );
 			var fileSize = uploadData.fileSize;
 			
  			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
  				arguments.brand.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
  				if(!IsNull(arguments.processObject.getImageFile())){
- 					getService('ImageService').clearImageCache(uploadDirectory, arguments.processObject.getImageFile());	
+ 					getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());	
  				}
  				
  				fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
@@ -94,7 +94,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				}
  				arguments.brand.setImageFile( uploadData.serverFile );
  			}
-
+			
 		} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
 		}
@@ -112,8 +112,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(fileExists(imageBasePath&arguments.data.imageFile)) {
 				fileDelete(imageBasePath&arguments.data.imageFile);
+				arguments.brand.setImageFile('');
 			}
-			getService('ImageService').clearImageCache(imageBasePath, arguments.data.imageFile);
+			getImageService().clearImageCache(imageBasePath, arguments.data.imageFile);
 		}
 
 		return arguments.brand;
