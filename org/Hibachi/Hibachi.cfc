@@ -1041,7 +1041,23 @@ component extends="framework.one" {
 			}
 
 		}
-
+		//regenerate token with existing payload
+		if(structKeyExists(request.context.headers,'Auth-Token') && !this.hibachiIsEmpty(request.context.headers['Auth-Token']) ){
+			//get token and Payload
+			var token = replace(request.context.headers.authToken, 'Bearer ', '');
+			var jwt = getService('hibachiJWTService').getHibachiJWTService().getJwtByToken(token);
+			
+			//create token
+			var key = getService('settingService').getSettingValue('globalClientSecret');
+			var jwt = getService('hibachiJWTService').newJwt(key);
+			var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+			
+			//hard coded to 15 minutes
+			var tokenExpirationTime = 900;
+			var payload = jwt.getPayload();
+			request.context.apiResponse.content['token'] = jwt.encode(payload);
+		}
+		
 		//leaving a note here in case we ever wish to support XML for api responses
 		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/json'){
 			responseString = serializeJSON(request.context.apiResponse.content);
