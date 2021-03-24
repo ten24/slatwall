@@ -146,8 +146,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
 	property name="listingSearchFiltersApplied" type="boolean" persistent="false" default="false";
 	
-	property name="availableSelectProperties" type="struct" persistent="false";
-	
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function init(){
@@ -183,7 +181,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.checkDORPermissions = false;
 		variables.filterDataApplied = false;
 		variables.applyOrderBysToGroupBys=true;
-		variables.availableSelectProperties = {};
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 		setHibachiService(getService('HibachiService'));
 		setHibachiUtilityService(getService('HibachiUtilityService'));
@@ -1246,7 +1243,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'none';
 	}
 
-	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true, struct availableSelectProperties = {}){
+	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
 		var HibachiBaseEntity = "";
 		HibachiBaseEntity = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 
@@ -1254,22 +1251,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(variables.collectionConfig == '{}' ){
 			var columnsArray = [];
-			if( !StructIsEmpty( arguments.availableSelectProperties ) ) { 
-				//set available properties on object
-				this.setAvailableSelectProperties( arguments.availableSelectProperties );
-				
-				//Add select properties to columns
-				var availblePropertyArray = [];
-				for(var column in arguments.availableSelectProperties) {
-					ArrayAppend( availblePropertyArray, {'name': column} );
-				}
-				
-				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-				
-				columnsArray = this.arrangeCollectionColumns( arguments.collectionObject, newEntity, availblePropertyArray );
-				
-			}
-			else if( arguments.addDefaultColumns ) { //check to see if we are supposed to add default columns
+			if( arguments.addDefaultColumns ) { //check to see if we are supposed to add default columns
 					
 				var cacheKey = 'defaultColumns' & arguments.collectionObject & '#getReportFlag()#';
 				var cachedColumnsArray = getCollectionCacheValue(cacheKey);
@@ -2278,23 +2260,32 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		
 		//Override colummns if availableSelectProperties are set
-		if( !StructIsEmpty(this.getAvailableSelectProperties()) ) {
-			//remove any additional columns
-			var collectionColumns = [];
-			for( var column in this.getCollectionConfigStruct().columns ) {
-				var propertyIdentifier = Replace(column['propertyIdentifier'], getBaseEntityAlias(), "", "one");
-				if(left(propertyIdentifier,1) == '.'){
-					propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
-				}
-
-				if( StructKeyExists( this.getAvailableSelectProperties(), propertyIdentifier) ) {
-					ArrayAppend(collectionColumns, column);
-				}
-			}
+		
+		if( (!getHibachiScope().getLoggedInFlag() || 
+				( !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().getSuperUserFlag() ) 
+			) ) {
+			var entityName = this.getCollectionObject();
+			var entityPublicProperties = getService("hibachiService").getServiceByEntityName(entityName).invokeMethod("get#entityName#PublicProperties");
 			
-			//override columns with updated list
-			this.getCollectionConfigStruct().columns = collectionColumns;
+			if( !StructIsEmpty( entityPublicProperties ) ){
+				//remove any additional columns
+				var collectionColumns = [];
+				for( var column in this.getCollectionConfigStruct().columns ) {
+					var propertyIdentifier = Replace(column['propertyIdentifier'], getBaseEntityAlias(), "", "one");
+					if(left(propertyIdentifier,1) == '.'){
+						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
+					}
+	
+					if( StructKeyExists( entityPublicProperties, propertyIdentifier) ) {
+						ArrayAppend(collectionColumns, column);
+					}
+				}
+				
+				//override columns with updated list
+				this.getCollectionConfigStruct().columns = collectionColumns;
+			}
 		}
+		
 		
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy,arguments.recordsCountJoins);
