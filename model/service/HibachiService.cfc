@@ -182,7 +182,6 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	 * Method to return list of public attribute codes
 	 * */
 	public any function getPublicPropertiesByEntityName(required string entityName) {
-		
 		var cacheKey = "getPublicPropertiesByEntityName#hash(arguments.entityName,'md5')#";
 		if(!getService('hibachiCacheService').hasCachedValue(cacheKey)) {
 			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
@@ -194,7 +193,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			var response = {};
 			
 			for( var attribute in attributeRecords) {
-				StructAppend( response , {'attributeCode' : attribute['attributeCode']});
+				StructAppend( response , {"#attribute['attributeCode']#" : ""});
 			}
 			
 			getService('hibachiCacheService').setCachedValue(cacheKey, response);
