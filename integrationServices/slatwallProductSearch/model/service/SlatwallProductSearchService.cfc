@@ -424,28 +424,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
         // Searching
         if ( len(arguments.keyword) ){
-            
             // TODO: translations
-            collectionList.addFilter(
-                propertyIdentifier='product.productName', 
-                value='%#arguments.keyword#%', 
-                comparisonOperator='LIKE', 
-                filterGroupAlias='keyword');
-            collectionList.addFilter(
-                propertyIdentifier='product.productCode', 
-                value='%#arguments.keyword#%', 
-                comparisonOperator='LIKE',
-                logicalOperator='OR', 
-                filterGroupAlias='keyword');
-            collectionList.addFilter(
-                propertyIdentifier='sku.skuCode', 
-                value='%#arguments.keyword#%', 
-                comparisonOperator='LIKE',
-                logicalOperator='OR', 
-                filterGroupAlias='keyword');
+            for( var propertyIdentifier in ['product.productName', 'product.productCode', 'sku.skuCode'] ){
+                collectionList.addFilter(
+                    propertyIdentifier=propertyIdentifier, 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword'
+                );
+            }
         }
-        
-
         
         // TODO: other inline filters, like price-range, reviews ....
         
@@ -454,20 +442,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 var selectedPropertyFilters = arguments.f[propertyIdentifier];
                 for(var comperisonOperator in selectedPropertyFilters){
                     var filterValue = selectedPropertyFilters[ comperisonOperator ];
-                    if( comparisonOperator != 'like' ){
-                        var formattedComperisonOperator = this.formatComperisonOperator( comparisonOperator );
-                        collectionList.addFilter(
-                            propertyIdentifier=propertyIdentifier, 
-                            value=filterValue, 
-                            comparisonOperator=formattedComperisonOperator 
-                        );
-                    } else {
+                    if( comparisonOperator == 'like' ){
                         collectionList.addFilter(
                             propertyIdentifier= propertyIdentifier, 
                             value='%#filterValue#%', 
                             comparisonOperator='LIKE',
                             logicalOperator='OR', 
                             filterGroupAlias='keyword'
+                        );
+                    } else {
+                        var formattedComperisonOperator = this.formatComperisonOperator( comparisonOperator );
+                        collectionList.addFilter(
+                            propertyIdentifier=propertyIdentifier, 
+                            value=filterValue, 
+                            comparisonOperator=formattedComperisonOperator 
                         );
                     }
                 }
