@@ -75,51 +75,78 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         // dump(var=cart, top=1);
 	}
 	
+	public struct function setProductSearchQueryOnURLScope(){
+	   // var testSearchQuery = "option_language=english,spanish&option_size_slug=medium,small&attribute_testing=1,2,3&brand=nike,puma&brand_id=1,2,4&brand_slug=acb,pqr,1112233&category_name=c1,c2,c3&productType=p1,p2,p3";
+	 
+	   // dump(testSearchQuery);
+	    
+	   // var testSearchQueryArray = listToArray(testSearchQuery, '&');
+	   // dump(testSearchQueryArray);
+	    
+	    var testSearchQueryArray = [
+            // 'brand=Abus,Arrow',
+            // 'brand_id=2c9480847791123e01779122657d0acf',
+            // 'brand_id=2c9480847791123e01779122657d0acf,2c9480847791123e0177911b1a37006d,2c928084761df6e801761e02e2fd0014',
+            // 'brand_id=2c9480847791123e01779122657d0acf,2c9480847791123e0177911b1a37006d,2c938084760493a2017604c413a01007,2c92808477f3032d0177f30a76970036',
+            // 'brand_slug=acb,pqr,1112233', // bad option
+            
+            // 'productType=Steel,Levers',
+            // 'productType_id=2c91808575d3a3570175e7144d6e0069,2c9480847791123e01779122a4470ae0,2c938084760493a2017604c68a441533,2c9480847791123e01779123092e0af1',
+            
+            // 'category_name=',
+            
+            // 'option_productFinish_id=2c91808e757ef05301758d90688b0a29,2c91808e757ef05301758d90688b0a12',
+            // 'option_productFinish_id=2c91808e757ef05301758d90688b0a29',
+            
+            // 'attribute_productKeyMachineType=1,2,3',
+            
+            // 'option_language=english,spanish',
+            // 'option_size_slug=medium,small',
+            
+            // 'keyword=Serrated'
+        ];
+        
+	    var urlScope = URL ?: {};
+	    for(var pair in testSearchQueryArray){
+	        urlScope[listFirst(pair, '=')] = listLast(pair, '=');
+	    }
+	    
+	    return urlScope;
+	}
+	
 	/**
 	* @test
 	*/
 	public void function getProducts_test(){
 	    
-	    /*
-    	    param name="arguments.data.currencyCode" default='USD';
-    	    
-    	    // facets-options	
-    	    param name="arguments.data.productType" default='';
-    	    param name="arguments.data.category" default='';
-    	    param name="arguments.data.brands" default='';
-    	    param name="arguments.data.options" default='';
-    	    param name="arguments.data.attributeOptions" default='';
-    	    
-            // Search
-            param name="arguments.data.keyword" default="";
-            // Sorting
-            param name="arguments.data.orderBy" default="product.productName|DESC"; 
-            // Pricing
-            param name="arguments.data.price" default=""; 
-            // Pagination
-    	    param name="arguments.data.currentPage" default=1;
-    	    param name="arguments.data.pageSize" default=10;
-    	
-	    */
+	    var urlScope = this.setProductSearchQueryOnURLScope();
+	   // urlScope['includePotentialFilters'] = false;
+	    var data = {};
 	    
-	    var brands = [];
-	    var productTypes = [];
-	    var options = [];
-	    
-		var data = {
-            "productType": "",
-            "category": "",
-            // "brands": "Yale,Lab",
-            "options": "",
-            "attributeOptions": "",
-            "keyword": "Serrated",
-        };
-		
-		this.getService().getProducts(data);
-		
+		this.getService().getProducts(data, urlScope);
 		dump(data);
-		
 	}
+	
+	
+	/**
+	* @test
+	*/
+	public void function parseProductSearchQuery_test(){
+	    
+	    var urlScope = this.setProductSearchQueryOnURLScope();
+	    dump(urlScope);
+	    
+	    var parsed = this.getService().parseProductSearchQuery(urlScope);
+	    dump(parsed);
+	}
+	  
+	
+	
+	
+	
+	
+
+
 }
 
 

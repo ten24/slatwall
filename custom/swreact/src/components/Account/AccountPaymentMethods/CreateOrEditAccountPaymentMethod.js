@@ -73,7 +73,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
           <div className={`col-sm-${isEdit ? 12 : 6}`}>
             <div className="form-group">
               <label htmlFor="accountPaymentMethodName">{t('frontend.account.payment_method.nickname')}</label>
-              <input className="form-control" type="text" id="accountPaymentMethodName" value={formik.values.paymentMethodName} onChange={formik.handleChange} />
+              <input className="form-control" type="text" id="accountPaymentMethodName" value={formik.values.accountPaymentMethodName} onChange={formik.handleChange} />
             </div>
             <div className="form-group">
               <label htmlFor="paymentMethodType">{t('frontend.account.payment_method.heading')}</label>
