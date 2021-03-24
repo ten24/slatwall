@@ -192,19 +192,6 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier, any collectionEntity){
 		//populate pageRecordStruct with pageRecord info based on the passed in property identifier
 		var pageRecordStruct = {};
-		
-		//Override colummns for non logged in user, non super user is non super user and entity has set public properties
-		if( !getHibachiScope().getLoggedInFlag() || 
-				( !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().getSuperUserFlag() ) 
-			) {
-			//Ignore additional properties if public properties are defined
-			var entityName = arguments.collectionEntity.getCollectionObject();
-			var entityPublicProperties = getService("hibachiService").getServiceByEntityName(entityName).invokeMethod("get#entityName#PublicProperties");
-			if( !StructIsEmpty(entityPublicProperties) && !StructKeyExists( entityPublicProperties, arguments.propertyIdentifier) ) {
-				return pageRecordStruct;
-			}
-		}
-		
 
 		if(isObject(arguments.pageRecord)) {
 			try{
