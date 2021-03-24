@@ -2259,8 +2259,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 		
 		
-		//Override colummns if availableSelectProperties are set
-		
+		//Override colummns for non logged in user, non super user is non super user and entity has set public properties
 		if( (!getHibachiScope().getLoggedInFlag() || 
 				( !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().getSuperUserFlag() ) 
 			) ) {
