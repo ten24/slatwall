@@ -385,37 +385,31 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 
         // TODO: content-filter
-
+        
         // Searching
-        if ( len( arguments.keyword ) ) {
+        if ( len(arguments.keyword) ){
             
-            // TODO: check if product is translated entity
-            var sql = "SELECT 
-                        baseID 
-                        FROM swTranslation 
-                        WHERE locale=:locale 
-                        AND baseObject='Product' 
-                        AND basePropertyName='productName'
-                        AND value like :keyword";
-            var params = {
-                locale=arguments.locale,
-                keyword='%#arguments.keyword#%'
-            };
-            var productIDQuery = queryExecute(sql,params);
-            var productIDs = ValueList(productIDQuery.baseID);
-            
+            // TODO: translations
             collectionList.addFilter(
                 propertyIdentifier='product.productName', 
                 value='%#arguments.keyword#%', 
                 comparisonOperator='LIKE', 
                 filterGroupAlias='keyword');
             collectionList.addFilter(
-                propertyIdentifier='product.productID', 
-                value=productIDs,
-                comparisonOperator='IN',
+                propertyIdentifier='product.productCode', 
+                value='%#arguments.keyword#%', 
+                comparisonOperator='LIKE',
+                logicalOperator='OR', 
+                filterGroupAlias='keyword');
+            collectionList.addFilter(
+                propertyIdentifier='sku.skuCode', 
+                value='%#arguments.keyword#%', 
+                comparisonOperator='LIKE',
                 logicalOperator='OR', 
                 filterGroupAlias='keyword');
         }
+        
+
         
         // TODO: other inline filters, like price-range, reviews ....
  
