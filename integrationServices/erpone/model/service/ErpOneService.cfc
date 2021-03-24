@@ -778,7 +778,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		if( structKeyExists(arguments.data, 'ProductCode') ){
 			
-			arguments.data.ProductCode=reReplace(reReplace(arguments.data.ProductCode, "(\\|/)", "--", "all" ),"\s", "__", "all");
+			arguments.data.ProductCode=arguments.data.ProductCode;
 		}
 
 		if( !structKeyExists(arguments.data, 'SkuCode') || this.hibachiIsEmpty( arguments.data.SkuCode ) ){
@@ -786,7 +786,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			arguments.data.SkuCode = arguments.data.ProductCode;
 		}else{
 			
-			arguments.data.SkuCode = Replace(arguments.data.SkuCode, " " , "--");
+			arguments.data.SkuCode = arguments.data.SkuCode;
 		}
 		
 		if( !structKeyExists(arguments.data, 'RemoteProductID') || this.hibachiIsEmpty(arguments.data.RemoteProductID) ){

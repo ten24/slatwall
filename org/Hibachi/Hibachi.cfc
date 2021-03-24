@@ -403,8 +403,20 @@ component extends="framework.one" {
                         request.context[headerName] = headers[key]; 
                     }
                     
-                    if(key == 'SWX-cmsSiteID'){
-			            getHibachiScope().setCurrentRequestSite(getHibachiScope().getService('siteService').getSiteByCMSSiteID(headers[key]));
+                    if(key == 'SWX-siteID'){
+			            getHibachiScope().setCurrentRequestSite(
+			                getHibachiScope().getService('siteService').getSiteBySiteID( headers[key] ) 
+			            );
+			            getHibachiScope().setCurrentRequestSitePathType('siteID');
+			        }else if(key == 'SWX-siteCode'){
+			            getHibachiScope().setCurrentRequestSite(
+			                getHibachiScope().getService('siteService').getSiteBySiteCode( headers[key] ) 
+			            );
+			            getHibachiScope().setCurrentRequestSitePathType('siteCode');
+			        } else if(key == 'SWX-cmsSiteID'){
+			            getHibachiScope().setCurrentRequestSite(
+			                getHibachiScope().getService('siteService').getSiteByCMSSiteID( headers[key] )
+			            );
 			            getHibachiScope().setCurrentRequestSitePathType('cmsSiteID');
 			        }
 			    }

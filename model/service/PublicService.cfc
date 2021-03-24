@@ -102,52 +102,224 @@ component  accessors="true" output="false"
     	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
     }
     
+    
+    /**
+     * Utility function to parse getProducts API query
+     * 
+     * it will create an struct of keys, and nested structs for facet key
+     * 
+     * - every facet can have multiple filter values `[ id, name, slug, code ]``
+     * - the facet-filters will fllow the following conventions forfilter-keys 
+     *      - `facetName_[facet_value_key]` i.e. brand_name, category_id, productType_slug
+     *      - for attributes, `attribute_[attributeGroupName]_[facet_value_key]` i.e. attribute_abc_name, attribute_abc_code
+     *      - for options, `option_[optionGroupCode]_[facet_value_key]` i.e. option_abc_name, option_abc_code
+     * 
+     * - the default facet-key is `name` i.e. if the last-part of the facet-keys is missing then the value will e treated as `name`
+     * - the value for filter-keys can be an array, or a single value 
+     * 
+     */
+    public struct function parseProductSearchQuery(struct urlScopeOrStruct, string defaultFacetValueKey = 'name', string keyDelemiter='_'){
+        var parsed = {};
+        var allowedFacetKeys = {
+            'brand': '',
+            'category': '',
+            'productType': '',
+            'attribute': '',
+            'option': ''
+        };
+
+        for(var thisKey in arguments.urlScopeOrStruct){
+            var subKeys = listToArray(thisKey, arguments.keyDelemiter);
+            var subKeysLen = subKeys.len();
+            
+            // append default keys as needed
+            var firstSubKey = subKeys[ 1 ];
+            if( structKeyExists(allowedFacetKeys, firstSubKey) ){
+                if( subKeysLen == 1 ){
+                    subKeys.append(  arguments.defaultFacetValueKey ); 
+                } else if(subKeysLen == 2 && listFindNoCase('attribute,option', firstSubKey) ){
+                    subKeys.append(  arguments.defaultFacetValueKey ); 
+                }
+            }
+            
+            this.recursivelyInsertIntoNestedStruct( parsed, subKeys, arguments.urlScopeOrStruct[thisKey] )
+        }
+        return parsed;
+    }
+    
+    
+    /**
+     * Utility function to insert a value into nested structs
+     * 
+     * TODO: move to HibachiUtilityService
+     * 
+     * it loops over the keys and will create's nested structs if needed until the second-last sub key
+     * and then try to insert/append value into that struct using the last sub-key as the key and the givenValue as the value for that key
+     * however if there already is a vlaue for the last sub-key, then
+     * - if it's a simple value or a list then it will create a array, by adding the both old and the given value values
+     * - if it's an array then it will append the given value into it
+     * - if it's an struct and the given value is also an struct, then it will merge both structs
+     */
+    public void function recursivelyInsertIntoNestedStruct(required struct theStruct, required array keys, required any theValue , string listTypeValueDelimiter=','){
+        if(!arguments.keys.len() ){
+            return;
+        }
+        
+        var firstSubKey = arguments.keys[1];
+        var subKeysLen = arguments.keys.len();
+        
+        if( subKeysLen == 1 ){
+            arguments.theStruct[ firstSubKey ] = arguments.theValue;
+            return;
+        }
+
+        if(!structKeyExists(arguments.theStruct, firstSubKey ) ){
+            arguments.theStruct[ firstSubKey ] = {};
+        }
+        
+        var lastSubKeyScope = theStruct[firstSubKey];
+        // skip the first and created nested structs until the secondLast
+        for(var i=2; i<=subKeysLen-1; i++ ){
+            var nextSubKey = arguments.keys[i];
+            
+            if(!structKeyExists(lastSubKeyScope, nextSubKey) ){
+                lastSubKeyScope[nextSubKey] = {};
+            }
+            lastSubKeyScope = lastSubKeyScope[nextSubKey];
+        }
+        
+        var lastKeyToInsertOrAppend = arguments.keys[subKeysLen];
+        
+        // if it does not exist, add, else append into array
+        if( !structKeyExists(lastSubKeyScope, lastKeyToInsertOrAppend) ){
+            lastSubKeyScope[ lastKeyToInsertOrAppend ] = arguments.theValue;
+            
+            // if the value is a list type, convert it into an array
+            var valuesArray = listToArray(arguments.theValue, arguments.listTypeValueDelimiter );
+            if( valuesArray.len() > 1 ){
+                lastSubKeyScope[ lastKeyToInsertOrAppend ] = valuesArray;
+            }
+            return;
+        }
+        
+        var lastKeyValue = lastSubKeyScope[ lastKeyToInsertOrAppend ];
+        
+        // if it's a simple-value or a list turn it into an array and add the given-value into the array
+        if( isSimpleValue(lastKeyValue) ){
+            lastKeyValue = listToArray(lastKeyValue, arguments.listTypeValueDelimiter );
+            lastKeyValue.append(arguments.theValue);
+            lastSubKeyScope[ lastKeyToInsertOrAppend ] = lastKeyValue;
+            return;
+        }
+        
+        // if it's an array then try to add
+        if( isArray(lastKeyValue) ){
+            lastKeyValue.append(arguments.theValue, true); // merge-arrays
+            return;
+        }
+        
+        if( isStruct( lastKeyValue) ){
+            if( isStruct(arguments.theValue) ){
+                lastKeyValue.append(arguments.theValue); // add and override keys values from new struct
+            } else {
+                throw("can't merge a value into an struct without a key");
+            }
+            return;
+        }
+        
+        throw("Unsupported operation...");
+    }
+    
     /**
 	 *
 	 * 
 	 */
-    public void function getProducts( required struct data ) {
+    public void function getProducts(required struct data, struct urlScope=url ){
         var hibachiScope = this.getHibachiScope();
         
-		param name="arguments.data.siteID" default='';
-    
-        //      account, order, for pricing
-        // 		param name="arguments.data.order" default=hibachiScope.getCart();
-        // 		param name="arguments.data.account" default=hibachiScope.getAccount();
-        // 		param name="arguments.data.priceGroupCode" default='';
-        	
-		param name="arguments.data.currencyCode" default='USD';
-	    
-	    // facets-options	
-	    param name="arguments.data.productType" default='';
-	    param name="arguments.data.category" default='';
-	    param name="arguments.data.brands" default='';
-	    param name="arguments.data.options" default='';
-	    param name="arguments.data.attributeOptions" default='';
+        // we're not using RequestContext here, but the URL-scope
+        arguments.parsedQuery = this.parseProductSearchQuery(arguments.urlScope);
+
+		param name="arguments.parsedQuery.siteID" default='';
+	    param name="arguments.parsedQuery.locale" default=hibachiScope.getSession().getRbLocale(); 
+
+        //  account, order, for pricing
+		param name="arguments.parsedQuery.order" default=hibachiScope.getCart();
+		param name="arguments.parsedQuery.account" default=hibachiScope.getAccount();
+        param name="arguments.parsedQuery.priceGroupCode" default='';
+        
+	    // facets
+	    param name="arguments.parsedQuery.brand" default={};
+	    param name="arguments.parsedQuery.option" default={};
+	    param name="arguments.parsedQuery.category" default={};
+	    param name="arguments.parsedQuery.attribute" default={};
+	    param name="arguments.parsedQuery.productType" default={};
 	    
         // Search
-        param name="arguments.data.keyword" default="";
+        param name="arguments.parsedQuery.keyword" default="";
         // Sorting
-        param name="arguments.data.orderBy" default="product.productName|DESC"; 
+        param name="arguments.parsedQuery.orderBy" default="product.productName|DESC"; 
         // Pricing
-        param name="arguments.data.price" default=""; 
+        param name="arguments.parsedQuery.price" default=""; 
         // Pagination
-	    param name="arguments.data.currentPage" default=1;
-	    param name="arguments.data.pageSize" default=10;
+	    param name="arguments.parsedQuery.currentPage" default=1;
+	    param name="arguments.parsedQuery.pageSize" default=10;
 	    
-	    param name="arguments.data.includePotentialFilters" default=true;
-
-	    // TODO: Temporary placeholder, Nitin is working on it and update.
-	    var currentRequestSite = !isNull(this.getHibachiScope().getCurrentRequestSite()) ?this.getHibachiScope().getCurrentRequestSite() : this.getService('SiteService').newSite();
+        // additional properties
+        param name="arguments.parsedQuery.includeSKUCount" default=true;
+	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
+	    
+	    // TODO: additional filters
+	    // product and sku properties/attributes -- need to figureout a convention/approach like product.featuredFlag=true
         
-	    var intigrationPackage = getService('SettingService').getSettingValue('siteProductSearchIntegration');
+	    // TODO: Nitin is working on it and will update.
+        // currently it will set a transient site, but it need's to figure-out current-request-site 
+	    var currentRequestSite = hibachiScope.getCurrentRequestSite();
+	    if(isNUll(currentRequestSite) ){
+	        // throw('current request site should never be null');
+	        hibachiScope.logHibachi('CurrentRequest site is null, which should never happen');
+	        var currentRequestSite = hibachiScope.getService('SiteService').newSite();
+	    }
+	    if( len(trim(arguments.parsedQuery.siteID)) && currentRequestSite.getSiteID() != arguments.parsedQuery.siteID ){
+	        currentRequestSite = hibachiScope.getService('siteService').getSiteBySiteID(arguments.parsedQuery.siteID);
+	    } else {
+	        // in case if it was not passed in from the frontend, and hibachi-scope figures-out the current-request-site
+	        arguments.parsedQuery.siteID = currentRequestSite.getSiteID();
+	    }
+	    
+	    if( isNull(arguments.parsedQuery.currencyCode) || !len(trim(arguments.parsedQuery.currencyCode)) ){
+	        arguments.parsedQuery.currencyCode = currentRequestSite.getCurrencyCode() ?: 'USD';
+	    }
+	    
+	    
+        /*
+            Price group is prioritized as so: 
+                1. Order price group
+                2. Price group passed in as argument
+                3. Price group on account
+                4. Default to ''
+        */
+        if( !isNull(arguments.parsedQuery.order.getPriceGroup()) ){ 
+            //order price group
+            arguments.parsedQuery.priceGroupCode = arguments.parsedQuery.order.getPriceGroup().getPriceGroupCode();
+        }
+        // if nothing was passed-in, no price-group on order and the account is loggd-in
+	    if(!len(arguments.parsedQuery.priceGroupCode) && hibachiScope.getLoggedInFlag() ){
+            var holdingPriceGroups = arguments.parsedQuery.account.getPriceGroups();
+            if( !isNull(holdingPriceGroups) && arrayLen(holdingPriceGroups) ){ 
+                // then use First of account's price-group
+                arguments.parsedQuery.priceGroupCode = holdingPriceGroups[1].getPriceGroupCode();
+            }
+	    }
+
+	    var intigrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
         
+        arguments.parsedQuery.site = currentRequestSite;
         arguments.data.ajaxResponse = {
-            'data' : integrationCFC.getProducts(argumentCollection=arguments.data)
+            'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
         };
-	    
     }
 
 
