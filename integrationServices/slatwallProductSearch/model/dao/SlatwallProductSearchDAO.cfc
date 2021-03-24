@@ -707,12 +707,25 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	
 	
 	public string function getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
+	    
 	    if(arguments.facetName == 'brand'){
 	        if(arguments.facetValueKey == 'id' ){
 	            return 'brandID';
 	        }  
 	        if(arguments.facetValueKey == 'name' ){
 	            return 'brandName';
+	        }
+	    }
+	    
+	    if(arguments.facetName == 'content'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'contentID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'contentTitle';
+	        }
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'contentUrlTitle';
 	        }
 	    }
 	    
@@ -946,6 +959,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.site";
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
+        param name="arguments.content" default={};
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
@@ -966,7 +980,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= :dateTimeNow )
 	    ";
 
-	    for(var facetName in ['brand', 'category', 'productType'] ){
+	    for(var facetName in ['brand', 'content', 'category', 'productType'] ){
     	    facetsSqlFilterQueryFragments[facetName] = '';
     	    var selectedFacetOptions = arguments[ facetName ];
     	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
@@ -1042,6 +1056,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.site";
         param name="arguments.brand" default={};
         param name="arguments.option" default={};
+        param name="arguments.content" default={};
         param name="arguments.category" default={};
         param name="arguments.attribute" default={};
         param name="arguments.productType" default={};

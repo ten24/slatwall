@@ -116,6 +116,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    param name="arguments.site";
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
+	    param name="arguments.content" default={};
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
@@ -186,12 +187,25 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 
 	public string function getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
+	    
 	    if(arguments.facetName == 'brand'){
 	        if(arguments.facetValueKey == 'id' ){
 	            return 'brand.brandID';
 	        }  
 	        if(arguments.facetValueKey == 'name' ){
 	            return 'brandName';
+	        }
+	    }
+	    
+	    if(arguments.facetName == 'content'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'content.contentID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'contentTitle';
+	        }
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'contentUrlTitle';
 	        }
 	    }
 	    
@@ -248,6 +262,25 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	}
 	
+	public string function formatComperisonOperator(required string comperisonOperator){
+	    switch(arguments.comparisonOperator ){
+    	    case 'eq':
+    	        return '=';
+    	    case 'neq':
+    	        return '!=';
+    	    case 'gte':
+    	        return '>=';
+    	    case 'gt':
+    	        return '>';   
+    	    case 'lte':
+    	        return '<=';
+    	    case 'lt':
+    	        return '>'; 
+    	    case 'in':
+    	        return 'IN'; 
+	    }
+	}
+	
 	public any function getBaseSearchCollectionData(){
 		param name="arguments.site";
 		param name="arguments.locale";
@@ -257,10 +290,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    // facets
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
+	    param name="arguments.content" default={};
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
 	    
+	    param name="arguments.f" default={}; // additional-filters
+	    
+	    param name="arguments.propertyIdentifiers" default='';
         // Search
         param name="arguments.keyword" default="";
         // Sorting
@@ -273,14 +310,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 		var collectionList = this.getProductFilterFacetOptionCollectionList();
 		
-		// product properties
-		collectionList.setDisplayProperties('product.productID,product.productName,product.urlTitle');
-		
-		// sku properties 
-		collectionList.addDisplayProperties('sku.skuID,sku.imageFile,skuPricePrice|price');
+		if( len(trim(arguments.propertyIdentifiers)) ){
+		    collectionList.setDisplayProperties(arguments.propertyIdentifiers);
+		} else {
+    		// product properties
+    		collectionList.setDisplayProperties('product.productID,product.productName,product.urlTitle');
+    		// sku properties 
+    		collectionList.addDisplayProperties('sku.skuID,sku.imageFile,skuPricePrice|skuPrice,skuPriceListPrice|listPrice');
+            collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
+		}
 
         // Product's filters
-        
         collectionList.addFilter(
             propertyIdentifier = 'productPublishedStartDateTime',
             value='NULL',
@@ -321,7 +361,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             
             // STOCK, 
             if( arguments.site.hasLocation() ){
-                collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
                 collectionList.addFilter('sku.stocks.calculatedQATS', 0, '>');
                 collectionList.addFilter('sku.stocks.location.sites.siteID', arguments.site.getSiteID());
                 collectionList.addFilter('sku.stocks.location.locationID', arguments.site.getLocations()[1].getLocationID());
@@ -340,13 +379,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             collectionList.addFilter(propertyIdentifier='priceGroupCode', value='NULL', comparisonOperator='IS');
         }
         // we also do not want sku-prices which have min-max quantities defined
-        // TODO: don't bring-in the sku-prices which have a min or max quantity defined ?
+        // TODO: don't bring-in the sku-prices which have a min or max quantity defined, probably ?
         collectionList.addFilter(propertyIdentifier='skuPriceMinQuantity', value='NULL', comparisonOperator='IS');
         collectionList.addFilter(propertyIdentifier='skuPriceMaxQuantity', value='NULL', comparisonOperator='IS');
         
 
-
-	    for(var facetName in ['brand', 'category', 'productType'] ){
+	    for(var facetName in ['brand', 'content', 'category', 'productType'] ){
     	    var selectedFacetOptions = arguments[ facetName ];
             if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
                 for(var facteValueKey in selectedFacetOptions ){
@@ -384,8 +422,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             }
 	    }
 
-        // TODO: content-filter
-        
         // Searching
         if ( len(arguments.keyword) ){
             
@@ -412,6 +448,31 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
         
         // TODO: other inline filters, like price-range, reviews ....
+        
+        if( !hibachiIsStructEmpty(arguments.f) ){
+            for(var propertyIdentifier in arguments.f ){
+                var selectedPropertyFilters = arguments.f[propertyIdentifier];
+                for(var comperisonOperator in selectedPropertyFilters){
+                    var filterValue = selectedPropertyFilters[ comperisonOperator ];
+                    if( comparisonOperator != 'like' ){
+                        var formattedComperisonOperator = this.formatComperisonOperator( comparisonOperator );
+                        collectionList.addFilter(
+                            propertyIdentifier=propertyIdentifier, 
+                            value=filterValue, 
+                            comparisonOperator=formattedComperisonOperator 
+                        );
+                    } else {
+                        collectionList.addFilter(
+                            propertyIdentifier= propertyIdentifier, 
+                            value='%#filterValue#%', 
+                            comparisonOperator='LIKE',
+                            logicalOperator='OR', 
+                            filterGroupAlias='keyword'
+                        );
+                    }
+                }
+            }
+        }
  
         // Sorting
         collectionList.setOrderBy(arguments.orderBy);
@@ -438,6 +499,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    // facets
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
+	    param name="arguments.content" default={};
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
@@ -495,6 +557,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    param name="arguments.site" default='';
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
+	    param name="arguments.content" default={};
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
