@@ -339,6 +339,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getAuthorizedProperties(){
 		if(!structKeyExists(variables,'authorizedProperties')){
 			variables.authorizedProperties = [];
+			
+			var entityName = this.getCollectionObject();
+			if( lcase(entityName) != "attribute") {
+				var entityPublicProperties = getService("hibachiService").getServiceByEntityName(entityName).invokeMethod("get#entityName#PublicProperties");
+				
+				if( ArrayLen(entityPublicProperties) ) {
+					variables.authorizedProperties = entityPublicProperties;
+				}
+			}
 		}
 		return variables.authorizedProperties;
 	}
@@ -2257,35 +2266,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		
-		
-		//Override colummns for non logged in user, non super user is non super user and entity has set public properties
-		if( (!getHibachiScope().getLoggedInFlag() || 
-				( !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().getSuperUserFlag() ) 
-			) ) {
-			var entityName = this.getCollectionObject();
-			var entityPublicProperties = getService("hibachiService").getServiceByEntityName(entityName).invokeMethod("get#entityName#PublicProperties");
-			
-			if( !StructIsEmpty( entityPublicProperties ) ){
-				//remove any additional columns
-				var collectionColumns = [];
-				for( var column in this.getCollectionConfigStruct().columns ) {
-					var propertyIdentifier = Replace(column['propertyIdentifier'], getBaseEntityAlias(), "", "one");
-					if(left(propertyIdentifier,1) == '.'){
-						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-1);
-					}
-	
-					if( StructKeyExists( entityPublicProperties, propertyIdentifier) ) {
-						ArrayAppend(collectionColumns, column);
-					}
-				}
-				
-				//override columns with updated list
-				this.getCollectionConfigStruct().columns = collectionColumns;
-			}
-		}
-		
-		
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy,arguments.recordsCountJoins);
 	//Documentation: Here, var HQL returns the collection - columns list
