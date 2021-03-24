@@ -1297,7 +1297,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var entityPrefix = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
 		
 		//loop through all defaultProperties
-		for( var defaultProperty in columnList ){
+		for( var defaultProperty in arguments.columnList ){
 			var columnStruct = {};
 			columnStruct['propertyIdentifier'] = '_' &  entityPrefix;
 
