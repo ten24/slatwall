@@ -1096,6 +1096,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 queryService.addParam( name=paramName, value=paramValue );
             }
         }
+
         queryService = queryService.execute().getResult();
         this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.; and fetched #queryService.recordCount# records ");
         return queryService;

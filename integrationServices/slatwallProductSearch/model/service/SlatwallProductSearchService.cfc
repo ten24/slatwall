@@ -262,7 +262,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	}
 	
-	public string function formatComperisonOperator(required string comperisonOperator){
+	public string function formatComparisonOperator(required string comparisonOperator){
 	    switch(arguments.comparisonOperator ){
     	    case 'eq':
     	        return '=';
@@ -275,7 +275,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    case 'lte':
     	        return '<=';
     	    case 'lt':
-    	        return '>'; 
+    	        return '<'; 
     	    case 'in':
     	        return 'IN'; 
 	    }
@@ -430,7 +430,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                     propertyIdentifier=propertyIdentifier, 
                     value='%#arguments.keyword#%', 
                     comparisonOperator='LIKE', 
-                    filterGroupAlias='keyword'
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
                 );
             }
         }
@@ -440,8 +441,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         if( !hibachiIsStructEmpty(arguments.f) ){
             for(var propertyIdentifier in arguments.f ){
                 var selectedPropertyFilters = arguments.f[propertyIdentifier];
-                for(var comperisonOperator in selectedPropertyFilters){
-                    var filterValue = selectedPropertyFilters[ comperisonOperator ];
+                for(var comparisonOperator in selectedPropertyFilters){
+                    var filterValue = selectedPropertyFilters[ comparisonOperator ];
                     if( comparisonOperator == 'like' ){
                         collectionList.addFilter(
                             propertyIdentifier= propertyIdentifier, 
@@ -451,11 +452,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                             filterGroupAlias='keyword'
                         );
                     } else {
-                        var formattedComperisonOperator = this.formatComperisonOperator( comparisonOperator );
+                        var formattedComparisonOperator = this.formatComparisonOperator( comparisonOperator );
                         collectionList.addFilter(
                             propertyIdentifier=propertyIdentifier, 
                             value=filterValue, 
-                            comparisonOperator=formattedComperisonOperator 
+                            comparisonOperator=formattedComparisonOperator 
                         );
                     }
                 }

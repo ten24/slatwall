@@ -117,29 +117,23 @@ component  accessors="true" output="false"
      * - the value for filter-keys can be an array, or a single value 
      * 
      */
-    public struct function parseProductSearchQuery(struct urlScopeOrStruct, string defaultFacetValueKey = 'name', string keyDelemiter='_'){
+    public struct function parseGetProductsQuery(struct urlScopeOrStruct, string defaultFacetValueKey = 'name', string keyDelemiter='_'){
         var parsed = {};
-        var allowedFacetKeys = {
-            'brand': '',
-            'category': '',
-            'productType': '',
-            'attribute': '',
-            'option': ''
-        };
+        var allowedFacetKeys = ['f','brand','option','content','category','attribute','productType'];
 
         for(var thisKey in arguments.urlScopeOrStruct){
             var subKeys = listToArray(thisKey, arguments.keyDelemiter);
             var subKeysLen = subKeys.len();
             
             // append default keys as needed
-            var firstSubKey = subKeys[ 1 ];
-            if( structKeyExists(allowedFacetKeys, firstSubKey) ){
+            var firstSubKey = subKeys[1];
+            if( allowedFacetKeys.find(firstSubKey) ){
                 if( subKeysLen == 1 ){
                     subKeys.append(  arguments.defaultFacetValueKey ); 
+                }  else if(subKeysLen == 2 && firstSubKey == 'f' ){
+                    subKeys.append('eq'); // for filters default conditionalOperators is `Equal`
                 } else if(subKeysLen == 2 && listFindNoCase('attribute,option', firstSubKey) ){
                     subKeys.append(  arguments.defaultFacetValueKey ); 
-                } else if(subKeysLen == 2 && firstSubKey == 'f' ){
-                    subKeys.append('eq'); // for filters default conditionalOperators is `Equal`
                 }
             }
             
@@ -270,7 +264,7 @@ component  accessors="true" output="false"
         var hibachiScope = this.getHibachiScope();
         
         // we're not using RequestContext here, but the URL-scope
-        arguments.parsedQuery = this.parseProductSearchQuery(arguments.urlScope);
+        arguments.parsedQuery = this.parseGetProductsQuery(arguments.urlScope);
 
 		param name="arguments.parsedQuery.siteID" default='';
 	    param name="arguments.parsedQuery.locale" default=hibachiScope.getSession().getRbLocale(); 
