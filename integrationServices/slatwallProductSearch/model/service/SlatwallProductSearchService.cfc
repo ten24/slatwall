@@ -111,7 +111,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    },
         	    'priceRange' : {
         	    	'name' : 'Price Range',
-        	    	'facetKey' : 'between',
+        	    	'facetKey' : 'priceRange',
         	    	'selectType': 'single',
         	    	'options' : [{
         	    		"name" : "100 - 500",
@@ -363,7 +363,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         
 
 
-	    for(var facetName in ['brand', 'category', 'productType'] ){
+	    for(var facetName in ['brand', 'content', 'category', 'productType'] ){
     	    var selectedFacetOptions = arguments[ facetName ];
             if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
                 for(var facteValueKey in selectedFacetOptions ){
@@ -401,8 +401,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             }
 	    }
 
-        // TODO: content-filter
-
         // Searching
         if ( len( arguments.keyword ) ) {
             
@@ -434,19 +432,17 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 filterGroupAlias='keyword');
         }
         
-        // TODO: other inline filters, like price-range, reviews ....
- 
-        // Sorting
-        collectionList.setOrderBy(arguments.orderBy);
-        
         //Price Range Filter
         if( len(arguments.priceRange) ) {
         	collectionList.addFilter(
         		propertyIdentifier='skuPricePrice',
-        		value="#arguments.priceRange#",
+        		value=arguments.priceRange,
         		comparisonOperator="between"
         	);
         }
+        
+        // Sorting
+        collectionList.setOrderBy(arguments.orderBy);
         
         // Pagination
         collectionList.setPageRecordsShow( arguments.pageSize );
