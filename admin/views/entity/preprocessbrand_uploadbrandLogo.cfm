@@ -50,26 +50,23 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.brand" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.brand" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.brand#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.brand#" edit="#rc.edit#" />
+	<hb:HibachiEntityProcessForm entity="#rc.brand#" edit="#rc.edit#" enctype="multipart/form-data">
 		
-		<hb:HibachiEntityDetailGroup object="#rc.brand#">
-			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/logo" text="#$.slatwall.rbkey('admin.brand.logo')#" />
-			<hb:HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" count="#rc.brand.getProductsCount()#"/>
-			<hb:HibachiEntityDetailItem property="vendors" />
-			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/brandsettings" />
-			
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.brand.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.brand#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.brand#">
+		</hb:HibachiEntityActionBar>
 		
-	</hb:HibachiEntityDetailForm>
+		<input type="hidden" name="imageFile" value="#rc.processObject.getImageFile()#" />
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="uploadFile" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
-
