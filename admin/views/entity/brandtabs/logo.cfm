@@ -83,7 +83,7 @@ Notes:
 				<div class="col-xs-2 s-upload-image">
 					<div class="thumbnail">
 						<div class="s-image">
-							<hb:HibachiProcessCaller entity="#rc.brand#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" icon="picture" iconOnly="true"  modal="true" />
+							<hb:HibachiProcessCaller entity="#rc.brand#" processContext="uploadBrandLogo" action="admin:entity.preprocessbrand" icon="picture" iconOnly="true"  modal="true" />
 						</div>
 						<div class="s-title">
 							<span class="s-short">
