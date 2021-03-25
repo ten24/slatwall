@@ -54,19 +54,34 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	}
 
 	public void function processIntegration( required any rc ){
-	
-		this.getService("hibachiTagService").cfsetting( requesttimeout=60000 );
-		var batch = this.getService("erpOneService").uploadCSVFile( arguments.rc );
 		
-		if( !isNull(batch) ){
-		    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
-		    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
-	        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
-		} 
-		// if no batch returned, then there was some issue with the import; sending user back
-		else{ 
-		    super.renderOrRedirectFailure( defaultAction="erpone:main.preProcessIntegration", maintainQueryString=true, rc=arguments.rc);
+		switch (arguments.rc.processContext) {
+			case 'importerponecsv':
+				this.getService("hibachiTagService").cfsetting( requesttimeout=60000 );
+				var batch = this.getService("erpOneService").uploadCSVFile( arguments.rc );
+				
+				if( !isNull(batch) ){
+				    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+				    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+			        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+				} else{ 
+					// if no batch returned, then there was some issue with the import; sending user back
+				    super.renderOrRedirectFailure( defaultAction="erpone:main.preProcessIntegration", maintainQueryString=true, rc=arguments.rc);
+				}
+				break;
+			case 'debug':
+				super.genericPreProcessMethod(entityName="Integration", rc=arguments.rc);
+				arguments.rc.result = this.getService("erpOneService").callErpOneGetDataApi(requestData = { 
+					'query' : arguments.rc.erpQuery, 
+					'columns' : arguments.rc.columns, 
+					'skip' : arguments.rc.offset,
+					'take' : arguments.rc.amountPerPage
+				});
+				getFW().setView("erpone:main.preprocessintegration_debug");
+				break;
 		}
+	
+		
 	}
 	
 	
@@ -91,6 +106,11 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
    		    this.getHibachiScope().showMessage("Invalid import type, no sample file available", "warning");
    		    super.renderOrRedirectFailure( defaultAction="erpone:main", maintainQueryString=false, rc=arguments.rc);
    		}
+	}
+	
+	
+	public void function runDebug(required struct rc){
+		dump('oi');
 	}
 
 }
