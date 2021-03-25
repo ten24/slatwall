@@ -107,10 +107,5 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
    		    super.renderOrRedirectFailure( defaultAction="erpone:main", maintainQueryString=false, rc=arguments.rc);
    		}
 	}
-	
-	
-	public void function runDebug(required struct rc){
-		dump('oi');
-	}
 
 }
