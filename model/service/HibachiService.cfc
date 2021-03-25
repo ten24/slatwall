@@ -181,8 +181,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	/**
 	 * Method to return list of public attribute codes
 	 * */
-	public array function getPublicPropertiesByEntityName(required string entityName) {
-		var cacheKey = "getPublicPropertiesByEntityName#hash(arguments.entityName,'md5')#";
+	public array function getPublicPropertiesForEntityName(required string entityName) {
+		var cacheKey = "getPublicPropertiesByEntityName-#lcase(arguments.entityName)#";
 		if(!getService('hibachiCacheService').hasCachedValue(cacheKey)) {
 			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
 			attributeCollectionList.setDisplayProperties('attributeCode');
@@ -200,19 +200,5 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		}
 			
 		return getService('hibachiCacheService').getCachedValue(cacheKey);
-	}
-	
-	
-	/***
-	 * OnMissing method override for public properties function
-	 ***/
-	public any function onMissingMethod( required string missingMethodName, required struct missingMethodArguments ) {
-		var lCaseMissingMethodName = lCase( arguments.missingMethodName );
-		if ( lCaseMissingMethodName.startsWith( 'get' ) && right(lCaseMissingMethodName, 16) == "publicproperties") {
-			var entityName = UcFirst( lCaseMissingMethodName.substring( 3, (len(lCaseMissingMethodName) - 16) ) );
-			return this.getPublicPropertiesByEntityName(entityName);
-		}
-	
-		return super.onMissingMethod(arguments.missingMethodName, arguments.missingMethodArguments);
 	}
 }
