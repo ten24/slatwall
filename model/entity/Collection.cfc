@@ -341,13 +341,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			variables.authorizedProperties = [];
 			
 			var entityName = this.getCollectionObject();
-			if( lcase(entityName) != "attribute") {
-				var entityPublicProperties = getService("hibachiService").getServiceByEntityName(entityName).invokeMethod("get#entityName#PublicProperties");
+			//skip attribute entity to avoid Stack Overflow via recursive calls from on missing method of public properties
+			if( !isNull(entityName) && lcase(entityName) != "attribute") {
+				var entityService = this.getService("hibachiService").getServiceByEntityName(entityName);
 				
-				if( ArrayLen(entityPublicProperties) ) {
-					variables.authorizedProperties = entityPublicProperties;
-				}
+				variables.authorizedProperties = entityService.invokeMethod("get#entityName#PublicProperties");
 			}
+			
+			
 		}
 		return variables.authorizedProperties;
 	}
