@@ -108,6 +108,21 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                         "name": "Brand Z-A",
                         "value": 'brandName|DESC',
                     }]
+        	    },
+        	    'priceRange' : {
+        	    	'name' : 'Price Range',
+        	    	'facetKey' : 'between',
+        	    	'selectType': 'single',
+        	    	'options' : [{
+        	    		"name" : "100 - 500",
+        	    		"value": "100-500",
+        	    	},{
+        	    		"name" : "501 - 1000",
+        	    		"value": "501-1000",
+        	    	},{
+        	    		"name" : "1001 - 1500",
+        	    		"value": "1001-1500",
+        	    	}]
         	    }
     	    };
 	}
@@ -267,6 +282,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         param name="arguments.orderBy" default="product.productName|DESC"; 
         // Pricing
         param name="arguments.price" default=""; 
+        //Price Range
+        param name="arguments.priceRange" default="";
         // Pagination
 	    param name="arguments.currentPage" default=1;
 	    param name="arguments.pageSize" default=10;
@@ -422,6 +439,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // Sorting
         collectionList.setOrderBy(arguments.orderBy);
         
+        //Price Range Filter
+        if( len(arguments.priceRange) ) {
+        	collectionList.addFilter(
+        		propertyIdentifier='skuPricePrice',
+        		value="#arguments.priceRange#",
+        		comparisonOperator="between"
+        	);
+        }
+        
         // Pagination
         collectionList.setPageRecordsShow( arguments.pageSize );
         collectionList.setCurrentPageDeclaration(arguments.currentPage);
@@ -454,6 +480,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         param name="arguments.orderBy" default="product.productName|DESC"; 
         // Pricing
         param name="arguments.price" default=""; 
+        // Price Range
+        param name="arguments.priceRange" default=""; //value1-value2
         // Pagination
 	    param name="arguments.currentPage" default=1;
 	    param name="arguments.pageSize" default=10;
