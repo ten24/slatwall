@@ -66,6 +66,7 @@ component  accessors="true" output="false"
     property name="typeService" type="any";
     property name="giftCardService";
     property name="integrationService" type="any";
+    property name="imageService" type="any";
 
 
     variables.publicContexts = [];
@@ -381,8 +382,8 @@ component  accessors="true" output="false"
 	public void function getBrandList( required struct data ) {
 	    arguments.data.entityName = "Brand";
 	    arguments.data.restRequestFlag = 1;
-
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+    
+        var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
 	        entityName=arguments.data.entityName, 
 	        data=arguments.data, 
 	        enforceAuthorization=false
@@ -390,6 +391,11 @@ component  accessors="true" output="false"
 	    
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("brandService").appendSettingsAndOptions(result.pageRecords);
+	        var brandList = result.pageRecords;
+	        var directory = 'brand/logo';
+	        for( var i=1; i <= arrayLen(brandList); i++ ) {
+                brandList[i]['imagePath'] = getImageService().getImagePathByImageFileAndDirectory( brandList[i]['imageFile'], directory);
+	        }
 	    }
 
 	    arguments.data.ajaxResponse = result;
