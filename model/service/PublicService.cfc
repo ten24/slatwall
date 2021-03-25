@@ -118,25 +118,21 @@ component  accessors="true" output="false"
      * - the value for filter-keys can be an array, or a single value 
      * 
      */
-    public struct function parseProductSearchQuery(struct urlScopeOrStruct, string defaultFacetValueKey = 'name', string keyDelemiter='_'){
+    public struct function parseGetProductsQuery(struct urlScopeOrStruct, string defaultFacetValueKey = 'name', string keyDelemiter='_'){
         var parsed = {};
-        var allowedFacetKeys = {
-            'brand': '',
-            'category': '',
-            'productType': '',
-            'attribute': '',
-            'option': ''
-        };
+        var allowedFacetKeys = ['f','brand','option','content','category','attribute','productType'];
 
         for(var thisKey in arguments.urlScopeOrStruct){
             var subKeys = listToArray(thisKey, arguments.keyDelemiter);
             var subKeysLen = subKeys.len();
             
             // append default keys as needed
-            var firstSubKey = subKeys[ 1 ];
-            if( structKeyExists(allowedFacetKeys, firstSubKey) ){
+            var firstSubKey = subKeys[1];
+            if( allowedFacetKeys.find(firstSubKey) ){
                 if( subKeysLen == 1 ){
                     subKeys.append(  arguments.defaultFacetValueKey ); 
+                }  else if(subKeysLen == 2 && firstSubKey == 'f' ){
+                    subKeys.append('eq'); // for filters default conditionalOperators is `Equal`
                 } else if(subKeysLen == 2 && listFindNoCase('attribute,option', firstSubKey) ){
                     subKeys.append(  arguments.defaultFacetValueKey ); 
                 }
@@ -231,14 +227,45 @@ component  accessors="true" output="false"
     }
     
     /**
-	 *
+     * ?[facetName]_[facetValueKey]=value
+     * ?[facetName]_[subFacetKey]_[facetValueKey]=value
+     * 
+     * e.g.
+	 * ?brand=abc OR 	 * ?brand_name=abc
+	 * ?brand_id=123
+	 * ?brand=abc,pqr,xyz&brand_id=123
+	 * ?productType_slug=abc-pqr-xyz
+	 * ?option_color=blue  OR  ?option_color_name=blue
+	 * ? option_size_code=x1,x2,x3
+	 * 
+	 * 
+	 * allowed facets, ['brand','category', 'productType', 'option', 'atttribute']
+	 * 'option' and 'attributes have sub-facets'
+	 * allowed facetValueKeys are ['id', 'name', 'code', 'slug' ] and if none is defined, then name is the default.
+	 * 
+	 * 
+	 * the `parseProductSearchQuery` will split the keys by `_`[the default `keyDelemiter` ] and will create nested structs;
+	 * 
+	 * Additional-Filters:
+	 * f_[propertyIdentifier]_[conditionalOperators]=value;
+	 * e.g. 
+	 * f_product.featuredFlag=1 OR f_product.featuredFlag_eq=1
+	 * 
+	 * conditionalOperators = [`eq`,`neq`, `gt`, `gte`, `lt`, `lte`, `like`, `in`]
+	 * 
+	 * Content:
+	 * for content allowed facet-value-keys are [`id`, `name`, `slug`] 
+	 * 
+	 * Order Bys:
+	 * ?orderby=someKey|direction
+	 * ?orderBy=someKey|direction,someOtherKey|direction ...
 	 * 
 	 */
     public void function getProducts(required struct data, struct urlScope=url ){
         var hibachiScope = this.getHibachiScope();
         
         // we're not using RequestContext here, but the URL-scope
-        arguments.parsedQuery = this.parseProductSearchQuery(arguments.urlScope);
+        arguments.parsedQuery = this.parseGetProductsQuery(arguments.urlScope);
 
 		param name="arguments.parsedQuery.siteID" default='';
 	    param name="arguments.parsedQuery.locale" default=hibachiScope.getSession().getRbLocale(); 
@@ -250,6 +277,7 @@ component  accessors="true" output="false"
         
 	    // facets
 	    param name="arguments.parsedQuery.brand" default={};
+	    param name="arguments.parsedQuery.content" default={};
 	    param name="arguments.parsedQuery.option" default={};
 	    param name="arguments.parsedQuery.category" default={};
 	    param name="arguments.parsedQuery.attribute" default={};
@@ -265,13 +293,17 @@ component  accessors="true" output="false"
 	    param name="arguments.parsedQuery.currentPage" default=1;
 	    param name="arguments.parsedQuery.pageSize" default=10;
 	    
-        // additional properties
+	    // Additional Filters
+	    // product and sku properties/attributes 
+	    // like product.featuredFlag=true
+	    param name="arguments.parsedQuery.f" default={}; 
+	    
+        // Additional Params
+        param name="arguments.parsedQuery.propertyIdentifiers" default='';
         param name="arguments.parsedQuery.includeSKUCount" default=true;
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
-	    // TODO: additional filters
-	    // product and sku properties/attributes -- need to figureout a convention/approach like product.featuredFlag=true
-        
+
 	    // TODO: Nitin is working on it and will update.
         // currently it will set a transient site, but it need's to figure-out current-request-site 
 	    var currentRequestSite = hibachiScope.getCurrentRequestSite();
