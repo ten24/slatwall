@@ -363,7 +363,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         
 
 
-	    for(var facetName in ['brand', 'content', 'category', 'productType'] ){
+	    for(var facetName in ['brand', 'category', 'productType'] ){
     	    var selectedFacetOptions = arguments[ facetName ];
             if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
                 for(var facteValueKey in selectedFacetOptions ){
