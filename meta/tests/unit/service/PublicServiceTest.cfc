@@ -103,7 +103,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             // 'option_language=english,spanish',
             // 'option_size_slug=medium,small',
             
-            // 'keyword=Serrated'
+            // 'keyword=Serrated',
+            
+            //'priceRange=20.00-70.00',
+            //'sorting=price|DESC'
         ];
         
 	    var urlScope = URL ?: {};
