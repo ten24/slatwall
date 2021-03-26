@@ -474,7 +474,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus did not found any new options to insert");
         }
 
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in updating facte-options for Product: #arguments.productIDs#, SKU: #arguments.skuIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in updating facet-options for Product: #arguments.productIDs#, SKU: #arguments.skuIDs# ");
 	}
 	
 	public any function updateProductFilterFacetOptionsByEntityNameAndIDs( required string entityName, required string entityIDs ){
@@ -602,7 +602,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q.execute();
         
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facet-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
         
         return q;
 	}
@@ -694,7 +694,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
         q.execute();
         
-        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
+        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facet-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
         
         return q;   
 	}
@@ -707,12 +707,25 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	
 	
 	public string function getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
+	    
 	    if(arguments.facetName == 'brand'){
 	        if(arguments.facetValueKey == 'id' ){
 	            return 'brandID';
 	        }  
 	        if(arguments.facetValueKey == 'name' ){
 	            return 'brandName';
+	        }
+	    }
+	    
+	    if(arguments.facetName == 'content'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'contentID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'contentTitle';
+	        }
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'contentUrlTitle';
 	        }
 	    }
 	    
@@ -822,16 +835,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    return variables['cached_FacetsMetaData'];
 	}
 	
-	public string function makeGetFacetOptionQuery(
-	    required struct facetMetaData, 
-	    required struct facetsFilterQueryFragments, 
-	    required any site,
-	    boolean includeSKUCount=true
-	){
-	    
-	    var facetQuery = "";
+	public string function getFacetOptionQuerySQLTemplate(required boolean includeSKUCount){
 	    if(arguments.includeSKUCount){
-    	    facetQuery = "
+    	    return "
     	        SELECT 
     	            rs.id, 
     	            rs.name, 
@@ -863,45 +869,55 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         	    GROUP BY rs.id
         	    HAVING COUNT(DISTINCT rs.skuID) > 0
     	    ";
-	    } else {
-	        facetQuery = "
-                SELECT 
-    	            id, 
-    	            name, 
-    	            facet, 
-    	            subFacet, 
-    	            subFacetName, 
-    	            slug, 
-    	            code 
-    	        FROM
-    	        ( 
-    	            SELECT 
-        				skuID, 
-        				$facetIDKey$                as id, 
-        				$facetNameKey$              as name, 
-        				$facetSlugKeyOrValue$       as slug,
-        				$facetCodeKeyOrValue$       as code,
-        				'$facet$'                   as facet, 
-        				$subFacetKeyOrValue$        as subFacet,
-        				$subFacetNameKeyOrValue$    as subFacetName
-        			FROM swProductFilterFacetOption 
-        			WHERE $facetIDKey$ IS NOT NULL
-        			$filterQueryFragment$
-        			GROUP BY skuID, $facetIDKey$, $facetNameKey$
-        		) rs
-        		
-        		$stockAvailabilitySQLFragment$
-        	    GROUP BY id
-    		";
-	    }
+	    } 
 	    
-        facetQuery = replace(facetQuery, '$facet$',              arguments.facetMetaData.facet );
-        facetQuery = replace(facetQuery, '$facetIDKey$',         arguments.facetMetaData.facetIDKey, 'all');
-        facetQuery = replace(facetQuery, '$facetNameKey$',       arguments.facetMetaData.facetNameKey, 'all');
-        facetQuery = replace(facetQuery, '$facetSlugKeyOrValue$', arguments.facetMetaData.facetSlugKeyOrValue );
-        facetQuery = replace(facetQuery, '$facetCodeKeyOrValue$', arguments.facetMetaData.facetCodeKeyOrValue );
-        facetQuery = replace(facetQuery, '$subFacetKeyOrValue$',  arguments.facetMetaData.subFacetKeyOrValue );
-        facetQuery = replace(facetQuery, '$subFacetNameKeyOrValue$',  arguments.facetMetaData.subFacetNameKeyOrValue );
+	    return "
+	        SELECT 
+	            id, 
+	            name, 
+	            facet, 
+	            subFacet, 
+	            subFacetName, 
+	            slug, 
+	            code 
+	        FROM
+	        ( 
+	            SELECT 
+    				skuID, 
+    				$facetIDKey$                as id, 
+    				$facetNameKey$              as name, 
+    				$facetSlugKeyOrValue$       as slug,
+    				$facetCodeKeyOrValue$       as code,
+    				'$facet$'                   as facet, 
+    				$subFacetKeyOrValue$        as subFacet,
+    				$subFacetNameKeyOrValue$    as subFacetName
+    			FROM swProductFilterFacetOption 
+    			WHERE $facetIDKey$ IS NOT NULL
+    			$filterQueryFragment$
+    			GROUP BY skuID, $facetIDKey$, $facetNameKey$
+    		) rs
+    		
+    		$stockAvailabilitySQLFragment$
+    	    GROUP BY id
+		";
+	}
+	
+	public string function makeGetFacetOptionQuery(
+	    required struct facetMetaData, 
+	    required struct facetsFilterQueryFragments, 
+	    required any site,
+	    boolean includeSKUCount=true
+	){
+	    
+	    var thisFacetOptionsQuery = this.getFacetOptionQuerySQLTemplate(arguments.includeSKUCount);
+
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facet$',              arguments.facetMetaData.facet );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facetIDKey$',         arguments.facetMetaData.facetIDKey, 'all');
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facetNameKey$',       arguments.facetMetaData.facetNameKey, 'all');
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facetSlugKeyOrValue$', arguments.facetMetaData.facetSlugKeyOrValue );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facetCodeKeyOrValue$', arguments.facetMetaData.facetCodeKeyOrValue );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetKeyOrValue$',  arguments.facetMetaData.subFacetKeyOrValue );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetNameKeyOrValue$',  arguments.facetMetaData.subFacetNameKeyOrValue );
         
         var filterQueryFragment = '';
         if( !this.hibachiIsStructEmpty(arguments.facetsFilterQueryFragments) ){
@@ -923,7 +939,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 filterQueryFragment = 'AND '&filterQueryFragment;
             }
         }
-        facetQuery = replace(facetQuery, '$filterQueryFragment$', filterQueryFragment );
+        
+        if( listFindNoCase('option,attribute', arguments.facetMetaData.facet)  && len(filterQueryFragment) ){
+            filterQueryFragment &= " $subFacetsQueryFragment$";
+        }
+        
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$filterQueryFragment$', filterQueryFragment );
         
         var stockAvailabilitySQLFragment = '';
         if(arguments.site.hasLocation() ){
@@ -937,15 +958,16 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
     	            AND rs.skuID = stk.skuID 
             ";
 	    }
-        facetQuery = replace(facetQuery, '$stockAvailabilitySQLFragment$', stockAvailabilitySQLFragment );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$stockAvailabilitySQLFragment$', stockAvailabilitySQLFragment );
         
-        return facetQuery;
+        return thisFacetOptionsQuery;
 	}
 	
-	public struct function makeFacteSqlFilterQueryFragments(){
+	public struct function makeFacetSqlFilterQueryFragments(){
 	    param name="arguments.site";
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
+        param name="arguments.content" default={};
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
@@ -966,21 +988,21 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= :dateTimeNow )
 	    ";
 
-	    for(var facetName in ['brand', 'category', 'productType'] ){
+	    for(var facetName in ['brand', 'content', 'category', 'productType'] ){
     	    facetsSqlFilterQueryFragments[facetName] = '';
     	    var selectedFacetOptions = arguments[ facetName ];
     	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
     	        var queryFragment = '(';
-    	        for(var facteValueKey in selectedFacetOptions ){
-                    var filterValue = selectedFacetOptions[facteValueKey];
-                    var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facteValueKey);
+    	        for(var facetValueKey in selectedFacetOptions ){
+                    var filterValue = selectedFacetOptions[facetValueKey];
+                    var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facetValueKey);
                     
                     if( !isNUll(columnName) ){
-                        var filterValuePlaceholder = columnName&'_'&facteValueKey;
+                        var filterValuePlaceholder = facetName&'_'&columnName;
                         facetsSqlFilterQueryParams[ filterValuePlaceholder ] = filterValue;
                         
                         if( len(queryFragment) > 1 ){
-                            queryFragment &= ' AND';
+                            queryFragment &= ' OR';
                         }
                         
                         if( isArray(filterValue) ){
@@ -996,42 +1018,65 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 }
     	    }
 	    }
-	    // TODO: refctor
+	    
 	    for(var facetName in ['option', 'attribute'] ){
     	    facetsSqlFilterQueryFragments[facetName] = '';
     	    var selectedFacetOptions = arguments[ facetName ];
+
     	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
-    	        var queryFragment = '(';
+    	        var concatedOptions = {};
+    	        
     	        for(var subFacetName in selectedFacetOptions ){
     	            var selectedSubFacetOptions = selectedFacetOptions[ subFacetName ];
     	            if(!this.hibachiIsStructEmpty(selectedSubFacetOptions) ){
-            	        for(var facteValueKey in selectedSubFacetOptions ){
-                            var filterValue = selectedSubFacetOptions[facteValueKey];
-                            var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facteValueKey);
-                            if( !isNUll(columnName) ){
-                                var filterValuePlaceholder = subFacetName&'_'&columnName&'_'&facteValueKey;
-                                facetsSqlFilterQueryParams[ filterValuePlaceholder ] = filterValue;
-                                
-                                if( len(queryFragment) > 1 ){
-                                    queryFragment &= ' AND';
-                                }
-                                
-                                if( isArray(filterValue) ){
-                                    queryFragment &= ' #columnName# IN (:#filterValuePlaceholder#)';
-                                } else{
-                                    queryFragment &= ' #columnName# = :#filterValuePlaceholder#';
+            	        for(var facetValueKey in selectedSubFacetOptions ){
+                            var thisFilterOption = selectedSubFacetOptions[facetValueKey];
+                            
+                            if(!structKeyExists(concatedOptions, facetValueKey) ){
+                                concatedOptions[facetValueKey] = thisFilterOption;
+                            } else{
+                                var oldOption = concatedOptions[facetValueKey];
+                                if( isSimpleValue(oldOption) ){
+                                    concatedOptions[facetValueKey] = [oldOption, thisFilterOption];
+                                } else {
+                                    concatedOptions[facetValueKey].append(thisFilterOption);
                                 }
                             }
-                        }
+            	        }
     	            }
     	        }
+    	        
+    	        var queryFragment = '(';
+    	        if( !this.hibachiIsStructEmpty(concatedOptions) ){
+    	            for(var thisFacetValueKey in concatedOptions){
+    	                var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, thisFacetValueKey);
+
+                        if( !isNUll(columnName) ){
+                            var facetKeyOptions = concatedOptions[thisFacetValueKey];
+                            
+                            var filterValuePlaceholder = facetName&'_'&columnName;
+                            facetsSqlFilterQueryParams[ filterValuePlaceholder ] = facetKeyOptions;
+                            
+                            if( len(queryFragment) > 1 ){
+                                queryFragment &= ' OR';
+                            }
+                            
+                            if( isArray(facetKeyOptions) ){
+                                queryFragment &= ' #columnName# IN (:#filterValuePlaceholder#)';
+                            } else{
+                                queryFragment &= ' #columnName# = :#filterValuePlaceholder#';
+                            }
+                        }  
+    	            }
+    	        }
+    	        
                 if( len(queryFragment) > 1){
                     queryFragment &= ')';
                     facetsSqlFilterQueryFragments[facetName] = queryFragment;
                 }
     	    }
 	    }
-	    
+
 	    return {
 	        'params': facetsSqlFilterQueryParams,
 	        'fragments' : facetsSqlFilterQueryFragments
@@ -1042,6 +1087,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.site";
         param name="arguments.brand" default={};
         param name="arguments.option" default={};
+        param name="arguments.content" default={};
         param name="arguments.category" default={};
         param name="arguments.attribute" default={};
         param name="arguments.productType" default={};
@@ -1050,7 +1096,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         var startTicks = getTickCount();
 
 	    var facetsMetadata = this.getFacetsMetaData();
-    	var filterQueryFragmentsData = this.makeFacteSqlFilterQueryFragments(argumentCollection=arguments);
+    	var filterQueryFragmentsData = this.makeFacetSqlFilterQueryFragments(argumentCollection=arguments);
 
         var getAllFacetOptionsSQL = '';
         for(var facetName in facetsMetadata ){
@@ -1063,12 +1109,43 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                                         
                                         "; 
             }
-            getAllFacetOptionsSQL &= this.makeGetFacetOptionQuery(
+            var thisFacetOptionsQuery = this.makeGetFacetOptionQuery(
                 facetMetaData = facetsMetadata[facetName], 
                 facetsFilterQueryFragments = filterQueryFragmentsData.fragments, 
                 includeSKUCount= arguments.includeSKUCount, 
                 site = arguments.site 
             );
+            
+            if( listFindNoCase('option,attribute', facetName) ){
+                var thisFacetOptions = arguments[ facetName ];
+                if( !this.hibachiIsStructEmpty(thisFacetOptions) ){
+                    var filterValuePlaceholderKey = facetName&'_subFactes';
+                    filterQueryFragmentsData.params[filterValuePlaceholderKey] = thisFacetOptions.keyArray();
+                    var columnName= 'optionGroupCode';
+                    if(facetName == 'attribute'){
+                        columnName = 'attributeCode';
+                    }
+                    
+                    var selectedSubFacetsOptionsQuery = " AND #columnName# IN (:#filterValuePlaceholderKey#)";
+                    selectedSubFacetsOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', selectedSubFacetsOptionsQuery);
+                    
+                    var subQuery = "
+                        SELECT DISTINCT skuID 
+                        FROM swProductFilterFacetOption 
+                        WHERE 
+                        #filterQueryFragmentsData.fragments[facetName]# 
+                    ";
+                    var remainingSubFacetsOptionsQuery = " AND ( skuID in (#subQuery#) AND #columnName# NOT IN (:#filterValuePlaceholderKey#) )";
+                    remainingSubFacetsOptionsQuery = replace( thisFacetOptionsQuery, '$subFacetsQueryFragment$', remainingSubFacetsOptionsQuery);
+                    
+                    thisFacetOptionsQuery =  selectedSubFacetsOptionsQuery & ' UNION ALL' & remainingSubFacetsOptionsQuery;
+
+                } else {
+                    thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', '');
+                }
+            }
+            
+            getAllFacetOptionsSQL &= thisFacetOptionsQuery;
         }
                 
         var queryService = new Query();
@@ -1081,9 +1158,23 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 queryService.addParam( name=paramName, value=paramValue );
             }
         }
+
         queryService = queryService.execute().getResult();
+
         this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.; and fetched #queryService.recordCount# records ");
         return queryService;
+	}
+	
+	
+	public any function getPriceRangeMinMax(){
+	    
+	    var queryService = new Query();
+	    var sql = "
+	        SELECT MAX(skuPricePrice) AS max, MIN(skuPricePrice) AS min
+            FROM swProductFilterFacetOption; 
+	    ";
+        queryService.setSQL(sql);
+	    return queryService.execute().getResult();
 	}
 
 	// =====================  END: Logical Methods ============================

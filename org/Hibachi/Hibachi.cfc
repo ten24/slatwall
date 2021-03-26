@@ -398,9 +398,12 @@ component extends="framework.one" {
                 if( left(ucase(key), 4) == 'SWX-' ) {
                     var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
                     
-                    //check to prevent overriding anything on rc, we can't really trust these headers
+                    //check to prevent overriding anything on rc and URL-scope, we can't really trust these headers
                     if(structKeyExists(request,'context') && !StructKeyExists(request.context, headerName)) {
                         request.context[headerName] = headers[key]; 
+                    }
+                    if( !isNull(URL) && !StructKeyExists( URL, headerName) ){
+                        URL[headerName] = headers[key]; 
                     }
                     
                     if(key == 'SWX-siteID'){
