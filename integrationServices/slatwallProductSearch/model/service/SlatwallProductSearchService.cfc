@@ -108,6 +108,21 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                         "name": "Brand Z-A",
                         "value": 'brandName|DESC',
                     }]
+        	    },
+        	    'priceRange' : {
+        	    	'name' : 'Price Range',
+        	    	'facetKey' : 'priceRange',
+        	    	'selectType': 'single',
+        	    	'options' : [{
+        	    		"name" : "100 - 500",
+        	    		"value": "100-500",
+        	    	},{
+        	    		"name" : "501 - 1000",
+        	    		"value": "501-1000",
+        	    	},{
+        	    		"name" : "1001 - 1500",
+        	    		"value": "1001-1500",
+        	    	}]
         	    }
     	    };
 	}
@@ -121,6 +136,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
+        param name="arguments.priceRangesCount" default=5;
         
 	    var rawFilterOptions = this.getSlatwallProductSearchDAO().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
 	    var startTicks = getTickCount();
@@ -181,10 +197,40 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	    } // END loop
 	    
+	    potentialFacetsAndOption['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount);
+	    
 	    this.logHibachi("SlatwallProductSearchService:: getPotentialFilterFacetsAndOptionsFormatted took #getTickCount() - startTicks# ms.")
 
 	    return potentialFacetsAndOption;
 	}
+	
+	public array function makePriceRangeOptions( required number priceRangesCount ){
+    
+        //check to avoid division by zero
+        if( arguments.priceRangesCount <= 0 ){
+            return [];
+        }
+        
+        var query = this.getSlatwallProductSearchDAO().getPriceRangeMinMax();
+        var min = val(query.min);
+        var max = val(query.max);
+        
+        var delta = floor((max - min) / arguments.priceRangesCount);
+        var ranges = [
+            {"name": (min) &" - "&(min+delta), "value": (min) &"-"&(min+delta)}
+        ];
+        
+        while( min < max) {
+            min = min + delta;
+            if( min + delta < max ) {
+                ranges.append(
+                    { "name": (min + 1) &" - "&(min+delta), "value": (min + 1) &"-"&(min+delta) }
+                );
+            }
+        }
+        return ranges;
+    }
+    
 
 	public string function getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
 	    
@@ -304,6 +350,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         param name="arguments.orderBy" default="product.productName|DESC"; 
         // Pricing
         param name="arguments.price" default=""; 
+        //Price Range
+        param name="arguments.priceRange" default="";
         // Pagination
 	    param name="arguments.currentPage" default=1;
 	    param name="arguments.pageSize" default=10;
@@ -436,8 +484,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             }
         }
         
-        // TODO: other inline filters, like price-range, reviews ....
+        //Price Range Filter
+        if( len(arguments.priceRange) ) {
+        	collectionList.addFilter(
+        		propertyIdentifier='skuPricePrice',
+        		value=arguments.priceRange,
+        		comparisonOperator="between"
+        	);
+        }
         
+        // Additional filters
         if( !hibachiIsStructEmpty(arguments.f) ){
             for(var propertyIdentifier in arguments.f ){
                 var selectedPropertyFilters = arguments.f[propertyIdentifier];
@@ -465,7 +521,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
  
         // Sorting
         collectionList.setOrderBy(arguments.orderBy);
-        
+ 
         // Pagination
         collectionList.setPageRecordsShow( arguments.pageSize );
         collectionList.setCurrentPageDeclaration(arguments.currentPage);
@@ -499,12 +555,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         param name="arguments.orderBy" default="product.productName|DESC"; 
         // Pricing
         param name="arguments.price" default=""; 
+        // Price Range
+        param name="arguments.priceRange" default=""; //value1-value2
         // Pagination
 	    param name="arguments.currentPage" default=1;
 	    param name="arguments.pageSize" default=10;
 	    
         // additional properties
         param name="arguments.includeSKUCount" default=true;
+        param name="arguments.priceRangesCount" default=5;
 	    param name="arguments.includePotentialFilters" default=true;
 	    
 	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);

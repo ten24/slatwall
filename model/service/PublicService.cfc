@@ -288,7 +288,8 @@ component  accessors="true" output="false"
         // Sorting
         param name="arguments.parsedQuery.orderBy" default="product.productName|DESC"; 
         // Pricing
-        param name="arguments.parsedQuery.price" default=""; 
+        param name="arguments.parsedQuery.priceRange" default="";
+
         // Pagination
 	    param name="arguments.parsedQuery.currentPage" default=1;
 	    param name="arguments.parsedQuery.pageSize" default=10;
@@ -301,6 +302,7 @@ component  accessors="true" output="false"
         // Additional Params
         param name="arguments.parsedQuery.propertyIdentifiers" default='';
         param name="arguments.parsedQuery.includeSKUCount" default=true;
+        param name="arguments.parsedQuery.priceRangesCount" default=5;
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
 

@@ -50,8 +50,8 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="productFilterFacetOptionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	
 	property name="siteName" ormtype="string";
-	property name="siteCode" ormtype="string" index="IDX_SITE_CODE";
-	property name="currencyCode" ormtype="string" index="IDX_CURRENCY_CODE";
+	property name="siteCode" ormtype="string" length="50" index="IDX_SITE_CODE";
+	property name="currencyCode" ormtype="string" length="3" ;
 	
 	property name="skuPricePrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="skuPriceListPrice" ormtype="big_decimal" hb_formatType="currency";
@@ -62,7 +62,7 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="skuPriceExpiresDateTime" ormtype="timestamp";
 
     property name="priceGroupName" ormtype="string";
-	property name="priceGroupCode" ormtype="string" index="IDX_PRICEGROUPCODE";
+	property name="priceGroupCode" ormtype="string" length="50" index="IDX_PRICEGROUPCODE";
 	
 	property name="brandName" ormtype="string" index="IDX_BRAND_NAME";
 	
@@ -77,21 +77,21 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
     property name="contentSortOrder" ormtype="integer";
 
 	property name="optionName" ormtype="string" index="IDX_OPTION_NAME";
-	property name="optionCode" ormtype="string" index="IDX_OPTION_CODE";
+	property name="optionCode" ormtype="string" length="100"  index="IDX_OPTION_CODE";
 	property name="optionSortOrder" ormtype="integer";
 
     property name="optionGroupName" ormtype="string";
-    property name="optionGroupCode" ormtype="string";
+    property name="optionGroupCode" length="50" ormtype="string";
 	property name="optionGroupSortOrder" ormtype="integer";
 	
-	property name="attributeCode" ormtype="string" index="IDX_ATTRIBUTE_CODE";
+	property name="attributeCode" length="50" ormtype="string" index="IDX_ATTRIBUTE_CODE";
 	property name="attributeName" ormtype="string";
 	property name="attributeUrlTitle" ormtype="string";
 	property name="attributeSortOrder" ormtype="integer";
 	property name="attributeInputType" ormtype="string" index="IDX_ATTRIBUTE_INPUT_TYPE";
 
 	property name="attributeSetName" ormtype="string";
-    property name="attributeSetCode" ormtype="string" index="IDX_ATTRIBUTE_SET_CODE";
+    property name="attributeSetCode" length="50" ormtype="string" index="IDX_ATTRIBUTE_SET_CODE";
 	property name="attributeSetObject" ormtype="string" index="IDX_ATTRIBUTE_SET_OBJECT";
 	property name="attributeSetSortOrder" ormtype="integer";
 

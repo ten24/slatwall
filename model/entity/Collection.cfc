@@ -1301,8 +1301,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	/**
 	 * Method to populate columns with correct properties
 	 * */
-	
-	private array function arrangeCollectionColumns(required string collectionObject, required any entity, required any columnList ) {
+	public array function arrangeCollectionColumns(required string collectionObject, required any entity, required any columnList ) {
 		var columnsArray = [];
 		var entityPrefix = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
 		
