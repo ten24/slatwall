@@ -111,7 +111,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    },
         	    'priceRange' : {
         	    	'name' : 'Price Range',
-        	    	'facetKey' : 'between',
+        	    	'facetKey' : 'priceRange',
         	    	'selectType': 'single',
         	    	'options' : [{
         	    		"name" : "100 - 500",
@@ -487,10 +487,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         if( len(arguments.priceRange) ) {
         	collectionList.addFilter(
         		propertyIdentifier='skuPricePrice',
-        		value="#arguments.priceRange#",
+        		value=arguments.priceRange,
         		comparisonOperator="between"
         	);
         }
+        
+        // Sorting
+        collectionList.setOrderBy(arguments.orderBy);
         
         // Pagination
         collectionList.setPageRecordsShow( arguments.pageSize );
