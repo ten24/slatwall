@@ -745,6 +745,25 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return formattedFacets;
 	}
 	
+	public array function createFilterRange(min, max, steps = 1) {
+    
+        //check to avoid division by zero
+        if( steps <= 0 ) {
+            return [];
+        }
+        var delta = floor((max - min) / steps);
+        var response = [{"name" : (min) &" - "&(min + delta) ,"value": (min) &"-"&(min + delta)}];
+        while( min < max) {
+            min = min + delta;
+            if( min + delta < max ) {
+                var option = {"name" : (min + 1) &" - "&(min + delta) ,"value": (min + 1) &"-"&(min + delta)};
+                ArrayAppend(response, option);
+            }
+            
+        }
+        
+        return response;
+    }
 	
 	
 	
