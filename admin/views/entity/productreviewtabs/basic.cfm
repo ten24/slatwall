@@ -11,6 +11,8 @@
 					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="product" 
 						edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"
 					/>
+				<cfelse>
+				<input type="hidden" value="#rc.productID#" name="product.productID">
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
