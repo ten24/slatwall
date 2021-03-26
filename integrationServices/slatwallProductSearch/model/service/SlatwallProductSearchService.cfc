@@ -491,6 +491,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // Sorting
         collectionList.setOrderBy(arguments.orderBy);
         
+        //Price Range Filter
+        if( len(arguments.priceRange) ) {
+        	collectionList.addFilter(
+        		propertyIdentifier='skuPricePrice',
+        		value=arguments.priceRange,
+        		comparisonOperator="between"
+        	);
+        }
+        
         // Pagination
         collectionList.setPageRecordsShow( arguments.pageSize );
         collectionList.setCurrentPageDeclaration(arguments.currentPage);
@@ -563,6 +572,26 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	}
 	
+	public array function createFilterRange(min, max, steps = 1) {
+    
+        //check to avoid division by zero
+        if( steps <= 0 ) {
+            return [];
+        }
+        var delta = floor((max - min) / steps);
+        var response = [{"name" : (min) &" - "&(min + delta) ,"value": (min) &"-"&(min + delta)}];
+        while( min < max) {
+            min = min + delta;
+            if( min + delta < max ) {
+                var option = {"name" : (min + 1) &" - "&(min + delta) ,"value": (min + 1) &"-"&(min + delta)};
+                ArrayAppend(response, option);
+            }
+            
+        }
+        
+        return response;
+    }
+    
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================
