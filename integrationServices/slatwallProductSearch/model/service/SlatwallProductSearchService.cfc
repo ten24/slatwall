@@ -484,6 +484,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
         // additional properties
         param name="arguments.includeSKUCount" default=true;
+        param name="arguments.priceRangesCount" default=5;
 	    param name="arguments.includePotentialFilters" default=true;
 	    
 	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);

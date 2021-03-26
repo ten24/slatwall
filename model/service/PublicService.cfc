@@ -268,6 +268,7 @@ component  accessors="true" output="false"
 	    
         // additional properties
         param name="arguments.parsedQuery.includeSKUCount" default=true;
+        param name="arguments.parsedQuery.priceRangesCount" default=5;
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
 	    // TODO: additional filters
