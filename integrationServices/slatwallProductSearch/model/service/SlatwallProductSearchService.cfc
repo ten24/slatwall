@@ -521,16 +521,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
  
         // Sorting
         collectionList.setOrderBy(arguments.orderBy);
-        
-        //Price Range Filter
-        if( len(arguments.priceRange) ) {
-        	collectionList.addFilter(
-        		propertyIdentifier='skuPricePrice',
-        		value=arguments.priceRange,
-        		comparisonOperator="between"
-        	);
-        }
-        
+ 
         // Pagination
         collectionList.setPageRecordsShow( arguments.pageSize );
         collectionList.setCurrentPageDeclaration(arguments.currentPage);
