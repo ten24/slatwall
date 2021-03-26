@@ -246,7 +246,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		httpRequest.setMethod(arguments.requestType);
 		httpRequest.setCharset("utf-8");
 		httpRequest.setUrl(requestURL);
-    	httpRequest.addParam( type='header', name='Content-Type', value=arguments.requestContentType);
+		if(arguments.requestType == 'POST'){
+    		httpRequest.addParam( type='header', name='Content-Type', value=arguments.requestContentType);
+		}
     	return httpRequest;
     }
     
@@ -263,6 +265,36 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         var rawRequest = httpRequest.send().getPrefix();
         if( !IsJson(rawRequest.fileContent) ){
 		    throw("ERPONE - callErpOneGetDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		}
+			
+	    return DeSerializeJson(rawRequest.fileContent);
+    }
+
+	public any function debugDataApi( required struct requestData, string endpoint="data/read", string requestType = "POST" ){
+		getService('hibachiTagService').cfsetting(requesttimeout=100000);
+		var queryString = '';
+		if(arguments.requestType == 'GET' && structKeyExists(arguments.requestData, 'query')){
+			queryString  = '/?' & arguments.requestData.query;
+		}
+		
+    	var httpRequest = this.createHttpRequest('distone/rest/service/'&arguments.endpoint&queryString, arguments.requestType);
+		
+		// Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
+		if(arguments.requestType == 'POST'){
+			
+			if(arguments.endpoint != 'data/read'){
+				httpRequest.addParam( type='header', name='Content-Type', value='application/json; charset=UTF-8');
+				httpRequest.addParam( type='body', value = arguments.requestData.query );
+			}else{
+				for( var key in arguments.requestData ){
+				    httpRequest.addParam( type='formfield', name= key, value = arguments.requestData[key] );
+				}
+			}
+		}
+        var rawRequest = httpRequest.send().getPrefix();
+        if( !IsJson(rawRequest.fileContent) ){
+		    return rawRequest;
 		}
 			
 	    return DeSerializeJson(rawRequest.fileContent);

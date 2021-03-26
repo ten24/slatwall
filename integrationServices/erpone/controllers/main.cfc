@@ -71,12 +71,12 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 				break;
 			case 'debug':
 				super.genericPreProcessMethod(entityName="Integration", rc=arguments.rc);
-				arguments.rc.result = this.getService("erpOneService").callErpOneGetDataApi(requestData = { 
+				arguments.rc.result = this.getService("erpOneService").debugDataApi(requestData = { 
 					'query' : arguments.rc.erpQuery, 
 					'columns' : arguments.rc.columns, 
 					'skip' : arguments.rc.offset,
 					'take' : arguments.rc.amountPerPage
-				});
+				}, endpoint = arguments.rc.endpoint, requestType = arguments.rc.httpMethod);
 				getFW().setView("erpone:main.preprocessintegration_debug");
 				break;
 		}
