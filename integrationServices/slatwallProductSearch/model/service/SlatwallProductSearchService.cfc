@@ -136,6 +136,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
+        param name="arguments.priceRangesCount" default=5;
         
 	    var rawFilterOptions = this.getSlatwallProductSearchDAO().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
 	    var startTicks = getTickCount();
@@ -196,10 +197,40 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	    } // END loop
 	    
+	    potentialFacetsAndOption['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount);
+	    
 	    this.logHibachi("SlatwallProductSearchService:: getPotentialFilterFacetsAndOptionsFormatted took #getTickCount() - startTicks# ms.")
 
 	    return potentialFacetsAndOption;
 	}
+	
+	public array function makePriceRangeOptions( required number priceRangesCount ){
+    
+        //check to avoid division by zero
+        if( arguments.priceRangesCount <= 0 ){
+            return [];
+        }
+        
+        var query = this.getSlatwallProductSearchDAO().getPriceRangeMinMax();
+        var min = val(query.min);
+        var max = val(query.max);
+        
+        var delta = floor((max - min) / arguments.priceRangesCount);
+        var ranges = [
+            {"name": (min) &" - "&(min+delta), "value": (min) &"-"&(min+delta)}
+        ];
+        
+        while( min < max) {
+            min = min + delta;
+            if( min + delta < max ) {
+                ranges.append(
+                    { "name": (min + 1) &" - "&(min+delta), "value": (min + 1) &"-"&(min+delta) }
+                );
+            }
+        }
+        return ranges;
+    }
+    
 
 	public string function getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
 	    
@@ -572,26 +603,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	}
 	
-	public array function createFilterRange(min, max, steps = 1) {
-    
-        //check to avoid division by zero
-        if( steps <= 0 ) {
-            return [];
-        }
-        var delta = floor((max - min) / steps);
-        var response = [{"name" : (min) &" - "&(min + delta) ,"value": (min) &"-"&(min + delta)}];
-        while( min < max) {
-            min = min + delta;
-            if( min + delta < max ) {
-                var option = {"name" : (min + 1) &" - "&(min + delta) ,"value": (min + 1) &"-"&(min + delta)};
-                ArrayAppend(response, option);
-            }
-            
-        }
-        
-        return response;
-    }
-    
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================

@@ -77,7 +77,7 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
     property name="contentSortOrder" ormtype="integer";
 
 	property name="optionName" ormtype="string" index="IDX_OPTION_NAME";
-	property name="optionCode" ormtype="string" length="50"  index="IDX_OPTION_CODE";
+	property name="optionCode" ormtype="string" length="100"  index="IDX_OPTION_CODE";
 	property name="optionSortOrder" ormtype="integer";
 
     property name="optionGroupName" ormtype="string";
