@@ -246,7 +246,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		httpRequest.setMethod(arguments.requestType);
 		httpRequest.setCharset("utf-8");
 		httpRequest.setUrl(requestURL);
-		if(arguments.requestType == 'POST'){
+		if(len(arguments.requestContentType)){
     		httpRequest.addParam( type='header', name='Content-Type', value=arguments.requestContentType);
 		}
     	return httpRequest;
@@ -273,18 +273,27 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public any function debugDataApi( required struct requestData, string endpoint="data/read", string requestType = "POST" ){
 		getService('hibachiTagService').cfsetting(requesttimeout=100000);
 		var queryString = '';
+		var requestContentType = '';
 		if(arguments.requestType == 'GET' && structKeyExists(arguments.requestData, 'query')){
 			queryString  = '/?' & arguments.requestData.query;
 		}
 		
-    	var httpRequest = this.createHttpRequest('distone/rest/service/'&arguments.endpoint&queryString, arguments.requestType);
+		if(arguments.requestType == 'POST'){
+			
+			if(arguments.endpoint == 'data/read'){
+				requestContentType = 'application/x-www-form-urlencoded';
+			}else{
+				requestContentType = 'application/json; charset=UTF-8';
+			}
+		}
+		
+    	var httpRequest = this.createHttpRequest('distone/rest/service/'&arguments.endpoint&queryString, arguments.requestType, requestContentType);
 		
 		// Authentication headers
 		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
 		if(arguments.requestType == 'POST'){
 			
 			if(arguments.endpoint != 'data/read'){
-				httpRequest.addParam( type='header', name='Content-Type', value='application/json; charset=UTF-8');
 				httpRequest.addParam( type='body', value = arguments.requestData.query );
 			}else{
 				for( var key in arguments.requestData ){
