@@ -1,9 +1,8 @@
-import React, { useState, useCallback } from 'react'
-import debounce from 'lodash/debounce'
-import ProductListingFilter from './ListingFilter'
+import ListingFilter from './ListingFilter'
 import { useTranslation } from 'react-i18next'
 import queryString from 'query-string'
 import ContentLoader from 'react-content-loader'
+import { useRef } from 'react'
 
 const getAppliedFilters = (params, facetKey) => {
   const qs = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
@@ -26,8 +25,9 @@ const FilterLoader = props => (
   </ContentLoader>
 )
 
-const ListingSidebar = ({ isFetching, qs, hide, optionGroups, brands, categories, productTypes, keyword, recordsCount, setKeyword, updateAttribute }) => {
-  const { t, i18n } = useTranslation()
+const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, category, priceRange, productType, keyword, recordsCount, setKeyword, updateAttribute }) => {
+  const { t } = useTranslation()
+  const textInput = useRef(null)
 
   return (
     <div className="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
@@ -50,6 +50,7 @@ const ListingSidebar = ({ isFetching, qs, hide, optionGroups, brands, categories
               className="cz-filter-search form-control form-control-sm appended-form-control"
               type="text"
               defaultValue={keyword}
+              ref={textInput}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault()
@@ -64,7 +65,7 @@ const ListingSidebar = ({ isFetching, qs, hide, optionGroups, brands, categories
                   className="fa fa-search"
                   onClick={e => {
                     e.preventDefault()
-                    setKeyword(e.target.value)
+                    setKeyword(textInput.current.value)
                   }}
                 />
               </span>
@@ -80,33 +81,51 @@ const ListingSidebar = ({ isFetching, qs, hide, optionGroups, brands, categories
             )}
 
             {!isFetching &&
-              optionGroups &&
-              optionGroups.map((filter, index) => {
-                return <ProductListingFilter qs={qs} key={`attr${filter.name.replace(' ', '')}`} index={`attr${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
+              brand &&
+              brand !== {} &&
+              brand.facetKey !== hide &&
+              [brand].map(filter => {
+                return <ListingFilter qs={qs} key="brand" index={brand.facetKey} {...filter} facetKey="brand" appliedFilters={getAppliedFilters(qs, 'brand')} updateAttribute={updateAttribute} />
               })}
 
             {!isFetching &&
-              brands &&
-              brands !== {} &&
-              brands.facetKey !== hide &&
-              [brands].map((filter, index) => {
-                return <ProductListingFilter qs={qs} key={`brand${filter.name.replace(' ', '')}`} index={`brand${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
+              priceRange &&
+              priceRange !== {} &&
+              [priceRange].map(filter => {
+                return <ListingFilter qs={qs} key={priceRange.facetKey} index={priceRange.facetKey} {...filter} facetKey="priceRange" appliedFilters={getAppliedFilters(qs, 'priceRange')} updateAttribute={updateAttribute} />
+              })}
+
+            {!isFetching &&
+              attribute &&
+              attribute.subFacets &&
+              Object.keys(attribute.subFacets).map(facetKey => {
+                return [option.subFacets[facetKey]].map(filter => {
+                  return <ListingFilter qs={qs} key={facetKey} index={facetKey} {...filter} facetKey={`attribute_${facetKey}`} appliedFilters={getAppliedFilters(qs, `attribute_${facetKey}`)} updateAttribute={updateAttribute} />
+                })
               })}
             {!isFetching &&
-              categories &&
-              categories.options &&
-              categories.options.length > 0 &&
-              categories.facetKey !== hide &&
-              [categories].map((filter, index) => {
-                return <ProductListingFilter qs={qs} key={`cat${filter.name.replace(' ', '')}`} index={`cat${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
+              option &&
+              option.subFacets &&
+              Object.keys(option.subFacets).map(facetKey => {
+                return [option.subFacets[facetKey]].map(filter => {
+                  return <ListingFilter qs={qs} key={facetKey} index={facetKey} {...filter} facetKey={`option_${facetKey}`} appliedFilters={getAppliedFilters(qs, `option_${facetKey}`)} updateAttribute={updateAttribute} />
+                })
               })}
             {!isFetching &&
-              productTypes &&
-              productTypes.options &&
-              productTypes.options.length > 0 &&
-              productTypes.facetKey !== hide &&
-              [productTypes].map((filter, index) => {
-                return <ProductListingFilter qs={qs} key={`pt${filter.name.replace(' ', '')}`} index={`pt${index}`} {...filter} appliedFilters={getAppliedFilters(qs, filter.facetKey)} updateAttribute={updateAttribute} />
+              category &&
+              category.options &&
+              category.options.length > 0 &&
+              category.facetKey !== hide &&
+              [category].map(filter => {
+                return <ListingFilter qs={qs} key={category.facetKey} index={category.facetKey} {...filter} appliedFilters={getAppliedFilters(qs, 'category')} updateAttribute={updateAttribute} />
+              })}
+            {!isFetching &&
+              productType &&
+              productType.options &&
+              productType.options.length > 0 &&
+              productType.facetKey !== hide &&
+              [productType].map(filter => {
+                return <ListingFilter qs={qs} key={productType.facetKey} index={productType.facetKey} {...filter} appliedFilters={getAppliedFilters(qs, 'productType')} updateAttribute={updateAttribute} />
               })}
           </div>
         </div>
