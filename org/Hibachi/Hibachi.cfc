@@ -398,13 +398,28 @@ component extends="framework.one" {
                 if( left(ucase(key), 4) == 'SWX-' ) {
                     var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
                     
-                    //check to prevent overriding anything on rc, we can't really trust these headers
+                    //check to prevent overriding anything on rc and URL-scope, we can't really trust these headers
                     if(structKeyExists(request,'context') && !StructKeyExists(request.context, headerName)) {
                         request.context[headerName] = headers[key]; 
                     }
+                    if( !isNull(URL) && !StructKeyExists( URL, headerName) ){
+                        URL[headerName] = headers[key]; 
+                    }
                     
-                    if(key == 'SWX-cmsSiteID'){
-			            getHibachiScope().setCurrentRequestSite(getHibachiScope().getService('siteService').getSiteByCMSSiteID(headers[key]));
+                    if(key == 'SWX-siteID'){
+			            getHibachiScope().setCurrentRequestSite(
+			                getHibachiScope().getService('siteService').getSiteBySiteID( headers[key] ) 
+			            );
+			            getHibachiScope().setCurrentRequestSitePathType('siteID');
+			        }else if(key == 'SWX-siteCode'){
+			            getHibachiScope().setCurrentRequestSite(
+			                getHibachiScope().getService('siteService').getSiteBySiteCode( headers[key] ) 
+			            );
+			            getHibachiScope().setCurrentRequestSitePathType('siteCode');
+			        } else if(key == 'SWX-cmsSiteID'){
+			            getHibachiScope().setCurrentRequestSite(
+			                getHibachiScope().getService('siteService').getSiteByCMSSiteID( headers[key] )
+			            );
 			            getHibachiScope().setCurrentRequestSitePathType('cmsSiteID');
 			        }
 			    }
