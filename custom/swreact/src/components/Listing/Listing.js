@@ -80,15 +80,14 @@ const ListingPage = ({ children, preFilter, hide }) => {
     return () => {
       didCancel = true
     }
-  }, [request, setRequest, params])
-
+  }, [request, setRequest, params, loc, path])
   return (
     <>
       <PageHeader> {children}</PageHeader>
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <aside className="col-lg-4">
-            <ProductListingSidebar isFetching={request.isFetching} hide={hide} qs={loc.search} {...request.filtering} recordsCount={request.data.recordsCount} setKeyword={setKeyword} updateAttribute={updateAttribute} />
+            <ProductListingSidebar isFetching={request.isFetching} hide={hide} qs={loc.search} {...request.filtering} recordsCount={request.data.recordsCount} keyword={params['keyword']} setKeyword={setKeyword} updateAttribute={updateAttribute} />
           </aside>
           <div className="col-lg-8">
             <ProductListingToolBar hide={hide} {...request.filtering} removeFilter={updateAttribute} setSort={setSort} />
