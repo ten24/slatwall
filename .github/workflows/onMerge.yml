@@ -29,11 +29,11 @@ jobs:
         run: |
           cd custom/swreact
           npm run build
-      - name: Commit React Bundle
-        run: |
-          git config --global user.name 'ten24deploy'
-          git config --global user.email 'ten24deploy@slatwallcommerce.com'
-          git remote set-url origin https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}
-          git add .
-          git commit -am "Bot Build"
-          git push
+      # - name: Commit React Bundle
+      #   run: |
+      #     git config --global user.name 'ten24deploy'
+      #     git config --global user.email 'ten24deploy@slatwallcommerce.com'
+      #     git remote set-url origin https://x-access-token:${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}
+      #     git add .
+      #     git commit -am "Bot Build"
+      #     git push
