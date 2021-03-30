@@ -1,15 +1,13 @@
-import { HeartButton, SWImage } from '../..'
+import { HeartButton, ProductPrice, SWImage } from '..'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import useFormatCurrency from '../../../hooks/useFormatCurrency'
-import { getBrandRoute, getProductRoute } from '../../../selectors/configurationSelectors'
+import { getBrandRoute, getProductRoute } from '../../selectors/configurationSelectors'
 
 const ProductCard = props => {
   const { productName, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, listPrice, defaultProductImageFiles = [], productClearance, skuID = '' } = props
   const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
   const { t } = useTranslation()
-  const [formatCurrency] = useFormatCurrency({})
   const brand = useSelector(getBrandRoute)
   const product = useSelector(getProductRoute)
 
@@ -29,12 +27,7 @@ const ProductCard = props => {
             <Link to={`/${product}/${urlTitle}?skuid=${skuID}`}>{productName}</Link>
           </h3>
           <div className="d-flex justify-content-between">
-            <div className="product-price">
-              {calculatedSalePrice > 0 && <span className="text-accent">{formatCurrency(calculatedSalePrice)}</span>}
-              <span style={{ marginLeft: '5px' }}>
-                <small>{`${formatCurrency(listPrice)} LIST`}</small>
-              </span>
-            </div>
+            <ProductPrice salePrice={calculatedSalePrice} listPrice={listPrice} />
           </div>
         </div>
       </div>

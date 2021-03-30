@@ -1,4 +1,4 @@
-import { CartLineItem, CartPromoBox, Layout, OrderNotes, PromotionalMessaging } from '../../components'
+import { CartLineItem, CartPromoBox, Layout, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -8,7 +8,7 @@ import useFormatCurrency from '../../hooks/useFormatCurrency'
 import PageHeader from '../../components/PageHeader/PageHeader'
 
 const Cart = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const cart = useSelector(state => state.cart)
   let history = useHistory()
