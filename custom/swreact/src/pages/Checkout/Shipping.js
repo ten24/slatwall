@@ -84,7 +84,6 @@ const PickupLocationPicker = () => {
               timeCaption="Time"
               dateFormat="MM/dd/yyyy h:mm aa"
               onChange={pickupDate => {
-                console.log('pickupDate', pickupDate.toLocaleString())
                 dispatch(
                   setPickupDate({
                     pickupDate: pickupDate.toLocaleString().replace(',', ''),

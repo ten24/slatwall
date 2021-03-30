@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { Layout } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
-import { Switch, Route, useRouteMatch, useLocation } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, useLocation, Redirect } from 'react-router-dom'
 import { getUser } from '../../actions/userActions'
 import CreateAccount from '../../components/Account/CreateAccount/CreateAccount'
 import ForgotPassword from '../../components/Account/ForgotPassword/ForgotPassword'
 import { isAuthenticated } from '../../utils'
+import queryString from 'query-string'
 
 // I think we should be prelaoding these https://medium.com/maxime-heckel/react-lazy-a-take-on-preloading-views-cc90be869f14
 const AccountLogin = React.lazy(() => import('../../components/Account/AccountLogin/AccountLogin'))
@@ -40,7 +41,11 @@ const MyAccount = () => {
     if (isAuthenticated() && !user.isFetching && !user.accountID.length) {
       dispatch(getUser())
     }
-  }, [dispatch, isAuthenticated, user])
+  }, [dispatch, user])
+  if (isAuthenticated() && loc.search.includes('redirect=')) {
+    const params = queryString.parse(loc.search)
+    return <Redirect to={params.redirect} />
+  }
 
   const path = loc.pathname.split('/').reverse()
   return (

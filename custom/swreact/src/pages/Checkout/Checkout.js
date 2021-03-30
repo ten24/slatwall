@@ -1,4 +1,4 @@
-import { CartPromoBox, Layout, OrderNotes, PromotionalMessaging, Spinner } from '../../components'
+import { CartPromoBox, Layout, OrderNotes, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -11,7 +11,6 @@ import ReviewSlide from './Review'
 
 import { checkOutSteps, REVIEW } from './steps'
 import { placeOrder } from '../../actions/cartActions'
-import useRedirect from '../../hooks/useRedirect'
 import { isAuthenticated } from '../../utils'
 import { useEffect } from 'react'
 // https://www.digitalocean.com/community/tutorials/how-to-create-multistep-forms-with-react-and-semantic-ui
@@ -26,7 +25,7 @@ const getCurrentStep = path => {
 }
 
 const StepsHeader = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const loc = useLocation()
   let history = useHistory()
 
@@ -44,6 +43,7 @@ const StepsHeader = () => {
         return (
           <a
             className={`step-item ${progressSate}`}
+            href={`/${step.name}`}
             key={step.progress}
             onClick={e => {
               e.preventDefault()
@@ -71,7 +71,7 @@ const CheckoutSideBar = () => {
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const currentStep = getCurrentStep(path)
   const [formatCurrency] = useFormatCurrency({})
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
 
   return (
@@ -123,20 +123,17 @@ const CheckoutSideBar = () => {
   )
 }
 const Checkout = () => {
-  const cart = useSelector(state => state.cart)
-  const { isFetching } = cart
   let match = useRouteMatch()
   const loc = useLocation()
   const history = useHistory()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const currentStep = getCurrentStep(path)
-  const [redirect, setRedirect] = useRedirect({ location: 'login', time: 0 })
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      history.push('/my-account')
+      history.push(`/my-account?redirect=${loc.pathname}`)
     }
-  }, [isAuthenticated, history])
+  }, [history, loc])
 
   return (
     <Layout>

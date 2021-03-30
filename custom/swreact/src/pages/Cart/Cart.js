@@ -1,4 +1,4 @@
-import { CartLineItem, CartPromoBox, Layout, OrderNotes, PromotionalMessaging } from '../../components'
+import { CartLineItem, CartPromoBox, Layout, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -8,7 +8,7 @@ import useFormatCurrency from '../../hooks/useFormatCurrency'
 import PageHeader from '../../components/PageHeader/PageHeader'
 
 const Cart = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const cart = useSelector(state => state.cart)
   let history = useHistory()
@@ -24,7 +24,7 @@ const Cart = () => {
         <div className="row">
           <section className="col-lg-8">
             <div className="d-flex justify-content-between align-items-center pt-3 pb-2 pb-sm-5 mt-1">
-              <h2 className="h6 mb-0">{t('frontend.product.products')}</h2>
+              <h2 className="h6 mb-0">{t('frontend.cart.heading')}</h2>
               <button
                 className="btn btn-outline-primary btn-sm pl-2"
                 disabled={isFetching}

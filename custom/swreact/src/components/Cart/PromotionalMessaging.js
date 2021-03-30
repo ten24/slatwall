@@ -4,7 +4,7 @@ const PromotionalMessaging = () => {
   const appliedPromotionMessages = useSelector(state => state.cart.appliedPromotionMessages)
   return (
     <>
-      {appliedPromotionMessages.length &&
+      {appliedPromotionMessages.length > 0 &&
         appliedPromotionMessages.map(({ message }, index) => {
           return (
             <div key={index} className="alert alert-success alert-wicon" role="alert">
