@@ -38,6 +38,7 @@
     "jasmine-core": "^2.8.0",
     "json-loader": "^0.5.4",
     "less": "*",
+    "lz-string": "^1.4.4",
     "ng-annotate-loader": "^0.6.1",
     "ng-annotate-patched": "^1.12.0",
     "ng-annotate-webpack-plugin": "^0.3.0",

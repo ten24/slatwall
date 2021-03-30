@@ -107,11 +107,12 @@
 			// Add the entity by it's name to the arguments for calling events
 	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			
+			// Do delete validation
+			// validating before announcing the event, so that the handler can check for errors and do some conditional logic 
+			arguments.entity.validate(context="delete"); 
+			
 			// Announce Before Event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
-			
-			// Do delete validation
-			arguments.entity.validate(context="delete");
 			
 			// If the entity Passes validation
 			if(!arguments.entity.hasErrors()) {
@@ -475,6 +476,8 @@
 					return onMissingGetEntityProcessContexts( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else if(right(lCaseMissingMethodName, 12) == "eventoptions"){
 					return onMissingGetEntityEventOptions( arguments.missingMethodName, arguments.missingMethodArguments );	
+				} else if ( lCaseMissingMethodName.startsWith( 'get' ) && right(lCaseMissingMethodName, 16) == "publicProperties") {
+					return this.onMissingPublicPropertiesMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else {
 					return onMissingGetMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
@@ -509,7 +512,21 @@
 		private function onMissingDeleteMethod( required string missingMethodName, required struct missingMethodArguments ) {
 			return delete( arguments.missingMethodArguments[ 1 ] );
 		}
-	
+		
+		private function onMissingPublicPropertiesMethod( required string missingMethodName, required struct missingMethodArguments ) {
+			var lCaseMissingMethodName = lCase( arguments.missingMethodName );
+		
+			var entityName = UcFirst( lCaseMissingMethodName.substring( 3, (len(lCaseMissingMethodName) - 16) ) );
+			
+			return this.getPublicPropertiesForEntityName(entityName);
+		}
+		
+		/**
+		 * Method to return list of public attribute codes
+		 * */
+		public array function getPublicPropertiesForEntityName(required string entityName) {
+			return [];
+		}
 	
 		/**
 		 * Provides dynamic get methods, by convention, on missing method:
@@ -986,7 +1003,6 @@
 		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public any function getServiceByEntityName( required string entityName ) {
-			
 			// Use the short version of the entityName
 			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
 			
@@ -1863,7 +1879,7 @@
 							entity.updateCalculatedProperties(true);
 							logHibachi('flushed',true);
 							//commit batch
-							ormFlush();
+							this.getHibachiScope().hibachiORMFlush();
 							
 						}catch(any e){
 							logHibachi('#attributes.entityID# - error #e.message#',true);

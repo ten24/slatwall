@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,14 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="brand";
 
-<cfparam name="rc.brand" type="any">
-<cfparam name="rc.edit" type="boolean">
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.brand#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.brand#" edit="#rc.edit#" />
-		
-		<hb:HibachiEntityDetailGroup object="#rc.brand#">
-			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/logo" text="#$.slatwall.rbkey('admin.brand.logo')#" />
-			<hb:HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" count="#rc.brand.getProductsCount()#"/>
-			<hb:HibachiEntityDetailItem property="vendors" />
-			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/brandsettings" />
-			
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.brand.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.brand#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
-
+	// Data Properties
+	property name="imageFile";
+	property name="uploadFile" hb_formFieldType="file" hb_fileAcceptMIMEType="image/gif,image/jpeg,image/pjpeg,image/png,image/x-png" hb_fileAcceptExtension=".jpeg,.jpg,.png,.gif";
+	
+}
