@@ -9,6 +9,7 @@
     "angular": "^1.6.4",
     "angular-chart.js": "^1.1.1",
     "angularjs-toaster": "^3.0.0",
+    "bigdecimal": "^0.6.1",
     "blueimp-md5": "^1.1.0",
     "braintree-web": "^3.57.0",
     "cachefactory": "^3.0.0",

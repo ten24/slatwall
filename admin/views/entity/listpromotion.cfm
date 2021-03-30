@@ -65,7 +65,7 @@ Notes:
 	</hb:HibachiEntityActionBar>
 	
 	<cfset promotionCollectionList = getHibachiScope().getService('promotionService').getPromotionCollectionList()>
-	<cfset serchableDisplayProperties = "promotionName,createdDateTime,modifiedDateTime,activeFlag,currentFlag"/>
+	<cfset serchableDisplayProperties = "promotionName,createdDateTime,modifiedDateTime,activeFlag"/>
 	<cfset promotionCollectionList.setDisplayProperties(serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
