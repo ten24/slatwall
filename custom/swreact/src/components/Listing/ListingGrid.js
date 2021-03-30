@@ -1,4 +1,4 @@
-import ProductCard from '../Account/ProductCard/ProductCard'
+import ProductCard from '../ProductCard/ProductCard'
 import ContentLoader from 'react-content-loader'
 
 const ListingGridLoader = props => (

@@ -373,7 +373,6 @@ export const addBillingAddress = (params = {}) => {
 export const addPayment = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
-    console.log('params', params)
     const req = await SlatwalApiService.cart.addPayment({
       ...params,
       returnJSONObjects: 'cart,account',

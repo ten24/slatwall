@@ -236,7 +236,7 @@
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
 	    	
 			// If data was passed in to this method then populate it with the new data
-	        if(structKeyExists(arguments,"data")){
+	        if(structKeyExists(arguments,"data") && isStruct(arguments.data) && !StructIsEmpty(arguments.data)){
 	        	// Populate this object
 				arguments.entity.populate(argumentCollection=arguments);
 	

@@ -52,10 +52,10 @@
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "updateCFM": "node buildtools/build.js",
-    "migrateTranslations": "node buildtools/i18n.js",
+    "mt": "node buildtools/i18n.js",
     "start": "export PORT=3006; react-scripts start",
-    "build:c9": "npm run migrateTranslations; PUBLIC_URL=/custom/swreact/build react-scripts build; npm run updateCFM",
-    "build": "npm run migrateTranslations; PUBLIC_URL=/custom/swreact/build react-scripts build; npm run updateCFM",
+    "build:c9": "npm run mt; PUBLIC_URL=/custom/swreact/build react-scripts build; npm run updateCFM",
+    "build": "npm run mt; PUBLIC_URL=/custom/swreact/build react-scripts build; npm run updateCFM",
     "build:local": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

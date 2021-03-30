@@ -9,6 +9,8 @@
     </hb:HibachiEntityActionBar>
         <hb:HibachiPropertyRow>
             <hb:HibachiPropertyList>
+                <hb:HibachiPropertyDisplay object="#rc.processObject#" property="endpoint" edit="#rc.edit#" />
+                <hb:HibachiPropertyDisplay object="#rc.processObject#" property="httpMethod" edit="#rc.edit#" />
                 <hb:HibachiPropertyDisplay object="#rc.processObject#" property="erpQuery" edit="#rc.edit#" />
                 <hb:HibachiPropertyDisplay object="#rc.processObject#" property="columns" edit="#rc.edit#" />
                 <hb:HibachiPropertyDisplay object="#rc.processObject#" property="amountPerPage" edit="#rc.edit#" />

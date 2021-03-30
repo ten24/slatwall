@@ -77,11 +77,9 @@ const CreditCardDetails = ({ onSubmit }) => {
                 selectedAccountID={formik.values.accountAddressID}
                 onSelect={value => {
                   formik.setFieldValue('accountAddressID', value)
-                  console.log('onSelect', value)
                 }}
                 onSave={values => {
                   dispatch(addNewAccountAndSetAsBilling({ ...values }))
-                  console.log('onSave', values)
                 }}
               />
             </>
