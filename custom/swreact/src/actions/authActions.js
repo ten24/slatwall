@@ -5,6 +5,8 @@ export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
 export const ERROR_LOGIN = 'ERROR_LOGIN'
 export const LOGOUT = 'LOGOUT'
+export const UPDATE_TOKEN = 'UPDATE_TOKEN'
+export const NO_TOKEN = 'NO_TOKEN'
 
 export const requestLogin = () => {
   return {
@@ -49,6 +51,16 @@ export const softLogout = () => {
     dispatch(requestLogOut())
     dispatch(clearUser())
   }
+}
+
+export const updateToken = response => {
+  if (response.token) {
+    return {
+      type: UPDATE_TOKEN,
+      payload: response.token,
+    }
+  }
+  return { type: NO_TOKEN }
 }
 
 export const login = (email, password) => {
