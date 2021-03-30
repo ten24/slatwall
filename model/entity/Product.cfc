@@ -154,7 +154,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	 
+	
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -1472,6 +1472,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
 
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
+			
+			variables.assignedAttributeSetSmartList.addOrder("sortOrder|ASC");
 
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";

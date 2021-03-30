@@ -696,7 +696,7 @@
 								</cfif>
 								<!--- Sortable --->
 								<cfif thistag.sortable>
-									<td class="s-table-sort"><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
+									<td class="s-table-sort"><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fas fa-arrows-alt"></i></a></td>
 								</cfif>
 
 								<cfloop array="#thistag.columns#" index="column">

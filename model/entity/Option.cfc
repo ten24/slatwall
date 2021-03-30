@@ -73,8 +73,9 @@ component displayname="Option" entityname="SlatwallOption" table="SwOption" pers
 	property name="productImages" singularname="productImage" cfc="Image" fieldtype="many-to-many" linktable="SwImageOption" fkcolumn="optionID" inversejoincolumn="imageID" inverse="true" lazy="extra"; 
 	
 	// Remote properties
-	property name="remoteID" ormtype="string";
-	
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
@@ -157,6 +158,18 @@ component displayname="Option" entityname="SlatwallOption" table="SwOption" pers
 		arguments.promotionQualifier.addExcludedOption( this );    
 	}
 	
+	
+	public boolean function isUniqueInOptionGroup(){
+		var optionCode = this.getOptionCode();
+		var optionGroupID = this.getOptionGroup().getOptionGroupID();
+		var optionID = getDAO('optionDAO').getOptionIDByOptionGroupIDAndOptionCode(optionGroupID,optionCode);
+		
+	   if(len(optionID) && optionID != this.getoptionID() ){
+	   		return false;
+	   }
+	   
+	   return true;
+	}
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
