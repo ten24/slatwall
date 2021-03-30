@@ -1,6 +1,7 @@
 component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true" output="false"{
 
 	property name="fw";
+	property name="hibachiTagService";
 	property name="integrationService";
 	property name="slatwallProductSearchDAO";
 	property name="slatwallProductSearchService";
@@ -22,6 +23,8 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	
 	//rebuilds an algolia index
 	public void function reBuildIndex(required struct rc){
+	    // set timeout to 10 minutes
+	    this.getHibachiTagService().cfsetting( requestTimeout=10*60 );
 	    this.getSlatwallProductSearchDAO().rePopulateProductFilterFacetOptionTable();
             
 	    getFW().setView("main.blank");

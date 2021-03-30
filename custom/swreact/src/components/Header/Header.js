@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
@@ -83,11 +83,13 @@ const MegaMenu = props => {
 }
 
 function Header() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   let history = useHistory()
   const content = useSelector(state => state.content)
   const menuItems = extractMenuFromContent(content)
   const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
+  const textInput = useRef(null)
+  const mobileTextInput = useRef(null)
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -106,6 +108,7 @@ function Header() {
                   <input
                     className="form-control appended-form-control"
                     type="text"
+                    ref={textInput}
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault()
@@ -113,9 +116,9 @@ function Header() {
                           pathname: '/products',
                           search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
                         })
+                        textInput.current.value = ''
                       }
                     }}
-                    // onChange={e => debounced.callback(e.target.value)}
                     placeholder={t('frontend.search.placeholder')}
                   />
                   <div className="input-group-append-overlay">
@@ -126,8 +129,9 @@ function Header() {
                           e.preventDefault()
                           history.push({
                             pathname: '/products',
-                            search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                            search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
                           })
+                          textInput.current.value = ''
                         }}
                         className="far fa-search"
                       ></i>
@@ -174,10 +178,35 @@ function Header() {
               <div className="input-group-overlay d-lg-none my-3 ml-0">
                 <div className="input-group-prepend-overlay">
                   <span className="input-group-text">
-                    <i className="far fa-search"></i>
+                    <i
+                      className="far fa-search"
+                      onClick={e => {
+                        e.preventDefault()
+                        history.push({
+                          pathname: '/products',
+                          search: mobileTextInput.stringify({ keyword: mobileTextInput.current.value }, { arrayFormat: 'comma' }),
+                        })
+                        mobileTextInput.current.value = ''
+                      }}
+                    />
                   </span>
                 </div>
-                <input className="form-control prepended-form-control" type="text" placeholder={t('frontend.search.placeholder')} />
+                <input
+                  className="form-control prepended-form-control"
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      history.push({
+                        pathname: '/products',
+                        search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                      })
+                      mobileTextInput.current.value = ''
+                    }
+                  }}
+                  type="text"
+                  ref={mobileTextInput}
+                  placeholder={t('frontend.search.placeholder')}
+                />
               </div>
 
               <ul className="navbar-nav nav-categories">

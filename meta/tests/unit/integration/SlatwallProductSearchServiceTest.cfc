@@ -54,282 +54,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		super.setup();
 		variables.service = variables.mockService.getSlatwallProductSearchServiceMock();
 	}
-
-	/**
-	* @test
-	*/
-	public void function getProductFilterFacetOptions_should_have_required_filter_types(){
-		
-		expect( this.getService()
-            .getHibachiCacheService()
-            .hasCachedValue('calculated_product_filter_facet_options')
-        ).toBeFalse();
-		
-	    var facets = this.getService().getProductFilterFacets();
-		var facetOptions = this.getService().getProductFilterFacetOptions();
-
-        dump(facetOptions);
-        
-        facets.each( function(thisFacet){
-            expect( facetOptions ).toHaveKey(thisFacet.id);
-        });
-        
-        expect( this.getService()
-            .getHibachiCacheService()
-            .hasCachedValue('calculated_product_filter_facet_options')
-        ).toBeTrue();
-	}
-	
-	/**
-	* @test
-	*/
-	public void function getProductFilterFacets_should_have_required_metadata(){
-	    
-	    var facets = this.getService().getProductFilterFacets();
-	    debug(facets);
-	    
-	    expect(facets).toBeTypeOf('array');
-	    
-	    facets.each( function(facet){
-            expect( facet ).toHaveKey('priority');
-            expect( facet ).toHaveKey('selectType');
-	    });
-	}
-	
-	
-	/**
-	* @test
-	* 
-	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
-	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_not_modify_cached_calculated_facet_options(){
-	    
-	    
-	    var oldFacetOptions = structCopy( this.getService().getProductFilterFacetOptions() );
-	    var selectedFacets = this.makeRandomSelectedFilters();
-	    dump(selectedFacets);
-	    
-	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
-	    var newFacetOptions = this.getService().getProductFilterFacetOptions();
-	    
-	    expect(
-	      this.StructEquals(oldFacetOptions, newFacetOptions )  
-	    ).toBeTrue("calculatePopentialFaceteOptionsForSelectedFacetOptions modified the cached facet options");
-	}
-	
-	
-	/**
-	* @test
-	* 
-	* This test checks if there're any wrong IDs, from other facet-options. [wrong entity IDs];
-	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_return_the_right_facet_option_IDs(){
-	    
-	    
-	    var facetOptions = this.getService().getProductFilterFacetOptions();
-	    var selectedFacets = this.makeRandomSelectedFilters();
-
-	    dump(selectedFacets);
-	    
-
-	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
-	    
-	    potentialFacetOptions.each( function(thisFacetName){
-	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
-	        var thisFacetAllAvailableOptions = facetOptions[ thisFacetName ];
-	        
-	        thisFacetPotentialOptions.each( function(optionID){
-	            expect(thisFacetAllAvailableOptions).toHaveKey( optionID );
-	        });
-	    });
-
-	   // dump(potentialFacetOptions);
-	}
-	
-	
-	/**
-	* @test
-	* 
-	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
-	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_return_the_right_facet_option_relatations_option_IDs(){
-	    
-	    
-	    var facetOptions = this.getService().getProductFilterFacetOptions();
-	    var selectedFacets = this.makeRandomSelectedFilters();
-	    dump(selectedFacets);
-	    
-	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
-	    
-	    potentialFacetOptions.each( function(thisFacetName){
-	        var thisFacetPotentialOptions = potentialFacetOptions[ thisFacetName ];
-            // dump("thisFacetName");
-	        // dump(thisFacetName);
-	        // dump(thisFacetPotentialOptions);
-	        thisFacetPotentialOptions.each( function(optionID){
-	            var potentialFacetOption = thisFacetPotentialOptions[ optionID ];
-                // dump("porential-facet-option");
-	            // dump(optionID);
-	            // dump(potentialFacetOption);
-	            potentialFacetOption.relations.each( function(relatedFacetName){
-	                var relatedFacetPotentialOptions = potentialFacetOption.relations[ relatedFacetName ];
-	                var relatedFacetAllAvailableOptions = facetOptions[ relatedFacetName ];
-                    // dump("porential-facet-option's related facet");
-                    // dump(relatedFacetName);
-    	            // dump(relatedFacetPotentialOptions);
-                    relatedFacetPotentialOptions.each( function(optionID){
-        	            expect(relatedFacetAllAvailableOptions).toHaveKey( optionID );
-        	        });
-	            });
-	        });
-	    });
-
-	   // dump(potentialFacetOptions);
-	}
-	
-	
-	
-	
-	/**
-	* @test
-	* 
-	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
-	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_return_all_facet_options_when_no_filters_are_applied(){
-	    
-	    var oldFacetOptions = structCopy( this.getService().getProductFilterFacetOptions() );
-
-	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions({});
-	    
-	     expect( this.StructEquals(oldFacetOptions, potentialFacetOptions )  )
-	     .toBeTrue("calculatePopentialFaceteOptionsForSelectedFacetOptions didn't return all facet's all options when no filters are applied");
-	}
-	
-	
-	/**
-	 * @test
-	 * 
-	 * This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
-	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_return_all_brands_regardless_selected(){
-	    
-	    
-	    var allFacetOptions = this.getService().getProductFilterFacetOptions();
-	    
-        var potentialBrandsOptions = structCopy( allFacetOptions['brands'] ); 
-        // dump('potentialBrandsOptions:');
-        // dump(potentialBrandsOptions);
-        
-	    var selectedFacets = this.makeRandomSelectedFilters();
-	    var selectedBrands = selectedFacets.brands;
-	    
-	    dump('selectedBrands:');
-	    dump(selectedBrands);
-	    
-	    var calculatedPotentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions({
-	        'brands': selectedBrands
-	    });
-	    
-    //     dump('calculatedPotentialFacetOptions:');
-	   // dump(calculatedPotentialFacetOptions);
-        
-        potentialBrandsOptions.each(function(thisBandID){
-            expect(calculatedPotentialFacetOptions.brands).toHaveKey( thisBandID );
-        });
-	}
-	
-	
-	        
-	/**
-	* @test
-	* 
-	* This test times the calculatePopentialFaceteOptionsForSelectedFacetOptions
-	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_be_fast(){
-	    
-	    
-	    var selectedFacets = this.makeRandomSelectedFilters();
-	    dump(selectedFacets);
-	    
-	    var start = getTickCount();
-	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
-	   // sleep(1);
-	   var timeTook = getTickCount()-start;
-	   
-	    expect( timeTook < 2 ).toBeTrue('it should take ~1 ms ;) but it took #timeTook#');
-    }
-    
-    
-    
-    /**
-	 *  @test
-	 *  
-	*/
-	public void function getPotentialProductFilterFacetOptions_should_be_fast(){
-
-// 	    var brandIDs = "2c9480847604f663017604f9f91804ca,2c99808475ffd5200175ffd7e4660009,2c9880847771e465017771e5695b0005";
-
-// 		var optionIDs = "2c91808372e5f4500172e6e495db0045,2c91808372e5f4500172e6e495db0237,2c91808372e5f4500172e6e6e05a0078"; 
-		
-// 		var productTypeIDs = "2c99808475ffd5200175ffd7e43b0006,2c938084760493a2017604c68a331530,2c99808475ffd5200175ffd810cc0109";
-		
-// 		var args = {};
-		
-// 		if( RandRange(1,10) > RandRange(1,10) ){
-// 		    args['productTypeIDs'] = productTypeIDs;
-// 		}
-		
-// 		if( RandRange(1,10) > RandRange(1,10) ){
-// 		    args['brandIDs'] = brandIDs;
-// 		}
-		
-// 		if( RandRange(1,10) > RandRange(1,10) ){
-// 		    args['optionIDs'] = optionIDs;
-// 		}
-		
-// 		dump("args : ");
-// 		dump(args);
-		
-        // var query = this.getService().getSlatwallProductSearchDAO().getPotentialProductFilterFacetOptions(
-        //   argumentCollection = args 
-        // );
-        
-        // var potentialFilters = this.getService().getPotentialFilterFacetsAndOptions(
-        //     appliedFilters = args 
-        // );
-        // dump(potentialFilters);
-        
-        // var data = this.getService().getBaseSearchCollectionList(argumentCollection = args );
-        
-        // // dump( data.collectionList.getCollectionConfigStruct() );
-        // dump( data.collectionList.getSQL() );
-        
-        // dump( data.collectionList.getRecordsCount() );
-        // dump( data.collectionList.getPageRecords() );
-        
-        var data = {
-            "productType": "",
-            "category": "",
-            // "brands": "Yale,Lab",
-            "options": "",
-            "attributeOptions": "",
-            "keyword": "Serrated",
-        };
-        dump(data);
-        
-        var result = this.getService().getProducts(argumentCollection=data)
-        
-        dump(result);
-    }
-	
 	
 	/**
 	 *  @test
 	 *  
 	*/
 	public void function getProductFilterFacetOptions_should_be_fast(){
-
-        
         var start = getTickCount();
         
         // this.getService().getSlatwallProductSearchDAO().rePopulateProductFilterFacetOptionTable();
@@ -340,24 +70,17 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		
 		var productIDs = "2c9480847650a077017650af142f0970, 402810847651d69c017651f51a890c2b"; 
         // this.getService().getSlatwallProductSearchDAO().recalculateProductFilterFacetOprionsForProductsAndSkus(productIDs=productIDs);
-		
-		
+
         this.getService().getSlatwallProductSearchDAO()
-        .recalculateProductFilterFacetOprionsForProductsAndSkus(
+        .recalculateProductFilterFacetOptionsForProductsAndSkus(
             productIDs=productIDs,
             skuIDs=skuIDs
         );
 
-		
 		var timeTook = getTickCount()-start;
-
 		dump("getProductFilterFacetOptions took #timeTook#");
-		
 		expect( timeTook < 10*1000 ).toBeTrue('it should take less than 10 sec. ;) but it took #timeTook#');
-
-		
 	}
-	
 	
 	/**
 	* @test
@@ -365,15 +88,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	* This test checks if there're any wrong IDs in facet-relations, [from other facet-options]
 	*/
 	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_should_only_return_selected_brands_possible_relations_at_max(){
-	    
-	    
 	    var allFacetOptions = this.getService().getProductFilterFacetOptions();
 	    var selectedFacets = this.makeRandomSelectedFilters();
 	    var selectedBrands = selectedFacets.brands;
-	    
 	   // dump('selectedBrands:');
 	   // dump(selectedBrands);
-	    
 	    var calculatedPotentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions({
 	        'brands': selectedBrands
 	    });
@@ -410,24 +129,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
                expectedBrandRelations[brandOptionRelationName].append(thisBrandOption.relations[brandOptionRelationName]);
             });
         });
-        
-        
         // dump('expectedBrandRelations:');
         // dump(expectedBrandRelations);
-        
         calculatedPotentialFacetOptions.each(function(thisFacetName){
             if(thisFacetName == 'brands'){
                 return;    
             }
-            
             var calculatedThisFacetNameOptions = calculatedPotentialFacetOptions[ thisFacetName ];
             calculatedThisFacetNameOptions.each(function(thisOptionID){
                 expect( expectedBrandRelations[thisFacetName] ).toHaveKey( thisOptionID );
             });
         });
-        
 	}
-	
 	
 	/**
 	* @test
@@ -467,123 +180,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
-	
-	
-
-	
-	/**
-	* @test	
-	* 
-	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_test(){
-	    
-	    
-	    var selectedFacets = {
-	        'brands': [
-	            '2c988084760a65cb01760a728e7a0776', 
-	            '2c99808475ffd5200175ffd7e4660009', 
-	            '2c938084760493a2017604a0da590006'
-	        ],
-	        'options': [
-	            '2c928084760415380176045d4fad0113',
-	            '2c91808372e5f4500172e6e495db0077',
-	            '2c91808372e5f4500172e6e6e05a0071',
-	            '2c91808575d3a357017606e194fa009c',
-	            '2c91808372e5f4500172e6e495db0091'
-	       ]
-	    };
-	    dump("selectedFacets : ");
-	    dump(selectedFacets);
-	    
-	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
-	    dump("potentialFacetOptions : ");
-	    dump(potentialFacetOptions);
-	    
-	}
-	
-	
-	/**
-	* @test	
-	* 
-	*/
-	public void function calculatePopentialFaceteOptionsForSelectedFacetOptions_collectionTest(){
-	    
-	    
-	    var selectedFacets = this.makeRandomSelectedFilters();
-	    dump("selectedFacets : ");
-	    dump(selectedFacets);
-	    
-	    var potentialFacetOptions = this.getService().calculatePopentialFaceteOptionsForSelectedFacetOptions(selectedFacets);
-	    dump("potentialFacetOptions : ");
-	    dump(potentialFacetOptions);
-	    
-	    var skuCollectionList = this.getService().getSkuCollectionList();
-		skuCollectionList.setDisplayProperties("");
-		skuCollectionList.addDisplayProperty("price");
-		skuCollectionList.addDisplayProperty("skuID");	
-		skuCollectionList.addDisplayProperty("imageFile");
-	    skuCollectionList.addDisplayProperty("product.productID");
-		skuCollectionList.addDisplayProperty('product.productName');
-		skuCollectionList.addDisplayProperty("product.calculatedQATS");
-		skuCollectionList.addDisplayProperty("calculatedSkuDefinition");
-		skuCollectionList.addDisplayProperty('product.calculatedSalePrice');
-	    
-	    
-	    skuCollectionList.addFilter("product.activeFlag",1);
-		skuCollectionList.addFilter("product.publishedFlag",1);
-		skuCollectionList.addFilter("publishedFlag",1);
-		
-		for(var thisFacetName in selectedFacets ){
-		    var potentialThisFacetOptions = potentialFacetOptions[ thisFacetName ];
-		    var filteredFacetOptions = selectedFacets[thisFacetName].filter( function(optionID){
-		        return structKeyExists(potentialThisFacetOptions, optionID);
-		    });
-		    selectedFacets[thisFacetName] = filteredFacetOptions;
-		}
-		
-		dump("Filtered selectedFacets: ");
-		dump(selectedFacets);
-		
-		for(var thisFacetName in selectedFacets ){
-		    if(selectedFacets[thisFacetName].isEmpty() ){
-		        continue;    
-		    }
-		    
-		    var filterIDsList = selectedFacets[thisFacetName].toList();
-		    
-		    switch (thisFacetName) {
-	               case 'brands':
-		                skuCollectionList.addFilter('product.brand.brandID', filterIDsList, 'IN' );
-		            break;
-    	           case 'productTypes':
-		                skuCollectionList.addFilter('product.productType.productTypeID', filterIDsList, 'IN' );
-    	            break;
-    	           case 'options':
-    	               	skuCollectionList.addFilter('options.optionID', filterIDsList, 'IN' );
-		            break;
-		           case 'optionGroups':
-		            // TODO: figure-out [either options and/or option-groups ] 
-		            break;
-		    }
-		}
-		
-		
-		dump("collection hql : ");
-		dump( skuCollectionList.getHQL() );
-		
-		dump("collection hql-params : ");
-		dump( skuCollectionList.getHQLParams() );
-		
-		dump("collection sql : ");
-		dump( skuCollectionList.getSQL() );
-        
-        // dump( getCollectionConfig.getRecords() );
-	
-    }
-
-	
 	/**************** Utilitis ****************/
-	
 	
 	public struct function makeRandomSelectedFilters(){
 	    
@@ -672,7 +269,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    return selectedFacets;
 	}
-	
 	
     /**
 	 * Returns whether two structures are equal, going deep.

@@ -34,6 +34,8 @@ class SWPricingManagerController{
         this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "" ,{isEditable:true});
         this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", {isVisible:false,isSearchable:false});
         this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", {isVisible:false,isSearchable:false});
+        // remove Image Path from display Property as if any product imported not have image then pricing tab will not be displayed.
+        //this.skuPriceCollectionConfig.addDisplayProperty("sku.imagePath", "", {isVisible:false,isSearchable:false});
         this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", {isVisible:false,isSearchable:false});
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
         this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
