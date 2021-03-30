@@ -3891,10 +3891,11 @@ component  accessors="true" output="false"
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         param name="arguments.data.enforceAuthorization" default="false";
-        //Todo : Add public Properties logic here to fetch default properties
-		
+        
+        //Use public Properties logic here to fetch default properties
+		var entityService = getHibachiService().getServiceByEntityName(arguments.data.entityName);
 		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && !structKeyExists(arguments.data,'defaultColumns')){
-			arguments.data['defaultColumns'] = true;
+			entityService.invokeMethod('get#arguments.data.entityName#PublicProperties');
 		}
 		
         if(!isNull(arguments.data.ID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.ID)){
