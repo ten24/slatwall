@@ -177,6 +177,28 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 
 		return getService('hibachiCacheService').getCachedValue(cacheKey);
 	}
-		
 	
+	/**
+	 * Method to return list of public attribute codes
+	 * */
+	public array function getPublicPropertiesForEntityName(required string entityName) {
+		var cacheKey = "getPublicPropertiesByEntityName-#lcase(arguments.entityName)#";
+		if(!getService('hibachiCacheService').hasCachedValue(cacheKey)) {
+			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
+			attributeCollectionList.setDisplayProperties('attributeCode');
+			attributeCollectionList.addFilter('publicPropertyFlag', 1);
+			attributeCollectionList.addFilter('attributeSet.attributeSetObject', arguments.entityName);
+			var attributeRecords = attributeCollectionList.getRecords(formatRecords = false);
+			
+			var response = [];
+			
+			for( var attribute in attributeRecords) {
+				ArrayAppend( response , attribute['attributeCode'] );
+			}
+			
+			getService('hibachiCacheService').setCachedValue(cacheKey, response);
+		}
+			
+		return getService('hibachiCacheService').getCachedValue(cacheKey);
+	}
 }

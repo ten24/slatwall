@@ -263,6 +263,11 @@ component  extends="HibachiService" accessors="true" {
 
 			//attributeModelCache
 			clearAttributeMetaDataCache(arguments.attribute.getAttributeSet());
+			
+			//clear public properties cache
+			var attributeEntityName = arguments.attribute.getAttributeSet().getAttributeSetObject();
+			getHibachiCacheService().resetCachedKey("getPublicPropertiesByEntityName-#lcase(attributeEntityName)#");
+			
 		} else {
 		    this.getHibachiScope().setORMHasErrors(true);
 		}
