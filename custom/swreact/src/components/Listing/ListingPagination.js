@@ -83,8 +83,6 @@ const ListingPagination = ({ recordsCount, pageNeighbours = 2, currentPage, tota
   }
 
   const pages = calculatePageNumbers(currentPage, pageNeighbours, totalPages)
-  console.log('totalPages', totalPages)
-  console.log('recordsCount', recordsCount)
   if (!recordsCount || recordsCount.length === 0 || totalPages === 1) return null
   return (
     <nav className="d-flex justify-content-between pt-2" aria-label="Page navigation">

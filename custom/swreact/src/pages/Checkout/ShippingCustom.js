@@ -120,7 +120,6 @@ const ShippingSlide = ({ currentStep }) => {
   if (orderFulfillments[0] && orderFulfillments[0].shippingMethod) {
     selectedShippingMethodID = orderFulfillments[0].shippingMethod.shippingMethodID
   }
-  console.log('selectedAccountID', selectedAccountID)
   if (showAddress && selectedAccountID && selectedAccountID.length) {
     setShowAddress(false)
   }
