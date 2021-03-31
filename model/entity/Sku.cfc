@@ -2026,10 +2026,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public void function postInsert(){
-		super.preInsert();
+		super.postInsert();
 	    
 	    // TODO: add a global-setting, 
-	    this.getDAO('stockDAO').creteEmptySKUStocksForAllParentLocation(this.getSkuID());
+	    this.getDAO('stockDAO').creteEmptySKUStocksForAllParentLocations(this.getSkuID());
 	}
 	
 	public void function preUpdate(Struct oldData){

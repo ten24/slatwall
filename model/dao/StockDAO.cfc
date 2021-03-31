@@ -59,7 +59,7 @@ Notes:
 	</cffunction>
 	
 	
-	<cffunction name="creteEmptySKUStocksForAllParentLocation">
+	<cffunction name="creteEmptySKUStocksForAllParentLocations">
 		<cfargument name="skuID" type="string" required="true">
 		<cfset local.accountID = this.getHibachiScope().getAccount().getAccountID() />
 		<cfquery name="local.createStocks" >
