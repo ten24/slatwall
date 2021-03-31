@@ -70,13 +70,21 @@ const ListingFilter = ({ qs, appliedFilters, name, facetKey, selectType, options
     <div className="card border-bottom pt-1 pb-2 my-1">
       <div className="card-header">
         <h3 className="accordion-heading">
-          <a className="collapsed" href={`#filer${index}`} role="button" data-toggle="collapse" aria-expanded="false">
+          <a
+            className=""
+            onClick={e => {
+              e.preventDefault()
+            }}
+            href={`#filer${index}`}
+            role="button"
+            aria-expanded="true"
+            aria-controls={`filer${index}`}
+          >
             {name}
-            <span className="accordion-indicator"></span>
           </a>
         </h3>
       </div>
-      <div className="collapse" id={`filer${index}`} data-parent="#shop-categories">
+      <div className="collapse show" aria-labelledby={`filer${index}`} id={`filer${index}`} data-parent="#shop-categories">
         <div className="card-body">
           <div className="widget widget-links cz-filter">
             <FacetSearch searchTerm={searchTerm} search={setSearchTerm} />
