@@ -305,6 +305,14 @@ component output="false" accessors="true" extends="HibachiService"  {
 		    	var jwtSession = this.getSession(payload.sessionID);
     			this.getHibachiScope().setSession(jwtSession);
 		    }
+		    else if(!this.hibachiIsEmpty(payload.accountID)){
+		    	var jwtAccount = this.getAccountService().getAccountByAccountID(payload.accountID);
+    			if(!isNull(jwtAccount)){
+    				jwtAccount.setJwtToken(jwt);
+    				this.getHibachiScope().setAccount(jwtAccount);
+    				this.getHibachiScope().getSession().setAccount( jwtAccount );
+    			}
+		    }
 		    
 		    return this.getHibachiScope().getSession();
 		}
