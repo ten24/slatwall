@@ -2023,23 +2023,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 			getService("SkuPriceService").saveSkuPrice(skuPrice);
 		}
-		
-		// TODO: add a global-setting, 
-		// TODO: use entity-queue
-	    // create-sku-stocks-for-locations-after-creating-new-skus = [ "All", "Parent", "None" ];
-	    var smartList = this.getLocationService().getLocationSmartList();
-	    var stockService = this.geService('StockService');
-		smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
-    	for( var location in smartList.getRecords() ){
-	        this.logHibachi("creating stock for sku-location, #location.getLocationName()#", true);
-	        var newStock = stockService.newStock();
-	        newStock.setSku( this );
-	        newStock.setLocation( location );
-	        stockService.saveStock( newStock );
-    	}
-    	
-	} 
-
+	}
+	
+	public void function postInsert(){
+		super.preInsert();
+	    
+	    // TODO: add a global-setting, 
+	    this.getDAO('stockDAO').creteEmptySKUStocksForAllParentLocation(this.getSkuID());
+	}
+	
 	public void function preUpdate(Struct oldData){
 		super.preUpdate(argumentCollection=arguments);
 		
