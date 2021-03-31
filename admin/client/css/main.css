@@ -9045,10 +9045,10 @@ a.form-control-feedback {
 
 /* end of Bootstrap 4 classes */
 /**********tool tip css here ************/
-.j-tool-tip-item{
+.ec-tool-tip-item{
   position:relative;
 }
-span.tool-tip {
+.ec-tool-tip {
     position: absolute;
     background: #000;
     color: #fff;
@@ -9061,7 +9061,7 @@ span.tool-tip {
     border-radius: 4px;
     display:none;
 }
-span.tool-tip:after{
+.ec-tool-tip:after{
     right: 3px;
     bottom: -11px;
     border: solid transparent;
@@ -9070,13 +9070,10 @@ span.tool-tip:after{
     width: 0;
     position: absolute;
     pointer-events: none;
-}
-span.tool-tip:after {
     border-color: rgba(255, 255, 255, 0);
     border-top-color: #000;
     border-width: 6px;
 }
-
-a.j-tool-tip-item:hover span.tool-tip{
+.ec-tool-tip-item:hover .ec-tool-tip{
   display:block;
 }
