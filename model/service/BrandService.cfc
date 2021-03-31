@@ -49,7 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="hibachiDataService" type="any";
-	
+	property name="imageService" type="any";
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
@@ -59,7 +59,66 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
+	public any function processBrand_uploadBrandLogo(required any brand, required any processObject) {
+		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
+		try {
+			// Get the upload directory for the current property
+			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+			var maxFileSize = val(maxFileSizeString) * 1000000;
+			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/brand/logo";
+
+			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
+				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
+			}
+			
+			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
+			
+			// If the directory where this file is going doesn't exists, then create it
+			if(!directoryExists(uploadDirectory)) {
+				directoryCreate(uploadDirectory);
+			}
+			// Do the upload, and then move it to the new location
+			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'overwrite', 'makeUnique' );
+			var fileSize = uploadData.fileSize;
+			
+ 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 				arguments.brand.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+ 			} else {
+ 				if(!IsNull(arguments.processObject.getImageFile())){
+ 					getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());	
+ 				}
+ 				
+ 				fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 				if(getHibachiUtilityService().isS3Path(fullFilePath)){
+ 					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
+ 				}
+ 				arguments.brand.setImageFile( uploadData.serverFile );
+ 			}
+			
+		} catch(any e) {
+			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
+		}
+
+		return arguments.brand;
+	}
 	
+	public any function processBrand_deleteBrandLogo(required any brand, required struct data) {
+		if(structKeyExists(arguments.data, "imageFile")) {
+			var imageBasePath = getHibachiScope().setting('globalAssetsImageFolderPath') & '/brand/logo/';
+
+			if(getHibachiUtilityService().isS3Path(imageBasePath)){
+				imageBasePath = getHibachiUtilityService().formatS3Path(imageBasePath);
+			}
+
+			if(fileExists(imageBasePath&arguments.data.imageFile)) {
+				fileDelete(imageBasePath&arguments.data.imageFile);
+				arguments.brand.setImageFile('');
+			}
+			getImageService().clearImageCache(imageBasePath, arguments.data.imageFile);
+		}
+
+		return arguments.brand;
+	}
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
@@ -76,6 +135,42 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return super.save(arguments.brand, arguments.data);
 	}
 	
+		/** 
+	 * Function append settings value and options to existing sku List
+	 * @param - array of skus
+	 * @return - updated array of skus
+	 **/
+	public array function appendSettingsAndOptions(required array brands) {
+		if(arrayLen(arguments.brands)) {
+			
+			for(var brand in arguments.brands) {
+	            
+	            var currentBrand = this.getBrand(brand.brandID);
+				var attributeSets = currentBrand.getAssignedAttributes()
+				var attributeStruct = currentBrand.getAttributeValuesByAttributeCodeStruct()
+			    var attributes = [];
+				for(var attribute in attributeSets) {
+					if(StructKeyExists(attributeStruct, attribute["attributeCode"])){
+						var thisAttributeObject = attributeStruct[attribute["attributeCode"]];
+						ArrayAppend( attributes, {
+							"attributeValueID" : thisAttributeObject.getAttributeValueID(),
+							"attributeID" : thisAttributeObject.getAttributeID(),
+							"attributeValue" : thisAttributeObject.getAttributeValue(),
+							"attributeCode" : attribute["attributeCode"]
+					} )
+					}
+					
+				}
+
+
+	            brand['attributes'] = attributes;
+	            
+	          //  brand['imagePath'] = currentBrand.getImagePath();
+	        }
+		}
+		return arguments.brands;
+	}
+	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
@@ -87,4 +182,3 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 	
 }
-

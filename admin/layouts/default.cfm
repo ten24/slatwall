@@ -309,10 +309,7 @@ Notes:
 									<li><a title="Developer Docs" href="https://www.slatwallcommerce.com/developer" target="_blank">#$.slatwall.rbKey('define.developerDocs')#</a></li>
 									<hb:HibachiActionCaller action="admin:main.system" type="list">
 									</hb:HibachiDividerHider>
-								</hb:HibachiActionCallerDropdown>
-								
-								<hb:HibachiActionCallerDropdown title=""  img="#request.slatwallScope.getBaseURL()#/assets/images/icon-gears.svg" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">
-									<!---<li class="divider"></li>--->
+									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:main.changelanguage" 
 										queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
 										text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" 

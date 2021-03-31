@@ -252,20 +252,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		return childAccountCollectionList.getRecords(formatRecord = false);
 	}
 	
-	public any function getAvailablePaymentMethods(required any account, struct data = {}) {
-		
-		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
-		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
-		accountPaymentMethodList.addFilter("account.accountID", arguments.account.getAccountID() );
-		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
-		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
-		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
-		accountPaymentMethodList.addFilter('activeFlag', 1);
-		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
-
-		return accountPaymentMethodList;
-	}
-	
 	
 	public struct function getAccountPaymentTransactionData(required any accountPayment){
 		var transactionData = {
@@ -896,15 +882,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
 				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 			} else {
-				
-				if ( 'astSuspended' == accountAuthentication.getAccount().getAccountStatusType().getSystemCode() ) {
-					arguments.processObject.addError(loginType, rbKey('validate.account.suspended'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.suspended'));
-				} else {
-					arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
-				}
-				
+				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+				arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
 			}
 		// Login was invalid
 		} else {

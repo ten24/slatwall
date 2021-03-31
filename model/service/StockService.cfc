@@ -706,7 +706,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		arguments.entity = super.save(argumentcollection=arguments);
-		ormFlush();
+		this.getHibachiScope().hibachiORMFlush();
 
 		if(!arguments.entity.hasErrors() && setResetMinMaxStockTransferItems) {
 			getHibachiTagService().cfSetting(requesttimeout="3600");

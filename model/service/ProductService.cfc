@@ -1555,6 +1555,10 @@ component extends="HibachiService" accessors="true" {
 	//  ====================  END: Wrapper Methods ========================
 
 	// ====================== START: Get Overrides ============================
+	
+	public any function getProductPublicProperties() {
+		return super.getProductPublicProperties();
+	}
 
 	// ======================  END: Get Overrides =============================
 

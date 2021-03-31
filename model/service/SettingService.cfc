@@ -402,6 +402,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
 			siteOrderTemplateEligibleShippingMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="ShippingMethod"},
 			siteWishlistShareEmailTemplate = { fieldtype="select", defaultValue="" },
+			siteProductSearchIntegration = {fieldtype="text", defaultValue="SlatwallProductSearch"},
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
