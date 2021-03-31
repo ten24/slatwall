@@ -358,13 +358,15 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
 		for(var propertyIdentifierItem in propertyIdentifiersArray){
 
-			if(left(propertyIdentifierItem,collectionObjectLength+1) != '_#collectionObject#'){
-				propertyIdentifierItem = '_#collectionObject#.#propertyIdentifierItem#';
-
-			}
+			
 			if(
 				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, propertyIdentifierItem)
 			){
+				
+				if(left(propertyIdentifierItem,collectionObjectLength+1) != '_#collectionObject#'){
+					propertyIdentifierItem = '_#collectionObject#.#propertyIdentifierItem#';
+				}
+			
 				columnStruct = {
 					propertyIdentifier = "#propertyIdentifierItem#"
 				};
@@ -797,11 +799,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		arrayAppend(filterGroupsConfig[1].filterGroup,filterStruct);
 
-
 		collectionOptions.filterGroupsConfig = serializeJson(filterGroupsConfig);
-		
-		
-		
 		
 		var collectionResponse = getAPIResponseForCollection(collectionEntity,collectionOptions,arguments.data.enforceAuthorization);
 
@@ -1006,26 +1004,19 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], any attributePropertyIdentifierArray=[], boolean enforeAuthorization=true){
-		var requestAuthorizedProperties = [];
-		var collectionAuthorizedProperties = arguments.collectionEntity.getAuthorizedProperties();
+		var authorizedProperties = [];
 		
 		
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
-			
 			if(arguments.enforeAuthorization){
-				
+
 				if(getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)){
-					arrayAppend(requestAuthorizedProperties,collectionPropertyIdentifier);
-				}
-				
-			} else {
-				if(arrayFindNoCase(collectionAuthorizedProperties, arguments.collectionPropertyIdentifiers)){
 					arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 				}
-				
+			} else {
+				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 			}
 		}
-		
 		
 		// for(var aggregatePropertyIdentifier in arguments.aggregatePropertyIdentifierArray){
 		// 	arrayAppend(requestAuthorizedProperties,aggregatePropertyIdentifier);
@@ -1035,7 +1026,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		// 	arrayAppend(requestAuthorizedProperties,attributePropertyIdentifier);
 		// }
 
-		return requestAuthorizedProperties;
+		return authorizedProperties;
 	}
 
 	public string function getPropertyIdentifiersList(required any entityProperties){

@@ -3896,10 +3896,7 @@ component  accessors="true" output="false"
             return;
         }
         
-        // if(structKeyExists(arguments.data, 'enforceAuthorization')){
-        //     structDelete(arguments.data,'enforceAuthorization');
-        // }
-        arguments.data.enforceAuthorization=true;
+        arguments.data.enforceAuthorization = true;
         request.debug = true;
         //Use public Properties logic here to fetch default properties
         if(!isNull(arguments.data.entityID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.entityID)){
