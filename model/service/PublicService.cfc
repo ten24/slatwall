@@ -3887,27 +3887,27 @@ component  accessors="true" output="false"
 	 * Generic Endpoint to get any entity
 	* */
 	public any function getEntity( required struct data ) {
-	    param name="arguments.data.entityName";
+	    param name="arguments.data.entityName" default="";
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        param name="arguments.data.enforceAuthorization" default="false";
+        param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
-        //Use public Properties logic here to fetch default properties
-		var entityService = getHibachiService().getServiceByEntityName(arguments.data.entityName);
-		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && !structKeyExists(arguments.data,'defaultColumns')){
-			entityService.invokeMethod('get#arguments.data.entityName#PublicProperties');
-		}
-		
-        if(!isNull(arguments.data.ID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.ID)){
-            var result = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.ID,arguments.data );
-        } else {
-    		var collectionOptions = getService('hibachiCollectionService').getCollectionOptionsFromData(arguments.data);
-    		var collectionEntity = getService('hibachiCollectionService').getTransientCollectionByEntityName(arguments.data.entityName,collectionOptions);
-    		collectionEntity.setEnforceAuthorization(arguments.data.enforceAuthorization);
-    	    var result =  getService('hibachiCollectionService').getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
+        if(!len(arguments.data.entityName)){
+            getHibachiScope().addActionResult("public:scope.getEntity",true);
+            return;
         }
         
-	    arguments.data.ajaxResponse['data'] = result;
+        // if(structKeyExists(arguments.data, 'enforceAuthorization')){
+        //     structDelete(arguments.data,'enforceAuthorization');
+        // }
+        arguments.data.enforceAuthorization=true;
+        request.debug = true;
+        //Use public Properties logic here to fetch default properties
+        if(!isNull(arguments.data.entityID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.entityID)){
+            arguments.data.ajaxResponse['data'] = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.entityID,arguments.data );
+        } else {
+    	    arguments.data.ajaxResponse['data'] = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data );
+        }
+
         getHibachiScope().addActionResult("public:scope.getEntity",false);
 	}
      public any function getPickupLocations() {

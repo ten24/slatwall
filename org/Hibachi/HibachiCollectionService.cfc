@@ -250,7 +250,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
 			var thisRecord = {};
 			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
-				if(arguments.propertyIdentifiers[p] neq 'pageRecords'){
+				if(arguments.propertyIdentifiers[p] != 'pageRecords'){
 					structAppend(thisRecord,getFormattedPageRecord(arguments.objectRecords[i],arguments.propertyIdentifiers[p],arguments.collectionEntity));
 				}
 			}
@@ -747,8 +747,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
-		if (!isNull(whiteList)){
-			var authorizedPropertyList = whiteList.split(",");
+		if (!isNull(arguments.whiteList)){
+			var authorizedPropertyList = arguments.whiteList.split(",");
 			for(var authorizedProperty in authorizedPropertyList){
 				collectionEntity.addAuthorizedProperty(authorizedProperty);
 			}
@@ -764,6 +764,10 @@ component output="false" accessors="true" extends="HibachiService" {
 
 
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct data){
+		param name="arguments.data.enforceAuthorization" default="true";
+		
+		
+		
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
 
@@ -774,10 +778,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			collectionConfigStruct['filterGroups'] = [];
 		}
 		if(!structKeyExists(collectionConfigStruct,'joins')){
-			collectionConfigStruct.joins = [];
+			collectionConfigStruct['joins'] = [];
 		}
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
-			collectionConfigStruct.isDistinct = false;
+			collectionConfigStruct['isDistinct'] = false;
 		}
 		
 		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.id';
@@ -785,7 +789,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		if(!len(collectionOptions.filterGroupsConfig)){
 			var filterGroupsConfig = [{
-				filterGroup = []
+				'filterGroup' = []
 			}];
 		}else{
 			var filterGroupsConfig = deserializeJson(collectionOptions.filterGroupsConfig);
@@ -796,11 +800,20 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		collectionOptions.filterGroupsConfig = serializeJson(filterGroupsConfig);
 		
+		
+		
+		
 		var collectionResponse = getAPIResponseForCollection(collectionEntity,collectionOptions,arguments.data.enforceAuthorization);
-		var response = {};
 
+		var response = {};
+		
+		if(!structKeyExists(collectionResponse, 'pageRecords')){
+			return response;
+		}
+		
 		if(arrayLen(collectionEntity.getProcessObjectArray())){
 			response = {};
+			
 			response['data'] = collectionResponse.pageRecords[1];
 			response['processData'] = collectionResponse.processObjectArray[1];
 		}else{
@@ -815,7 +828,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		arguments.collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
 
-		if(!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
+		if(( arguments.collectionEntity.getEnforceAuthorization() && !getHibachiScope().getAccount().getAdminAccountFlag() ) || !arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
 			if(structkeyExists(collectionOptions,'currentPage') && len(collectionOptions.currentPage)){
 				arguments.collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}
@@ -969,16 +982,14 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,arguments.collectionEntity.getEnforceAuthorization());
-			for(var authorizedProperty in authorizedProperties){
-				arguments.collectionEntity.addAuthorizedProperty(authorizedProperty);
-			}
-
+			
+			
 			var collectionStruct = {};
 			if(structKeyExists(collectionOptions,'allRecords') && collectionOptions.allRecords == 'true'){
-				collectionStruct = getFormattedRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
+				collectionStruct = getFormattedRecords(arguments.collectionEntity, authorizedProperties);
 			}else{
 				//paginated collection struct
-				collectionStruct = getFormattedPageRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
+				collectionStruct = getFormattedPageRecords(arguments.collectionEntity, authorizedProperties);
 			}
 			//supply collection author so that we can drive UI showing and hiding of elements via angular
 			if(!isNull(arguments.collectionEntity.getCreatedByAccountID())){
@@ -995,26 +1006,36 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], any attributePropertyIdentifierArray=[], boolean enforeAuthorization=true){
-		var authorizedProperties = [];
+		var requestAuthorizedProperties = [];
+		var collectionAuthorizedProperties = arguments.collectionEntity.getAuthorizedProperties();
+		
+		
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
-			if(
-				(
-					!arguments.enforeAuthorization
-				)||
-				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)
-			){
-				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
+			
+			if(arguments.enforeAuthorization){
+				
+				if(getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)){
+					arrayAppend(requestAuthorizedProperties,collectionPropertyIdentifier);
+				}
+				
+			} else {
+				if(arrayFindNoCase(collectionAuthorizedProperties, arguments.collectionPropertyIdentifiers)){
+					arrayAppend(authorizedProperties,collectionPropertyIdentifier);
+				}
+				
 			}
 		}
-		for(var aggregatePropertyIdentifier in arguments.aggregatePropertyIdentifierArray){
-			arrayAppend(authorizedProperties,aggregatePropertyIdentifier);
-		}
-		for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
+		
+		
+		// for(var aggregatePropertyIdentifier in arguments.aggregatePropertyIdentifierArray){
+		// 	arrayAppend(requestAuthorizedProperties,aggregatePropertyIdentifier);
+		// }
+		// for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
 
-			arrayAppend(authorizedProperties,attributePropertyIdentifier);
-		}
+		// 	arrayAppend(requestAuthorizedProperties,attributePropertyIdentifier);
+		// }
 
-		return authorizedProperties;
+		return requestAuthorizedProperties;
 	}
 
 	public string function getPropertyIdentifiersList(required any entityProperties){
@@ -1028,16 +1049,16 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public struct function createFilterStruct(required string propertyIdentifier, required string comparisonOperator, required string value){
 		var filterStruct = {
-			propertyIdentifier=arguments.propertyIdentifier,
-			comparisonOperator = arguments.comparisonOperator,
-			value = arguments.value
+			'propertyIdentifier' : arguments.propertyIdentifier,
+			'comparisonOperator' : arguments.comparisonOperator,
+			'value' : arguments.value
 		};
 		return filterStruct;
 	}
 
 	public struct function createColumnStruct(required string propertyIdentifier){
 		var columnStruct = {
-			propertyIdentifier=arguments.propertyIdentifier
+			'propertyIdentifier' : arguments.propertyIdentifier
 		};
 		return columnStruct;
 	}

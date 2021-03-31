@@ -2158,6 +2158,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ====================  END: Smart List Overrides ========================
 
 	// ====================== START: Get Overrides ============================
+	
+	public array function getAccountPublicProperties(){
+		return ['accountID','firstName','lastName'];
+	}
 
 	// ======================  END: Get Overrides =============================
 
