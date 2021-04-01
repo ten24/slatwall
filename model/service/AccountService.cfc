@@ -882,15 +882,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
 				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 			} else {
-				
-				if ( 'astSuspended' == accountAuthentication.getAccount().getAccountStatusType().getSystemCode() ) {
-					arguments.processObject.addError(loginType, rbKey('validate.account.suspended'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.suspended'));
-				} else {
-					arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
-				}
-				
+				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+				arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
 			}
 		// Login was invalid
 		} else {
@@ -1982,8 +1975,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function savePermissionGroup(required any permissionGroup, struct data={}, string context="save") {
-
 		arguments.permissionGroup.setPermissionGroupName( arguments.data.permissionGroupName );
+		if ( structKeyExists( arguments.data, 'permissionGroupCode' ) && len(arguments.data.permissionGroupCode) ) {
+			arguments.permissionGroup.setPermissionGroupCode( arguments.data.permissionGroupCode );
+		}
 		//transform namespaced permissions into a single array
 		if(!structKeyExists(arguments.data,'permissions')){
 			arguments.data.permissions=[];

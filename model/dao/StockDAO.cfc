@@ -59,6 +59,26 @@ Notes:
 	</cffunction>
 	
 	
+	<cffunction name="creteEmptySKUStocksForAllParentLocations">
+		<cfargument name="skuID" type="string" required="true">
+		<cfset local.accountID = this.getHibachiScope().getAccount().getAccountID() />
+		<cfquery name="local.createStocks" >
+			INSERT INTO SwStock 
+			( stockID, skuID, locationID, createdByAccountID, modifiedByAccountID, createdDateTime, modifiedDateTime )
+            SELECT 
+                LOWER(REPLACE(CAST(UUID() AS char character set utf8),'-',''))      AS stockID,  
+                <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar"> AS skuID,   
+                locationID, 
+                #local.accountID#                                                   AS createdByAccountID,
+                #local.accountID#                                                   AS modifiedByAccountID,
+                now()                                                               AS createdDateTime, 
+                now()                                                               AS modifiedDateTime
+            FROM SwLocation 
+            WHERE parentLocationID IS NULL
+		</cfquery>
+	</cffunction>
+	
+	
 	<cffunction name="updateStockCalculatedProperties">
 		<cfargument name="skuID" type="string" >
 		<cfargument name="productID" type="string" >

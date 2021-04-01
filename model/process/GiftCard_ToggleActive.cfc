@@ -50,10 +50,8 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 property name="activeFlag" hb_formFieldType="yesno" default="true";
 
 	 public boolean function getActiveFlag() {
-	 	if(!structKeyExists(variables, "activeFlag")){
-	 		variables.activeFlag = getGiftCard().getActiveFlag();
-	 	}
-	 	return variables.activeFlag;
+	     return variables.activeFlag = getGiftCard().getActiveFlag();
+	     
 	 }
 
 }

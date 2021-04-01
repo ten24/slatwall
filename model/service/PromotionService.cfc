@@ -2271,7 +2271,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Status Methods ============================
 
 	// ====================== START: Save Overrides ===========================
-
+	public any function savePromotionCode(required any promotionCode, struct data={}, string context="save"){
+		if (!StructKeyExists(arguments.data, 'accounts')) {
+			arguments.data['accounts'] = "";
+			arguments.data['accounts_selectable'] = "";
+		}
+		return super.save(entity=arguments.promotionCode,data=arguments.data,context=arguments.context);
+	}
 	// ======================  END: Save Overrides ============================
 
 	// ==================== START: Smart List Overrides =======================
