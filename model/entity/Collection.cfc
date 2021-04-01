@@ -1254,47 +1254,53 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'none';
 	}
 
-	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
-		var HibachiBaseEntity = "";
-		HibachiBaseEntity = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
-
-		variables.collectionObject = HibachiBaseEntity;
+	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true, boolean useAuthorizedPropertiesAdDefaultColumns = false){
+		
+		variables.collectionObject = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 		
 		if(variables.collectionConfig == '{}' ){
+			
+			var cacheKey = 'defaultColumns-#variables.collectionObject#-#getReportFlag()#-#arguments.addDefaultColumns#-#arguments.useAuthorizedPropertiesAdDefaultColumns#';
+			var cachedInitialCollectionConfig = getCollectionCacheValue(cacheKey);
+			
+			if(!isNull(cachedInitialCollectionConfig)){
+				variables.collectionConfig = cachedInitialCollectionConfig;
+				return;
+			}
+				
 			var columnsArray = [];
-			if( arguments.addDefaultColumns ) { //check to see if we are supposed to add default columns
-					
-				var cacheKey = 'defaultColumns' & arguments.collectionObject & '#getReportFlag()#';
-				var cachedColumnsArray = getCollectionCacheValue(cacheKey);
-					
-				if(isNull(cachedColumnsArray)){
-					//get default columns
-					var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-					var defaultProperties = "";
-					if(getReportFlag()){
-						defaultProperties  = newEntity.getDefaultCollectionReportProperties();
-					}else{
-						defaultProperties = newEntity.getDefaultCollectionProperties();
-					}
-					
-					columnsArray = this.arrangeCollectionColumns( arguments.collectionObject, newEntity, defaultProperties );
-					
-					setCollectionCacheValue(cacheKey,columnsArray);
+			if( arguments.addDefaultColumns  && !useAuthorizedPropertiesAdDefaultColumns) { //check to see if we are supposed to add default columns
+				
+				//get default columns
+				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
+				var defaultProperties = "";
+				if(getReportFlag()){
+					defaultProperties  = newEntity.getDefaultCollectionReportProperties();
 				}else{
-					columnsArray = cachedColumnsArray;
+					defaultProperties = newEntity.getDefaultCollectionProperties();
 				}
+				
+				columnsArray = this.arrangeCollectionColumns( arguments.collectionObject, newEntity, defaultProperties );
+					
 			}
 
 			var columnsJson = serializeJson(columnsArray);
 
 			var properlyCasedShortEntityName = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
 			var defaultCollectionConfig = '{
-				"baseEntityName":"#HibachiBaseEntity#",
+				"baseEntityName":"#variables.collectionObject#",
 				"baseEntityAlias":"_#properlyCasedShortEntityName#",
 				"columns":#columnsJson#,
 				"filterGroups":[{"filterGroup":[]}]
 			}';
 			variables.collectionConfig = defaultCollectionConfig;
+			if(useAuthorizedPropertiesAdDefaultColumns){
+				setDisplayProperties(arrayToList(getAuthorizedProperties()))
+			}
+			
+			cachedInitialCollectionConfig = getCollectionConfig();
+			
+			setCollectionCacheValue(cacheKey,cachedInitialCollectionConfig);
 		}
 		
 	}
