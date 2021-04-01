@@ -230,7 +230,7 @@ component extends="HibachiService" accessors="true" {
 
 	public string function getNextSkuCode(required struct productSchedule={}, required struct product={}) {
 		var productCode = arguments.product.getProductCode();
-		if( ArrayIsEmpty(arguments.productSchedule.getSkus()) ) {
+		if( structIsEmpty(arguments.productSchedule) || ArrayIsEmpty(arguments.productSchedule.getSkus())) {
 			return getService('HibachiUtilityService').createUniqueProperty(propertyValue=productCode, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=true );
 		}
 		
