@@ -1254,13 +1254,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'none';
 	}
 
-	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true, boolean useAuthorizedPropertiesAdDefaultColumns = false){
+	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true, boolean useAuthorizedPropertiesAsDefaultColumns = false){
 		
 		variables.collectionObject = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 		
 		if(variables.collectionConfig == '{}' ){
 			
-			var cacheKey = 'defaultColumns-#variables.collectionObject#-#getReportFlag()#-#arguments.addDefaultColumns#-#arguments.useAuthorizedPropertiesAdDefaultColumns#';
+			var cacheKey = 'defaultColumns-#variables.collectionObject#-#getReportFlag()#-#arguments.addDefaultColumns#-#arguments.useAuthorizedPropertiesAsDefaultColumns#';
 			var cachedInitialCollectionConfig = getCollectionCacheValue(cacheKey);
 			
 			if(!isNull(cachedInitialCollectionConfig)){
@@ -1269,7 +1269,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 				
 			var columnsArray = [];
-			if( arguments.addDefaultColumns  && !useAuthorizedPropertiesAdDefaultColumns) { //check to see if we are supposed to add default columns
+			if( arguments.addDefaultColumns  && !useAuthorizedPropertiesAsDefaultColumns) { //check to see if we are supposed to add default columns
 				
 				//get default columns
 				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
@@ -1294,7 +1294,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				"filterGroups":[{"filterGroup":[]}]
 			}';
 			variables.collectionConfig = defaultCollectionConfig;
-			if(useAuthorizedPropertiesAdDefaultColumns){
+			if(useAuthorizedPropertiesAsDefaultColumns){
 				setDisplayProperties(arrayToList(getAuthorizedProperties()))
 			}
 			

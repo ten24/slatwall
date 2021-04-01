@@ -3799,7 +3799,7 @@ component  accessors="true" output="false"
         
         arguments.data.restRequestFlag = 1;
         arguments.data.enforceAuthorization = true;
-        arguments.data.useAuthorizedPropertiesAdDefaultColumns = true;
+        arguments.data.useAuthorizedPropertiesAsDefaultColumns = true;
         
         if(structKeyExists(this,'get#arguments.data.entityName#list')){
              return invokeMethod("get#arguments.data.entityName#list", {data=arguments.data});

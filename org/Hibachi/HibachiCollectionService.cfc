@@ -162,7 +162,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
 		var collectionEntity = this.newCollection();
 		var properlyCasedShortEntityName = getService('hibachiService').getProperlyCasedShortEntityName(arguments.entityName);
-		collectionEntity.setCollectionObject(properlyCasedShortEntityName,collectionOptions.defaultColumns, collectionOptions.useAuthorizedPropertiesAdDefaultColumns);
+		collectionEntity.setCollectionObject(properlyCasedShortEntityName,collectionOptions.defaultColumns, collectionOptions.useAuthorizedPropertiesAsDefaultColumns);
 
 		return collectionEntity;
 	}
@@ -694,9 +694,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			defaultColumns = arguments.data['defaultColumns'];
 		}
 		
-		var useAuthorizedPropertiesAdDefaultColumns = false;
-		if(structKeyExists(arguments.data,'useAuthorizedPropertiesAdDefaultColumns')){
-			useAuthorizedPropertiesAdDefaultColumns = arguments.data['useAuthorizedPropertiesAdDefaultColumns'];
+		var useAuthorizedPropertiesAsDefaultColumns = false;
+		if(structKeyExists(arguments.data,'useAuthorizedPropertiesAsDefaultColumns')){
+			useAuthorizedPropertiesAsDefaultColumns = arguments.data['useAuthorizedPropertiesAsDefaultColumns'];
 		}
 
 		var processContext = '';
@@ -721,7 +721,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			useElasticSearch=useElasticSearch,
 			splitKeywords=splitKeywords,
 			defaultColumns=defaultColumns,
-			useAuthorizedPropertiesAdDefaultColumns=useAuthorizedPropertiesAdDefaultColumns,
+			useAuthorizedPropertiesAsDefaultColumns=useAuthorizedPropertiesAsDefaultColumns,
 			processContext=processContext,
 			isReport=isReport
 			
