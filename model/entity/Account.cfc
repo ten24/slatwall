@@ -155,9 +155,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
     property name="permissionGroupNameList" persistent="false";
     property name="preferredLocale" persistent="false";
 	property name="countryCode" persistent="false"; 
-		//CUSTOM PROPERTIES BEGIN
+	
+	//CUSTOM PROPERTIES BEGIN
 
- property name="companyCode" ormtype="string";//CUSTOM PROPERTIES END
+    property name="companyCode" ormtype="string";
+    
+    //CUSTOM PROPERTIES END
+		
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -725,6 +729,28 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 		return variables.accountPaymentMethodOptions;
 	} 
+	
+	public any function getBillingAccountAddressOptions(){
+		if(!structKeyExists(variables, 'billingAccountAddressOptions')){
+			variables.billingAccountAddressOptions = [];
+			var accountAddressCollectionList = getService("AddressService").getAccountAddressCollectionList();
+			accountAddressCollectionList.addFilter("account.accountID", this.getAccountID());
+			accountAddressCollectionList.setDisplayProperties("accountAddressName,accountAddressID,address.streetAddress,address.postalCode");
+			var options = accountAddressCollectionList.getRecords();
+			var index = 1;
+			for (var option in options){
+				if (index == 1){
+					arrayAppend(variables.billingAccountAddressOptions, {selected="selected",value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+				}else{
+					arrayAppend(variables.billingAccountAddressOptions, {value=option['accountAddressID'], name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+				}
+				index++;
+			}
+			
+			arrayPrepend(variables.billingAccountAddressOptions, {value="new", name="New"});
+		}
+		return variables.billingAccountAddressOptions;
+	}
 
 	public any function getUnenrolledAccountLoyaltyOptions() {
 		if(!structKeyExists(variables, "unenrolledAccountLoyaltyOptions")) {

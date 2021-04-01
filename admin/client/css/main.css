@@ -314,6 +314,14 @@ sw-listing-display-cell {
 td > sw-listing-display-cell sw-form-registrar sw-property-display {
   display: inline-block;
 }
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"],
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group,
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span{
+  display: block;
+}
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span .input-xs{
+  width: 100% !important;
+}
 .clearFixInline {
   display: inline-block;
   width: 100%;
@@ -3483,7 +3491,9 @@ table .s-table-header .table-section a.s-hint {
   color: #e6e6e6;
 }
 .s-j-draggablePanelList .s-pannel-name .s-title-wrapper {
-  display: inline;
+  display: inline-flex;
+  height: 100%;
+  align-items: center;
 }
 .s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-edit-mode {
   width: 100%;
@@ -3497,7 +3507,6 @@ table .s-table-header .table-section a.s-hint {
   top: -3px;
 }
 .s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-view-mode .s-controlls {
-  top: 11px;
   margin-left: 8px;
   cursor: pointer;
 }
@@ -3742,8 +3751,8 @@ table .s-table-header .table-section a.s-hint {
 }
 .s-table-inner-nav .s-display-options .s-close {
   position: absolute;
-  right: 5px;
-  top: 1px;
+  right: 22px;
+  top: 5px;
   font-size: 18px;
   color: #aaa;
   z-index: 2000;
@@ -8805,6 +8814,12 @@ table.s-detail-content-table tbody tr.s-done {
   align-items: flex-end;
   justify-content: space-between;
   padding: 0.75em 1em;
+  min-height: 100px;
+}
+
+.Mcard-body div:nth-child(2n){
+  position: absolute;
+  right: 22px;
 }
 .Mcard-body h1 {
   color: #666666;
@@ -8879,7 +8894,8 @@ table.s-detail-content-table tbody tr.s-done {
 .hibachi-report-date-group:active,
 .hibachi-report-date-group-custom-toggle:hover,
 .hibachi-report-date-group-custom-toggle:active {
-  border: 2px solid #707070;
+  border: 1px solid #707070;
+  padding: 4px 31px;
   color: #707070;
 }
 .hibachi-report-date-group + .active {
@@ -8950,10 +8966,7 @@ table.s-detail-content-table tbody tr.s-done {
   background: #ffffff;
   margin: 2.5em 0;
 }
-.s-select-list-wrapper .input-group {
-  padding-left: 15px;
-  padding-right: 15px;
-}
+
 .badge {
   color: #fff;
   background-color: #f1863b;
