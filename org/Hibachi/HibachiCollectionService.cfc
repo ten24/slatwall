@@ -1018,14 +1018,14 @@ component output="false" accessors="true" extends="HibachiService" {
 				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 			}
 		}
-		
-		// for(var aggregatePropertyIdentifier in arguments.aggregatePropertyIdentifierArray){
-		// 	arrayAppend(requestAuthorizedProperties,aggregatePropertyIdentifier);
-		// }
-		// for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
-
-		// 	arrayAppend(requestAuthorizedProperties,attributePropertyIdentifier);
-		// }
+		//TODO: Revisit this
+		for(var aggregatePropertyIdentifier in arguments.aggregatePropertyIdentifierArray){
+			arrayAppend(authorizedProperties,aggregatePropertyIdentifier);
+		}
+		//TODO: Revisit this
+		for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
+			arrayAppend(authorizedProperties,attributePropertyIdentifier);
+		}
 
 		return authorizedProperties;
 	}
