@@ -3882,6 +3882,35 @@ component  accessors="true" output="false"
          
          getOrderService().deleteOrder( cart );
      }
+     
+     /**
+	 * Generic Endpoint to get any entity
+	* */
+	public any function getEntity( required struct data ) {
+	    param name="arguments.data.entityName" default="";
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+        if(!len(arguments.data.entityName)){
+            getHibachiScope().addActionResult("public:scope.getEntity",true);
+            return;
+        }
+        
+        arguments.data.enforceAuthorization = true;
+        
+        var entityService = getHibachiService().getServiceByEntityName(arguments.data.entityName);
+		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && structKeyExists(entityService,'get#arguments.data.entityName#PublicProperties')){
+			arguments.data.propertyIdentifiersList = arrayToList(entityService.invokeMethod('get#arguments.data.entityName#PublicProperties'));
+		}
+        //Use public Properties logic here to fetch default properties
+        if(!isNull(arguments.data.entityID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.entityID)){
+            arguments.data.ajaxResponse['data'] = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.entityID,arguments.data );
+        } else {
+    	    arguments.data.ajaxResponse['data'] = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data );
+        }
+
+        getHibachiScope().addActionResult("public:scope.getEntity",false);
+	}
      public any function getPickupLocations() {
 		arguments.data.ajaxResponse['locations'] = getService('LocationService').getLocationParentOptions(false)
     }

@@ -342,10 +342,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			var entityName = this.getCollectionObject();
 			//skip attribute entity to avoid Stack Overflow via recursive calls from on missing method of public properties
-			if( !isNull(entityName) && lcase(entityName) != "attribute") {
+			if( !isNull(entityName) && lcase(entityName) != 'attribute') {
 				var entityService = this.getService("hibachiService").getServiceByEntityName(entityName);
-				
-				variables.authorizedProperties = entityService.invokeMethod("get#entityName#PublicProperties");
+				if(structKeyExists(entityService, 'get#entityName#PublicProperties')){
+					variables.authorizedProperties = entityService.invokeMethod('get#entityName#PublicProperties');
+				}
 			}
 			
 			
