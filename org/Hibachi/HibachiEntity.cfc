@@ -840,7 +840,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		
 		var propertyCollection = getPropertyCountCollectionList(arguments.propertyName, propertyCountName);
 		var records = propertyCollection.getRecords();
-		if(arraylen(records)){
+		if(arraylen(records) && isNumeric(records[1][propertyCountName])){
 			return records[1][propertyCountName];
 		}else{
 			return 0;
