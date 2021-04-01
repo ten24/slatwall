@@ -53,7 +53,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Logical Methods ===========================
 	
 	public array function getBrandPublicProperties(){
-		return ['brandID','brandName','urlTitle', 'brandDescription', 'activeFlag'];
+		return ['brandID','brandName','urlTitle', 'brandDescription', 'activeFlag', 'brandFeatured', 'brandWebsite', 'imageFile'];
 	}
 	
 	// =====================  END: Logical Methods ============================
