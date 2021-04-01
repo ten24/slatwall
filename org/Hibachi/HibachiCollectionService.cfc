@@ -826,7 +826,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		arguments.collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
 
-		if(( arguments.collectionEntity.getEnforceAuthorization() && !getHibachiScope().getAccount().getAdminAccountFlag() ) || !arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
+		if(( arguments.collectionEntity.getEnforceAuthorization() && listFindNoCase(getHibachiScope().setting('globalPublicApiEntities'),collectionEntity.getCollectionObject() ) ) || !arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
 			if(structkeyExists(collectionOptions,'currentPage') && len(collectionOptions.currentPage)){
 				arguments.collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}

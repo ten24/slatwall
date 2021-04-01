@@ -3897,7 +3897,11 @@ component  accessors="true" output="false"
         }
         
         arguments.data.enforceAuthorization = true;
-        request.debug = true;
+        
+        var entityService = getHibachiService().getServiceByEntityName(arguments.data.entityName);
+		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && structKeyExists(entityService,'get#arguments.data.entityName#PublicProperties')){
+			arguments.data.propertyIdentifiersList = arrayToList(entityService.invokeMethod('get#arguments.data.entityName#PublicProperties'));
+		}
         //Use public Properties logic here to fetch default properties
         if(!isNull(arguments.data.entityID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.entityID)){
             arguments.data.ajaxResponse['data'] = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.entityID,arguments.data );
