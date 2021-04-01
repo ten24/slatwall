@@ -465,6 +465,13 @@ class SWListingSearchController {
         }
     }
 
+     public searchByEnterKey = (event)=>{
+        if(event.keyCode == 13) {
+                  this.search();
+                  event.preventDefault();
+                  
+        }
+    }
 
 
 }
