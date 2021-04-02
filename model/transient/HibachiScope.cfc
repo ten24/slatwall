@@ -88,7 +88,31 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getCurrentRequestSite() {
 
-		if(!structKeyExists(variables,'currentRequestSite')){
+		if( !structKeyExists(variables,'currentRequestSite') ){
+		    
+		    // the client can pass one of ['sitID', 'siteCode', 'cmsSiteID'] in either header[SWX-siteID], URL, or RequestBody; 
+		    var siteID = request.context.siteID ?: url.siteID ?: '';
+		    if( len(siteID) ){
+				variables.currentRequestSite = this.getService('siteService').getSiteBySiteID(siteID);
+				this.setCurrentRequestSitePathType('siteID');
+				return variables.currentRequestSite;
+			}
+			
+			var siteCode = request.context.siteCode ?: url.siteCode ?: '';
+		    if( len(siteCode) ){
+				variables.currentRequestSite = this.getService('siteService').getSiteBySiteCode(siteCode);
+				this.setCurrentRequestSitePathType('siteCode');
+				return variables.currentRequestSite;
+			}
+			
+			var cmsSiteID = request.context.cmsSiteID ?: url.cmsSiteID ?: '';
+		    if( len(cmsSiteID) ){
+				variables.currentRequestSite = this.getService('siteService').getSiteByCMSSiteID(cmsSiteID);
+				this.setCurrentRequestSitePathType('cmsSiteID');
+				return variables.currentRequestSite;
+			}
+
+		    
 			if ( len( getContextRoot() ) ) {
 				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
 				var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
