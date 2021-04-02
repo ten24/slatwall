@@ -95,21 +95,27 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		    if( len(siteID) ){
 				variables.currentRequestSite = this.getService('siteService').getSiteBySiteID(siteID);
 				this.setCurrentRequestSitePathType('siteID');
-				return variables.currentRequestSite;
+				if( !isNull(variables.currentRequestSite) ){
+				    return variables.currentRequestSite;
+				}
 			}
 			
 			var siteCode = request.context.siteCode ?: url.siteCode ?: '';
 		    if( len(siteCode) ){
 				variables.currentRequestSite = this.getService('siteService').getSiteBySiteCode(siteCode);
 				this.setCurrentRequestSitePathType('siteCode');
-				return variables.currentRequestSite;
+				if( !isNull(variables.currentRequestSite) ){
+				    return variables.currentRequestSite;
+				}
 			}
 			
 			var cmsSiteID = request.context.cmsSiteID ?: url.cmsSiteID ?: '';
 		    if( len(cmsSiteID) ){
 				variables.currentRequestSite = this.getService('siteService').getSiteByCMSSiteID(cmsSiteID);
 				this.setCurrentRequestSitePathType('cmsSiteID');
-				return variables.currentRequestSite;
+				if( !isNull(variables.currentRequestSite) ){
+				    return variables.currentRequestSite;
+				}
 			}
 
 		    
@@ -133,7 +139,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	        var pathArrayLen = arrayLen(pathArray);
     		
     		if(pathArrayLen){
-    			
     			variables.currentRequestSite = getService('siteService').getSiteBySiteCode(pathArray[1]);
     		}
         		

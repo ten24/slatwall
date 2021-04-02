@@ -3485,37 +3485,30 @@ component  accessors="true" output="false"
 	 * */
 	
 	public void function createWishlist(required any data) {
-	    
-        param name="arguments.data.orderTemplateTypeID" default="2c9280846b712d47016b75464e800014";
+        param name="arguments.data.orderTemplateName" default="";
         param name="arguments.data.currencyCode" default="USD";
-        param name="arguments.data.site" default="stoneAndBerg";
+        param name="arguments.data.siteID" default="";
         
-        if( !(getHibachiScope().getLoggedInFlag()) ) {
-            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        if( !this.getHibachiScope().getLoggedInFlag() ){
+            arguments.data.ajaxResponse['error'] = this.getHibachiScope().rbKey('validate.loggedInUser.wishlist');
         }
-        
-        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-        
-		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
-		    arguments.data.messages = [];
-			var orderTemplate = getOrderService().newOrderTemplate();
-		}
-		
-		if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+
+        arguments.data['orderTemplateTypeID'] = "2c9280846b712d47016b75464e800014"; // type-id for wishlist
+		if( !len(trim(arguments.data.orderTemplateName)) ){
 			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
         }
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
+        
+ 		orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
  		
  		var processObject = orderTemplate.getProcessObject('createWishlist');
  		if( processObject.hasErrors() ){
  		    orderTemplate.addErrors( processObject.getErrors() );
+ 		} else {
+            arguments.data['ajaxResponse']['orderTemplateID'] = orderTemplate.getOrderTemplateID();
  		}
  		
-        getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
-            
-        if(orderTemplate.hasErrors()) {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-        }
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
     }
     
     public any function addItemAndCreateWishlist( required struct data ){
