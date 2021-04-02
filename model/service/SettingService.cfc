@@ -670,9 +670,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "siteDefaultLocale":
 				return getTranslationService().getSiteAvailableLocalesOptions();
 			case "siteDefaultCountry":
-				var countryCollection = this.getCountryCollectionList();
-				var countryOptions = countryCollection.getRecordOptions(false);
-				return countryOptions;
+				return this.getCountryCollectionList().getRecordOptions(false);
 			case "siteDefaultAccountPaymentMethod":
 				return getPaymentService().getActivePaymentMethodOptions();
 			case "siteForgotPasswordEmailTemplate":
