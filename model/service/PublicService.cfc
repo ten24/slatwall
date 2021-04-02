@@ -3144,7 +3144,7 @@ component  accessors="true" output="false"
         
         newOrderTemplate = this.getOrderService().processOrderTemplate(newOrderTemplate, arguments.data, "create");
         
-        var processObject = orderTemplate.getProcessObject('create');
+        var processObject = newOrderTemplate.getProcessObject('create');
         if( processObject.hasErrors() ){
             newOrderTemplate.addErrors( processObject.getErrors() );
         }
@@ -3510,7 +3510,7 @@ component  accessors="true" output="false"
         this.addErrors(arguments.data, orderTemplate.getErrors());
         this.getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
         
-        return orderTemplate;
+        return orderTemplate; // addItemAndCreateWishlist uses it
     }
     
     public any function addItemAndCreateWishlist( required struct data ){
