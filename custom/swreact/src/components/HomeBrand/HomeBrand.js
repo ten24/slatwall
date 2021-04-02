@@ -9,13 +9,13 @@ import { useEffect } from 'react'
 import { getShopBy } from '../../selectors/contentSelectors'
 import { getBrandRoute } from '../../selectors/configurationSelectors'
 
-const BandSlide = ({ brandLogo, urlTitle = '', title }) => {
+const BandSlide = ({ brandLogo, urlTitle = '', title, customPath = '/custom/assets/files/associatedimage/' }) => {
   const brand = useSelector(getBrandRoute)
   return (
     <div className="repeater">
       <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
         <Link className="d-block p-4" to={`/${brand}/${urlTitle}`}>
-          <SWImage className="d-block mx-auto" customPath="/custom/assets/files/associatedimage/" src={brandLogo} alt={title} />
+          <SWImage className="d-block mx-auto" customPath={customPath} src={brandLogo} alt={title} />
         </Link>
       </div>
     </div>
@@ -28,6 +28,8 @@ const getBrandLogo = brand => {
   })
   if (attr.length > 0) {
     return attr[0].attributeValue
+  } else if (brand.imagePath) {
+    return brand.imagePath.split('/').reverse()[0]
   }
   return ''
 }
@@ -81,7 +83,7 @@ const HomeBrand = props => {
       <Slider {...settings}>
         {brand.isLoaded &&
           brand.data.map((slide, index) => {
-            return <BandSlide key={slide.brandID} {...slide} brandLogo={getBrandLogo(slide)} key={index} />
+            return <BandSlide key={slide.brandID} {...slide} customPath="/custom/assets/images/brand/logo/" brandLogo={getBrandLogo(slide)} />
           })}
       </Slider>
 

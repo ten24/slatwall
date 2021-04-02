@@ -59,12 +59,14 @@ const ProductDetailGallery = ({ productID, skuID }) => {
         <div className="cz-preview order-sm-2">
           <div className="cz-preview-item active" id="first">
             <div>
-              <Slider arrows={false} infinite={filterImages.length > 1} asNavFor={sliders.nav1} ref={slider => (slider2.current = slider)} slidesToShow={3} swipeToSlide={true} focusOnSelect={true}>
-                {productImageGallery.isLoaded &&
-                  filterImages.map(({ ORIGINALPATH, NAME }) => {
-                    return <SWImage key={NAME} customPath="/" src={ORIGINALPATH} className="cz-image-zoom w-100 mx-auto" alt="Product" style={{ maxWidth: '100px' }} />
-                  })}
-              </Slider>
+              {filterImages.length > 1 && (
+                <Slider arrows={false} infinite={filterImages.length > 3} asNavFor={sliders.nav1} ref={slider => (slider2.current = slider)} slidesToShow={3} swipeToSlide={true} focusOnSelect={true}>
+                  {productImageGallery.isLoaded &&
+                    filterImages.map(({ ORIGINALPATH, NAME }) => {
+                      return <SWImage key={NAME} customPath="/" src={ORIGINALPATH} className="cz-image-zoom w-100 mx-auto" alt="Product" style={{ maxWidth: '100px' }} />
+                    })}
+                </Slider>
+              )}
             </div>
           </div>
         </div>

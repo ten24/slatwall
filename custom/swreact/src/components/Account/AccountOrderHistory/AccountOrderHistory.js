@@ -40,9 +40,9 @@ const ToolBar = ({ term, updateTerm, search }) => {
             </span>
           </div>
         </div>
-        <a href="##" className="btn btn-outline-secondary">
+        {/* <a href="##" className="btn btn-outline-secondary">
           <i className="far fa-file-alt mr-2"></i> {t('frontend.account.request_statement')}
-        </a>
+        </a> */}
       </div>
     </div>
   )

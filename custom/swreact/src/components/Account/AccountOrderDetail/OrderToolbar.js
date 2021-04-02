@@ -7,11 +7,11 @@ const OrderToolbar = ({ delivered }) => {
         </div>
         <div className="col-sm-6">
           <div className="row justify-content-end">
-            <div className="mr-3">
+            {/* <div className="mr-3">
               <a href="#" className="btn btn-outline-secondary">
                 <i className="far fa-box-full mr-2"></i> Request RMA
               </a>
-            </div>
+            </div> */}
             <div>
               <a href="#" className="btn btn-outline-secondary">
                 <i className="far fa-print mr-2"></i> Print
