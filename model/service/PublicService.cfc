@@ -3092,6 +3092,41 @@ component  accessors="true" output="false"
             arguments.data['ajaxResponse']['primaryPaymentMethodID'] = account.getPrimaryPaymentMethod().getAccountPaymentMethodID(); 
         }
     }
+    
+    public any function createOrderTemplate( required struct data ) {
+        param name="arguments.data.siteID" default="";
+        param name="arguments.data.siteCode" default="";
+        param name="arguments.data.cmsSiteID" default="";
+        param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
+        param name="arguments.data.orderTemplateName" default="";
+        param name="arguments.data.orderTemplateTypeID" default="";
+        param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
+        param name="arguments.data.scheduleOrderDayOfTheMonth" default=1;
+
+        var hibachiScope = this.getHibachiScope();
+        
+        if( !(hibachiScope.getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.loginRequired');
+            return;
+        }
+        
+        var newOrderTemplate = this.getOrderService().newOrderTemplate();
+        
+        arguments.data['accountID'] = hibachiScope.getAccount().getAccountID();
+        if( !(len(arguments.data.orderTemplateTypeID)) && len(arguments.data.orderTemplateSystemCode) ){
+            arguments.data.orderTemplateTypeID = this.getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
+        }
+        
+        newOrderTemplate = this.getOrderService().processOrderTemplate(newOrderTemplate, arguments.data, "create");
+
+        hibachiScope.addActionResult("public:orderTemplate.create", newOrderTemplate.hasErrors() );
+        if( newOrderTemplate.hasErrors() ){
+            this.addErrors(arguments.data, newOrderTemplate.getErrors());
+        } else {
+            arguments.data['ajaxResponse']['orderTemplate'] = newOrderTemplate.getOrderTemplateID();
+        }
+    }
+
    
 	public void function getOrderTemplates(required any data){ 
         param name="arguments.data.pageRecordsShow" default=5;
