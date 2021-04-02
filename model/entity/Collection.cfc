@@ -1269,7 +1269,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 				
 			var columnsArray = [];
-			if( arguments.addDefaultColumns  && !useAuthorizedPropertiesAsDefaultColumns) { //check to see if we are supposed to add default columns
+			if( arguments.addDefaultColumns  && !arguments.useAuthorizedPropertiesAsDefaultColumns) { //check to see if we are supposed to add default columns
 				
 				//get default columns
 				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
