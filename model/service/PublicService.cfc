@@ -3118,6 +3118,11 @@ component  accessors="true" output="false"
         }
         
         newOrderTemplate = this.getOrderService().processOrderTemplate(newOrderTemplate, arguments.data, "create");
+        
+        var processObject = orderTemplate.getProcessObject('create');
+        if( processObject.hasErrors() ){
+            newOrderTemplate.addErrors( processObject.getErrors() );
+        }
 
         hibachiScope.addActionResult("public:orderTemplate.create", newOrderTemplate.hasErrors() );
         if( newOrderTemplate.hasErrors() ){
