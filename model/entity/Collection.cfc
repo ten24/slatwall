@@ -1294,7 +1294,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				"filterGroups":[{"filterGroup":[]}]
 			}';
 			variables.collectionConfig = defaultCollectionConfig;
-			if(useAuthorizedPropertiesAsDefaultColumns){
+			if(arguments.useAuthorizedPropertiesAsDefaultColumns){
 				setDisplayProperties(arrayToList(getAuthorizedProperties()))
 			}
 			
