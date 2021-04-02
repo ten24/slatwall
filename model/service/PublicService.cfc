@@ -3093,6 +3093,31 @@ component  accessors="true" output="false"
         }
     }
     
+    public void function updatePrimaryPaymentMethod(required any data){
+        param name="data.paymentMethodID" default="";
+
+        if( !(hibachiScope.getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.loginRequired');
+            return;
+        }
+
+        var account = this.getHibachiScope().getAccount();
+        var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
+        
+        if( accountPaymentMethod.getAccount().getAccountID() != account.getAccountID() ){
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.doesNotBelongToUser');
+            return;
+        }
+
+        account.setPrimaryPaymentMethod(accountPaymentMethod);
+        account = this.getAccountService().saveAccount(account, {}, 'updatePrimaryPaymentMethod');
+
+        this.getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+        if( account.hasErrors() ){
+            this.addErrors(arguments.data, account.getErrors() );
+        }
+    }
+    
     public any function createOrderTemplate( required struct data ) {
         param name="arguments.data.siteID" default="";
         param name="arguments.data.siteCode" default="";
