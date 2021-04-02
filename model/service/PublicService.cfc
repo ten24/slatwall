@@ -3570,6 +3570,26 @@ component  accessors="true" output="false"
         }
     }
     
+    public any function shareWishlist( required struct data ) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.receiverEmailAddress" default="";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+
+        orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, "shareWishlist");
+        
+        var processObject = orderTemplate.getProcessObject("shareWishlist");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult( "public:orderTemplate.shareWishlist", orderTemplate.hasErrors() );
+    }
+    
 	public void function addOrderTemplateItem(required any data) {
         param name="data.orderTemplateID" default="";
         param name="data.skuID" default="";
