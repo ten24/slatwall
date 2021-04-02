@@ -455,7 +455,7 @@ Notes:
 			queryExecute(sql,params);
 		}
 		
-    	public any function getAppliedOrderTemplatePromotionCodes(required string orderTemplateID){
+    	public any function getAppliedOrderTemplatePromotionCodes( required string orderTemplateID ){
     		var query = new Query();
     		var sql = " 
         		SELECT 
@@ -466,11 +466,9 @@ Notes:
                 WHERE o.orderTemplateID=:orderTemplateID
     		";
     		
-    		return query.execute( 
-                    		sql = sql, 
-                    		params = { orderTemplateID: arguments.orderTemplateID }, 
-                    		returntype = 'array' 
-    		            ).getResult();
+			query.addParam(name="orderTemplateID",value=arguments.orderTemplateID);
+
+    		return query.execute( sql=sql, returntype='array').getResult();
         }
 	</cfscript>
 

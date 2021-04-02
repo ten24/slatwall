@@ -1166,12 +1166,14 @@
 			var cacheKey = 'getPropertyIsPersistentByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
 			
 			if(!structKeyExists(variables,cacheKey)){
-				var propertyMetaData = getPropertiesStructByEntityName(
-				getLastEntityNameInPropertyIdentifier(
-						arguments.entityName,
-						arguments.propertyIdentifier
-					)	
-				)[listLast(arguments.propertyIdentifier, ".")];
+			    var lastEntityName = getLastEntityNameInPropertyIdentifier( arguments.entityName, arguments.propertyIdentifier );
+				var propertiesMetaData = getPropertiesStructByEntityName(lastEntityName);
+				var lastPropertyName = listLast(arguments.propertyIdentifier, ".");
+				if(!structKeyExists(propertiesMetaData, lastPropertyName) ){
+				    throw("propertyName: #lastPropertyName# is not valid for entityName: #lastEntityName#");
+				}
+				var propertyMetaData = propertiesMetaData[lastPropertyName];
+				
 				variables[cacheKey] = !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
 			}
 			

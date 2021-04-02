@@ -3093,16 +3093,16 @@ component  accessors="true" output="false"
         }
     }
     
-    public void function updatePrimaryPaymentMethod(required any data){
-        param name="data.paymentMethodID" default="";
-
+    public void function setPrimaryPaymentMethod(required any data){
+        param name="data.accountPaymentMethodID" default="";
+        var hibachiScope = this.getHibachiScope();
         if( !(hibachiScope.getLoggedInFlag()) ) {
             arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.loginRequired');
             return;
         }
 
-        var account = this.getHibachiScope().getAccount();
-        var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod(arguments.data.paymentMethodID);
+        var account = hibachiScope.getAccount();
+        var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod(arguments.data.accountPaymentMethodID);
         
         if( accountPaymentMethod.getAccount().getAccountID() != account.getAccountID() ){
             arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.doesNotBelongToUser');
@@ -3808,9 +3808,9 @@ component  accessors="true" output="false"
         param name="arguments.data.orderTemplateID" default="";
 
 		arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] = [];
-        
         if( len(arguments.data.orderTemplateID) ){
-            arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] = this.getDAO('orderDAO').getAppliedOrderTemplatePromotionCodes(arguments.data.orderTemplateID);;
+            arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] 
+                = this.getDAO('orderDAO').getAppliedOrderTemplatePromotionCodes( arguments.data.orderTemplateID );
         } 
     }
     
@@ -3820,7 +3820,7 @@ component  accessors="true" output="false"
         var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 
     	if(!isNull(orderTemplate)){
-    	    this.getDao('orderDao').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
+    	    this.getDAO('orderDAO').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
             this.getHibachiScope().addActionResult( "public:orderTemplate.deleteOrderTemplatePromoItems", false );  
     	}
     }
