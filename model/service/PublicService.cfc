@@ -3796,8 +3796,11 @@ component  accessors="true" output="false"
 	    param name="arguments.data.entityName" default="";
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
         arguments.data.restRequestFlag = 1;
-        	    
+        arguments.data.enforceAuthorization = true;
+        arguments.data.useAuthorizedPropertiesAsDefaultColumns = true;
+        
         if(structKeyExists(this,'get#arguments.data.entityName#list')){
              return invokeMethod("get#arguments.data.entityName#list", {data=arguments.data});
         }
@@ -3806,13 +3809,7 @@ component  accessors="true" output="false"
             getHibachiScope().addActionResult("public:scope.getEntity",true);
             return;
         }
-        
-        arguments.data.enforceAuthorization = true;
-        
-        var entityService = getHibachiService().getServiceByEntityName(arguments.data.entityName);
-		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && structKeyExists(entityService,'get#arguments.data.entityName#PublicProperties')){
-			arguments.data.propertyIdentifiersList = arrayToList(entityService.invokeMethod('get#arguments.data.entityName#PublicProperties'));
-		}
+    
         //Use public Properties logic here to fetch default properties
         if(!isNull(arguments.data.entityID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.entityID)){
             arguments.data.ajaxResponse['data'] = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.entityID,arguments.data );
