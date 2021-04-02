@@ -3483,8 +3483,7 @@ component  accessors="true" output="false"
 	 * addWishlistItem
 	 * removeWishlistItem
 	 * */
-	
-	public void function createWishlist(required any data) {
+	public any function createWishlist(required any data) {
         param name="arguments.data.orderTemplateName" default="";
         param name="arguments.data.currencyCode" default="USD";
         param name="arguments.data.siteID" default="";
@@ -3498,6 +3497,7 @@ component  accessors="true" output="false"
 			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
         }
         
+        var orderTemplate = this.getOrderService().newOrderTemplate();
  		orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
  		
  		var processObject = orderTemplate.getProcessObject('createWishlist');
@@ -3509,6 +3509,8 @@ component  accessors="true" output="false"
  		
         this.addErrors(arguments.data, orderTemplate.getErrors());
         this.getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+        
+        return orderTemplate;
     }
     
     public any function addItemAndCreateWishlist( required struct data ){

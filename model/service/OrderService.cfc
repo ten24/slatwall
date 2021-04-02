@@ -1661,7 +1661,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderTemplate.getAccount())){
 			var account = arguments.orderTemplate.getAccount();
 			arguments.transientOrder.setAccount(account); 
-    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType());	
 		}
 		
 		if(
@@ -2391,7 +2390,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// TODO: max-collection validation
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
-		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+		orderTemplateItemCollectionList.addFilter('sku.skuID', arguments.processObject.getSku().getSkuID());
 		
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
