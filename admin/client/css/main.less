@@ -4650,3 +4650,38 @@ pre.json{
 .mr-2 { margin-right: .5rem!important; }
 
 // end of Bootstrap 4 classes 
+
+/**********tool tip css here ************/
+a.ec-tool-tip-item{
+  position:relative;
+}
+span.ec-tool-tip {
+    position: absolute;
+    background: #000;
+    color: #fff;
+    right: -1px;
+    bottom: 19px;
+    min-width: 75px;
+    font-size: 11px;
+    padding-top: 2px;
+    padding-bottom: 4px;
+    border-radius: 4px;
+    display:none;
+}
+span.ec-tool-tip:after{
+    right: 3px;
+    bottom: -11px;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #000;
+    border-width: 6px;
+}
+
+a.ec-tool-tip-item:hover span.ec-tool-tip{
+  display:block;
+}
