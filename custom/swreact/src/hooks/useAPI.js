@@ -41,7 +41,7 @@ export const useGetSku = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getSkuList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getSkuListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -82,7 +82,7 @@ export const useGetBrand = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getBrandList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getBrandListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -106,7 +106,7 @@ export const useGetBrands = () => {
       axios({
         method: 'GET',
         withCredentials: true,
-        url: `${sdkURL}api/scope/getBrandList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getBrandListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -131,7 +131,7 @@ export const useGetProductList = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getProductList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getProductListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -413,7 +413,7 @@ export const useGetSkuList = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getSkuList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getSkuListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
           'Auth-Token': `Bearer ${token}`,

@@ -4,7 +4,7 @@ import Slider from 'react-slick'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import ProductSlider from '../ProductSlider/ProductSlider'
-import { useGetEntity } from '../../hooks/useAPI'
+import { useGetProductList } from '../../hooks/useAPI'
 
 const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
   let history = useHistory()
@@ -32,7 +32,7 @@ const MainBanner = () => {
   const contentStore = useSelector(state => state.content)
 
   let homeMainBanner = []
-  Object.keys(contentStore).forEach(key => {
+  Object.keys(contentStore).map(key => {
     if (key.includes('main-banner-slider/')) {
       homeMainBanner.push(contentStore[key])
     }
@@ -67,7 +67,7 @@ const MainBanner = () => {
 
 const HomeBanner = () => {
   const home = useSelector(state => state.content['home'])
-  let [request, setRequest] = useGetEntity()
+  let [request, setRequest] = useGetProductList()
 
   useEffect(() => {
     let didCancel = false
@@ -78,7 +78,6 @@ const HomeBanner = () => {
           'f:publishedFlag': 1,
           'f:productFeatured': 1,
         },
-        entity: 'product',
         makeRequest: true,
         isFetching: true,
         isLoaded: false,
