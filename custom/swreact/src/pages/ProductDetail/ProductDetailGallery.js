@@ -17,16 +17,12 @@ const ProductDetailGallery = ({ productID, skuID }) => {
   const slider1 = useRef()
   const slider2 = useRef()
   useEffect(() => {
-    let didCancel = false
     setSliders({
       nav1: slider1.current,
       nav2: slider2.current,
     })
     if (!productImageGallery.isLoaded && !productImageGallery.isFetching) {
       setRequest({ ...productImageGallery, isFetching: true, isLoaded: false, params: { productID }, makeRequest: true })
-    }
-    return () => {
-      didCancel = true
     }
   }, [productImageGallery, setRequest, productID])
   let filterImages = productImageGallery.isLoaded

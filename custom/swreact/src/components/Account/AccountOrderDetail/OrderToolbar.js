@@ -13,9 +13,9 @@ const OrderToolbar = ({ delivered }) => {
               </a>
             </div> */}
             <div>
-              <a href="#" className="btn btn-outline-secondary">
+              <button className="btn btn-outline-secondary">
                 <i className="far fa-print mr-2"></i> Print
-              </a>
+              </button>
             </div>
           </div>
         </div>

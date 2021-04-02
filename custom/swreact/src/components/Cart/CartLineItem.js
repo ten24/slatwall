@@ -1,4 +1,4 @@
-import { ProductPrice, SWImage } from '../../components'
+import { ProductPrice } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -21,7 +21,7 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
     return orderItem.orderItemID === orderItemID
   })
   const { price, quantity, sku, extendedPriceAfterDiscount } = orderItem[0]
-  const { skuID, listPrice, imagePath, skuCode, product } = sku
+  const { skuID, listPrice, skuCode, product } = sku
   const { productID, productName, urlTitle, brand } = product
   const { brandName } = brand
 

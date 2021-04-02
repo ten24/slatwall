@@ -3,6 +3,37 @@ import axios from 'axios'
 import { sdkURL, SlatwalApiService } from '../services'
 import queryString from 'query-string'
 
+export const useGetEntity = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
+  useEffect(() => {
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/public/${request.entity}?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
+            setRequest({ data: response.data.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
 export const useGetSku = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
@@ -95,7 +126,6 @@ export const useGetBrands = () => {
 export const useGetProductList = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, currentPage: 1, totalPages: 1 })
   useEffect(() => {
-    let didCancel = false
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
@@ -119,7 +149,6 @@ export const useGetProductList = () => {
     }
     return () => {
       source.cancel()
-      didCancel = true
     }
   }, [request, setRequest])
 
@@ -213,7 +242,6 @@ export const useGetAvailablePaymentMethods = () => {
 export const useAddWishlistItem = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
-    let didCancel = false
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
@@ -236,7 +264,6 @@ export const useAddWishlistItem = () => {
     }
     return () => {
       source.cancel()
-      didCancel = true
     }
   }, [request, setRequest])
 
@@ -245,9 +272,8 @@ export const useAddWishlistItem = () => {
 
 export const useGetOrderDetails = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
-  const token = localStorage.getItem('token')
   useEffect(() => {
-    let didCancel = false
+    const token = localStorage.getItem('token')
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
@@ -271,7 +297,6 @@ export const useGetOrderDetails = () => {
     }
     return () => {
       source.cancel()
-      didCancel = true
     }
   }, [request, setRequest])
 
@@ -282,7 +307,6 @@ export const useGetAllOrders = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {} })
   useEffect(() => {
     const token = localStorage.getItem('token')
-    let didCancel = false
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
@@ -307,7 +331,6 @@ export const useGetAllOrders = () => {
     }
     return () => {
       source.cancel()
-      didCancel = true
     }
   }, [request, setRequest])
 

@@ -4,7 +4,7 @@ import { SWImage } from '..'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useGetBrands } from '../../hooks/useAPI'
+import { useGetEntity } from '../../hooks/useAPI'
 import { useEffect } from 'react'
 import { getShopBy } from '../../selectors/contentSelectors'
 import { getBrandRoute } from '../../selectors/configurationSelectors'
@@ -23,9 +23,12 @@ const BandSlide = ({ brandLogo, urlTitle = '', title, customPath = '/custom/asse
 }
 
 const getBrandLogo = brand => {
-  const attr = brand.attributes.filter(attribute => {
-    return attribute.attributeCode === 'brandLogo'
-  })
+  let attr = []
+  if (brand.attributes) {
+    attr = brand.attributes.filter(attribute => {
+      return attribute.attributeCode === 'brandLogo'
+    })
+  }
   if (attr.length > 0) {
     return attr[0].attributeValue
   } else if (brand.imagePath) {
@@ -36,18 +39,18 @@ const getBrandLogo = brand => {
 
 const HomeBrand = props => {
   const { t } = useTranslation()
-  let [brand, setRequest] = useGetBrands()
+  let [request, setRequest] = useGetEntity()
   const shopBy = useSelector(getShopBy)
 
   useEffect(() => {
     let didCancel = false
-    if (!brand.isFetching && !brand.isLoaded && !didCancel) {
-      setRequest({ ...brand, isFetching: true, isLoaded: false, params: { 'f:brandFeatured': 1, 'f:activeFlag': 1 }, makeRequest: true })
+    if (!request.isFetching && !request.isLoaded && !didCancel) {
+      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { 'f:brandFeatured': 1 }, makeRequest: true })
     }
     return () => {
       didCancel = true
     }
-  }, [brand, setRequest])
+  }, [request, setRequest])
 
   const settings = {
     dots: false,
@@ -81,8 +84,8 @@ const HomeBrand = props => {
     <div style={{ height: 'fit-content' }} className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
       <h3 className="h3">{shopBy.title}</h3>
       <Slider {...settings}>
-        {brand.isLoaded &&
-          brand.data.map((slide, index) => {
+        {request.isLoaded &&
+          request.data.map((slide, index) => {
             return <BandSlide key={slide.brandID} {...slide} customPath="/custom/assets/images/brand/logo/" brandLogo={getBrandLogo(slide)} />
           })}
       </Slider>

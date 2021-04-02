@@ -7,6 +7,7 @@ import useRedirect from '../../../hooks/useRedirect'
 import * as Yup from 'yup'
 
 const CreateAccount = () => {
+  // eslint-disable-next-line no-unused-vars
   const [redirect, setRedirect] = useRedirect({ location: '/my-account' })
   const signupSchema = Yup.object().shape({
     firstName: Yup.string().required('Required'),
