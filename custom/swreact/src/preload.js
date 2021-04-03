@@ -9,6 +9,7 @@ const data = {
     { URLKeyType: 'Address', URLKey: 'ad' },
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
+  enforceVerifiedAccountFlag: false,
   seo: {
     title: 'Stone & Berg',
     titleMeta: '',
