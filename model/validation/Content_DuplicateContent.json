@@ -1,6 +1,6 @@
 {
 	"properties": {
-		"newContent.urlTitle": [
+		"urlTitle": [
 			{
 				"contexts": "duplicateContent",
 				"required": true
@@ -10,7 +10,7 @@
 				"regex": "^[A-Za-z0-9-]+$"
 			}
 		],
-		"newContent.urlTitlePath": [
+		"urlTitlePath": [
 			{
 				"contexts": "duplicateContent",
 				"method": "isUniqueUrlTitlePathBySite"
