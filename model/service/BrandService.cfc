@@ -53,7 +53,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Logical Methods ===========================
 	
 	public array function getBrandPublicProperties(){
-		return ['brandID','brandName','urlTitle', 'brandDescription', 'activeFlag', 'brandFeatured', 'brandWebsite', 'imageFile'];
+	    var publicProperties = ['brandID','brandName','urlTitle', 'brandDescription', 'activeFlag', 'brandFeatured', 'brandWebsite', 'imageFile'];
+	    var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Brand');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
 	}
 	
 	// =====================  END: Logical Methods ============================
