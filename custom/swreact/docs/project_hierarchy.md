@@ -59,8 +59,16 @@ Simple JS utiles needed for Simple tasks.
 
 ## index.js
 
+This is the index file for our React Application. This loades the applicationa nd any other Enviroment related stuff. Like setting up our redux store. Redux is not build to React so it makes sense to be loaded outside of our App. Webworkers can access the Redux store too!
+
 ## App.js
+
+This is the core of our App. Mostly used for Getting configuration, routing, and Preloading our lazy components.
 
 ## createStore.js
 
+This is an aggrigation of our Reduces for our Redux Store
+
 ## preload.js
+
+This was initially going to be used for SSR from Slatwall but now is really just the Init State for the Configuration Reducer.

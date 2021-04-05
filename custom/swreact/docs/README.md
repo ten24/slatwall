@@ -2,14 +2,18 @@
 
 [About React](about_react.md)
 
-[About Redux](about_react.md)
+[About Redux](redux_starter.md)
 
-[ES6 Starter](about_react.md)
+[ES6 Starter](es6_starter.md)
 
-[Development Enviroment](about_react.md)
+[Development Enviroment](develoment_enviroment.md)
 
 [Project Hierarchy](project_hierarchy.md)
 
 # Using Data
 
-[About React](about_react.md)
+## Local Data
+
+[Fetching Local Data](fetching_data.md)
+
+[Fetching Content](fetching_content.md)
