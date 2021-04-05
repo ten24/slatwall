@@ -567,7 +567,11 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	public boolean function authenticateCollectionPropertyIdentifier(required string crudType, required any collection, required string propertyIdentifier){
-		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
+		if(getAccount().getNewFlag() || !getAccount().getAdminAccountFlag()){
+			return arrayFindNoCase(arguments.collection.getAuthorizedProperties(), arguments.propertyIdentifier);
+		}else{
+			return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
+		}
 	}
 	
 
