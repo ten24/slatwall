@@ -52,6 +52,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="imageService" type="any";
 	// ===================== START: Logical Methods ===========================
 	
+	public array function getBrandPublicProperties(){
+		return ['brandID','brandName','urlTitle', 'brandDescription', 'activeFlag', 'brandFeatured', 'brandWebsite', 'imageFile'];
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================

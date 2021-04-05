@@ -236,7 +236,7 @@
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
 	    	
 			// If data was passed in to this method then populate it with the new data
-	        if(structKeyExists(arguments,"data")){
+	        if(structKeyExists(arguments,"data") && isStruct(arguments.data) && !StructIsEmpty(arguments.data)){
 	        	// Populate this object
 				arguments.entity.populate(argumentCollection=arguments);
 	
@@ -476,8 +476,6 @@
 					return onMissingGetEntityProcessContexts( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else if(right(lCaseMissingMethodName, 12) == "eventoptions"){
 					return onMissingGetEntityEventOptions( arguments.missingMethodName, arguments.missingMethodArguments );	
-				} else if ( lCaseMissingMethodName.startsWith( 'get' ) && right(lCaseMissingMethodName, 16) == "publicProperties") {
-					return this.onMissingPublicPropertiesMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else {
 					return onMissingGetMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
@@ -513,21 +511,6 @@
 			return delete( arguments.missingMethodArguments[ 1 ] );
 		}
 		
-		private function onMissingPublicPropertiesMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			var lCaseMissingMethodName = lCase( arguments.missingMethodName );
-		
-			var entityName = UcFirst( lCaseMissingMethodName.substring( 3, (len(lCaseMissingMethodName) - 16) ) );
-			
-			return this.getPublicPropertiesForEntityName(entityName);
-		}
-		
-		/**
-		 * Method to return list of public attribute codes
-		 * */
-		public array function getPublicPropertiesForEntityName(required string entityName) {
-			return [];
-		}
-	
 		/**
 		 * Provides dynamic get methods, by convention, on missing method:
 		 *

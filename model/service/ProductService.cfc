@@ -76,7 +76,12 @@ component extends="HibachiService" accessors="true" {
 		approvedProductReviewCollectionList.addFilter("productReviewStatusType.systemCode","prstApproved");
 		return approvedProductReviewCollectionList;
 	}
-	
+	public array function getProductPublicProperties(){
+		return ['productID','productName','urlTitle', 'productCode', 'productDescription'];
+	}
+	public array function getProductTypePublicProperties(){
+		return ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
+	}
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
 		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
@@ -1555,10 +1560,6 @@ component extends="HibachiService" accessors="true" {
 	//  ====================  END: Wrapper Methods ========================
 
 	// ====================== START: Get Overrides ============================
-	
-	public any function getProductPublicProperties() {
-		return super.getProductPublicProperties();
-	}
 
 	// ======================  END: Get Overrides =============================
 
