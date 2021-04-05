@@ -10,7 +10,7 @@ import { isAuthenticated } from '../../utils'
 
 const OrderConfirmation = () => {
   let [orders, setRequest] = useGetAllOrders()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   let dispatch = useDispatch()
   let loc = useLocation()
   let history = useHistory()
@@ -26,7 +26,7 @@ const OrderConfirmation = () => {
     return () => {
       didCancel = true
     }
-  }, [orders, setRequest])
+  }, [orders, setRequest, dispatch])
 
   if (!isAuthenticated()) {
     return <Redirect to={'/my-account'} />

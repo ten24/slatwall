@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Redirect, useHistory } from 'react-router'
+import { Redirect } from 'react-router'
 import { CartLineItem } from '../../components'
 import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
 import SlideNavigation from './SlideNavigation'
@@ -96,7 +96,6 @@ const ReviewSlide = ({ currentStep }) => {
   const cart = useSelector(state => state.cart)
   const { fulfillmentMethod } = useSelector(fulfillmentSelector)
   const { paymentMethod } = useSelector(orderPayment)
-  let history = useHistory()
 
   if (cart.isPlaced) {
     return <Redirect to={'/order-confirmation'} />

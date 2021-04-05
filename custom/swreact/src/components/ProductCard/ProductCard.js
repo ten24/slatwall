@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux'
 import { getBrandRoute, getProductRoute } from '../../selectors/configurationSelectors'
 
 const ProductCard = props => {
-  const { productName, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, listPrice, defaultProductImageFiles = [], productClearance, skuID = '' } = props
-  const imgUrl = defaultProductImageFiles.length > 0 ? defaultProductImageFiles[0].imageFile : ''
+  const { productName, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, listPrice, imageFile, defaultSku_imageFile, productClearance, skuID = '' } = props
   const { t } = useTranslation()
   const brand = useSelector(getBrandRoute)
   const product = useSelector(getProductRoute)
@@ -17,7 +16,7 @@ const ProductCard = props => {
         {productClearance === true && <span className="badge badge-primary">{t('frontend.core.special')}</span>}
         <HeartButton skuID={skuID} />
         <Link className="card-img-top d-block overflow-hidden" to={`/${product}/${urlTitle}?skuid=${skuID}`}>
-          <SWImage src={imgUrl} alt="Product" />
+          <SWImage customPath="/custom/assets/images/product/default/" src={imageFile || defaultSku_imageFile} alt="Product" />
         </Link>
         <div className="card-body py-2 text-left">
           <Link className="product-meta d-block font-size-xs pb-1" to={`/${brand}/${brand_urlTitle}`}>

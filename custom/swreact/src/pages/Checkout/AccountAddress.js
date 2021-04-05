@@ -35,7 +35,7 @@ const ShippingAddress = ({ onSave }) => {
   useEffect(() => {
     dispatch(getCountries())
     dispatch(getStateCodeOptionsByCountryCode(formik.values.countryCode))
-  }, [dispatch])
+  }, [dispatch, formik])
 
   return (
     <>
@@ -44,9 +44,9 @@ const ShippingAddress = ({ onSave }) => {
         <div className="d-lg-flex pt-4 mt-3">
           <div className="w-50 pr-3"></div>
           <div className="w-50 pl-2">
-            <a className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
+            <button className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
               <span className="d-none d-sm-inline">Save</span>
-            </a>
+            </button>
           </div>
         </div>
       </form>

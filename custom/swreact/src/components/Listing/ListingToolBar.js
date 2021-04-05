@@ -1,9 +1,7 @@
-import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
 
 const ListingToolBar = ({ hide, sorting, orderBy, setSort }) => {
-  const { t, i18n } = useTranslation()
   const loc = useLocation()
 
   const qs = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
