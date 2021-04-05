@@ -840,8 +840,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		
 		var propertyCollection = getPropertyCountCollectionList(arguments.propertyName, propertyCountName);
 		var records = propertyCollection.getRecords();
-		if(arraylen(records)){
-			return records[1][propertyCountName];
+		if(arraylen(records) ){
+			return val( records[1][propertyCountName] );
 		}else{
 			return 0;
 		}

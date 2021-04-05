@@ -3093,13 +3093,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var allocatedOrderDiscountAmount = getService('HibachiUtilityService').precisionCalculate(discount);
 		}
 		
-		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
+		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount < 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
 			if(arguments.order.hasAppliedPromotion()){
 				promotionApplied.setPromotion(arguments.order.getAppliedPromotions()[1].getPromotion());
 			}
-			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
+			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount);
 			promotionApplied.setManualDiscountAmountFlag(true);
 			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
 		}
