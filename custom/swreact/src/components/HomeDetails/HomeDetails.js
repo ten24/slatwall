@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 
 function HomeDetails(props) {
   let homeContent = []
-  Object.keys(props).map(key => {
+  Object.keys(props).forEach(key => {
     if (key.includes('content-columns/')) {
       homeContent.push(props[key])
     }

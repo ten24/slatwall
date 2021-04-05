@@ -14,7 +14,7 @@ const Address = props => {
   const { streetAddress, addressID, city, stateCode, postalCode, isPrimary } = address
   const MySwal = withReactContent(Swal)
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <tr>
@@ -32,8 +32,9 @@ const Address = props => {
         >
           <i className="far fa-edit"></i>
         </Link>
-        <a
-          className="nav-link-style text-primary"
+        <button
+          type="button"
+          className="link-button nav-link-style text-primary"
           onClick={() => {
             MySwal.fire({
               icon: 'info',
@@ -50,7 +51,7 @@ const Address = props => {
           }}
         >
           <i className="far fa-trash-alt"></i>
-        </a>
+        </button>
       </td>
     </tr>
   )
@@ -58,7 +59,7 @@ const Address = props => {
 
 const AccountAddresses = props => {
   const { primaryAddress, accountAddresses, title, customBody, contentTitle } = props
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <AccountLayout title={title}>

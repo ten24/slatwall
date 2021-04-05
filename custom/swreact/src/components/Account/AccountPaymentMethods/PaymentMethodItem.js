@@ -6,10 +6,10 @@ import { deletePaymentMethod } from '../../../actions/userActions'
 import { useTranslation } from 'react-i18next'
 
 const PaymentMethodItem = props => {
-  const { accountPaymentMethodID, accountPaymentMethodName, nameOnCreditCard, isPrimary = false, creditCardType, activeFlag, expirationYear, expirationMonth } = props
+  const { accountPaymentMethodID, accountPaymentMethodName, nameOnCreditCard, isPrimary = false, creditCardType, expirationYear, expirationMonth } = props
   const MySwal = withReactContent(Swal)
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <tr>
@@ -34,8 +34,9 @@ const PaymentMethodItem = props => {
         >
           <i className="far fa-edit"></i>
         </Link>
-        <a
-          className="nav-link-style text-primary"
+        <button
+          type="button"
+          className="link-button nav-link-style text-primary"
           onClick={() => {
             MySwal.fire({
               icon: 'info',
@@ -55,7 +56,7 @@ const PaymentMethodItem = props => {
           data-original-title="Remove"
         >
           <i className="far fa-trash-alt"></i>
-        </a>
+        </button>
       </td>
     </tr>
   )
