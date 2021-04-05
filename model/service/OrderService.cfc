@@ -2506,7 +2506,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var account = arguments.orderTemplate.getAccount();
 		
-		var siteCountryCode = getSiteService().getCountryCodeBySite(arguments.orderTemplate.getSite());
+		var siteCountryCode = arguments.orderTemplate.getSite().setting('siteDefaultCountry');
 			
 		if(!isNull(processObject.getNewAccountAddress())){
 			
