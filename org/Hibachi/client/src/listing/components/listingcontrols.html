@@ -26,8 +26,9 @@
 						data-base-entity-alias="swListingControls.collectionConfig.baseEntityAlias"
 						data-base-entity-name="swListingControls.collectionConfig.baseEntityName"
 				>
+                    
 					<li class="list-group-item"
-						ng-repeat="column in swListingControls.collectionConfig.columns track by $index"
+						ng-repeat="column in swListingControls.collectionConfig.columns track by column.title"
 						ng-if="swListingControls.canDisplayColumn(column)"
 						sw-column-item
 						data-column="column"
