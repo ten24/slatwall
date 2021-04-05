@@ -173,12 +173,12 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		// First Check the application cache
 		var cacheKey = 'getDefaultPropertyIdentifiersListByEntityName#hash(arguments.entityName&arguments.includesList&arguments.excludesList,'md5')#';
 		
-		if(!this.gethibachiCacheService().hasCachedValue(cacheKey)) {
+		if(!this.getHibachiCacheService().hasCachedValue(cacheKey)) {
 			var pidList = getEntityObject( arguments.entityName ).getDefaultPropertyIdentifiersList(argumentsCollection = arguments);
 			this.gethibachiCacheService().setCachedValue(cacheKey, pidList);
 		}
 
-		return this.gethibachiCacheService().getCachedValue(cacheKey);
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 	}
 	
 	/**
@@ -187,7 +187,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	public array function getPublicAttributesByEntityName(required string entityName) {
 		var cacheKey = "getPublicAttributesByEntityName-#arguments.entityName#";
 		
-		if(!this.gethibachiCacheService().hasCachedValue(cacheKey) ){
+		if(!this.getHibachiCacheService().hasCachedValue(cacheKey) ){
 			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
 			attributeCollectionList.setDisplayProperties('attributeCode');
 			attributeCollectionList.addFilter('publicPropertyFlag', 1);
@@ -200,9 +200,9 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 				ArrayAppend( response , attribute['attributeCode'] );
 			}
 			
-			this.gethibachiCacheService().setCachedValue(cacheKey, response);
+			this.getHibachiCacheService().setCachedValue(cacheKey, response);
 		}
 			
-		return this.gethibachiCacheService().getCachedValue(cacheKey);
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 	}
 }
