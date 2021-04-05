@@ -80,7 +80,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     public any function get( required struct rc ) {
         var publicService = getService('PublicService');
 
-        if ( structKeyExists(arguments.rc, "context") && !structKeyExists(arguments.rc, "entityName") ) {
+        if ( structKeyExists(arguments.rc, "context")  ) {
             
             if ( arguments.rc.context == "getCart"){
                 publicService.invokeMethod("getCartData", {data=arguments.rc});
@@ -90,15 +90,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
             }
             
-        } else if ( structKeyExists(arguments.rc, "entityName") ) {
-            if( structKeyExists(arguments.rc, "entityID") ){
-                var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.rc.entityName );
-                arguments.rc["f:#primaryIDName#"] = arguments.rc.entityID;
-                url["f:#primaryIDName#"] = arguments.rc.entityID;
-            }
-            publicService.invokeMethod("get#arguments.rc.entityName#list", {data=arguments.rc});
-            
-        }
+        } 
         
     }
 
