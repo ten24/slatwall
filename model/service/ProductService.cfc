@@ -78,13 +78,13 @@ component extends="HibachiService" accessors="true" {
 	}
 	public array function getProductPublicProperties(){
 		var publicProoerties =  ['productID','productName','urlTitle', 'productCode', 'productDescription'];
-		var publicAttributes = this.getHibachiService().getPublicPropertiesForEntityName('Product');
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProoerties.append(publicAttributes, true);
 		return publicProoerties;
 	}
 	public array function getProductTypePublicProperties(){
 		var publicProoerties = ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
-		var publicAttributes = this.getHibachiService().getPublicPropertiesForEntityName('ProductType');
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('ProductType');
 	    publicProoerties.append(publicAttributes, true);
 		return publicProoerties;
 	}
