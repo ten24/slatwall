@@ -64,6 +64,7 @@ $(document).ready(function(e){
 					var stateField = jQuery( this ).closest('.slatwall-address-container').find( '.slatwall-address-stateCode' );
 				}
 				jQuery(stateField).html('');
+				jQuery( stateField ).append('<option value="">Select</option>');
 				jQuery.each(stateSmartList.pageRecords, function(i, v){
 					jQuery( stateField ).append('<option value="' + v['stateCode'] + '">' + v['stateName'] + '</option>');
 				});
