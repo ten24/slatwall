@@ -337,9 +337,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getAuthorizedProperties(){
-		if(!structKeyExists(variables,'authorizedProperties')){
+		if( !structKeyExists(variables,'authorizedProperties') ){
 			variables.authorizedProperties = [];
-			
 			var entityName = this.getCollectionObject();
 			//skip attribute entity to avoid Stack Overflow via recursive calls from on missing method of public properties
 			if( !isNull(entityName) && lcase(entityName) != 'attribute') {
@@ -348,8 +347,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.authorizedProperties = entityService.invokeMethod('get#entityName#PublicProperties');
 				}
 			}
-			
-			
 		}
 		return variables.authorizedProperties;
 	}

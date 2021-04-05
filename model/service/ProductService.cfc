@@ -77,10 +77,16 @@ component extends="HibachiService" accessors="true" {
 		return approvedProductReviewCollectionList;
 	}
 	public array function getProductPublicProperties(){
-		return ['productID','productName','urlTitle', 'productCode', 'productDescription'];
+		var publicProoerties =  ['productID','productName','urlTitle', 'productCode', 'productDescription'];
+		var publicAttributes = this.getHibachiService().getPublicPropertiesForEntityName('Product');
+	    publicProoerties.append(publicAttributes, true);
+		return publicProoerties;
 	}
 	public array function getProductTypePublicProperties(){
-		return ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
+		var publicProoerties = ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
+		var publicAttributes = this.getHibachiService().getPublicPropertiesForEntityName('ProductType');
+	    publicProoerties.append(publicAttributes, true);
+		return publicProoerties;
 	}
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
