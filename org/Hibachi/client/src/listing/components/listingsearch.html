@@ -44,7 +44,7 @@
     <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
                 data-ng-model="swListingSearch.swListingDisplay.searchText"
-                data-ng-keyup="$event.keyCode == 13 && swListingSearch.search()">
+                data-ng-keypress="swListingSearch.searchByEnterKey($event)">
         <button class="btn btn-xs btn-default s-add-search-param"
                 data-ng-if="swListingSearch.swListingDisplay.searchText"
                 data-ng-disabled="!swListingSearch.selectedSearchColumn || (swListingSearch.selectedSearchColumn.title == 'All')"

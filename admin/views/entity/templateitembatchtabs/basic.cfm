@@ -18,7 +18,7 @@
 				object="#rc.templateItemBatch#" 
 				property="removalSku" 
 				fieldType="typeahead"
-				autocompleteNameProperty="skuName"
+				autocompleteNameProperty="skuCode"
 				autocompletePropertyIdentifiers="skuName,skuCode"
 				edit="#rc.edit#" />
 			<div ng-cloak ng-show="replacementFlag == true || (#rc.templateItemBatch.getReplacementFlag()# && !#rc.edit#)">
@@ -26,7 +26,7 @@
 					object="#rc.templateItemBatch#" 
 					property="replacementSku"
 					fieldType="typeahead"
-					autocompleteNameProperty="skuName"
+					autocompleteNameProperty="skuCode"
 					autocompletePropertyIdentifiers="skuName,skuCode"
 					edit="#rc.edit#" />
 			</div>
