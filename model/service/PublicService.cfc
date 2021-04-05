@@ -357,100 +357,6 @@ component  accessors="true" output="false"
     }
 
 
-	/**
-	 * Get Product List (an alternative to generic entity api call for products)
-	 * */
-	public void function getProductList( required struct data ) {
-	    param name="arguments.data.includeChildProductType" default= 0;
-	    param name="arguments.data.productTypeUrlTitle" default= "";
-	    arguments.data.entityName = "Product";
-	    arguments.data.restRequestFlag = 1;
-	    
-	    //Set an In filter for child types
-	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
-	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
-
-	       //Append filter in URL
-	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
-	    }
-
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
-	        entityName=arguments.data.entityName, 
-	        data=arguments.data, 
-	        enforceAuthorization=false
-	    );
-
-	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
-	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
-
-	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(result.pageRecords);
-	    }
-
-	    arguments.data.ajaxResponse = result;
-	}
-
-	/**
-	 * Get Sku List (an alternative to generic entity api call for products)
-	 * */
-	public void function getSkuList( required struct data ) {
-	    arguments.data.entityName = "Sku";
-	    arguments.data.restRequestFlag = 1;
-
-	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
-	        entityName=arguments.data.entityName, 
-	        data=arguments.data, 
-	        enforceAuthorization=false
-	    );
-
-	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
-	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
-	    }
-
-	    arguments.data.ajaxResponse = result;
-
-	}
-	
-		/**
-	 * Get Sku List (an alternative to generic entity api call for products)
-	 * */
-	public void function getBrandList( required struct data ) {
-	    arguments.data.entityName = "Brand";
-	    arguments.data.restRequestFlag = 1;
-    
-        var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
-	        entityName=arguments.data.entityName, 
-	        data=arguments.data, 
-	        enforceAuthorization=false
-	    );
-	    
-	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
-	        result.pageRecords = getService("brandService").appendSettingsAndOptions(result.pageRecords);
-	        var brandList = result.pageRecords;
-	        var directory = 'brand/logo';
-	        for( var i=1; i <= arrayLen(brandList); i++ ) {
-                brandList[i]['imagePath'] = getImageService().getImagePathByImageFileAndDirectory( brandList[i]['imageFile'], directory);
-	        }
-	    }
-
-	    arguments.data.ajaxResponse = result;
-
-	}
-    
-    /**
-	 * Get Favourite Product List (List out all wishlist sku's )
-	 * */
-    public void function getFavoriteProducts(required struct data){
-         if( getHibachiScope().getLoggedInFlag() ) {
-             
-                var products = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
-                arguments.data.ajaxResponse["accountWishlistProducts"] = products;
-                
-            }
-        
-        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.favouriteProduct ');
-        
-    }
-	
 	
 	/***
 	 * Method to return list of bundle groups and sku list for product
@@ -3891,17 +3797,19 @@ component  accessors="true" output="false"
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
+        arguments.data.restRequestFlag = 1;
+        arguments.data.enforceAuthorization = true;
+        arguments.data.useAuthorizedPropertiesAsDefaultColumns = true;
+        
+        if(structKeyExists(this,'get#arguments.data.entityName#list')){
+             return invokeMethod("get#arguments.data.entityName#list", {data=arguments.data});
+        }
+        
         if(!len(arguments.data.entityName)){
             getHibachiScope().addActionResult("public:scope.getEntity",true);
             return;
         }
-        
-        arguments.data.enforceAuthorization = true;
-        
-        var entityService = getHibachiService().getServiceByEntityName(arguments.data.entityName);
-		if(!structKeyExists(arguments.data,'propertyIdentifiersList') && structKeyExists(entityService,'get#arguments.data.entityName#PublicProperties')){
-			arguments.data.propertyIdentifiersList = arrayToList(entityService.invokeMethod('get#arguments.data.entityName#PublicProperties'));
-		}
+    
         //Use public Properties logic here to fetch default properties
         if(!isNull(arguments.data.entityID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.entityID)){
             arguments.data.ajaxResponse['data'] = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.entityID,arguments.data );
