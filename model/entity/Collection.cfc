@@ -345,6 +345,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var entityService = this.getService("hibachiService").getServiceByEntityName(entityName);
 				if(structKeyExists(entityService, 'get#entityName#PublicProperties')){
 					variables.authorizedProperties = entityService.invokeMethod('get#entityName#PublicProperties');
+				} else {
+					variables.authorizedProperties = this.getService('hibachiService')
+					    .invokeMethod('getPublicAttributesByEntityName', {'entityName': entityName} );
 				}
 			}
 		}
