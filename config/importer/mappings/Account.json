@@ -23,12 +23,6 @@
                 "dataType": "string"
             }
         },
-        "username": {
-            "propertyIdentifier": "username",
-            "validations": {
-                "dataType": "string"
-            }
-        },
         "companyName": {
             "propertyIdentifier": "company",
             "validations": {
@@ -49,7 +43,18 @@
             }
         },
         "accountActiveFlag": {
-            "propertyIdentifier": "activeFlag"
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "taxExemptFlag": {
+            "propertyIdentifier": "taxExemptFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
         }
     },
     
