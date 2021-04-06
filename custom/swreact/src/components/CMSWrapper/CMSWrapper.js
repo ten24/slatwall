@@ -18,7 +18,7 @@ const CMSWrapper = ({ children }) => {
   let path = pathname.split('/').reverse()[0].toLowerCase()
   path = path.length ? path : 'home'
 
-  payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
+  payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID', 'productListingPageFlag']
 
   useEffect(() => {
     dispatch(getFavouriteProducts())
@@ -31,7 +31,7 @@ const CMSWrapper = ({ children }) => {
       let NewPayload = {}
       let newPath = location.pathname.split('/').reverse()[0].toLowerCase()
       newPath = newPath.length ? newPath : 'home'
-      NewPayload[newPath] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
+      NewPayload[newPath] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID', 'productListingPageFlag']
       dispatch(getFavouriteProducts())
       dispatch(
         getContent({
