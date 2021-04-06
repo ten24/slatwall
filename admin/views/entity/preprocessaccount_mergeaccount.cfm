@@ -65,7 +65,7 @@ Notes:
 				</div> 
 				<h4>From Account</h4>
 				<!--- General Details --->
-				<swa:SlatwallAccountTypeahead fieldName="fromAccountID" required="true" initialAccountID="#rc.account.getAccountID()#" /> 	
+				<swa:SlatwallAccountTypeahead fieldName="fromAccountID" required="true"/> 	
 				<!--- General Details --->
 				<h4>To Account</h4>
 				<swa:SlatwallAccountTypeahead fieldName="toAccountID" required="true" /> 	
