@@ -48,8 +48,9 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
-	property name="hibachiDataService" type="any";
 	property name="imageService" type="any";
+    property name="hibachiService" type="any";
+	property name="hibachiDataService" type="any";
 	// ===================== START: Logical Methods ===========================
 	
 	public array function getBrandPublicProperties(){
