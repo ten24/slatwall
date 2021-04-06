@@ -171,7 +171,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		try{
 		
 			if( !IsJson(rawRequest.fileContent) ){
-				throw("createAndSetGrantToken: API responde is not valid json");
+				throw("createAndSetGrantToken: API response is not valid json | Status Code: #rawRequest.statuscode#");
 			}
 			
 			var response = DeSerializeJson(rawRequest.fileContent);
@@ -214,7 +214,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		try{
 			
 			if( !IsJson(rawRequest.fileContent) ){
-				throw("createAndSetAccessToken: API responde is not valid json");
+				throw("createAndSetAccessToken: API response is not valid json");
 			}
 			
 			var response = DeSerializeJson(rawRequest.fileContent);
@@ -264,7 +264,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
 		var rawRequest = httpRequest.send().getPrefix();
 		if( !IsJson(rawRequest.fileContent) ){
-			throw("ERPONE - callErpOneGetDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+			throw("ERPONE - callErpOneGetDataApi: API response is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
 			
 		return DeSerializeJson(rawRequest.fileContent);
@@ -317,7 +317,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		httpRequest.addParam(type="body", value=serializeJSON(requestData));
 		var rawRequest = httpRequest.send().getPrefix();
 		if( !IsJson(rawRequest.fileContent) ){
-			throw("ERPONE - callErpOneUpdateDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+			throw("ERPONE - callErpOneUpdateDataApi: API response is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
 			
 		return DeSerializeJson(rawRequest.fileContent);
@@ -378,27 +378,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		} else {
 			this.logHibachi("ERPONE - No data recieve from getOrderItemData API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
-		}
-
-	}
-	
-	public any function getItemInventoryData( items ){
-		logHibachi("ERPONE - called getItemInventoryData");
-		
-		var InventoryArray = this.callErpOneGetDataApi({
-			"items"			: arguments.items,
-			"warehouses"	: "*",
-			"format"		: "array"
-		},"item/availability")
-
-		if( InventoryArray.len() > 0 ){
-
-			this.logHibachi("ERPONE - Start pushing Inventory to import-queue ");
-			var batch = this.pushRecordsIntoImportQueue( "Inventory", InventoryArray );
-			this.logHibachi("ERPONE - Finish pushing Inventory to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
-
-		} else {
-			this.logHibachi("ERPONE - No data recieve from getItemInventoryData API");
 		}
 
 	}
@@ -569,41 +548,62 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 		logHibachi("ERPONE - Starting importing ErpOneInventoryItems");
 		
-		var currentPage = 1;
-		var pageSize = 10;
-		var recordsFetched = 0;
+		var pageSize = 100;
 		
 		var skuCollection = getSkuService().getSkuCollectionList();
 		skuCollection.setDisplayProperties(displayPropertiesList='skuCode');
 		var totalRecordsCount = skuCollection.getRecordsCount();
 		skuCollection.setPageRecordsShow(pageSize);
-
-		while ( recordsFetched < totalRecordsCount ){
-			try {
-				var skuCollection = getSkuService().getSkuCollectionList();
-				skuCollection.setDisplayProperties(displayPropertiesList='skuCode');
-				var totalRecordsCount = skuCollection.getRecordsCount();
-				skuCollection.setPageRecordsShow(pageSize);
-				skuCollection.setCurrentPageDeclaration(currentPage);
-				var skus = skuCollection.getPageRecords();
-				var skuData = [];
-				for(var sku in skus) {
-					sku['skuCode']=reReplace(reReplace(sku['skuCode'], "--" , "/", "all" ),"__", " ", "all");
-					skuData.append(sku['skuCode']);
-				}
-				this.getItemInventoryData(arrayToList(skuData));
-				this.logHibachi("Successfully called getItemInventoryData for CurrentPage: #currentPage# #arrayLen(skuData)# and PageSize: #pageSize# ");
-	
-			} catch(e){
-	
-				this.logHibachi("Got error while trying to call getItemInventoryData for CurrentPage: #currentPage# and PageSize: #pageSize#");
-				this.getHibachiUtilityService().logException(e);
-			}
 		
-			//increment regardless of success or failure;
-			recordsFetched += pageSize;
-			currentPage += 1;
+		var totalPages = floor(totalRecordsCount / pageSize);
+
+		for(var i = 1; i <= totalPages; i++){
+			// try {
+				skuCollection.setCurrentPageDeclaration(i);
+				var skus = skuCollection.getPageRecords(refresh=true);
+				var skuData = '';
+				for(var sku in skus) {
+					//sku['skuCode']=reReplace(reReplace(sku['skuCode'], "--" , "/", "all" ),"__", " ", "all");
+					skuData = listAppend(skuData, sku['skuCode']);
+
+				}
+				var inventoryArray = this.callErpOneGetDataApi({
+					'items'			: skuData,
+					'warehouses'	: '*',
+					'format'		: 'array'
+				},'item/availability');
+				
+				if(arrayLen(inventoryArray)){
+					
+					for(var inventoryItem in inventoryArray){
+						queryExecute(
+							sql = 'UPDATE swSku set calculatedQATS = :qnt WHERE skuCode = :skuCode',
+							params = {
+								'skuCode' : {
+									'value' : inventoryItem['item'],
+									'type' : 'varchar'
+								},
+								'qnt' : {
+									'value' : inventoryItem['available'],
+									'type' : 'numeric'
+								},
+							}
+						);
+						
+					}
+					
+				}
+				
+
+			// } catch(e){
+	
+			// 	this.logHibachi("Got error while trying to call getItemInventoryData for CurrentPage: #currentPage# and PageSize: #pageSize#");
+			// 	this.getHibachiUtilityService().logException(e);
+			// }
+		
+
 		}
+	
 			
 		this.logHibachi("ERPONE - Finish importing ErpOneInventoryItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
@@ -744,7 +744,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				logHibachi("ERPOne - Successfully updated Account Data");
 			}
 			else {
-				throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+				throw("ERPONE - callErpOnePushAccountApi: API response is not valid json for request: #Serializejson(arguments.data.payload)#");
 			}
 			
 			if( structKeyExists(arguments.data.sycontactData, 'First_Name') && !this.hibachiIsEmpty(arguments.data.sycontactData.First_Name) ){
@@ -815,13 +815,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 						logHibachi("ERPOne - Successfully created Sy_contact Data with rowID #response.rowids[1]#");
 					}
 					else {
-						throw("ERPONE - callErpOnePushSy_contactApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+						throw("ERPONE - callErpOnePushSy_contactApi: API response is not valid json for request: #Serializejson(arguments.data.payload)#");
 					}
 				}
 			
 			}
 			else {
-				throw("ERPONE - callErpOnePushAccountApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+				throw("ERPONE - callErpOnePushAccountApi: API response is not valid json for request: #Serializejson(arguments.data.payload)#");
 			}
 		}
 		
@@ -907,7 +907,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			logHibachi("ERPOne - Successfully updated Order Data");
 		}
 		else {
-			throw("ERPONE - callErpOnePushOrderApi: API responde is not valid json for request: #Serializejson(arguments.data.payload)#");
+			throw("ERPONE - callErpOnePushOrderApi: API response is not valid json for request: #Serializejson(arguments.data.payload)#");
 		}
 		logHibachi("ERPOne - End Order pushData");
 	}
