@@ -586,14 +586,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				}
 				var inventoryArray = this.callErpOneGetDataApi({
 					'items'			: skuData,
-					'warehouses'	: '*',
+					'warehouses'	: '01',
 					'format'		: 'array'
 				},'item/availability');
 				
 				if(arrayLen(inventoryArray)){
 					
 					for(var inventoryItem in inventoryArray){
-						queryExecute(
+						var test = queryExecute(
 							sql = 'UPDATE swSku set calculatedQATS = :qnt WHERE skuCode = :skuCode',
 							params = {
 								'skuCode' : {
@@ -606,8 +606,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 								},
 							}
 						);
-						
+					
 					}
+					
 					
 				}
 				
@@ -622,7 +623,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
 	
 			
-		this.logHibachi("ERPONE - Finish importing ErpOneInventoryItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
+		this.logHibachi("ERPONE - Finish importing ErpOneInventoryItems");
 	}
 	
 	
