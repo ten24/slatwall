@@ -158,4 +158,44 @@ component extends="Slatwall.model.service.PublicService" {
 
 	}
 	
+	
+	
+	public void function getProducts(required struct data, struct urlScope=url ){
+		super.getProducts(argumentCollection=arguments);
+
+		if(structKeyExists(arguments.data.ajaxResponse.data, 'products') && arrayLen(arguments.data.ajaxResponse.data.products)){
+			
+			var pricePayload = [];
+			var isCustomerFlag  = false;
+			if(!getHibachiScope().getAccount().getNewFlag() && len(getHibachiScope().getAccount().getRemoteID())){
+				isCustomerFlag = true;
+				var customerCode = getHibachiScope().getAccount().getRemoteID();
+			}
+			for(var product in arguments.data.ajaxResponse.data.products){
+				var priceData = { 
+					'item': product['sku_skuCode'], 
+					'quantity' : 1, 
+					'unit': 'EACH'
+				};
+				
+				if(isCustomerFlag){
+					priceData['customer'] = customerCode;
+				}
+				arrayAppend(pricePayload, priceData);
+			}
+			var livePrices = getService('erpOneService').getLivePrices(pricePayload);
+			
+			for(var product in arguments.data.ajaxResponse.data.products){
+				
+				for(var livePrice in livePrices){
+					if(livePrice['item'] == product['sku_skuCode']){
+						product['skuPrice'] = livePrice['item'];
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	
 }

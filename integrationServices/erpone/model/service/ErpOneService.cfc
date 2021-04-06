@@ -309,6 +309,23 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return DeSerializeJson(rawRequest.fileContent);
 	}
 	
+	
+	public any function getLivePrices( required array requestData){
+		var httpRequest = this.createHttpRequest('distone/rest/service/price/fetch', 'POST', 'application/json; charset=UTF-8');
+		
+		// Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
+
+		httpRequest.addParam( type='body', value = serializeJSON(arguments.requestData));
+			
+		var rawRequest = httpRequest.send().getPrefix();
+		if( !IsJson(rawRequest.fileContent) ){
+			return rawRequest;
+		}
+			
+		return DeSerializeJson(rawRequest.fileContent);
+	}
+	
 	public any function callErpOneUpdateDataApi( required any requestData, string endpoint="create" ){
 		var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json");
 		
@@ -607,6 +624,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 		this.logHibachi("ERPONE - Finish importing ErpOneInventoryItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
 	}
+	
+	
+	
+	
 	/**
 	 * @hint helper function to create a struct of properties+values from @entity/Account.cfc.
 	 * 
