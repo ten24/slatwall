@@ -24,7 +24,7 @@ const BasicPage = () => {
     let didCancel = false
     if (!didCancel && ((!request.isFetching && !request.isLoaded) || loc.search !== path) && content.productListingPageFlag === '1') {
       setPath(loc.search)
-      setRequest({ ...request, params: { ...params, content: '', includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
+      setRequest({ ...request, params: { ...params, content: content.contentID, includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
     }
     return () => {
       didCancel = true

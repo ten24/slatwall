@@ -32,7 +32,7 @@ const MainBanner = () => {
   const contentStore = useSelector(state => state.content)
 
   let homeMainBanner = []
-  Object.keys(contentStore).map(key => {
+  Object.keys(contentStore).forEach(key => {
     if (key.includes('main-banner-slider/')) {
       homeMainBanner.push(contentStore[key])
     }
