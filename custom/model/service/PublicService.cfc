@@ -189,7 +189,7 @@ component extends="Slatwall.model.service.PublicService" {
 				
 				for(var livePrice in livePrices){
 					if(livePrice['item'] == product['sku_skuCode']){
-						product['skuPrice'] = livePrice['item'];
+						product['skuPrice'] = livePrice['price'];
 						break;
 					}
 				}

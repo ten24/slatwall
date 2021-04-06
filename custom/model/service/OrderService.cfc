@@ -139,4 +139,112 @@ component extends="Slatwall.model.service.OrderService" {
 	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=false,boolean updateCalculatedProperties=false, boolean updateShippingMethodOptions=true) {
 		return super.saveOrderItem(argumentCollection=arguments);
 	}
+	
+	
+	
+	
+	public any function processOrder_updateOrderAmounts(required any order, struct data) {
+		this.logHibachi('updating order amounts called'); 
+		
+		//only allow promos to be applied to orders that have not been closed or canceled
+		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
+
+			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
+				//quote logic should freeze the price based on the expiration therefore short circuiting the logic
+				if(
+ 					!arguments.order.getQuoteFlag() 
+ 					|| 
+ 					(arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired() )
+ 				){
+ 					
+ 					var pricePayload = [];
+					var isCustomerFlag  = false;
+					if(!arguments.ordergetAccount().getNewFlag() && len(arguments.ordergetAccount().getRemoteID())){
+						isCustomerFlag = true;
+						var customerCode = arguments.ordergetAccount().getRemoteID();
+					}
+					
+ 					// Loop over the orderItems to see if the skuPrice Changed
+					for(var orderItem in arguments.order.getOrderItems()){
+						
+						
+	 					if(
+	 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
+	 						&&
+	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
+	 					){
+	 						var priceData = { 
+								'item': orderItem.getSkuCode(), 
+								'quantity' : orderItem.getQuantity(), 
+								'unit': 'EACH'
+							};
+							
+							if(isCustomerFlag){
+								priceData['customer'] = customerCode;
+							}
+							arrayAppend(pricePayload, priceData);
+							
+						}
+					}
+					
+					var livePrices = getService('erpOneService').getLivePrices(pricePayload);
+					
+					// Loop over the orderItems to see if the skuPrice Changed
+					for(var orderItem in arguments.order.getOrderItems()){
+						
+						
+	 					if(
+	 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
+	 						&&
+	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
+	 					){
+					
+
+							for(var livePrice in livePrices){
+								if(livePrice['item'] == orderItem.getSkuCode()){
+									
+									if( orderItem.getPrice() != livePrice['price']){
+										orderItem.setPrice(livePrice['price']);
+				 						orderItem.setSkuPrice(livePrice['price']);
+									}
+									break;
+								}
+							}
+							
+ 						}
+ 						
+ 						
+					}
+					
+ 				}
+			}
+			
+			// First Re-Calculate the 'amounts' base on price groups
+
+			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
+		
+			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
+			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
+			
+			updateOrderItemsWithAllocatedOrderDiscountAmount(arguments.order);
+
+			// Re-Calculate tax now that the new promotions and price groups have been applied
+	    	if(arguments.order.getPaymentAmountDue() != 0){
+	    		//Enable Fulfillment Tax Recalculation if already calculated
+				arguments.order.setRefreshCalculateFulfillmentChargeFlag(true);
+				
+				getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+	    	}
+			
+			//update the calculated properties
+			getHibachiScope().addModifiedEntity(arguments.order);
+			this.logHibachi('Order added to modified entities and is being saved.');
+			
+		}
+		
+		return arguments.order;
+	}
+	
+	
+	
 }
