@@ -8,7 +8,7 @@ const CartPromoBox = () => {
   const promotionCodes = useSelector(state => state.cart.promotionCodes)
   const dispatch = useDispatch()
   const [promoCode, setPromoCode] = useState('')
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   return (
     <div className="accordion" id="order-options">
       <div className="card">

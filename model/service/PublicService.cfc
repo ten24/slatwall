@@ -56,6 +56,7 @@ component  accessors="true" output="false"
     property name="paymentService" type="any";
     property name="subscriptionService" type="any";
     property name="hibachiCacheService" type="any";
+    property name="hibachiCollectionService" type="any";
     property name="hibachiSessionService" type="any";
     property name="hibachiUtilityService" type="any";
     property name="productService" type="any";
@@ -67,6 +68,7 @@ component  accessors="true" output="false"
     property name="giftCardService";
     property name="integrationService" type="any";
     property name="imageService" type="any";
+    property name="locationService" type="any";
 
 
     variables.publicContexts = [];
@@ -1836,7 +1838,7 @@ component  accessors="true" output="false"
           getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
           return;
       }
-      var location = getService('LocationService').getLocation(arguments.data.value);
+      var location = this.getLocationService().getLocation(arguments.data.value);
       
       if(isNull(location)){
           getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
@@ -3868,35 +3870,39 @@ component  accessors="true" output="false"
 	 * Generic Endpoint to get any entity
 	* */
 	public any function getEntity( required struct data ) {
+	    param name="arguments.data.entityID" default="";
 	    param name="arguments.data.entityName" default="";
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+        if( !len(arguments.data.entityName) ){
+            getHibachiScope().addActionResult("public:scope.getEntity",true);
+            return;
+        }
         
         arguments.data.restRequestFlag = 1;
         arguments.data.enforceAuthorization = true;
         arguments.data.useAuthorizedPropertiesAsDefaultColumns = true;
         
-        if(structKeyExists(this,'get#arguments.data.entityName#list')){
-             return invokeMethod("get#arguments.data.entityName#list", {data=arguments.data});
+        var overrideFunctionName = 'get'&arguments.data.entityName;
+        if( structKeyExists(this, overrideFunctionName) ){
+            return this.invokeMethod(overrideFunctionName, {data=arguments.data});
         }
         
-        if(!len(arguments.data.entityName)){
-            getHibachiScope().addActionResult("public:scope.getEntity",true);
-            return;
-        }
-    
         //Use public Properties logic here to fetch default properties
-        if(!isNull(arguments.data.entityID) && !this.getHibachiScope().hibachiIsEmpty(arguments.data.entityID)){
-            arguments.data.ajaxResponse['data'] = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.data.entityName,arguments.data.entityID,arguments.data );
+        if( len(arguments.data.entityID) ){
+            arguments.data.ajaxResponse['data'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
         } else {
-    	    arguments.data.ajaxResponse['data'] = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.data.entityName,arguments.data );
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
         }
 
-        getHibachiScope().addActionResult("public:scope.getEntity",false);
+        this.getHibachiScope().addActionResult("public:scope.getEntity", false);
 	}
-     public any function getPickupLocations() {
-		arguments.data.ajaxResponse['locations'] = getService('LocationService').getLocationParentOptions(false)
+    
+    public any function getPickupLocations() {
+		arguments.data.ajaxResponse['locations'] = this.getLocationService().getLocationParentOptions(false)
     }
+    
     public any function setPickupDate(required any data) {
         param name="data.pickupDate" default="";
 		param name="data.orderFulfillmentID" default="";

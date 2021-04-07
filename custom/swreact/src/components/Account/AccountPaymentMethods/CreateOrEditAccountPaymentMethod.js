@@ -3,7 +3,6 @@ import { connect, useDispatch } from 'react-redux'
 import AccountContent from '../AccountContent/AccountContent'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountAddressForm from './AccountAddressForm'
-import { toast } from 'react-toastify'
 import useRedirect from '../../../hooks/useRedirect'
 import SwSelect from '../../SwSelect/SwSelect'
 import { addPaymentMethod } from '../../../actions/userActions'
@@ -21,7 +20,7 @@ const years = Array(10)
 const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, contentTitle, accountAddresses, accountPaymentMethods }) => {
   const [redirect, setRedirect] = useRedirect({ location: '/my-account/cards' })
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const formik = useFormik({
     enableReinitialize: true,

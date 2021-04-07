@@ -1,4 +1,4 @@
-export default {
+const data = {
   site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: 'stoneAndBerg' },
   router: [
     { URLKeyType: 'Product', URLKey: 'product' },
@@ -9,6 +9,7 @@ export default {
     { URLKeyType: 'Address', URLKey: 'ad' },
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
+  enforceVerifiedAccountFlag: false,
   seo: {
     title: 'Stone & Berg',
     titleMeta: '',
@@ -512,3 +513,5 @@ export default {
     },
   ],
 }
+
+export default data

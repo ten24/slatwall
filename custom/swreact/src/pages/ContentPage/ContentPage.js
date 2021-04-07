@@ -1,6 +1,6 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Layout } from '../../components'
-import React, { useState } from 'react'
+import { createElement } from 'react'
 
 import { useLocation } from 'react-router'
 import NotFound from '../NotFound/NotFound'
@@ -24,7 +24,7 @@ const ContentPage = () => {
     component = content[path].setting.contentTemplateFile.replace('.cfm', '')
   }
 
-  return <Layout>{!content.isFetching && React.createElement(pageComponents[component])}</Layout>
+  return <Layout>{!content.isFetching && createElement(pageComponents[component])}</Layout>
 }
 
 export default ContentPage

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 const ContactForm = () => {
   const [content, setContent] = useState({ form: null, isLoaded: false, submitted: false })
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   let loc = useLocation()
   const siteCode = useSelector(state => state.configuration.site.siteCode)
   const path = loc.pathname.split('/').reverse()[0]
@@ -32,16 +32,17 @@ const ContactForm = () => {
         return item
       })
   }, [])
-
+  if (!content.isLoaded && formsByPath.length) {
+    if (formsByPath.length > 1) {
+      formsByPath = formsByPath.sort((a, b) => {
+        return a.sortOrder - b.sortOrder
+      })
+    }
+    formsByPath = formsByPath[0]
+  }
   useEffect(() => {
     let didCancel = false
     if (!content.isLoaded && formsByPath.length) {
-      if (formsByPath.length > 1) {
-        formsByPath = formsByPath.sort((a, b) => {
-          return a.sortOrder - b.sortOrder
-        })
-      }
-      formsByPath = formsByPath[0]
       axios({
         method: 'POST',
         withCredentials: true,

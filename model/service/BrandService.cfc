@@ -48,12 +48,16 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
-	property name="hibachiDataService" type="any";
 	property name="imageService" type="any";
+    property name="hibachiService" type="any";
+	property name="hibachiDataService" type="any";
 	// ===================== START: Logical Methods ===========================
 	
 	public array function getBrandPublicProperties(){
-		return ['brandID','brandName','urlTitle', 'brandDescription', 'activeFlag', 'brandFeatured', 'brandWebsite', 'imageFile'];
+	    var publicProperties = ['brandID','brandName','urlTitle', 'brandDescription', 'activeFlag', 'brandFeatured', 'brandWebsite', 'imageFile'];
+	    var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Brand');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
 	}
 	
 	public string function getImageBasePath( boolean frontendURL = false ) {

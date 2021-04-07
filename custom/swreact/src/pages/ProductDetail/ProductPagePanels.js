@@ -50,11 +50,11 @@ const ProductPagePanels = () => {
           <div className="card-body font-size-sm">
             <div className="d-flex justify-content-between border-bottom py-2">
               <div className="font-weight-semibold text-dark">Document Title</div>
-              <a href="#">Download</a>
+              <a href="?=doc">Download</a>
             </div>
             <div className="d-flex justify-content-between border-bottom py-2">
               <div className="font-weight-semibold text-dark">Document Title</div>
-              <a href="#">Download</a>
+              <a href="?=doc">Download</a>
             </div>
           </div>
         </div>

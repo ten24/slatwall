@@ -47,9 +47,9 @@ const MainBanner = () => {
         breakpoint: 768,
         settings: {
           arrows: false,
-        }
-      }
-    ]
+        },
+      },
+    ],
   }
   return (
     <div className="container">

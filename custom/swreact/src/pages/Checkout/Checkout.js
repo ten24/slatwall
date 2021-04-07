@@ -128,12 +128,18 @@ const Checkout = () => {
   const history = useHistory()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const currentStep = getCurrentStep(path)
+  const verifiedAccountFlag = useSelector(state => state.userReducer.verifiedAccountFlag)
+  const enforceVerifiedAccountFlag = useSelector(state => state.configuration.enforceVerifiedAccountFlag)
 
   useEffect(() => {
     if (!isAuthenticated()) {
       history.push(`/my-account?redirect=${loc.pathname}`)
     }
   }, [history, loc])
+
+  if (enforceVerifiedAccountFlag && !verifiedAccountFlag && isAuthenticated()) {
+    return <Redirect to="/account-verification" />
+  }
 
   return (
     <Layout>

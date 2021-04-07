@@ -3,7 +3,7 @@ import SwSelect from '../../SwSelect/SwSelect'
 import { useTranslation } from 'react-i18next'
 
 const AccountAddressForm = ({ formik, states, countries }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <>
