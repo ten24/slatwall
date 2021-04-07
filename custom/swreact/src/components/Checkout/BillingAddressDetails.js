@@ -1,12 +1,8 @@
-import { useSelector } from 'react-redux'
-import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
-
-const BillingAddressDetails = () => {
-  let billingNickname = useSelector(billingAddressNickname)
-  const { billingAddress } = useSelector(orderPayment)
+const BillingAddressDetails = ({ orderPayment, billingNickname }) => {
+  const { billingAddress } = orderPayment
 
   return (
-    <div className="col-md-4">
+    <>
       <h3 className="h6">Billing Address:</h3>
       {billingAddress && (
         <p>
@@ -21,7 +17,7 @@ const BillingAddressDetails = () => {
           {`${billingAddress.city}, ${billingAddress.stateCode} ${billingAddress.postalCode}`}
         </p>
       )}
-    </div>
+    </>
   )
 }
 

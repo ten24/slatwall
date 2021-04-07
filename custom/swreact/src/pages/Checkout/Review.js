@@ -9,6 +9,8 @@ const ReviewSlide = ({ currentStep }) => {
   const { fulfillmentMethod } = useSelector(fulfillmentSelector)
   const payment = useSelector(orderPayment)
   const shippingAddress = useSelector(shippingAddressSelector)
+  let billingNickname = useSelector(billingAddressNickname)
+
   let shippingAddressNickname = useSelector(shippingAddressNicknameSelector)
   if (cart.isPlaced) {
     return <Redirect to={'/order-confirmation'} />
@@ -17,12 +19,34 @@ const ReviewSlide = ({ currentStep }) => {
   return (
     <>
       <div className="row bg-lightgray pt-3 pr-3 pl-3 rounded mb-5">
-        {fulfillmentMethod.fulfillmentMethodType === 'shipping' && <ShippingAddressDetails shippingAddress={shippingAddress} shippingAddressNickname={shippingAddressNickname} />}
-        {fulfillmentMethod.fulfillmentMethodType === 'pickup' && <PickupLocationDetails pickupLocation={fulfillmentMethod} />}
-        <BillingAddressDetails />
-        {payment.paymentMethod.paymentMethodType === 'creditCard' && <CreditCardDetails creditCardPayment={payment} />}
-        {payment.paymentMethod.paymentMethodType === 'giftCard' && <GiftCardDetails />}
-        {payment.paymentMethod.paymentMethodType === 'termPayment' && <TermPaymentDetails termPayment={payment} />}
+        {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
+          <div className="col-md-4">
+            <ShippingAddressDetails shippingAddress={shippingAddress} shippingAddressNickname={shippingAddressNickname} />
+          </div>
+        )}
+        {fulfillmentMethod.fulfillmentMethodType === 'pickup' && (
+          <div className="col-md-4">
+            <PickupLocationDetails pickupLocation={fulfillmentMethod} />
+          </div>
+        )}
+        <div className="col-md-4">
+          <BillingAddressDetails billingAddressNickname={billingNickname} orderPayment={payment} />
+        </div>
+        {payment.paymentMethod.paymentMethodType === 'creditCard' && (
+          <div className="col-md-4">
+            <CreditCardDetails creditCardPayment={payment} />
+          </div>
+        )}
+        {payment.paymentMethod.paymentMethodType === 'giftCard' && (
+          <div className="col-md-4">
+            <GiftCardDetails />
+          </div>
+        )}
+        {payment.paymentMethod.paymentMethodType === 'termPayment' && (
+          <div className="col-md-4">
+            <TermPaymentDetails termPayment={payment} />
+          </div>
+        )}
       </div>
 
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Review your order</h2>
