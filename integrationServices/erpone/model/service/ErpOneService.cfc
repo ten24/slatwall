@@ -360,7 +360,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	
 	public any function callErpOneUpdateDataApi( required any requestData, string endpoint="create" ){
-		var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json");
+		var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json; charset=UTF-8");
 		
 		// Authentication headers
 		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
@@ -369,7 +369,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		if( !IsJson(rawRequest.fileContent) ){
 			throw("ERPONE - callErpOneUpdateDataApi: API response is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
-			
 		return DeSerializeJson(rawRequest.fileContent);
 	}
 		
@@ -499,6 +498,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				
 				
 				if(arrayLen(syAccountsArray)){
+					accountData['remoteContactID'] = syAccountsArray[1]['__rowids'];
 					if(len(syAccountsArray[1]["First_Name"])){
 						accountData["firstName"] = syAccountsArray[1]["First_Name"];
 					}
@@ -512,6 +512,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					}
 				}
 				
+				dd(accountData);
 				arrayAppend(formatedAccounts,accountData)
 			}
 			
@@ -695,33 +696,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return erponeAccount;			
 	}
 	
-	public any function convertSwAccountToErponeSyconatcAccount(required any account){
-		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,remoteID,company,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
-		var addressPropList = 	this.getHibachiUtilityService().prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
-
-		accountPropList = accountPropList & ',' & addressPropList;
-		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
-		var mapping = {
-			"contact" : "companyCode",
-			"firstName" : "First_Name",
-			"lastName" : "Last_Name",
-			"primaryAddress_address_streetAddress" : "adr_1",
-			"primaryAddress_address_street2Address" : "adr_2",
-			"primaryAddress_address_city" : "adr_4",
-			"primaryAddress_address_stateCode" : "state",
-			"primaryAddress_address_postalCode" : "postal_code"
-		};
-
-		var erponeAccount = {};
-
-		for(var fromKey in mapping){
-			if( StructKeyExists( swAccountStruct, fromKey ) && !IsNull(swAccountStruct[fromKey]) ){
-				erponeAccount[mapping[fromKey]] = swAccountStruct[fromKey];
-			}
-		}
-
-		return erponeAccount;			
-	}
 	
 	public any function convertSwOrderToErponeOrder(required any order){
 		var orderPropList =  "orderID,orderNumber,remoteID,orderOpenDateTime,currencyCode,account.companyCode";
@@ -775,20 +749,31 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public void function pushAccountDataToErpOne(required any entity, any data ={}){
 		logHibachi("ERPOne - Start pushData - Account: #arguments.entity.getAccountID()#");
 		
-		arguments.data.payload = this.convertSwAccountToErponeAccount(arguments.entity);
-		arguments.data.sycontactData = this.convertSwAccountToErponeSyconatcAccount(arguments.entity);
-		arguments.create = false;
-		
-		//push to remote endpoint
-		
-		var payload = {
-		  "table"	 : "customer",
-		  "triggers" : "true",
-		  "changes"	 : [ arguments.data.payload ]
+		var customerChanges = {
+			"name" : entity.getCompany(),
 		};
+		if(!isNull(entity.getAddress())){
+			var address = entity.getAddress();
+			customerChanges['adr[1]'] = address.getStreetAddress();
+			customerChanges['adr[2]'] = address.getStreet2Address();
+			customerChanges['adr[4]'] = address.getCity();
+			customerChanges['state'] = address.getStateCode();
+			customerChanges['postal_code'] = address.getPostalCode();
+		}
+		
+		if(!isNull(entity.getPrimaryPhoneNumber())){
+			customerChanges['phone'] = entity.getPrimaryPhoneNumber().getPhoneNumber();
+		}
+		
+
+		if( len(arguments.entity.getRemoteID()) ){
 			
-		if( !this.hibachiIsEmpty(arguments.entity.getRemoteID()) ){
-			var accountResponse = this.callErpOneUpdateDataApi(payload, "update" );
+			customerChanges['__rowid'] = arguments.entity.getRemoteID();
+			var accountResponse = this.callErpOneUpdateDataApi({
+				"table"	   : "customer",
+				"triggers" : "true",
+				"changes"  : [ customerChanges ]
+			}, "update" );
 			
 			/** Format error:
 			 * typical error response: { "errordetail": "error", "filecontent": "null"};
@@ -797,40 +782,44 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 			if( structKeyExists(accountResponse, 'updated') && accountResponse.updated > 0 ){
 				logHibachi("ERPOne - Successfully updated Account Data");
-			}
-			else {
-				throw("ERPONE - callErpOnePushAccountApi: API response is not valid json for request: #Serializejson(arguments.data.payload)#");
+			} else {
+				throw("ERPONE - callErpOnePushAccountApi: API response is not valid json");
 			}
 			
-			if( structKeyExists(arguments.data.sycontactData, 'First_Name') && !this.hibachiIsEmpty(arguments.data.sycontactData.First_Name) ){
-				var sycontactPayload = {
-				  "table"	 : "sy_contact",
-				  "triggers" : "true",
-				  "changes"	 : [ arguments.data.sycontactData ]
-				};
+			if( len(entity.getRemoteContact()) ){
+
 				
-				var sy_conatctUpdateresponse = this.callErpOneUpdateDataApi(sycontactPayload, "update" );
+				var contactResponse = this.callErpOneUpdateDataApi({
+					"table"	 : "sy_contact",
+					"triggers" : "true",
+					"changes"	 : [ 
+						{
+							"__rowid" : entity.getRemoteContact(),
+							"First_Name" : entity.getFirstName(),
+							"Last_Name" : entity.getLastName()
+						} 
+					]
+				}, "update" );
 				
 				/** Format error:
 				 * typical error response: { "errordetail": "error", "filecontent": "null"};
 				 * typical successful response: {"table":"customer","updated":1,"triggers":false}
 				*/
 			
-				if( structKeyExists(sy_conatctUpdateresponse, 'updated') && sy_conatctUpdateresponse.updated > 0 ){
+				if( structKeyExists(contactResponse, 'updated') && contactResponse.updated > 0 ){
 					logHibachi("ERPOne - Successfully updated Sy_contact Data");
-				}
-				else {
-					throw("ERPONE - callErpOnePushSy_contactApi: Error occured while updating `sy_contact`, request: #Serializejson(arguments.data.payload)#");
+				} else {
+					throw("ERPONE - callErpOnePushSy_contactApi: Error occured while updating `sy_contact`");
 				}
 			}
 			
 		} else {
-			var payload = {
-			  "table"	 : "customer",
-			  "triggers" : "true",
-			  "records"	 : [ arguments.data.payload ]
-			};
-			var response = this.callErpOneUpdateDataApi(payload, "create" );
+			
+			var response = this.callErpOneUpdateDataApi({
+				"table"	   : "customer",
+				"triggers" : "true",
+				"changes"  : [ customerChanges ]
+			}, "create" );
 			/** Format error:
 			 * typical error response: { "errordetail": "error", "filecontent": "null"};
 			 * typical successful response: {"table":"customer","updated":1,"triggers":false}
@@ -839,43 +828,32 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				
 				logHibachi("ERPOne - Successfully created Account on Erpone with rowID #response.rowids[1]#");
 				
-				//Added remoteAccountID to get importRemoteID for the account
-				if( !structKeyExists(arguments.data.payload, 'remoteAccountID') || this.hibachiIsEmpty(arguments.data.payload.remoteAccountID) ) {
+				entity.setRemoteID(response.rowids[1]);
+				entity.setImportRemoteID(lcase(hash(response.rowids[1], 'MD5')));
+
 				
-				arguments.data.payload.remoteAccountID = arguments.entity.getAccountID();
-				}
+				var contactResponse = this.callErpOneUpdateDataApi({
+					"table"	 : "sy_contact",
+					"triggers" : "true",
+					"records"	 : [ {
+						"First_Name" : entity.getFirstName(),
+						"Last_Name" : entity.getLastName()
+					} ]
+				}, "create" );
 				
-				var accountUpdation = getAccountDAO().getUpdateRemoteIDForNewAccount(
-					accountID = arguments.entity.getAccountID() , 
-					remoteID = response.rowids[1] , 
-					importRemoteID = this.genericCreateMappingImportRemoteID( arguments.data.payload , this.getEntityMapping( 'Account' )) );
-					
-				logHibachi("ERPOne - Successfully updated Slatwall account with accountID #arguments.entity.getAccountID()#");
-				
-				if( structKeyExists(arguments.data.sycontactData, 'First_Name') && !this.hibachiIsEmpty(arguments.data.sycontactData.First_Name) ){
-					var sycontactPayload = {
-					  "table"	 : "sy_conatct",
-					  "triggers" : "true",
-					  "records"	 : [ arguments.data.sycontactData ]
-					};
-					
-					var sy_conatctUpdateresponse = this.callErpOneUpdateDataApi(sycontactPayload, "create" );
-					
-					/** Format error:
-					 * typical error response: { "errordetail": "error", "filecontent": "null"};
-					 * typical successful response: {"table":"customer","updated":1,"triggers":false}
-					*/
-				
-					if( structKeyExists(sy_conatctUpdateresponse, 'created') && sy_conatctUpdateresponse.created > 0 ){
-						logHibachi("ERPOne - Successfully created Sy_contact Data with rowID #response.rowids[1]#");
-					}
-					else {
-						throw("ERPONE - callErpOnePushSy_contactApi: API response is not valid json for request: #Serializejson(arguments.data.payload)#");
-					}
-				}
+				/** Format error:
+				 * typical error response: { "errordetail": "error", "filecontent": "null"};
+				 * typical successful response: {"table":"customer","updated":1,"triggers":false}
+				*/
 			
-			}
-			else {
+				if( structKeyExists(contactResponse, 'created') && contactResponse.created > 0 ){
+					entity.setRemoteContact(contactResponse.rowids[1]);
+				} else {
+					throw("ERPONE - callErpOnePushSy_contactApi: API response is not valid json");
+				}
+				
+			
+			} else {
 				throw("ERPONE - callErpOnePushAccountApi: API response is not valid json for request: #Serializejson(arguments.data.payload)#");
 			}
 		}

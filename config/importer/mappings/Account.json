@@ -11,6 +11,13 @@
                 "dataType": "string"
             }
         },
+        "remoteContactID": {
+            "propertyIdentifier": "remoteContact",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        
         "firstName": {
             "propertyIdentifier": "firstName",
             "validations": {
