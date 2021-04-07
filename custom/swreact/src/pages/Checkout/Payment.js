@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { SwRadioSelect } from '../../components'
 import SlideNavigation from './SlideNavigation'
-import { useTranslation } from 'react-i18next'
 import { addNewAccountAndSetAsBilling, addPayment } from '../../actions/cartActions'
 import CreditCardDetails from './CreditCardDetails'
 import { eligiblePaymentMethodDetailSelector, orderPayment, billingAccountAddressSelector } from '../../selectors/orderSelectors'
 import { accountPaymentMethods } from '../../selectors/userSelectors'
-import { addNewAccountAddress, addPaymentMethod } from '../../actions/userActions'
 import AccountAddress from './AccountAddress'
 
 export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'
@@ -122,7 +120,7 @@ const PaymentSlide = ({ currentStep }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
   const [paymentMethodOnOrder, setPaymentMethodOnOrder] = useState(false)
 
-  if (paymentMethod && paymentMethod.paymentMethodID && paymentMethodOnOrder != paymentMethod.paymentMethodID) {
+  if (paymentMethod && paymentMethod.paymentMethodID && paymentMethodOnOrder !== paymentMethod.paymentMethodID) {
     setPaymentMethodOnOrder(paymentMethod.paymentMethodID)
     setSelectedPaymentMethod(paymentMethod.paymentMethodID)
   }

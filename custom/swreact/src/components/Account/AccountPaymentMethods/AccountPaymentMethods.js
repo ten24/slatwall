@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 const AccountPaymentMethods = () => {
   const user = useSelector(state => state.userReducer)
   const { primaryPaymentMethod, accountPaymentMethods } = user
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   return (
     <AccountLayout>
       <AccountContent />

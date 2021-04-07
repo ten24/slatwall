@@ -30,7 +30,6 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
   }
 
   useEffect(() => {
-    let didCancel = false
     if (!skus.isFetching && !skus.isLoaded) {
       setSkusRequest({ ...skus, isFetching: true, isLoaded: false, params: { productID }, makeRequest: true })
     }
@@ -48,10 +47,6 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
         },
         makeRequest: true,
       })
-    }
-
-    return () => {
-      didCancel = true
     }
   }, [setSkusRequest, skus, productID, sku, setRequest, setOptionsRequest, skuOptions, skuID])
 

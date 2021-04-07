@@ -392,6 +392,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
 			siteDateFormat = {fieldType="select", defaultValue="mm-dd-yyyy"},
 			siteDefaultAccountPaymentMethod = {fieldtype="select", defaultValue="444df303dedc6dab69dd7ebcc9b8036a"},	
+			siteDefaultCountry = {fieldType="select", defaultValue="us"},
 			siteDefaultLocale = {fieldType="select"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
@@ -670,6 +671,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return options;
 			case "siteDefaultLocale":
 				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDefaultCountry":
+				return this.getCountryCollectionList().getRecordOptions(false);
 			case "siteDefaultAccountPaymentMethod":
 				return getPaymentService().getActivePaymentMethodOptions();
 			case "siteForgotPasswordEmailTemplate":

@@ -4,39 +4,26 @@ import { Link } from 'react-router-dom'
 import { SWImage } from '../..'
 import { addToCart } from '../../../actions/cartActions'
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
+import { getProductRoute } from '../../../selectors/configurationSelectors'
 
 const OrderItem = ({ quantity, sku_skuID, sku_product_productName, sku_product_urlTitle, BrandName, isSeries, ProductSeries, calculatedExtendedPriceAfterDiscount, sku_calculatedSkuDefinition, sku_imageFile, price }) => {
   const [formatCurrency] = useFormatCurrency({})
-  const routing = useSelector(state => state.configuration.router)
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
-  const product = routing
-    .map(route => {
-      return route.URLKeyType === 'Product' ? route.URLKey : null
-    })
-    .filter(item => {
-      return item
-    })
-  const brand = routing
-    .map(route => {
-      return route.URLKeyType === 'Brand' ? route.URLKey : null
-    })
-    .filter(item => {
-      return item
-    })
+  const productRouting = useSelector(getProductRoute)
 
   return (
     <div className="d-sm-flex justify-content-between align-items-center my-4 pb-3 border-bottom">
       <div className="media media-ie-fix d-block d-sm-flex align-items-center text-center text-sm-left">
-        <Link to={`/${product[0]}/${sku_product_urlTitle}?skuid=${sku_skuID}`} className="d-inline-block mx-auto mr-sm-4" style={{ width: '10rem' }}>
+        <Link to={`/${productRouting}/${sku_product_urlTitle}?skuid=${sku_skuID}`} className="d-inline-block mx-auto mr-sm-4" style={{ width: '10rem' }}>
           <SWImage src={sku_imageFile} alt="Product" />
         </Link>
         <div className="media-body pt-2">
           {isSeries && <span className="product-meta d-block font-size-xs pb-1">{ProductSeries}</span>}
           {/* <!--- only show this span if part of a bundled product? ---> */}
           <h3 className="product-title font-size-base mb-2">
-            <Link to={`/${product[0]}/${sku_product_urlTitle}?skuid=${sku_skuID}`}>{sku_product_productName}</Link>
+            <Link to={`/${productRouting}/${sku_product_urlTitle}?skuid=${sku_skuID}`}>{sku_product_productName}</Link>
           </h3>
           {/* <!--- product title ---> */}
           <div className="font-size-sm">
@@ -88,7 +75,7 @@ const OrderShipments = ({ shipments }) => {
                 {shipment.trackingNumber && (
                   <div className="col-sm-6 text-right">
                     {'Tracking Number: '}
-                    <a href="#" target="_blank">
+                    <a href="/#to-shipper" target="_blank">
                       {shipment.trackingNumber}
                     </a>
                   </div>

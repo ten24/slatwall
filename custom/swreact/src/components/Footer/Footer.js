@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 function Footer() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   let history = useHistory()
   const formLink = useSelector(state => state.configuration.footer.formLink)
   const contentStore = useSelector(state => {

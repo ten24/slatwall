@@ -4,13 +4,24 @@ import { SlatwalApiService } from '../../../services'
 import { SWForm, SWInput } from '../../SWForm/SWForm'
 import { PromptLayout } from '../AccountLayout/AccountLayout'
 import useRedirect from '../../../hooks/useRedirect'
+import * as Yup from 'yup'
 
 const CreateAccount = () => {
+  // eslint-disable-next-line no-unused-vars
   const [redirect, setRedirect] = useRedirect({ location: '/my-account' })
+  const signupSchema = Yup.object().shape({
+    firstName: Yup.string().required('Required'),
+    lastName: Yup.string().required('Required'),
+    phoneNumber: Yup.string().required('Required'),
+    password: Yup.string().required('Required'),
+    passwordConfirm: Yup.string().required('Required'),
+    emailAddress: Yup.string().email('Invalid email').required('Required'),
+    emailAddressConfirm: Yup.string().email('Invalid email').required('Required'),
+  })
 
   const formik = useFormik({
     initialValues: {
-      slatAction: 'public:account.create,public:account.login',
+      returnTokenFlag: '1',
       createAuthenticationFlag: '1',
       firstName: '',
       lastName: '',
@@ -20,6 +31,7 @@ const CreateAccount = () => {
       password: '',
       passwordConfirm: '',
     },
+    validationSchema: signupSchema,
     onSubmit: values => {
       SlatwalApiService.account.create(values).then(response => {
         if (response.isSuccess()) {

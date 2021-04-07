@@ -17,7 +17,7 @@ const range = (from, to, step = 1) => {
 }
 
 const Pagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 0, setCurrentPage }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const calculatePageNumbers = () => {
     /**
