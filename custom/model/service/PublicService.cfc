@@ -165,35 +165,13 @@ component extends="Slatwall.model.service.PublicService" {
 
 		if(structKeyExists(arguments.data.ajaxResponse.data, 'products') && arrayLen(arguments.data.ajaxResponse.data.products)){
 			
-			var pricePayload = [];
-			var isCustomerFlag  = false;
-			if(!getHibachiScope().getAccount().getNewFlag() && len(getHibachiScope().getAccount().getRemoteID())){
-				isCustomerFlag = true;
-				var customerCode = getHibachiScope().getAccount().getRemoteID();
-			}
-			for(var product in arguments.data.ajaxResponse.data.products){
-				var priceData = { 
-					'item': product['sku_skuCode'], 
-					'quantity' : 1, 
-					'unit': 'EACH'
-				};
-				
-				if(isCustomerFlag){
-					priceData['customer'] = customerCode;
-				}
-				arrayAppend(pricePayload, priceData);
-			}
-			var livePrices = getService('erpOneService').getLivePrices(pricePayload);
-			
-			for(var product in arguments.data.ajaxResponse.data.products){
-				
-				for(var livePrice in livePrices){
-					if(livePrice['item'] == product['sku_skuCode']){
-						product['skuPrice'] = livePrice['price'];
-						break;
-					}
-				}
-			}
+			// Change prices to ERP One Prices
+			getService('erpOneService').getLiveListingPrices(
+				data = arguments.data.ajaxResponse.data.products,
+				skuCodeKey = "sku_skuCode", 
+				priceKeys = "skuPrice" ,  // We can also pass a list of prices ex:"listPrice,skuPrice"
+				customerCode = getHibachiScope().getAccount().getRemoteID()
+			);
 		}
 	}
 

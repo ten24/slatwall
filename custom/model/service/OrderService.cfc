@@ -158,11 +158,7 @@ component extends="Slatwall.model.service.OrderService" {
  				){
  					
  					var pricePayload = [];
-					var isCustomerFlag  = false;
-					if(!arguments.ordergetAccount().getNewFlag() && len(arguments.ordergetAccount().getRemoteID())){
-						isCustomerFlag = true;
-						var customerCode = arguments.ordergetAccount().getRemoteID();
-					}
+					var customerCode = isNull(arguments.order.getAccount()) ? '' : arguments.order.getAccount().getRemoteID();
 					
  					// Loop over the orderItems to see if the skuPrice Changed
 					for(var orderItem in arguments.order.getOrderItems()){
@@ -174,12 +170,12 @@ component extends="Slatwall.model.service.OrderService" {
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 	 					){
 	 						var priceData = { 
-								'item': orderItem.getSkuCode(), 
+								'item': orderItem.getSku().getSkuCode(), 
 								'quantity' : orderItem.getQuantity(), 
 								'unit': 'EACH'
 							};
 							
-							if(isCustomerFlag){
+							if(len(customerCode)){
 								priceData['customer'] = customerCode;
 							}
 							arrayAppend(pricePayload, priceData);
@@ -201,7 +197,9 @@ component extends="Slatwall.model.service.OrderService" {
 					
 
 							for(var livePrice in livePrices){
-								if(livePrice['item'] == orderItem.getSkuCode()){
+								if(livePrice['item'] == orderItem.getSku().getSkuCode()){
+									//Prices have 3 decimal numbers on ERP
+									livePrice['price'] = round(livePrice['price'],2);
 									
 									if( orderItem.getPrice() != livePrice['price']){
 										orderItem.setPrice(livePrice['price']);

@@ -311,6 +311,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	
 	public any function getLivePrices( required array requestData){
+		
 		var httpRequest = this.createHttpRequest('distone/rest/service/price/fetch', 'POST', 'application/json; charset=UTF-8');
 		
 		// Authentication headers
@@ -325,6 +326,38 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 		return DeSerializeJson(rawRequest.fileContent);
 	}
+	
+	
+	public any function getLiveListingPrices(required array data, required string skuCodeKey="skuCode", required string priceKeys="skuPrice" , string customerCode = ""){
+		var pricePayload = [];
+		for(var item in arguments.data){
+			var priceData = { 
+				'item': item[arguments.skuCodeKey], 
+				'quantity' : 1, 
+				'unit': 'EACH'
+			};
+			
+			if(len(arguments.customerCode)){
+				priceData['customer'] = customerCode;
+			}
+			arrayAppend(pricePayload, priceData);
+		}
+		var livePrices = getLivePrices(pricePayload);
+		
+		for(var item in arguments.data){
+			
+			for(var livePrice in livePrices){
+				if(livePrice['item'] == item[arguments.skuCodeKey]){
+					for(var priceKey in arguments.priceKeys){
+						item[priceKey] = round(livePrice['price'],2);
+					}
+					break;
+				}
+			}
+		}
+		return arguments.data;
+	}
+	
 	
 	public any function callErpOneUpdateDataApi( required any requestData, string endpoint="create" ){
 		var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json");
