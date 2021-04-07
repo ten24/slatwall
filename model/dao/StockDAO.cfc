@@ -59,7 +59,7 @@ Notes:
 	</cffunction>
 	
 	
-	<cffunction name="creteEmptySKUStocksForAllParentLocations">
+	<cffunction name="createEmptySKUStocksForAllParentLocations">
 		<cfargument name="skuID" type="string" required="true">
 		<cfset local.accountID = this.getHibachiScope().getAccount().getAccountID() />
 		<cfquery name="local.createStocks" >
@@ -69,8 +69,8 @@ Notes:
                 LOWER(REPLACE(CAST(UUID() AS char character set utf8),'-',''))      AS stockID,  
                 <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar"> AS skuID,   
                 locationID, 
-                #local.accountID#                                                   AS createdByAccountID,
-                #local.accountID#                                                   AS modifiedByAccountID,
+                '#local.accountID#'                                             	AS createdByAccountID,
+                '#local.accountID#'                                             	AS modifiedByAccountID,
                 now()                                                               AS createdDateTime, 
                 now()                                                               AS modifiedDateTime
             FROM SwLocation 
