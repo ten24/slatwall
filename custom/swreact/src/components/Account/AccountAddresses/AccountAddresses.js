@@ -1,6 +1,6 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import { Link } from 'react-router-dom'
@@ -8,10 +8,11 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { deleteAccountAddress } from '../../../actions/userActions'
 import { useTranslation } from 'react-i18next'
+import { getAllAccountAddresses, getPrimaryAddress } from '../../../selectors/userSelectors'
 
 const Address = props => {
-  const { accountAddressID, address } = props
-  const { streetAddress, addressID, city, stateCode, postalCode, isPrimary } = address
+  const { accountAddressID, address, isPrimary } = props
+  const { streetAddress, addressID, city, stateCode, postalCode } = address
   const MySwal = withReactContent(Swal)
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -57,42 +58,50 @@ const Address = props => {
   )
 }
 
-const AccountAddresses = props => {
-  const { primaryAddress, accountAddresses, title, customBody, contentTitle } = props
+const AccountAddresses = ({ title, customBody, contentTitle }) => {
   const { t } = useTranslation()
-
+  const accountAddresses = useSelector(getAllAccountAddresses)
+  const primaryAddress = useSelector(getPrimaryAddress)
+  console.log('accountAddresses', accountAddresses)
   return (
     <AccountLayout title={title}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
-      <div className="table-responsive font-size-md">
-        <table className="table table-hover mb-0">
-          <thead>
-            <tr>
-              <th>{t('frontend.account.address.heading')}</th>
-              <th>{t('frontend.core.actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accountAddresses &&
-              accountAddresses.map((address, index) => {
-                return <Address key={index} {...address} isPrimary={address.accountAddressID === primaryAddress.accountAddressID} />
-              })}
-          </tbody>
-        </table>
+      {accountAddresses.length === 0 && (
+        <div className="alert alert-info" role="alert">
+          This is a info alert—check it out!
+        </div>
+      )}
+      <div className="alert alert-info" role="alert">
+        {t('frontend.account.address.none')}
       </div>
-      <hr className="pb-4" />
-      <div className="text-sm-right">
-        <Link className="btn btn-primary" to="/my-account/addresses/new">
-          {t('frontend.account.address.add')}
-        </Link>
-      </div>
+      {accountAddresses.length > 0 && (
+        <>
+          <div className="table-responsive font-size-md">
+            <table className="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>{t('frontend.account.address.heading')}</th>
+                  <th>{t('frontend.core.actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {accountAddresses &&
+                  accountAddresses.map((address, index) => {
+                    return <Address key={index} {...address} isPrimary={address.accountAddressID === primaryAddress.accountAddressID} />
+                  })}
+              </tbody>
+            </table>
+          </div>
+          <hr className="pb-4" />
+          <div className="text-sm-right">
+            <Link className="btn btn-primary" to="/my-account/addresses/new">
+              {t('frontend.account.address.add')}
+            </Link>
+          </div>
+        </>
+      )}
     </AccountLayout>
   )
 }
 
-function mapStateToProps(state) {
-  return state.userReducer
-}
-
-AccountAddresses.propTypes = {}
-export default connect(mapStateToProps)(AccountAddresses)
+export default AccountAddresses
