@@ -702,7 +702,14 @@ component extends="HibachiService" accessors="true" {
 		
 		return arguments.products;
 	}
-
+	
+	
+	/**
+	 * Method to return product type image base path
+	 * */
+	public string function getProductTypeImageBasePath( boolean frontendURL = false ) {
+		return (arguments.frontendURL ? getHibachiScope().getBaseImageURL() : getHibachiScope().setting('globalAssetsImageFolderPath') ) & "/productType/logo";
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -715,7 +722,70 @@ component extends="HibachiService" accessors="true" {
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
+	
+	/***
+	 * Process method to upload logo for product type
+	 * */
+	public any function processProductType_uploadLogo(required any productType, required any processObject) {
+		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
+		try {
+			
+			//get upload directory base path
+			var uploadDirectory = this.getProductTypeImageBasePath();
+			
+			//upload file
+			var fileUpload = getHibachiUtilityService().uploadFile( 
+				uploadDirectory = uploadDirectory,
+				fileFormFieldName = 'uploadFile',
+				allowedMimeType = arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType
+			);
+			
+			//check if upload had any errors
+			if( !fileUpload.success ) {
+ 				arguments.productType.addError('imageFile', fileUpload.message);
+ 			} else {
+ 				
+ 				//delete existing image from object
+ 				if( arguments.productType.getImageFile() != "") {
+ 					arguments.productType = this.processCategory_deleteCategoryLogo( arguments.category );
+ 				}
+ 				
+ 				//set image path
+ 				arguments.productType.setImageFile( fileUpload.filePath );
+ 			}
+		} catch(any e) {
+			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
+		}
 
+		return arguments.productType;
+	}
+	
+	/**
+	 * Process method to delete logo for product type
+	 * */
+	public any function processProductType_deleteLogo(required any productType, required struct data) {
+		if(structKeyExists(arguments.data, "imageFile")) {
+			
+			//get image base path
+			var imageBasePath = this.getProductTypeImageBasePath();
+			var fileName = arguments.productType.getImageFile();
+			
+			//delete file
+			getHibachiUtilityService().deleteFileFromPath( 
+			 	directoryPath = imageBasePath,
+			 	fileName = fileName
+			 );
+			 
+			arguments.productType.setImageFile('');
+			
+			//clear image cache
+			getImageService().clearImageCache(imageBasePath, fileName);
+		}
+
+		return arguments.productType;
+	}
+	
+	
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
 		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
