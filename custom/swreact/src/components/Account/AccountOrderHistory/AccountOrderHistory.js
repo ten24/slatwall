@@ -11,8 +11,6 @@ import { useGetAllOrders } from '../../../hooks/useAPI'
 import ListingPagination from '../../Listing/ListingPagination'
 
 const ToolBar = ({ term, updateTerm, search }) => {
-  const { t, i18n } = useTranslation()
-
   return (
     <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
       <div className="d-flex justify-content-between w-100">
@@ -40,9 +38,9 @@ const ToolBar = ({ term, updateTerm, search }) => {
             </span>
           </div>
         </div>
-        <a href="##" className="btn btn-outline-secondary">
+        {/* <a href="##" className="btn btn-outline-secondary">
           <i className="far fa-file-alt mr-2"></i> {t('frontend.account.request_statement')}
-        </a>
+        </a> */}
       </div>
     </div>
   )
@@ -77,7 +75,7 @@ const OrderListItem = props => {
 const OrderHistoryList = () => {
   const [keyword, setSearchTerm] = useState('')
   let [orders, setRequest] = useGetAllOrders()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const search = (currentPage = 1) => {
     setRequest({ ...orders, params: { currentPage, pageRecordsShow: 10, keyword }, makeRequest: true, isFetching: true, isLoaded: false })
   }
@@ -90,7 +88,7 @@ const OrderHistoryList = () => {
     return () => {
       didCancel = true
     }
-  }, [orders, setRequest])
+  }, [orders, keyword, setRequest])
 
   return (
     <>
@@ -122,7 +120,7 @@ const OrderHistoryList = () => {
 }
 
 const AccountOrderHistory = ({ crumbs, title, orders }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <AccountLayout title={t('frontend.account.account_order_history')}>

@@ -41,7 +41,7 @@ const ProductDetail = props => {
     return () => {
       didCancel = true
     }
-  }, [request, setRequest, pathname, search, path])
+  }, [request, setRequest, pathname, search, path, redirect, setRedirect])
 
   return (
     <Layout>

@@ -14,7 +14,7 @@ export default function ScrollToTop() {
         //   behavior: 'smooth',
       })
     })
-  }, [])
+  }, [history])
 
   return null
 }

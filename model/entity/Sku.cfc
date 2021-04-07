@@ -2023,8 +2023,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 			getService("SkuPriceService").saveSkuPrice(skuPrice);
 		}
-	} 
-
+	}
+	
+	public void function postInsert(){
+		super.postInsert();
+	    
+	    // TODO: add a global-setting, 
+	    this.getDAO('stockDAO').creteEmptySKUStocksForAllParentLocations(this.getSkuID());
+	}
+	
 	public void function preUpdate(Struct oldData){
 		super.preUpdate(argumentCollection=arguments);
 		

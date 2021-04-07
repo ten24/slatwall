@@ -32,7 +32,7 @@ const extractMenuFromContent = content => {
         return item.children.length
       })
       .filter(item => {
-        return item.urlTitle != 'productcategories'
+        return item.urlTitle !== 'productcategories'
       })
       .sort((a, b) => {
         return a.sortOrder - b.sortOrder
@@ -43,7 +43,7 @@ const extractMenuFromContent = content => {
 
 const MegaMenu = props => {
   let history = useHistory()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <li className="nav-item dropdown">
@@ -142,12 +142,7 @@ function Header() {
                   <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
                     <span className="navbar-toggler-icon"></span>
                   </button>
-                  <a className="navbar-tool navbar-stuck-toggler" href="#">
-                    <span className="navbar-tool-tooltip">{t('frontend.nav.expand')}</span>
-                    <div className="navbar-tool-icon-box">
-                      <i className="far fa-bars"></i>
-                    </div>
-                  </a>
+
                   <Link className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" to="/my-account" data-toggle="modal">
                     <AccountBubble />
                   </Link>

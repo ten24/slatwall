@@ -337,18 +337,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getAuthorizedProperties(){
-		if(!structKeyExists(variables,'authorizedProperties')){
+		if( !structKeyExists(variables,'authorizedProperties') ){
 			variables.authorizedProperties = [];
-			
 			var entityName = this.getCollectionObject();
 			//skip attribute entity to avoid Stack Overflow via recursive calls from on missing method of public properties
-			if( !isNull(entityName) && lcase(entityName) != "attribute") {
+			if( !isNull(entityName) && lcase(entityName) != 'attribute') {
 				var entityService = this.getService("hibachiService").getServiceByEntityName(entityName);
-				
-				variables.authorizedProperties = entityService.invokeMethod("get#entityName#PublicProperties");
+				if(structKeyExists(entityService, 'get#entityName#PublicProperties')){
+					variables.authorizedProperties = entityService.invokeMethod('get#entityName#PublicProperties');
+				} else {
+					variables.authorizedProperties = this.getService('hibachiService')
+					    .invokeMethod('getPublicAttributesByEntityName', {'entityName': entityName} );
+				}
 			}
-			
-			
 		}
 		return variables.authorizedProperties;
 	}
@@ -1253,47 +1254,53 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'none';
 	}
 
-	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
-		var HibachiBaseEntity = "";
-		HibachiBaseEntity = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
-
-		variables.collectionObject = HibachiBaseEntity;
+	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true, boolean useAuthorizedPropertiesAsDefaultColumns = false){
+		
+		variables.collectionObject = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 		
 		if(variables.collectionConfig == '{}' ){
+			
+			var cacheKey = 'defaultColumns-#variables.collectionObject#-#getReportFlag()#-#arguments.addDefaultColumns#-#arguments.useAuthorizedPropertiesAsDefaultColumns#';
+			var cachedInitialCollectionConfig = getCollectionCacheValue(cacheKey);
+			
+			if(!isNull(cachedInitialCollectionConfig)){
+				variables.collectionConfig = cachedInitialCollectionConfig;
+				return;
+			}
+				
 			var columnsArray = [];
-			if( arguments.addDefaultColumns ) { //check to see if we are supposed to add default columns
-					
-				var cacheKey = 'defaultColumns' & arguments.collectionObject & '#getReportFlag()#';
-				var cachedColumnsArray = getCollectionCacheValue(cacheKey);
-					
-				if(isNull(cachedColumnsArray)){
-					//get default columns
-					var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-					var defaultProperties = "";
-					if(getReportFlag()){
-						defaultProperties  = newEntity.getDefaultCollectionReportProperties();
-					}else{
-						defaultProperties = newEntity.getDefaultCollectionProperties();
-					}
-					
-					columnsArray = this.arrangeCollectionColumns( arguments.collectionObject, newEntity, defaultProperties );
-					
-					setCollectionCacheValue(cacheKey,columnsArray);
+			if( arguments.addDefaultColumns  && !arguments.useAuthorizedPropertiesAsDefaultColumns) { //check to see if we are supposed to add default columns
+				
+				//get default columns
+				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
+				var defaultProperties = "";
+				if(getReportFlag()){
+					defaultProperties  = newEntity.getDefaultCollectionReportProperties();
 				}else{
-					columnsArray = cachedColumnsArray;
+					defaultProperties = newEntity.getDefaultCollectionProperties();
 				}
+				
+				columnsArray = this.arrangeCollectionColumns( arguments.collectionObject, newEntity, defaultProperties );
+					
 			}
 
 			var columnsJson = serializeJson(columnsArray);
 
 			var properlyCasedShortEntityName = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
 			var defaultCollectionConfig = '{
-				"baseEntityName":"#HibachiBaseEntity#",
+				"baseEntityName":"#variables.collectionObject#",
 				"baseEntityAlias":"_#properlyCasedShortEntityName#",
 				"columns":#columnsJson#,
 				"filterGroups":[{"filterGroup":[]}]
 			}';
 			variables.collectionConfig = defaultCollectionConfig;
+			if(arguments.useAuthorizedPropertiesAsDefaultColumns){
+				setDisplayProperties(arrayToList(getAuthorizedProperties()))
+			}
+			
+			cachedInitialCollectionConfig = getCollectionConfig();
+			
+			setCollectionCacheValue(cacheKey,cachedInitialCollectionConfig);
 		}
 		
 	}

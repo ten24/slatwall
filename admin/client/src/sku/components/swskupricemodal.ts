@@ -30,12 +30,12 @@ class SWSkuPriceModalController{
     public priceGroupOptions; 
     public selectedPriceGroup:{};
     public submittedPriceGroup:any;
+    public submittedCurrencyCode:any;
     public saveSuccess:boolean=true; 
     public imagePath:string; 
     public selectCurrencyCodeEventName:string; 
     public priceGroupId:string;
     
-
     //@ngInject
     constructor(
         public $hibachi,
@@ -210,9 +210,9 @@ class SWSkuPriceModalController{
                     if(response.records.length){
                         this.currencyCodeOptions = [];
                         for(var i=0; i<response.records.length; i++){
-                            this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                            this.currencyCodeOptions.push({currencyCode: response.records[i]['currencyCode'], currencyName: response.records[i]['currencyCode'] });
                         }
-                        this.currencyCodeOptions.unshift("- Select Currency Code -")
+                        this.currencyCodeOptions.unshift({currencyCode:"- Select Currency Code -", currencyName: ""});
                         
                         this.selectedCurrencyCode = this.currencyCodeOptions[0];
                         for(var i=0; i<this.currencyCodeOptions.length; i++){
@@ -285,9 +285,9 @@ class SWSkuPriceModalController{
                     if(response.records.length){
                         this.currencyCodeOptions = [];
                         for(var i=0; i<response.records.length; i++){
-                            this.currencyCodeOptions.push(response.records[i]['currencyCode']);
+                            this.currencyCodeOptions.push({currencyCode: response.records[i]['currencyCode'], currencyName: response.records[i]['currencyCode'] });
                         }
-                        this.currencyCodeOptions.unshift("- Select Currency Code -");
+                        this.currencyCodeOptions.unshift({currencyCode:"- Select Currency Code -", currencyName: ""});
                         
                         this.selectedCurrencyCode = this.currencyCodeOptions[0];
                     }
@@ -303,6 +303,14 @@ class SWSkuPriceModalController{
             return;
         }
         this.submittedPriceGroup = { priceGroupID : priceGroupData['priceGroupID'] };
+    }
+    public setSelectedCurrencyCode = (currencyCodeData) =>{
+        
+        if(!currencyCodeData.currencyCode){
+            this.submittedCurrencyCode = {};
+            return;
+        }
+        this.submittedCurrencyCode = currencyCodeData['currencyCode'];
     }
     
     public setSelectedSku = (skuData) =>{
@@ -383,6 +391,10 @@ class SWSkuPriceModalController{
         if(this.pageRecord && this.submittedPriceGroup){
             this.priceGroup.priceGroupID = this.submittedPriceGroup.priceGroupID;
             this.priceGroup.priceGroupCode = this.submittedPriceGroup.priceGroupCode;
+        }
+        
+        if(this.pageRecord && this.submittedCurrencyCode){
+            this.currencyCode = this.submittedCurrencyCode.currencyCode;
         }
         
         var form = this.formService.getForm(this.formName);

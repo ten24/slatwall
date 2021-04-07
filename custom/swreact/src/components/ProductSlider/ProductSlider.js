@@ -40,7 +40,7 @@ const ProductSlider = ({ children, sliderData = [], settings, title, slidesToSho
         {children}
         <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
           {sliderData.map((slide, index) => {
-            return <ProductCard {...slide} skuID={slide.defaultSku_skuID} listPrice={slide.defaultSku_listPrice} key={index} />
+            return <ProductCard {...slide} imageFile={slide.defaultSku_imageFile} skuID={slide.defaultSku_skuID} listPrice={slide.defaultSku_listPrice} key={index} />
           })}
         </Slider>
       </div>

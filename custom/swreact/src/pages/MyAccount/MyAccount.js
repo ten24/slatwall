@@ -19,6 +19,7 @@ const AccountOrderDetail = React.lazy(() => import('../../components/Account/Acc
 const AccountPaymentMethods = React.lazy(() => import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods'))
 const AccountOrderHistory = React.lazy(() => import('../../components/Account/AccountOrderHistory/AccountOrderHistory'))
 const CreateOrEditAccountPaymentMethod = React.lazy(() => import('../../components/Account/AccountPaymentMethods/CreateOrEditAccountPaymentMethod'))
+// eslint-disable-next-line no-unused-vars
 const pageComponents = {
   AccountLogin,
   AccountOverview,

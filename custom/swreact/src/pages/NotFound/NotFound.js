@@ -1,20 +1,9 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
-import { getContent } from '../../actions/contentActions'
 
 const NotFound = () => {
-  const dispatch = useDispatch()
   const history = useHistory()
   const contentStore = useSelector(state => state.content['404']) || {}
-
-  // useEffect(() => {
-  //   dispatch(
-  //     getContent({
-  //       content: { '404': ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID'] },
-  //     })
-  //   )
-  // }, [dispatch])
 
   return (
     <div

@@ -397,7 +397,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// =================== JS helper methods  ===========================
 
 	public any function getAvailableAccountPropertyList() {
-		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+		return ReReplace("accountID,firstName,lastName,company,remoteID,verifiedAccountFlag,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
 			accountAddresses.address.addressID,accountAddresses.address.countryCode,accountAddresses.address.firstName,accountAddresses.address.lastName
