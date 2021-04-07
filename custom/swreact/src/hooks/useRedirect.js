@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-const useRedirect = ({ shouldRedirect = false, location = '/', time = 2000 }) => {
+export const useRedirect = ({ shouldRedirect = false, location = '/', time = 2000 }) => {
   const history = useHistory()
   const [redirect, setRedirect] = useState(shouldRedirect)
 
