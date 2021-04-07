@@ -106,7 +106,9 @@ class SWListingDisplayController{
     public baseEntity:any;
     public baseEntityName:string;
     public baseEntityID:string;
-
+    
+    public collectionConfigUpdateEventId:string;
+    public collectionConfigUpdateEventName:string;
     public selections;
     public multiselectCount;
     public isCurrentPageRecordsSelected;
@@ -297,6 +299,19 @@ class SWListingDisplayController{
                 this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
+        
+        if(this.collectionConfigUpdateEventId && this.collectionConfigUpdateEventName){
+            this.observerService.attach(this.updateCollectionConfig,this.collectionConfigUpdateEventName,this.collectionConfigUpdateEventId);
+        }
+    }
+    
+    public updateCollectionConfig = (collectionConfig)=>{
+        this.collectionConfig = collectionConfig;
+        this.$timeout(
+            ()=>{
+                this.paginator.setCurrentPage(1);
+            }
+        );
     }
     
     public getCollectionByPagination = (state) =>{
@@ -834,6 +849,8 @@ class SWListingDisplay implements ng.IDirective{
             showSimpleListingControls:"<?",
             showPrintOptions:"<?",
             showReport:"<?",
+            collectionConfigUpdateEventId:"@?",
+            collectionConfigUpdateEventName:"@?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",
