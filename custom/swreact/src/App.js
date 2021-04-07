@@ -14,6 +14,7 @@ const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/Produc
 const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
 const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
+const Manufacturer = lazyWithPreload(() => import('./pages/Manufacturer/Manufacturer'))
 
 const NotFound = lazyWithPreload(() => import('./pages/NotFound/NotFound'))
 const ContentPage = lazyWithPreload(() => import('./pages/ContentPage/ContentPage'))
@@ -42,12 +43,14 @@ const pageComponents = {
   Account,
   Address,
   Attribute,
+  Manufacturer,
   OrderConfirmation,
 }
 
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
   const routing = useSelector(state => state.configuration.router)
+  const shopByManufacturer = useSelector(state => state.configuration.shopByManufacturer)
   const dispatch = useDispatch()
   useEffect(() => {
     Object.keys(pageComponents).map(key => {
@@ -68,6 +71,7 @@ export default function App() {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
         <Route path="/order-confirmation" component={OrderConfirmation} />
+        <Route path={shopByManufacturer.slug} component={Manufacturer} />
         <Route path="/products" component={ProductListing} />
         <Route path="/product" component={ProductListing} />
         <Route path="/search" component={ProductListing} />
