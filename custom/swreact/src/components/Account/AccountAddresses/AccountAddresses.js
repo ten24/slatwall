@@ -62,18 +62,15 @@ const AccountAddresses = ({ title, customBody, contentTitle }) => {
   const { t } = useTranslation()
   const accountAddresses = useSelector(getAllAccountAddresses)
   const primaryAddress = useSelector(getPrimaryAddress)
-  console.log('accountAddresses', accountAddresses)
   return (
     <AccountLayout title={title}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
       {accountAddresses.length === 0 && (
         <div className="alert alert-info" role="alert">
-          This is a info alert—check it out!
+          {t('frontend.account.address.none')}
         </div>
       )}
-      <div className="alert alert-info" role="alert">
-        {t('frontend.account.address.none')}
-      </div>
+
       {accountAddresses.length > 0 && (
         <>
           <div className="table-responsive font-size-md">
