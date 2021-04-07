@@ -316,10 +316,10 @@ td > sw-listing-display-cell sw-form-registrar sw-property-display {
 }
 td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"],
 td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group,
-td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span{
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span {
   display: block;
 }
-td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span .input-xs{
+td > sw-listing-display-cell sw-form-registrar sw-property-display[data-property-identifier="skuCode"] .s-input-group span .input-xs {
   width: 100% !important;
 }
 .clearFixInline {
@@ -484,7 +484,7 @@ a:hover {
   border-radius: 2px;
   line-height: 9px;
 }
-a.form-control-feedback.adminentitypreprocesstranslation{
+a.form-control-feedback.adminentitypreprocesstranslation {
   right: 10px;
 }
 .btn,
@@ -2002,7 +2002,7 @@ select:focus {
 #slatwall-navbar .dropdown .dropdown-toggle {
   display: flex;
   align-items: center;
-} 
+}
 #slatwall-navbar .s-temp-nav .dropdown .dropdown-toggle {
   padding: 22px 6px;
 }
@@ -2035,7 +2035,6 @@ select:focus {
   left: auto;
   right: 8px;
 }
-
 /* ALERTS */
 .alert {
   -webkit-border-radius: 0;
@@ -3491,7 +3490,9 @@ table .s-table-header .table-section a.s-hint {
   color: #e6e6e6;
 }
 .s-j-draggablePanelList .s-pannel-name .s-title-wrapper {
-  display: inline;
+  display: inline-flex;
+  height: 100%;
+  align-items: center;
 }
 .s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-edit-mode {
   width: 100%;
@@ -3505,7 +3506,6 @@ table .s-table-header .table-section a.s-hint {
   top: -3px;
 }
 .s-j-draggablePanelList .s-pannel-name .s-title-wrapper .s-view-mode .s-controlls {
-  top: 4px;
   margin-left: 8px;
   cursor: pointer;
 }
@@ -6868,11 +6868,9 @@ a.disabled > i.hibachi-ui-radio-checked {
   border-radius: 0px;
   padding-right: 10px;
 }
-
-sw-typeahead-input-field[data-entity-name="Brand"] .s-select-list-wrapper .input-group{
+.sw-typeahead-input-field[data-entity-name="Brand"] .s-select-list-wrapper .input-group {
   padding: 0;
 }
-
 /*-- Custom Modal Amount Change --*/
 .s-modal-module-wrapper .s-modal-module {
   background: #F7F7F7;
@@ -8812,11 +8810,10 @@ table.s-detail-content-table tbody tr.s-done {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 0.75em 1em;
   min-height: 100px;
+  padding: 0.75em 1em;
 }
-
-.Mcard-body div:nth-child(2n){
+.Mcard-body div:nth-child(2n) {
   position: absolute;
   right: 22px;
 }
@@ -8893,7 +8890,8 @@ table.s-detail-content-table tbody tr.s-done {
 .hibachi-report-date-group:active,
 .hibachi-report-date-group-custom-toggle:hover,
 .hibachi-report-date-group-custom-toggle:active {
-  border: 2px solid #707070;
+  border: 1px solid #707070;
+  padding: 4px 31px;
   color: #707070;
 }
 .hibachi-report-date-group + .active {
@@ -8964,7 +8962,6 @@ table.s-detail-content-table tbody tr.s-done {
   background: #ffffff;
   margin: 2.5em 0;
 }
-
 .badge {
   color: #fff;
   background-color: #f1863b;
@@ -9030,15 +9027,45 @@ pre.json .null {
 pre.json .key {
   color: #c056ddab;
 }
-a.form-control-feedback {
-    right: 15px;
-    pointer-events: auto;
+.p-0 {
+  padding: 0!important;
 }
-
-/* Bootstrap 4 classes - can remove once we update */
-
-.p-0 { padding: 0!important; }
-.mb-4 { margin-bottom: 1.5rem!important; }
-.mr-2 { margin-right: .5rem!important; }
-
-/* end of Bootstrap 4 classes */
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+.mr-2 {
+  margin-right: 0.5rem !important;
+}
+/**********tool tip css here ************/
+a.ec-tool-tip-item {
+  position: relative;
+}
+span.ec-tool-tip {
+  position: absolute;
+  background: #000;
+  color: #fff;
+  right: -1px;
+  bottom: 19px;
+  min-width: 75px;
+  font-size: 11px;
+  padding-top: 2px;
+  padding-bottom: 4px;
+  border-radius: 4px;
+  display: none;
+}
+span.ec-tool-tip:after {
+  right: 3px;
+  bottom: -11px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(255, 255, 255, 0);
+  border-top-color: #000;
+  border-width: 6px;
+}
+a.ec-tool-tip-item:hover span.ec-tool-tip {
+  display: block;
+}

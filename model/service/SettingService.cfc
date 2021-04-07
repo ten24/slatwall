@@ -301,7 +301,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
 			globalIntegrationRequestLog = {fieldType="yesno",defaultValue=0},
 			globalIntegrationRequestLogExpirationDays = {fieldtype="text", defaultValue=30, validate={dataType="numeric",required=true,maxValue=180}},
-
+			globalPublicApiEntities = {fieldType="multiselect",defaultValue="Brand,Product,ProductType,Sku"},
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -392,6 +392,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
 			siteDateFormat = {fieldType="select", defaultValue="mm-dd-yyyy"},
 			siteDefaultAccountPaymentMethod = {fieldtype="select", defaultValue="444df303dedc6dab69dd7ebcc9b8036a"},	
+			siteDefaultCountry = {fieldType="select", defaultValue="us"},
 			siteDefaultLocale = {fieldType="select"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
@@ -402,6 +403,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
 			siteOrderTemplateEligibleShippingMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="ShippingMethod"},
 			siteWishlistShareEmailTemplate = { fieldtype="select", defaultValue="" },
+			siteProductSearchIntegration = {fieldtype="text", defaultValue="SlatwallProductSearch"},
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
@@ -641,6 +643,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalTranslateEntities":
 				return getTranslationService().getEntityNameOptions();
+			case "globalPublicApiEntities":
+				return getTranslationService().getEntityNameOptions();
 			case "globalTranslateLocales":
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
@@ -667,6 +671,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return options;
 			case "siteDefaultLocale":
 				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDefaultCountry":
+				return this.getCountryCollectionList().getRecordOptions(false);
 			case "siteDefaultAccountPaymentMethod":
 				return getPaymentService().getActivePaymentMethodOptions();
 			case "siteForgotPasswordEmailTemplate":

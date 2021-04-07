@@ -107,11 +107,12 @@
 			// Add the entity by it's name to the arguments for calling events
 	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			
+			// Do delete validation
+			// validating before announcing the event, so that the handler can check for errors and do some conditional logic 
+			arguments.entity.validate(context="delete"); 
+			
 			// Announce Before Event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
-			
-			// Do delete validation
-			arguments.entity.validate(context="delete");
 			
 			// If the entity Passes validation
 			if(!arguments.entity.hasErrors()) {
@@ -235,7 +236,7 @@
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
 	    	
 			// If data was passed in to this method then populate it with the new data
-	        if(structKeyExists(arguments,"data")){
+	        if(structKeyExists(arguments,"data") && isStruct(arguments.data) && !StructIsEmpty(arguments.data)){
 	        	// Populate this object
 				arguments.entity.populate(argumentCollection=arguments);
 	
@@ -509,8 +510,7 @@
 		private function onMissingDeleteMethod( required string missingMethodName, required struct missingMethodArguments ) {
 			return delete( arguments.missingMethodArguments[ 1 ] );
 		}
-	
-	
+		
 		/**
 		 * Provides dynamic get methods, by convention, on missing method:
 		 *
@@ -986,7 +986,6 @@
 		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public any function getServiceByEntityName( required string entityName ) {
-			
 			// Use the short version of the entityName
 			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
 			
@@ -1150,12 +1149,14 @@
 			var cacheKey = 'getPropertyIsPersistentByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
 			
 			if(!structKeyExists(variables,cacheKey)){
-				var propertyMetaData = getPropertiesStructByEntityName(
-				getLastEntityNameInPropertyIdentifier(
-						arguments.entityName,
-						arguments.propertyIdentifier
-					)	
-				)[listLast(arguments.propertyIdentifier, ".")];
+			    var lastEntityName = getLastEntityNameInPropertyIdentifier( arguments.entityName, arguments.propertyIdentifier );
+				var propertiesMetaData = getPropertiesStructByEntityName(lastEntityName);
+				var lastPropertyName = listLast(arguments.propertyIdentifier, ".");
+				if(!structKeyExists(propertiesMetaData, lastPropertyName) ){
+				    throw("propertyName: #lastPropertyName# is not valid for entityName: #lastEntityName#");
+				}
+				var propertyMetaData = propertiesMetaData[lastPropertyName];
+				
 				variables[cacheKey] = !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
 			}
 			
@@ -1863,7 +1864,7 @@
 							entity.updateCalculatedProperties(true);
 							logHibachi('flushed',true);
 							//commit batch
-							ormFlush();
+							this.getHibachiScope().hibachiORMFlush();
 							
 						}catch(any e){
 							logHibachi('#attributes.entityID# - error #e.message#',true);

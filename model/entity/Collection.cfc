@@ -255,7 +255,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public boolean function getApplyOrderBysToGroupBys(){
 		return variables.applyOrderBysToGroupBys;
 	}
-
+	
 	public void function setFilterByLeafNodesFlag(required boolean value) {
 		// Ensures exclusivity so that both types of leaf node filter flags cannot both be true
 		if (arguments.value && getFilterByNonLeafNodesFlag()) {
@@ -339,6 +339,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getAuthorizedProperties(){
 		if(!structKeyExists(variables,'authorizedProperties')){
 			variables.authorizedProperties = [];
+			
+			var entityName = this.getCollectionObject();
+			//skip attribute entity to avoid Stack Overflow via recursive calls from on missing method of public properties
+			if( !isNull(entityName) && lcase(entityName) != 'attribute') {
+				var entityService = this.getService("hibachiService").getServiceByEntityName(entityName);
+				if(structKeyExists(entityService, 'get#entityName#PublicProperties')){
+					variables.authorizedProperties = entityService.invokeMethod('get#entityName#PublicProperties');
+				}
+			}
+			
+			
 		}
 		return variables.authorizedProperties;
 	}
@@ -855,8 +866,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var collectionConfig = this.getCollectionConfigStruct();
 		collectionConfig["columns"] = [];
 		this.setCollectionConfigStruct(collectionConfig);
-
-
+		
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
 			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
@@ -1244,78 +1254,33 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'none';
 	}
 
-	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
-		var HibachiBaseEntity = "";
-		HibachiBaseEntity = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
-
-		variables.collectionObject = HibachiBaseEntity;
+	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true, boolean useAuthorizedPropertiesAsDefaultColumns = false){
+		
+		variables.collectionObject = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
+		
 		if(variables.collectionConfig == '{}' ){
-			var columnsArray = [];
 			
-			//check to see if we are supposed to add default columns
-			if(arguments.addDefaultColumns){
-					
-				var cacheKey = 'defaultColumns' & arguments.collectionObject & '#getReportFlag()#';
-				var cachedColumnsArray = getCollectionCacheValue(cacheKey);
-					
-				if(isNull(cachedColumnsArray)){
-					//get default columns
-					var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-					var defaultProperties = "";
-					if(getReportFlag()){
-						defaultProperties  = newEntity.getDefaultCollectionReportProperties();
-					}else{
-						defaultProperties = newEntity.getDefaultCollectionProperties();
-					}
-					
-					//loop through all defaultProperties
-					for(var defaultProperty in defaultProperties){
-						var columnStruct = {};
-						columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) ;
-
-						if(!structKeyExists(defaultProperty, 'name')){
-							continue; //alternatively we could throw
-						}
-
-						columnStruct['propertyIdentifier'] &= '.' & defaultProperty.name;
-	
-						columnStruct['title'] = newEntity.getTitleByPropertyIdentifier(defaultProperty.name);
-						//if propertyKey is a primary id, hide it and make it so it can't be deleted
-						if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id' && !isReport()){
-							columnStruct['isDeletable'] = false;
-							columnStruct['isVisible'] = false;
-						//if propertyKey is a config of json hide it
-						}else if(structKeyExists(defaultProperty,"hb_formFieldType") && defaultProperty.hb_formFieldType == 'json'){
-							columnStruct['isDeletable'] = true;
-							columnStruct['isVisible'] = false;
-						}else{
-							columnStruct['isDeletable'] = true;
-							columnStruct['isVisible'] = true;
-						}
-						columnStruct['isSearchable'] = true;
-						columnStruct['isExportable'] = true;
-						if(structKeyExists(defaultProperty,"ormtype")){
-							columnStruct['ormtype'] = defaultProperty.ormtype;
-						}
-						if(structKeyExists(defaultProperty,"fieldtype")){
-							columnStruct['type'] = defaultProperty.fieldtype;
-						}
-						if(structKeyExists(defaultProperty,"hb_formatType")){
-							columnStruct['type'] = defaultProperty.hb_formatType;
-						}
-						if(structKeyExists(defaultProperty,"hb_displayType")){
-							columnStruct['type'] = defaultProperty.hb_displayType;
-						}
-						if(!structKeyExists(columnStruct,'type')){
-							columnStruct['type'] = 'none';
-						}
-
-						arrayAppend(columnsArray,columnStruct);
-					}
-					setCollectionCacheValue(cacheKey,columnsArray);
+			var cacheKey = 'defaultColumns-#variables.collectionObject#-#getReportFlag()#-#arguments.addDefaultColumns#-#arguments.useAuthorizedPropertiesAsDefaultColumns#';
+			var cachedInitialCollectionConfig = getCollectionCacheValue(cacheKey);
+			
+			if(!isNull(cachedInitialCollectionConfig)){
+				variables.collectionConfig = cachedInitialCollectionConfig;
+				return;
+			}
+				
+			var columnsArray = [];
+			if( arguments.addDefaultColumns  && !arguments.useAuthorizedPropertiesAsDefaultColumns) { //check to see if we are supposed to add default columns
+				
+				//get default columns
+				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
+				var defaultProperties = "";
+				if(getReportFlag()){
+					defaultProperties  = newEntity.getDefaultCollectionReportProperties();
 				}else{
-					columnsArray = cachedColumnsArray;
+					defaultProperties = newEntity.getDefaultCollectionProperties();
 				}
+				
+				columnsArray = this.arrangeCollectionColumns( arguments.collectionObject, newEntity, defaultProperties );
 					
 			}
 
@@ -1323,13 +1288,76 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			var properlyCasedShortEntityName = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
 			var defaultCollectionConfig = '{
-				"baseEntityName":"#HibachiBaseEntity#",
+				"baseEntityName":"#variables.collectionObject#",
 				"baseEntityAlias":"_#properlyCasedShortEntityName#",
 				"columns":#columnsJson#,
 				"filterGroups":[{"filterGroup":[]}]
 			}';
 			variables.collectionConfig = defaultCollectionConfig;
+			if(arguments.useAuthorizedPropertiesAsDefaultColumns){
+				setDisplayProperties(arrayToList(getAuthorizedProperties()))
+			}
+			
+			cachedInitialCollectionConfig = getCollectionConfig();
+			
+			setCollectionCacheValue(cacheKey,cachedInitialCollectionConfig);
 		}
+		
+	}
+	
+	/**
+	 * Method to populate columns with correct properties
+	 * */
+	public array function arrangeCollectionColumns(required string collectionObject, required any entity, required any columnList ) {
+		var columnsArray = [];
+		var entityPrefix = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
+		
+		//loop through all defaultProperties
+		for( var defaultProperty in arguments.columnList ){
+			var columnStruct = {};
+			columnStruct['propertyIdentifier'] = '_' &  entityPrefix;
+
+			if(!structKeyExists(defaultProperty, 'name')){
+				continue; //alternatively we could throw
+			}
+
+			columnStruct['propertyIdentifier'] &= '.' & defaultProperty.name;
+
+			columnStruct['title'] = arguments.entity.getTitleByPropertyIdentifier(defaultProperty.name);
+			//if propertyKey is a primary id, hide it and make it so it can't be deleted
+			if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id' && !isReport()){
+				columnStruct['isDeletable'] = false;
+				columnStruct['isVisible'] = false;
+			//if propertyKey is a config of json hide it
+			}else if(structKeyExists(defaultProperty,"hb_formFieldType") && defaultProperty.hb_formFieldType == 'json'){
+				columnStruct['isDeletable'] = true;
+				columnStruct['isVisible'] = false;
+			}else{
+				columnStruct['isDeletable'] = true;
+				columnStruct['isVisible'] = true;
+			}
+			columnStruct['isSearchable'] = true;
+			columnStruct['isExportable'] = true;
+			if(structKeyExists(defaultProperty,"ormtype")){
+				columnStruct['ormtype'] = defaultProperty.ormtype;
+			}
+			if(structKeyExists(defaultProperty,"fieldtype")){
+				columnStruct['type'] = defaultProperty.fieldtype;
+			}
+			if(structKeyExists(defaultProperty,"hb_formatType")){
+				columnStruct['type'] = defaultProperty.hb_formatType;
+			}
+			if(structKeyExists(defaultProperty,"hb_displayType")){
+				columnStruct['type'] = defaultProperty.hb_displayType;
+			}
+			if(!structKeyExists(columnStruct,'type')){
+				columnStruct['type'] = 'none';
+			}
+
+			arrayAppend(columnsArray,columnStruct);
+		}
+		
+		return columnsArray;
 		
 	}
 
@@ -4477,7 +4505,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				this.updateListingSearchFilters();
 			}
 			
-
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
 				var isDistinct = false;

@@ -6,7 +6,9 @@
 
 <hb:HibachiEntityDetailForm object="#rc.importerMapping#" edit="#rc.edit#">
 	<hb:HibachiEntityActionBar type="detail" object="#rc.importerMapping#" edit="#rc.edit#">
-  </hb:HibachiEntityActionBar>
+		<hb:HibachiActionCaller action="slatwallImporter:main.getSampleCSV" querystring="mappingCode=#rc.importerMapping.getMappingCode()#" type="list" />
+		<hb:HibachiProcessCaller entity="#rc.importerMapping#" action="slatwallimporter:main.preprocessintegration" querystring="mappingCode=#rc.importerMapping.getMappingCode()#" processContext="importcsv" type="list" modal="true" />
+	</hb:HibachiEntityActionBar>
 	<hb:HibachiEntityDetailGroup object="#rc.importerMapping#">
 		<hb:HibachiEntityDetailItem view="admin:entity/importermappingtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 	</hb:HibachiEntityDetailGroup>

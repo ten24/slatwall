@@ -76,7 +76,12 @@ component extends="HibachiService" accessors="true" {
 		approvedProductReviewCollectionList.addFilter("productReviewStatusType.systemCode","prstApproved");
 		return approvedProductReviewCollectionList;
 	}
-	
+	public array function getProductPublicProperties(){
+		return ['productID','productName','urlTitle', 'productCode', 'productDescription'];
+	}
+	public array function getProductTypePublicProperties(){
+		return ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
+	}
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
 		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
@@ -230,7 +235,7 @@ component extends="HibachiService" accessors="true" {
 
 	public string function getNextSkuCode(required struct productSchedule={}, required struct product={}) {
 		var productCode = arguments.product.getProductCode();
-		if( ArrayIsEmpty(arguments.productSchedule.getSkus()) ) {
+		if( (isStruct(arguments.productSchedule) && structIsEmpty(arguments.productSchedule)) || (isObject(arguments.productSchedule) && ArrayIsEmpty(arguments.productSchedule.getSkus())) ) {
 			return getService('HibachiUtilityService').createUniqueProperty(propertyValue=productCode, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=true );
 		}
 		

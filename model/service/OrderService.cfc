@@ -1323,7 +1323,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_addPromotionCode(required any orderTemplate, required any processObject) { 
-		var promotionCode = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
+		var promotionCode = this.getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 	
 		if( isNull(promotionCode) || !promotionCode.getPromotion().getActiveFlag() ){
 			arguments.orderTemplate.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
@@ -1589,7 +1589,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
-			ormFlush();	
+			this.getHibachiScope().hibachiORMFlush();
 			
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
 		}
@@ -1661,7 +1661,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderTemplate.getAccount())){
 			var account = arguments.orderTemplate.getAccount();
 			arguments.transientOrder.setAccount(account); 
-    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType());	
 		}
 		
 		if(
@@ -1860,7 +1859,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
-		
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
 			
@@ -2027,13 +2025,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.processOrder_updateOrderAmounts(newOrder);
 
 		newOrder.updateCalculatedProperties(runAgain=true); 
-		ormFlush();//flush so that the order exists
+		this.getHibachiScope().hibachiORMFlush();//flush so that the order exists
 		
 		var orderFulfillments = newOrder.getOrderFulfillments();
 		for( var orderFulfillment in orderFulfillments ){
 			getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
 		}
-		ormFlush();
+		this.getHibachiScope().hibachiORMFlush();
 		
 		newOrder.validate( context = 'placeOrder' );
 		
@@ -2054,7 +2052,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderProcessingFlag( false );
 		arguments.orderTemplate.setMostRecentError( javacast('null','') );
 		arguments.orderTemplate.setMostRecentErrorDateTime( javacast('null','') );
-		ormFlush();
+		this.getHibachiScope().hibachiORMFlush();
 		
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
         getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
@@ -2102,7 +2100,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				//keep going potentially the gift card is already applied to another order 
 				continue;
 			} else {
-				ormFlush(); 
+				this.getHibachiScope().hibachiORMFlush(); 
 			}
 		}  
 
@@ -2177,7 +2175,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrder.clearHibachiErrors();
 
 			newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
-			ormFlush(); 
+			this.getHibachiScope().hibachiORMFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
 			getHibachiEventService().announceEvent("afterOrderProcess_retryPaymentFailure", {"entity":newOrder, "order":newOrder});
 		} else {
@@ -2188,7 +2186,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		newOrder.setOrderOrigin(getSettingService().getOrderOrigin(getSettingService().getSettingValue('globalOrderTemplateOrderOrigin')));
 		// Flush everything before removing items so it doesn't persit the item in session after remove
-		ormFlush();
+		this.getHibachiScope().hibachiORMFlush();
 		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
 		
@@ -2391,7 +2389,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// TODO: max-collection validation
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
-		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+		orderTemplateItemCollectionList.addFilter('sku.skuID', arguments.processObject.getSku().getSkuID());
 		
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
@@ -2506,7 +2504,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var account = arguments.orderTemplate.getAccount();
 		
-		var siteCountryCode = getSiteService().getCountryCodeBySite(arguments.orderTemplate.getSite());
+		var siteCountryCode = arguments.orderTemplate.getSite().setting('siteDefaultCountry');
 			
 		if(!isNull(processObject.getNewAccountAddress())){
 			
@@ -2784,7 +2782,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.nullAccountFlag" type="boolean" default=false;  
 		
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedTaxTotal,calculatedFulfillmentHandlingFeeTotal,calculatedDiscountTotal"; //extra prop we need
+		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedDiscountTotal"; //extra prop we need
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
@@ -3093,13 +3091,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var allocatedOrderDiscountAmount = getService('HibachiUtilityService').precisionCalculate(discount);
 		}
 		
-		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
+		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount < 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
 			if(arguments.order.hasAppliedPromotion()){
 				promotionApplied.setPromotion(arguments.order.getAppliedPromotions()[1].getPromotion());
 			}
-			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
+			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount);
 			promotionApplied.setManualDiscountAmountFlag(true);
 			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
 		}
@@ -4510,7 +4508,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			//must flush otherwise the dao won't get the correct amount.
 			if (!arguments.processObject.getOrderFulfillment().hasErrors() && !arguments.orderDelivery.hasErrors()){
-				ormFlush();
+				this.getHibachiScope().hibachiORMFlush();
 			}
 			
 			// generate invoice number for this order delivery
@@ -6377,6 +6375,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		return representation;
+	}
+	
+	public array function getAccountWishlists(string accountID){
+		var list = this.getOrderTemplateCollectionList();
+		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name");
+		list.addFilter("account.accountID",arguments.accountID);
+		list.addFilter("orderTemplateType.typeCode","WishList");
+		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
+		return list.getRecords();
 	}
 	
 	public array function getAccountWishlistsProducts(string accountID){
