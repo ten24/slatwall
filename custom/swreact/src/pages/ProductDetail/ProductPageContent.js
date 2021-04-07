@@ -3,17 +3,16 @@ import ProductPagePanels from './ProductPagePanels'
 import React, { useEffect, useRef, useState } from 'react'
 import { addToCart } from '../../actions/cartActions'
 import { useDispatch } from 'react-redux'
-import { HeartButton } from '../../components'
+import { HeartButton, ProductPrice } from '../../components'
 import { useTranslation } from 'react-i18next'
 import { useGetSku, useGetProductSkus, useGetProductAvailableSkuOptions, useGetProductSkuSelected } from '../../hooks/useAPI'
-import { useHistory, useLocation } from 'react-router'
+import { useLocation } from 'react-router'
 import { usePush } from '../../hooks/useRedirect'
 
 const ProductPageContent = ({ productID, productName, productClearance, productCode, productDescription, skuID }) => {
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   let loc = useLocation()
-  let history = useHistory()
   let [sku, setRequest] = useGetSku()
   let [skus, setSkusRequest] = useGetProductSkus()
   let [skuOptions, setOptionsRequest] = useGetProductAvailableSkuOptions()
@@ -21,7 +20,6 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
   const [lastOptionGoupID, setLastOptionGoupID] = useState('')
   let [push, setPush] = usePush({ location: loc.pathname })
 
-  let productDetails = {}
   const [quantity, setQuantity] = useState(1)
   const refs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef()])
 
@@ -32,7 +30,6 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
   }
 
   useEffect(() => {
-    let didCancel = false
     if (!skus.isFetching && !skus.isLoaded) {
       setSkusRequest({ ...skus, isFetching: true, isLoaded: false, params: { productID }, makeRequest: true })
     }
@@ -51,11 +48,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
         makeRequest: true,
       })
     }
-
-    return () => {
-      didCancel = true
-    }
-  }, [setSkusRequest, skus, productID, productDetails, sku, setRequest, setOptionsRequest, skuOptions])
+  }, [setSkusRequest, skus, productID, sku, setRequest, setOptionsRequest, skuOptions, skuID])
 
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
@@ -180,7 +173,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                 )} */}
 
                 <div className="mb-3">
-                  <span className="h4 text-accent font-weight-light">{sku.price ? sku.price : ''}</span> <span className="font-size-sm ml-1">{sku.data.listPrice ? `${sku.data.listPrice} ${t('frontend.core.list')}` : ''}</span>
+                  <ProductPrice salePrice={sku.data.price} listPrice={sku.data.listPrice} />
                 </div>
                 <div className="form-group d-flex align-items-center">
                   <select

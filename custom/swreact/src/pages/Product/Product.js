@@ -1,4 +1,3 @@
-import { Layout } from '../../components'
 import ProductDetail from '../ProductDetail/ProductDetail'
 import { useLocation } from 'react-router-dom'
 

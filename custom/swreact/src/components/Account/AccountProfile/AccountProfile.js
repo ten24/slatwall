@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
   const dispatch = useDispatch()
   const MySwal = withReactContent(Swal)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const user = useSelector(state => state.userReducer)
 
   const formik = useFormik({

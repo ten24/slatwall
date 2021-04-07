@@ -6,6 +6,7 @@ import { PromptLayout } from '../AccountLayout/AccountLayout'
 import useRedirect from '../../../hooks/useRedirect'
 
 const ForgotPassword = () => {
+  // eslint-disable-next-line no-unused-vars
   const [redirect, setRedirect] = useRedirect({ location: '/my-account' })
 
   const formik = useFormik({

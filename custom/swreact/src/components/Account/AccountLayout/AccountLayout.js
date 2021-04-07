@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
 const AccountSidebar = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   // const contentStore = useSelector(state => state.content)
   const user = useSelector(state => state.userReducer)
 
@@ -18,15 +18,15 @@ const AccountSidebar = () => {
           <div className="media align-items-center">
             <div className="media-body">
               <h3 className="font-size-base mb-0">{`${user.firstName} ${user.lastName}`}</h3>
-              <a
-                href="#"
+              <button
+                type="button"
                 onClick={() => {
                   dispatch(logout())
                 }}
-                className="text-accent font-size-sm"
+                className="link-button text-accent font-size-sm"
               >
                 {t('frontend.core.logout')}
-              </a>
+              </button>
               <br />
             </div>
           </div>

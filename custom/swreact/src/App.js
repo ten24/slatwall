@@ -54,7 +54,7 @@ export default function App() {
       return pageComponents[key].preload()
     })
     dispatch(getConfiguration())
-  }, [])
+  }, [dispatch])
   return (
     <Suspense fallback={<Loading />}>
       <ScrollToTop />

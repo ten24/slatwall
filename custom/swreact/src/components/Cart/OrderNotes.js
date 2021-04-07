@@ -1,15 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
 import { useState } from 'react'
 import { updateOrderNotes } from '../../actions/cartActions'
 
 const OrderNotes = () => {
   const dispatch = useDispatch()
   const { orderNotes = '', isFetching } = useSelector(state => state.cart)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [notes, setOrderNotes] = useState({ text: '', original: '' })
-  if (orderNotes != notes.original) {
+  if (orderNotes !== notes.original) {
     setOrderNotes({ text: orderNotes, original: orderNotes })
   }
   return (

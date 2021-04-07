@@ -3,7 +3,7 @@ import styles from './SignUpForm.module.css'
 import { useTranslation } from 'react-i18next'
 
 const MyForm = ({ status, message, onValidated }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   let email, fName, lName, company
   const submit = () => {

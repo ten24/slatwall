@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { getContent } from '../../actions/contentActions'
 import { useHistory, useLocation } from 'react-router'
 import { getFavouriteProducts } from '../../actions/userActions'
+
+let payload = {
+  header: ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID'],
+  footer: ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID'],
+  '404': ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID'],
+}
 
 const CMSWrapper = ({ children }) => {
   const dispatch = useDispatch()
@@ -11,11 +17,8 @@ const CMSWrapper = ({ children }) => {
 
   let path = pathname.split('/').reverse()[0].toLowerCase()
   path = path.length ? path : 'home'
-  let payload = {}
-  payload.header = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
-  payload.footer = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
+
   payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
-  payload['404'] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
 
   useEffect(() => {
     dispatch(getFavouriteProducts())
@@ -25,18 +28,18 @@ const CMSWrapper = ({ children }) => {
       })
     )
     history.listen(location => {
-      payload = {}
-      path = location.pathname.split('/').reverse()[0].toLowerCase()
-      path = path.length ? path : 'home'
-      payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
+      let NewPayload = {}
+      let newPath = location.pathname.split('/').reverse()[0].toLowerCase()
+      newPath = newPath.length ? newPath : 'home'
+      NewPayload[newPath] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
       dispatch(getFavouriteProducts())
       dispatch(
         getContent({
-          content: payload,
+          content: NewPayload,
         })
       )
     })
-  }, [dispatch])
+  }, [dispatch, history])
 
   return <>{children}</>
 }

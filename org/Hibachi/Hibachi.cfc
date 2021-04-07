@@ -67,6 +67,9 @@ component extends="framework.one" {
 		 { "$GET/api/scope/$" = "/api:public/get/" }
 		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
 		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
+		
+		,{ "$GET/api/public/:entityName/$" = "/api:public/get/context/getEntity/entityName/:entityName"}
+		,{ "$GET/api/public/:entityName/:entityID/$" = "/api:public/get/context/getEntity/entityName/:entityName/entityID/:entityID"}
 
 		,{ "$POST/api/auth/login/$" = "/api:main/login"}
 		,{ "$GET/api/auth/login/$" = "/api:main/login"}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import OrderShipments from './OrderShipments'
 import OrderToolbar from './OrderToolbar'
@@ -17,7 +17,7 @@ const AccountOrderDetail = props => {
     return () => {
       didCancel = true
     }
-  }, [order, setRequest])
+  }, [order, orderID, setRequest])
   return (
     <AccountLayout title={`Order: ${(order.isLoaded && order.data.orderInfo[0].orderNumber) || ''}`}>
       <OrderToolbar delivered={order.isLoaded && order.data.orderInfo[0].orderStatusType_typeName} />
