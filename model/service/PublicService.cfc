@@ -810,6 +810,81 @@ component  accessors="true" output="false"
         arguments.data.ajaxResponse['images'] = product.getImageGalleryArray(argumentCollection=arguments.data);
     }
     
+    /**
+     * Function get Product Type detail information
+     * @param urlTitle
+     * @return none
+    */
+    public void function getProductType(required struct data){
+        param name="arguments.data.urlTitle";
+        
+        var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
+        
+        if( IsNull( productType ) 
+            || ( !IsNull(productType.getActiveFlag()) && !productType.getActiveFlag() ) 
+            || ( !IsNull(productType.getPublishedFlag()) && !productType.getPublishedFlag() )
+            ) {
+            getHibachiScope().addActionResult( "public:product.getProductType", true );
+            return;
+        }
+        
+        //get sub product types
+        var subProductTypeCollectionList = getProductService().getProductTypeCollectionList();
+        subProductTypeCollectionList.setDisplayProperties("productTypeName, urlTitle, imageFile, productTypeID, productTypeIDPath");
+        subProductTypeCollectionList.addFilter('productTypeIDPath', "%#productType.getProductTypeID()#%", "LIKE");
+        subProductTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+        var subProductTypesRecord = subProductTypeCollectionList.getRecords( formatRecords = true );
+        
+        var subProductTypes = [];
+        var typeIndex = 0;
+        for( var subProductType in subProductTypesRecord ) {
+            
+            //skip current record
+            if( subProductType['productTypeID'] == productType.getProductTypeID()  ) {
+                continue;
+            }
+            
+            //remove parent ids from path
+            var productTypeIDPath = subProductType['productTypeIDPath'];
+            productTypeIDPath = ReplaceList( productTypeIDPath, productType.getProductTypeIDPath(), "");
+            productTypeIDPath = ListChangeDelims( productTypeIDPath, ",", ",");
+            
+            var responseStruct = {
+                "title": subProductType['productTypeName'],
+                "productTypeID": subProductType['productTypeID'],
+                "imageFile" : trim(subProductType['imageFile']) != "" ? getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & subProductType['imageFile'] : "",
+                "urlTitle" : subProductType['urlTitle']
+            };
+            
+            //if it's a parent type set title and correct index
+            if( productTypeIDPath == subProductType['productTypeID'] ) {
+                subProductTypes[ ++typeIndex ] = responseStruct;
+                //add an index for 2nd level sub types
+                subProductTypes[ typeIndex ]["subTypes"] = [];
+            } else {
+                
+                //remove immediate parent id from path
+                productTypeIDPath = ReplaceList( productTypeIDPath, subProductTypes[ typeIndex ]['productTypeID'], "");
+                productTypeIDPath = ListChangeDelims( productTypeIDPath, ",", ",");
+                
+                //add show products flag if it's last child
+                StructAppend( responseStruct, {"showProducts" : productTypeIDPath !== subProductType['productTypeID'] });
+                
+                //append sub type array
+                ArrayAppend( subProductTypes[ typeIndex ]["subTypes"], responseStruct);
+            }
+        }
+        
+        var repsonse = {
+            "title": productType.getProductTypeName(),
+            "productTypeID": productType.getProductTypeID(),
+            "subProductTypes" : subProductTypes,
+        }
+        arguments.data.ajaxResponse['data'] = repsonse;
+        getHibachiScope().addActionResult( "public:product.getProductType", false );
+        
+    }
+    
      /**
      * Function get Product Options By Option Group
      * It adds productOptions as key in ajaxResponse
