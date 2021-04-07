@@ -31,6 +31,13 @@ export { default as CartLineItem } from './Cart/CartLineItem'
 export { default as CartPromoBox } from './Cart/CartPromoBox'
 export { default as OrderNotes } from './Cart/OrderNotes'
 
+export { PickupLocationDetails } from './Checkout/PickupLocationDetails'
+export { ShippingAddressDetails } from './Checkout/ShippingAddressDetails'
+export { BillingAddressDetails } from './Checkout/BillingAddressDetails'
+export { TermPaymentDetails } from './Checkout/TermPaymentDetails'
+export { CreditCardDetails } from './Checkout/CreditCardDetails'
+export { GiftCardDetails } from './Checkout/GiftCardDetails'
+
 export { default as CMSWrapper } from './CMSWrapper/CMSWrapper'
 export { default as Footer } from './Footer/Footer'
 export { default as Header } from './Header/Header'
