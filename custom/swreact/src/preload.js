@@ -10,6 +10,10 @@ const data = {
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
   enforceVerifiedAccountFlag: false,
+  shopByManufacturer: {
+    slug: '/brands',
+    showInMenu: true,
+  },
   seo: {
     title: 'Stone & Berg',
     titleMeta: '',
