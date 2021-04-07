@@ -13,7 +13,7 @@ const BrandBanner = ({ brandCode }) => {
       didCancel = true
     }
   }, [request, brandCode, setRequest])
-  console.log('request.data', request.data)
+
   return (
     <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
       {request.isLoaded && <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/images/brand/logo/" src={request.data[0].imageFile.length ? request.data.imageFile.split('/').reverse()[0] : ''} alt={request.data.brandName} />}
