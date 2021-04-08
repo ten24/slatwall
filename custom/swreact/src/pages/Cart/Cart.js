@@ -1,18 +1,19 @@
 import { CartLineItem, CartPromoBox, Layout, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { getCart } from '../../actions/cartActions'
 import { useEffect } from 'react'
 import useFormatCurrency from '../../hooks/useFormatCurrency'
 import PageHeader from '../../components/PageHeader/PageHeader'
+import { AuthenticationStepUp } from '../../components/AuthenticationStepUp/AuthenticationStepUp'
 
 const Cart = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const cart = useSelector(state => state.cart)
+
+  const { total, isFetching, orderItems } = useSelector(state => state.cart)
   let history = useHistory()
-  const { total, isFetching } = cart
   const [formatCurrency] = useFormatCurrency({})
   useEffect(() => {
     dispatch(getCart())
@@ -20,6 +21,7 @@ const Cart = () => {
   return (
     <Layout>
       <PageHeader />
+
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <section className="col-lg-8">
@@ -36,9 +38,10 @@ const Cart = () => {
                 <i className="far fa-chevron-left"></i> {t('frontend.order.continue_shopping')}
               </button>
             </div>
-            {cart.orderItems &&
-              cart.orderItems.map(({ orderItemID }) => {
-                return <CartLineItem key={orderItemID} orderItemID={orderItemID} /> // this cannot be index or it wont force a rerender
+            <AuthenticationStepUp />
+            {orderItems &&
+              orderItems.map(({ orderItemID }) => {
+                return <CartLineItem key={orderItemID} orderItemID={orderItemID} />
               })}
           </section>
 
@@ -54,7 +57,7 @@ const Cart = () => {
 
               <button
                 className="btn btn-primary btn-block mt-4"
-                disabled={cart.isFetching}
+                disabled={isFetching || orderItems.length === 0}
                 onClick={e => {
                   e.preventDefault()
                   history.push('/checkout')
