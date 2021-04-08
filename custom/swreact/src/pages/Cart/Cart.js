@@ -1,18 +1,20 @@
 import { CartLineItem, CartPromoBox, Layout, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Link, useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { getCart } from '../../actions/cartActions'
 import { useEffect } from 'react'
 import useFormatCurrency from '../../hooks/useFormatCurrency'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import { AuthenticationStepUp } from '../../components/AuthenticationStepUp/AuthenticationStepUp'
+import { disableInteractionSelector } from '../../selectors'
 
 const Cart = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const disableInteraction = useSelector(disableInteractionSelector)
 
-  const { total, isFetching, orderItems } = useSelector(state => state.cart)
+  const { total, orderItems } = useSelector(state => state.cart)
   let history = useHistory()
   const [formatCurrency] = useFormatCurrency({})
   useEffect(() => {
@@ -29,7 +31,7 @@ const Cart = () => {
               <h2 className="h6 mb-0">{t('frontend.cart.heading')}</h2>
               <button
                 className="btn btn-outline-primary btn-sm pl-2"
-                disabled={isFetching}
+                disabled={disableInteraction}
                 onClick={e => {
                   e.preventDefault()
                   history.goBack()
@@ -39,6 +41,11 @@ const Cart = () => {
               </button>
             </div>
             <AuthenticationStepUp />
+            {orderItems && orderItems.length === 0 && (
+              <div className="alert alert-warning" role="alert">
+                {t('frontend.cart.empty')}
+              </div>
+            )}
             {orderItems &&
               orderItems.map(({ orderItemID }) => {
                 return <CartLineItem key={orderItemID} orderItemID={orderItemID} />
@@ -57,7 +64,7 @@ const Cart = () => {
 
               <button
                 className="btn btn-primary btn-block mt-4"
-                disabled={isFetching || orderItems.length === 0}
+                disabled={disableInteraction}
                 onClick={e => {
                   e.preventDefault()
                   history.push('/checkout')
