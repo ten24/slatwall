@@ -20,7 +20,7 @@ const ProductPagePanels = ({ productID }) => {
   if (request.isLoaded) {
     propertiesToDisplay = Object.keys(request.data)
       .filter(property => {
-        return property.startsWith('product') && !propertyBlackList.includes(property) && request.data[property].trim().length > 0
+        return property.startsWith('product') && !propertyBlackList.includes(property) && request.data[property] && request.data[property].trim().length > 0
       })
       .map(property => {
         return { key: property.replace('product', ''), value: request.data[property] }
