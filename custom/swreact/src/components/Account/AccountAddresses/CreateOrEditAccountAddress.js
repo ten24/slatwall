@@ -53,9 +53,6 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
       dispatch(getStateCodeOptionsByCountryCode(formik.values.countryCode))
     }
   }, [dispatch, formik, stateCodeOptions, countryCodeOptions, isFetching])
-  console.log('formik.values.countryCode', formik.values.countryCode)
-  console.log('stateCodeOptions[formik.values.countryCode]', stateCodeOptions[formik.values.countryCode])
-  console.log('stateCodeOptions', stateCodeOptions)
 
   return (
     <AccountLayout title={`Add ${action}`}>
