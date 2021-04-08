@@ -15,3 +15,14 @@ export const getShopBy = createSelector(getAllContent, (content = {}) => {
   }
   return shopBy[0]
 })
+
+export const getMyAccountMenu = createSelector(getAllContent, (content = {}) => {
+  return Object.keys(content)
+    .filter(key => {
+      return key.includes('my-account/') && content[key].displayInNavigation === '1'
+    })
+    .map(key => {
+      return content[key]
+    })
+    .sort((a, b) => (a.sortOrder > b.sortOrder ? 1 : -1))
+})

@@ -42,7 +42,7 @@ const ContactForm = () => {
   }
   useEffect(() => {
     let didCancel = false
-    if (!content.isLoaded && formsByPath.length) {
+    if (!content.isLoaded && formsByPath) {
       axios({
         method: 'POST',
         withCredentials: true,
@@ -56,7 +56,7 @@ const ContactForm = () => {
           siteCode: siteCode,
         },
       }).then(response => {
-        if (didCancel) {
+        if (!didCancel) {
           setContent({ form: response.data.content.form, isLoaded: true })
         }
       })

@@ -569,7 +569,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                         ffo.attributeSetName = atst.attributeSetName,
                         ffo.attributeSetCode = atst.attributeSetCode,
                         ffo.attributeSetObject = atst.attributeSetObject,
-                        ffo.attributeSetUrlTitle = atst.urltitle
+                        ffo.attributeSetSortOrder = atst.sortOrder
                 ";
             break;
             case 'attributeOption':

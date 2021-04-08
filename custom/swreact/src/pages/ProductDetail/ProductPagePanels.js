@@ -1,10 +1,37 @@
+import { useEffect } from 'react'
+import { useGetEntityByID } from '../../hooks'
+
+const propertyBlackList = ['productID', 'productName', 'productCode']
+
 // TODO: Migrate to reactstrap accordion
-const ProductPagePanels = () => {
+const ProductPagePanels = ({ productID }) => {
+  let [request, setRequest] = useGetEntityByID()
+  let propertiesToDisplay = []
+  useEffect(() => {
+    let didCancel = false
+    if (!request.isFetching && !request.isLoaded && !didCancel) {
+      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'product', params: { entityID: productID }, makeRequest: true })
+    }
+    return () => {
+      didCancel = true
+    }
+  }, [request, setRequest, productID])
+
+  if (request.isLoaded) {
+    propertiesToDisplay = Object.keys(request.data)
+      .filter(property => {
+        return property.startsWith('product') && !propertyBlackList.includes(property) && request.data[property].trim().length > 0
+      })
+      .map(property => {
+        return { key: property.replace('product', ''), value: request.data[property] }
+      })
+  }
+
   return (
     <div className="accordion mb-4" id="productPanels">
-      <div className="alert alert-danger" role="alert">
+      {/* <div className="alert alert-danger" role="alert">
         <i className="far fa-exclamation-circle"></i> This item is not eligable for free freight
-      </div>
+      </div> */}
       <div className="card">
         <div className="card-header">
           <h3 className="accordion-heading">
@@ -19,18 +46,18 @@ const ProductPagePanels = () => {
             <div className="font-size-sm row">
               <div className="col-6">
                 <ul>
-                  <li>Manufacturer:</li>
-                  <li>Style:</li>
-                  <li>Fire Rated:</li>
-                  <li>Safety Rating:</li>
+                  {request.isLoaded &&
+                    propertiesToDisplay.map(({ key }) => {
+                      return <li key={key}>{key}:</li>
+                    })}
                 </ul>
               </div>
               <div className="col-6 text-muted">
                 <ul>
-                  <li>Gardall</li>
-                  <li>Burgalry/Fire</li>
-                  <li>2 hour</li>
-                  <li>Residential Security Container (RSC)</li>
+                  {request.isLoaded &&
+                    propertiesToDisplay.map(({ key, value }) => {
+                      return <li key={key}>{value}</li>
+                    })}
                 </ul>
               </div>
             </div>
