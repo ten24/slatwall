@@ -17,14 +17,14 @@ const BasicPage = () => {
   const setPage = pageNumber => {
     params['currentPage'] = pageNumber
     request.data.currentPage = pageNumber
-    setRequest({ ...request, params: { currentPage: pageNumber, content: '', includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
+    setRequest({ ...request, params: { currentPage: pageNumber, content_id: content.contentID, includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
   }
 
   useEffect(() => {
     let didCancel = false
     if (!didCancel && ((!request.isFetching && !request.isLoaded) || loc.search !== path) && content.productListingPageFlag === '1') {
       setPath(loc.search)
-      setRequest({ ...request, params: { ...params, content: content.contentID, includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
+      setRequest({ ...request, params: { ...params, content_id: content.contentID, includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
     }
     return () => {
       didCancel = true
