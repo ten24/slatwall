@@ -329,3 +329,9 @@ label {
 .contactForm.hide {
   display: none;
 }
+
+// Validations
+.form-error-msg {
+    font-size: .875em;
+    color: #dc3545;
+}
