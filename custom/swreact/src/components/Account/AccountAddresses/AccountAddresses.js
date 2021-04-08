@@ -72,31 +72,29 @@ const AccountAddresses = ({ title, customBody, contentTitle }) => {
       )}
 
       {accountAddresses.length > 0 && (
-        <>
-          <div className="table-responsive font-size-md">
-            <table className="table table-hover mb-0">
-              <thead>
-                <tr>
-                  <th>{t('frontend.account.address.heading')}</th>
-                  <th>{t('frontend.core.actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {accountAddresses &&
-                  accountAddresses.map((address, index) => {
-                    return <Address key={index} {...address} isPrimary={address.accountAddressID === primaryAddress.accountAddressID} />
-                  })}
-              </tbody>
-            </table>
-          </div>
-          <hr className="pb-4" />
-          <div className="text-sm-right">
-            <Link className="btn btn-primary" to="/my-account/addresses/new">
-              {t('frontend.account.address.add')}
-            </Link>
-          </div>
-        </>
+        <div className="table-responsive font-size-md">
+          <table className="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>{t('frontend.account.address.heading')}</th>
+                <th>{t('frontend.core.actions')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {accountAddresses &&
+                accountAddresses.map((address, index) => {
+                  return <Address key={index} {...address} isPrimary={address.accountAddressID === primaryAddress.accountAddressID} />
+                })}
+            </tbody>
+          </table>
+        </div>
       )}
+      <hr className="pb-4" />
+      <div className="text-sm-right">
+        <Link className="btn btn-primary" to="/my-account/addresses/new">
+          {t('frontend.account.address.add')}
+        </Link>
+      </div>
     </AccountLayout>
   )
 }
