@@ -19,11 +19,16 @@ const LoginForm = () => {
       loginEmail: '',
       loginPassword: '',
     },
-    validationSchema: loginSchema,
+    validateOnChange: false,
+    validationSchema: Yup.object().shape({
+      loginEmail: Yup.string().email('Invalid email').required('Required'),
+      loginPassword: Yup.string().required('Required'),
+    }),
     onSubmit: values => {
       dispatch(login(values.loginEmail, values.loginPassword))
     },
   })
+
   return (
     <div className="col-md-6">
       <div className="card box-shadow">
@@ -35,12 +40,12 @@ const LoginForm = () => {
           <form onSubmit={formik.handleSubmit}>
             <div className="form-group">
               <label htmlFor="loginEmail">{t('frontend.account.email')}</label>
-              <input value={formik.values.loginEmail} onChange={formik.handleChange} autoComplete="email" className="form-control" type="email" id="loginEmail" />
+              <input value={formik.values.loginEmail} onBlur={formik.handleBlur} onChange={formik.handleChange} autoComplete="email" className="form-control" type="email" id="loginEmail" />
               {formik.errors.loginEmail && <span className="form-error-msg">{formik.errors.loginEmail}</span>}
             </div>
             <div className="form-group">
               <label htmlFor="loginPassword">{t('frontend.account.password')}</label>
-              <input value={formik.values.loginPassword} onChange={formik.handleChange} autoComplete="current-password" className="form-control" type="password" id="loginPassword" />
+              <input value={formik.values.loginPassword} onBlur={formik.handleBlur} onChange={formik.handleChange} autoComplete="current-password" className="form-control" type="password" id="loginPassword" />
               {formik.errors.loginPassword && formik.touched.loginPassword && <span className="form-error-msg">{formik.errors.loginPassword}</span>}
             </div>
             <div className="text-right">

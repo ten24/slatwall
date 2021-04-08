@@ -9,7 +9,7 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   const { paymentMethod_paymentMethodType, paymentMethod_paymentMethodName, creditCardLastFour, billingAddress_streetAddress, billingAddress_city, billingAddress_stateCode, billingAddress_postalCode, billingAddress_name, purchaseOrderNumber, nameOnCreditCard, creditCardType } = orderPayments
   const [formateDate] = useFormatDateTime({})
   const [formatCurrency] = useFormatCurrency({})
-  console.log('orderFulfillments', orderFulfillments)
+
   return (
     <div className="row align-items-start mb-5 mr-3">
       <div className="col-md-7">
