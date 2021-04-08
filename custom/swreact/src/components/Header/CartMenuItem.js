@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import useFormatCurrency from '../../hooks/useFormatCurrency'
 
 const CartMenuItem = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const cart = useSelector(state => state.cart)
   const cartQuantity = cart.orderItems.reduce((accumulator, orderItem) => accumulator + orderItem.quantity, 0)
   const [formatCurrency] = useFormatCurrency({})

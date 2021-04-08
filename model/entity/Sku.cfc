@@ -2013,16 +2013,25 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function preInsert(){
 		super.preInsert();
 		
-		var skuPrice = getService("SkuPriceService").newSkuPrice();
-		
-		skuPrice.setCurrencyCode(this.getCurrencyCode());
-		skuPrice.setSku(this);
-		skuPrice.setPrice(this.getPrice());
-		skuPrice.setCreatedDateTime(NOW());
-
-		skuPrice = getService("SkuPriceService").saveSkuPrice(skuPrice);
+		if(this.getSkuPricesCount() == 0){
+			var skuPrice = getService("SkuPriceService").newSkuPrice();
+			
+			skuPrice.setCurrencyCode(this.getCurrencyCode());
+			skuPrice.setSku(this);
+			skuPrice.setPrice(this.getPrice());
+			skuPrice.setCreatedDateTime(NOW());
+	
+			getService("SkuPriceService").saveSkuPrice(skuPrice);
+		}
 	}
-
+	
+	public void function postInsert(){
+		super.postInsert();
+	    
+	    // TODO: add a global-setting, 
+	    this.getDAO('stockDAO').creteEmptySKUStocksForAllParentLocations(this.getSkuID());
+	}
+	
 	public void function preUpdate(Struct oldData){
 		super.preUpdate(argumentCollection=arguments);
 		

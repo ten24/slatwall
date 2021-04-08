@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
@@ -32,7 +32,7 @@ const extractMenuFromContent = content => {
         return item.children.length
       })
       .filter(item => {
-        return item.urlTitle != 'productcategories'
+        return item.urlTitle !== 'productcategories'
       })
       .sort((a, b) => {
         return a.sortOrder - b.sortOrder
@@ -43,7 +43,7 @@ const extractMenuFromContent = content => {
 
 const MegaMenu = props => {
   let history = useHistory()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <li className="nav-item dropdown">
@@ -83,11 +83,14 @@ const MegaMenu = props => {
 }
 
 function Header() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   let history = useHistory()
   const content = useSelector(state => state.content)
+  const { shopByManufacturer } = useSelector(state => state.configuration)
   const menuItems = extractMenuFromContent(content)
   const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
+  const textInput = useRef(null)
+  const mobileTextInput = useRef(null)
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -106,6 +109,7 @@ function Header() {
                   <input
                     className="form-control appended-form-control"
                     type="text"
+                    ref={textInput}
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault()
@@ -113,9 +117,9 @@ function Header() {
                           pathname: '/products',
                           search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
                         })
+                        textInput.current.value = ''
                       }
                     }}
-                    // onChange={e => debounced.callback(e.target.value)}
                     placeholder={t('frontend.search.placeholder')}
                   />
                   <div className="input-group-append-overlay">
@@ -126,8 +130,9 @@ function Header() {
                           e.preventDefault()
                           history.push({
                             pathname: '/products',
-                            search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                            search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
                           })
+                          textInput.current.value = ''
                         }}
                         className="far fa-search"
                       ></i>
@@ -138,12 +143,7 @@ function Header() {
                   <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
                     <span className="navbar-toggler-icon"></span>
                   </button>
-                  <a className="navbar-tool navbar-stuck-toggler" href="#">
-                    <span className="navbar-tool-tooltip">{t('frontend.nav.expand')}</span>
-                    <div className="navbar-tool-icon-box">
-                      <i className="far fa-bars"></i>
-                    </div>
-                  </a>
+
                   <Link className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" to="/my-account" data-toggle="modal">
                     <AccountBubble />
                   </Link>
@@ -174,10 +174,35 @@ function Header() {
               <div className="input-group-overlay d-lg-none my-3 ml-0">
                 <div className="input-group-prepend-overlay">
                   <span className="input-group-text">
-                    <i className="far fa-search"></i>
+                    <i
+                      className="far fa-search"
+                      onClick={e => {
+                        e.preventDefault()
+                        history.push({
+                          pathname: '/products',
+                          search: mobileTextInput.stringify({ keyword: mobileTextInput.current.value }, { arrayFormat: 'comma' }),
+                        })
+                        mobileTextInput.current.value = ''
+                      }}
+                    />
                   </span>
                 </div>
-                <input className="form-control prepended-form-control" type="text" placeholder={t('frontend.search.placeholder')} />
+                <input
+                  className="form-control prepended-form-control"
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      history.push({
+                        pathname: '/products',
+                        search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                      })
+                      mobileTextInput.current.value = ''
+                    }
+                  }}
+                  type="text"
+                  ref={mobileTextInput}
+                  placeholder={t('frontend.search.placeholder')}
+                />
               </div>
 
               <ul className="navbar-nav nav-categories">
@@ -185,14 +210,16 @@ function Header() {
                   return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} />
                 })}
               </ul>
-              <ul className="navbar-nav mega-nav ml-lg-2">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    <i className="far fa-industry-alt mr-2"></i>
-                    {t('frontend.nav.manufacturer')}
-                  </Link>
-                </li>
-              </ul>
+              {shopByManufacturer.showInMenu && (
+                <ul className="navbar-nav mega-nav ml-lg-2">
+                  <li className="nav-item">
+                    <Link className="nav-link" to={shopByManufacturer.slug}>
+                      <i className="far fa-industry-alt mr-2"></i>
+                      {t('frontend.nav.manufacturer')}
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </div>
           </div>
         </div>

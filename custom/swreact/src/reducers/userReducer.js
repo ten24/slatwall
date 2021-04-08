@@ -18,6 +18,7 @@ const initialState = {
     isLoaded: false,
   },
   company: '',
+  verifiedAccountFlag: false,
   isFetching: false,
   isFetchingOrders: false,
 }

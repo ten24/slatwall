@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SwRadioSelect } from '../../components'
 import { useFormik } from 'formik'
 import SwSelect from '../../components/SwSelect/SwSelect'
 import { useTranslation } from 'react-i18next'
-import { addNewAccountAndSetAsBilling, addPayment, addAddressAndPaymentAndAddToOrder } from '../../actions/cartActions'
-import ShippingAddressForm from './ShippingAddressForm'
+import { addNewAccountAndSetAsBilling } from '../../actions/cartActions'
 import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
 import AccountAddress from './AccountAddress'
-import { addNewAccountAddress, addPaymentMethod } from '../../actions/userActions'
+import { addPaymentMethod } from '../../actions/userActions'
 
 export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'
 export const GIFT_CARD = '50d8cd61009931554764385482347f3a'
@@ -24,7 +22,7 @@ const years = Array(10)
 
 const CreditCardDetails = ({ onSubmit }) => {
   const [isEdit, setEdit] = useState(true)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const billingAccountAddress = useSelector(state => state.cart.billingAccountAddress)
 
@@ -67,7 +65,7 @@ const CreditCardDetails = ({ onSubmit }) => {
   useEffect(() => {
     dispatch(getCountries())
     dispatch(getStateCodeOptionsByCountryCode(formik.values.countryCode))
-  }, [dispatch])
+  }, [dispatch, formik])
   return (
     <>
       <div className="row mb-3">
@@ -79,11 +77,9 @@ const CreditCardDetails = ({ onSubmit }) => {
                 selectedAccountID={formik.values.accountAddressID}
                 onSelect={value => {
                   formik.setFieldValue('accountAddressID', value)
-                  console.log('onSelect', value)
                 }}
                 onSave={values => {
                   dispatch(addNewAccountAndSetAsBilling({ ...values }))
-                  console.log('onSave', values)
                 }}
               />
             </>
@@ -154,9 +150,9 @@ const CreditCardDetails = ({ onSubmit }) => {
             <div className="d-lg-flex pt-4 mt-3">
               <div className="w-50 pr-3"></div>
               <div className="w-50 pl-2">
-                <a className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
+                <button className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
                   <span className="d-none d-sm-inline">Save</span>
-                </a>
+                </button>
               </div>
             </div>
           )}

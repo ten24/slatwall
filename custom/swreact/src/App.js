@@ -14,6 +14,7 @@ const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/Produc
 const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
 const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
+const Manufacturer = lazyWithPreload(() => import('./pages/Manufacturer/Manufacturer'))
 
 const NotFound = lazyWithPreload(() => import('./pages/NotFound/NotFound'))
 const ContentPage = lazyWithPreload(() => import('./pages/ContentPage/ContentPage'))
@@ -23,6 +24,8 @@ const Category = lazyWithPreload(() => import('./pages/Category/Category'))
 const Account = lazyWithPreload(() => import('./pages/Account/Account'))
 const Address = lazyWithPreload(() => import('./pages/Address/Address'))
 const Attribute = lazyWithPreload(() => import('./pages/Attribute/Attribute'))
+const OrderConfirmation = lazyWithPreload(() => import('./pages/OrderConfirmation/OrderConfirmation'))
+
 const pageComponents = {
   Home,
   Checkout,
@@ -40,18 +43,21 @@ const pageComponents = {
   Account,
   Address,
   Attribute,
+  Manufacturer,
+  OrderConfirmation,
 }
 
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
   const routing = useSelector(state => state.configuration.router)
+  const shopByManufacturer = useSelector(state => state.configuration.shopByManufacturer)
   const dispatch = useDispatch()
   useEffect(() => {
     Object.keys(pageComponents).map(key => {
       return pageComponents[key].preload()
     })
     dispatch(getConfiguration())
-  }, [])
+  }, [dispatch])
   return (
     <Suspense fallback={<Loading />}>
       <ScrollToTop />
@@ -64,6 +70,8 @@ export default function App() {
           routing.map(({ URLKey, URLKeyType }, index) => {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
+        <Route path="/order-confirmation" component={OrderConfirmation} />
+        <Route path={shopByManufacturer.slug} component={Manufacturer} />
         <Route path="/products" component={ProductListing} />
         <Route path="/product" component={ProductListing} />
         <Route path="/search" component={ProductListing} />

@@ -236,7 +236,7 @@
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
 	    	
 			// If data was passed in to this method then populate it with the new data
-	        if(structKeyExists(arguments,"data")){
+	        if(structKeyExists(arguments,"data") && isStruct(arguments.data) && !StructIsEmpty(arguments.data)){
 	        	// Populate this object
 				arguments.entity.populate(argumentCollection=arguments);
 	
@@ -510,8 +510,7 @@
 		private function onMissingDeleteMethod( required string missingMethodName, required struct missingMethodArguments ) {
 			return delete( arguments.missingMethodArguments[ 1 ] );
 		}
-	
-	
+		
 		/**
 		 * Provides dynamic get methods, by convention, on missing method:
 		 *
@@ -987,7 +986,6 @@
 		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public any function getServiceByEntityName( required string entityName ) {
-			
 			// Use the short version of the entityName
 			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
 			

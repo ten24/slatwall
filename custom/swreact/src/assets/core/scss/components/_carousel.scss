@@ -346,7 +346,7 @@
 }
 
 .slick-dots {
-	display: flex;
+	display: flex!important; // needed to override inline display block from slickslider
 	justify-content: center;
 	margin: 0;
 	padding: 2rem 0;

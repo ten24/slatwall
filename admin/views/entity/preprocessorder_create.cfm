@@ -89,12 +89,12 @@ Notes:
 				<hb:HibachiFormField fieldName="accountID" value="#rc.processObject.getAccountID()#" fieldType="hidden">
 				<hb:HibachiFormField fieldName="newAccountFlag" value="#rc.processObject.getNewAccountFlag()#" fieldType="hidden">	
 			</cfif>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeID" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderOriginID" edit="#rc.edit#">
 			<!---location type ahead collection--->
 			<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" object="#rc.processObject#" property="defaultStockLocationID" edit="true">
+			<input type="hidden" name="orderTypeID" value="444df2df9f923d6c6fd0942a466e84cc">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

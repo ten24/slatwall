@@ -72,7 +72,10 @@ const calculatePageNumbers = (currentPage, pageNeighbours, totalPages) => {
 }
 
 const ListingPagination = ({ recordsCount, pageNeighbours = 2, currentPage, totalPages = 1, setPage }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  recordsCount = typeof recordsCount === 'string' || recordsCount instanceof String ? parseInt(recordsCount) : recordsCount
+  currentPage = typeof currentPage === 'string' || currentPage instanceof String ? parseInt(currentPage) : currentPage
+  totalPages = typeof totalPages === 'string' || totalPages instanceof String ? parseInt(totalPages) : totalPages
 
   const gotoPage = pageTo => {
     const newPage = Math.max(0, Math.min(pageTo, totalPages))
@@ -80,7 +83,7 @@ const ListingPagination = ({ recordsCount, pageNeighbours = 2, currentPage, tota
   }
 
   const pages = calculatePageNumbers(currentPage, pageNeighbours, totalPages)
-  if (!recordsCount || totalPages === 1) return null
+  if (!recordsCount || recordsCount.length === 0 || totalPages === 1) return null
   return (
     <nav className="d-flex justify-content-between pt-2" aria-label="Page navigation">
       <ul className="mx-auto pagination">

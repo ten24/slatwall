@@ -3,7 +3,6 @@ import { connect, useDispatch } from 'react-redux'
 import AccountContent from '../AccountContent/AccountContent'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountAddressForm from './AccountAddressForm'
-import { toast } from 'react-toastify'
 import useRedirect from '../../../hooks/useRedirect'
 import SwSelect from '../../SwSelect/SwSelect'
 import { addPaymentMethod } from '../../../actions/userActions'
@@ -21,7 +20,7 @@ const years = Array(10)
 const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, contentTitle, accountAddresses, accountPaymentMethods }) => {
   const [redirect, setRedirect] = useRedirect({ location: '/my-account/cards' })
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -73,7 +72,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
           <div className={`col-sm-${isEdit ? 12 : 6}`}>
             <div className="form-group">
               <label htmlFor="accountPaymentMethodName">{t('frontend.account.payment_method.nickname')}</label>
-              <input className="form-control" type="text" id="accountPaymentMethodName" value={formik.values.paymentMethodName} onChange={formik.handleChange} />
+              <input className="form-control" type="text" id="accountPaymentMethodName" value={formik.values.accountPaymentMethodName} onChange={formik.handleChange} />
             </div>
             <div className="form-group">
               <label htmlFor="paymentMethodType">{t('frontend.account.payment_method.heading')}</label>

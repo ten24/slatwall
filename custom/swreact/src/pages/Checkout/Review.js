@@ -1,91 +1,60 @@
 import { useSelector } from 'react-redux'
-import { CartLineItem } from '../../components'
+import { Redirect } from 'react-router'
+import { CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, CreditCardDetails, TermPaymentDetails, BillingAddressDetails } from '../../components'
+import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
+import SlideNavigation from './SlideNavigation'
 
-const ReviewSlide = () => {
+const ReviewSlide = ({ currentStep }) => {
   const cart = useSelector(state => state.cart)
-  const orderPayments = useSelector(state => state.cart.orderPayments)
-  const orderFulfillments = useSelector(state => state.cart.orderFulfillments)
-  const accountPaymentMethods = useSelector(state => state.userReducer.accountPaymentMethods)
-  const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
-  const { paymentMethod, billingAddress, creditCardType, nameOnCreditCard, creditCardLastFour } = orderPayments.length ? orderPayments[0] : {}
-  const { name, streetAddress, city, stateCode, postalCode } = orderFulfillments.length ? orderFulfillments[0].shippingAddress : {}
-  let shippingAddressNickname = ''
-  if (orderFulfillments.length) {
-    shippingAddressNickname = accountAddresses
-      .filter(({ address: { addressID } }) => {
-        return addressID === orderFulfillments[0].shippingAddress.addressID
-      })
-      .map(({ accountAddressName }) => {
-        return accountAddressName
-      })
-    shippingAddressNickname = shippingAddressNickname.length ? shippingAddressNickname[0] : null
-  }
-  let billingAddressNickname = ''
-  if (orderPayments.length && orderPayments[0].accountPaymentMethod) {
-    billingAddressNickname = accountPaymentMethods
-      .filter(({ accountPaymentMethodID }) => {
-        return accountPaymentMethodID === orderPayments[0].accountPaymentMethod.accountPaymentMethodID
-      })
-      .map(({ accountPaymentMethodName }) => {
-        return accountPaymentMethodName
-      })
-    billingAddressNickname = billingAddressNickname.length ? billingAddressNickname[0] : null
+  const { fulfillmentMethod } = useSelector(fulfillmentSelector)
+  const payment = useSelector(orderPayment)
+  const shippingAddress = useSelector(shippingAddressSelector)
+  let billingNickname = useSelector(billingAddressNickname)
+
+  let shippingAddressNickname = useSelector(shippingAddressNicknameSelector)
+  if (cart.isPlaced) {
+    return <Redirect to={'/order-confirmation'} />
   }
 
   return (
     <>
       <div className="row bg-lightgray pt-3 pr-3 pl-3 rounded mb-5">
+        {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
+          <div className="col-md-4">
+            <ShippingAddressDetails shippingAddress={shippingAddress} shippingAddressNickname={shippingAddressNickname} />
+          </div>
+        )}
+        {fulfillmentMethod.fulfillmentMethodType === 'pickup' && (
+          <div className="col-md-4">
+            <PickupLocationDetails pickupLocation={fulfillmentMethod} />
+          </div>
+        )}
         <div className="col-md-4">
-          <h3 className="h6">Shipping Address:</h3>
-          {orderFulfillments.length > 0 && orderFulfillments[0].shippingAddress && (
-            <p>
-              {shippingAddressNickname && (
-                <>
-                  <em>{shippingAddressNickname}</em>
-                  <br />
-                </>
-              )}
-              {name} <br />
-              {streetAddress} <br />
-              {`${city}, ${stateCode} ${postalCode}`}
-            </p>
-          )}
+          <BillingAddressDetails billingAddressNickname={billingNickname} orderPayment={payment} />
         </div>
-        <div className="col-md-4">
-          <h3 className="h6">Billing Address:</h3>
-          {billingAddress && (
-            <p>
-              {billingAddressNickname && (
-                <>
-                  <em>{billingAddressNickname}</em>
-                  <br />
-                </>
-              )}
-              {billingAddress.name} <br />
-              {billingAddress.streetAddress} <br />
-              {`${billingAddress.city}, ${billingAddress.stateCode} ${billingAddress.postalCode}`}
-            </p>
-          )}
-        </div>
-        <div className="col-md-4">
-          <h3 className="h6">Payment Method:</h3>
-          {paymentMethod && (
-            <p>
-              <em>{paymentMethod.paymentMethodName}</em>
-              <br />
-              {nameOnCreditCard} <br />
-              {`${creditCardType} ending in ${creditCardLastFour}`}
-            </p>
-          )}
-        </div>
+        {payment.paymentMethod.paymentMethodType === 'creditCard' && (
+          <div className="col-md-4">
+            <CreditCardDetails creditCardPayment={payment} />
+          </div>
+        )}
+        {payment.paymentMethod.paymentMethodType === 'giftCard' && (
+          <div className="col-md-4">
+            <GiftCardDetails />
+          </div>
+        )}
+        {payment.paymentMethod.paymentMethodType === 'termPayment' && (
+          <div className="col-md-4">
+            <TermPaymentDetails termPayment={payment} />
+          </div>
+        )}
       </div>
 
-      {/* <!-- Order Items --> */}
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Review your order</h2>
       {cart.orderItems &&
         cart.orderItems.map(({ orderItemID }) => {
           return <CartLineItem key={orderItemID} orderItemID={orderItemID} isDisabled={true} /> // this cannot be index or it wont force a rerender
         })}
+      <SlideNavigation currentStep={currentStep} />
     </>
   )
 }

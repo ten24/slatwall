@@ -1,4 +1,4 @@
-export default {
+const data = {
   site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: 'stoneAndBerg' },
   router: [
     { URLKeyType: 'Product', URLKey: 'product' },
@@ -9,6 +9,11 @@ export default {
     { URLKeyType: 'Address', URLKey: 'ad' },
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
+  enforceVerifiedAccountFlag: false,
+  shopByManufacturer: {
+    slug: '/brands',
+    showInMenu: true,
+  },
   seo: {
     title: 'Stone & Berg',
     titleMeta: '',
@@ -19,6 +24,11 @@ export default {
   theme: {
     host: 'https://stoneandberg.ten24dev.com',
     basePath: '/custom/client/assets/images/',
+    primaryColor: '5f1018',
+  },
+  formatting: {
+    dateFormat: 'MMM DD, YYYY',
+    timeFormat: 'HH:MM a',
   },
   countries: [
     { key: 'Afghanistan', value: 'AF' },
@@ -507,3 +517,5 @@ export default {
     },
   ],
 }
+
+export default data

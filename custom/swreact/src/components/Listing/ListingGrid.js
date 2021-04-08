@@ -1,4 +1,4 @@
-import ProductCard from '../Account/ProductCard/ProductCard'
+import ProductCard from '../ProductCard/ProductCard'
 import ContentLoader from 'react-content-loader'
 
 const ListingGridLoader = props => (
@@ -27,10 +27,10 @@ const ListingGrid = ({ isFetching, pageRecords }) => {
       )}
       {!isFetching &&
         pageRecords &&
-        pageRecords.map(({ product_urlTitle, product_productID, product_productName, sku_imageFile, sku_skuPrices_price, sku_skuID }) => {
+        pageRecords.map(({ product_urlTitle, product_productID, product_productName, sku_imageFile, listPrice, sku_skuID }, index) => {
           return (
-            <div key={product_productID} className="col-md-4 col-sm-6 px-2 mb-4">
-              <ProductCard urlTitle={product_urlTitle} productID={product_productID} productName={product_productName} listPrice={sku_skuPrices_price} skuID={sku_skuID} defaultProductImageFiles={[sku_imageFile]} />
+            <div key={sku_skuID + `${index}`} className="col-md-4 col-sm-6 px-2 mb-4">
+              <ProductCard urlTitle={product_urlTitle} productID={product_productID} productName={product_productName} listPrice={listPrice} skuID={sku_skuID} imageFile={sku_imageFile} />
             </div>
           )
         })}

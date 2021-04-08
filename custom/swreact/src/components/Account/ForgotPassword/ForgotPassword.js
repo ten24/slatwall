@@ -6,6 +6,7 @@ import { PromptLayout } from '../AccountLayout/AccountLayout'
 import useRedirect from '../../../hooks/useRedirect'
 
 const ForgotPassword = () => {
+  // eslint-disable-next-line no-unused-vars
   const [redirect, setRedirect] = useRedirect({ location: '/my-account' })
 
   const formik = useFormik({
@@ -29,7 +30,7 @@ const ForgotPassword = () => {
   return (
     <PromptLayout>
       <SWForm formik={formik} title="Forgot Password" primaryButtontext="Send Me Reset Email">
-        <SWInput formik={formik} token="emailAddress" label="Email Address" type="email" />
+        <SWInput required={true} formik={formik} token="emailAddress" label="Email Address" type="email" />
       </SWForm>
     </PromptLayout>
   )

@@ -246,7 +246,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		httpRequest.setMethod(arguments.requestType);
 		httpRequest.setCharset("utf-8");
 		httpRequest.setUrl(requestURL);
-    	httpRequest.addParam( type='header', name='Content-Type', value=arguments.requestContentType);
+		if(len(arguments.requestContentType)){
+    		httpRequest.addParam( type='header', name='Content-Type', value=arguments.requestContentType);
+		}
     	return httpRequest;
     }
     
@@ -263,6 +265,45 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         var rawRequest = httpRequest.send().getPrefix();
         if( !IsJson(rawRequest.fileContent) ){
 		    throw("ERPONE - callErpOneGetDataApi: API responde is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		}
+			
+	    return DeSerializeJson(rawRequest.fileContent);
+    }
+
+	public any function debugDataApi( required struct requestData, string endpoint="data/read", string requestType = "POST" ){
+		getService('hibachiTagService').cfsetting(requesttimeout=100000);
+		var queryString = '';
+		var requestContentType = '';
+		if(arguments.requestType == 'GET' && structKeyExists(arguments.requestData, 'query')){
+			queryString  = '/?' & arguments.requestData.query;
+		}
+		
+		if(arguments.requestType == 'POST'){
+			
+			if(arguments.endpoint == 'data/read'){
+				requestContentType = 'application/x-www-form-urlencoded';
+			}else{
+				requestContentType = 'application/json; charset=UTF-8';
+			}
+		}
+		
+    	var httpRequest = this.createHttpRequest('distone/rest/service/'&arguments.endpoint&queryString, arguments.requestType, requestContentType);
+		
+		// Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
+		if(arguments.requestType == 'POST'){
+			
+			if(arguments.endpoint != 'data/read'){
+				httpRequest.addParam( type='body', value = arguments.requestData.query );
+			}else{
+				for( var key in arguments.requestData ){
+				    httpRequest.addParam( type='formfield', name= key, value = arguments.requestData[key] );
+				}
+			}
+		}
+        var rawRequest = httpRequest.send().getPrefix();
+        if( !IsJson(rawRequest.fileContent) ){
+		    return rawRequest;
 		}
 			
 	    return DeSerializeJson(rawRequest.fileContent);
@@ -778,7 +819,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		if( structKeyExists(arguments.data, 'ProductCode') ){
 			
-			arguments.data.ProductCode=reReplace(reReplace(arguments.data.ProductCode, "(\\|/)", "--", "all" ),"\s", "__", "all");
+			arguments.data.ProductCode=arguments.data.ProductCode;
 		}
 
 		if( !structKeyExists(arguments.data, 'SkuCode') || this.hibachiIsEmpty( arguments.data.SkuCode ) ){
@@ -786,7 +827,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			arguments.data.SkuCode = arguments.data.ProductCode;
 		}else{
 			
-			arguments.data.SkuCode = Replace(arguments.data.SkuCode, " " , "--");
+			arguments.data.SkuCode = arguments.data.SkuCode;
 		}
 		
 		if( !structKeyExists(arguments.data, 'RemoteProductID') || this.hibachiIsEmpty(arguments.data.RemoteProductID) ){

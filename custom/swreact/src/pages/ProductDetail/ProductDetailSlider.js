@@ -5,7 +5,7 @@ import { renameKeysInArrayOfObjects } from '../../utils'
 import { useTranslation } from 'react-i18next'
 
 const ProductDetailSlider = ({ productID }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [relatedProducts, setRelatedProducts] = useState({ products: [], isLoaded: false, err: '', productID })
   if (relatedProducts.productID !== productID) {
     setRelatedProducts({ products: [], isLoaded: false, err: '', productID })

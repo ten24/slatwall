@@ -3,13 +3,15 @@ import { BreadCrumb } from '../..'
 import { logout } from '../../../actions/authActions'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { getMyAccountMenu } from '../../../selectors/contentSelectors'
+
+const isSelectedClass = 'bg-secondary font-size-sm mb-0 text-muted'
 
 const AccountSidebar = () => {
-  const { t, i18n } = useTranslation()
-  // const contentStore = useSelector(state => state.content)
+  const { t } = useTranslation()
+  let loc = useLocation()
+  const accountMenu = useSelector(getMyAccountMenu)
   const user = useSelector(state => state.userReducer)
-
-  // const pages = getAccountData(contentStore)
   const dispatch = useDispatch()
   return (
     <aside className="col-lg-4 pt-4 pt-lg-0">
@@ -18,53 +20,35 @@ const AccountSidebar = () => {
           <div className="media align-items-center">
             <div className="media-body">
               <h3 className="font-size-base mb-0">{`${user.firstName} ${user.lastName}`}</h3>
-              <a
-                href="#"
+              <button
+                type="button"
                 onClick={() => {
                   dispatch(logout())
                 }}
-                className="text-accent font-size-sm"
+                className="link-button text-accent font-size-sm"
               >
                 {t('frontend.core.logout')}
-              </a>
+              </button>
               <br />
             </div>
           </div>
         </div>
-        <div className="bg-secondary px-4 py-3">
-          <h3 className="font-size-sm mb-0 text-muted">
-            <Link to="/my-account" className="nav-link-style active">
-              {t('frontend.account.overview')}
-            </Link>
-          </h3>
-        </div>
-        <ul className="list-unstyled mb-0">
-          <li className="border-bottom mb-0">
-            <Link to="/my-account/orders" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-shopping-bag pr-2" /> {t('frontend.account.order_history')}
+
+        <ul className="list-unstyled mb-0 ">
+          <li key={'/my-account'} className={`border-bottom mb-0 ${loc.pathname === `/my-account` && isSelectedClass}`}>
+            <Link to={'/my-account'} className="nav-link-style active d-flex align-items-center px-4 py-3">
+              <i className="far pr-2" /> {t('frontend.account.overview')}
             </Link>
           </li>
-          <li className="border-bottom mb-0">
-            <Link to="/my-account/profile" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-user pr-2" /> {t('frontend.account.profile_info')}
-            </Link>
-          </li>
-          <li className="border-bottom mb-0">
-            <Link to="/my-account/favorites" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-heart pr-2" /> {t('frontend.account.favorties')}
-            </Link>
-          </li>
-          <li className="border-bottom mb-0">
-            <Link to="/my-account/addresses" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-map-marker-alt pr-2" /> {t('frontend.account.addresses')}
-            </Link>
-          </li>
-          <li className="mb-0">
-            <Link to="/my-account/cards" className="nav-link-style d-flex align-items-center px-4 py-3">
-              <i className="far fa-credit-card pr-2" />
-              {t('frontend.account.payment_methods')}
-            </Link>
-          </li>
+          {accountMenu.map(({ contentID, urlTitlePath, title }) => {
+            return (
+              <li key={contentID} className={`border-bottom mb-0 ${loc.pathname.startsWith(`/${urlTitlePath}`) && isSelectedClass}`}>
+                <Link to={`/${urlTitlePath}`} className="nav-link-style d-flex align-items-center px-4 py-3">
+                  <i className="far pr-2" /> {title}
+                </Link>
+              </li>
+            )
+          })}
         </ul>
       </div>
     </aside>

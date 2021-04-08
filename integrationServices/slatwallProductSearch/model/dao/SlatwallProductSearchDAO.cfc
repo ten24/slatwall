@@ -111,42 +111,48 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	//just to save some maintenance, and remove duplicacy
 	public any function getProductFilterFacetOptionsSeletQueryColumnList(){
 	    
+	    // NOTE: the position of the keys should alwasy match with query in function **getProductFilterFacetOptionsSeletQuerySQL** below
+	    
 	    if( !structKeyExists(variables, 'cached_productFilterFacetOptionsSeletQueryColumnList') ){
 	        
 	        variables['cached_productFilterFacetOptionsSeletQueryColumnList'] = "
 	                        
 	                        productFilterFacetOptionID,
     	   
-                            productID, 
-                            productActiveFlag, 
-                            productPublishedFlag,
+                            productID,
+                            productPublishedStartDateTime,
+                            productPublishedEndDateTime,
                 	        
-                	        skuID, 
-                	        skuActiveFlag, 
-                	        skuPublishedFlag,
+                	        skuID,
+                	        
+                	        skuPriceID,
+                		    skuPricePrice,
+                		    skuPriceListPrice,
+                		    skuPriceMinQuantity,
+                		    skuPriceMaxQuantity,
+                		    skuPriceCurrencyCode,
+                		    skuPriceRenewalPrice,
+                		    skuPriceExpiresDateTime,
+                		    
+                		    priceGroupID, priceGroupName, 
+		                    priceGroupCode, parentPriceGroupID,
                             
-                            brandID, brandName, 
-                            brandActiveFlag, 
-                            brandPublishedFlag,
+                            brandID, brandName,
                             
                             categoryID, categoryName, parentCategoryID, 
                             categoryUrlTitle,
                             
                             optionID, optionName, optionCode, 
-                            optionSortOrder, 
-                            optionActiveFlag,
+                            optionSortOrder,
                             
-                            optionGroupID, optionGroupName, 
+                            optionGroupID, optionGroupName, optionGroupCode,
                             optionGroupSortOrder,
                             
                             productTypeID, productTypeName, parentProductTypeID, 
-                            productTypeURLTitle, 
-                            productTypeActiveFlag, 
-                            productTypePublishedFlag,
+                            productTypeURLTitle,
                             
                             contentID, parentContentID,
                             contentTitle, 
-                            contentActiveFlag,
                             contentUrlTitle,
                             contentSortOrder,
                             
@@ -158,8 +164,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                        
                             attributeSetID, attributeSetCode, attributeSetName, attributeSetObject,
                             attributeSetSortOrder,
-                            attributeSetActiveFlag,
-                       
+
                             attributeOptionID, attributeOptionValue, attributeOptionLabel,
                             attributeOptionUrlTitle,
                             attributeOptionSortOrde
@@ -171,7 +176,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	
 	
 	/**
-	 * 
+	 * This function is used to create a SQL query to create filter-option-relations [maximum possible]
 	*/
 	public any function getProductFilterFacetOptionsSeletQuerySQL( string productIDs = "", string skuIDs = "" ){
 	    
@@ -189,9 +194,19 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 return arguments.joins;
             }
             if( arguments.row.attributeSetObject == 'sku'){
-                return listAppend(joins, "(att.attributeCode = `#arguments.row.attributeCode#` AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue)", '$' );
+                return listAppend(joins, "(
+                    att.attributeCode = `#arguments.row.attributeCode#` 
+                    AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue 
+                    AND sk.#arguments.row.attributeCode# != '' 
+                    AND sk.#arguments.row.attributeCode# IS NOT NULL
+                    )", '$' );
             } 
-            return listAppend(joins, "(att.attributeCode = `#arguments.row.attributeCode#` AND p.#arguments.row.attributeCode# = atto.attributeOptionValue)", '$' );
+            return listAppend(joins, "(
+                att.attributeCode = `#arguments.row.attributeCode#` 
+                AND p.#arguments.row.attributeCode# = atto.attributeOptionValue
+                AND p.#arguments.row.attributeCode# != '' 
+                AND p.#arguments.row.attributeCode# IS NOT NULL
+                )", '$' );
         }, "");
         selectTypeAttributeOptionJoinParts = selectTypeAttributeOptionJoinParts.replace(")$(", ") OR (", "ALL");
             
@@ -202,16 +217,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         if( !this.hibachiIsEmpty(arguments.productIDs) ){
             arguments.productIDs =  listQualify(arguments.productIDs, "'");
             productAndSkuIDsQueryPart = "p.productID IN (#arguments.productIDs#)";
-            
             if( this.hibachiIsEmpty(arguments.skuIDs) ){
                 productAndSkuIDsQueryPart = " AND " & productAndSkuIDsQueryPart;
             }
         }
         if( !this.hibachiIsEmpty(arguments.skuIDs) ){
-            
             arguments.skuIDs =  listQualify(arguments.skuIDs, "'");
             var skuIDsQueryPart = "sk.skuID IN (#arguments.skuIDs#)";
-            
             if(!this.hibachiIsEmpty(arguments.productIDs)){
                 productAndSkuIDsQueryPart = " AND ( #productAndSkuIDsQueryPart# OR #skuIDsQueryPart# ) ";
             } else {
@@ -225,6 +237,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            		CONCAT(
            			COALESCE( p.productID, ''), 
            			COALESCE( sk.skuID, ''), 
+           			COALESCE( sp.skuPriceID, ''), 
+           			COALESCE( pg.priceGroupID, ''), 
            			COALESCE( br.brandID, ''), 
            			COALESCE( cr.categoryID, ''), 
            			COALESCE( o.optionID, ''), 
@@ -238,36 +252,40 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            		)
            ) AS productFilterFacetOptionID,
 	
-		   p.productID, 
-		   p.activeFlag AS productActiveFlag, 
-		   p.publishedFlag AS productPublishedFlag,
+		   p.productID,
+		   p.publishedStartDateTime AS productPublishedStartDateTime,
+           p.publishedEndDateTime AS productPublishedEndDateTime,
 		   
-		   sk.skuID, 
-		   sk.activeFlag AS skuActiveFlag, 
-		   sk.publishedFlag AS skuPublishedFlag,
+		   sk.skuID,
 		   
-	       br.brandID, br.brandName, 
-	       br.activeFlag AS brandActiveFlag, 
-	       br.publishedFlag AS brandPublishedFlag,
+		   sp.skuPriceID,
+		   sp.price AS skuPricePrice,
+		   sp.listPrice AS skuPriceListPrice,
+		   sp.minQuantity AS skuPriceMinQuantity,
+		   sp.maxQuantity AS skuPriceMaxQuantity,
+		   sp.currencyCode AS skuPriceCurrencyCode,
+		   sp.renewalPrice AS skuPriceRenewalPrice,
+		   sp.expiresDateTime AS skuPriceExpiresDateTime,
+		   
+		   pg.priceGroupID, pg.priceGroupName, 
+		   pg.priceGroupCode, pg.parentPriceGroupID,
+		   
+	       br.brandID, br.brandName,
 	       
            cr.categoryID, cr.categoryName, cr.parentCategoryID, 
            cr.urlTitle AS categoryUrlTitle,
            
            o.optionID, o.optionName, o.optionCode, 
-           o.sortOrder AS optionSortOrder, 
-           o.activeFlag AS optionActiveFlag,
+           o.sortOrder AS optionSortOrder,
            
-           og.optionGroupID, og.optionGroupName, 
+           og.optionGroupID, og.optionGroupName, og.optionGroupCode,
            og.sortOrder AS optionGroupSortOrder,
            
            pt.productTypeID, pt.productTypeName, pt.parentProductTypeID, 
            pt.urlTitle AS productTypeURLTitle,
-           pt.activeFlag AS productTypeActiveFlag, 
-           pt.publishedFlag AS productTypePublishedFlag,
            
            co.contentID, co.parentContentID,
-           co.title AS contentTitle, 
-           co.activeFlag AS contentActiveFlag,
+           co.title AS contentTitle,
            co.urlTitle AS contentUrlTitle,
            co.sortOrder AS contentSortOrder,
            
@@ -279,7 +297,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
            
            atst.attributeSetID, atst.attributeSetCode, atst.attributeSetName, atst.attributeSetObject,
            atst.sortOrder AS attributeSetSortOrder,
-           atst.activeFlag AS attributeSetActiveFlag,
            
            atto.attributeOptionID, atto.attributeOptionValue, atto.attributeOptionLabel,
            atto.urltitle AS attributeOptionUrlTitle,
@@ -289,20 +306,39 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         
            INNER JOIN swSku sk
                 ON sk.productID = p.productID #productAndSkuIDsQueryPart#
+                    AND ( p.activeFlag = 1 OR p.activeFlag IS NULL ) 
+                    AND ( p.publishedFlag = 1 OR p.publishedFlag IS NULL)
+                    AND ( p.publishedStartDateTime IS NULL OR p.publishedStartDateTime <= NOW() )
+                    AND ( p.publishedEndDateTime IS NULL OR p.publishedEndDateTime >= NOW() )
+                    AND ( sk.activeFlag = 1 OR sk.activeFlag IS NULL ) 
+                    AND ( sk.publishedFlag = 1 OR sk.publishedFlag IS NULL)
+                    
+            INNER JOIN swSkuPrice sp
+                ON sp.skuID = sk.skuID 
+                    AND ( sp.activeFlag = 1 OR sp.activeFlag IS NULL )
+            LEFT JOIN swPriceGroup pg
+                ON pg.priceGroupID = sp.priceGroupID
+                    AND ( pg.activeFlag = 1 OR pg.activeFlag IS NULL )
                             
-           LEFT JOIN swProductType pt
-                ON pt.productTypeID = p.productTypeID
+            LEFT JOIN swProductType pt
+                ON pt.productTypeID = p.productTypeID 
+                    AND ( pt.activeFlag = 1 OR pt.activeFlag IS NULL ) 
+                    AND ( pt.publishedFlag = 1 OR pt.publishedFlag IS NULL )
 
-           LEFT JOIN swBrand br
+            LEFT JOIN swBrand br
                 ON br.brandID = p.brandID
-
+                    AND ( br.activeFlag = 1 OR br.activeFlag IS NULL ) 
+                    AND ( br.publishedFlag = 1 OR br.publishedFlag IS NULL )
+            
+            LEFT JOIN swProductCategory pc
+                ON pc.productID = p.productID            
             LEFT JOIN swCategory cr
-                ON cr.categoryID IN (SELECT DISTINCT categoryID FROM swProductCategory)
+                ON cr.categoryID = pc.categoryID
             
             LEFT JOIN swProductListingPage plp
                 ON plp.productID = p.productID 
             LEFT JOIN swContent co
-                ON co.contentID = plp.contentID 
+                ON co.contentID = plp.contentID AND ( co.activeFlag = 1 OR co.activeFlag IS NULL )
                     
             LEFT JOIN swProductSite pst
                 ON pst.productID = p.productID
@@ -313,6 +349,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 ON so.skuID = sk.skuID
             LEFT JOIN swOption o
                 ON o.optionID = so.optionID
+                    AND ( o.activeFlag = 1 OR o.activeFlag IS NULL ) 
 
             LEFT JOIN swOptionGroup og
                 ON og.optionGroupID = o.optionGroupID
@@ -322,9 +359,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 
             LEFT JOIN SwAttributeSet atst
                 ON atst.attributeSetID = att.attributeSetID
-            	
+                    AND ( atst.activeFlag = 1 OR atst.activeFlag IS NULL ) 
+
             LEFT JOIN swAttributeOption atto
             	ON(#selectTypeAttributeOptionJoinParts#)
+            	
+            GROUP BY productFilterFacetOptionID
 	   ";
 	        
         this.logHibachi("SlatwallProductSearchDAO:: getProductFilterFacetOptionsSeletQuerySQL took #getTickCount()-startTicks# ms. in creating the SQL string");
@@ -333,9 +373,10 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	}
 	
 	/**
-	 * 
+	 * **** START ********************** Keep the Filter-Relations updated in realtime
 	*/
-	public any function recalculateProductFilterFacetOptionsForProductsAndSkus( string productIDs = "", string skuIDs = "" ){
+
+	public any function reCalculateProductFilterFacetOptionsForProductsAndSkus( string productIDs = "", string skuIDs = "" ){
 	    
 	    if( this.hibachiIsEmpty(arguments.skuIDs) && this.hibachiIsEmpty(arguments.productIDs) ){
             return;
@@ -358,48 +399,40 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             getExistingOptionsSQL &= " skuID IN (#qualifiedSkuIDs#)";
         }
             
-        dump(getExistingOptionsSQL);
-            
         var getExistingOptionsQuery = new Query();
         getExistingOptionsQuery.setSQL( getExistingOptionsSQL );
         getExistingOptionsQuery = getExistingOptionsQuery.execute().getResult();
 	        
         this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in fetching existing facet-options ");
  
-	    var existingFFOsMap = {};
+	    var existingFFOsToDeletMap = {};
         for( var row in getExistingOptionsQuery ){
-            existingFFOsMap[ row.productFilterFacetOptionID] = row.productFilterFacetOptionID;
+            existingFFOsToDeletMap[ row.productFilterFacetOptionID] = row.productFilterFacetOptionID;
         }
-	        
-        dump("Existing ffos");
-        dump(existingFFOsMap);
-	        
+        
         var getNewOptionsQuerySQL = this.getProductFilterFacetOptionsSeletQuerySQL(argumentCollection = arguments ); 
-        
-        dump("getNewOptionsQuerySQL: ");
-        dump(getNewOptionsQuerySQL);
-        
+
         var getNewOptionsQuery = new Query();
         getNewOptionsQuery.setSQL(getNewOptionsQuerySQL);
         var getNewOptionsQueryResult = getNewOptionsQuery.execute().getResult();
         
-        var newFFOsToInsert = {};
+        var newFFOsToInsertCount = 0;
+        // we're looping over the new options and, 
+        // checking if the new-option-id exists in the old options then we can exclude that option from deleting
+        // otherwise it's a relation which is no longer valid, and needs to be deleted
         for( var row in getNewOptionsQueryResult ){
-            if( !structKeyExists(existingFFOsMap, row.productFilterFacetOptionID) ){
-                newFFOsToInsert[ row.productFilterFacetOptionID ] = row.productFilterFacetOptionID;
+            if( structKeyExists(existingFFOsToDeletMap, row.productFilterFacetOptionID) ){
+                existingFFOsToDeletMap.delete( row.productFilterFacetOptionID ); 
             } else {
-                // we don't need to insert/update/delete this record as it already exist
-                existingFFOsMap.delete( row.productFilterFacetOptionID ); 
+                newFFOsToInsertCount++;
             }
         }
         
-        dump(newFFOsToInsert);
-	        
         // now delete whatever is left from the old options as these are no-longer valid
-        if( structCount(existingFFOsMap) > 0 ){
-	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus deleting #structCount(existingFFOsMap)# old options");
+        if( structCount(existingFFOsToDeletMap) > 0 ){
+	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus deleting #structCount(existingFFOsToDeletMap)# old options");
         
-            var ffoIDsToDelete = existingFFOsMap.keyList();
+            var ffoIDsToDelete = existingFFOsToDeletMap.keyList();
             ffoIDsToDelete = listQualify( ffoIDsToDelete , "'");
             
             var deleteQuery = new Query();
@@ -416,38 +449,33 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         }
 	        
         // and insert any new filter-options
-        if( structCount(newFFOsToInsert) > 0 ){
-	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus inserting #structCount(newFFOsToInsert)# new options");
+        if( newFFOsToInsertCount > 0 ){
+	        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus inserting #newFFOsToInsertCount# new options");
 
-            var ffoIDsToInsert = newFFOsToInsert.keyList();
-            ffoIDsToInsert = listQualify( ffoIDsToInsert , "'");
-        
+
             var insertQuery = new Query();
             
-            // we're doing another query on the DB to get the options, as doing that in the cf-code is 
-            // - and it will be some complicated logic, can be buggy and hard to maintain
-            // - a lot of string-manipulation, which will be slow
-            // - it can create a really big string-query totransfer over the network, again slow
+            // we're doing another query on the DB to get create the options and insert/replace, as doing that in the cf-code 
+            // - will be some complicated logic, can be buggy and hard to maintain
+            // - and a lot of string-manipulation, which will be slow
+            // - and it can create a really big string-query to transfer over the network, which again will be slow
+            // - also the replace query will takecare of updating the existing-option-fields like, brand-name, category-name, which is what we need 
             var insertSQL = "
-        	        INSERT INTO swProductFilterFacetOption ( 
+        	        REPLACE INTO swProductFilterFacetOption ( 
         	            #this.getProductFilterFacetOptionsSeletQueryColumnList()# 
         	        ) 
     	            SELECT * FROM ( 
     	                #getNewOptionsQuerySQL# 
-    	            ) result_set 
-    	            WHERE result_set.productFilterFacetOptionID IN( #ffoIDsToInsert# )
+    	            ) result_set
                 ";
-            
             insertQuery.setSQL( insertSQL );
 	        insertQuery.execute();
-            
         } else {
             this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus did not found any new options to insert");
         }
 
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in updating facte-options for Product: #arguments.productIDs#, SKU: #arguments.skuIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsForProductsAndSkus took #getTickCount()-startTicks# ms.; in updating facet-options for Product: #arguments.productIDs#, SKU: #arguments.skuIDs# ");
 	}
-
 	
 	public any function updateProductFilterFacetOptionsByEntityNameAndIDs( required string entityName, required string entityIDs ){
 	    
@@ -461,31 +489,21 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             UPDATE swProductFilterFacetOption ffo
             INNER JOIN
         ";
-            
+                    
         switch (arguments.entityName){
             case 'product':
                 sql &= " 
                     swProduct p ON p.productID = ffo.productID AND p.productID IN (:entityIDs)
                     SET 
-                        ffo.productActiveFlag = p.activeFlag,
-                        ffo.productPublishedFlag = p.publishedFlag
-                ";
-            break;
-            case 'sku':
-                sql &= " 
-                    swSku sk ON sk.skuID = ffo.skuID AND sk.skuID IN (:entityIDs)
-                    SET 
-                        ffo.skuActiveFlag = sk.activeFlag,
-                        ffo.skuPublishedFlag = sk.publishedFlag
+                        ffo.productPublishedStartDateTime = p.publishedStartDateTime,
+                        ffo.productPublishedEndDateTime = p.publishedEndDateTime
                 ";
             break;
             case 'brand':
                 sql &= " 
                     swBrand br ON br.brandID = ffo.brandID AND br.brandID IN (:entityIDs)
                     SET 
-                        ffo.brandName = br.brandName,
-                        ffo.brandActiveFlag = br.activeFlag,
-                        ffo.brandPublishedFlag = br.publishedFlag
+                        ffo.brandName = br.brandName
                 ";
             break;
             case 'category':
@@ -503,16 +521,16 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     SET 
                         ffo.optionName = o.optionName,
                         ffo.optionCode = o.optionCode,
-                        ffo.optionSortOrder = o.sortOrder,
-                        ffo.optionActiveFlag = o.activeFlag
+                        ffo.optionSortOrder = o.sortOrder
                 ";
             break;
             case 'optionGroup':
                 sql &= " 
                     swOptionGroup og ON og.optionGroupID = ffo.optionGroupID AND og.optionGroupID IN (:entityIDs)
                     SET 
-                        ffo.optionGroupName = o.optionGroupName,
-                        ffo.optionGroupSortOrder = o.sortOrder
+                        ffo.optionGroupName = og.optionGroupName,
+                        ffo.optionGroupCode = og.optionGroupCode,
+                        ffo.optionGroupSortOrder = og.sortOrder
                 ";
             break;
             case 'productType':
@@ -521,9 +539,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     SET 
                         ffo.productTypeName = pt.productTypeName,
                         ffo.parentProductTypeID = pt.parentProductTypeID,
-                        ffo.productTypeURLTitle = pt.urlTitle,
-                        ffo.productTypeActiveFlag = pt.activeFlag,
-                        ffo.productTypePublishedFlag = pt.publishedFlag
+                        ffo.productTypeURLTitle = pt.urlTitle
                 ";
             break;
             case 'site':
@@ -553,8 +569,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                         ffo.attributeSetName = atst.attributeSetName,
                         ffo.attributeSetCode = atst.attributeSetCode,
                         ffo.attributeSetObject = atst.attributeSetObject,
-                        ffo.attributeSetUrlTitle = atst.urltitle,
-                        ffo.attributeSetActiveFlag = atst.activeFlag
+                        ffo.attributeSetSortOrder = atst.sortOrder
                 ";
             break;
             case 'attributeOption':
@@ -572,27 +587,27 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     swContent cont ON cont.contentID = ffo.contentID AND cont.contentID IN (:entityIDs)
                     SET 
                         ffo.parentContentID = cont.parentContentID,
-                        ffo.contentActiveFlag = cont.activeFlag,
                         ffo.contentUrlTitle = cont.urlTitle,
                         ffo.contentSortOrder = cont.sortOrder
                 ";
             break;
             default:
-                throw("not supported entity-name #arguments.entityName#");
+                this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs was called for not supported entity-name #arguments.entityName#");
+                return;
             break;
         }
             
         var q = new Query();
         q.setSQL( sql );
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
-        q = q.execute().getResult();
+        q.execute();
         
-        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entityName# : #arguments.entityIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: updateProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facet-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
         
-        return q ? : {};
+        return q;
 	}
 	
-	public any function removeProductFilterFacetOptionsByEntityNameAndIDs( required string entittyName, required string entityIDs ){
+	public any function removeProductFilterFacetOptionsByEntityNameAndIDs( required string entityName, required string entityIDs ){
 	    
 	    if( this.hibachiIsEmpty(arguments.entityIDs) ){
             return;
@@ -601,7 +616,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         var startTicks = getTickCount();
         
         var sql = " 
-            DELETE swProductFilterFacetOption 
+            DELETE ffo
                 FROM swProductFilterFacetOption as ffo
             INNER JOIN
         ";
@@ -677,187 +692,491 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         var q = new Query();
         q.setSQL( sql );
         q.addParam( name='entityIDs', list="true", value=arguments.entityIDs );
-        q = q.execute().getResult();
+        q.execute();
         
-        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facte-options for #arguments.entittyName# : #arguments.entityIDs# ");
+        this.logHibachi("SlatwallProductSearchDAO:: removeProductFilterFacetOptionsByEntityNameAndIDs took #getTickCount()-startTicks# ms.; in updating facet-options for #arguments.entityName#: #arguments.entityIDs#, SQL: #sql# ");
         
         return q;   
 	}
 	
-	public any function getPotentialFilterFacetsAndOptions(){
-	    param name="arguments.siteID" default='';
-	    param name="arguments.productType" default='';
-	    param name="arguments.category" default='';
-	    param name="arguments.brands" default='';
-	    param name="arguments.options" default='';
-	    param name="arguments.attributeOptions" default='';
+	/**
+	 * **** END ********************** Keep the Filter-Relations updated in realtime
+	*/
+	
+	
+	
+	
+	public string function getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
 	    
-        var startTicks = getTickCount();
-        
-        var q = new Query();
-
-        var siteJoinFilterQueryPart = "";
-        if( !this.hibachiIsEmpty(arguments.siteID) ){
-            siteJoinFilterQueryPart = " AND ( ffo.siteID = :siteID OR ffo.siteID IS NULL )";
-            q.addParam(name='siteID', value=arguments.siteID)
-        }
-        
-        var productTypeJoinFilterQueryPart = " 
-            AND ( ffo.productTypeActiveflag = 1 OR ffo.productTypeActiveflag IS NULL ) 
-            AND ( ffo.productTypePublishedFlag = 1 OR ffo.productTypePublishedFlag IS NULL)
-        ";
-        if( !this.hibachiIsEmpty(arguments.productType) ){
-            productTypeJoinFilterQueryPart = " AND ffo.productTypeName IN ( :productType )";
-            q.addParam( name='productType', list="true", value=arguments.productType );
-        }
-        
-        var categoryJoinFilterQueryPart = "";
-        if( !this.hibachiIsEmpty(arguments.category) ){
-            categoryJoinFilterQueryPart = " AND ffo.categoryName IN ( :category )";
-            q.addParam( name='category', list="true", value=arguments.category );
-        }
-        
-        var brandJoinFilterQueryPart = " 
-            AND ( ffo.brandActiveFlag = 1 OR ffo.brandActiveFlag IS NULL) 
-            AND ( ffo.brandPublishedFlag = 1 OR ffo.brandPublishedFlag IS NULL)
-        ";
-        if( !this.hibachiIsEmpty(arguments.brands) ){
-            brandJoinFilterQueryPart = " AND ffo.brandName IN ( :brands )";
-            q.addParam( name='brands', list="true", value=arguments.brands );
-        }
-        
-        var optionJoinFilterQueryPart = " AND (ffo.optionActiveFlag=1 OR ffo.optionActiveFlag IS NULL)";
-        if( !this.hibachiIsEmpty(arguments.options) ){
-            optionJoinFilterQueryPart = " AND ffo.optionName IN ( :options )";
-            q.addParam( name='options', list="true", value=arguments.options );
-        }
-        
-        
-        var attributeOptionJoinFilterQueryPart = " AND (ffo.attributeSetActiveFlag=1 OR ffo.attributeSetActiveFlag IS NULL)";
-        if( !this.hibachiIsEmpty(arguments.attributeOptions) ){
-            attributeOptionJoinFilterQueryPart = " AND ffo.attributeOptionValue IN ( :attributeOptions )";
-            q.addParam( name='attributeOptions', list="true", value=arguments.attributeOptions );
-        }
-
-        var sql = "
-            SELECT   
-               ffo.productFilterFacetOptionID,
-		       ffo.brandID, ffo.brandName,
-               ffo.categoryID, ffo.categoryName, ffo.parentCategoryID, ffo.categoryUrlTitle,
-               ffo.optionID, ffo.optionName, ffo.optionCode, ffo.optionSortOrder,
-               ffo.optionGroupID, ffo.optionGroupName, ffo.optionGroupSortOrder,
-               ffo.productTypeID, ffo.productTypeName, ffo.parentProductTypeID, ffo.productTypeURLTitle,
-               ffo.siteID, ffo.siteName, ffo.siteCode, ffo.currencyCode,
-               
-               ffo.attributeID, ffo.attributeName, ffo.attributeCode, ffo.attributeInputType,
-               ffo.attributeUrlTitle,ffo.attributeSortOrder,
-               
-               ffo.attributeSetID, ffo.attributeSetCode, ffo.attributeSetName, ffo.attributeSetObject, ffo.attributeSetSortOrder,
-
-               ffo.attributeOptionID, ffo.attributeOptionValue, ffo.attributeOptionLabel,
-               ffo.attributeOptionUrlTitle, ffo.attributeOptionSortOrde
-            
-            FROM swProductFilterFacetOption as ffo
-            
-            INNER JOIN swSkuPrice sp
-                ON sp.skuID = ffo.skuID 
-                    AND sp.activeFlag = 1 
-                    AND ffo.skuActiveflag = 1 AND ffo.skuPublishedFlag = 1
-                    AND ffo.productActiveFlag = 1 AND ffo.productPublishedFlag = 1
-                    
-                    #siteJoinFilterQueryPart#
-            		#productTypeJoinFilterQueryPart#
-                    #categoryJoinFilterQueryPart#
-                    #brandJoinFilterQueryPart#
-                    #optionJoinFilterQueryPart#
-                    #attributeOptionJoinFilterQueryPart#
-                    
-            GROUP BY ffo.productFilterFacetOptionID
-        ";
+	    if(arguments.facetName == 'brand'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'brandID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'brandName';
+	        }
+	    }
 	    
+	    if(arguments.facetName == 'content'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'contentID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'contentTitle';
+	        }
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'contentUrlTitle';
+	        }
+	    }
 	    
-        q.setSQL( sql );
-        q = q.execute().getResult();
-        
-        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.; and fetched #q.recordCount# records ");
-        
-        return q;
+	    if(arguments.facetName == 'category'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'categoryID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'categoryName';
+	        }  
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'categoryUrlTitle';
+	        }
+	    }
+	    
+	    if(arguments.facetName == 'productType'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'productTypeID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'productTypeName';
+	        }  
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'productTypeUrlTitle';
+	        }
+	    }
+	    
+	    if(arguments.facetName == 'attribute'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'attributeOptionID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'attributeOptionLabel';
+	        }  
+	        if(arguments.facetValueKey == 'slug' ){
+	            return 'attributeOptionUrlTitle';
+	        }
+	        if(arguments.facetValueKey == 'code' ){
+	            return 'attributeOptionValue';
+	        }
+	    }
+
+	    if(arguments.facetName == 'option'){
+	        if(arguments.facetValueKey == 'id' ){
+	            return 'optionID';
+	        }  
+	        if(arguments.facetValueKey == 'name' ){
+	            return 'optionName';
+	        }
+	        if(arguments.facetValueKey == 'code' ){
+	            return 'optionCode';
+	        }
+	    }
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-    
-    /**
-	 * ************** NOTO IN USE
-	*/
-	public any function _getPotentialProductFilterFacetOptions( string productIDs = "", string skuIDs = "" ){
+	public struct function getFacetsMetaData(){
+	    if( !structKeyExists(variables, 'cached_FacetsMetaData') ){
+	        variables['cached_FacetsMetaData'] = {
+    	        'brand' : {
+            	    'facet'                 : 'brand',
+    	            'facetIDKey'            : 'brandID',
+            	    'facetNameKey'          : 'brandName',
+            	    'subFacetKeyOrValue'    : 'NULL',
+            	    'subFacetNameKeyOrValue' : 'NULL',
+            	    'facetSlugKeyOrValue'   : 'NULL',
+            	    'facetCodeKeyOrValue'   : 'NULL',
+    	        },
+    	        'category' : {
+            	    'facet'                 : 'category',
+    	            'facetIDKey'            : 'categoryID',
+            	    'facetNameKey'          : 'categoryName',
+            	    'subFacetKeyOrValue'    : 'NULL',
+            	    'subFacetNameKeyOrValue' : 'NULL',
+            	    'facetSlugKeyOrValue'   : 'categoryURLTitle',
+            	    'facetCodeKeyOrValue'   : 'NULL',
+    	        },
+    	        'productType' : {
+            	    'facet'                 : 'productType',
+    	            'facetIDKey'            : 'productTypeID',
+            	    'facetNameKey'          : 'productTypeName',
+            	    'subFacetKeyOrValue'    : 'NULL',
+            	    'subFacetNameKeyOrValue' : 'NULL',
+            	    'facetSlugKeyOrValue'   : 'productTypeURLTitle',
+            	    'facetCodeKeyOrValue'   : 'NULL',
+    	        },
+    	        'option' : {
+            	    'facet'                 : 'option',
+    	            'facetIDKey'            : 'optionID',
+            	    'facetNameKey'          : 'optionName',
+            	    'subFacetKeyOrValue'    : 'optionGroupCode',
+            	    'subFacetNameKeyOrValue': 'optionGroupName',
+            	    'facetSlugKeyOrValue'   : 'NULL',
+            	    'facetCodeKeyOrValue'   : 'optionCode',
+    	        },
+    	        'attribute' : {
+            	    'facet'                 : 'attribute',
+    	            'facetIDKey'            : 'attributeOptionID',
+            	    'facetNameKey'          : 'attributeOptionLabel',
+            	    'subFacetKeyOrValue'    : 'attributeCode',
+            	    'subFacetNameKeyOrValue': 'attributeName',
+            	    'facetSlugKeyOrValue'   : 'attributeOptionUrlTitle',
+            	    'facetCodeKeyOrValue'   : 'attributeOptionValue',
+    	        }
+    	    }
+	    }
 	    
+	    return variables['cached_FacetsMetaData'];
+	}
+	
+	public string function getFacetOptionQuerySQLTemplate(required boolean includeSKUCount){
+	    if(arguments.includeSKUCount){
+    	    return "
+    	        SELECT 
+    	            rs.id, 
+    	            rs.name, 
+    	            rs.facet, 
+    	            rs.subFacet, 
+    	            rs.subFacetName, 
+    	            rs.slug, 
+    	            rs.code, 
+    	            COUNT(DISTINCT rs.skuID) AS count 
+    	        FROM
+    	        ( 
+    	            SELECT 
+        				skuID, 
+        				$facetIDKey$                as id, 
+        				$facetNameKey$              as name, 
+        				$facetSlugKeyOrValue$       as slug,
+        				$facetCodeKeyOrValue$       as code,
+        				'$facet$'                   as facet, 
+        				$subFacetKeyOrValue$        as subFacet,
+        				$subFacetNameKeyOrValue$    as subFacetName
+        			FROM swProductFilterFacetOption 
+        			WHERE $facetIDKey$ IS NOT NULL
+        			$filterQueryFragment$
+        			GROUP BY skuID, $facetIDKey$, $facetNameKey$
+        		) rs
+        		
+        		$stockAvailabilitySQLFragment$
+        	    
+        	    GROUP BY rs.id
+        	    HAVING COUNT(DISTINCT rs.skuID) > 0
+    	    ";
+	    } 
+	    
+	    return "
+	        SELECT 
+	            id, 
+	            name, 
+	            facet, 
+	            subFacet, 
+	            subFacetName, 
+	            slug, 
+	            code 
+	        FROM
+	        ( 
+	            SELECT 
+    				skuID, 
+    				$facetIDKey$                as id, 
+    				$facetNameKey$              as name, 
+    				$facetSlugKeyOrValue$       as slug,
+    				$facetCodeKeyOrValue$       as code,
+    				'$facet$'                   as facet, 
+    				$subFacetKeyOrValue$        as subFacet,
+    				$subFacetNameKeyOrValue$    as subFacetName
+    			FROM swProductFilterFacetOption 
+    			WHERE $facetIDKey$ IS NOT NULL
+    			$filterQueryFragment$
+    			GROUP BY skuID, $facetIDKey$, $facetNameKey$
+    		) rs
+    		
+    		$stockAvailabilitySQLFragment$
+    	    GROUP BY id
+		";
+	}
+	
+	public string function makeGetFacetOptionQuery(
+	    required struct facetMetaData, 
+	    required struct facetsFilterQueryFragments, 
+	    required any site,
+	    boolean includeSKUCount=true
+	){
+	    
+	    var thisFacetOptionsQuery = this.getFacetOptionQuerySQLTemplate(arguments.includeSKUCount);
+
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facet$',              arguments.facetMetaData.facet );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facetIDKey$',         arguments.facetMetaData.facetIDKey, 'all');
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facetNameKey$',       arguments.facetMetaData.facetNameKey, 'all');
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facetSlugKeyOrValue$', arguments.facetMetaData.facetSlugKeyOrValue );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$facetCodeKeyOrValue$', arguments.facetMetaData.facetCodeKeyOrValue );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetKeyOrValue$',  arguments.facetMetaData.subFacetKeyOrValue );
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetNameKeyOrValue$',  arguments.facetMetaData.subFacetNameKeyOrValue );
+        
+        var filterQueryFragment = '';
+        if( !this.hibachiIsStructEmpty(arguments.facetsFilterQueryFragments) ){
+            for(var facetName in arguments.facetsFilterQueryFragments ){
+                if(facetName == arguments.facetMetaData.facet ){
+                    continue;
+                }
+                if( !len(arguments.facetsFilterQueryFragments[facetName]) ){
+                    continue;
+                }
+
+                if( len(filterQueryFragment) > 1 ){
+                    filterQueryFragment &= ' AND';
+                }
+                filterQueryFragment &= ' '&arguments.facetsFilterQueryFragments[facetName];
+            }
+            
+            if(len(filterQueryFragment)){
+                filterQueryFragment = 'AND '&filterQueryFragment;
+            }
+        }
+        
+        if( listFindNoCase('option,attribute', arguments.facetMetaData.facet)  && len(filterQueryFragment) ){
+            filterQueryFragment &= " $subFacetsQueryFragment$";
+        }
+        
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$filterQueryFragment$', filterQueryFragment );
+        
+        var stockAvailabilitySQLFragment = '';
+        if(arguments.site.hasLocation() ){
+            // the :siteID param should already be added
+	        // facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
+            stockAvailabilitySQLFragment = "
+    	        INNER JOIN swStock stk 
+    	            ON 
+	                stk.stockID IN (SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID )
+    	            AND stk.calculatedQATS > 0 
+    	            AND rs.skuID = stk.skuID 
+            ";
+	    }
+        thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$stockAvailabilitySQLFragment$', stockAvailabilitySQLFragment );
+        
+        return thisFacetOptionsQuery;
+	}
+	
+	public struct function makeFacetSqlFilterQueryFragments(){
+	    param name="arguments.site";
+	    param name="arguments.brand" default={};
+	    param name="arguments.option" default={};
+        param name="arguments.content" default={};
+	    param name="arguments.category" default={};
+	    param name="arguments.attribute" default={};
+	    param name="arguments.productType" default={};
+	    
+	    var facetsSqlFilterQueryFragments = {};
+	    var facetsSqlFilterQueryParams = {};
+	    
+	    facetsSqlFilterQueryFragments['productSite'] = '';
+	    if( len(arguments.site.getSiteID()) ){
+	        facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
+	        facetsSqlFilterQueryFragments['productSite'] = '(siteID = :siteID OR siteID IS NULL)';
+	    }
+	    
+	    // CF-Server's date-time instead of BD-Server's 
+	    facetsSqlFilterQueryParams['dateTimeNow'] = dateTimeFormat(now(), 'short');
+	    facetsSqlFilterQueryFragments['productPublishedPeriod'] = "
+	        ( productPublishedStartDateTime IS NULL OR productPublishedStartDateTime <= :dateTimeNow )
+            AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= :dateTimeNow )
+	    ";
+
+	    for(var facetName in ['brand', 'content', 'category', 'productType'] ){
+    	    facetsSqlFilterQueryFragments[facetName] = '';
+    	    var selectedFacetOptions = arguments[ facetName ];
+    	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
+    	        var queryFragment = '(';
+    	        for(var facetValueKey in selectedFacetOptions ){
+                    var filterValue = selectedFacetOptions[facetValueKey];
+                    var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facetValueKey);
+                    
+                    if( !isNUll(columnName) ){
+                        var filterValuePlaceholder = facetName&'_'&columnName;
+                        facetsSqlFilterQueryParams[ filterValuePlaceholder ] = filterValue;
+                        
+                        if( len(queryFragment) > 1 ){
+                            queryFragment &= ' OR';
+                        }
+                        
+                        if( isArray(filterValue) ){
+                            queryFragment &= ' #columnName# IN (:#filterValuePlaceholder#)';
+                        } else{
+                            queryFragment &= ' #columnName# = :#filterValuePlaceholder#';
+                        }
+                    }
+                }
+                if( len(queryFragment) > 1){
+                    queryFragment &= ')';
+                    facetsSqlFilterQueryFragments[facetName] = queryFragment;
+                }
+    	    }
+	    }
+	    
+	    for(var facetName in ['option', 'attribute'] ){
+    	    facetsSqlFilterQueryFragments[facetName] = '';
+    	    var selectedFacetOptions = arguments[ facetName ];
+
+    	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
+    	        var concatedOptions = {};
+    	        
+    	        for(var subFacetName in selectedFacetOptions ){
+    	            var selectedSubFacetOptions = selectedFacetOptions[ subFacetName ];
+    	            if(!this.hibachiIsStructEmpty(selectedSubFacetOptions) ){
+            	        for(var facetValueKey in selectedSubFacetOptions ){
+                            var thisFilterOption = selectedSubFacetOptions[facetValueKey];
+                            
+                            if(!structKeyExists(concatedOptions, facetValueKey) ){
+                                concatedOptions[facetValueKey] = thisFilterOption;
+                            } else{
+                                var oldOption = concatedOptions[facetValueKey];
+                                if( isSimpleValue(oldOption) ){
+                                    concatedOptions[facetValueKey] = [oldOption, thisFilterOption];
+                                } else {
+                                    concatedOptions[facetValueKey].append(thisFilterOption);
+                                }
+                            }
+            	        }
+    	            }
+    	        }
+    	        
+    	        var queryFragment = '(';
+    	        if( !this.hibachiIsStructEmpty(concatedOptions) ){
+    	            for(var thisFacetValueKey in concatedOptions){
+    	                var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, thisFacetValueKey);
+
+                        if( !isNUll(columnName) ){
+                            var facetKeyOptions = concatedOptions[thisFacetValueKey];
+                            
+                            var filterValuePlaceholder = facetName&'_'&columnName;
+                            facetsSqlFilterQueryParams[ filterValuePlaceholder ] = facetKeyOptions;
+                            
+                            if( len(queryFragment) > 1 ){
+                                queryFragment &= ' OR';
+                            }
+                            
+                            if( isArray(facetKeyOptions) ){
+                                queryFragment &= ' #columnName# IN (:#filterValuePlaceholder#)';
+                            } else{
+                                queryFragment &= ' #columnName# = :#filterValuePlaceholder#';
+                            }
+                        }  
+    	            }
+    	        }
+    	        
+                if( len(queryFragment) > 1){
+                    queryFragment &= ')';
+                    facetsSqlFilterQueryFragments[facetName] = queryFragment;
+                }
+    	    }
+	    }
+
+	    return {
+	        'params': facetsSqlFilterQueryParams,
+	        'fragments' : facetsSqlFilterQueryFragments
+	    };
+	}
+	
+	public any function getPotentialFilterFacetsAndOptions(){
+        param name="arguments.site";
+        param name="arguments.brand" default={};
+        param name="arguments.option" default={};
+        param name="arguments.content" default={};
+        param name="arguments.category" default={};
+        param name="arguments.attribute" default={};
+        param name="arguments.productType" default={};
+        param name="arguments.includeSKUCount" default=true;
         
         var startTicks = getTickCount();
-        // we'll use these to generate the records for perticular Products and SKUs
-        // which, then, will be used to update the `swProductFilterFacetOption` table;
-        
-        var skuJoinFilterQueryPart = ' AND ffo.skuActiveflag = 1 AND ffo.skuPublishedFlag = 1';
-        var productJoinFilterQueryPart = ' AND ffo.productActiveFlag = 1 AND ffo.productPublishedFlag = 1';
-        if( !this.hibachiIsEmpty(arguments.productIDs) ){
-            var qualifiedProductIDs =  listQualify(arguments.productIDs, "'");
-            var productJoinFilterQueryPart &= " AND ffo.productID IN (#qualifiedProductIDs#)"
-        }
-        if( !this.hibachiIsEmpty(arguments.skuIDs) ){
-            var qualifiedSkuIDs =  listQualify(arguments.skuIDs, "'");
-            var skuJoinFilterQueryPart &= " AND ffo.skuID IN (#qualifiedSkuIDs#)";
+
+	    var facetsMetadata = this.getFacetsMetaData();
+    	var filterQueryFragmentsData = this.makeFacetSqlFilterQueryFragments(argumentCollection=arguments);
+
+        var getAllFacetOptionsSQL = '';
+        for(var facetName in facetsMetadata ){
+            if( len(getAllFacetOptionsSQL) ){
+               // union-all because there won't be any duplictes in the result-set, 
+               // so we can avoide some computation, by avoiding the sorting of result-set to remove duplicates [ behaviour of simple UNION]
+               getAllFacetOptionsSQL &= " 
+                                        
+                                        UNION ALL
+                                        
+                                        "; 
+            }
+            var thisFacetOptionsQuery = this.makeGetFacetOptionQuery(
+                facetMetaData = facetsMetadata[facetName], 
+                facetsFilterQueryFragments = filterQueryFragmentsData.fragments, 
+                includeSKUCount= arguments.includeSKUCount, 
+                site = arguments.site 
+            );
+            
+            if( listFindNoCase('option,attribute', facetName) ){
+                var thisFacetOptions = arguments[ facetName ];
+                if( !this.hibachiIsStructEmpty(thisFacetOptions) ){
+                    var filterValuePlaceholderKey = facetName&'_subFactes';
+                    filterQueryFragmentsData.params[filterValuePlaceholderKey] = thisFacetOptions.keyArray();
+                    var columnName= 'optionGroupCode';
+                    if(facetName == 'attribute'){
+                        columnName = 'attributeCode';
+                    }
+                    
+                    var selectedSubFacetsOptionsQuery = " AND #columnName# IN (:#filterValuePlaceholderKey#)";
+                    selectedSubFacetsOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', selectedSubFacetsOptionsQuery);
+                    
+                    var subQuery = "
+                        SELECT DISTINCT skuID 
+                        FROM swProductFilterFacetOption 
+                        WHERE 
+                        #filterQueryFragmentsData.fragments[facetName]# 
+                    ";
+                    var remainingSubFacetsOptionsQuery = " AND ( skuID in (#subQuery#) AND #columnName# NOT IN (:#filterValuePlaceholderKey#) )";
+                    remainingSubFacetsOptionsQuery = replace( thisFacetOptionsQuery, '$subFacetsQueryFragment$', remainingSubFacetsOptionsQuery);
+                    
+                    thisFacetOptionsQuery =  selectedSubFacetsOptionsQuery & ' UNION ALL' & remainingSubFacetsOptionsQuery;
+
+                } else {
+                    thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', '');
+                }
+            }
+            
+            getAllFacetOptionsSQL &= thisFacetOptionsQuery;
         }
                 
-        var sql = "
-            SELECT   
-               ffo.productFilterFacetOptionID,
-			   ffo.productID, ffo.skuID,
-		       ffo.brandID, ffo.brandName,
-               ffo.categoryID, ffo.categoryName, ffo.parentCategoryID, ffo.categoryUrlTitle,
-               ffo.optionID, ffo.optionName, ffo.optionCode, ffo.optionSortOrder,
-               ffo.optionGroupID, ffo.optionGroupName, ffo.optionGroupSortOrder,
-               ffo.productTypeID, ffo.productTypeName, ffo.parentProductTypeID, ffo.productTypeURLTitle,
-               ffo.siteID, ffo.siteName, ffo.siteCode, ffo.currencyCode,
-               
-               ffo.attributeID, ffo.attributeName, ffo.attributeCode, ffo.attributeInputType,
-               ffo.attributeUrlTitle,ffo.attributeSortOrder,
-               
-               ffo.attributeSetID, ffo.attributeSetCode, ffo.attributeSetName, ffo.attributeSetObject, ffo.attributeSetSortOrder,
+        var queryService = new Query();
+        queryService.setSQL(getAllFacetOptionsSQL);
+        for(var paramName in filterQueryFragmentsData.params ){
+            var paramValue = filterQueryFragmentsData.params[paramName];
+            if( isArray(paramValue) ){
+                queryService.addParam( name=paramName, list=true, value=arrayToList(paramValue) );
+            } else {
+                queryService.addParam( name=paramName, value=paramValue );
+            }
+        }
 
-               ffo.attributeOptionID, ffo.attributeOptionValue, ffo.attributeOptionLabel,
-               ffo.attributeOptionUrlTitle, ffo.attributeOptionSortOrde
-            
-            FROM swProductFilterFacetOption as ffo
-            
-            INNER JOIN swSkuPrice sp
-                ON sp.skuID = ffo.skuID 
-                    AND sp.activeFlag = 1 
-                    
-                    #skuJoinFilterQueryPart#
-                    #productJoinFilterQueryPart#
-                    
-            		AND ffo.brandActiveFlag = 1 AND ffo.brandPublishedFlag = 1
-            		AND ffo.productTypeActiveflag = 1 AND ffo.productTypePublishedFlag = 1
-                    AND ffo.optionActiveFlag=1
-                    AND ffo.attributeSetActiveFlag = 1
-            
-            GROUP BY ffo.productFilterFacetOptionID
-        ";
-        
-        var q = new Query();
-        q.setSQL( sql );
-        var result = q.execute().getResult();
-        
-        this.logHibachi("SlatwallProductSearchDAO:: _getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.; and fetched #q.recordCount# records ");
-        
-        return result;
+        queryService = queryService.execute().getResult();
+
+        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.; and fetched #queryService.recordCount# records ");
+        return queryService;
 	}
-    
+	
+	
+	public any function getPriceRangeMinMax(){
+	    
+	    var queryService = new Query();
+	    var sql = "
+	        SELECT MAX(skuPricePrice) AS max, MIN(skuPricePrice) AS min
+            FROM swProductFilterFacetOption; 
+	    ";
+        queryService.setSQL(sql);
+	    return queryService.execute().getResult();
+	}
+
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================

@@ -1,10 +1,12 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addWishlistItem, removeWishlistItem } from '../../actions/userActions'
 import useWishList from '../../hooks/useWishlist'
 
 const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
   const dispatch = useDispatch()
   const [isOnWishlist] = useWishList(skuID)
+  const primaryColor = useSelector(state => state.configuration.theme.primaryColor)
+
   if (isOnWishlist) {
     return (
       <button
@@ -17,9 +19,9 @@ const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
         data-toggle="tooltip"
         data-placement="left"
         title=""
-        data-original-title="Add to wishlist"
+        data-original-title="Remove from wishlist"
       >
-        <i className="far fa-heart" style={{ color: '#5f1018' }}></i>
+        <i className="fas fa-heart" style={{ color: `#${primaryColor}` }}></i>
       </button>
     )
   } else {

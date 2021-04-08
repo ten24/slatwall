@@ -3,6 +3,68 @@ import axios from 'axios'
 import { sdkURL, SlatwalApiService } from '../services'
 import queryString from 'query-string'
 
+export const useGetEntity = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
+  useEffect(() => {
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/public/${request.entity}?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
+            setRequest({ data: response.data.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetEntityByID = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
+  useEffect(() => {
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/public/${request.entity}?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data.data && response.data.data) {
+            setRequest({ data: response.data.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
 export const useGetSku = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
@@ -10,7 +72,7 @@ export const useGetSku = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getSkuList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getSkuListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -51,7 +113,7 @@ export const useGetBrand = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getBrandList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getBrandListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -75,7 +137,7 @@ export const useGetBrands = () => {
       axios({
         method: 'GET',
         withCredentials: true,
-        url: `${sdkURL}api/scope/getBrandList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getBrandListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -93,15 +155,14 @@ export const useGetBrands = () => {
 }
 
 export const useGetProductList = () => {
-  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, currentPage: 1, totalPages: 1 })
   useEffect(() => {
-    let didCancel = false
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getProductList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getProductListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -109,7 +170,8 @@ export const useGetProductList = () => {
       })
         .then(response => {
           if (response.status === 200 && response.data && response.data.pageRecords) {
-            setRequest({ data: response.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+            const { pageRecords, currentPage, totalPages } = response.data
+            setRequest({ data: pageRecords, currentPage, totalPages, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
@@ -118,7 +180,6 @@ export const useGetProductList = () => {
     }
     return () => {
       source.cancel()
-      didCancel = true
     }
   }, [request, setRequest])
 
@@ -212,7 +273,6 @@ export const useGetAvailablePaymentMethods = () => {
 export const useAddWishlistItem = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
-    let didCancel = false
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
@@ -235,7 +295,6 @@ export const useAddWishlistItem = () => {
     }
     return () => {
       source.cancel()
-      didCancel = true
     }
   }, [request, setRequest])
 
@@ -244,9 +303,8 @@ export const useAddWishlistItem = () => {
 
 export const useGetOrderDetails = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
-  const token = localStorage.getItem('token')
   useEffect(() => {
-    let didCancel = false
+    const token = localStorage.getItem('token')
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
@@ -270,7 +328,6 @@ export const useGetOrderDetails = () => {
     }
     return () => {
       source.cancel()
-      didCancel = true
     }
   }, [request, setRequest])
 
@@ -281,22 +338,22 @@ export const useGetAllOrders = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {} })
   useEffect(() => {
     const token = localStorage.getItem('token')
-    let didCancel = false
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
-        method: 'GET',
+        method: 'POST',
         withCredentials: true, // default
         url: `${sdkURL}api/scope/getAllOrdersOnAccount`,
         headers: {
           'Content-Type': 'application/json',
           'Auth-Token': `Bearer ${token}`,
         },
+        data: request.params,
         cancelToken: source.token,
       })
         .then(response => {
           if (response.status === 200 && response.data && response.data.ordersOnAccount) {
-            setRequest({ data: response.data.ordersOnAccount.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+            setRequest({ data: response.data.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
@@ -305,7 +362,6 @@ export const useGetAllOrders = () => {
     }
     return () => {
       source.cancel()
-      didCancel = true
     }
   }, [request, setRequest])
 
@@ -388,7 +444,7 @@ export const useGetSkuList = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getSkuList?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getSkuListing?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
           'Auth-Token': `Bearer ${token}`,
@@ -469,6 +525,31 @@ export const useGetProductSkuSelected = () => {
         method: 'POST',
         withCredentials: true, // default
         url: `${sdkURL}api/scope/productSkuSelected`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetProductImageGallery = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getProductImageGallery`,
         data: request.params,
         headers: {
           'Content-Type': 'application/json',

@@ -1,15 +1,20 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router'
 
 export default function ScrollToTop() {
-  const { pathname } = useLocation()
-
+  const history = useHistory()
   useEffect(() => {
     window.scrollTo({
       top: 0,
       //   behavior: 'smooth',
     })
-  }, [pathname])
+    history.listen(location => {
+      window.scrollTo({
+        top: 0,
+        //   behavior: 'smooth',
+      })
+    })
+  }, [history])
 
   return null
 }

@@ -1,4 +1,4 @@
-import { CartPromoBox, Layout, PromotionalMessaging, Spinner } from '../../components'
+import { CartPromoBox, Layout, OrderNotes, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -8,11 +8,11 @@ import useFormatCurrency from '../../hooks/useFormatCurrency'
 import ShippingSlide from './Shipping'
 import PaymentSlide from './Payment'
 import ReviewSlide from './Review'
-import AccountAddress from './AccountAddress'
 
 import { checkOutSteps, REVIEW } from './steps'
-import SlideNavigation from './SlideNavigation'
 import { placeOrder } from '../../actions/cartActions'
+import { isAuthenticated } from '../../utils'
+import { useEffect } from 'react'
 // https://www.digitalocean.com/community/tutorials/how-to-create-multistep-forms-with-react-and-semantic-ui
 // https://github.com/srdjan/react-multistep/blob/master/react-multistep.js
 // https://www.geeksforgeeks.org/how-to-create-multi-step-progress-bar-using-bootstrap/
@@ -25,7 +25,7 @@ const getCurrentStep = path => {
 }
 
 const StepsHeader = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const loc = useLocation()
   let history = useHistory()
 
@@ -43,6 +43,7 @@ const StepsHeader = () => {
         return (
           <a
             className={`step-item ${progressSate}`}
+            href={`/${step.name}`}
             key={step.progress}
             onClick={e => {
               e.preventDefault()
@@ -70,7 +71,7 @@ const CheckoutSideBar = () => {
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const currentStep = getCurrentStep(path)
   const [formatCurrency] = useFormatCurrency({})
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
 
   return (
@@ -101,9 +102,9 @@ const CheckoutSideBar = () => {
         </ul>
         <h3 className="font-weight-normal text-center my-4">
           <span>{total > 0 ? formatCurrency(total) : '--'}</span>
-          {/* $274.<small>50</small> */}
         </h3>
         {currentStep.key !== REVIEW && <CartPromoBox />}
+        {currentStep.key === REVIEW && <OrderNotes />}
         {currentStep.key === REVIEW && (
           <button
             className="btn btn-primary btn-block mt-4"
@@ -122,12 +123,23 @@ const CheckoutSideBar = () => {
   )
 }
 const Checkout = () => {
-  const cart = useSelector(state => state.cart)
-  const { isFetching } = cart
   let match = useRouteMatch()
   const loc = useLocation()
+  const history = useHistory()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const currentStep = getCurrentStep(path)
+  const verifiedAccountFlag = useSelector(state => state.userReducer.verifiedAccountFlag)
+  const enforceVerifiedAccountFlag = useSelector(state => state.configuration.enforceVerifiedAccountFlag)
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      history.push(`/my-account?redirect=${loc.pathname}`)
+    }
+  }, [history, loc])
+
+  if (enforceVerifiedAccountFlag && !verifiedAccountFlag && isAuthenticated()) {
+    return <Redirect to="/account-verification" />
+  }
 
   return (
     <Layout>
@@ -137,27 +149,17 @@ const Checkout = () => {
           <section className="col-lg-8">
             {/* <!-- Steps--> */}
             <StepsHeader />
+            <Route path={`${match.path}/cart`}>
+              <Redirect to="/cart" />
+            </Route>
 
             <Switch>
               <Route path={`${match.path}/shipping`}>
                 <ShippingSlide currentStep={currentStep} />
               </Route>
-              <Route path={`${match.path}/cart`}>
-                <Redirect to="/cart" />
-              </Route>
+
               <Route path={`${match.path}/payment`}>
                 <PaymentSlide currentStep={currentStep} />
-              </Route>
-              <Route path={`${match.path}/aa`}>
-                <AccountAddress
-                  currentStep={currentStep}
-                  onSelect={value => {
-                    console.log('onSelect', value)
-                  }}
-                  onSave={values => {
-                    console.log('onSave', values)
-                  }}
-                />
               </Route>
               <Route path={`${match.path}/review`}>
                 <ReviewSlide currentStep={currentStep} />

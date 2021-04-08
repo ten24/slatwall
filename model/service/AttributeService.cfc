@@ -256,13 +256,14 @@ component  extends="HibachiService" accessors="true" {
 
 		arguments.attribute = super.save(arguments.attribute, arguments.data);
 
-		if(!arguments.attribute.hasErrors() && !isNull(arguments.attribute.getAttributeSet())) {
-			getHibachiDAO().flushORMSession();
-
-			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
-
+		if( !arguments.attribute.hasErrors() && !isNull(arguments.attribute.getAttributeSet()) ){
+			this.getHibachiDAO().flushORMSession();
+			this.getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
 			//attributeModelCache
 			clearAttributeMetaDataCache(arguments.attribute.getAttributeSet());
+			//clear public properties cache
+			var attributeEntityName = arguments.attribute.getAttributeSet().getAttributeSetObject();
+			this.getHibachiCacheService().resetCachedKey("getPublicAttributesByEntityName-#attributeEntityName#");
 		} else {
 		    this.getHibachiScope().setORMHasErrors(true);
 		}
