@@ -107,4 +107,13 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		return token;
 	}
 	
+	public string function refreshToken(){
+		var decodedToken = getHibachiScope().getDecodedJWTToken();
+        var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+        //hard coded to 15 minutes
+        var tokenExpirationTime = 900;
+        payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
+        return this.encode(payload);
+    }
+	
 }

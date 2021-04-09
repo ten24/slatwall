@@ -1062,7 +1062,7 @@ component extends="framework.one" {
 		
 		//regenerate token with existing payload
 		if(structKeyExists(request.context.headers,'Auth-Token') && !getHibachiScope().getService("hibachiService").hibachiIsEmpty(request.context.requestheaderdata.headers['Auth-Token']) ){
-			request.context.apiResponse.content['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
+			request.context.apiResponse.content['token'] = getHibachiScope().getService('HibachiJWTService').refreshToken();
 		}
 		
 		//leaving a note here in case we ever wish to support XML for api responses
@@ -1109,7 +1109,7 @@ component extends="framework.one" {
 			populateAPIHeaders();
 			//regenerate token with existing payload
 			if(structKeyExists(request.context.requestheaderdata.headers,'Auth-Token') && !getHibachiScope().getService("hibachiService").hibachiIsEmpty(request.context.requestheaderdata.headers['Auth-Token']) ){
-				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
+				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').refreshToken();
 			}
 			
 			if(isStruct(arguments.rc.ajaxResponse)){

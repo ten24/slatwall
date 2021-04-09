@@ -109,6 +109,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(payload.issuer != serverName){
 			throw(type="Invalid token issuer",message="Invalid token issuer");
 		}
+		this.getHibachiScope().setDecodedJWTToken(this);
 		return this;
 	}
 	
