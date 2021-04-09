@@ -5,6 +5,8 @@ import { Loading, Header, SEO, CMSWrapper } from './components'
 import lazyWithPreload from './components/lazyWithPreload/lazyWithPreload'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import { getConfiguration } from './actions/configActions'
+import logo from './assets/images/logo.png'
+import mobileLogo from './assets/images/logo-mobile.png'
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
 const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
 const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
@@ -62,7 +64,7 @@ export default function App() {
     <Suspense fallback={<Loading />}>
       <ScrollToTop />
       <SEO />
-      <Header />
+      <Header logo={logo} mobileLogo={mobileLogo} />
       <CMSWrapper />
       <Switch>
         <Route path="/404" component={NotFound} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import SimpleBar from 'simplebar-react'
+// import SimpleBar from 'simplebar-react'
 
 const AttributeFacet = ({ qs, facet, filterName, facetKey, updateAttribute, isSelected = false }) => {
   const token = filterName.replace(/\s/g, '') + facet.name.replace(/\s/g, '') + 'input'
@@ -88,13 +88,13 @@ const ListingFilter = ({ qs, appliedFilters, name, facetKey, selectType, options
         <div className="card-body">
           <div className="widget widget-links cz-filter">
             <FacetSearch searchTerm={searchTerm} search={setSearchTerm} />
-            <SimpleBar className="widget-list cz-filter-list pt-1" style={{ maxHeight: '12rem' }} forceVisible="y" autoHide={false}>
-              {searchResults &&
-                searchResults.map((facet, index) => {
-                  const isSelected = appliedFilters.includes(facet.name)
-                  return <AttributeFacet qs={qs} isSelected={isSelected} facet={facet} key={facet.id || facet.value} filterName={name} facetKey={facetKey} updateAttribute={updateAttribute} />
-                })}
-            </SimpleBar>
+            {/* <SimpleBar className="widget-list cz-filter-list pt-1" style={{ maxHeight: '12rem' }} forceVisible="y" autoHide={false}> */}
+            {searchResults &&
+              searchResults.map((facet, index) => {
+                const isSelected = appliedFilters.includes(facet.name)
+                return <AttributeFacet qs={qs} isSelected={isSelected} facet={facet} key={facet.id || facet.value} filterName={name} facetKey={facetKey} updateAttribute={updateAttribute} />
+              })}
+            {/* </SimpleBar> */}
           </div>
         </div>
       </div>
