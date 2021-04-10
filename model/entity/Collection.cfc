@@ -767,23 +767,29 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		arrayAppend(collectionConfigStruct.filterAggregates,filterAggregate);
 	}
+	
+	public any function getCorrentCollectionEntityCache(){
+	    var collectionsCache = this.getService('HibachiCollectionService').getCollectionCache();
+	    var collectionObject = this.getCollectionObject();
+		
+		if(!structKeyExists(collectionsCache,collectionObject) ){
+			collectionsCache[collectionObject] = {};
+		}
+		
+		return collectionsCache[collectionObject];
+	}
 
 	public any function getCollectionCacheValue(required string cacheKey){
-		if(!structKeyExists(getService('HibachiCollectionService').getCollectionCache(),getCollectionObject())){
-			getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()] = {};
-		}
-		if(structKeyExists(getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()],arguments.cacheKey)){
-			return getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][arguments.cacheKey];
+	    var cache = this.getCorrentCollectionEntityCache();
+		
+		if(structKeyExists( cache, arguments.cacheKey) ){
+			return cache[arguments.cacheKey];
 		}
 	}
 
 	public void function setCollectionCacheValue(required string cacheKey, any value){
-		if(!structKeyExists(getService('HibachiCollectionService').getCollectionCache(),getCollectionObject())){
-			getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()] = {};
-		}
-
-		getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()][arguments.cacheKey] = arguments.value;
-
+	    var cache = this.getCorrentCollectionEntityCache();
+	    cache[arguments.cacheKey] = arguments.value;
 	}
 
 	//add Filter
@@ -1259,11 +1265,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionObject = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 		
 		if(variables.collectionConfig == '{}' ){
-			
+		    
 			var cacheKey = 'defaultColumns-#variables.collectionObject#-#getReportFlag()#-#arguments.addDefaultColumns#-#arguments.useAuthorizedPropertiesAsDefaultColumns#';
+
 			var cachedInitialCollectionConfig = getCollectionCacheValue(cacheKey);
 			
-			if(!isNull(cachedInitialCollectionConfig)){
+			if(!isNull(cachedInitialCollectionConfig) && cachedInitialCollectionConfig != '{}' ){
 				variables.collectionConfig = cachedInitialCollectionConfig;
 				return;
 			}
@@ -1295,14 +1302,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}';
 			variables.collectionConfig = defaultCollectionConfig;
 			if(arguments.useAuthorizedPropertiesAsDefaultColumns){
-				setDisplayProperties(arrayToList(getAuthorizedProperties()))
+				setDisplayProperties( 
+				    arrayToList(getAuthorizedProperties()) 
+				);
 			}
-			
-			cachedInitialCollectionConfig = getCollectionConfig();
-			
-			setCollectionCacheValue(cacheKey,cachedInitialCollectionConfig);
+            
+            // as we've modified the collection-config, let's serialize it again			
+			variables.collectionConfig = serializeJson(this.getCollectionConfigStruct());
+
+			setCollectionCacheValue(cacheKey, variables.collectionConfig);
 		}
-		
 	}
 	
 	/**

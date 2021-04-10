@@ -261,9 +261,6 @@ component  extends="HibachiService" accessors="true" {
 			this.getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
 			//attributeModelCache
 			clearAttributeMetaDataCache(arguments.attribute.getAttributeSet());
-			//clear public properties cache
-			var attributeEntityName = arguments.attribute.getAttributeSet().getAttributeSetObject();
-			this.getHibachiCacheService().resetCachedKey("getPublicAttributesByEntityName-#attributeEntityName#");
 		} else {
 		    this.getHibachiScope().setORMHasErrors(true);
 		}
@@ -276,11 +273,16 @@ component  extends="HibachiService" accessors="true" {
 		return arguments.attribute;
 	}
 
-	public void function clearAttributeMetaDataCache(required any attributeSet){
-		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel");
-		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_CacheKey");
-		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#");
-		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#");
+	public void function clearAttributeMetaDataCache(required any attributeSet ){
+		var entityName = arguments.attributeSet.getAttributeSetObject();
+		var cacheService = this.getHibachiCacheService();
+		
+		cacheService.resetCachedKey("attributeService_getAttributeModel");
+		cacheService.resetCachedKey("attributeService_getAttributeModel_CacheKey");
+		cacheService.resetCachedKey("attributeService_getAttributeModel_#entityName#");
+		cacheService.resetCachedKey("attributeService_getAttributeModel_#entityName#_#arguments.attributeSet.getAttributeSetCode()#");e
+		//clear public properties cache
+		cacheService.resetCachedKey("getPublicAttributesByEntityName_#entityName#");
 	}
 
 	// ======================  END: Save Overrides ============================
