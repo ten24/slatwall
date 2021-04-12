@@ -4207,7 +4207,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Populate with the data
 				orderDeliveryItem.setOrderItem( thisOrderItem );
 				orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
+				if(!isNull(arguments.orderDelivery.getLocation())){
 				orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
+				}
 				orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
 				this.saveOrderDeliveryItem( orderDeliveryItem );
 			}
