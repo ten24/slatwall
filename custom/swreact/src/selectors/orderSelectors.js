@@ -6,6 +6,19 @@ export const getAllAccountPaymentMethods = state => state.userReducer.accountPay
 export const getAllPickupLocations = state => state.cart.pickupLocations
 export const getAllOrderPayments = state => state.cart.orderPayments
 export const getAllEligiblePaymentMethodDetails = state => state.cart.eligiblePaymentMethodDetails
+export const getAllOrderItems = state => state.cart.orderItems
+export const isFetching = state => state.cart.isFetching
+
+export const hasOrderItems = createSelector(getAllOrderItems, orderItems => {
+  return orderItems.length ? true : false
+})
+
+export const orderItemsCountSelector = createSelector(getAllOrderItems, orderItems => {
+  return orderItems.length
+})
+export const disableInteractionSelector = createSelector([hasOrderItems, isFetching], (validOI, fetching) => {
+  return !(validOI && !fetching)
+})
 
 export const fulfillmentMethodSelector = createSelector(getAllOrderFulfillments, orderFulfillments => {
   let selectedFulfillmentMethod = { fulfillmentMethodID: '' }

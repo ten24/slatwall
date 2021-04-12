@@ -6,8 +6,9 @@ import { SwRadioSelect } from '../../components'
 import ShippingAddressForm from './ShippingAddressForm'
 const ShippingAddress = ({ onSave }) => {
   const dispatch = useDispatch()
+  const isFetching = useSelector(state => state.content.isFetching)
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
-  const stateCodeOptions = useSelector(state => state.content.stateCodeOptions['US']) || []
+  const stateCodeOptions = useSelector(state => state.content.stateCodeOptions)
   const [isEdit, setEdit] = useState(true)
 
   let initialValues = {
@@ -25,7 +26,7 @@ const ShippingAddress = ({ onSave }) => {
   }
 
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: false,
     initialValues: initialValues,
     onSubmit: values => {
       setEdit(!isEdit)
@@ -33,14 +34,18 @@ const ShippingAddress = ({ onSave }) => {
     },
   })
   useEffect(() => {
-    dispatch(getCountries())
-    dispatch(getStateCodeOptionsByCountryCode(formik.values.countryCode))
-  }, [dispatch, formik])
+    if (countryCodeOptions.length === 0 && !isFetching) {
+      dispatch(getCountries())
+    }
+    if (!stateCodeOptions[formik.values.countryCode] && !isFetching) {
+      dispatch(getStateCodeOptionsByCountryCode(formik.values.countryCode))
+    }
+  }, [dispatch, formik, stateCodeOptions, countryCodeOptions, isFetching])
 
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <ShippingAddressForm formik={formik} isEdit={isEdit} countryCodeOptions={countryCodeOptions} stateCodeOptions={stateCodeOptions} />
+        <ShippingAddressForm formik={formik} isEdit={isEdit} countryCodeOptions={countryCodeOptions} stateCodeOptions={stateCodeOptions[formik.values.countryCode]} />
         <div className="d-lg-flex pt-4 mt-3">
           <div className="w-50 pr-3"></div>
           <div className="w-50 pl-2">

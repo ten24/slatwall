@@ -1,54 +1,30 @@
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
 import { useFormatDateTime } from '../../../hooks/useFormatDate'
+import { ShippingAddressDetails, BillingAddressDetails, TermPaymentDetails, GiftCardDetails, CreditCardDetails, PickupLocationDetails } from '../../index'
 
 const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
-  const { orderOpenDateTime, billingAddress_streetAddress, billingAddress_city, billingAddress_stateCode, billingAddress_postalCode, billingAddress_name } = orderInfo
-  const { orderFulfillment_shippingAddress_name, orderFulfillment_shippingAddress_streetAddress, orderFulfillment_shippingAddress_city, orderFulfillment_shippingAddress_stateCode, orderFulfillment_shippingAddress_postalCode } = orderFulfillments
+  const { orderOpenDateTime } = orderInfo
+  const { orderFulfillment_fulfillmentMethod_fulfillmentMethodType, orderFulfillment_shippingAddress_name, orderFulfillment_shippingAddress_streetAddress, orderFulfillment_shippingAddress_city, orderFulfillment_shippingAddress_stateCode, orderFulfillment_shippingAddress_postalCode, orderFulfillment_pickupLocation_locationName } = orderFulfillments
   const { calculatedTotal, calculatedSubTotal, calculatedTaxTotal, calculatedFulfillmentTotal, calculatedDiscountTotal } = orderInfo
-  const { paymentMethod_paymentMethodName, creditCardLastFour } = orderPayments
+  const { paymentMethod_paymentMethodType, paymentMethod_paymentMethodName, creditCardLastFour, billingAddress_streetAddress, billingAddress_city, billingAddress_stateCode, billingAddress_postalCode, billingAddress_name, purchaseOrderNumber, nameOnCreditCard, creditCardType } = orderPayments
   const [formateDate] = useFormatDateTime({})
   const [formatCurrency] = useFormatCurrency({})
 
   return (
     <div className="row align-items-start mb-5 mr-3">
       <div className="col-md-7">
-        <div className="row">
-          <div className="col-6">
-            <h3 className="h6">Shipping Address</h3>
-            <p className="text-sm">
-              {orderFulfillment_shippingAddress_name}
-              {/* <br />
-              {BusinessName} */}
-              <br />
-              {orderFulfillment_shippingAddress_streetAddress}
-              <br />
-              {`${orderFulfillment_shippingAddress_city}, ${orderFulfillment_shippingAddress_stateCode} ${orderFulfillment_shippingAddress_postalCode}`}
-            </p>
-
-            {/* <h3 className="h6">PO Number</h3>
-            <p className="text-sm">{'PONumber'}</p> */}
-
+        <div className="row text-sm">
+          <div className="col-6 ">
+            {orderFulfillment_fulfillmentMethod_fulfillmentMethodType === 'shipping' && <ShippingAddressDetails className="" shippingAddress={{ name: orderFulfillment_shippingAddress_name, streetAddress: orderFulfillment_shippingAddress_streetAddress, city: orderFulfillment_shippingAddress_city, stateCode: orderFulfillment_shippingAddress_stateCode, postalCode: orderFulfillment_shippingAddress_postalCode }} shippingAddressNickname={''} />}
+            {orderFulfillment_fulfillmentMethod_fulfillmentMethodType === 'pickup' && <PickupLocationDetails className="" pickupLocation={{ locationName: orderFulfillment_pickupLocation_locationName }} />}
             <h3 className="h6">Date Placed</h3>
-            <p className="text-sm">{formateDate(orderOpenDateTime)}</p>
+            <p>{formateDate(orderOpenDateTime)}</p>
           </div>
           <div className="col-6">
-            <h3 className="h6">Billing Address</h3>
-            <p className="text-sm">
-              {billingAddress_name}
-              {/* <br />
-              {billingAddress_BuisnessName} */}
-              <br />
-              {billingAddress_streetAddress}
-              <br />
-              {`${billingAddress_city}, ${billingAddress_stateCode} ${billingAddress_postalCode}`}
-            </p>
-
-            <h3 className="h6">Payment Method</h3>
-            <p className="text-sm">
-              {paymentMethod_paymentMethodName}
-              <br />
-              Card ending in {creditCardLastFour}
-            </p>
+            <BillingAddressDetails billingAddressNickname={''} orderPayment={{ billingAddress: { name: billingAddress_name, streetAddress: billingAddress_streetAddress, city: billingAddress_city, stateCode: billingAddress_stateCode, postalCode: billingAddress_postalCode } }} />
+            {paymentMethod_paymentMethodType === 'termPayment' && <TermPaymentDetails termPayment={{ purchaseOrderNumber: purchaseOrderNumber, paymentMethod: { paymentMethodName: paymentMethod_paymentMethodName } }} />}
+            {paymentMethod_paymentMethodType === 'giftCard' && <GiftCardDetails />}
+            {paymentMethod_paymentMethodType === 'creditCard' && <CreditCardDetails creditCardPayment={{ creditCardType, nameOnCreditCard, creditCardLastFour, paymentMethod: { paymentMethodName: paymentMethod_paymentMethodName } }} />}
           </div>
         </div>
       </div>
