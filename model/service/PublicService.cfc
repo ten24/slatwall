@@ -877,14 +877,27 @@ component  accessors="true" output="false"
             }
         }
         
-        var repsonse = {
-            "title": productType.getProductTypeName(),
-            "productTypeID": productType.getProductTypeID(),
-            "subProductTypes" : subProductTypes,
+        var response = {
+            "title"     : productType.getProductTypeName(),
+            "urlTitle"  : productType.getUrlTitle(),
+            "imageFile" : productType.getImageFile(),
+            "productTypeID" : productType.getProductTypeID(),
+            "productTypeNamePath" : productType.getProductTypeNamePath()
+        };
+
+        // if image is not empty, prefix with base-path
+        if( len(response.imageFile) ){
+            response['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & response.imageFile;
+        }    
+    
+        if( subProductTypes.len() > 0 ){
+           response["subProductTypes"] = subProductTypes; 
+        } else {
+            response["showProducts"] = true;
         }
-        arguments.data.ajaxResponse['data'] = repsonse;
-        getHibachiScope().addActionResult( "public:product.getProductType", false );
         
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult( "public:product.getProductType", false );
     }
     
      /**
