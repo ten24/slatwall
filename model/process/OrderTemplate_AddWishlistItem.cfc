@@ -50,11 +50,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="orderTemplate";
-	property name="sku";
+	property name="sku" cfc="Sku";
 	
 	property name="skuID";
 
 	public any function getSku(){
-		return getService('SkuService').getSku(getSkuID());
+		return this.getService('SkuService').getSku(this.getSkuID());
 	}
 }
