@@ -1,0 +1,117 @@
+//
+// Blog module styles
+// --------------------------------------------------
+
+
+// Entry title
+
+.blog-entry-title > a {
+  color: $blog-entry-title-color;
+  text-decoration: none !important;
+  line-height: 1.3;
+  &:hover {
+    color: $blog-entry-title-hover-color;
+  }
+}
+
+
+// Entry thumb
+
+.blog-entry-thumb {
+  display: block;
+  position: relative;
+  > img {
+    display: block;
+    width: 100%;
+  }
+  &.video-item {
+    &::before, &::after { display: none; }
+  }
+}
+
+
+// Entry meta
+
+.blog-entry-meta-link {
+  display: inline-block;
+  color: $blog-entry-meta-link-color !important;
+  font-weight: normal;
+  > i {
+    margin: {
+      top: -.0625rem;
+      right: .375rem;
+    }
+    vertical-align: middle;
+  }
+  &:hover {
+    color: $blog-entry-meta-link-hover-color !important;
+  }
+}
+
+.blog-entry-meta-label {
+  position: absolute;
+  top: $spacer;
+  right: $spacer;
+  padding: $blog-entry-meta-label-padding-y $blog-entry-meta-label-padding-x;
+  @include border-radius($border-radius-sm);
+  background-color: $blog-entry-meta-label-bg;
+  color: $blog-entry-meta-label-color;
+  text-decoration: none !important;
+  z-index: 5;
+  > i {
+    margin: {
+      top: -.0625rem;
+      right: .375rem;
+    }
+    color: $gray-600;
+    vertical-align: middle;
+  }
+}
+
+.blog-entry-meta-divider {
+  display: inline-block;
+  width: $border-width;
+  height: 1rem;
+  margin: 0 $spacer;
+  background-color: darken($border-color, 3%);
+  vertical-align: middle;
+}
+
+.blog-entry-author-ava {
+  display: inline-block;
+  width: $blog-entry-meta-avatar-size;
+  height: $blog-entry-meta-avatar-size;
+  margin-right: .5rem;
+  padding: .125rem;
+  border: $border-width solid $border-color;
+  border-radius: 50%;
+  vertical-align: middle;
+  > img {
+    display: block;
+    width: 100%;
+    border-radius: 50%;
+  }
+}
+
+
+// Blog list layout
+@include media-breakpoint-up(md) {
+  .blog-list {
+    display: flex;
+    .left-column {
+      width: 37%;
+      padding-right: $grid-gutter-width / 2;
+    }
+    .right-column {
+      width: 63%;
+      padding-left: $grid-gutter-width / 2;
+    }
+  }
+}
+
+
+// Featured posts carousel
+
+.featured-posts-carousel [data-controls] {
+  margin-top: -$carousel-control-size;
+}

@@ -1,0 +1,118 @@
+//
+// Steps
+// --------------------------------------------------
+
+
+// Base styles
+
+.steps {
+  display: flex;
+  width: 100%;
+}
+.step-item {
+  flex-basis: 0;
+  flex-grow: 1;
+  transition: $step-transition;
+  text: {
+    align: center;
+    decoration: none !important;
+  }
+  &:first-child .step-progress {
+    @include border-radius($step-bar-border-radius);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  &:last-child .step-progress {
+    @include border-radius($step-bar-border-radius);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+.step-progress {
+  position: relative;
+  width: 100%;
+  height: $step-bar-height;
+}
+.step-count {
+  position: absolute;
+  top: -(($step-count-size / 2) - .0625rem);
+  left: 50%;
+  width: $step-count-size;
+  height: $step-count-size;
+  margin-left: -($step-count-size / 2);
+  border-radius: 50%;
+  font-size: $step-count-font-size;
+  line-height: $step-count-size;
+}
+.step-label {
+  padding-top: ($step-count-size / 2) + .75rem;
+  > i {
+    margin: {
+      top: -.25rem;
+      right: .425rem;
+    }
+    font-size: 1.2em;
+    vertical-align: middle;
+  }
+}
+@include media-breakpoint-down('sm') {
+  .step-label {
+    font-size: $font-size-xs;
+    > i { display: none; }
+  }
+}
+
+
+// Dark skin
+
+.steps-dark {
+  .step-item {
+    color: $step-dark-color;
+  }
+  .step-count,
+  .step-progress {
+    color: $step-dark-progress-color;
+    background-color: $step-dark-progress-bg;
+  }
+  .step-item:hover {
+    color: $step-dark-hover-color;
+  }
+  .step-item.active {
+    &.current {
+      color: $step-dark-active-color;
+      pointer-events: none;
+    }
+    .step-count,
+    .step-progress {
+      color: $step-dark-progress-active-color;
+      background-color: $step-dark-progress-active-bg;
+    }
+  }
+}
+
+
+// Light skin
+.steps-light {
+  .step-item {
+    color: $step-light-color;
+  }
+  .step-count,
+  .step-progress {
+    color: $step-light-progress-color;
+    background-color: $step-light-progress-bg;
+  }
+  .step-item:hover {
+    color: $step-light-hover-color;
+  }
+  .step-item.active {
+    &.current {
+      color: $step-light-active-color;
+      pointer-events: none;
+    }
+    .step-count,
+    .step-progress {
+      color: $step-light-progress-active-color;
+      background-color: $step-light-progress-active-bg;
+    }
+  }
+}
