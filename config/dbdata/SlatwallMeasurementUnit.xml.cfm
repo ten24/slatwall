@@ -14,5 +14,8 @@
 		<Record unitCode="mg" measurementType="weight" unitName="Milligram" conversionRatio="453592.37" />
 		<Record unitCode='mL' measurementType="volume" unitName="Milliliter" conversionRatio="1000" />
 		<Record unitCode='L' measurementType="volume" unitName="Liter" conversionRatio="1" />
+		<Record unitCode='m' measurementType="length" unitName="Meter" conversionRatio="100" />
+		<Record unitCode='in' measurementType="length" unitName="Inch" conversionRatio="2.54" />
+		<Record unitCode='ft' measurementType="length" unitName="Foot" conversionRatio="30.48" />
 	</Records>
 </Table>
