@@ -1395,7 +1395,7 @@
 	             apiRequestAudit.setParams( serializeJson(form) );
 	        }
 	        
-	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getStatus() );
 	        
 	        apiRequestAudit.setRequestType( arguments.requestType);
 	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
@@ -1583,6 +1583,26 @@
     		*/
     		return csvParsedRows;
     	}
+    	
+    	
+    public string function getSQLfromHQL(required string HQL, required struct hqlParams) {
+
+		var hydratedHQL = arguments.HQL; 
+		for(var key in arguments.hqlParams ){
+			hydratedHQL = replace(hydratedHQL, ":#key#", "'#arguments.hqlParams[key]#'");
+		}
+		
+		// java magic
+		var javaTranslatorFactory = createObject("java", "org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+		var javaCollections = createObject("java", "java.util.Collections");
+		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hydratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
+		javaTranslator.compile(javaCollections.EMPTY_MAP, false);
+		var sqlStr = javaTranslator.getSQLString();
+
+		// sqlstr = rereplace(sqlstr, "as .*?\d+_\d+_", '', "ALL"); //\sas\s\w+\d+_\d+_,
+
+		return sqlstr;
+	}
 
 
 	</cfscript>

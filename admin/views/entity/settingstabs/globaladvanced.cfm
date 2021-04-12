@@ -90,6 +90,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalDisableUninstalledIntegration"/>
 		<swa:SlatwallSetting settingName="globalIntegrationRequestLog"/>
 		<swa:SlatwallSetting settingName="globalIntegrationRequestLogExpirationDays"/>
+		<swa:SlatwallSetting settingName="globalPublicApiEntities" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

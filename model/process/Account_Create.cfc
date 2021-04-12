@@ -65,21 +65,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accessID";
 	property name="organizationFlag" hb_formFieldType="yesno" default=0;
 	property name="accountID" hb_formFieldType="textautocomplete" cfc="Account";
-	property name="parentAccountID";
+	property name="parentAccountID" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="childAccountID";
 	property name="birthDate";
-	property name="accounttype";
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
 	property name="childAccount" cfc="Account" fieldtype="many-to-one";
 	property name="accountCreatedSite" cfc="Site" fieldtype="many-to-one";
 	
 	public any function getParentAccount(){
 		if(!structKeyExists(variables,'parentAccount')){
-			if(!isNull(getAccountID())){
-				if(listLen(getAccountID()) > 1){
-					variables.accountID = listFirst(variables.accountID);
+			if(!isNull(getParentAccountID())){
+				if(listLen(getParentAccountID()) > 1){
+					variables.parentAccountID = listFirst(variables.parentAccountID);
 				}
-				variables.parentAccount = getService('accountService').getAccount(getAccountID());	
+				variables.parentAccount = getService('accountService').getAccount(getParentAccountID());	
 			}else{
 				return;
 			}

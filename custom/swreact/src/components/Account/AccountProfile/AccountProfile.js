@@ -1,4 +1,4 @@
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import { useFormik } from 'formik'
@@ -9,10 +9,11 @@ import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../../../services'
 import { useTranslation } from 'react-i18next'
 
-const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
+const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
   const dispatch = useDispatch()
   const MySwal = withReactContent(Swal)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const user = useSelector(state => state.userReducer)
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -73,7 +74,6 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
       }
     })
   }
-  //                    {t('token')}
 
   return (
     <AccountLayout crumbs={crumbs} title={title}>
@@ -132,10 +132,5 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle, user }) => {
     </AccountLayout>
   )
 }
-const mapStateToProps = state => {
-  return {
-    user: state.userReducer,
-  }
-}
 
-export default connect(mapStateToProps)(AccountProfile)
+export default AccountProfile

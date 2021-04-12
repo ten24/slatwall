@@ -149,7 +149,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="salePrice" type="struct" persistent="false";
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
-
+	property name="allowableRefundPercent" persistent="false";
 	
  	
 	public boolean function getQuantityHasChanged(){
@@ -472,7 +472,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getExtendedPrice() {
-		if(!structKeyExists(variables,'extendedPrice')){
+		if(!structKeyExists(variables,'extendedPrice_price')){
 			var price = 0;
 		
 			//get bundle price
@@ -481,8 +481,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			}else if(!isNull(getPrice())){
 				price = getPrice();
 			}
-			variables.extendedPrice = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
+			variables.extendedPrice_price = price;
 		}
+		variables.extendedPrice = val(getService('HibachiUtilityService').precisionCalculate(round(variables.extendedPrice_price * val(getQuantity()) * 100) / 100));
 		return variables.extendedPrice;
 	}
 	
@@ -1154,6 +1155,27 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 		return variables.orderItemStatusType;
 	}
+	
+	public any function getAllowableRefundPercent(){
+        if(!structKeyExists(variables,'allowableRefundPercent')){
+	    	var map = getSku().setting('skuAllowableRefundPercentages')
+	        var dateDiff = 0;
+	        if(!isNull(this.getOrder().getOrderCloseDateTime())){
+	            dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
+	        }
+	        
+            variables.allowableRefundPercent = 100
+            if(!isNull(map)){
+		        map = DeserializeJSON(map);
+		        for (var rule in map) {
+					if(rule.minDays <= dateDiff && rule.maxDays >= dateDiff){
+						variables.allowableRefundPercent = rule.refundPercent
+					}
+				}
+            }
+        }
+        return variables.allowableRefundPercent;
+    }
 
 	// ==============  END: Overridden Implicet Getters ====================
 

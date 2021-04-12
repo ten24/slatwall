@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router'
 
 const SEO = () => {
-  const configuration = useSelector(state => state.configuration)
-  const contentStore = useSelector(state => state.content)
   let loc = useLocation()
-  const { site = {}, seo = {} } = configuration
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
+  const configuration = useSelector(state => state.configuration)
+  const content = useSelector(state => state.content[path])
+  const { site = {}, seo = {} } = configuration
   let title = site.siteName
-  if (contentStore[path]) {
-    title = contentStore[path].setting.contentHTMLTitleString
+  if (content) {
+    title = content.setting.contentHTMLTitleString
   }
   return (
     <Helmet title={title}>

@@ -4,39 +4,54 @@ import { SWImage } from '..'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useGetEntity } from '../../hooks/useAPI'
+import { useEffect } from 'react'
+import { getShopBy } from '../../selectors/contentSelectors'
+import { getBrandRoute } from '../../selectors/configurationSelectors'
 
-const BandSlide = ({ associatedImage, linkUrl = '/all', title, slideKey }) => {
+const BandSlide = ({ brandLogo, urlTitle = '', title, customPath = '/custom/assets/files/associatedimage/' }) => {
+  const brand = useSelector(getBrandRoute)
   return (
-    <div index={slideKey} className="repeater">
+    <div className="repeater">
       <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
-        <Link className="d-block p-4" to={linkUrl}>
-          <SWImage className="d-block mx-auto" customPath="/custom/assets/files/associatedimage/" src={associatedImage} alt={title} />
+        <Link className="d-block p-4" to={`/${brand}/${urlTitle}`}>
+          <SWImage className="d-block mx-auto" customPath={customPath} src={brandLogo} alt={title} />
         </Link>
       </div>
     </div>
   )
 }
 
-function HomeBrand(props) {
-  const { t, i18n } = useTranslation()
-  const homeBrand = useSelector(state => {
-    return Object.keys(state.content)
-      .filter(key => {
-        return key.includes('shop-by/')
-      })
-      .map(key => {
-        return state.content[key]
-      })
-  })
-  const shopBy = useSelector(state => {
-    return Object.keys(state.content)
-      .filter(key => {
-        return key === 'home/shop-by'
-      })
-      .map(key => {
-        return state.content[key]
-      })
-  })
+const getBrandLogo = brand => {
+  let attr = []
+  if (brand.attributes) {
+    attr = brand.attributes.filter(attribute => {
+      return attribute.attributeCode === 'brandLogo'
+    })
+  }
+  if (attr.length > 0) {
+    return attr[0].attributeValue
+  } else if (brand.imagePath) {
+    return brand.imagePath.split('/').reverse()[0]
+  }
+  return ''
+}
+
+const HomeBrand = props => {
+  const { t } = useTranslation()
+  let [request, setRequest] = useGetEntity()
+  const shopBy = useSelector(getShopBy)
+
+  useEffect(() => {
+    let didCancel = false
+    if (!request.isFetching && !request.isLoaded && !didCancel) {
+      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { 'f:brandFeatured': 1 }, makeRequest: true })
+    }
+    return () => {
+      didCancel = true
+    }
+  }, [request, setRequest])
+
   const settings = {
     dots: false,
     infinite: true,
@@ -65,21 +80,19 @@ function HomeBrand(props) {
       },
     ],
   }
-
   return (
     <div style={{ height: 'fit-content' }} className="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
-      <h3 className="h3">{shopBy.length > 0 && shopBy[0].title}</h3>
+      <h3 className="h3">{shopBy.title}</h3>
       <Slider {...settings}>
-        {homeBrand &&
-          homeBrand.map((slide, index) => {
-            return <BandSlide {...slide} key={index} slideKey={index} />
+        {request.isLoaded &&
+          request.data.map((slide, index) => {
+            return <BandSlide key={slide.brandID} {...slide} customPath="/custom/assets/images/brand/logo/" brandLogo={getBrandLogo(slide)} />
           })}
       </Slider>
-      {shopBy.length > 0 && (
-        <Link className="btn btn-primary mt-3 btn-long" to={shopBy[0].linkUrl || '/'}>
-          {t('frontend.home.more_brands')}
-        </Link>
-      )}
+
+      <Link className="btn btn-primary mt-3 btn-long" to={shopBy.linkUrl}>
+        {t('frontend.home.more_brands')}
+      </Link>
     </div>
   )
 }

@@ -201,7 +201,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					var entityMethodInvoked = invokeMethodOrProcessOnService(arguments.entityQueue, entity, entityService);  
 					
 					if( entityMethodInvoked ){
-						ormflush();
+						this.getHibachiScope().hibachiORMFlush();
 					} else {
 						ORMClearSession();
 						this.getHibachiScope().setORMHasErrors(false);

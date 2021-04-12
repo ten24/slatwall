@@ -172,7 +172,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Final Loop over orderItems to apply taxRates either from internal calculation, or from integrations rate calculation
 		for(var orderItem in arguments.order.getOrderItems()) {
-
 			// Apply Tax for sale items
 			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
 
@@ -269,14 +268,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								}
 								
 								var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
-
+								var itemTotal = orderItem.getCalculatedItemTotal();
+								
 								var newAppliedTax = this.newTaxApplied();
 								newAppliedTax.setAppliedType("orderItem");
 								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
-								if(!IsNull(taxRateItemResponse)){
-								newAppliedTax.setVATPrice( taxRateItemResponse.getVATPrice() );
-								newAppliedTax.setVATAmount( taxRateItemResponse.getVATAmount() );
-								}
+								newAppliedTax.setVATPrice( this.getVATPrice(taxCategoryRate, itemTotal) );
+								newAppliedTax.setVATAmount( this.getVATAmount(taxCategoryRate, itemTotal) );
 								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 								newAppliedTax.setOrderItem( orderItem );
 								newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
@@ -290,7 +288,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 								newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 								newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-
 								// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 								if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 									newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
@@ -473,16 +470,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										continue;
 									}
 									var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
+									var itemTotal = orderItem.getExtendedPriceAfterDiscount();
 
 									var newAppliedTax = this.newTaxApplied();
 									newAppliedTax.setAppliedType("orderItem");
 									newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
-									newAppliedTax.setVATPrice( taxRateItemResponse.getVATPrice() );
-									newAppliedTax.setVATAmount( taxRateItemResponse.getVATAmount() );
+									newAppliedTax.setVATPrice( this.getVATPrice(taxCategoryRate, itemTotal) );
+									newAppliedTax.setVATAmount( this.getVATAmount(taxCategoryRate, itemTotal) );
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderItem( orderItem );
 									newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
-									newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * taxCategoryRate.getTaxRate()) / 100 );
+									newAppliedTax.setTaxLiabilityAmount( round(itemTotal * taxCategoryRate.getTaxRate()) / 100 );
 	
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
@@ -848,6 +846,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	
+	public any function getVATAmount(required any taxCategoryRate, required any totalItemPrice){
+		var taxRate = arguments.taxCategoryRate.getTaxRate();
+		
+		if( !isNull(totalItemPrice) && !isNull(taxRate) ){
+			return numberFormat(( totalItemPrice * taxRate ) / ( 100 + taxRate ), "0.00");
+		}
+		return 0;
+	}
+	
+	public any function getVATPrice(required any taxCategoryRate, required any totalItemPrice){
+		var taxRate = arguments.taxCategoryRate.getTaxRate();
+		var vatAmount = this.getVATAmount(arguments.taxCategoryRate, arguments.totalItemPrice);
+		
+		if( !isNull(vatAmount) ){
+			return (totalItemPrice - vatAmount);
+		}
+		return totalItemPrice;
+	}
+	
 	public any function generateTaxRatesRequestBeanForIntegration( required any entity, required any integration ){
 
 		if (arguments.entity.getClassName() == 'orderDelivery'){
@@ -1164,6 +1181,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return taxRatesRequestBean;
 	}
 
+	
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================

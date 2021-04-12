@@ -1,25 +1,34 @@
 import { login } from '../../../actions/authActions'
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useRouteMatch } from 'react-router-dom'
-
+import * as Yup from 'yup'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
   let match = useRouteMatch()
-  const { t, i18n } = useTranslation()
-
+  const { t } = useTranslation()
+  const loginSchema = Yup.object().shape({
+    loginEmail: Yup.string().email('Invalid email').required('Required'),
+    loginPassword: Yup.string().required('Required'),
+  })
   const formik = useFormik({
     initialValues: {
       loginEmail: '',
       loginPassword: '',
     },
+    validateOnChange: false,
+    validationSchema: Yup.object().shape({
+      loginEmail: Yup.string().email('Invalid email').required('Required'),
+      loginPassword: Yup.string().required('Required'),
+    }),
     onSubmit: values => {
       dispatch(login(values.loginEmail, values.loginPassword))
     },
   })
+
   return (
     <div className="col-md-6">
       <div className="card box-shadow">
@@ -27,16 +36,17 @@ const LoginForm = () => {
           <h2 className="h4 mb-1">{t('frontend.account.sign_in')}</h2>
           <p className="font-size-sm text-muted mb-4">
             {`${t('frontend.account.no_account')} `} <Link to={`${match.path}/createAccount`}>{t('frontend.account.request')}</Link>.
-
           </p>
           <form onSubmit={formik.handleSubmit}>
             <div className="form-group">
               <label htmlFor="loginEmail">{t('frontend.account.email')}</label>
-              <input value={formik.values.loginEmail} onChange={formik.handleChange} autoComplete="email" required className="form-control" type="email" id="loginEmail" />
+              <input value={formik.values.loginEmail} onBlur={formik.handleBlur} onChange={formik.handleChange} autoComplete="email" className="form-control" type="email" id="loginEmail" />
+              {formik.errors.loginEmail && <span className="form-error-msg">{formik.errors.loginEmail}</span>}
             </div>
             <div className="form-group">
               <label htmlFor="loginPassword">{t('frontend.account.password')}</label>
-              <input value={formik.values.loginPassword} onChange={formik.handleChange} autoComplete="current-password" required className="form-control" type="password" id="loginPassword" />
+              <input value={formik.values.loginPassword} onBlur={formik.handleBlur} onChange={formik.handleChange} autoComplete="current-password" className="form-control" type="password" id="loginPassword" />
+              {formik.errors.loginPassword && formik.touched.loginPassword && <span className="form-error-msg">{formik.errors.loginPassword}</span>}
             </div>
             <div className="text-right">
               <Link to={`${match.path}/forgotPassword`} className="nav-link-inline font-size-sm">
@@ -56,7 +66,7 @@ const LoginForm = () => {
   )
 }
 
-const AccountLogin = ({ auth }) => {
+const AccountLogin = () => {
   return (
     <div className="container py-4 py-lg-5 my-4">
       <div className="row d-flex justify-content-center">
@@ -65,11 +75,5 @@ const AccountLogin = ({ auth }) => {
     </div>
   )
 }
-const mapStateToProps = state => {
-  return {
-    auth: state.authReducer,
-    user: state.userReducer,
-  }
-}
 
-export default connect(mapStateToProps)(AccountLogin)
+export default AccountLogin

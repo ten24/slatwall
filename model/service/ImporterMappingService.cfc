@@ -93,18 +93,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    
 	    if( !isNull(arguments.data) && !this.hibachiIsEmpty(arguments.data) ){
 	        arguments.importerMapping.populate(arguments.data);
-    	    var mappingStruct = deSerializeJSON( arguments.importerMapping.getMapping() );
-            mappingStruct['name']        = arguments.importerMapping.getName();
-            mappingStruct['entityName']  = arguments.importerMapping.getBaseObject();
-            mappingStruct['mappingCode'] = arguments.importerMapping.getMappingCode();
-            arguments.importerMapping.setMapping(serializeJson(mappingStruct));
+	        
+	        if(IsJSON(arguments.importerMapping.getMapping())){
+	        	var mappingStruct = deSerializeJSON( arguments.importerMapping.getMapping() );
+	            mappingStruct['name']        = arguments.importerMapping.getName();
+	            mappingStruct['entityName']  = arguments.importerMapping.getBaseObject();
+	            mappingStruct['mappingCode'] = arguments.importerMapping.getMappingCode();
+	            arguments.importerMapping.setMapping(serializeJson(mappingStruct));
+	        }
 	    }
 	    
         arguments.importerMapping = super.saveImporterMapping(argumentCollection=arguments);
         if( !arguments.importerMapping.hasErrors() ){
             this.putMappingIntoCache(mappingStruct);
         }
-		 
 		return arguments.importerMapping;
 	}
 	

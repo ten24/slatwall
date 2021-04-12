@@ -1,13 +1,43 @@
-const HeartButton = ({ isSaved, className = 'btn-wishlist btn-sm' }) => {
-  if (isSaved) {
+import { useDispatch, useSelector } from 'react-redux'
+import { addWishlistItem, removeWishlistItem } from '../../actions/userActions'
+import useWishList from '../../hooks/useWishlist'
+
+const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
+  const dispatch = useDispatch()
+  const [isOnWishlist] = useWishList(skuID)
+  const primaryColor = useSelector(state => state.configuration.theme.primaryColor)
+
+  if (isOnWishlist) {
     return (
-      <button className={className} type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
-        <i className="far fa-heart" style={{ color: '#5f1018' }}></i>
+      <button
+        className={className}
+        onClick={e => {
+          e.preventDefault()
+          dispatch(removeWishlistItem(skuID))
+        }}
+        type="button"
+        data-toggle="tooltip"
+        data-placement="left"
+        title=""
+        data-original-title="Remove from wishlist"
+      >
+        <i className="fas fa-heart" style={{ color: `#${primaryColor}` }}></i>
       </button>
     )
   } else {
     return (
-      <button className={className} type="button" data-toggle="tooltip" data-placement="left" title="" data-original-title="Add to wishlist">
+      <button
+        onClick={e => {
+          e.preventDefault()
+          dispatch(addWishlistItem(skuID))
+        }}
+        className={className}
+        type="button"
+        data-toggle="tooltip"
+        data-placement="left"
+        title=""
+        data-original-title="Add to wishlist"
+      >
         <i className="far fa-heart"></i>
       </button>
     )

@@ -1,16 +1,14 @@
-import React, { useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
-import { connect, useDispatch } from 'react-redux'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import debounce from 'lodash/debounce'
-import { setKeyword } from '../../actions/productSearchActions'
 import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
 import AccountBubble from './AccountBubble'
-import logo from '../../assets/images/sb-logo.png'
-import mobileLogo from '../../assets/images/sb-logo-mobile.png'
+import logo from '../../assets/images/logo.png'
+import mobileLogo from '../../assets/images/logo-mobile.png'
 import { useTranslation } from 'react-i18next'
 import groupBy from 'lodash/groupBy'
+import queryString from 'query-string'
+import { useSelector } from 'react-redux'
 
 const extractMenuFromContent = content => {
   let menu = Object.keys(content)
@@ -34,7 +32,7 @@ const extractMenuFromContent = content => {
         return item.children.length
       })
       .filter(item => {
-        return item.urlTitle != 'productcategories'
+        return item.urlTitle !== 'productcategories'
       })
       .sort((a, b) => {
         return a.sortOrder - b.sortOrder
@@ -45,7 +43,7 @@ const extractMenuFromContent = content => {
 
 const MegaMenu = props => {
   let history = useHistory()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <li className="nav-item dropdown">
@@ -84,19 +82,15 @@ const MegaMenu = props => {
   )
 }
 
-function Header({ menuItems, mainNavigation }) {
-  const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
-
-  const [searchTerm, setSearchTerm] = useState('')
+function Header() {
+  const { t } = useTranslation()
   let history = useHistory()
-
-  const slowlyRequest = useCallback(
-    debounce(value => {
-      dispatch(setKeyword(value))
-    }, 500),
-    []
-  )
+  const content = useSelector(state => state.content)
+  const { shopByManufacturer } = useSelector(state => state.configuration)
+  const menuItems = extractMenuFromContent(content)
+  const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
+  const textInput = useRef(null)
+  const mobileTextInput = useRef(null)
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -115,15 +109,16 @@ function Header({ menuItems, mainNavigation }) {
                   <input
                     className="form-control appended-form-control"
                     type="text"
-                    value={searchTerm}
+                    ref={textInput}
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
-                        history.push('/products')
+                        e.preventDefault()
+                        history.push({
+                          pathname: '/products',
+                          search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                        })
+                        textInput.current.value = ''
                       }
-                    }}
-                    onChange={e => {
-                      setSearchTerm(e.target.value)
-                      slowlyRequest(e.target.value)
                     }}
                     placeholder={t('frontend.search.placeholder')}
                   />
@@ -131,8 +126,13 @@ function Header({ menuItems, mainNavigation }) {
                     <span className="input-group-text">
                       <i
                         style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          history.push('/products')
+                        onClick={e => {
+                          e.preventDefault()
+                          history.push({
+                            pathname: '/products',
+                            search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
+                          })
+                          textInput.current.value = ''
                         }}
                         className="far fa-search"
                       ></i>
@@ -143,12 +143,7 @@ function Header({ menuItems, mainNavigation }) {
                   <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
                     <span className="navbar-toggler-icon"></span>
                   </button>
-                  <a className="navbar-tool navbar-stuck-toggler" href="#">
-                    <span className="navbar-tool-tooltip">{t('frontend.nav.expand')}</span>
-                    <div className="navbar-tool-icon-box">
-                      <i className="far fa-bars"></i>
-                    </div>
-                  </a>
+
                   <Link className="navbar-tool ml-1 ml-lg-0 mr-n1 mr-lg-2" to="/my-account" data-toggle="modal">
                     <AccountBubble />
                   </Link>
@@ -179,10 +174,35 @@ function Header({ menuItems, mainNavigation }) {
               <div className="input-group-overlay d-lg-none my-3 ml-0">
                 <div className="input-group-prepend-overlay">
                   <span className="input-group-text">
-                    <i className="far fa-search"></i>
+                    <i
+                      className="far fa-search"
+                      onClick={e => {
+                        e.preventDefault()
+                        history.push({
+                          pathname: '/products',
+                          search: mobileTextInput.stringify({ keyword: mobileTextInput.current.value }, { arrayFormat: 'comma' }),
+                        })
+                        mobileTextInput.current.value = ''
+                      }}
+                    />
                   </span>
                 </div>
-                <input className="form-control prepended-form-control" type="text" placeholder={t('frontend.search.placeholder')} />
+                <input
+                  className="form-control prepended-form-control"
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      history.push({
+                        pathname: '/products',
+                        search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                      })
+                      mobileTextInput.current.value = ''
+                    }
+                  }}
+                  type="text"
+                  ref={mobileTextInput}
+                  placeholder={t('frontend.search.placeholder')}
+                />
               </div>
 
               <ul className="navbar-nav nav-categories">
@@ -190,14 +210,16 @@ function Header({ menuItems, mainNavigation }) {
                   return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} />
                 })}
               </ul>
-              <ul className="navbar-nav mega-nav ml-lg-2">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    <i className="far fa-industry-alt mr-2"></i>
-                    {t('frontend.nav.manufacturer')}
-                  </Link>
-                </li>
-              </ul>
+              {shopByManufacturer.showInMenu && (
+                <ul className="navbar-nav mega-nav ml-lg-2">
+                  <li className="nav-item">
+                    <Link className="nav-link" to={shopByManufacturer.slug}>
+                      <i className="far fa-industry-alt mr-2"></i>
+                      {t('frontend.nav.manufacturer')}
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </div>
           </div>
         </div>
@@ -205,16 +227,5 @@ function Header({ menuItems, mainNavigation }) {
     </header>
   )
 }
-Header.propTypes = {
-  menuItems: PropTypes.array,
-  mainNavigation: PropTypes.string,
-}
-function mapStateToProps(state) {
-  const menuItems = extractMenuFromContent(state.content)
-  return {
-    menuItems,
-    mainNavigation: state.content['header/main-navigation'] ? state.content['header/main-navigation'].customBody : '',
-  }
-}
 
-export default connect(mapStateToProps)(Header)
+export default Header

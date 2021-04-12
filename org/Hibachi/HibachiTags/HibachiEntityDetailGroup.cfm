@@ -74,9 +74,15 @@
 	<cfoutput>
 		<cfif not attributes.createOrModalFlag>
 			<div class="row s-pannel-control">
-				<div class="col-md-12 s-toggle-panels">
-					<a href="##" class="j-openall j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Expand All"><i class="fa fa-expand"></i></a>
-					<a href="##" class="j-closeall j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Collapse All"><i class="fa fa-compress"></i></a>
+				<div class="col-md-12 s-toggle-panels ">
+					<a href="##" class="j-openall ec-tool-tip-item">
+						<i class="fa fa-expand"></i>
+						<span class="ec-tool-tip">Expand All</span>
+					</a>
+					<a href="##" class="j-closeall ec-tool-tip-item">
+						<i class="fa fa-compress"></i>
+						<span class="ec-tool-tip">Collapse All</span>
+					</a>
 				</div>
 			</div>
 

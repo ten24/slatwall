@@ -1,9 +1,14 @@
 import { Layout } from '../../components'
+import ListingPage from '../../components/Listing/Listing'
 
-const Category = () => {
+const Category = props => {
+  const path = props.location.pathname.split('/').reverse()
+  const filter = {
+    category: path[0],
+  }
   return (
     <Layout>
-      <h1>Category Page</h1>
+      <ListingPage preFilter={filter} hide={'category'} />
     </Layout>
   )
 }
