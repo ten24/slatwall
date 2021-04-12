@@ -6,6 +6,7 @@
 *.lic
 *.pfx
 *.js.map
+!custom/swreact/**/**
 #custom/
 _notes/
 aspnet_client/
