@@ -68,7 +68,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="parentAccountID" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="childAccountID";
 	property name="birthDate";
-	property name="accounttype";
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
 	property name="childAccount" cfc="Account" fieldtype="many-to-one";
 	property name="accountCreatedSite" cfc="Site" fieldtype="many-to-one";
