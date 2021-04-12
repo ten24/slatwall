@@ -1561,7 +1561,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
 			
-			for(var orderFulfillment in transientOrder){
+			for(var orderFulfillment in transientOrder.getOrderFulfillments()){
 				getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment, false);
 			}
 			
@@ -1572,7 +1572,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
 			request[orderTemplateOrderDetailsKey]['discountTotal'] = transientOrder.getCalculatedDiscountTotal();
 			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
-			request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = transientOrder.getTaxableAmountTotal();
+
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
@@ -4207,7 +4207,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Populate with the data
 				orderDeliveryItem.setOrderItem( thisOrderItem );
 				orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
+				if(!isNull(arguments.orderDelivery.getLocation())){
 				orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
+				}
 				orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
 				this.saveOrderDeliveryItem( orderDeliveryItem );
 			}

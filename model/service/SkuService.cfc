@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="skuDAO" type="any";
+	property name="stockDAO" type="any";
 	property name="inventoryService" type="any";
 	property name="locationService" type="any";
 	property name="optionService" type="any";
@@ -305,6 +306,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return sku;
 	}
 
+	public any function processSku_createEmptySKUStocksForAllParentLocations(required any sku){
+	    this.getStockDAO().createEmptySKUStocksForAllParentLocations(arguments.sku.getSkuID());
+		return sku;
+	}
+	
 	// @help Modifies capacity and waitlisting properties
 	public any function processSku_editCapacity(required any sku, required any processObject) {
 		if(arguments.processObject.getEditScope() == "none"  ){
