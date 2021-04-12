@@ -98,7 +98,7 @@ const ProductType = () => {
   return (
     <Layout>
       { request.data.title?.length > 0 &&
-        <Helmet title={request.data.title} />
+        <Helmet title={request.data.productTypeNamePath} />
       }
       { request.data.subProductTypes?.length > 0 &&
         <ProductTypeList data={request.data} />
