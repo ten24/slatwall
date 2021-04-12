@@ -125,7 +125,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//Order Payments Information
 		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();
-		orderPaymentCollectionList.setDisplayProperties('order.orderID,paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
+		orderPaymentCollectionList.setDisplayProperties('order.orderID,paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, purchaseOrderNumber,creditCardType,nameOnCreditCard, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
 		orderPaymentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			orderPaymentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');

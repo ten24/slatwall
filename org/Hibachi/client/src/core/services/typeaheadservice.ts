@@ -61,15 +61,18 @@ class TypeaheadService {
     }
 
     public attachTypeaheadSelectionUpdateEvent = (key:string, callback) =>{
-        this.observerService.attach(callback, this.getTypeaheadSelectionUpdateEvent(key));
+        let eventKey = this.getTypeaheadSelectionUpdateEvent(key);
+        this.observerService.attach(callback, eventKey);
     }
 
     public notifyTypeaheadSelectionUpdateEvent = (key:string, data:any) =>{
-        this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key), data); 
+        let eventKey = this.getTypeaheadSelectionUpdateEvent(key);
+        this.observerService.notify(eventKey, data); 
     }
     
     public notifyTypeaheadClearSearchEvent = (key:string, data:any) =>{
-        this.observerService.notify(this.getTypeaheadClearSearchEvent(key), data); 
+        let eventKey = this.getTypeaheadClearSearchEvent(key);
+        this.observerService.notify(eventKey, data); 
     }
 
     public setTypeaheadState = (key:string, state:any) =>{
@@ -84,13 +87,15 @@ class TypeaheadService {
         return this.getTypeaheadState(key).primaryIDPropertyName;
     }
 
-    public getIndexOfSelection = (key:string, data:any) =>{
-        for(var j = 0; j < this.getData(key).length; j++){
-            if( angular.isDefined(data[this.getTypeaheadPrimaryIDPropertyName(key)]) &&
-                data[this.getTypeaheadPrimaryIDPropertyName(key)] == this.getData(key)[j][this.getTypeaheadPrimaryIDPropertyName(key)]
-            ){
+    public getIndexOfSelection = (key:string, newSelection:any) =>{
+        const oldSelections = this.getData(key);
+        const primaryIdKey = this.getTypeaheadPrimaryIDPropertyName(key);
+        
+        for(var j = 0; j < oldSelections.length; j++ ){
+            const oldSelection = oldSelections[j];
+            if( angular.isDefined( newSelection[primaryIdKey] ) && newSelection[primaryIdKey] == oldSelection[primaryIdKey] ){
                 return j;
-            } else if ( this.checkAgainstFallbackProperties(key, this.getData(key)[j], data) ){
+            } else if ( this.checkAgainstFallbackProperties(key, oldSelection, newSelection) ){
                 return j;
             }
         }
@@ -138,25 +143,28 @@ class TypeaheadService {
         );
     }
 
-     public updateSelections = (key:string) =>{
-        if(angular.isDefined(this.getData(key)) && this.getData(key).length){
-            for(var j = 0; j < this.getTypeaheadState(key).results.length; j++){
-                for(var i = 0; i < this.getData(key).length; i++){
-                    if( this.getData(key)[i][this.getTypeaheadPrimaryIDPropertyName(key)] == this.getTypeaheadState(key).results[j][this.getTypeaheadPrimaryIDPropertyName(key)] ){
-                        this.markResultSelected(this.getTypeaheadState(key).results[j],i);
-                        break; 
-                    }
-                    var found = this.checkAgainstFallbackProperties( key,
-                                                                     this.getData(key)[i], 
-                                                                     this.getTypeaheadState(key).results[j], 
-                                                                     i
-                                                                   );
-                    if(found){
-                        break; 
-                    }
+    public updateSelections = (key:string) => {
+        
+        const oldSelections = this.getData(key);
+        const state = this.getTypeaheadState(key);
+        const results = state.results;
+        const primaryIdKey = this.getTypeaheadPrimaryIDPropertyName(key);
+        
+        results.forEach( (result, resultIndex) =>{
+            oldSelections.find( (selection, selectionIndex) => {
+                
+                if(selection[primaryIdKey] == result[primaryIdKey] ){
+                    this.markResultSelected(result, selectionIndex);
+                    return true;
                 }
-            }
-        }
+                
+                var found = this.checkAgainstFallbackProperties( key, selection, result, selectionIndex );
+                if(found){
+                    return true;
+                }
+                
+            });
+        });
     }
 
     private markResultSelected = (result, index) => {
@@ -165,80 +173,104 @@ class TypeaheadService {
     }   
 
     private checkAgainstFallbackProperties = (key:string, selection:any, result:any, selectionIndex?:number) =>{
-        var resultPrimaryID = result[this.getTypeaheadPrimaryIDPropertyName(key)];
+        const primaryIdKey = this.getTypeaheadPrimaryIDPropertyName(key);
+        const resultPrimaryID = result[primaryIdKey];
+        const state = this.getTypeaheadState(key);
+        
         //is there a singular property to compare against
-        if(angular.isDefined(this.getTypeaheadState(key).propertyToCompare) && 
-            this.getTypeaheadState(key).propertyToCompare.length
-        ){
-            if( angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare]) &&
-                selection[this.getTypeaheadState(key).propertyToCompare] == resultPrimaryID
+        if(state?.propertyToCompare?.length){
+            const propertyToCompare = state.propertyToCompare;
+            let found = false;
+            
+            if( 
+                angular.isDefined(selection[propertyToCompare]) &&
+                selection[propertyToCompare] == resultPrimaryID
             ){
-                if(angular.isDefined(selectionIndex)){
-                    this.markResultSelected(result, selectionIndex); 
-                }
-                return true; 
+                found = true;
             }
 
-            if( angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare]) &&
-                angular.isDefined(result[this.getTypeaheadState(key).propertyToCompare]) &&
-                selection[this.getTypeaheadState(key).propertyToCompare] == result[this.getTypeaheadState(key).propertyToCompare]
+            if( !found &&
+                angular.isDefined(selection[propertyToCompare]) &&
+                angular.isDefined(result[propertyToCompare]) &&
+                selection[propertyToCompare] == result[propertyToCompare]
             ){
-                if(angular.isDefined(selectionIndex)){
+                found = true;
+            }
+            
+            if(found){
+                if(angular.isDefined(selectionIndex) ){
                     this.markResultSelected(result, selectionIndex); 
                 }
                 return true; 
             }
         }
+        
         //check the defined fallback properties to see if theres a match
-        if( this.getTypeaheadState(key).fallbackPropertyArray.length > 0 ){
-            for(var j=0; j < this.getTypeaheadState(key).fallbackPropertyArray.length; j++){
-                var property = this.getTypeaheadState(key).fallbackPropertyArray[j]; 
-                if( angular.isDefined(selection[property]) ){
-                    if( selection[property] == resultPrimaryID ){
-                        if(angular.isDefined(selectionIndex)){
+        if( state?.fallbackPropertyArray?.length ){
+            const fallbackPropertyArray = state.fallbackPropertyArray;
+            
+            for(let j=0; j < fallbackPropertyArray.length; j++ ){
+                const fallbackProperty = fallbackPropertyArray[j]; 
+                if( angular.isDefined(selection[fallbackProperty]) ){
+                    let found = false;
+                    if( selection[fallbackProperty] == resultPrimaryID ){
+                        found = true;
+                    }
+                    
+                    if( 
+                        !found &&
+                        angular.isDefined(result[fallbackProperty]) &&
+                        selection[fallbackProperty] == result[fallbackProperty]
+                    ){
+                        found = true;
+                    }
+                    
+                    if(found){
+                        if(angular.isDefined(selectionIndex) ){
                             this.markResultSelected(result, selectionIndex); 
                         }
                         return true; 
                     }
-                    if( angular.isDefined(result[property]) &&
-                        selection[property] == result[property]
-                    ){
-                        if(angular.isDefined(selectionIndex)){
-                       	    this.markResultSelected(result, selectionIndex); 
-                        }
-                        return true; 
-                    }
                 }
             }
         }
+        
         return false; 
     }
 
     public updateSelectionList = (key:string)=>{
-        var selectionIDArray = [];
+        let selectionIDArray = [];
+        const oldSelections = this.getData(key) || [];
+        const state = this.getTypeaheadState(key);
+        const propertyToCompare = state.propertyToCompare;
 
-        if(angular.isDefined(this.getData(key))){
-            for(var j = 0; j < this.getData(key).length; j++){
-                var selection = this.getData(key)[j]; 
-                var primaryID = selection[this.getTypeaheadPrimaryIDPropertyName(key)];
-                if( angular.isDefined(primaryID) ){
-                    selectionIDArray.push(primaryID);
-                } else if( angular.isDefined(this.getTypeaheadState(key).propertyToCompare) &&
-                        angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare])
-                ){
-                    selectionIDArray.push(selection[this.getTypeaheadState(key).propertyToCompare]);
-                } else if( angular.isDefined(this.getTypeaheadState(key).fallbackPropertyArray)){
-                    var fallbackPropertyArray = this.getTypeaheadState(key).fallbackPropertyArray;
-                    for(var i=0; i < fallbackPropertyArray.length; i++){
-                        var fallbackProperty = fallbackPropertyArray[i]; 
-                        if(angular.isDefined(selection[fallbackProperty])){
-                            selectionIDArray.push(selection[fallbackProperty]);
-                            break; 
-                        }
+        for(let j = 0; j < oldSelections.length; j++){
+            const selection = oldSelections[j]; 
+            const primaryIdKey = this.getTypeaheadPrimaryIDPropertyName(key);
+            
+            const primaryID = selection[primaryIdKey];
+
+            if(primaryID){
+                selectionIDArray.push(primaryID);
+                
+            } else if( propertyToCompare && angular.isDefined(selection[propertyToCompare]) ){
+                
+                selectionIDArray.push(selection[propertyToCompare]);
+                
+            } else if( angular.isDefined(state.fallbackPropertyArray) ){
+                
+                var fallbackPropertyArray = state.fallbackPropertyArray;
+                for(var i=0; i < fallbackPropertyArray.length; i++){
+                    var fallbackProperty = fallbackPropertyArray[i]; 
+                    if( angular.isDefined(selection[fallbackProperty]) ){
+                        selectionIDArray.push( selection[fallbackProperty] );
+                        break; 
                     }
-                } 
+                }
             }
+            
         }
+        
         return selectionIDArray.join(",");
     }
     

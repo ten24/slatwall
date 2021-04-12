@@ -17,6 +17,12 @@ class SWListingDisplayController{
     public collectionID;
     //binding
     public collectionId;
+    
+    //not binding
+    public tableID:string;
+    //binding
+    public tableId:string;
+    
     public collectionPromise;
     public collectionData:any;
     public collectionObject:any;
@@ -125,7 +131,6 @@ class SWListingDisplayController{
     public sortable:boolean = false;
     public sortableFieldName:string;
     public sortProperty;
-    public tableID:string;
     public tableclass:string;
     public tableattributes:string;
     public typeaheadDataKey:string;
@@ -496,11 +501,7 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        if(this.name!=null){
-            this.tableID = this.name;
-        } else {
-            this.tableID = 'LD'+this.utilityService.createID();
-        }
+        this.tableID = this.tableId || this.name || 'LD'+this.utilityService.createID();
         
         this.observerService.attach(this.refreshListingDisplay, 'refreshListingDisplay', this.tableID);
         
@@ -952,7 +953,9 @@ class SWListingDisplay implements ng.IDirective{
             isRadio:"<?",
             angularLinks:"<?",
             isAngularRoute:"<?",
+           
             name:"@?",
+            tableId:"@?", 
 
             /*required*/
             collection:"<?",
