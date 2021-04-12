@@ -4,6 +4,7 @@ class SWOrderItemGiftRecipientRowController {
 	public recipients;
 	public recipient;
 	public quantity;
+	public messageMaxLength:number;
     public tableForm:any;
     public showInvalidRecipientMessage:boolean;
 
@@ -55,9 +56,9 @@ class SWOrderItemGiftRecipientRowController {
 
 	public getMessageCharactersLeft = ():number =>{
 		if(angular.isDefined(this.recipient.giftMessage) && this.recipient.giftMessage != null ){
-			return 250 - this.recipient.giftMessage.length;
+			return this.messageMaxLength - this.recipient.giftMessage.length;
 		} else {
-			return 250;
+			return this.messageMaxLength;
 		}
 	}
 
@@ -84,7 +85,8 @@ class SWOrderItemGiftRecipientRow implements ng.IDirective {
 				quantity:"=",
                 showInvalidRecipientMessage:"=",
                 tableForm:"=?",
-				index:"="
+				index:"=",
+				messageMaxLength:"="
 			};
 			public bindToController={
 				recipient:"=",
@@ -92,7 +94,8 @@ class SWOrderItemGiftRecipientRow implements ng.IDirective {
 				quantity:"=",
                 showInvalidRecipientMessage:"=",
                 tableForm:"=?",
-                index:"="
+                index:"=",
+				messageMaxLength:"="
 			};
 			public controller= SWOrderItemGiftRecipientRowController;
 			public controllerAs= "giftRecipientRowControl";
