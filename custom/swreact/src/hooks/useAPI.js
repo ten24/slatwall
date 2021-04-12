@@ -24,7 +24,7 @@ export const useGetEntity = () => {
             setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
-        .catch(thrown => {})
+        .catch(thrown => { })
     }
     return () => {
       source.cancel()
@@ -145,7 +145,7 @@ export const useGetProductList = () => {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
-        .catch(thrown => {})
+        .catch(thrown => { })
     }
     return () => {
       source.cancel()
@@ -260,7 +260,7 @@ export const useAddWishlistItem = () => {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
-        .catch(thrown => {})
+        .catch(thrown => { })
     }
     return () => {
       source.cancel()
@@ -293,7 +293,7 @@ export const useGetOrderDetails = () => {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
-        .catch(thrown => {})
+        .catch(thrown => { })
     }
     return () => {
       source.cancel()
@@ -327,7 +327,7 @@ export const useGetAllOrders = () => {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
-        .catch(thrown => {})
+        .catch(thrown => { })
     }
     return () => {
       source.cancel()
@@ -361,7 +361,7 @@ export const useAddOrderShippingAddress = () => {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
-        .catch(thrown => {})
+        .catch(thrown => { })
     }
     return () => {
       source.cancel()
@@ -394,7 +394,7 @@ export const useGetFavouriteProducts = () => {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
-        .catch(thrown => {})
+        .catch(thrown => { })
     }
     return () => {
       source.cancel()
@@ -427,7 +427,7 @@ export const useGetSkuList = () => {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
-        .catch(thrown => {})
+        .catch(thrown => { })
     }
     return () => {
       source.cancel()
@@ -551,7 +551,7 @@ export const useGetProductType = () => {
           'Content-Type': 'application/json',
         },
       }).then(response => {
-        
+
         if (response.status === 200 && response.data && response.data.data && response.data.successfulActions.length > 0) {
           setRequest({ data: response.data.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
         } else {

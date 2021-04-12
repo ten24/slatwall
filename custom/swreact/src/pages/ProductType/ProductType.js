@@ -4,7 +4,7 @@ import ListingPage from '../../components/Listing/Listing'
 const ProductType = props => {
   const path = props.location.pathname.split('/').reverse()
   const filter = {
-    productType: path[0],
+    productType_slug: path[0],
   }
   return (
     <Layout>
