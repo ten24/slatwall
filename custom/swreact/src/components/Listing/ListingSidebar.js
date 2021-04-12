@@ -4,6 +4,9 @@ import queryString from 'query-string'
 import ContentLoader from 'react-content-loader'
 import { useRef } from 'react'
 
+import useFormatCurrency from '../../hooks/useFormatCurrency'
+
+
 const getAppliedFilters = (params, facetKey) => {
   const qs = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
   if (qs[facetKey]) {
@@ -11,6 +14,7 @@ const getAppliedFilters = (params, facetKey) => {
   }
   return []
 }
+
 
 const FilterLoader = props => (
   <ContentLoader speed={2} width={400} height={150} viewBox="0 0 400 200" backgroundColor="#f3f3f3" foregroundColor="#ecebeb" {...props}>
@@ -28,6 +32,15 @@ const FilterLoader = props => (
 const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, category, priceRange, productType, keyword, recordsCount, setKeyword, updateAttribute }) => {
   const { t } = useTranslation()
   const textInput = useRef(null)
+  const [formatCurrency] = useFormatCurrency({})
+
+  priceRange?.options.forEach(option => {
+    const ranges = option.name.split('-')
+    if (ranges.length != 2) {
+      console.error("invalid currency range", option)
+    }
+    option.name = formatCurrency(parseFloat(ranges[0])) + " - " + formatCurrency(parseFloat(ranges[1]))
+  })
 
   return (
     <div className="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
