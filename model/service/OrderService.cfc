@@ -1561,7 +1561,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
 			
-			for(var orderFulfillment in transientOrder){
+			for(var orderFulfillment in transientOrder.getOrderFulfillments()){
 				getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment, false);
 			}
 			
@@ -1572,7 +1572,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
 			request[orderTemplateOrderDetailsKey]['discountTotal'] = transientOrder.getCalculatedDiscountTotal();
 			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
-			request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = transientOrder.getTaxableAmountTotal();
+
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
