@@ -52,7 +52,7 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
           </span>
         </button>
       </div>
-      <div className="cz-sidebar-body" data-simplebar data-simplebar-auto-hide="true">
+      <div className="cz-sidebar-body">
         <div className="widget widget-categories mb-3">
           <div className="row">
             <h3 className="widget-title col">{t('frontend.core.filters')}</h3>

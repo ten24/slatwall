@@ -22,21 +22,6 @@ const BandSlide = ({ brandLogo, urlTitle = '', title, customPath = '/custom/asse
   )
 }
 
-const getBrandLogo = brand => {
-  let attr = []
-  if (brand.attributes) {
-    attr = brand.attributes.filter(attribute => {
-      return attribute.attributeCode === 'brandLogo'
-    })
-  }
-  if (attr.length > 0) {
-    return attr[0].attributeValue
-  } else if (brand.imagePath) {
-    return brand.imagePath.split('/').reverse()[0]
-  }
-  return ''
-}
-
 const HomeBrand = props => {
   const { t } = useTranslation()
   let [request, setRequest] = useGetEntity()
@@ -85,8 +70,8 @@ const HomeBrand = props => {
       <h3 className="h3">{shopBy.title}</h3>
       <Slider {...settings}>
         {request.isLoaded &&
-          request.data.map((slide, index) => {
-            return <BandSlide key={slide.brandID} {...slide} customPath="/custom/assets/images/brand/logo/" brandLogo={getBrandLogo(slide)} />
+          request.data.map(slide => {
+            return <BandSlide key={slide.brandID} {...slide} customPath="/custom/assets/images/brand/logo/" brandLogo={slide.imageFile} />
           })}
       </Slider>
 

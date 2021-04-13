@@ -3075,6 +3075,71 @@ component  accessors="true" output="false"
             arguments.data['ajaxResponse']['primaryPaymentMethodID'] = account.getPrimaryPaymentMethod().getAccountPaymentMethodID(); 
         }
     }
+    
+    public void function setPrimaryPaymentMethod(required any data){
+        param name="data.accountPaymentMethodID" default="";
+        var hibachiScope = this.getHibachiScope();
+        if( !(hibachiScope.getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.loginRequired');
+            return;
+        }
+
+        var account = hibachiScope.getAccount();
+        var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod(arguments.data.accountPaymentMethodID);
+        
+        if( accountPaymentMethod.getAccount().getAccountID() != account.getAccountID() ){
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.doesNotBelongToUser');
+            return;
+        }
+
+        account.setPrimaryPaymentMethod(accountPaymentMethod);
+        account = this.getAccountService().saveAccount(account, {}, 'updatePrimaryPaymentMethod');
+
+        this.getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+        if( account.hasErrors() ){
+            this.addErrors(arguments.data, account.getErrors() );
+        }
+    }
+    
+    public any function createOrderTemplate( required struct data ) {
+        param name="arguments.data.siteID" default="";
+        param name="arguments.data.siteCode" default="";
+        param name="arguments.data.cmsSiteID" default="";
+        param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
+        param name="arguments.data.orderTemplateName" default="";
+        param name="arguments.data.orderTemplateTypeID" default="";
+        param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
+        param name="arguments.data.scheduleOrderDayOfTheMonth" default=1;
+
+        var hibachiScope = this.getHibachiScope();
+        
+        if( !(hibachiScope.getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.loginRequired');
+            return;
+        }
+        
+        var newOrderTemplate = this.getOrderService().newOrderTemplate();
+        
+        arguments.data['accountID'] = hibachiScope.getAccount().getAccountID();
+        if( !(len(arguments.data.orderTemplateTypeID)) && len(arguments.data.orderTemplateSystemCode) ){
+            arguments.data.orderTemplateTypeID = this.getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
+        }
+        
+        newOrderTemplate = this.getOrderService().processOrderTemplate(newOrderTemplate, arguments.data, "create");
+        
+        var processObject = newOrderTemplate.getProcessObject('create');
+        if( processObject.hasErrors() ){
+            newOrderTemplate.addErrors( processObject.getErrors() );
+        }
+
+        hibachiScope.addActionResult("public:orderTemplate.create", newOrderTemplate.hasErrors() );
+        if( newOrderTemplate.hasErrors() ){
+            this.addErrors(arguments.data, newOrderTemplate.getErrors());
+        } else {
+            arguments.data['ajaxResponse']['orderTemplate'] = newOrderTemplate.getOrderTemplateID();
+        }
+    }
+
    
 	public void function getOrderTemplates(required any data){ 
         param name="arguments.data.pageRecordsShow" default=5;
@@ -3401,39 +3466,48 @@ component  accessors="true" output="false"
 	 * addWishlistItem
 	 * removeWishlistItem
 	 * */
-	
-	public void function createWishlist(required any data) {
-	    
-        param name="arguments.data.orderTemplateTypeID" default="2c9280846b712d47016b75464e800014";
+	public any function createWishlist(required any data) {
+        param name="arguments.data.orderTemplateName" default="";
         param name="arguments.data.currencyCode" default="USD";
-        param name="arguments.data.site" default="stoneAndBerg";
+        param name="arguments.data.siteID" default="";
         
-        if( !(getHibachiScope().getLoggedInFlag()) ) {
-            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        if( !this.getHibachiScope().getLoggedInFlag() ){
+            arguments.data.ajaxResponse['error'] = this.getHibachiScope().rbKey('validate.loggedInUser.wishlist');
         }
-        
-        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-        
-		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
-		    arguments.data.messages = [];
-			var orderTemplate = getOrderService().newOrderTemplate();
-		}
-		
-		if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+
+        arguments.data['orderTemplateTypeID'] = "2c9280846b712d47016b75464e800014"; // type-id for wishlist
+		if( !len(trim(arguments.data.orderTemplateName)) ){
 			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
         }
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
+        
+        var orderTemplate = this.getOrderService().newOrderTemplate();
+ 		orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
  		
  		var processObject = orderTemplate.getProcessObject('createWishlist');
  		if( processObject.hasErrors() ){
  		    orderTemplate.addErrors( processObject.getErrors() );
+ 		} else {
+            arguments.data['ajaxResponse']['orderTemplateID'] = orderTemplate.getOrderTemplateID();
  		}
  		
-        getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+        
+        return orderTemplate; // addItemAndCreateWishlist uses it
+    }
+    
+    public any function addItemAndCreateWishlist( required struct data ){
+        var orderTemplate = this.createWishlist(argumentCollection= arguments);
+
+        if( !orderTemplate.hasErrors() ){
+            this.getHibachiScope().flushORMSession();
             
-        if(orderTemplate.hasErrors()) {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            arguments.data['orderTemplateID'] = orderTemplate.getOrderTemplateID();
+            this.addWishlistItem(arguments.data)
         }
+
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult("public:orderTemplate.addItemAndCreateWishlist", orderTemplate.hasErrors() );
     }
 	
 	public void function getWishlist(required any data) {
@@ -3511,6 +3585,26 @@ component  accessors="true" output="false"
         if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
+    }
+    
+    public any function shareWishlist( required struct data ) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.receiverEmailAddress" default="";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+
+        orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, "shareWishlist");
+        
+        var processObject = orderTemplate.getProcessObject("shareWishlist");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult( "public:orderTemplate.shareWishlist", orderTemplate.hasErrors() );
     }
     
 	public void function addOrderTemplateItem(required any data) {
@@ -3633,6 +3727,127 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
     }
+    
+    public void function addOrderTemplatePromotionCode(required any data) {
+        param name="arguments.data.promotionCode" default="";
+        param name="arguments.data.orderTemplateID" default="";
+     	param name="arguments.data.returnAppliedPromotionCodes" default="true";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+        
+        orderTemplate = this.getService("OrderService").processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
+        var processObject = orderTemplate.getProcessObject("addPromotionCode");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+        
+        this.getHibachiScope().addActionResult( "public:orderTemplate.addOrderTemplatePromotionCode", orderTemplate.hasErrors() );
+        this.addErrors(arguments.data, orderTemplate.getErrors() );
+        
+        if( !orderTemplate.hasErrors() ){
+            orderTemplate.clearProcessObject("addPromotionCode");
+            if(arguments.data.returnAppliedPromotionCodes){
+                this.getHibachiScope().flushORMSession(); 
+                this.getAppliedOrderTemplatePromotionCodes(arguments.data);
+            }
+            this.getOrderTemplateDetails(arguments.data);
+        }
+    }
+    
+    public void function removeOrderTemplatePromotionCode(required any data) {
+        param name="arguments.data.promotionCodeID" default="";
+        param name="arguments.data.orderTemplateID" default="";
+     	param name="arguments.data.returnAppliedPromotionCodes" default="true";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+        
+        orderTemplate = this.getOrderService().processOrderTemplate( orderTemplate, arguments.data, 'removePromotionCode');
+
+        var processObject = orderTemplate.getProcessObject("removePromotionCode");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+        
+        this.getHibachiScope().addActionResult( "public:orderTemplate.removeOrderTemplatePromotionCode", orderTemplate.hasErrors() );
+        this.addErrors(arguments.data, orderTemplate.getErrors() );
+        
+        if( !orderTemplate.hasErrors() ){
+            orderTemplate.clearProcessObject("removePromotionCode");
+            if( arguments.data.returnAppliedPromotionCodes ){
+                this.getHibachiScope().flushORMSession(); 
+                this.getAppliedOrderTemplatePromotionCodes(arguments.data);
+            }
+            this.getOrderTemplateDetails(arguments.data);
+        } 
+    }
+    
+    public void function getAppliedOrderTemplatePromotionCodes(required any data){
+        param name="arguments.data.orderTemplateID" default="";
+
+		arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] = [];
+        if( len(arguments.data.orderTemplateID) ){
+            arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] 
+                = this.getDAO('orderDAO').getAppliedOrderTemplatePromotionCodes( arguments.data.orderTemplateID );
+        } 
+    }
+    
+    public any function deleteOrderTemplatePromoItems(required any data ){
+        param name="data.orderTemplateID" default="";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+
+    	if(!isNull(orderTemplate)){
+    	    this.getDAO('orderDAO').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
+            this.getHibachiScope().addActionResult( "public:orderTemplate.deleteOrderTemplatePromoItems", false );  
+    	}
+    }
+    
+    public any function getOrderTemplatePromotionProducts( required any data ) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.pageRecordsShow" default=10;
+        param name="arguments.data.currentPage" default=1;
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount( argumentCollection = arguments );
+        if( isNull(orderTemplate) ){
+            return;
+        }
+
+        if( !structKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig') ){
+            var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
+            promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
+            promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
+            arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
+        }
+
+        var promotionsCollectionList = this.getService("SkuService").getSkuCollectionList();
+        promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
+        promotionsCollectionList.setPageRecordsShow( arguments.data.pageRecordsShow );
+        promotionsCollectionList.setDisplayProperties('
+            product.defaultSku.skuID|skuID,
+            product.urlTitle|urlTitle,
+            product.productName|productName
+        ');
+
+        var records = promotionsCollectionList.getPageRecords();
+
+        var imageService = this.getService('ImageService');
+        records = arrayMap(records, function(product){
+            product.skuImagePath = imageService.getResizedImageByProfileName(product.skuID, 'medium');
+            return product;
+        }) 
+
+        arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
+    }
+
+   
+    
+    
     
     ///    ############### .  getXXXOptions();  .  ###############   
     

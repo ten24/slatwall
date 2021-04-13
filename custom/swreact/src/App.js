@@ -5,15 +5,17 @@ import { Loading, Header, SEO, CMSWrapper } from './components'
 import lazyWithPreload from './components/lazyWithPreload/lazyWithPreload'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import { getConfiguration } from './actions/configActions'
+import logo from './assets/images/logo.png'
+import mobileLogo from './assets/images/logo-mobile.png'
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
 const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
 const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
 const Checkout = lazyWithPreload(() => import('./pages/Checkout/Checkout'))
 const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/ProductDetail'))
-const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
 const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
+const Manufacturer = lazyWithPreload(() => import('./pages/Manufacturer/Manufacturer'))
 
 const NotFound = lazyWithPreload(() => import('./pages/NotFound/NotFound'))
 const ContentPage = lazyWithPreload(() => import('./pages/ContentPage/ContentPage'))
@@ -42,12 +44,14 @@ const pageComponents = {
   Account,
   Address,
   Attribute,
-  OrderConfirmation
+  Manufacturer,
+  OrderConfirmation,
 }
 
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
   const routing = useSelector(state => state.configuration.router)
+  const shopByManufacturer = useSelector(state => state.configuration.shopByManufacturer)
   const dispatch = useDispatch()
   useEffect(() => {
     Object.keys(pageComponents).map(key => {
@@ -59,7 +63,7 @@ export default function App() {
     <Suspense fallback={<Loading />}>
       <ScrollToTop />
       <SEO />
-      <Header />
+      <Header logo={logo} mobileLogo={mobileLogo} />
       <CMSWrapper />
       <Switch>
         <Route path="/404" component={NotFound} />
@@ -68,8 +72,8 @@ export default function App() {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
         <Route path="/order-confirmation" component={OrderConfirmation} />
+        <Route path={shopByManufacturer.slug} component={Manufacturer} />
         <Route path="/search" component={ProductListing} />
-        <Route path="/category-listing" component={CategoryListing} />
         <Route path="/my-account" component={MyAccount} />
         <Route path="/checkout" component={Checkout} />
         <Route path="/checkout/:id" component={Checkout} />

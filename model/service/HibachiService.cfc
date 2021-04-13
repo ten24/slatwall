@@ -184,8 +184,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	/**
 	 * Method to return list of public attribute codes
 	*/
-	public array function getPublicAttributesByEntityName(required string entityName) {
-		var cacheKey = "getPublicAttributesByEntityName-#arguments.entityName#";
+	public array function getPublicAttributesByEntityName( required string entityName ){
+		var cacheKey = "getPublicAttributesByEntityName_#arguments.entityName#";
 		
 		if(!this.getHibachiCacheService().hasCachedValue(cacheKey) ){
 			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
@@ -195,7 +195,6 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			var attributeRecords = attributeCollectionList.getRecords(formatRecords = false);
 			
 			var response = [];
-			
 			for( var attribute in attributeRecords) {
 				ArrayAppend( response , attribute['attributeCode'] );
 			}

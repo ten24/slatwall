@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
 import AccountBubble from './AccountBubble'
-import logo from '../../assets/images/logo.png'
-import mobileLogo from '../../assets/images/logo-mobile.png'
 import { useTranslation } from 'react-i18next'
 import groupBy from 'lodash/groupBy'
 import queryString from 'query-string'
@@ -82,10 +80,11 @@ const MegaMenu = props => {
   )
 }
 
-function Header() {
+function Header({ logo, mobileLogo }) {
   const { t } = useTranslation()
   let history = useHistory()
   const content = useSelector(state => state.content)
+  const { shopByManufacturer } = useSelector(state => state.configuration)
   const menuItems = extractMenuFromContent(content)
   const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
   const textInput = useRef(null)
@@ -209,14 +208,16 @@ function Header() {
                   return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} />
                 })}
               </ul>
-              <ul className="navbar-nav mega-nav ml-lg-2">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    <i className="far fa-industry-alt mr-2"></i>
-                    {t('frontend.nav.manufacturer')}
-                  </Link>
-                </li>
-              </ul>
+              {shopByManufacturer.showInMenu && (
+                <ul className="navbar-nav mega-nav ml-lg-2">
+                  <li className="nav-item">
+                    <Link className="nav-link" to={shopByManufacturer.slug}>
+                      <i className="far fa-industry-alt mr-2"></i>
+                      {t('frontend.nav.manufacturer')}
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </div>
           </div>
         </div>
