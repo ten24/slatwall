@@ -45,7 +45,7 @@ const pageComponents = {
   Address,
   Attribute,
   Manufacturer,
-  OrderConfirmation
+  OrderConfirmation,
 }
 
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
@@ -74,7 +74,6 @@ export default function App() {
         <Route path="/order-confirmation" component={OrderConfirmation} />
         <Route path={shopByManufacturer.slug} component={Manufacturer} />
         <Route path="/search" component={ProductListing} />
-
         <Route path="/my-account" component={MyAccount} />
         <Route path="/checkout" component={Checkout} />
         <Route path="/checkout/:id" component={Checkout} />
