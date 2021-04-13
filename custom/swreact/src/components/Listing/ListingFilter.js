@@ -56,15 +56,16 @@ const ListingFilter = ({ qs, appliedFilters, name, facetKey, selectType, options
       results = options.filter(option => option.name.toLowerCase().includes(searchTerm.toLowerCase()))
     }
     if (selectType === 'single') {
-      results = options.filter(option => {
+      const selectedResults = options.filter(option => {
         return appliedFilters.includes(option.name)
       })
-      if (results.length === 0) {
-        results = options
+      if (selectedResults.length !== 0) {
+        results = selectedResults
       }
     }
     setSearchResults([...results])
   }, [searchTerm, options, appliedFilters, name, selectType])
+
   return (
     <div className="card border-bottom pt-1 pb-2 my-1">
       <div className="card-header">

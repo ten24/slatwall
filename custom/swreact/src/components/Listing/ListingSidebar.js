@@ -6,7 +6,6 @@ import { useRef } from 'react'
 
 import useFormatCurrency from '../../hooks/useFormatCurrency'
 
-
 const getAppliedFilters = (params, facetKey) => {
   const qs = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
   if (qs[facetKey]) {
@@ -14,7 +13,6 @@ const getAppliedFilters = (params, facetKey) => {
   }
   return []
 }
-
 
 const FilterLoader = props => (
   <ContentLoader speed={2} width={400} height={150} viewBox="0 0 400 200" backgroundColor="#f3f3f3" foregroundColor="#ecebeb" {...props}>
@@ -29,18 +27,26 @@ const FilterLoader = props => (
   </ContentLoader>
 )
 
+const formatPriceRange = (priceRange, formatCurrency) => {
+  const options = priceRange?.options.map(option => {
+    const ranges = option.name.split('-')
+    if (ranges.length !== 2) {
+      console.error('invalid currency range', option)
+    }
+    const name = formatCurrency(parseFloat(ranges[0])) + ' - ' + formatCurrency(parseFloat(ranges[1]))
+    return { name, value: option.value }
+  })
+  if (options) {
+    return { ...priceRange, options }
+  }
+}
+
 const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, category, priceRange, productType, keyword, recordsCount, setKeyword, updateAttribute }) => {
   const { t } = useTranslation()
   const textInput = useRef(null)
   const [formatCurrency] = useFormatCurrency({})
 
-  priceRange?.options.forEach(option => {
-    const ranges = option.name.split('-')
-    if (ranges.length !== 2) {
-      console.error("invalid currency range", option)
-    }
-    option.name = formatCurrency(parseFloat(ranges[0])) + " - " + formatCurrency(parseFloat(ranges[1]))
-  })
+  const newPriceRange = formatPriceRange(priceRange, formatCurrency)
 
   return (
     <div className="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
@@ -102,10 +108,10 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
               })}
 
             {!isFetching &&
-              priceRange &&
-              priceRange !== {} &&
-              [priceRange].map(filter => {
-                return <ListingFilter qs={qs} key={priceRange.facetKey} index={priceRange.facetKey} {...filter} facetKey="priceRange" appliedFilters={getAppliedFilters(qs, 'priceRange')} updateAttribute={updateAttribute} />
+              newPriceRange &&
+              newPriceRange !== {} &&
+              [newPriceRange].map(filter => {
+                return <ListingFilter qs={qs} key={newPriceRange.facetKey} index={newPriceRange.facetKey} {...filter} facetKey="priceRange" appliedFilters={getAppliedFilters(qs, 'priceRange')} updateAttribute={updateAttribute} />
               })}
 
             {!isFetching &&

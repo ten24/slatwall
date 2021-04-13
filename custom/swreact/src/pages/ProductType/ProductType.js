@@ -1,7 +1,7 @@
 import { Link, Redirect, useHistory, useParams } from 'react-router-dom'
 import { Layout, BreadCrumb, SWImage } from '../../components'
 import ListingPage from '../../components/Listing/Listing'
-import PageHeader from '../../components/PageHeader/PageHeader'
+// import PageHeader from '../../components/PageHeader/PageHeader'
 import { Helmet } from 'react-helmet'
 
 import { useGetProductType } from '../../hooks/useAPI'
@@ -14,7 +14,6 @@ const ProductTypeList = ({ data }) => {
 
   return (
     <Layout>
-
       {/* TODO: can be replaced with page-header? */}
       <div className="page-title-overlap bg-lightgray pt-4">
         <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
@@ -28,7 +27,6 @@ const ProductTypeList = ({ data }) => {
       </div>
 
       <div className="container pb-4 pb-sm-5">
-
         {/* <!--- Product Type grid ---> */}
         <div className="row pt-5">
           {/* <!--- Product Type ---> */}
@@ -74,7 +72,6 @@ const ProductTypeList = ({ data }) => {
             })}
         </div>
       </div>
-
     </Layout>
   )
 }
@@ -97,19 +94,15 @@ const ProductType = () => {
 
   return (
     <Layout>
-      { request.data.title?.length > 0 &&
-        <Helmet title={request.data.title} />
-      }
-      { request.data.childProductTypes?.length > 0 &&
-        <ProductTypeList data={request.data} />
-      }
-      { request.data.showProducts &&
+      {request.data.title?.length > 0 && <Helmet title={request.data.title} />}
+      {request.data.childProductTypes?.length > 0 && <ProductTypeList data={request.data} />}
+      {request.data.showProducts && (
         <ListingPage preFilter={{ productType_id: request.data.productTypeID }} hide={'productType'}>
           <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
             <h5 className="h4 text-dark mb-0 font-accent">{request.data.title}</h5>
           </div>
         </ListingPage>
-      }
+      )}
     </Layout>
   )
 }
