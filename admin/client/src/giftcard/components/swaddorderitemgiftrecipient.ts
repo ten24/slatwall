@@ -18,6 +18,7 @@ class SWAddOrderItemRecipientController {
     public tableForm;
     public showInvalidAddFormMessage:boolean;
     public typeaheadCollectionConfig
+    public messageMaxLength:number;
 
     //@ngInject
     constructor(private $hibachi, private collectionConfigService, public entityService, public observerService){
@@ -136,9 +137,9 @@ class SWAddOrderItemRecipientController {
 
     getMessageCharactersLeft = ():number =>{
         if(this.currentGiftRecipient.giftMessage && this.currentGiftRecipient.giftMessage != null){
-            return 250 - this.currentGiftRecipient.giftMessage.length;
+            return this.messageMaxLength - this.currentGiftRecipient.giftMessage.length;
         } else {
-            return 250;
+            return this.messageMaxLength;
         }
     }
 
@@ -162,7 +163,8 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
         "showInvalidAddFormMessage":"=?",
         "showInvalidRowMessage":"=?",
         "tableForm":"=?",
-        "recipientAddForm":"=?"
+        "recipientAddForm":"=?",
+        "messageMaxLength":"=?"
     };
 
     public controller=SWAddOrderItemRecipientController;

@@ -768,11 +768,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		arrayAppend(collectionConfigStruct.filterAggregates,filterAggregate);
 	}
 	
-	public any function getCorrentCollectionEntityCache(){
+	public any function getCurrentCollectionEntityCache(){
 	    var collectionsCache = this.getService('HibachiCollectionService').getCollectionCache();
 	    var collectionObject = this.getCollectionObject();
 		
-		if(!structKeyExists(collectionsCache,collectionObject) ){
+		if(!structKeyExists(collectionsCache, collectionObject) ){
 			collectionsCache[collectionObject] = {};
 		}
 		
@@ -780,7 +780,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getCollectionCacheValue(required string cacheKey){
-	    var cache = this.getCorrentCollectionEntityCache();
+	    var cache = this.getCurrentCollectionEntityCache();
 		
 		if(structKeyExists( cache, arguments.cacheKey) ){
 			return cache[arguments.cacheKey];
@@ -788,7 +788,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public void function setCollectionCacheValue(required string cacheKey, any value){
-	    var cache = this.getCorrentCollectionEntityCache();
+	    var cache = this.getCurrentCollectionEntityCache();
 	    cache[arguments.cacheKey] = arguments.value;
 	}
 

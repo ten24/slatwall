@@ -17,7 +17,7 @@ const Manufacturer = () => {
   useEffect(() => {
     let didCancel = false
     if (!request.isFetching && !request.isLoaded && !didCancel) {
-      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { pageSize: 500 }, makeRequest: true })
+      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { pageSize: 100 }, makeRequest: true })
     }
     return () => {
       didCancel = true
@@ -53,7 +53,7 @@ const Manufacturer = () => {
               request.data
                 .sort((a, b) => (a.brandName > b.brandName ? 1 : -1))
                 .reduce((acc, element) => {
-                  if (element.brandFeatured.trim() === 'Yes') {
+                  if (element.brandFeatured) {
                     return [element, ...acc]
                   }
                   return [...acc, element]
@@ -63,7 +63,8 @@ const Manufacturer = () => {
                     <div key={brand.brandID} className="col-md-4 col-sm-6 mb-3">
                       <div className="card border-0">
                         <Link className="d-block overflow-hidden rounded-lg" to={`/${brandRoute}/${brand.urlTitle}`}>
-                          <SWImage className="d-block w-100" customPath="/custom/assets/files/brandlogo/" src={brand.brandLogo} alt={brand.brandName} />
+                          <SWImage className="d-block w-100" customPath="/custom/assets/images/brand/logo/" src={brand.imageFile} alt={brand.brandName} />
+                          <h2 className="h5">{brand.brandName}</h2>
                         </Link>
                       </div>
                     </div>

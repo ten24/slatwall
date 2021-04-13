@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useGetEntityByID } from '../../hooks'
+import { isString, isBoolean, booleanToString, containsHTML } from '../../utils'
 
 const propertyBlackList = ['productID', 'productName', 'productCode']
 
@@ -20,13 +21,15 @@ const ProductPagePanels = ({ productID }) => {
   if (request.isLoaded) {
     propertiesToDisplay = Object.keys(request.data)
       .filter(property => {
-        return property.startsWith('product') && !propertyBlackList.includes(property) && request.data[property] && request.data[property].trim().length > 0
+        return property.startsWith('product') && !propertyBlackList.includes(property)
       })
       .map(property => {
-        return { key: property.replace('product', ''), value: request.data[property] }
+        return { key: property.replace('product', ''), value: isBoolean(request.data[property]) ? booleanToString(request.data[property]) : request.data[property] }
+      })
+      .filter(({ key, value }) => {
+        return isString(value) && value.trim().length > 0
       })
   }
-
   return (
     <div className="accordion mb-4" id="productPanels">
       {/* <div className="alert alert-danger" role="alert">
@@ -56,7 +59,7 @@ const ProductPagePanels = ({ productID }) => {
                 <ul>
                   {request.isLoaded &&
                     propertiesToDisplay.map(({ key, value }) => {
-                      return <li key={key}>{value}</li>
+                      return <li key={key}>{containsHTML(value) ? <div dangerouslySetInnerHTML={{ __html: value }} /> : value}</li>
                     })}
                 </ul>
               </div>

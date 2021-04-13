@@ -73,9 +73,9 @@ Notes:
 				data-order-by-list="firstName|ASC"
 				data-initial-entity-id="#attributes.initialAccountID#">
 					<div class="row">
-						<span class="adminIcon col-xs-2 col-sm-1 " sw-typeahead-search-line-item bind-html="true" data-property-identifier="calculatedAdminIcon" data-right-content-property-identifier="company"></span>
-						<div class="col-xs-10 col-sm-offset-1">
-							<p class="fullName first" sw-typeahead-search-line-item data-property-identifier="calculatedFullName"></p>
+						<!--<span class="adminIcon col-xs-2 col-sm-1 " sw-typeahead-search-line-item bind-html="true" data-property-identifier="calculatedAdminIcon" data-right-content-property-identifier="company"></span>-->
+						<div class="col-xs-12">
+							<b><p class="fullName first mrg-btm-1" sw-typeahead-search-line-item data-property-identifier="calculatedFullName"></p></b>
 							<p class="company" sw-typeahead-search-line-item data-property-identifier="company"></p>
 						</div>
 					</div>

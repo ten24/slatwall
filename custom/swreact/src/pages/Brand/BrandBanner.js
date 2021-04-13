@@ -15,10 +15,14 @@ const BrandBanner = ({ brandCode }) => {
   }, [request, brandCode, setRequest])
 
   return (
-    <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
-      {request.isLoaded && <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/images/brand/logo/" src={request.data[0].imageFile.length ? request.data.imageFile.split('/').reverse()[0] : ''} alt={request.data.brandName} />}
-      {/* <p>{request.data[0].brandName}</p> */}
-    </div>
+    <>
+      {request.isLoaded && request.data[0] && (
+        <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
+          <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/images/brand/logo/" src={request.data[0].imageFile} alt={request.data.brandName} />
+          <p dangerouslySetInnerHTML={{ __html: request.data[0].brandDescription }} />
+        </div>
+      )}
+    </>
   )
 }
 
