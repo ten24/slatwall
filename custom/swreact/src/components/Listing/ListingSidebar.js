@@ -36,7 +36,7 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
 
   priceRange?.options.forEach(option => {
     const ranges = option.name.split('-')
-    if (ranges.length != 2) {
+    if (ranges.length !== 2) {
       console.error("invalid currency range", option)
     }
     option.name = formatCurrency(parseFloat(ranges[0])) + " - " + formatCurrency(parseFloat(ranges[1]))
