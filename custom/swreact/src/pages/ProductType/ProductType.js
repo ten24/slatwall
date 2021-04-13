@@ -98,7 +98,7 @@ const ProductType = () => {
   return (
     <Layout>
       { request.data.title?.length > 0 &&
-        <Helmet title={request.data.productTypeNamePath} />
+        <Helmet title={request.data.title} />
       }
       { request.data.subProductTypes?.length > 0 &&
         <ProductTypeList data={request.data} />
@@ -106,7 +106,7 @@ const ProductType = () => {
       { request.data.showProducts &&
         <ListingPage preFilter={{ productType_id: request.data.productTypeID }} hide={'productType'}>
           <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
-            <h1 className="h3 text-dark mb-0 font-accent">{request.data.title}</h1>
+            <h5 className="h4 text-dark mb-0 font-accent">{request.data.title}</h5>
           </div>
         </ListingPage>
       }
