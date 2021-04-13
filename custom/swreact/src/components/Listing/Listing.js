@@ -8,19 +8,19 @@ import PageHeader from '../PageHeader/PageHeader'
 import queryString from 'query-string'
 import { useGetProducts } from '../../hooks/useAPI'
 
-const processQueryParamters = params => {
+const processQueryParameters = params => {
   return queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
 }
 const buildPath = params => {
   return queryString.stringify(params, { arrayFormat: 'comma' })
 }
-const initalData = { brands: '', orderBy: 'product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
+const initialData = { brand: '', orderBy: 'product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
 
 const ListingPage = ({ children, preFilter, hide }) => {
   const loc = useLocation()
   let history = useHistory()
-  let params = processQueryParamters(loc.search)
-  params = { ...initalData, ...params, ...preFilter }
+  let params = processQueryParameters(loc.search)
+  params = { ...initialData, ...params, ...preFilter }
   const [path, setPath] = useState(loc.search)
   let [request, setRequest] = useGetProducts(params)
 

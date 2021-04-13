@@ -158,7 +158,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 	//CUSTOM PROPERTIES BEGIN
 
- property name="companyCode" ormtype="string";//CUSTOM PROPERTIES END
+ property name="companyCode" ormtype="string";
+ property name="remoteContact" ormtype="string";//CUSTOM PROPERTIES END
 		
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
