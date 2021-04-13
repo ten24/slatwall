@@ -58,6 +58,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="productTypeNamePath" ormtype="string";
 	property name="productTypeDescription" ormtype="string" length="4000";
 	property name="systemCode" ormtype="string";
+	property name="imageFile" ormtype="string" length="250" default="";
 
 	// Related Object Properties (Many-To-One)
 	property name="parentProductType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="parentProductTypeID";

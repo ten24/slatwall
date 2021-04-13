@@ -43,7 +43,7 @@ const toBreadcrumbs = (link, { rootName = 'Home', nameTransform = s => s } = {})
 const BreadCrumb = () => {
   let location = useLocation()
   let crumbs = toBreadcrumbs(location.pathname, { nameTransform: kebabToTitle })
-  crumbs.pop()
+  // crumbs.pop()
   return (
     <>
       {crumbs && (
