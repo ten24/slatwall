@@ -10,10 +10,7 @@ const LoginForm = () => {
   const dispatch = useDispatch()
   let match = useRouteMatch()
   const { t } = useTranslation()
-  const loginSchema = Yup.object().shape({
-    loginEmail: Yup.string().email('Invalid email').required('Required'),
-    loginPassword: Yup.string().required('Required'),
-  })
+
   const formik = useFormik({
     initialValues: {
       loginEmail: '',
