@@ -32,8 +32,8 @@ const ProductTypeList = ({ data }) => {
         {/* <!--- Product Type grid ---> */}
         <div className="row pt-5">
           {/* <!--- Product Type ---> */}
-          {data.subProductTypes &&
-            data.subProductTypes.map(({ productTypeID, title, imageFile, urlTitle, subTypes }, index) => {
+          {data.childProductTypes &&
+            data.childProductTypes.map(({ productTypeID, title, imageFile, urlTitle, childProductTypes }, index) => {
               let customImagePath = ''
               let imageFileName = defaultImg
               if (imageFile !== '') {
@@ -41,7 +41,7 @@ const ProductTypeList = ({ data }) => {
                 customImagePath = imageFile.split('/').slice(0, -1).join('/') + '/'
               }
 
-              urlTitle = subTypes.length === 0 ? `/${productsRoute}/${urlTitle}` : urlTitle
+              urlTitle = childProductTypes.length === 0 ? `/${productsRoute}/${urlTitle}` : urlTitle
 
               return (
                 <div className="col-md-4 col-sm-6 mb-3" key={productTypeID}>
@@ -54,7 +54,7 @@ const ProductTypeList = ({ data }) => {
                         <Link to={urlTitle}>{title}</Link>
                       </h2>
                       <ul className="list-unstyled font-size-sm mb-0">
-                        {subTypes.map(({ productTypeID, title, urlTitle, showProducts }, index) => {
+                        {childProductTypes.map(({ productTypeID, title, urlTitle, showProducts }, index) => {
                           urlTitle = showProducts ? `/${productsRoute}/${urlTitle}` : urlTitle
 
                           return (
@@ -100,7 +100,7 @@ const ProductType = () => {
       { request.data.title?.length > 0 &&
         <Helmet title={request.data.title} />
       }
-      { request.data.subProductTypes?.length > 0 &&
+      { request.data.childProductTypes?.length > 0 &&
         <ProductTypeList data={request.data} />
       }
       { request.data.showProducts &&

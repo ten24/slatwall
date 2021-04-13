@@ -831,49 +831,49 @@ component  accessors="true" output="false"
         }
         
         //get sub product types
-        var subProductTypeCollectionList = getProductService().getProductTypeCollectionList();
-        subProductTypeCollectionList.setDisplayProperties("productTypeName, urlTitle, imageFile, productTypeID, productTypeIDPath");
-        subProductTypeCollectionList.addFilter('productTypeIDPath', "%#productType.getProductTypeID()#%", "LIKE");
-        subProductTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
-        var subProductTypesRecord = subProductTypeCollectionList.getRecords( formatRecords = true );
+        var childProductTypeCollectionList = getProductService().getProductTypeCollectionList();
+        childProductTypeCollectionList.setDisplayProperties("productTypeName, urlTitle, imageFile, productTypeID, productTypeIDPath");
+        childProductTypeCollectionList.addFilter('productTypeIDPath', "%#productType.getProductTypeID()#%", "LIKE");
+        childProductTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+        var childProductTypesRecord = childProductTypeCollectionList.getRecords( formatRecords = true );
         
-        var subProductTypes = [];
+        var childProductTypes = [];
         var typeIndex = 0;
-        for( var subProductType in subProductTypesRecord ) {
+        for( var childProductType in childProductTypesRecord ) {
             
             //skip current record
-            if( subProductType['productTypeID'] == productType.getProductTypeID()  ) {
+            if( childProductType['productTypeID'] == productType.getProductTypeID()  ) {
                 continue;
             }
             
             //remove parent ids from path
-            var productTypeIDPath = subProductType['productTypeIDPath'];
+            var productTypeIDPath = childProductType['productTypeIDPath'];
             productTypeIDPath = ReplaceList( productTypeIDPath, productType.getProductTypeIDPath(), "");
             productTypeIDPath = ListChangeDelims( productTypeIDPath, ",", ",");
             
             var responseStruct = {
-                "title": subProductType['productTypeName'],
-                "productTypeID": subProductType['productTypeID'],
-                "imageFile" : trim(subProductType['imageFile']) != "" ? getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & subProductType['imageFile'] : "",
-                "urlTitle" : subProductType['urlTitle']
+                "title": childProductType['productTypeName'],
+                "productTypeID": childProductType['productTypeID'],
+                "imageFile" : trim(childProductType['imageFile']) != "" ? getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & childProductType['imageFile'] : "",
+                "urlTitle" : childProductType['urlTitle']
             };
             
             //if it's a parent type set title and correct index
-            if( productTypeIDPath == subProductType['productTypeID'] ) {
-                subProductTypes[ ++typeIndex ] = responseStruct;
+            if( productTypeIDPath == childProductType['productTypeID'] ) {
+                childProductTypes[ ++typeIndex ] = responseStruct;
                 //add an index for 2nd level sub types
-                subProductTypes[ typeIndex ]["subTypes"] = [];
+                childProductTypes[ typeIndex ]["childProductTypes"] = [];
             } else {
                 
                 //remove immediate parent id from path
-                productTypeIDPath = ReplaceList( productTypeIDPath, subProductTypes[ typeIndex ]['productTypeID'], "");
+                productTypeIDPath = ReplaceList( productTypeIDPath, childProductTypes[ typeIndex ]['productTypeID'], "");
                 productTypeIDPath = ListChangeDelims( productTypeIDPath, ",", ",");
                 
                 //add show products flag if it's last child
-                StructAppend( responseStruct, {"showProducts" : productTypeIDPath !== subProductType['productTypeID'] });
+                StructAppend( responseStruct, {"showProducts" : productTypeIDPath !== childProductType['productTypeID'] });
                 
                 //append sub type array
-                ArrayAppend( subProductTypes[ typeIndex ]["subTypes"], responseStruct);
+                ArrayAppend( childProductTypes[ typeIndex ]["childProductTypes"], responseStruct);
             }
         }
         
@@ -895,8 +895,8 @@ component  accessors="true" output="false"
             response['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & response.imageFile;
         }    
     
-        if( subProductTypes.len() > 0 ){
-           response["subProductTypes"] = subProductTypes; 
+        if( childProductTypes.len() > 0 ){
+           response["childProductTypes"] = childProductTypes; 
         } else {
             response["showProducts"] = true;
         }
