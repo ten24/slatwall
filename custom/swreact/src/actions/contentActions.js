@@ -3,8 +3,8 @@ import { sdkURL } from '../services'
 import { setTitle } from './configActions'
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
-export const RECIVE_CONTENT = 'RECIVE_CONTENT'
-export const RECIVE_STATE_CODES = 'RECIVE_STATE_CODES'
+export const RECEIVE_CONTENT = 'RECEIVE_CONTENT'
+export const RECEIVE_STATE_CODES = 'RECEIVE_STATE_CODES'
 
 export const requestContent = () => {
   return {
@@ -12,15 +12,15 @@ export const requestContent = () => {
   }
 }
 
-export const reciveContent = content => {
+export const receiveContent = content => {
   return {
-    type: RECIVE_CONTENT,
+    type: RECEIVE_CONTENT,
     content,
   }
 }
-export const reciveStateCodes = codes => {
+export const receiveStateCodes = codes => {
   return {
-    type: RECIVE_STATE_CODES,
+    type: RECEIVE_STATE_CODES,
     payload: codes,
   }
 }
@@ -57,9 +57,9 @@ export const getContent = (content = {}) => {
       data: { ...content, siteCode },
     })
     if (response.status === 200) {
-      dispatch(reciveContent({ ...response.data.content }))
+      dispatch(receiveContent({ ...response.data.content }))
     } else {
-      dispatch(reciveContent({}))
+      dispatch(receiveContent({}))
     }
   }
   // }
@@ -79,9 +79,9 @@ export const getPageContent = (content = {}, slug = '') => {
       data: { ...content, siteCode },
     })
     if (response.status === 200) {
-      dispatch(reciveContent(response.data.content))
+      dispatch(receiveContent(response.data.content))
     } else {
-      dispatch(reciveContent({}))
+      dispatch(receiveContent({}))
     }
   }
 }
@@ -100,9 +100,9 @@ export const getStateCodeOptionsByCountryCode = (countryCode = 'US') => {
     if (response.status === 200) {
       let payload = {}
       payload[countryCode] = response.data.stateCodeOptions || []
-      dispatch(reciveStateCodes(payload))
+      dispatch(receiveStateCodes(payload))
     } else {
-      dispatch(reciveStateCodes({}))
+      dispatch(receiveStateCodes({}))
     }
   }
 }
@@ -118,9 +118,9 @@ export const getCountries = () => {
       },
     })
     if (response.status === 200) {
-      dispatch(reciveContent({ countryCodeOptions: response.data.countryCodeOptions }))
+      dispatch(receiveContent({ countryCodeOptions: response.data.countryCodeOptions }))
     } else {
-      dispatch(reciveContent({}))
+      dispatch(receiveContent({}))
     }
   }
 }
@@ -129,7 +129,7 @@ export const addContent = (content = {}) => {
     if (content.setting) {
       dispatch(setTitle(content.setting.contentHTMLTitleString))
     }
-    dispatch(reciveContent(content))
+    dispatch(receiveContent(content))
   }
 }
 // export const addFormResponse = (content = {}) => {
@@ -147,9 +147,9 @@ export const addContent = (content = {}) => {
 //       data: content,
 //     })
 //     if (response.status === 200) {
-//       dispatch(reciveContent(response.data.content))
+//       dispatch(receiveContent(response.data.content))
 //     } else {
-//       dispatch(reciveContent({}))
+//       dispatch(receiveContent({}))
 //     }
 //   }
 // }

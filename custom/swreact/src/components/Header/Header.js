@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
 import AccountBubble from './AccountBubble'
-import logo from '../../assets/images/logo.png'
-import mobileLogo from '../../assets/images/logo-mobile.png'
 import { useTranslation } from 'react-i18next'
 import groupBy from 'lodash/groupBy'
 import queryString from 'query-string'
@@ -82,7 +80,7 @@ const MegaMenu = props => {
   )
 }
 
-function Header() {
+function Header({ logo, mobileLogo }) {
   const { t } = useTranslation()
   let history = useHistory()
   const content = useSelector(state => state.content)
@@ -114,7 +112,7 @@ function Header() {
                       if (e.key === 'Enter') {
                         e.preventDefault()
                         history.push({
-                          pathname: '/products',
+                          pathname: '/search',
                           search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
                         })
                         textInput.current.value = ''
@@ -129,7 +127,7 @@ function Header() {
                         onClick={e => {
                           e.preventDefault()
                           history.push({
-                            pathname: '/products',
+                            pathname: '/search',
                             search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
                           })
                           textInput.current.value = ''
@@ -179,7 +177,7 @@ function Header() {
                       onClick={e => {
                         e.preventDefault()
                         history.push({
-                          pathname: '/products',
+                          pathname: '/search',
                           search: mobileTextInput.stringify({ keyword: mobileTextInput.current.value }, { arrayFormat: 'comma' }),
                         })
                         mobileTextInput.current.value = ''
@@ -193,7 +191,7 @@ function Header() {
                     if (e.key === 'Enter') {
                       e.preventDefault()
                       history.push({
-                        pathname: '/products',
+                        pathname: '/search',
                         search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
                       })
                       mobileTextInput.current.value = ''
