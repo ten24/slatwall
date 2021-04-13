@@ -13,7 +13,6 @@ const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
 const Checkout = lazyWithPreload(() => import('./pages/Checkout/Checkout'))
 const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/ProductDetail'))
-const CategoryListing = lazyWithPreload(() => import('./pages/CategoryListing/CategoryListing'))
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
 const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
 const Manufacturer = lazyWithPreload(() => import('./pages/Manufacturer/Manufacturer'))
@@ -74,10 +73,7 @@ export default function App() {
           })}
         <Route path="/order-confirmation" component={OrderConfirmation} />
         <Route path={shopByManufacturer.slug} component={Manufacturer} />
-        <Route path="/products" component={ProductListing} />
-        <Route path="/product" component={ProductListing} />
         <Route path="/search" component={ProductListing} />
-        <Route path="/category-listing" component={CategoryListing} />
         <Route path="/my-account" component={MyAccount} />
         <Route path="/checkout" component={Checkout} />
         <Route path="/checkout/:id" component={Checkout} />
