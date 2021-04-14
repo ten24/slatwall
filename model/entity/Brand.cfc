@@ -91,10 +91,7 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Attribute Values (one-to-many)    	//CUSTOM PROPERTIES BEGIN
-
- property name="brandLogo" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
- property name="test67" ormtype="string";//CUSTOM PROPERTIES END
+	// Attribute Values (one-to-many)    
 	public void function addAttributeValue(required any attributeValue) {    
 		arguments.attributeValue.setBrand( this );    
 	}    
