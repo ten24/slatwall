@@ -112,7 +112,7 @@ function Header({ logo, mobileLogo }) {
                       if (e.key === 'Enter') {
                         e.preventDefault()
                         history.push({
-                          pathname: '/products',
+                          pathname: '/search',
                           search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
                         })
                         textInput.current.value = ''
@@ -127,7 +127,7 @@ function Header({ logo, mobileLogo }) {
                         onClick={e => {
                           e.preventDefault()
                           history.push({
-                            pathname: '/products',
+                            pathname: '/search',
                             search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
                           })
                           textInput.current.value = ''
@@ -177,7 +177,7 @@ function Header({ logo, mobileLogo }) {
                       onClick={e => {
                         e.preventDefault()
                         history.push({
-                          pathname: '/products',
+                          pathname: '/search',
                           search: mobileTextInput.stringify({ keyword: mobileTextInput.current.value }, { arrayFormat: 'comma' }),
                         })
                         mobileTextInput.current.value = ''
@@ -191,7 +191,7 @@ function Header({ logo, mobileLogo }) {
                     if (e.key === 'Enter') {
                       e.preventDefault()
                       history.push({
-                        pathname: '/products',
+                        pathname: '/search',
                         search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
                       })
                       mobileTextInput.current.value = ''

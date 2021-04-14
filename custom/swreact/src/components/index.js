@@ -57,7 +57,6 @@ export { default as ListingSidebar } from './Listing/ListingSidebar'
 export { default as ListingToolBar } from './Listing/ListingToolBar'
 
 export { default as Loading } from './Loading/Loading'
-export { default as Navigation } from './Navigation/Navigation'
 export { default as PageHeader } from './PageHeader/PageHeader'
 export { default as ProductCard } from './ProductCard/ProductCard'
 export { default as ProductPrice } from './ProductPrice/ProductPrice'
