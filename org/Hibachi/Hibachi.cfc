@@ -1352,7 +1352,9 @@ component extends="framework.one" {
 			applicationStop();
 			location('?reload=true&update=true',false);
 		}
+		
 		if(variables.framework.hibachi.errorDisplayFlag && structKeyExists(request,'context') && structKeyExists(request.context,'apiRequest') && request.context.apiRequest){
+			populateAPIHeaders();
 			writeDump(exception); abort;
 		}
 		response.setStatus(500);
