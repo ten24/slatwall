@@ -1302,6 +1302,8 @@ component extends="HibachiService" output="false" accessors="true" {
 					formatDetails.object = settingObject;
 
 					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, '', formatDetails);
+				} else {
+					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, settingDetails.fieldType);
 				}
 			// This is the no deffinition case
 			} else if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){
