@@ -1,5 +1,6 @@
 import ProductCard from '../ProductCard/ProductCard'
 import ContentLoader from 'react-content-loader'
+import { Link } from 'react-router-dom'
 
 const ListingGridLoader = props => (
   <ContentLoader viewBox="0 0 1200 500" height={400} width={1000} {...props}>
@@ -26,7 +27,7 @@ const ListingGrid = ({ isFetching, pageRecords }) => {
         </>
       )}
       {!isFetching &&
-        pageRecords &&
+        pageRecords.length > 0 &&
         pageRecords.map(({ product_urlTitle, product_productID, product_productName, sku_imageFile, listPrice, sku_skuID }, index) => {
           return (
             <div key={sku_skuID + `${index}`} className="col-md-4 col-sm-6 px-2 mb-4">
@@ -34,6 +35,14 @@ const ListingGrid = ({ isFetching, pageRecords }) => {
             </div>
           )
         })}
+      {!isFetching &&
+        pageRecords.length == 0 &&
+        <div className="col">
+          Sorry we can't seem to fins any products that match your search.
+          <br />
+          Need assistance? <Link to='/contact'>Contact Us</Link>
+        </div>
+      }
     </div>
   )
 }
