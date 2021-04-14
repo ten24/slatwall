@@ -161,6 +161,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productSafeTypeStyle" ormtype="string" hb_formFieldType="select";
  property name="productSafeFireRated" ormtype="string";
  property name="productSafeSafetyRating" ormtype="string";
+ property name="productSafeWheels" ormtype="string";
+ property name="productSafeRating" ormtype="string";
+ property name="productSafeDialType" ormtype="string";
+ property name="productBoltType" ormtype="string";
+ property name="productCombinationQuantity" ormtype="string";
  property name="productDoorKnobSeries" ormtype="string" hb_formFieldType="select";
  property name="productKeyMachinePartCompatibility" ormtype="string";
  property name="productKeyMachineCutterMaterial" ormtype="string";
@@ -170,6 +175,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productKeyMachineCompatibility" ormtype="string";
  property name="productBatteryCompatibility" ormtype="string";
  property name="productVoltageRange" ormtype="string";
+ property name="productHoleSawCompatibility" ormtype="string";
+ property name="productArborCompatibility" ormtype="string";
+ property name="productChuckSize" ormtype="string";
+ property name="productBitSize" ormtype="string";
  property name="productToolsFileCutType" ormtype="string";
  property name="productToolsFileType" ormtype="string";
  property name="productAlarmVolume" ormtype="string";
@@ -198,6 +207,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="mechanicalKeying" ormtype="string" hb_formFieldType="select";
  property name="mechanicalStyle" ormtype="string";
  property name="productBumpStop" ormtype="boolean" hb_formatType="yesno";
+ property name="productNoseSize" ormtype="string";
  property name="productTrimStyle" ormtype="string";
  property name="productBarrelDiameter" ormtype="string";
  property name="productTumblerType" ormtype="string" hb_formFieldType="select";
