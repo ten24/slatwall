@@ -50,6 +50,7 @@ component  accessors="true" output="false"
 {
     property name="accountService" type="any";
     property name="addressService" type="any";
+    property name="attributeService" type="any";
     property name="formService" type="any";
     property name="orderService" type="any";
     property name="userUtility" type="any";
@@ -4097,9 +4098,9 @@ component  accessors="true" output="false"
          getCartData( arguments.data );
          
          getOrderService().deleteOrder( cart );
-     }
+    }
      
-     /**
+    /**
 	 * Generic Endpoint to get any entity
 	* */
 	public any function getEntity( required struct data ) {
@@ -4130,6 +4131,125 @@ component  accessors="true" output="false"
         }
 
         this.getHibachiScope().addActionResult("public:scope.getEntity", false);
+	}
+	
+	public any function getProduct(required struct data ){
+	    param name="arguments.data.entityID" default="";
+	    param name="arguments.data.propertyIdentifierList" default="";
+	    param name="arguments.data.formatAttributes" default=false;
+	    param name="arguments.data.includeAttributesMetadata" default=true;
+	    
+	    if( !len(arguments.data.entityID) ){
+            this.getHibachiScope().addActionResult("public:scope.getProduct",true);
+            return;
+        }
+        
+        arguments.data.entityName = "Product";
+        arguments.data.restRequestFlag = 1;
+        arguments.data.enforceAuthorization = true;
+        arguments.data.useAuthorizedPropertiesAsDefaultColumns = true;
+        
+        var fetchMetadata = arguments.data.includeAttributesMetadata || arguments.data.includeAttributesMetadata;
+        
+        if( fetchMetadata ){
+            
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
+                arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
+            }
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
+                arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
+            }
+        }
+        
+        var response = {};
+        response['product'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        
+        if(fetchMetadata){
+            if(arguments.data.includeAttributesMetadata){
+                response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
+            }
+        }
+        
+        arguments.data.ajaxResponse['data'] = response;
+	}
+	
+	
+	private struct function getAttributeSetMetadataForProduct(required productID, required string productTypeIDPath, string brandID=''){
+	    
+	    var attributeSetCollectionList = this.getAttributeService().getAttributeSetCollectionList();
+	    
+	    attributeSetCollectionList.setDisplayProperties('attributeSetID, attributeSetName, attributeSetCode, attributeSetDescription, globalFlag, sortOrder');
+	    attributeSetCollectionList.addDisplayProperties('attributes.attributeID, attributes.attributeName, attributes.attributeCode, attributes.attributeDescription, attributes.sortOrder');
+	    
+        attributeSetCollectionList.setDistinct(true);
+	    attributeSetCollectionList.addFilter('activeFlag', 1);
+	    attributeSetCollectionList.addFilter('attributeSetObject', 'Product');
+	    attributeSetCollectionList.addFilter('attributes.activeFlag', 1);
+	    
+	    attributeSetCollectionList.addFilter(
+            value               =  1,
+            filterGroupAlias    = 'attribute_set_filters',
+            propertyIdentifier  = 'globalFlag',
+            comparisonOperator  = "="
+        );
+        
+        if( len(arguments.productTypeIDPath) ){
+            attributeSetCollectionList.addFilter( 
+                value               = arguments.productTypeIDPath, 
+                logicalOperator     = "OR",
+                filterGroupAlias    = 'attribute_set_filters',
+                propertyIdentifier  = 'productTypes.productTypeID',
+                comparisonOperator  = "IN"
+            );
+        }
+        
+         if( len(arguments.brandID) ){
+            attributeSetCollectionList.addFilter( 
+                value               = arguments.brandID, 
+                logicalOperator     = "OR",
+                filterGroupAlias    = 'attribute_set_filters',
+                propertyIdentifier  = 'brands.brandID',
+                comparisonOperator  = "="
+            );
+        }
+        
+        attributeSetCollectionList.addFilter( 
+            value               = arguments.productID, 
+            logicalOperator     = "OR",
+            filterGroupAlias    = 'attribute_set_filters',
+            propertyIdentifier  = 'products.productID',
+            comparisonOperator  = "="
+        );
+        
+        var attributeSets =attributeSetCollectionList.getRecords();
+        var formattedAttributeSets = {};
+
+        for(var attributeSet in attributeSets){
+            if(!structKeyExists(formattedAttributeSets, attributeSet.attributeSetID) ){
+                formattedAttributeSets[attributeSet.attributeSetID] = {
+                    'sortOrder'                 : attributeSet.sortOrder,
+                    'globalFlag'                : attributeSet.globalFlag,
+                    'attributes'                : {},
+                    'attributeSetID'            : attributeSet.attributeSetID,
+                    'attributeSetName'          : attributeSet.attributeSetName,
+                    'attributeSetCode'          : attributeSet.attributeSetCode,
+                    'attributeSetDescription'   : attributeSet.attributeSetDescription
+                }
+            }
+            
+            var formattedAttributeSet = formattedAttributeSets[attributeSet.attributeSetID];
+            
+            formattedAttributeSet.attributes[ attributeSet.attributes_attributeID ] = {
+                'sortOrder'              : attributeSet.attributes_sortOrder,
+                'attributeID'            : attributeSet.attributes_attributeID,
+                'attributeName'          : attributeSet.attributes_attributeName,
+                'attributeCode'          : attributeSet.attributes_attributeCode,
+                'attributeDescription'   : attributeSet.attributes_attributeDescription
+            }
+            
+        }
+        
+        return formattedAttributeSets;
 	}
     
     public any function getPickupLocations() {
