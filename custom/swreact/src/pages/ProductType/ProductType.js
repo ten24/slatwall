@@ -5,7 +5,6 @@ import ListingPage from '../../components/Listing/Listing'
 import { Helmet } from 'react-helmet'
 
 import { useGetProductType } from '../../hooks/useAPI'
-import defaultImg from '../../assets/images/category-img-1.png'
 import { getProductTypeProductListRoute } from '../../selectors/configurationSelectors'
 import { useSelector } from 'react-redux'
 
@@ -33,7 +32,7 @@ const ProductTypeList = ({ data }) => {
           {data.childProductTypes &&
             data.childProductTypes.map(({ productTypeID, title, imageFile, urlTitle, childProductTypes }, index) => {
               let customImagePath = ''
-              let imageFileName = defaultImg
+              let imageFileName = ''
               if (imageFile !== '') {
                 imageFileName = imageFile.split('/').reverse()[0]
                 customImagePath = imageFile.split('/').slice(0, -1).join('/') + '/'
