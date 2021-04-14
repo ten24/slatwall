@@ -170,6 +170,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productKeyMachineCompatibility" ormtype="string";
  property name="productBatteryCompatibility" ormtype="string";
  property name="productVoltageRange" ormtype="string";
+ property name="productToolsFileCutType" ormtype="string";
+ property name="productToolsFileType" ormtype="string";
  property name="productAlarmVolume" ormtype="string";
  property name="productRequiredCylinder" ormtype="string";
  property name="productDeviceCompatibility" ormtype="string";
@@ -200,6 +202,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productBarrelDiameter" ormtype="string";
  property name="productTumblerType" ormtype="string" hb_formFieldType="select";
  property name="mechanicalKeyway" ormtype="string";
+ property name="productOEMEquivalent" ormtype="string";
  property name="mechanicalRekeyable" ormtype="boolean" hb_formatType="yesno";
  property name="mechanicalBodyMaterial" ormtype="string" hb_formFieldType="select";
  property name="mechanicalShackleMaterial" ormtype="string" hb_formFieldType="select";
@@ -219,6 +222,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productElectronicProx" ormtype="boolean" hb_formatType="yesno";
  property name="productElectronicUsers" ormtype="string";
  property name="productElectronicScheduling" ormtype="boolean" hb_formatType="yesno";
+ property name="productLighted" ormtype="boolean" hb_formatType="yesno";
+ property name="productElectrical" ormtype="string";
+ property name="productFaceplantDimensions" ormtype="string";
+ property name="productsTamperStrength" ormtype="string";
+ property name="productStrikeApplication" ormtype="string";
  property name="productCover" ormtype="string";
  property name="productCoverStyle" ormtype="string";
  property name="productHanded" ormtype="string" hb_formFieldType="select";
@@ -229,6 +237,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productParallelArm" ormtype="boolean" hb_formatType="yesno";
  property name="productHingeLength" ormtype="string";
  property name="productCloserSize" ormtype="string";
+ property name="productDoorDuty" ormtype="string";
+ property name="productDoorInset" ormtype="string";
  property name="productRegularArm" ormtype="boolean" hb_formatType="yesno";
  property name="productExtraDutyArm" ormtype="boolean" hb_formatType="yesno";
  property name="productCushNStopArm" ormtype="boolean" hb_formatType="yesno";

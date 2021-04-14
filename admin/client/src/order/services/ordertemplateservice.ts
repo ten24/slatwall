@@ -4,7 +4,7 @@ export class OrderTemplateService {
 
 	public orderTemplate;
     public orderTemplateID:string; 
-	public orderTemplatePropertyIdentifierList = 'subtotal,total,fulfillmentTotal,fulfillmentDiscount';
+	public orderTemplatePropertyIdentifierList = 'calculatedSubTotal,calculatedTotal,calculatedFulfillmentTotal,calculatedFulfillmentDiscount';
 	public orderTemplateItemPropertyIdentifierList = ''; //this get's programitically set
 
 	public editablePropertyIdentifierList = '';

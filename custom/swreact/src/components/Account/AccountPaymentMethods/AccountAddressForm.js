@@ -1,16 +1,41 @@
-import { connect } from 'react-redux'
 import SwSelect from '../../SwSelect/SwSelect'
 import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/contentActions'
 
-const AccountAddressForm = ({ formik, states, countries }) => {
+const AccountAddressForm = ({ formik }) => {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
+  const stateCodeOptions = useSelector(state => state.content.stateCodeOptions)
+  const isFetching = useSelector(state => state.content.isFetching)
+
+  useEffect(() => {
+    if (countryCodeOptions.length === 0 && !isFetching) {
+      dispatch(getCountries())
+    }
+    if (!stateCodeOptions['billingAddress.countryCode'] && !isFetching) {
+      dispatch(getStateCodeOptionsByCountryCode(['billingAddress.countryCode']))
+    }
+  }, [dispatch, formik, stateCodeOptions, countryCodeOptions, isFetching])
 
   return (
     <>
       <h2>Billing Address</h2>
       <div className="form-group">
         <label htmlFor="billingAddress.countryCode">{t('frontend.account.countryCode')}</label>
-        <SwSelect id="billingAddress.countryCode" name="['billingAddress.countryCode']" value={formik.values['billingAddress.countryCode']} onChange={formik.handleChange} options={countries} />
+        <SwSelect
+          id="billingAddress.countryCode"
+          name="['billingAddress.countryCode']"
+          value={formik.values['billingAddress.countryCode']}
+          onChange={e => {
+            e.preventDefault()
+            dispatch(getStateCodeOptionsByCountryCode(e.target.value))
+            formik.handleChange(e)
+          }}
+          options={countryCodeOptions}
+        />
       </div>
       <div className="form-group">
         <label htmlFor="billingAddress.name">{t('frontend.account.name')}</label>
@@ -36,10 +61,22 @@ const AccountAddressForm = ({ formik, states, countries }) => {
         <label htmlFor="billingAddress.city">{t('frontend.account.city')}</label>
         <input className="form-control" name="['billingAddress.city']" type="text" id="billingAddress.city" value={formik.values['billingAddress.city']} onChange={formik.handleChange} />
       </div>
-      <div className="form-group">
-        <label htmlFor="billingAddress.stateCode">{t('frontend.account.stateCode')}</label>
-        <SwSelect id="billingAddress.stateCode" name="['billingAddress.stateCode']" value={formik.values['billingAddress.paymentMethod.stateCode']} onChange={formik.handleChange} options={states} />
-      </div>
+      {stateCodeOptions['billingAddress.countryCode'] && stateCodeOptions['billingAddress.countryCode'].length > 0 && (
+        <div className="form-group">
+          <label htmlFor="billingAddress.stateCode">{t('frontend.account.stateCode')}</label>
+          <SwSelect
+            id="billingAddress.stateCode"
+            name="['billingAddress.stateCode']"
+            value={formik.values['billingAddress.paymentMethod.stateCode']}
+            onChange={e => {
+              e.preventDefault()
+              formik.handleChange(e)
+            }}
+            options={stateCodeOptions['billingAddress.countryCode']}
+          />
+        </div>
+      )}
+
       <div className="form-group">
         <label htmlFor="billingAddress.postalCode">{t('frontend.account.postalCode')}</label>
         <input className="form-control" name="['billingAddress.postalCode']" type="text" id="billingAddress.postalCode" value={formik.values['billingAddress.postalCode']} onChange={formik.handleChange} />
@@ -48,11 +85,4 @@ const AccountAddressForm = ({ formik, states, countries }) => {
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    states: state.configuration.states,
-    countries: state.configuration.countries,
-    isEdit: false,
-  }
-}
-export default connect(mapStateToProps)(AccountAddressForm)
+export default AccountAddressForm

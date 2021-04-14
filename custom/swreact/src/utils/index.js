@@ -24,3 +24,8 @@ export const isAuthenticated = () => {
   }
   return false
 }
+
+export const containsHTML = str => /<[a-z][\s\S]*>/i.test(str)
+export const isString = val => 'string' === typeof val
+export const isBoolean = val => 'boolean' === typeof val
+export const booleanToString = value => (value ? 'Yes' : 'No')
