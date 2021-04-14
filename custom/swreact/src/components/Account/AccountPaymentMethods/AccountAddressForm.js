@@ -15,8 +15,8 @@ const AccountAddressForm = ({ formik }) => {
     if (countryCodeOptions.length === 0 && !isFetching) {
       dispatch(getCountries())
     }
-    if (!stateCodeOptions['billingAddress.countryCode'] && !isFetching) {
-      dispatch(getStateCodeOptionsByCountryCode(['billingAddress.countryCode']))
+    if (!stateCodeOptions[formik.values['billingAddress.countryCode']] && !isFetching) {
+      dispatch(getStateCodeOptionsByCountryCode(formik.values['billingAddress.countryCode']))
     }
   }, [dispatch, formik, stateCodeOptions, countryCodeOptions, isFetching])
 

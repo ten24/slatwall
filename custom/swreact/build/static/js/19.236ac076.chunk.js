@@ -1,2 +1,0 @@
-(this.webpackJsonpswreact=this.webpackJsonpswreact||[]).push([[19],{512:function(e,t,c){"use strict";c.r(t);var s=c(21),a=c(136),r=c(11),n=c(121),h=c(0);t.default=function(){var e=Object(r.h)();return Object(h.jsxs)(s.o,{children:[Object(h.jsx)(a.a,{title:"Search - "+new URLSearchParams(e.search).get("keyword")}),Object(h.jsx)(n.a,{})]})}}}]);
-//# sourceMappingURL=19.236ac076.chunk.js.map
