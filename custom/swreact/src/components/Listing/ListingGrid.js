@@ -1,5 +1,7 @@
 import ProductCard from '../ProductCard/ProductCard'
 import ContentLoader from 'react-content-loader'
+
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 const ListingGridLoader = props => (
@@ -19,6 +21,8 @@ const ListingGridLoader = props => (
 )
 
 const ListingGrid = ({ isFetching, pageRecords }) => {
+  const { t } = useTranslation()
+
   return (
     <div className="row mx-n2">
       {isFetching && (
@@ -38,9 +42,9 @@ const ListingGrid = ({ isFetching, pageRecords }) => {
       {!isFetching &&
         pageRecords.length == 0 &&
         <div className="col">
-          Sorry we can't seem to fins any products that match your search.
+          {t('frontend.listing.noProductsFound')}
           <br />
-          Need assistance? <Link to='/contact'>Contact Us</Link>
+          {t('frontend.listing.needAssistance')} <Link to='/contact'>{t('frontend.nav.contact')}</Link>
         </div>
       }
     </div>
