@@ -60,6 +60,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return publicProperties;
 	}
 	
+	public string function getImageBasePath( boolean frontendURL = false ) {
+		return (arguments.frontendURL ? getHibachiScope().getBaseImageURL() : getHibachiScope().setting('globalAssetsImageFolderPath') ) & "/brand/logo";
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
@@ -70,39 +74,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processBrand_uploadBrandLogo(required any brand, required any processObject) {
 		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
 		try {
-			// Get the upload directory for the current property
-			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
-			var maxFileSize = val(maxFileSizeString) * 1000000;
-			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/brand/logo";
-
-			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
-				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
-			}
 			
-			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
+			var uploadDirectory = this.getImageBasePath();
 			
-			// If the directory where this file is going doesn't exists, then create it
-			if(!directoryExists(uploadDirectory)) {
-				directoryCreate(uploadDirectory);
-			}
-			// Do the upload, and then move it to the new location
-			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'overwrite', 'makeUnique' );
-			var fileSize = uploadData.fileSize;
+			var fileUpload = getHibachiUtilityService().uploadFile( 
+				uploadDirectory = uploadDirectory,
+				fileFormFieldName = 'uploadFile',
+				allowedMimeType = arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType
+			);
 			
- 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
- 				arguments.brand.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+			if( !fileUpload.success ) {
+ 				arguments.brand.addError('imageFile', fileUpload.message);
  			} else {
- 				if(!IsNull(arguments.processObject.getImageFile())){
- 					getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());	
+ 				
+ 				//delete existing image from object
+ 				if( arguments.brand.getImageFile() != "") {
+ 					arguments.brand = this.processBrand_deleteBrandLogo( arguments.brand, {"imageFile": arguments.brand.getImageFile()});
  				}
  				
- 				fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
- 				if(getHibachiUtilityService().isS3Path(fullFilePath)){
- 					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
- 				}
- 				arguments.brand.setImageFile( uploadData.serverFile );
+ 				arguments.brand.setImageFile( fileUpload.filePath );
  			}
-			
 		} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
 		}
@@ -112,16 +103,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processBrand_deleteBrandLogo(required any brand, required struct data) {
 		if(structKeyExists(arguments.data, "imageFile")) {
-			var imageBasePath = getHibachiScope().setting('globalAssetsImageFolderPath') & '/brand/logo/';
-
-			if(getHibachiUtilityService().isS3Path(imageBasePath)){
-				imageBasePath = getHibachiUtilityService().formatS3Path(imageBasePath);
-			}
-
-			if(fileExists(imageBasePath&arguments.data.imageFile)) {
-				fileDelete(imageBasePath&arguments.data.imageFile);
-				arguments.brand.setImageFile('');
-			}
+			
+			var imageBasePath = this.getImageBasePath();
+			
+			getHibachiUtilityService().deleteFileFromPath( 
+			 	directoryPath = imageBasePath,
+			 	fileName = arguments.data.imageFile
+			 );
+			 
+			arguments.brand.setImageFile('');
 			getImageService().clearImageCache(imageBasePath, arguments.data.imageFile);
 		}
 

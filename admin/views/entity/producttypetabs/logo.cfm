@@ -44,11 +44,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.brand" type="any" />
+<cfparam name="rc.productType" type="any" />
 
 <cfoutput>
 	<div class="row s-image-uploader">
-			<cfset fullImagePath = "#$.slatwall.getService('brandService').getImageBasePath( frontendURL = true )#/#rc.brand.getImageFile()#" />
+			<cfset fullImagePath = "#$.slatwall.getService('productService').getProductTypeImageBasePath( frontendURL = true )#/#rc.productType.getImageFile()#" />
 			<cfif fileExists($.slatwall.getService('HibachiUtilityService').hibachiExpandPath(fullImagePath))>
 				<div class="col-xs-2 s-upload-image">
 					<div class="thumbnail">
@@ -67,10 +67,10 @@ Notes:
 						<div class="s-controlls">
 							<div class="btn-group btn-group-justified" role="group">
 								<div class="btn-group" role="group">
-									<hb:HibachiProcessCaller entity="#rc.brand#" processContext="uploadBrandLogo" action="admin:entity.preprocessbrand" queryString="imageFile=#rc.brand.getImageFile()#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
+									<hb:HibachiProcessCaller entity="#rc.productType#" processContext="uploadLogo" action="admin:entity.preprocessproducttype" queryString="imageFile=#rc.productType.getImageFile()#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
 								</div>
 								<div class="btn-group" role="group">
-									<hb:HibachiProcessCaller entity="#rc.brand#" processContext="deleteBrandLogo" action="admin:entity.processbrand" queryString="imageFile=#rc.brand.getImageFile()#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
+									<hb:HibachiProcessCaller entity="#rc.productType#" processContext="deleteLogo" action="admin:entity.processproducttype" queryString="imageFile=#rc.productType.getImageFile()#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
 								</div>
 							</div>
 						</div>
@@ -82,7 +82,7 @@ Notes:
 				<div class="col-xs-2 s-upload-image">
 					<div class="thumbnail">
 						<div class="s-image">
-							<hb:HibachiProcessCaller entity="#rc.brand#" processContext="uploadBrandLogo" action="admin:entity.preprocessbrand" icon="picture" iconOnly="true"  modal="true" />
+							<hb:HibachiProcessCaller entity="#rc.productType#" processContext="uploadLogo" action="admin:entity.preprocessproducttype" icon="picture" iconOnly="true"  modal="true" />
 						</div>
 						<div class="s-title">
 							<span class="s-short">
@@ -96,7 +96,7 @@ Notes:
 						<div class="s-controlls">
 							<div class="btn-group btn-group-justified" role="group">
 								<div class="btn-group" role="group">
-									<hb:HibachiProcessCaller entity="#rc.brand#" processContext="uploadBrandLogo" action="admin:entity.preprocessbrand" icon="plus" iconOnly="true"  modal="true" class="btn btn-default" />
+									<hb:HibachiProcessCaller entity="#rc.productType#" processContext="uploadLogo" action="admin:entity.preprocessproducttype" icon="plus" iconOnly="true"  modal="true" class="btn btn-default" />
 								</div>
 							</div>
 						</div>
