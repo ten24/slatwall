@@ -4108,7 +4108,8 @@ component  accessors="true" output="false"
 	    param name="arguments.data.entityName" default="";
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        
+	    param name="arguments.data.propertyIdentifierList" default="";
+
         if( !len(arguments.data.entityName) ){
             getHibachiScope().addActionResult("public:scope.getEntity",true);
             return;
@@ -4133,23 +4134,26 @@ component  accessors="true" output="false"
         this.getHibachiScope().addActionResult("public:scope.getEntity", false);
 	}
 	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/product/{entityID}`
+	 * 
+	 * if @includeAttributesMetadata is set to true, and the request is for an specific product [entityID is set], 
+	 * it will all attribute-sets related to the requested-product [ Global, product-tpyes(the hierarchy), brand and the requested product ];
+	 * 
+	 * @includeAttributesMetadata, defaults to `false`; is boolean flag to return the attribute-sets metadata for that product
+	 */
 	public any function getProduct(required struct data ){
-	    param name="arguments.data.entityID" default="";
-	    param name="arguments.data.propertyIdentifierList" default="";
 	    param name="arguments.data.includeAttributesMetadata" default=false;
 	    
+	    // if this's  cal to get all-products
 	    if( !len(arguments.data.entityID) ){
-            this.getHibachiScope().addActionResult("public:scope.getProduct",true);
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
             return;
         }
         
-        arguments.data.entityName = "Product";
-        arguments.data.restRequestFlag = 1;
-        arguments.data.enforceAuthorization = true;
-        arguments.data.useAuthorizedPropertiesAsDefaultColumns = true;
-        
         if( arguments.data.includeAttributesMetadata ){
-            
             if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
                 arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
             }
@@ -4166,6 +4170,7 @@ component  accessors="true" output="false"
         }
         
         arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
 	}
 	
 	
