@@ -344,7 +344,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	* @Suppress
 	*/
 	public struct function getSkuSalePriceDetails( required any skuID) {
-		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
+		if(!isNew() && structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
 			return getSalePriceDetailsForSkus()[ arguments.skuID ];
 		}
 		return {};
