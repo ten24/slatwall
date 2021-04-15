@@ -4136,8 +4136,7 @@ component  accessors="true" output="false"
 	public any function getProduct(required struct data ){
 	    param name="arguments.data.entityID" default="";
 	    param name="arguments.data.propertyIdentifierList" default="";
-	    param name="arguments.data.formatAttributes" default=false;
-	    param name="arguments.data.includeAttributesMetadata" default=true;
+	    param name="arguments.data.includeAttributesMetadata" default=false;
 	    
 	    if( !len(arguments.data.entityID) ){
             this.getHibachiScope().addActionResult("public:scope.getProduct",true);
@@ -4149,9 +4148,7 @@ component  accessors="true" output="false"
         arguments.data.enforceAuthorization = true;
         arguments.data.useAuthorizedPropertiesAsDefaultColumns = true;
         
-        var fetchMetadata = arguments.data.includeAttributesMetadata || arguments.data.includeAttributesMetadata;
-        
-        if( fetchMetadata ){
+        if( arguments.data.includeAttributesMetadata ){
             
             if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
                 arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
@@ -4164,22 +4161,20 @@ component  accessors="true" output="false"
         var response = {};
         response['product'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
         
-        if(fetchMetadata){
-            if(arguments.data.includeAttributesMetadata){
-                response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
-            }
+        if(arguments.data.includeAttributesMetadata){
+            response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
         }
         
         arguments.data.ajaxResponse['data'] = response;
 	}
 	
 	
-	private struct function getAttributeSetMetadataForProduct(required productID, required string productTypeIDPath, string brandID=''){
+	private array function getAttributeSetMetadataForProduct(required productID, required string productTypeIDPath, string brandID=''){
 	    
 	    var attributeSetCollectionList = this.getAttributeService().getAttributeSetCollectionList();
 	    
-	    attributeSetCollectionList.setDisplayProperties('attributeSetID, attributeSetName, attributeSetCode, attributeSetDescription, globalFlag, sortOrder');
-	    attributeSetCollectionList.addDisplayProperties('attributes.attributeID, attributes.attributeName, attributes.attributeCode, attributes.attributeDescription, attributes.sortOrder');
+	    attributeSetCollectionList.setDisplayProperties('attributeSetName, attributeSetCode, attributeSetDescription, globalFlag, sortOrder');
+	    attributeSetCollectionList.addDisplayProperties('attributes.attributeName, attributes.attributeCode, attributes.attributeDescription, attributes.sortOrder');
 	    
         attributeSetCollectionList.setDistinct(true);
 	    attributeSetCollectionList.addFilter('activeFlag', 1);
@@ -4198,7 +4193,7 @@ component  accessors="true" output="false"
                 value               = arguments.productTypeIDPath, 
                 logicalOperator     = "OR",
                 filterGroupAlias    = 'attribute_set_filters',
-                propertyIdentifier  = 'productTypes.productTypeID',
+                propertyIdentifier  = 'productTypes.productTypeIDPath',
                 comparisonOperator  = "IN"
             );
         }
@@ -4225,31 +4220,41 @@ component  accessors="true" output="false"
         var formattedAttributeSets = {};
 
         for(var attributeSet in attributeSets){
-            if(!structKeyExists(formattedAttributeSets, attributeSet.attributeSetID) ){
-                formattedAttributeSets[attributeSet.attributeSetID] = {
+            if(!structKeyExists(formattedAttributeSets, attributeSet.attributeSetCode) ){
+                formattedAttributeSets[attributeSet.attributeSetCode] = {
                     'sortOrder'                 : attributeSet.sortOrder,
                     'globalFlag'                : attributeSet.globalFlag,
                     'attributes'                : {},
-                    'attributeSetID'            : attributeSet.attributeSetID,
                     'attributeSetName'          : attributeSet.attributeSetName,
                     'attributeSetCode'          : attributeSet.attributeSetCode,
                     'attributeSetDescription'   : attributeSet.attributeSetDescription
                 }
             }
             
-            var formattedAttributeSet = formattedAttributeSets[attributeSet.attributeSetID];
+            var formattedAttributeSet = formattedAttributeSets[attributeSet.attributeSetCode];
             
-            formattedAttributeSet.attributes[ attributeSet.attributes_attributeID ] = {
+            formattedAttributeSet.attributes[ attributeSet.attributes_attributeCode ] = {
                 'sortOrder'              : attributeSet.attributes_sortOrder,
-                'attributeID'            : attributeSet.attributes_attributeID,
                 'attributeName'          : attributeSet.attributes_attributeName,
                 'attributeCode'          : attributeSet.attributes_attributeCode,
                 'attributeDescription'   : attributeSet.attributes_attributeDescription
             }
-            
         }
         
-        return formattedAttributeSets;
+        var attributeSets = [];
+        for(var attributeSetCode in formattedAttributeSets){
+            var formattedAttributeSet = formattedAttributeSets[attributeSetCode];
+            
+            var attributes = [];
+            for(var attributeCode in formattedAttributeSet.attributes ){
+                attributes.append( formattedAttributeSet.attributes[attributeCode] );
+            }
+            
+            formattedAttributeSet['attributes'] = attributes;
+            attributeSets.append(formattedAttributeSet);
+        }
+        
+        return attributeSets;
 	}
     
     public any function getPickupLocations() {
