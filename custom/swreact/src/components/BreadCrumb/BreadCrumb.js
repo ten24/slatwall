@@ -1,9 +1,25 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { setLastLocation } from '../../actions/contentActions'
 // import PropTypes from 'prop-types'
 
 const Crumb = ({ path, name, index }) => {
+  
+  //override path for product detail breadcrumb with last page visited
+  if( path === "/product") {
+    let lastLocation = localStorage.getItem("lastLocation")
+    if( typeof lastLocation !== undefined ) {
+      lastLocation = JSON.parse( lastLocation ) //parse to valid object
+      lastLocation = lastLocation[lastLocation.length - 1] //get last elemenet
+      
+      //override path and name with last page
+      path = lastLocation.path
+      name = lastLocation.name
+    }
+  }
+  
   if (index > 0) {
     return (
       <li className="breadcrumb-item text-nowrap">
@@ -40,9 +56,16 @@ const toBreadcrumbs = (link, { rootName = 'Home', nameTransform = s => s } = {})
       { path: '', crumbs: [{ path: '/', name: rootName }] }
     )
 
-const BreadCrumb = () => {
+const BreadCrumb = props => {
   let location = useLocation()
   let crumbs = toBreadcrumbs(location.pathname, { nameTransform: kebabToTitle })
+  
+  //don't save value for product detail page
+  if( !location.pathname.includes("/product/") ) {
+    //set current location as last location on storage
+    localStorage.setItem("lastLocation", JSON.stringify(crumbs) );
+  }
+  
   // crumbs.pop()
   return (
     <>
