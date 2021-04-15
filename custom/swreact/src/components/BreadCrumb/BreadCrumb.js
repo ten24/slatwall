@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useLocation } from 'react-router'
-import { Link, useHistory } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { setLastLocation } from '../../actions/contentActions'
+import { Link } from 'react-router-dom'
 // import PropTypes from 'prop-types'
 
 const Crumb = ({ path, name, index }) => {
@@ -56,7 +54,7 @@ const toBreadcrumbs = (link, { rootName = 'Home', nameTransform = s => s } = {})
       { path: '', crumbs: [{ path: '/', name: rootName }] }
     )
 
-const BreadCrumb = props => {
+const BreadCrumb = () => {
   let location = useLocation()
   let crumbs = toBreadcrumbs(location.pathname, { nameTransform: kebabToTitle })
   
