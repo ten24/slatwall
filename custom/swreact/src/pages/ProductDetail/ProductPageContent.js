@@ -49,12 +49,11 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
       })
     }
   }, [setSkusRequest, skus, productID, sku, setRequest, setOptionsRequest, skuOptions, skuID])
-
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
       <div className="px-lg-3">
         <div className="row">
-          <ProductDetailGallery productID={productID} skuID={sku.data.skuID} />
+          <ProductDetailGallery productID={productID} skuID={sku.data.skuID} imageFile={sku.data.imageFile} />
           {/* <!-- Product details--> */}
           <div className="col-lg-6 pt-0">
             <div className="product-details pb-3">
