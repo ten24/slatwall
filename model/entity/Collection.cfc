@@ -2539,7 +2539,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//this is used for record level permissions
 		if (setting("globalDisableRecordLevelPermissions")){
 			setPermissionAppliedFlag(true);
-		}else if(!getPermissionAppliedFlag()){
+		}else if(!this.getPermissionAppliedFlag()){
 
 			applyPermissionRecordRestrictions();
 
