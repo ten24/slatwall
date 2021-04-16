@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom'
 import useRedirect from '../../hooks/useRedirect'
 import { useGetProductDetails } from '../../hooks/useAPI'
 import queryString from 'query-string'
+import { Helmet } from 'react-helmet'
 
 const ProductDetail = props => {
   let { pathname, search } = useLocation()
@@ -47,6 +48,7 @@ const ProductDetail = props => {
     <Layout>
       <div className="bg-light p-0">
         <ProductPageHeader title={request.data.calculatedTitle} />
+        <Helmet title={request.data.calculatedTitle} />
         {request.data.productID && <ProductPageContent {...request.data} skuID={params.skuid} />}
         {request.data.productID && <ProductDetailSlider productID={request.data.productID} />}
       </div>
