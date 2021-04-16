@@ -78,7 +78,7 @@ component extends="HibachiService" accessors="true" {
 		return approvedProductReviewCollectionList;
 	}
 	public array function getProductPublicProperties(){
-		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription'];
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'productType.productTypeIDPath', 'brand.brandID'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
