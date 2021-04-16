@@ -597,7 +597,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		accountEmailAddress.setAccount(arguments.account);
 		accountEmailAddress.setEmailAddress(arguments.processObject.getEmailAddress());
 		this.saveAccountEmailAddress(accountEmailAddress);
-		arguments.account = this.saveAccount(arguments.account);
+
+		if (!accountEmailAddress.hasErrors()) {
+			arguments.account = this.saveAccount(arguments.account);
+		} else {
+			arguments.account.addErrors( accountEmailAddress.getErrors() );
+		}
 		
 		return arguments.account;
 	}
@@ -608,7 +613,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		accountPhoneNumber.setAccount(arguments.account);
 		accountPhoneNumber.setPhoneNumber(arguments.processObject.getPhoneNumber());
 		this.saveAccountPhoneNumber(accountPhoneNumber);
-		arguments.account = this.saveAccount(arguments.account);
+		
+		if (!accountPhoneNumber.hasErrors()) {
+			arguments.account = this.saveAccount(arguments.account);
+		} else {
+			arguments.account.addErrors( accountPhoneNumber.getErrors() );
+		}
 		
 		return arguments.account;
 	}
