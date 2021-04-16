@@ -206,7 +206,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		
 		} else if(StructKeyExists(requestHeaders.headers, "request_token")) {
-			dump(this.getHibachiScope().getDecodedJWTToken());
 			request.context["foundWithAuthToken"] = true;
 		
 		} else {
