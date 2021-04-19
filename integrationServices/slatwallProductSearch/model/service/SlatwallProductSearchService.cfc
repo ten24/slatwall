@@ -473,11 +473,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                                 filterValue = collectionList.getSimplePredicate({'value' : filterValue});
                             }
                             
-                            var hql = "(select
-                                            distinct sku.skuID 
-                                        from
+                            var hql = "(
+                                        SELECT
+                                            DISTINCT sku.skuID 
+                                        FROM
                                             SlatwallProductFilterFacetOption
-                                        where
+                                        WHERE
+                                            #subFacetColumnName# = '#subFacetName#'
+                                            AND
                                             #propertyIdentifier# #conditionalOpp# #filterValue#
                                     )";
                             
