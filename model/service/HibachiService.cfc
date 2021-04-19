@@ -192,6 +192,10 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			attributeCollectionList.setDisplayProperties('attributeCode');
 			attributeCollectionList.addFilter('publicPropertyFlag', 1);
 			attributeCollectionList.addFilter('attributeSet.attributeSetObject', arguments.entityName);
+			
+			//XXX: this leads to stack-overflow, while trying to apply permissions
+			attributeCollectionList.setPermissionAppliedFlag(true);
+			
 			var attributeRecords = attributeCollectionList.getRecords(formatRecords = false);
 			
 			var response = [];
