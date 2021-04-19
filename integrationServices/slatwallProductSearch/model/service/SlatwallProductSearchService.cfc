@@ -465,6 +465,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                         var filterValue = selectedFacetOptions[subFacetName][facteValueKey];
                         var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(facetName, facteValueKey);
                         if( !isNUll(propertyIdentifier) ){
+                            
                             var conditionalOpp = '=';
                             if( isArray(filterValue) ){
                                 conditionalOpp = 'IN';
@@ -474,26 +475,23 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                             }
                             
                             var hql = "(
-                                        SELECT
-                                            DISTINCT sku.skuID 
-                                        FROM
-                                            SlatwallProductFilterFacetOption
-                                        WHERE
-                                            #subFacetColumnName# = '#subFacetName#'
-                                            AND
-                                            #propertyIdentifier# #conditionalOpp# #filterValue#
-                                    )";
+                                SELECT
+                                    DISTINCT sku.skuID 
+                                FROM
+                                    SlatwallProductFilterFacetOption
+                                WHERE
+                                    #subFacetColumnName# = '#subFacetName#'
+                                    AND
+                                    #propertyIdentifier# #conditionalOpp# #filterValue#
+                            )";
                             
                             collectionList.addFilter(
                                 value              = hql,
                                 customHQL          = true,
-                                logicalOperator    = "OR",
                                 filterGroupAlias   = subFacetName&'_filters',
                                 propertyIdentifier = 'sku.skuID', 
                                 comparisonOperator = 'IN'
                             );
-                            
-                            // collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
                         }
                     }
                 }
