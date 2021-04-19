@@ -1,5 +1,5 @@
 const data = {
-  site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: 'stoneAndBerg' },
+  site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: 'landrsales' },
   router: [
     { URLKeyType: 'Product', URLKey: 'product' },
     { URLKeyType: 'ProductType', URLKey: 'products' },
@@ -22,7 +22,7 @@ const data = {
     formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
   },
   theme: {
-    host: 'https://stoneandberg.ten24dev.com',
+    host: 'https://landrsales.ten24dev.com',
     basePath: '/custom/client/assets/images/',
     primaryColor: '5f1018',
   },

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { sdkURL, SlatwalApiService } from '../services'
 import queryString from 'query-string'
+import { useHistory, useLocation } from 'react-router'
 
 export const useGetEntity = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
@@ -493,26 +494,47 @@ export const useGetProductSkus = () => {
 }
 
 export const useGetProductAvailableSkuOptions = () => {
-  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: { sku: {} }, error: '', params: {} })
+  const loc = useLocation()
+  const history = useHistory()
   useEffect(() => {
     if (request.makeRequest) {
       axios({
         method: 'POST',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/productAvailableSkuOptions`,
+        url: `${sdkURL}api/scope/productAvailableSkuOptions,productSkuSelected`,
         data: request.params,
         headers: {
           'Content-Type': 'application/json',
         },
       }).then(response => {
         if (response.status === 200 && response.data) {
-          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          // setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+
+          if (response.data.skuID.length) {
+            axios({
+              method: 'GET',
+              withCredentials: true, // default
+              url: `${sdkURL}api/scope/getSkuListing?f:skuID=${response.data.skuID}`,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }).then(skuResponse => {
+              if (skuResponse.status === 200 && skuResponse.data && skuResponse.data.pageRecords && skuResponse.data.pageRecords.length === 1) {
+                setRequest({ data: { ...response.data, sku: skuResponse.data.pageRecords[0] }, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+              } else {
+                setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Missing SKU' })
+              }
+            })
+          } else {
+            setRequest({ data: { ...response.data, sku: {} }, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          }
         } else {
-          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
         }
       })
     }
-  }, [request, setRequest])
+  }, [request, setRequest, loc, history])
 
   return [request, setRequest]
 }
@@ -534,6 +556,36 @@ export const useGetProductSkuSelected = () => {
           setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
         } else {
           setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetSkuOptionDetails = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getSkuOptionDetails`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          const filterdOptions = Object.keys(response.data.skuOptionDetails)
+            .map(key => {
+              return response.data.skuOptionDetails[key]
+            })
+            .sort((a, b) => a.sortOrder - b.sortOrder)
+          setRequest({ data: filterdOptions, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
         }
       })
     }
