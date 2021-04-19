@@ -452,8 +452,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         
 	    for(var facetName in ['option', 'attribute'] ){
     	    var selectedFacetOptions = arguments[ facetName ];
+    	    var customHQL = '';
     	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
                 for(var subFacetName in selectedFacetOptions ){
+                    
+                    var subFacetColumnName = 'optionGroupCode';
+                    if(facetName == 'attribute'){
+                        subFacetColumnName = 'attributeCode';
+                    }
+                    
                     for(var facteValueKey in selectedFacetOptions[subFacetName] ){
                         var filterValue = selectedFacetOptions[subFacetName][facteValueKey];
                         var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(facetName, facteValueKey);
@@ -461,9 +468,29 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                             var conditionalOpp = '=';
                             if( isArray(filterValue) ){
                                 conditionalOpp = 'IN';
-                                filterValue = arrayToList(filterValue);
+                                filterValue = collectionList.getListPredicate({'value' : arrayToList(filterValue)});
+                            } else {
+                                filterValue = collectionList.getSimplePredicate({'value' : filterValue});
                             }
-                            collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
+                            
+                            var hql = "(select
+                                            distinct sku.skuID 
+                                        from
+                                            SlatwallProductFilterFacetOption
+                                        where
+                                            #propertyIdentifier# #conditionalOpp# #filterValue#
+                                    )";
+                            
+                            collectionList.addFilter(
+                                value              = hql,
+                                customHQL          = true,
+                                logicalOperator    = "OR",
+                                filterGroupAlias   = subFacetName&'_filters',
+                                propertyIdentifier = 'sku.skuID', 
+                                comparisonOperator = 'IN'
+                            );
+                            
+                            // collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
                         }
                     }
                 }
@@ -570,9 +597,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var startTicks = getTickCount();
 	    var total = collectionData.collectionList.getRecordsCount();
-	    this.logHibachi("SlatwallProductSearchService:: getProducts/getRecordsCount took #getTickCount() - startTicks# ms.");
+	    this.logHibachi("SlatwallProductSearchService:: getProducts/getRecordsCount took #getTickCount() - startTicks# ms. count: #total#");
         
         startTicks = getTickCount();
+        
+        this.logHibachi("SQL :: "&collectionData.collectionList.getSQL() );
+        
 	    var records = collectionData.collectionList.getPageRecords();
 	    this.logHibachi("SlatwallProductSearchService:: getProducts/getPageRecords [p:#arguments.currentPage#(#arguments.pageSize#)] took #getTickCount() - startTicks# ms.");
 
