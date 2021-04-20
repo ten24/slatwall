@@ -155,6 +155,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
     property name="permissionGroupNameList" persistent="false";
     property name="preferredLocale" persistent="false";
 	property name="countryCode" persistent="false"; 
+
 		
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
