@@ -3803,7 +3803,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if( arguments.filter.keyExists('customHQL') && arguments.filter.customHQL ){
 		    predicate = arguments.filter.value.trim();
-		    if(!redicate.len() ){
+		    if( !predicate.len() ){
 		        throw("Invalid filter, custom-HQL can not be empty string, #arguments.filter.value#");
 		    }
 		    if( predicate.left(1) != '(' || predicate.right(1) != ')' ){
