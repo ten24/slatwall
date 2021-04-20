@@ -50,6 +50,7 @@ component  accessors="true" output="false"
 {
     property name="accountService" type="any";
     property name="addressService" type="any";
+    property name="attributeService" type="any";
     property name="formService" type="any";
     property name="orderService" type="any";
     property name="userUtility" type="any";
@@ -810,6 +811,99 @@ component  accessors="true" output="false"
             arguments.data.resizeSizes = sizeArray;
         }
         arguments.data.ajaxResponse['images'] = product.getImageGalleryArray(argumentCollection=arguments.data);
+    }
+    
+    /**
+     * Function get Product Type detail information
+     * @param urlTitle
+     * @return none
+    */
+    public void function getProductType(required struct data){
+        param name="arguments.data.urlTitle";
+        
+        var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
+        
+        if( IsNull( productType ) 
+            || ( !IsNull(productType.getActiveFlag()) && !productType.getActiveFlag() ) 
+            || ( !IsNull(productType.getPublishedFlag()) && !productType.getPublishedFlag() )
+            ) {
+            getHibachiScope().addActionResult( "public:product.getProductType", true );
+            return;
+        }
+        
+        //get sub product types
+        var childProductTypeCollectionList = getProductService().getProductTypeCollectionList();
+        childProductTypeCollectionList.setDisplayProperties("productTypeName, urlTitle, imageFile, productTypeID, productTypeIDPath");
+        childProductTypeCollectionList.addFilter('productTypeIDPath', "%#productType.getProductTypeID()#%", "LIKE");
+        childProductTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+        var childProductTypesRecord = childProductTypeCollectionList.getRecords( formatRecords = true );
+        
+        var childProductTypes = [];
+        var typeIndex = 0;
+        for( var childProductType in childProductTypesRecord ) {
+            
+            //skip current record
+            if( childProductType['productTypeID'] == productType.getProductTypeID()  ) {
+                continue;
+            }
+            
+            //remove parent ids from path
+            var productTypeIDPath = childProductType['productTypeIDPath'];
+            productTypeIDPath = ReplaceList( productTypeIDPath, productType.getProductTypeIDPath(), "");
+            productTypeIDPath = ListChangeDelims( productTypeIDPath, ",", ",");
+            
+            var responseStruct = {
+                "title": childProductType['productTypeName'],
+                "productTypeID": childProductType['productTypeID'],
+                "imageFile" : trim(childProductType['imageFile']) != "" ? getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & childProductType['imageFile'] : "",
+                "urlTitle" : childProductType['urlTitle']
+            };
+            
+            //if it's a parent type set title and correct index
+            if( productTypeIDPath == childProductType['productTypeID'] ) {
+                childProductTypes[ ++typeIndex ] = responseStruct;
+                //add an index for 2nd level sub types
+                childProductTypes[ typeIndex ]["childProductTypes"] = [];
+            } else {
+                
+                //remove immediate parent id from path
+                productTypeIDPath = ReplaceList( productTypeIDPath, childProductTypes[ typeIndex ]['productTypeID'], "");
+                productTypeIDPath = ListChangeDelims( productTypeIDPath, ",", ",");
+                
+                //add show products flag if it's last child
+                StructAppend( responseStruct, {"showProducts" : productTypeIDPath !== childProductType['productTypeID'] });
+                
+                //append sub type array
+                ArrayAppend( childProductTypes[ typeIndex ]["childProductTypes"], responseStruct);
+            }
+        }
+        
+        var titleTemplate = productType.getSettingValueFormatted('productTypeHTMLTitleString');
+        var descriptionTemplate = productType.getSettingValueFormatted('productTypeMetaDescriptionString');
+        var metaKeywordsTemplate = productType.getSettingValueFormatted('productTypeMetaKeywordsString');
+        
+        var response = {
+            "title"         : productType.stringReplace(template=titleTemplate, formatValues=true),
+            "urlTitle"      : productType.getUrlTitle(),
+            "imageFile"     : productType.getImageFile(),
+            "description"   : productType.stringReplace(template=descriptionTemplate, formatValues=true),
+            "metaKeywords"  : productType.stringReplace(template=metaKeywordsTemplate, formatValues=true),
+            "productTypeID" : productType.getProductTypeID()
+        };
+
+        // if image is not empty, prefix with base-path
+        if( !isNull(response.imageFile) ){
+            response['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & response.imageFile;
+        }    
+    
+        if( childProductTypes.len() > 0 ){
+           response["childProductTypes"] = childProductTypes; 
+        } else {
+            response["showProducts"] = true;
+        }
+        
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult( "public:product.getProductType", false );
     }
     
      /**
@@ -3000,6 +3094,71 @@ component  accessors="true" output="false"
             arguments.data['ajaxResponse']['primaryPaymentMethodID'] = account.getPrimaryPaymentMethod().getAccountPaymentMethodID(); 
         }
     }
+    
+    public void function setPrimaryPaymentMethod(required any data){
+        param name="data.accountPaymentMethodID" default="";
+        var hibachiScope = this.getHibachiScope();
+        if( !(hibachiScope.getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.loginRequired');
+            return;
+        }
+
+        var account = hibachiScope.getAccount();
+        var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod(arguments.data.accountPaymentMethodID);
+        
+        if( accountPaymentMethod.getAccount().getAccountID() != account.getAccountID() ){
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.doesNotBelongToUser');
+            return;
+        }
+
+        account.setPrimaryPaymentMethod(accountPaymentMethod);
+        account = this.getAccountService().saveAccount(account, {}, 'updatePrimaryPaymentMethod');
+
+        this.getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+        if( account.hasErrors() ){
+            this.addErrors(arguments.data, account.getErrors() );
+        }
+    }
+    
+    public any function createOrderTemplate( required struct data ) {
+        param name="arguments.data.siteID" default="";
+        param name="arguments.data.siteCode" default="";
+        param name="arguments.data.cmsSiteID" default="";
+        param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
+        param name="arguments.data.orderTemplateName" default="";
+        param name="arguments.data.orderTemplateTypeID" default="";
+        param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
+        param name="arguments.data.scheduleOrderDayOfTheMonth" default=1;
+
+        var hibachiScope = this.getHibachiScope();
+        
+        if( !(hibachiScope.getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.loginRequired');
+            return;
+        }
+        
+        var newOrderTemplate = this.getOrderService().newOrderTemplate();
+        
+        arguments.data['accountID'] = hibachiScope.getAccount().getAccountID();
+        if( !(len(arguments.data.orderTemplateTypeID)) && len(arguments.data.orderTemplateSystemCode) ){
+            arguments.data.orderTemplateTypeID = this.getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
+        }
+        
+        newOrderTemplate = this.getOrderService().processOrderTemplate(newOrderTemplate, arguments.data, "create");
+        
+        var processObject = newOrderTemplate.getProcessObject('create');
+        if( processObject.hasErrors() ){
+            newOrderTemplate.addErrors( processObject.getErrors() );
+        }
+
+        hibachiScope.addActionResult("public:orderTemplate.create", newOrderTemplate.hasErrors() );
+        if( newOrderTemplate.hasErrors() ){
+            this.addErrors(arguments.data, newOrderTemplate.getErrors());
+        } else {
+            arguments.data['ajaxResponse']['orderTemplate'] = newOrderTemplate.getOrderTemplateID();
+        }
+    }
+
    
 	public void function getOrderTemplates(required any data){ 
         param name="arguments.data.pageRecordsShow" default=5;
@@ -3326,39 +3485,48 @@ component  accessors="true" output="false"
 	 * addWishlistItem
 	 * removeWishlistItem
 	 * */
-	
-	public void function createWishlist(required any data) {
-	    
-        param name="arguments.data.orderTemplateTypeID" default="2c9280846b712d47016b75464e800014";
+	public any function createWishlist(required any data) {
+        param name="arguments.data.orderTemplateName" default="";
         param name="arguments.data.currencyCode" default="USD";
-        param name="arguments.data.site" default="stoneAndBerg";
+        param name="arguments.data.siteID" default="";
         
-        if( !(getHibachiScope().getLoggedInFlag()) ) {
-            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        if( !this.getHibachiScope().getLoggedInFlag() ){
+            arguments.data.ajaxResponse['error'] = this.getHibachiScope().rbKey('validate.loggedInUser.wishlist');
         }
-        
-        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-        
-		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
-		    arguments.data.messages = [];
-			var orderTemplate = getOrderService().newOrderTemplate();
-		}
-		
-		if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
+
+        arguments.data['orderTemplateTypeID'] = "2c9280846b712d47016b75464e800014"; // type-id for wishlist
+		if( !len(trim(arguments.data.orderTemplateName)) ){
 			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
         }
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
+        
+        var orderTemplate = this.getOrderService().newOrderTemplate();
+ 		orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
  		
  		var processObject = orderTemplate.getProcessObject('createWishlist');
  		if( processObject.hasErrors() ){
  		    orderTemplate.addErrors( processObject.getErrors() );
+ 		} else {
+            arguments.data['ajaxResponse']['orderTemplateID'] = orderTemplate.getOrderTemplateID();
  		}
  		
-        getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+        
+        return orderTemplate; // addItemAndCreateWishlist uses it
+    }
+    
+    public any function addItemAndCreateWishlist( required struct data ){
+        var orderTemplate = this.createWishlist(argumentCollection= arguments);
+
+        if( !orderTemplate.hasErrors() ){
+            this.getHibachiScope().flushORMSession();
             
-        if(orderTemplate.hasErrors()) {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            arguments.data['orderTemplateID'] = orderTemplate.getOrderTemplateID();
+            this.addWishlistItem(arguments.data)
         }
+
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult("public:orderTemplate.addItemAndCreateWishlist", orderTemplate.hasErrors() );
     }
 	
 	public void function getWishlist(required any data) {
@@ -3436,6 +3604,26 @@ component  accessors="true" output="false"
         if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
+    }
+    
+    public any function shareWishlist( required struct data ) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.receiverEmailAddress" default="";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+
+        orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, "shareWishlist");
+        
+        var processObject = orderTemplate.getProcessObject("shareWishlist");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult( "public:orderTemplate.shareWishlist", orderTemplate.hasErrors() );
     }
     
 	public void function addOrderTemplateItem(required any data) {
@@ -3558,6 +3746,127 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
     }
+    
+    public void function addOrderTemplatePromotionCode(required any data) {
+        param name="arguments.data.promotionCode" default="";
+        param name="arguments.data.orderTemplateID" default="";
+     	param name="arguments.data.returnAppliedPromotionCodes" default="true";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+        
+        orderTemplate = this.getService("OrderService").processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
+        var processObject = orderTemplate.getProcessObject("addPromotionCode");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+        
+        this.getHibachiScope().addActionResult( "public:orderTemplate.addOrderTemplatePromotionCode", orderTemplate.hasErrors() );
+        this.addErrors(arguments.data, orderTemplate.getErrors() );
+        
+        if( !orderTemplate.hasErrors() ){
+            orderTemplate.clearProcessObject("addPromotionCode");
+            if(arguments.data.returnAppliedPromotionCodes){
+                this.getHibachiScope().flushORMSession(); 
+                this.getAppliedOrderTemplatePromotionCodes(arguments.data);
+            }
+            this.getOrderTemplateDetails(arguments.data);
+        }
+    }
+    
+    public void function removeOrderTemplatePromotionCode(required any data) {
+        param name="arguments.data.promotionCodeID" default="";
+        param name="arguments.data.orderTemplateID" default="";
+     	param name="arguments.data.returnAppliedPromotionCodes" default="true";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+        
+        orderTemplate = this.getOrderService().processOrderTemplate( orderTemplate, arguments.data, 'removePromotionCode');
+
+        var processObject = orderTemplate.getProcessObject("removePromotionCode");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+        
+        this.getHibachiScope().addActionResult( "public:orderTemplate.removeOrderTemplatePromotionCode", orderTemplate.hasErrors() );
+        this.addErrors(arguments.data, orderTemplate.getErrors() );
+        
+        if( !orderTemplate.hasErrors() ){
+            orderTemplate.clearProcessObject("removePromotionCode");
+            if( arguments.data.returnAppliedPromotionCodes ){
+                this.getHibachiScope().flushORMSession(); 
+                this.getAppliedOrderTemplatePromotionCodes(arguments.data);
+            }
+            this.getOrderTemplateDetails(arguments.data);
+        } 
+    }
+    
+    public void function getAppliedOrderTemplatePromotionCodes(required any data){
+        param name="arguments.data.orderTemplateID" default="";
+
+		arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] = [];
+        if( len(arguments.data.orderTemplateID) ){
+            arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] 
+                = this.getDAO('orderDAO').getAppliedOrderTemplatePromotionCodes( arguments.data.orderTemplateID );
+        } 
+    }
+    
+    public any function deleteOrderTemplatePromoItems(required any data ){
+        param name="data.orderTemplateID" default="";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+
+    	if(!isNull(orderTemplate)){
+    	    this.getDAO('orderDAO').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
+            this.getHibachiScope().addActionResult( "public:orderTemplate.deleteOrderTemplatePromoItems", false );  
+    	}
+    }
+    
+    public any function getOrderTemplatePromotionProducts( required any data ) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.pageRecordsShow" default=10;
+        param name="arguments.data.currentPage" default=1;
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount( argumentCollection = arguments );
+        if( isNull(orderTemplate) ){
+            return;
+        }
+
+        if( !structKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig') ){
+            var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
+            promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
+            promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
+            arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
+        }
+
+        var promotionsCollectionList = this.getService("SkuService").getSkuCollectionList();
+        promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
+        promotionsCollectionList.setPageRecordsShow( arguments.data.pageRecordsShow );
+        promotionsCollectionList.setDisplayProperties('
+            product.defaultSku.skuID|skuID,
+            product.urlTitle|urlTitle,
+            product.productName|productName
+        ');
+
+        var records = promotionsCollectionList.getPageRecords();
+
+        var imageService = this.getService('ImageService');
+        records = arrayMap(records, function(product){
+            product.skuImagePath = imageService.getResizedImageByProfileName(product.skuID, 'medium');
+            return product;
+        }) 
+
+        arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
+    }
+
+   
+    
+    
     
     ///    ############### .  getXXXOptions();  .  ###############   
     
@@ -3789,9 +4098,9 @@ component  accessors="true" output="false"
          getCartData( arguments.data );
          
          getOrderService().deleteOrder( cart );
-     }
+    }
      
-     /**
+    /**
 	 * Generic Endpoint to get any entity
 	* */
 	public any function getEntity( required struct data ) {
@@ -3799,7 +4108,8 @@ component  accessors="true" output="false"
 	    param name="arguments.data.entityName" default="";
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        
+	    param name="arguments.data.propertyIdentifierList" default="";
+
         if( !len(arguments.data.entityName) ){
             getHibachiScope().addActionResult("public:scope.getEntity",true);
             return;
@@ -3822,6 +4132,134 @@ component  accessors="true" output="false"
         }
 
         this.getHibachiScope().addActionResult("public:scope.getEntity", false);
+	}
+	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/product/{entityID}`
+	 * 
+	 * if @includeAttributesMetadata is set to true, and the request is for an specific product [entityID is set], 
+	 * it will all attribute-sets related to the requested-product [ Global, product-tpyes(the hierarchy), brand and the requested product ];
+	 * 
+	 * @includeAttributesMetadata, defaults to `false`; is boolean flag to return the attribute-sets metadata for that product
+	 */
+	public any function getProduct(required struct data ){
+	    param name="arguments.data.includeAttributesMetadata" default=false;
+	    
+	    // if this's  cal to get all-products
+	    if( !len(arguments.data.entityID) ){
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+            return;
+        }
+        
+        if( arguments.data.includeAttributesMetadata ){
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
+                arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
+            }
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
+                arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
+            }
+        }
+        
+        var response = {};
+        response['product'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        
+        if(arguments.data.includeAttributesMetadata){
+            response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
+        }
+        
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+	}
+	
+	
+	private array function getAttributeSetMetadataForProduct(required productID, required string productTypeIDPath, string brandID=''){
+	    
+	    var attributeSetCollectionList = this.getAttributeService().getAttributeSetCollectionList();
+	    
+	    attributeSetCollectionList.setDisplayProperties('attributeSetName, attributeSetCode, attributeSetDescription, globalFlag, sortOrder');
+	    attributeSetCollectionList.addDisplayProperties('attributes.attributeName, attributes.attributeCode, attributes.attributeDescription, attributes.sortOrder');
+	    
+        attributeSetCollectionList.setDistinct(true);
+	    attributeSetCollectionList.addFilter('activeFlag', 1);
+	    attributeSetCollectionList.addFilter('attributeSetObject', 'Product');
+	    attributeSetCollectionList.addFilter('attributes.activeFlag', 1);
+	    
+	    attributeSetCollectionList.addFilter(
+            value               =  1,
+            filterGroupAlias    = 'attribute_set_filters',
+            propertyIdentifier  = 'globalFlag',
+            comparisonOperator  = "="
+        );
+        
+        if( len(arguments.productTypeIDPath) ){
+            attributeSetCollectionList.addFilter( 
+                value               = arguments.productTypeIDPath, 
+                logicalOperator     = "OR",
+                filterGroupAlias    = 'attribute_set_filters',
+                propertyIdentifier  = 'productTypes.productTypeIDPath',
+                comparisonOperator  = "IN"
+            );
+        }
+        
+         if( len(arguments.brandID) ){
+            attributeSetCollectionList.addFilter( 
+                value               = arguments.brandID, 
+                logicalOperator     = "OR",
+                filterGroupAlias    = 'attribute_set_filters',
+                propertyIdentifier  = 'brands.brandID',
+                comparisonOperator  = "="
+            );
+        }
+        
+        attributeSetCollectionList.addFilter( 
+            value               = arguments.productID, 
+            logicalOperator     = "OR",
+            filterGroupAlias    = 'attribute_set_filters',
+            propertyIdentifier  = 'products.productID',
+            comparisonOperator  = "="
+        );
+        
+        var attributeSets =attributeSetCollectionList.getRecords();
+        var formattedAttributeSets = {};
+
+        for(var attributeSet in attributeSets){
+            if(!structKeyExists(formattedAttributeSets, attributeSet.attributeSetCode) ){
+                formattedAttributeSets[attributeSet.attributeSetCode] = {
+                    'sortOrder'                 : attributeSet.sortOrder,
+                    'globalFlag'                : attributeSet.globalFlag,
+                    'attributes'                : {},
+                    'attributeSetName'          : attributeSet.attributeSetName,
+                    'attributeSetCode'          : attributeSet.attributeSetCode,
+                    'attributeSetDescription'   : attributeSet.attributeSetDescription
+                }
+            }
+            
+            var formattedAttributeSet = formattedAttributeSets[attributeSet.attributeSetCode];
+            
+            formattedAttributeSet.attributes[ attributeSet.attributes_attributeCode ] = {
+                'sortOrder'              : attributeSet.attributes_sortOrder,
+                'attributeName'          : attributeSet.attributes_attributeName,
+                'attributeCode'          : attributeSet.attributes_attributeCode,
+                'attributeDescription'   : attributeSet.attributes_attributeDescription
+            }
+        }
+        
+        var attributeSets = [];
+        for(var attributeSetCode in formattedAttributeSets){
+            var formattedAttributeSet = formattedAttributeSets[attributeSetCode];
+            
+            var attributes = [];
+            for(var attributeCode in formattedAttributeSet.attributes ){
+                attributes.append( formattedAttributeSet.attributes[attributeCode] );
+            }
+            
+            formattedAttributeSet['attributes'] = attributes;
+            attributeSets.append(formattedAttributeSet);
+        }
+        
+        return attributeSets;
 	}
     
     public any function getPickupLocations() {

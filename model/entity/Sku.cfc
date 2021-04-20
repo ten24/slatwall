@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="changeEventDates,addLocation,removeLocation" {
+component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="changeEventDates,addLocation,removeLocation,createEmptySKUStocksForAllParentLocations" {
 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -2040,9 +2040,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public void function postInsert(){
 		super.postInsert();
-	    
-	    // TODO: add a global-setting, 
-	    this.getDAO('stockDAO').creteEmptySKUStocksForAllParentLocations(this.getSkuID());
+		
+	    // TODO: add a global-setting
+		this.getHibachiScope().addEntityQueueData(this.getSkuID(), 'Sku', 'processSku_createEmptySKUStocksForAllParentLocations');
 	}
 	
 	public void function preUpdate(Struct oldData){

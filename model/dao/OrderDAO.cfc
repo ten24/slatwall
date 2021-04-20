@@ -454,6 +454,22 @@ Notes:
 			};
 			queryExecute(sql,params);
 		}
+		
+    	public any function getAppliedOrderTemplatePromotionCodes( required string orderTemplateID ){
+    		var query = new Query();
+    		var sql = " 
+        		SELECT 
+        		    p.promotionCode, p.promotionCodeID
+                FROM swordertemplatepromotioncode o
+                INNER JOIN swpromotioncode p
+                    ON p.promotionCodeID = o.promotionCodeID
+                WHERE o.orderTemplateID=:orderTemplateID
+    		";
+    		
+			query.addParam(name="orderTemplateID",value=arguments.orderTemplateID);
+
+    		return query.execute( sql=sql, returntype='array').getResult();
+        }
 	</cfscript>
 
 </cfcomponent>

@@ -6,6 +6,7 @@ class SWAssignedProductsController {
     public alreadySelectedProductsCollectionConfig:any;
     public collectionConfig:any;
     public contentId:string;
+    public listingDisplayId: string;
     public typeaheadDataKey:string;
     public edit:boolean;
     public productSortProperty:string;
@@ -21,7 +22,9 @@ class SWAssignedProductsController {
         this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductListingPage");
         this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productListingPageID,sortOrder,product.productID,product.productName,product.productCode,product.calculatedSalePrice,product.activeFlag,product.publishedFlag");
         this.alreadySelectedProductsCollectionConfig.addFilter("content.contentID", this.contentId, "=");
+        
         this.typeaheadDataKey = utilityService.createID(32);
+        this.listingDisplayId = 'LD'+utilityService.createID(32);
     }
 }
 

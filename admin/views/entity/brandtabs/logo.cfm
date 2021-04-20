@@ -48,19 +48,18 @@ Notes:
 
 <cfoutput>
 	<div class="row s-image-uploader">
-			<cfset imageFile = "#rc.brand.getImageFile()#">
-			<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/brand/logo/#rc.brand.getImageFile()#" />
-			<cfif fileExists($.slatwall.getService('HibachiUtilityService').hibachiExpandPath(thisImagePath))>
+			<cfset fullImagePath = "#$.slatwall.getService('brandService').getImageBasePath( frontendURL = true )#/#rc.brand.getImageFile()#" />
+			<cfif fileExists($.slatwall.getService('HibachiUtilityService').hibachiExpandPath(fullImagePath))>
 				<div class="col-xs-2 s-upload-image">
 					<div class="thumbnail">
 						<div class="s-image">
-							#$.slatwall.getResizedImage(imagePath=thisImagePath, width=250, height=250)#
+							#$.slatwall.getResizedImage(imagePath=fullImagePath, width=250, height=250)#
 						</div>
 						<div class="s-title">
 							<span class="s-short">
-								<cfset objImage  = thisImagePath>
-								<cfif len( trim(thisImagePath ) ) gt 17>
-									<cfset objImage  = left( trim( thisImagePath ), 17 ) & "...">
+								<cfset objImage  = fullImagePath>
+								<cfif len( trim(fullImagePath ) ) gt 17>
+									<cfset objImage  = left( trim( fullImagePath ), 17 ) & "...">
 								</cfif>
 								#objImage#
 							</span>
@@ -68,10 +67,10 @@ Notes:
 						<div class="s-controlls">
 							<div class="btn-group btn-group-justified" role="group">
 								<div class="btn-group" role="group">
-									<hb:HibachiProcessCaller entity="#rc.brand#" processContext="uploadBrandLogo" action="admin:entity.preprocessbrand" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
+									<hb:HibachiProcessCaller entity="#rc.brand#" processContext="uploadBrandLogo" action="admin:entity.preprocessbrand" queryString="imageFile=#rc.brand.getImageFile()#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
 								</div>
 								<div class="btn-group" role="group">
-									<hb:HibachiProcessCaller entity="#rc.brand#" processContext="deleteBrandLogo" action="admin:entity.processbrand" queryString="imageFile=#imageFile#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
+									<hb:HibachiProcessCaller entity="#rc.brand#" processContext="deleteBrandLogo" action="admin:entity.processbrand" queryString="imageFile=#rc.brand.getImageFile()#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
 								</div>
 							</div>
 						</div>
@@ -87,9 +86,9 @@ Notes:
 						</div>
 						<div class="s-title">
 							<span class="s-short">
-								<cfset objImage  = thisImagePath>
-								<cfif len( trim( thisImagePath ) ) gt 17>
-									<cfset objImage  = left( trim( thisImagePath ), 17 ) & "...">
+								<cfset objImage  = fullImagePath>
+								<cfif len( trim( fullImagePath ) ) gt 17>
+									<cfset objImage  = left( trim( fullImagePath ), 17 ) & "...">
 								</cfif>
 								#objImage#
 							</span>

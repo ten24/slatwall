@@ -35,7 +35,7 @@ const ProductSlider = ({ children, sliderData = [], settings, title, slidesToSho
   }
   return (
     <div className="container">
-      <div className="featured-products bg-white text-center pb-5 pt-5">
+      <div className="featured-products shadow bg-white text-center my-5 py-3">
         <h3 className="h3 mb-0">{title}</h3>
         {children}
         <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
