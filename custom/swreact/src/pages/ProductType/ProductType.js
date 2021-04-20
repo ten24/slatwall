@@ -94,7 +94,7 @@ const ProductType = () => {
 
   return (
     <Layout>
-      {request.data.title?.length > 0 && <Helmet title={request.data.title} />}
+      <Helmet title={request.data.htmlTitle} />
       {request.data.childProductTypes?.length > 0 && <ProductTypeList data={request.data} />}
       {request.data.showProducts && (
         <ListingPage preFilter={{ productType_id: request.data.productTypeID }} hide={'productType'}>
