@@ -5275,8 +5275,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		var order = arguments.orderPayment.getOrder();
 		order.setCalculatedPaymentAmountDue(order.getPaymentAmountDue());
-		// Flush the statusType for the orderPayment
-		getHibachiDAO().flushORMSession();
+		
+		//error check to avoid ORM flush error
+		if(!arguments.orderPayment.hasErrors()) {
+			// Flush the statusType for the orderPayment
+			getHibachiDAO().flushORMSession();
+		}
 
 		// If no errors, attempt To Update The Order Status
 		if(!arguments.orderPayment.hasErrors()) {
