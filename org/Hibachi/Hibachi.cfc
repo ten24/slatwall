@@ -986,9 +986,13 @@ component extends="framework.one" {
 	public void function populateAPIHeaders(){
 		param name="request.context.headers" default="#structNew()#";
 		var httpRequestData = getHTTPRequestData();
-
-		if(this.CORSEnabled && arrayLen(this.CORSWhitelist) && structKeyExists(httpRequestData.headers,'Origin') && !isNull(httpRequestData.headers['Origin'])){
-			populateCORSHeader(httpRequestData.headers['Origin']);
+		
+		if(!getHibachiScope().hasApplicationValue("CORSWhitelist")){
+			getHibachiScope().setApplicationValue('CORSWhitelist', listToArray(getHibachiScope().setting('globalCORSWhitelist')));
+		}
+		var CORSWhitelist = getHibachiScope().getApplicationValue('CORSWhitelist');
+		if(arrayLen(CORSWhitelist) && structKeyExists(httpRequestData.headers,'Origin') && !isNull(httpRequestData.headers['Origin'])){
+			populateCORSHeader(httpRequestData.headers['Origin'],CORSWhitelist);
 		}
 		if(!structKeyExists(request.context.headers,'Content-Type')){
 			request.context.headers['Content-Type'] = 'application/json';
@@ -1003,9 +1007,9 @@ component extends="framework.one" {
 		}
 	}
 
-	public void function populateCORSHeader(origin){
+	public void function populateCORSHeader(origin,CORSWhitelist){
 		var matched = false;
-		for(var domain in this.CORSWhiteList){
+		for(var domain in arguments.CORSWhiteList){
 			if(domain == '*'){
 				request.context.headers['Access-Control-Allow-Origin'] = domain;
 				matched = true;
