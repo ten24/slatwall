@@ -101,7 +101,7 @@ component extends="HibachiService" accessors="true" {
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
         
-        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.productClearance, relatedProduct.calculatedSalePrice";	
+        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.calculatedSalePrice";	
         properties &= ",relatedProduct.brand.brandID, relatedProduct.brand.brandName, relatedProduct.brand.urlTitle";
         properties &= ",relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID";
         properties &= ",relatedProduct.defaultSku.imageFile, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.defaultSku.skuID";

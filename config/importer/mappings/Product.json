@@ -177,12 +177,6 @@
                 "dataType": "string"
             }
         },
-        "Clearance": {
-            "propertyIdentifier": "productClearance",
-            "validations": {
-                "dataType": "string"
-            }
-        },
         "Diameter": {
             "propertyIdentifier": "productDiameter",
             "validations": {
