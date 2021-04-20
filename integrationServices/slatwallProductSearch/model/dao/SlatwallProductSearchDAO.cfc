@@ -972,8 +972,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
 	    
-	    var facetsSqlFilterQueryFragments = {};
 	    var facetsSqlFilterQueryParams = {};
+	    var facetsSqlFilterQueryFragments = {};
+	    var subFacetsSqlFilterQueryFragments = {};
 	    
 	    facetsSqlFilterQueryFragments['productSite'] = '';
 	    if( len(arguments.site.getSiteID()) ){
@@ -1019,67 +1020,121 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
     	    }
 	    }
 	    
+	    // make query fragments for facets having sub-facets
 	    for(var facetName in ['option', 'attribute'] ){
     	    facetsSqlFilterQueryFragments[facetName] = '';
+    	    
     	    var selectedFacetOptions = arguments[ facetName ];
-
-    	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
-    	        var concatedOptions = {};
-    	        
-    	        for(var subFacetName in selectedFacetOptions ){
-    	            var selectedSubFacetOptions = selectedFacetOptions[ subFacetName ];
-    	            if(!this.hibachiIsStructEmpty(selectedSubFacetOptions) ){
-            	        for(var facetValueKey in selectedSubFacetOptions ){
-                            var thisFilterOption = selectedSubFacetOptions[facetValueKey];
-                            
-                            if(!structKeyExists(concatedOptions, facetValueKey) ){
-                                concatedOptions[facetValueKey] = thisFilterOption;
-                            } else{
-                                var oldOption = concatedOptions[facetValueKey];
-                                if( isSimpleValue(oldOption) ){
-                                    concatedOptions[facetValueKey] = [oldOption, thisFilterOption];
-                                } else {
-                                    concatedOptions[facetValueKey].append(thisFilterOption);
-                                }
-                            }
-            	        }
-    	            }
-    	        }
-    	        
-    	        var queryFragment = '(';
-    	        if( !this.hibachiIsStructEmpty(concatedOptions) ){
-    	            for(var thisFacetValueKey in concatedOptions){
-    	                var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, thisFacetValueKey);
-
-                        if( !isNUll(columnName) ){
-                            var facetKeyOptions = concatedOptions[thisFacetValueKey];
-                            
-                            var filterValuePlaceholder = facetName&'_'&columnName;
-                            facetsSqlFilterQueryParams[ filterValuePlaceholder ] = facetKeyOptions;
-                            
-                            if( len(queryFragment) > 1 ){
-                                queryFragment &= ' OR';
-                            }
-                            
-                            if( isArray(facetKeyOptions) ){
-                                queryFragment &= ' #columnName# IN (:#filterValuePlaceholder#)';
-                            } else{
-                                queryFragment &= ' #columnName# = :#filterValuePlaceholder#';
-                            }
-                        }  
-    	            }
-    	        }
-    	        
-                if( len(queryFragment) > 1){
-                    queryFragment &= ')';
-                    facetsSqlFilterQueryFragments[facetName] = queryFragment;
-                }
+    	    if( this.hibachiIsStructEmpty(selectedFacetOptions) ){
+    	        continue;
     	    }
+        	    
+	        /* 
+	            we need to intersect the SKU's for each optionGroup
+	            
+	            AND 
+	            
+	            skuID IN (  
+	                Select DISTINCT skuID 
+	                    FROM pffo 
+	                WHERE 
+	                    optionGroupCode='a' 
+	                    AND optionName IN ('x','y') 
+	                    AND optionID IN (1,2,3)
+	                    AND optionCode IN (x,y,z)
+	            )
+            	
+            	AND 
+            	
+            	skuID IN (  
+	                Select DISTINCT skuID 
+	                    FROM pffo 
+	                WHERE 
+	                    optionGroupCode='b' 
+	                    AND optionName IN ('x','y') 
+	                    AND optionID IN (1,2,3)
+	                    AND optionCode IN (x,y,z)
+	            )
+	            
+            	AND 
+            	
+            	skuID IN (  
+	                Select DISTINCT skuID 
+	                    FROM pffo 
+	                WHERE 
+	                    attributeCode='attXYZ' 
+	                    AND attributeOptionLabel IN ('x','y') 
+	                    AND attributeOptionNameID IN (1,2,3)  
+	                    AND attributeOptionValue IN (x,y,z)
+	            )         
+	        */
+	        
+	        var subFacetQueryFragments = {};
+    	    var subFacetColumnName = 'optionGroupCode';
+            if(facetName == 'attribute'){
+                subFacetColumnName = 'attributeCode';
+            }
+            
+            // create query fragments for sub-facets
+	        for(var subFacetName in selectedFacetOptions ){
+	            var selectedSubFacetOptions = selectedFacetOptions[ subFacetName ];
+	            var subFacetQueryFragment = "";
+	            if(this.hibachiIsStructEmpty(selectedSubFacetOptions) ){
+	                continue;
+	            }
+	            
+	            // loop over different filter values [id, name, code, slug] 
+    	        for(var facetValueKey in selectedSubFacetOptions ){
+                    var facetValueColumnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facetValueKey);
+    	            if( isNull(facetValueColumnName) ){
+    	                continue;
+    	            }
+
+    	            var facetKeyOptions = selectedSubFacetOptions[facetValueKey];
+                    var filterValuePlaceholder = facetName&'_'&subFacetName&'_'&facetValueColumnName;
+                    facetsSqlFilterQueryParams[ filterValuePlaceholder ] = facetKeyOptions;
+                    
+                    if( isArray(facetKeyOptions) ){
+                        queryFragment &= ' AND #facetValueColumnName# IN (:#filterValuePlaceholder#)';
+                    } else{
+                        queryFragment &= ' AND #facetValueColumnName# = :#filterValuePlaceholder#';
+                    }
+    	        }
+    	        
+    	        if( subFacetQueryFragment.len() ){
+    	            subFacetQueryFragment = "
+    	            
+    	                skuID IN (
+        	                SELECT DISTINCT skuID
+        	                FROM swProductFilterFacetOption
+        	                WHERE
+        	                #subFacetColumnName# = '#subFacetName#'
+        	                #subFacetQueryFragment#
+    	                )
+    	                
+    	           ";
+    	           subFacetQueryFragments[ subFacetName ] = subFacetQueryFragment;
+    	        }
+	        }
+	        
+	        // create the query-fragemnt for the facet by concating all sub-facet fragments
+	        var facetQueryFragment = '';
+	        if( !this.hibachiIsStructEmpty(subFacetQueryFragments) ){
+	            for(var subFacetName in subFacetQueryFragments ){
+                    facetQueryFragment &= " AND #subFacetQueryFragments[subFacetName]#";
+	            }
+	        }
+            if( facetQueryFragment.len() ){
+                // wrap the query-fragment in (...)
+                facetsSqlFilterQueryFragments[facetName] = '(' & facetQueryFragment & ')';
+                subFacetsSqlFilterQueryFragments[ facetName ] = subFacetQueryFragments;
+            }
 	    }
 
 	    return {
 	        'params': facetsSqlFilterQueryParams,
-	        'fragments' : facetsSqlFilterQueryFragments
+	        'fragments' : facetsSqlFilterQueryFragments,
+	        'subFacetFragments' : subFacetsSqlFilterQueryFragments
 	    };
 	}
 	
@@ -1115,6 +1170,16 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 includeSKUCount= arguments.includeSKUCount, 
                 site = arguments.site 
             );
+            
+            
+            // TODO
+            
+            // 1. fetch the options for all sub-facets except which have filters applied 
+            //  by applying all filters for the facets AND skiping the skipping the sub-facets having filters 
+            //  e.g WHERE optionGroupCode NOT IN ('og1', 'og5') AND 'facet-filter-fagments'
+            
+            // 2. for sub-facets which have filters applied,
+            // fetche the optione in another query, apply filterf from all other sub-facets except for the one we're fetching
             
             if( listFindNoCase('option,attribute', facetName) ){
                 var thisFacetOptions = arguments[ facetName ];
