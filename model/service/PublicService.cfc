@@ -349,8 +349,8 @@ component  accessors="true" output="false"
             }
 	    }
 
-	    var integrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
-	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(integrationPackage);
+	    var intigrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
+	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(intigrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
         
         arguments.parsedQuery.site = currentRequestSite;
