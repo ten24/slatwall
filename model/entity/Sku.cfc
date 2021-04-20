@@ -224,6 +224,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// ==================== START: Logical Methods =========================	
 
+	
+ 
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -716,7 +718,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// START: Quantity Helper Methods
 
 	public numeric function getQuantity(required string quantityType, string locationID, string stockID, string currencyCode) {
-		
 		//DataCache prefix means this cache will be cleared whenever an orm flush occurs
 		var cacheKey = arguments.quantityType;
 		if(structKeyExists(arguments,'locationID')){
@@ -2003,20 +2004,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			getHibachiScope().flushORMSession();
 			getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
 		}
-	}
-	
-	
-
-	public boolean function getCalculatedQATSPerformCalculateFlag(){
-		return this.setting('skuTrackInventoryFlag');
-	}
-	
-	public boolean function getCalculatedQOHPerformCalculateFlag(){
-		return this.setting('skuTrackInventoryFlag');
-	}
-	
-	public boolean function getCalculatedQOQPerformCalculateFlag(){
-		return this.setting('skuTrackInventoryFlag');
 	}
 
 	// ==================  END:  Overridden Methods ========================
