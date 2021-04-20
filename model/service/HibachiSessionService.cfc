@@ -161,7 +161,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		var jwtPayload = currentSession.getAccount().getJwtToken().getPayload();
 
 		//if order id exists in payload then use that to get recent order else get most recent not placed order order
-		if( !this.hibachiIsEmpty(jwtPayload.orderID) ){
+		if( structKeyExists(jwtPayload, "orderID") && !this.hibachiIsEmpty(jwtPayload.orderID) ){
 			
 			currentSession.setOrder( 
 			    this.getOrderService().getOrder( jwtPayload.orderID) 

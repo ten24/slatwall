@@ -88,6 +88,7 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
 <input type="hidden" name="newOrderPayment.orderPaymentID"
       value="#rc.addOrderPaymentProcessObject.getNewOrderPayment().getOrderPaymentID()#"/>
 
+<input type="hidden" name="accountPaymentMethodID" value=""/>
 <!--- New Payment Type --->
 <hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#"
                           property="paymentMethod"
