@@ -3801,9 +3801,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		
-		if( arguments.filter.keyExists('customHQL') ){
-		    predicate = trim(arguments.filter.value);
-		    if( !predicate.listFirst() != '(' || !predicate.listLast() != ')'){
+		if( arguments.filter.keyExists('customHQL') && arguments.filter.customHQL ){
+		    predicate = arguments.filter.value.trim();
+		    if(!redicate.len() ){
+		        throw("Invalid filter, custom-HQL can not be empty string, #arguments.filter.value#");
+		    }
+		    if( predicate.left(1) != '(' || predicate.right(1) != ')' ){
 		        throw("Invalid filter, custom-HQL should be wrapped in '(...)', #arguments.filter.value#");
 		    }
 		     return predicate;
