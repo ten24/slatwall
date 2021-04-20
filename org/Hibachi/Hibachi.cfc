@@ -987,8 +987,9 @@ component extends="framework.one" {
 		param name="request.context.headers" default="#structNew()#";
 		var httpRequestData = getHTTPRequestData();
 		
+		var CORSWhitelist = listToArray(getHibachiScope().setting('globalCORSWhitelist'));
 		if(arrayLen(CORSWhitelist) && structKeyExists(httpRequestData.headers,'Origin') && !isNull(httpRequestData.headers['Origin'])){
-			populateCORSHeader(httpRequestData.headers['Origin'],listToArray(getHibachiScope().setting('globalCORSWhitelist'));
+			populateCORSHeader(httpRequestData.headers['Origin'],CORSWhitelist);
 		}
 		if(!structKeyExists(request.context.headers,'Content-Type')){
 			request.context.headers['Content-Type'] = 'application/json';
