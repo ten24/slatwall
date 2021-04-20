@@ -291,6 +291,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3Bucket = {fieldtype="text"},
 			globalS3AccessKey = {fieldtype="text"},
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
+			globalCORSWhitelist = {fieldtype="text",defaultValue=""},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
 			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
