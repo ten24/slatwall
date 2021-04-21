@@ -2,9 +2,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	
 	property name="hibachiAuthenticationService" type="any";
 	property name="hibachiValidationService" type="any";
-	
-	property name="decodedJWTToken" type="any";
-	
+
 	property name="account" type="any";
 	property name="content" type="any";
 	property name="session" type="any";

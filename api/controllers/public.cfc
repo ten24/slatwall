@@ -76,7 +76,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             getHibachiScope().setPersistSessionFlag(false);
         }
     }
-    
+
     public any function get( required struct rc ) {
         var publicService = getService('PublicService');
 

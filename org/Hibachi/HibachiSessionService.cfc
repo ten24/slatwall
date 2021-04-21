@@ -291,38 +291,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
-	/**
-	 * Method to create account session using Bearer Token
-	 * */
-	public any function setAccountSessionByAuthToken(required string authToken){
-		//get token by stripping prefix
-		var token = replace(arguments.authToken, 'Bearer ', '');
-		
-		if(this.hibachiIsEmpty(token) ){
-		    return;
-		}
-		
-		var jwt = this.getHibachiJWTService().getJwtByToken(token);
-
-		if( jwt.verify() ){
-		    var payload = jwt.getPayload();
-		    
-		    if( !this.hibachiIsEmpty(payload.sessionID) ){
-		    	var jwtSession = this.getSession(payload.sessionID);
-    			this.getHibachiScope().setSession(jwtSession);
-		    }
-		    else if(!this.hibachiIsEmpty(payload.accountID)){
-		    	var jwtAccount = this.getAccountService().getAccountByAccountID(payload.accountID);
-    			if(!isNull(jwtAccount)){
-    				jwtAccount.setJwtToken(jwt);
-    				this.getHibachiScope().setAccount(jwtAccount);
-    				this.getHibachiScope().getSession().setAccount( jwtAccount );
-    			}
-		    }
-		    
-		    return this.getHibachiScope().getSession();
-		}
-	}
 	
 	
 	public any function getSessionIDFromAuthToken(required string authToken){
@@ -335,10 +303,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		var jwt = this.getHibachiJWTService().getJwtByToken(token);
 
-		// Invalid or expired token
-		if( !jwt.verify() ){
-			return;
-		}
+		// Invalid or expired token 
+		// REVIEW: There is no need to check JWT Expiration, we are managing it in the session table
+		// if( !jwt.verify() ){
+		// 	return;
+		// }
 		
 		var payload = jwt.getPayload();
 
