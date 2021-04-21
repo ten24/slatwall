@@ -108,7 +108,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 		public any function getFeaturedItems(required any rc, struct data={}) {
 	    var productCollectionList = getService('HibachiService').getProductCollectionList();
-		productCollectionList.setDisplayProperties("productID,productFeatured,productTypeID");
+		productCollectionList.setDisplayProperties("productID,productTypeID");
 		productCollectionList.addFilter('productType.productTypeID','2c91808e72edb2a801732b2e11e80d96','=');
 		productCollectionList = productCollectionList.getRecords(formatRecords=false);
 
