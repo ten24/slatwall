@@ -66,7 +66,7 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 	 * Method to create JWT Token for account
 	 * @param - setOrder : flag to set order on JWT
 	 * */
-	public string function createToken( struct payload= {}){
+	public string function createToken(){
 		//create token
 		var key = getService('settingService').getSettingValue('globalClientSecret');
 		var jwt = newJwt(key);
@@ -74,47 +74,25 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		//hard coded to 15 minutes
 		var tokenExpirationTime = 900;
 		
-		if(structIsEmpty(arguments.payload)){
-			arguments.payload['iat'] = javaCast( "int", currentTime );
-			arguments.payload['issuer'] = CGI['server_name'];
-			arguments.payload['accountID'] = this.getHibachiScope().getAccount().getAccountID();
-			arguments.payload['sessionID'] = this.getHibachiScope().getSession().getSessionID();
+		var payload = {
+			'iat' : javaCast( 'int', currentTime ),
+			'issuer' : CGI['server_name'],
+			'accountID' : this.getHibachiScope().getAccount().getAccountID(),
+			'sessionID' : this.getHibachiScope().getSession().getSessionID(),
+			'exp': JavaCast( 'int', ( currentTime + tokenExpirationTime ) ),
+			'encoding' : 'UTF-8'
 		}
-		
-		arguments.payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
-		
-		
-		// TODO: should be in modal/service/HibachiJWTService; hibachi should not know anything about order;
-		// if( arguments.setOrder && !arguments.clearOrder ) {
-		// 	//set cart order id on arguments.payload
-		// 	var mostRecentCart = getService('orderService').getMostRecentNotPlacedOrderByAccountID(getHibachiScope().getAccount().getAccountID());
-		// 	if( !isNull(mostRecentCart) ) {
-		// 		arguments.payload['orderID'] = mostRecentCart.getOrderID();
-		// 	}
-		// } else if(arguments.clearOrder) {
-		// 	arguments.payload['orderID'] = '';
-		// }
 		
 		//add users role so we can make decisions on frontend permissions
 		if(getHibachiScope().getAccount().getSuperUserFlag()){
-			arguments.payload['role']='superUser';	
+			payload['role']='superUser';	
 		}else if(getHibachiScope().getAccount().hasPermissionGroup()){
-			arguments.payload['role']="admin";
-			arguments.payload['permissionGroups']=getHibachiScope().getAccount().getPermissionGroupsCollectionList().getPrimaryIDList();
+			payload['role']="admin";
+			payload['permissionGroups']=getHibachiScope().getAccount().getPermissionGroupsCollectionList().getPrimaryIDList();
 		}else{
-			arguments.payload['role']='public';
+			payload['role']='public';
 		}
 		
-		arguments.payload['encoding'] = "UTF-8";
-		var token = jwt.encode(payload);
-		return token;
+		return jwt.encode(payload);
 	}
-	
-	public string function refreshToken(){
-		if(IsNull(this.getHibachiScope().getDecodedJWTToken())){
-			return '';
-		}
-        return this.createToken(this.getHibachiScope().getDecodedJWTToken().getPayload());
-    }
-	
 }

@@ -86,12 +86,15 @@ export const getUser = () => {
     if (req.isFail()) {
       dispatch(softLogout())
     } else {
-      if (req.success().account.accountID === '') {
-        dispatch(softLogout())
-      } else {
+      
+      // if (req.success().account.accountID !== currentUser.accountID) {
+      //   dispatch(softLogout())
+      // } else {
         dispatch(receiveUser(req.success().account))
         dispatch(receiveCart(req.success().cart))
-      }
+      // }
+      
+      
     }
   }
 }

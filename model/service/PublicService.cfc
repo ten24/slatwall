@@ -2299,9 +2299,7 @@ component  accessors="true" output="false"
             getHibachiScope().getSession().setOrder( cart );
             
             //create new token with cart information
-            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !this.getHibachiScope().hibachiIsEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
-                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
-            }
+            arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession(true);

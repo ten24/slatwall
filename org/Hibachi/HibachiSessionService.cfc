@@ -121,8 +121,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var foundWithExtendedPSID = false;
 		
 		// Check for non-persistent cookie.
-
-		if( len(getHibachiScope().getSessionValue(sessionValue)) ) {
+		if( structKeyExists(requestHeaders,'Headers') && structKeyExists(requestHeaders.Headers,'Auth-Token') && !isNull(getSessionIDFromAuthToken(requestHeaders.Headers['Auth-Token']))){
+			
+			var sessionEntity = this.getSession( getSessionIDFromAuthToken(requestHeaders.Headers['Auth-Token']), true);
+			
+		}else if( len(getHibachiScope().getSessionValue(sessionValue)) ) {
 			
 			var sessionEntity = this.getSession( getHibachiScope().getSessionValue(sessionValue), true);
 			
@@ -319,6 +322,32 @@ component output="false" accessors="true" extends="HibachiService"  {
 		    
 		    return this.getHibachiScope().getSession();
 		}
+	}
+	
+	
+	public any function getSessionIDFromAuthToken(required string authToken){
+		//get token by stripping prefix
+		var token = replace(arguments.authToken, 'Bearer ', '');
+		
+		if(!len(token) ){
+			return;
+		}
+		
+		var jwt = this.getHibachiJWTService().getJwtByToken(token);
+
+		// Invalid or expired token
+		if( !jwt.verify() ){
+			return;
+		}
+		
+		var payload = jwt.getPayload();
+
+		// SessionID not set
+		if( this.hibachiIsEmpty(payload.sessionID) ){
+			return;
+		}
+
+		return payload.sessionID;
 	}
 	
 	public any function getSessionBySessionCookie(required any cookieName, required any cookieValue,boolean isNew=false){
