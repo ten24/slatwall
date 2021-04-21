@@ -139,7 +139,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		}
 		
 		// If the session was set with a persistent cookie, and the session has an non new order on it... then remove all of the personal information
-		if(getHibachiScope().getSessionFoundPSIDCookieFlag() && !getHibachiScope().getSession().getOrder().getNewFlag()) {
+		if((getHibachiScope().getSessionFoundPSIDCookieFlag() || getHibachiScope().getSessionFoundWithExpiredJwtToken()) && !getHibachiScope().getSession().getOrder().getNewFlag()) {
 			
 			getOrderService().processOrder(getHibachiScope().getSession().getOrder(), 'removePersonalInfo');
 			// Force persistance
