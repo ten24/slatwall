@@ -342,7 +342,7 @@ Notes:
 					</hb:HibachiPropertyRow>
 
 					<cfif rc.processObject.getSku().isGiftCardSku() && rc.processObject.getSku().getGiftCardRecipientRequiredFlag()>
-						<div sw-add-order-item-gift-recipient quantity="giftRecipientControl.quantity" order-item-gift-recipients="giftRecipientControl.orderItemGiftRecipients"></div>
+						<div sw-add-order-item-gift-recipient quantity="giftRecipientControl.quantity" order-item-gift-recipients="giftRecipientControl.orderItemGiftRecipients" message-max-length="#rc.$.slatwall.getService('SettingService').getSettingValue('globalGiftCardMessageLength')#"></div>
 					</cfif>
 			</span>
 		<cfelse>

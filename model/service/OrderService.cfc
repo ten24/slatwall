@@ -125,7 +125,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//Order Payments Information
 		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();
-		orderPaymentCollectionList.setDisplayProperties('order.orderID,paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
+		orderPaymentCollectionList.setDisplayProperties('order.orderID,paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, purchaseOrderNumber,creditCardType,nameOnCreditCard, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
 		orderPaymentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			orderPaymentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
@@ -1323,7 +1323,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_addPromotionCode(required any orderTemplate, required any processObject) { 
-		var promotionCode = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
+		var promotionCode = this.getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
 	
 		if( isNull(promotionCode) || !promotionCode.getPromotion().getActiveFlag() ){
 			arguments.orderTemplate.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
@@ -1561,7 +1561,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
 			
-			for(var orderFulfillment in transientOrder){
+			for(var orderFulfillment in transientOrder.getOrderFulfillments()){
 				getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment, false);
 			}
 			
@@ -1572,7 +1572,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
 			request[orderTemplateOrderDetailsKey]['discountTotal'] = transientOrder.getCalculatedDiscountTotal();
 			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
-			request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = transientOrder.getTaxableAmountTotal();
+
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
@@ -1661,7 +1661,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderTemplate.getAccount())){
 			var account = arguments.orderTemplate.getAccount();
 			arguments.transientOrder.setAccount(account); 
-    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType());	
 		}
 		
 		if(
@@ -1860,7 +1859,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}) {
-		
 		if(arguments.processObject.getNewAccountFlag()) {
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
 			
@@ -2391,7 +2389,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// TODO: max-collection validation
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
-		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+		orderTemplateItemCollectionList.addFilter('sku.skuID', arguments.processObject.getSku().getSkuID());
 		
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
@@ -2784,7 +2782,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.nullAccountFlag" type="boolean" default=false;  
 		
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedTaxTotal,calculatedFulfillmentHandlingFeeTotal,calculatedDiscountTotal"; //extra prop we need
+		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedDiscountTotal"; //extra prop we need
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
@@ -3093,13 +3091,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var allocatedOrderDiscountAmount = getService('HibachiUtilityService').precisionCalculate(discount);
 		}
 		
-		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
+		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount < 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
 			if(arguments.order.hasAppliedPromotion()){
 				promotionApplied.setPromotion(arguments.order.getAppliedPromotions()[1].getPromotion());
 			}
-			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
+			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount);
 			promotionApplied.setManualDiscountAmountFlag(true);
 			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
 		}
@@ -4209,7 +4207,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Populate with the data
 				orderDeliveryItem.setOrderItem( thisOrderItem );
 				orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
+				if(!isNull(arguments.orderDelivery.getLocation())){
 				orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
+				}
 				orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
 				this.saveOrderDeliveryItem( orderDeliveryItem );
 			}

@@ -32,7 +32,7 @@ const MainBanner = () => {
   const contentStore = useSelector(state => state.content)
 
   let homeMainBanner = []
-  Object.keys(contentStore).map(key => {
+  Object.keys(contentStore).forEach(key => {
     if (key.includes('main-banner-slider/')) {
       homeMainBanner.push(contentStore[key])
     }
@@ -88,10 +88,13 @@ const HomeBanner = () => {
     }
   }, [request, setRequest])
   return (
-    <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${Background})` }}>
+    <>
+      <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${Background})` }}>
+       
+        <MainBanner />
+      </div>
       <ProductSlider sliderData={request.data}>{home && <div dangerouslySetInnerHTML={{ __html: home.customBody }} />}</ProductSlider>
-      <MainBanner />
-    </div>
+    </>
   )
 }
 

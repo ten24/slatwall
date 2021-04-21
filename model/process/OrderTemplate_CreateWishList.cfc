@@ -117,15 +117,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getSite() {
-		if(!StructKeyExists(variables, 'site') ) {
-			if( !IsNull(variables.siteID) && len( trim(variables.siteID) ) ) {
+		if(!StructKeyExists(variables, 'site') ){
+			if( !IsNull(variables.siteID) && len( trim(variables.siteID) ) ){
 				variables['site'] = getService('SiteService').getSite( variables.siteID );
-				return variables['site'];
 			}
-		} else {
-			return variables['site'];
 		}
 		
+		if(!isNull(variables.site) ){
+			return variables['site'];
+		}
 	}
 	
 }

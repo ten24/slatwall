@@ -34,6 +34,37 @@ export const useGetEntity = () => {
   return [request, setRequest]
 }
 
+export const useGetEntityByID = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
+  useEffect(() => {
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/public/${request.entity}?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data.data && response.data.data) {
+            setRequest({ data: response.data.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
 export const useGetSku = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
@@ -526,6 +557,33 @@ export const useGetProductImageGallery = () => {
       }).then(response => {
         if (response.status === 200 && response.data) {
           setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+/**
+ * Api to get product type details information
+ **/
+export const useGetProductType = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'GET',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getProductType?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data && response.data.data && response.data.successfulActions.length > 0) {
+          setRequest({ data: response.data.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
         } else {
           setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
         }

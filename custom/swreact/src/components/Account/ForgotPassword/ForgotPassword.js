@@ -30,7 +30,7 @@ const ForgotPassword = () => {
   return (
     <PromptLayout>
       <SWForm formik={formik} title="Forgot Password" primaryButtontext="Send Me Reset Email">
-        <SWInput formik={formik} token="emailAddress" label="Email Address" type="email" />
+        <SWInput required={true} formik={formik} token="emailAddress" label="Email Address" type="email" />
       </SWForm>
     </PromptLayout>
   )

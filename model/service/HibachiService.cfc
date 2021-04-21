@@ -184,18 +184,21 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	/**
 	 * Method to return list of public attribute codes
 	*/
-	public array function getPublicAttributesByEntityName(required string entityName) {
-		var cacheKey = "getPublicAttributesByEntityName-#arguments.entityName#";
+	public array function getPublicAttributesByEntityName( required string entityName ){
+		var cacheKey = "getPublicAttributesByEntityName_#arguments.entityName#";
 		
 		if(!this.getHibachiCacheService().hasCachedValue(cacheKey) ){
 			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
 			attributeCollectionList.setDisplayProperties('attributeCode');
 			attributeCollectionList.addFilter('publicPropertyFlag', 1);
 			attributeCollectionList.addFilter('attributeSet.attributeSetObject', arguments.entityName);
+			
+			//XXX: this leads to stack-overflow, while trying to apply permissions
+			attributeCollectionList.setPermissionAppliedFlag(true); 
+
 			var attributeRecords = attributeCollectionList.getRecords(formatRecords = false);
 			
 			var response = [];
-			
 			for( var attribute in attributeRecords) {
 				ArrayAppend( response , attribute['attributeCode'] );
 			}

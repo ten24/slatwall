@@ -199,7 +199,7 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                 </div>
               </form>
               {/* <!-- Product panels--> */}
-              <ProductPagePanels />
+              <ProductPagePanels productID={productID} />
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../services'
+import { getCart } from './cartActions'
 import { requestUser, receiveUser, clearUser } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
@@ -37,6 +38,7 @@ export const logout = () => {
   return async dispatch => {
     const response = await SlatwalApiService.auth.revokeToken()
     dispatch(softLogout())
+    dispatch(getCart())
 
     if (response.isSuccess()) {
       toast.success('Logout Successful')
