@@ -493,6 +493,52 @@ export const useGetProductSkus = () => {
   return [request, setRequest]
 }
 
+export const useGetSkuByOption = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: { sku: {} }, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/productDetailData`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+  return [request, setRequest]
+}
+export const useGetProductPageDetails = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: { sku: {} }, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/productDetailData`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+  return [request, setRequest]
+}
 export const useGetProductAvailableSkuOptions = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: { sku: {} }, error: '', params: {} })
   const loc = useLocation()
@@ -502,33 +548,14 @@ export const useGetProductAvailableSkuOptions = () => {
       axios({
         method: 'POST',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/productAvailableSkuOptions,productSkuSelected`,
+        url: `${sdkURL}api/scope/productDetailData`,
         data: request.params,
         headers: {
           'Content-Type': 'application/json',
         },
       }).then(response => {
         if (response.status === 200 && response.data) {
-          // setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
-
-          if (response.data.skuID.length) {
-            axios({
-              method: 'GET',
-              withCredentials: true, // default
-              url: `${sdkURL}api/scope/getSkuListing?f:skuID=${response.data.skuID}`,
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            }).then(skuResponse => {
-              if (skuResponse.status === 200 && skuResponse.data && skuResponse.data.pageRecords && skuResponse.data.pageRecords.length === 1) {
-                setRequest({ data: { ...response.data, sku: skuResponse.data.pageRecords[0] }, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
-              } else {
-                setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Missing SKU' })
-              }
-            })
-          } else {
-            setRequest({ data: { ...response.data, sku: {} }, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
-          }
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
         } else {
           setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
         }

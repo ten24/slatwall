@@ -6,116 +6,149 @@ import ProductPageHeader from './ProductPageHeader'
 import ProductPageContent from './ProductPageContent'
 import ProductDetailSlider from './ProductDetailSlider'
 import { Redirect, useHistory, useLocation } from 'react-router-dom'
-import { useGetProductDetails, useGetProductAvailableSkuOptions, useGetSkuOptionDetails } from '../../hooks/useAPI'
+import { useGetEntity, useGetProductAvailableSkuOptions } from '../../hooks/useAPI'
 import queryString from 'query-string'
 import { Helmet } from 'react-helmet'
+const skuCodesToSkuIds = (params, productOptionGroups) => {
+  const parsedOptions = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+  const temp = Object.keys(parsedOptions).map(optionGroupCode => {
+    return productOptionGroups
+      .map(optionGroup => {
+        const optCount = optionGroup.options.filter(option => {
+          return option.optionCode === parsedOptions[optionGroupCode]
+        })[0]
+        return optCount ? optCount.optionID : null
+      })
+      .filter(option => option)
+  })
+  return temp.join()
+}
 
+const skuIdsToSkuCodes = (idList, productOptionGroups) => {
+  return productOptionGroups
+    .map(optionGroup =>
+      optionGroup.options
+        .filter(option => {
+          return idList.includes(option.optionID)
+        })
+        .map(option => {
+          let payload = {}
+          payload[optionGroup.optionGroupCode] = option.optionCode
+          return payload
+        })
+    )
+    .flat()
+}
 const ProductDetail = props => {
   let { pathname, search } = useLocation()
-  let [product, getProduct] = useGetProductDetails()
-  let [productOptions, getProductOptions] = useGetSkuOptionDetails()
   let [skuOptions, getSkuOptionsRequest] = useGetProductAvailableSkuOptions()
-  const loc = useLocation()
+  let [newproduct, getPublicProduct] = useGetEntity()
 
+  let location = useLocation()
   let history = useHistory()
   const [path, setPath] = useState(pathname)
   const params = queryString.parse(search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
-  const skuCodesToSkuIds = params => {
-    const parsedOptions = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
-    return Object.keys(parsedOptions)
-      .map(optionGroupCode => {
-        return productOptions.data
-          .map(optionGroup => {
-            const optCount = optionGroup.options.filter(option => {
-              return option.optionCode === parsedOptions[optionGroupCode]
-            })[0]
-            return optCount ? optCount.optionID : null
-          })
-          .filter(option => option)[0]
-      })
-      .join()
-  }
+
   useEffect(() => {
-    history.listen(location => {
-      const parsedOptions = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+    // Redirect to default sku if not provided
+    if (newproduct.isLoaded && !Object.keys(params).length) {
+      console.log('Redirect to Default Sku')
+      const cals = skuIdsToSkuCodes(newproduct.data[0].defaultSelectedOptions, newproduct.data[0].optionGroups)
+      history.push({
+        pathname: location.pathname,
+        search: queryString.stringify(Object.assign(...cals), { arrayFormat: 'comma' }),
+      })
+    }
+    // get the sku
+    if (newproduct.isLoaded && !skuOptions.isFetching && !skuOptions.isLoaded) {
+      const selectedOptionIDList = skuCodesToSkuIds(search, newproduct.data[0].optionGroups)
+      console.log('Get Sku')
       getSkuOptionsRequest({
         ...skuOptions,
-        isFetching: false,
+        isFetching: true,
         isLoaded: false,
         params: {
-          productID: product.data.productID,
-          selectedOptionIDList: Object.keys(parsedOptions)
-            .map(optionGroupCode => {
-              return productOptions.data
-                .map(optionGroup => {
-                  const optCount = optionGroup.options.filter(option => {
-                    return option.optionCode === parsedOptions[optionGroupCode]
-                  })[0]
-                  return optCount ? optCount.optionID : null
-                })
-                .filter(option => option)[0]
-            })
-            .join(),
+          productID: newproduct.data[0].productID,
+          // Accounts for First Load
+          selectedOptionIDList: selectedOptionIDList.length ? selectedOptionIDList : newproduct.data[0].defaultSelectedOptions,
         },
-        makeRequest: false,
+        makeRequest: true,
       })
+    }
+
+    history.listen(location => {
+      if (!newproduct.isFetching && newproduct.isLoaded) {
+        console.log('parsedOptions', location.search, newproduct)
+        const selectedOptionIDList = skuCodesToSkuIds(location.search, newproduct.data[0].optionGroups)
+        getSkuOptionsRequest({
+          ...skuOptions,
+          isFetching: true,
+          isLoaded: false,
+          params: {
+            productID: newproduct.data[0].productID,
+            // Accounts for First Load
+            selectedOptionIDList,
+          },
+          makeRequest: true,
+        })
+      }
     })
-  }, [history, getSkuOptionsRequest, skuOptions, params, search, product, productOptions])
+  }, [history, getSkuOptionsRequest, skuOptions, params, search, location, newproduct])
 
-  //  getSkuOptionsRequest({ ...skuOptions, isFetching: true, isLoaded: false, params: { 'f:skuID': params.skuid }, makeRequest: true })
-
-  if (product.isLoaded && !productOptions.isLoaded && !productOptions.isFetching) {
-    getProductOptions({ ...productOptions, isFetching: true, isLoaded: false, params: { productID: product.data.productID }, makeRequest: true })
-  }
-  if (!product.isFetching && product.isLoaded && Object.keys(product.data).length === 0) {
+  // Do we have a valid product?
+  if (!newproduct.isFetching && newproduct.isLoaded && newproduct.data[0] && Object.keys(newproduct.data[0]).length === 0) {
     return <Redirect to="/404" />
   }
-  if ((!product.isFetching && !product.isLoaded) || pathname !== path) {
-    const urlTitle = pathname.split('/').reverse()
+  // Get the Product on page chnage
+  if (pathname !== path) {
+    console.log('Refresh all')
+    const parsedOptions = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
     setPath(pathname)
 
-    getProduct({
-      ...product,
+    // getSkuOptionsRequest({
+    //   ...skuOptions,
+    //   isFetching: false,
+    //   isLoaded: false,
+    //   params: {
+    //     productID: newproduct.data[0].productID,
+    //     selectedOptionIDList: Object.keys(parsedOptions)
+    //       .map(optionGroupCode => {
+    //         return newproduct.data[0].optionGroups
+    //           .map(optionGroup => {
+    //             const optCount = optionGroup.options.filter(option => {
+    //               return option.optionCode === parsedOptions[optionGroupCode]
+    //             })[0]
+    //             return optCount ? optCount.optionID : null
+    //           })
+    //           .filter(option => option)[0]
+    //       })
+    //       .join(),
+    //   },
+    //   makeRequest: false,
+    // })
+  }
+  if (!newproduct.isFetching && !newproduct.isLoaded) {
+    const urlTitle = pathname.split('/').reverse()
+    setPath(pathname)
+    getPublicProduct({
+      ...newproduct,
       params: {
-        filter: {
-          current: 1,
-          urlTitle: urlTitle[0],
-        },
+        'f:urlTitle': urlTitle[0],
       },
+      entity: 'product',
       makeRequest: true,
       isFetching: true,
       isLoaded: false,
     })
   }
 
-  if (product.isLoaded && productOptions.isLoaded && !skuOptions.isFetching && !skuOptions.isLoaded) {
-    console.log('skuCodesToSkuIds(search)', search, skuCodesToSkuIds(search))
-    getSkuOptionsRequest({
-      ...skuOptions,
-      isFetching: true,
-      isLoaded: false,
-      params: {
-        productID: product.data.productID,
-        selectedOptionIDList: skuCodesToSkuIds(search),
-      },
-      makeRequest: true,
-    })
-  }
-  // let skuOptionSelection = {}
-  // if (sku.isLoaded && sku.data.options) {
-  //   sku.data.options.forEach(({ optionGroupID, optionID }) => {
-  //     skuOptionSelection[optionGroupID] = optionID
-  //   })
-  // }
-  // console.log(`ProductPageContent: params.skuid: ${params.skuid} skuID: ${sku.data.skuID}`)
-  console.log('skuOptions', skuOptions)
   return (
     <Layout>
       <div className="bg-light p-0">
-        <ProductPageHeader title={product.data.calculatedTitle} />
-        <Helmet title={product.data.calculatedTitle} />
-        {product.data.productID && <ProductPageContent {...product.data} sku={skuOptions.data.sku} skuID={skuOptions.data.skuID} availableSkuOptions={skuOptions.data.availableSkuOptions} productOptions={productOptions.data} isFetching={skuOptions.isFetching || productOptions.isFetching || product.isFetching} />}
-        {product.data.productID && <ProductDetailSlider productID={product.data.productID} />}
+        {newproduct.isLoaded && <ProductPageHeader title={newproduct.data[0].calculatedTitle} />}
+        {newproduct.isLoaded && <Helmet title={newproduct.data[0].calculatedTitle} />}
+        {newproduct.isLoaded && newproduct.data[0].productID && <ProductPageContent product={newproduct.data[0]} sku={skuOptions.data.sku[0]} skuID={skuOptions.data.skuID} availableSkuOptions={skuOptions.data.availableSkuOptions} productOptions={newproduct.data[0].optionGroups} isFetching={skuOptions.isFetching || newproduct.isFetching} />}
+        {newproduct.isLoaded && newproduct.data[0].productID && <ProductDetailSlider productID={newproduct.data[0].productID} />}
       </div>
     </Layout>
   )
