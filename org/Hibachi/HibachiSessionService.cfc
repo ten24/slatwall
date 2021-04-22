@@ -262,7 +262,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiScope().getSessionFoundPSIDCookieFlag() 
 				|| getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() 
 				|| getHibachiScope().getSessionFoundNPSIDCookieFlag()
-				|| getHibachiScope().getSessionFoundPSIDCookieFlag()
+				|| getHibachiScope().getSessionfoundWithExpiredJwtToken()
 			) 
 			&& !getHibachiScope().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccountAuthentication());
 				
