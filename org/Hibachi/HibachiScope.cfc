@@ -12,7 +12,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
 	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
-	property name="sessionfoundWithExpiredJwtToken" type="boolean";
+	property name="sessionFoundWithExpiredJwtToken" type="boolean";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale" type="string";
 	property name="url" type="string";
