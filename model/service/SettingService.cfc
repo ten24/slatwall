@@ -241,6 +241,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
 			globalCurrencyType = {fieldType="select",defaultValue="Local"},
 			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalVATCountries = {fieldType="listingMultiselect", listingMultiselectEntityName="Country", defaultValue=""},
 			globalDeploySitesAndApplicationsOnUpdate = {fieldtype="yesno", defaultValue=1}, 
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
