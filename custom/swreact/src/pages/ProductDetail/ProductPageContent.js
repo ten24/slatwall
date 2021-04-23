@@ -38,7 +38,7 @@ const ProductPageContent = ({ product, skuID, sku, productOptions = [], availabl
             <div className="product-details pb-3">
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {product.productClearance === true && ' On Special'}</span>
-                {isAuthenticated() && skuID.length > 0 && <HeartButton skuID={skuID} className={'btn-wishlist mr-0 mr-lg-n3'} />}
+                {skuID && <HeartButton skuID={skuID} className={'btn-wishlist mr-0 mr-lg-n3'} />}
               </div>
               <h2 className="h4 mb-2">{product.productName}</h2>
               <div className="mb-2">
@@ -83,7 +83,7 @@ const ProductPageContent = ({ product, skuID, sku, productOptions = [], availabl
                       ))}
                   </select>
 
-                  <button disabled={cart.isFetching || skuID} className="btn btn-primary btn-block" type="submit">
+                  <button disabled={cart.isFetching || !skuID} className="btn btn-primary btn-block" type="submit">
                     <i className="far fa-shopping-cart font-size-lg mr-2"></i>
                     {t('frontend.product.add_to_cart')}
                   </button>
@@ -109,6 +109,8 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
   const [lastOption, setLastOption] = useState({ optionCode: '', optionGroupCode: '' })
   const loc = useLocation()
   const history = useHistory()
+  const { t } = useTranslation()
+
   let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
   if (lastOption.optionGroupCode.length === 0 && Object.keys(params).length > 0) {
     setLastOption({ optionCode: Object.entries(params)[0][0], optionGroupCode: Object.entries(params)[0][1] })
@@ -137,9 +139,7 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
     if (!active) {
       params = {}
     }
-
     params[optionGroupCode] = optionCode
-    console.log('setOption', queryString.stringify(params, { arrayFormat: 'comma' }))
     history.push({
       pathname: loc.pathname,
       search: queryString.stringify(params, { arrayFormat: 'comma' }),
@@ -159,7 +159,7 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
     })
     // onkect sort order
     if (Object.keys(forceSelcted) && JSON.stringify({ ...forceSelcted, ...params }).length !== JSON.stringify(params).length) {
-      console.log('toSET', { ...forceSelcted, ...params })
+      console.log('Redirect because of foreced Selection')
       history.push({
         pathname: loc.pathname,
         search: queryString.stringify({ ...forceSelcted, ...params }, { arrayFormat: 'comma' }),
@@ -173,7 +173,6 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
       {filteredOptions.length > 0 &&
         filteredOptions.map(({ optionGroupName, options, optionGroupID, optionGroupCode }) => {
           const selectedOptionCode = params[optionGroupCode] || options[0].optionCode
-          console.log('selectedOptionCode', selectedOptionCode, optionGroupCode, params[optionGroupCode])
           return (
             <div className="form-group" key={optionGroupID}>
               <div className="d-flex justify-content-between align-items-center pb-1">
@@ -195,32 +194,12 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
                   options.map(option => {
                     return (
                       <option className={`option ${option.active ? 'active' : 'nonactive'}`} key={option.optionID} value={option.optionCode}>
-                        {option.optionName + ' - ' + option.active}
+                        {option.active && option.optionName}
+                        {!option.active && option.optionName + ' - ' + t('frontend.product.na')}
                       </option>
                     )
                   })}
               </select>
-
-              {/* {options &&
-                options.map((option, index) => {
-                  return (
-                    <div key={option.optionID} className="form-check form-check-inline custom-control custom-radio d-inline-flex">
-                      <input
-                        className="custom-control-input"
-                        type="radio"
-                        id={option.optionID}
-                        value={option.optionID}
-                        onChange={e => {
-                          setOption(optionGroupCode, option.optionCode, option.active)
-                        }}
-                        checked={params[optionGroupCode] === option.optionCode}
-                      />
-                      <label className="custom-control-label" htmlFor={option.optionID} onClick={e => {}}>
-                        {option.optionName + ' - ' + option.optionID + ' - ' + option.active}
-                      </label>
-                    </div>
-                  )
-                })} */}
             </div>
           )
         })}
