@@ -155,7 +155,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-	 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -345,7 +344,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	* @Suppress
 	*/
 	public struct function getSkuSalePriceDetails( required any skuID) {
-		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
+		if(!isNew() && structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
 			return getSalePriceDetailsForSkus()[ arguments.skuID ];
 		}
 		return {};
