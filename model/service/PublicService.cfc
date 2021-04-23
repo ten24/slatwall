@@ -883,9 +883,10 @@ component  accessors="true" output="false"
         var metaKeywordsTemplate = productType.getSettingValueFormatted('productTypeMetaKeywordsString');
         
         var response = {
-            "title"         : productType.stringReplace(template=titleTemplate, formatValues=true),
+            "title"         : productType.getProductTypeName(),
             "urlTitle"      : productType.getUrlTitle(),
             "imageFile"     : productType.getImageFile(),
+            "htmlTitle"     : productType.stringReplace(template=titleTemplate, formatValues=true),
             "description"   : productType.stringReplace(template=descriptionTemplate, formatValues=true),
             "metaKeywords"  : productType.stringReplace(template=metaKeywordsTemplate, formatValues=true),
             "productTypeID" : productType.getProductTypeID()
