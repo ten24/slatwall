@@ -1175,37 +1175,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 site = arguments.site 
             );
             
-            /*
-            if( listFindNoCase('option,attribute', facetName) ){
-                var thisFacetOptions = arguments[ facetName ];
-                if( !this.hibachiIsStructEmpty(thisFacetOptions) ){
-                    var filterValuePlaceholderKey = facetName&'_subFactes';
-                    filterQueryFragmentsData.params[filterValuePlaceholderKey] = thisFacetOptions.keyArray();
-                    var columnName= 'optionGroupCode';
-                    if(facetName == 'attribute'){
-                        columnName = 'attributeCode';
-                    }
-                    
-                    var selectedSubFacetsOptionsQuery = " AND #columnName# IN (:#filterValuePlaceholderKey#)";
-                    selectedSubFacetsOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', selectedSubFacetsOptionsQuery);
-                    
-                    var subQuery = "
-                        SELECT DISTINCT skuID 
-                        FROM swProductFilterFacetOption 
-                        WHERE 
-                        #filterQueryFragmentsData.fragments[facetName]# 
-                    ";
-                    var remainingSubFacetsOptionsQuery = " AND ( skuID in (#subQuery#) AND #columnName# NOT IN (:#filterValuePlaceholderKey#) )";
-                    remainingSubFacetsOptionsQuery = replace( thisFacetOptionsQuery, '$subFacetsQueryFragment$', remainingSubFacetsOptionsQuery);
-                    
-                    thisFacetOptionsQuery =  selectedSubFacetsOptionsQuery & ' UNION ALL' & remainingSubFacetsOptionsQuery;
-
-                } else {
-                    thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', '');
-                }
-            }
-            */
-            
             // 1. fetch the options for all sub-facets except which have filters applied 
             //  by applying all filters for the facets AND skiping the sub-facets having selected-filters 
             //  e.g " WHERE..... AND optionGroupCode NOT IN ('og1', 'og5') "
