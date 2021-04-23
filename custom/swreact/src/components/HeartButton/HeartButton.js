@@ -1,11 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { addWishlistItem, removeWishlistItem } from '../../actions/userActions'
 import useWishList from '../../hooks/useWishlist'
+import { isAuthenticated } from '../../utils'
 
 const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
   const dispatch = useDispatch()
   const [isOnWishlist] = useWishList(skuID)
   const primaryColor = useSelector(state => state.configuration.theme.primaryColor)
+
+  if (!isAuthenticated()) {
+    return null
+  }
 
   if (isOnWishlist) {
     return (
