@@ -155,8 +155,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-	
-	//CUSTOM PROPERTIES BEGIN
+	 	//CUSTOM PROPERTIES BEGIN
 
  property name="productSafeTypeStyle" ormtype="string" hb_formFieldType="select";
  property name="productSafeFireRated" ormtype="string";
@@ -219,6 +218,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="mechanicalShackleDiameter" ormtype="string" hb_formFieldType="select";
  property name="mechanicalShackleClearance" ormtype="string" hb_formFieldType="select";
  property name="mechanicalBodyWidth" ormtype="string";
+ property name="productSwitchType" ormtype="string";
  property name="productElectronicRelayOutputs" ormtype="string";
  property name="productElectronicReaderTechnology" ormtype="string";
  property name="productElectronicIndoorOutdoor" ormtype="string";
@@ -234,7 +234,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productElectronicScheduling" ormtype="boolean" hb_formatType="yesno";
  property name="productLighted" ormtype="boolean" hb_formatType="yesno";
  property name="productElectrical" ormtype="string";
- property name="productFaceplantDimensions" ormtype="string";
+ property name="productFaceplateDimensions" ormtype="string";
  property name="productsTamperStrength" ormtype="string";
  property name="productStrikeApplication" ormtype="string";
  property name="productCover" ormtype="string";
@@ -279,6 +279,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productKeyMachineDuplicate" ormtype="boolean" hb_formatType="yesno";
  property name="productCylinderCamType" ormtype="string";
  property name="productCylinderBoltType" ormtype="string";
+ property name="productCylinderTechnology" ormtype="string";
  property name="productPickStyle" ormtype="string" hb_formFieldType="select";
  property name="productTension" ormtype="string";
  property name="productTensionWrenchStyle" ormtype="string";
@@ -355,7 +356,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productDisplay" ormtype="boolean" hb_formatType="yesno" default="Yes";
  property name="searchKeywords" length="4000"  ormtype="string" hb_formFieldType="textarea";
  property name="productBuildable" ormtype="boolean" hb_formatType="yesno" default="No";//CUSTOM PROPERTIES END
-	 
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();

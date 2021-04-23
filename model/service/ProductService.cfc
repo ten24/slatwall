@@ -78,7 +78,7 @@ component extends="HibachiService" accessors="true" {
 		return approvedProductReviewCollectionList;
 	}
 	public array function getProductPublicProperties(){
-		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription'];
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'productType.productTypeIDPath', 'brand.brandID'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
@@ -691,16 +691,32 @@ component extends="HibachiService" accessors="true" {
 				product['categories'] = categories;
 				
 				//Append Option Groups
-				var optionGroups = [];
-				if( arrayLen(currentProduct.getOptionGroups()) ) {
-					for(var optionGroup in currentProduct.getOptionGroups()){
-						ArrayAppend( optionGroups, {
-							"optionGroupdID" : optionGroup.getOptionGroupID(),
-							"optionGroupName" : optionGroup.getOptionGroupName(),
-						} )
-					}
-				}
-				product['optionGroups'] =  optionGroups;
+				var optsList = [];
+        		var defaultSelectedOptions = '';
+				var defaultSku = currentProduct.getDefaultSku()
+				var optionGroupsArr = currentProduct.getOptionGroups()
+    			var skuOptionDetails = currentProduct.getSkuOptionDetails()
+		        if(!isNull(defaultSku)){
+		        defaultSelectedOptions = defaultSku.getOptionsIDList()
+		            for(var optionGroup in optionGroupsArr) {
+		                var options = currentProduct.getOptionsByOptionGroup( optionGroup.getOptionGroupID() )
+		                var group = []
+		                for(var option in options) {
+		                    ArrayAppend(group,{"optionID": option.getOptionID()
+		                    ,"optionCode": option.getOptionCode()
+		                    ,"optionName": option.getOptionName()})
+		                }
+		                ArrayAppend(optsList, {
+		                    "optionGroupName": optionGroup.getOptionGroupName(),
+		                    "optionGroupID": optionGroup.getOptionGroupID(),
+		                    "optionGroupCode": optionGroup.getOptionGroupCode(),
+		                    "options": group })
+		            }
+		        }
+		        
+		        product['optionGroups'] = optsList;
+    			product['defaultSelectedOptions'] = defaultSelectedOptions;
+     
 				
 				//Append base product type system code
 				product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
