@@ -68,12 +68,14 @@ const ProductDetail = props => {
         isLoaded: false,
         params: {
           productID: newproduct.data[0].productID,
+          skuID: params['skuid'],
           // Accounts for First Load
           selectedOptionIDList: selectedOptionIDList.length ? selectedOptionIDList : newproduct.data[0].defaultSelectedOptions,
         },
         makeRequest: true,
       })
     }
+    // http://localhost:3006/product/demo-product?skuid=2c91808278f0fded0178f5d49b860da8
 
     history.listen(location => {
       if (!newproduct.isFetching && newproduct.isLoaded) {

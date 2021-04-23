@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import queryString from 'query-string'
 import { useHistory, useLocation } from 'react-router'
 import ContentLoader from 'react-content-loader'
-import { isAuthenticated } from '../../utils'
+import { skuIdsToSkuCodes } from '../../utils'
 
 const OptionLoader = props => (
   <ContentLoader speed={2} width={400} height={150} viewBox="0 0 400 200" backgroundColor="#f3f3f3" foregroundColor="#ecebeb" {...props}>
@@ -158,21 +158,30 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
       }
     })
     // onkect sort order
-    if (Object.keys(forceSelcted) && JSON.stringify({ ...forceSelcted, ...params }).length !== JSON.stringify(params).length) {
+    if (Object.keys(forceSelcted) && JSON.stringify({ ...forceSelcted, ...params }).length !== JSON.stringify(params).length && !params.skuid) {
       console.log('Redirect because of foreced Selection')
       history.push({
         pathname: loc.pathname,
         search: queryString.stringify({ ...forceSelcted, ...params }, { arrayFormat: 'comma' }),
       })
     }
-  }, [history, filteredOptions, loc, params])
+
+    if (params.skuid && sku) {
+      console.log('Redirect to passed Sku', skuOptionDetails)
+      const cals = skuIdsToSkuCodes(sku.selectedOptionIDList, skuOptionDetails)
+      history.push({
+        pathname: loc.pathname,
+        search: queryString.stringify(Object.assign(...cals), { arrayFormat: 'comma' }),
+      })
+    }
+  }, [history, filteredOptions, loc, params, sku, skuOptionDetails])
 
   // searchForSelection(filteredOptions)
   return (
     <>
       {filteredOptions.length > 0 &&
         filteredOptions.map(({ optionGroupName, options, optionGroupID, optionGroupCode }) => {
-          const selectedOptionCode = params[optionGroupCode] || options[0].optionCode
+          const selectedOptionCode = params[optionGroupCode] || 'select'
           return (
             <div className="form-group" key={optionGroupID}>
               <div className="d-flex justify-content-between align-items-center pb-1">
@@ -190,6 +199,11 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
                   setOption(optionGroupCode, selectedOption.optionCode, selectedOption.active)
                 }}
               >
+                {selectedOptionCode === 'select' && (
+                  <option className={`option nonactive`} value="select">
+                    {t('frontend.product.select')}
+                  </option>
+                )}
                 {options &&
                   options.map(option => {
                     return (
