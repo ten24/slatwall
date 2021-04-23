@@ -516,7 +516,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         if( len(arguments.priceRange) ) {
         	collectionList.addFilter(
         		propertyIdentifier='skuPricePrice',
-        		value=ReReplace(arguments.priceRange,"[^0-9.]","","all"),
+        		value=arguments.priceRange,
         		comparisonOperator="between"
         	);
         }
