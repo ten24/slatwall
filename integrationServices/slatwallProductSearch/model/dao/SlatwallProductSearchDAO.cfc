@@ -929,14 +929,14 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     continue;
                 }
 
-                if( len(filterQueryFragment) > 1 ){
+                if( filterQueryFragment.len() ){
                     filterQueryFragment &= ' AND';
                 }
                 filterQueryFragment &= ' '&arguments.facetsFilterQueryFragments[facetName];
             }
             
-            if(len(filterQueryFragment)){
-                filterQueryFragment = 'AND '&filterQueryFragment;
+            if(filterQueryFragment.len() ){
+                filterQueryFragment = ' AND '&filterQueryFragment;
             }
         }
         
@@ -993,7 +993,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
     	    facetsSqlFilterQueryFragments[facetName] = '';
     	    var selectedFacetOptions = arguments[ facetName ];
     	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
-    	        var queryFragment = '(';
+    	        var queryFragment = '';
     	        for(var facetValueKey in selectedFacetOptions ){
                     var filterValue = selectedFacetOptions[facetValueKey];
                     var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facetValueKey);
@@ -1002,8 +1002,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                         var filterValuePlaceholder = facetName&'_'&columnName;
                         facetsSqlFilterQueryParams[ filterValuePlaceholder ] = filterValue;
                         
-                        if( len(queryFragment) > 1 ){
-                            queryFragment &= ' OR';
+                        if( queryFragment.len() ){
+                            queryFragment &= ' AND ';
                         }
                         
                         if( isArray(filterValue) ){
@@ -1013,8 +1013,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                         }
                     }
                 }
-                if( len(queryFragment) > 1){
-                    queryFragment &= ')';
+                if( queryFragment.len() ){
+                    queryFragment = '( '& queryFragment &' )';
                     facetsSqlFilterQueryFragments[facetName] = queryFragment;
                 }
     	    }
@@ -1025,6 +1025,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
     	    facetsSqlFilterQueryFragments[facetName] = '';
     	    
     	    var selectedFacetOptions = arguments[ facetName ];
+
     	    if( this.hibachiIsStructEmpty(selectedFacetOptions) ){
     	        continue;
     	    }
@@ -1095,9 +1096,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     facetsSqlFilterQueryParams[ filterValuePlaceholder ] = facetKeyOptions;
                     
                     if( isArray(facetKeyOptions) ){
-                        queryFragment &= ' AND #facetValueColumnName# IN (:#filterValuePlaceholder#)';
+                        subFacetQueryFragment &= ' AND #facetValueColumnName# IN (:#filterValuePlaceholder#)';
                     } else{
-                        queryFragment &= ' AND #facetValueColumnName# = :#filterValuePlaceholder#';
+                        subFacetQueryFragment &= ' AND #facetValueColumnName# = :#filterValuePlaceholder#';
                     }
     	        }
     	        
@@ -1121,7 +1122,10 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	        var facetQueryFragment = '';
 	        if( !this.hibachiIsStructEmpty(subFacetQueryFragments) ){
 	            for(var subFacetName in subFacetQueryFragments ){
-                    facetQueryFragment &= " AND #subFacetQueryFragments[subFacetName]#";
+	                if(facetQueryFragment.len() ){
+	                    facetQueryFragment &= " AND ";
+	                }
+                    facetQueryFragment &= " #subFacetQueryFragments[subFacetName]#";
 	            }
 	        }
             if( facetQueryFragment.len() ){
@@ -1171,16 +1175,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 site = arguments.site 
             );
             
-            
-            // TODO
-            
-            // 1. fetch the options for all sub-facets except which have filters applied 
-            //  by applying all filters for the facets AND skiping the skipping the sub-facets having filters 
-            //  e.g WHERE optionGroupCode NOT IN ('og1', 'og5') AND 'facet-filter-fagments'
-            
-            // 2. for sub-facets which have filters applied,
-            // fetche the optione in another query, apply filterf from all other sub-facets except for the one we're fetching
-            
+            /*
             if( listFindNoCase('option,attribute', facetName) ){
                 var thisFacetOptions = arguments[ facetName ];
                 if( !this.hibachiIsStructEmpty(thisFacetOptions) ){
@@ -1209,10 +1204,86 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', '');
                 }
             }
+            */
+            
+            // 1. fetch the options for all sub-facets except which have filters applied 
+            //  by applying all filters for the facets AND skiping the sub-facets having selected-filters 
+            //  e.g " WHERE..... AND optionGroupCode NOT IN ('og1', 'og5') "
+            
+            // 2. for sub-facets which have filters applied,
+            // fetche the optione in another query, 
+            // apply filters from all other facets except current-facet and all sub-facets except for the one we're fetching options for
+            
+            
+            if( listFindNoCase('option,attribute', facetName) ){
+                
+                var thisFacetOptions = arguments[ facetName ];
+                
+                if( !this.hibachiIsStructEmpty(thisFacetOptions) ){
+                    
+                    var subFacetFragments = filterQueryFragmentsData.subFacetFragments[ facetName ] ?: {};
+
+                    var thisFacetQueryFragment = filterQueryFragmentsData.fragments[ facetName ];
+                    
+                    var subFacetColumnName= 'optionGroupCode';
+                    if(facetName == 'attribute'){
+                        subFacetColumnName = 'attributeCode';
+                    }
+                    
+                    // make queries for selected sub-facets
+                    var selectedSubFacetsOptionsQueries = '';
+                    for( var thisSelectedSubFacetName in subFacetFragments ){
+                        // concat query fragments for rest of the sub-facets except this
+                        var thisSubFacetOptionsQueryFragments = '';
+                        for(var remainingSubFacetName in subFacetFragments ){
+                            
+                            if(remainingSubFacetName == thisSelectedSubFacetName){
+                                continue;
+                            }
+                            
+                            if(thisSubFacetOptionsQueryFragments.len() ){
+                                thisSubFacetOptionsQueryFragments &= " AND ";
+                            }
+                            
+                            thisSubFacetOptionsQueryFragments &= subFacetFragments[ remainingSubFacetName ];
+                        }
+                        
+                        if(thisSubFacetOptionsQueryFragments.len() ){
+                            thisSubFacetOptionsQueryFragments = " AND (#thisSubFacetOptionsQueryFragments#)";
+                        }
+                        
+                        var selectedSubFacetNamePlaceholder = facetName&'_'&subFacetColumnName&'_'&thisSelectedSubFacetName;
+                        filterQueryFragmentsData.params[selectedSubFacetNamePlaceholder] = thisSelectedSubFacetName;
+                        thisSubFacetOptionsQueryFragments &= " AND #subFacetColumnName# = :#selectedSubFacetNamePlaceholder#";
+                        
+                        // if we have more then one sub-facet selected, union all queries;
+                        if( selectedSubFacetsOptionsQueries.len() ){
+                            selectedSubFacetsOptionsQueries &= " UNION ALL ";
+                        }
+                        
+                        // replace the sub-facets query-fragment in the query template
+                        selectedSubFacetsOptionsQueries &= replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', thisSubFacetOptionsQueryFragments);
+                    }
+                    
+                    
+                    // make query for the rest of the sub-facet
+                    var selectedSubFacetNamesPlaceholder = facetName&'_'&subFacetColumnName&'_selected';
+                    filterQueryFragmentsData.params[selectedSubFacetNamesPlaceholder] = subFacetFragments.keyArray();
+                    var remainingSubFacetsOptionsQuery = " AND " & thisFacetQueryFragment & " AND #subFacetColumnName# NOT IN (:#selectedSubFacetNamesPlaceholder#)";
+                    remainingSubFacetsOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', remainingSubFacetsOptionsQuery);
+                    
+                    thisFacetOptionsQuery = remainingSubFacetsOptionsQuery & ' UNION ALL' & selectedSubFacetsOptionsQueries;
+                } else {
+                    thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$subFacetsQueryFragment$', '');
+                }
+            }
             
             getAllFacetOptionsSQL &= thisFacetOptionsQuery;
         }
-                
+        
+        
+        this.logHibachi("getAllFacetOptionsSQL: #getAllFacetOptionsSQL#");
+        
         var queryService = new Query();
         queryService.setSQL(getAllFacetOptionsSQL);
         for(var paramName in filterQueryFragmentsData.params ){
