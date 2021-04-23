@@ -17,7 +17,7 @@ const Manufacturer = () => {
   useEffect(() => {
     let didCancel = false
     if (!request.isFetching && !request.isLoaded && !didCancel) {
-      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { pageSize: 100 }, makeRequest: true })
+      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { 'P:Show': 500, 'f:activeFlag': 1 }, makeRequest: true })
     }
     return () => {
       didCancel = true
@@ -50,26 +50,29 @@ const Manufacturer = () => {
         <div className="container pb-4 pb-sm-5">
           <div className="row pt-5">
             {request.isLoaded &&
-              request.data
-                .sort((a, b) => (a.brandName > b.brandName ? 1 : -1))
-                .reduce((acc, element) => {
-                  if (element.brandFeatured) {
-                    return [element, ...acc]
-                  }
-                  return [...acc, element]
-                }, [])
-                .map(brand => {
-                  return (
-                    <div key={brand.brandID} className="col-md-4 col-sm-6 mb-3">
-                      <div className="card border-0">
-                        <Link className="d-block overflow-hidden rounded-lg" to={`/${brandRoute}/${brand.urlTitle}`}>
-                          <SWImage className="d-block w-100" customPath="/custom/assets/images/brand/logo/" src={brand.imageFile} alt={brand.brandName} />
-                          <h2 className="h5">{brand.brandName}</h2>
-                        </Link>
-                      </div>
+              [
+                ...request.data
+                  .filter(element => {
+                    return element.brandFeatured === true
+                  })
+                  .sort((a, b) => (a.brandName > b.brandName ? 1 : -1)),
+                ...request.data
+                  .filter(element => {
+                    return element.brandFeatured !== true
+                  })
+                  .sort((a, b) => (a.brandName > b.brandName ? 1 : -1)),
+              ].map(brand => {
+                return (
+                  <div key={brand.brandID} className="col-md-4 col-sm-6 mb-3">
+                    <div className="card border-0">
+                      <Link className="d-block overflow-hidden rounded-lg" to={`/${brandRoute}/${brand.urlTitle}`}>
+                        <SWImage className="d-block w-100" customPath="/custom/assets/images/brand/logo/" src={brand.imageFile} alt={brand.brandName} />
+                        <h2 className="h5">{brand.brandName}</h2>
+                      </Link>
                     </div>
-                  )
-                })}
+                  </div>
+                )
+              })}
           </div>
         </div>
       </div>
