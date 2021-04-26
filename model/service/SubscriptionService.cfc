@@ -671,7 +671,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
 
 				//set as new
-				getOrderService().updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
+				getOrderService().updateOrderStatusBySystemCode(order, "ostProcessing");
 
 				//create orderid and close
 				order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
