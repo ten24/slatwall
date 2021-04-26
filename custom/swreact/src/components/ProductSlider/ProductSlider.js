@@ -31,7 +31,7 @@ const ProductSlider = ({ children, sliderData = [], settings, title, slidesToSho
         ],
       }
   if (!sliderData.length) {
-    return <></>
+    return null
   }
   return (
     <div className="container">
