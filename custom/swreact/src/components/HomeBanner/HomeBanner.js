@@ -51,6 +51,9 @@ const MainBanner = () => {
       },
     ],
   }
+  if(contentStore["home/main-banner-slider"] !== undefined){
+    console.log(contentStore["home/main-banner-slider"].associatedImage);
+  }
   return (
     <div className="container">
       <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mx-md-5 pb-4">
