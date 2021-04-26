@@ -9,6 +9,7 @@ export const useGetEntity = () => {
   useEffect(() => {
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
+      request.params['includeAttributesMetadata'] = true
       axios({
         method: 'GET',
         withCredentials: true,

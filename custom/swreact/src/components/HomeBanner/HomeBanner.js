@@ -4,7 +4,7 @@ import Slider from 'react-slick'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import ProductSlider from '../ProductSlider/ProductSlider'
-import { useGetProductList } from '../../hooks/useAPI'
+import { useGetEntity } from '../../hooks/useAPI'
 
 const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
   let history = useHistory()
@@ -67,7 +67,7 @@ const MainBanner = () => {
 
 const HomeBanner = () => {
   const home = useSelector(state => state.content['home'])
-  let [request, setRequest] = useGetProductList()
+  let [request, setRequest] = useGetEntity()
 
   useEffect(() => {
     let didCancel = false
@@ -78,6 +78,7 @@ const HomeBanner = () => {
           'f:publishedFlag': 1,
           'f:productFeatured': 1,
         },
+        entity: 'product',
         makeRequest: true,
         isFetching: true,
         isLoaded: false,
@@ -90,7 +91,6 @@ const HomeBanner = () => {
   return (
     <>
       <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${Background})` }}>
-       
         <MainBanner />
       </div>
       <ProductSlider sliderData={request.data}>{home && <div dangerouslySetInnerHTML={{ __html: home.customBody }} />}</ProductSlider>
