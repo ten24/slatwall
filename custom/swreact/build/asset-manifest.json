@@ -1,10 +1,10 @@
 {
   "files": {
     "main.css": "/custom/swreact/build/static/css/main.abe41d49.chunk.css",
-    "main.js": "/custom/swreact/build/static/js/main.78822ee8.chunk.js",
-    "main.js.map": "/custom/swreact/build/static/js/main.78822ee8.chunk.js.map",
-    "runtime-main.js": "/custom/swreact/build/static/js/runtime-main.18d3d578.js",
-    "runtime-main.js.map": "/custom/swreact/build/static/js/runtime-main.18d3d578.js.map",
+    "main.js": "/custom/swreact/build/static/js/main.b1908dbc.chunk.js",
+    "main.js.map": "/custom/swreact/build/static/js/main.b1908dbc.chunk.js.map",
+    "runtime-main.js": "/custom/swreact/build/static/js/runtime-main.80c15155.js",
+    "runtime-main.js.map": "/custom/swreact/build/static/js/runtime-main.80c15155.js.map",
     "static/css/2.ffda3d49.chunk.css": "/custom/swreact/build/static/css/2.ffda3d49.chunk.css",
     "static/js/2.858c1e11.chunk.js": "/custom/swreact/build/static/js/2.858c1e11.chunk.js",
     "static/js/2.858c1e11.chunk.js.map": "/custom/swreact/build/static/js/2.858c1e11.chunk.js.map",
@@ -32,8 +32,8 @@
     "static/js/12.90910f99.chunk.js.map": "/custom/swreact/build/static/js/12.90910f99.chunk.js.map",
     "static/js/13.c61131e6.chunk.js": "/custom/swreact/build/static/js/13.c61131e6.chunk.js",
     "static/js/13.c61131e6.chunk.js.map": "/custom/swreact/build/static/js/13.c61131e6.chunk.js.map",
-    "static/js/14.1524bbda.chunk.js": "/custom/swreact/build/static/js/14.1524bbda.chunk.js",
-    "static/js/14.1524bbda.chunk.js.map": "/custom/swreact/build/static/js/14.1524bbda.chunk.js.map",
+    "static/js/14.f16ab8cf.chunk.js": "/custom/swreact/build/static/js/14.f16ab8cf.chunk.js",
+    "static/js/14.f16ab8cf.chunk.js.map": "/custom/swreact/build/static/js/14.f16ab8cf.chunk.js.map",
     "static/js/15.0ba8afa6.chunk.js": "/custom/swreact/build/static/js/15.0ba8afa6.chunk.js",
     "static/js/15.0ba8afa6.chunk.js.map": "/custom/swreact/build/static/js/15.0ba8afa6.chunk.js.map",
     "static/js/16.c8f4bd91.chunk.js": "/custom/swreact/build/static/js/16.c8f4bd91.chunk.js",
@@ -62,10 +62,10 @@
     "static/media/main-bg-img.e2ca7f83.jpg": "/custom/swreact/build/static/media/main-bg-img.e2ca7f83.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.18d3d578.js",
+    "static/js/runtime-main.80c15155.js",
     "static/css/2.ffda3d49.chunk.css",
     "static/js/2.858c1e11.chunk.js",
     "static/css/main.abe41d49.chunk.css",
-    "static/js/main.78822ee8.chunk.js"
+    "static/js/main.b1908dbc.chunk.js"
   ]
 }
