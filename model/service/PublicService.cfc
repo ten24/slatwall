@@ -308,6 +308,7 @@ component  accessors="true" output="false"
         param name="arguments.parsedQuery.priceRangesCount" default=5;
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
+	    param name="arguments.data.includeAttributesMetadata" default=false;
 
 	    // TODO: Nitin is working on it and will update.
         // currently it will set a transient site, but it need's to figure-out current-request-site 
@@ -4150,6 +4151,10 @@ component  accessors="true" output="false"
     	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
              arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendImagesToProduct(arguments.data.ajaxResponse['data'].pageRecords);
 	         arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(arguments.data.ajaxResponse['data'].pageRecords);
+	         if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){
+	             arguments.data.ajaxResponse['attributeSets'] = getAttributeSetMetadataForProduct(arguments.data.ajaxResponse['data'].pageRecords[1].productID, arguments.data.ajaxResponse['data'].pageRecords[1].productType_productTypeIDPath, arguments.data.ajaxResponse['data'].pageRecords[1].brand_brandID ); 
+	         }
+                
             this.getHibachiScope().addActionResult("public:scope.getProduct", true);
             return;
         }
