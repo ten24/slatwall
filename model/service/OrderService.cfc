@@ -1008,6 +1008,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( arguments.processObject.getSaveOrderFlag() ){
 			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag(), updateShippingMethodOptions=arguments.processObject.getupdateShippingMethodOptionsFlag() );
 		}
+		
+		//create sku bundle records
+		if(!isNull(newOrderItem) && !isNull(newOrderItem.getSku().getBundleFlag()) && isBoolean(newOrderItem.getSku().getBundleFlag()) && newOrderItem.getSku().getBundleFlag()){
+	 		var insertSQL = "INSERT INTO SwOrderItemSkuBundle (orderItemSkuBundleID, createdDateTime, modifiedDateTime, skuID, orderItemID, quantity) ";
+			insertSQL &= "SELECT REPLACE(CAST(UUID() as char character set utf8), '-', ''), #now()#, #now()#, bundledSkuID, '#newOrderItem.getOrderItemID()#', bundledQuantity FROM SwSkuBundle where skuID = '#newOrderItem.getSku().getSkuID()#'";
+		
+ 			QueryExecute(insertSQL);
+		}
 
 		return arguments.order;
 	}
@@ -5811,7 +5819,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderPayment;
 
 	}
-
 
 	// ======================  END: Save Overrides ============================
 
