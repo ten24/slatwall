@@ -4146,20 +4146,7 @@ component  accessors="true" output="false"
 	public any function getProduct(required struct data ){
 	    param name="arguments.data.includeAttributesMetadata" default=false;
 	    
-	    // if this's  cal to get all-products
-	    if( !len(arguments.data.entityID) ){
-    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-             arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendImagesToProduct(arguments.data.ajaxResponse['data'].pageRecords);
-	         arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(arguments.data.ajaxResponse['data'].pageRecords);
-	         if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){
-	             arguments.data.ajaxResponse['attributeSets'] = getAttributeSetMetadataForProduct(arguments.data.ajaxResponse['data'].pageRecords[1].productID, arguments.data.ajaxResponse['data'].pageRecords[1].productType_productTypeIDPath, arguments.data.ajaxResponse['data'].pageRecords[1].brand_brandID ); 
-	         }
-                
-            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
-            return;
-        }
-        
-        if( arguments.data.includeAttributesMetadata ){
+	     if( arguments.data.includeAttributesMetadata ){
             if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
                 arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
             }
@@ -4167,6 +4154,25 @@ component  accessors="true" output="false"
                 arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
             }
         }
+	    
+	    // if this's  cal to get all-products
+	    if( !len(arguments.data.entityID) ){
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+             arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendImagesToProduct(arguments.data.ajaxResponse['data'].pageRecords);
+	         arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(arguments.data.ajaxResponse['data'].pageRecords);
+	         if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){
+	             var product = getProductService().getProduct(arguments.data.ajaxResponse['data'].pageRecords[1].productID)
+	             if(!isNull(product)){
+	                arguments.data.ajaxResponse['getProductType'] =
+	                arguments.data.ajaxResponse['attributeSets'] = getAttributeSetMetadataForProduct(product.getProductID(), product.getProductType().getProductTypeIDPath() ,product.getBrand().getBrandID() ); 
+ 	             }
+	         }
+                
+            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+            return;
+        }
+        
+       
         
         var response = {};
         response['product'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
