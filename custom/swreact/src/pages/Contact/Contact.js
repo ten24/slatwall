@@ -1,11 +1,14 @@
+import { Layout } from '../../components'
 import BasicPageWithSidebar from '../BasicPageWithSidebar/BasicPageWithSidebar'
 import ContactForm from './ContactForm'
 
 const Contact = () => {
   return (
-    <BasicPageWithSidebar>
-      <ContactForm />
-    </BasicPageWithSidebar>
+    <Layout>
+      <BasicPageWithSidebar>
+        <ContactForm />
+      </BasicPageWithSidebar>
+    </Layout>
   )
 }
 
