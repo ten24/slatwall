@@ -804,7 +804,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		boolean hidden=true,
  		boolean ignoredWhenSearch=false,
  		string displayPropertyIdentifier="",
-		string displayValue = ""
+		string displayValue = "",
+		boolean customHQL = false,
 	){
 		
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
@@ -841,7 +842,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			setHasAggregate(true);
 		}
 
-
 		//check if the propertyKey is an attribute
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
 			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
@@ -854,7 +854,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				propertyIdentifier=arguments.propertyIdentifier
 			);
 		}
-
+		
+		if(arguments.customHQL){
+		    filter['customHQL'] = true;
+		}
 
 		//if we already have a filter group then we need a logicalOperator
 		if(arraylen(filterGroup['filterGroup'])){
@@ -2279,7 +2282,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		structDelete(variables,'groupBys');
 		
-		variables.HQLParams = {};
+		variables.HQLParams = variables.HQLParams ?: {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 
@@ -3760,6 +3763,28 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return rangePredicate;
 	}
 	
+	public string function getListPredicate( required struct filter){
+	    if(len(arguments.filter.value) ){
+			var paramList = '';
+			var values = listToArray( arguments.filter.value, this.getInlistDelimiter() );
+			for(var value in values){
+				var paramID = getParamID();
+				addHQLParam(paramID, value, arguments.filter['ormtype'] ?: '' );
+				paramList = listAppend(paramList, ':#paramID#');
+			}
+			return '(#paramList#)';
+		}
+		
+		return "('')";
+	}
+	
+	public string function getSimplePredicate( required struct filter){
+    	var paramID = getParamID();
+		addHQLParam(paramID, arguments.filter.value, arguments.filter['ormtype'] ?: '');
+    	return ":#paramID#";
+	}
+
+	
 	
 	private string function getPredicate(required any filter){
 		
@@ -3775,6 +3800,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				arguments.filter.value = "";
 			}
 		}
+		
+		if( arguments.filter.keyExists('customHQL') && arguments.filter.customHQL ){
+		    predicate = arguments.filter.value.trim();
+		    if( !predicate.len() ){
+		        throw("Invalid filter, custom-HQL can not be empty string, #arguments.filter.value#");
+		    }
+		    if( predicate.left(1) != '(' || predicate.right(1) != ')' ){
+		        throw("Invalid filter, custom-HQL should be wrapped in '(...)', #arguments.filter.value#");
+		    }
+		     return predicate;
+		}
+		
 		//Session Filters
 		arguments.filter.value = replaceStringTemplateInFilterValue(getHibachiScope(), arguments.filter.value);
 
@@ -3789,18 +3826,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 		} else if(arguments.filter.comparisonOperator == 'in' || arguments.filter.comparisonOperator == 'not in') {
 			
-			if(len(arguments.filter.value)) {
-				var paramList = '';
-				var values = listToArray(arguments.filter.value,this.getInlistDelimiter());
-				for(var value in values){
-					var paramID = getParamID();
-					addHQLParam(paramID, value, arguments.filter['ormtype']);
-					paramList = listAppend(paramList, ':#paramID#');
-				}
-				predicate = '(#paramList#)';
-			} else {
-				predicate = "('')";
-			}
+			predicate = this.getListPredicate(arguments.filter);
 			
 		} else if(arguments.filter.comparisonOperator == 'like' || arguments.filter.comparisonOperator == 'not like') {
 			var paramID = getParamID();
@@ -3828,9 +3854,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = ":#paramID#";
 		
 		} else {
-			var paramID = getParamID();
-			addHQLParam(paramID,arguments.filter.value,arguments.filter['ormtype']);
-			predicate = ":#paramID#";
+		    predicate = this.getSimplePredicate(arguments.filter);
 		}
 		
 		return predicate;
