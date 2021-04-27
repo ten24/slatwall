@@ -115,7 +115,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 		if (!isNull(getLocation())){
 			return  !getLocation().hasChildren();
 		}
-		return true;
+		return false;
 	}
 
     // ============ START: Non-Persistent Property Methods =================
