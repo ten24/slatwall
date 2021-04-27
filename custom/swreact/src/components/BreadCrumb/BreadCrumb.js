@@ -5,17 +5,17 @@ import { Link } from 'react-router-dom'
 
 const Crumb = ({ path, name, index }) => {
   //override path for product detail breadcrumb with last page visited
-  if (path === '/product') {
-    let lastLocation = localStorage.getItem('lastLocation')
-    if (typeof lastLocation !== undefined) {
-      lastLocation = JSON.parse(lastLocation) //parse to valid object
-      lastLocation = lastLocation[lastLocation.length - 1] //get last elemenet
+  // if (path === '/product') {
+  //   let lastLocation = localStorage.getItem('lastLocation')
+  //   if (typeof lastLocation !== undefined) {
+  //     lastLocation = JSON.parse(lastLocation) //parse to valid object
+  //     lastLocation = lastLocation[lastLocation.length - 1] //get last elemenet
 
-      //override path and name with last page
-      path = lastLocation.path
-      name = lastLocation.name
-    }
-  }
+  //     //override path and name with last page
+  //     path = lastLocation.path
+  //     name = lastLocation.name
+  //   }
+  // }
 
   if (index > 0) {
     return (

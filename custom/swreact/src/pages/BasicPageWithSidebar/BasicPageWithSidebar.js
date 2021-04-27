@@ -1,9 +1,8 @@
 import { useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
-import ContactForm from './ContactForm'
 
-const BasicPageWithSidebar = () => {
+const BasicPageWithSidebar = ({ children }) => {
   let history = useHistory()
   let loc = useLocation()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
@@ -34,8 +33,7 @@ const BasicPageWithSidebar = () => {
                   __html: customSummary || '',
                 }}
               />
-
-              <ContactForm />
+              {children}
             </div>
           </section>
           <Sidebar />
