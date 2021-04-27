@@ -7,8 +7,10 @@ import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import { getConfiguration } from './actions/configActions'
 import logo from './assets/images/logo.png'
 import mobileLogo from './assets/images/logo-mobile.png'
+
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
 const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
+const Contact = lazyWithPreload(() => import('./pages/Contact/Contact'))
 const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
 const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
 const Checkout = lazyWithPreload(() => import('./pages/Checkout/Checkout'))
@@ -31,6 +33,7 @@ const pageComponents = {
   Home,
   Checkout,
   Cart,
+  Contact,
   MyAccount,
   ProductListing,
   ProductDetail,
@@ -67,6 +70,7 @@ export default function App() {
       <CMSWrapper />
       <Switch>
         <Route path="/404" component={NotFound} />
+        <Route path="/contact" component={Contact} />
         {routing.length &&
           routing.map(({ URLKey, URLKeyType }, index) => {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />

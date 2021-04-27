@@ -11,6 +11,7 @@ export const CONFIRM_ORDER = 'CONFIRM_ORDER'
 export const CLEAR_CART = 'CLEAR_CART'
 export const ADD_TO_CART = 'ADD_TO_CART'
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
+export const SET_ERROR = 'SET_ERROR'
 
 export const requestCart = () => {
   return {
@@ -28,6 +29,12 @@ export const confirmOrder = (isPlaced = true) => {
   return {
     type: CONFIRM_ORDER,
     isPlaced,
+  }
+}
+export const setError = (error = null) => {
+  return {
+    type: SET_ERROR,
+    error,
   }
 }
 
@@ -382,6 +389,7 @@ export const addPayment = (params = {}) => {
       dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
       dispatch(receiveUser(req.success().account))
+      if (req.success().errors) dispatch(setError(req.success().errors))
     }
   }
 }

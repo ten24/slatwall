@@ -1,58 +1,53 @@
-import { isString, isBoolean, booleanToString, containsHTML } from '../../utils'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+import { isBoolean, booleanToString } from '../../utils'
 
-const propertyBlackList = ['productID', 'productName', 'productCode']
+const propertyBlackList = ['productID', 'productName', 'productCode', 'productFeatured', 'productDisplay']
 
 // TODO: Migrate to reactstrap accordion
-const ProductPagePanels = ({ product = {} }) => {
-  let propertiesToDisplay = []
+const ProductPagePanels = ({ product = {}, attributeSets = [] }) => {
+  const { t } = useTranslation()
 
-  propertiesToDisplay = Object.keys(product)
-    .filter(property => {
-      return property.startsWith('product') && !propertyBlackList.includes(property)
+  const filteredAttributeSets = attributeSets
+    .map(set => {
+      return { ...set, attributes: set.attributes.filter(attr => attr.attributeCode in product && !propertyBlackList.includes(attr.attributeCode) && product[attr.attributeCode] !== ' ').sort((a, b) => a.sortOrder - b.sortOrder) }
     })
-    .map(property => {
-      return { key: property.replace('product', ''), value: isBoolean(product[property]) ? booleanToString(product[property]) : product[property] }
-    })
-    .filter(({ key, value }) => {
-      return isString(value) && value.trim().length > 0
-    })
+    .filter(set => set.attributes.length)
 
   return (
     <div className="accordion mb-4" id="productPanels">
-      {/* <div className="alert alert-danger" role="alert">
-        <i className="far fa-exclamation-circle"></i> This item is not eligable for free freight
-      </div> */}
-      <div className="card">
-        <div className="card-header">
-          <h3 className="accordion-heading">
-            <a href="#productInfo" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="productInfo">
-              <i className="far fa-key font-size-lg align-middle mt-n1 mr-2"></i>
-              Product info<span className="accordion-indicator"></span>
-            </a>
-          </h3>
-        </div>
-        <div className="collapse show" id="productInfo" data-parent="#productPanels">
-          <div className="card-body">
-            <div className="font-size-sm row">
-              <div className="col-6">
-                <ul>
-                  {propertiesToDisplay.map(({ key }) => {
-                    return <li key={key}>{key}:</li>
-                  })}
-                </ul>
-              </div>
-              <div className="col-6 text-muted">
-                <ul>
-                  {propertiesToDisplay.map(({ key, value }) => {
-                    return <li key={key}>{containsHTML(value) ? <div dangerouslySetInnerHTML={{ __html: value }} /> : value}</li>
-                  })}
-                </ul>
+      {filteredAttributeSets.map(set => {
+        return (
+          <div className="card">
+            <div className="card-header">
+              <h3 className="accordion-heading">
+                <a href={`#${set.attributeSetCode}`} role="button" data-toggle="collapse" aria-expanded="true" aria-controls={set.attributeSetCode}>
+                  <i className="far fa-key font-size-lg align-middle mt-n1 mr-2"></i>
+                  {set.attributeSetName}
+                  <span className="accordion-indicator"></span>
+                </a>
+              </h3>
+            </div>
+            <div className="collapse show" id={set.attributeSetCode} data-parent="#productPanels">
+              <div className="card-body font-size-sm">
+                {set.attributes.map(({ attributeName, attributeCode }) => {
+                  return (
+                    <div className="font-size-sm row">
+                      <div className="col-6">
+                        <ul style={{ margin: 0, padding: 0 }}>{attributeName}</ul>
+                      </div>
+                      <div className="col-6 text-muted">
+                        <ul style={{ margin: 0, padding: 0 }}>{isBoolean(product[attributeCode]) ? booleanToString(product[attributeCode]) : product[attributeCode]}</ul>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="card">
+        )
+      })}
+      {/* <div className="card">
         <div className="card-header">
           <h3 className="accordion-heading">
             <a className="collapsed" href="#technicalinfo" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="technicalinfo">
@@ -73,20 +68,22 @@ const ProductPagePanels = ({ product = {} }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+
       <div className="card">
         <div className="card-header">
           <h3 className="accordion-heading">
             <a className="collapsed" href="#questions" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="questions">
               <i className="far fa-question-circle font-size-lg align-middle mt-n1 mr-2"></i>
-              Questions?<span className="accordion-indicator"></span>
+              {t('frontend.product.questions.heading')}
+              <span className="accordion-indicator"></span>
             </a>
           </h3>
         </div>
         <div className="collapse" id="questions" data-parent="#productPanels">
           <div className="card-body">
-            <p>Have questions about this product?</p>
-            <a href="/contact">Contact Us</a>
+            <p>{t('frontend.product.questions.detail')}</p>
+            <Link to="/contact">{t('frontend.nav.contact')}</Link>
           </div>
         </div>
       </div>

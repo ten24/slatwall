@@ -30,6 +30,9 @@ const data = {
     dateFormat: 'MMM DD, YYYY',
     timeFormat: 'HH:MM a',
   },
+  forms: {
+    contact: '2c91808575030b800175064d31680010',
+  },
 }
 
 export default data

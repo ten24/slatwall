@@ -21,9 +21,9 @@ export const useGetEntity = () => {
       })
         .then(response => {
           if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
-            setRequest({ data: response.data.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+            setRequest({ data: response.data.data.pageRecords, attributeSets: response.data.attributeSets, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
-            setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+            setRequest({ data: [], attributeSets: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
         .catch(thrown => {})

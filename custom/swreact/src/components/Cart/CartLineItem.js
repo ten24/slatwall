@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { updateItemQuantity, removeItem } from '../../actions/cartActions'
-import { useDebouncedCallback } from 'use-debounce'
 import useFormatCurrency from '../../hooks/useFormatCurrency'
 import { getProductRoute } from '../../selectors/configurationSelectors'
 import ProductImage from '../ProductImage/ProductImage'
@@ -14,9 +13,7 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
   const [formatCurrency] = useFormatCurrency({})
   const productRouting = useSelector(getProductRoute)
   const { t } = useTranslation()
-  const debounced = useDebouncedCallback(value => {
-    dispatch(updateItemQuantity(skuID, value))
-  }, 1000)
+
   const orderItem = orderItems.filter(orderItem => {
     return orderItem.orderItemID === orderItemID
   })
@@ -84,7 +81,7 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
                 defaultValue={quantity}
                 disabled={isFetching}
                 onChange={e => {
-                  debounced.callback(e.target.value)
+                  dispatch(updateItemQuantity(skuID, e.target.value))
                 }}
               />
             </div>

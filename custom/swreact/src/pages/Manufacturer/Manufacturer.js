@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import { SWImage } from '../../components'
+import { ListingPagination, SWImage } from '../../components'
 import { useGetEntity } from '../../hooks'
 import { Link } from 'react-router-dom'
 import { getBrandRoute } from '../../selectors/configurationSelectors'
@@ -9,8 +9,11 @@ import { getBrandRoute } from '../../selectors/configurationSelectors'
 const Manufacturer = () => {
   let history = useHistory()
   let loc = useLocation()
+  const gridSize = 3
+  const countToDisplay = gridSize * 4
   const content = useSelector(state => state.content[loc.pathname.substring(1)])
   const brandRoute = useSelector(getBrandRoute)
+  const [currentPage, setPage] = useState(1)
   const { title, customBody } = content || {}
   let [request, setRequest] = useGetEntity()
 
@@ -24,6 +27,20 @@ const Manufacturer = () => {
     }
   }, [request, setRequest])
 
+  const sortedList = [
+    ...request.data
+      .filter(element => {
+        return element.brandFeatured === true
+      })
+      .sort((a, b) => (a.brandName > b.brandName ? 1 : -1)),
+    ...request.data
+      .filter(element => {
+        return element.brandFeatured !== true
+      })
+      .sort((a, b) => (a.brandName > b.brandName ? 1 : -1)),
+  ]
+  const start = (currentPage - 1) * countToDisplay
+  const end = start + countToDisplay
   return (
     <div className="bg-light p-0">
       <div className="page-title-overlap bg-lightgray pt-4">
@@ -50,18 +67,7 @@ const Manufacturer = () => {
         <div className="container pb-4 pb-sm-5">
           <div className="row pt-5">
             {request.isLoaded &&
-              [
-                ...request.data
-                  .filter(element => {
-                    return element.brandFeatured === true
-                  })
-                  .sort((a, b) => (a.brandName > b.brandName ? 1 : -1)),
-                ...request.data
-                  .filter(element => {
-                    return element.brandFeatured !== true
-                  })
-                  .sort((a, b) => (a.brandName > b.brandName ? 1 : -1)),
-              ].map(brand => {
+              sortedList.slice(start, end).map(brand => {
                 return (
                   <div key={brand.brandID} className="col-md-4 col-sm-6 mb-3">
                     <div className="card border-0">
@@ -74,6 +80,9 @@ const Manufacturer = () => {
                 )
               })}
           </div>
+        </div>
+        <div className="container pb-4 pb-sm-5">
+          <ListingPagination recordsCount={sortedList.length} currentPage={currentPage} totalPages={Math.ceil(sortedList.length / countToDisplay)} setPage={setPage} />
         </div>
       </div>
     </div>
