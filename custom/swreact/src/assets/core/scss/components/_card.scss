@@ -118,13 +118,9 @@
   }
 }
 
-// brands page cards here
-.bg-light.box-shadow-lg{
-  .card.common-height{
-    padding:20px;
-    min-height: 221px;
-    .img-cover {
-      min-height: 119px;
-    }
-  }
+.flex-1 {
+  flex: 1;
+}
+.hover-shadow-none:hover {
+  box-shadow: none!important; //override bootstrap shadow class to remove the shadow on hover
 }
