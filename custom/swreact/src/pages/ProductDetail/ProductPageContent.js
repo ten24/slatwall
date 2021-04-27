@@ -23,7 +23,7 @@ const OptionLoader = props => (
   </ContentLoader>
 )
 
-const ProductPageContent = ({ product, skuID, sku, productOptions = [], availableSkuOptions = '', isFetching = false }) => {
+const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions = [], availableSkuOptions = '', isFetching = false }) => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const cart = useSelector(state => state.cart)
@@ -90,7 +90,7 @@ const ProductPageContent = ({ product, skuID, sku, productOptions = [], availabl
                 </div>
               </form>
               {/* <!-- Product panels--> */}
-              <ProductPagePanels product={product} />
+              <ProductPagePanels product={product} attributeSets={attributeSets} />
             </div>
           </div>
         </div>
