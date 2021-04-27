@@ -1891,7 +1891,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Set the first shipping method as default
 		if(!isNull(site)){
 			var shippingMethod = getService('ShippingService').getShippingMethod( 
-			            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
+			            ListFirst( arguments.orderTemplate.setting('orderTemplateEligibleShippingMethods',[site]) )
 				   );
 			if(!isNull(shippingMethod)){
 				orderTemplate.setShippingMethod(shippingMethod);
@@ -1973,7 +1973,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.logHibachi('Start Processing OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#', true);
 		
 		// if next process date is in future and not a logged in user skip
-		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
+		if( ((!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1)  && !getHibachiScope().getLoggedInFlag()) {
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
 			return arguments.orderTemplate;
 		}
@@ -2173,6 +2173,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		newOrder.setPaymentProcessingInProgressFlag(false); 
+		
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0 || !arrayLen(newOrder.getOrderPayments()) ){
@@ -2247,10 +2248,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
-				arguments.order.clearHibachiErrors();
-				arguments.orderTemplate.clearHibachiErrors();
-				//try to place as much of the order as possible should only fail in OFY case
-				continue;
+				break;
 			}
 		}
 
@@ -2512,8 +2510,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var account = arguments.orderTemplate.getAccount();
 		
-		var siteCountryCode = arguments.orderTemplate.getSite().setting('siteDefaultCountry');
-			
 		if(!isNull(processObject.getNewAccountAddress())){
 			
 			var accountAddress = getAccountService().newAccountAddress();
