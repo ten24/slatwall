@@ -1,4 +1,4 @@
-import { CONFIRM_ORDER, REQUEST_CART, RECEIVE_CART, CLEAR_CART } from '../actions/cartActions'
+import { CONFIRM_ORDER, REQUEST_CART, RECEIVE_CART, CLEAR_CART, SET_ERROR } from '../actions/cartActions'
 
 const initState = {
   orderID: null,
@@ -25,9 +25,11 @@ const cart = (state = initState, action) => {
       const { cart } = action
       return { ...state, ...cart, isFetching: false, err: null }
     case CLEAR_CART:
-      return { ...state, loginToken: null, isFetching: false }
+      return { ...state, isFetching: false, err: null }
     case CONFIRM_ORDER:
-      return { ...state, loginToken: null, isPlaced: action.isPlaced }
+      return { ...state, isPlaced: action.isPlaced }
+    case SET_ERROR:
+      return { ...state, err: action.error }
 
     default:
       return { ...state }
