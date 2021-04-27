@@ -117,3 +117,14 @@
     border: 1px solid rgba(0,0,0,.085);
   }
 }
+
+// brands page cards here
+.bg-light.box-shadow-lg{
+  .card.common-height{
+    padding:20px;
+    min-height: 221px;
+    .img-cover {
+      min-height: 119px;
+    }
+  }
+}

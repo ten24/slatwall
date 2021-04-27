@@ -69,10 +69,12 @@ const Manufacturer = () => {
             {request.isLoaded &&
               sortedList.slice(start, end).map(brand => {
                 return (
-                  <div key={brand.brandID} className="col-md-4 col-sm-6 mb-3">
-                    <div className="card border-0">
+                  <div key={brand.brandID} className="col-md-2 col-sm-6 mb-3">
+                    <div className="card text-center shadow common-height">
                       <Link className="d-block overflow-hidden rounded-lg" to={`/${brandRoute}/${brand.urlTitle}`}>
-                        <SWImage className="d-block w-100" customPath="/custom/assets/images/brand/logo/" src={brand.imageFile} alt={brand.brandName} />
+                        <div className="d-flex align-items-center justify-content-center img-cover">
+                          <SWImage className="d-block w-100" customPath="/custom/assets/images/brand/logo/" src={brand.imageFile} alt={brand.brandName} />
+                        </div>
                         <h2 className="h5">{brand.brandName}</h2>
                       </Link>
                     </div>
