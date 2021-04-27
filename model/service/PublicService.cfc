@@ -4145,7 +4145,7 @@ component  accessors="true" output="false"
 	 */
 	public any function getProduct(required struct data ){
 	    param name="arguments.data.includeAttributesMetadata" default=false;
-	    
+	     arguments.data.ajaxResponse['attributeSets'] = []
 	     if( arguments.data.includeAttributesMetadata ){
             if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
                 arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
@@ -4163,7 +4163,6 @@ component  accessors="true" output="false"
 	         if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){
 	             var product = getProductService().getProduct(arguments.data.ajaxResponse['data'].pageRecords[1].productID)
 	             if(!isNull(product)){
-	                arguments.data.ajaxResponse['getProductType'] =
 	                arguments.data.ajaxResponse['attributeSets'] = getAttributeSetMetadataForProduct(product.getProductID(), product.getProductType().getProductTypeIDPath() ,product.getBrand().getBrandID() ); 
  	             }
 	         }
