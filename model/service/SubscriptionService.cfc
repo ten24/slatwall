@@ -784,7 +784,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			subscriptionUsage.setNextReminderEmailDate( javaCast("null", "") );
 
 			// Setup the next Reminder email
-			if( len(arguments.subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
+			if( !isNull(subscriptionUsage.getExpirationDate()) && len(arguments.subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
 
 				// Loop over each of the days looking for the next one
 				for(var nextReminderDay in listToArray(subscriptionUsage.setting('subscriptionUsageRenewalReminderDays'))) {
@@ -802,6 +802,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 
+			} else {
+				arguments.subscriptionUsage.addError('sendRenewalReminder', rbkey('admin.entity.processsubscriptionusage.sendRenewalReminder_failure'));
 			}
 
 
