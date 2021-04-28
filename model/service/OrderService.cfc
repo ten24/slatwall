@@ -1008,6 +1008,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( arguments.processObject.getSaveOrderFlag() ){
 			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag(), updateShippingMethodOptions=arguments.processObject.getupdateShippingMethodOptionsFlag() );
 		}
+		
+		//create sku bundle records
+		if(!isNull(newOrderItem) && !isNull(newOrderItem.getSku().getBundleFlag()) && isBoolean(newOrderItem.getSku().getBundleFlag()) && newOrderItem.getSku().getBundleFlag()){
+	 		var insertSQL = "INSERT INTO SwOrderItemSkuBundle (orderItemSkuBundleID, createdDateTime, modifiedDateTime, skuID, orderItemID, quantity) ";
+			insertSQL &= "SELECT REPLACE(CAST(UUID() as char character set utf8), '-', ''), #now()#, #now()#, bundledSkuID, '#newOrderItem.getOrderItemID()#', bundledQuantity FROM SwSkuBundle where skuID = '#newOrderItem.getSku().getSkuID()#'";
+		
+ 			QueryExecute(insertSQL);
+		}
 
 		return arguments.order;
 	}
@@ -1599,7 +1607,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
-			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+			this.logHibachi('encountered error in calculating totals For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		}
 		
 		return request[orderTemplateOrderDetailsKey];
@@ -1883,7 +1891,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Set the first shipping method as default
 		if(!isNull(site)){
 			var shippingMethod = getService('ShippingService').getShippingMethod( 
-			            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
+			            ListFirst( arguments.orderTemplate.setting('orderTemplateEligibleShippingMethods',[site]) )
 				   );
 			if(!isNull(shippingMethod)){
 				orderTemplate.setShippingMethod(shippingMethod);
@@ -1965,7 +1973,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.logHibachi('Start Processing OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#', true);
 		
 		// if next process date is in future and not a logged in user skip
-		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
+		if( ((!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1)  && !getHibachiScope().getLoggedInFlag()) {
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
 			return arguments.orderTemplate;
 		}
@@ -2165,6 +2173,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		newOrder.setPaymentProcessingInProgressFlag(false); 
+		
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0 || !arrayLen(newOrder.getOrderPayments()) ){
@@ -2239,10 +2248,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
-				arguments.order.clearHibachiErrors();
-				arguments.orderTemplate.clearHibachiErrors();
-				//try to place as much of the order as possible should only fail in OFY case
-				continue;
+				break;
 			}
 		}
 
@@ -2504,8 +2510,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var account = arguments.orderTemplate.getAccount();
 		
-		var siteCountryCode = arguments.orderTemplate.getSite().setting('siteDefaultCountry');
-			
 		if(!isNull(processObject.getNewAccountAddress())){
 			
 			var accountAddress = getAccountService().newAccountAddress();
@@ -5811,7 +5815,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderPayment;
 
 	}
-
 
 	// ======================  END: Save Overrides ============================
 
