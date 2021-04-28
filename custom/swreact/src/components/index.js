@@ -37,6 +37,7 @@ export { BillingAddressDetails } from './Checkout/BillingAddressDetails'
 export { TermPaymentDetails } from './Checkout/TermPaymentDetails'
 export { CreditCardDetails } from './Checkout/CreditCardDetails'
 export { GiftCardDetails } from './Checkout/GiftCardDetails'
+export { ProductTypeList } from './ProductTypeList/ProductTypeList'
 
 export { default as CMSWrapper } from './CMSWrapper/CMSWrapper'
 export { default as Footer } from './Footer/Footer'
