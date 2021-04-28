@@ -1607,7 +1607,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//if we have any error we probably don't have the required data for returning the total
 		if(structKeyExists(evaluate(threadName), "ERROR")){
-			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+			this.logHibachi('encountered error in calculating totals For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
 		}
 		
 		return request[orderTemplateOrderDetailsKey];
