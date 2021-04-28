@@ -1212,7 +1212,45 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ======================  END: Status Methods ============================
 
+	// ===================== START: Delete Overrides ==========================
+
+	public boolean function deleteTaxCategoryRate(required any entity) {
+
+		var deleteResult = super.delete(argumentcollection=arguments);
+
+		// If there aren't any errors then flush, and clear cache
+		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
+
+			getHibachiCacheService().resetCachedKeyByPrefix('getTaxCategoryRateRecordsByTaxCategory_#arguments.entity.getTaxCategory().getTaxCategoryID()#',true);
+			getHibachiCacheService().updateServerInstanceSettingsCache();
+			getHibachiDAO().flushORMSession();
+
+		}
+
+		return deleteResult;
+	}
+
+	// =====================  END: Delete Overrides ===========================
+
 	// ====================== START: Save Overrides ===========================
+
+	public any function saveTaxCategoryRate(required any entity, struct data={}) {
+		
+		// Call the default save logic
+		arguments.entity = super.save(argumentcollection=arguments);
+
+		// If there aren't any errors then flush, and clear cache
+		if(!getHibachiScope().getORMHasErrors()) {
+ 
+			//wait for thread to finish because admin depends on getting the savedID
+			getHibachiCacheService().resetCachedKeyByPrefix('getTaxCategoryRateRecordsByTaxCategory_#arguments.entity.getTaxCategory().getTaxCategoryID()#',true);
+			getHibachiCacheService().updateServerInstanceSettingsCache();
+			getHibachiDAO().flushORMSession();
+			
+		}
+
+		return arguments.entity;
+	}
 
 	// ======================  END: Save Overrides ============================
 

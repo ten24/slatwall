@@ -46,29 +46,35 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.orderItem" type="any" />
 
-<cfparam name="rc.site" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfset rc.orderItemSkuBundleCollection = rc.$.slatwall.getService("SkuService").getCollectionList("OrderItemSkuBundle")>
+<cfset rc.orderItemSkuBundleCollection.addFilter("orderItem.orderItemID", "#rc.orderItem.getOrderItemID()#","=")>
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.site#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.site#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.site#">
-			<hb:HibachiEntityDetailItem view="admin:entity/sitetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/sitetabs/sitesettings" />
-            <hb:HibachiEntityDetailItem view="admin:entity/sitetabs/skusettings" />
-			<hb:HibachiEntityDetailItem view="admin:entity/sitetabs/accountsettings" />
-			<hb:HibachiEntityDetailItem view="admin:entity/sitetabs/ordertemplatesettings" />
+<cfset local.displayPropertyList = 'sku.product.productName,sku.skuCode,quantity'/>
+<cfset rc.orderItemSkuBundleCollection.setDisplayProperties(displayPropertyList,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	}
+)/>
 
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.site.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.site#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
+<cfset rc.orderItemSkuBundleCollection.addDisplayProperties("orderItemSkuBundleID",
+	{
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=true
+	}
+)/>
+
+<hb:HibachiListingDisplay
+	  collectionList="#rc.orderItemSkuBundleCollection#"
+	  usingPersonalCollection="false">
+</hb:HibachiListingDisplay>
+
 </cfoutput>
