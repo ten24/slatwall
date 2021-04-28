@@ -46,18 +46,26 @@ const BasicPage = () => {
           onClick={event => {
             event.preventDefault()
             if (event.target.getAttribute('href')) {
-              history.push(event.target.getAttribute('href'))
+              if (event.target.getAttribute('href').includes('http')) {
+                window.location.href = event.target.getAttribute('href')
+              } else {
+                history.push(event.target.getAttribute('href'))
+              }
             }
           }}
           dangerouslySetInnerHTML={{
             __html: customBody || '',
           }}
         />
-        <hr />
-        <div className="col-lg-8">
-          <ListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
-          <ListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />
-        </div>
+        {content.productListingPageFlag === '1' && (
+          <>
+            <hr />
+            <div className="col-lg-8">
+              <ListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
+              <ListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
