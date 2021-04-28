@@ -35,7 +35,7 @@ const ProductType = () => {
         />
       )}
       {request.data.showProducts && (
-        <ListingPage preFilter={{ productType_id: request.data.productTypeID }} hide={'productType'}>
+        <ListingPage preFilter={{ productType_id: request.data.productTypeID }} hide={['productType']}>
           <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
             <h5 className="h4 text-dark mb-0 font-accent">{request.data.title}</h5>
           </div>
