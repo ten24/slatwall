@@ -81,7 +81,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
           <div className="col-sm-12">
-            <h4 class="text-center my-lg-4">Profile Info</h4>
+            <h4 class="text-left my-lg-4">Profile Info</h4>
           </div>
           <div className="col-sm-6">
             <div className="form-group">
