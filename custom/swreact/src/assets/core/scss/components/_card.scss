@@ -117,3 +117,10 @@
     border: 1px solid rgba(0,0,0,.085);
   }
 }
+
+.flex-1 {
+  flex: 1;
+}
+.hover-shadow-none:hover {
+  box-shadow: none!important; //override bootstrap shadow class to remove the shadow on hover
+}
