@@ -119,10 +119,25 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
 		var foundWithExtendedPSID = false;
+		var foundWithExpiredJWTToken = false;
 		
-		// Check for non-persistent cookie.
-
-		if( len(getHibachiScope().getSessionValue(sessionValue)) ) {
+		if( structKeyExists(requestHeaders,'Headers') && structKeyExists(requestHeaders.Headers,'Auth-Token')){
+			
+			var token = replace(requestHeaders.Headers['Auth-Token'], 'Bearer ', '');
+			var jwt = this.getHibachiJWTService().getJwtByToken(token);
+			try{
+				var decodedJwt = jwt.decode(ignoreExpiration=true);
+				var payload = jwt.getPayload();
+				var sessionEntity = this.getSession( payload.sessionID, true);
+				var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+				if(currentTime < payload.iat || currentTime > payload.exp){
+					foundWithExpiredJWTToken = true;
+				}
+			}catch(any e){
+				var sessionEntity = this.newSession();
+			}
+		
+		}else if( len(getHibachiScope().getSessionValue(sessionValue)) ) {
 			
 			var sessionEntity = this.getSession( getHibachiScope().getSessionValue(sessionValue), true);
 			
@@ -205,6 +220,9 @@ component output="false" accessors="true" extends="HibachiService"  {
 			}
 		
 		
+		} else if(StructKeyExists(requestHeaders.headers, "request_token")) {
+			request.context["foundWithAuthToken"] = true;
+		
 		} else {
 			var sessionEntity = this.newSession();
 		
@@ -221,6 +239,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().setSessionFoundNPSIDCookieFlag( foundWithNPSID );
 		getHibachiScope().setSessionFoundPSIDCookieFlag( foundWithPSID );
 		getHibachiScope().setSessionFoundExtendedPSIDCookieFlag( foundWithExtendedPSID );
+		getHibachiScope().setSessionfoundWithExpiredJwtToken( foundWithExpiredJWTToken );
 		
 		// Variable to store the last request dateTime of a session
 		var previousRequestDateTime = getHibachiScope().getSession().getLastRequestDateTime();
@@ -243,6 +262,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiScope().getSessionFoundPSIDCookieFlag() 
 				|| getHibachiScope().getSessionFoundExtendedPSIDCookieFlag() 
 				|| getHibachiScope().getSessionFoundNPSIDCookieFlag()
+				|| getHibachiScope().getSessionfoundWithExpiredJwtToken()
 			) 
 			&& !getHibachiScope().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccountAuthentication());
 				
@@ -283,35 +303,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
 		
-	}
-	
-	/**
-	 * Method to create account session using Bearer Token
-	 * */
-	public any function setAccountSessionByAuthToken(required string authToken){
-		//get token by stripping prefix
-		var token = replace(arguments.authToken, 'Bearer ', '');
-		
-		if(this.hibachiIsEmpty(token) ){
-		    return;
-		}
-		
-		var jwt = this.getHibachiJWTService().getJwtByToken(token);
-
-		if( jwt.verify() ){
-		    var payload = jwt.getPayload();
-		    
-		    if( !this.hibachiIsEmpty(payload.accountID) ){
-		        var jwtAccount = this.getAccountService().getAccountByAccountID(payload.accountID);
-    			if(!isNull(jwtAccount)){
-    				jwtAccount.setJwtToken(jwt);
-    				this.getHibachiScope().setAccount(jwtAccount);
-    				this.getHibachiScope().getSession().setAccount( jwtAccount );
-    			}
-		    }
-		    
-		    return this.getHibachiScope().getSession();
-		}
 	}
 	
 	public any function getSessionBySessionCookie(required any cookieName, required any cookieValue,boolean isNew=false){
