@@ -19,6 +19,10 @@ const data = {
     title: 'Stone & Berg',
     titleMeta: '',
   },
+  filtering: {
+    productTypeBase: 'merchandise',
+    requireKeyword: true,
+  },
   footer: {
     formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
   },
