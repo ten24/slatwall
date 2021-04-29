@@ -4,12 +4,13 @@ const data = {
     { URLKeyType: 'Product', URLKey: 'product' },
     { URLKeyType: 'ProductType', URLKey: 'products' },
     { URLKeyType: 'Category', URLKey: 'cat' },
-    { URLKeyType: 'Brand', URLKey: 'sb' },
+    { URLKeyType: 'Brand', URLKey: 'brand' },
     { URLKeyType: 'Account', URLKey: 'ac' },
     { URLKeyType: 'Address', URLKey: 'ad' },
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
-  enforceVerifiedAccountFlag: false,
+  cmsProvider: 'slatwallCMS',
+  enforceVerifiedAccountFlag: true,
   shopByManufacturer: {
     slug: '/brands',
     showInMenu: true,
@@ -17,6 +18,10 @@ const data = {
   seo: {
     title: 'Stone & Berg',
     titleMeta: '',
+  },
+  filtering: {
+    productTypeBase: 'merchandise',
+    requireKeyword: true,
   },
   footer: {
     formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
@@ -29,6 +34,9 @@ const data = {
   formatting: {
     dateFormat: 'MMM DD, YYYY',
     timeFormat: 'HH:MM a',
+  },
+  forms: {
+    contact: '2c91808575030b800175064d31680010',
   },
 }
 

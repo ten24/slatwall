@@ -1,9 +1,8 @@
 import { useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
-import ContactForm from './ContactForm'
 
-const BasicPageWithSidebar = () => {
+const BasicPageWithSidebar = ({ children }) => {
   let history = useHistory()
   let loc = useLocation()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
@@ -27,15 +26,18 @@ const BasicPageWithSidebar = () => {
                 onClick={event => {
                   event.preventDefault()
                   if (event.target.getAttribute('href')) {
-                    history.push(event.target.getAttribute('href'))
+                    if (event.target.getAttribute('href').includes('http')) {
+                      window.location.href = event.target.getAttribute('href')
+                    } else {
+                      history.push(event.target.getAttribute('href'))
+                    }
                   }
                 }}
                 dangerouslySetInnerHTML={{
                   __html: customSummary || '',
                 }}
               />
-
-              <ContactForm />
+              {children}
             </div>
           </section>
           <Sidebar />

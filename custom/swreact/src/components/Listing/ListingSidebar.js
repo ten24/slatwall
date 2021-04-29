@@ -47,7 +47,6 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
   const [formatCurrency] = useFormatCurrency({})
 
   const newPriceRange = formatPriceRange(priceRange, formatCurrency)
-
   return (
     <div className="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
       <div className="cz-sidebar-header box-shadow-sm">
@@ -102,8 +101,9 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
             {!isFetching &&
               brand &&
               brand !== {} &&
-              brand.facetKey !== hide &&
+              !hide.includes(brand.facetKey) &&
               [brand].map(filter => {
+                console.log('hide.includes(brand.facetKey)', brand.facetKey, hide, hide.includes(brand.facetKey))
                 return <ListingFilter qs={qs} key="brand" index={brand.facetKey} {...filter} facetKey="brand" appliedFilters={getAppliedFilters(qs, 'brand')} updateAttribute={updateAttribute} />
               })}
 
@@ -134,7 +134,7 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
               category &&
               category.options &&
               category.options.length > 0 &&
-              category.facetKey !== hide &&
+              !hide.includes(category.facetKey) &&
               [category].map(filter => {
                 return <ListingFilter qs={qs} key={category.facetKey} index={category.facetKey} {...filter} appliedFilters={getAppliedFilters(qs, 'category')} updateAttribute={updateAttribute} />
               })}
@@ -142,7 +142,7 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
               productType &&
               productType.options &&
               productType.options.length > 0 &&
-              productType.facetKey !== hide &&
+              !hide.includes(productType.facetKey) &&
               [productType].map(filter => {
                 return <ListingFilter qs={qs} key={productType.facetKey} index={productType.facetKey} {...filter} appliedFilters={getAppliedFilters(qs, 'productType')} updateAttribute={updateAttribute} />
               })}
