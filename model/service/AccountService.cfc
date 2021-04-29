@@ -591,6 +591,39 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	} 
 
+	public any function processAccount_addAccountEmailAddress(required any account, required any processObject, struct data={}) {
+		
+		var accountEmailAddress = this.newAccountEmailAddress();
+		accountEmailAddress.setAccount(arguments.account);
+		accountEmailAddress.setEmailAddress(arguments.processObject.getEmailAddress());
+		this.saveAccountEmailAddress(accountEmailAddress);
+
+		if (!accountEmailAddress.hasErrors()) {
+			arguments.account = this.saveAccount(arguments.account);
+		} else {
+			arguments.account.addErrors( accountEmailAddress.getErrors() );
+		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_addAccountPhoneNumber(required any account, required any processObject, struct data={}) {
+		
+		var accountPhoneNumber = this.newAccountPhoneNumber();
+		accountPhoneNumber.setAccount(arguments.account);
+		accountPhoneNumber.setPhoneNumber(arguments.processObject.getPhoneNumber());
+		this.saveAccountPhoneNumber(accountPhoneNumber);
+		
+		if (!accountPhoneNumber.hasErrors()) {
+			arguments.account = this.saveAccount(arguments.account);
+		} else {
+			arguments.account.addErrors( accountPhoneNumber.getErrors() );
+		}
+		
+		return arguments.account;
+	}
+
+
 	public any function processAccount_clone(required any account, required any processObject, struct data={}) {
 
 		var newAccount = this.newAccount();
