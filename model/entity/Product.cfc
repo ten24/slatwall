@@ -186,6 +186,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productKeyBoxStyle" ormtype="string";
  property name="productBoredLockGrade" ormtype="string" hb_formFieldType="select";
  property name="productBoredLockStyle" ormtype="string" hb_formFieldType="select";
+ property name="mechanicalHardwareHoleSpacing" ormtype="string";
+ property name="productLatchCompatibility" ormtype="string";
+ property name="productTrimFunction" ormtype="string";
  property name="mechanicalFaceplate" ormtype="string" hb_formFieldType="select";
  property name="productPaddleOrientation" ormtype="string" hb_formFieldType="select";
  property name="productJambType" ormtype="string" hb_formFieldType="select";
@@ -267,6 +270,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productHingeMaterial" ormtype="string";
  property name="productHingeStyle" ormtype="string" hb_formFieldType="select";
  property name="productHingePin" ormtype="boolean" hb_formatType="yesno" default="No";
+ property name="productCodedUncoded" ormtype="string";
+ property name="productAdditionalKeyInfo" ormtype="string";
+ property name="productGroove" ormtype="string";
+ property name="productLockHand" ormtype="string";
  property name="productAutoModel" ormtype="string" hb_formFieldType="select";
  property name="productModelYear" ormtype="string" hb_formFieldType="select";
  property name="productAutoLockType" ormtype="string" hb_formFieldType="select";
@@ -545,7 +552,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	* @Suppress
 	*/
 	public struct function getSkuSalePriceDetails( required any skuID) {
-		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
+		if(!isNew() && structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
 			return getSalePriceDetailsForSkus()[ arguments.skuID ];
 		}
 		return {};
