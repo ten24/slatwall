@@ -139,42 +139,12 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		}
 		
 		// If the session was set with a persistent cookie, and the session has an non new order on it... then remove all of the personal information
-		if(getHibachiScope().getSessionFoundPSIDCookieFlag() && !getHibachiScope().getSession().getOrder().getNewFlag()) {
+		if((getHibachiScope().getSessionFoundPSIDCookieFlag() || getHibachiScope().getSessionFoundWithExpiredJwtToken()) && !getHibachiScope().getSession().getOrder().getNewFlag()) {
 			
 			getOrderService().processOrder(getHibachiScope().getSession().getOrder(), 'removePersonalInfo');
 			// Force persistance
 			getHibachiDAO().flushORMSession();
 		}
-	}
-	
-	/**
-	 * Method override to setup cart information on session
-	 * */
-	public any function setAccountSessionByAuthToken(required string authToken) {
-		var currentSession = super.setAccountSessionByAuthToken(arguments.authToken);
-		
-		if( isNull(currentSession) ){
-		    return;
-		}
-
-		//Set Cart on Session
-		var jwtPayload = currentSession.getAccount().getJwtToken().getPayload();
-
-		//if order id exists in payload then use that to get recent order else get most recent not placed order order
-		if( structKeyExists(jwtPayload, "orderID") && !this.hibachiIsEmpty(jwtPayload.orderID) ){
-			
-			currentSession.setOrder( 
-			    this.getOrderService().getOrder( jwtPayload.orderID) 
-			);
-			this.saveSession(currentSession);
-			
-			// Q: do we really need to flush here?
-			// if we're using the jwt we will always get the cart from the token, 
-			// Force persistance
-			this.getHibachiDAO().flushORMSession();
-		}
-		
-		return currentSession;
 	}
 	
 }

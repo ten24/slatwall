@@ -209,6 +209,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 	            sku['options'] = options;
+	            sku['selectedOptionIDList'] = currentSku.getOptionsIDList();
 	            
 	            sku['imagePath'] = currentSku.getImagePath();
 	        }

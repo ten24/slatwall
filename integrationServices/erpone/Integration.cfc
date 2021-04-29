@@ -46,53 +46,36 @@
 Notes:
 
 */
-component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
-{
-	property name="hibachiUtilityService" type="any";
-	//list of supported algorithms
+component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
 	
-	public any function newJWT(required string key){
-		return getHibachiScope().getTransient('HibachiJWT').setup(arguments.key);
+	public string function getIntegrationTypes() {
+		return "fw1,Data";
 	}
 	
-	public any function getJwtByToken(required string token){
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		jwt.setTokenString(arguments.token);
-		return jwt;
+	public string function getDisplayName() {
+		return "ERP One";
 	}
 	
-	/**
-	 * Method to create JWT Token for account
-	 * @param - setOrder : flag to set order on JWT
-	 * */
-	public string function createToken(){
-		//create token
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		//hard coded to 15 minutes
-		var tokenExpirationTime = 900;
 		
-		var payload = {
-			'iat' : javaCast( 'int', currentTime ),
-			'issuer' : CGI['server_name'],
-			'accountID' : this.getHibachiScope().getAccount().getAccountID(),
-			'sessionID' : this.getHibachiScope().getSession().getSessionID(),
-			'exp': JavaCast( 'int', ( currentTime + tokenExpirationTime ) ),
-			'encoding' : 'UTF-8'
-		}
+	public array function getEventHandlers() {
 		
-		//add users role so we can make decisions on frontend permissions
-		if(getHibachiScope().getAccount().getSuperUserFlag()){
-			payload['role']='superUser';	
-		}else if(getHibachiScope().getAccount().hasPermissionGroup()){
-			payload['role']="admin";
-			payload['permissionGroups']=getHibachiScope().getAccount().getPermissionGroupsCollectionList().getPrimaryIDList();
-		}else{
-			payload['role']='public';
-		}
-		
-		return jwt.encode(payload);
+		return [ 'Slatwall.integrationServices.erpone.model.handler.ErponeHandler' ];
+	}
+	
+	
+	public struct function getSettings() {
+		return {
+		    devGatewayURL = {fieldType="text"},
+			prodGatewayURL = {fieldType="text"},
+			devMode = { fieldType="yesno", defaultValue=1 },
+			devClient = {fieldType="text", defaultValue="web"},
+			prodClient = {fieldType="text", defaultValue="web"},
+			devCompany = {fieldType="text", defaultValue="DC"},
+			prodCompany = {fieldType="text", defaultValue="DC"},
+			devUsername = {fieldType="text", defaultValue="Ten24Dev"},
+			prodUsername = {fieldType="text", defaultValue="Ten24Dev"},
+			devPassword = {fieldType="password"},
+			prodPassword = {fieldType="password"}
+    	};
 	}
 }

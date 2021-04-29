@@ -194,8 +194,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			attributeCollectionList.addFilter('attributeSet.attributeSetObject', arguments.entityName);
 			
 			//XXX: this leads to stack-overflow, while trying to apply permissions
-			attributeCollectionList.setPermissionAppliedFlag(true);
-			
+			attributeCollectionList.setPermissionAppliedFlag(true); 
+
 			var attributeRecords = attributeCollectionList.getRecords(formatRecords = false);
 			
 			var response = [];
