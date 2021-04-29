@@ -26,7 +26,11 @@ const BasicPageWithSidebar = ({ children }) => {
                 onClick={event => {
                   event.preventDefault()
                   if (event.target.getAttribute('href')) {
-                    history.push(event.target.getAttribute('href'))
+                    if (event.target.getAttribute('href').includes('http')) {
+                      window.location.href = event.target.getAttribute('href')
+                    } else {
+                      history.push(event.target.getAttribute('href'))
+                    }
                   }
                 }}
                 dangerouslySetInnerHTML={{

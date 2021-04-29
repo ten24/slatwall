@@ -41,7 +41,11 @@ const Sidebar = () => {
                     onClick={event => {
                       if (event.target.getAttribute('href')) {
                         event.preventDefault()
-                        history.push(event.target.getAttribute('href'))
+                        if (event.target.getAttribute('href').includes('http')) {
+                          window.location.href = event.target.getAttribute('href')
+                        } else {
+                          history.push(event.target.getAttribute('href'))
+                        }
                       }
                     }}
                     dangerouslySetInnerHTML={{

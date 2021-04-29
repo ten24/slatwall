@@ -16,7 +16,7 @@ const buildPath = params => {
 }
 const initialData = { brand: '', orderBy: 'product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
 
-const ListingPage = ({ children, preFilter, hide }) => {
+const ListingPage = ({ children, preFilter, hide = [] }) => {
   const loc = useLocation()
   let history = useHistory()
   let params = processQueryParameters(loc.search)
