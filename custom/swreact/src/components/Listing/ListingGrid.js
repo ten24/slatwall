@@ -39,14 +39,13 @@ const ListingGrid = ({ isFetching, pageRecords }) => {
             </div>
           )
         })}
-      {!isFetching &&
-        pageRecords.length == 0 &&
+      {!isFetching && pageRecords.length === 0 && (
         <div className="col">
           {t('frontend.listing.noProductsFound')}
           <br />
-          {t('frontend.listing.needAssistance')} <Link to='/contact'>{t('frontend.nav.contact')}</Link>
+          {t('frontend.listing.needAssistance')} <Link to="/contact">{t('frontend.nav.contact')}</Link>
         </div>
-      }
+      )}
     </div>
   )
 }

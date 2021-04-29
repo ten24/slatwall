@@ -18,7 +18,7 @@ const ProductPagePanels = ({ product = {}, attributeSets = [] }) => {
     <div className="accordion mb-4" id="productPanels">
       {filteredAttributeSets.map(set => {
         return (
-          <div className="card">
+          <div key={set.attributeSetCode} className="card">
             <div className="card-header">
               <h3 className="accordion-heading">
                 <a href={`#${set.attributeSetCode}`} role="button" data-toggle="collapse" aria-expanded="true" aria-controls={set.attributeSetCode}>

@@ -86,7 +86,6 @@ export const getUser = () => {
     if (req.isFail()) {
       dispatch(softLogout())
     } else {
-      console.log('req.success().account', req.success().account)
       if (req.success().account.accountID.length) {
         dispatch(receiveUser(req.success().account))
       } else {
