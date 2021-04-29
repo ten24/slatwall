@@ -45,21 +45,23 @@ export const receiveStateCodes = codes => {
 export const getContent = (content = {}) => {
   return async (dispatch, getState) => {
     // if (!getState().content.isFetching && shouldUseData(getState().content, content.content)) {
-    const { siteCode } = getState().configuration.site
-    dispatch(requestContent())
-    const response = await axios({
-      method: 'POST',
-      withCredentials: true,
-      url: `${sdkURL}api/scope/getSlatwallContent`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: { ...content, siteCode },
-    })
-    if (response.status === 200) {
-      dispatch(receiveContent({ ...response.data.content }))
-    } else {
-      dispatch(receiveContent({}))
+    const { site, cmsProvider } = getState().configuration
+    if (cmsProvider === 'slatwallCMS') {
+      dispatch(requestContent())
+      const response = await axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/getSlatwallContent`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: { ...content, siteCode: site.siteCode },
+      })
+      if (response.status === 200) {
+        dispatch(receiveContent({ ...response.data.content }))
+      } else {
+        dispatch(receiveContent({}))
+      }
     }
   }
   // }

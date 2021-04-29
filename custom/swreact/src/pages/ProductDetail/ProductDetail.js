@@ -102,7 +102,6 @@ const ProductDetail = props => {
   // Get the Product on page chnage
   if (pathname !== path) {
     console.log('Refresh all')
-    const parsedOptions = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
     setPath(pathname)
 
     // getSkuOptionsRequest({

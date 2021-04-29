@@ -107,15 +107,18 @@ function Header({ logo, mobileLogo }) {
                   <input
                     className="form-control appended-form-control"
                     type="text"
+                    required
                     ref={textInput}
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault()
-                        history.push({
-                          pathname: '/search',
-                          search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
-                        })
-                        textInput.current.value = ''
+                        if (e.target.checkValidity()) {
+                          history.push({
+                            pathname: '/search',
+                            search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
+                          })
+                          textInput.current.value = ''
+                        }
                       }
                     }}
                     placeholder={t('frontend.search.placeholder')}
@@ -126,11 +129,13 @@ function Header({ logo, mobileLogo }) {
                         style={{ cursor: 'pointer' }}
                         onClick={e => {
                           e.preventDefault()
-                          history.push({
-                            pathname: '/search',
-                            search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
-                          })
-                          textInput.current.value = ''
+                          if (textInput.current.checkValidity()) {
+                            history.push({
+                              pathname: '/search',
+                              search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
+                            })
+                            textInput.current.value = ''
+                          }
                         }}
                         className="far fa-search"
                       ></i>
