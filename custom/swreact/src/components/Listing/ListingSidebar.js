@@ -44,7 +44,7 @@ const formatPriceRange = (priceRange, formatCurrency) => {
 const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, category, priceRange, productType, keyword, recordsCount, setKeyword, updateAttribute }) => {
   const { t } = useTranslation()
   const textInput = useRef(null)
-  const [formatCurrency] = useFormatCurrency({})
+  const [formatCurrency] = useFormatCurrency({ minimumFractionDigits: 0 })
 
   const newPriceRange = formatPriceRange(priceRange, formatCurrency)
 
