@@ -182,39 +182,43 @@ component extends="Slatwall.model.service.OrderService" {
 							
 						}
 					}
-					
-					var livePrices = getService('erpOneService').getLivePrices(pricePayload);
-					
-					// Loop over the orderItems to see if the skuPrice Changed
-					for(var orderItem in arguments.order.getOrderItems()){
+					try{
+						var livePrices = getService('erpOneService').getLivePrices(pricePayload);
 						
-						
-	 					if(
-	 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
-	 						&&
-	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
-	 					){
-					
-
-							for(var livePrice in livePrices){
-								if(livePrice['item'] == orderItem.getSku().getSkuCode()){
-									//Prices have 3 decimal numbers on ERP
-									livePrice['price'] = round(livePrice['price'],2);
-									
-									if( orderItem.getPrice() != livePrice['price']){
-										orderItem.setPrice(livePrice['price']);
-				 						orderItem.setSkuPrice(livePrice['price']);
-									}
-									break;
-								}
-							}
+						// Loop over the orderItems to see if the skuPrice Changed
+						for(var orderItem in arguments.order.getOrderItems()){
 							
- 						}
- 						
- 						
+							
+		 					if(
+		 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
+		 						&&
+		 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
+		 					){
+						
+	
+								for(var livePrice in livePrices){
+									if(livePrice['item'] == orderItem.getSku().getSkuCode()){
+										//Prices have 3 decimal numbers on ERP
+										livePrice['price'] = round(livePrice['price'],2);
+										
+										if( orderItem.getPrice() != livePrice['price']){
+											orderItem.setPrice(livePrice['price']);
+					 						orderItem.setSkuPrice(livePrice['price']);
+										}
+										break;
+									}
+								}
+								
+	 						}
+						}
+					}catch( any e ){
+						arguments.order.addError('addOrderItem', 'Error getting Live Prices: #e.message#');
 					}
-					
+						
  				}
+			}
+			if(arguments.order.hasErrors()){
+				return arguments.order;
 			}
 			
 			// First Re-Calculate the 'amounts' base on price groups
