@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,54 +45,36 @@
 
 Notes:
 
-*/
-component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
-{
-	property name="hibachiUtilityService" type="any";
-	//list of supported algorithms
-	
-	public any function newJWT(required string key){
-		return getHibachiScope().getTransient('HibachiJWT').setup(arguments.key);
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+<cfparam name="rc.orderItem" type="any" />
+
+<cfset rc.orderItemSkuBundleCollection = rc.$.slatwall.getService("SkuService").getCollectionList("OrderItemSkuBundle")>
+<cfset rc.orderItemSkuBundleCollection.addFilter("orderItem.orderItemID", "#rc.orderItem.getOrderItemID()#","=")>
+
+<cfoutput>
+<cfset local.displayPropertyList = 'sku.product.productName,sku.skuCode,quantity'/>
+<cfset rc.orderItemSkuBundleCollection.setDisplayProperties(displayPropertyList,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
 	}
-	
-	public any function getJwtByToken(required string token){
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		jwt.setTokenString(arguments.token);
-		return jwt;
+)/>
+
+<cfset rc.orderItemSkuBundleCollection.addDisplayProperties("orderItemSkuBundleID",
+	{
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=true
 	}
-	
-	/**
-	 * Method to create JWT Token for account
-	 * @param - setOrder : flag to set order on JWT
-	 * */
-	public string function createToken(){
-		//create token
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		//hard coded to 15 minutes
-		var tokenExpirationTime = 900;
-		
-		var payload = {
-			'iat' : javaCast( 'int', currentTime ),
-			'issuer' : CGI['server_name'],
-			'accountID' : this.getHibachiScope().getAccount().getAccountID(),
-			'sessionID' : this.getHibachiScope().getSession().getSessionID(),
-			'exp': JavaCast( 'int', ( currentTime + tokenExpirationTime ) ),
-			'encoding' : 'UTF-8'
-		}
-		
-		//add users role so we can make decisions on frontend permissions
-		if(getHibachiScope().getAccount().getSuperUserFlag()){
-			payload['role']='superUser';	
-		}else if(getHibachiScope().getAccount().hasPermissionGroup()){
-			payload['role']="admin";
-			payload['permissionGroups']=getHibachiScope().getAccount().getPermissionGroupsCollectionList().getPrimaryIDList();
-		}else{
-			payload['role']='public';
-		}
-		
-		return jwt.encode(payload);
-	}
-}
+)/>
+
+<hb:HibachiListingDisplay
+	  collectionList="#rc.orderItemSkuBundleCollection#"
+	  usingPersonalCollection="false">
+</hb:HibachiListingDisplay>
+
+</cfoutput>

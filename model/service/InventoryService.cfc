@@ -540,7 +540,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function processInventoryAnalysis_exportXLS(required any InventoryAnalysis, required any processObject) {
 
-		var filename = getService("HibachiUtilityService").createSEOString(arguments.InventoryAnalysis.getInventoryAnalysisName() &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.xls';
+		var filename = getService("HibachiUtilityService").createSEOString(left(arguments.InventoryAnalysis.getInventoryAnalysisName(),5) &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.xls';
 		var fullFilename = getHibachiTempDirectory() & filename;
 
 		// Create spreadsheet object
@@ -551,8 +551,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		spreadsheetrowcount += 1;
 		spreadsheetFormatRow(spreadsheet, {bold=true}, 1);
 		// Add rows
-		spreadsheetAddRows(spreadsheet, arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query);
-		spreadsheetrowcount += arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query.recordcount;
+		var reportQuery = arguments.InventoryAnalysis.getReportData(true).query;
+		spreadsheetAddRows(spreadsheet, reportQuery);
+		spreadsheetrowcount += reportQuery.recordcount;
 
 		spreadsheetWrite( spreadsheet, fullFilename, true );
 		getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true );
@@ -564,7 +565,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var filename = getService("HibachiUtilityService").createSEOString(arguments.InventoryAnalysis.getInventoryAnalysisName() &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.csv';
 		var fullFilename = getHibachiTempDirectory() & filename;
 
-		fileWrite(fullFilename, getService("hibachiUtilityService").queryToCSV(arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query, arguments.InventoryAnalysis.getReportData().columnList, true ));
+		fileWrite(fullFilename, getService("hibachiUtilityService").queryToCSV(arguments.InventoryAnalysis.getReportData(true).query, arguments.InventoryAnalysis.getReportData().columnList, true ));
 		getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true );
 
 		return arguments.InventoryAnalysis;
