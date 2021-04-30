@@ -470,7 +470,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										continue;
 									}
 									var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
-									var itemTotal = orderItem.getCalculatedItemTotal();
+									var itemTotal = orderItem.getExtendedPriceAfterDiscount();
 
 									var newAppliedTax = this.newTaxApplied();
 									newAppliedTax.setAppliedType("orderItem");
@@ -480,7 +480,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderItem( orderItem );
 									newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
-									newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * taxCategoryRate.getTaxRate()) / 100 );
+									newAppliedTax.setTaxLiabilityAmount( round(itemTotal * taxCategoryRate.getTaxRate()) / 100 );
 	
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );

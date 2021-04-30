@@ -53,6 +53,7 @@ component extends="HibachiService" accessors="true" {
 	property name="skuDAO" type="any";
 	property name="productTypeDAO" type="any";
 
+	property name="hibachiService" type="any";
 	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
@@ -76,7 +77,18 @@ component extends="HibachiService" accessors="true" {
 		approvedProductReviewCollectionList.addFilter("productReviewStatusType.systemCode","prstApproved");
 		return approvedProductReviewCollectionList;
 	}
-	
+	public array function getProductPublicProperties(){
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'productType.productTypeIDPath', 'brand.brandID'];
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
+	public array function getProductTypePublicProperties(){
+		var publicProperties = ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('ProductType');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
 		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
@@ -228,6 +240,26 @@ component extends="HibachiService" accessors="true" {
 		return AvailableOptions;
 	}
 
+	public string function getNextSkuCode(required struct productSchedule={}, required struct product={}) {
+		var productCode = arguments.product.getProductCode();
+		if( (isStruct(arguments.productSchedule) && structIsEmpty(arguments.productSchedule)) || (isObject(arguments.productSchedule) && ArrayIsEmpty(arguments.productSchedule.getSkus())) ) {
+			return getService('HibachiUtilityService').createUniqueProperty(propertyValue=productCode, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=true );
+		}
+		
+		//Check if last sku is exist in skulist, return unique sku
+		var productScheduleSkus = arguments.productSchedule.getSkus();
+		var lastSku = ArrayLast(productScheduleSkus);
+		var newSkuCode = lastSku.getSkuCode();
+		for( var i=1; i<=ArrayLen(productScheduleSkus); i++ ){
+			if( productScheduleSkus[i].getSkuCode() == newSkuCode ) {
+				var returnValue = "#productCode#-#i+1#";
+				newSkuCode = getService('HibachiUtilityService').createUniqueProperty(propertyValue=returnValue, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=false );
+				break;
+			}
+		}
+		return newSkuCode;
+	}
+	
 	// @help Generates an event sku stub. Used to replace repetitive code.
 	private any function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
 
@@ -310,7 +342,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
-				newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
+				newSku.setSkuCode( this.getNextSkuCode( arguments.productSchedule, newSku.getProduct() ) );
 				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
@@ -322,7 +354,6 @@ component extends="HibachiService" accessors="true" {
 				} else {
 					newSku.setEventCapacity(1);
 				}
-
 
 				// Set default Sku if its not already set
 				if( isNull( newSku.getProduct().getDefaultSku() ) ) {
@@ -435,9 +466,8 @@ component extends="HibachiService" accessors="true" {
 		var lastDay = 0;
 
 		do {
-
+			
 			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
-
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuStartDateTime,cursorPosition);
 			newSkuEndDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuEndDateTime,cursorPosition);
@@ -449,7 +479,6 @@ component extends="HibachiService" accessors="true" {
 			}
 
 		} while ( !latestSku.hasErrors() && newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
-		
 		if (latestSku.hasErrors()) {
 			arguments.product.addErrors(latestSku.getErrors());
 		}
@@ -662,16 +691,32 @@ component extends="HibachiService" accessors="true" {
 				product['categories'] = categories;
 				
 				//Append Option Groups
-				var optionGroups = [];
-				if( arrayLen(currentProduct.getOptionGroups()) ) {
-					for(var optionGroup in currentProduct.getOptionGroups()){
-						ArrayAppend( optionGroups, {
-							"optionGroupdID" : optionGroup.getOptionGroupID(),
-							"optionGroupName" : optionGroup.getOptionGroupName(),
-						} )
-					}
-				}
-				product['optionGroups'] =  optionGroups;
+				var optsList = [];
+        		var defaultSelectedOptions = '';
+				var defaultSku = currentProduct.getDefaultSku()
+				var optionGroupsArr = currentProduct.getOptionGroups()
+    			var skuOptionDetails = currentProduct.getSkuOptionDetails()
+		        if(!isNull(defaultSku)){
+		        defaultSelectedOptions = defaultSku.getOptionsIDList()
+		            for(var optionGroup in optionGroupsArr) {
+		                var options = currentProduct.getOptionsByOptionGroup( optionGroup.getOptionGroupID() )
+		                var group = []
+		                for(var option in options) {
+		                    ArrayAppend(group,{"optionID": option.getOptionID()
+		                    ,"optionCode": option.getOptionCode()
+		                    ,"optionName": option.getOptionName()})
+		                }
+		                ArrayAppend(optsList, {
+		                    "optionGroupName": optionGroup.getOptionGroupName(),
+		                    "optionGroupID": optionGroup.getOptionGroupID(),
+		                    "optionGroupCode": optionGroup.getOptionGroupCode(),
+		                    "options": group })
+		            }
+		        }
+		        
+		        product['optionGroups'] = optsList;
+    			product['defaultSelectedOptions'] = defaultSelectedOptions;
+     
 				
 				//Append base product type system code
 				product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
@@ -680,7 +725,14 @@ component extends="HibachiService" accessors="true" {
 		
 		return arguments.products;
 	}
-
+	
+	
+	/**
+	 * Method to return product type image base path
+	 * */
+	public string function getProductTypeImageBasePath( boolean frontendURL = false ) {
+		return (arguments.frontendURL ? getHibachiScope().getBaseImageURL() : getHibachiScope().setting('globalAssetsImageFolderPath') ) & "/productType/logo";
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -693,7 +745,70 @@ component extends="HibachiService" accessors="true" {
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
+	
+	/***
+	 * Process method to upload logo for product type
+	 * */
+	public any function processProductType_uploadLogo(required any productType, required any processObject) {
+		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
+		try {
+			
+			//get upload directory base path
+			var uploadDirectory = this.getProductTypeImageBasePath();
+			
+			//upload file
+			var fileUpload = getHibachiUtilityService().uploadFile( 
+				uploadDirectory = uploadDirectory,
+				fileFormFieldName = 'uploadFile',
+				allowedMimeType = arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType
+			);
+			
+			//check if upload had any errors
+			if( !fileUpload.success ) {
+ 				arguments.productType.addError('imageFile', fileUpload.message);
+ 			} else {
+ 				
+ 				//delete existing image from object
+ 				if( arguments.productType.getImageFile() != "") {
+ 					arguments.productType = this.processCategory_deleteCategoryLogo( arguments.category );
+ 				}
+ 				
+ 				//set image path
+ 				arguments.productType.setImageFile( fileUpload.filePath );
+ 			}
+		} catch(any e) {
+			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
+		}
 
+		return arguments.productType;
+	}
+	
+	/**
+	 * Process method to delete logo for product type
+	 * */
+	public any function processProductType_deleteLogo(required any productType, required struct data) {
+		if(structKeyExists(arguments.data, "imageFile")) {
+			
+			//get image base path
+			var imageBasePath = this.getProductTypeImageBasePath();
+			var fileName = arguments.productType.getImageFile();
+			
+			//delete file
+			getHibachiUtilityService().deleteFileFromPath( 
+			 	directoryPath = imageBasePath,
+			 	fileName = fileName
+			 );
+			 
+			arguments.productType.setImageFile('');
+			
+			//clear image cache
+			getImageService().clearImageCache(imageBasePath, fileName);
+		}
+
+		return arguments.productType;
+	}
+	
+	
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
 		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
@@ -807,7 +922,6 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 		}
-
 		// Return the product
 		return arguments.product;
 	}
@@ -1139,7 +1253,6 @@ component extends="HibachiService" accessors="true" {
 		
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
-
         // Return the product
 		return arguments.product;
 	}
@@ -1158,7 +1271,6 @@ component extends="HibachiService" accessors="true" {
 		arguments.product.getSkus()[1].setImageFile(sku.generateImageFileName());
 
 		arguments.product = this.saveProduct(arguments.product);
-
 
 		return arguments.product;
 	}

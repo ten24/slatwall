@@ -2,7 +2,7 @@ import SwSelect from '../../components/SwSelect/SwSelect'
 import { useDispatch } from 'react-redux'
 import { getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
 
-const ShippingAddressForm = ({ formik, isEdit, countryCodeOptions, stateCodeOptions }) => {
+const ShippingAddressForm = ({ formik, isEdit, countryCodeOptions, stateCodeOptions = [] }) => {
   const dispatch = useDispatch()
   return (
     <>

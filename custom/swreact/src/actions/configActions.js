@@ -42,9 +42,9 @@ export const getConfiguration = () => {
       },
     }).then(response => {
       if (response.status === 200 && response.data.config && Object.keys(response.data.config).length > 0) {
-        dispatch(reciveConfiguration({ ...configuration, ...response.data.config }))
+        dispatch(reciveConfiguration(response.data.config))
       } else {
-        dispatch(reciveConfiguration({ ...configuration }))
+        dispatch(reciveConfiguration({}))
       }
     })
   }

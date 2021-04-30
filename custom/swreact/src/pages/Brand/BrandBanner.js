@@ -1,25 +1,28 @@
 import React, { useEffect } from 'react'
 import { SWImage } from '../../components'
-import { useGetBrand } from '../../hooks/useAPI'
+import { useGetEntity } from '../../hooks/useAPI'
 const BrandBanner = ({ brandCode }) => {
-  let [brand, setRequest] = useGetBrand()
+  let [request, setRequest] = useGetEntity()
 
   useEffect(() => {
     let didCancel = false
-    if (!brand.isFetching && !brand.isLoaded && !didCancel) {
-      setRequest({ ...brand, isFetching: true, isLoaded: false, params: { 'f:urlTitle': brandCode }, makeRequest: true })
-    } else {
+    if (!request.isFetching && !request.isLoaded && !didCancel) {
+      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { 'f:urlTitle': brandCode }, makeRequest: true })
     }
     return () => {
       didCancel = true
     }
-  }, [brand, setRequest])
+  }, [request, brandCode, setRequest])
 
   return (
-    <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
-      <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/files/associatedimage/" src={brand.data.associatedImage} alt={brand.data.brandCode} />
-      <p>{brand.data.brandName}</p>
-    </div>
+    <>
+      {request.isLoaded && request.data[0] && (
+        <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
+          <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/images/brand/logo/" src={request.data[0].imageFile} alt={request.data.brandName} />
+          <p dangerouslySetInnerHTML={{ __html: request.data[0].brandDescription }} />
+        </div>
+      )}
+    </>
   )
 }
 

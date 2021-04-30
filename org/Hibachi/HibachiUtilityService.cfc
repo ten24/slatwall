@@ -1395,7 +1395,7 @@
 	             apiRequestAudit.setParams( serializeJson(form) );
 	        }
 	        
-	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getStatus() );
 	        
 	        apiRequestAudit.setRequestType( arguments.requestType);
 	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
@@ -1587,22 +1587,85 @@
     	
     public string function getSQLfromHQL(required string HQL, required struct hqlParams) {
 
-		var hidratedHQL = HQL; 
-		cfloop(collection=hqlParams, item="key") {
-			hidratedHQL = replace(hidratedHQL, ":#key#", "'#hqlParams[key]#'");
+		var hydratedHQL = arguments.HQL; 
+		for(var key in arguments.hqlParams ){
+			hydratedHQL = replace(hydratedHQL, ":#key#", "'#arguments.hqlParams[key]#'");
 		}
+		
 		// java magic
 		var javaTranslatorFactory = createObject("java", "org.hibernate.hql.ast.ASTQueryTranslatorFactory");
 		var javaCollections = createObject("java", "java.util.Collections");
-		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hidratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
+		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hydratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
 		javaTranslator.compile(javaCollections.EMPTY_MAP, false);
-		var sqlstr = javaTranslator.getSQLString();
+		var sqlStr = javaTranslator.getSQLString();
 
 		// sqlstr = rereplace(sqlstr, "as .*?\d+_\d+_", '', "ALL"); //\sas\s\w+\d+_\d+_,
 
 		return sqlstr;
 	}
-
+	
+	/**
+	 * Method to upload file
+	 * @param uploadDirectory
+	 * @param fileFormFieldName - name of file type field in form, to get it from POST request
+	 * @param allowedMimeType - file types to be allowed for upload
+	 * */
+	public any function uploadFile( string uploadDirectory, string fileFormFieldName = "uploadFile", string allowedMimeType = "*" ) {
+		
+		if( this.isS3Path( arguments.uploadDirectory ) ){
+			uploadDirectory = this.formatS3Path( arguments.uploadDirectory );
+		}
+		
+		// If the directory where this file is going doesn't exists, then create it
+		if(!directoryExists(arguments.uploadDirectory)) {
+			directoryCreate(arguments.uploadDirectory);
+		}
+		
+		// Upload the file to temp directory
+		var uploadData = fileUpload( getHibachiTempDirectory(), arguments.fileFormFieldName, arguments.allowedMimeType , 'overwrite', 'makeUnique' );
+		var fileSize = uploadData.fileSize;
+		
+		//get max image size
+		var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+		var maxFileSize = val(maxFileSizeString) * 1000000;
+		
+		//check allowed filesize validation
+ 		if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 			return {
+ 				'success': false,
+ 				'message': getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize')
+ 			}
+ 		}
+ 		
+ 		//move file to correct location	
+ 		fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", arguments.uploadDirectory);
+ 		
+ 		if( this.isS3Path( arguments.uploadDirectory ) ){
+ 			StoreSetACL( arguments.uploadDirectory, [{group="all", permission="read"}]);
+ 		}
+ 		
+ 		return {
+ 			'success': true,
+ 			'filePath': uploadData.serverFile
+ 		}
+	}
+	
+	/**
+	 * Method to delete file from server
+	 * @param directoryPath
+	 * @param fileName
+	 * */
+	public void function deleteFileFromPath( string directoryPath, string fileName ) {
+		if( this.isS3Path( arguments.directoryPath ) ){
+			arguments.directoryPath = this.formatS3Path( arguments.directoryPath );
+		}
+		
+		var finalPath = arguments.directoryPath & arguments.fileName;
+		
+		if(fileExists( finalPath ) ) {
+			fileDelete( finalPath );
+		}
+	}
 
 	</cfscript>
 

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 const AccountBubble = ({ isAuthenticated, name }) => {
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   useEffect(() => {
     dispatch(getUser())

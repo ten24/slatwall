@@ -333,6 +333,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		jQuery.each( jQuery( scopeSelector ).find( jQuery('.hibachi-display-toggle.hide') ), function(index, value){
 			if($("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == getPaymentMethodType || (getPaymentMethodType != undefined && $("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == 'creditCard,termPayment')){
 				$("#"+jQuery(this).attr('id')).removeClass("hide");
+				 $("#"+jQuery(this).attr('id')).find('*').attr('disabled', false);
+				
 			}
 	    });
 		

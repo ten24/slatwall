@@ -591,6 +591,39 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	} 
 
+	public any function processAccount_addAccountEmailAddress(required any account, required any processObject, struct data={}) {
+		
+		var accountEmailAddress = this.newAccountEmailAddress();
+		accountEmailAddress.setAccount(arguments.account);
+		accountEmailAddress.setEmailAddress(arguments.processObject.getEmailAddress());
+		this.saveAccountEmailAddress(accountEmailAddress);
+
+		if (!accountEmailAddress.hasErrors()) {
+			arguments.account = this.saveAccount(arguments.account);
+		} else {
+			arguments.account.addErrors( accountEmailAddress.getErrors() );
+		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_addAccountPhoneNumber(required any account, required any processObject, struct data={}) {
+		
+		var accountPhoneNumber = this.newAccountPhoneNumber();
+		accountPhoneNumber.setAccount(arguments.account);
+		accountPhoneNumber.setPhoneNumber(arguments.processObject.getPhoneNumber());
+		this.saveAccountPhoneNumber(accountPhoneNumber);
+		
+		if (!accountPhoneNumber.hasErrors()) {
+			arguments.account = this.saveAccount(arguments.account);
+		} else {
+			arguments.account.addErrors( accountPhoneNumber.getErrors() );
+		}
+		
+		return arguments.account;
+	}
+
+
 	public any function processAccount_clone(required any account, required any processObject, struct data={}) {
 
 		var newAccount = this.newAccount();
@@ -882,15 +915,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
 				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 			} else {
-				
-				if ( 'astSuspended' == accountAuthentication.getAccount().getAccountStatusType().getSystemCode() ) {
-					arguments.processObject.addError(loginType, rbKey('validate.account.suspended'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.suspended'));
-				} else {
-					arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
-					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
-				}
-				
+				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+				arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
 			}
 		// Login was invalid
 		} else {
@@ -1785,7 +1811,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			ormExecuteQuery("Update SlatwallAccountRelationship set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
 			ormExecuteQuery("Update SlatwallAccountRelationship set parentAccount.accountID=:toAccountID where parentAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
 			ormExecuteQuery("Update SlatwallAccountRelationship set childAccount.accountID=:toAccountID where childAccount.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID}); 
-	
+	        ormExecuteQuery("Update SlatwallApiRequestAudit set account.accountID=:toAccountID where account.accountID=:fromAccountID",{toAccountID=arguments.data.toAccountID, fromAccountID=arguments.data.fromAccountID});
+			
 			//making accountPaymentMethod null in orderPayments that use it
 			getDAO("accountDAO").removeAccountPaymentMethodsFromOrderPaymentsByAccountID(fromAccount.getAccountID());
 	
@@ -1982,8 +2009,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function savePermissionGroup(required any permissionGroup, struct data={}, string context="save") {
-
 		arguments.permissionGroup.setPermissionGroupName( arguments.data.permissionGroupName );
+		if ( structKeyExists( arguments.data, 'permissionGroupCode' ) && len(arguments.data.permissionGroupCode) ) {
+			arguments.permissionGroup.setPermissionGroupCode( arguments.data.permissionGroupCode );
+		}
 		//transform namespaced permissions into a single array
 		if(!structKeyExists(arguments.data,'permissions')){
 			arguments.data.permissions=[];

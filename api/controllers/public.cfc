@@ -80,7 +80,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     public any function get( required struct rc ) {
         var publicService = getService('PublicService');
 
-        if ( structKeyExists(arguments.rc, "context") ) {
+        if ( structKeyExists(arguments.rc, "context")  ) {
             
             if ( arguments.rc.context == "getCart"){
                 publicService.invokeMethod("getCartData", {data=arguments.rc});
@@ -90,7 +90,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
             }
             
-        }
+        } 
         
     }
 

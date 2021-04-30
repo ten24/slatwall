@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import SwSelect from '../../components/SwSelect/SwSelect'
 import { useTranslation } from 'react-i18next'
-import { addNewAccountAndSetAsBilling, addPayment, addAddressAndPaymentAndAddToOrder } from '../../actions/cartActions'
-import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
+import { addNewAccountAndSetAsBilling } from '../../actions/cartActions'
 import AccountAddress from './AccountAddress'
 import { addPaymentMethod } from '../../actions/userActions'
 
@@ -22,12 +21,12 @@ const years = Array(10)
 
 const CreditCardDetails = ({ onSubmit }) => {
   const [isEdit, setEdit] = useState(true)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const billingAccountAddress = useSelector(state => state.cart.billingAccountAddress)
 
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: false,
     initialValues: {
       creditCardNumber: '',
       nameOnCreditCard: '',
@@ -62,10 +61,6 @@ const CreditCardDetails = ({ onSubmit }) => {
     },
   })
 
-  useEffect(() => {
-    dispatch(getCountries())
-    dispatch(getStateCodeOptionsByCountryCode(formik.values.countryCode))
-  }, [dispatch])
   return (
     <>
       <div className="row mb-3">
@@ -77,11 +72,9 @@ const CreditCardDetails = ({ onSubmit }) => {
                 selectedAccountID={formik.values.accountAddressID}
                 onSelect={value => {
                   formik.setFieldValue('accountAddressID', value)
-                  console.log('onSelect', value)
                 }}
                 onSave={values => {
                   dispatch(addNewAccountAndSetAsBilling({ ...values }))
-                  console.log('onSave', values)
                 }}
               />
             </>
@@ -136,14 +129,12 @@ const CreditCardDetails = ({ onSubmit }) => {
           <div className="row mb-3">
             <div className="col-sm-12">
               <div className="row">
-                <div className="col-sm-12">
-                  <div className="custom-control custom-checkbox">
+                <div className="col-sm-12">{/* <div className="custom-control custom-checkbox">
                     <input className="custom-control-input" type="checkbox" id="saveShippingAsBilling" checked={formik.values.saveShippingAsBilling} onChange={formik.handleChange} />
                     <label className="custom-control-label" htmlFor="saveShippingAsBilling">
                       Same as shipping address
                     </label>
-                  </div>
-                </div>
+                  </div> */}</div>
               </div>
             </div>
           </div>
@@ -152,9 +143,9 @@ const CreditCardDetails = ({ onSubmit }) => {
             <div className="d-lg-flex pt-4 mt-3">
               <div className="w-50 pr-3"></div>
               <div className="w-50 pl-2">
-                <a className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
+                <button className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
                   <span className="d-none d-sm-inline">Save</span>
-                </a>
+                </button>
               </div>
             </div>
           )}

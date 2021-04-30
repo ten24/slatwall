@@ -78,7 +78,7 @@ export const receiveAccountOrders = ordersOnAccount => {
 }
 
 export const getUser = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(requestUser())
 
     const req = await SlatwalApiService.account.get({ returnJSONObjects: 'cart' })
@@ -86,12 +86,13 @@ export const getUser = () => {
     if (req.isFail()) {
       dispatch(softLogout())
     } else {
-      if (req.success().account.accountID === '') {
-        dispatch(softLogout())
-      } else {
+      if (req.success().account.accountID.length) {
         dispatch(receiveUser(req.success().account))
-        dispatch(receiveCart(req.success().cart))
+      } else {
+        dispatch(softLogout())
       }
+
+      dispatch(receiveCart(req.success().cart))
     }
   }
 }

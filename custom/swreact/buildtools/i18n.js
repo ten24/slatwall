@@ -2,23 +2,6 @@ const fs = require('fs')
 var _ = require('lodash')
 const glob = require('glob')
 
-const propertiesToJSON = properties => {
-  return properties
-    .split('\n')
-    .filter(line => '' !== line.trim())
-    .map(line => line.split('='))
-    .map(tokens => ({
-      [tokens[0].trim()]: tokens[1] ? tokens[1].trim() : ``,
-    }))
-    .reduce(
-      (properties, property) => ({
-        ...properties,
-        ...property,
-      }),
-      {}
-    )
-}
-
 const setValue = (obj, keys, value) => {
   keys = typeof keys === 'string' ? keys.split('.') : keys
   const key = keys.shift()
@@ -40,7 +23,7 @@ const propertiesToJSONObject = properties => {
     .filter(line => '' !== line.trim())
     .filter(line => line.trim().substring(0, 1) !== '#')
     .map(line => line.split('='))
-    // .filter(tokens => tokens[0].includes('frontend.'))
+    .filter(tokens => tokens[0].includes('frontend.'))
     .map(tokens => {
       let obj,
         o = (obj = {})
@@ -67,7 +50,6 @@ items.forEach(fileName => {
       if (err) throw err
     })
     let fileData = {}
-
     files.forEach(file => {
       const translationFile = fs.readFileSync(file, 'utf8')
       const newTranslations = propertiesToJSONObject(translationFile)

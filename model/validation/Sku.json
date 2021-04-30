@@ -25,7 +25,7 @@
 		"product": [{ "contexts": "save", "required": true }],
 		"renewalPrice": [{ "contexts": "save", "dataType": "numeric", "minValue": 0 }],
 		"skuCode": [
-			{ "contexts": "save", "required": true, "unique": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$" }
+			{ "contexts": "save", "required": true, "unique": true, "regex": "^\w+([\s-_#\/:^~|+]\w+)*$" }
 		],
 		"redemptionAmount": [{ "conditions": "isGiftCardSku", "dataType": "numeric", "minValue": 0 }],
 		"redemptionAmountType": [{ "conditions": "isGiftCardSku", "required": true }],
