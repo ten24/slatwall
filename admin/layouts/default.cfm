@@ -245,6 +245,8 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listentityqueue" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listimportermapping" type="list">
 									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
+									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">
+									<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
 									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 								</hb:HibachiDividerHider>

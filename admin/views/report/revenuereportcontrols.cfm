@@ -88,16 +88,6 @@
 					
                     <!-- Button (Rectangle) -->
 					<div class="col flex flex-end">	
-						<div class="report-select">
-	                        <!--- BACKEND TODO: Wireup subscription report dropdown --->
-	                        <select name="report" data-live-search="true" data-width="auto">
-	                        	<option value="##">Subscription Reports ...</option>
-	                        	 <option value="##">Deferred Revenue Report</option>
-	                        	 <option value="##">Earned Revenue Report</option>
-	                        	 <option value="##">New Subscription Orders Report</option>
-	                        	 <option value="##">Cancelled Orders Report</option>
-	                        </select>
-	                    </div>
 				        <div id="u123" class="ax_default shape" data-label="Button" style="cursor: pointer;">
 				            <div id="u123_div" class="" tabindex="0"></div>
 				            <div id="u123_text" class="text single-select">
