@@ -31,6 +31,7 @@ export { default as CartLineItem } from './Cart/CartLineItem'
 export { default as CartPromoBox } from './Cart/CartPromoBox'
 export { default as OrderNotes } from './Cart/OrderNotes'
 
+export { OrderSummary } from './Checkout/OrderSummary'
 export { PickupLocationDetails } from './Checkout/PickupLocationDetails'
 export { ShippingAddressDetails } from './Checkout/ShippingAddressDetails'
 export { BillingAddressDetails } from './Checkout/BillingAddressDetails'

@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import SwSelect from '../../components/SwSelect/SwSelect'
 import { useTranslation } from 'react-i18next'
 import { addNewAccountAndSetAsBilling } from '../../actions/cartActions'
-import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
 import AccountAddress from './AccountAddress'
 import { addPaymentMethod } from '../../actions/userActions'
 
@@ -27,7 +26,7 @@ const CreditCardDetails = ({ onSubmit }) => {
   const billingAccountAddress = useSelector(state => state.cart.billingAccountAddress)
 
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: false,
     initialValues: {
       creditCardNumber: '',
       nameOnCreditCard: '',
@@ -62,10 +61,6 @@ const CreditCardDetails = ({ onSubmit }) => {
     },
   })
 
-  useEffect(() => {
-    dispatch(getCountries())
-    dispatch(getStateCodeOptionsByCountryCode(formik.values.countryCode))
-  }, [dispatch, formik])
   return (
     <>
       <div className="row mb-3">
@@ -134,14 +129,12 @@ const CreditCardDetails = ({ onSubmit }) => {
           <div className="row mb-3">
             <div className="col-sm-12">
               <div className="row">
-                <div className="col-sm-12">
-                  <div className="custom-control custom-checkbox">
+                <div className="col-sm-12">{/* <div className="custom-control custom-checkbox">
                     <input className="custom-control-input" type="checkbox" id="saveShippingAsBilling" checked={formik.values.saveShippingAsBilling} onChange={formik.handleChange} />
                     <label className="custom-control-label" htmlFor="saveShippingAsBilling">
                       Same as shipping address
                     </label>
-                  </div>
-                </div>
+                  </div> */}</div>
               </div>
             </div>
           </div>
