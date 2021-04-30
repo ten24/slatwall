@@ -217,6 +217,9 @@ component extends="Slatwall.model.service.OrderService" {
 						
  				}
 			}
+			if(arguments.order.hasErrors()){
+				return arguments.order;
+			}
 			
 			// First Re-Calculate the 'amounts' base on price groups
 
