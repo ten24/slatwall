@@ -158,4 +158,25 @@ component extends="Slatwall.model.service.PublicService" {
 
 	}
 	
+	
+	public void function productDetailData( required struct data ) {
+		
+		super.productDetailData(argumentCollection=arguments);
+		try{
+			if(structKeyExists(arguments.data.ajaxResponse, 'sku') && arrayLen(arguments.data.ajaxResponse.sku)){
+				// Change prices to ERP One Prices
+				getService('erpOneService').getLiveListingPrices(
+					data = arguments.data.ajaxResponse.sku,
+					skuCodeKey = "skuCode", 
+					priceKeys = "listPrice" ,  // We can also pass a list of prices ex:"listPrice,skuPrice"
+					customerCode = getHibachiScope().getAccount().getRemoteID()
+				);
+			}
+		}catch(any e){
+			logHibachi('Error getting live prices', true);
+		}
+		
+	}
+
+	
 }

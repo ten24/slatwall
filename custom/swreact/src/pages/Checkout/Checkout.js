@@ -1,4 +1,4 @@
-import { CartPromoBox, Layout, OrderNotes, PromotionalMessaging } from '../../components'
+import { CartPromoBox, Layout, OrderNotes, OrderSummary, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import PageHeader from '../../components/PageHeader/PageHeader'
@@ -79,30 +79,7 @@ const CheckoutSideBar = () => {
       <div className="cz-sidebar-static rounded-lg box-shadow-lg ml-lg-auto">
         <PromotionalMessaging />
 
-        <div className="widget mb-3">
-          <h2 className="widget-title text-center">Order summary</h2>
-        </div>
-        <ul className="list-unstyled font-size-sm pb-2 border-bottom">
-          <li className="d-flex justify-content-between align-items-center">
-            <span className="mr-2">Subtotal:</span>
-            <span className="text-right">{subtotal > 0 ? formatCurrency(subtotal) : '--'}</span>
-          </li>
-          <li className="d-flex justify-content-between align-items-center">
-            <span className="mr-2">Shipping:</span>
-            <span className="text-right">{fulfillmentChargeAfterDiscountTotal > 0 ? formatCurrency(fulfillmentChargeAfterDiscountTotal) : '--'}</span>
-          </li>
-          <li className="d-flex justify-content-between align-items-center">
-            <span className="mr-2">Taxes:</span>
-            <span className="text-right">{taxTotal > 0 ? formatCurrency(taxTotal) : '--'}</span>
-          </li>
-          <li className="d-flex justify-content-between align-items-center">
-            <span className="mr-2">Discount:</span>
-            <span className="text-right">{discountTotal > 0 ? formatCurrency(discountTotal) : '--'}</span>
-          </li>
-        </ul>
-        <h3 className="font-weight-normal text-center my-4">
-          <span>{total > 0 ? formatCurrency(total) : '--'}</span>
-        </h3>
+        <OrderSummary />
         {currentStep.key !== REVIEW && <CartPromoBox />}
         {currentStep.key === REVIEW && <OrderNotes />}
         {currentStep.key === REVIEW && (
