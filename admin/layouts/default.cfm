@@ -191,6 +191,7 @@ Notes:
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.accounts_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-accounts.svg"  type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:entity.listaccount" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionusage" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listpermissiongroup" type="list">
 									<li class="divider"></li>
