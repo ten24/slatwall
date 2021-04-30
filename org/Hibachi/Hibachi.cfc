@@ -1036,7 +1036,8 @@ component extends="framework.one" {
 		}
 		
 		//regenerate token with existing payload
-		if(structKeyExists(request.context.headers,'Auth-Token') && len(request.context.requestheaderdata.headers['Auth-Token']) ){
+		var httpRequestData = GetHttpRequestData();
+		if(structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']) ){
 			request.context.apiResponse.content['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
 		}
 		
@@ -1083,7 +1084,8 @@ component extends="framework.one" {
 		if(arguments.rc.ajaxRequest && !structKeyExists(request, "exception")) {
 			populateAPIHeaders();
 			//regenerate token with existing payload
-			if(structKeyExists(request.context.requestheaderdata.headers,'Auth-Token') && len(request.context.requestheaderdata.headers['Auth-Token']) ){
+			var httpRequestData = GetHttpRequestData();
+			if(structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']) ){
 				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
 			}
 			
