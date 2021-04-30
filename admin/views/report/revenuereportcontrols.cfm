@@ -73,6 +73,7 @@
 	    }
     </style>
 <cfoutput>
+	<cfparam name="rc.reportName" default="" />
 	<div id="reporting-top">
 		
 		<form id="revrecognition" action="?s=1" method="post">
@@ -82,7 +83,7 @@
 				<div class="flex flex-space-bettween align-items-end">
 					<div class="col flex align-items-end">
 						<!--- BACKEND TODO: Add logic for subscription name --->
-						<h3>[Report Name Here]</h3>
+						<h3>#rc.reportName#</h3>
 					</div>
 					
                     <!-- Button (Rectangle) -->
