@@ -173,7 +173,7 @@ component extends="Slatwall.model.service.PublicService" {
 				);
 			}
 		}catch(any e){
-			logHibachi('Error getting live prices', true);
+			getHibachiScope().logHibachi('Error getting live prices', true);
 		}
 		
 	}
