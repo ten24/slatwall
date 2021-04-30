@@ -80,6 +80,9 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
+          <div className="col-sm-12">
+            <h4 class="text-left my-lg-4">Profile Info</h4>
+          </div>
           <div className="col-sm-6">
             <div className="form-group">
               <label htmlFor="accountFirstName">{t('frontend.account.first_name')}</label>

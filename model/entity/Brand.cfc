@@ -91,8 +91,7 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	
-	// Attribute Values (one-to-many)    	
+	// Attribute Values (one-to-many)    
 	public void function addAttributeValue(required any attributeValue) {    
 		arguments.attributeValue.setBrand( this );    
 	}    
