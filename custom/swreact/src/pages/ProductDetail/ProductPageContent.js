@@ -43,7 +43,7 @@ const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions
               <h2 className="h4 mb-2">{product.productName}</h2>
               <div className="mb-2">
                 <span className="text-small text-muted">{`SKU: `}</span>
-                {sku && <span className="h4 font-weight-normal text-large text-accent mr-1">{sku.skuCode}</span>}
+                {sku && <span className="font-weight-normal text-large text-accent mr-1">{sku.skuCode}</span>}
               </div>
               <div
                 className="mb-3 font-weight-light font-size-small text-muted"
