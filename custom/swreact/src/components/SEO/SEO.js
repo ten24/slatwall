@@ -9,7 +9,8 @@ const SEO = () => {
   const configuration = useSelector(state => state.configuration)
   const content = useSelector(state => state.content[path])
   const { site = {}, seo = {} } = configuration
-  let title = site.siteName
+  let modifiedBrand = path.split('-')[0].toUpperCase();
+  let title = modifiedBrand ? `${modifiedBrand} - ${site.siteName}` : site.siteName;
   if (content) {
     title = content.setting.contentHTMLTitleString
   }
