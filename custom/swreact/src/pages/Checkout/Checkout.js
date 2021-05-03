@@ -4,7 +4,6 @@ import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from 
 import PageHeader from '../../components/PageHeader/PageHeader'
 import { useTranslation } from 'react-i18next'
 import './checkout.css'
-import useFormatCurrency from '../../hooks/useFormatCurrency'
 import ShippingSlide from './Shipping'
 import PaymentSlide from './Payment'
 import ReviewSlide from './Review'
@@ -66,11 +65,10 @@ const StepsHeader = () => {
 
 const CheckoutSideBar = () => {
   const cart = useSelector(state => state.cart)
-  const { isFetching, total, taxTotal, subtotal, discountTotal, fulfillmentChargeAfterDiscountTotal } = cart
+  const { isFetching } = cart
   const loc = useLocation()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const currentStep = getCurrentStep(path)
-  const [formatCurrency] = useFormatCurrency({})
   const { t } = useTranslation()
   const dispatch = useDispatch()
 

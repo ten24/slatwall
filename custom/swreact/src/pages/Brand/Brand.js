@@ -18,7 +18,7 @@ const Brand = props => {
 
   const [request, setRequest] = useGetProductType()
   const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
-  const productTypeUrl = params['productType'] || productTypeBase
+  const productTypeUrl = params['key'] || productTypeBase
 
   useEffect(() => {
     if (!request.isFetching && !request.isLoaded) {
@@ -31,7 +31,7 @@ const Brand = props => {
   }
   history.listen(location => {
     params = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
-    setRequest({ ...request, data: {}, isFetching: true, isLoaded: false, params: { urlTitle: params['productType'] || productTypeBase }, makeRequest: true })
+    setRequest({ ...request, data: {}, isFetching: true, isLoaded: false, params: { urlTitle: params['key'] || productTypeBase }, makeRequest: true })
   })
 
   return (
@@ -40,13 +40,13 @@ const Brand = props => {
         <ProductTypeList
           data={request.data}
           onSelect={urlTitle => {
-            params['productType'] = urlTitle
+            params['key'] = urlTitle
             history.push(`${loc.pathname}?${queryString.stringify(params, { arrayFormat: 'comma' })}`)
           }}
         />
       )}
       {request.data.showProducts && (
-        <ListingPage preFilter={brandFilter} hide={['productType', 'brands']}>
+        <ListingPage preFilter={{ ...brandFilter, productType_id: request.data.productTypeID }} hide={['productType', 'brands']}>
           <BrandBanner brandCode={path[0]} />
         </ListingPage>
       )}
