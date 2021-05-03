@@ -2401,9 +2401,6 @@ component  accessors="true" output="false"
             // Also make sure that this cart gets set in the session as the order
             getHibachiScope().getSession().setOrder( cart );
             
-            //create new token with cart information
-            arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
-            
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession(true);
             
