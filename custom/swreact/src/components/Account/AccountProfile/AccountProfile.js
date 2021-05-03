@@ -43,7 +43,8 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
 
     MySwal.fire({
       title: 'Update Password',
-      html: '<input id="accountPassword" placeholder="Password" class="swal2-input"><input id="accountPasswordConfirm" placeholder="Confirm Password" class="swal2-input">',
+      html: 
+      '<form><div class="form-group text-left"><label for="accountPassword">Password</label><input id="accountPassword" class="form-control" /></div><div class="form-group text-left"><label for="accountPasswordConfirm">Confirm Password</label><input id="accountPasswordConfirm" class="form-control"></div></form>',
       focusConfirm: false,
       showCancelButton: true,
       preConfirm: () => {
