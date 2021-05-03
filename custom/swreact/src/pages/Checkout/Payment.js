@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { SwRadioSelect } from '../../components'
+import { GiftCardDetails, CreditCardDetails as CCDetails, SwRadioSelect, TermPaymentDetails } from '../../components'
 import SlideNavigation from './SlideNavigation'
-import { addNewAccountAndSetAsBilling, addPayment } from '../../actions/cartActions'
+import { addNewAccountAndSetAsBilling, addPayment, removePayment } from '../../actions/cartActions'
 import CreditCardDetails from './CreditCardDetails'
-import { eligiblePaymentMethodDetailSelector, orderPayment, billingAccountAddressSelector } from '../../selectors/orderSelectors'
+import { eligiblePaymentMethodDetailSelector, orderPayment, billingAccountAddressSelector, getAllOrderPayments, disableInteractionSelector } from '../../selectors/orderSelectors'
 import { accountPaymentMethods } from '../../selectors/userSelectors'
 import AccountAddress from './AccountAddress'
+import { useTranslation } from 'react-i18next'
 
 export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'
 export const GIFT_CARD = '50d8cd61009931554764385482347f3a'
@@ -61,11 +62,52 @@ const GiftCardPayemnt = () => {
     </>
   )
 }
+
+const ListPayments = () => {
+  const payments = useSelector(getAllOrderPayments)
+  const disableInteraction = useSelector(disableInteractionSelector)
+
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  if (payments.length === 0) {
+    return null
+  }
+
+  return (
+    <>
+      <p>{t('frontend.checkout.payments')}</p>
+      <div className="row ">
+        {payments.map(payment => {
+          return (
+            <div className="bg-lightgray rounded mb-5 col-md-4" key={payment.orderPaymentID}>
+              {payment.paymentMethod.paymentMethodType === 'creditCard' && <CCDetails hideHeading={true} creditCardPayment={payment} />}
+              {payment.paymentMethod.paymentMethodType === 'giftCard' && <GiftCardDetails />}
+              {payment.paymentMethod.paymentMethodType === 'termPayment' && <TermPaymentDetails hideHeading={true} termPayment={payment} />}
+              <hr />
+              <button
+                className="btn btn-link px-0 text-danger"
+                type="button"
+                disabled={disableInteraction}
+                onClick={event => {
+                  event.preventDefault()
+                  dispatch(removePayment({ orderPaymentID: payment.orderPaymentID }))
+                }}
+              >
+                <i className="fal fa-times-circle"></i>
+                <span className="font-size-sm"> Remove</span>
+              </button>
+            </div>
+          )
+        })}
+      </div>
+    </>
+  )
+}
 const TermPayment = ({ method }) => {
   const dispatch = useDispatch()
   const [accountAddressID, setAccountAddressID] = useState('')
   const { purchaseOrderNumber } = useSelector(orderPayment)
-  const [termOrderNumber, setTermOrderNumber] = useState(purchaseOrderNumber )
+  const [termOrderNumber, setTermOrderNumber] = useState(purchaseOrderNumber)
   const selectedAccountID = useSelector(billingAccountAddressSelector)
 
   return (
@@ -87,7 +129,7 @@ const TermPayment = ({ method }) => {
           </div>
         </div>
       </div>
-      {termOrderNumber.length > 0 && (
+      {termOrderNumber && termOrderNumber.length > 0 && (
         <AccountAddress
           addressTitle={'Billing Address'}
           selectedAccountID={selectedAccountID || accountAddressID}
@@ -119,29 +161,38 @@ const PaymentSlide = ({ currentStep }) => {
   const { paymentMethod } = useSelector(orderPayment)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
   const [paymentMethodOnOrder, setPaymentMethodOnOrder] = useState(false)
+  const allPayments = useSelector(getAllOrderPayments)
 
   if (paymentMethod && paymentMethod.paymentMethodID && paymentMethodOnOrder !== paymentMethod.paymentMethodID) {
     setPaymentMethodOnOrder(paymentMethod.paymentMethodID)
     setSelectedPaymentMethod(paymentMethod.paymentMethodID)
   }
+  console.log('allPayments', allPayments)
+
   return (
     <>
       {/* <!-- Payment Method --> */}
-      <div className="row mb-3">
-        <div className="col-sm-12">
-          <SwRadioSelect
-            label="Select Your Method of Payment"
-            options={eligiblePaymentMethodDetails}
-            onChange={value => {
-              setSelectedPaymentMethod(value)
-            }}
-            selectedValue={selectedPaymentMethod.length > 0 ? selectedPaymentMethod : paymentMethodOnOrder}
-          />
-        </div>
-      </div>
-      {selectedPaymentMethod === CREDIT_CARD && <CreditCardPayemnt />}
-      {selectedPaymentMethod === GIFT_CARD && <GiftCardPayemnt />}
-      {selectedPaymentMethod === TERM_PAYMENT && <TermPayment method={selectedPaymentMethod} />}
+      <ListPayments />
+      {allPayments.length === 0 && (
+        <>
+          <div className="row mb-3">
+            <div className="col-sm-12">
+              <SwRadioSelect
+                label="Select Your Method of Payment"
+                options={eligiblePaymentMethodDetails}
+                onChange={value => {
+                  setSelectedPaymentMethod(value)
+                }}
+                selectedValue={selectedPaymentMethod.length > 0 ? selectedPaymentMethod : paymentMethodOnOrder}
+              />
+            </div>
+          </div>
+
+          {selectedPaymentMethod === CREDIT_CARD && <CreditCardPayemnt />}
+          {selectedPaymentMethod === GIFT_CARD && <GiftCardPayemnt />}
+          {selectedPaymentMethod === TERM_PAYMENT && <TermPayment method={selectedPaymentMethod} />}
+        </>
+      )}
 
       <SlideNavigation currentStep={currentStep} nextActive={!orderRequirementsList.includes('payment')} />
     </>
