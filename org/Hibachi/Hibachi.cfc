@@ -1074,7 +1074,15 @@ component extends="framework.one" {
 		if(getHibachiScope().getService('hibachiUtilityService').isInThread()){
 			abort;
 		}
-
+		if(arguments.rc.apiRequest || arguments.rc.ajaxRequest) {
+			populateAPIHeaders();
+			//regenerate token with existing payload
+			var httpRequestData = GetHttpRequestData();
+			if(structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']) || getHibachiScope().getPersistSessionFlag() ){
+				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
+			}
+			
+		}
 		// Check for an API Response
 		if(arguments.rc.apiRequest) {
 			renderApiResponse();
