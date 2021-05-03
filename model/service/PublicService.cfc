@@ -4190,12 +4190,8 @@ component  accessors="true" output="false"
 	
 	/**
 	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
-	 * @path `/api/public/product/{entityID}`
+	 * @path `/api/public/brand/{entityID}`
 	 * 
-	 * if @includeAttributesMetadata is set to true, and the request is for an specific product [entityID is set], 
-	 * it will all attribute-sets related to the requested-product [ Global, product-tpyes(the hierarchy), brand and the requested product ];
-	 * 
-	 * @includeAttributesMetadata, defaults to `false`; is boolean flag to return the attribute-sets metadata for that product
 	 */
 	public any function getBrand(required struct data ){
 	    
