@@ -175,7 +175,7 @@ component extends="Slatwall.model.service.OrderService" {
 								'unit': 'EACH'
 							};
 							
-							if(len(customerCode)){
+							if(!isNull(customerCode) && len(customerCode)){
 								priceData['customer'] = customerCode;
 							}
 							arrayAppend(pricePayload, priceData);
