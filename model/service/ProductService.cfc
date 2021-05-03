@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" accessors="true" {
 
 	// Slatwall Service Injection
+	property name="hibachiDAO" type="any";
 	property name="productDAO" type="any";
 	property name="skuDAO" type="any";
 	property name="productTypeDAO" type="any";
@@ -101,7 +102,7 @@ component extends="HibachiService" accessors="true" {
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
         
-        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.productClearance, relatedProduct.calculatedSalePrice";	
+        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.calculatedSalePrice";	
         properties &= ",relatedProduct.brand.brandID, relatedProduct.brand.brandName, relatedProduct.brand.urlTitle";
         properties &= ",relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID";
         properties &= ",relatedProduct.defaultSku.imageFile, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.defaultSku.skuID";
@@ -134,10 +135,6 @@ component extends="HibachiService" accessors="true" {
 			var resizeSizes=['s','m','l','xl']; //add all sized images
 			
 			for(var product in arguments.products) {
-				
-				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-					continue;
-				}
 				
 	            var imageFile = product[arguments.propertyName] ? : '';
 	            if( this.hibachiIsEmpty(imageFile) ) {
@@ -1564,7 +1561,7 @@ component extends="HibachiService" accessors="true" {
 
 		// if this type has a parent, inherit all products that were assigned to that parent
 		if(!arguments.productType.hasErrors() && !isNull(arguments.productType.getParentProductType()) and arrayLen(arguments.productType.getParentProductType().getProducts())) {
-			getProductDAO().flushOrmSession();
+			getHibachiDAO().flushOrmSession();
 			getProductDAO().updateProductProductType( arguments.productType.getParentProductType().getProductTypeID(), arguments.productType.getProductTypeID() );
 		}
 

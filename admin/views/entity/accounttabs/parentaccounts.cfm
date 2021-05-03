@@ -55,7 +55,7 @@ Notes:
 <cfset rc.parentAccountCollection = rc.$.slatwall.getService("AccountService").getCollectionList("AccountRelationship")>
 <cfset rc.parentAccountCollection.addFilter("childAccount.accountID", "#rc.account.getAccountID()#","=")>
 
-<cfset local.displayPropertyList = 'parentAccount.firstName,parentAccount.lastName,parentAccount.accountID,parentAccount.accountCode,parentAccount.company,parentAccount.primaryPhoneNumber.phoneNumber,parentAccount.primaryEmailAddress.emailAddress,parentAccount.guestAccountFlag,parentAccount.organizationFlag'/>
+<cfset local.displayPropertyList = 'parentAccount.firstName,parentAccount.lastName,parentAccount.accountID,parentAccount.accountCode,parentAccount.company,parentAccount.guestAccountFlag,parentAccount.organizationFlag'/>
 <cfset rc.parentAccountCollection.setDisplayProperties(displayPropertyList,
 	{
 		isVisible=true,

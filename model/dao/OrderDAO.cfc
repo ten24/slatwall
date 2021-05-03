@@ -354,6 +354,24 @@ Notes:
 			AND temporaryFlag = 1
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="setScheduleOrderProcessingFlag" access="public" returntype="void" output="false">
+		<cfargument name="orderTemplateID" type="string" required="true" />
+		<cfargument name="value" type="boolean" required="true" />
+		<cfargument name="mostRecentError" type="string" required="false" />
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE SwOrderTemplate 
+			SET scheduleOrderProcessingFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.value#" /> 
+			<cfif structKeyExists(arguments, "mostRecentError")>
+			    ,mostRecentError = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.mostRecentError#" />
+			    ,mostRecentErrorDateTime = <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#now()#" />
+			</cfif>
+			WHERE orderTemplateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
+		</cfquery>
+	</cffunction>
 
 	<cfscript>
 		public numeric function getOrderItemCountOnOrder(required any orderItem){
