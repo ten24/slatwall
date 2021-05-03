@@ -685,6 +685,7 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 		
+		
 		return arguments.products;
 	}
 	
