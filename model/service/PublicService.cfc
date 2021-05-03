@@ -744,7 +744,14 @@ component  accessors="true" output="false"
         param name="arguments.data.typeCode" default="";
         
         var typeList = getService('TypeService').getTypeByTypeCode(arguments.data.typeCode);
-        arguments.data.ajaxResponse['typeList'] = typeList;
+        
+        if(isNull(typeList)){
+            this.addErrors(arguments.data, ["No System Types Found."])
+        } else {
+            arguments.data.ajaxResponse['typeList'] = typeList;
+        }
+
+        getHibachiScope().addActionResult("public:getSystemTypesByTypeCode", isNull(typeList));
     }
     
     /**

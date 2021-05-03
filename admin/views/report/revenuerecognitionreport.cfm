@@ -4,6 +4,7 @@
 <cfparam name="rc.productID" default=""/>
 <cfparam name="rc.minDate" default="#CreateDate(Year(now()),Month(now()),Day(now()))#"/>
 <cfparam name="rc.maxDate" default="#CreateDate(Year(now()),12,31)#"/>
+<cfparam name="rc.reportName" default="Revenue Recognition Report"/>
 <cfoutput> 
     <cfset slatAction = 'report.deferredRevenueReport'/>
     

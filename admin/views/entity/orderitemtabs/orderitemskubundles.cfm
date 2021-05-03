@@ -49,36 +49,32 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.order" type="any" />
-<cfparam name="rc.edit" type="boolean" /> 
+<cfparam name="rc.orderItem" type="any" />
 
-<cfset local.collectionOrderFulfillmentList = $.slatwall.getService('orderService').getOrderFulfillmentCollectionList()  >
-	<cfif rc.order.getVATTotal() NEQ 0>
-		<cfset local.serchableDisplayProperties="fulfillmentMethod.fulfillmentMethodName,fulfillmentCharge,discountAmount,handlingFee,chargeVATAmount,chargeAfterDiscount,quantityDelivered,quantityUndelivered" />
-	<cfelse>
-		<cfset local.serchableDisplayProperties="fulfillmentMethod.fulfillmentMethodName,fulfillmentCharge,discountAmount,handlingFee,chargeTaxAmount,chargeAfterDiscount,quantityDelivered,quantityUndelivered" />
-	</cfif>
-	<cfset collectionOrderFulfillmentList.setDisplayProperties(serchableDisplayProperties, {
+<cfset rc.orderItemSkuBundleCollection = rc.$.slatwall.getService("SkuService").getCollectionList("OrderItemSkuBundle")>
+<cfset rc.orderItemSkuBundleCollection.addFilter("orderItem.orderItemID", "#rc.orderItem.getOrderItemID()#","=")>
+
+<cfoutput>
+<cfset local.displayPropertyList = 'sku.product.productName,sku.skuCode,quantity'/>
+<cfset rc.orderItemSkuBundleCollection.setDisplayProperties(displayPropertyList,
+	{
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
-	})/>
+	}
+)/>
 
-	<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="orderFulfillmentID",columnConfig={isVisible=false})>
-	<cfset local.collectionOrderFulfillmentList.addFilter("order.orderID",rc.order.getOrderID())>
+<cfset rc.orderItemSkuBundleCollection.addDisplayProperties("orderItemSkuBundleID",
+	{
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=true
+	}
+)/>
 
-<cfoutput>
-	<hb:HibachiListingDisplay collectionList="#local.collectionOrderFulfillmentList#"
-							   recordDetailAction="admin:entity.detailorderfulfillment"
-							   recordEditAction="admin:entity.editorderfulfillment"
-							   currencyCode="#rc.order.getCurrencyCode()#">
-		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
-		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="handlingFee" />
-		<hb:HibachiListingColumn propertyIdentifier="chargeTaxAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="chargeAfterDiscount" />
-		<hb:HibachiListingColumn propertyIdentifier="quantityDelivered" />
-		<hb:HibachiListingColumn propertyIdentifier="quantityUndelivered" />
-	</hb:HibachiListingDisplay>
+<hb:HibachiListingDisplay
+	  collectionList="#rc.orderItemSkuBundleCollection#"
+	  usingPersonalCollection="false">
+</hb:HibachiListingDisplay>
+
 </cfoutput>
