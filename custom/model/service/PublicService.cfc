@@ -147,11 +147,6 @@ component extends="Slatwall.model.service.PublicService" {
 	    
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("brandService").appendSettingsAndOptions(result.pageRecords);
-	        var brandList = result.pageRecords;
-	        var directory = 'brand/logo';
-	        for( var i=1; i <= arrayLen(brandList); i++ ) {
-                brandList[i]['imagePath'] = getImageService().getImagePathByImageFileAndDirectory( brandList[i]['imageFile'], directory);
-	        }
 	    }
 
 	    arguments.data.ajaxResponse = result;

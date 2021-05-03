@@ -4188,6 +4188,36 @@ component  accessors="true" output="false"
 	}
 	
 	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/product/{entityID}`
+	 * 
+	 * if @includeAttributesMetadata is set to true, and the request is for an specific product [entityID is set], 
+	 * it will all attribute-sets related to the requested-product [ Global, product-tpyes(the hierarchy), brand and the requested product ];
+	 * 
+	 * @includeAttributesMetadata, defaults to `false`; is boolean flag to return the attribute-sets metadata for that product
+	 */
+	public any function getBrand(required struct data ){
+	    
+	    // if this's  cal to get all-products
+	    if( !len(arguments.data.entityID) ){
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+            arguments.data.ajaxResponse['data'].pageRecords = getService("brandService").appendSettingsAndOptions(arguments.data.ajaxResponse['data'].pageRecords);
+            this.getHibachiScope().addActionResult("public:scope.getBrand", true);
+            return;
+        }
+       
+        
+        var response = {};
+        response['brand'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        response['brand'] = getService("brandService").appendSettingsAndOptions([response['brand']]);
+	    response['brand'] = response['brand'][1]
+       
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+	}
+	
+	
 	private array function getAttributeSetMetadataForProduct(required productID, required string productTypeIDPath, string brandID=''){
 	    
 	    var attributeSetCollectionList = this.getAttributeService().getAttributeSetCollectionList();

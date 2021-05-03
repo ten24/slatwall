@@ -166,50 +166,6 @@ component extends="HibachiService" accessors="true" {
 		return arguments.products;
 	}
 	
-	/**
-	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
-	 * */
-	public any function appendCategoriesAndOptionsToProduct(required array products) {
-		
-		for(var product in arguments.products) {
-			if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-				continue;
-			}
-			
-			var currentProduct = this.getProduct(product.productID);
-			if( isNull( currentProduct ) ) {
-				continue;
-			}
-			
-			var categories = [];
-			var currentProductCategories = currentProduct.getCategories();
-			for(var category in currentProductCategories){
-				ArrayAppend( categories, {
-					"urlTitle"      : category.getUrlTitle(),
-					"categoryID"    : category.getCategoryID(),
-					"categoryName"  : category.getCategoryName(),
-				});
-			}
-			product['categories'] = categories;
-			
-			//Append Option Groups
-			var optionGroups = [];
-			var currentProductoptionGroups = currentProduct.getOptionGroups();
-			for(var optionGroup in currentProductoptionGroups){
-				ArrayAppend( optionGroups, {
-					"optionGroupdID"    : optionGroup.getOptionGroupID(),
-					"optionGroupName"   : optionGroup.getOptionGroupName()
-				});
-			}
-			product['optionGroups'] =  optionGroups;
-			
-			//Append base product type system code
-			product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
-		}
-	
-		return arguments.products;
-	}
-	
 
 	public numeric function getProductRating(required any product){
 		return getDao('productDao').getProductRating(arguments.product);
@@ -716,9 +672,15 @@ component extends="HibachiService" accessors="true" {
 		        
 		        product['optionGroups'] = optsList;
     			product['defaultSelectedOptions'] = defaultSelectedOptions;
+    			
+    			product['settings']= {
+		            "productTitleString": currentProduct.stringReplace( template = currentProduct.setting('productTitleString'), formatValues = true ),
+	            	"productHTMLTitleString":  currentProduct.stringReplace( template = currentProduct.setting('productHTMLTitleString'), formatValues = true ),
+	            	"productMetaDescriptionString": currentProduct.stringReplace( template = currentProduct.setting('productMetaDescriptionString'), formatValues = true ),
+	            	"productMetaKeywordsString": currentProduct.stringReplace( template = currentProduct.setting('productMetaKeywordsString'), formatValues = true )
+	            }
      
-				
-				//Append base product type system code
+     			//Append base product type system code
 				product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
 			}
 		}
