@@ -744,7 +744,14 @@ component  accessors="true" output="false"
         param name="arguments.data.typeCode" default="";
         
         var typeList = getService('TypeService').getTypeByTypeCode(arguments.data.typeCode);
-        arguments.data.ajaxResponse['typeList'] = typeList;
+        
+        if(isNull(typeList)){
+            this.addErrors(arguments.data, ["No System Types Found."])
+        } else {
+            arguments.data.ajaxResponse['typeList'] = typeList;
+        }
+
+        getHibachiScope().addActionResult("public:getSystemTypesByTypeCode", isNull(typeList));
     }
     
     /**
@@ -2393,9 +2400,6 @@ component  accessors="true" output="false"
             
             // Also make sure that this cart gets set in the session as the order
             getHibachiScope().getSession().setOrder( cart );
-            
-            //create new token with cart information
-            arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession(true);

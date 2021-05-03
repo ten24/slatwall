@@ -273,8 +273,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								var newAppliedTax = this.newTaxApplied();
 								newAppliedTax.setAppliedType("orderItem");
 								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
-								newAppliedTax.setVATPrice( this.getVATPrice(taxCategoryRate, itemTotal) );
-								newAppliedTax.setVATAmount( this.getVATAmount(taxCategoryRate, itemTotal) );
 								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 								newAppliedTax.setOrderItem( orderItem );
 								newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
@@ -288,13 +286,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 								newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 								newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-								// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
-								if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
-									newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+								if(getHibachiScope().setting('globalVATCountries').listFindNoCase(taxAddress.getCountryCode())){
+									newAppliedTax.setVATPrice( this.getVATPrice(taxCategoryRate, itemTotal) );
+									newAppliedTax.setVATAmount( this.getVATAmount(taxCategoryRate, itemTotal) );
 								} else {
-									newAppliedTax.setTaxAmount( 0 );
+									// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
+									if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
+										newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+									} else {
+										newAppliedTax.setTaxAmount( 0 );
+									}
 								}
-
 							}
 
 						}
@@ -475,12 +477,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var newAppliedTax = this.newTaxApplied();
 									newAppliedTax.setAppliedType("orderItem");
 									newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
-									newAppliedTax.setVATPrice( this.getVATPrice(taxCategoryRate, itemTotal) );
-									newAppliedTax.setVATAmount( this.getVATAmount(taxCategoryRate, itemTotal) );
+									newAppliedTax.setTaxLiabilityAmount( round(itemTotal * taxCategoryRate.getTaxRate()) / 100 );
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderItem( orderItem );
 									newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
-									newAppliedTax.setTaxLiabilityAmount( round(itemTotal * taxCategoryRate.getTaxRate()) / 100 );
 	
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
@@ -489,12 +489,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 									newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 									newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-	
-									// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
-									if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
-										newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+									if(getHibachiScope().setting('globalVATCountries').listFindNoCase(taxAddress.getCountryCode())){
+										newAppliedTax.setVATPrice( this.getVATPrice(taxCategoryRate, itemTotal) );
+										newAppliedTax.setVATAmount( this.getVATAmount(taxCategoryRate, itemTotal) );
 									} else {
-										newAppliedTax.setTaxAmount( 0 );
+										// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
+										if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
+											newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+										} else {
+											newAppliedTax.setTaxAmount( 0 );
+										}
 									}
 	
 								}
@@ -520,9 +524,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				for( var feeType in feeTypes ){
 					if(feeType == 'handling'){
-						var taxCategoryID = orderFulfillment.getHandlingFeeTaxCategory();
+						var taxCategoryID = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodHandlingFeeTaxCategory');
+						var amount = val(orderFulfillment.getHandlingFee());
+					}else if(feeType == 'shipping'){
+						var taxCategoryID = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory');
+						var amount = val(orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount());
 					}else{
-						var taxCategoryID = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory')
+						var amount = 0;
+					}
+					if(amount == 0){
+						continue;
 					}
 					// Get this sku's taxCategory
 					if( !isNull( taxCategoryID) ){
@@ -584,11 +595,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											
 												if(
 													!isNull(taxCategoryRate.getTaxIntegration()) 
-													&& !isNull(taxCategoryRate.getTaxIntegration().setting('VATCountries'))
+													&& !isNull(getHibachiScope().setting('globalVATCountries'))
 													&& !isNull(orderFulfillment.getShippingAddress())
 													&& !isNull(orderFulfillment.getShippingAddress().getCountryCode())
 												){
-													isVATApplicable = listFind(taxCategoryRate.getTaxIntegration().setting('VATCountries'), orderFulfillment.getShippingAddress().getCountryCode());
+													isVATApplicable = getHibachiScope().setting('globalVATCountries').listFindNoCase(orderFulfillment.getShippingAddress().getCountryCode());
 												}
 												
 												// Add a new AppliedTax
@@ -648,6 +659,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										continue;
 									}
 									
+									if(feeType == 'none'){
+										continue;
+									}
 								
 									var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 									var newAppliedTax = this.newTaxApplied();
@@ -657,14 +671,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderFulfillment( orderFulfillment );
 									newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
-									if(feeType == 'shipping'){
-										var price = orderFulfillment.getFulfillmentCharge();
-									}else{
-										var price = orderFulfillment.getHandlingFee();
-									}
-									if(!IsNull(price)){
-									//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
-									newAppliedTax.setTaxLiabilityAmount( round(price * taxCategoryRate.getTaxRate()) / 100 );
+									if(!IsNull(amount)){
+										//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
+										newAppliedTax.setTaxLiabilityAmount( round(amount * taxCategoryRate.getTaxRate()) / 100 );
 									}
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
@@ -673,11 +682,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 									newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 									newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-									// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
-									if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
-										newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+									if(getHibachiScope().setting('globalVATCountries').listFindNoCase(taxAddress.getCountryCode())){
+										newAppliedTax.setVATPrice( this.getVATPrice(taxCategoryRate, amount) );
+										newAppliedTax.setVATAmount( this.getVATAmount(taxCategoryRate, amount) );
 									} else {
-										newAppliedTax.setTaxAmount( 0 );
+										// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
+										if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
+											newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+										} else {
+											newAppliedTax.setTaxAmount( 0 );
+										}
 									}
 								}
 							}
@@ -1198,7 +1212,45 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ======================  END: Status Methods ============================
 
+	// ===================== START: Delete Overrides ==========================
+
+	public boolean function deleteTaxCategoryRate(required any entity) {
+
+		var deleteResult = super.delete(argumentcollection=arguments);
+
+		// If there aren't any errors then flush, and clear cache
+		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
+
+			getHibachiCacheService().resetCachedKeyByPrefix('getTaxCategoryRateRecordsByTaxCategory_#arguments.entity.getTaxCategory().getTaxCategoryID()#',true);
+			getHibachiCacheService().updateServerInstanceSettingsCache();
+			getHibachiDAO().flushORMSession();
+
+		}
+
+		return deleteResult;
+	}
+
+	// =====================  END: Delete Overrides ===========================
+
 	// ====================== START: Save Overrides ===========================
+
+	public any function saveTaxCategoryRate(required any entity, struct data={}) {
+		
+		// Call the default save logic
+		arguments.entity = super.save(argumentcollection=arguments);
+
+		// If there aren't any errors then flush, and clear cache
+		if(!getHibachiScope().getORMHasErrors()) {
+ 
+			//wait for thread to finish because admin depends on getting the savedID
+			getHibachiCacheService().resetCachedKeyByPrefix('getTaxCategoryRateRecordsByTaxCategory_#arguments.entity.getTaxCategory().getTaxCategoryID()#',true);
+			getHibachiCacheService().updateServerInstanceSettingsCache();
+			getHibachiDAO().flushORMSession();
+			
+		}
+
+		return arguments.entity;
+	}
 
 	// ======================  END: Save Overrides ============================
 

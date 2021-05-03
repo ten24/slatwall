@@ -60,6 +60,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment" cfc="OrderFulfillment";
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
+	property name="account" hb_rbKey="entity.account";
 
 	// New Properties
 
@@ -189,12 +190,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getAccount(){
-		if ( !StructKeyExists(variables, 'account') || IsNull(variables.account) ) {
-			variables.account = getOrder().getAccount() ?: getHibachiScope().getAccount();
-		}
-		return variables.account;
-	}
-	
+        if(!structKeyExists(variables, 'account')){
+            if(!isNull(getOrder()) && !isNull(getOrder().getAccount())){
+                variables.account = this.getOrder().getAccount();
+            }else if(!isNull(getHibachiScope().getAccount())){
+                variables.account = getHibachiScope().getAccount();
+            }
+        }
+        if(structKeyExists(variables,'account')){
+            return variables.account;
+        }
+    }
 
 	public any function getPrice() {
 		

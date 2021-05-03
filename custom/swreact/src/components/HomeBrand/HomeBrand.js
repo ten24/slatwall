@@ -75,7 +75,7 @@ const HomeBrand = props => {
           })}
       </Slider>
 
-      <Link className="btn btn-primary mt-3 btn-long" to={shopBy.linkUrl}>
+      <Link className="btn btn-primary mt-3 btn-long" to='/brands'>
         {t('frontend.home.more_brands')}
       </Link>
     </div>
