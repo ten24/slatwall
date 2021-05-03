@@ -11,7 +11,6 @@ import { getBrandRoute } from '../../selectors/configurationSelectors'
 
 const BandSlide = ({ brandLogo, urlTitle = '', title, customPath = '/custom/assets/files/associatedimage/' }) => {
   const brand = useSelector(getBrandRoute)
-  console.log("something", brand)
   return (
     <div className="repeater">
       <div className="brand-box bg-white box-shadow-sm rounded-lg m-3">
