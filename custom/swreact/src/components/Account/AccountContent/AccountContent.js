@@ -12,11 +12,21 @@ const AccountContent = () => {
   const { accountPaymentMethods } = useSelector(state => state.userReducer)
   const accountAddresses = useSelector(getAllAccountAddresses)
   const { customBody = '', contentTitle = '' } = content || {}
+  let paymentCount = accountPaymentMethods.length === 0 
+  let addressesCount = accountAddresses.length === 0
+  let alertMesage;
  
-  let alertMesage = (accountPaymentMethods.length === 0 && accountAddresses.length === 0) ? 'frontend.account.missing_address_paymentMethod' :
-                    accountPaymentMethods.length === 0 ? 'frontend.account.payment_methods.none' :
-                    accountAddresses.length === 0 ? 'frontend.account.address.none' :
-                    ''
+  if(paymentCount && addressesCount) {
+    alertMesage = 'frontend.account.missing_address_paymentMethod' 
+  }else if(paymentCount){
+    alertMesage = 'frontend.account.payment_methods.none'
+  }else if(addressesCount){
+    alertMesage = 'frontend.account.address.none'
+  }else{
+    alertMesage = ''
+  }
+    
+    
   return (
     <>
       <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
