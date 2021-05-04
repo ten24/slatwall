@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { Helmet } from 'react-helmet'
 import { SWImage } from '../../components'
 import { useGetEntity } from '../../hooks/useAPI'
 const BrandBanner = ({ brandCode }) => {
@@ -17,10 +18,13 @@ const BrandBanner = ({ brandCode }) => {
   return (
     <>
       {request.isLoaded && request.data[0] && (
-        <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
-          <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/images/brand/logo/" src={request.data[0].imageFile} alt={request.data.brandName} />
-          <p dangerouslySetInnerHTML={{ __html: request.data[0].brandDescription }} />
-        </div>
+        <>
+          <Helmet title={request.data[0].settings.brandHTMLTitleString} />
+          <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
+            <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/images/brand/logo/" src={request.data[0].imageFile} alt={request.data.brandName} />
+            <p dangerouslySetInnerHTML={{ __html: request.data[0].brandDescription }} />
+          </div>
+        </>
       )}
     </>
   )

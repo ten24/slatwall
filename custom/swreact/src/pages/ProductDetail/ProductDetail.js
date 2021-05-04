@@ -145,7 +145,7 @@ const ProductDetail = props => {
     <Layout>
       <div className="bg-light p-0">
         {newproduct.isLoaded && <ProductPageHeader title={newproduct.data[0].productSeries} />}
-        {newproduct.isLoaded && <Helmet title={newproduct.data[0].calculatedTitle} />}
+        {newproduct.isLoaded && <Helmet title={newproduct.data[0].settings.productHTMLTitleString} />}
         {newproduct.isLoaded && newproduct.data[0].productID && <ProductPageContent attributeSets={newproduct.attributeSets} product={newproduct.data[0]} sku={skuOptions.data.sku[0]} skuID={skuOptions.data.skuID} availableSkuOptions={skuOptions.data.availableSkuOptions} productOptions={newproduct.data[0].optionGroups} isFetching={skuOptions.isFetching || newproduct.isFetching} />}
         {newproduct.isLoaded && newproduct.data[0].productID && <ProductDetailSlider productID={newproduct.data[0].productID} />}
       </div>
