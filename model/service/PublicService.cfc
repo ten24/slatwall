@@ -4162,6 +4162,7 @@ component  accessors="true" output="false"
 	    // if this's  cal to get all-products
 	    if( !len(arguments.data.entityID) ){
     	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+             abort;
              arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendImagesToProduct(arguments.data.ajaxResponse['data'].pageRecords);
 	         arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(arguments.data.ajaxResponse['data'].pageRecords);
 	         if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){

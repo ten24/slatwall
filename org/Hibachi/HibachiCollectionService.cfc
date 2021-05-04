@@ -244,7 +244,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers, any collectionEntity){
 		//validate columns against entities default property identifiers
-		
+
 		arguments.objectRecords = getService('translationService').getTranslatedCollectionRecords(arguments.collectionEntity.getCollectionObject(), arguments.objectRecords);
 		var formattedObjectRecords = [];
 		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
@@ -338,8 +338,20 @@ component output="false" accessors="true" extends="HibachiService" {
 		//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
 		var defaultEntityProperties = (arguments.showNonPersistent) ? getPropertiesByEntityName(arguments.entityName) : getDefaultPropertiesByEntityName(arguments.entityName);
 		var propertyIdentifiersList = getPropertyIdentifiersList(defaultEntityProperties);
-		// Turn the property identifiers into an array
-		return listToArray( propertyIdentifiersList );
+		var propertyIdentifierArray = listToArray( propertyIdentifiersList );
+		
+		var entityService = this.getHibachiService().getServiceByEntityName(arguments.entityName);
+		var publicPropertiesFunctionName = "get#arguments.entityName#PublicProperties";
+		if(structKeyExists(entityService, publicPropertiesFunctionName ) ){
+		    var publicProperties = entityService.invokeMethod( publicPropertiesFunctionName );
+		    for(var publicPropertyName in publicProperties ){
+		        if( !propertyIdentifierArray.find(publicPropertyName) ){
+		            propertyIdentifierArray.append( publicPropertyName );
+		        }
+		    }
+		}
+		
+		return propertyIdentifierArray;
 	}
 
 	//even though void return type it still makes changes to the collectionConfigStuct
@@ -953,7 +965,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			var attributePropertyIdentifierArray = [];
 			//get default property identifiers for the records that the collection refers to
 
-
+            dump(arguments.collectionEntity.getCollectionConfigStruct());
+            		
+            
 			if(structKeyExists(arguments.collectionEntity.getCollectionConfigStruct(),'columns')){
 				for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
 					var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),arguments.collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
@@ -979,10 +993,9 @@ component output="false" accessors="true" extends="HibachiService" {
 
 				}
 			}
-
+            
 			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,arguments.collectionEntity.getEnforceAuthorization());
-			
-			
+
 			var collectionStruct = {};
 			if(structKeyExists(collectionOptions,'allRecords') && collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity, authorizedProperties);
@@ -1007,12 +1020,17 @@ component output="false" accessors="true" extends="HibachiService" {
 	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], any attributePropertyIdentifierArray=[], boolean enforeAuthorization=true){
 		var authorizedProperties = [];
 		
+		dump("collectionPropertyIdentifiers");
+		dump(collectionPropertyIdentifiers);
 		
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
 			if(arguments.enforeAuthorization){
-
-				if(getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)){
+                    
+				if(getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, collectionPropertyIdentifier)){
+					dump("A - " & collectionPropertyIdentifier);
 					arrayAppend(authorizedProperties,collectionPropertyIdentifier);
+				} else {
+					dump("NA - " & collectionPropertyIdentifier);
 				}
 			} else {
 				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
@@ -1026,7 +1044,9 @@ component output="false" accessors="true" extends="HibachiService" {
 		for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
 			arrayAppend(authorizedProperties,attributePropertyIdentifier);
 		}
-
+		
+        dump("authorizedProperties");
+        dump(authorizedProperties);
 		return authorizedProperties;
 	}
 

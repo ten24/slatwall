@@ -316,19 +316,40 @@ component output="false" accessors="true" extends="HibachiService" {
 		if( arguments.account.getSuperUserFlag() ) {
 			return true;
 		}
-
+		var hibachiCollectionService =  getService('hibachiCollectionService');
+        var hibachiService = getService('hibachiService');
+        var collectionObject = arguments.collection.getCollectionObject();
+        
 		var cacheKey = "authenticateCollectionPropertyIdentifier_" & hash("#arguments.crudType##arguments.collection.getCollectionConfigStruct()['baseEntityName']##arguments.propertyIdentifier##arguments.account.getPermissionGroupCacheKey()#",'md5');;
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			var propertyIdentifierWithoutAlias = getService('hibachiCollectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);
-			var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+		if( !getService('HibachiCacheService').hasCachedValue(cacheKey) ){
+			var propertyIdentifierWithoutAlias = hibachiCollectionService.getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);
+			
+			var isObject = hibachiService.getPropertyIsObjectByEntityNameAndPropertyIdentifier(
+			    entityName=collectionObject,
+			    propertyIdentifier=propertyIdentifierWithoutAlias
+			);
+			
 			if(isObject){
-				var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+				var lastEntity = hibachiService.getLastEntityNameInPropertyIdentifier(
+				    entityName=collectionObject, 
+				    propertyIdentifier=propertyIdentifierWithoutAlias
+				);
 			}else{
-				var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
-				var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(lastEntity, listLast(propertyIdentifierWithoutAlias,'.'));
+				var lastEntity = hibachiService.getLastEntityNameInPropertyIdentifier(
+				    entityName=collectionObject, 
+				    propertyIdentifier=propertyIdentifierWithoutAlias
+				);
+				var propertyStruct = hibachiService.getPropertyByEntityNameAndPropertyName(lastEntity, listLast(propertyIdentifierWithoutAlias,'.'));
 			}
 			
-			getService('HibachiCacheService').setCachedValue(cacheKey,authenticateEntityPropertyCrudByAccount(crudType=arguments.crudType, entityName=lastEntity, propertyName=listLast(propertyIdentifierWithoutAlias,'.'), account=arguments.account));
+			getService('HibachiCacheService').setCachedValue(cacheKey,
+    			authenticateEntityPropertyCrudByAccount(
+    			    crudType=arguments.crudType, 
+    			    entityName=lastEntity, 
+    			    propertyName=listLast(propertyIdentifierWithoutAlias,'.'), 
+    			    account=arguments.account
+    			)
+			);
 		}
 		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
