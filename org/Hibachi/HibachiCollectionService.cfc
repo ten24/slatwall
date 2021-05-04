@@ -1,5 +1,6 @@
 component output="false" accessors="true" extends="HibachiService" {
 	property name="hibachiService" type="any";
+	property name="HibachiCacheService" type="any";
 	property name="HibachiUtilityService" type="any";
 	property name="aliasMap" type="struct";
 	property name="collectionCache" type="struct";
@@ -40,7 +41,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	//returns meta data about the objects properties
 	public array function getEntityNameOptions() {
-		var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
+		var entitiesMetaData = this.getHibachiService().getEntitiesMetaData();
 		var entitiesArray = listToArray(structKeyList(entitiesMetaData));
 		arraySort(entitiesArray,"text");
 
@@ -80,7 +81,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public array function getObjectOptions() {
 		if(!structKeyExists(variables, "ObjectOptions")) {
-			var emd = getService("hibachiService").getEntitiesMetaData();
+			var emd = this.getHibachiService().getEntitiesMetaData();
 			var enArr = listToArray(structKeyList(emd));
 			arraySort(enArr,"text");
 			variables.ObjectOptions = [{name=getHibachiScope().rbKey('define.select'), value=''}];
@@ -109,7 +110,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function getEntityNameProperties( required string EntityName ) {
 		var returnArray = [];
 		var sortArray = [];
-		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getService('hibachiService').getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getService('hibachiService').getProperlyCasedShortEntityName(arguments.entityName)#"});
+		var attributeCodesList = this.getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#this.getHibachiService().getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#this.getHibachiService().getProperlyCasedShortEntityName(arguments.entityName)#"});
 		var properties = getPropertiesStructByEntityName(arguments.entityName);
 
 		for(var attributeCode in listToArray(attributeCodesList)) {
@@ -161,7 +162,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function getTransientCollectionByEntityName(required string entityName, struct data={}){
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
 		var collectionEntity = this.newCollection();
-		var properlyCasedShortEntityName = getService('hibachiService').getProperlyCasedShortEntityName(arguments.entityName);
+		var properlyCasedShortEntityName = this.getHibachiService().getProperlyCasedShortEntityName(arguments.entityName);
 		collectionEntity.setCollectionObject(properlyCasedShortEntityName,collectionOptions.defaultColumns, collectionOptions.useAuthorizedPropertiesAsDefaultColumns);
 
 		return collectionEntity;
@@ -206,7 +207,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 		}else{
-
+		    
+            arguments.propertyIdentifier = replace(arguments.propertyIdentifier, ".", "_", "All");
+            
 			if(structKeyExists(arguments.pageRecord,arguments.propertyIdentifier)){
 				if(isObject(arguments.pageRecord[arguments.propertyIdentifier])){
 					var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
@@ -244,7 +247,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers, any collectionEntity){
 		//validate columns against entities default property identifiers
-		
+
 		arguments.objectRecords = getService('translationService').getTranslatedCollectionRecords(arguments.collectionEntity.getCollectionObject(), arguments.objectRecords);
 		var formattedObjectRecords = [];
 		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
@@ -338,8 +341,20 @@ component output="false" accessors="true" extends="HibachiService" {
 		//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
 		var defaultEntityProperties = (arguments.showNonPersistent) ? getPropertiesByEntityName(arguments.entityName) : getDefaultPropertiesByEntityName(arguments.entityName);
 		var propertyIdentifiersList = getPropertyIdentifiersList(defaultEntityProperties);
-		// Turn the property identifiers into an array
-		return listToArray( propertyIdentifiersList );
+		var propertyIdentifierArray = listToArray( propertyIdentifiersList );
+		
+		var entityService = this.getHibachiService().getServiceByEntityName(arguments.entityName);
+		var publicPropertiesFunctionName = "get#arguments.entityName#PublicProperties";
+		if(structKeyExists(entityService, publicPropertiesFunctionName ) ){
+		    var publicProperties = entityService.invokeMethod( publicPropertiesFunctionName );
+		    for(var publicPropertyName in publicProperties ){
+		        if( !propertyIdentifierArray.find(publicPropertyName) ){
+		            propertyIdentifierArray.append( publicPropertyName );
+		        }
+		    }
+		}
+		
+		return propertyIdentifierArray;
 	}
 
 	//even though void return type it still makes changes to the collectionConfigStuct
@@ -865,7 +880,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				for(var currentJoin = 1; currentJoin <= arraylen(arguments.collectionEntity.getCollectionConfigStruct().joins); currentJoin++){
 
 					var currentJoinParts = ListToArray(arguments.collectionEntity.getCollectionConfigStruct().joins[currentJoin]['associationName'], '.');
-					var current_object = getService('hibachiService').getPropertiesStructByEntityName(arguments.collectionEntity.getCollectionObject());
+					var current_object = this.getHibachiService().getPropertiesStructByEntityName(arguments.collectionEntity.getCollectionObject());
 
 					for (var i = 1; i <= arraylen(currentJoinParts); i++) {
 						if(structKeyExists(current_object, currentJoinParts[i]) && structKeyExists(current_object[currentJoinParts[i]], 'cfc')){
@@ -873,7 +888,7 @@ component output="false" accessors="true" extends="HibachiService" {
 								arguments.collectionEntity.setHasManyRelationFilter(true);
 								break;
 							}
-							current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[currentJoinParts[i]]['cfc']);
+							current_object = this.getHibachiService().getPropertiesStructByEntityName(current_object[currentJoinParts[i]]['cfc']);
 						}
 					}
 					if(arguments.collectionEntity.getHasManyRelationFilter()){
@@ -952,8 +967,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			var aggregatePropertyIdentifierArray = [];
 			var attributePropertyIdentifierArray = [];
 			//get default property identifiers for the records that the collection refers to
-
-
+            
 			if(structKeyExists(arguments.collectionEntity.getCollectionConfigStruct(),'columns')){
 				for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
 					var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),arguments.collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
@@ -979,10 +993,9 @@ component output="false" accessors="true" extends="HibachiService" {
 
 				}
 			}
-
+            
 			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,arguments.collectionEntity.getEnforceAuthorization());
-			
-			
+
 			var collectionStruct = {};
 			if(structKeyExists(collectionOptions,'allRecords') && collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity, authorizedProperties);
@@ -1007,11 +1020,9 @@ component output="false" accessors="true" extends="HibachiService" {
 	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], any attributePropertyIdentifierArray=[], boolean enforeAuthorization=true){
 		var authorizedProperties = [];
 		
-		
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
 			if(arguments.enforeAuthorization){
-
-				if(getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)){
+				if(getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, collectionPropertyIdentifier)){
 					arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 				}
 			} else {
@@ -1026,7 +1037,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
 			arrayAppend(authorizedProperties,attributePropertyIdentifier);
 		}
-
+		
 		return authorizedProperties;
 	}
 
@@ -1077,7 +1088,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");
 
 		if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined' && arguments.data.ids != ''){
-			var propertyIdentifier = '_' & getService('hibachiCollectionService').getCollectionObjectByCasing(collectionEntity,'camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
+			var propertyIdentifier = '_' & this.getCollectionObjectByCasing(collectionEntity,'camel') & '.' & this.getHibachiService().getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
 			var filterGroup = {
 				propertyIdentifier = propertyIdentifier,
 				comparisonOperator = 'IN',
@@ -1176,7 +1187,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data,'keywords')){
 			collection1.setKeywords(arguments.data.keywords);
 		}
-		var primaryIDPropertyName = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
+		var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
 		
 		//Because we need to be able to join the collections later, we need to force the primaryIDProperty to be exportable
 		collection1 = forcePrimaryIDExportable( collection1 );
@@ -1311,7 +1322,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public any function forcePrimaryIDExportable (required any collectionEntity){
-		var primaryIDPropertyName = getService("HibachiService").getPrimaryIDPropertyNameByEntityName(arguments.collectionEntity.getCollectionObject());
+		var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.collectionEntity.getCollectionObject());
 		
 		for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
 			if (
@@ -1628,7 +1639,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public any function processCollection_clearCache(required any collection){
 		var cacheKeyPrefix = '_report_#arguments.collection.getCollectionID()#';
-		getService('HibachiCacheService').resetCachedKeyByPrefix(cacheKeyPrefix,true);	
+		this.getHibachiCacheService().resetCachedKeyByPrefix(cacheKeyPrefix,true);	
 		return arguments.collection;
 	}
 
