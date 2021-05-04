@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwIntegrati">
+<Table tableName="SwIntegration">
 	<Columns>
 		<column name="integrationID" fieldtype="id" />
 		<column name="activeFlag" datatype="bit" update="false" />
