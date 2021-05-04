@@ -235,7 +235,7 @@ component accessors="true" output="false" displayname="Avatax" implements = "Sla
 					itemData.Qty = item.getQuantity();
 					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn" || item.getOrderItem().getOrderItemType().getSystemCode() == "oitRefund"){
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1;
-						if(listContains(setting("VATCountries"),addressData.Country)){
+						if(getHibachiScope().setting('globalVATCountries').listFindNoCase(addressData.Country)){
 							itemData.taxOverride = {
 								taxOverrideType:"TaxAmount",
 								taxAmount:-1 * item.getOrderItem().getVATAmount(),
@@ -286,7 +286,7 @@ component accessors="true" output="false" displayname="Avatax" implements = "Sla
 					itemData.Qty = 1;
 					itemData.Amount = amount;
 
-					if(listContains(setting("VATCountries"),addressData.Country)){
+					if(getHibachiScope().setting('globalVATCountries').listFindNoCase(addressData.Country)){
 						itemData.taxOverride = {
 							taxOverrideType:"TaxAmount",
 							taxAmount:-1*item.getOrderReturn().getFulfillmentVATRefund(),
@@ -303,7 +303,7 @@ component accessors="true" output="false" displayname="Avatax" implements = "Sla
 
 				}
 				
-				if(listContains(setting("VATCountries"),addressData.Country)){
+				if(getHibachiScope().setting('globalVATCountries').listFindNoCase(addressData.Country)){
 					itemData.taxIncluded = true;
 				}
 				arrayAppend(requestDataStruct.Lines, itemData);
@@ -385,9 +385,8 @@ component accessors="true" output="false" displayname="Avatax" implements = "Sla
 								var feeType = right(taxLine.LineNo,8);
 								taxLine.LineNo = left(taxLine.LineNo, len(taxLine.LineNo) - 8);
 							}
-							
 							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0 && !listContains(setting("VATCountries"),taxDetail.Country)) {
+							if(taxDetail.Tax > 0 && !getHibachiScope().setting('globalVATCountries').listFindNoCase(taxDetail.Country)) {
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
@@ -405,7 +404,7 @@ component accessors="true" output="false" displayname="Avatax" implements = "Sla
 									argumentCollection=args
 								);
 							}
-							if(listContains(setting("VATCountries"),taxDetail.Country)){
+							if(getHibachiScope().setting('globalVATCountries').listFindNoCase(taxDetail.Country)){
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									VATAmount = taxDetail.Tax, 

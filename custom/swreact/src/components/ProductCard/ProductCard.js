@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { getBrandRoute, getProductRoute } from '../../selectors/configurationSelectors'
 
 const ProductCard = props => {
-  const { productName, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, listPrice, imageFile, defaultSku_imageFile, productClearance, skuID = '' } = props
+  const { productName, productCode, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, listPrice, imageFile, defaultSku_imageFile, productClearance, skuID = '' } = props
   const { t } = useTranslation()
   const brand = useSelector(getBrandRoute)
   const product = useSelector(getProductRoute)
@@ -27,6 +27,7 @@ const ProductCard = props => {
           <h3 className="product-title font-size-sm">
             <Link to={productLink}>{productName}</Link>
           </h3>
+          <h3 className="font-size-sm">{productCode}</h3>
           <div className="d-flex justify-content-between">
             <ProductPrice salePrice={calculatedSalePrice} listPrice={listPrice} />
           </div>

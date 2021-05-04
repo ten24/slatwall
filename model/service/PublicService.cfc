@@ -744,7 +744,14 @@ component  accessors="true" output="false"
         param name="arguments.data.typeCode" default="";
         
         var typeList = getService('TypeService').getTypeByTypeCode(arguments.data.typeCode);
-        arguments.data.ajaxResponse['typeList'] = typeList;
+        
+        if(isNull(typeList)){
+            this.addErrors(arguments.data, ["No System Types Found."])
+        } else {
+            arguments.data.ajaxResponse['typeList'] = typeList;
+        }
+
+        getHibachiScope().addActionResult("public:getSystemTypesByTypeCode", isNull(typeList));
     }
     
     /**
@@ -2393,9 +2400,6 @@ component  accessors="true" output="false"
             
             // Also make sure that this cart gets set in the session as the order
             getHibachiScope().getSession().setOrder( cart );
-            
-            //create new token with cart information
-            arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
             
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession(true);
@@ -4183,6 +4187,32 @@ component  accessors="true" output="false"
             response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
         }
         
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+	}
+	
+	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/brand/{entityID}`
+	 * 
+	 */
+	public any function getBrand(required struct data ){
+	    
+	    // if this's  cal to get all-products
+	    if( !len(arguments.data.entityID) ){
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+            arguments.data.ajaxResponse['data'].pageRecords = getService("brandService").appendSettingsAndOptions(arguments.data.ajaxResponse['data'].pageRecords);
+            this.getHibachiScope().addActionResult("public:scope.getBrand", true);
+            return;
+        }
+       
+        
+        var response = {};
+        response['brand'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        response['brand'] = getService("brandService").appendSettingsAndOptions([response['brand']]);
+	    response['brand'] = response['brand'][1]
+       
         arguments.data.ajaxResponse['data'] = response;
         this.getHibachiScope().addActionResult("public:scope.getProduct", true);
 	}

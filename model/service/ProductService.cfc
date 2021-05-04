@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" accessors="true" {
 
 	// Slatwall Service Injection
+	property name="hibachiDAO" type="any";
 	property name="productDAO" type="any";
 	property name="skuDAO" type="any";
 	property name="productTypeDAO" type="any";
@@ -101,7 +102,7 @@ component extends="HibachiService" accessors="true" {
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
         
-        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.productClearance, relatedProduct.calculatedSalePrice";	
+        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.calculatedSalePrice";	
         properties &= ",relatedProduct.brand.brandID, relatedProduct.brand.brandName, relatedProduct.brand.urlTitle";
         properties &= ",relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID";
         properties &= ",relatedProduct.defaultSku.imageFile, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.defaultSku.skuID";
@@ -135,10 +136,6 @@ component extends="HibachiService" accessors="true" {
 			
 			for(var product in arguments.products) {
 				
-				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-					continue;
-				}
-				
 	            var imageFile = product[arguments.propertyName] ? : '';
 	            if( this.hibachiIsEmpty(imageFile) ) {
 	            	continue;
@@ -163,50 +160,6 @@ component extends="HibachiService" accessors="true" {
 	        }
 	        
 		}
-		return arguments.products;
-	}
-	
-	/**
-	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
-	 * */
-	public any function appendCategoriesAndOptionsToProduct(required array products) {
-		
-		for(var product in arguments.products) {
-			if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-				continue;
-			}
-			
-			var currentProduct = this.getProduct(product.productID);
-			if( isNull( currentProduct ) ) {
-				continue;
-			}
-			
-			var categories = [];
-			var currentProductCategories = currentProduct.getCategories();
-			for(var category in currentProductCategories){
-				ArrayAppend( categories, {
-					"urlTitle"      : category.getUrlTitle(),
-					"categoryID"    : category.getCategoryID(),
-					"categoryName"  : category.getCategoryName(),
-				});
-			}
-			product['categories'] = categories;
-			
-			//Append Option Groups
-			var optionGroups = [];
-			var currentProductoptionGroups = currentProduct.getOptionGroups();
-			for(var optionGroup in currentProductoptionGroups){
-				ArrayAppend( optionGroups, {
-					"optionGroupdID"    : optionGroup.getOptionGroupID(),
-					"optionGroupName"   : optionGroup.getOptionGroupName()
-				});
-			}
-			product['optionGroups'] =  optionGroups;
-			
-			//Append base product type system code
-			product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
-		}
-	
 		return arguments.products;
 	}
 	
@@ -716,12 +669,19 @@ component extends="HibachiService" accessors="true" {
 		        
 		        product['optionGroups'] = optsList;
     			product['defaultSelectedOptions'] = defaultSelectedOptions;
+    			
+    			product['settings']= {
+		            "productTitleString": currentProduct.stringReplace( template = currentProduct.setting('productTitleString'), formatValues = true ),
+	            	"productHTMLTitleString":  currentProduct.stringReplace( template = currentProduct.setting('productHTMLTitleString'), formatValues = true ),
+	            	"productMetaDescriptionString": currentProduct.stringReplace( template = currentProduct.setting('productMetaDescriptionString'), formatValues = true ),
+	            	"productMetaKeywordsString": currentProduct.stringReplace( template = currentProduct.setting('productMetaKeywordsString'), formatValues = true )
+	            }
      
-				
-				//Append base product type system code
+     			//Append base product type system code
 				product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
 			}
 		}
+		
 		
 		return arguments.products;
 	}
@@ -1564,7 +1524,7 @@ component extends="HibachiService" accessors="true" {
 
 		// if this type has a parent, inherit all products that were assigned to that parent
 		if(!arguments.productType.hasErrors() && !isNull(arguments.productType.getParentProductType()) and arrayLen(arguments.productType.getParentProductType().getProducts())) {
-			getProductDAO().flushOrmSession();
+			getHibachiDAO().flushOrmSession();
 			getProductDAO().updateProductProductType( arguments.productType.getParentProductType().getProductTypeID(), arguments.productType.getProductTypeID() );
 		}
 
