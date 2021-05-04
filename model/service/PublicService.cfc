@@ -1181,11 +1181,11 @@ component  accessors="true" output="false"
         var skus = [];
         
         //smart list to load up sku array
-        var skuSmartList = getService('skuService').getSkuSmartList();
+        var skuSmartList = this.getSkuService().getSkuSmartList();
         skuSmartList.addInFilter('skuID',data.skuIDs);
         
         for (var skuID in data.skuIDs){
-            var sku = getService('SkuService').getSku(skuID);
+            var sku = this.getSkuService().getSku(skuID);
             if(!isNull(sku)){
                 arguments.data.ajaxResponse['resizedImagePaths'][skuID] = sku.getResizedImagePath(width=imageWidth, height=imageHeight);         
             }
@@ -3018,7 +3018,7 @@ component  accessors="true" output="false"
     		//data setup.
     		var orderFulfillment = getService("OrderService").newOrderFulfillment();
     		var orderItem = getService("OrderService").newOrderItem();
-    		var sku = getService("SkuService").getSkuBySkuCode(data.skuCode);
+    		var sku = this.getSkuService().getSkuBySkuCode(data.skuCode);
     		
     		//set the sku so we have data for the rates.
     		orderItem.setSku(sku);
@@ -3467,7 +3467,7 @@ component  accessors="true" output="false"
 	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
 		}
 	    
-	    var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
+	    var promotionsCollectionList = this.getSkuService().getSkuCollectionList();
 	    promotionsCollectionList.setCollectionConfigStruct(arguments.data.orderTemplatePromotionSkuCollectionConfig);
         
         arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
@@ -3848,7 +3848,7 @@ component  accessors="true" output="false"
             arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
         }
 
-        var promotionsCollectionList = this.getService("SkuService").getSkuCollectionList();
+        var promotionsCollectionList = this.this.getSkuService().getSkuCollectionList();
         promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
         promotionsCollectionList.setPageRecordsShow( arguments.data.pageRecordsShow );
         promotionsCollectionList.setDisplayProperties('
@@ -4162,15 +4162,14 @@ component  accessors="true" output="false"
 	    // if this's  cal to get all-products
 	    if( !len(arguments.data.entityID) ){
     	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-             abort;
-             arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendImagesToProduct(arguments.data.ajaxResponse['data'].pageRecords);
-	         arguments.data.ajaxResponse['data'].pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(arguments.data.ajaxResponse['data'].pageRecords);
-	         if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){
-	             var product = getProductService().getProduct(arguments.data.ajaxResponse['data'].pageRecords[1].productID)
-	             if(!isNull(product)){
-	                arguments.data.ajaxResponse['attributeSets'] = getAttributeSetMetadataForProduct(product.getProductID(), product.getProductType().getProductTypeIDPath() ,product.getBrand().getBrandID() ); 
- 	             }
-	         }
+            arguments.data.ajaxResponse['data'].pageRecords = this.getProductService().appendImagesToProduct(arguments.data.ajaxResponse['data'].pageRecords);
+            arguments.data.ajaxResponse['data'].pageRecords = this.getProductService().appendCategoriesAndOptionsToProduct(arguments.data.ajaxResponse['data'].pageRecords);
+            if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){
+                var product = this.getProductService().getProduct(arguments.data.ajaxResponse['data'].pageRecords[1].productID)
+                if(!isNull(product)){
+                    arguments.data.ajaxResponse['attributeSets'] = getAttributeSetMetadataForProduct(product.getProductID(), product.getProductType().getProductTypeIDPath() ,product.getBrand().getBrandID() ); 
+                }
+            }
                 
             this.getHibachiScope().addActionResult("public:scope.getProduct", true);
             return;
@@ -4180,9 +4179,9 @@ component  accessors="true" output="false"
         
         var response = {};
         response['product'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
-        response['product'] = getService("productService").appendImagesToProduct([response['product']]);
+        response['product'] = this.getProductService().appendImagesToProduct([response['product']]);
 
-	    response['product'] = getService("productService").appendCategoriesAndOptionsToProduct(response['product']);
+	    response['product'] = this.getProductService().appendCategoriesAndOptionsToProduct(response['product']);
 	    response['product'] = response['product'][1]
         if(arguments.data.includeAttributesMetadata){
             response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
@@ -4417,7 +4416,7 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         var optsList = [];
         var defaultSelectedOptions = '';
-        var product = getService("productService").getProduct( arguments.data.productID )
+        var product = this.getProductService().getProduct( arguments.data.productID )
         var optionGroupsArr = product.getOptionGroups()
         var skuOptionDetails = product.getSkuOptionDetails()
         var defaultSku = product.getDefaultSku()
@@ -4439,7 +4438,7 @@ component  accessors="true" output="false"
         }
  
         
-      var skuCollectionList = getService('SkuService').getSkuCollectionList();
+      var skuCollectionList = this.getSkuService().getSkuCollectionList();
 	    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
          skuCollectionList.addFilter('product.productID',trim(arguments.data.productID));
 		 skuCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -4453,7 +4452,7 @@ component  accessors="true" output="false"
      
      }
      
-public void function getConfiguration( required struct data ) {
+    public void function getConfiguration( required struct data ) {
         param name="arguments.data.siteCode" default="";
         var siteLookup = getService('siteService').getSiteBySiteCode(arguments.data.siteCode);
         getHibachiScope().setSite(siteLookup);
@@ -4484,9 +4483,8 @@ public void function getConfiguration( required struct data ) {
         getHibachiScope().addActionResult("public:getConfiguration");
 
         arguments.data['ajaxResponse']['config']['router'] = router;
-        return 
-         
-     }
+        return;
+    }
      
     public void function productDetailData( required struct data ) {
 		param name="arguments.data.productID" type="string" default="";
@@ -4502,12 +4500,12 @@ public void function getConfiguration( required struct data ) {
 				if(!isNull(sku) && sku.getActiveFlag() && sku.getPublishedFlag()) {
 					arguments.data.ajaxResponse['skuID'] = sku.getSkuID();
 				
-					var skuCollectionList = getService('SkuService').getSkuCollectionList();
+					var skuCollectionList = this.getSkuService().getSkuCollectionList();
 				    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
 		    	    skuCollectionList.addFilter('skuID',sku.getSkuID());
 					var results = skuCollectionList.getRecords()
 					if(!ArrayIsEmpty(results) ) {
-			        	arguments.data.ajaxResponse['sku'] = getService("skuService").appendSettingsAndOptionsToSku(results);
+			        	arguments.data.ajaxResponse['sku'] = this.getSkuService().appendSettingsAndOptionsToSku(results);
 			    	}
 				}else{
 					arguments.data.ajaxResponse['skuID'] = '';

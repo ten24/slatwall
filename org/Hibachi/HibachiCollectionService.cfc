@@ -206,7 +206,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 		}else{
-
+		    
+            arguments.propertyIdentifier = replace(arguments.propertyIdentifier, ".", "_", "All");
+            
 			if(structKeyExists(arguments.pageRecord,arguments.propertyIdentifier)){
 				if(isObject(arguments.pageRecord[arguments.propertyIdentifier])){
 					var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
@@ -964,9 +966,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			var aggregatePropertyIdentifierArray = [];
 			var attributePropertyIdentifierArray = [];
 			//get default property identifiers for the records that the collection refers to
-
-            dump(arguments.collectionEntity.getCollectionConfigStruct());
-            		
             
 			if(structKeyExists(arguments.collectionEntity.getCollectionConfigStruct(),'columns')){
 				for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
@@ -1020,17 +1019,10 @@ component output="false" accessors="true" extends="HibachiService" {
 	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], any attributePropertyIdentifierArray=[], boolean enforeAuthorization=true){
 		var authorizedProperties = [];
 		
-		dump("collectionPropertyIdentifiers");
-		dump(collectionPropertyIdentifiers);
-		
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
 			if(arguments.enforeAuthorization){
-                    
 				if(getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, collectionPropertyIdentifier)){
-					dump("A - " & collectionPropertyIdentifier);
 					arrayAppend(authorizedProperties,collectionPropertyIdentifier);
-				} else {
-					dump("NA - " & collectionPropertyIdentifier);
 				}
 			} else {
 				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
@@ -1045,8 +1037,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			arrayAppend(authorizedProperties,attributePropertyIdentifier);
 		}
 		
-        dump("authorizedProperties");
-        dump(authorizedProperties);
 		return authorizedProperties;
 	}
 
