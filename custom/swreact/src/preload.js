@@ -37,6 +37,15 @@ const data = {
     dateFormat: 'MMM DD, YYYY',
     timeFormat: 'HH:MM a',
   },
+  analytics: {
+    tagManager: {
+      gtmId: 'G-QCNMEP30GL',
+    },
+    googleAnalytics: {
+      id: '',
+    },
+    reportWebVitals: false,
+  },
   forms: {
     contact: '2c91808575030b800175064d31680010',
   },
