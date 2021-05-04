@@ -362,9 +362,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 		    collectionList.setDisplayProperties(arguments.propertyIdentifiers);
 		} else {
     		// product properties
-    		collectionList.setDisplayProperties('product.productID,product.productName,product.urlTitle');
+    		collectionList.setDisplayProperties('product.productID,product.productName,product.productCode,product.urlTitle');
     		// sku properties 
-    		collectionList.addDisplayProperties('sku.skuID,sku.imageFile,skuPricePrice|skuPrice,skuPriceListPrice|listPrice');
+    		collectionList.addDisplayProperties('sku.skuID,sku.skuCode,sku.imageFile,skuPricePrice|skuPrice,skuPriceListPrice|listPrice');
             collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
 		}
 
@@ -516,7 +516,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         if( len(arguments.priceRange) ) {
         	collectionList.addFilter(
         		propertyIdentifier='skuPricePrice',
-        		value=arguments.priceRange,
+        		value=ReReplace(arguments.priceRange,"[^0-9.]","","all"),
         		comparisonOperator="between"
         	);
         }

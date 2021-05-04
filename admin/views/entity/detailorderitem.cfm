@@ -75,6 +75,9 @@ Notes:
 		<!--- Tabs --->
 		<hb:HibachiEntityDetailGroup object="#rc.orderItem#">
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cfif !isNull(rc.orderItem.getSku().getBundleFlag()) && isBoolean(rc.orderItem.getSku().getBundleFlag()) && rc.orderItem.getSku().getBundleFlag()>
+				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/orderitemskubundles" lazyload="true" />
+			</cfif>
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/taxes" />
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/promotions" />
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/stockholds" />

@@ -67,7 +67,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
   return (
     <AccountLayout title={'Add Account Payment Method'}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
-      <form onSubmit={formik.handleSubmit} class="mt-5">
+      <form onSubmit={formik.handleSubmit} className="mt-5">
         <div className="row">
             <div className="col-md-6">
 	            <div className="form-group">

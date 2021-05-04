@@ -2542,7 +2542,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//this is used for record level permissions
 		if (setting("globalDisableRecordLevelPermissions")){
 			setPermissionAppliedFlag(true);
-		}else if( !this.getPermissionAppliedFlag() ){
+		}else if(!this.getPermissionAppliedFlag()){
 
 			applyPermissionRecordRestrictions();
 
@@ -4515,9 +4515,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 
-		if(arguments.excludeOrderBy){
-			this.setExcludeOrderBy(true);
-		}
+		this.setExcludeOrderBy(arguments.excludeOrderBy);
+
 
 		if(!isNull(collectionConfig.baseEntityName)){
 			var selectHQL = "";

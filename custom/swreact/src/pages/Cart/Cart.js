@@ -1,10 +1,9 @@
-import { CartLineItem, CartPromoBox, Layout, PromotionalMessaging } from '../../components'
+import { CartLineItem, CartPromoBox, Layout, OrderSummary, PromotionalMessaging } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { getCart } from '../../actions/cartActions'
 import { useEffect } from 'react'
-import useFormatCurrency from '../../hooks/useFormatCurrency'
 import PageHeader from '../../components/PageHeader/PageHeader'
 import { AuthenticationStepUp } from '../../components/AuthenticationStepUp/AuthenticationStepUp'
 import { disableInteractionSelector } from '../../selectors'
@@ -13,10 +12,8 @@ const Cart = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const disableInteraction = useSelector(disableInteractionSelector)
-
-  const { total, orderItems } = useSelector(state => state.cart)
+  const { orderItems } = useSelector(state => state.cart)
   let history = useHistory()
-  const [formatCurrency] = useFormatCurrency({})
   useEffect(() => {
     dispatch(getCart())
   }, [dispatch])
@@ -55,10 +52,8 @@ const Cart = () => {
           <aside className="col-lg-4 pt-4 pt-lg-0">
             <div className="cz-sidebar-static rounded-lg box-shadow-lg ml-lg-auto">
               <PromotionalMessaging />
-              <div className="text-center mb-4 pb-3 border-bottom">
-                <h2 className="h6 mb-3 pb-1">{t('frontend.order.subtotal')}</h2>
-                <h3 className="font-weight-normal">{formatCurrency(total)}</h3>
-              </div>
+
+              <OrderSummary />
 
               <CartPromoBox />
 

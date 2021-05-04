@@ -191,6 +191,7 @@ Notes:
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.accounts_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-accounts.svg"  type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:entity.listaccount" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionusage" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listpermissiongroup" type="list">
 									<li class="divider"></li>
@@ -245,6 +246,8 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listentityqueue" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listimportermapping" type="list">
 									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
+									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">
+									<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
 									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 								</hb:HibachiDividerHider>
