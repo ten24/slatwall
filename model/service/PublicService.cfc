@@ -4221,16 +4221,18 @@ component  accessors="true" output="false"
 	    // if this's  cal to get all-products
 	    if( !len(arguments.data.entityID) ){
     	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-            // arguments.data.ajaxResponse['data'].pageRecords = getService("ContentService").appendSettingsAndOptionsToContent(arguments.data.ajaxResponse['data'].pageRecords);
-            this.getHibachiScope().addActionResult("public:scope.getBrand", true);
+    	    for( var record in arguments.data.ajaxResponse['data'].pageRecords) {
+                record = getService("ContentService").appendSettingsAndOptionsToContent(record);
+    	    }
+            this.getHibachiScope().addActionResult("public:scope.getContent", true);
             return;
         }
        
         
         var response = {};
         response['content'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
-	   // response['content'] = response['content'][1]
-       
+	    response['content'] = getService("ContentService").appendSettingsAndOptionsToContent(response['content']);
+
         arguments.data.ajaxResponse['data'] = response;
         this.getHibachiScope().addActionResult("public:scope.getContent", true);
 	}
