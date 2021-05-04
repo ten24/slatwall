@@ -9,7 +9,7 @@ import { getBrandRoute } from '../../selectors/configurationSelectors'
 const Manufacturer = () => {
   let history = useHistory()
   let loc = useLocation()
-  const gridSize = 3
+  const { gridSize, maxCount } = useSelector(state => state.configuration.shopByManufacturer)
   const countToDisplay = gridSize * 4
   const content = useSelector(state => state.content[loc.pathname.substring(1)])
   const brandRoute = useSelector(getBrandRoute)
@@ -20,12 +20,12 @@ const Manufacturer = () => {
   useEffect(() => {
     let didCancel = false
     if (!request.isFetching && !request.isLoaded && !didCancel) {
-      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { 'P:Show': 500, 'f:activeFlag': 1 }, makeRequest: true })
+      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { 'P:Show': maxCount, 'f:activeFlag': 1 }, makeRequest: true })
     }
     return () => {
       didCancel = true
     }
-  }, [request, setRequest])
+  }, [request, setRequest, maxCount])
 
   const sortedList = [
     ...request.data

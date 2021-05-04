@@ -14,6 +14,8 @@ const data = {
   shopByManufacturer: {
     slug: '/brands',
     showInMenu: true,
+    gridSize: 1000,
+    maxCount: 1000,
   },
   seo: {
     title: 'Stone & Berg',
