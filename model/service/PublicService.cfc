@@ -886,7 +886,6 @@ component  accessors="true" output="false"
             }
         }
         
-        var titleTemplate = productType.getSettingValueFormatted('productTypeHTMLTitleString');
         var descriptionTemplate = productType.getSettingValueFormatted('productTypeMetaDescriptionString');
         var metaKeywordsTemplate = productType.getSettingValueFormatted('productTypeMetaKeywordsString');
         
@@ -894,7 +893,7 @@ component  accessors="true" output="false"
             "title"         : productType.getProductTypeName(),
             "urlTitle"      : productType.getUrlTitle(),
             "imageFile"     : productType.getImageFile(),
-            "htmlTitle"     : productType.stringReplace(template=titleTemplate, formatValues=true),
+            "htmlTitle"     : productType.getCustomHtmlTitle(),
             "description"   : productType.stringReplace(template=descriptionTemplate, formatValues=true),
             "metaKeywords"  : productType.stringReplace(template=metaKeywordsTemplate, formatValues=true),
             "productTypeID" : productType.getProductTypeID()
