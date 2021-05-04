@@ -167,7 +167,6 @@ const PaymentSlide = ({ currentStep }) => {
     setPaymentMethodOnOrder(paymentMethod.paymentMethodID)
     setSelectedPaymentMethod(paymentMethod.paymentMethodID)
   }
-  console.log('allPayments', allPayments)
 
   return (
     <>
