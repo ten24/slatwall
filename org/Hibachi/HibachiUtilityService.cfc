@@ -968,11 +968,11 @@
 				} catch (any e) {}
 			}
 			
-			var errorMEssage = "There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin."; 
+			var errorMessage = "There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin."; 
 		    if( !isNull(this.getHibachiScope().getAccount()) && this.getHibachiScope().getAccount().getAdminAccountFlag() ){
-		        this.getHibachiScope().showMessage( errorMEssage, 'error');
+		        this.getHibachiScope().showMessage( errorMessage, 'error');
 		    }
-			this.logHibachi(errorMEssage, true);
+			this.logHibachi(errorMessage, true);
 			return "";
 		}
 
