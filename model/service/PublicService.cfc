@@ -4152,14 +4152,15 @@ component  accessors="true" output="false"
 	public any function getProduct(required struct data ){
 	    param name="arguments.data.includeAttributesMetadata" default=false;
 	     arguments.data.ajaxResponse['attributeSets'] = []
+	     
 	     if( arguments.data.includeAttributesMetadata ){
-            if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
-                arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
-            }
-            if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
-                arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
-            }
-        }
+            	if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
+                	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
+            	}
+            	if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
+                	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
+            	}
+	     }
 	    
 	    // if this's  cal to get all-products
 	    if( !len(arguments.data.entityID) ){
@@ -4201,7 +4202,6 @@ component  accessors="true" output="false"
 	 */
 	public any function getBrand(required struct data ){
 	    
-	    // if this's  cal to get all-products
 	    if( !len(arguments.data.entityID) ){
     	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
             arguments.data.ajaxResponse['data'].pageRecords = getService("brandService").appendSettingsAndOptions(arguments.data.ajaxResponse['data'].pageRecords);
@@ -4217,6 +4217,31 @@ component  accessors="true" output="false"
        
         arguments.data.ajaxResponse['data'] = response;
         this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+	}
+	
+		/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/content/{entityID}`
+	 * 
+	 */
+	public any function getContent(required struct data ){
+	    
+	    if( !len(arguments.data.entityID) ){
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+    	    for( var record in arguments.data.ajaxResponse['data'].pageRecords) {
+                record = getService("ContentService").appendSettingsAndOptionsToContent(record);
+    	    }
+            this.getHibachiScope().addActionResult("public:scope.getContent", true);
+            return;
+        }
+       
+        
+        var response = {};
+        response['content'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+	    response['content'] = getService("ContentService").appendSettingsAndOptionsToContent(response['content']);
+
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult("public:scope.getContent", true);
 	}
 	
 	

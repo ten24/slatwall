@@ -24,10 +24,10 @@ const ProductCard = props => {
           <Link className="product-meta d-block font-size-xs pb-1" to={`/${brand}/${brand_urlTitle}`}>
             {brand_brandName}
           </Link>
-          <h3 className="product-title font-size-sm">
+          <h3 className="font-size-sm text-muted mb-2">{productCode}</h3>
+          <h3 className="product-title font-size-md">
             <Link to={productLink}>{productName}</Link>
           </h3>
-          <h3 className="font-size-sm">{productCode}</h3>
           <div className="d-flex justify-content-between">
             <ProductPrice salePrice={calculatedSalePrice} listPrice={listPrice} />
           </div>

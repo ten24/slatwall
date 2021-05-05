@@ -8,6 +8,12 @@ import { Provider } from 'react-redux'
 import store from './createStore'
 import App from './App'
 import './assets/theme'
+import TagManager from 'react-gtm-module'
+import devData from './preload'
+
+TagManager.initialize({
+  gtmId: devData.analytics.tagManager.gtmId,
+})
 
 ReactDOM.render(
   // <React.StrictMode>
