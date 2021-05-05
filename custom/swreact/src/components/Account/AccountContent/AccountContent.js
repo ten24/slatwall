@@ -12,8 +12,8 @@ const AccountContent = () => {
   const { accountPaymentMethods } = useSelector(state => state.userReducer)
   const accountAddresses = useSelector(getAllAccountAddresses)
   const { customBody = '', contentTitle = '' } = content || {}
-  let noPaymentMethods = accountPaymentMethods.length === 0 
-  let noAddresses = accountAddresses.length === 0
+  const noPaymentMethods = accountPaymentMethods.length === 0 
+  const noAddresses = accountAddresses.length === 0
   let alertMesage = '';
  
   if(noPaymentMethods && noAddresses) {
