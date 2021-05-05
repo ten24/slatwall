@@ -3105,7 +3105,7 @@ component  accessors="true" output="false"
     public void function setPrimaryPaymentMethod(required any data){
         param name="data.accountPaymentMethodID" default="";
         var hibachiScope = this.getHibachiScope();
-        if( !(hibachiScope.getLoggedInFlag()) ) {
+        if( !hibachiScope.getLoggedInFlag() ) {
             arguments.data.ajaxResponse['error'] = hibachiScope.rbKey('validate.api.loginRequired');
             return;
         }
@@ -3119,9 +3119,10 @@ component  accessors="true" output="false"
         }
 
         account.setPrimaryPaymentMethod(accountPaymentMethod);
-        account = this.getAccountService().saveAccount(account, {}, 'updatePrimaryPaymentMethod');
+        account = this.getAccountService().saveAccount(account, {}, 'setPrimaryPaymentMethod');
 
-        this.getHibachiScope().addActionResult( "public:account.updatePrimaryPaymentMethod", account.hasErrors());
+        this.getHibachiScope().addActionResult( "public:account.setPrimaryPaymentMethod", account.hasErrors());
+        
         if( account.hasErrors() ){
             this.addErrors(arguments.data, account.getErrors() );
         }
