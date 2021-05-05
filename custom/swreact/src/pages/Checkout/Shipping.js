@@ -77,7 +77,7 @@ const PickupLocationPicker = () => {
   const isPreviousDate = date => {
     const currentDate = new Date()
     currentDate.setHours(0, 0, 0, 0) // set time 00:00 as date coming from datepicker has time 00:00 , just to make user can pick today date
-    return date >= currentDate
+    return !(date < currentDate)
   }
   return (
     <>
