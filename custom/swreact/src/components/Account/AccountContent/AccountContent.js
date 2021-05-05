@@ -12,18 +12,16 @@ const AccountContent = () => {
   const { accountPaymentMethods } = useSelector(state => state.userReducer)
   const accountAddresses = useSelector(getAllAccountAddresses)
   const { customBody = '', contentTitle = '' } = content || {}
-  let paymentCount = accountPaymentMethods.length === 0 
-  let addressesCount = accountAddresses.length === 0
-  let alertMesage;
+  let noPaymentMethods = accountPaymentMethods.length === 0 
+  let noAddresses = accountAddresses.length === 0
+  let alertMesage = '';
  
-  if(paymentCount && addressesCount) {
+  if(noPaymentMethods && noAddresses) {
     alertMesage = 'frontend.account.missing_address_paymentMethod' 
-  }else if(paymentCount){
+  }else if(noPaymentMethods){
     alertMesage = 'frontend.account.payment_methods.none'
-  }else if(addressesCount){
+  }else if(noAddresses){
     alertMesage = 'frontend.account.address.none'
-  }else{
-    alertMesage = ''
   }
     
     
@@ -31,9 +29,12 @@ const AccountContent = () => {
     <>
       <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
         <div className="d-flex justify-content-between w-100">
-          <div className="alert alert-info" role="alert">
-            { t(alertMesage) }
-         </div>
+        <h2 className="h3">{contentTitle}</h2>
+         { alertMesage.length > 0 &&
+         	<div className="alert alert-info" role="alert">
+            	{ t(alertMesage) }
+         	</div>  
+        }
         </div>
       </div>
       
