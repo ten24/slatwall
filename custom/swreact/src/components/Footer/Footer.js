@@ -12,7 +12,7 @@ function Footer() {
   const contentStore = useSelector(state => {
     return Object.keys(state.content)
       .map(key => {
-        if (state.content[key] && state.content[key].setting) {
+        if (state.content[key] && state.content[key].settings) {
           state.content[key].key = key
           return state.content[key]
         }
@@ -32,7 +32,6 @@ function Footer() {
       })
   }, {})
 
-  // These will be required to be named the correct things
   let getInTouch,
     stayInformed,
     siteLinks = ''
