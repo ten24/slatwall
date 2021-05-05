@@ -967,8 +967,12 @@
 				// Graceful handling of decrypt failure
 				} catch (any e) {}
 			}
-
-			logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin.", true);
+			
+			var errorMEssage = "There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin."; 
+		    if( !isNull(this.getHibachiScope().getAccount()) && this.getHibachiScope().getAccount().getAdminAccountFlag() ){
+		        this.getHibachiScope().showMessage( errorMEssage, 'error');
+		    }
+			this.logHibachi(errorMEssage, true);
 			return "";
 		}
 
