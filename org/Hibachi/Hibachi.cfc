@@ -1078,7 +1078,8 @@ component extends="framework.one" {
 			populateAPIHeaders();
 			//regenerate token with existing payload
 			var httpRequestData = GetHttpRequestData();
-			if(structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']) || getHibachiScope().getPersistSessionFlag() ){
+			var jwtTokenProvided = structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']);
+			if( (jwtTokenProvided || getHibachiScope().getPersistSessionFlag()) && !getHibachiScope().getSession().getNewFlag()){
 				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
 			}
 			

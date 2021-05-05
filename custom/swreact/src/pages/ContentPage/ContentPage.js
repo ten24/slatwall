@@ -21,7 +21,7 @@ const ContentPage = () => {
   let component = 'NotFound'
 
   if (!content.isFetching && content[path]) {
-    component = content[path].setting.contentTemplateFile.replace('.cfm', '')
+    component = content[path].settings.contentTemplateFile.replace('.cfm', '')
   }
 
   return <Layout>{!content.isFetching && createElement(pageComponents[component])}</Layout>
