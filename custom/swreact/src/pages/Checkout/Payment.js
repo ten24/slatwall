@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { GiftCardDetails, CreditCardDetails as CCDetails, SwRadioSelect, TermPaymentDetails } from '../../components'
 import SlideNavigation from './SlideNavigation'
@@ -13,11 +13,23 @@ export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'
 export const GIFT_CARD = '50d8cd61009931554764385482347f3a'
 export const TERM_PAYMENT = '2c918088783591e3017836350bd21385'
 
-const CreditCardPayemnt = () => {
+const CreditCardPayment = () => {
   const paymentMethods = useSelector(accountPaymentMethods)
   const [newOrderPayment, setNewOrderPayment] = useState(false)
   const { accountPaymentMethod = { accountPaymentMethodID: '' } } = useSelector(orderPayment)
   const dispatch = useDispatch()
+
+  // @function - Opens new payment method form
+  const openAddPaymentForm = () => {
+    setNewOrderPayment('new')
+  }
+
+  useEffect(() => {
+    if (paymentMethods.length === 0) {
+      // if there is no payment method found for the user , open new payment form
+      openAddPaymentForm()
+    }
+  }, [paymentMethods])
 
   return (
     <>
@@ -28,7 +40,7 @@ const CreditCardPayemnt = () => {
             options={paymentMethods}
             onChange={value => {
               if (value === 'new') {
-                setNewOrderPayment('new')
+                openAddPaymentForm()
               } else {
                 setNewOrderPayment(false)
                 dispatch(
@@ -187,7 +199,7 @@ const PaymentSlide = ({ currentStep }) => {
             </div>
           </div>
 
-          {selectedPaymentMethod === CREDIT_CARD && <CreditCardPayemnt />}
+          {selectedPaymentMethod === CREDIT_CARD && <CreditCardPayment />}
           {selectedPaymentMethod === GIFT_CARD && <GiftCardPayemnt />}
           {selectedPaymentMethod === TERM_PAYMENT && <TermPayment method={selectedPaymentMethod} />}
         </>
