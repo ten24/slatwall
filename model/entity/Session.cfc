@@ -156,10 +156,17 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
     		    || variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID()
     		)
 		){
+<<<<<<< HEAD
 			return variables.order;
 		}  
 		
 		if ( !structKeyExists(variables, "requestOrder") && arguments.createIfNotFound ){
+=======
+			
+			return variables.order;
+			
+		} else if ( !structKeyExists(variables, "requestOrder") && arguments.createIfNotFound ){
+>>>>>>> 2b29d28aff9633dbfe8445ac06a674c2e14a6bca
 			
 			variables.requestOrder = getService("orderService").newOrder();
 			
