@@ -44,3 +44,15 @@ export const skuIdsToSkuCodes = (idList, productOptionGroups) => {
     )
     .flat()
 }
+export const parseErrorMessages = error => {
+  if (error instanceof Object) {
+    console.log('1', error)
+    return Object.keys(error)
+      .map(key => parseErrorMessages(error[key]))
+      .flat()
+  }
+  return error
+}
+export const getErrorMessage = error => {
+  return parseErrorMessages(error)?.join('. ')
+}

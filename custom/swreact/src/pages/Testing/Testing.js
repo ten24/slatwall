@@ -2,10 +2,14 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18next from 'i18next'
 import { Layout } from '../../components'
+import { getErrorMessage } from '../../utils'
 import { useGetSku } from '../../hooks/useAPI'
 
 const TranslationExmaple = () => {
   const { t } = useTranslation()
+  const error = { errors: { emailAddress: ['message 1', 'message 2'], phone: ['message 3'], nested: { apple: ['nested Message'] }, deep: { apple: [{ apple: ['Deep nested Message'] }] } } }
+
+  console.log('getErrorMessages', getErrorMessage(error.errors))
 
   return (
     <div>
