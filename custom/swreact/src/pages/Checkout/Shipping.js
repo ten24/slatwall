@@ -70,14 +70,14 @@ const PickupLocationPicker = () => {
   const selectedLocation = useSelector(pickupLocation)
   const { orderFulfillmentID, estimatedShippingDate } = useSelector(fulfillmentSelector)
 
-  // @function - returns if date (coming from datepicker) is less than current Date.
+  // @function - returns true if date (coming from datepicker) is greater than Current-Date.
   // @param - date => any date object
   // @returns - Boolean
   // @info - https://reactdatepicker.com/#example-filter-dates
-  const isPreviousDate = date => {
+  const isFutureDate = date => {
     const currentDate = new Date()
     currentDate.setHours(0, 0, 0, 0) // set time 00:00 as date coming from datepicker has time 00:00 , just to make user can pick today date
-    return !(date < currentDate)
+    return date >= currentDate
   }
   return (
     <>
@@ -93,7 +93,7 @@ const PickupLocationPicker = () => {
               timeIntervals={60}
               timeCaption="Time"
               dateFormat="MM/dd/yyyy h:mm aa"
-              filterDate={isPreviousDate}
+              filterDate={isFutureDate}
               onChange={pickupDate => {
                 dispatch(
                   setPickupDate({
