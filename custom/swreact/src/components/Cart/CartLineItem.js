@@ -19,7 +19,7 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
   })
   const { price, quantity, sku, extendedPriceAfterDiscount } = orderItem[0]
   const { skuID, listPrice, skuCode, product } = sku
-  const { productID, productName, urlTitle, brand } = product
+  const { productID, productName, urlTitle, brand, productSeries } = product
   const { brandName } = brand
 
   const isBackordered = false
@@ -32,7 +32,7 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
           {/* <SWImage customPath={imagePath} alt="Product" /> */}
         </Link>
         <div className="media-body pt-2">
-          <span className="product-meta d-block font-size-xs pb-1">{t('frontend.product.series')}</span>
+          <span className="product-meta d-block font-size-xs pb-1">{productSeries || t('frontend.product.series')}</span>
           <h3 className="product-title font-size-base mb-2">
             <Link
               to={{
