@@ -1284,10 +1284,10 @@ component  accessors="true" output="false"
             addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
         } else if(arguments.data.returnTokenFlag) {
             //Attempt Login
-            var accountProcess = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
-            if ( !accountProcess.hasErrors() && getHibachiScope().getLoggedinFlag() ){
-                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
-            }
+            getHibachiScope().flushOrmSession();
+            var accountProcess = this.getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
+            getHibachiSessionService().persistSession(true);
+
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
