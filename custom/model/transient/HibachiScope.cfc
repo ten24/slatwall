@@ -31,12 +31,6 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			availablePropertyList&=",orderItems.sku.product.productSeries";
 		}
 		
-		availablePropertyList = rereplace(availablePropertyList,"[[:space:]]","","all");
-		
-		if(right(trim(availablePropertyList),1)==','){
-			availablePropertyList = left(availablePropertyList,len(trim(availablePropertyList))-1);
-		}
-	
 		return availablePropertyList;
 	}
 }
