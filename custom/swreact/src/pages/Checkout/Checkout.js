@@ -11,7 +11,7 @@ const Checkout = () => {
   const history = useHistory()
   const path = loc.pathname.split('/').reverse()[0].toLowerCase()
   const currentStep = getCurrentStep(path)
-  const verifiedAccountFlag = useSelector(state => state.userReducer.verifiedAccountFlag)
+  const { verifiedAccountFlag, isFetching, accountID } = useSelector(state => state.userReducer)
   const enforceVerifiedAccountFlag = useSelector(state => state.configuration.enforceVerifiedAccountFlag)
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const Checkout = () => {
     }
   }, [history, loc])
 
-  if (enforceVerifiedAccountFlag && !verifiedAccountFlag && isAuthenticated()) {
+  if (enforceVerifiedAccountFlag && !verifiedAccountFlag && isAuthenticated() && !isFetching && accountID.length > 0) {
     return <Redirect to="/account-verification" />
   }
 
