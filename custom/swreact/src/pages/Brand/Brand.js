@@ -54,6 +54,7 @@ const Brand = props => {
       {request.data.showProducts && (
         <ListingPage preFilter={{ ...brandFilter, productType_id: request.data.productTypeID }} hide={['productType', 'brands']}>
           {brandResponse.isLoaded && brandResponse.data.length > 0 && <BrandBanner brandName={brandResponse.data[0].brandName} imageFile={brandResponse.data[0].imageFile} brandDescription={brandResponse.data[0].brandDescription} />}{' '}
+
         </ListingPage>
       )}
     </Layout>

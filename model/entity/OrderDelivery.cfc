@@ -112,7 +112,10 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	}
 	
 	public boolean function getLocationIsLeafNode(){
-		return  !getLocation().hasChildren();
+		if (!isNull(getLocation())){
+			return  !getLocation().hasChildren();
+		}
+		return false;
 	}
 
     // ============ START: Non-Persistent Property Methods =================

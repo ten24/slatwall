@@ -398,7 +398,7 @@ export const removePayment = (params = {}) => {
   return async dispatch => {
     dispatch(requestCart())
 
-    const req = await SlatwalApiService.cart.removePayment(params)
+    const req = await SlatwalApiService.cart.removePayment({ ...params, returnJSONObjects: 'cart' })
 
     if (req.isSuccess()) {
       dispatch(updateToken(req.success()))

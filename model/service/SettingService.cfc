@@ -121,7 +121,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountAuthentication = [ "integration.integrationID" ],
 			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
 			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ],
-			account = ["accountCreatedSite.siteID"]
+			account = ["accountCreatedSite.siteID"],
+			orderTemplate = ["site.siteID"]
 		};
 	}
 
@@ -241,6 +242,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
 			globalCurrencyType = {fieldType="select",defaultValue="Local"},
 			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalVATCountries = {fieldType="listingMultiselect", listingMultiselectEntityName="Country", defaultValue=""},
 			globalDeploySitesAndApplicationsOnUpdate = {fieldtype="yesno", defaultValue=1}, 
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
@@ -291,6 +293,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3Bucket = {fieldtype="text"},
 			globalS3AccessKey = {fieldtype="text"},
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
+			globalCORSWhitelist = {fieldtype="text",defaultValue=""},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
 			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
@@ -344,7 +347,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="ShippingMethod"
 			},
-			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=1},
+			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=0},
 			orderTemplateDaysAllowedToEditNextOrderTemplate = {fieldtype="text", defaultValue="2", validate={dataType="numeric",required=true}},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
@@ -401,7 +404,6 @@ component extends="HibachiService" output="false" accessors="true" {
             siteRecaptchaSiteKey = {fieldType="text"},
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
-			siteOrderTemplateEligibleShippingMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="ShippingMethod"},
 			siteWishlistShareEmailTemplate = { fieldtype="select", defaultValue="" },
 			siteProductSearchIntegration = {fieldtype="text", defaultValue="SlatwallProductSearch"},
 			

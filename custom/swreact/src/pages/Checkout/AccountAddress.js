@@ -62,7 +62,7 @@ const ShippingAddress = ({ onSave }) => {
 const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'Addresses' }) => {
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const [showAddress, setShowAddress] = useState(false)
-  if (showAddress) {
+  if (showAddress || accountAddresses.length === 0) {
     selectedAccountID = 'new'
   }
   return (
@@ -91,7 +91,7 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
           </div>
         </div>
       )}
-      {showAddress && (
+      {(showAddress || selectedAccountID === 'new') && (
         <ShippingAddress
           setShowAddress={showAddress}
           onSave={values => {

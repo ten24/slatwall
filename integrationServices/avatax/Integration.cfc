@@ -70,7 +70,6 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			sourceRegion = {fieldType="text"},
 			sourceCountry = {fieldType="text"},
 			sourcePostalCode = {fieldType="text"},
-			vatCountries = {fieldType="text"},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"},
 			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},

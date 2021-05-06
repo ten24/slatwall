@@ -21,9 +21,11 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
         }}
         dangerouslySetInnerHTML={{ __html: customBody }}
       />
-      <a href={linkUrl} className="btn btn-light btn-long">
-        {linkLabel}
-      </a>
+      {linkUrl && linkUrl.length > 0 && 
+        <a href={linkUrl} className="btn btn-light btn-long">
+          {linkLabel}
+        </a>
+      }
     </div>
   )
 }

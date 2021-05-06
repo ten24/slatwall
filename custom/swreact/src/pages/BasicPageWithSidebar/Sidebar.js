@@ -11,6 +11,7 @@ const Sidebar = () => {
     return Object.keys(state.content)
       .map(key => {
         if (state.content[key] && state.content[key].settings && state.content[key].settings.contentTemplateFile === 'sidebar.cfm') {
+
           state.content[key].key = key
           return state.content[key]
         }

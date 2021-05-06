@@ -60,6 +60,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="activationDateTime" ormtype="timestamp";
 	property name="canceledDateTime" ormtype="timestamp";
 	property name="lastOrderPlacedDateTime" ormtype="timestamp";
+	property name="mostRecentError" ormtype="string";
+	property name="mostRecentErrorDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateTypeID";
@@ -175,7 +177,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
 		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
 		if(!isNull(getSite())){
-			shippingMethodCollection.addFilter('shippingMethodID',this.getSite().setting('siteOrderTemplateEligibleShippingMethods'),'in'); 
+			shippingMethodCollection.addFilter('shippingMethodID',this.setting('orderTemplateEligibleShippingMethods',[getSite()]),'in'); 
 		}
 		return shippingMethodCollection.getRecords();
 	}

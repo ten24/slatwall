@@ -45,12 +45,14 @@
 							data-scheduled-order-dates="#rc.orderTemplate.getScheduledOrderDates(1)#">
 					</sw-order-template-upcoming-orders-card>
 				</div> 
-	
-	
+				<cfset local.startDate = dateFormat(deserializeJson(decodeForHTML(rc.orderTemplate.getEncodedJsonRepresentation()))['scheduleOrderNextPlaceDateTime']) />
+				<cfset local.endDate = dateFormat(dateAdd("yyyy", 1,deserializeJson(decodeForHTML(rc.orderTemplate.getEncodedJsonRepresentation()))['scheduleOrderNextPlaceDateTime'])) />
 				<div class="col-md-2">
 					<sw-order-template-update-schedule-modal data-schedule-order-next-place-date-time-string="#dateFormat(rc.orderTemplate.getScheduleOrderNextPlaceDateTime(), 'yyyy-mm-dd')#"
 															data-order-template-schedule-date-change-reason-type-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions()))#"	
-															data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"> 
+															data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+															data-start-date-string="#local.startDate#"
+															data-end-date-string="#local.endDate#"> 
 					</sw-order-template-update-schedule-modal>
 				</div> 
 			<cfelse>

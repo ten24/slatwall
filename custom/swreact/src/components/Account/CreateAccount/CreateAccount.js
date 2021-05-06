@@ -4,6 +4,8 @@ import { SlatwalApiService } from '../../../services'
 import { SWForm, SWInput } from '../../SWForm/SWForm'
 import { PromptLayout } from '../AccountLayout/AccountLayout'
 import useRedirect from '../../../hooks/useRedirect'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup'
 import { getErrorMessage } from '../../../utils'
 import { useDispatch } from 'react-redux'
@@ -12,6 +14,7 @@ import { updateToken } from '../../../actions/authActions'
 const CreateAccount = () => {
   const dispatch = useDispatch()
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+  const { t } = useTranslation()
   // eslint-disable-next-line no-unused-vars
   const [redirect, setRedirect] = useRedirect({ location: '/my-account' })
   const signupSchema = Yup.object().shape({
@@ -68,6 +71,7 @@ const CreateAccount = () => {
         <SWInput formik={formik} token="emailAddressConfirm" label="Confirm Email Address" type="email" />
         <SWInput formik={formik} token="password" label="Password" type="password" />
         <SWInput formik={formik} token="passwordConfirm" label="Confirm Password" type="password" />
+         <Link to='/my-account'>{t('frontend.account.back_to_login')}</Link>
       </SWForm>
     </PromptLayout>
   )
