@@ -7,6 +7,7 @@ class SWOrderTemplateUpdateScheduleModalController{
 
 	public endDayOfTheMonth:number;
 	public endDate:Date;
+	public startDateString:string;
 	public endDateString:string;
 	
 	public scheduleOrderNextPlaceDateTimeString:string;
@@ -85,6 +86,7 @@ class SWOrderTemplateUpdateScheduleModal implements ng.IDirective {
 		scheduleOrderNextPlaceDateTimeString:"@?",
 		scheduleOrderNextPlaceDateTime:"=?",
         endDayOfTheMonth:'<?',
+        startDateString:'@?',
         endDateString:'@?',
         endDate:'=?'
 	};

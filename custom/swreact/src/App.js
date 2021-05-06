@@ -7,10 +7,12 @@ import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import { getConfiguration } from './actions/configActions'
 import logo from './assets/images/logo.png'
 import mobileLogo from './assets/images/logo-mobile.png'
+
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
 const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
+const Contact = lazyWithPreload(() => import('./pages/Contact/Contact'))
 const MyAccount = lazyWithPreload(() => import('./pages/MyAccount/MyAccount'))
-const ProductListing = lazyWithPreload(() => import('./pages/ProductListing/ProductListing'))
+const Search = lazyWithPreload(() => import('./pages/Search/Search'))
 const Checkout = lazyWithPreload(() => import('./pages/Checkout/Checkout'))
 const ProductDetail = lazyWithPreload(() => import('./pages/ProductDetail/ProductDetail'))
 const Testing = lazyWithPreload(() => import('./pages/Testing/Testing'))
@@ -31,8 +33,9 @@ const pageComponents = {
   Home,
   Checkout,
   Cart,
+  Contact,
   MyAccount,
-  ProductListing,
+  Search,
   ProductDetail,
   Testing,
   NotFound,
@@ -67,13 +70,14 @@ export default function App() {
       <CMSWrapper />
       <Switch>
         <Route path="/404" component={NotFound} />
+        <Route path="/contact" component={Contact} />
         {routing.length &&
           routing.map(({ URLKey, URLKeyType }, index) => {
             return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
           })}
         <Route path="/order-confirmation" component={OrderConfirmation} />
         <Route path={shopByManufacturer.slug} component={Manufacturer} />
-        <Route path="/search" component={ProductListing} />
+        <Route path="/search" component={Search} />
         <Route path="/my-account" component={MyAccount} />
         <Route path="/checkout" component={Checkout} />
         <Route path="/checkout/:id" component={Checkout} />

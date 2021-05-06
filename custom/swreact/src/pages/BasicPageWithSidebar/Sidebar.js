@@ -10,7 +10,8 @@ const Sidebar = () => {
   let allSidebar = useSelector(state => {
     return Object.keys(state.content)
       .map(key => {
-        if (state.content[key] && state.content[key].setting && state.content[key].setting.contentTemplateFile === 'sidebar.cfm') {
+        if (state.content[key] && state.content[key].settings && state.content[key].settings.contentTemplateFile === 'sidebar.cfm') {
+
           state.content[key].key = key
           return state.content[key]
         }
@@ -41,7 +42,11 @@ const Sidebar = () => {
                     onClick={event => {
                       if (event.target.getAttribute('href')) {
                         event.preventDefault()
-                        history.push(event.target.getAttribute('href'))
+                        if (event.target.getAttribute('href').includes('http')) {
+                          window.location.href = event.target.getAttribute('href')
+                        } else {
+                          history.push(event.target.getAttribute('href'))
+                        }
                       }
                     }}
                     dangerouslySetInnerHTML={{

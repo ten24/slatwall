@@ -362,7 +362,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 		    collectionList.setDisplayProperties(arguments.propertyIdentifiers);
 		} else {
     		// product properties
-    		collectionList.setDisplayProperties('product.productID,product.productName,product.urlTitle');
+    		collectionList.setDisplayProperties('product.productID,product.productName,product.productCode,product.urlTitle');
     		// sku properties 
     		collectionList.addDisplayProperties('sku.skuID,sku.skuCode,sku.imageFile,skuPricePrice|skuPrice,skuPriceListPrice|listPrice');
             collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
@@ -452,18 +452,46 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         
 	    for(var facetName in ['option', 'attribute'] ){
     	    var selectedFacetOptions = arguments[ facetName ];
+    	    var customHQL = '';
     	    if( !this.hibachiIsStructEmpty(selectedFacetOptions) ){
                 for(var subFacetName in selectedFacetOptions ){
+                    
+                    var subFacetColumnName = 'optionGroupCode';
+                    if(facetName == 'attribute'){
+                        subFacetColumnName = 'attributeCode';
+                    }
+                    
                     for(var facteValueKey in selectedFacetOptions[subFacetName] ){
                         var filterValue = selectedFacetOptions[subFacetName][facteValueKey];
                         var propertyIdentifier = this.getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(facetName, facteValueKey);
                         if( !isNUll(propertyIdentifier) ){
+                            
                             var conditionalOpp = '=';
                             if( isArray(filterValue) ){
                                 conditionalOpp = 'IN';
-                                filterValue = arrayToList(filterValue);
+                                filterValue = collectionList.getListPredicate({'value' : arrayToList(filterValue)});
+                            } else {
+                                filterValue = collectionList.getSimplePredicate({'value' : filterValue});
                             }
-                            collectionList.addFilter(propertyIdentifier, filterValue, conditionalOpp );
+                            
+                            var hql = "(
+                                SELECT
+                                    DISTINCT sku.skuID 
+                                FROM
+                                    SlatwallProductFilterFacetOption
+                                WHERE
+                                    #subFacetColumnName# = '#subFacetName#'
+                                    AND
+                                    #propertyIdentifier# #conditionalOpp# #filterValue#
+                            )";
+                            
+                            collectionList.addFilter(
+                                value              = hql,
+                                customHQL          = true,
+                                filterGroupAlias   = subFacetName&'_filters',
+                                propertyIdentifier = 'sku.skuID', 
+                                comparisonOperator = 'IN'
+                            );
                         }
                     }
                 }
@@ -570,9 +598,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var startTicks = getTickCount();
 	    var total = collectionData.collectionList.getRecordsCount();
-	    this.logHibachi("SlatwallProductSearchService:: getProducts/getRecordsCount took #getTickCount() - startTicks# ms.");
+	    this.logHibachi("SlatwallProductSearchService:: getProducts/getRecordsCount took #getTickCount() - startTicks# ms. count: #total#");
         
         startTicks = getTickCount();
+        
+        this.logHibachi("SQL :: "&collectionData.collectionList.getSQL() );
+        
 	    var records = collectionData.collectionList.getPageRecords();
 	    this.logHibachi("SlatwallProductSearchService:: getProducts/getPageRecords [p:#arguments.currentPage#(#arguments.pageSize#)] took #getTickCount() - startTicks# ms.");
 

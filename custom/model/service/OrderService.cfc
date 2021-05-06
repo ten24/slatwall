@@ -162,8 +162,7 @@ component extends="Slatwall.model.service.OrderService" {
 					
  					// Loop over the orderItems to see if the skuPrice Changed
 					for(var orderItem in arguments.order.getOrderItems()){
-						
-						
+					    
 	 					if(
 	 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
 	 						&&
@@ -175,7 +174,7 @@ component extends="Slatwall.model.service.OrderService" {
 								'unit': 'EACH'
 							};
 							
-							if(len(customerCode)){
+							if(!isNull(customerCode) && len(customerCode)){
 								priceData['customer'] = customerCode;
 							}
 							arrayAppend(pricePayload, priceData);
@@ -183,38 +182,45 @@ component extends="Slatwall.model.service.OrderService" {
 						}
 					}
 					
-					var livePrices = getService('erpOneService').getLivePrices(pricePayload);
-					
-					// Loop over the orderItems to see if the skuPrice Changed
-					for(var orderItem in arguments.order.getOrderItems()){
+					try{
+					    var erpOneService = this.getService('erpOneService');
+						var livePrices = erpOneService.getLivePrices(pricePayload);
 						
-						
-	 					if(
-	 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
-	 						&&
-	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
-	 					){
-					
+						// Loop over the orderItems to see if the skuPrice Changed
+						for(var orderItem in arguments.order.getOrderItems()){
 
-							for(var livePrice in livePrices){
-								if(livePrice['item'] == orderItem.getSku().getSkuCode()){
-									//Prices have 3 decimal numbers on ERP
-									livePrice['price'] = round(livePrice['price'],2);
-									
-									if( orderItem.getPrice() != livePrice['price']){
-										orderItem.setPrice(livePrice['price']);
-				 						orderItem.setSkuPrice(livePrice['price']);
+		 					if(
+		 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
+		 						&&
+		 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
+		 					){
+
+								for(var livePrice in livePrices){
+									if(livePrice['item'] == orderItem.getSku().getSkuCode()){
+										//Prices have 3 decimal numbers on ERP
+										livePrice['price'] = round(livePrice['price'],2);
+										
+										if( orderItem.getPrice() != livePrice['price']){
+											orderItem.setPrice(livePrice['price']);
+					 						orderItem.setSkuPrice(livePrice['price']);
+										}
+										break;
 									}
-									break;
 								}
-							}
-							
- 						}
- 						
- 						
+								
+	 						}
+						}
+					} catch( any e ){
+					    // we're ignoring the ERP errors in the dev-mode sue to IP whitelisting constraint 
+					   	if( !erpOneService.setting("devMode") ){
+						    arguments.order.addError('addOrderItem', 'Error getting Live Prices: #e.message#');
+					   	}
 					}
-					
+						
  				}
+			}
+			if(arguments.order.hasErrors()){
+				return arguments.order;
 			}
 			
 			// First Re-Calculate the 'amounts' base on price groups

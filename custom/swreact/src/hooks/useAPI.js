@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { sdkURL, SlatwalApiService } from '../services'
 import queryString from 'query-string'
+import { useHistory, useLocation } from 'react-router'
 
 export const useGetEntity = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
   useEffect(() => {
     let source = axios.CancelToken.source()
     if (request.makeRequest) {
+      request.params['includeAttributesMetadata'] = true
       axios({
         method: 'GET',
         withCredentials: true,
@@ -19,9 +21,9 @@ export const useGetEntity = () => {
       })
         .then(response => {
           if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
-            setRequest({ data: response.data.data.pageRecords, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+            setRequest({ data: response.data.data.pageRecords, attributeSets: response.data.attributeSets, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
-            setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+            setRequest({ data: [], attributeSets: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
         })
         .catch(thrown => {})
@@ -492,14 +494,14 @@ export const useGetProductSkus = () => {
   return [request, setRequest]
 }
 
-export const useGetProductAvailableSkuOptions = () => {
-  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
+export const useGetSkuByOption = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: { sku: {} }, error: '', params: {} })
   useEffect(() => {
     if (request.makeRequest) {
       axios({
         method: 'POST',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/productAvailableSkuOptions`,
+        url: `${sdkURL}api/scope/productDetailData`,
         data: request.params,
         headers: {
           'Content-Type': 'application/json',
@@ -508,11 +510,59 @@ export const useGetProductAvailableSkuOptions = () => {
         if (response.status === 200 && response.data) {
           setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
         } else {
-          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
         }
       })
     }
   }, [request, setRequest])
+  return [request, setRequest]
+}
+export const useGetProductPageDetails = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: { sku: {} }, error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/productDetailData`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+  return [request, setRequest]
+}
+export const useGetProductAvailableSkuOptions = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: { sku: {} }, error: '', params: {} })
+  const loc = useLocation()
+  const history = useHistory()
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/productDetailData`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: { sku: {} }, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest, loc, history])
 
   return [request, setRequest]
 }
@@ -534,6 +584,36 @@ export const useGetProductSkuSelected = () => {
           setRequest({ data: response.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
         } else {
           setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+        }
+      })
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetSkuOptionDetails = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {} })
+  useEffect(() => {
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getSkuOptionDetails`,
+        data: request.params,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200 && response.data) {
+          const filterdOptions = Object.keys(response.data.skuOptionDetails)
+            .map(key => {
+              return response.data.skuOptionDetails[key]
+            })
+            .sort((a, b) => a.sortOrder - b.sortOrder)
+          setRequest({ data: filterdOptions, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+        } else {
+          setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
         }
       })
     }
@@ -573,6 +653,7 @@ export const useGetProductImageGallery = () => {
 export const useGetProductType = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
+    let source = axios.CancelToken.source()
     if (request.makeRequest) {
       axios({
         method: 'GET',
@@ -581,13 +662,19 @@ export const useGetProductType = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-      }).then(response => {
-        if (response.status === 200 && response.data && response.data.data && response.data.successfulActions.length > 0) {
-          setRequest({ data: response.data.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
-        } else {
-          setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
-        }
+        cancelToken: source.token,
       })
+        .then(response => {
+          if (response.status === 200 && response.data && response.data.data && response.data.successfulActions.length > 0) {
+            setRequest({ data: response.data.data, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
     }
   }, [request, setRequest])
 

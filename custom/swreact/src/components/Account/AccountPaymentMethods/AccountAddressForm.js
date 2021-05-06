@@ -40,7 +40,7 @@ const AccountAddressForm = ({ formik }) => {
           />
         </div>
       </div>
-      <div class="col-md-6">
+      <div className="col-md-6">
         <div className="form-group">
           <label htmlFor="billingAddress.name">{t('frontend.account.name')}</label>
           <input className="form-control" name="['billingAddress.name']" type="text" id="billingAddress.name" value={formik.values['billingAddress.name']} onChange={formik.handleChange} />

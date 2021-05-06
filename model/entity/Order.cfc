@@ -913,8 +913,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getPaymentAmountTotal() {
 		var totalPayments = 0;
 
-		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getStatusCode() eq "opstActive" && !orderPayment.hasErrors()) {
+		for(var orderPayment in this.getOrderPayments()) {
+			if( !orderPayment.isNew() && orderPayment.getStatusCode() eq "opstActive" && !orderPayment.hasErrors()) {
 				if(orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
 					totalPayments = getService('HibachiUtilityService').precisionCalculate(totalPayments + orderPayment.getAmount());
 				} else {

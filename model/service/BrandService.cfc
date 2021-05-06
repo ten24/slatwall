@@ -51,6 +51,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="imageService" type="any";
     property name="hibachiService" type="any";
 	property name="hibachiDataService" type="any";
+	property name="settingService" type="any";
 	// ===================== START: Logical Methods ===========================
 	
 	public array function getBrandPublicProperties(){
@@ -140,7 +141,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 **/
 	public array function appendSettingsAndOptions(required array brands) {
 		if(arrayLen(arguments.brands)) {
-			
+			var directory = 'brand/logo';
 			for(var brand in arguments.brands) {
 	            
 	            var currentBrand = this.getBrand(brand.brandID);
@@ -160,10 +161,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 				}
 
+	            brand['settings']= {
+		            "brandHTMLTitleString": currentBrand.stringReplace( template = currentBrand.setting('brandHTMLTitleString'), formatValues = true ),
+	            	"brandMetaDescriptionString":  currentBrand.stringReplace( template = currentBrand.setting('brandMetaDescriptionString'), formatValues = true ),
+	            	"brandMetaKeywordsString": currentBrand.stringReplace( template = currentBrand.setting('brandMetaKeywordsString'), formatValues = true )
+	            }
+                brand['imagePath'] = getImageService().getImagePathByImageFileAndDirectory(brand['imageFile'], directory);
+	         	
 
 	            brand['attributes'] = attributes;
-	            
-	          //  brand['imagePath'] = currentBrand.getImagePath();
 	        }
 		}
 		return arguments.brands;

@@ -48,6 +48,7 @@ Notes:
 */
 component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
 {
+	property name="hibachiUtilityService" type="any";
 	//list of supported algorithms
 	
 	public any function newJWT(required string key){
@@ -65,29 +66,21 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 	 * Method to create JWT Token for account
 	 * @param - setOrder : flag to set order on JWT
 	 * */
-	public string function createToken(boolean setOrder = true, boolean clearOrder = false){
+	public string function createToken(){
 		//create token
 		var key = getService('settingService').getSettingValue('globalClientSecret');
 		var jwt = newJwt(key);
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 		//hard coded to 15 minutes
 		var tokenExpirationTime = 900;
-		var payload = {};
-		payload['iat'] = javaCast( "int", currentTime );
-		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
-		payload['issuer'] = CGI['server_name'];
-		payload['accountID'] = this.getHibachiScope().getAccount().getAccountID();
 		
-		
-		// TODO: should be in modal/service/HibachiJWTService; hibachi should not know anything about order;
-		if( arguments.setOrder && !arguments.clearOrder ) {
-			//set cart order id on payload
-			var mostRecentCart = getService('orderService').getMostRecentNotPlacedOrderByAccountID(getHibachiScope().getAccount().getAccountID());
-			if( !isNull(mostRecentCart) ) {
-				payload['orderID'] = mostRecentCart.getOrderID();
-			}
-		} else if(arguments.clearOrder) {
-			payload['orderID'] = '';
+		var payload = {
+			'iat' : javaCast( 'int', currentTime ),
+			'issuer' : CGI['server_name'],
+			'accountID' : this.getHibachiScope().getAccount().getAccountID(),
+			'sessionID' : this.getHibachiScope().getSession().getSessionID(),
+			'exp': JavaCast( 'int', ( currentTime + tokenExpirationTime ) ),
+			'encoding' : 'UTF-8'
 		}
 		
 		//add users role so we can make decisions on frontend permissions
@@ -100,10 +93,6 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 			payload['role']='public';
 		}
 		
-		payload['encoding'] = "UTF-8";
-		var token = jwt.encode(payload);
-		
-		return token;
+		return jwt.encode(payload);
 	}
-	
 }

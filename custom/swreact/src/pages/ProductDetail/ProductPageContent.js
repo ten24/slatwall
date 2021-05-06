@@ -1,180 +1,70 @@
 import ProductDetailGallery from './ProductDetailGallery'
 import ProductPagePanels from './ProductPagePanels'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { addToCart } from '../../actions/cartActions'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { HeartButton, ProductPrice } from '../../components'
 import { useTranslation } from 'react-i18next'
-import { useGetSku, useGetProductSkus, useGetProductAvailableSkuOptions, useGetProductSkuSelected } from '../../hooks/useAPI'
-import { useLocation } from 'react-router'
-import { usePush } from '../../hooks/useRedirect'
+import queryString from 'query-string'
+import { useHistory, useLocation } from 'react-router'
+import ContentLoader from 'react-content-loader'
+import { skuIdsToSkuCodes } from '../../utils'
 
-const ProductPageContent = ({ productID, productName, productClearance, productCode, productDescription, skuID }) => {
+const OptionLoader = props => (
+  <ContentLoader speed={2} width={400} height={150} viewBox="0 0 400 200" backgroundColor="#f3f3f3" foregroundColor="#ecebeb" {...props}>
+    <rect x="25" y="15" rx="5" ry="5" width="350" height="20" />
+    <rect x="25" y="45" rx="5" ry="5" width="350" height="10" />
+    <rect x="25" y="60" rx="5" ry="5" width="350" height="10" />
+    <rect x="26" y="75" rx="5" ry="5" width="350" height="10" />
+    <rect x="27" y="107" rx="5" ry="5" width="350" height="20" />
+    <rect x="26" y="135" rx="5" ry="5" width="350" height="10" />
+    <rect x="26" y="150" rx="5" ry="5" width="350" height="10" />
+    <rect x="27" y="165" rx="5" ry="5" width="350" height="10" />
+  </ContentLoader>
+)
+
+const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions = [], availableSkuOptions = '', isFetching = false }) => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  let loc = useLocation()
-  let [sku, setRequest] = useGetSku()
-  let [skus, setSkusRequest] = useGetProductSkus()
-  let [skuOptions, setOptionsRequest] = useGetProductAvailableSkuOptions()
-  let [skuSelected, setSlectedRequest] = useGetProductSkuSelected()
-  const [lastOptionGoupID, setLastOptionGoupID] = useState('')
-  let [push, setPush] = usePush({ location: loc.pathname })
-
+  const cart = useSelector(state => state.cart)
   const [quantity, setQuantity] = useState(1)
-  const refs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef(), React.createRef()])
-
-  if (skuSelected.isLoaded) {
-    setSlectedRequest({ data: {}, isFetching: false, isLoaded: false, params: {}, makeRequest: false })
-    setRequest({ ...sku, isFetching: true, isLoaded: false, params: { 'f:skuID': skuSelected.data.skuID || skus.data.skus[0].skuID }, makeRequest: true })
-    setPush({ ...push, search: `?skuid=${skuSelected.data.skuID || skus.data.skus[0].skuID}`, shouldRedirect: true, time: 200 })
-  }
-
-  useEffect(() => {
-    if (!skus.isFetching && !skus.isLoaded) {
-      setSkusRequest({ ...skus, isFetching: true, isLoaded: false, params: { productID }, makeRequest: true })
-    }
-    if ((skuID || (skus.isLoaded && skus.data.skus[0])) && !sku.isFetching && !sku.isLoaded) {
-      setRequest({ ...sku, isFetching: true, isLoaded: false, params: { 'f:skuID': skuID || skus.data.skus[0].skuID }, makeRequest: true })
-    }
-    if (!skuOptions.isFetching && !skuOptions.isLoaded && sku.isLoaded) {
-      setOptionsRequest({
-        ...skuOptions,
-        isFetching: true,
-        isLoaded: false,
-        params: {
-          productID,
-          selectedOptionIDList: '',
-        },
-        makeRequest: true,
-      })
-    }
-  }, [setSkusRequest, skus, productID, sku, setRequest, setOptionsRequest, skuOptions, skuID])
-
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
       <div className="px-lg-3">
         <div className="row">
-          <ProductDetailGallery productID={productID} skuID={sku.data.skuID} />
+          <ProductDetailGallery productID={product.productID} skuID={skuID} />
           {/* <!-- Product details--> */}
           <div className="col-lg-6 pt-0">
             <div className="product-details pb-3">
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {productClearance === true && ' On Special'}</span>
-                <HeartButton skuID={sku.data.skuID} className={'btn-wishlist mr-0 mr-lg-n3'} />
+                <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {product.productClearance === true && ' On Special'}</span>
+                {skuID && <HeartButton skuID={skuID} className={'btn-wishlist mr-0 mr-lg-n3'} />}
               </div>
-              <h2 className="h4 mb-2">{productName}</h2>
+              <h2 className="h4 mb-2">{product.productName}</h2>
               <div className="mb-2">
                 <span className="text-small text-muted">{`SKU: `}</span>
-                <span className="h4 font-weight-normal text-large text-accent mr-1">{sku.data.skuCode}</span>
+                {sku && <span className="font-weight-normal text-large text-accent mr-1">{sku.skuCode}</span>}
               </div>
               <div
                 className="mb-3 font-weight-light font-size-small text-muted"
                 dangerouslySetInnerHTML={{
-                  __html: productDescription,
+                  __html: product.productDescription,
                 }}
               />
               <form
                 className="mb-grid-gutter"
                 onSubmit={event => {
                   event.preventDefault()
-                  dispatch(addToCart(sku.data.skuID, quantity))
+                  dispatch(addToCart(sku.skuID, quantity))
                   window.scrollTo({
                     top: 0,
                     behavior: 'smooth',
                   })
                 }}
               >
-                {skus.isLoaded &&
-                  skuOptions.isLoaded &&
-                  skus.data.options.length > 0 &&
-                  skus.data.options.map(({ optionGroupName, options, optionGroupID }, index) => {
-                    let selectOptions = sku.data.options
-                      .map(options => {
-                        return options.optionID
-                      })
-                      .join()
-                    const selectOption = options.filter(option => {
-                      return selectOptions.includes(option.optionID)
-                    })
-                    let filteredOptions = options
-                    if (lastOptionGoupID !== optionGroupID) {
-                      filteredOptions = options.filter(opt => {
-                        return skuOptions.data.availableSkuOptions.includes(opt.optionID)
-                      })
-                    }
-
-                    if (!filteredOptions.length) {
-                      return <div key={optionGroupID}></div>
-                    }
-
-                    return (
-                      <div className="form-group" key={optionGroupID}>
-                        <div className="d-flex justify-content-between align-items-center pb-1">
-                          <label className="font-weight-medium" htmlFor={optionGroupID}>
-                            {optionGroupName}
-                          </label>
-                        </div>
-
-                        <select
-                          className="custom-select"
-                          required
-                          id={optionGroupID}
-                          ref={refs.current[index]}
-                          value={(selectOption.length > 0 && selectOption[0].optionID) || options[0]}
-                          onChange={e => {
-                            const selectedOptionIDList = refs.current.reduce((acc, ref) => (ref.current ? [...acc, ref.current.value] : acc), []).join()
-                            setOptionsRequest({
-                              ...skuOptions,
-                              isFetching: true,
-                              isLoaded: false,
-                              params: {
-                                productID,
-                                selectedOptionIDList: e.target.value,
-                              },
-                              makeRequest: true,
-                            })
-
-                            setSlectedRequest({ ...skuSelected, isFetching: true, isLoaded: false, params: { productID, selectedOptionIDList }, makeRequest: true })
-                            setLastOptionGoupID(optionGroupID)
-                          }}
-                        >
-                          {filteredOptions &&
-                            filteredOptions.map(({ optionID, optionName }) => {
-                              return (
-                                <option key={optionID} value={optionID}>
-                                  {optionName}
-                                </option>
-                              )
-                            })}
-                        </select>
-                      </div>
-                    )
-                  })}
-
-                {/* {productDetails.options.length === 0 && productDetails.skus.length > 1 && (
-                  <div className="form-group">
-                    <div className="d-flex justify-content-between align-items-center pb-1">
-                      <label className="font-weight-medium" htmlFor="product-size">
-                        {t('frontend.product.option')}
-                      </label>
-                    </div>
-
-                    <select className="custom-select" required id="product-size">
-                      {productDetails.skus &&
-                        productDetails.skus.map(({ skuID, calculatedSkuDefinition }) => {
-                          return (
-                            <option key={skuID} value={skuID}>
-                              {calculatedSkuDefinition}
-                            </option>
-                          )
-                        })}
-                    </select>
-                  </div>
-                )} */}
-
-                <div className="mb-3">
-                  <ProductPrice salePrice={sku.data.price} listPrice={sku.data.listPrice} />
-                </div>
+                {productOptions.length > 0 && !isFetching && <SkuOptions productID={product.productID} skuOptionDetails={productOptions} availableSkuOptions={availableSkuOptions} sku={sku} skuID={skuID} />}
+                {isFetching && <OptionLoader />}
+                <div className="mb-3">{sku && <ProductPrice salePrice={sku.price} listPrice={sku.listPrice} />}</div>
                 <div className="form-group d-flex align-items-center">
                   <select
                     value={quantity}
@@ -184,27 +74,150 @@ const ProductPageContent = ({ productID, productName, productClearance, productC
                     className="custom-select mr-3"
                     style={{ width: '5rem' }}
                   >
-                    {sku.data.calculatedQATS > 0 &&
-                      [...Array(sku.data.calculatedQATS > 20 ? 20 : sku.data.calculatedQATS).keys()].map((value, index) => (
+                    {sku &&
+                      sku.calculatedQATS > 0 &&
+                      [...Array(sku.calculatedQATS > 20 ? 20 : sku.calculatedQATS).keys()].map((value, index) => (
                         <option key={index + 1} value={index + 1}>
                           {index + 1}
                         </option>
                       ))}
                   </select>
 
-                  <button className="btn btn-primary btn-block" type="submit">
+                  <button disabled={cart.isFetching || !skuID} className="btn btn-primary btn-block" type="submit">
                     <i className="far fa-shopping-cart font-size-lg mr-2"></i>
                     {t('frontend.product.add_to_cart')}
                   </button>
                 </div>
               </form>
               {/* <!-- Product panels--> */}
-              <ProductPagePanels productID={productID} />
+              <ProductPagePanels product={product} attributeSets={attributeSets} />
             </div>
           </div>
         </div>
       </div>
     </div>
+  )
+}
+const getOptionByCode = (filteredOptions, optionGroupCode, optionCode) => {
+  return filteredOptions
+    .filter(optionGroup => optionGroupCode === optionGroup.optionGroupCode)
+    .map(optionGroup => optionGroup.options.filter(option => optionCode === option.optionCode))
+    .flat()
+    .shift()
+}
+const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, skuID }) => {
+  const [lastOption, setLastOption] = useState({ optionCode: '', optionGroupCode: '' })
+  const loc = useLocation()
+  const history = useHistory()
+  const { t } = useTranslation()
+
+  let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+  if (lastOption.optionGroupCode.length === 0 && Object.keys(params).length > 0) {
+    setLastOption({ optionCode: Object.entries(params)[0][0], optionGroupCode: Object.entries(params)[0][1] })
+  }
+  const calculateOptions = () => {
+    let filteredOptions = skuOptionDetails
+    filteredOptions.forEach(filteredOption => {
+      filteredOption.options = filteredOption.options.map(option => {
+        option.active = true
+        return option
+      })
+    })
+    if (lastOption.optionGroupCode.length > 0) {
+      filteredOptions.forEach(filteredOption => {
+        filteredOption.options = filteredOption.options.map(option => {
+          option.active = filteredOption.optionGroupCode === lastOption.optionGroupCode || availableSkuOptions.includes(option.optionID)
+          return option
+        })
+      })
+    }
+    return filteredOptions
+  }
+  const setOption = (optionGroupCode, optionCode, active) => {
+    delete params['skuid']
+    setLastOption({ optionCode, optionGroupCode })
+    if (!active) {
+      params = {}
+    }
+    params[optionGroupCode] = optionCode
+    history.push({
+      pathname: loc.pathname,
+      search: queryString.stringify(params, { arrayFormat: 'comma' }),
+    })
+  }
+  let filteredOptions = calculateOptions()
+
+  useEffect(() => {
+    let forceSelcted = {}
+    filteredOptions.forEach(optionGroup => {
+      const selectedOptions = optionGroup.options.filter(({ active }) => {
+        return active
+      })
+      if (selectedOptions.length === 1) {
+        forceSelcted[optionGroup.optionGroupCode] = selectedOptions[0].optionCode
+      }
+    })
+    // onkect sort order
+    if (Object.keys(forceSelcted) && JSON.stringify({ ...forceSelcted, ...params }).length !== JSON.stringify(params).length && !params.skuid) {
+      console.log('Redirect because of foreced Selection')
+      history.push({
+        pathname: loc.pathname,
+        search: queryString.stringify({ ...forceSelcted, ...params }, { arrayFormat: 'comma' }),
+      })
+    }
+
+    if (params.skuid && sku) {
+      console.log('Redirect to passed Sku', skuOptionDetails)
+      const cals = skuIdsToSkuCodes(sku.selectedOptionIDList, skuOptionDetails)
+      history.push({
+        pathname: loc.pathname,
+        search: queryString.stringify(Object.assign(...cals), { arrayFormat: 'comma' }),
+      })
+    }
+  }, [history, filteredOptions, loc, params, sku, skuOptionDetails])
+
+  // searchForSelection(filteredOptions)
+  return (
+    <>
+      {filteredOptions.length > 0 &&
+        filteredOptions.map(({ optionGroupName, options, optionGroupID, optionGroupCode }) => {
+          const selectedOptionCode = params[optionGroupCode] || 'select'
+          return (
+            <div className="form-group" key={optionGroupID}>
+              <div className="d-flex justify-content-between align-items-center pb-1">
+                <label className="font-weight-medium" htmlFor={optionGroupID}>
+                  {optionGroupName}
+                </label>
+              </div>
+              <select
+                className="custom-select"
+                required
+                value={selectedOptionCode}
+                id={optionGroupID}
+                onChange={e => {
+                  const selectedOption = getOptionByCode(filteredOptions, optionGroupCode, e.target.value)
+                  setOption(optionGroupCode, selectedOption.optionCode, selectedOption.active)
+                }}
+              >
+                {selectedOptionCode === 'select' && (
+                  <option className={`option nonactive`} value="select">
+                    {t('frontend.product.select')}
+                  </option>
+                )}
+                {options &&
+                  options.map(option => {
+                    return (
+                      <option className={`option ${option.active ? 'active' : 'nonactive'}`} key={option.optionID} value={option.optionCode}>
+                        {option.active && option.optionName}
+                        {!option.active && option.optionName + ' - ' + t('frontend.product.na')}
+                      </option>
+                    )
+                  })}
+              </select>
+            </div>
+          )
+        })}
+    </>
   )
 }
 

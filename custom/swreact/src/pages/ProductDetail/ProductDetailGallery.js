@@ -8,7 +8,7 @@ import { useGetProductImageGallery } from '../../hooks/useAPI'
 Probably should move to this eventually 
 https://react-slick.neostack.com/docs/example/custom-paging
 */
-const ProductDetailGallery = ({ productID, skuID }) => {
+const ProductDetailGallery = ({ productID, skuID, imageFile }) => {
   let [productImageGallery, setRequest] = useGetProductImageGallery()
   const [sliders, setSliders] = useState({
     nav1: null,
@@ -16,6 +16,7 @@ const ProductDetailGallery = ({ productID, skuID }) => {
   })
   const slider1 = useRef()
   const slider2 = useRef()
+
   useEffect(() => {
     setSliders({
       nav1: slider1.current,
@@ -33,6 +34,12 @@ const ProductDetailGallery = ({ productID, skuID }) => {
   if (filterImages.length === 0) {
     filterImages = [{ ORIGINALPATH: '', NAME: '' }]
   }
+  filterImages.unshift(
+    filterImages.splice(
+      filterImages.findIndex(item => item.ORIGINALFILENAME === imageFile),
+      1
+    )[0]
+  )
 
   return (
     <div className="col-lg-6 pr-lg-5 pt-0">
