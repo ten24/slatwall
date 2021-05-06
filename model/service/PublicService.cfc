@@ -1293,10 +1293,9 @@ component  accessors="true" output="false"
             addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
         } else if(arguments.data.returnTokenFlag) {
             //Attempt Login
+            getHibachiScope().flushOrmSession();
             var accountProcess = this.getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
-            if ( !accountProcess.hasErrors() && getHibachiScope().getLoggedinFlag() ){
-                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
-            }
+            getHibachiSessionService().persistSession(true);
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
