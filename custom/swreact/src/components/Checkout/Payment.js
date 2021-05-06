@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { GiftCardDetails, CreditCardDetails as CCDetails, SwRadioSelect, TermPaymentDetails } from '../../components'
-import SlideNavigation from './SlideNavigation'
+import { CreditCardDetails, SlideNavigation, AccountAddress, GiftCardDetails, CCDetails, SwRadioSelect, TermPaymentDetails } from '../../components'
 import { addNewAccountAndSetAsBilling, addPayment, removePayment } from '../../actions/cartActions'
-import CreditCardDetails from './CreditCardDetails'
 import { eligiblePaymentMethodDetailSelector, orderPayment, billingAccountAddressSelector, getAllOrderPayments, disableInteractionSelector } from '../../selectors/orderSelectors'
 import { accountPaymentMethods } from '../../selectors/userSelectors'
-import AccountAddress from './AccountAddress'
 import { useTranslation } from 'react-i18next'
 
 export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'
@@ -210,4 +207,4 @@ const PaymentSlide = ({ currentStep }) => {
   )
 }
 
-export default PaymentSlide
+export { PaymentSlide, TermPayment, ListPayments, GiftCardPayemnt, CreditCardPayment }

@@ -3,10 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addShippingAddressUsingAccountAddress, addShippingMethod } from '../../actions/cartActions'
 import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
 import { useFormik } from 'formik'
-import SlideNavigation from './SlideNavigation'
-import { SwRadioSelect } from '../../components'
+import { SlideNavigation, SwRadioSelect, ShippingAddressForm } from '../../components'
 import { useAddOrderShippingAddress } from '../../hooks/useAPI'
-import ShippingAddressForm from './ShippingAddressForm'
 const ShippingAddress = ({ orderFulfillment = {} }) => {
   const dispatch = useDispatch()
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)

@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router'
-import { CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, CreditCardDetails, TermPaymentDetails, BillingAddressDetails } from '../../components'
+import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, CreditCardDetails, TermPaymentDetails, BillingAddressDetails } from '../../components'
 import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
-import SlideNavigation from './SlideNavigation'
 
 const ReviewSlide = ({ currentStep }) => {
   const cart = useSelector(state => state.cart)
@@ -59,4 +58,4 @@ const ReviewSlide = ({ currentStep }) => {
   )
 }
 
-export default ReviewSlide
+export { ReviewSlide }

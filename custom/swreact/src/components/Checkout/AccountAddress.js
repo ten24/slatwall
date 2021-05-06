@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
 import { useFormik } from 'formik'
-import { SwRadioSelect } from '../../components'
-import ShippingAddressForm from './ShippingAddressForm'
+import { SwRadioSelect, ShippingAddressForm } from '../../components'
 const ShippingAddress = ({ onSave }) => {
   const dispatch = useDispatch()
   const isFetching = useSelector(state => state.content.isFetching)
@@ -62,7 +61,7 @@ const ShippingAddress = ({ onSave }) => {
 const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'Addresses' }) => {
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const [showAddress, setShowAddress] = useState(false)
-  if (showAddress || accountAddresses.length === 0) {
+  if (showAddress) {
     selectedAccountID = 'new'
   }
   return (
@@ -91,7 +90,7 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
           </div>
         </div>
       )}
-      {(showAddress || selectedAccountID === 'new') && (
+      {showAddress && (
         <ShippingAddress
           setShowAddress={showAddress}
           onSave={values => {
@@ -104,4 +103,4 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
   )
 }
 
-export default AccountAddress
+export { AccountAddress }
