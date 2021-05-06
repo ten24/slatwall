@@ -53,9 +53,6 @@ const MainBanner = () => {
       },
     ],
   }
-  if(contentStore["home/main-banner-slider"] !== undefined){
-    console.log(contentStore["home/main-banner-slider"].associatedImage);
-  }
   return (
     <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${host}/custom/assets/files/associatedimage/${contentStore["home/main-banner-slider"] && contentStore["home/main-banner-slider"].associatedImage}` }}>
       <div className="container">
