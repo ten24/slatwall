@@ -29,7 +29,7 @@ const AccountContent = () => {
     <>
       <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
         <div className="d-flex justify-content-between w-100">
-        <h2 className="h3">{contentTitle}</h2>
+        <h2 className="h5">List of your saved addresses:</h2>
          { alertMesage.length > 0 &&
          	<div className="alert alert-info" role="alert">
             	{ t(alertMesage) }
