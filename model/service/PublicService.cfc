@@ -1024,6 +1024,31 @@ component  accessors="true" output="false"
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
     }
 	
+    /**
+     * Function to get gift card balance
+     * adds giftCardsOnAccount in ajaxResponse
+     * @param giftCardID optional
+     * @return none
+     **/
+    public void function getGiftCardBalance(required any data) {
+        param name="arguments.data.giftCardCode" default="";
+        param name="arguments.data.giftCardID" default="";
+
+        if(len(arguments.data.giftCardCode)){
+            var giftCard = getService("giftCardService").getGiftCardByGiftCardCode(arguments.data.giftCardCode);
+        } else if(len(arguments.data.giftCardID)){
+            var giftCard = getService("giftCardService").getGiftCardByGiftCardID(arguments.data.giftCardID);
+        }
+
+        if(!isNull(giftCard)){
+            arguments.data['ajaxResponse']['data']['giftCardCode'] = giftCard.getGiftCardCode();
+            arguments.data['ajaxResponse']['data']['giftCardBalance'] = giftCard.getBalanceAmount();
+            getHibachiScope().addActionResult( "public:account.getGiftCardBalance", false );
+        } else {
+            getHibachiScope().addActionResult( "public:account.getGiftCardBalance", true );
+        }
+    }
+	
 	/**
      * Function to get all order deliveries for user
      * adds cartsAndQuotesOnAccount in ajaxResponse
