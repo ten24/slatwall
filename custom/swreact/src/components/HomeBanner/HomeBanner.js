@@ -32,7 +32,7 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
 
 const MainBanner = () => {
   const contentStore = useSelector(state => state.content)
-
+  const { host, basePath } = useSelector(state => state.configuration.theme)
   let homeMainBanner = []
   Object.keys(contentStore).forEach(key => {
     if (key.includes('main-banner-slider/')) {
@@ -54,14 +54,16 @@ const MainBanner = () => {
     ],
   }
   return (
-    <div className="container">
-      <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mx-md-5 pb-4">
-        <Slider className="slider-dark" {...settings}>
-          {homeMainBanner.length > 0 &&
-            homeMainBanner.map((slideData, index) => {
-              return <BannerSlide {...slideData} key={index} slideKey={index} />
-            })}
-        </Slider>
+    <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${host}/custom/assets/files/associatedimage/${contentStore["home/main-banner-slider"] && contentStore["home/main-banner-slider"].associatedImage}` }}>
+      <div className="container">
+        <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mx-md-5 pb-4">
+          <Slider className="slider-dark" {...settings}>
+            {homeMainBanner.length > 0 &&
+              homeMainBanner.map((slideData, index) => {
+                return <BannerSlide {...slideData} key={index} slideKey={index} />
+              })}
+          </Slider>
+        </div>
       </div>
     </div>
   )
@@ -92,9 +94,7 @@ const HomeBanner = () => {
   }, [request, setRequest])
   return (
     <>
-      <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${Background})` }}>
         <MainBanner />
-      </div>
       <ProductSlider sliderData={request.data}>{home && <div dangerouslySetInnerHTML={{ __html: home.customBody }} />}</ProductSlider>
     </>
   )
