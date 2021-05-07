@@ -3,6 +3,12 @@ const SHIPPING = 'shipping'
 const PAYMENT = 'payment'
 const REVIEW = 'review'
 
+const getCurrentStep = path => {
+  return (checkOutSteps.filter(step => {
+    return step.key === path
+  }) || [checkOutSteps[1]])[0]
+}
+
 const checkOutSteps = [
   {
     key: CART,
@@ -41,4 +47,4 @@ const checkOutSteps = [
     next: '',
   },
 ]
-export { checkOutSteps, CART, SHIPPING, PAYMENT, REVIEW }
+export { checkOutSteps, CART, SHIPPING, PAYMENT, REVIEW, getCurrentStep }

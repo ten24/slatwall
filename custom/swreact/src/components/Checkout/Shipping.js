@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { addAddressAndAttachAsShipping, addPickupLocation, addShippingAddressUsingAccountAddress, addShippingMethod, changeOrderFulfillment, getEligibleFulfillmentMethods, getPickupLocations, setPickupDate } from '../../actions/cartActions'
-import SlideNavigation from './SlideNavigation'
-import { SwRadioSelect } from '../../components'
-import AccountAddress from './AccountAddress'
+import { AccountAddress, SlideNavigation, SwRadioSelect } from '../../components'
 import { useEffect } from 'react'
 import { accountAddressSelector, fulfillmentMethodSelector, fulfillmentSelector, pickupLocation, pickupLocationOptions, shippingMethodSelector } from '../../selectors/orderSelectors'
 import DatePicker from 'react-datepicker'
@@ -12,6 +10,7 @@ const FulfillmentPicker = () => {
   const dispatch = useDispatch()
   const { eligibleFulfillmentMethods, orderItems } = useSelector(state => state.cart)
   let selectedFulfillmentMethod = useSelector(fulfillmentMethodSelector)
+
   return (
     <div className="row mb-3">
       <div className="col-sm-12">
@@ -69,6 +68,15 @@ const PickupLocationPicker = () => {
   const selectedLocation = useSelector(pickupLocation)
   const { orderFulfillmentID, estimatedShippingDate } = useSelector(fulfillmentSelector)
 
+  // @function - returns true if date (coming from datepicker) is greater than Current-Date.
+  // @param - date => any date object
+  // @returns - Boolean
+  // @info - https://reactdatepicker.com/#example-filter-dates
+  const isFutureDate = date => {
+    const currentDate = new Date()
+    currentDate.setHours(0, 0, 0, 0) // set time 00:00 as date coming from datepicker has time 00:00 , just to make user can pick today date
+    return date >= currentDate
+  }
   return (
     <>
       <div className="row mb-3">
@@ -83,6 +91,7 @@ const PickupLocationPicker = () => {
               timeIntervals={60}
               timeCaption="Time"
               dateFormat="MM/dd/yyyy h:mm aa"
+              filterDate={isFutureDate}
               onChange={pickupDate => {
                 dispatch(
                   setPickupDate({
@@ -156,4 +165,4 @@ const ShippingSlide = ({ currentStep }) => {
   )
 }
 
-export default ShippingSlide
+export { ShippingSlide, PickupLocationPicker, ShippingMethodPicker, FulfillmentPicker }

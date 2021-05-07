@@ -32,4 +32,4 @@ const SlideNavigation = ({ currentStep, nextActive = true }) => {
   )
 }
 
-export default SlideNavigation
+export { SlideNavigation }

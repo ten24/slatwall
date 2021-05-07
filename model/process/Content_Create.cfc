@@ -54,8 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Lazy / Injected Objects
 	property name="site";
 	property name="parentContent";
-	
-	property name="contentTemplateTypeID";
+	property name="contentTemplateTypeID" cfc="Type" hb_rbKey="entity.content.contentTemplateTypeID" hb_formFieldType="select";
 	property name="contentTemplateType" type="any";
 	
 	// New Properties
