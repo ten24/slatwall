@@ -47,17 +47,9 @@ Notes:
 
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
-	property name="hibachiService" type="any";
 	property name="settingService" type="any";
 	property name="GiftCardDAO";
 	// ===================== START: Logical Methods ===========================
-
-	public array function getGiftCardPublicProperties(){
-		var publicProperties =  ['giftCardID','giftCardCode','giftCardPin','expirationDate','ownerFirstName','ownerLastName','ownerEmailAddress','activeFlag','issuedDate','currencyCode','calculatedBalanceAmount'];
-		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('GiftCard');
-	    publicProperties.append(publicAttributes, true);
-		return publicProperties;
-	}
 	
 	/**
      * Function to get list of gift cards for user
