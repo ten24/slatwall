@@ -128,9 +128,14 @@ class SWListingDisplayController{
     public showTopPagination:boolean;
     public showFilters:boolean;
     public showToggleDisplayOptions:boolean;
-    public sortable:boolean = false;
+    
+    // sorting
+    public sortable: boolean;
+    public sortProperty:string;
     public sortableFieldName:string;
-    public sortProperty;
+    public sortContextIdColumn:string;
+    public sortContextIdValue:string;
+    
     public tableclass:string;
     public tableattributes:string;
     public typeaheadDataKey:string;
@@ -624,8 +629,10 @@ class SWListingDisplayController{
                 this.collectionConfig.setCustomEndpoint(this.customEndpoint);
             }
         }
-       
-        if(angular.isDefined(this.sortableFieldName)){
+        
+        // sorting
+        this.sortable = this.sortable || this.sortProperty?.length > 0;
+        if(this.sortProperty && !this.sortableFieldName ){
             this.sortableFieldName = "sorting" + this.tableID;
         }
     }
@@ -1039,11 +1046,10 @@ class SWListingDisplay implements ng.IDirective{
             defaultSearchColumn:"@?",
 
             /*Sorting*/
-            sortable:"<?",
-            sortableFieldName:"@?",
             sortProperty:"@?",
-            sortContextIDColumn:"@?",
-            sortContextIDValue:"@?",
+            sortableFieldName:"@?",
+            sortContextIdColumn:"@?",
+            sortContextIdValue:"@?",
 
             /*Single Select*/
             selectFieldName:"@?",

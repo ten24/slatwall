@@ -88,7 +88,7 @@ class SWDraggableContainer implements ng.IDirective{
                 element.on('drop', (e)=>{
                     e = e.originalEvent || e;
                     e.preventDefault();
-
+                    debugger;
                     if(!this.draggableService.isDropAllowed(e)) return true;
 
                     var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");

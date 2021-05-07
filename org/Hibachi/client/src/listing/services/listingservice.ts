@@ -178,6 +178,7 @@ class ListingService{
             let pageRecordsWithManualSortOrder = {};
 
             this.$timeout( () => {
+                debugger;
                 pageRecords.forEach( (record, index) => {
                     let primaryID = record[primaryIDPropertyName];
                     if(primaryID){

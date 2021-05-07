@@ -80,6 +80,18 @@ Notes:
 		}
 	)/>
 	
+	<!--- required for sorting --->
+	<cfset attributeSetCollectionList.addDisplayProperty(
+	displayProperty='sortOrder', 
+	columnConfig={
+			isVisible=true,
+			isSearchable=false,
+			isDeletable=false
+		}
+	)/>
+	<cfset attributeSetCollectionList.setOrderBy("sortOrder|ASC") />
+
+	
 	<cfset attributeSetCollectionList.addDisplayProperty(
 	displayProperty='attributeSetID',
 	columnConfig={
@@ -88,12 +100,20 @@ Notes:
 		isDeletable=false
 	})/>
 	
+	
 	<hb:HibachiListingDisplay 
 		collectionList="#attributeSetCollectionList#"
+		
+		sortProperty="sortOrder"
+		sortableFieldName="sortOrder"
+		edit=true
+
+	    recordeditmodal=true 
+		recordEditAction="admin:entity.editAttributeSet"
+		recordDetailAction="admin:entity.detailAttributeSet"
+		
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(attributeSetCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(attributeSetCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
 	
