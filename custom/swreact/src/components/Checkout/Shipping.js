@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { addAddressAndAttachAsShipping, addPickupLocation, addShippingAddressUsingAccountAddress, addShippingMethod, changeOrderFulfillment, getEligibleFulfillmentMethods, getPickupLocations, setPickupDate } from '../../actions/cartActions'
-import SlideNavigation from './SlideNavigation'
-import { SwRadioSelect } from '../../components'
-import AccountAddress from './AccountAddress'
+import { AccountAddress, SlideNavigation, SwRadioSelect } from '../../components'
 import { useEffect } from 'react'
 import { accountAddressSelector, fulfillmentMethodSelector, fulfillmentSelector, pickupLocation, pickupLocationOptions, shippingMethodSelector } from '../../selectors/orderSelectors'
 import DatePicker from 'react-datepicker'
@@ -167,4 +165,4 @@ const ShippingSlide = ({ currentStep }) => {
   )
 }
 
-export default ShippingSlide
+export { ShippingSlide, PickupLocationPicker, ShippingMethodPicker, FulfillmentPicker }

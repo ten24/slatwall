@@ -85,4 +85,4 @@ const ShippingAddressForm = ({ formik, isEdit, countryCodeOptions, stateCodeOpti
     </>
   )
 }
-export default ShippingAddressForm
+export { ShippingAddressForm }
