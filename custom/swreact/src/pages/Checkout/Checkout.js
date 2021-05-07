@@ -40,14 +40,16 @@ const StepsHeader = () => {
           progressSate = 'active current'
         }
         return (
-          <a
-            className={`step-item ${progressSate}`}
-            href={`/${step.name}`}
+          <button
+            className={`step-item ${progressSate} btn btn-link flex-grow-1 p-0`}
+            style={{ border: 'none' }}
             key={step.progress}
             onClick={e => {
               e.preventDefault()
-              history.push(step.link)
+              if (step.key === 'checkout') history.push('/shopping-cart')
+              else history.push(step.key)
             }}
+            disabled={progressSate === ''}
           >
             <div className="step-progress">
               <span className="step-count">{step.progress}</span>
@@ -56,7 +58,7 @@ const StepsHeader = () => {
               <i className={`fal fa-${step.icon}`}></i>
               {t(step.name)}
             </div>
-          </a>
+          </button>
         )
       })}
     </div>
