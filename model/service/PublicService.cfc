@@ -1019,6 +1019,9 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllGiftCardsOnAccount(required any data) {
+        param name="arguments.data.giftCardCode" default="";
+        param name="arguments.data.giftCardID" default="";
+
         arguments.account = getHibachiScope().getAccount();
         var giftCards = getService('giftCardService').getAllGiftCardsOnAccount( argumentCollection=arguments);
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;

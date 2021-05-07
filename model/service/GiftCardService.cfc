@@ -61,9 +61,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getAllGiftCardsOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+		param name="arguments.data.giftCardCode" default="";
+        param name="arguments.data.giftCardID" default="";
+		
 
 		var giftCardList = this.getGiftCardCollectionList();
 		giftCardList.addFilter( 'ownerAccount.accountID', arguments.account.getAccountID() );
+
+		if (len(arguments.data.giftCardCode)) {
+			giftCardList.addFilter("giftCardCode", arguments.data.giftCardCode);
+		} else if (len(arguments.data.giftCardID)) {
+			giftCardList.addFilter("giftCardID", arguments.data.giftCardID);
+		}
+
 		giftCardList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		giftCardList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
