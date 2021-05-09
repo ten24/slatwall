@@ -160,6 +160,8 @@ class SWListingDisplayController{
     public refreshEvent: string;
     public loading: boolean;
     
+    // not-binded
+    public recordSortedEventName: string;
     
     //@ngInject
     constructor(
@@ -419,8 +421,15 @@ class SWListingDisplayController{
             this.listingService.setupSelect(this.tableID);
             this.listingService.setupMultiselect(this.tableID);
             this.listingService.setupExampleEntity(this.tableID);
+            
+            
+            if(this.sortable){
+                // if the sortable-field-name is set, then the listing is supposed to be used in a form
+                // else it's a regular listing and it is supposed to call the API to update the page-record's sort-order and refresh itself 
+                this.listingService.setupSortable(this.tableID, this.sortableFieldName?.length >= 0 );
+            } 
+            
             this.setupCollectionPromise();
-
         }
 
         if(!this.collectionObject && (this.collectionConfig && this.collectionConfig.baseEntityName)){
@@ -631,10 +640,8 @@ class SWListingDisplayController{
         }
         
         // sorting
-        this.sortable = this.sortable || this.sortProperty?.length > 0;
-        if(this.sortProperty && !this.sortableFieldName ){
-            this.sortableFieldName = "sorting" + this.tableID;
-        }
+        this.sortable = this.sortable || this.sortProperty?.length > 0 || this.sortableFieldName?.length > 0;
+        this.recordSortedEventName = this.listingService.getListingPageRecordSortedEventString(this.tableID);
     }
 
     public getListingPageRecordsUpdateEventString = () =>{

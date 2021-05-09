@@ -179,6 +179,7 @@
                     </thead>
                     <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
                            sw-draggable-container
+                           data-drop-event-name="{{swListingDisplay.recordSortedEventName}}"
                            data-draggable="swListingDisplay.sortable"
                            data-draggable-records="swListingDisplay.collectionData.pageRecords"
                            data-listing-id="{{swListingDisplay.tableID}}"

@@ -105,7 +105,6 @@ Notes:
 		collectionList="#attributeSetCollectionList#"
 		
 		sortProperty="sortOrder"
-		sortableFieldName="sortOrder"
 		edit=true
 
 	    recordeditmodal=true 
