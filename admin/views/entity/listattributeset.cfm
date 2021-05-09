@@ -107,7 +107,6 @@ Notes:
 		sortProperty="sortOrder"
 		edit=true
 
-	    recordeditmodal=true 
 		recordEditAction="admin:entity.editAttributeSet"
 		recordDetailAction="admin:entity.detailAttributeSet"
 		
