@@ -9704,12 +9704,12 @@ var SWDraggableContainer = /** @class */ (function () {
                     element.on('drop', function (e) {
                         e = e.originalEvent || e;
                         e.preventDefault();
-                        debugger;
                         if (!_this.draggableService.isDropAllowed(e))
                             return true;
                         var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
                         var parsedRecord = JSON.parse(record);
                         var index = Array.prototype.indexOf.call(listNode.children, placeholderNode);
+                        parsedRecord['positionChnage'] = index - parsedRecord.draggableStartKey;
                         if (index < parsedRecord.draggableStartKey) {
                             parsedRecord.draggableStartKey++;
                         }
@@ -9717,11 +9717,11 @@ var SWDraggableContainer = /** @class */ (function () {
                             scope.swDraggableContainer.draggableRecords.splice(index, 0, parsedRecord);
                             scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
                         }, 0);
-                        if (angular.isDefined(scope.swDraggableContainer.listingId)) {
-                            _this.listingService.notifyListingPageRecordsUpdate(scope.swDraggableContainer.listingId);
+                        if (scope.swDraggableContainer.dropEventName) {
+                            _this.observerService.notify(scope.swDraggableContainer.dropEventName, parsedRecord);
                         }
-                        else if (angular.isDefined(scope.swDraggableContainer.dropEventName)) {
-                            _this.observerService.notify(scope.swDraggableContainer.dropEventName);
+                        else if (angular.isDefined(scope.swDraggableContainer.listingId)) {
+                            _this.listingService.notifyListingPageRecordsUpdate(scope.swDraggableContainer.listingId);
                         }
                         placeholderElement.remove();
                         e.stopPropagation();
@@ -9846,6 +9846,9 @@ var ListingService = /** @class */ (function () {
         this.getListingPageRecordsUpdateEventString = function (listingID) {
             return listingID + "pageRecordsUpdated";
         };
+        this.getListingPageRecordSortedEventString = function (listingID) {
+            return listingID + "pageRecords_sorted";
+        };
         this.getListingOrderByChangedEventString = function (listingID) {
             return listingID + "orderByChanged";
         };
@@ -9915,6 +9918,10 @@ var ListingService = /** @class */ (function () {
             }
             return baseEntityName;
         };
+        this.getListingSortPropertyname = function (listingId) {
+            var currentListing = _this.getListing(listingId);
+            return currentListing.sortProperty || 'sortOrder';
+        };
         this.getListingBaseEntityPrimaryIDPropertyName = function (listingID) {
             if (_this.getListingExampleEntity(listingID) != null) {
                 return _this.getListingExampleEntity(listingID).$$getIDName();
@@ -9944,7 +9951,6 @@ var ListingService = /** @class */ (function () {
                 var primaryIDColumnIndex_1 = _this.getListingCollectionConfigColumnIndexByPropertyIdentifier(listingID, primaryIDWithBaseAlias);
                 var pageRecordsWithManualSortOrder_1 = {};
                 _this.$timeout(function () {
-                    debugger;
                     pageRecords.forEach(function (record, index) {
                         var _a;
                         var primaryID = record[primaryIDPropertyName_1];
@@ -10398,11 +10404,35 @@ var ListingService = /** @class */ (function () {
                 }
                 _this.setupHierarchicalExpandable(listingID, collectionConfig);
             }
-            _this.setupSortable(listingID);
             _this.updateColumnAndAdministrativeCount(listingID);
         };
-        this.setupSortable = function (listingID) {
-            _this.attachToListingPageRecordsUpdate(listingID, _this.getPageRecordsWithManualSortOrder, _this.utilityService.createID(32));
+        this.updateListingPageRecordSortOrder = function (listingID, recordId, newSortOrder) {
+            var currentListing = _this.getListing(listingID);
+            var entityName = _this.getListingBaseEntityName(listingID);
+            var primaryIDPropertyName = _this.getListingEntityPrimaryIDPropertyName(listingID);
+            _this.$hibachi.updateEntitySortOrder(entityName, primaryIDPropertyName, recordId, newSortOrder, currentListing.sortContextIdColumn, currentListing.sortContextIdValue).then(function (data) {
+                _this.observerService.notifyById('refreshListingDisplay', listingID, null);
+            }).catch(function (e) {
+                console.error("Error encountered while updating sort-order for Listing:" + listingID + ", Entity: " + entityName + ", recordID: " + recordId + ", newSortOrder: " + newSortOrder, e);
+            });
+        };
+        this.setupSortable = function (listingID, hasSortableFieldName) {
+            // if the sortable-field-name is set, then the listing is supposed to be used in a form
+            // else it's a regular listing and it is supposed to call the API to update the page-record's sort-order and refresh itself 
+            if (hasSortableFieldName) {
+                _this.attachToListingPageRecordsUpdate(listingID, _this.getPageRecordsWithManualSortOrder, _this.utilityService.createID(32));
+                return;
+            }
+            // if the listing doesn;t have a sortable-field-name, then we're going to update the sort-order in
+            _this.observerService.attach(function (updatedRecord) {
+                var currentListing = _this.getListing(listingID);
+                var sortProperty = _this.getListingSortPropertyname(listingID);
+                var primaryIDPropertyName = _this.getListingEntityPrimaryIDPropertyName(listingID);
+                var recordId = updatedRecord[primaryIDPropertyName];
+                var oldSortOrder = updatedRecord[sortProperty];
+                var positionChnage = updatedRecord['positionChnage'];
+                _this.updateListingPageRecordSortOrder(listingID, recordId, oldSortOrder + positionChnage);
+            }, _this.getListingPageRecordSortedEventString(listingID));
         };
         this.setupSelect = function (listingID) {
             var _a;
@@ -11902,6 +11932,23 @@ var HibachiService = /** @class */ (function () {
                 params.context = context;
             }
             var request = _this.requestService.newAdminRequest(urlString, params);
+            return request.promise;
+        };
+        this.updateEntitySortOrder = function (enittyName, primaryIdPropertyName, primaryID, newSortOrder, contextIDColumn, contextIDValue) {
+            if (newSortOrder === void 0) { newSortOrder = 0; }
+            var data = {
+                'recordID': primaryID,
+                'entityName': enittyName,
+                'recordIDColumn': primaryIdPropertyName,
+                'newSortOrder': newSortOrder,
+                'contextIDColumn': contextIDColumn,
+                'contextIDValue': contextIDValue
+            };
+            var urlString = _this.getUrlWithActionPrefix() + 'admin:ajax.updateSortOrder';
+            var request = _this.requestService.newAdminRequest(urlString, data, 'post', {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'X-Hibachi-AJAX': true
+            });
             return request.promise;
         };
         this.savePersonalCollection = function (params) {
@@ -15773,6 +15820,7 @@ var SWListingDisplayController = /** @class */ (function () {
             });
         };
         this.processCollection = function () {
+            var _a;
             _this.initializeState();
             if (angular.isDefined(_this.collectionPromise)) {
                 _this.hasCollectionPromise = true;
@@ -15821,6 +15869,11 @@ var SWListingDisplayController = /** @class */ (function () {
                 _this.listingService.setupSelect(_this.tableID);
                 _this.listingService.setupMultiselect(_this.tableID);
                 _this.listingService.setupExampleEntity(_this.tableID);
+                if (_this.sortable) {
+                    // if the sortable-field-name is set, then the listing is supposed to be used in a form
+                    // else it's a regular listing and it is supposed to call the API to update the page-record's sort-order and refresh itself 
+                    _this.listingService.setupSortable(_this.tableID, ((_a = _this.sortableFieldName) === null || _a === void 0 ? void 0 : _a.length) >= 0);
+                }
                 _this.setupCollectionPromise();
             }
             if (!_this.collectionObject && (_this.collectionConfig && _this.collectionConfig.baseEntityName)) {
@@ -15891,7 +15944,7 @@ var SWListingDisplayController = /** @class */ (function () {
             }
         };
         this.initializeState = function () {
-            var _a;
+            var _a, _b;
             _this.tableID = _this.tableId || _this.name || 'LD' + _this.utilityService.createID();
             _this.observerService.attach(_this.refreshListingDisplay, 'refreshListingDisplay', _this.tableID);
             if (angular.isUndefined(_this.collectionConfig)) {
@@ -16001,10 +16054,8 @@ var SWListingDisplayController = /** @class */ (function () {
                 }
             }
             // sorting
-            _this.sortable = _this.sortable || ((_a = _this.sortProperty) === null || _a === void 0 ? void 0 : _a.length) > 0;
-            if (_this.sortProperty && !_this.sortableFieldName) {
-                _this.sortableFieldName = "sorting" + _this.tableID;
-            }
+            _this.sortable = _this.sortable || ((_a = _this.sortProperty) === null || _a === void 0 ? void 0 : _a.length) > 0 || ((_b = _this.sortableFieldName) === null || _b === void 0 ? void 0 : _b.length) > 0;
+            _this.recordSortedEventName = _this.listingService.getListingPageRecordSortedEventString(_this.tableID);
         };
         this.getListingPageRecordsUpdateEventString = function () {
             return _this.listingService.getListingPageRecordsUpdateEventString(_this.tableID);
@@ -30954,4 +31005,4 @@ exports.SWModalWindow = SWModalWindow;
 /***/ })
 
 }]);
-//# sourceMappingURL=hibachiAdmin.0e79da0249076c5fa587.bundle.js.map
+//# sourceMappingURL=hibachiAdmin.8369b38aa77fa548827b.bundle.js.map
