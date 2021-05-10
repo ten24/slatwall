@@ -128,8 +128,8 @@ export const getCountries = () => {
 }
 export const addContent = (content = {}) => {
   return async dispatch => {
-    if (content.setting) {
-      dispatch(setTitle(content.setting.contentHTMLTitleString))
+    if (content.settings) {
+      dispatch(setTitle(content.settings.contentHTMLTitleString))
     }
     dispatch(receiveContent(content))
   }

@@ -60,82 +60,66 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
       <form onSubmit={formik.handleSubmit}>
         <div className="row"></div>
         <h2>{heading}</h2>
-        <div class="row">
-          <div class="col-md-6">
-            <div className="form-group">
-              <label htmlFor="countryCode">{t('frontend.account.countryCode')}</label>
-              <SwSelect
-                id="countryCode"
-                value={formik.values.countryCode}
-                onChange={e => {
-                  e.preventDefault()
-                  dispatch(getStateCodeOptionsByCountryCode(e.target.value))
-                  formik.handleChange(e)
-                }}
-                options={countryCodeOptions}
-              />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div className="form-group">
-              <label htmlFor="name">{t('frontend.account.name')}</label>
-              <input className="form-control" type="text" id="name" value={formik.values['name']} onChange={formik.handleChange} />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div className="form-group">
-              <label htmlFor="company">{t('frontend.account.company')}</label>
-              <input className="form-control" type="text" id="company" value={formik.values['company']} onChange={formik.handleChange} />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div className="form-group">
-              <label htmlFor="phoneNumber">{t('frontend.account.phoneNumber')} </label>
-              <input className="form-control" type="text" id="phoneNumber" value={formik.values['phoneNumber']} onChange={formik.handleChange} />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div className="form-group">
-              <label htmlFor="streetAddress">{t('frontend.account.streetAddress')}</label>
-              <input className="form-control" type="text" id="streetAddress" value={formik.values['streetAddress']} onChange={formik.handleChange} />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div className="form-group">
-              <label htmlFor="street2Address">{t('frontend.account.street2Address')}</label>
-              <input className="form-control" type="text" id="street2Address" value={formik.values['street2Address']} onChange={formik.handleChange} />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div className="form-group">
-              <label htmlFor="city">{t('frontend.account.city')}</label>
-              <input className="form-control" type="text" id="city" value={formik.values['city']} onChange={formik.handleChange} />
-            </div>
-          </div>
-          <div class="col-md-3">
-            {stateCodeOptions[formik.values.countryCode] && stateCodeOptions[formik.values.countryCode].length > 0 && (
-              <div className="form-group">
-                <label htmlFor="stateCode">{t('frontend.account.stateCode')}</label>
-                <SwSelect
-                  id="stateCode"
-                  value={formik.values['stateCode']}
-                  onChange={e => {
-                    e.preventDefault()
-                    formik.handleChange(e)
-                  }}
-                  options={stateCodeOptions[formik.values.countryCode]}
-                />
-              </div>
-            )}
-          </div>
-          <div class="col-md-3">
-            <div className="form-group">
-              <label htmlFor="postalCode">{t('frontend.account.postalCode')}</label>
-              <input className="form-control" type="text" id="postalCode" value={formik.values['postalCode']} onChange={formik.handleChange} />
-            </div>
-          </div>
+        <div className="form-group">
+          <label htmlFor="countryCode">{t('frontend.account.countryCode')}</label>
+          <SwSelect
+            id="countryCode"
+            value={formik.values.countryCode}
+            onChange={e => {
+              e.preventDefault()
+              dispatch(getStateCodeOptionsByCountryCode(e.target.value))
+              formik.handleChange(e)
+            }}
+            options={countryCodeOptions}
+          />
         </div>
+        <div className="form-group">
+          <label htmlFor="accountAddressName">{t('frontend.account.nickname')}</label>
+          <input className="form-control" type="text" id="accountAddressName" value={formik.values['accountAddressName']} onChange={formik.handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="name">{t('frontend.account.fullname')}</label>
+          <input className="form-control" type="text" id="name" value={formik.values['name']} onChange={formik.handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="company">{t('frontend.account.company')}</label>
+          <input className="form-control" type="text" id="company" value={formik.values['company']} onChange={formik.handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="phoneNumber">{t('frontend.account.phoneNumber')} </label>
+          <input className="form-control" type="text" id="phoneNumber" value={formik.values['phoneNumber']} onChange={formik.handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="streetAddress">{t('frontend.account.streetAddress')}</label>
+          <input className="form-control" type="text" id="streetAddress" value={formik.values['streetAddress']} onChange={formik.handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="street2Address">{t('frontend.account.street2Address')}</label>
+          <input className="form-control" type="text" id="street2Address" value={formik.values['street2Address']} onChange={formik.handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="city">{t('frontend.account.city')}</label>
+          <input className="form-control" type="text" id="city" value={formik.values['city']} onChange={formik.handleChange} />
+        </div>
+        {stateCodeOptions[formik.values.countryCode] && stateCodeOptions[formik.values.countryCode].length > 0 && (
+          <div className="form-group">
+            <label htmlFor="stateCode">{t('frontend.account.stateCode')}</label>
+            <SwSelect
+              id="stateCode"
+              value={formik.values['stateCode']}
+              onChange={e => {
+                e.preventDefault()
+                formik.handleChange(e)
+              }}
+              options={stateCodeOptions[formik.values.countryCode]}
+            />
+          </div>
+        )}
 
+        <div className="form-group">
+          <label htmlFor="postalCode">{t('frontend.account.postalCode')}</label>
+          <input className="form-control" type="text" id="postalCode" value={formik.values['postalCode']} onChange={formik.handleChange} />
+        </div>
         <div className="col-12">
           <hr className="mt-2 mb-3" />
           <div className="d-flex flex-wrap justify-content-end">

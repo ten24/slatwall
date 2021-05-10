@@ -162,8 +162,7 @@ component extends="Slatwall.model.service.OrderService" {
 					
  					// Loop over the orderItems to see if the skuPrice Changed
 					for(var orderItem in arguments.order.getOrderItems()){
-						
-						
+					    
 	 					if(
 	 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
 	 						&&
@@ -182,20 +181,20 @@ component extends="Slatwall.model.service.OrderService" {
 							
 						}
 					}
+					
 					try{
-						var livePrices = getService('erpOneService').getLivePrices(pricePayload);
+					    var erpOneService = this.getService('erpOneService');
+						var livePrices = erpOneService.getLivePrices(pricePayload);
 						
 						// Loop over the orderItems to see if the skuPrice Changed
 						for(var orderItem in arguments.order.getOrderItems()){
-							
-							
+
 		 					if(
 		 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
 		 						&&
 		 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 		 					){
-						
-	
+
 								for(var livePrice in livePrices){
 									if(livePrice['item'] == orderItem.getSku().getSkuCode()){
 										//Prices have 3 decimal numbers on ERP
@@ -211,8 +210,11 @@ component extends="Slatwall.model.service.OrderService" {
 								
 	 						}
 						}
-					}catch( any e ){
-						arguments.order.addError('addOrderItem', 'Error getting Live Prices: #e.message#');
+					} catch( any e ){
+					    // we're ignoring the ERP errors in the dev-mode sue to IP whitelisting constraint 
+					   	if( !erpOneService.setting("devMode") ){
+						    arguments.order.addError('addOrderItem', 'Error getting Live Prices: #e.message#');
+					   	}
 					}
 						
  				}
