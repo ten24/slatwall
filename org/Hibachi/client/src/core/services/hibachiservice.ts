@@ -516,6 +516,31 @@ class HibachiService{
 		return request.promise;
 	};
 	
+	updateEntitySortOrder = (enittyName:string, primaryIdPropertyName: string, primaryID:string, newSortOrder=0, contextIDColumn?:string,  contextIDValue?:string ) => {
+	    const data = {
+			'recordID' : primaryID,
+			'entityName' : enittyName,
+			'recordIDColumn' : primaryIdPropertyName,
+			'newSortOrder' : newSortOrder,
+			
+			'contextIDColumn' : contextIDColumn,
+			'contextIDValue' : contextIDValue
+		};
+		
+		const urlString = this.getUrlWithActionPrefix()+'admin:ajax.updateSortOrder';
+		
+		const request = this.requestService.newAdminRequest(
+		    urlString, 
+		    data, 
+		    'post', 
+		    {
+		        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+		        'X-Hibachi-AJAX': true
+		    }
+		);
+        return request.promise;
+	}
+	
 	savePersonalCollection= (params) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.savePersonalCollection';
