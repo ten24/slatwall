@@ -123,7 +123,8 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	public string function getSimpleRepresentation() {
 		if(!getAddress().isNew()) {
-			return "#getAccountAddressName()# - #getAddress().getSimpleRepresentation()#";
+			var accoutAddress = len(getAccountAddressName()) > 0 ? "#getAccountAddressName()# -" : "";
+			return "#accoutAddress# #getAddress().getSimpleRepresentation()#";
 		}
 		return rbKey('define.new');
 	}
