@@ -27,6 +27,7 @@
     "react-gtm-module": "^2.0.11",
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.8.8",
+    "react-loading-overlay": "^1.0.1",
     "react-mailchimp-subscribe": "^2.1.0",
     "react-redux": "^7.2.2",
     "react-router": "^5.2.0",
