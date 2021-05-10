@@ -66,7 +66,9 @@
 	<cfparam name="attributes.parentPropertyName" type="string" default="" />  <!--- Setting this value will turn on Expandable --->
 
 	<!--- Sorting --->
+	
 	<cfparam name="attributes.sortProperty" type="string" default="" />  			<!--- Setting this value will turn on Sorting --->
+	<cfparam name="attributes.sortableFieldName" type="string" default="" />  		
 	<cfparam name="attributes.sortContextIDColumn" type="string" default="" />
 	<cfparam name="attributes.sortContextIDValue" type="string" default="" />
 
@@ -85,7 +87,6 @@
 	<cfparam name="attributes.tableclass" type="string" default="" />  <!--- Pass in additional classes for the table --->
 	<cfparam name="attributes.adminattributes" type="string" default="" />
 	<cfparam name="attributes.recordAlias" type="string" default="" /> <!--- Optional record alias for process object injection --->
-	<cfparam name="attributes.sortable" type="boolean" default="false" />
 	<!--- Settings --->
 	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
 	<cfparam name="attributes.hideUnfilteredResults" type="boolean" default="false" /> <!--- If true, collection will only show records when filtered or searched --->
@@ -99,6 +100,7 @@
 	<cfparam name="thistag.multiselectable" type="string" default="false" />
 	<cfparam name="thistag.expandable" type="string" default="false" />
 	<cfparam name="thistag.sortable" type="string" default="false" />
+
 	<cfparam name="thistag.exampleEntity" type="string" default="" />
 	<cfparam name="thistag.buttonGroup" type="array" default="#arrayNew(1)#" />
 
@@ -146,12 +148,13 @@
 				<cfset personalCollectionKey = hash(serializeJson(attributes.collectionList.getCollectionConfigStruct()))/>
 			</cfif>
 			
+			
+			
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
-				data-sortable="#attributes.sortable#"
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
 				</cfif>
@@ -174,6 +177,20 @@
 				record-edit-event="#attributes.recordEditEvent#"
 				record-edit-action="#attributes.recordEditAction#"
 				
+				
+				<!---collection list sorting--->
+				<cfif len(attributes.sortProperty)>
+    			    data-sort-property="#attributes.sortProperty#"
+    			</cfif>
+    			<cfif len(attributes.sortableFieldName)>
+                    data-sortable-field-name"#attributes.sortableFieldName#"
+				</cfif>
+				<cfif len(attributes.sortContextIDColumn) AND len(attributes.sortContextIDValue)>
+                    data-sort-context-id-value="#attributes.sortContextIDValue#"
+                    data-sort-context-id-column="#attributes.sortContextIDColumn#"
+				</cfif>
+
+    				
 				<cfif !isNull(attributes.recordDetailActionIdProperty)>
 					record-detail-action-property="#attributes.recordDetailActionIdProperty#"
 				</cfif>

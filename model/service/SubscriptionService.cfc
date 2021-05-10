@@ -57,6 +57,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="paymentService" type="any";
 	property name="skuService" type="any";
 	property name="typeService" type="any";
+	property name="hibachiService" type="any";
 	
 	public any function getDeferredRevenueData(
 		string subscriptionTypeSystemCode, 
@@ -465,6 +466,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	// ===================== START: Logical Methods ===========================
+
+	public array function getSubscriptionBenefitPublicProperties(){
+		var publicProperties =  ['subscriptionBenefitID','subscriptionBenefitName','maxUseCount','accessType.typeName'];
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('SubscriptionBenefit');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
 
 	public any function hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod(){
 		if (getSubscriptionTermHasAutoPayFlagSet() && !getHasPaymentMethodThatAllowsAccountsToSave()){
