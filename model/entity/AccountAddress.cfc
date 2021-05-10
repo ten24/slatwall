@@ -123,8 +123,8 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	public string function getSimpleRepresentation() {
 		if(!getAddress().isNew()) {
-			var accoutAddress = len(getAccountAddressName()) > 0 ? "#getAccountAddressName()# -" : "";
-			return "#accoutAddress# #getAddress().getSimpleRepresentation()#";
+			var accoutAddressName = len(getAccountAddressName()) > 0 ? "#getAccountAddressName()# -" : "";
+			return "#accoutAddressName# #getAddress().getSimpleRepresentation()#";
 		}
 		return rbKey('define.new');
 	}
@@ -144,4 +144,3 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
-
