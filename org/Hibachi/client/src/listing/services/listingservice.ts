@@ -60,7 +60,7 @@ class ListingService{
     }
     
     public getListingPageRecordSortedEventString = (listingID:string) => {
-        return listingID + "pageRecords_sorted";
+        return listingID + "pageRecordsSorted";
     }
 
     public getListingOrderByChangedEventString = (listingID:string) => {
