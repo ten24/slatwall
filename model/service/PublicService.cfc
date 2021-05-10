@@ -1018,12 +1018,12 @@ component  accessors="true" output="false"
      * @param currentPage optional
      * @return none
      **/
-    public void function getAllGiftCardsOnAccount(required any data) {
+    public void function getGiftCardsOnAccount(required any data) {
         param name="arguments.data.giftCardCode" default="";
         param name="arguments.data.giftCardID" default="";
 
         arguments.account = getHibachiScope().getAccount();
-        var giftCards = getService('giftCardService').getAllGiftCardsOnAccount( argumentCollection=arguments);
+        var giftCards = getService('giftCardService').getGiftCardsOnAccount( argumentCollection=arguments);
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
     }
 	

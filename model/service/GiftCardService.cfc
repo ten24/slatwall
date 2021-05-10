@@ -58,7 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
      * @param currentPage optional
      * return struct of giftCards and total count
      **/
-	public any function getAllGiftCardsOnAccount(required any account, struct data={}) {
+	public any function getGiftCardsOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
 		param name="arguments.data.giftCardCode" default="";
