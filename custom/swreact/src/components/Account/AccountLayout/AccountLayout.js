@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { getMyAccountMenu } from '../../../selectors/contentSelectors'
 
-const isSelectedClass = 'bg-secondary font-size-sm mb-0 text-muted'
+const isSelectedClass = 'bg-secondary  mb-0 text-primary'
 
 const AccountSidebar = () => {
   const { t } = useTranslation()
@@ -36,7 +36,7 @@ const AccountSidebar = () => {
 
         <ul className="list-unstyled mb-0 ">
           <li key={'/my-account'} className={`border-bottom mb-0 ${loc.pathname === `/my-account` && isSelectedClass}`}>
-            <Link to={'/my-account'} className="nav-link-style active d-flex align-items-center px-4 py-3">
+            <Link to={'/my-account'} className="nav-link-style d-flex align-items-center px-4 py-3">
               <i className="far pr-2" /> {t('frontend.account.overview')}
             </Link>
           </li>

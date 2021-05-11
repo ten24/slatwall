@@ -4,6 +4,7 @@ import axios from 'axios'
 import { sdkURL } from '../services'
 import { receiveUser, requestUser } from './userActions'
 import { updateToken } from './authActions'
+import { getErrorMessage } from '../utils'
 
 export const REQUEST_CART = 'REQUEST_CART'
 export const RECEIVE_CART = 'RECEIVE_CART'
@@ -80,8 +81,11 @@ export const addToCart = (skuID, quantity = 1) => {
     if (req.isSuccess()) {
       dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
+      if (req.success().errors) toast.error(getErrorMessage(req.success().errors))
     } else {
       dispatch(receiveCart())
+
+      toast.error('Error')
     }
   }
 }

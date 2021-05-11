@@ -44,6 +44,7 @@ export { StepsHeader } from './Checkout/StepsHeader'
 export { AccountAddress } from './Checkout/AccountAddress'
 export { SlideNavigation } from './Checkout/SlideNavigation'
 export { ShippingAddressForm } from './Checkout/ShippingAddressForm'
+export { Overlay } from './Overlay/Overlay'
 
 export { PaymentSlide, TermPayment, ListPayments, GiftCardPayemnt, CreditCardPayment } from './Checkout/Payment'
 export { ReviewSlide } from './Checkout/Review'

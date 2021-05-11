@@ -307,3 +307,6 @@ a.nav-link {
   display: none;
   &.active { display: block; }
 }
+
+// navlink color on active
+.text-primary>.nav-link-style { color: $brand-primary; }
