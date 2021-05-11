@@ -630,9 +630,9 @@ component  accessors="true" output="false"
 	     
 	     var account = getHibachiScope().getAccount();
 	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
-	         var order = this.getOrderService.getOrder(arguments.data.orderID);
+	         var order = this.getOrderService().getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
-	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService.getOrderDetails(order.getOrderID(), account.getAccountID());
+	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService().getOrderDetails(order.getOrderID(), account.getAccountID());
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
 	         } else {
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
