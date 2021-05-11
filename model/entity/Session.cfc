@@ -147,11 +147,19 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	
 	
 	
-	public any function getOrder(boolean createIfNotFound=true) {
-		if(structKeyExists(variables, "order") && (isNull(getHibachiScope().getCurrentRequestSite()) || variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID())) {
-			
+	public any function getOrder(boolean createIfNotFound=true){
+		if(
+		    structKeyExists(variables, "order") 
+    		&& (
+    		    isNull(getHibachiScope().getCurrentRequestSite()) 
+    		    || isNull(variables.order.getOrderCreatedSite()) 
+    		    || variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID()
+    		)
+		){
 			return variables.order;
-		} else if (!structKeyExists(variables, "requestOrder") && arguments.createIfNotFound) {
+		}  
+		
+		if ( !structKeyExists(variables, "requestOrder") && arguments.createIfNotFound ){
 			
 			variables.requestOrder = getService("orderService").newOrder();
 			
@@ -174,8 +182,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 			if(!isNull(getHibachiScope().getCurrentRequestSite())){
 				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 			}
-			
 		}
+		
 		if(structKeyExists(variables,'requestOrder')){
 			return variables.requestOrder;
 		}

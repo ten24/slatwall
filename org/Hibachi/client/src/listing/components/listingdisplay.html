@@ -110,9 +110,11 @@
                             <!-- Sortable --> 
                             <input data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" type="hidden" data-ng-attr-name="{{swListingDisplay.sortableFieldName}}" data-ng-value="swListingDisplay.pageRecordsWithManualSortOrder" />
                             <th data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">&nbsp;</th>
+                           
                             <!-- Selectable -->
                             <input data-ng-if-start="swListingDisplay.selectable" type="hidden" data-ng-attr-name="{{swListingDisplay.selectFieldName}}" data-ng-value="swListingDisplay.selectValue" />
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
+                           
                             <!-- Multiselectable -->
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" value="{{swListingDisplay.multiselectValues.length ? swListingDisplay.multiselectValues : ['']}}" />
                             
@@ -177,6 +179,7 @@
                     </thead>
                     <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
                            sw-draggable-container
+                           data-drop-event-name="{{swListingDisplay.recordSortedEventName}}"
                            data-draggable="swListingDisplay.sortable"
                            data-draggable-records="swListingDisplay.collectionData.pageRecords"
                            data-listing-id="{{swListingDisplay.tableID}}"
