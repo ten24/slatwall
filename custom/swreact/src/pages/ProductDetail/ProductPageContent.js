@@ -3,31 +3,18 @@ import ProductPagePanels from './ProductPagePanels'
 import { useEffect, useState } from 'react'
 import { addToCart } from '../../actions/cartActions'
 import { useDispatch, useSelector } from 'react-redux'
-import { HeartButton, ProductPrice } from '../../components'
+import { Button, HeartButton, ProductPrice } from '../../components'
 import { useTranslation } from 'react-i18next'
 import queryString from 'query-string'
 import { useHistory, useLocation } from 'react-router'
-import ContentLoader from 'react-content-loader'
 import { skuIdsToSkuCodes } from '../../utils'
-
-const OptionLoader = props => (
-  <ContentLoader speed={2} width={400} height={150} viewBox="0 0 400 200" backgroundColor="#f3f3f3" foregroundColor="#ecebeb" {...props}>
-    <rect x="25" y="15" rx="5" ry="5" width="350" height="20" />
-    <rect x="25" y="45" rx="5" ry="5" width="350" height="10" />
-    <rect x="25" y="60" rx="5" ry="5" width="350" height="10" />
-    <rect x="26" y="75" rx="5" ry="5" width="350" height="10" />
-    <rect x="27" y="107" rx="5" ry="5" width="350" height="20" />
-    <rect x="26" y="135" rx="5" ry="5" width="350" height="10" />
-    <rect x="26" y="150" rx="5" ry="5" width="350" height="10" />
-    <rect x="27" y="165" rx="5" ry="5" width="350" height="10" />
-  </ContentLoader>
-)
 
 const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions = [], availableSkuOptions = '', isFetching = false }) => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const cart = useSelector(state => state.cart)
   const [quantity, setQuantity] = useState(1)
+
   return (
     <div className="container bg-light box-shadow-lg rounded-lg px-4 py-3 mb-5">
       <div className="px-lg-3">
@@ -38,7 +25,7 @@ const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions
             <div className="product-details pb-3">
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="d-inline-block font-size-sm align-middle px-2 bg-primary text-light"> {product.productClearance === true && ' On Special'}</span>
-                {skuID && <HeartButton skuID={skuID} className={'btn-wishlist mr-0 mr-lg-n3'} />}
+                {skuID && <HeartButton skuID={skuID} className={'btn-wishlist mr-0'} />}
               </div>
               <h2 className="h4 mb-2">{product.productName}</h2>
               <div className="mb-2">
@@ -51,19 +38,8 @@ const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions
                   __html: product.productDescription,
                 }}
               />
-              <form
-                className="mb-grid-gutter"
-                onSubmit={event => {
-                  event.preventDefault()
-                  dispatch(addToCart(sku.skuID, quantity))
-                  window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth',
-                  })
-                }}
-              >
-                {productOptions.length > 0 && !isFetching && <SkuOptions productID={product.productID} skuOptionDetails={productOptions} availableSkuOptions={availableSkuOptions} sku={sku} skuID={skuID} />}
-                {isFetching && <OptionLoader />}
+              <form className="mb-grid-gutter" onSubmit={e => e.preventDefault()}>
+                {productOptions.length > 0 && <SkuOptions productID={product.productID} skuOptionDetails={productOptions} availableSkuOptions={availableSkuOptions} sku={sku} skuID={skuID} />}
                 <div className="mb-3">{sku && <ProductPrice salePrice={sku.price} listPrice={sku.listPrice} />}</div>
                 <div className="form-group d-flex align-items-center">
                   <select
@@ -82,11 +58,21 @@ const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions
                         </option>
                       ))}
                   </select>
-
-                  <button disabled={cart.isFetching || !skuID} className="btn btn-primary btn-block" type="submit">
+                  <Button
+                    disabled={cart.isFetching || !skuID}
+                    isLoading={cart.isFetching}
+                    className="btn btn-primary btn-block"
+                    onClick={event => {
+                      dispatch(addToCart(sku.skuID, quantity))
+                      window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                      })
+                    }}
+                  >
                     <i className="far fa-shopping-cart font-size-lg mr-2"></i>
                     {t('frontend.product.add_to_cart')}
-                  </button>
+                  </Button>
                 </div>
               </form>
               {/* <!-- Product panels--> */}
@@ -107,6 +93,7 @@ const getOptionByCode = (filteredOptions, optionGroupCode, optionCode) => {
 }
 const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, skuID }) => {
   const [lastOption, setLastOption] = useState({ optionCode: '', optionGroupCode: '' })
+  const { isFetching } = useSelector(state => state.cart)
   const loc = useLocation()
   const history = useHistory()
   const { t } = useTranslation()
@@ -176,7 +163,6 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
     }
   }, [history, filteredOptions, loc, params, sku, skuOptionDetails])
 
-  // searchForSelection(filteredOptions)
   return (
     <>
       {filteredOptions.length > 0 &&
@@ -192,6 +178,7 @@ const SkuOptions = ({ productID, skuOptionDetails, availableSkuOptions, sku, sku
               <select
                 className="custom-select"
                 required
+                disabled={isFetching}
                 value={selectedOptionCode}
                 id={optionGroupID}
                 onChange={e => {

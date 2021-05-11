@@ -1,50 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './button.css';
+import { useTranslation } from 'react-i18next'
 
 /**
  * Primary UI component for user interaction
  */
-export const Button = ({ primary, backgroundColor, size, label, ...props }) => {
-  const mode = primary ? 'storybook-button--primary' : 'storybook-button--secondary';
+export const Button = ({ disabled, classList = 'btn btn-primary btn-block', isLoading = false, children, label, onClick }) => {
+  const { t } = useTranslation()
   return (
-    <button
-      type="button"
-      className={['storybook-button', `storybook-button--${size}`, mode].join(' ')}
-      style={backgroundColor && { backgroundColor }}
-      {...props}
-    >
-      {label}
+    <button type="button" className={classList} onClick={onClick}>
+      {children && children}
+      {!children && t(label)}
+      {isLoading && (
+        <>
+          <span> </span>
+          <i className="far fa fa-spinner fa fa-spin font-size-lg mr-2" />
+        </>
+      )}
     </button>
-  );
-};
-
-Button.propTypes = {
-  /**
-   * Is this the principal call to action on the page?
-   */
-  primary: PropTypes.bool,
-  /**
-   * What background color to use
-   */
-  backgroundColor: PropTypes.string,
-  /**
-   * How large should the button be?
-   */
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
-  /**
-   * Button contents
-   */
-  label: PropTypes.string.isRequired,
-  /**
-   * Optional click handler
-   */
-  onClick: PropTypes.func,
-};
-
-Button.defaultProps = {
-  backgroundColor: null,
-  primary: false,
-  size: 'medium',
-  onClick: undefined,
-};
+  )
+}
