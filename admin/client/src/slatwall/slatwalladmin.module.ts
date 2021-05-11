@@ -6,7 +6,7 @@ import {collectionmodule} from "../../../../org/Hibachi/client/src/collection/co
 import {listingmodule} from "../../../../org/Hibachi/client/src/listing/listing.module";
 import {cardmodule} from "../../../../org/Hibachi/client/src/card/card.module";
 import {widgetmodule} from "../../../../org/Hibachi/client/src/widget/widget.module";
-
+import {reportmodule} from "../../../../org/Hibachi/client/src/report/report.module"; 
 
 import {accountmodule} from "../account/account.module";
 import {addressmodule} from "../address/address.module";
@@ -24,7 +24,7 @@ import {productbundlemodule} from "../productbundle/productbundle.module";
 import {sitemodule} from "../site/site.module";
 import {skumodule} from "../sku/sku.module";
 import {subscriptionusagemodule} from "../subscriptionusage/subscriptionusage.module";
-import {termmodule} from "../term/term.module"; 
+import {termmodule} from "../term/term.module";
 
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
@@ -63,7 +63,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   sitemodule.name,
   skumodule.name,
   subscriptionusagemodule.name,
-  termmodule.name
+  termmodule.name,
+  reportmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
 .constant('slatwallPathBuilder', new SlatwallPathBuilder())
