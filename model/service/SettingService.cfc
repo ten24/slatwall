@@ -304,7 +304,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
 			globalIntegrationRequestLog = {fieldType="yesno",defaultValue=0},
 			globalIntegrationRequestLogExpirationDays = {fieldtype="text", defaultValue=30, validate={dataType="numeric",required=true,maxValue=180}},
-			globalPublicApiEntities = {fieldType="multiselect",defaultValue="Brand,Product,ProductType,Sku,SubscriptionBenefit"},
+			globalPublicApiEntities = {fieldType="multiselect",defaultValue="Brand,Product,ProductType,Sku"},
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},

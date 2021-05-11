@@ -57,7 +57,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="paymentService" type="any";
 	property name="skuService" type="any";
 	property name="typeService" type="any";
-	property name="hibachiService" type="any";
 	
 	public any function getDeferredRevenueData(
 		string subscriptionTypeSystemCode, 
@@ -454,9 +453,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
 		var subscriptionUsageList = this.getSubscriptionUsageBenefitAccountCollectionList();
+
+		subscriptionUsageList.addDisplayProperty("account.calculatedFullName");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.autoRenewFlag");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.autoPayFlag");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.initialTerm.termName");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.accountPaymentMethod.accountPaymentMethodID");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.expirationDate");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.gracePeriodTerm.termName");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.nextBillDate");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.nextReminderEmailDate");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.renewalSku.skuID");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.renewalTerm.termName");
+
 		subscriptionUsageList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage);
 
 		return { 
 		    "subscriptionsUsageOnAccount":  subscriptionUsageList.getPageRecords(), 
@@ -466,13 +478,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	// ===================== START: Logical Methods ===========================
-
-	public array function getSubscriptionBenefitPublicProperties(){
-		var publicProperties =  ['subscriptionBenefitID','subscriptionBenefitName','maxUseCount','accessType.typeName'];
-		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('SubscriptionBenefit');
-	    publicProperties.append(publicAttributes, true);
-		return publicProperties;
-	}
 
 	public any function hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod(){
 		if (getSubscriptionTermHasAutoPayFlagSet() && !getHasPaymentMethodThatAllowsAccountsToSave()){
