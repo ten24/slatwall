@@ -2547,12 +2547,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var account = arguments.orderTemplate.getAccount(); 
 
-		if(!isNull(processObject.getNewAccountAddress())){
+		if(!isNull(arguments.processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
-			accountAddress.populate(processObject.getNewAccountAddress());
+			accountAddress.populate(arguments.processObject.getNewAccountAddress());
 			
 			var address = getAddressService().newAddress();
-			address.populate(processObject.getNewAccountAddress().address);
+			address.populate(arguments.processObject.getNewAccountAddress().address);
 		
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
@@ -2561,19 +2561,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 			arguments.orderTemplate.setBillingAccountAddress(accountAddress);
-		} else if (!isNull(processObject.getBillingAccountAddress())) {  
-			arguments.orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
+		} else if (!isNull(arguments.processObject.getBillingAccountAddress())) {  
+			arguments.orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(arguments.processObject.getBillingAccountAddress().value));	
 		} 	
 
-		if(!isNull(processObject.getNewAccountPaymentMethod())){
+		if(!isNull(arguments.processObject.getNewAccountPaymentMethod())){
 			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
-			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
+			accountPaymentMethod.populate(arguments.processObject.getNewAccountPaymentMethod());
 
 			accountPaymentMethod.setAccount(account);
-			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
+			accountPaymentMethod.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress());
 
-			//set payment method as credit card
-			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(arguments.orderTemplate.getSite().setting('siteDefaultAccountPaymentMethod'))); 
+			//set payment method as site's default payment method if it exists
+			if(!isNull(arguments.orderTemplate.getSite())){
+				accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(arguments.orderTemplate.getSite().setting('siteDefaultAccountPaymentMethod'))); 
+			} else {
+				// set global site default payment method
+				accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(getService("settingService").getSettingValue("siteDefaultAccountPaymentMethod")))
+			}
 			
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
 			
@@ -2586,7 +2591,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
-			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
+			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethod().value));	
 		} 
 		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
