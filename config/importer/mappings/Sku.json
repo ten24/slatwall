@@ -23,6 +23,12 @@
                 "dataType": "string"
             }
         },
+        "defaultImage": {
+            "propertyIdentifier": "imageFile",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "price": {
             "propertyIdentifier": "price",
             "validations": {
@@ -81,6 +87,13 @@
             "hasMapping"         : false,
             "propertyIdentifier": "options",
             "generatorFunction": "generateSkuOptions"
+        },
+        {
+            "type": "manyToMany",
+            "entityName": "Image",
+            "mappingCode": "SkuAlternateImage",
+            "isNullable": true,
+            "propertyIdentifier": "assignedAlternateImages"
         }
     ],
     
