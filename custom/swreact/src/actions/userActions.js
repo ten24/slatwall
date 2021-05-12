@@ -237,10 +237,10 @@ export const getFavouriteProducts = () => {
         },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
-          return orderTemplateItems_sku_skuID
+        const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
+          return sku_skuID
         })
-        const orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        const orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].orderTemplate_orderTemplateID : ''
         dispatch(
           receiveWishlist({
             skusList,
@@ -268,10 +268,10 @@ export const addWishlistItem = (skuID = '') => {
         data: { skuID, orderTemplateID },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
-          return orderTemplateItems_sku_skuID
+        const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
+          return sku_skuID
         })
-        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].orderTemplate_orderTemplateID : ''
         dispatch(
           receiveWishlist({
             skusList,
@@ -299,10 +299,10 @@ export const removeWishlistItem = (removalSkuID = '') => {
         data: { removalSkuID, orderTemplateID },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
-          return orderTemplateItems_sku_skuID
+        const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
+          return sku_skuID
         })
-        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].orderTemplate_orderTemplateID : ''
         dispatch(
           receiveWishlist({
             skusList,
