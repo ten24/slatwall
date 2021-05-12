@@ -1,8 +1,7 @@
 import { softLogout } from './authActions'
-import { SlatwalApiService, sdkURL } from '../services'
+import { SlatwalApiService, sdkURL, axios } from '../services'
 import { toast } from 'react-toastify'
 import { receiveCart } from './cartActions'
-import axios from 'axios'
 import { isAuthenticated } from '../utils'
 
 export const REQUEST_USER = 'REQUEST_USER'
@@ -233,7 +232,6 @@ export const getFavouriteProducts = () => {
         url: `${sdkURL}api/scope/getWishlistItems`,
         headers: {
           'Content-Type': 'application/json',
-          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
         },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
@@ -263,7 +261,6 @@ export const addWishlistItem = (skuID = '') => {
         url: `${sdkURL}api/scope/addWishlistItem,getWishlistItems`,
         headers: {
           'Content-Type': 'application/json',
-          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
         },
         data: { skuID, orderTemplateID },
       })
@@ -294,7 +291,6 @@ export const removeWishlistItem = (removalSkuID = '') => {
         url: `${sdkURL}api/scope/removeWishlistItem,getWishlistItems`,
         headers: {
           'Content-Type': 'application/json',
-          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
         },
         data: { removalSkuID, orderTemplateID },
       })
