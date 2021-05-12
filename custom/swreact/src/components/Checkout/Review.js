@@ -20,13 +20,10 @@ const ReviewSlide = ({ currentStep }) => {
     <>
       <div className="row bg-lightgray pt-3 pr-3 pl-3 rounded mb-5">
         {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
-        <>
           <div className="col-md-4">
             <ShippingAddressDetails shippingAddress={shippingAddress} shippingAddressNickname={shippingAddressNickname} />
             <Link to="/my-account/addresses">Edit</Link>
           </div>
-          
-        </>
         )}
         {fulfillmentMethod.fulfillmentMethodType === 'pickup' && (
           <div className="col-md-4">
