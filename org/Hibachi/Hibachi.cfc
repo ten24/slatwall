@@ -464,9 +464,8 @@ component extends="framework.one" {
 		){
 			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
 			var CORSWhitelist = listToArray(getHibachiScope().setting('globalCORSWhitelist'));
-			if( arrayLen(CORSWhitelist) ){
-			    populateCORSHeader(httpRequestData.headers['Origin']);
-			}
+			 populateCORSHeader(httpRequestData.headers['Origin'], CORSWhitelist);
+			
 			return;
 		}
 
