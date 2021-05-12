@@ -78,18 +78,21 @@ component extends="HibachiService" accessors="true" {
 		approvedProductReviewCollectionList.addFilter("productReviewStatusType.systemCode","prstApproved");
 		return approvedProductReviewCollectionList;
 	}
+	
 	public array function getProductPublicProperties(){
-		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.listPrice', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
 	}
+	
 	public array function getProductTypePublicProperties(){
 		var publicProperties = ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('ProductType');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
 	}
+	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
 		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
