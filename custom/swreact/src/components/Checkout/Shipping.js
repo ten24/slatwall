@@ -16,7 +16,7 @@ const FulfillmentPicker = () => {
       <div className="col-sm-12">
         {eligibleFulfillmentMethods && eligibleFulfillmentMethods.length > 0 && (
           <SwRadioSelect
-            label="How do you want to recieve your items?"
+            label="How do you want to receive your items?"
             options={eligibleFulfillmentMethods}
             onChange={fulfillmentMethodID => {
               const orderItemIDList = orderItems
@@ -44,7 +44,7 @@ const ShippingMethodPicker = () => {
       <div className="col-sm-12">
         {orderFulfillments.length > 0 && (
           <SwRadioSelect
-            label="How do you want to recieve your items?"
+            label="Choose your delivery option"
             options={orderFulfillment.shippingMethodOptions}
             onChange={value => {
               dispatch(
@@ -92,6 +92,7 @@ const PickupLocationPicker = () => {
               timeCaption="Time"
               dateFormat="MM/dd/yyyy h:mm aa"
               filterDate={isFutureDate}
+              className="form-control"
               onChange={pickupDate => {
                 dispatch(
                   setPickupDate({

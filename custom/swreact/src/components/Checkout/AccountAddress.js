@@ -71,7 +71,6 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
         <div className="row">
           <div className="col-sm-12">
             <SwRadioSelect
-              label="Account Address"
               options={accountAddresses.map(({ accountAddressName, accountAddressID, address: { streetAddress } }) => {
                 return { name: `${accountAddressName} - ${streetAddress}`, value: accountAddressID }
               })}
@@ -83,7 +82,8 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
                   onSelect(value)
                 }
               }}
-              newLabel="Add Account Address"
+              customLabel={<span>Account Address</span>}
+              newLabel="Add Address"
               selectedValue={selectedAccountID}
               displayNew={true}
             />
