@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router'
+import {Link} from 'react-router-dom'
 import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, CreditCardDetails, TermPaymentDetails, BillingAddressDetails } from '../../components'
 import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
 
@@ -19,9 +20,13 @@ const ReviewSlide = ({ currentStep }) => {
     <>
       <div className="row bg-lightgray pt-3 pr-3 pl-3 rounded mb-5">
         {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
+        <>
           <div className="col-md-4">
             <ShippingAddressDetails shippingAddress={shippingAddress} shippingAddressNickname={shippingAddressNickname} />
+            <Link to="/my-account/addresses">Edit</Link>
           </div>
+          
+        </>
         )}
         {fulfillmentMethod.fulfillmentMethodType === 'pickup' && (
           <div className="col-md-4">
@@ -34,6 +39,7 @@ const ReviewSlide = ({ currentStep }) => {
         {payment.paymentMethod.paymentMethodType === 'creditCard' && (
           <div className="col-md-4">
             <CreditCardDetails creditCardPayment={payment} />
+            <Link to="/my-account/cards">Edit</Link>
           </div>
         )}
         {payment.paymentMethod.paymentMethodType === 'giftCard' && (
