@@ -129,7 +129,7 @@ component extends="HibachiService" accessors="true" {
 	 * @param - addAltImage - boolean to ignore alt images
 	 * @return - updated array of products
 	 **/
-	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+	public array function appendImagesToProducts(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
 			var resizeSizes=['s','m','l','xl']; //add all sized images
@@ -578,7 +578,7 @@ component extends="HibachiService" accessors="true" {
 	 * @param - addAltImage - boolean to ignore alt images
 	 * @return - updated array of products
 	 **/
-	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+	public array function appendImagesToProducts(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
 			var resizeSizes=['s','m','l','xl']; //add all sized images

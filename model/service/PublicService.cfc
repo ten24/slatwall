@@ -796,7 +796,7 @@ component  accessors="true" output="false"
         var relatedProducts = getProductService().getAllRelatedProducts(productID = arguments.data.productID);
         //add images
         if(arrayLen(relatedProducts)) {
-            relatedProducts = getProductService().appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
+            relatedProducts = getProductService().appendImagesToProducts(relatedProducts, "relatedProduct_defaultSku_imageFile");
         }
         arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
@@ -4151,50 +4151,51 @@ component  accessors="true" output="false"
 	 */
 	public any function getProduct(required struct data ){
         param name="arguments.data.urlTitle" default='';
+        param name="arguments.data.f:urlTitle:eq" default=''; //supporting both syntax, for url-title 
 	    param name="arguments.data.includeAttributesMetadata" default=false;
         
+        // consolidate both params
+        if( !arguments.data['urlTitle'].len() && arguments.data['f:urlTitle:eq'].len() ){
+            arguments.data['urlTitle'] = arguments.data['f:urlTitle:eq'];
+        }
+        
+        // if there's some value for urlTitle, set the entityID
         if( arguments.data.urlTitle.len() ){
 	        var product = this.getProductService().getProductByUrlTitle( arguments.data.urlTitle );
 	        if( !isNull(product) ){
 	            arguments.data.entityID = product.getProductID();
 	        }
         }
-        
-	     arguments.data.ajaxResponse['attributeSets'] = []
-	     
-	     if( arguments.data.includeAttributesMetadata ){
-            	if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
-                	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
-            	}
-            	if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
-                	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
-            	}
-	     }
-	    
-	    // if this's  cal to get all-products
+       
+       
+	    // if there's no entityID, then we're assuming that this's a call to fetch multiple-products
 	    if( !len(arguments.data.entityID) ){
-    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-            arguments.data.ajaxResponse['data'].pageRecords = this.getProductService().appendImagesToProduct(arguments.data.ajaxResponse['data'].pageRecords);
-            arguments.data.ajaxResponse['data'].pageRecords = this.getProductService().appendCategoriesAndOptionsToProduct(arguments.data.ajaxResponse['data'].pageRecords);
-            if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){
-                var product = this.getProductService().getProduct(arguments.data.ajaxResponse['data'].pageRecords[1].productID)
-                if(!isNull(product)){
-                    arguments.data.ajaxResponse['attributeSets'] = getAttributeSetMetadataForProduct(product.getProductID(), product.getProductType().getProductTypeIDPath() ,product.getBrand().getBrandID() ); 
-                }
-            }
-                
+    	    var collectionData = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+            acollectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendCategoriesAndOptionsToProduct(collectionData.pageRecords);
+            
+            arguments.data.ajaxResponse['data'] = collectionData; 
             this.getHibachiScope().addActionResult("public:scope.getProduct", true);
             return;
         }
         
-       
+	    // if the API is requesting attribute-set metadata, we need to have `brandID` and `productTypeIDPath` in the collection-query result
+	    if( arguments.data.includeAttributesMetadata ){
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeIDPath') ){
+            	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
+            }
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
+            	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
+            }
+	     }
         
-        var response = {};
-        response['product'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
-        response['product'] = this.getProductService().appendImagesToProduct([response['product']]);
-
-	    response['product'] = this.getProductService().appendCategoriesAndOptionsToProduct(response['product']);
-	    response['product'] = response['product'][1]
+        var response = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        
+        // this will return an array, on structs; in our case an array of length 1
+        var updatedProductArray = this.getProductService().appendImagesToProducts( [ response['product'] ] );
+	    updatedProductArray = this.getProductService().appendCategoriesAndOptionsToProduct( updatedProductArray );
+        response['product'] = updatedProductArray[1];
+        
         if(arguments.data.includeAttributesMetadata){
             response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
         }
