@@ -29,10 +29,10 @@ const ProductTypeList = ({ data, onSelect }) => {
               }
 
               return (
-                <div className="col-md-4 col-sm-6 mb-3" key={productTypeID}>
+                <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-3" key={productTypeID}>
                   <div className="card border-0">
                     <div
-                      className="d-block overflow-hidden rounded-lg"
+                      className="d-block overflow-hidden rounded-lg typelisting-image"
                       onClick={e => {
                         e.preventDefault()
                         onSelect(urlTitle)
@@ -43,7 +43,7 @@ const ProductTypeList = ({ data, onSelect }) => {
                     <div className="card-body">
                       <h2 className="h5">
                         <button
-                          className="link-button"
+                          className="link-button text-left"
                           onClick={e => {
                             e.preventDefault()
                             onSelect(urlTitle)
@@ -55,9 +55,9 @@ const ProductTypeList = ({ data, onSelect }) => {
                       <ul className="list-unstyled font-size-sm mb-0">
                         {childProductTypes.map(({ productTypeID, title, urlTitle, showProducts }, index) => {
                           return (
-                            <li className="d-flex align-items-center justify-content-between" key={productTypeID}>
+                            <li key={productTypeID}>
                               <button
-                                className="link-button nav-link-style"
+                                className="link-button nav-link-style d-flex align-items-center justify-content-between text-left"
                                 onClick={e => {
                                   e.preventDefault()
                                   onSelect(urlTitle)
