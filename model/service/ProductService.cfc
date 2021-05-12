@@ -619,7 +619,7 @@ component extends="HibachiService" accessors="true" {
 	/**
 	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
 	 * */
-	public any function appendCategoriesAndOptionsToProduct(required array products) {
+	public any function appendCategoriesAndOptionsToProducts(required array products) {
 		if(arrayLen(arguments.products)) {
 			for(var product in arguments.products) {
 				

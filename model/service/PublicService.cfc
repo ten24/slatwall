@@ -4151,13 +4151,7 @@ component  accessors="true" output="false"
 	 */
 	public any function getProduct(required struct data ){
         param name="arguments.data.urlTitle" default='';
-        param name="arguments.data.f:urlTitle:eq" default=''; //supporting both syntax, for url-title 
 	    param name="arguments.data.includeAttributesMetadata" default=false;
-        
-        // consolidate both params
-        if( !arguments.data['urlTitle'].len() && arguments.data['f:urlTitle:eq'].len() ){
-            arguments.data['urlTitle'] = arguments.data['f:urlTitle:eq'];
-        }
         
         // if there's some value for urlTitle, set the entityID
         if( arguments.data.urlTitle.len() ){
@@ -4167,12 +4161,11 @@ component  accessors="true" output="false"
 	        }
         }
        
-       
 	    // if there's no entityID, then we're assuming that this's a call to fetch multiple-products
 	    if( !len(arguments.data.entityID) ){
     	    var collectionData = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
             acollectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
-            collectionData = this.getProductService().appendCategoriesAndOptionsToProduct(collectionData.pageRecords);
+            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData.pageRecords);
             
             arguments.data.ajaxResponse['data'] = collectionData; 
             this.getHibachiScope().addActionResult("public:scope.getProduct", true);
@@ -4189,13 +4182,14 @@ component  accessors="true" output="false"
             }
 	     }
         
-        var response = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        var response = {};
         
-        // this will return an array, on structs; in our case an array of length 1
-        var updatedProductArray = this.getProductService().appendImagesToProducts( [ response['product'] ] );
-	    updatedProductArray = this.getProductService().appendCategoriesAndOptionsToProduct( updatedProductArray );
-        response['product'] = updatedProductArray[1];
-        
+        var product = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        var updatedProductArray = [ product ];
+        updatedProductArray = this.getProductService().appendImagesToProducts(updatedProductArray);
+	    updatedProductArray = this.getProductService().appendCategoriesAndOptionsToProducts(updatedProductArray);
+
+	    response['product'] = updatedProductArray[1];
         if(arguments.data.includeAttributesMetadata){
             response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
         }
