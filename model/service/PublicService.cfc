@@ -4150,7 +4150,16 @@ component  accessors="true" output="false"
 	 * @includeAttributesMetadata, defaults to `false`; is boolean flag to return the attribute-sets metadata for that product
 	 */
 	public any function getProduct(required struct data ){
+        param name="arguments.data.urlTitle" default='';
 	    param name="arguments.data.includeAttributesMetadata" default=false;
+        
+        if( arguments.data.urlTitle.len() ){
+	        var product = this.getProductService().getProductByUrlTitle( arguments.data.urlTitle );
+	        if( !isNull(product) ){
+	            arguments.data.entityID = product.getProductID();
+	        }
+        }
+        
 	     arguments.data.ajaxResponse['attributeSets'] = []
 	     
 	     if( arguments.data.includeAttributesMetadata ){
