@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { accountAddressSelector, fulfillmentMethodSelector, fulfillmentSelector, pickupLocation, pickupLocationOptions, shippingMethodSelector } from '../../selectors/orderSelectors'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { useTranslation } from 'react-i18next'
 
 const FulfillmentPicker = () => {
   const dispatch = useDispatch()
@@ -39,12 +40,14 @@ const ShippingMethodPicker = () => {
   const orderFulfillments = useSelector(state => state.cart.orderFulfillments)
   const selectedShippingMethod = useSelector(shippingMethodSelector)
   const orderFulfillment = useSelector(fulfillmentSelector)
+  const { t } = useTranslation()
+
   return (
     <div className="row mb-3">
       <div className="col-sm-12">
         {orderFulfillments.length > 0 && (
           <SwRadioSelect
-            label="Choose your delivery option"
+            label={`${t('frontend.checkout.delivery_option')} `}
             options={orderFulfillment.shippingMethodOptions}
             onChange={value => {
               dispatch(
