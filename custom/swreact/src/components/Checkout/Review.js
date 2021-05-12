@@ -22,7 +22,7 @@ const ReviewSlide = ({ currentStep }) => {
         {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
           <div className="col-md-4">
             <ShippingAddressDetails shippingAddress={shippingAddress} shippingAddressNickname={shippingAddressNickname} />
-            <Link to="/my-account/addresses">Edit</Link>
+            <Link to="/checkout/shipping">Edit</Link>
           </div>
         )}
         {fulfillmentMethod.fulfillmentMethodType === 'pickup' && (
@@ -36,7 +36,7 @@ const ReviewSlide = ({ currentStep }) => {
         {payment.paymentMethod.paymentMethodType === 'creditCard' && (
           <div className="col-md-4">
             <CreditCardDetails creditCardPayment={payment} />
-            <Link to="/my-account/cards">Edit</Link>
+            <Link to="/checkout/payment">Edit</Link>
           </div>
         )}
         {payment.paymentMethod.paymentMethodType === 'giftCard' && (
