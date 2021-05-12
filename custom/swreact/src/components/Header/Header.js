@@ -43,6 +43,17 @@ const MegaMenu = props => {
   let history = useHistory()
   const { t } = useTranslation()
 
+  /**
+   * Toggle menu , while the sub-menu is clicked
+   */
+  const toggleNav = () => {
+    const toggleButton = document.getElementById('menuToggleButton')
+    const menuClass = document.getElementById('navbarCollapse').className
+    const isOpened = menuClass.includes('show') ? true : false
+    if (isOpened) {
+      toggleButton.click()
+    }
+  }
   return (
     <li className="nav-item dropdown">
       <a className="nav-link dropdown-toggle" href={props.linkUrl || '/'} data-toggle="dropdown">
@@ -64,6 +75,10 @@ const MegaMenu = props => {
                   onClick={event => {
                     event.preventDefault()
                     if (event.target.getAttribute('href')) {
+                      setTimeout(() => {
+                        // setting timeout so that the menu closes , after the page changes
+                        toggleNav()
+                      }, 200)
                       history.push(event.target.getAttribute('href'))
                     }
                   }}
@@ -143,7 +158,7 @@ function Header({ logo, mobileLogo }) {
                   </div>
                 </div>
                 <div className="navbar-toolbar d-flex flex-shrink-0 align-items-center">
-                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" id="menuToggleButton">
                     <span className="navbar-toggler-icon"></span>
                   </button>
 
