@@ -34,21 +34,6 @@ const Crumb = ({ path, name, index }) => {
   )
 }
 
-/**
- * Returns custom path for breadcrumb
- * @param {string} path
- * @return {string} customPath
- */
-const customBredCrumbPath = path => {
-  path = path.replace('/', '')
-  switch (path) {
-    case 'brand':
-      return '/brands'
-    default:
-      return `/${path}`
-  }
-}
-
 const titleizeWord = str => `${str[0].toUpperCase()}${str.slice(1)}`
 const kebabToTitle = str => str.split('-').map(titleizeWord).join(' ')
 const toBreadcrumbs = (link, { rootName = 'Home', nameTransform = s => s } = {}) =>
@@ -59,7 +44,7 @@ const toBreadcrumbs = (link, { rootName = 'Home', nameTransform = s => s } = {})
       (acc, curr, idx, arr) => {
         acc.path += `/${curr}`
         acc.crumbs.push({
-          path: customBredCrumbPath(acc.path),
+          path: acc.path,
           name: nameTransform(curr),
         })
 
