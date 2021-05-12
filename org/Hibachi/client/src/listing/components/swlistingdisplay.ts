@@ -128,9 +128,14 @@ class SWListingDisplayController{
     public showTopPagination:boolean;
     public showFilters:boolean;
     public showToggleDisplayOptions:boolean;
-    public sortable:boolean = false;
+    
+    // sorting
+    public sortable: boolean;
+    public sortProperty:string;
     public sortableFieldName:string;
-    public sortProperty;
+    public sortContextIdColumn:string;
+    public sortContextIdValue:string;
+    
     public tableclass:string;
     public tableattributes:string;
     public typeaheadDataKey:string;
@@ -155,6 +160,8 @@ class SWListingDisplayController{
     public refreshEvent: string;
     public loading: boolean;
     
+    // not-binded
+    public recordSortedEventName: string;
     
     //@ngInject
     constructor(
@@ -414,8 +421,15 @@ class SWListingDisplayController{
             this.listingService.setupSelect(this.tableID);
             this.listingService.setupMultiselect(this.tableID);
             this.listingService.setupExampleEntity(this.tableID);
+            
+            
+            if(this.sortable){
+                // if the sortable-field-name is set, then the listing is supposed to be used in a form
+                // else it's a regular listing and it is supposed to call the API to update the page-record's sort-order and refresh itself 
+                this.listingService.setupSortable(this.tableID, this.sortableFieldName?.length >= 0 );
+            } 
+            
             this.setupCollectionPromise();
-
         }
 
         if(!this.collectionObject && (this.collectionConfig && this.collectionConfig.baseEntityName)){
@@ -624,10 +638,10 @@ class SWListingDisplayController{
                 this.collectionConfig.setCustomEndpoint(this.customEndpoint);
             }
         }
-       
-        if(angular.isDefined(this.sortableFieldName)){
-            this.sortableFieldName = "sorting" + this.tableID;
-        }
+        
+        // sorting
+        this.sortable = this.sortable || this.sortProperty?.length > 0 || this.sortableFieldName?.length > 0;
+        this.recordSortedEventName = this.listingService.getListingPageRecordSortedEventString(this.tableID);
     }
 
     public getListingPageRecordsUpdateEventString = () =>{
@@ -1039,11 +1053,10 @@ class SWListingDisplay implements ng.IDirective{
             defaultSearchColumn:"@?",
 
             /*Sorting*/
-            sortable:"<?",
-            sortableFieldName:"@?",
             sortProperty:"@?",
-            sortContextIDColumn:"@?",
-            sortContextIDValue:"@?",
+            sortableFieldName:"@?",
+            sortContextIdColumn:"@?",
+            sortContextIdValue:"@?",
 
             /*Single Select*/
             selectFieldName:"@?",

@@ -11,10 +11,10 @@ const AccountFavorites = () => {
   let [productList, setRequest] = useGetProductList()
 
   if (favouriteSkus.isLoaded && !productList.isFetching && !productList.isLoaded) {
-    setRequest({ ...productList, params: { 'f:skus.skuid:eq': favouriteSkus.skusList.join() }, makeRequest: true, isFetching: true, isLoaded: false })
+    setRequest({ ...productList, params: { 'f:skus.skuID:in': favouriteSkus.skusList.join() }, makeRequest: true, isFetching: true, isLoaded: false })
   }
   const setPage = pageNumber => {
-    setRequest({ ...productList, params: { 'f:skus.skuid:eq': favouriteSkus.skusList.join(), currentPage: pageNumber }, makeRequest: true, isFetching: true, isLoaded: false })
+    setRequest({ ...productList, params: { 'f:skus.skuID:in': favouriteSkus.skusList.join(), currentPage: pageNumber }, makeRequest: true, isFetching: true, isLoaded: false })
   }
 
   return (
