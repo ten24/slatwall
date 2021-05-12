@@ -18,7 +18,7 @@ const FulfillmentPicker = () => {
       <div className="col-sm-12">
         {eligibleFulfillmentMethods && eligibleFulfillmentMethods.length > 0 && (
           <SwRadioSelect
-            label={`${t('frontend.checkout.receive_option')} `}
+            label={t('frontend.checkout.receive_option')}
             options={eligibleFulfillmentMethods}
             onChange={fulfillmentMethodID => {
               const orderItemIDList = orderItems
@@ -48,7 +48,7 @@ const ShippingMethodPicker = () => {
       <div className="col-sm-12">
         {orderFulfillments.length > 0 && (
           <SwRadioSelect
-            label={`${t('frontend.checkout.delivery_option')} `}
+            label={t('frontend.checkout.delivery_option')}
             options={orderFulfillment.shippingMethodOptions}
             onChange={value => {
               dispatch(
@@ -114,7 +114,7 @@ const PickupLocationPicker = () => {
         <div className="col-sm-12">
           {pickupLocations.length > 0 && (
             <SwRadioSelect
-              label={`${t('frontend.checkout.location_option')} `}
+              label={t('frontend.checkout.location_option')}
               options={pickupLocations}
               onChange={value => {
                 dispatch(

@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getCountries, getStateCodeOptionsByCountryCode } from '../../actions/contentActions'
 import { useFormik } from 'formik'
 import { SwRadioSelect, ShippingAddressForm } from '../../components'
+import { useTranslation } from 'react-i18next'
+
 const ShippingAddress = ({ onSave }) => {
   const dispatch = useDispatch()
   const isFetching = useSelector(state => state.content.isFetching)
@@ -61,9 +63,12 @@ const ShippingAddress = ({ onSave }) => {
 const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'Addresses' }) => {
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const [showAddress, setShowAddress] = useState(false)
+  const { t } = useTranslation()
+
   if (showAddress) {
     selectedAccountID = 'new'
   }
+
   return (
     <>
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{addressTitle}</h2>
@@ -82,7 +87,7 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
                   onSelect(value)
                 }
               }}
-              customLabel={<span>Account Address</span>}
+              customLabel={<span>{t('frontend.checkout.receive_option')}</span>}
               newLabel="Add Address"
               selectedValue={selectedAccountID}
               displayNew={true}
