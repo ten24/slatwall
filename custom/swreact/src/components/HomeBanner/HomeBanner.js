@@ -92,7 +92,6 @@ const HomeBanner = () => {
       didCancel = true
     }
   }, [request, setRequest])
-  console.log('request', request)
   return (
     <>
       <MainBanner />
