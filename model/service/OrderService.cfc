@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var orderItems = ordersItemsCollectionList.getRecords(formatRecords = false);
 		//Append images to products
-		orderItems = getService("productService").appendImagesToProduct(orderItems, "sku_imageFile", false);
+		orderItems = getService("productService").appendImagesToProducts(orderItems, "sku_imageFile", false);
 		
         orderDetails['orderItems'] = orderItems;
 		

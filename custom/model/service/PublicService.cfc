@@ -70,9 +70,9 @@ component extends="Slatwall.model.service.PublicService" {
 	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
-	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
+	        result.pageRecords = getService("productService").appendImagesToProducts(result.pageRecords);
 
-	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(result.pageRecords);
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProducts(result.pageRecords);
 	    }
 
 	    arguments.data.ajaxResponse = result;
@@ -103,9 +103,9 @@ component extends="Slatwall.model.service.PublicService" {
 	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
-	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
+	        result.pageRecords = getService("productService").appendImagesToProducts(result.pageRecords);
 
-	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(result.pageRecords);
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProducts(result.pageRecords);
 	    }
 
 	    arguments.data.ajaxResponse = result;
