@@ -618,6 +618,15 @@ component extends="HibachiService" accessors="true" {
 		}
 		return arguments.products;
 	}
+	public any function appendSettingsToProductType(required struct productType) {
+		productType['settings']= {
+           	"productHTMLTitleString":  productType.stringReplace( template = productType.setting('productTypeHTMLTitleString'), formatValues = true ),
+           	"productMetaDescriptionString": productType.stringReplace( template = productType.setting('productTypeMetaDescriptionString'), formatValues = true ),
+           	"productMetaKeywordsString": productType.stringReplace( template = productType.setting('productTypeMetaKeywordsString'), formatValues = true )
+	    };
+	    return arguments.productType;
+	}
+
 	
 	/**
 	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
