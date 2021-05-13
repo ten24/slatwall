@@ -35,6 +35,38 @@ export const useGetEntity = () => {
   return [request, setRequest]
 }
 
+export const useGetProductsByEntity = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
+  useEffect(() => {
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      request.params['includeAttributesMetadata'] = true
+      axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/public/${request.entity}?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data.data) {
+            setRequest({ data: response.data.data, attributeSets: response.data.attributeSets, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: [], attributeSets: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
 export const useGetEntityByID = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
   useEffect(() => {
@@ -355,6 +387,39 @@ export const useGetAllOrders = () => {
         .then(response => {
           if (response.status === 200 && response.data && response.data.ordersOnAccount) {
             setRequest({ data: response.data.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
+export const useGetAccountCartsAndQuotes = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {} })
+  useEffect(() => {
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getAllCartsAndQuotesOnAccount`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: request.params,
+        cancelToken: source.token,
+      })
+        .then(response => {
+          console.log('response.data', response.data)
+          if (response.status === 200 && response.data && response.data.cartsAndQuotesOnAccount && response.data.cartsAndQuotesOnAccount.ordersOnAccount) {
+            setRequest({ data: response.data.cartsAndQuotesOnAccount.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
             setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }

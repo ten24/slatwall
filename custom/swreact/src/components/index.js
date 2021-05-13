@@ -2,6 +2,7 @@ export { default as AccountAddresses } from './Account/AccountAddresses/AccountA
 export { default as CreateOrEditAccountAddress } from './Account/AccountAddresses/CreateOrEditAccountAddress'
 
 export { default as AccountContent } from './Account/AccountContent/AccountContent'
+export { AccountToolBar } from './Account/AccountToolBar/AccountToolBar'
 export { default as AccountFavorites } from './Account/AccountFavorites/AccountFavorites'
 export { AccountLayout, PromptLayout } from './Account/AccountLayout/AccountLayout'
 export { default as AccountLogin } from './Account/AccountLogin/AccountLogin'
