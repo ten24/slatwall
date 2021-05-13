@@ -46,10 +46,23 @@ export const setOrderOnCart = orderID => {
   return async dispatch => {
     dispatch(requestCart())
 
-    const req = await SlatwalApiService.order.setOrderOnCart({ orderID, returnJSONObjects: 'cart' })
-
-    if (req.isSuccess()) {
-      dispatch(receiveCart(req.success().cart))
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/addCartToSession`,
+      data: {
+        orderID,
+        returnJSONObjects: 'cart',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      if (response.errors) toast.error(getErrorMessage(response.errors))
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
     }
   }
 }
