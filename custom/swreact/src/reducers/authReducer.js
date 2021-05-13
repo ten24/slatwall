@@ -23,9 +23,6 @@ const auth = (state = initState, action) => {
 
     case LOGOUT:
       return { ...state, isAuthenticanted: false, isFetching: false }
-    case UPDATE_TOKEN:
-      localStorage.setItem('token', action.payload)
-      return { ...state }
 
     case '@@INIT':
       return { ...state, isAuthenticanted: token ? true : false }

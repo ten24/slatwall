@@ -8,6 +8,8 @@ import { useFormatCurrency, useFormatDate } from '../../../hooks'
 import { Button } from '../../Button/Button'
 import { useDispatch } from 'react-redux'
 import { setOrderOnCart } from '../../../actions'
+import { ListingPagination } from '../..'
+import { AccountToolBar } from '../AccountToolBar/AccountToolBar'
 const OrderStatus = ({ type = 'info', text }) => {
   return <span className={`badge badge-${type} m-0`}>{text}</span>
 }
@@ -46,11 +48,13 @@ const AccountCarts = () => {
   const [keyword, setSearchTerm] = useState('')
   const { t } = useTranslation()
   let [orders, setRequest] = useGetAccountCartsAndQuotes()
-
+  const search = (currentPage = 1) => {
+    setRequest({ ...orders, params: { currentPage, pageRecordsShow: 10, keyword }, makeRequest: true, isFetching: true, isLoaded: false })
+  }
   useEffect(() => {
     let didCancel = false
     if (!orders.isFetching && !orders.isLoaded && !didCancel) {
-      setRequest({ ...orders, isFetching: true, isLoaded: false, params: { pageRecordsShow: 10, keyword }, makeRequest: true })
+      setRequest({ ...orders, isFetching: true, isLoaded: false, params: { pageRecordsShow: 20, keyword }, makeRequest: true })
     }
     return () => {
       didCancel = true
@@ -60,6 +64,7 @@ const AccountCarts = () => {
   return (
     <AccountLayout>
       <AccountContent />
+      <AccountToolBar term={keyword} updateTerm={setSearchTerm} search={search} />
 
       <div className="table-responsive font-size-md">
         <table className="table table-hover mb-0">
@@ -79,6 +84,8 @@ const AccountCarts = () => {
           </tbody>
         </table>
       </div>
+      <hr className="pb-4" />
+      <ListingPagination recordsCount={orders.data.records} currentPage={orders.data.currentPage} totalPages={Math.ceil(orders.data.records / 20)} setPage={search} />
     </AccountLayout>
   )
 }

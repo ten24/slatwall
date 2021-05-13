@@ -1,5 +1,4 @@
 import { sdkURL, axios } from '../services'
-import { updateToken } from './authActions'
 
 export const REQUEST_CONFIGURATION = 'REQUEST_CONFIGURATION'
 export const RECIVE_CONFIGURATION = 'RECIVE_CONFIGURATION'
@@ -40,7 +39,6 @@ export const getConfiguration = () => {
         siteCode: siteCode,
       },
     }).then(response => {
-      dispatch(updateToken(response.data))
       if (response.status === 200 && response.data.config && Object.keys(response.data.config).length > 0) {
         dispatch(reciveConfiguration(response.data.config))
       } else {

@@ -1,5 +1,4 @@
 import { sdkURL, axios } from '../services'
-import { updateToken } from './authActions'
 import { setTitle } from './configActions'
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
@@ -58,7 +57,6 @@ export const getContent = (content = {}) => {
         data: { ...content, siteCode: site.siteCode },
       })
       if (response.status === 200) {
-        dispatch(updateToken(response.data))
         dispatch(receiveContent({ ...response.data.content }))
       } else {
         dispatch(receiveContent({}))
@@ -82,7 +80,6 @@ export const getPageContent = (content = {}, slug = '') => {
       data: { ...content, siteCode },
     })
     if (response.status === 200) {
-      dispatch(updateToken(response.data))
       dispatch(receiveContent(response.data.content))
     } else {
       dispatch(receiveContent({}))
@@ -102,7 +99,6 @@ export const getStateCodeOptionsByCountryCode = (countryCode = 'US') => {
       },
     })
     if (response.status === 200) {
-      dispatch(updateToken(response.data))
       let payload = {}
       payload[countryCode] = response.data.stateCodeOptions || []
       dispatch(receiveStateCodes(payload))
@@ -123,7 +119,6 @@ export const getCountries = () => {
       },
     })
     if (response.status === 200) {
-      dispatch(updateToken(response.data))
       dispatch(receiveContent({ countryCodeOptions: response.data.countryCodeOptions }))
     } else {
       dispatch(receiveContent({}))

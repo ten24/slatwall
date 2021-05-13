@@ -1,4 +1,4 @@
-import { softLogout, updateToken } from './authActions'
+import { softLogout } from './authActions'
 import { SlatwalApiService, sdkURL, axios } from '../services'
 import { toast } from 'react-toastify'
 import { receiveCart } from './cartActions'
@@ -101,7 +101,6 @@ export const getUser = () => {
     if (req.isFail()) {
       dispatch(softLogout())
     } else {
-      dispatch(updateToken(req.success()))
       if (req.success().account.accountID.length) {
         dispatch(receiveUser(req.success().account))
       } else {
@@ -120,7 +119,6 @@ export const updateUser = user => {
     const response = await SlatwalApiService.account.update(user)
 
     if (response.isSuccess()) {
-      dispatch(updateToken(response.success()))
       toast.success('Update Successful')
       dispatch(receiveUser(response.success().account))
     } else {
@@ -136,7 +134,6 @@ export const getAccountOrders = () => {
     if (req.isFail()) {
       dispatch(receiveAccountOrders([]))
     } else {
-      dispatch(updateToken(req.success()))
       dispatch(receiveAccountOrders(req.success().ordersOnAccount.ordersOnAccount))
     }
   }
@@ -149,7 +146,6 @@ export const getAccountCartsAndQuotes = () => {
     if (req.isFail()) {
       dispatch(receiveAccountOrders([]))
     } else {
-      dispatch(updateToken(req.success()))
       dispatch(receiveAccountOrders(req.success().cartsAndQuotesOnAccount.ordersOnAccount))
     }
   }
@@ -172,7 +168,6 @@ export const addNewAccountAddress = address => {
     const response = await SlatwalApiService.account.addAddress({ ...address, returnJSONObjects: 'account' })
 
     if (response.isSuccess()) {
-      dispatch(updateToken(response.success()))
       toast.success('Update Successful')
       dispatch(receiveUser(response.success().account))
     } else {
@@ -189,7 +184,6 @@ export const updateAccountAddress = user => {
     const response = await SlatwalApiService.account.updateAddress({ ...user, returnJSONObjects: 'account' })
 
     if (response.isSuccess()) {
-      dispatch(updateToken(response.success()))
       toast.success('Update Successful')
       dispatch(receiveUser(response.success().account))
     } else {
@@ -203,7 +197,6 @@ export const deleteAccountAddress = accountAddressID => {
     const response = await SlatwalApiService.account.deleteAddress({ accountAddressID, returnJSONObjects: 'account' })
 
     if (response.isSuccess()) {
-      dispatch(updateToken(response.success()))
       toast.success('Update Successful')
       dispatch(receiveUser(response.success().account))
     } else {
@@ -217,7 +210,6 @@ export const addPaymentMethod = paymentMethod => {
     const response = await SlatwalApiService.account.addPaymentMethod({ ...paymentMethod, returnJSONObjects: 'account' })
 
     if (response.isSuccess()) {
-      dispatch(updateToken(response.success()))
       if (response.success().failureActions.length) {
         dispatch(receiveUser())
         toast.error(JSON.stringify(response.success().errors))
@@ -236,7 +228,6 @@ export const updatePaymentMethod = paymentMethod => {
     const response = await SlatwalApiService.account.updatePaymentMethod({ paymentMethod, returnJSONObjects: 'account' })
 
     if (response.isSuccess()) {
-      dispatch(updateToken(response.success()))
       toast.success('Update Successful')
       dispatch(receiveUser(response.success().account))
     } else {
@@ -272,7 +263,6 @@ export const getFavouriteProducts = () => {
         },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        dispatch(updateToken(response.data))
         const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
           return sku_skuID
         })
@@ -303,7 +293,6 @@ export const addWishlistItem = (skuID = '') => {
         data: { skuID, orderTemplateID },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        dispatch(updateToken(response.data))
         const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
           return sku_skuID
         })
@@ -334,7 +323,6 @@ export const removeWishlistItem = (removalSkuID = '') => {
         data: { removalSkuID, orderTemplateID },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        dispatch(updateToken(response.data))
         const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
           return sku_skuID
         })

@@ -2,7 +2,6 @@ import { toast } from 'react-toastify'
 import { SlatwalApiService, axios } from '../services'
 import { sdkURL } from '../services'
 import { receiveUser, requestUser } from './userActions'
-import { updateToken } from './authActions'
 import { getErrorMessage } from '../utils'
 
 export const REQUEST_CART = 'REQUEST_CART'
@@ -50,7 +49,6 @@ export const setOrderOnCart = orderID => {
     const req = await SlatwalApiService.order.setOrderOnCart({ orderID, returnJSONObjects: 'cart' })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -62,7 +60,6 @@ export const getCart = () => {
     const req = await SlatwalApiService.cart.get()
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -74,7 +71,6 @@ export const clearCartData = () => {
     const req = await SlatwalApiService.cart.clear()
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -90,7 +86,6 @@ export const addToCart = (skuID, quantity = 1) => {
     })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
       if (req.success().errors) toast.error(getErrorMessage(req.success().errors))
     } else {
@@ -114,7 +109,6 @@ export const getEligibleFulfillmentMethods = () => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart({ eligibleFulfillmentMethods: response.data.eligibleFulfillmentMethods }))
     } else {
       dispatch(receiveCart())
@@ -135,7 +129,6 @@ export const getPickupLocations = () => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart({ pickupLocations: response.data.locations }))
     } else {
       dispatch(receiveCart())
@@ -160,7 +153,6 @@ export const addPickupLocation = params => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -184,7 +176,6 @@ export const setPickupDate = params => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -208,7 +199,6 @@ export const updateOrderNotes = params => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -249,7 +239,6 @@ export const updateItemQuantity = (skuID, quantity = 1) => {
       },
     })
     if (response.status === 200) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -265,7 +254,6 @@ export const removeItem = orderItemID => {
       returnJSONObjects: 'cart',
     })
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -278,7 +266,6 @@ export const addShippingAddress = (params = {}) => {
     const req = await SlatwalApiService.cart.addShippingAddress(params)
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -293,7 +280,6 @@ export const addShippingAddressUsingAccountAddress = (params = {}) => {
     })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -308,7 +294,6 @@ export const addShippingMethod = (params = {}) => {
     })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -333,7 +318,6 @@ export const updateFulfillment = (params = {}) => {
     const req = await SlatwalApiService.cart.updateFulfillment(params)
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -354,7 +338,7 @@ export const applyPromoCode = promotionCode => {
         })
         toast.error(errorMessages.join(' '))
       }
-      dispatch(updateToken(req.success()))
+
       dispatch(receiveCart(cart))
     }
   }
@@ -368,7 +352,6 @@ export const removePromoCode = (promotionCode, promotionCodeID) => {
       returnJSONObjects: 'cart',
     })
     if (req.success()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -381,7 +364,6 @@ export const addBillingAddress = (params = {}) => {
     const req = await SlatwalApiService.cart.addBillingAddress(params)
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -396,7 +378,6 @@ export const addPayment = (params = {}) => {
     })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
       dispatch(receiveUser(req.success().account))
       if (req.success().errors) dispatch(setError(req.success().errors))
@@ -411,7 +392,6 @@ export const removePayment = (params = {}) => {
     const req = await SlatwalApiService.cart.removePayment({ ...params, returnJSONObjects: 'cart' })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart({ ...req.success().cart }))
     }
   }
@@ -424,7 +404,6 @@ export const placeOrder = () => {
     const req = await SlatwalApiService.cart.placeOrder({ returnJSONObjects: 'cart' })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
       dispatch(confirmOrder())
     }
@@ -446,7 +425,6 @@ export const addAddressAndAttachAsShipping = (params = {}) => {
       data: { returnJsonObjects: 'cart,account', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
@@ -470,7 +448,6 @@ export const changeOrderFulfillment = (params = {}) => {
       data: { returnJsonObjects: 'cart', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -492,7 +469,6 @@ export const addAddressAndAttachAsBilling = (params = {}) => {
       data: { returnJsonObjects: 'cart,account', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
@@ -517,7 +493,6 @@ export const addBillingAddressUsingAccountAddress = (params = {}) => {
       data: { returnJsonObjects: 'cart', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
@@ -542,7 +517,6 @@ export const addNewAccountAndSetAsBilling = (params = {}) => {
       data: { returnJsonObjects: 'cart,account', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
@@ -567,7 +541,6 @@ export const addAddressAndPaymentAndAddToOrder = (params = {}) => {
       data: { returnJsonObjects: 'cart,account', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
