@@ -53,7 +53,7 @@ Notes:
 
 <cfset local.productReviewCollectionList = rc.product.getProductReviewsCollectionList() />
 <cfset local.productReviewCollectionList.setDisplayProperties(
-  	"product.productName,rating,reviewTitle,review,reviewerName,account.primaryEmailAddress.emailAddress,createdDateTime",
+  	"rating,reviewTitle,review,reviewerName,account.primaryEmailAddress.emailAddress,createdDateTime",
 	{
 		isVisible=true,
 		isSearchable=true,
@@ -86,5 +86,6 @@ Notes:
 							recordeditaction="admin:entity.editproductreview"
 							recordeditmodal="true">
 </hb:HibachiListingDisplay>
+
 
 <hb:HibachiActionCaller action="admin:entity.createProductReview" querystring="productID=#rc.product.getProductID()#" modal="true" type="link" class="btn btn-primary" />

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { sdkURL, SlatwalApiService } from '../services'
+import { sdkURL, SlatwalApiService, axios } from '../services'
 import queryString from 'query-string'
 import { useHistory, useLocation } from 'react-router'
 

@@ -6390,17 +6390,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var list = this.getOrderTemplateCollectionList();
 		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name");
 		list.addFilter("account.accountID",arguments.accountID);
-		list.addFilter("orderTemplateType.typeCode","WishList");
+		list.addFilter("orderTemplateType.systemCode","ottWishList");
 		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
 		return list.getRecords();
 	}
 	
 	public array function getAccountWishlistsProducts(string accountID){
-		var list = this.getOrderTemplateCollectionList();
-		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name,orderTemplateItems.sku.skuName,orderTemplateItems.sku.skuID");
-		list.addFilter("account.accountID",arguments.accountID);
-		list.addFilter("orderTemplateType.typeCode","WishList");
-		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
+		var list = this.getOrderTemplateItemCollectionList();
+		list.setDisplayProperties("orderTemplate.orderTemplateID,orderTemplate.orderTemplateName,sku.skuDefinition,sku.skuID");
+		list.addFilter("orderTemplate.account.accountID",arguments.accountID);
+		list.addFilter("orderTemplate.orderTemplateType.systemCode","ottWishList");
+		list.addFilter("orderTemplate.orderTemplateStatusType.systemCode","otstCancelled","!=");
 		return list.getRecords();
 	}
 }

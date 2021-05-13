@@ -461,9 +461,11 @@ component extends="framework.one" {
 		if( variables.framework.preflightOptions &&
         	request._fw1.cgiRequestMethod == "OPTIONS" &&
 			structKeyExists(httpRequestData.headers,'Origin')
-			){
+		){
 			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
-			populateCORSHeader(httpRequestData.headers['Origin']);
+			var CORSWhitelist = listToArray(getHibachiScope().setting('globalCORSWhitelist'));
+			 populateCORSHeader(httpRequestData.headers['Origin'], CORSWhitelist);
+			
 			return;
 		}
 
@@ -995,7 +997,7 @@ component extends="framework.one" {
 		}
 	}
 
-	public void function populateCORSHeader(origin,CORSWhitelist){
+	public void function populateCORSHeader(required string origin, array CORSWhitelist){
 		var matched = false;
 		for(var domain in arguments.CORSWhiteList){
 			if(domain == '*'){

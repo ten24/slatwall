@@ -65,7 +65,7 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
   const [showAddress, setShowAddress] = useState(false)
   const { t } = useTranslation()
 
-  if (showAddress) {
+  if (showAddress || accountAddresses.length === 0) {
     selectedAccountID = 'new'
   }
 
@@ -95,7 +95,7 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
           </div>
         </div>
       )}
-      {showAddress && (
+      {(showAddress || selectedAccountID === 'new') && (
         <ShippingAddress
           setShowAddress={showAddress}
           onSave={values => {
