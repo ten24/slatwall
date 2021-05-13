@@ -971,13 +971,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	            'line' : lineNumber,
 	            'item' : orderItem.getSku().getRemoteID(),
 	            'qty_ord' : orderItem.getQuantity(),
-	            'override_price' : yesnoFormat(orderItem.getUserDefinedPriceFlag())
+	            'unit_price' : orderItem.getExtendedUnitPriceAfterDiscount(),
+	            'override_price' : 'yes'
 			}
-			
-			if(orderItem.getUserDefinedPriceFlag()){
-				itemData['unit_price'] = itemData.getExtendedUnitPrice();
-			}
-			
 			
 			if(isDevModeFlag){
 				itemData['company_it'] = this.setting("devCompany");
