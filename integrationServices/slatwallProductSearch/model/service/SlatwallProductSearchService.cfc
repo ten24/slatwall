@@ -90,6 +90,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	        'facetKey'   : 'orderBy',
         	        'selectType' : 'multi',
         	        'options' : [{
+                        "name": "Featured",
+                        "value": 'product.productFeatured|DESC,product.productName|ASC',
+                    },{
                         "name": "Price Low To High",
                         "value": 'skuPriceListPrice|ASC',
                     },{

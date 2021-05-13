@@ -14,7 +14,7 @@ const processQueryParameters = params => {
 const buildPath = params => {
   return queryString.stringify(params, { arrayFormat: 'comma' })
 }
-const initialData = { brand: '', orderBy: 'product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
+const initialData = { brand: '', orderBy: 'product.productFeatured|DESC,product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
 
 const ListingPage = ({ children, preFilter, hide = [] }) => {
   const loc = useLocation()
