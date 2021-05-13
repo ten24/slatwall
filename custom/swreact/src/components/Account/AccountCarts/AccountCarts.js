@@ -17,6 +17,7 @@ const OrderListItem = props => {
   const [formatCurrency] = useFormatCurrency({})
   const [formateDate] = useFormatDate()
   const dispatch = useDispatch()
+  const { t } = useTranslation()
 
   const { orderID, createdDateTime, orderStatusType_typeName, calculatedTotal } = props
   return (
@@ -36,7 +37,7 @@ const OrderListItem = props => {
             })
           }}
         >
-          Change Order
+          {t('frontend.account.order.change_order')}
         </Button>
         <br />
       </td>
@@ -70,10 +71,10 @@ const AccountCarts = () => {
         <table className="table table-hover mb-0">
           <thead>
             <tr>
-              <th>Date Created</th>
+              <th>{t('frontend.core.date_created')}</th>
               <th>{t('frontend.account.order.status')}</th>
               <th> {t('frontend.account.order.total')}</th>
-              <th>Select Order</th>
+              <th>{t('frontend.account.order.select_order')}</th>
             </tr>
           </thead>
           <tbody>
