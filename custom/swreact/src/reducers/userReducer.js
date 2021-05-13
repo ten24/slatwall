@@ -1,4 +1,4 @@
-import { RECEIVE_WISHLIST, RECEIVE_ACCOUNT_ORDERS, REQUEST_ACCOUNT_ORDERS, REQUEST_USER, RECEIVE_USER, CLEAR_USER, REQUEST_CREATE_USER, RECEIVE_CREATE_USER, ERROR_CREATE_USER } from '../actions/userActions'
+import { REQUEST_CARTS_AND_QUOTES, RECEIVE_CARTS_AND_QUOTES, RECEIVE_WISHLIST, RECEIVE_ACCOUNT_ORDERS, REQUEST_ACCOUNT_ORDERS, REQUEST_USER, RECEIVE_USER, CLEAR_USER, REQUEST_CREATE_USER, RECEIVE_CREATE_USER, ERROR_CREATE_USER } from '../actions/userActions'
 
 const initialState = {
   accountID: '',
@@ -17,17 +17,24 @@ const initialState = {
     skusList: [],
     isLoaded: false,
   },
+  cartsAndQuotesOnAccount: [],
   company: '',
   verifiedAccountFlag: false,
   isFetching: false,
   isFetchingOrders: false,
 }
 const user = (state = initialState, action) => {
-  const { user, err, ordersOnAccount, favouriteSkus } = action
+  const { user, err, ordersOnAccount, cartsAndQuotesOnAccount, favouriteSkus } = action
 
   switch (action.type) {
     case REQUEST_USER:
       return { ...state, isFetching: true }
+
+    case REQUEST_CARTS_AND_QUOTES:
+      return { ...state, isFetchingOrders: true }
+
+    case RECEIVE_CARTS_AND_QUOTES:
+      return { ...state, cartsAndQuotesOnAccount, isFetchingOrders: false }
 
     case RECEIVE_ACCOUNT_ORDERS:
       return { ...state, ordersOnAccount, isFetchingOrders: false }

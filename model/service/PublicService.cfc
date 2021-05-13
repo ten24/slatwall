@@ -2279,19 +2279,19 @@ component  accessors="true" output="false"
     }
     
     /** 
-     * @http-context changeOrder
-     * @description Change Order
+     * @http-context addCartToSession
+     * @description Add Cart on account to Session
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      */
-    public void function changeOrder( required struct data ){
+    public void function addCartToSession( required struct data ){
         param name="arguments.data.orderID" default="";
         
         var order = this.getOrderService().getOrder( arguments.data.orderID );
-        if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
+        if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() && order.getStatusCode() == "ostNotPlaced") {
             getHibachiScope().getSession().setOrder( order );
-            getHibachiScope().addActionResult( "public:cart.change", false );
+            getHibachiScope().addActionResult( "public:cart.addCartToSession", false );
         } else {
-            getHibachiScope().addActionResult( "public:cart.change", true );
+            getHibachiScope().addActionResult( "public:cart.addCartToSession", true );
         }
     }
     
