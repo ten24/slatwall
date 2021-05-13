@@ -1,6 +1,5 @@
 import { toast } from 'react-toastify'
-import { SlatwalApiService } from '../services'
-import axios from 'axios'
+import { SlatwalApiService, axios } from '../services'
 import { sdkURL } from '../services'
 import { receiveUser, requestUser } from './userActions'
 import { updateToken } from './authActions'
@@ -100,7 +99,6 @@ export const getEligibleFulfillmentMethods = () => {
       url: `${sdkURL}api/scope/getEligibleFulfillmentMethods`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
     })
     if (response.status === 200 && response.data) {
@@ -143,7 +141,6 @@ export const addPickupLocation = params => {
       url: `${sdkURL}api/scope/addPickupFulfillmentLocation`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: {
         ...params,
@@ -168,7 +165,6 @@ export const setPickupDate = params => {
       url: `${sdkURL}api/scope/setPickupDate`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: {
         ...params,
@@ -193,7 +189,6 @@ export const updateOrderNotes = params => {
       url: `${sdkURL}api/scope/updateOrderNotes`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: {
         ...params,
@@ -230,7 +225,6 @@ export const updateItemQuantity = (skuID, quantity = 1) => {
       url: `${sdkURL}api/scope/updateOrderItemQuantity`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: {
         orderItem: {
@@ -436,7 +430,6 @@ export const addAddressAndAttachAsShipping = (params = {}) => {
       url: `${sdkURL}api/scope/addEditAccountAddress,addShippingAddressUsingAccountAddress`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart,account', ...params },
     })
@@ -461,7 +454,6 @@ export const changeOrderFulfillment = (params = {}) => {
       url: `${sdkURL}api/scope/changeOrderFulfillment`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart', ...params },
     })
@@ -484,7 +476,6 @@ export const addAddressAndAttachAsBilling = (params = {}) => {
       url: `${sdkURL}api/scope/addEditAccountAddress,addBillingAddressUsingAccountAddress`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart,account', ...params },
     })
@@ -510,7 +501,6 @@ export const addBillingAddressUsingAccountAddress = (params = {}) => {
       url: `${sdkURL}api/scope/addBillingAddressUsingAccountAddress`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart', ...params },
     })
@@ -536,7 +526,6 @@ export const addNewAccountAndSetAsBilling = (params = {}) => {
       url: `${sdkURL}api/scope/addNewAccountAddress,addBillingAddressUsingAccountAddress`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart,account', ...params },
     })
@@ -562,7 +551,6 @@ export const addAddressAndPaymentAndAddToOrder = (params = {}) => {
       url: `${sdkURL}api/scope/addAccountPaymentMethod`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart,account', ...params },
     })

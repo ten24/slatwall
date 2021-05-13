@@ -30,8 +30,8 @@
                             inst.dpDiv.addClass('month_year_datepicker')
 
                             if ((datestr = $(this).val()).length > 0) {
-                                year = datestr.substring(datestr.length-4, datestr.length);
-                                month = datestr.substring(0, 2);
+                                year = datestr.substring(0, datestr.length-3);
+                                month = datestr.substring(datestr.length-2, datestr.length);
                                 $(this).datepicker('option', 'defaultDate', new Date(year, month-1, 1));
                                 $(this).datepicker('setDate', new Date(year, month-1, 1));
                                 $(".ui-datepicker-calendar").hide();
