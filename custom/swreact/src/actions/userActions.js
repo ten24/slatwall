@@ -18,6 +18,22 @@ export const REQUEST_CREATE_USER = 'REQUEST_CREATE_USER'
 export const RECEIVE_CREATE_USER = 'RECEIVE_CREATE_USER'
 export const ERROR_CREATE_USER = 'ERROR_CREATE_USER'
 
+export const REQUEST_CARTS_AND_QUOTES = 'REQUEST_CARTS_AND_QUOTES'
+export const RECEIVE_CARTS_AND_QUOTES = 'RECEIVE_CARTS_AND_QUOTES'
+
+export const requestAccountCartsAndQuotes = () => {
+  return {
+    type: REQUEST_CARTS_AND_QUOTES,
+  }
+}
+
+export const receiveAccountCartsAndQuotes = cartsAndQuotesOnAccount => {
+  return {
+    type: RECEIVE_CARTS_AND_QUOTES,
+    cartsAndQuotesOnAccount,
+  }
+}
+
 export const requestWishlist = () => {
   return {
     type: REQUEST_WISHLIST,
@@ -119,6 +135,18 @@ export const getAccountOrders = () => {
       dispatch(receiveAccountOrders([]))
     } else {
       dispatch(receiveAccountOrders(req.success().ordersOnAccount.ordersOnAccount))
+    }
+  }
+}
+
+export const getAccountCartsAndQuotes = () => {
+  return async dispatch => {
+    dispatch(requestAccountOrders())
+    const req = await SlatwalApiService.account.cartsAndQuotes()
+    if (req.isFail()) {
+      dispatch(receiveAccountOrders([]))
+    } else {
+      dispatch(receiveAccountOrders(req.success().cartsAndQuotesOnAccount.ordersOnAccount))
     }
   }
 }
