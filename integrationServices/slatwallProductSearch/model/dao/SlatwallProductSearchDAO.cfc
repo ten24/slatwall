@@ -950,10 +950,20 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         if(arguments.site.hasLocation() ){
             // the :siteID param should already be added
 	        // facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
+	        
+	        // we're filtering for sku-stock for 
+	        // 
+            //  locations having that perticular site 
+	        //  + sku-stock for locations having no site assigned    e.g. `Default` location
+	        //
             stockAvailabilitySQLFragment = "
     	        INNER JOIN swStock stk 
     	            ON 
-	                stk.stockID IN (SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID )
+	                stk.locationID IN (
+	                    SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID 
+                			UNION ALL
+                		SELECT DISTINCT locationID FROM swLocation where locationID NOT IN (SELECT DISTINCT locationID FROM swLocationSite) 
+	                )
     	            AND stk.calculatedQATS > 0 
     	            AND rs.skuID = stk.skuID 
             ";
