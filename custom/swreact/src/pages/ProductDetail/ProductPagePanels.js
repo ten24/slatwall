@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { isBoolean, booleanToString } from '../../utils'
 
-const propertyBlackList = ['productID', 'productName', 'productCode', 'productFeatured', 'productDisplay']
+const propertyBlackList = ['productID', 'productName', 'productCode', 'productFeaturedFlag', 'productDisplay']
 
 // TODO: Migrate to reactstrap accordion
 const ProductPagePanels = ({ product = {}, attributeSets = [] }) => {
