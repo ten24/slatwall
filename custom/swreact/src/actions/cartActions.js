@@ -43,6 +43,18 @@ export const clearCart = () => {
     type: CLEAR_CART,
   }
 }
+export const setOrderOnCart = orderID => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const req = await SlatwalApiService.order.setOrderOnCart({ orderID, returnJSONObjects: 'cart' })
+
+    if (req.isSuccess()) {
+      dispatch(updateToken(req.success()))
+      dispatch(receiveCart(req.success().cart))
+    }
+  }
+}
 export const getCart = () => {
   return async dispatch => {
     dispatch(requestCart())

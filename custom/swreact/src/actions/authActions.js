@@ -81,6 +81,7 @@ export const login = (email, password) => {
         dispatch(errorLogin(req.toString()))
         toast.error('Incorrect Username or Password')
       } else {
+        dispatch(updateToken(req.success()))
         dispatch(receiveLogin({ isAuthenticanted: true }))
         dispatch(receiveUser(req))
         toast.success('Login Successful')

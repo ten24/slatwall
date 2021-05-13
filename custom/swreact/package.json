@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@slatwall/slatwall-sdk": "^1.0.3-alpha",
+    "@slatwall/slatwall-sdk": "^1.0.5-alpha",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.3",
