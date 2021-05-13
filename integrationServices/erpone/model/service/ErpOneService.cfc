@@ -512,7 +512,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					}
 				}
 				
-				dd(accountData);
 				arrayAppend(formatedAccounts,accountData)
 			}
 			
@@ -532,34 +531,88 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public any function importErpOneOrders(){
 		
 		logHibachi("ERPONE - Starting importing importErpOneOrders");
-			
-		var response = this.callErpOneGetDataApi({
-			"table" : "oe_head"
-		}, "data/count");
+		var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
 		
-		var totalRecordsCount = response.count;
-		var currentPage = 1;
-		var pageSize = 100;
-		var recordsFetched = 0;
-		
-		while ( recordsFetched < totalRecordsCount ){
-			
-			try {
-				this.getOrderData( currentPage, pageSize );
-				this.logHibachi("Successfully called getOrderData for CurrentPage: #currentPage# and PageSize: #pageSize#");
-				
-			} catch(e){
-			
-				this.logHibachi("Got error while trying to call getOrderData for CurrentPage: #currentPage# and PageSize: #pageSize#");
-				this.getHibachiUtilityService().logException(e);
-			}
-			
-			//increment regardless of success or failure;
-			recordsFetched += pageSize;
-			currentPage += 1;
+		if(isDevModeFlag){
+		//	company = this.setting("devCompany"); DISABLED FOR TESTING
 		}
 		
-		this.logHibachi("ERPONE - Finish importing importErpOneOrders for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
+
+		var requestQuery = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
+	
+		var pageNumber = 1;
+		var pageSize = 100;
+		var hasPages = true;
+		
+		
+		var formatedOrders = [];
+		
+		while(hasPages){
+			
+			logHibachi("ERPONE - Paginating #pageNumber#");
+			
+			var ordersArray = this.callErpOneGetDataApi({
+				"skip" : ( pageNumber - 1 ) * pageSize,
+				"take" : pageSize,
+				"query": requestQuery,
+				"columns" : "oe_head.order,oe_head.name,oe_head.adr,oe_head.state,oe_head.postal_code,oe_head.country_code,oe_head.ship_via_code,oe_head.cu_po,oe_head.ord_date,oe_head.opn,oe_head.o_tot_gross,oe_head.stat,oe_head.customer,oe_head.ord_ext,oe_head.rec_seq"
+			});
+			
+			writedump(ordersArray); abort;
+			logHibachi("ERPONE - skip #( pageNumber - 1 ) * pageSize# | take: #pageSize# = Returned : #arrayLen(ordersArray)#");
+			for(var order in ordersArray){
+				
+				var orderData =  {
+					'BillingAddress_addressNickName' : 'Billing Address',
+					'BillingAddress_city' : order['oe_head_adr'][4],
+					'BillingAddress_countryCode' : 'US',
+					'BillingAddress_postalCode' : order['oe_head_postal_code'],
+					'BillingAddress_remoteAddressID' : 'billing_'&rder['__rowids'],
+					'BillingAddress_stateCode' : order['oe_head_state'],
+					'BillingAddress_street2Address' : order['oe_head_adr'][3],
+					'BillingAddress_streetAddress' : order['oe_head_adr'][2],
+					//'CanceledDateTime' : ,
+					'CurrencyCode' : 'USD',
+					//'EstimatedDeliveryDateTime' : ,
+					//'OrderCloseDateTime' : ,
+					//'OrderIPAddress' : ,
+					//'OrderNotes' : ,
+					'OrderNumber' : order['oe_head_order'],
+					'OrderOpenDateTime' : order['oe_head_order'],
+					//'OrderSiteCode' : ,
+					'OrderStatusCode' : order['oe_head_order'],
+					'OrderTypeCode' : ,
+					'RemoteAccountID' : order['oe_head_customer'],
+					'RemoteOrderID' : order['__rowids'],
+					'ShippingAddress_addressNickName' : 'Shipping Address',
+					'ShippingAddress_city' : order['oe_head_adr'][4],
+					// 'ShippingAddress_company' : ,
+					'ShippingAddress_countryCode' : 'US',
+					// 'ShippingAddress_email' : ,
+					// 'ShippingAddress_locality' : ,
+					// 'ShippingAddress_phoneNumber' : ,
+					'ShippingAddress_postalCode' : order['oe_head_postal_code'],
+					'ShippingAddress_remoteAddressID' : 'shipping_'&rder['__rowids'],
+					'ShippingAddress_stateCode' : order['oe_head_state'],
+					'ShippingAddress_street2Address' : order['oe_head_adr'][3],
+					'ShippingAddress_streetAddress' : order['oe_head_adr'][2]
+				};
+				
+				arrayAppend(formatedOrders,orderData)
+			}
+			
+			if(arrayLen(ordersArray) < pageSize){
+				hasPages = false;
+			}
+			pageNumber++;
+			
+		}
+		if(arrayLen(formatedOrders)){
+			this.pushRecordsIntoImportQueue( "Account", formatedOrders );
+		}
+		
+		this.logHibachi("ERPONE - Finish importing Accounts");
 	}
 	
 	public any function importErpOneOrderItems(){
