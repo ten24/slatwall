@@ -18,9 +18,17 @@ class SWReportMenuController{
         private collectionConfigService,
     ){
     	this.slatwall = $rootScope.slatwall
-    	$scope.$watch('slatwall.account.accountID',this.getMyCustomReports);
-    	this.getPopularReports();
-	    this.getAllReports();
+
+		this.getPopularReports();
+		this.getAllReports();
+
+		this.slatwall.getAccount().then((result)=>{
+			if(!result.account){
+				return;
+			}
+
+			this.getMyCustomReports();
+		});
     }
 
 	public chunkify = (a, n, balanced) => {
