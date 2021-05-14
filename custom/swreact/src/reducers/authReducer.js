@@ -1,4 +1,4 @@
-import { REQUEST_LOGIN, RECEIVE_LOGIN, ERROR_LOGIN, LOGOUT, UPDATE_TOKEN } from '../actions/authActions'
+import { REQUEST_LOGIN, RECEIVE_LOGIN, ERROR_LOGIN, LOGOUT } from '../actions/authActions'
 
 const token = localStorage.getItem('token')
 

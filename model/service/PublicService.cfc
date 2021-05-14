@@ -891,16 +891,19 @@ component  accessors="true" output="false"
         
         var descriptionTemplate = productType.getSettingValueFormatted('productTypeMetaDescriptionString');
         var metaKeywordsTemplate = productType.getSettingValueFormatted('productTypeMetaKeywordsString');
-        
+        getProductService().appendSettingsToProductType(productType);
+
         var response = {
             "title"         : productType.getProductTypeName(),
             "urlTitle"      : productType.getUrlTitle(),
+            "breadcrumbs"   : getProductService().getProductTypeAncestorsbyPath(productType.getProductTypeIDPath()),
             "imageFile"     : productType.getImageFile(),
-            "htmlTitle"     : productType.getCustomHtmlTitle(),
+            "settings"      : productType["settings"],
             "description"   : productType.stringReplace(template=descriptionTemplate, formatValues=true),
             "metaKeywords"  : productType.stringReplace(template=metaKeywordsTemplate, formatValues=true),
             "productTypeID" : productType.getProductTypeID()
         };
+
 
         // if image is not empty, prefix with base-path
         if( !isNull(response.imageFile) ){
@@ -4185,6 +4188,7 @@ component  accessors="true" output="false"
         var response = {};
         
         var product = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        product["breadcrumbs"] = getProductService().getProductTypeAncestorsbyPath(product['productType_productTypeIDPath']);
         var updatedProductArray = [ product ];
         updatedProductArray = this.getProductService().appendImagesToProducts(updatedProductArray);
 	    updatedProductArray = this.getProductService().appendCategoriesAndOptionsToProducts(updatedProductArray);
