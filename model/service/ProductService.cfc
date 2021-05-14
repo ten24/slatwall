@@ -78,18 +78,21 @@ component extends="HibachiService" accessors="true" {
 		approvedProductReviewCollectionList.addFilter("productReviewStatusType.systemCode","prstApproved");
 		return approvedProductReviewCollectionList;
 	}
+	
 	public array function getProductPublicProperties(){
-		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.listPrice', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
 	}
+	
 	public array function getProductTypePublicProperties(){
 		var publicProperties = ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('ProductType');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
 	}
+	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
 		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
@@ -129,7 +132,7 @@ component extends="HibachiService" accessors="true" {
 	 * @param - addAltImage - boolean to ignore alt images
 	 * @return - updated array of products
 	 **/
-	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+	public array function appendImagesToProducts(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
 			var resizeSizes=['s','m','l','xl']; //add all sized images
@@ -578,7 +581,7 @@ component extends="HibachiService" accessors="true" {
 	 * @param - addAltImage - boolean to ignore alt images
 	 * @return - updated array of products
 	 **/
-	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+	public array function appendImagesToProducts(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
 			var resizeSizes=['s','m','l','xl']; //add all sized images
@@ -615,11 +618,26 @@ component extends="HibachiService" accessors="true" {
 		}
 		return arguments.products;
 	}
+	public any function appendSettingsToProductType(required struct productType) {
+		productType['settings']= {
+           	"productHTMLTitleString":  productType.stringReplace( template = productType.setting('productTypeHTMLTitleString'), formatValues = true ),
+           	"productMetaDescriptionString": productType.stringReplace( template = productType.setting('productTypeMetaDescriptionString'), formatValues = true ),
+           	"productMetaKeywordsString": productType.stringReplace( template = productType.setting('productTypeMetaKeywordsString'), formatValues = true )
+	    };
+	    return arguments.productType;
+	}
+	public any function getProductTypeAncestorsbyPath(required productTypeIDPath) {
+		var productTypeCollectionList = this.getProductTypeCollectionList();
+        productTypeCollectionList.setDisplayProperties("productTypeName, urlTitle");
+        productTypeCollectionList.addFilter('productTypeID', "#productTypeIDPath#", "IN");
+        productTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+        return productTypeCollectionList.getRecords( formatRecords = true );
+	}
 	
 	/**
 	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
 	 * */
-	public any function appendCategoriesAndOptionsToProduct(required array products) {
+	public any function appendCategoriesAndOptionsToProducts(required array products) {
 		if(arrayLen(arguments.products)) {
 			for(var product in arguments.products) {
 				
@@ -1369,7 +1387,7 @@ component extends="HibachiService" accessors="true" {
  				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
  				getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());
- 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", uploadDirectory);
  				if(getHibachiUtilityService().isS3Path(fullFilePath)){
  					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
  				}

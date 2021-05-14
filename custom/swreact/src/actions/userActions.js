@@ -1,8 +1,7 @@
 import { softLogout } from './authActions'
-import { SlatwalApiService, sdkURL } from '../services'
+import { SlatwalApiService, sdkURL, axios } from '../services'
 import { toast } from 'react-toastify'
 import { receiveCart } from './cartActions'
-import axios from 'axios'
 import { isAuthenticated } from '../utils'
 
 export const REQUEST_USER = 'REQUEST_USER'
@@ -18,6 +17,22 @@ export const CLEAR_USER = 'CLEAR_USER'
 export const REQUEST_CREATE_USER = 'REQUEST_CREATE_USER'
 export const RECEIVE_CREATE_USER = 'RECEIVE_CREATE_USER'
 export const ERROR_CREATE_USER = 'ERROR_CREATE_USER'
+
+export const REQUEST_CARTS_AND_QUOTES = 'REQUEST_CARTS_AND_QUOTES'
+export const RECEIVE_CARTS_AND_QUOTES = 'RECEIVE_CARTS_AND_QUOTES'
+
+export const requestAccountCartsAndQuotes = () => {
+  return {
+    type: REQUEST_CARTS_AND_QUOTES,
+  }
+}
+
+export const receiveAccountCartsAndQuotes = cartsAndQuotesOnAccount => {
+  return {
+    type: RECEIVE_CARTS_AND_QUOTES,
+    cartsAndQuotesOnAccount,
+  }
+}
 
 export const requestWishlist = () => {
   return {
@@ -120,6 +135,18 @@ export const getAccountOrders = () => {
       dispatch(receiveAccountOrders([]))
     } else {
       dispatch(receiveAccountOrders(req.success().ordersOnAccount.ordersOnAccount))
+    }
+  }
+}
+
+export const getAccountCartsAndQuotes = () => {
+  return async dispatch => {
+    dispatch(requestAccountOrders())
+    const req = await SlatwalApiService.account.cartsAndQuotes()
+    if (req.isFail()) {
+      dispatch(receiveAccountOrders([]))
+    } else {
+      dispatch(receiveAccountOrders(req.success().cartsAndQuotesOnAccount.ordersOnAccount))
     }
   }
 }
@@ -233,14 +260,13 @@ export const getFavouriteProducts = () => {
         url: `${sdkURL}api/scope/getWishlistItems`,
         headers: {
           'Content-Type': 'application/json',
-          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
         },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
-          return orderTemplateItems_sku_skuID
+        const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
+          return sku_skuID
         })
-        const orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        const orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].orderTemplate_orderTemplateID : ''
         dispatch(
           receiveWishlist({
             skusList,
@@ -263,15 +289,14 @@ export const addWishlistItem = (skuID = '') => {
         url: `${sdkURL}api/scope/addWishlistItem,getWishlistItems`,
         headers: {
           'Content-Type': 'application/json',
-          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
         },
         data: { skuID, orderTemplateID },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
-          return orderTemplateItems_sku_skuID
+        const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
+          return sku_skuID
         })
-        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].orderTemplate_orderTemplateID : ''
         dispatch(
           receiveWishlist({
             skusList,
@@ -294,15 +319,14 @@ export const removeWishlistItem = (removalSkuID = '') => {
         url: `${sdkURL}api/scope/removeWishlistItem,getWishlistItems`,
         headers: {
           'Content-Type': 'application/json',
-          'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
         },
         data: { removalSkuID, orderTemplateID },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        const skusList = response.data.accountWishlistProducts.map(({ orderTemplateItems_sku_skuID }) => {
-          return orderTemplateItems_sku_skuID
+        const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
+          return sku_skuID
         })
-        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].value : ''
+        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].orderTemplate_orderTemplateID : ''
         dispatch(
           receiveWishlist({
             skusList,

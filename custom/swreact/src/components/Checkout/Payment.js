@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CreditCardDetails, SlideNavigation, AccountAddress, GiftCardDetails, CCDetails, SwRadioSelect, TermPaymentDetails } from '../../components'
+import { CreditCardDetails, SlideNavigation, AccountAddress, GiftCardDetails, CCDetails, SwRadioSelect, TermPaymentDetails, Overlay } from '../../components'
 import { addNewAccountAndSetAsBilling, addPayment, removePayment } from '../../actions/cartActions'
 import { eligiblePaymentMethodDetailSelector, orderPayment, billingAccountAddressSelector, getAllOrderPayments, disableInteractionSelector } from '../../selectors/orderSelectors'
 import { accountPaymentMethods } from '../../selectors/userSelectors'
@@ -171,14 +171,15 @@ const PaymentSlide = ({ currentStep }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
   const [paymentMethodOnOrder, setPaymentMethodOnOrder] = useState(false)
   const allPayments = useSelector(getAllOrderPayments)
+  const { isFetching } = useSelector(state => state.cart)
 
   if (paymentMethod && paymentMethod.paymentMethodID && paymentMethodOnOrder !== paymentMethod.paymentMethodID) {
     setPaymentMethodOnOrder(paymentMethod.paymentMethodID)
     setSelectedPaymentMethod(paymentMethod.paymentMethodID)
   }
-
+  console.log('eligiblePaymentMethodDetails', eligiblePaymentMethodDetails)
   return (
-    <>
+    <Overlay active={isFetching} spinner>
       {/* <!-- Payment Method --> */}
       <ListPayments />
       {allPayments.length === 0 && (
@@ -203,7 +204,7 @@ const PaymentSlide = ({ currentStep }) => {
       )}
 
       <SlideNavigation currentStep={currentStep} nextActive={!orderRequirementsList.includes('payment')} />
-    </>
+    </Overlay>
   )
 }
 

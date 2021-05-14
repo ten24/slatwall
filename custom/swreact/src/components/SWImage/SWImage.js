@@ -4,7 +4,14 @@ import defaultMissingBrand from '../../assets/images/missing-brand.png'
 import defaultMissingProductType from '../../assets/images/missing-product-type.png'
 import defaultMissingProduct from '../../assets/images/missing-product.png'
 
-const DefaultImage = ({ alt = '', style }) => {
+const DefaultImage = ({ alt = '', style, type }) => {
+  if (type === 'product') {
+    return <img style={style} src={defaultMissingProduct} alt={alt} />
+  } else if (type === 'productType') {
+    return <img style={style} src={defaultMissingProductType} alt={alt} />
+  } else if (type === 'brand') {
+    return <img style={style} src={defaultMissingBrand} alt={alt} />
+  }
   return <img style={style} src={defaultMissing} alt={alt} />
 }
 const SWImage = ({ className, customPath, src, alt = '', style = {}, type = 'product' }) => {
@@ -34,7 +41,7 @@ const SWImage = ({ className, customPath, src, alt = '', style = {}, type = 'pro
       />
     )
   }
-  return <DefaultImage style={style} />
+  return <DefaultImage style={style} type={type} />
 }
 
 export default SWImage

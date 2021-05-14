@@ -60,7 +60,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment" cfc="OrderFulfillment";
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
-	property name="account" hb_rbKey="entity.account";
+	property name="account" hb_rbKey="entity.account" cfc="Account";
 
 	// New Properties
 

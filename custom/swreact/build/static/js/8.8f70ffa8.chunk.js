@@ -1,2 +1,0 @@
-(this.webpackJsonpswreact=this.webpackJsonpswreact||[]).push([[8],{519:function(e,s,t){"use strict";t.r(s);var c=t(28),r=t(0);s.default=function(){return Object(r.jsx)(c.r,{children:Object(r.jsx)("h1",{children:"Address Page"})})}}}]);
-//# sourceMappingURL=8.8f70ffa8.chunk.js.map

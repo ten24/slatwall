@@ -8,6 +8,8 @@ class SWReportMenuController{
 	public allReports: any;
 	public myCustomReports: any;
 	private slatwall: any;
+	
+	//@ngInject
     constructor(
     	private $scope,
         public $rootScope,

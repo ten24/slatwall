@@ -4,7 +4,6 @@ import ProductListingGrid from './ListingGrid'
 import ProductListingToolBar from './ListingToolBar'
 import ProductListingPagination from './ListingPagination'
 import ProductListingSidebar from './ListingSidebar'
-import PageHeader from '../PageHeader/PageHeader'
 import queryString from 'query-string'
 import { useGetProducts } from '../../hooks/useAPI'
 
@@ -14,7 +13,7 @@ const processQueryParameters = params => {
 const buildPath = params => {
   return queryString.stringify(params, { arrayFormat: 'comma' })
 }
-const initialData = { brand: '', orderBy: 'product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
+const initialData = { brand: '', orderBy: 'product.productFeaturedFlag|DESC,product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
 
 const ListingPage = ({ children, preFilter, hide = [] }) => {
   const loc = useLocation()
@@ -83,7 +82,6 @@ const ListingPage = ({ children, preFilter, hide = [] }) => {
   }, [request, setRequest, params, loc, path])
   return (
     <>
-      <PageHeader> {children}</PageHeader>
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <aside className="col-lg-4">

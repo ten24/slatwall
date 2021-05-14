@@ -1,4 +1,4 @@
-import { REQUEST_LOGIN, RECEIVE_LOGIN, ERROR_LOGIN, LOGOUT, UPDATE_TOKEN } from '../actions/authActions'
+import { REQUEST_LOGIN, RECEIVE_LOGIN, ERROR_LOGIN, LOGOUT } from '../actions/authActions'
 
 const token = localStorage.getItem('token')
 
@@ -23,9 +23,6 @@ const auth = (state = initState, action) => {
 
     case LOGOUT:
       return { ...state, isAuthenticanted: false, isFetching: false }
-    case UPDATE_TOKEN:
-      localStorage.setItem('token', action.payload)
-      return { ...state }
 
     case '@@INIT':
       return { ...state, isAuthenticanted: token ? true : false }
