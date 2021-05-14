@@ -66,6 +66,40 @@ export const useGetProductsByEntity = () => {
 
   return [request, setRequest]
 }
+/*
+Currently this only wokrs for product
+*/
+export const useGetEntityByUrlTitle = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
+  useEffect(() => {
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      request.params['includeAttributesMetadata'] = true
+      axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/public/${request.entity}?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data.data && response.data.data.product) {
+            setRequest({ data: response.data.data.product, attributeSets: response.data.data.attributeSets, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
 
 export const useGetEntityByID = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: {}, entity: '' })
