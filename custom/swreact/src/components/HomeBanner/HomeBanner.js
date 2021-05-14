@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -32,7 +31,7 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
 
 const MainBanner = () => {
   const contentStore = useSelector(state => state.content)
-  const { host, basePath } = useSelector(state => state.configuration.theme)
+  const { host } = useSelector(state => state.configuration.theme)
   let homeMainBanner = []
   Object.keys(contentStore).forEach(key => {
     if (key.includes('main-banner-slider/')) {

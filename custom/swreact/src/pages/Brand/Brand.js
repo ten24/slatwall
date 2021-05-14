@@ -1,4 +1,4 @@
-import { Layout, ProductTypeList } from '../../components'
+import { Layout, PageHeader, ProductTypeList } from '../../components'
 import BrandBanner from './BrandBanner'
 import ListingPage from '../../components/Listing/Listing'
 import { Redirect, useHistory, useLocation } from 'react-router'
@@ -7,8 +7,13 @@ import { useSelector } from 'react-redux'
 import queryString from 'query-string'
 import { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
+import { getProductTypeRoute, getBrandRoute } from '../../selectors/configurationSelectors'
 
 const Brand = props => {
+  const productTypeRoute = useSelector(getProductTypeRoute)
+  const brandRoute = useSelector(getBrandRoute)
+  const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
+
   const path = props.location.pathname.split('/').reverse()
   const loc = useLocation()
   let params = queryString.parse(loc.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
@@ -19,7 +24,6 @@ const Brand = props => {
   let [brandResponse, setBrandRequest] = useGetEntity()
 
   const [request, setRequest] = useGetProductType()
-  const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
   const productTypeUrl = params['key'] || productTypeBase
 
   useEffect(() => {
@@ -42,7 +46,22 @@ const Brand = props => {
   return (
     <Layout>
       {brandResponse.isLoaded && brandResponse.data.length > 0 && <Helmet title={brandResponse.data[0].settings.brandHTMLTitleString} />}
-      {request.data.childProductTypes?.length > 0 && (
+      {brandResponse.isLoaded && request.isLoaded && (
+        <PageHeader
+          title={!request.data.showProducts && request.data.title}
+          includeHome={true}
+          brand={[{ title: brandResponse.data[0].brandName, urlTitle: `/${brandRoute}/${brandResponse.data[0].urlTitle}` }]}
+          crumbs={request.data.breadcrumbs
+            .map(crumb => {
+              return { title: crumb.productTypeName, urlTitle: `/${productTypeRoute}/${crumb.urlTitle}` }
+            })
+            .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${productTypeBase}`)
+            .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${productTypeUrl}`)}
+        >
+          {request.data.showProducts && <BrandBanner brandName={brandResponse.data[0].brandName} imageFile={brandResponse.data[0].imageFile} brandDescription={brandResponse.data[0].brandDescription} />}
+        </PageHeader>
+      )}
+      {brandResponse.isLoaded && request.data.childProductTypes?.length > 0 && (
         <ProductTypeList
           data={request.data}
           onSelect={urlTitle => {
@@ -51,12 +70,7 @@ const Brand = props => {
           }}
         />
       )}
-      {request.data.showProducts && (
-        <ListingPage preFilter={{ ...brandFilter, productType_id: request.data.productTypeID }} hide={['productType', 'brands']}>
-          {brandResponse.isLoaded && brandResponse.data.length > 0 && <BrandBanner brandName={brandResponse.data[0].brandName} imageFile={brandResponse.data[0].imageFile} brandDescription={brandResponse.data[0].brandDescription} />}{' '}
-
-        </ListingPage>
-      )}
+      {request.data.showProducts && <ListingPage preFilter={{ ...brandFilter, productType_id: request.data.productTypeID }} hide={['productType', 'brands']}></ListingPage>}
     </Layout>
   )
 }
