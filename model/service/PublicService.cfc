@@ -891,16 +891,18 @@ component  accessors="true" output="false"
         
         var descriptionTemplate = productType.getSettingValueFormatted('productTypeMetaDescriptionString');
         var metaKeywordsTemplate = productType.getSettingValueFormatted('productTypeMetaKeywordsString');
-        
+        this.getProductService().appendSettingsToProductType(productType);
+
         var response = {
             "title"         : productType.getProductTypeName(),
             "urlTitle"      : productType.getUrlTitle(),
             "imageFile"     : productType.getImageFile(),
-            "htmlTitle"     : productType.getCustomHtmlTitle(),
+            "settings"      : productType["settings"],
             "description"   : productType.stringReplace(template=descriptionTemplate, formatValues=true),
             "metaKeywords"  : productType.stringReplace(template=metaKeywordsTemplate, formatValues=true),
             "productTypeID" : productType.getProductTypeID()
         };
+
 
         // if image is not empty, prefix with base-path
         if( !isNull(response.imageFile) ){

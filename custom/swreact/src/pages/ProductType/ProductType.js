@@ -25,7 +25,7 @@ const ProductType = () => {
 
   return (
     <Layout>
-      <Helmet title={request.data.htmlTitle} />
+      {request.isLoaded && <Helmet title={request.data.settings.productHTMLTitleString} />}
       {request.data.childProductTypes?.length > 0 && (
         <ProductTypeList
           onSelect={urlTitle => {

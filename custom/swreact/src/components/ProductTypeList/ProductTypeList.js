@@ -38,7 +38,7 @@ const ProductTypeList = ({ data, onSelect }) => {
                         onSelect(urlTitle)
                       }}
                     >
-                      <SWImage className="d-block w-100" customPath={customImagePath} src={imageFileName} alt={title} />
+                      <SWImage className="d-block w-100" customPath={customImagePath} src={imageFileName} alt={title} type="productType" />
                     </div>
                     <div className="card-body">
                       <h2 className="h5">
