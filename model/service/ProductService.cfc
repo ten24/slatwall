@@ -626,7 +626,13 @@ component extends="HibachiService" accessors="true" {
 	    };
 	    return arguments.productType;
 	}
-
+	public any function getProductTypeAncestorsbyPath(required productTypeIDPath) {
+		var productTypeCollectionList = this.getProductTypeCollectionList();
+        productTypeCollectionList.setDisplayProperties("productTypeName, urlTitle");
+        productTypeCollectionList.addFilter('productTypeID', "#productTypeIDPath#", "IN");
+        productTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+        return productTypeCollectionList.getRecords( formatRecords = true );
+	}
 	
 	/**
 	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
