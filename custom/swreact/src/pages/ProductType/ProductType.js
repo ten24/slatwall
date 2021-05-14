@@ -33,10 +33,13 @@ const ProductType = () => {
           title={!request.data.showProducts && request.data.title}
           crumbs={request.data.breadcrumbs
             .map(crumb => {
-              return { title: crumb.productTypeName, urlTitle: `/${productTypeRoute}/${crumb.urlTitle}` }
+              return { title: crumb.productTypeName, urlTitle: crumb.urlTitle }
             })
-            .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${productTypeBase}`)
-            .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${id}`)}
+            .filter(crumb => crumb.urlTitle !== productTypeBase)
+            .filter(crumb => crumb.urlTitle !== id)
+            .map(crumb => {
+              return { ...crumb, urlTitle: `/${productTypeRoute}/${crumb.urlTitle}` }
+            })}
         />
       )}
       {request.data.childProductTypes?.length > 0 && (
