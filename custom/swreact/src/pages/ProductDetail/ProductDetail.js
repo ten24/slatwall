@@ -1,7 +1,7 @@
 // import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 
-import { Layout } from '../../components'
+import { BreadCrumb, Layout } from '../../components'
 import ProductPageHeader from './ProductPageHeader'
 import ProductPageContent from './ProductPageContent'
 import ProductDetailSlider from './ProductDetailSlider'
@@ -9,6 +9,8 @@ import { Redirect, useHistory, useLocation } from 'react-router-dom'
 import { useGetProductAvailableSkuOptions, useGetEntityByUrlTitle } from '../../hooks/useAPI'
 import queryString from 'query-string'
 import { Helmet } from 'react-helmet'
+import { useSelector } from 'react-redux'
+import { getProductTypeRoute } from '../../selectors/configurationSelectors'
 const skuCodesToSkuIds = (params, productOptionGroups) => {
   const parsedOptions = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
   const temp = Object.keys(parsedOptions).map(optionGroupCode => {
@@ -43,17 +45,19 @@ const ProductDetail = props => {
   let { pathname, search } = useLocation()
   let [skuOptions, getSkuOptionsRequest] = useGetProductAvailableSkuOptions()
   let [newproduct, getPublicProduct] = useGetEntityByUrlTitle()
+  const productTypeRoute = useSelector(getProductTypeRoute)
 
   let location = useLocation()
   let history = useHistory()
   const [path, setPath] = useState(pathname)
   const params = queryString.parse(search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+  const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
 
   useEffect(() => {
     // Redirect to default sku if not provided
     if (newproduct.isLoaded && !Object.keys(params).length) {
       console.log('Redirect to Default Sku')
-      const cals = skuIdsToSkuCodes(newproduct.data.defaultSelectedOptions, newproduct.data[0].optionGroups)
+      const cals = skuIdsToSkuCodes(newproduct.data.defaultSelectedOptions, newproduct.data.optionGroups)
       history.push({
         pathname: location.pathname,
         search: queryString.stringify(Object.assign(...cals), { arrayFormat: 'comma' }),
@@ -144,7 +148,17 @@ const ProductDetail = props => {
   return (
     <Layout>
       <div className="bg-light p-0">
-        {newproduct.isLoaded && <ProductPageHeader title={newproduct.data.productSeries} />}
+        {newproduct.isLoaded && (
+          <ProductPageHeader title={newproduct.data.productSeries}>
+            <BreadCrumb
+              crumbs={newproduct.data.breadcrumbs
+                .map(crumb => {
+                  return { title: crumb.productTypeName, urlTitle: `/${productTypeRoute}/${crumb.urlTitle}` }
+                })
+                .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${productTypeBase}`)}
+            />
+          </ProductPageHeader>
+        )}
         {newproduct.isLoaded && <Helmet title={newproduct.data.settings.productHTMLTitleString} />}
         {newproduct.isLoaded && newproduct.data.productID && <ProductPageContent attributeSets={newproduct.attributeSets} product={newproduct.data} sku={skuOptions.data.sku[0]} skuID={skuOptions.data.skuID} availableSkuOptions={skuOptions.data.availableSkuOptions} productOptions={newproduct.data.optionGroups} isFetching={skuOptions.isFetching || newproduct.isFetching} />}
         {newproduct.isLoaded && newproduct.data.productID && <ProductDetailSlider productID={newproduct.data.productID} />}

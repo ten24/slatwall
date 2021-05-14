@@ -1,16 +1,18 @@
 import { Redirect, useHistory, useParams } from 'react-router-dom'
-import { Layout, ProductTypeList } from '../../components'
+import { Layout, PageHeader, ProductTypeList } from '../../components'
 import ListingPage from '../../components/Listing/Listing'
 import { Helmet } from 'react-helmet'
 import { useGetProductType } from '../../hooks/useAPI'
 import { useSelector } from 'react-redux'
-import { getProductTypeProductListRoute } from '../../selectors/configurationSelectors'
+import { getProductTypeRoute } from '../../selectors/configurationSelectors'
 
 const ProductType = () => {
+  const productTypeRoute = useSelector(getProductTypeRoute)
+  const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
+
   let { id } = useParams()
   const history = useHistory()
   const [request, setRequest] = useGetProductType()
-  const productsRoute = useSelector(getProductTypeProductListRoute)
 
   if (!request.isFetching && !request.isLoaded) {
     setRequest({ ...request, isFetching: true, isLoaded: false, params: { urlTitle: id }, makeRequest: true })
@@ -26,10 +28,21 @@ const ProductType = () => {
   return (
     <Layout>
       {request.isLoaded && <Helmet title={request.data.settings.productHTMLTitleString} />}
+      {request.isLoaded && (
+        <PageHeader
+          title={!request.data.showProducts && request.data.title}
+          crumbs={request.data.breadcrumbs
+            .map(crumb => {
+              return { title: crumb.productTypeName, urlTitle: `/${productTypeRoute}/${crumb.urlTitle}` }
+            })
+            .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${productTypeBase}`)
+            .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${id}`)}
+        />
+      )}
       {request.data.childProductTypes?.length > 0 && (
         <ProductTypeList
           onSelect={urlTitle => {
-            history.push(`/${productsRoute}/${urlTitle}`)
+            history.push(`/${productTypeRoute}/${urlTitle}`)
           }}
           data={request.data}
         />

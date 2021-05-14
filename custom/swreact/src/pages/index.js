@@ -5,7 +5,6 @@ export { default as BasicPageWithSidebar } from './BasicPageWithSidebar/BasicPag
 export { default as Brand } from './Brand/Brand'
 export { default as Cart } from './Cart/Cart'
 export { default as Category } from './Category/Category'
-export { default as CategoryListing } from './CategoryListing/CategoryListing'
 export { default as Checkout } from './Checkout/Checkout'
 export { default as Contact } from './Contact/Contact'
 export { default as ContentPage } from './ContentPage/ContentPage'

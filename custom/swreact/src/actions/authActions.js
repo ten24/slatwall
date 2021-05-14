@@ -82,6 +82,7 @@ export const login = (email, password) => {
         dispatch(receiveCart(response.data.cart))
         toast.success('Login Successful')
       } else {
+        errorLogin({})
         toast.error('Incorrect Username or Password')
       }
     }
