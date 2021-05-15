@@ -87,7 +87,7 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
                   onSelect(value)
                 }
               }}
-              customLabel={<span>{t('frontend.checkout.receive_option')}</span>}
+              customLabel={t('frontend.checkout.receive_option')}
               newLabel="Add Address"
               selectedValue={selectedAccountID}
               displayNew={true}
