@@ -47,9 +47,7 @@ const MegaMenu = props => {
    * Toggle menu , while the sub-menu is clicked
    */
   const toggleNav = () => {
-    const menuClass = document.getElementById('navbarCollapse').className
-    const isOpened = menuClass.includes('show') ? true : false
-    if (isOpened) {
+    if (props.toggleRef.current.ariaExpanded==="true") {
       props.toggleRef.current.click()
     }
   }
@@ -104,6 +102,7 @@ function Header({ logo, mobileLogo }) {
   const textInput = useRef(null)
   const mobileTextInput = useRef(null)
   const toggleMenuButton = useRef(null)
+
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
