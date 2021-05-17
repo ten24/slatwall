@@ -4,7 +4,7 @@ import { getContent } from '../../actions/contentActions'
 import { useHistory, useLocation } from 'react-router'
 import { getFavouriteProducts } from '../../actions/userActions'
 
-const basicProperties = ['title', 'customSummary', 'customBody', 'contentSubTitle', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID', 'productListingPageFlag', 'displayInNavigation']
+const basicProperties = ['title', 'customSummary', 'customBody', 'contentSubtitle', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID', 'productListingPageFlag', 'displayInNavigation']
 
 let payload = {
   header: basicProperties,
