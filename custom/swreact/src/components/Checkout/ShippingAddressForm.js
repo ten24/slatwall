@@ -7,10 +7,20 @@ const ShippingAddressForm = ({ formik, isEdit, countryCodeOptions, stateCodeOpti
   return (
     <>
       <div className="row">
-        <div className="col-sm-6">
+      <div className="col-sm-6">
           <div className="form-group">
-            <label htmlFor="accountAddressName">Nickname</label>
-            <input disabled={!isEdit} className="form-control" type="text" id="accountAddressName" value={formik.values.accountAddressName} onChange={formik.handleChange} />
+            <label htmlFor="checkout-country">Country</label>
+            <SwSelect
+              id="countryCode"
+              disabled={!isEdit}
+              value={formik.values.countryCode}
+              onChange={e => {
+                e.preventDefault()
+                dispatch(getStateCodeOptionsByCountryCode(e.target.value))
+                formik.handleChange(e)
+              }}
+              options={countryCodeOptions}
+            />
           </div>
         </div>
         <div className="col-sm-6">
@@ -35,26 +45,10 @@ const ShippingAddressForm = ({ formik, isEdit, countryCodeOptions, stateCodeOpti
         </div>
       </div>
       <div className="row">
-        <div className="col-sm-4">
+        <div className="col-sm-6">
           <div className="form-group">
             <label htmlFor="city">City</label>
             <input disabled={!isEdit} className="form-control" type="text" id="city" value={formik.values.city} onChange={formik.handleChange} />
-          </div>
-        </div>
-        <div className="col-sm-3">
-          <div className="form-group">
-            <label htmlFor="checkout-country">Country</label>
-            <SwSelect
-              id="countryCode"
-              disabled={!isEdit}
-              value={formik.values.countryCode}
-              onChange={e => {
-                e.preventDefault()
-                dispatch(getStateCodeOptionsByCountryCode(e.target.value))
-                formik.handleChange(e)
-              }}
-              options={countryCodeOptions}
-            />
           </div>
         </div>
         {stateCodeOptions.length > 0 && (
