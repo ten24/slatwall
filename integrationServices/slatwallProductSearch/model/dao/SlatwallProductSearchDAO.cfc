@@ -50,6 +50,45 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public void function logQuery(required any queryService, string prefix='' , boolean toFile = true){
+	    
+        var sql = arguments.queryService.getSql().toString();
+        var result = serializeJSON(arguments.queryService, "struct");
+        var recordCount = arguments.queryService.recordCount();
+        var executionTime = arguments.queryService.getExecutionTime();
+        
+	    var template = "
+	        /** SQL */
+            
+            #sql#	    
+	        
+	        
+	        /** Time Took #executionTime# in fetching #recordCount# records*/
+	        
+	        
+	        /** Result */
+	        /** 
+	        
+	            #result# 
+	        
+	        */
+	    ";
+	    
+	    this.logHibachi("SlatwallProductSearchDAO:: #arguments.prefix#  #template#");
+	    if(!arguments.toFile){
+	        return;
+	    }
+	    
+	    var dir = expandPath("/Slatwall/integrationServices/slatwallProductSearch/scripts/");
+	    var fileName = arguments.prefix & "_" & hash(sql, 'md5') & "__E_" & executionTime & "__R_" & recordCount & "_" & getTickCount() & '.sql';
+	    var filepath = dir & fileName;
+	    
+	    logHibachi( filepath );
+	    
+	    fileWrite( filepath, template );
+	    
+	}
     
 	public any function getProductAndSkuSelectTypeAttributes(){
 	    var startTicks = getTickCount();
@@ -76,7 +115,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    query.setSQL(sql);
 	    query = query.execute().getResult();
 	    
-	    this.logHibachi("SlatwallProductSearchDAO:: getProductAndSkuSelectTypeAttributes took #getTickCount()-startTicks# ms., and fetched #query.recordCount# records ");
+	    this.logQuery(query, 'getProductAndSkuSelectTypeAttributes');
+	    
+	    this.logHibachi("SlatwallProductSearchDAO:: getProductAndSkuSelectTypeAttributes took #getTickCount()-startTicks# ms.");
         
         return query;
 	}
@@ -1261,10 +1302,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         }
         
         
-        this.logHibachi("getAllFacetOptionsSQL: #getAllFacetOptionsSQL#");
+        // TODO cleanup, left for debugging
+        // this.logHibachi("getAllFacetOptionsSQL: #getAllFacetOptionsSQL#");
         
         var queryService = new Query();
         queryService.setSQL(getAllFacetOptionsSQL);
+        
         for(var paramName in filterQueryFragmentsData.params ){
             var paramValue = filterQueryFragmentsData.params[paramName];
             if( isArray(paramValue) ){
@@ -1276,7 +1319,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 
         queryService = queryService.execute().getResult();
 
-        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.; and fetched #queryService.recordCount# records ");
+	    this.logQuery(queryService, 'getPotentialProductFilterFacetOptions' );
+        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.;");
         return queryService;
 	}
 	
