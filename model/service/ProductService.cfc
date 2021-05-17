@@ -1563,6 +1563,21 @@ component extends="HibachiService" accessors="true" {
 		return arguments.productReview;
 		
 	}
+	
+public any function getProductTypesForBrand(required string urlTitle){
+		var productTypeCollectionList = getService('HibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
+		productTypeCollectionList.addFilter('products.brand.urlTitle', urlTitle);
+        productTypeCollectionList.addOrderBy("productTypeID"); //to arrange them from parent to child order
+		var filteredTypes =  productTypeCollectionList.getRecords( formatRecords = true );
+		var filteredTypeIDPaths = []
+            for( var filteredType in filteredTypes ) {
+                for(var ptyi in ListToArray(filteredType.productTypeIDPath)){
+                    ArrayAppend(filteredTypeIDPaths, ptyi);
+                }
+            }
+        return filteredTypeIDPaths
+	}
 
 	// ======================  END: Save Overrides ============================
 
