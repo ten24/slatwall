@@ -28,7 +28,7 @@ const Brand = props => {
 
   useEffect(() => {
     if (!request.isFetching && !request.isLoaded) {
-      setRequest({ ...request, isFetching: true, isLoaded: false, params: { urlTitle: productTypeUrl }, makeRequest: true })
+      setRequest({ ...request, isFetching: true, isLoaded: false, params: { urlTitle: productTypeUrl, brandUrlTitle: path[0] }, makeRequest: true })
     }
     if (!brandResponse.isFetching && !brandResponse.isLoaded) {
       setBrandRequest({ ...brandResponse, isFetching: true, isLoaded: false, entity: 'brand', params: { 'f:urlTitle': path[0] }, makeRequest: true })
@@ -40,7 +40,7 @@ const Brand = props => {
   }
   history.listen(location => {
     params = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
-    setRequest({ ...request, data: {}, isFetching: true, isLoaded: false, params: { urlTitle: params['key'] || productTypeBase }, makeRequest: true })
+    setRequest({ ...request, data: {}, isFetching: true, isLoaded: false, params: { urlTitle: params['key'] || productTypeBase, brandUrlTitle: path[0] }, makeRequest: true })
   })
 
   return (
