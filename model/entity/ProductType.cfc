@@ -414,7 +414,17 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		super.preUpdate(argumentcollection=arguments);
 	}
 
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
+	public string function getCustomHtmlTitle() {
+        var simpleRepresentation = this.getProductTypeName();
+		if( !isNull(this.getParentProductType()) ){
+			var parentProductTypeName =  this.getParentProductType().getSimpleRepresentation();
+			// if it's not a system's type, add the rest of the sub-types
+			if(parentProductTypeName.listLen('|') >  1){
+			    simpleRepresentation &= " |" & parentProductTypeName.listRest('|'); 
+			}
+		}
+		return simpleRepresentation & " | " & "Stone and Berg";
+	}
+	//CUSTOM FUNCTIONS END
 }
-
-
