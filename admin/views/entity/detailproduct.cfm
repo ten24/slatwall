@@ -111,7 +111,7 @@ Notes:
 
 			<!--- Relating --->
 			<hb:HibachiEntityDetailItem property="listingPages" count="#rc.product.getListingPagesCount()#"/>
-			<hb:HibachiEntityDetailItem property="categories"  count="#rc.product.getCategoriesCount()#"/>
+			<hb:HibachiEntityDetailItem property="categories" count="#rc.product.getCalculatedCategoriesCount()#"/>
 			<hb:HibachiEntityDetailItem property="relatedProducts" count="#rc.product.getRelatedProductsCount()#" />
 			<hb:HibachiEntityDetailItem property="sites" count="#rc.product.getSitesCount()#" />
 
