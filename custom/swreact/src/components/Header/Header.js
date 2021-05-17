@@ -72,10 +72,9 @@ const MegaMenu = props => {
                   onClick={event => {
                     event.preventDefault()
                     if (event.target.getAttribute('href')) {
-                      setTimeout(() => {
-                        // setting timeout so that the menu closes , after the page changes
-                        toggleNav()
-                      }, 200)
+                      history.listen((_) => {
+                        toggleNav();
+                      });
                       history.push(event.target.getAttribute('href'))
                     }
                   }}
