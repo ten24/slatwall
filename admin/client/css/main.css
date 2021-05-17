@@ -9073,3 +9073,8 @@ a.ec-tool-tip-item:hover span.ec-tool-tip {
 p.mrg-btm-1 {
   margin-bottom: 2px;
 }
+
+/*selected item in related products*/
+.dropdown-item.s-selected {
+    background-color: #e6e6e6c7;
+}
