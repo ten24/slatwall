@@ -48,46 +48,66 @@ Notes:
 */
 component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="true" output="false"{
 	
+	property name="slatwallProductSearchIntegrationCFC";
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public void function logQuery(required any queryService, string prefix='' , boolean toFile = true){
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false){
+	    return this.getSlatwallProductSearchIntegrationCFC().setting(argumentCollection=arguments);
+	}
+	
+	public string function getCurrentRequestFullURL(){
+	    /*
+    	    Protocol = #getPageContext().getRequest().getScheme()#;
+            Domain = #cgi.server_name#;
+            Template = #cgi.script_name#;
+            QueryString = #cgi.query_string#;
+        */
+	    return getPageContext().getRequest().getScheme()&'://'&CGI.server_name&'/'&CGI.script_name&'?'&CGI.query_string;
+	}
+	
+	public void function logQuery(required any queryService, string prefix='' ){
+	    
+	    if( !this.setting('enableSqlQueryLogs') && !this.setting('enableSqlQueryFileDumps') ){
+	        return;
+	    }
 	    
         var sql = arguments.queryService.getSql().toString();
         var result = serializeJSON(arguments.queryService, "struct");
         var recordCount = arguments.queryService.recordCount();
-        var executionTime = arguments.queryService.getExecutionTime();
+        var executionTime = arguments.queryService.getExecutionTime()/1000000; // it's returned in nano sec.
         
 	    var template = "
-	        /** SQL */
-            
-            #sql#	    
 	        
-	        
+	        /** URL : #this.getCurrentRequestFullURL()#;
+	       
 	        /** Time Took #executionTime# in fetching #recordCount# records*/
+	
+	        
+	        /** SQL */
+                #sql#	    
 	        
 	        
 	        /** Result */
 	        /** 
-	        
+
 	            #result# 
-	        
+	    
 	        */
 	    ";
 	    
-	    this.logHibachi("SlatwallProductSearchDAO:: #arguments.prefix#  #template#");
-	    if(!arguments.toFile){
+	    if(this.setting('enableSqlQueryLogs') ){
+	        this.logHibachi("SlatwallProductSearchDAO::     #arguments.prefix#      #template#");
+	    }
+	    
+	    if(!this.setting('enableSqlQueryFileDumps')){
 	        return;
 	    }
 	    
 	    var dir = expandPath("/Slatwall/integrationServices/slatwallProductSearch/scripts/");
-	    var fileName = arguments.prefix & "_" & hash(sql, 'md5') & "__E_" & executionTime & "__R_" & recordCount & "_" & getTickCount() & '.sql';
-	    var filepath = dir & fileName;
-	    
-	    logHibachi( filepath );
-	    
-	    fileWrite( filepath, template );
-	    
+	    var fileName = dir & arguments.prefix & "_" & hash(sql, 'md5') & "__Ext_" & executionTime & "__Recs_" & recordCount & "_" & getTickCount() & '.sql';
+
+	    fileWrite( fileName, template );
 	}
     
 	public any function getProductAndSkuSelectTypeAttributes(){
@@ -230,7 +250,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         attributeIDs = listQualify(attributeIDs, "'");
         
         // TODO: multi-selet type
-        var selectTypeAttributeOptionJoinParts = productAndSkuSelectTypeAttributes.reduce( function(joins,row){
+        var selectTypeAttributeOptionJoinParts = productAndSkuSelectTypeAttributes.reduce( function( joins, row ){
             if( arguments.row.attributeInputType != 'select' ){
                 return arguments.joins;
             }
