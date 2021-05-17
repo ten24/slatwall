@@ -7,10 +7,9 @@ import { useSelector } from 'react-redux'
 import queryString from 'query-string'
 import { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
-import { getProductTypeRoute, getBrandRoute } from '../../selectors/configurationSelectors'
+import { getBrandRoute } from '../../selectors/configurationSelectors'
 
 const Brand = props => {
-  const productTypeRoute = useSelector(getProductTypeRoute)
   const brandRoute = useSelector(getBrandRoute)
   const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
 
@@ -49,13 +48,16 @@ const Brand = props => {
         <PageHeader
           title={!request.data.showProducts && request.data.title}
           includeHome={true}
-          brand={[{ title: brandResponse.data[0].brandName, urlTitle: `/${brandRoute}/${brandResponse.data[0].urlTitle}` }]}
+          brand={params['key'] && [{ title: brandResponse.data[0].brandName, urlTitle: `/${brandRoute}/${brandResponse.data[0].urlTitle}` }]}
           crumbs={request.data.breadcrumbs
             .map(crumb => {
-              return { title: crumb.productTypeName, urlTitle: `/${productTypeRoute}/${crumb.urlTitle}` }
+              return { title: crumb.productTypeName, urlTitle: crumb.urlTitle }
             })
-            .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${productTypeBase}`)
-            .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${productTypeUrl}`)}
+            .filter(crumb => crumb.urlTitle !== productTypeBase)
+            .filter(crumb => crumb.urlTitle !== productTypeUrl)
+            .map(crumb => {
+              return { ...crumb, urlTitle: `${loc.pathname}?${queryString.stringify({ key: crumb.urlTitle }, { arrayFormat: 'comma' })}` }
+            })}
         >
           {request.data.showProducts && <BrandBanner brandName={brandResponse.data[0].brandName} imageFile={brandResponse.data[0].imageFile} brandDescription={brandResponse.data[0].brandDescription} />}
         </PageHeader>
