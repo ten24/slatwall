@@ -10,7 +10,7 @@
                 "dataType": "string"
             }
         },
-        "name": {
+        "addressNickName": {
             "propertyIdentifier": "name",
             "validations": {
                 "required": true,
@@ -76,7 +76,7 @@
                 "dataType": "numeric"
             }
         },
-        "emailAddress": {
+        "email": {
             "propertyIdentifier": "emailAddress",
             "validations": {
                 "dataType": "string"
