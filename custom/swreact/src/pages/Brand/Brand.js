@@ -22,7 +22,6 @@ const Brand = props => {
   }
   const history = useHistory()
   let [brandResponse, setBrandRequest] = useGetEntity()
-
   const [request, setRequest] = useGetProductType()
   const productTypeUrl = params['key'] || productTypeBase
 
