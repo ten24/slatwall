@@ -582,7 +582,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         if( len(arguments.priceRange) ) {
         	collectionList.addFilter(
         		propertyIdentifier='skuPricePrice',
-        		value=ReReplace(arguments.priceRange,"[^0-9.]","","all"),
+        		value=ReReplace(arguments.priceRange,"[^0-9.^-]","","all"),
         		comparisonOperator="between"
         	);
         }
@@ -670,7 +670,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    if( arguments.includePotentialFilters ){
 	        var potentialFilters = this.getPotentialFilterFacetsAndOptionsFormatted(argumentCollection=arguments);
-	        potentialFacetsAndOption['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount, collectionData.priceRangeCollectionList );
+	        potentialFilters['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount, collectionData.priceRangeCollectionList );
 	        
 	        resultSet['potentialFilters'] = potentialFilters;
 	    }
