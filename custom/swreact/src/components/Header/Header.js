@@ -43,6 +43,19 @@ const MegaMenu = props => {
   let history = useHistory()
   const { t } = useTranslation()
 
+  history.listen((_) => {
+    // listen to path , and toggleNav on path change
+    toggleNav();
+  });
+
+  /**
+   * Toggle menu , while the sub-menu is clicked
+   */
+  const toggleNav = () => {
+    if (props.toggleRef.current.ariaExpanded==="true") {
+      props.toggleRef.current.click()
+    }
+  }
   return (
     <li className="nav-item dropdown">
       <a className="nav-link dropdown-toggle" href={props.linkUrl || '/'} data-toggle="dropdown">
@@ -89,6 +102,8 @@ function Header({ logo, mobileLogo }) {
   const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
   const textInput = useRef(null)
   const mobileTextInput = useRef(null)
+  const toggleMenuButton = useRef(null)
+
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -143,7 +158,7 @@ function Header({ logo, mobileLogo }) {
                   </div>
                 </div>
                 <div className="navbar-toolbar d-flex flex-shrink-0 align-items-center">
-                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+                  <button ref={toggleMenuButton} className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" id="menuToggleButton">
                     <span className="navbar-toggler-icon"></span>
                   </button>
 
@@ -210,7 +225,7 @@ function Header({ logo, mobileLogo }) {
 
               <ul className="navbar-nav nav-categories">
                 {menuItems.map((menuItem, index) => {
-                  return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} />
+                  return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} toggleRef={toggleMenuButton} />
                 })}
               </ul>
               {shopByManufacturer.showInMenu && (
