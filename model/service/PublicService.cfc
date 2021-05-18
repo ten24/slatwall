@@ -831,9 +831,8 @@ component  accessors="true" output="false"
     */
     public void function getProductType(required struct data){
         param name="arguments.data.urlTitle";
-        
+
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
-        
         if( IsNull( productType ) 
             || ( !IsNull(productType.getActiveFlag()) && !productType.getActiveFlag() ) 
             || ( !IsNull(productType.getPublishedFlag()) && !productType.getPublishedFlag() )
@@ -841,10 +840,12 @@ component  accessors="true" output="false"
             getHibachiScope().addActionResult( "public:product.getProductType", true );
             return;
         }
-        
-        //get sub product types
         var childProductTypeCollectionList = getProductService().getProductTypeCollectionList();
         childProductTypeCollectionList.setDisplayProperties("productTypeName, urlTitle, imageFile, productTypeID, productTypeIDPath");
+        if(structKeyExists(arguments.data, 'brandUrlTitle')){
+            var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
+            childProductTypeCollectionList.addFilter('productTypeID', ArrayToList(brandProductTypeList), "IN");
+        }
         childProductTypeCollectionList.addFilter('productTypeIDPath', "%#productType.getProductTypeID()#%", "LIKE");
         childProductTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
         var childProductTypesRecord = childProductTypeCollectionList.getRecords( formatRecords = true );
