@@ -1573,7 +1573,9 @@ public any function getProductTypesForBrand(required string urlTitle){
 		var filteredTypeIDPaths = []
             for( var filteredType in filteredTypes ) {
                 for(var ptyi in ListToArray(filteredType.productTypeIDPath)){
-                    ArrayAppend(filteredTypeIDPaths, ptyi);
+                    if(!arrayFindNoCase(filteredTypeIDPaths, ptyi)){
+                    	ArrayAppend(filteredTypeIDPaths, ptyi);
+                    }
                 }
             }
         return filteredTypeIDPaths
