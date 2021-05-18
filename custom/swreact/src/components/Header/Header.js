@@ -43,6 +43,11 @@ const MegaMenu = props => {
   let history = useHistory()
   const { t } = useTranslation()
 
+  history.listen((_) => {
+    // listen to path , and toggleNav on path change
+    toggleNav();
+  });
+
   /**
    * Toggle menu , while the sub-menu is clicked
    */
@@ -72,9 +77,6 @@ const MegaMenu = props => {
                   onClick={event => {
                     event.preventDefault()
                     if (event.target.getAttribute('href')) {
-                      history.listen((_) => {
-                        toggleNav();
-                      });
                       history.push(event.target.getAttribute('href'))
                     }
                   }}
