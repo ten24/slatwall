@@ -410,9 +410,9 @@
           }
           background-color: $dropdown-bg;
           box-shadow: $dropdown-box-shadow;
-          &.show {
-            display: none;
-          }
+          // &.show {
+          //   display: none;
+          // }
           > .dropdown {
             > .dropdown-toggle {
               position: relative;
@@ -443,12 +443,12 @@
             }
           }
         }
-        .dropdown:hover > .dropdown-menu {
-          display: block;
-          div {
-            animation: slide-up 0.25s ease-in-out;
-          }
-        }
+        // .dropdown:hover > .dropdown-menu {
+        //   display: block;
+        //   div {
+        //     animation: slide-up 0.25s ease-in-out;
+        //   }
+        // }
         .navbar-tool-text {
           display: block;
         }
