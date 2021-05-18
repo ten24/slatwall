@@ -200,23 +200,32 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	    } // END loop
 	    
-	    potentialFacetsAndOption['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount);
-	    
 	    this.logHibachi("SlatwallProductSearchService:: getPotentialFilterFacetsAndOptionsFormatted took #getTickCount() - startTicks# ms.")
 
 	    return potentialFacetsAndOption;
 	}
 	
-	public array function makePriceRangeOptions( required number priceRangesCount ){
+	public array function makePriceRangeOptions( required number priceRangesCount, required any priceRangeCollectionList ){
     
         //check to avoid division by zero
         if( arguments.priceRangesCount <= 0 ){
             return [];
         }
         
-        var query = this.getSlatwallProductSearchDAO().getPriceRangeMinMax();
-        var min = val(query.min);
-        var max = val(query.max);
+        var startTicks = getTickCount();
+        var records = arguments.priceRangeCollectionList.getRecords(formatRecords=false);
+        
+        var min = val(records[1]['min']);
+        var max = val(records[1]['max']);
+        
+        this.getSlatwallProductSearchDAO().logQuery({
+            'sql': arguments.priceRangeCollectionList.getSQL(),
+            'result' : { 'min': min, 'max': max},
+            'recordCount' : 1,
+            'executionTime' : getTickCount() - startTicks,
+        }, 'getProducts:: priceRangeCollectionList.getRecords' );
+        
+        
         
         var delta = floor((max - min) / arguments.priceRangesCount);
         var ranges = [
@@ -347,7 +356,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    param name="arguments.f" default={}; // additional-filters
 	    
-	    param name="arguments.propertyIdentifiers" default='';
+	    param name="arguments.propertyIdentifierList" default='';
         // Search
         param name="arguments.keyword" default="";
         // Sorting
@@ -362,16 +371,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 		var collectionList = this.getProductFilterFacetOptionCollectionList();
 		
-		if( len(trim(arguments.propertyIdentifiers)) ){
-		    collectionList.setDisplayProperties(arguments.propertyIdentifiers);
-		} else {
-    		// sku properties 
-    		collectionList.setDisplayProperties('sku.skuID,sku.skuCode,sku.imageFile,skuPricePrice|skuPrice,skuPriceListPrice|listPrice');
-            collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
-    		// product properties
-    		collectionList.addDisplayProperties('product.productID,product.productName,product.productCode,product.urlTitle');
-		}
-
         // Product's filters
         collectionList.addFilter(
             propertyIdentifier = 'productPublishedStartDateTime',
@@ -517,15 +516,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             }
         }
         
-        //Price Range Filter
-        if( len(arguments.priceRange) ) {
-        	collectionList.addFilter(
-        		propertyIdentifier='skuPricePrice',
-        		value=ReReplace(arguments.priceRange,"[^0-9.]","","all"),
-        		comparisonOperator="between"
-        	);
-        }
-        
         // Additional filters
         if( !hibachiIsStructEmpty(arguments.f) ){
             for(var propertyIdentifier in arguments.f ){
@@ -551,10 +541,53 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 }
             }
         }
- 
+        
+        
+        // make a copy of the collection-object, with all the filters applied
+        var priceRangeCollectionList = this.getProductFilterFacetOptionCollectionList();
+        priceRangeCollectionList.setCollectionConfigStruct( 
+            // duplicate so both collections are not sharing the same objects under the hood
+            Duplicate( collectionList.getCollectionConfigStruct() ) 
+        );
+        priceRangeCollectionList.setHQLParams( 
+            // duplicate so both collections are not sharing the same objects under the hood
+            Duplicate( collectionList.getHQLParams() ) 
+        );
+
+        priceRangeCollectionList.setDisplayProperties('');
+        priceRangeCollectionList.addDisplayAggregate(
+            propertyIdentifier='skuPriceListPrice', 
+            aggregateFunction='MIN', 
+            aggregateAlias='min'
+        );
+        priceRangeCollectionList.addDisplayAggregate(
+            propertyIdentifier='skuPriceListPrice', 
+            aggregateFunction='MAX', 
+            aggregateAlias='max'
+        );
+        
+        // add the display-properties and the rest of the procing-filter, pagination, sorting etc.
+        
+        if( len(trim(arguments.propertyIdentifierList)) ){
+		    collectionList.setDisplayProperties(arguments.propertyIdentifierList);
+		} else {
+    		// sku properties 
+    		collectionList.setDisplayProperties('sku.skuID,sku.skuCode,sku.imageFile,skuPricePrice|skuPrice,skuPriceListPrice|listPrice');
+            collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
+    		// product properties
+    		collectionList.addDisplayProperties('product.productID,product.productName,product.productCode,product.urlTitle');
+		}
+		
+        //Price Range Filter
+        if( len(arguments.priceRange) ) {
+        	collectionList.addFilter(
+        		propertyIdentifier='skuPricePrice',
+        		value=ReReplace(arguments.priceRange,"[^0-9.]","","all"),
+        		comparisonOperator="between"
+        	);
+        }
         // Sorting
         collectionList.setOrderBy(arguments.orderBy);
- 
         // Pagination
         collectionList.setPageRecordsShow( arguments.pageSize );
         collectionList.setCurrentPageDeclaration(arguments.currentPage);
@@ -562,7 +595,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         return { 
             'currencyCode': currencyCode,
             'priceGroupCode': priceGroupCode,
-            'collectionList': collectionList
+            'collectionList': collectionList,
+            'priceRangeCollectionList': priceRangeCollectionList
         };
     }
 
@@ -635,11 +669,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    };
 	    
 	    if( arguments.includePotentialFilters ){
-	        resultSet['potentialFilters'] = this.getPotentialFilterFacetsAndOptionsFormatted(argumentCollection=arguments);
+	        var potentialFilters = this.getPotentialFilterFacetsAndOptionsFormatted(argumentCollection=arguments);
+	        potentialFacetsAndOption['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount, collectionData.priceRangeCollectionList );
+	        
+	        resultSet['potentialFilters'] = potentialFilters;
 	    }
 	    
 	    return resultSet;
-
 	}
 	
 	// ===================== START: Logical Methods ===========================

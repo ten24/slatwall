@@ -1338,19 +1338,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         return queryService;
 	}
 	
-	
-	public any function getPriceRangeMinMax(){
-	    
-	    var queryService = new Query();
-	    var sql = "
-	        SELECT MAX(skuPricePrice) AS max, MIN(skuPricePrice) AS min
-            FROM swProductFilterFacetOption; 
-	    ";
-        queryService.setSQL(sql);
-	    queryService = queryService.execute().getResult();
-	    this.logQuery(queryService, 'getPotentialProductFilterFacetOptions' );
-	    return queryService;
-	}
 
 	// =====================  END: Logical Methods ============================
 

@@ -49,6 +49,7 @@ Notes:
 component  accessors="true" output="false" 
 {
     property name="siteService" type="any";
+    property name="settingService" type="any";
     property name="accountService" type="any";
     property name="addressService" type="any";
     property name="attributeService" type="any";
@@ -336,7 +337,7 @@ component  accessors="true" output="false"
             }
 	    }
 
-	    var integrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
+	    var integrationPackage = this.getSettingService().getSettingValue('siteProductSearchIntegration', hibachiScope.getCurrentRequestSite());
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(integrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
         
