@@ -55,7 +55,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	public struct function getSettings() {
 		return {
 			enableSqlQueryLogs : { fieldType: "yesno", defaultValue: 0 },
-			enableSqlQueryFileDumps : { fieldType: "yesno", defaultValue: 0 , description: "Enable/disable capruting sql queries dumps (in '/scripts/' DIR), Only to be used for debugging in Local developer env"}
+			enableSqlQueryResultLogs : { fieldType: "yesno", defaultValue: 0 , description: "If the SqlQueryLogs is enabled, this will enable/disable dumping result in the logs as well"}
 		};
 	}
 	

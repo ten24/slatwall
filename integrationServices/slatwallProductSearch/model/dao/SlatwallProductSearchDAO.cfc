@@ -66,48 +66,44 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    return getPageContext().getRequest().getScheme()&'://'&CGI.server_name&'/'&CGI.script_name&'?'&CGI.query_string;
 	}
 	
-	public void function logQuery(required any queryService, string prefix='' ){
+	public void function logQuery(required any structOrQuery, string prefix='' ){
 	    
-	    if( !this.setting('enableSqlQueryLogs') && !this.setting('enableSqlQueryFileDumps') ){
+	    if( !this.setting('enableSqlQueryLogs') ){
 	        return;
 	    }
 	    
-        var sql = arguments.queryService.getSql().toString();
-        var result = serializeJSON(arguments.queryService, "struct");
-        var recordCount = arguments.queryService.recordCount();
-        var executionTime = arguments.queryService.getExecutionTime()/1000000; // it's returned in nano sec.
+        var sql = arguments.structOrQuery['sql'] ?: arguments.structOrQuery.getSql().toString();
+        var recordCount = arguments.structOrQuery['recordCount'] ?:  arguments.structOrQuery.recordCount();
+        var executionTime = arguments.structOrQuery['executionTime'] ?:  arguments.structOrQuery.getExecutionTime()/1000000; // it's returned in nano sec.
         
 	    var template = "
 	        
 	        /** URL : #this.getCurrentRequestFullURL()#;
-	       
 	        /** Time Took #executionTime# in fetching #recordCount# records*/
-	
 	        
 	        /** SQL */
                 #sql#	    
-	        
+	    ";
+	    
+	   
+	    if( this.setting('enableSqlQueryResultLogs') ){
+	        template &= " 
 	        
 	        /** Result */
 	        /** 
-
-	            #result# 
-	    
-	        */
-	    ";
-	    
-	    if(this.setting('enableSqlQueryLogs') ){
-	        this.logHibachi("SlatwallProductSearchDAO::     #arguments.prefix#      #template#");
+	           #serializeJSON(arguments.structOrQuery['result'] ?: arguments.structOrQuery, "struct")# 
+	         */
+	       ";
 	    }
 	    
-	    if(!this.setting('enableSqlQueryFileDumps')){
-	        return;
-	    }
+	   this.logHibachi("SlatwallProductSearch::     #arguments.prefix#      #template#");
 	    
-	    var dir = expandPath("/Slatwall/integrationServices/slatwallProductSearch/scripts/");
-	    var fileName = dir & arguments.prefix & "_" & hash(sql, 'md5') & "__Ext_" & executionTime & "__Recs_" & recordCount & "_" & getTickCount() & '.sql';
 
-	    fileWrite( fileName, template );
+        // TODO: cleanup, left here for debugging
+	    // var dir = expandPath("/Slatwall/integrationServices/slatwallProductSearch/scripts/");
+	    // var fileName = dir & arguments.prefix & "_" & hash(sql, 'md5') & "__Ext_" & executionTime & "__Recs_" & recordCount & "_" & getTickCount() & '.sql';
+
+	    // fileWrite( fileName, template );
 	}
     
 	public any function getProductAndSkuSelectTypeAttributes(){
@@ -148,6 +144,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    var sql = "TRUNCATE TABLE  swProductFilterFacetOption";
 	    query.setSQL(sql);
 	    query.execute().getResult();
+
 	    this.logHibachi("SlatwallProductSearchDAO:: cleared swProductFilterFacetOption table, in #getTickCount()-startTicks# ms.");
 	}
 	
@@ -163,8 +160,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         var startTicks = getTickCount();
 	    var query = new Query();
 	    query.setSQL(sql);
-	    query.execute();
-	    
+	    query.execute().getResult();
 	    this.logHibachi("SlatwallProductSearchDAO:: rePopulateProductFilterFacetOptionsTable took #getTickCount()-startTicks# ms.");
 	}
 	
@@ -1322,7 +1318,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         }
         
         
-        // TODO cleanup, left for debugging
+        // TODO cleanup, left here for debugging
         // this.logHibachi("getAllFacetOptionsSQL: #getAllFacetOptionsSQL#");
         
         var queryService = new Query();
@@ -1353,7 +1349,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             FROM swProductFilterFacetOption; 
 	    ";
         queryService.setSQL(sql);
-	    return queryService.execute().getResult();
+	    queryService = queryService.execute().getResult();
+	    this.logQuery(queryService, 'getPotentialProductFilterFacetOptions' );
+	    return queryService;
 	}
 
 	// =====================  END: Logical Methods ============================

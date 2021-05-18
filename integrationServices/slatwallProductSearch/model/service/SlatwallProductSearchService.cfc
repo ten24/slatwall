@@ -364,11 +364,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 		if( len(trim(arguments.propertyIdentifiers)) ){
 		    collectionList.setDisplayProperties(arguments.propertyIdentifiers);
 		} else {
-    		// product properties
-    		collectionList.setDisplayProperties('product.productID,product.productName,product.productCode,product.urlTitle');
     		// sku properties 
-    		collectionList.addDisplayProperties('sku.skuID,sku.skuCode,sku.imageFile,skuPricePrice|skuPrice,skuPriceListPrice|listPrice');
+    		collectionList.setDisplayProperties('sku.skuID,sku.skuCode,sku.imageFile,skuPricePrice|skuPrice,skuPriceListPrice|listPrice');
             collectionList.addDisplayProperty('sku.stocks.calculatedQATS');
+    		// product properties
+    		collectionList.addDisplayProperties('product.productID,product.productName,product.productCode,product.urlTitle');
 		}
 
         // Product's filters
@@ -601,14 +601,25 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var startTicks = getTickCount();
 	    var total = collectionData.collectionList.getRecordsCount();
-	    this.logHibachi("SlatwallProductSearchService:: getProducts/getRecordsCount took #getTickCount() - startTicks# ms. count: #total#");
+
+        this.getSlatwallProductSearchDAO().logQuery({
+            'sql': collectionData.collectionList.getSelectionCountSQL(),
+            'result' : { 'total': total},
+            'recordCount' : total,
+            'executionTime' : getTickCount() - startTicks,
+        }, 'getProducts:: collection.getRecordsCount' );
+        
         
         startTicks = getTickCount();
         
-        this.logHibachi("SQL :: "&collectionData.collectionList.getSQL() );
-        
 	    var records = collectionData.collectionList.getPageRecords();
-	    this.logHibachi("SlatwallProductSearchService:: getProducts/getPageRecords [p:#arguments.currentPage#(#arguments.pageSize#)] took #getTickCount() - startTicks# ms.");
+	    
+        this.getSlatwallProductSearchDAO().logQuery({
+            'sql': collectionData.collectionList.getSQL(),
+            'result' : records,
+            'recordCount' : arrayLen(records),
+            'executionTime' : getTickCount() - startTicks,
+        }, 'getProducts:: collection.getPageRecords, [page:#arguments.currentPage#, size: #arguments.pageSize#]');
 
 	    var resultSet = {
 	        'total' : total,
