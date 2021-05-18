@@ -61,7 +61,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
 	}
-
+	public array function getCategoryPublicProperties(){
+		var publicProperties = ['categoryID','categoryIDPath','urlTitle', 'categoryName', 'categoryNamePath', 'categoryDescription'];
+		var publicAttributes = this.getPublicAttributesByEntityName('Category');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
 	public boolean function restrictedContentExists() {
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
