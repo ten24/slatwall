@@ -962,8 +962,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	public string function makeGetFacetOptionQuery(
 	    required struct facetMetaData, 
 	    required struct facetsFilterQueryFragments, 
-	    required any site,
 	    boolean includeSKUCount=true
+	    boolean applySiteFilter=false
+	    any site,
 	){
 	    
 	    var thisFacetOptionsQuery = this.getFacetOptionQuerySQLTemplate(arguments.includeSKUCount);
@@ -1003,48 +1004,44 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$filterQueryFragment$', filterQueryFragment );
         
-        var stockAvailabilitySQLFragment = '';
-        if(arguments.site.hasLocation() ){
-            // the :siteID param should already be added
-	        // facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
-	        
+        var stockAvailabilitySQLFragment = "    
+            INNER JOIN swStock stk 
+                ON rs.skuID = stk.skuID 
+                AND stk.calculatedQATS > 0
+        ";
+        if( arguments.applySiteFilter && arguments.site.hasLocation() ){
 	        // we're filtering for sku-stock for 
 	        // 
             //  locations having that perticular site 
 	        //  + sku-stock for locations having no site assigned    e.g. `Default` location
 	        //
-            stockAvailabilitySQLFragment = "
-    	        INNER JOIN swStock stk 
-    	            ON 
-	                stk.locationID IN (
-	                    SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID 
-                			UNION ALL
-                		SELECT DISTINCT locationID FROM swLocation where locationID NOT IN (SELECT DISTINCT locationID FROM swLocationSite) 
-	                )
-    	            AND stk.calculatedQATS > 0 
-    	            AND rs.skuID = stk.skuID 
-            ";
-	    }
+            stockAvailabilitySQLFragment &= "
+                    AND stk.locationID IN (
+                        SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID 
+                            UNION ALL
+                        SELECT DISTINCT locationID FROM swLocation where locationID NOT IN (SELECT DISTINCT locationID FROM swLocationSite) 
+                    )";
+	    } 
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$stockAvailabilitySQLFragment$', stockAvailabilitySQLFragment );
         
         return thisFacetOptionsQuery;
 	}
 	
 	public struct function makeFacetSqlFilterQueryFragments(){
-	    param name="arguments.site";
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
         param name="arguments.content" default={};
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
+	    param name="arguments.applySiteFilter" default=false;
 	    
 	    var facetsSqlFilterQueryParams = {};
 	    var facetsSqlFilterQueryFragments = {};
 	    var subFacetsSqlFilterQueryFragments = {};
 	    
-	    facetsSqlFilterQueryFragments['productSite'] = '';
-	    if( len(arguments.site.getSiteID()) ){
+	    if( arguments.applySiteFilter && !isNull(arguments.site) ){
+	        facetsSqlFilterQueryFragments['productSite'] = '';
 	        facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
 	        facetsSqlFilterQueryFragments['productSite'] = '(siteID = :siteID OR siteID IS NULL)';
 	    }
@@ -1210,7 +1207,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	}
 	
 	public any function getPotentialFilterFacetsAndOptions(){
-        param name="arguments.site";
         param name="arguments.brand" default={};
         param name="arguments.option" default={};
         param name="arguments.content" default={};
@@ -1218,6 +1214,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.attribute" default={};
         param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
+	    param name="arguments.applySiteFilter" default=false;
         
         var startTicks = getTickCount();
 
@@ -1238,8 +1235,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             var thisFacetOptionsQuery = this.makeGetFacetOptionQuery(
                 facetMetaData = facetsMetadata[facetName], 
                 facetsFilterQueryFragments = filterQueryFragmentsData.fragments, 
-                includeSKUCount= arguments.includeSKUCount, 
-                site = arguments.site 
+                includeSKUCount = arguments.includeSKUCount, 
+                applySiteFilter = arguments.applySiteFilter,
+                site = arguments.site ?: javaCast('null', '')
             );
             
             // 1. fetch the options for all sub-facets except which have filters applied 

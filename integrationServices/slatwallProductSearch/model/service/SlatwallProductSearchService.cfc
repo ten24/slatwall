@@ -131,7 +131,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	public struct function getPotentialFilterFacetsAndOptionsFormatted(){
-	    param name="arguments.site";
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
 	    param name="arguments.content" default={};
@@ -140,6 +139,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
         param name="arguments.priceRangesCount" default=5;
+	    param name="arguments.applySiteFilter" default=false;
         
 	    var rawFilterOptions = this.getSlatwallProductSearchDAO().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
 	    var startTicks = getTickCount();
@@ -331,10 +331,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	public any function getBaseSearchCollectionData(){
-		param name="arguments.site";
 		param name="arguments.locale";
 		param name="arguments.currencyCode";
 		param name="arguments.priceGroupCode" default='';
+		
+        param name="arguments.applySiteFilter" default=false;
         
 	    // facets
 	    param name="arguments.brand" default={};
@@ -396,7 +397,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             logicalOperator="OR", 
             filterGroupAlias = 'publishedEndDateTimeFilter');
         
-        if( !isNull(arguments.site) ){
+        // STOCK, 
+        collectionList.addFilter('sku.stocks.calculatedQATS', 0, '>');
+        
+        if( arguments.applySiteFilter && !isNull(arguments.site) ){
             // site's filters
             collectionList.addFilter( 
                 propertyIdentifier = 'site.siteID',
@@ -410,9 +414,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 logicalOperator="OR",
                 filterGroupAlias = 'productSiteFilter');
             
-            // STOCK, 
+            // STOCK location, 
             if( arguments.site.hasLocation() ){
-                collectionList.addFilter('sku.stocks.calculatedQATS', 0, '>');
                 collectionList.addFilter('sku.stocks.location.sites.siteID', arguments.site.getSiteID());
                 collectionList.addFilter('sku.stocks.location.locationID', arguments.site.getLocations()[1].getLocationID());
             }
@@ -430,7 +433,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             collectionList.addFilter(propertyIdentifier='priceGroupCode', value='NULL', comparisonOperator='IS');
         }
         // we also do not want sku-prices which have min-max quantities defined
-        // TODO: don't bring-in the sku-prices which have a min or max quantity defined, probably ?
         collectionList.addFilter(propertyIdentifier='skuPriceMinQuantity', value='NULL', comparisonOperator='IS');
         collectionList.addFilter(propertyIdentifier='skuPriceMaxQuantity', value='NULL', comparisonOperator='IS');
         
@@ -567,7 +569,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public struct function getProducts(){
 	    this.logHibachi("Called: getProducts on service");
 
-	    param name="arguments.site";
 		param name="arguments.locale";
 		param name="arguments.currencyCode";
 		param name="arguments.priceGroupCode" default='';
@@ -594,8 +595,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
         // additional properties
         param name="arguments.includeSKUCount" default=true;
+        param name="arguments.applySiteFilter" default=false;
         param name="arguments.priceRangesCount" default=5;
 	    param name="arguments.includePotentialFilters" default=true;
+	    
 	    
 	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);
 	    
