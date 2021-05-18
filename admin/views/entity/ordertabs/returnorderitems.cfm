@@ -14,7 +14,6 @@
 				fulfillment-tax-amount="#rc.processObject.getFulfillmentTaxAmountNotRefunded()#"
 				<cfif rc.processObject.getOrderTypeCode() EQ "otRefundOrder">
 					refund-order-items="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serialize(rc.processObject.getRefundOrderItemList()))#"
-					order-total="#rc.order.getRefundableAmount()#"
 				<cfelse>
 					order-total="#rc.order.getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge()#"
 				</cfif>
