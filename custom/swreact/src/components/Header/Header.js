@@ -43,19 +43,6 @@ const MegaMenu = props => {
   let history = useHistory()
   const { t } = useTranslation()
 
-  history.listen((_) => {
-    // listen to path , and toggleNav on path change
-    toggleNav();
-  });
-
-  /**
-   * Toggle menu , while the sub-menu is clicked
-   */
-  const toggleNav = () => {
-    if (props.toggleRef.current.ariaExpanded==="true") {
-      props.toggleRef.current.click()
-    }
-  }
   return (
     <li className="nav-item dropdown">
       <a className="nav-link dropdown-toggle" href={props.linkUrl || '/'} data-toggle="dropdown">
@@ -103,6 +90,21 @@ function Header({ logo, mobileLogo }) {
   const textInput = useRef(null)
   const mobileTextInput = useRef(null)
   const toggleMenuButton = useRef(null)
+
+  history.listen(_ => {
+    // listen to path , and toggleNav on path change
+    toggleNav()
+  })
+
+  /**
+   * Toggle menu , while the sub-menu is clicked
+   */
+  const toggleNav = () => {
+    console.log('toggleMenuButton', toggleMenuButton)
+    if (toggleMenuButton.current && toggleMenuButton.current.ariaExpanded === 'true') {
+      toggleMenuButton.current.click()
+    }
+  }
 
   return (
     <header className="shadow-sm">
@@ -225,7 +227,7 @@ function Header({ logo, mobileLogo }) {
 
               <ul className="navbar-nav nav-categories">
                 {menuItems.map((menuItem, index) => {
-                  return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} toggleRef={toggleMenuButton} />
+                  return <MegaMenu key={index} subMenu={menuItem.children} title={menuItem.title} linkUrl={menuItem.linkUrl} />
                 })}
               </ul>
               {shopByManufacturer.showInMenu && (
