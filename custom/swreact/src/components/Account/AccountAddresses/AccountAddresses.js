@@ -59,17 +59,18 @@ const Address = props => {
   )
 }
 
-const AccountAddresses = ({ title, customBody, contentTitle }) => {
+const AccountAddresses = ({ title }) => {
   const { t } = useTranslation()
+  const isLoaded = useSelector(state => state.userReducer.isLoaded)
   const accountAddresses = useSelector(getAllAccountAddresses)
   const primaryAddress = useSelector(getPrimaryAddress)
+
+  if (isLoaded && accountAddresses.length === 0) {
+    return <Redirect to="/my-account/addresses/new" />
+  }
   return (
     <AccountLayout title={title}>
       <AccountContent />
-      {accountAddresses.length === 0 && (
-        <Redirect to="/my-account/addresses/new" />
-      )}
-
       {accountAddresses.length > 0 && (
         <div className="table-responsive font-size-md">
           <table className="table table-hover mb-0">

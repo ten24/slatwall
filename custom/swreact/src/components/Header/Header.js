@@ -100,7 +100,6 @@ function Header({ logo, mobileLogo }) {
    * Toggle menu , while the sub-menu is clicked
    */
   const toggleNav = () => {
-    console.log('toggleMenuButton', toggleMenuButton)
     if (toggleMenuButton.current && toggleMenuButton.current.ariaExpanded === 'true') {
       toggleMenuButton.current.click()
     }
