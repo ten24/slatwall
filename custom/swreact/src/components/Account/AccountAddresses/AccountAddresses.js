@@ -65,7 +65,7 @@ const AccountAddresses = ({ title, customBody, contentTitle }) => {
   const primaryAddress = useSelector(getPrimaryAddress)
   return (
     <AccountLayout title={title}>
-      <AccountContent customBody={customBody} contentTitle={contentTitle} />
+      <AccountContent />
       {accountAddresses.length === 0 && (
         <Redirect to="/my-account/addresses/new" />
       )}
