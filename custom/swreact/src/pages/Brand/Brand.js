@@ -59,7 +59,7 @@ const Brand = props => {
               return { ...crumb, urlTitle: `${loc.pathname}?${queryString.stringify({ key: crumb.urlTitle }, { arrayFormat: 'comma' })}` }
             })}
         >
-          {request.data.showProducts && <BrandBanner brandName={brandResponse.data[0].brandName} imageFile={brandResponse.data[0].imageFile} brandDescription={brandResponse.data[0].brandDescription} />}
+          <BrandBanner brandName={brandResponse.data[0].brandName} imageFile={brandResponse.data[0].imageFile} brandDescription={brandResponse.data[0].brandDescription} />
         </PageHeader>
       )}
       {brandResponse.isLoaded && request.data.childProductTypes?.length > 0 && (
@@ -71,7 +71,7 @@ const Brand = props => {
           }}
         />
       )}
-      {request.data.showProducts && <ListingPage preFilter={{ ...brandFilter, productType_id: request.data.productTypeID }} hide={['productType', 'brands']}></ListingPage>}
+      {request.data.showProducts && <ListingPage preFilter={{ brand: brandResponse.data[0].brandName, productType_id: request.data.productTypeID }} hide={['productType', 'brands']}></ListingPage>}
     </Layout>
   )
 }
