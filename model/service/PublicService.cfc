@@ -49,7 +49,6 @@ Notes:
 component  accessors="true" output="false" 
 {
     property name="siteService" type="any";
-    property name="settingService" type="any";
     property name="accountService" type="any";
     property name="addressService" type="any";
     property name="attributeService" type="any";
@@ -272,8 +271,8 @@ component  accessors="true" output="false"
         // we're not using RequestContext here, but the URL-scope
         arguments.parsedQuery = this.parseGetProductsQuery(arguments.urlScope);
 
+		param name="arguments.parsedQuery.siteID" default='';
 	    param name="arguments.parsedQuery.locale" default=hibachiScope.getSession().getRbLocale(); 
-		param name="arguments.parsedQuery.currencyCode" default='USD';
 
         //  account, order, for pricing
 		param name="arguments.parsedQuery.order" default=hibachiScope.getCart();
@@ -305,17 +304,34 @@ component  accessors="true" output="false"
 	    param name="arguments.parsedQuery.f" default={}; 
 	    
         // Additional Params
+        param name="arguments.parsedQuery.propertyIdentifiers" default='';
         param name="arguments.parsedQuery.includeSKUCount" default=true;
-        param name="arguments.parsedQuery.applySiteFilter" default=false;
         param name="arguments.parsedQuery.priceRangesCount" default=5;
-        param name="arguments.parsedQuery.propertyIdentifierList" default='';
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
+	    param name="arguments.data.includeAttributesMetadata" default=false;
+
+	    //
+	    // TODO: the frontend needs to send `SWX-requestSiteID` OR `SWX-requestSiteCode` headers
+	    //
+	    
 	    var currentRequestSite = hibachiScope.getCurrentRequestSite();
-	    if( !isNUll(currentRequestSite) ){
-            arguments.parsedQuery.site = currentRequestSite;
+	    if(isNUll(currentRequestSite) ){
+	        // throw('current request site should never be null');
+	        hibachiScope.logHibachi('CurrentRequest site is null, which should never happen');
+	        var currentRequestSite = this.getSiteService().newSite();
+	    }
+	    if( len(trim(arguments.parsedQuery.siteID)) && currentRequestSite.getSiteID() != arguments.parsedQuery.siteID ){
+	        currentRequestSite = this.getSiteService().getSiteBySiteID(arguments.parsedQuery.siteID);
+	    } else {
+	        // in case if it was not passed in from the frontend, and hibachi-scope figures-out the current-request-site
+	        arguments.parsedQuery.siteID = currentRequestSite.getSiteID();
+	    }
+	    
+	    if( isNull(arguments.parsedQuery.currencyCode) || !len(trim(arguments.parsedQuery.currencyCode)) ){
 	        arguments.parsedQuery.currencyCode = currentRequestSite.getCurrencyCode() ?: 'USD';
 	    }
+	    
 	    
         /*
             Price group is prioritized as so: 
@@ -337,10 +353,11 @@ component  accessors="true" output="false"
             }
 	    }
 
-	    var integrationPackage = this.getSettingService().getSettingValue('siteProductSearchIntegration', hibachiScope.getCurrentRequestSite());
+	    var integrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(integrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
         
+        arguments.parsedQuery.site = currentRequestSite;
         arguments.data.ajaxResponse = {
             'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
         };
@@ -813,7 +830,7 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function getProductType(required struct data){
-        param name="arguments.data.urlTitle";
+        param name="arguments.data.urlTitle" default="";
 
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
         if( IsNull( productType ) 
@@ -1083,7 +1100,7 @@ component  accessors="true" output="false"
      	param name="arguments.data.phoneNumber" default="";
 
      	var addressID = "";
-     	var accountAddress = getHibachiScope().this.getAccountService().getAccountAddress( arguments.data.accountAddressID );
+     	var accountAddress = this.getAccountService().getAccountAddress( arguments.data.accountAddressID );
         
         if (!isNull(accountAddress) && getHibachiScope().getAccount().getAccountID() == accountAddress.getAccount().getAccountID() ){
             addressID = accountAddress.getAddressID();
@@ -1095,7 +1112,7 @@ component  accessors="true" output="false"
      	    newAddress = this.getAddressService().saveAddress(newAddress, arguments.data, "full");
      	    
      	    //save account address
-     	    accountAddress = getHibachiScope().this.getAccountService().saveAccountAddress( accountAddress, arguments.data );
+     	    accountAddress = this.getAccountService().saveAccountAddress( accountAddress, arguments.data );
      	    
             if(!newAddress.hasErrors() && !accountAddress.hasErrors()) {
   	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
@@ -2037,9 +2054,9 @@ component  accessors="true" output="false"
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-                var accountPaymentMethod = getHibachiScope().this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
+                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
             }else{
-                var accountPaymentMethod = getHibachiScope().this.getAccountService().newAccountPaymentMethod(  );	
+                var accountPaymentMethod = this.getAccountService().newAccountPaymentMethod(  );	
                 accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             }
             
