@@ -5,12 +5,13 @@ import { useFormik } from 'formik'
 import { SwRadioSelect, ShippingAddressForm } from '../../components'
 import { useTranslation } from 'react-i18next'
 
-const ShippingAddress = ({ onSave }) => {
+const ShippingAddress = ({ onSave, isShipping = true }) => {
   const dispatch = useDispatch()
   const isFetching = useSelector(state => state.content.isFetching)
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
   const stateCodeOptions = useSelector(state => state.content.stateCodeOptions)
   const [isEdit, setEdit] = useState(true)
+  const { t } = useTranslation()
 
   let initialValues = {
     name: '',
@@ -19,6 +20,7 @@ const ShippingAddress = ({ onSave }) => {
     street2Address: '',
     city: '',
     stateCode: '',
+    emailAddress: '',
     postalCode: '',
     countryCode: 'US',
     accountAddressName: '',
@@ -46,7 +48,7 @@ const ShippingAddress = ({ onSave }) => {
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <ShippingAddressForm formik={formik} isEdit={isEdit} countryCodeOptions={countryCodeOptions} stateCodeOptions={stateCodeOptions[formik.values.countryCode]} />
+        <ShippingAddressForm isShipping={isShipping} formik={formik} isEdit={isEdit} countryCodeOptions={countryCodeOptions} stateCodeOptions={stateCodeOptions[formik.values.countryCode]} />
         <div className="d-lg-flex pt-4 mt-3">
           <div className="w-50 pr-3"></div>
           <div className="w-50 pl-2">
@@ -60,7 +62,7 @@ const ShippingAddress = ({ onSave }) => {
   )
 }
 
-const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'Addresses' }) => {
+const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'Addresses', isShipping = true }) => {
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const [showAddress, setShowAddress] = useState(false)
   const { t } = useTranslation()
@@ -97,6 +99,7 @@ const AccountAddress = ({ onSelect, onSave, selectedAccountID, addressTitle = 'A
       )}
       {(showAddress || selectedAccountID === 'new') && (
         <ShippingAddress
+          isShipping={isShipping}
           setShowAddress={showAddress}
           onSave={values => {
             setShowAddress(false)

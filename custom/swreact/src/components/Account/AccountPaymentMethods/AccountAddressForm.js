@@ -19,7 +19,6 @@ const AccountAddressForm = ({ formik }) => {
       dispatch(getStateCodeOptionsByCountryCode(formik.values['billingAddress.countryCode']))
     }
   }, [dispatch, formik, stateCodeOptions, countryCodeOptions, isFetching])
-  console.log('stateCodeOptions', formik.values['billingAddress.countryCode'], stateCodeOptions[formik.values['billingAddress.countryCode']])
   return (
     <>
       <h5 className="mt-4 mb-2">Billing Address</h5>
