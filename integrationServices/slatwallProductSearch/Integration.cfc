@@ -52,6 +52,12 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		return ['Slatwall.integrationServices.slatwallProductSearch.model.handler.SlatwallProductSearchHandler'];
 	}
 	
+	public struct function getSettings() {
+		return {
+			enableSqlQueryLogs : { fieldType: "yesno", defaultValue: 0 },
+			enableSqlQueryResultLogs : { fieldType: "yesno", defaultValue: 0 , description: "If the SqlQueryLogs is enabled, this will enable/disable dumping result in the logs as well"}
+		};
+	}
 	
 	public string function getIntegrationTypes() {
 		return "fw1,search";

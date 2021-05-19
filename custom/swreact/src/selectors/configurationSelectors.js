@@ -21,7 +21,7 @@ export const getProductRoute = createSelector(getRoutes, routes => {
     })[0]
 })
 
-export const getProductTypeProductListRoute = createSelector(getRoutes, routes => {
+export const getProductTypeRoute = createSelector(getRoutes, routes => {
   return routes
     .map(route => {
       return route.URLKeyType === 'ProductType' ? route.URLKey : null
