@@ -40,13 +40,14 @@ const Brand = props => {
     params = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
     setRequest({ ...request, data: {}, isFetching: true, isLoaded: false, params: { urlTitle: params['key'] || productTypeBase, brandUrlTitle: path[0] }, makeRequest: true })
   })
-
+  console.log('productTypeUrl', productTypeUrl)
+  const isNonBasePTAndListing = !request.data.showProducts && productTypeUrl !== productTypeBase
   return (
     <Layout>
       {brandResponse.isLoaded && brandResponse.data.length > 0 && <Helmet title={brandResponse.data[0].settings.brandHTMLTitleString} />}
       {brandResponse.isLoaded && request.isLoaded && (
         <PageHeader
-          title={!request.data.showProducts && request.data.title}
+          title={isNonBasePTAndListing && request.data.title}
           includeHome={true}
           brand={params['key'] && [{ title: brandResponse.data[0].brandName, urlTitle: `/${brandRoute}/${brandResponse.data[0].urlTitle}` }]}
           crumbs={request.data.breadcrumbs
