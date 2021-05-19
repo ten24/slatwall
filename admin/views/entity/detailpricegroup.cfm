@@ -62,7 +62,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.priceGroup#">
 			<hb:HibachiEntityDetailItem view="admin:entity/pricegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem property="pricegrouprates" />
-			<hb:HibachiEntityDetailItem view="admin:entity/pricegrouptabs/assignedaccounts" count="#rc.priceGroup.getCalculatedAccountsCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegrouptabs/assignedaccounts" />
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
