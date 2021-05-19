@@ -56,9 +56,9 @@ Notes:
 
 <cfoutput>
 <hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailwishlist">
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderTemplate#">
+	<hb:HibachiEntityActionBar type="preprocess" backAction="admin:entity.listwishlist" object="#rc.orderTemplate#">
 	</hb:HibachiEntityActionBar>
-
+	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 		    <cfif isNull(rc.accountID)>

@@ -51,8 +51,8 @@ class SWReportConfigurationBarController{
 		$scope.$watch('swReportConfigurationBar.site', ()=>{
         	this.observerService.notify('swReportConfigurationBar_SiteUpdate', this.site.siteID);
 		});
-		this.customReportStartDateTime =  new Date(	eomData).addMonths(-11)
-		this.customReporEndDateTime = eomData
+		this.customReportStartDateTime =  new Date(	eomData).addMonths(-11).toDateString().split(' ').slice(1).join(' ')
+		this.customReporEndDateTime = eomData.toDateString().split(' ').slice(1).join(' ')
     	this.site = this.siteCollectionList[0]
 
     }
