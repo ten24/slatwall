@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
-import Background from '../../assets/images/main-bg-img.jpg'
 import Slider from 'react-slick'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import ProductSlider from '../ProductSlider/ProductSlider'
-import { useGetEntity } from '../../hooks/useAPI'
+import { useGetProductsByEntity } from '../../hooks/useAPI'
 
 const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
   let history = useHistory()
@@ -21,18 +20,18 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
         }}
         dangerouslySetInnerHTML={{ __html: customBody }}
       />
-      {linkUrl && linkUrl.length > 0 && 
+      {linkUrl && linkUrl.length > 0 && (
         <a href={linkUrl} className="btn btn-light btn-long">
           {linkLabel}
         </a>
-      }
+      )}
     </div>
   )
 }
 
 const MainBanner = () => {
   const contentStore = useSelector(state => state.content)
-  const { host, basePath } = useSelector(state => state.configuration.theme)
+  const { host } = useSelector(state => state.configuration.theme)
   let homeMainBanner = []
   Object.keys(contentStore).forEach(key => {
     if (key.includes('main-banner-slider/')) {
@@ -54,7 +53,7 @@ const MainBanner = () => {
     ],
   }
   return (
-    <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${host}/custom/assets/files/associatedimage/${contentStore["home/main-banner-slider"] && contentStore["home/main-banner-slider"].associatedImage}` }}>
+    <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${host}/custom/assets/files/associatedimage/${contentStore['home/main-banner-slider'] && contentStore['home/main-banner-slider'].associatedImage}` }}>
       <div className="container">
         <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mx-md-5 pb-4">
           <Slider className="slider-dark" {...settings}>
@@ -71,7 +70,7 @@ const MainBanner = () => {
 
 const HomeBanner = () => {
   const home = useSelector(state => state.content['home'])
-  let [request, setRequest] = useGetEntity()
+  let [request, setRequest] = useGetProductsByEntity()
 
   useEffect(() => {
     let didCancel = false
@@ -80,7 +79,7 @@ const HomeBanner = () => {
         ...request,
         params: {
           'f:publishedFlag': 1,
-          'f:productFeatured': 1,
+          'f:productFeaturedFlag': 1,
         },
         entity: 'product',
         makeRequest: true,
@@ -94,7 +93,7 @@ const HomeBanner = () => {
   }, [request, setRequest])
   return (
     <>
-        <MainBanner />
+      <MainBanner />
       <ProductSlider sliderData={request.data}>{home && <div dangerouslySetInnerHTML={{ __html: home.customBody }} />}</ProductSlider>
     </>
   )

@@ -1,8 +1,5 @@
 import { useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { getAllAccountAddresses } from '../../../selectors/userSelectors'
-
 
   const AccountContent = () => {
   const { t } = useTranslation()
@@ -24,7 +21,6 @@ import { getAllAccountAddresses } from '../../../selectors/userSelectors'
     alertMesage = 'frontend.account.address.none'
   }
     
-    
   return (
     <>
       <div className="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
@@ -37,7 +33,7 @@ import { getAllAccountAddresses } from '../../../selectors/userSelectors'
         }
         </div>
       </div>
-      
+
       <div
         onClick={event => {
           event.preventDefault()

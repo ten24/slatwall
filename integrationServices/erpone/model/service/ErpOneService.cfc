@@ -697,51 +697,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	
-	public any function convertSwOrderToErponeOrder(required any order){
-		var orderPropList =  "orderID,orderNumber,remoteID,orderOpenDateTime,currencyCode,account.companyCode";
-		
-		var addressPropList = 	this.getHibachiUtilityService().prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "billingAddress.");
-
-		orderPropList = orderPropList & ',' & addressPropList;
-		var swOrderStruct = arguments.order.getStructRepresentation( orderPropList );
-		var mapping = {
-			
-		 "orderNumber"					: "order",
-		 "orderOpenDateTime"			: "ord_date",
-		 "account_companyCode"			: "customer",
-		 "currencyCode"					: "currency_code",
-		 "billingAddress_countryCode"	: "country_code",
-		 "billingAddress_postalCode"	: "postal_code",
-		 "billingAddress_stateCode"	    : "state"
-		};
-		var erponeOrder = {};
-		var address = [];
-		for(var fromKey in mapping){
-			if( StructKeyExists( swOrderStruct, fromKey ) && !IsNull(swOrderStruct[fromKey]) ){
-				erponeOrder[mapping[fromKey]] = swOrderStruct[fromKey];
-			}
-		}
-		if( StructKeyExists( swOrderStruct, "billingAddress_street2Address" ) && !IsNull(swOrderStruct["billingAddress_street2Address"]) ){
-				address.append(swOrderStruct["billingAddress_street2Address"]);
-			}
-		if( StructKeyExists( swOrderStruct, "billingAddress_streetAddress" ) && !IsNull(swOrderStruct["billingAddress_streetAddress"]) ){
-			address.append(swOrderStruct["billingAddress_streetAddress"]);
-		}
-		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress3" )){
-			address.append("");
-		}
-		if( StructKeyExists( swOrderStruct, "billingAddress_city" ) && !IsNull(swOrderStruct["billingAddress_city"]) ){
-			address.append(swOrderStruct["billingAddress_city"]);
-		}
-		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress4" )){
-			address.append("");
-		}
-		if( !StructKeyExists( swOrderStruct, "billingAddress_streetAddress5" )){
-			address.append("");
-		}
-		erponeOrder["adr"]=address;
-		return erponeOrder;			
-	}
 	/**
 	 * @hint helper function, to push Data into @thisIntegration/Data.cfc for further processing, from EntityQueue
 	 * 
@@ -915,32 +870,142 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public void function pushOrderDataToErpOne(required any entity, any data ={}){
 		logHibachi("ERPOne - Start pushData - Order: #arguments.entity.getOrderID()#");
 		
-		arguments.data.payload = this.convertSwOrderToErponeOrder(arguments.entity);
-		arguments.create = false;
-		//push to remote endpoint
-		var payload = {
-		  "table"	 : "oe_head",
-		  "triggers" : "true",
-		  "changes"	 : [ arguments.data.payload ]
-		};
+
+		var isDevModeFlag = this.setting("devMode");
+		if(!len(arguments.entity.getRemoteID())){
 			
-		if( !this.hibachiIsEmpty(arguments.entity.getRemoteID()) ){
-			var response = this.callErpOneUpdateDataApi(payload, "update" );
-		} else {
-			var response = this.callErpOneUpdateDataApi(payload, "create" );
+			
+			
+			arguments.data.payload = {
+				'order_ext' : arguments.entity.getOrderNumber(),
+	            'customer' : arguments.entity.getAccount().getCompanyCode(),
+			}
+			
+			
+			for(var orderPayment in arguments.entity.getOrderPayments()) {
+				if(orderPayment.getStatusCode() == "opstActive"){
+					if(orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment'){
+						arguments.data.payload['cu_po'] = orderPayment.getPurchaseOrderNumber();
+						break;
+					}else if(orderPayment.getPaymentMethod().getPaymentMethodType() == 'creditCard'){
+						
+						arguments.data.payload['Cred_card'] = '************' & orderPayment.getCreditCardLastFour();
+						
+						var expiration = '20';
+						if(len(orderPayment.getExpirationYear()) == 4){
+							expiration = orderPayment.getExpirationYear();
+						}else{
+							expiration &= orderPayment.getExpirationYear();
+						}
+						expiration &= '/' & numberFormat(orderPayment.getExpirationMonth(),'00') & '/01';
+						
+						arguments.data.payload['Cred_card_exp'] = expiration;
+						arguments.data.payload['Cred_card_type'] = 'CC'; //Value: Valid credit card code in the system. Example: “CC” or “VI”
+						arguments.data.payload['Auth_type'] = 'A'; // Value: Preauth indicator “A”
+						arguments.data.payload['Auth_asv'] = 'Y';
+						
+						arguments.data.payload['Auth_amount'] = orderPayment.getAmountAuthorized();
+						
+						var paymentTransactions = orderPayment.getPaymentTransactions();
+						for(var i=1; i<=arrayLen(paymentTransactions); i++) {
+							if(paymentTransactions[i].getAmountAuthorized() > 0 &&(isNull(paymentTransactions[i].getAuthorizationCodeInvalidFlag()) || !paymentTransactions[i].getAuthorizationCodeInvalidFlag())) {
+								arguments.data.payload['Auth_date'] = dateFormat(paymentTransactions[i].getTransactionDateTime(), 'yyyy-mm-dd');
+								arguments.data.payload['Auth_time'] = timeFormat(paymentTransactions[i].getTransactionDateTime(), 'h:mm TT');
+								arguments.data.payload['Auth_memo'] = 'This transaction has been approved';
+								arguments.data.payload['Auth_number'] = paymentTransactions[i].getAuthorizationCode();
+								arguments.data.payload['Auth_trans_number'] = paymentTransactions[i].getAuthorizationCode();
+								break;
+							}
+						}
+						
+					}
+					
+					break;
+				}
+			}
+			
+			if(!arguments.entity.getShippingAddress().getNewFlag()){
+	            arguments.data.payload['s_name'] =  arguments.entity.getShippingAddress().getName();
+	            arguments.data.payload['s_adr'] = [
+	                arguments.entity.getShippingAddress().getStreetAddress(),
+	                arguments.entity.getShippingAddress().getStreet2Address(),
+	                arguments.entity.getShippingAddress().getLocality(),
+	                arguments.entity.getShippingAddress().getCity()
+	            ];
+	            arguments.data.payload['s_st'] = arguments.entity.getShippingAddress().getStateCode();
+	            arguments.data.payload['s_postal_code'] = arguments.entity.getShippingAddress().getPostalCode();
+	            arguments.data.payload['s_country_code'] = arguments.entity.getShippingAddress().getCountryCode();
+			}
+			
+			if(isDevModeFlag){
+				arguments.data.payload['company_cu'] = this.setting("devCompany");
+				arguments.data.payload['company_oe'] = this.setting("devCompany");
+			}else{
+				arguments.data.payload['company_cu'] = this.setting("prodCompany");
+				arguments.data.payload['company_oe'] = this.setting("prodCompany");
+			}
+
+			var response = this.callErpOneUpdateDataApi({
+			  "table"	 : "ec_oehead",
+			  "triggers" : "true",
+			  "records"	 : [ arguments.data.payload ]
+			}, "create" );
+			
+			if(structKeyExists(response, 'created') && response.created == 1){
+				arguments.entity.setRemoteID(response.rowids[1]);
+			}else{
+				throw("ERPONE - pushOrderDataToErpOne #arguments.entity.getOrderNumber()#: Error: #Serializejson(response)#");
+			}
+		}
+
+		var orderItemsData = [];
+		var lineNumber = 0;
+		for(var orderItem in arguments.entity.getOrderItems()){
+			lineNumber++;
+			if(len(orderItem.getRemoteID())){
+				continue;
+			}
+			 var itemData = {
+	            'order_ext' : arguments.entity.getOrderNumber(),
+	            'customer' : arguments.entity.getAccount().getCompanyCode(),
+	            'line' : lineNumber,
+	            'item' : orderItem.getSku().getRemoteID(),
+	            'qty_ord' : orderItem.getQuantity(),
+	            'unit_price' : orderItem.getExtendedUnitPriceAfterDiscount(),
+	            'override_price' : 'yes'
+			}
+			
+			if(isDevModeFlag){
+				itemData['company_it'] = this.setting("devCompany");
+				itemData['company_cu'] = this.setting("devCompany");
+				itemData['company_oe'] = this.setting("devCompany");
+			}else{
+				itemData['company_it'] = this.setting("prodCompany");
+				itemData['company_cu'] = this.setting("prodCompany");
+				itemData['company_oe'] = this.setting("prodCompany");
+			}
+			orderItemsData.append(itemData);
+			lineNumber++;
 		}
 		
-		
-		/** Format error:
-		 * typical error response: { "errordetail": "error", "filecontent": "null"};
-		 * typical successful response: {"table":"customer","updated":1,"triggers":false}
-		*/
-	
-		if( structKeyExists(response, 'updated') && response.updated > 0 ){
-			logHibachi("ERPOne - Successfully updated Order Data");
-		}
-		else {
-			throw("ERPONE - callErpOnePushOrderApi: API response is not valid json for request: #Serializejson(arguments.data.payload)#");
+		if(arrayLen(orderItemsData)){
+			var response = this.callErpOneUpdateDataApi({
+			  "table"	 : "ec_oeline",
+			  "triggers" : "false",
+			  "records"	 : orderItemsData
+			}, "create" );
+
+			if(structKeyExists(response, 'created') && response.created > 0){
+				var lineNumber = 1;
+				for(var orderItem in arguments.entity.getOrderItems()){
+					if(len(orderItem.getRemoteID())){
+						continue;
+					}
+					orderItem.setRemoteID(response.rowids[lineNumber]);
+					lineNumber++;
+					
+				}
+			}
 		}
 		logHibachi("ERPOne - End Order pushData");
 	}

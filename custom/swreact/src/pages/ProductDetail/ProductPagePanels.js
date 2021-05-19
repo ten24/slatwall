@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { isBoolean, booleanToString } from '../../utils'
 
-const propertyBlackList = ['productID', 'productName', 'productCode', 'productFeatured', 'productDisplay']
+const propertyBlackList = ['productID', 'productName', 'productCode', 'productFeaturedFlag', 'productDisplay']
 
 // TODO: Migrate to reactstrap accordion
 const ProductPagePanels = ({ product = {}, attributeSets = [] }) => {
@@ -32,7 +32,7 @@ const ProductPagePanels = ({ product = {}, attributeSets = [] }) => {
               <div className="card-body font-size-sm">
                 {set.attributes.map(({ attributeName, attributeCode }) => {
                   return (
-                    <div className="font-size-sm row">
+                    <div key={attributeCode} className="font-size-sm row">
                       <div className="col-6">
                         <ul style={{ margin: 0, padding: 0 }}>{attributeName}</ul>
                       </div>

@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { sdkURL } from '../services'
+import { sdkURL, axios } from '../services'
 
 export const REQUEST_CONFIGURATION = 'REQUEST_CONFIGURATION'
 export const RECIVE_CONFIGURATION = 'RECIVE_CONFIGURATION'
@@ -27,9 +26,8 @@ export const requestConfiguration = () => {
 export const getConfiguration = () => {
   return async (dispatch, getState) => {
     dispatch(requestConfiguration())
+    const siteCode = getState().configuration.site.siteCode
 
-    const { configuration } = getState()
-    const { siteCode } = configuration.site
     axios({
       method: 'POST',
       withCredentials: true, // default

@@ -47,3 +47,16 @@
     }
   }
 }
+
+ul.two-cols li {
+  flex: 1 0 50%;
+  align-items: flex-start;
+  justify-content: flex-start;
+  button {
+    text-align: left;
+    display: flex;
+  }
+  .nav-link-style > i {
+    margin-top: 3px;
+  }
+}

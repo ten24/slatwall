@@ -19,7 +19,7 @@ export const isAuthenticated = () => {
   if (token) {
     try {
       token = jwt_decode(token)
-      return token.exp && token.exp * 1000 > Date.now() && token.accountID.length
+      return token.exp && token.exp * 1000 > Date.now() && token.accountID.length > 0
     } catch (error) {}
   }
   return false

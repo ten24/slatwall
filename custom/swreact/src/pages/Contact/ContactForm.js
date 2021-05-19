@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux'
-import axios from 'axios'
-import { sdkURL } from '../../services/SlatwalApiService'
+import { sdkURL, axios } from '../../services'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import queryString from 'query-string'

@@ -3,6 +3,7 @@
 
 import {Subject, Observable} from 'rxjs';
 import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes/swstore';
+import { HibachiService } from '../../core/services/hibachiservice';
 
 class ListingService{
 
@@ -56,6 +57,10 @@ class ListingService{
     //Event Functions
     public getListingPageRecordsUpdateEventString = (listingID:string) => {
         return listingID + "pageRecordsUpdated";
+    }
+    
+    public getListingPageRecordSortedEventString = (listingID:string) => {
+        return listingID + "pageRecordsSorted";
     }
 
     public getListingOrderByChangedEventString = (listingID:string) => {
@@ -141,6 +146,11 @@ class ListingService{
         }
         return baseEntityName;
     }
+    
+    public getListingSortPropertyname = (listingId: string) => {
+        const currentListing = this.getListing(listingId);
+        return currentListing.sortProperty || 'sortOrder';
+    }
 
     public getListingBaseEntityPrimaryIDPropertyName = (listingID:string) =>{
         if(this.getListingExampleEntity(listingID) != null){
@@ -178,6 +188,7 @@ class ListingService{
             let pageRecordsWithManualSortOrder = {};
 
             this.$timeout( () => {
+
                 pageRecords.forEach( (record, index) => {
                     let primaryID = record[primaryIDPropertyName];
                     if(primaryID){
@@ -731,12 +742,54 @@ class ListingService{
             this.setupHierarchicalExpandable(listingID, collectionConfig);
         }
 
-        this.setupSortable(listingID);
         this.updateColumnAndAdministrativeCount(listingID);
     };
-
-    public setupSortable = (listingID:string) =>{
-        this.attachToListingPageRecordsUpdate(listingID, this.getPageRecordsWithManualSortOrder, this.utilityService.createID(32));
+    
+    
+    public updateListingPageRecordSortOrder = (listingID: string, recordId: string, newSortOrder: number) => {
+        let currentListing = this.getListing(listingID);
+        
+        const entityName = this.getListingBaseEntityName(listingID);
+        const primaryIDPropertyName  = this.getListingEntityPrimaryIDPropertyName(listingID);
+        
+        this.$hibachi.updateEntitySortOrder(
+            entityName,
+			primaryIDPropertyName,
+			recordId,
+	        newSortOrder,
+            currentListing.sortContextIdColumn,
+            currentListing.sortContextIdValue
+        ).then( data =>{
+            this.observerService.notifyById( 'refreshListingDisplay', listingID, null);
+        }).catch(e => {
+            console.error(`Error encountered while updating sort-order for Listing:${listingID}, Entity: ${entityName}, recordID: ${recordId}, newSortOrder: ${newSortOrder}`, e);
+        })
+                
+    }
+    
+    public setupSortable = (listingID:string, hasSortableFieldName:boolean ) =>{
+        // if the sortable-field-name is set, then the listing is supposed to be used in a form
+        // else it's a regular listing and it is supposed to call the API to update the page-record's sort-order and refresh itself 
+        
+        if(hasSortableFieldName){
+            this.attachToListingPageRecordsUpdate(listingID, this.getPageRecordsWithManualSortOrder, this.utilityService.createID(32));
+            return;
+        } 
+        
+        // if the listing doesn;t have a sortable-field-name, then we're going to update the sort-order in
+        this.observerService.attach(
+            (updatedRecord) =>{
+                let currentListing = this.getListing(listingID);
+                const sortProperty = this.getListingSortPropertyname(listingID);
+                const primaryIDPropertyName  = this.getListingEntityPrimaryIDPropertyName(listingID);
+                const recordId = updatedRecord[ primaryIDPropertyName ];
+                const oldSortOrder = updatedRecord[ sortProperty ];
+                const positionChnage = updatedRecord['positionChnage'];
+                
+                this.updateListingPageRecordSortOrder(listingID, recordId, oldSortOrder+positionChnage);
+            }, 
+            this.getListingPageRecordSortedEventString(listingID)
+        );
     }
 
      public setupSelect = (listingID:string) => {

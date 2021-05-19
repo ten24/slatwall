@@ -1,9 +1,8 @@
 import { toast } from 'react-toastify'
-import { SlatwalApiService } from '../services'
-import axios from 'axios'
+import { SlatwalApiService, axios } from '../services'
 import { sdkURL } from '../services'
 import { receiveUser, requestUser } from './userActions'
-import { updateToken } from './authActions'
+import { getErrorMessage } from '../utils'
 
 export const REQUEST_CART = 'REQUEST_CART'
 export const RECEIVE_CART = 'RECEIVE_CART'
@@ -43,6 +42,30 @@ export const clearCart = () => {
     type: CLEAR_CART,
   }
 }
+export const setOrderOnCart = orderID => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/addCartToSession`,
+      data: {
+        orderID,
+        returnJSONObjects: 'cart',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (response.status === 200 && response.data) {
+      if (response.errors) toast.error(getErrorMessage(response.errors))
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
 export const getCart = () => {
   return async dispatch => {
     dispatch(requestCart())
@@ -50,7 +73,6 @@ export const getCart = () => {
     const req = await SlatwalApiService.cart.get()
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -62,7 +84,6 @@ export const clearCartData = () => {
     const req = await SlatwalApiService.cart.clear()
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -78,10 +99,12 @@ export const addToCart = (skuID, quantity = 1) => {
     })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
+      if (req.success().errors) toast.error(getErrorMessage(req.success().errors))
     } else {
       dispatch(receiveCart())
+
+      toast.error('Error')
     }
   }
 }
@@ -96,11 +119,9 @@ export const getEligibleFulfillmentMethods = () => {
       url: `${sdkURL}api/scope/getEligibleFulfillmentMethods`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart({ eligibleFulfillmentMethods: response.data.eligibleFulfillmentMethods }))
     } else {
       dispatch(receiveCart())
@@ -121,7 +142,6 @@ export const getPickupLocations = () => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart({ pickupLocations: response.data.locations }))
     } else {
       dispatch(receiveCart())
@@ -139,7 +159,6 @@ export const addPickupLocation = params => {
       url: `${sdkURL}api/scope/addPickupFulfillmentLocation`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: {
         ...params,
@@ -147,7 +166,6 @@ export const addPickupLocation = params => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -164,7 +182,6 @@ export const setPickupDate = params => {
       url: `${sdkURL}api/scope/setPickupDate`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: {
         ...params,
@@ -172,7 +189,6 @@ export const setPickupDate = params => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -189,7 +205,6 @@ export const updateOrderNotes = params => {
       url: `${sdkURL}api/scope/updateOrderNotes`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: {
         ...params,
@@ -197,7 +212,6 @@ export const updateOrderNotes = params => {
       },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -226,7 +240,6 @@ export const updateItemQuantity = (skuID, quantity = 1) => {
       url: `${sdkURL}api/scope/updateOrderItemQuantity`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: {
         orderItem: {
@@ -239,7 +252,6 @@ export const updateItemQuantity = (skuID, quantity = 1) => {
       },
     })
     if (response.status === 200) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -255,7 +267,6 @@ export const removeItem = orderItemID => {
       returnJSONObjects: 'cart',
     })
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -268,7 +279,6 @@ export const addShippingAddress = (params = {}) => {
     const req = await SlatwalApiService.cart.addShippingAddress(params)
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -283,7 +293,6 @@ export const addShippingAddressUsingAccountAddress = (params = {}) => {
     })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -298,7 +307,6 @@ export const addShippingMethod = (params = {}) => {
     })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -323,7 +331,6 @@ export const updateFulfillment = (params = {}) => {
     const req = await SlatwalApiService.cart.updateFulfillment(params)
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -344,7 +351,7 @@ export const applyPromoCode = promotionCode => {
         })
         toast.error(errorMessages.join(' '))
       }
-      dispatch(updateToken(req.success()))
+
       dispatch(receiveCart(cart))
     }
   }
@@ -358,7 +365,6 @@ export const removePromoCode = (promotionCode, promotionCodeID) => {
       returnJSONObjects: 'cart',
     })
     if (req.success()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -371,7 +377,6 @@ export const addBillingAddress = (params = {}) => {
     const req = await SlatwalApiService.cart.addBillingAddress(params)
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
     }
   }
@@ -386,7 +391,6 @@ export const addPayment = (params = {}) => {
     })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
       dispatch(receiveUser(req.success().account))
       if (req.success().errors) dispatch(setError(req.success().errors))
@@ -401,7 +405,6 @@ export const removePayment = (params = {}) => {
     const req = await SlatwalApiService.cart.removePayment({ ...params, returnJSONObjects: 'cart' })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart({ ...req.success().cart }))
     }
   }
@@ -414,7 +417,6 @@ export const placeOrder = () => {
     const req = await SlatwalApiService.cart.placeOrder({ returnJSONObjects: 'cart' })
 
     if (req.isSuccess()) {
-      dispatch(updateToken(req.success()))
       dispatch(receiveCart(req.success().cart))
       dispatch(confirmOrder())
     }
@@ -432,12 +434,10 @@ export const addAddressAndAttachAsShipping = (params = {}) => {
       url: `${sdkURL}api/scope/addEditAccountAddress,addShippingAddressUsingAccountAddress`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart,account', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
@@ -457,12 +457,10 @@ export const changeOrderFulfillment = (params = {}) => {
       url: `${sdkURL}api/scope/changeOrderFulfillment`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveCart(response.data.cart))
     } else {
       dispatch(receiveCart())
@@ -480,12 +478,10 @@ export const addAddressAndAttachAsBilling = (params = {}) => {
       url: `${sdkURL}api/scope/addEditAccountAddress,addBillingAddressUsingAccountAddress`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart,account', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
@@ -506,12 +502,10 @@ export const addBillingAddressUsingAccountAddress = (params = {}) => {
       url: `${sdkURL}api/scope/addBillingAddressUsingAccountAddress`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
@@ -532,12 +526,10 @@ export const addNewAccountAndSetAsBilling = (params = {}) => {
       url: `${sdkURL}api/scope/addNewAccountAddress,addBillingAddressUsingAccountAddress`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart,account', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {
@@ -558,12 +550,10 @@ export const addAddressAndPaymentAndAddToOrder = (params = {}) => {
       url: `${sdkURL}api/scope/addAccountPaymentMethod`,
       headers: {
         'Content-Type': 'application/json',
-        'Auth-Token': `Bearer ${localStorage.getItem('token')}`,
       },
       data: { returnJsonObjects: 'cart,account', ...params },
     })
     if (response.status === 200 && response.data) {
-      dispatch(updateToken(response.data))
       dispatch(receiveUser(response.data.account))
       dispatch(receiveCart(response.data.cart))
     } else {

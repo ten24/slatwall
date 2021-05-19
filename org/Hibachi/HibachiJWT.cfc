@@ -91,15 +91,6 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			throw(type="No Account ID",message="No Account ID");
 		}
 
-		/*if has session then verify session account against token*/
-		if(
-			!isNull(getHibachiScope().getSession())
-			&& !getHibachiScope().getSession().getAccount().getNewFlag()
-			&& getHibachiScope().getSession().getAccount().getAccountID() != payload.accountID
-		){
-			throw(type='AccountID is not valid',message='AccountID is not valid');
-		}
-
 		if(!arguments.ignoreExpiration){
 			var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 			if(currentTime < payload.iat || currentTime > payload.exp){
