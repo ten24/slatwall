@@ -2,9 +2,9 @@ import { SWImage } from '../../components'
 
 const ProductTypeList = ({ data, onSelect, brand = {} }) => {
   return (
-    <div className="container pb-4 pb-sm-5">
+    <div className="container bg-light box-shadow-lg rounded-lg p-5">
       {/* <!--- Product Type grid ---> */}
-      <div className="row pt-5">
+      <div className="row">
         {/* <!--- Product Type ---> */}
         {data.childProductTypes &&
           data.childProductTypes.map(({ productTypeID, title, imageFile, urlTitle, childProductTypes }, index) => {
