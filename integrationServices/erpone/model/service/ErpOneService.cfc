@@ -542,7 +542,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var requestQuery = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
 	
 		var pageNumber = 1;
-		var pageSize = 100;
+		var pageSize = 1;
 		var hasPages = true;
 		
 		
@@ -559,7 +559,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				"columns" : "oe_head.order,oe_head.name,oe_head.adr,oe_head.state,oe_head.postal_code,oe_head.country_code,oe_head.ship_via_code,oe_head.cu_po,oe_head.ord_date,oe_head.opn,oe_head.o_tot_gross,oe_head.stat,oe_head.customer,oe_head.ord_ext,oe_head.rec_seq"
 			});
 			
-			writedump(ordersArray); abort;
 			logHibachi("ERPONE - skip #( pageNumber - 1 ) * pageSize# | take: #pageSize# = Returned : #arrayLen(ordersArray)#");
 			for(var order in ordersArray){
 				
@@ -568,7 +567,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					'BillingAddress_city' : order['oe_head_adr'][4],
 					'BillingAddress_countryCode' : 'US',
 					'BillingAddress_postalCode' : order['oe_head_postal_code'],
-					'BillingAddress_remoteAddressID' : 'billing_'&rder['__rowids'],
+					'BillingAddress_remoteAddressID' : 'billing_'&order['__rowids'],
 					'BillingAddress_stateCode' : order['oe_head_state'],
 					'BillingAddress_street2Address' : order['oe_head_adr'][3],
 					'BillingAddress_streetAddress' : order['oe_head_adr'][2],
@@ -582,7 +581,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					'OrderOpenDateTime' : order['oe_head_order'],
 					//'OrderSiteCode' : ,
 					'OrderStatusCode' : order['oe_head_order'],
-					'OrderTypeCode' : ,
+				// 	'OrderTypeCode' : ,
 					'RemoteAccountID' : order['oe_head_customer'],
 					'RemoteOrderID' : order['__rowids'],
 					'ShippingAddress_addressNickName' : 'Shipping Address',
@@ -593,13 +592,17 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					// 'ShippingAddress_locality' : ,
 					// 'ShippingAddress_phoneNumber' : ,
 					'ShippingAddress_postalCode' : order['oe_head_postal_code'],
-					'ShippingAddress_remoteAddressID' : 'shipping_'&rder['__rowids'],
+					'ShippingAddress_remoteAddressID' : 'shipping_'&order['__rowids'],
 					'ShippingAddress_stateCode' : order['oe_head_state'],
 					'ShippingAddress_street2Address' : order['oe_head_adr'][3],
 					'ShippingAddress_streetAddress' : order['oe_head_adr'][2]
 				};
 				
-				arrayAppend(formatedOrders,orderData)
+				orderData['orderItems'] = this.fetchErpOneOrderItemsByOrder(orderData.orderNumber, company);
+				
+				dump(orderData); abort;
+				
+				arrayAppend(formatedOrders,orderData);
 			}
 			
 			if(arrayLen(ordersArray) < pageSize){
@@ -614,6 +617,45 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		this.logHibachi("ERPONE - Finish importing Accounts");
 	}
+	
+	public any function fetchErpOneOrderItemsByOrder(required any orderNumber, required string company){
+	    
+		var query = "FOR EACH oe_line NO-LOCK WHERE oe_line.company_oe = '#arguments.company#' AND oe_line.rec_type = 'O' AND oe_line.order = '#arguments.OrderNumber#' ";
+		this.logHibachi("ERPONE - fetching order-items for order: #arguments.orderNumber#, Query: #query#");
+			 
+		var orderItems = this.callErpOneGetDataApi({
+			"query": query,
+			"columns" : "order,line,item,descr,price,list_price,q_ord"
+		});
+		
+		var transformedItems = [];
+		// TODO: move to variables scope as it's constant
+		var erponeItemMapping = {
+			"line"       : "line",
+			"item"       : "remoteSkuID",
+			"order"      : "remoteOrderID",
+			"price"      : "price",
+			"q_ord"      : "quantity",
+			"list_price" : "skuPrice"
+		};
+
+		for(var erponeItem in  orderItems ){
+    		var transformedItem = this.transformedErponeItem( erpOneItem, erponeItemMapping);
+	    	
+	    	// make uniquee import-remote-id for Slatwall's - orderItem
+	    	transformedItem['remoteOrderItemID'] = transformedItem.remoteOrderID&"_"&transformedItem.line;
+	    	
+	    	// so that Slatwall does-not update the `price` 
+	    	transformedItem['userDefinedPriceFlag'] = true;
+	    	
+	    	// TODO: order-item-type and status
+	    	
+		    transformedItems.append( transformedItem );
+		}
+		
+		return transformedItems;
+	}
+	
 	
 	public any function importErpOneOrderItems(){
 
