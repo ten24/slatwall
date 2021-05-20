@@ -64,7 +64,6 @@ const AccountCarts = () => {
 
   return (
     <AccountLayout>
-      <AccountContent />
       <AccountToolBar term={keyword} updateTerm={setSearchTerm} search={search} />
 
       <div className="table-responsive font-size-md">
