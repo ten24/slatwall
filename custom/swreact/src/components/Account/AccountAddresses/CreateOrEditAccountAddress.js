@@ -78,7 +78,7 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
           <input className="form-control" type="text" id="accountAddressName" value={formik.values['accountAddressName']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="name">{t('frontend.account.fullname')}</label>
+          <label htmlFor="name">{t('frontend.account.name')}</label>
           <input className="form-control" type="text" id="name" value={formik.values['name']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
