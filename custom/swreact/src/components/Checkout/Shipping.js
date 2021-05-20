@@ -145,7 +145,6 @@ const ShippingSlide = ({ currentStep }) => {
     dispatch(getEligibleFulfillmentMethods())
     dispatch(getPickupLocations())
   }, [dispatch])
-  console.log('selectedFulfillmentMethod.fulfillmentMethod.fulfillmentMethodType', selectedFulfillmentMethod.fulfillmentMethod.fulfillmentMethodType)
 
   return (
     <>
