@@ -1,9 +1,11 @@
-const ShippingAddressDetails = ({ shippingAddress, shippingAddressNickname }) => {
-  const { name, streetAddress, city, stateCode, postalCode } = shippingAddress
+import { useTranslation } from 'react-i18next'
 
+const ShippingAddressDetails = ({ shippingAddress, shippingAddressNickname }) => {
+  const { name, streetAddress, city, stateCode, postalCode, emailAddress } = shippingAddress || {}
+  const { t } = useTranslation()
   return (
     <>
-      <h3 className="h6">Shipping Address:</h3>
+      <h3 className="h6">{t('frontend.checkout.shipping_address')}</h3>
       <p>
         {shippingAddressNickname && (
           <>
@@ -13,7 +15,8 @@ const ShippingAddressDetails = ({ shippingAddress, shippingAddressNickname }) =>
         )}
         {name} <br />
         {streetAddress} <br />
-        {`${city}, ${stateCode} ${postalCode}`}
+        {`${city}, ${stateCode} ${postalCode}`} <br />
+        {emailAddress.length > 0 && emailAddress}
       </p>
     </>
   )

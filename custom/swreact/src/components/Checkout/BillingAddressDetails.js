@@ -1,9 +1,13 @@
+import { useTranslation } from 'react-i18next'
+
 const BillingAddressDetails = ({ orderPayment, billingNickname }) => {
   const { billingAddress } = orderPayment
+  const { name, streetAddress, city, stateCode, postalCode, emailAddress } = billingAddress || {}
+  const { t } = useTranslation()
 
   return (
     <>
-      <h3 className="h6">Billing Address:</h3>
+      <h3 className="h6">{t('frontend.checkout.billing_address')}</h3>
       {billingAddress && (
         <p>
           {billingNickname && (
@@ -12,9 +16,10 @@ const BillingAddressDetails = ({ orderPayment, billingNickname }) => {
               <br />
             </>
           )}
-          {billingAddress.name} <br />
-          {billingAddress.streetAddress} <br />
-          {`${billingAddress.city}, ${billingAddress.stateCode} ${billingAddress.postalCode}`}
+          {name} <br />
+          {streetAddress} <br />
+          {`${city}, ${stateCode} ${postalCode}`} <br />
+          {emailAddress.length > 0 && emailAddress}
         </p>
       )}
     </>
