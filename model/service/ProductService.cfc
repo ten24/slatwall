@@ -95,15 +95,6 @@ component extends="HibachiService" accessors="true" {
 	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
-		relatedProducts.addFilter("product.productID",arguments.productID);
-		relatedProducts.addFilter("product.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=false);
-		return relatedProducts;
-	}
-	
-	public any function getAllRelatedProducts(required any productID) {
-		var relatedProducts = this.getProductRelationshipCollectionList();
         
         var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.calculatedSalePrice";	
         properties &= ",relatedProduct.brand.brandID, relatedProduct.brand.brandName, relatedProduct.brand.urlTitle";
