@@ -613,9 +613,9 @@ component  accessors="true" output="false"
 	     
 	     var account = getHibachiScope().getAccount();
 	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
-	         var order = this.getOrderService.getOrder(arguments.data.orderID);
+	         var order = this.getOrderService().getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
-	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService.getOrderDetails(order.getOrderID(), account.getAccountID());
+	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService().getOrderDetails(order.getOrderID(), account.getAccountID());
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
 	         } else {
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
@@ -1083,7 +1083,7 @@ component  accessors="true" output="false"
      	param name="arguments.data.phoneNumber" default="";
 
      	var addressID = "";
-     	var accountAddress = getHibachiScope().this.getAccountService().getAccountAddress( arguments.data.accountAddressID );
+     	var accountAddress = this.getAccountService().getAccountAddress( arguments.data.accountAddressID );
         
         if (!isNull(accountAddress) && getHibachiScope().getAccount().getAccountID() == accountAddress.getAccount().getAccountID() ){
             addressID = accountAddress.getAddressID();
@@ -1095,7 +1095,7 @@ component  accessors="true" output="false"
      	    newAddress = this.getAddressService().saveAddress(newAddress, arguments.data, "full");
      	    
      	    //save account address
-     	    accountAddress = getHibachiScope().this.getAccountService().saveAccountAddress( accountAddress, arguments.data );
+     	    accountAddress = this.getAccountService().saveAccountAddress( accountAddress, arguments.data );
      	    
             if(!newAddress.hasErrors() && !accountAddress.hasErrors()) {
   	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
@@ -2037,9 +2037,9 @@ component  accessors="true" output="false"
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-                var accountPaymentMethod = getHibachiScope().this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
+                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
             }else{
-                var accountPaymentMethod = getHibachiScope().this.getAccountService().newAccountPaymentMethod(  );	
+                var accountPaymentMethod = this.getAccountService().newAccountPaymentMethod(  );	
                 accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             }
             

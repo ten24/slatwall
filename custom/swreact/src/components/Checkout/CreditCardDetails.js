@@ -65,18 +65,17 @@ const CreditCardDetails = ({ onSubmit }) => {
       <div className="row mb-3">
         <div className="col-sm-12">
           {!formik.values.saveShippingAsBilling && (
-            <>
-              <AccountAddress
-                addressTitle={'Billing Address'}
-                selectedAccountID={formik.values.accountAddressID}
-                onSelect={value => {
-                  formik.setFieldValue('accountAddressID', value)
-                }}
-                onSave={values => {
-                  dispatch(addNewAccountAndSetAsBilling({ ...values }))
-                }}
-              />
-            </>
+            <AccountAddress
+              isShipping={false}
+              addressTitle={'Billing Address'}
+              selectedAccountID={formik.values.accountAddressID}
+              onSelect={value => {
+                formik.setFieldValue('accountAddressID', value)
+              }}
+              onSave={values => {
+                dispatch(addNewAccountAndSetAsBilling({ ...values }))
+              }}
+            />
           )}
         </div>
       </div>

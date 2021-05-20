@@ -27,6 +27,7 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
       countryCode: accountAddress ? accountAddress.address.countryCode : 'US',
       name: accountAddress ? accountAddress.address.name : '',
       company: accountAddress ? accountAddress.address.company : '',
+      emailAddress: accountAddress ? accountAddress.address.emailAddress : '',
       phoneNumber: accountAddress ? accountAddress.address.phoneNumber : '',
       streetAddress: accountAddress ? accountAddress.address.streetAddress : '',
       street2Address: accountAddress ? accountAddress.address.street2Address : '',
@@ -78,7 +79,7 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
           <input className="form-control" type="text" id="accountAddressName" value={formik.values['accountAddressName']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
-          <label htmlFor="name">{t('frontend.account.fullname')}</label>
+          <label htmlFor="name">{t('frontend.account.name')}</label>
           <input className="form-control" type="text" id="name" value={formik.values['name']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
@@ -88,6 +89,10 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
         <div className="form-group">
           <label htmlFor="phoneNumber">{t('frontend.account.phoneNumber')} </label>
           <input className="form-control" type="text" id="phoneNumber" value={formik.values['phoneNumber']} onChange={formik.handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="phoneNumber">{t('frontend.account.emailAddress')} </label>
+          <input className="form-control" type="email" id="emailAddress" value={formik.values['emailAddress']} onChange={formik.handleChange} />
         </div>
         <div className="form-group">
           <label htmlFor="streetAddress">{t('frontend.account.streetAddress')}</label>

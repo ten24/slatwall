@@ -451,7 +451,6 @@ export const useGetAccountCartsAndQuotes = () => {
         cancelToken: source.token,
       })
         .then(response => {
-          console.log('response.data', response.data)
           if (response.status === 200 && response.data && response.data.cartsAndQuotesOnAccount && response.data.cartsAndQuotesOnAccount.ordersOnAccount) {
             setRequest({ data: response.data.cartsAndQuotesOnAccount.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
