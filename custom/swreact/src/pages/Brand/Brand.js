@@ -40,7 +40,6 @@ const Brand = props => {
     params = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
     setRequest({ ...request, data: {}, isFetching: true, isLoaded: false, params: { urlTitle: params['key'] || productTypeBase, brandUrlTitle: path[0] }, makeRequest: true })
   })
-  console.log('productTypeUrl', productTypeUrl)
   const isNonBasePTAndListing = !request.data.showProducts && productTypeUrl !== productTypeBase
   return (
     <Layout>
