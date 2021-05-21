@@ -8,6 +8,7 @@
 .product-card {
   padding-bottom: $card-spacer-y;
   border: 0;
+  height: 100%;
   transition: $product-card-transition;
 
   .product-card-actions,
@@ -334,7 +335,7 @@
     z-index: 5;
   }
   @include media-breakpoint-down(md) {
-    padding-bottom: 1.5rem;
+    padding-bottom: 5.5rem;
   }
 }
 
