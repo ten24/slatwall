@@ -1291,7 +1291,7 @@ component  accessors="true" output="false"
 
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
-        param name="arguments.data.returnTokenFlag" default="0";        
+        param name="arguments.data.returnTokenFlag" default="1";        
 
         var account = this.getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
 
@@ -1369,7 +1369,7 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_ResetPassword
       **/
     public void function resetPasswordUpdate( required struct data ) {
-        param name="data.swprid";
+        param name="data.swprid" default="";
 
         var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
 
