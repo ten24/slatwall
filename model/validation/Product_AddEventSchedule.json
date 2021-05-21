@@ -15,7 +15,15 @@
 			}
 		],
 		"locationConfigurations": [{ "required": true }],
-		"scheduleEndDate" : [{"required": true, "conditions": "recurringSchedule"}],
+		"scheduleEndDate" : [
+			{
+				"required": true,
+				"conditions": "recurringSchedule",
+				"gtDateTimeProperty": "eventStartDateTime",
+				"dataType" : "date",
+				"gtNow": true
+			}
+		],
 		"schedulingType": [{ "required": true }],
 		"price": [{ "required": false }],
 		"eventCapacity": [{ "required": true }]
