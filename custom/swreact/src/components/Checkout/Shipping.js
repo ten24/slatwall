@@ -5,18 +5,20 @@ import { useEffect } from 'react'
 import { accountAddressSelector, fulfillmentMethodSelector, fulfillmentSelector, pickupLocation, pickupLocationOptions, shippingMethodSelector } from '../../selectors/orderSelectors'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { useTranslation } from 'react-i18next'
 
 const FulfillmentPicker = () => {
   const dispatch = useDispatch()
   const { eligibleFulfillmentMethods, orderItems } = useSelector(state => state.cart)
   let selectedFulfillmentMethod = useSelector(fulfillmentMethodSelector)
+  const { t } = useTranslation()
 
   return (
     <div className="row mb-3">
       <div className="col-sm-12">
         {eligibleFulfillmentMethods && eligibleFulfillmentMethods.length > 0 && (
           <SwRadioSelect
-            label="How do you want to recieve your items?"
+            label={t('frontend.checkout.receive_option')}
             options={eligibleFulfillmentMethods}
             onChange={fulfillmentMethodID => {
               const orderItemIDList = orderItems
@@ -39,12 +41,14 @@ const ShippingMethodPicker = () => {
   const orderFulfillments = useSelector(state => state.cart.orderFulfillments)
   const selectedShippingMethod = useSelector(shippingMethodSelector)
   const orderFulfillment = useSelector(fulfillmentSelector)
+  const { t } = useTranslation()
+
   return (
     <div className="row mb-3">
       <div className="col-sm-12">
         {orderFulfillments.length > 0 && (
           <SwRadioSelect
-            label="How do you want to recieve your items?"
+            label={t('frontend.checkout.delivery_option')}
             options={orderFulfillment.shippingMethodOptions}
             onChange={value => {
               dispatch(
@@ -67,6 +71,7 @@ const PickupLocationPicker = () => {
   const pickupLocations = useSelector(pickupLocationOptions)
   const selectedLocation = useSelector(pickupLocation)
   const { orderFulfillmentID, estimatedShippingDate } = useSelector(fulfillmentSelector)
+  const { t } = useTranslation()
 
   // @function - returns true if date (coming from datepicker) is greater than Current-Date.
   // @param - date => any date object
@@ -92,6 +97,7 @@ const PickupLocationPicker = () => {
               timeCaption="Time"
               dateFormat="MM/dd/yyyy h:mm aa"
               filterDate={isFutureDate}
+              className="form-control"
               onChange={pickupDate => {
                 dispatch(
                   setPickupDate({
@@ -108,7 +114,7 @@ const PickupLocationPicker = () => {
         <div className="col-sm-12">
           {pickupLocations.length > 0 && (
             <SwRadioSelect
-              label="Which Location would you like to pickup from?"
+              label={t('frontend.checkout.location_option')}
               options={pickupLocations}
               onChange={value => {
                 dispatch(
@@ -133,6 +139,8 @@ const ShippingSlide = ({ currentStep }) => {
   let selectedAccountID = useSelector(accountAddressSelector)
   const orderFulfillment = useSelector(fulfillmentSelector)
   const { isFetching } = useSelector(state => state.cart)
+  const { t } = useTranslation()
+
   useEffect(() => {
     dispatch(getEligibleFulfillmentMethods())
     dispatch(getPickupLocations())
@@ -145,7 +153,6 @@ const ShippingSlide = ({ currentStep }) => {
         {selectedFulfillmentMethod.fulfillmentMethod.fulfillmentMethodType === 'pickup' && <PickupLocationPicker />}
         {selectedFulfillmentMethod.fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
           <AccountAddress
-            addressTitle={'Shipping address'}
             selectedAccountID={selectedAccountID}
             onSelect={value => {
               dispatch(

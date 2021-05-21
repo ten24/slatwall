@@ -20,6 +20,7 @@ const initialState = {
   cartsAndQuotesOnAccount: [],
   company: '',
   verifiedAccountFlag: false,
+  isLoaded: false,
   isFetching: false,
   isFetchingOrders: false,
 }
@@ -44,7 +45,7 @@ const user = (state = initialState, action) => {
 
     case RECEIVE_USER:
       if (user.loginToken) delete user.loginToken
-      return { ...state, ...user, isFetching: false }
+      return { ...state, ...user, isFetching: false, isLoaded: true }
 
     case CLEAR_USER:
       return { ...initialState }

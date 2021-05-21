@@ -43,8 +43,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
 
     MySwal.fire({
       title: 'Update Password',
-      html: 
-      '<form><div class="form-group text-left"><label for="accountPassword">Password</label><input id="accountPassword" class="form-control" /></div><div class="form-group text-left"><label for="accountPasswordConfirm">Confirm Password</label><input id="accountPasswordConfirm" class="form-control"></div></form>',
+      html: '<form><div class="form-group text-left"><label for="accountPassword">Password</label><input id="accountPassword" class="form-control" /></div><div class="form-group text-left"><label for="accountPasswordConfirm">Confirm Password</label><input id="accountPasswordConfirm" class="form-control"></div></form>',
       focusConfirm: false,
       showCancelButton: true,
       preConfirm: () => {
@@ -82,7 +81,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
           <div className="col-sm-12">
-            <h4 class="text-left my-lg-4">Profile Info</h4>
+            <h4 className="text-left my-lg-4">Profile Info</h4>
           </div>
           <div className="col-sm-6">
             <div className="form-group">
