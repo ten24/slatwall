@@ -198,6 +198,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="placeOrderFlag" persistent="false" default="false";
 	property name="refreshCalculateFulfillmentChargeFlag" persistent="false" default="false"; //Flag for Fulfillment Tax Recalculation 
 	property name="orderStatusHistoryTypeCodeList" persistent="false" default="";
+	property name="newAccountFlag" persistent="false" default="false"
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -219,7 +220,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 	property name="calculatedFulfillmentHandlingFeeTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-
 	
 	public void function init(){
 		setOrderService(getService('orderService'));
