@@ -815,8 +815,7 @@ component  accessors="true" output="false"
 	 */
 	public any function getProductType(required struct data ){
 	    param name="arguments.data.urlTitle" default='';
-
- //writeDump(var = arguments, label= "1", abort="true")
+        arguments.data.restRequestFlag = true
 
         // if there's some value for urlTitle, set the entityID
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
@@ -830,11 +829,9 @@ component  accessors="true" output="false"
 	        // Get List or Records
 	        if(structKeyExists(arguments.data, 'brandUrlTitle')){
                 var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
-                arguments.data['f:productTypeID:in'] = ArrayToList(brandProductTypeList)
-               // writeDump(var = arguments.data, label= "1", abort="true")
+                url['f:productTypeID:in'] = ArrayToList(brandProductTypeList)
             }
     	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-           // arguments.data.ajaxResponse['data'].pageRecords = getService("brandService").appendSettingsAndOptions(arguments.data.ajaxResponse['data'].pageRecords);
             this.getHibachiScope().addActionResult("public:scope.getProductType", true);
             return;
         }else{
