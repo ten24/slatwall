@@ -270,6 +270,19 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return DeSerializeJson(rawRequest.fileContent);
 	}
 
+	public any function callErpOneUpdateDataApi( required any requestData, string endpoint="create" ){
+		var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json; charset=UTF-8");
+		
+		// Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
+		httpRequest.addParam(type="body", value=serializeJSON(requestData));
+		var rawRequest = httpRequest.send().getPrefix();
+		if( !IsJson(rawRequest.fileContent) ){
+			throw("ERPONE - callErpOneUpdateDataApi: API response is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
+		}
+		return DeSerializeJson(rawRequest.fileContent);
+	}
+	
 	public any function debugDataApi( required struct requestData, string endpoint="data/read", string requestType = "POST" ){
 		getService('hibachiTagService').cfsetting(requesttimeout=100000);
 		var queryString = '';
@@ -327,7 +340,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return DeSerializeJson(rawRequest.fileContent);
 	}
 	
-	
 	public any function getLiveListingPrices(required array data, required string skuCodeKey="skuCode", required string priceKeys="skuPrice" , string customerCode = ""){
 		var pricePayload = [];
 		for(var item in arguments.data){
@@ -359,77 +371,20 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	
-	public any function callErpOneUpdateDataApi( required any requestData, string endpoint="create" ){
-		var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json; charset=UTF-8");
-		
-		// Authentication headers
-		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
-		httpRequest.addParam(type="body", value=serializeJSON(requestData));
-		var rawRequest = httpRequest.send().getPrefix();
-		if( !IsJson(rawRequest.fileContent) ){
-			throw("ERPONE - callErpOneUpdateDataApi: API response is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
-		}
-		return DeSerializeJson(rawRequest.fileContent);
-	}
-		
-	public struct function transformedErpOneItem(required struct item, required struct erponeMapping ){
+	public struct function swapStructKeys(required struct item, required struct keysMapping ){
 
 		var transformedItem = {};
+		for( var sourceKey in arguments.keysMapping ){
+			var destinationKey = arguments.keysMapping[ sourceKey ];
 			
-			for( var sourceKey in arguments.erponeMapping ){
-				var destinationKey = arguments.erponeMapping[ sourceKey ];
-				
-				if( structKeyExists(arguments.item, sourceKey) ){
-					transformedItem[ destinationKey ] = arguments.item[ sourceKey ];
-				}
+			if( structKeyExists(arguments.item, sourceKey) ){
+				transformedItem[ destinationKey ] = arguments.item[ sourceKey ];
 			}
-		
+		}
+	
 		return transformedItem;
 	}
 	
-
-	public any function getOrderData(numeric pageNumber = 1, numeric pageSize = 50 ){
-		logHibachi("ERPONE - called getOrderData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
-		//still working to get order numbers without hyphen so pass one order for testing
-		var OrdersArray = this.callErpOneGetDataApi({
-			"skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
-			"take" : arguments.pageSize,
-			"query": "FOR EACH oe_head",
-			"columns" : "order,ord_date,customer,adr,currency_code,country_code,postal_code,state"
-		})
-		if( OrdersArray.len() > 0 ){
-
-			this.logHibachi("ERPONE - Start pushing Orders to import-queue ");
-			var batch = this.pushRecordsIntoImportQueue( "Order", OrdersArray );
-			this.logHibachi("ERPONE - Finish pushing Orders to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
-
-		} else {
-			this.logHibachi("ERPONE - No data recieve from getOrderData API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
-		}
-		
-	}
-	
-	public any function getOrderItemData(numeric pageNumber = 1, numeric pageSize = 50 ){
-		logHibachi("ERPONE - called getOrderItemData with pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
-		//still working to get order numbers without hyphen so pass one order for testing
-		var OrdersArray = this.callErpOneGetDataApi({
-			"skip" : ( arguments.pageNumber - 1 ) * arguments.pageSize,
-			"take" : arguments.pageSize,
-			"query": "FOR EACH oe_line",
-			"columns" : "order,price,list_price,item,line"
-		})
-
-		if( OrdersArray.len() > 0 ){
-
-			this.logHibachi("ERPONE - Start pushing OrderItem to import-queue ");
-			var batch = this.pushRecordsIntoImportQueue( "OrderItem", OrdersArray );
-			this.logHibachi("ERPONE - Finish pushing OrderItem to import-queue, Created new import-batch: #batch.getBatchID()#, pushed #batch.getEntityQueueItemsCount()# of #batch.getInitialEntityQueueItemsCount()# into import queue");
-
-		} else {
-			this.logHibachi("ERPONE - No data recieve from getOrderItemData API for pageNumber = #arguments.pageNumber# and pageSize= #arguments.pageSize#");
-		}
-
-	}
 	
 	// Importer Functions - Paginated data API call
 	
@@ -530,7 +485,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	public any function importErpOneOrders(){
 		
-		logHibachi("ERPONE - Starting importing importErpOneOrders");
+		this.logHibachi("ERPONE - Starting importing importErpOneOrders");
+		
 		var isDevModeFlag = this.setting("devMode");
 		var company =  this.setting("prodCompany")
 		
@@ -599,6 +555,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				};
 				
 				orderData['orderItems'] = this.fetchErpOneOrderItemsByOrder(orderData.orderNumber, company);
+				orderData['orderPayments'] = this.fetchErpOneOrderPaymentsByOrder(orderData.orderNumber, company);
 				
 				dump(orderData); abort;
 				
@@ -620,7 +577,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	public any function fetchErpOneOrderItemsByOrder(required any orderNumber, required string company){
 	    
-		var query = "FOR EACH oe_line NO-LOCK WHERE oe_line.company_oe = '#arguments.company#' AND oe_line.rec_type = 'O' AND oe_line.order = '#arguments.OrderNumber#' ";
+		var query = "
+		            FOR EACH oe_line NO-LOCK 
+		                WHERE oe_line.company_oe = '#arguments.company#' 
+		            AND oe_line.rec_type = 'O' 
+		            AND oe_line.order = '#arguments.OrderNumber#' 
+		      ";
+		      
 		this.logHibachi("ERPONE - fetching order-items for order: #arguments.orderNumber#, Query: #query#");
 			 
 		var orderItems = this.callErpOneGetDataApi({
@@ -640,7 +603,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		};
 
 		for(var erponeItem in  orderItems ){
-    		var transformedItem = this.transformedErponeItem( erpOneItem, erponeItemMapping);
+    		var transformedItem = this.swapStructKeys( erpOneItem, erponeItemMapping);
 	    	
 	    	// make uniquee import-remote-id for Slatwall's - orderItem
 	    	transformedItem['remoteOrderItemID'] = transformedItem.remoteOrderID&"_"&transformedItem.line;
@@ -656,6 +619,124 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return transformedItems;
 	}
 	
+	public any function fetchErpOneOrderPaymentsByOrder(required any orderNumber, required string company){
+	    
+		var query = "
+		            FOR EACH oe_head NO-LOCK 
+		                WHERE oe_head.company_oe = '#arguments.company#' 
+		            AND oe_head.rec_type = 'I' 
+		            AND oe_head.order = '#arguments.OrderNumber#'
+		          ";
+		          
+        var columns = [ 
+            "adr",
+            "created_date",
+            "created_time",
+            "customer",
+            "cu_po",
+            "c_tot_code",
+            "c_tot_code_amt",
+            "c_tot_gross",
+            "c_tot_net_ar",
+            "email",
+            "invc_date",
+            "invc_seq",
+            "invoice",
+            "opn",
+            "order",
+            "ord_date",
+            "ord_ext",
+            "phone",
+            "rec_seq",
+            "residential",
+            "ship_via_code",
+            "stat",
+            "state",
+            "country_code",
+            "postal_code"
+        ];        
+        
+		this.logHibachi("ERPONE - fetching order-shipments for order: #arguments.orderNumber#, Query: #query#");
+			 
+		var orderInvoices = this.callErpOneGetDataApi({
+			"query": query,
+			"columns" : columns.toList()
+		});
+		
+		var transformedItems = [];
+
+		for(var erponeItem in  orderInvoices ){
+    		var transformedItem = {};
+    		
+    		// TODO: 
+	    	
+		    transformedItems.append( orderInvoices );
+		}
+		
+		return transformedItems;
+	}
+	
+	
+	public any function fetchErpOneOrderShipmentsByOrder(required any orderNumber, required string company){
+	    
+		var query = "
+		            FOR EACH oe_head NO-LOCK 
+		                WHERE oe_head.company_oe = '#arguments.company#' 
+		            AND oe_head.rec_type = 'S' 
+		            AND oe_head.order = '#arguments.OrderNumber#'
+		          ";
+		          
+        var columns = [ 
+                        "adr",
+                        "created_date",
+                        "created_time",
+                        "customer",
+                        "cu_po",
+                        "c_tot_code",
+                        "c_tot_code_amt",
+                        "c_tot_gross",
+                        "c_tot_net_ar",
+                        "email",
+                        "invc_date",
+                        "invc_seq",
+                        "invoice",
+                        "opn",
+                        "order",
+                        "ord_date",
+                        "ord_ext",
+                        "phone",
+                        "rec_seq",
+                        "residential",
+                        "ship_via_code",
+                        "stat",
+                        "state",
+                        "country_code",
+                        "postal_code",
+                        "Manifest_id",
+                        "num_pages",
+                        "ship_date"
+                    ];        
+        
+		this.logHibachi("ERPONE - fetching order-shipments for order: #arguments.orderNumber#, Query: #query#");
+			 
+		var orderShipments = this.callErpOneGetDataApi({
+			"query": query,
+			"columns" : columns.toList()
+		});
+		
+		var transformedItems = [];
+
+		for(var erponeItem in  orderShipments ){
+    		var transformedItem = {};
+    		
+    		// TODO:
+	    	
+		    transformedItems.append( orderShipments );
+		}
+		
+		return transformedItems;
+	}
+
 	
 	public any function importErpOneOrderItems(){
 
@@ -1121,7 +1202,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			"state" 		: "stateCode"
 		};
 		
-		var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
+		var transformedItem = this.swapStructKeys( arguments.data, erponeMapping);
 		transformedItem.remoteOrderID = transformedItem.OrderNumber;
 		transformedItem["FullAddress"] = {
 				  "streetAddress"  : transformedItem.Address[2],
@@ -1155,38 +1236,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return transformedItem;
 	}
 	
-	public any function preProcessOrderItemData(required struct data ){
-
-		if( left(arguments.data.order, 1) == '-' ){
-			return;
-		}
-		var erponeMapping = {
-			"order" : "RemoteOrderID",
-			"price" : "Price",
-			"list_price" : "SkuPrice",
-			"item" : "RemoteSkuID",
-			"line" : "Line"
-		};
-
-		var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
-		
-		transformedItem.remoteOrderItemID = transformedItem.RemoteOrderID&"_"&transformedItem.Line;
-		return transformedItem;
-	}
-	
 	public any function preProcessInventoryData(required struct data ){
-	var erponeMapping = {
+	    var erponeMapping = {
 			"item" 			: "remoteSkuID",
 			"warehouse"		: "remoteLocationID",
 			"available"		: "quantityIn"
 		};
 
-	var transformedItem = this.transformedErponeItem( arguments.data, erponeMapping);
-	if( structKeyExists(transformedItem, 'remoteSkuID') ){
-			
+	    var transformedItem = this.swapStructKeys( arguments.data, erponeMapping);
+    	if( structKeyExists(transformedItem, 'remoteSkuID') ){
 			transformedItem.remoteSkuID=reReplace(reReplace(transformedItem.remoteSkuID, "(\\|/)", "--", "all" ),"\s", "__", "all");
 			transformedItem.remoteInventoryID=transformedItem.remoteLocationID&"--"&reReplace(reReplace(transformedItem.remoteSkuID, "(\\|/)", "--", "all" ),"\s", "__", "all");
-	}
-	return transformedItem;
+    	}
+    	return transformedItem;
 	}
 }

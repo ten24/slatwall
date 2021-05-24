@@ -1670,6 +1670,59 @@
 			fileDelete( finalPath );
 		}
 	}
+	
+	public struct function flattenStruct( required struct original, string delimiter=".", string prefix="" ){
+	    var flattened = {};
+	    
+		var keysArray = arguments.original.keyArray();
+		for ( var thisKey in keysArray ) {
+		    
+		    var nextPrefix = prefix & thisKey;
+		    
+			if( isArray(arguments.original[thisKey]) ){
+				
+				var flattenedArray = flattenArray(arguments.original[thisKey], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedArray);
+				
+			} else if ( IsStruct(arguments.original[thisKey]) ) {
+				
+				var flattenedStruct = flattenStruct(arguments.original[thisKey], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedStruct);
+				
+			} else {
+			
+				flattened[ nextPrefix ] = arguments.original[thisKey];
+			}
+		}
+		
+		return flattened;
+	}
+	
+	public struct function flattenArray( required array original, string delimiter=".", string prefix="" ){
+	    var flattened = {};
+	    
+		for ( var i=1; i<= arguments.original.len(); i++ ){
+		    
+		    var nextPrefix = arguments.prefix &"["& i &"]";
+		    
+			if( isArray(arguments.original[i]) ){
+				
+				var flattenedArray = this.flattenArray(arguments.original[i], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedArray);
+				
+			} else if ( isStruct(arguments.original[i]) ){
+				
+				var flattenedStruct = this.flattenStruct(arguments.original[i], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedStruct);
+				
+			} else {
+			
+				flattened[nextPrefix] = arguments.original[i];
+			}
+		}
+		
+		return flattened;
+	}
 
 	</cfscript>
 
