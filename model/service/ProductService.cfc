@@ -1564,11 +1564,48 @@ component extends="HibachiService" accessors="true" {
 		
 	}
 	
-public any function getProductTypesForBrand(required string urlTitle){
+	public any function getProductTypesForBrand(required string urlTitle){
 		var productTypeCollectionList = getService('HibachiService').getProductTypeCollectionList();
 		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
 		productTypeCollectionList.addFilter('products.brand.urlTitle', urlTitle);
-        productTypeCollectionList.addOrderBy("productTypeID"); //to arrange them from parent to child order
+        productTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+		var filteredTypes =  productTypeCollectionList.getRecords( formatRecords = true );
+		var filteredTypeIDPaths = []
+            for( var filteredType in filteredTypes ) {
+                for(var ptyi in ListToArray(filteredType.productTypeIDPath)){
+                    if(!arrayFindNoCase(filteredTypeIDPaths, ptyi)){
+                    	ArrayAppend(filteredTypeIDPaths, ptyi);
+                    }
+                }
+            }
+        return filteredTypeIDPaths
+	}
+	
+	public any function getProductTypesForKeyword(required string keyword){
+		var productTypeCollectionList = getService('HibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
+		productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.productName', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.productCode', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.skus.skuCode', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
 		var filteredTypes =  productTypeCollectionList.getRecords( formatRecords = true );
 		var filteredTypeIDPaths = []
             for( var filteredType in filteredTypes ) {
