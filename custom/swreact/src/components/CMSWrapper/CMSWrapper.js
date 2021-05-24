@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { getPageContent } from '../../actions/contentActions'
 import { useHistory, useLocation } from 'react-router'
-import { getFavouriteProducts } from '../../actions/userActions'
+import { getWishLists } from '../../actions/userActions'
 
 const CMSWrapper = ({ children }) => {
   const dispatch = useDispatch()
@@ -14,7 +14,7 @@ const CMSWrapper = ({ children }) => {
 
   useEffect(() => {
     if (!isLoaded) {
-      dispatch(getFavouriteProducts())
+      dispatch(getWishLists())
       dispatch(
         getPageContent(
           {

@@ -1,24 +1,25 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { addWishlistItem, removeWishlistItem } from '../../actions/userActions'
-import useWishList from '../../hooks/useWishlist'
+import { addSkuToWishList, removeWishlistItem } from '../../actions/userActions'
+import { getDefaultWishlist, getItemsForDefaultWishList } from '../../selectors/userSelectors'
 import { isAuthenticated } from '../../utils'
 
 const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
   const dispatch = useDispatch()
-  const [isOnWishlist] = useWishList(skuID)
   const primaryColor = useSelector(state => state.configuration.theme.primaryColor)
+  const defaultWishlist = useSelector(getDefaultWishlist)
+  const items = useSelector(getItemsForDefaultWishList)
 
   if (!isAuthenticated()) {
     return null
   }
 
-  if (isOnWishlist) {
+  if (items.includes(skuID)) {
     return (
       <button
         className={className}
         onClick={e => {
           e.preventDefault()
-          dispatch(removeWishlistItem(skuID))
+          dispatch(removeWishlistItem(skuID, defaultWishlist?.value))
         }}
         type="button"
         data-toggle="tooltip"
@@ -34,7 +35,7 @@ const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
       <button
         onClick={e => {
           e.preventDefault()
-          dispatch(addWishlistItem(skuID))
+          dispatch(addSkuToWishList(skuID, defaultWishlist?.value))
         }}
         className={className}
         type="button"
