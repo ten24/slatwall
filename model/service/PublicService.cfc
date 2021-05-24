@@ -807,12 +807,61 @@ component  accessors="true" output="false"
         arguments.data.ajaxResponse['images'] = product.getImageGalleryArray(argumentCollection=arguments.data);
     }
     
+    	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/brand/{entityID}`
+	 * 
+	 */
+	public any function getProductType(required struct data ){
+	    param name="arguments.data.urlTitle" default='';
+	    param name="arguments.data.includeSettingsInList" default=false;
+
+        // if there's some value for urlTitle, set the entityID
+        var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
+            if( !isNull(productType) ){
+	            arguments.data.entityID = productType.getProductTypeID();
+	        }
+	    if( !len(arguments.data.entityID) ){
+	        // Get List or Records
+	        if(structKeyExists(arguments.data, 'brandUrlTitle')){
+                var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
+                url['f:productTypeID:in'] = ArrayToList(brandProductTypeList)
+            }
+    	    var productTypesList = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+    	    if(arguments.data.includeSettingsInList){
+    	        for( var record in productTypesList.pageRecords) {
+                    productType = getProductService().getProductTypeByUrlTitle( record.urlTitle );
+                    getProductService().appendSettingsToProductType(productType);
+                    record['settings'] = productType['settings']
+                    record['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & productType.getImageFile();
+                }
+    	        
+    	    }
+            arguments.data.ajaxResponse['data'] = productTypesList
+            this.getHibachiScope().addActionResult("public:scope.getProductType", true);
+            return;
+        }else{
+        // Get Single Record
+        var response = {};
+        response['productType'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        getProductService().appendSettingsToProductType(productType);
+        response['productType']['settings'] = productType['settings']
+        response['productType']['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & productType.getImageFile();
+        response['productType']["ancestors"] = getProductService().getProductTypeAncestorsbyPath(productType.getProductTypeIDPath())
+        arguments.data.ajaxResponse['data'] = response;
+        }
+       
+
+        this.getHibachiScope().addActionResult("public:scope.getProductType", true);
+	}
+    
     /**
      * Function get Product Type detail information
      * @param urlTitle
      * @return none
     */
-    public void function getProductType(required struct data){
+    public void function getProductTypeLegacy(required struct data){
         param name="arguments.data.urlTitle";
 
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
