@@ -56,3 +56,30 @@ export const parseErrorMessages = error => {
 export const getErrorMessage = error => {
   return parseErrorMessages(error)?.join('. ')
 }
+
+export const organizeProductTypes = (parents, list) => {
+  return parents.map(parent => {
+    let childProductTypes = list
+      .filter(productType => {
+        return productType.productTypeIDPath.includes(parent.productTypeIDPath) && productType.productTypeID !== parent.productTypeID
+      })
+      .filter(productType => {
+        return productType.productTypeIDPath.split(',').length === parent.productTypeIDPath.split(',').length + 1
+      })
+    if (list.length > 0) {
+      childProductTypes = organizeProductTypes(childProductTypes, list)
+    }
+    return { ...parent, childProductTypes }
+  })
+}
+export const augmentProductType = (parent, data) => {
+  let parents = data.filter(productType => {
+    return productType.urlTitle === parent
+  })
+  parents = organizeProductTypes(parents, data)
+
+  if (parents.length > 0) {
+    parents = parents[0]
+  }
+  return parents
+}

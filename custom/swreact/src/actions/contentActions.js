@@ -133,6 +133,24 @@ export const addContent = (content = {}) => {
     dispatch(receiveContent(content))
   }
 }
+export const getProductTypes = () => {
+  return async dispatch => {
+    dispatch(requestContent())
+    const response = await axios({
+      method: 'GET',
+      withCredentials: true,
+      url: `${sdkURL}api/public/productType?p:show=500`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
+      dispatch(receiveContent({ productTypes: response.data.data.pageRecords }))
+    } else {
+      dispatch(receiveContent({}))
+    }
+  }
+}
 // export const addFormResponse = (content = {}) => {
 //   return async (dispatch, getState) => {
 //     dispatch(requestContent())
