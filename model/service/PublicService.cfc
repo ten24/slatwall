@@ -815,32 +815,39 @@ component  accessors="true" output="false"
 	 */
 	public any function getProductType(required struct data ){
 	    param name="arguments.data.urlTitle" default='';
-        arguments.data.restRequestFlag = true
+	    param name="arguments.data.includeSettingsInList" default=false;
 
         // if there's some value for urlTitle, set the entityID
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
             if( !isNull(productType) ){
 	            arguments.data.entityID = productType.getProductTypeID();
 	        }
-        
-    
-	    
 	    if( !len(arguments.data.entityID) ){
 	        // Get List or Records
 	        if(structKeyExists(arguments.data, 'brandUrlTitle')){
                 var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
                 url['f:productTypeID:in'] = ArrayToList(brandProductTypeList)
             }
-    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+    	    var productTypesList = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+    	    if(arguments.data.includeSettingsInList){
+    	        for( var record in productTypesList.pageRecords) {
+                    productType = getProductService().getProductTypeByUrlTitle( record.urlTitle );
+                    getProductService().appendSettingsToProductType(productType);
+                    record['settings'] = productType['settings']
+                    record['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & productType.getImageFile();
+                }
+    	        
+    	    }
+            arguments.data.ajaxResponse['data'] = productTypesList
             this.getHibachiScope().addActionResult("public:scope.getProductType", true);
             return;
         }else{
         // Get Single Record
         var response = {};
         response['productType'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
-             getProductService().appendSettingsToProductType(productType);
+        getProductService().appendSettingsToProductType(productType);
         response['productType']['settings'] = productType['settings']
-        response['productType']["imageFile"] = productType.getImageFile()
+        response['productType']['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & productType.getImageFile();
         response['productType']["ancestors"] = getProductService().getProductTypeAncestorsbyPath(productType.getProductTypeIDPath())
         arguments.data.ajaxResponse['data'] = response;
         }
@@ -854,7 +861,7 @@ component  accessors="true" output="false"
      * @param urlTitle
      * @return none
     */
-    public void function getProductTypeOld(required struct data){
+    public void function getProductTypeLegacy(required struct data){
         param name="arguments.data.urlTitle";
 
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
