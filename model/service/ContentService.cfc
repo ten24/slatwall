@@ -56,7 +56,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="skuService" type="any";
 
 	public array function getContentPublicProperties(){
-	    var publicProperties = ['contentID','title', 'urlTitlePath', 'urlTitle', 'sortOrder', 'associatedImage', 'parentContent.contentID', 'productListingPageFlag', 'displayInNavigation'];
+	    var publicProperties = ['contentID','contentIDPath','title', 'urlTitlePath', 'urlTitle', 'sortOrder', 'associatedImage', 'parentContent.contentID', 'productListingPageFlag', 'displayInNavigation'];
 	    var publicAttributes = this.getPublicAttributesByEntityName('content');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;

@@ -32,6 +32,7 @@ const ListingPage = ({ children, preFilter, hide = [] }) => {
   }
   const setKeyword = keyword => {
     params['keyword'] = keyword
+    params['currentPage'] = 1
     history.push({
       pathname: loc.pathname,
       search: buildPath(params, { arrayFormat: 'comma' }),
@@ -39,7 +40,7 @@ const ListingPage = ({ children, preFilter, hide = [] }) => {
   }
   const setSort = orderBy => {
     params['orderBy'] = orderBy
-
+    params['currentPage'] = 1
     history.push({
       pathname: loc.pathname,
       search: buildPath(params, { arrayFormat: 'comma' }),
@@ -63,7 +64,7 @@ const ListingPage = ({ children, preFilter, hide = [] }) => {
     } else {
       params[attribute.filterName] = [attribute.name]
     }
-
+    params['currentPage'] = 1
     history.push({
       pathname: loc.pathname,
       search: buildPath(params, { arrayFormat: 'comma' }),

@@ -613,9 +613,9 @@ component  accessors="true" output="false"
 	     
 	     var account = getHibachiScope().getAccount();
 	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
-	         var order = this.getOrderService.getOrder(arguments.data.orderID);
+	         var order = this.getOrderService().getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
-	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService.getOrderDetails(order.getOrderID(), account.getAccountID());
+	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService().getOrderDetails(order.getOrderID(), account.getAccountID());
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
 	         } else {
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
@@ -807,12 +807,61 @@ component  accessors="true" output="false"
         arguments.data.ajaxResponse['images'] = product.getImageGalleryArray(argumentCollection=arguments.data);
     }
     
+    	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/brand/{entityID}`
+	 * 
+	 */
+	public any function getProductType(required struct data ){
+	    param name="arguments.data.urlTitle" default='';
+	    param name="arguments.data.includeSettingsInList" default=false;
+
+        // if there's some value for urlTitle, set the entityID
+        var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
+            if( !isNull(productType) ){
+	            arguments.data.entityID = productType.getProductTypeID();
+	        }
+	    if( !len(arguments.data.entityID) ){
+	        // Get List or Records
+	        if(structKeyExists(arguments.data, 'brandUrlTitle')){
+                var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
+                url['f:productTypeID:in'] = ArrayToList(brandProductTypeList)
+            }
+    	    var productTypesList = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+    	    if(arguments.data.includeSettingsInList){
+    	        for( var record in productTypesList.pageRecords) {
+                    productType = getProductService().getProductTypeByUrlTitle( record.urlTitle );
+                    getProductService().appendSettingsToProductType(productType);
+                    record['settings'] = productType['settings']
+                    record['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & productType.getImageFile();
+                }
+    	        
+    	    }
+            arguments.data.ajaxResponse['data'] = productTypesList
+            this.getHibachiScope().addActionResult("public:scope.getProductType", true);
+            return;
+        }else{
+        // Get Single Record
+        var response = {};
+        response['productType'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        getProductService().appendSettingsToProductType(productType);
+        response['productType']['settings'] = productType['settings']
+        response['productType']['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & productType.getImageFile();
+        response['productType']["ancestors"] = getProductService().getProductTypeAncestorsbyPath(productType.getProductTypeIDPath())
+        arguments.data.ajaxResponse['data'] = response;
+        }
+       
+
+        this.getHibachiScope().addActionResult("public:scope.getProductType", true);
+	}
+    
     /**
      * Function get Product Type detail information
      * @param urlTitle
      * @return none
     */
-    public void function getProductType(required struct data){
+    public void function getProductTypeLegacy(required struct data){
         param name="arguments.data.urlTitle";
 
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
@@ -1083,7 +1132,7 @@ component  accessors="true" output="false"
      	param name="arguments.data.phoneNumber" default="";
 
      	var addressID = "";
-     	var accountAddress = getHibachiScope().this.getAccountService().getAccountAddress( arguments.data.accountAddressID );
+     	var accountAddress = this.getAccountService().getAccountAddress( arguments.data.accountAddressID );
         
         if (!isNull(accountAddress) && getHibachiScope().getAccount().getAccountID() == accountAddress.getAccount().getAccountID() ){
             addressID = accountAddress.getAddressID();
@@ -1095,7 +1144,7 @@ component  accessors="true" output="false"
      	    newAddress = this.getAddressService().saveAddress(newAddress, arguments.data, "full");
      	    
      	    //save account address
-     	    accountAddress = getHibachiScope().this.getAccountService().saveAccountAddress( accountAddress, arguments.data );
+     	    accountAddress = this.getAccountService().saveAccountAddress( accountAddress, arguments.data );
      	    
             if(!newAddress.hasErrors() && !accountAddress.hasErrors()) {
   	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
@@ -2037,9 +2086,9 @@ component  accessors="true" output="false"
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-                var accountPaymentMethod = getHibachiScope().this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
+                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
             }else{
-                var accountPaymentMethod = getHibachiScope().this.getAccountService().newAccountPaymentMethod(  );	
+                var accountPaymentMethod = this.getAccountService().newAccountPaymentMethod(  );	
                 accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             }
             

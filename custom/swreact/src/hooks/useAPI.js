@@ -451,7 +451,6 @@ export const useGetAccountCartsAndQuotes = () => {
         cancelToken: source.token,
       })
         .then(response => {
-          console.log('response.data', response.data)
           if (response.status === 200 && response.data && response.data.cartsAndQuotesOnAccount && response.data.cartsAndQuotesOnAccount.ordersOnAccount) {
             setRequest({ data: response.data.cartsAndQuotesOnAccount.ordersOnAccount, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
@@ -756,7 +755,7 @@ export const useGetProductType = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getProductType?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getProductTypeLegacy?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },

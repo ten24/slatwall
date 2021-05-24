@@ -215,9 +215,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         var startTicks = getTickCount();
         var records = arguments.priceRangeCollectionList.getRecords(formatRecords=false);
         
-        var min = val(records[1]['min']);
-        var max = val(records[1]['max']);
-        
+        var min = val(records[1]['min'] ?: 0);
+        var max = val(records[1]['max'] ?: 0);
         this.getSlatwallProductSearchDAO().logQuery({
             'sql': arguments.priceRangeCollectionList.getSQL(),
             'result' : { 'min': min, 'max': max},

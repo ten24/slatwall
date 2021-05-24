@@ -153,7 +153,6 @@ const ShippingSlide = ({ currentStep }) => {
         {selectedFulfillmentMethod.fulfillmentMethod.fulfillmentMethodType === 'pickup' && <PickupLocationPicker />}
         {selectedFulfillmentMethod.fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
           <AccountAddress
-            addressTitle={ t('frontend.checkout.location_option') }
             selectedAccountID={selectedAccountID}
             onSelect={value => {
               dispatch(
