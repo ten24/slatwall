@@ -1,11 +1,12 @@
 import { Helmet } from 'react-helmet'
-import { Layout, ProductTypeList } from '../../components'
+import { Layout, PageHeader, ProductTypeList } from '../../components'
 import ListingPage from '../../components/Listing/Listing'
 import { Redirect, useHistory, useLocation } from 'react-router'
-import { useGetProductTypeLegacy } from '../../hooks/useAPI'
+import { useGetEntity } from '../../hooks/useAPI'
 import { useSelector } from 'react-redux'
 import queryString from 'query-string'
 import { useEffect } from 'react'
+import { augmentProductType } from '../../utils'
 
 const Search = () => {
   const loc = useLocation()
@@ -13,24 +14,20 @@ const Search = () => {
 
   const history = useHistory()
 
-  const [request, setRequest] = useGetProductTypeLegacy()
+  const [productTypeListRequest, setProductTypeListRequest] = useGetEntity()
   const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
   const productTypeUrl = params['key'] || productTypeBase
 
   useEffect(() => {
-    if (!request.isFetching && !request.isLoaded) {
-      setRequest({ ...request, isFetching: true, isLoaded: false, params: { urlTitle: productTypeUrl }, makeRequest: true })
+    if (!productTypeListRequest.isFetching && !productTypeListRequest.isLoaded) {
+      setProductTypeListRequest({ ...productTypeListRequest, isFetching: true, isLoaded: false, entity: 'ProductType', params: { searchKeyword: params?.keyword, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
     }
-  }, [request, setRequest, productTypeUrl])
+  }, [productTypeListRequest, setProductTypeListRequest, productTypeUrl, params])
 
-  if (!request.isFetching && request.isLoaded && Object.keys(request.data).length === 0) {
+  if (!productTypeListRequest.isFetching && productTypeListRequest.isLoaded && Object.keys(productTypeListRequest.data).length === 0) {
     return <Redirect to="/404" />
   }
-  history.listen(location => {
-    let params = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
-    setRequest({ ...request, data: {}, isFetching: true, isLoaded: false, params: { urlTitle: params['key'] || productTypeBase }, makeRequest: true })
-  })
-
+  const productTypeData = augmentProductType(productTypeUrl, productTypeListRequest.data)
   return (
     <Layout>
       <div className="container pb-2 pt-5 border-bottom d-none">
@@ -158,16 +155,33 @@ const Search = () => {
       </div>
 
       <Helmet title={`Search - ${params['keyword']}`} />
-      {request.data.childProductTypes?.length > 0 && (
+      {productTypeListRequest.isLoaded && (
+        <PageHeader
+          title={''}
+          crumbs={productTypeListRequest.data
+            .filter(productType => {
+              return productTypeData?.productTypeIDPath?.includes(productType.productTypeID)
+            })
+            .map(crumb => {
+              return { title: crumb.productTypeName, urlTitle: crumb.urlTitle }
+            })
+            .filter(crumb => crumb.urlTitle !== productTypeBase)
+            .filter(crumb => crumb.urlTitle !== params['key'])
+            .map(crumb => {
+              return { ...crumb, urlTitle: `${loc.pathname}?${queryString.stringify({ ...params, key: crumb.urlTitle }, { arrayFormat: 'comma' })}` }
+            })}
+        />
+      )}
+      {productTypeData.childProductTypes?.length > 0 && (
         <ProductTypeList
-          data={request.data}
+          data={productTypeData}
           onSelect={urlTitle => {
             params['key'] = urlTitle
             history.push(`${loc.pathname}?${queryString.stringify(params, { arrayFormat: 'comma' })}`)
           }}
         />
       )}
-      {request.data.showProducts && <ListingPage preFilter={{ productType_id: request.data.productTypeID }} hide={['productType']} />}
+      {productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_id: productTypeData.productTypeID }} hide={['productType']} />}
     </Layout>
   )
 }
