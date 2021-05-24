@@ -198,8 +198,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="placeOrderFlag" persistent="false" default="false";
 	property name="refreshCalculateFulfillmentChargeFlag" persistent="false" default="false"; //Flag for Fulfillment Tax Recalculation 
 	property name="orderStatusHistoryTypeCodeList" persistent="false" default="";
-	property name="newAccountFlag" persistent="false" default="false"
-	
+
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
 	property name="hibachiService" persistent="false" type="any";

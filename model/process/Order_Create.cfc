@@ -69,6 +69,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="defaultStockLocationID" cfc="Location" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="typeahead";
 	property name="orderCreatedSite" cfc="Site" fieldtype="many-to-one";
 	property name="organizationFlag" hb_rbKey="entity.account.organizationFlag" hb_formFieldType="yesno" default=0;
+	property name="newAccountFlag" persistent="false" default="false"
 
 	// Cached Properties
 	property name="fulfillmentMethodIDOptions";
