@@ -1,14 +1,16 @@
 // import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 
-import { Layout } from '../../components'
+import { BreadCrumb, Layout } from '../../components'
 import ProductPageHeader from './ProductPageHeader'
 import ProductPageContent from './ProductPageContent'
 import ProductDetailSlider from './ProductDetailSlider'
 import { Redirect, useHistory, useLocation } from 'react-router-dom'
-import { useGetEntity, useGetProductAvailableSkuOptions } from '../../hooks/useAPI'
+import { useGetProductAvailableSkuOptions, useGetEntityByUrlTitle } from '../../hooks/useAPI'
 import queryString from 'query-string'
 import { Helmet } from 'react-helmet'
+import { useSelector } from 'react-redux'
+import { getProductTypeRoute } from '../../selectors/configurationSelectors'
 const skuCodesToSkuIds = (params, productOptionGroups) => {
   const parsedOptions = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
   const temp = Object.keys(parsedOptions).map(optionGroupCode => {
@@ -42,18 +44,20 @@ const skuIdsToSkuCodes = (idList, productOptionGroups) => {
 const ProductDetail = props => {
   let { pathname, search } = useLocation()
   let [skuOptions, getSkuOptionsRequest] = useGetProductAvailableSkuOptions()
-  let [newproduct, getPublicProduct] = useGetEntity()
+  let [newproduct, getPublicProduct] = useGetEntityByUrlTitle()
+  const productTypeRoute = useSelector(getProductTypeRoute)
 
   let location = useLocation()
   let history = useHistory()
   const [path, setPath] = useState(pathname)
   const params = queryString.parse(search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+  const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
 
   useEffect(() => {
     // Redirect to default sku if not provided
     if (newproduct.isLoaded && !Object.keys(params).length) {
       console.log('Redirect to Default Sku')
-      const cals = skuIdsToSkuCodes(newproduct.data[0].defaultSelectedOptions, newproduct.data[0].optionGroups)
+      const cals = skuIdsToSkuCodes(newproduct.data.defaultSelectedOptions, newproduct.data.optionGroups)
       history.push({
         pathname: location.pathname,
         search: queryString.stringify(Object.assign(...cals), { arrayFormat: 'comma' }),
@@ -61,16 +65,16 @@ const ProductDetail = props => {
     }
     // get the sku
     if (newproduct.isLoaded && !skuOptions.isFetching && !skuOptions.isLoaded) {
-      const selectedOptionIDList = skuCodesToSkuIds(search, newproduct.data[0].optionGroups)
+      const selectedOptionIDList = skuCodesToSkuIds(search, newproduct.data.optionGroups)
       getSkuOptionsRequest({
         ...skuOptions,
         isFetching: true,
         isLoaded: false,
         params: {
-          productID: newproduct.data[0].productID,
+          productID: newproduct.data.productID,
           skuID: params['skuid'],
           // Accounts for First Load
-          selectedOptionIDList: selectedOptionIDList.length ? selectedOptionIDList : newproduct.data[0].defaultSelectedOptions,
+          selectedOptionIDList: selectedOptionIDList.length ? selectedOptionIDList : newproduct.data.defaultSelectedOptions,
         },
         makeRequest: true,
       })
@@ -79,13 +83,13 @@ const ProductDetail = props => {
 
     history.listen(location => {
       if (!newproduct.isFetching && newproduct.isLoaded) {
-        const selectedOptionIDList = skuCodesToSkuIds(location.search, newproduct.data[0].optionGroups)
+        const selectedOptionIDList = skuCodesToSkuIds(location.search, newproduct.data.optionGroups)
         getSkuOptionsRequest({
           ...skuOptions,
           isFetching: true,
           isLoaded: false,
           params: {
-            productID: newproduct.data[0].productID,
+            productID: newproduct.data.productID,
             // Accounts for First Load
             selectedOptionIDList,
           },
@@ -96,7 +100,7 @@ const ProductDetail = props => {
   }, [history, getSkuOptionsRequest, skuOptions, params, search, location, newproduct])
 
   // Do we have a valid product?
-  if (!newproduct.isFetching && newproduct.isLoaded && newproduct.data[0] && Object.keys(newproduct.data[0]).length === 0) {
+  if (!newproduct.isFetching && newproduct.isLoaded && newproduct.data && Object.keys(newproduct.data).length === 0) {
     return <Redirect to="/404" />
   }
   // Get the Product on page chnage
@@ -132,7 +136,7 @@ const ProductDetail = props => {
     getPublicProduct({
       ...newproduct,
       params: {
-        'f:urlTitle': urlTitle[0],
+        urlTitle: urlTitle[0],
       },
       entity: 'product',
       makeRequest: true,
@@ -144,10 +148,20 @@ const ProductDetail = props => {
   return (
     <Layout>
       <div className="bg-light p-0">
-        {newproduct.isLoaded && <ProductPageHeader title={newproduct.data[0].productSeries} />}
-        {newproduct.isLoaded && <Helmet title={newproduct.data[0].calculatedTitle} />}
-        {newproduct.isLoaded && newproduct.data[0].productID && <ProductPageContent attributeSets={newproduct.attributeSets} product={newproduct.data[0]} sku={skuOptions.data.sku[0]} skuID={skuOptions.data.skuID} availableSkuOptions={skuOptions.data.availableSkuOptions} productOptions={newproduct.data[0].optionGroups} isFetching={skuOptions.isFetching || newproduct.isFetching} />}
-        {newproduct.isLoaded && newproduct.data[0].productID && <ProductDetailSlider productID={newproduct.data[0].productID} />}
+        {newproduct.isLoaded && (
+          <ProductPageHeader title={newproduct.data.productSeries}>
+            <BreadCrumb
+              crumbs={newproduct.data.breadcrumbs
+                .map(crumb => {
+                  return { title: crumb.productTypeName, urlTitle: `/${productTypeRoute}/${crumb.urlTitle}` }
+                })
+                .filter(crumb => crumb.urlTitle !== `/${productTypeRoute}/${productTypeBase}`)}
+            />
+          </ProductPageHeader>
+        )}
+        {newproduct.isLoaded && <Helmet title={newproduct.data.settings.productHTMLTitleString} />}
+        {newproduct.isLoaded && newproduct.data.productID && <ProductPageContent attributeSets={newproduct.attributeSets} product={newproduct.data} sku={skuOptions.data.sku[0]} skuID={skuOptions.data.skuID} availableSkuOptions={skuOptions.data.availableSkuOptions} productOptions={newproduct.data.optionGroups} isFetching={skuOptions.isFetching || newproduct.isFetching} />}
+        {newproduct.isLoaded && newproduct.data.productID && <ProductDetailSlider productID={newproduct.data.productID} />}
       </div>
     </Layout>
   )

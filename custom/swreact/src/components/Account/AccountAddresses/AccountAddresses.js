@@ -9,6 +9,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { deleteAccountAddress } from '../../../actions/userActions'
 import { useTranslation } from 'react-i18next'
 import { getAllAccountAddresses, getPrimaryAddress } from '../../../selectors/userSelectors'
+import { Redirect } from 'react-router-dom'
 
 const Address = props => {
   const { accountAddressID, address, isPrimary } = props
@@ -58,19 +59,18 @@ const Address = props => {
   )
 }
 
-const AccountAddresses = ({ title, customBody, contentTitle }) => {
+const AccountAddresses = ({ title }) => {
   const { t } = useTranslation()
+  const isLoaded = useSelector(state => state.userReducer.isLoaded)
   const accountAddresses = useSelector(getAllAccountAddresses)
   const primaryAddress = useSelector(getPrimaryAddress)
+
+  if (isLoaded && accountAddresses.length === 0) {
+    return <Redirect to="/my-account/addresses/new" />
+  }
   return (
     <AccountLayout title={title}>
-      <AccountContent customBody={customBody} contentTitle={contentTitle} />
-      {accountAddresses.length === 0 && (
-        <div className="alert alert-info" role="alert">
-          {t('frontend.account.address.none')}
-        </div>
-      )}
-
+      <AccountContent />
       {accountAddresses.length > 0 && (
         <div className="table-responsive font-size-md">
           <table className="table table-hover mb-0">

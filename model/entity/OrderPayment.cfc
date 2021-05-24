@@ -144,6 +144,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
 	property name="maximumPaymentMethodPaymentAmount" persistent="false";
 	property name="orderHasAnotherDynamicOrderPaymentFlag" persistent="false";
+	
+	//Calculated properties
+	property name="calculatedPaymentTransactionsCount" ormtype="integer";
  
 		
 	public string function getMostRecentChargeProviderTransactionID() {

@@ -1,6 +1,8 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 import { Chart, ChartData, Point } from 'chart.js';
+import { PublicService } from '../../core/core.module';
+
 class SWListingReportController {
     public selectedCollectionID:string;
     public collectionName:string;
@@ -52,6 +54,7 @@ class SWListingReportController {
         public listingService,
         public observerService,
         public collectionConfigService,
+        private publicService : PublicService,
     ) {
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
         if(this.collectionId){
@@ -73,7 +76,8 @@ class SWListingReportController {
         this.observerService.attach(this.updateReportFromListing,'displayOptionsAction',this.tableId);
     }
     
-    public $onInit=()=>{
+     public $onInit=()=>{
+        this.publicService.getAccount();
     }
     
     public updateReportFromListing=(params)=>{
@@ -82,8 +86,6 @@ class SWListingReportController {
             this.updatePeriod();
         }
     }
-    
-    
     
     public saveReportCollection = (collectionName?)=>{
         if(collectionName || this.collectionId){

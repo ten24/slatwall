@@ -28,7 +28,7 @@
 				>
                     
 					<li class="list-group-item"
-						ng-repeat="column in swListingControls.collectionConfig.columns track by column.title"
+						ng-repeat="column in swListingControls.collectionConfig.columns track by $index+column.title"
 						ng-if="swListingControls.canDisplayColumn(column)"
 						sw-column-item
 						data-column="column"

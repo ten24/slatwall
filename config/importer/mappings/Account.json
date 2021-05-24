@@ -11,6 +11,13 @@
                 "dataType": "string"
             }
         },
+        "remoteContactID": {
+            "propertyIdentifier": "remoteContact",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        
         "firstName": {
             "propertyIdentifier": "firstName",
             "validations": {
@@ -19,12 +26,6 @@
         },
         "lastName": {
             "propertyIdentifier": "lastName",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "username": {
-            "propertyIdentifier": "username",
             "validations": {
                 "dataType": "string"
             }
@@ -49,7 +50,18 @@
             }
         },
         "accountActiveFlag": {
-            "propertyIdentifier": "activeFlag"
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "taxExemptFlag": {
+            "propertyIdentifier": "taxExemptFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
         }
     },
     

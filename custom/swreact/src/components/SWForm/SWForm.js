@@ -38,8 +38,8 @@ const SWInput = ({ required = false, formik, token = '', label = '', wrapperClas
         <label className="control-label" htmlFor={token}>
           {label}
         </label>
-        <input required={required} className="form-control" type={type} id={token} value={formik.values[token]} onChange={formik.handleChange} />
-        {showErrors && formik.errors[token] && <span className="form-error-msg">{formik.errors[token]}</span>}
+        <input className="form-control" type={type} id={token} value={formik.values[token]} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+        {showErrors && formik.touched[token] && formik.errors[token] && <span className="form-error-msg">{formik.errors[token]}</span>}
       </div>
     </div>
   )

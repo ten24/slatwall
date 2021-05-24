@@ -42,7 +42,7 @@ const BasicPage = () => {
       </div>
       <div className="container bg-light box-shadow-lg rounded-lg p-5">
         <div
-          className="content-body"
+          className="content-body mb-5"
           onClick={event => {
             event.preventDefault()
             if (event.target.getAttribute('href')) {
@@ -58,13 +58,10 @@ const BasicPage = () => {
           }}
         />
         {content.productListingPageFlag === '1' && (
-          <>
-            <hr />
-            <div className="col-lg-8">
-              <ListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
-              <ListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />
-            </div>
-          </>
+          <div className="col">
+            <ListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
+            <ListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />
+          </div>
         )}
       </div>
     </div>

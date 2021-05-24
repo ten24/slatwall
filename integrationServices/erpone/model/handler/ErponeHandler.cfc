@@ -43,7 +43,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 		addToQueue(arguments.entity.getAccount()  , "pushAccountDataToErpOne");
 	}
 	
-	public void function afterOrderSaveSuccess(any slatwallScope, any entity, any eventData) {
+	public void function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any entity, required any data){
 		addToQueue(arguments.entity , "pushOrderDataToErpOne");
 	}
 }

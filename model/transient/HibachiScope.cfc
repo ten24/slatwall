@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,9 +39,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiScope" {
 
@@ -91,18 +86,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		if( !structKeyExists(variables,'currentRequestSite') ){
 		    
 		    // the client can pass one of ['sitID', 'siteCode', 'cmsSiteID'] in either header[SWX-siteID], URL, or RequestBody; 
-		    var siteID = request.context.siteID ?: url.siteID ?: '';
-		    if( len(siteID) ){
-				variables.currentRequestSite = this.getService('siteService').getSiteBySiteID(siteID);
+		    var requestSiteID = request.context.requestSiteID ?: url.requestSiteID ?: '';
+		    if( len(requestSiteID) ){
+				variables.currentRequestSite = this.getService('siteService').getSiteBySiteID(requestSiteID);
 				this.setCurrentRequestSitePathType('siteID');
 				if( !isNull(variables.currentRequestSite) ){
 				    return variables.currentRequestSite;
 				}
 			}
 			
-			var siteCode = request.context.siteCode ?: url.siteCode ?: '';
-		    if( len(siteCode) ){
-				variables.currentRequestSite = this.getService('siteService').getSiteBySiteCode(siteCode);
+			var requestSiteCode = request.context.requestSiteCode ?: url.requestSiteCode ?: '';
+		    if( len(requestSiteCode) ){
+				variables.currentRequestSite = this.getService('siteService').getSiteBySiteCode(requestSiteCode);
 				this.setCurrentRequestSitePathType('siteCode');
 				if( !isNull(variables.currentRequestSite) ){
 				    return variables.currentRequestSite;
@@ -499,7 +494,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				orderFulfillments.accountAddress.accountAddressID,orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
 				orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,orderFulfillments.fulfillmentMethod.fulfillmentMethodType,orderFulfillments.orderFulfillmentItems.sku.skuName,orderFulfillments.orderFulfillmentItems.sku.product.productName,
 				orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
-				orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.name,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.stateCode,orderFulfillments.shippingAddress.postalCode,orderFulfillments.shippingAddress.countrycode,
+				orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.name,orderFulfillments.shippingAddress.emailAddress,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.stateCode,orderFulfillments.shippingAddress.postalCode,orderFulfillments.shippingAddress.countrycode,
 				orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
 				orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationID, orderFulfillments.pickupLocation.locationName,
 				orderFulfillments.estimatedShippingDate,orderFulfillments.pickupDate,
@@ -509,7 +504,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'orderPayment')){
 			availablePropertyList&="
 				orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,orderPayments.purchaseOrderNumber,
-				orderPayments.billingAccountAddress.accountAddressID,orderPayments.billingAddress.addressID,orderPayments.billingAddress.name,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.stateCode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
+				orderPayments.billingAccountAddress.accountAddressID,orderPayments.billingAddress.addressID,orderPayments.billingAddress.name,orderPayments.billingAddress.emailAddress,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.stateCode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
 				orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName,orderPayments.paymentMethod.paymentMethodType, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode,promotionCodes.promotion.promotionName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodType,eligiblePaymentMethodDetails.paymentMethod.paymentMethodID,eligiblePaymentMethodDetails.maximumAmount,
 				orderNotes,orderPayments.accountPaymentMethod.accountPaymentMethodID
 			";

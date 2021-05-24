@@ -61,6 +61,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalLogApiRequests" />
 		<swa:SlatwallSetting settingName="globalLogMessages" />
 		<swa:SlatwallSetting settingName="globalTimeFormat" />
+		<swa:SlatwallSetting settingName="globalVATCountries" />
 		<swa:SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
 		<swa:SlatwallSetting settingName="globalAuditCommitMode" />
 		<swa:SlatwallSetting settingName="globalAssetsImageFolderPath" />

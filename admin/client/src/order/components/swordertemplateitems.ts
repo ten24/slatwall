@@ -55,7 +55,7 @@ class SWOrderTemplateItemsController{
 		
 		this.addSkuCollection = this.orderTemplateService.getAddSkuCollection(); 
 	    
-	    if( angular.isDefined(this.siteId) ){
+	    if( angular.isDefined(this.siteId) && this.siteId.length ){
 	    	this.addSkuCollection.addFilter('product.sites.siteID', this.siteId,'=',undefined,true);
 	    }
 	    

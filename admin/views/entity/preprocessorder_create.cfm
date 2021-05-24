@@ -75,11 +75,11 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="createAuthenticationFlag" edit="#rc.edit#" fieldType="yesno">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#" fieldType="yesno">
 				<hb:HibachiDisplayToggle selector="input[name='createAuthenticationFlag']" loadVisable="#rc.processObject.getCreateAuthenticationFlag()#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
 				</hb:HibachiDisplayToggle>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#" fieldType="yesno">
 			</hb:HibachiDisplayToggle>
 			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
 				<swa:SlatwallAccountTypeahead /> 	

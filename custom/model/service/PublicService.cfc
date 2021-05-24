@@ -70,9 +70,9 @@ component extends="Slatwall.model.service.PublicService" {
 	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
-	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
+	        result.pageRecords = getService("productService").appendImagesToProducts(result.pageRecords);
 
-	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(result.pageRecords);
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProducts(result.pageRecords);
 	    }
 
 	    arguments.data.ajaxResponse = result;
@@ -103,9 +103,9 @@ component extends="Slatwall.model.service.PublicService" {
 	    );
 
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
-	        result.pageRecords = getService("productService").appendImagesToProduct(result.pageRecords);
+	        result.pageRecords = getService("productService").appendImagesToProducts(result.pageRecords);
 
-	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(result.pageRecords);
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProducts(result.pageRecords);
 	    }
 
 	    arguments.data.ajaxResponse = result;
@@ -147,15 +147,31 @@ component extends="Slatwall.model.service.PublicService" {
 	    
 	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
 	        result.pageRecords = getService("brandService").appendSettingsAndOptions(result.pageRecords);
-	        var brandList = result.pageRecords;
-	        var directory = 'brand/logo';
-	        for( var i=1; i <= arrayLen(brandList); i++ ) {
-                brandList[i]['imagePath'] = getImageService().getImagePathByImageFileAndDirectory( brandList[i]['imageFile'], directory);
-	        }
 	    }
 
 	    arguments.data.ajaxResponse = result;
 
 	}
+	
+	
+	public void function productDetailData( required struct data ) {
+		
+		super.productDetailData(argumentCollection=arguments);
+		try{
+			if(structKeyExists(arguments.data.ajaxResponse, 'sku') && arrayLen(arguments.data.ajaxResponse.sku)){
+				// Change prices to ERP One Prices
+				getService('erpOneService').getLiveListingPrices(
+					data = arguments.data.ajaxResponse.sku,
+					skuCodeKey = "skuCode", 
+					priceKeys = "listPrice" ,  // We can also pass a list of prices ex:"listPrice,skuPrice"
+					customerCode = getHibachiScope().getAccount().getRemoteID()
+				);
+			}
+		}catch(any e){
+			getHibachiScope().logHibachi('Error getting live prices', true);
+		}
+		
+	}
+
 	
 }

@@ -453,9 +453,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
 		var subscriptionUsageList = this.getSubscriptionUsageBenefitAccountCollectionList();
+
+		subscriptionUsageList.addDisplayProperty("account.calculatedFullName");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.autoRenewFlag");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.autoPayFlag");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.initialTerm.termName");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.accountPaymentMethod.accountPaymentMethodID");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.expirationDate");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.gracePeriodTerm.termName");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.nextBillDate");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.nextReminderEmailDate");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.renewalSku.skuID");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.renewalTerm.termName");
+
 		subscriptionUsageList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage);
 
 		return { 
 		    "subscriptionsUsageOnAccount":  subscriptionUsageList.getPageRecords(), 
@@ -671,7 +684,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
 
 				//set as new
-				getOrderService().updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
+				getOrderService().updateOrderStatusBySystemCode(order, "ostProcessing");
 
 				//create orderid and close
 				order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
@@ -784,7 +797,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			subscriptionUsage.setNextReminderEmailDate( javaCast("null", "") );
 
 			// Setup the next Reminder email
-			if( len(arguments.subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
+			if( !isNull(subscriptionUsage.getExpirationDate()) && len(arguments.subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
 
 				// Loop over each of the days looking for the next one
 				for(var nextReminderDay in listToArray(subscriptionUsage.setting('subscriptionUsageRenewalReminderDays'))) {
@@ -802,6 +815,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 
+			} else {
+				arguments.subscriptionUsage.addError('sendRenewalReminder', rbkey('admin.entity.processsubscriptionusage.sendRenewalReminder_failure'));
 			}
 
 

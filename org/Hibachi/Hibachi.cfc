@@ -461,9 +461,11 @@ component extends="framework.one" {
 		if( variables.framework.preflightOptions &&
         	request._fw1.cgiRequestMethod == "OPTIONS" &&
 			structKeyExists(httpRequestData.headers,'Origin')
-			){
+		){
 			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
-			populateCORSHeader(httpRequestData.headers['Origin']);
+			var CORSWhitelist = listToArray(getHibachiScope().setting('globalCORSWhitelist'));
+			 populateCORSHeader(httpRequestData.headers['Origin'], CORSWhitelist);
+			
 			return;
 		}
 
@@ -977,9 +979,10 @@ component extends="framework.one" {
 	public void function populateAPIHeaders(){
 		param name="request.context.headers" default="#structNew()#";
 		var httpRequestData = getHTTPRequestData();
-
-		if(this.CORSEnabled && arrayLen(this.CORSWhitelist) && structKeyExists(httpRequestData.headers,'Origin') && !isNull(httpRequestData.headers['Origin'])){
-			populateCORSHeader(httpRequestData.headers['Origin']);
+		
+		var CORSWhitelist = listToArray(getHibachiScope().setting('globalCORSWhitelist'));
+		if(arrayLen(CORSWhitelist) && structKeyExists(httpRequestData.headers,'Origin') && !isNull(httpRequestData.headers['Origin'])){
+			populateCORSHeader(httpRequestData.headers['Origin'],CORSWhitelist);
 		}
 		if(!structKeyExists(request.context.headers,'Content-Type')){
 			request.context.headers['Content-Type'] = 'application/json';
@@ -994,9 +997,9 @@ component extends="framework.one" {
 		}
 	}
 
-	public void function populateCORSHeader(origin){
+	public void function populateCORSHeader(required string origin, array CORSWhitelist){
 		var matched = false;
-		for(var domain in this.CORSWhiteList){
+		for(var domain in arguments.CORSWhiteList){
 			if(domain == '*'){
 				request.context.headers['Access-Control-Allow-Origin'] = domain;
 				matched = true;
@@ -1035,7 +1038,8 @@ component extends="framework.one" {
 		}
 		
 		//regenerate token with existing payload
-		if(structKeyExists(request.context.headers,'Auth-Token') && len(request.context.requestheaderdata.headers['Auth-Token']) ){
+		var httpRequestData = GetHttpRequestData();
+		if(structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']) ){
 			request.context.apiResponse.content['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
 		}
 		
@@ -1072,7 +1076,16 @@ component extends="framework.one" {
 		if(getHibachiScope().getService('hibachiUtilityService').isInThread()){
 			abort;
 		}
-
+		if(arguments.rc.apiRequest || arguments.rc.ajaxRequest) {
+			populateAPIHeaders();
+			//regenerate token with existing payload
+			var httpRequestData = GetHttpRequestData();
+			var jwtTokenProvided = structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']);
+			if( (jwtTokenProvided || getHibachiScope().getPersistSessionFlag()) && !getHibachiScope().getSession().getNewFlag()){
+				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
+			}
+			
+		}
 		// Check for an API Response
 		if(arguments.rc.apiRequest) {
 			renderApiResponse();
@@ -1082,7 +1095,8 @@ component extends="framework.one" {
 		if(arguments.rc.ajaxRequest && !structKeyExists(request, "exception")) {
 			populateAPIHeaders();
 			//regenerate token with existing payload
-			if(structKeyExists(request.context.requestheaderdata.headers,'Auth-Token') && len(request.context.requestheaderdata.headers['Auth-Token']) ){
+			var httpRequestData = GetHttpRequestData();
+			if(structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']) ){
 				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
 			}
 			

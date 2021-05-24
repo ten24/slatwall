@@ -48,6 +48,7 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
+	property name="hibachiService" type="any";
 	property name="skuDAO" type="any";
 	property name="stockDAO" type="any";
 	property name="inventoryService" type="any";
@@ -214,6 +215,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	        }
 		}
 		return arguments.skus;
+	}
+
+	public array function getSkuPublicProperties(){
+		var publicProperties =  ["skuID","skuCode","skuName","calculatedSkuDefinition","price","skuDescription","skuDefinition","calculatedQATS","activeFlag","product.activeFlag","publishedFlag","listPrice","renewalPrice","product.productName","product.productCode","product.productType.productTypeName","product.brand.brandName"];
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Sku');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties; 
 	}
 	
 	// =====================  END: Logical Methods ============================

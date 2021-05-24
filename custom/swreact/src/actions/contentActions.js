@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { sdkURL } from '../services'
+import { sdkURL, axios } from '../services'
 import { setTitle } from './configActions'
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
@@ -128,8 +127,8 @@ export const getCountries = () => {
 }
 export const addContent = (content = {}) => {
   return async dispatch => {
-    if (content.setting) {
-      dispatch(setTitle(content.setting.contentHTMLTitleString))
+    if (content.settings) {
+      dispatch(setTitle(content.settings.contentHTMLTitleString))
     }
     dispatch(receiveContent(content))
   }

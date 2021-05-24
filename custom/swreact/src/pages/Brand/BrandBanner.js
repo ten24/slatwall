@@ -1,28 +1,11 @@
-import React, { useEffect } from 'react'
 import { SWImage } from '../../components'
-import { useGetEntity } from '../../hooks/useAPI'
-const BrandBanner = ({ brandCode }) => {
-  let [request, setRequest] = useGetEntity()
-
-  useEffect(() => {
-    let didCancel = false
-    if (!request.isFetching && !request.isLoaded && !didCancel) {
-      setRequest({ ...request, isFetching: true, isLoaded: false, entity: 'brand', params: { 'f:urlTitle': brandCode }, makeRequest: true })
-    }
-    return () => {
-      didCancel = true
-    }
-  }, [request, brandCode, setRequest])
-
+const BrandBanner = ({ brandName, imageFile, brandDescription }) => {
   return (
-    <>
-      {request.isLoaded && request.data[0] && (
-        <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
-          <SWImage style={{ maxHeight: '150px', marginRight: '50px' }} customPath="/custom/assets/images/brand/logo/" src={request.data[0].imageFile} alt={request.data.brandName} />
-          <p dangerouslySetInnerHTML={{ __html: request.data[0].brandDescription }} />
-        </div>
-      )}
-    </>
+    <div>
+      {/* Checking 'imageFile' length so that empty string does not get passed */}
+      {imageFile && imageFile.length > 5 ? <SWImage style={{ maxHeight: '150px', marginRight: '30px' }} customPath="/custom/assets/images/brand/logo/" src={imageFile} alt={brandName} type="brand" /> : <h1>{brandName}</h1>}
+      <span dangerouslySetInnerHTML={{ __html: brandDescription }} />
+    </div>
   )
 }
 

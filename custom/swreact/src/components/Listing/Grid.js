@@ -26,10 +26,10 @@ const Grid = ({ isFetching, products = [] }) => {
         </>
       )}
       {!isFetching &&
-        products.map(({ urlTitle, productID, productName, sku_imageFile, sku_price, skuID }) => {
+        products.map(({ urlTitle, productID, productName, productCode, sku_imageFile, sku_price, skuID }) => {
           return (
-            <div key={productID} className="col-md-4 col-sm-6 px-2 mb-4">
-              <ProductCard urlTitle={urlTitle} productID={productID} productName={productName} listPrice={sku_price} skuID={skuID} defaultProductImageFiles={[sku_imageFile]} />
+            <div key={productID} className="col-md-4 col-sm-6 mb-4 p-0">
+              <ProductCard urlTitle={urlTitle} productID={productID} productName={productName} productCode={productCode} listPrice={sku_price} skuID={skuID} defaultProductImageFiles={[sku_imageFile]} />
             </div>
           )
         })}

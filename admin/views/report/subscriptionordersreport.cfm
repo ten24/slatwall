@@ -3,6 +3,7 @@
 <cfparam name="rc.productID" default=""/>
 <cfparam name="rc.minDate" default="#CreateDate(Year(now()),1,1)#"/>
 <cfparam name="rc.maxDate" default="#CreateDate(Year(now()),Month(now()),Day(now()))#"/>
+<cfparam name="rc.reportName" default="New Subscriptions Report"/>
 <cfparam name="showProducts" default="true"/>
 <cfoutput>
     

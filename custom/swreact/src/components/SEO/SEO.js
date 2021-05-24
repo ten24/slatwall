@@ -11,7 +11,7 @@ const SEO = () => {
   const { site = {}, seo = {} } = configuration
   let title = site.siteName
   if (content) {
-    title = content.setting.contentHTMLTitleString
+    title = content.settings.contentHTMLTitleString
   }
   return (
     <Helmet title={title}>

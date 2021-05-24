@@ -32,10 +32,10 @@ const ListingGrid = ({ isFetching, pageRecords }) => {
       )}
       {!isFetching &&
         pageRecords.length > 0 &&
-        pageRecords.map(({ product_urlTitle, product_productID, product_productName, sku_imageFile, listPrice, sku_skuID }, index) => {
+        pageRecords.map(({ product_urlTitle, product_productID, product_productName, product_productCode, sku_imageFile, listPrice, sku_skuID }, index) => {
           return (
-            <div key={sku_skuID + `${index}`} className="col-md-4 col-sm-6 px-2 mb-4">
-              <ProductCard urlTitle={product_urlTitle} productID={product_productID} productName={product_productName} listPrice={listPrice} skuID={sku_skuID} imageFile={sku_imageFile} />
+            <div key={sku_skuID + `${index}`} className="col-md-4 col-sm-6 mb-4 p-0">
+              <ProductCard urlTitle={product_urlTitle} productID={product_productID} productName={product_productName} productCode={product_productCode} listPrice={listPrice} skuID={sku_skuID} imageFile={sku_imageFile} />
             </div>
           )
         })}

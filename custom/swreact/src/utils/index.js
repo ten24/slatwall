@@ -19,7 +19,7 @@ export const isAuthenticated = () => {
   if (token) {
     try {
       token = jwt_decode(token)
-      return token.exp && token.exp * 1000 > Date.now() && token.accountID.length
+      return token.exp && token.exp * 1000 > Date.now() && token.accountID.length > 0
     } catch (error) {}
   }
   return false
@@ -43,4 +43,16 @@ export const skuIdsToSkuCodes = (idList, productOptionGroups) => {
         })
     )
     .flat()
+}
+export const parseErrorMessages = error => {
+  if (error instanceof Object) {
+    console.log('1', error)
+    return Object.keys(error)
+      .map(key => parseErrorMessages(error[key]))
+      .flat()
+  }
+  return error
+}
+export const getErrorMessage = error => {
+  return parseErrorMessages(error)?.join('. ')
 }
