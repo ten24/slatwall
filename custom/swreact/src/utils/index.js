@@ -46,7 +46,6 @@ export const skuIdsToSkuCodes = (idList, productOptionGroups) => {
 }
 export const parseErrorMessages = error => {
   if (error instanceof Object) {
-    console.log('1', error)
     return Object.keys(error)
       .map(key => parseErrorMessages(error[key]))
       .flat()
@@ -82,4 +81,11 @@ export const augmentProductType = (parent, data) => {
     parents = parents[0]
   }
   return parents
+}
+
+export const groupBy = (xs, key) => {
+  return xs.reduce(function (rv, x) {
+    ;(rv[x[key]] = rv[x[key]] || []).push(x)
+    return rv
+  }, {})
 }

@@ -1,5 +1,6 @@
 import { sdkURL, axios } from '../services'
 import { setTitle } from './configActions'
+import queryString from 'query-string'
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT'
@@ -68,19 +69,24 @@ export const getContent = (content = {}) => {
 
 export const getPageContent = (content = {}, slug = '') => {
   return async (dispatch, getState) => {
-    const { siteCode } = getState().configuration.site
+    if (getState().content[slug]) {
+      return
+    }
     dispatch(requestContent())
     const response = await axios({
-      method: 'POST',
+      method: 'GET',
       withCredentials: true,
-      url: `${sdkURL}api/scope/getSlatwallContent`,
+      url: `${sdkURL}api/public/content?${queryString.stringify({ 'p:show': 250, ...content }, { arrayFormat: 'comma' })}`,
       headers: {
         'Content-Type': 'application/json',
       },
-      data: { ...content, siteCode },
     })
-    if (response.status === 200) {
-      dispatch(receiveContent(response.data.content))
+    if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
+      const data = response.data.data.pageRecords.reduce((accumulator, content) => {
+        accumulator[content.urlTitlePath] = content
+        return accumulator
+      }, {})
+      dispatch(receiveContent(data))
     } else {
       dispatch(receiveContent({}))
     }
