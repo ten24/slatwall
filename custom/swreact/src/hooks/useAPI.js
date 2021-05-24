@@ -755,7 +755,7 @@ export const useGetProductType = () => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getProductType?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/getProductTypeLegacy?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
         headers: {
           'Content-Type': 'application/json',
         },
