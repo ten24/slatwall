@@ -103,7 +103,6 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
               brand !== {} &&
               !hide.includes(brand.facetKey) &&
               [brand].map(filter => {
-                console.log('hide.includes(brand.facetKey)', brand.facetKey, hide, hide.includes(brand.facetKey))
                 return <ListingFilter qs={qs} key="brand" index={brand.facetKey} {...filter} facetKey="brand" appliedFilters={getAppliedFilters(qs, 'brand')} updateAttribute={updateAttribute} />
               })}
 

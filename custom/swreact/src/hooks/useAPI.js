@@ -21,6 +21,8 @@ export const useGetEntity = () => {
         .then(response => {
           if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
             setRequest({ data: response.data.data.pageRecords, attributeSets: response.data.attributeSets, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else if (response.status === 200 && response.data.data && response.data.data[request.entity]) {
+            setRequest({ data: response.data.data[request.entity], attributeSets: response.data.attributeSets, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
           } else {
             setRequest({ data: [], attributeSets: [], isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
           }
@@ -747,7 +749,7 @@ export const useGetProductImageGallery = () => {
 /**
  * Api to get product type details information
  **/
-export const useGetProductType = () => {
+export const useGetProductTypeLegacy = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
     let source = axios.CancelToken.source()
