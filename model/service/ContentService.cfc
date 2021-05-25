@@ -56,12 +56,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="skuService" type="any";
 
 	public array function getContentPublicProperties(){
-	    var publicProperties = ['contentID','title', 'urlTitlePath', 'urlTitle', 'sortOrder', 'associatedImage', 'parentContent.contentID', 'productListingPageFlag', 'displayInNavigation'];
+	    var publicProperties = ['contentID','contentIDPath','title', 'urlTitlePath', 'urlTitle', 'sortOrder', 'associatedImage', 'parentContent.contentID', 'productListingPageFlag', 'displayInNavigation'];
 	    var publicAttributes = this.getPublicAttributesByEntityName('content');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
 	}
-
+	public array function getCategoryPublicProperties(){
+		var publicProperties = ['categoryID','categoryIDPath','urlTitle', 'categoryName', 'categoryNamePath', 'categoryDescription'];
+		var publicAttributes = this.getPublicAttributesByEntityName('Category');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
 	public boolean function restrictedContentExists() {
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
