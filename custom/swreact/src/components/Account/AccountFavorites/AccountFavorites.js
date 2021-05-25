@@ -17,12 +17,12 @@ const AccountFavorites = () => {
 
   if (isListItemsLoaded && !productList.isFetching && !productList.isLoaded) {
     setSkuList(items)
-    setRequest({ ...productList, entity: 'product', params: { 'f:skus.skuID:in': items.join() }, makeRequest: true, isFetching: true, isLoaded: false })
+    setRequest({ ...productList, entity: 'product', params: { 'f:skus.skuID:in': items.join(), 'p:show': 250 }, makeRequest: true, isFetching: true, isLoaded: false })
   }
 
   if (skuList !== items) {
     setSkuList(items)
-    setRequest({ ...productList, entity: 'product', params: { 'f:skus.skuID:in': items.join() }, makeRequest: true, isFetching: true, isLoaded: false })
+    setRequest({ ...productList, entity: 'product', params: { 'f:skus.skuID:in': items.join(), 'p:show': 250 }, makeRequest: true, isFetching: true, isLoaded: false })
   }
   const start = (currentPage - 1) * countToDisplay
   const end = start + countToDisplay
