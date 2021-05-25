@@ -828,6 +828,11 @@ component  accessors="true" output="false"
                 var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
                 url['f:productTypeID:in'] = ArrayToList(brandProductTypeList)
             }
+            if(structKeyExists(arguments.data, 'searchKeyword')){
+                // Get all possible product types for search keyword
+                var keywordProductTypeList = getProductService().getProductTypesForKeyword( arguments.data.searchKeyword );
+                 url['f:productTypeID:in'] = ArrayToList(keywordProductTypeList)
+            }
     	    var productTypesList = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
     	    if(arguments.data.includeSettingsInList){
     	        for( var record in productTypesList.pageRecords) {
