@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="orderTypeID" hb_rbKey="entity.order.orderType" hb_formFieldType="select";
 	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
-	property name="newAccountFlag";
+	property name="newAccountFlag" persistent="false" default="false";
 	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="firstName" hb_rbKey="entity.account.firstName";
 	property name="lastName" hb_rbKey="entity.account.lastName";
@@ -69,7 +69,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="defaultStockLocationID" cfc="Location" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="typeahead";
 	property name="orderCreatedSite" cfc="Site" fieldtype="many-to-one";
 	property name="organizationFlag" hb_rbKey="entity.account.organizationFlag" hb_formFieldType="yesno" default=0;
-	property name="newAccountFlag" persistent="false" default="false"
 
 	// Cached Properties
 	property name="fulfillmentMethodIDOptions";
