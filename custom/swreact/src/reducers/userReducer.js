@@ -1,4 +1,4 @@
-import { REQUEST_CARTS_AND_QUOTES, RECEIVE_CARTS_AND_QUOTES, RECEIVE_WISHLIST, RECEIVE_ACCOUNT_ORDERS, REQUEST_ACCOUNT_ORDERS, REQUEST_USER, RECEIVE_USER, CLEAR_USER, REQUEST_CREATE_USER, RECEIVE_CREATE_USER, ERROR_CREATE_USER } from '../actions/userActions'
+import { RECEIVE_WISHLIST_ITEMS, REQUEST_WISHLIST, REQUEST_CARTS_AND_QUOTES, RECEIVE_CARTS_AND_QUOTES, RECEIVE_WISHLIST, RECEIVE_ACCOUNT_ORDERS, REQUEST_ACCOUNT_ORDERS, REQUEST_USER, RECEIVE_USER, CLEAR_USER, REQUEST_CREATE_USER, RECEIVE_CREATE_USER, ERROR_CREATE_USER } from '../actions/userActions'
 
 const initialState = {
   accountID: '',
@@ -17,6 +17,12 @@ const initialState = {
     skusList: [],
     isLoaded: false,
   },
+  wishList: {
+    lists: [],
+    items: [],
+    isListLoaded: false,
+    isListItemsLoaded: false,
+  },
   cartsAndQuotesOnAccount: [],
   company: '',
   verifiedAccountFlag: false,
@@ -25,7 +31,7 @@ const initialState = {
   isFetchingOrders: false,
 }
 const user = (state = initialState, action) => {
-  const { user, err, ordersOnAccount, cartsAndQuotesOnAccount, favouriteSkus } = action
+  const { user, err, ordersOnAccount, cartsAndQuotesOnAccount, payload } = action
 
   switch (action.type) {
     case REQUEST_USER:
@@ -58,8 +64,13 @@ const user = (state = initialState, action) => {
       user.isFetching = false
       return { ...state, user }
 
+    case REQUEST_WISHLIST:
+      return { ...state }
+
     case RECEIVE_WISHLIST:
-      return { ...state, favouriteSkus: { ...state.favouriteSkus, ...favouriteSkus, isLoaded: true } }
+      return { ...state, wishList: { ...state.wishList, isListLoaded: true, lists: payload } }
+    case RECEIVE_WISHLIST_ITEMS:
+      return { ...state, wishList: { ...state.wishList, isListItemsLoaded: true, items: payload } }
 
     case ERROR_CREATE_USER:
       return { ...state, err, isFetching: false }
