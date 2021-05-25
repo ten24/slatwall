@@ -225,9 +225,8 @@ class SWCriteriaNumber{
 						}
 
 		    		} else {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart || selectedFilterProperty.value;
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
 						selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
-						selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaValue;
 					}
 					
 					scope.filterItem.value = selectedFilterProperty.criteriaValue;

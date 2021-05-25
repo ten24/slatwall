@@ -1,0 +1,33 @@
+name: 'Commit Message Check'
+on:
+  pull_request:
+    types:
+        - opened
+        - edited
+        - reopened
+        - synchronize
+    branches:
+        - develop-team
+        - develop-sprint-*
+        - hotfix
+
+  workflow_dispatch:
+jobs:
+  check-commit-message:
+    name: Check Commit Messages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR Commits
+        id: 'get-pr-commits'
+        uses: tim-actions/get-pr-commits@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check for Teamwork Task Link
+        if: ${{ success() || failure() }}
+        uses: tim-actions/commit-message-checker-with-regex@v0.3.1
+        with:
+          commits: ${{ steps.get-pr-commits.outputs.commits }}
+          pattern: '#\/task(?:s)?\/[0-9]+'
+          flags: 'mi'
+          error: 'You must include at least one commit with Teamwork link in the message.'
+          one_pass_all_pass: 'true'
