@@ -83,9 +83,6 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	// Calculated Properties
-	property name="calculatedChildCategoriesCount" ormtype="integer";
-	
 	// Non-Persistent Properties
 	
 	// ============ START: Non-Persistent Property Methods =================
