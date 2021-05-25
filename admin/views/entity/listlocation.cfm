@@ -63,6 +63,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
+	<cfset rc.locationCollectionList.setOrderBy('createdDateTime|DESC')/>
 	<cfset rc.locationCollectionList.addFilter(propertyIdentifier='parentLocation', value='null', comparisonOperator='is', ignoredWhenSearch="true")/>
 	<cfset rc.locationCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
 		isSearchable=true,

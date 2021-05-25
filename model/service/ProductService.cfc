@@ -80,7 +80,7 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public array function getProductPublicProperties(){
-		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.listPrice', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.listPrice', 'defaultSku.skuID', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
@@ -687,7 +687,7 @@ component extends="HibachiService" accessors="true" {
 		        
 		        product['optionGroups'] = optsList;
     			product['defaultSelectedOptions'] = defaultSelectedOptions;
-    			
+
     			product['settings']= {
 		            "productTitleString": currentProduct.stringReplace( template = currentProduct.setting('productTitleString'), formatValues = true ),
 	            	"productHTMLTitleString":  currentProduct.stringReplace( template = currentProduct.setting('productHTMLTitleString'), formatValues = true ),
@@ -1387,7 +1387,7 @@ component extends="HibachiService" accessors="true" {
  				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
  				getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());
- 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", uploadDirectory);
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
  				if(getHibachiUtilityService().isS3Path(fullFilePath)){
  					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
  				}
@@ -1562,6 +1562,60 @@ component extends="HibachiService" accessors="true" {
 		}
 		return arguments.productReview;
 		
+	}
+	
+	public any function getProductTypesForBrand(required string urlTitle){
+		var productTypeCollectionList = getService('HibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
+		productTypeCollectionList.addFilter('products.brand.urlTitle', urlTitle);
+        productTypeCollectionList.addOrderBy("productTypeIDPath|Agit statusSC"); //to arrange them from parent to child order
+		var filteredTypes =  productTypeCollectionList.getRecords( formatRecords = true );
+		var filteredTypeIDPaths = []
+            for( var filteredType in filteredTypes ) {
+                for(var ptyi in ListToArray(filteredType.productTypeIDPath)){
+                    if(!arrayFindNoCase(filteredTypeIDPaths, ptyi)){
+                    	ArrayAppend(filteredTypeIDPaths, ptyi);
+                    }
+                }
+            }
+        return filteredTypeIDPaths
+	}
+	
+	public any function getProductTypesForKeyword(required string keyword){
+		var productTypeCollectionList = getService('HibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
+		productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.productName', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.productCode', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.skus.skuCode', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+		var filteredTypes =  productTypeCollectionList.getRecords( formatRecords = true );
+		var filteredTypeIDPaths = []
+            for( var filteredType in filteredTypes ) {
+                for(var ptyi in ListToArray(filteredType.productTypeIDPath)){
+                    if(!arrayFindNoCase(filteredTypeIDPaths, ptyi)){
+                    	ArrayAppend(filteredTypeIDPaths, ptyi);
+                    }
+                }
+            }
+        return filteredTypeIDPaths
 	}
 
 	// ======================  END: Save Overrides ============================

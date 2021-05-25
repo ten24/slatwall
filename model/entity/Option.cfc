@@ -170,6 +170,17 @@ component displayname="Option" entityname="SlatwallOption" table="SwOption" pers
 	   
 	   return true;
 	}
+	
+	public boolean function isUniqueInOptionName(){
+		var optionsData = {};
+		optionsData[this.getOptionGroup().getOptionGroupCode()] = this.getOptionName();
+		var optionID = getDAO('optionDAO').getOptionIDsByOptionGroupCodeAndOptionNames(optionsData);
+
+	   if(len(optionID) && optionID != this.getoptionID() ){
+	   		return false;
+	   }
+	   return true;
+	}
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
