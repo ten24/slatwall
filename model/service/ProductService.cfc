@@ -80,7 +80,7 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public array function getProductPublicProperties(){
-		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.listPrice', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.listPrice', 'defaultSku.skuID', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
@@ -687,7 +687,7 @@ component extends="HibachiService" accessors="true" {
 		        
 		        product['optionGroups'] = optsList;
     			product['defaultSelectedOptions'] = defaultSelectedOptions;
-    			
+
     			product['settings']= {
 		            "productTitleString": currentProduct.stringReplace( template = currentProduct.setting('productTitleString'), formatValues = true ),
 	            	"productHTMLTitleString":  currentProduct.stringReplace( template = currentProduct.setting('productHTMLTitleString'), formatValues = true ),
@@ -1568,7 +1568,7 @@ component extends="HibachiService" accessors="true" {
 		var productTypeCollectionList = getService('HibachiService').getProductTypeCollectionList();
 		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
 		productTypeCollectionList.addFilter('products.brand.urlTitle', urlTitle);
-        productTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+        productTypeCollectionList.addOrderBy("productTypeIDPath|Agit statusSC"); //to arrange them from parent to child order
 		var filteredTypes =  productTypeCollectionList.getRecords( formatRecords = true );
 		var filteredTypeIDPaths = []
             for( var filteredType in filteredTypes ) {
