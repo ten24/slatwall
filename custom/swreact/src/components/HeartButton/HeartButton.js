@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { addSkuToWishList, removeWishlistItem } from '../../actions/userActions'
+import { addSkuToWishList, removeWishlistItem, createListAndAddItem } from '../../actions/userActions'
 import { getDefaultWishlist, getItemsForDefaultWishList } from '../../selectors/userSelectors'
 import { isAuthenticated } from '../../utils'
 
@@ -7,6 +7,7 @@ const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
   const dispatch = useDispatch()
   const primaryColor = useSelector(state => state.configuration.theme.primaryColor)
   const defaultWishlist = useSelector(getDefaultWishlist)
+  const isListLoaded = useSelector(state => state.userReducer.wishList.isListLoaded)
   const items = useSelector(getItemsForDefaultWishList)
 
   if (!isAuthenticated()) {
@@ -35,7 +36,11 @@ const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
       <button
         onClick={e => {
           e.preventDefault()
-          dispatch(addSkuToWishList(skuID, defaultWishlist?.value))
+          if (isListLoaded && !defaultWishlist?.value) {
+            dispatch(createListAndAddItem(skuID))
+          } else {
+            dispatch(addSkuToWishList(skuID, defaultWishlist?.value))
+          }
         }}
         className={className}
         type="button"

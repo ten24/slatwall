@@ -256,12 +256,11 @@ export const deletePaymentMethod = accountPaymentMethodID => {
   }
 }
 
-export const getWishLists = () => {
+export const getWishLists = (force = false) => {
   return async (dispatch, getState) => {
     dispatch(requestWishlist())
-
-    if (!getState().userReducer.isLoaded && isAuthenticated()) {
-      dispatch(getWishListItems())
+    if ((!getState().userReducer.wishList.isListLoaded || force) && isAuthenticated()) {
+      dispatch(getWishListItems(true))
       const response = await axios({
         method: 'GET',
         withCredentials: true,
@@ -277,11 +276,11 @@ export const getWishLists = () => {
     }
   }
 }
-export const getWishListItems = () => {
+export const getWishListItems = (force = false) => {
   return async (dispatch, getState) => {
     dispatch(requestWishlist())
 
-    if (!getState().userReducer.isLoaded && isAuthenticated()) {
+    if ((!getState().userReducer.wishList.isListItemsLoaded || force) && isAuthenticated()) {
       const response = await axios({
         method: 'GET',
         withCredentials: true,
@@ -322,6 +321,25 @@ export const getFavouriteProducts = () => {
             orderTemplateID,
           })
         )
+      }
+    }
+  }
+}
+
+export const createListAndAddItem = (skuID = '') => {
+  return async (dispatch, getState) => {
+    if (isAuthenticated()) {
+      const response = await axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/addItemAndCreateWishlist`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: { skuID },
+      })
+      if (response.status === 200 && response.data && response.data.orderTemplateID?.length > 0) {
+        dispatch(getWishLists(true))
       }
     }
   }
