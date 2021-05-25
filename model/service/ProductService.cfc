@@ -125,47 +125,6 @@ component extends="HibachiService" accessors="true" {
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
 		return relatedProducts;
 	}
-	
-	/** Function append Images to existing product List
-	 * @param - array of products
-	 * @param - image property name
-	 * @param - addAltImage - boolean to ignore alt images
-	 * @return - updated array of products
-	 **/
-	public array function appendImagesToProducts(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
-		if(arrayLen(arguments.products)) {
-			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
-			var resizeSizes=['s','m','l','xl']; //add all sized images
-			
-			for(var product in arguments.products) {
-				
-	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( this.hibachiIsEmpty(imageFile) ) {
-	            	continue;
-	            }
-	            var imageArray = [];
-	            for( var size in resizeSizes) {
-	            	var resizeImageData = {
-		                size=size, //Large Image
-		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
-		                missingImagePath = missingImageSetting
-		            };
-		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
-	            }
-	            
-	            product['images'] = imageArray;
-	        }
-	        
-	        //If there's only one product in response, add alternate images as well
-	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && StructKeyExists(arguments.products[1], 'productID') && trim(arguments.products[1].productID) != "" ) {
-	        	//Modify image size to be used as size index
-	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
-	        }
-	        
-		}
-		return arguments.products;
-	}
-	
 
 	public numeric function getProductRating(required any product){
 		return getDao('productDao').getProductRating(arguments.product);

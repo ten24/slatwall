@@ -830,7 +830,7 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function getProductType(required struct data){
-        param name="arguments.data.urlTitle";
+        param name="arguments.data.urlTitle" default="";
         
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
         
@@ -4168,13 +4168,13 @@ component  accessors="true" output="false"
         }
        
 	    // if there's no entityID, then we're assuming that this's a call to fetch multiple-products
-	    if( !len(arguments.data.entityID) ){
+	    if( !len(arguments.data.entityID)  ){
     	    var collectionData = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-            acollectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
-            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData);
             
             arguments.data.ajaxResponse['data'] = collectionData; 
-            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+            this.getHibachiScope().addActionResult("public:scope.getProduct", false);
             return;
         }
         
@@ -4202,7 +4202,7 @@ component  accessors="true" output="false"
         }
         
         arguments.data.ajaxResponse['data'] = response;
-        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+        this.getHibachiScope().addActionResult("public:scope.getProduct", false);
 	}
 	
 	
