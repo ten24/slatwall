@@ -183,7 +183,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
         if (!structKeyExists(variables, 'returnReasonTypeOptions')) {
             var typeCollection = getService('typeService').getTypeCollectionList();
 		    typeCollection.setDisplayProperties('typeName|name,typeID|value');
-		    typeCollection.addFilter('parentType.systemCode','orderReturnReasonType');
             typeCollection.addOrderBy('sortOrder|ASC');
             
             // Return
@@ -198,7 +197,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
             } else if (getOrderTypeCode() == 'otReplacementOrder') {
                 typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderReplacementReasonTypeOptions'), 'IN');
                 
-            // Refund?
+            // Refund
+            }else if (getOrderTypeCode() == 'otRefundOrder') {
+                typeCollection.addFilter('typeID', getService('SettingService').getSettingValue('orderRefundReasonTypeOptions'), 'IN');
+                
             }
 
             variables.returnReasonTypeOptions = typeCollection.getRecords();

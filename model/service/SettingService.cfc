@@ -328,6 +328,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				fieldType="listingMultiselect", 
 				listingMultiselectEntityName="Type"
 			},
+			orderRefundReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
 			orderExchangeReasonTypeOptions = {
 				fieldType="listingMultiselect", 
 				listingMultiselectEntityName="Type"
