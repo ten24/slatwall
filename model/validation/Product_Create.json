@@ -34,7 +34,7 @@
 		}
 	},
 	"properties": {
-		"product.productName": [{ "required": true }],
+		"productName": [{ "required": true }],
 		"product.productCode": [{ "required": true }],
 		"contents": [{ "conditions": "generateContentAccessSkus", "required": true }],
 		"subscriptionBenefits": [{ "conditions": "generateSubscriptionSkus", "required": true }],
