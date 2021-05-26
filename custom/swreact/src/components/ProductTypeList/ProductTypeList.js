@@ -1,13 +1,13 @@
 import { SWImage } from '../../components'
 
-const ProductTypeList = ({ data, onSelect, brand = {} }) => {
+const ProductTypeList = ({ data, onSelect }) => {
   return (
-    <div className="container pb-4 pb-sm-5">
+    <div className="container bg-light box-shadow-lg rounded-lg p-5">
       {/* <!--- Product Type grid ---> */}
-      <div className="row pt-5">
+      <div className="row">
         {/* <!--- Product Type ---> */}
         {data.childProductTypes &&
-          data.childProductTypes.map(({ productTypeID, title, imageFile, urlTitle, childProductTypes }, index) => {
+          data.childProductTypes.map(({ productTypeID, productTypeName, imageFile, urlTitle, childProductTypes }, index) => {
             let customImagePath = ''
             let imageFileName = ''
             if (imageFile !== '') {
@@ -25,7 +25,7 @@ const ProductTypeList = ({ data, onSelect, brand = {} }) => {
                       onSelect(urlTitle)
                     }}
                   >
-                    <SWImage className="d-block w-100" customPath={customImagePath} src={imageFileName} alt={title} type="productType" />
+                    <SWImage className="d-block w-100" customPath={customImagePath} src={imageFileName} alt={productTypeName} type="productType" />
                   </div>
                   <div className="card-body">
                     <h2 className="h5">
@@ -36,11 +36,11 @@ const ProductTypeList = ({ data, onSelect, brand = {} }) => {
                           onSelect(urlTitle)
                         }}
                       >
-                        {title}
+                        {productTypeName}
                       </button>
                     </h2>
                     <ul className="list-unstyled font-size-sm mb-0">
-                      {childProductTypes.map(({ productTypeID, title, urlTitle, showProducts }, index) => {
+                      {childProductTypes.map(({ productTypeID, productTypeName, urlTitle }) => {
                         return (
                           <li key={productTypeID}>
                             <button
@@ -51,7 +51,7 @@ const ProductTypeList = ({ data, onSelect, brand = {} }) => {
                               }}
                             >
                               <i className="far fa-chevron-circle-right pr-2"></i>
-                              {title}
+                              {productTypeName}
                             </button>
                           </li>
                         )

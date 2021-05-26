@@ -76,7 +76,6 @@ export const login = (email, password) => {
       })
 
       if (response.status === 200 && response.data) {
-        console.log('req', response.data)
         dispatch(receiveLogin({ isAuthenticanted: true }))
         dispatch(receiveUser(response.data.account))
         dispatch(receiveCart(response.data.cart))

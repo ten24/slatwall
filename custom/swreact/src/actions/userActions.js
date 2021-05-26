@@ -9,6 +9,7 @@ export const RECEIVE_USER = 'RECEIVE_USER'
 
 export const REQUEST_WISHLIST = 'REQUEST_WISHLIST'
 export const RECEIVE_WISHLIST = 'RECEIVE_WISHLIST'
+export const RECEIVE_WISHLIST_ITEMS = 'RECEIVE_WISHLIST_ITEMS'
 
 export const RECEIVE_ACCOUNT_ORDERS = 'RECEIVE_ACCOUNT_ORDERS'
 export const REQUEST_ACCOUNT_ORDERS = 'REQUEST_ACCOUNT_ORDERS'
@@ -40,10 +41,16 @@ export const requestWishlist = () => {
   }
 }
 
-export const receiveWishlist = (favouriteSkus = {}) => {
+export const receiveWishlist = (lists = []) => {
   return {
     type: RECEIVE_WISHLIST,
-    favouriteSkus,
+    payload: lists,
+  }
+}
+export const receiveWishlistItems = (items = []) => {
+  return {
+    type: RECEIVE_WISHLIST_ITEMS,
+    payload: items,
   }
 }
 
@@ -249,6 +256,47 @@ export const deletePaymentMethod = accountPaymentMethodID => {
   }
 }
 
+export const getWishLists = (force = false) => {
+  return async (dispatch, getState) => {
+    dispatch(requestWishlist())
+    if ((!getState().userReducer.wishList.isListLoaded || force) && isAuthenticated()) {
+      dispatch(getWishListItems(true))
+      const response = await axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/getWishlist`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
+        dispatch(receiveWishlist(response.data.accountWishlistProducts))
+      }
+    }
+  }
+}
+export const getWishListItems = (force = false) => {
+  return async (dispatch, getState) => {
+    dispatch(requestWishlist())
+
+    if ((!getState().userReducer.wishList.isListItemsLoaded || force) && isAuthenticated()) {
+      const response = await axios({
+        method: 'GET',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/getWishListItems`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
+        dispatch(receiveWishlistItems(response.data.accountWishlistProducts))
+      } else {
+        dispatch(receiveWishlistItems())
+      }
+    }
+  }
+}
 export const getFavouriteProducts = () => {
   return async (dispatch, getState) => {
     dispatch(requestWishlist())
@@ -257,7 +305,7 @@ export const getFavouriteProducts = () => {
       const response = await axios({
         method: 'GET',
         withCredentials: true,
-        url: `${sdkURL}api/scope/getWishlistItems`,
+        url: `${sdkURL}api/scope/getWishlist`,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -278,11 +326,28 @@ export const getFavouriteProducts = () => {
   }
 }
 
-export const addWishlistItem = (skuID = '') => {
+export const createListAndAddItem = (skuID = '') => {
   return async (dispatch, getState) => {
-    dispatch(requestWishlist())
-    let { isLoaded, orderTemplateID } = getState().userReducer.favouriteSkus
-    if (isLoaded && isAuthenticated()) {
+    if (isAuthenticated()) {
+      const response = await axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/addItemAndCreateWishlist`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: { skuID },
+      })
+      if (response.status === 200 && response.data && response.data.orderTemplateID?.length > 0) {
+        dispatch(getWishLists(true))
+      }
+    }
+  }
+}
+
+export const addSkuToWishList = (skuID = '', orderTemplateID = null) => {
+  return async (dispatch, getState) => {
+    if (isAuthenticated()) {
       const response = await axios({
         method: 'POST',
         withCredentials: true,
@@ -293,26 +358,17 @@ export const addWishlistItem = (skuID = '') => {
         data: { skuID, orderTemplateID },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
-          return sku_skuID
-        })
-        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].orderTemplate_orderTemplateID : ''
-        dispatch(
-          receiveWishlist({
-            skusList,
-            orderTemplateID,
-          })
-        )
+        dispatch(receiveWishlistItems(response.data.accountWishlistProducts))
+      } else {
+        dispatch(receiveWishlistItems())
       }
     }
   }
 }
-
-export const removeWishlistItem = (removalSkuID = '') => {
+export const removeWishlistItem = (removalSkuID = '', orderTemplateID) => {
   return async (dispatch, getState) => {
     dispatch(requestWishlist())
-    let { isLoaded, orderTemplateID } = getState().userReducer.favouriteSkus
-    if (isLoaded && isAuthenticated()) {
+    if (isAuthenticated()) {
       const response = await axios({
         method: 'POST',
         withCredentials: true,
@@ -323,16 +379,9 @@ export const removeWishlistItem = (removalSkuID = '') => {
         data: { removalSkuID, orderTemplateID },
       })
       if (response.status === 200 && response.data && response.data.accountWishlistProducts) {
-        const skusList = response.data.accountWishlistProducts.map(({ sku_skuID }) => {
-          return sku_skuID
-        })
-        orderTemplateID = response.data.accountWishlistProducts.length ? response.data.accountWishlistProducts[0].orderTemplate_orderTemplateID : ''
-        dispatch(
-          receiveWishlist({
-            skusList,
-            orderTemplateID,
-          })
-        )
+        dispatch(receiveWishlistItems(response.data.accountWishlistProducts))
+      } else {
+        dispatch(receiveWishlistItems())
       }
     }
   }

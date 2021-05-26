@@ -7,6 +7,7 @@ import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import { getConfiguration } from './actions/configActions'
 import logo from './assets/images/logo.png'
 import mobileLogo from './assets/images/logo-mobile.png'
+import { axios, SlatwalApiService } from './services'
 
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
 const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
@@ -54,6 +55,8 @@ const pageComponents = {
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
   const routing = useSelector(state => state.configuration.router)
+  const siteCode = useSelector(state => state.configuration.site.siteCode)
+  console.log('siteCode', siteCode)
   const shopByManufacturer = useSelector(state => state.configuration.shopByManufacturer)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -62,6 +65,30 @@ export default function App() {
     })
     dispatch(getConfiguration())
   }, [dispatch])
+
+  useEffect(() => {
+    const axiosRequestInteceptor = axios.interceptors.request.use(config => {
+      config.headers['SWX-requestSiteCode'] = siteCode
+      if (localStorage.getItem('token')) {
+        config.headers['Auth-Token'] = `Bearer ${localStorage.getItem('token')}`
+      }
+      return config
+    })
+    const slatwalApiServiceRequestInteceptor = SlatwalApiService.sdkScope.httpService.axios.interceptors.request.use(config => {
+      config.headers['SWX-requestSiteCode'] = siteCode
+      if (localStorage.getItem('token')) {
+        config.headers['Auth-Token'] = `Bearer ${localStorage.getItem('token')}`
+      }
+      return config
+    })
+
+    return () => {
+      // Cleanup
+      axios.interceptors.request.eject(axiosRequestInteceptor)
+      SlatwalApiService.sdkScope.httpService.axios.interceptors.request.eject(slatwalApiServiceRequestInteceptor)
+    }
+  }, [siteCode])
+
   return (
     <Suspense fallback={<Loading />}>
       <ScrollToTop />
