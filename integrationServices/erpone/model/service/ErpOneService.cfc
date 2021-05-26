@@ -554,6 +554,22 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					'ShippingAddress_streetAddress' : order['oe_head_adr'][2]
 				};
 				
+				/*
+    				OrderHeader Status codes
+    				
+    				CH - credit hold
+    				CL - closed
+    				HO - order hold
+    				
+    				IJ - invoice journal (posted)
+    				IP - invoice printed
+    				IV - invoice (not yet printed)
+    				
+    				OE - Order Entry
+    				OP - Order Printed
+    				QP - Quote Printed
+				*/
+				
 				orderData['orderItems'] = this.fetchErpOneOrderItemsByOrder(orderData.orderNumber, company);
 				orderData['orderPayments'] = this.fetchErpOneOrderPaymentsByOrder(orderData.orderNumber, company);
 				
@@ -727,15 +743,93 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var transformedItems = [];
 
 		for(var erponeItem in  orderShipments ){
-    		var transformedItem = {};
+		    
+    		var transformedItem = {
+    		    // shipping address
+        		'shippingAddress_addressNickName'   : 'shipping Address',
+    			'ShippingAddress_streetAddress'     : erponeItem['adr'][1],
+    			'ShippingAddress_street2Address'    : erponeItem['adr'][2] & " " & erponeItem['adr'][3],
+    			'shippingAddress_city'              : erponeItem['adr'][4],
+    			'shippingAddress_postalCode'        : erponeItem['postal_code'],
+    			'shippingAddress_stateCode'         : erponeItem['adr'],
+    			'shippingAddress_countryCode'       : erponeItem['country_code'] ?: 'US',
+    			'shippingAddress_email'             : erponeItem['email'],
+    			'shippingAddress_phoneNumber'       : erponeItem['phone'],
+    			'shippingAddress_remoteAddressID'   : 'shipping'&erponeItem['__rowids'],
+			
+    		};
+
+            // $shipment->setCustomerPurchaseOrder($erpShipment->cu_po);    ??
+            
+            // $shipment->setRecordSequence($erpShipment->rec_seq);         ??
+            // $shipment->setManifestId($erpShipment->Manifest_id);         ??
+            // $shipment->setNumberOfPages($erpShipment->num_pages);        ??
     		
     		// TODO:
-	    	
+    		// fulfillemnt method       -- default to shipping
+    		// pickup-location ?        // need setup, or can be default to the "Default location"
+    		// shipping method ?        // can be set to something default
+    		
+    		// shipping integration ?   // need setup
+    		// $shipment->setShipViaCode($erpShipment->ship_via_code);
+    		
+    		
+    		// status  -- default to `fulfilled`
+            // $shipment->setOpen($erpShipment->opn);                       ??
+            // $shipment->setStatus($erpShipment->stat);
+
+    		//  shipment tracking [Delivery]
+            // 	$shipment->setWebReferenceNumber($erpShipment->ord_ext);    ??
+            //  $shipment->setShipDate($erpShipment->ship_date);
+    		
+    		// get shipmentItems
+    		
+    		
+
+
 		    transformedItems.append( orderShipments );
 		}
 		
 		return transformedItems;
 	}
+	
+	
+	public any function fetchErpOneOrderShipmentItems(required any orderNumber, required string company){
+	    
+	    /*
+	    
+	    $query = "FOR EACH oe_line NO-LOCK "
+                . "WHERE oe_line.company_oe = '" . $this->erp->getCompany() . "' "
+                . "AND oe_line.rec_type = 'S' "
+                . "AND oe_line.order = '{$orderNumber}' AND oe_line.rec_seq = '{$recordSequence}'";
+	    
+	    */
+	 
+		var query = "
+            FOR EACH oe_line NO-LOCK  
+                WHERE oe_line.company_oe = '#arguments.company#' 
+            AND oe_line.rec_type = 'S' 
+            AND oe_line.order = '#arguments.OrderNumber#'
+		";
+		          
+        var columns = [ "line","item","descr","price","q_ord","q_comm" ];        
+        
+		this.logHibachi("ERPONE - fetching order-shipment-items for order: #arguments.orderNumber#, Query: #query#");
+			 
+		var orderShipmentItems = this.callErpOneGetDataApi({
+			"query": query,
+			"columns" : columns.toList()
+		});
+		
+		var transformedItems = [];
+
+		for(var erponeItem in  orderShipments ){
+		    var transformedItem = {};
+		    
+		    transformedItem['quantity'] = 
+		    
+		}
+    };
 
 	
 	public any function importErpOneOrderItems(){
