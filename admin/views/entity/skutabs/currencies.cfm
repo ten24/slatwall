@@ -52,10 +52,6 @@ Notes:
 <cfparam name="rc.sku" type="any" />
 
 <cfoutput>
-	<cfset filteredCurrencyList = "" />
-	<cfscript>
-	  filteredCurrencyList = listRemoveDuplicates("#rc.sku.setting('skuEligibleCurrencies')#", ",", true); 
-	</cfscript>
 	<table class="table table-bordered table-hover">
 		<tr>
 			<th>#$.slatwall.rbKey('entity.currency')#</th>
@@ -64,7 +60,7 @@ Notes:
 			<th>#$.slatwall.rbKey('entity.currency.currencyCode')#</th>
 			<th class="admin admin1"></th>
 		</tr>
-		<cfloop list="#filteredCurrencyList#" index="local.currencyCode">
+		<cfloop list="#rc.sku.setting('skuEligibleCurrencies')#" index="local.currencyCode">
 			<cfset local.currency = $.slatwall.getService("currencyService").getCurrency( local.currencyCode ) />
 			<cfif local.currency.getCurrencyCode() eq rc.sku.setting('skuCurrency')>
 				<tr class="highlight-yellow">

@@ -60,22 +60,9 @@ Notes:
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	<cfset orderCurrencies = rc.account.getOrderCurrencies()/>
-    <cfset filteredOrderCurriencies = []/>
-    
-	<cfscript>
-	    function removeDuplicateCurrency(currency){   
-         for(i = 1; i < arrayLen(arguments.currency); i++){
-           if( !filteredOrderCurriencies.contains(arguments.currency[i]) ){
-                 filteredOrderCurriencies.add(arguments.currency[i]); 
-             }
-          }   
-            return filteredOrderCurriencies;
-        }
-        removeDuplicateCurrency(orderCurrencies)
-    </cfscript>
     
 	<sw-tab-group id="#getHibachiScope().createHibachiUUID()#">
-		<cfloop array="#filteredOrderCurriencies#" index="orderCurrencyRecord">
+		<cfloop array="#orderCurrencies#" index="orderCurrencyRecord">
 		<cfset orderCurrency = orderCurrencyRecord['currencyCode']/>
 			<sw-tab-content id="#getHibachiScope().createHibachiUUID()#" name="#orderCurrency#">
 				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.account.totalOrdersCount')#" value="#rc.account.getTotalOrdersCount(orderCurrency)#" edit="false" >
