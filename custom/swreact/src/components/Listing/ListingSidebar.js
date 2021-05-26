@@ -33,7 +33,9 @@ const formatPriceRange = (priceRange, formatCurrency) => {
     if (ranges.length !== 2) {
       console.error('invalid currency range', option)
     }
-    const name = formatCurrency(parseFloat(ranges[0])) + ' - ' + formatCurrency(parseFloat(ranges[1]))
+    // securing edge cases for the intl number format , it does works if decimal points are less than 3
+    const name = formatCurrency(parseInt(ranges[0])) + ' - ' + formatCurrency(parseInt(ranges[1]))
+
     return { name, value: option.value }
   })
   if (options) {
@@ -45,7 +47,6 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
   const { t } = useTranslation()
   const textInput = useRef(null)
   const [formatCurrency] = useFormatCurrency({ minimumFractionDigits: 0 })
-
   const newPriceRange = formatPriceRange(priceRange, formatCurrency)
   return (
     <div className="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
