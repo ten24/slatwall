@@ -1,5 +1,5 @@
 {
 	"properties": {
-		"comment": [{ "contexts": "edit", "method": "canEdit" }]
+		"comment": [{ "method": "canEdit", "required": true }]
 	}
 }
