@@ -118,7 +118,7 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
               attribute &&
               attribute.subFacets &&
               Object.keys(attribute.subFacets).map(facetKey => {
-                return [option.subFacets[facetKey]].map(filter => {
+                return [attribute.subFacets[facetKey]].map(filter => {
                   return <ListingFilter qs={qs} key={facetKey} index={facetKey} {...filter} facetKey={`attribute_${facetKey}`} appliedFilters={getAppliedFilters(qs, `attribute_${facetKey}`)} updateAttribute={updateAttribute} />
                 })
               })}
