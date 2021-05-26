@@ -24,6 +24,18 @@ const Search = () => {
     }
   }, [productTypeListRequest, setProductTypeListRequest, productTypeUrl, params])
 
+  useEffect(() => {
+    const unload = history.listen(location => {
+      let newParams = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+      if (Object.keys(newParams).length === 1) {
+        setProductTypeListRequest({ ...productTypeListRequest, isFetching: true, isLoaded: false, entity: 'ProductType', params: { searchKeyword: newParams?.keyword, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
+      }
+    })
+    return () => {
+      unload()
+    }
+  }, [productTypeListRequest, setProductTypeListRequest, history])
+
   if (!productTypeListRequest.isFetching && productTypeListRequest.isLoaded && Object.keys(productTypeListRequest.data).length === 0) {
     return <Redirect to="/404" />
   }
@@ -181,7 +193,7 @@ const Search = () => {
           }}
         />
       )}
-      {productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_id: productTypeData.productTypeID }} hide={['productType']} />}
+      {productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_slug: productTypeUrl }} hide={['productType']} />}
     </Layout>
   )
 }
