@@ -5,7 +5,7 @@ const AccountContent = () => {
   let history = useHistory()
   let loc = useLocation()
   const content = useSelector(state => state.content[loc.pathname.substring(1)])
-  const { customBody = '', contentTitle = '', contentSubtitle = '' } = content || {}
+  const { customBody = '', contentSubtitle = '' } = content || {}
 
   return (
     <>
