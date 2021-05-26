@@ -204,14 +204,14 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             }
             if( arguments.row.attributeSetObject == 'sku'){
                 return listAppend(joins, "(
-                    att.attributeCode = `#arguments.row.attributeCode#` 
+                    att.attributeCode = '#arguments.row.attributeCode#' 
                     AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue 
                     AND sk.#arguments.row.attributeCode# != '' 
                     AND sk.#arguments.row.attributeCode# IS NOT NULL
                     )", '$' );
             } 
             return listAppend(joins, "(
-                att.attributeCode = `#arguments.row.attributeCode#` 
+                att.attributeCode = '#arguments.row.attributeCode#' 
                 AND p.#arguments.row.attributeCode# = atto.attributeOptionValue
                 AND p.#arguments.row.attributeCode# != '' 
                 AND p.#arguments.row.attributeCode# IS NOT NULL
