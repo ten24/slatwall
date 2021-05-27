@@ -22,6 +22,18 @@ const Search = () => {
     setProductTypeListRequest({ ...productTypeListRequest, isFetching: true, isLoaded: false, entity: 'ProductType', params: { searchKeyword: params?.keyword, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
   }, [productTypeUrl, params.keyword])
 
+  useEffect(() => {
+    const unload = history.listen(location => {
+      let newParams = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+      if (Object.keys(newParams).length === 1) {
+        setProductTypeListRequest({ ...productTypeListRequest, isFetching: true, isLoaded: false, entity: 'ProductType', params: { searchKeyword: newParams?.keyword, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
+      }
+    })
+    return () => {
+      unload()
+    }
+  }, [productTypeListRequest, setProductTypeListRequest, history])
+
   if (!productTypeListRequest.isFetching && productTypeListRequest.isLoaded && Object.keys(productTypeListRequest.data).length === 0) {
     return <Redirect to="/404" />
   }
