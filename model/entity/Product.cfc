@@ -156,7 +156,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 		//CUSTOM PROPERTIES BEGIN
-
+	
  property name="productSafeTypeStyle" ormtype="string" hb_formFieldType="select";
  property name="productSafeFireRated" ormtype="string";
  property name="productSafeSafetyRating" ormtype="string";
@@ -368,7 +368,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productPackageType" ormtype="string" hb_formFieldType="select";
  property name="productDisplay" ormtype="boolean" hb_formatType="yesno" default="Yes";
  property name="searchKeywords" length="4000"  ormtype="string" hb_formFieldType="textarea";
- property name="productBuildable" ormtype="boolean" hb_formatType="yesno" default="No";//CUSTOM PROPERTIES END
+ property name="productBuildable" ormtype="boolean" hb_formatType="yesno" default="No";	//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();

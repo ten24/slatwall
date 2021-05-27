@@ -13,7 +13,7 @@
 		"price": [{ "contexts": "save", "required": true, "dataType": "numeric" }],
 		"productName": [{ "contexts": "save", "required": true }],
 		"productCode": [
-			{ "contexts": "save", "required": true, "unique": true, "regex": "^[\w\d\s-_#\/:^~|+]+$" }
+			{ "contexts": "save", "required": true, "unique": true, "regex": "^[\w\d]+([\w\d\s-_#\/:^~.|+@!&$]+)?$" }
 		],
 		"productType": [{ "contexts": "save", "required": true }],
 		"transactionExistsFlag": [{ "contexts": "delete", "eq": false }],
