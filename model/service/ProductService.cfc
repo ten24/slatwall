@@ -1400,7 +1400,43 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 
+	public any function processProduct_uploadBulkImage(required any product, required any processObject , any data ) {
+		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
+		try {
+		// Get the upload directory for the current property
+			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+			var maxFileSize = val(maxFileSizeString) * 1000000;
+			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/defaultImageZip";
+		
+		if(getHibachiUtilityService().isS3Path(uploadDirectory)){
+				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
+			}
 
+			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
+
+			// If the directory where this file is going doesn't exists, then create it
+			if(!directoryExists(uploadDirectory)) {
+				directoryCreate(uploadDirectory);
+			}
+
+			// Do the upload, and then move it to the new location
+			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
+			var fileSize = uploadData.fileSize;
+ 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+ 			} else {
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", uploadDirectory);
+ 				if(getHibachiUtilityService().isS3Path(fullFilePath)){
+ 					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
+ 				}
+ 			}
+		} catch(any e) {
+			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
+			}
+
+		return arguments.product;
+		
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================

@@ -67,7 +67,7 @@ Notes:
 				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
 				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" disabled="#!$.slatwall.getSmartList("SubscriptionTerm").getRecordsCount() or !$.slatwall.getSmartList("SubscriptionBenefit").getRecordsCount()#"  disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoSubscriptionBenefitOrTerm')#" />
 				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.miscFee')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=miscFee" type="list" />
-				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="uploadbulkimage"/>
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="uploadbulkimage" modal="true" type="list"/>
 			</hb:HibachiActionCallerDropdown>
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>

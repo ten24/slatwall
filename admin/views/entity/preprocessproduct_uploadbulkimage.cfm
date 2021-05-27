@@ -13,20 +13,12 @@
 		</hb:HibachiEntityActionBar>
 		
 		<input type="hidden" name="imageFile" value="#rc.processObject.getImageFile()#" />
-
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="uploadFile" edit="#rc.edit#">
-		<!--		<hb:HibachiPropertyDisplay object="#rc.product#" -->
-		<!--								property="imageNameProductProperty" -->
-		<!--								fieldName="imageNameProductProperty" -->
-		<!--								fieldType="radioGroup" -->
-		<!--								edit="#rc.edit#" -->
-		<!--								enableOtherInputForRadioGroupShowHide="false" />	-->
-		<!--</hb:HibachiPropertyRow>-->
-		
-		
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
 	</hb:HibachiEntityProcessForm>
 </cfoutput>
