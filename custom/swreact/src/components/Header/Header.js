@@ -105,6 +105,37 @@ function Header({ logo, mobileLogo }) {
     }
   }
 
+  /**
+   * Search Input validation
+   * @return {boolean}
+   */
+  const searchInputValidation = () => {
+    textInput.current.value = textInput.current.value.toString().trim() // trim white spaces around input
+
+    // check input validation
+    if (!textInput.current.checkValidity()) {
+      textInput.current.value = ''
+      return false
+    }
+    return true
+  }
+
+  /**
+   * Search Products
+   * @param {event} e
+   * @return {void}
+   */
+  const searchForProducts = e => {
+    if ((e.key === 'Enter' || e?.type === 'click') && searchInputValidation()) {
+      e.preventDefault()
+      history.push({
+        pathname: '/search',
+        search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
+      })
+      textInput.current.value = ''
+    }
+  }
+
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -120,41 +151,10 @@ function Header({ logo, mobileLogo }) {
             <div className="navbar-right">
               <div className="navbar-topright">
                 <div className="input-group-overlay d-none d-lg-flex">
-                  <input
-                    className="form-control appended-form-control"
-                    type="text"
-                    required
-                    ref={textInput}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault()
-                        if (e.target.checkValidity()) {
-                          history.push({
-                            pathname: '/search',
-                            search: queryString.stringify({ keyword: e.target.value }, { arrayFormat: 'comma' }),
-                          })
-                          textInput.current.value = ''
-                        }
-                      }
-                    }}
-                    placeholder={t('frontend.search.placeholder')}
-                  />
+                  <input className="form-control appended-form-control" type="text" required ref={textInput} onKeyDown={searchForProducts} placeholder={t('frontend.search.placeholder')} />
                   <div className="input-group-append-overlay">
                     <span className="input-group-text">
-                      <i
-                        style={{ cursor: 'pointer' }}
-                        onClick={e => {
-                          e.preventDefault()
-                          if (textInput.current.checkValidity()) {
-                            history.push({
-                              pathname: '/search',
-                              search: queryString.stringify({ keyword: textInput.current.value }, { arrayFormat: 'comma' }),
-                            })
-                            textInput.current.value = ''
-                          }
-                        }}
-                        className="far fa-search"
-                      ></i>
+                      <i style={{ cursor: 'pointer' }} onClick={searchForProducts} className="far fa-search"></i>
                     </span>
                   </div>
                 </div>
