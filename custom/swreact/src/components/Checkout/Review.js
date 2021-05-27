@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router'
 import {Link} from 'react-router-dom'
-import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, CreditCardDetails, TermPaymentDetails, BillingAddressDetails } from '../../components'
+import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, CreditCardDetails, TermPaymentDetails, BillingAddressDetails, ListPayments } from '../../components'
 import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
 import { useTranslation } from 'react-i18next'
 
@@ -37,20 +37,11 @@ const ReviewSlide = ({ currentStep }) => {
         </div>
         {payment.paymentMethod.paymentMethodType === 'creditCard' && (
           <div className="col-md-4">
-            <CreditCardDetails creditCardPayment={payment} />
+            <ListPayments creditCardPayment={payment} />
             <Link to="/checkout/payment">{t('frontend.core.edit')}</Link>
           </div>
         )}
-        {payment.paymentMethod.paymentMethodType === 'giftCard' && (
-          <div className="col-md-4">
-            <GiftCardDetails />
-          </div>
-        )}
-        {payment.paymentMethod.paymentMethodType === 'termPayment' && (
-          <div className="col-md-4">
-            <TermPaymentDetails termPayment={payment} />
-          </div>
-        )}
+     
       </div>
 
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Review your order</h2>

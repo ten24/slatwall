@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom';
 import { CreditCardDetails, SlideNavigation, AccountAddress, GiftCardDetails, CCDetails, SwRadioSelect, TermPaymentDetails, Overlay } from '../../components'
 import { addNewAccountAndSetAsBilling, addPayment, removePayment } from '../../actions/cartActions'
 import { eligiblePaymentMethodDetailSelector, orderPayment, billingAccountAddressSelector, getAllOrderPayments, disableInteractionSelector } from '../../selectors/orderSelectors'
@@ -75,12 +76,15 @@ const GiftCardPayemnt = () => {
 const ListPayments = () => {
   const payments = useSelector(getAllOrderPayments)
   const disableInteraction = useSelector(disableInteractionSelector)
+  const location = useLocation();
 
   const { t } = useTranslation()
   const dispatch = useDispatch()
   if (payments.length === 0) {
     return null
   }
+  
+  console.log("param", location.pathname)
 
   return (
     <>
@@ -93,7 +97,8 @@ const ListPayments = () => {
               {payment.paymentMethod.paymentMethodType === 'giftCard' && <GiftCardDetails />}
               {payment.paymentMethod.paymentMethodType === 'termPayment' && <TermPaymentDetails hideHeading={true} termPayment={payment} />}
               <hr />
-              <button
+              { location.pathname === "/checkout/payment" &&
+                <button
                 className="btn btn-link px-0 text-danger"
                 type="button"
                 disabled={disableInteraction}
@@ -105,6 +110,9 @@ const ListPayments = () => {
                 <i className="fal fa-times-circle"></i>
                 <span className="font-size-sm"> Remove</span>
               </button>
+              }
+                
+              
             </div>
           )
         })}
