@@ -1,43 +1,76 @@
 import { Redirect, useHistory, useParams } from 'react-router-dom'
-import { Layout, ProductTypeList } from '../../components'
+import { Layout, PageHeader, ProductTypeList } from '../../components'
 import ListingPage from '../../components/Listing/Listing'
 import { Helmet } from 'react-helmet'
-import { useGetProductType } from '../../hooks/useAPI'
+import { useGetEntity } from '../../hooks/useAPI'
 import { useSelector } from 'react-redux'
-import { getProductTypeProductListRoute } from '../../selectors/configurationSelectors'
+import { getProductTypeRoute } from '../../selectors/configurationSelectors'
+import { augmentProductType } from '../../utils'
+import { useEffect } from 'react'
 
 const ProductType = () => {
+  const productTypeRoute = useSelector(getProductTypeRoute)
+  const productTypeBase = useSelector(state => state.configuration.filtering.productTypeBase)
+
   let { id } = useParams()
   const history = useHistory()
-  const [request, setRequest] = useGetProductType()
-  const productsRoute = useSelector(getProductTypeProductListRoute)
+  const [productTypeRequest, setProductTypeRequest] = useGetEntity()
+  const [productTypeListRequest, setProductTypeListRequest] = useGetEntity()
 
-  if (!request.isFetching && !request.isLoaded) {
-    setRequest({ ...request, isFetching: true, isLoaded: false, params: { urlTitle: id }, makeRequest: true })
+  useEffect(() => {
+    const unload = history.listen(location => {
+      const urlTitle = location.pathname.split('/').reverse()[0]
+      const hasData = !!productTypeListRequest.data.filter(pt => pt.urlTitle === urlTitle).length
+      if (!hasData && productTypeListRequest.data.length > 0) {
+        setProductTypeRequest({ ...productTypeRequest, data: {}, isFetching: false, isLoaded: false, params: { urlTitle }, makeRequest: true })
+        setProductTypeListRequest({ ...productTypeListRequest, data: [], isFetching: false, isLoaded: false, params: {}, makeRequest: false })
+      }
+    })
+    return () => {
+      unload()
+    }
+  }, [history, setProductTypeRequest, productTypeRequest, setProductTypeListRequest, productTypeListRequest])
+
+  if (!productTypeRequest.isFetching && !productTypeRequest.isLoaded) {
+    setProductTypeRequest({ ...productTypeRequest, isFetching: true, isLoaded: false, entity: 'productType', params: { urlTitle: id }, makeRequest: true })
   }
-  if (!request.isFetching && request.isLoaded && Object.keys(request.data).length === 0) {
+  if (!productTypeRequest.isFetching && productTypeRequest.isLoaded && Object.keys(productTypeRequest.data).length === 0) {
     return <Redirect to="/404" />
   }
-  history.listen(location => {
-    const urlTitle = location.pathname.split('/').reverse()[0]
-    setRequest({ ...request, data: {}, isFetching: false, isLoaded: false, params: { urlTitle }, makeRequest: true })
-  })
+  if (!productTypeListRequest.isFetching && !productTypeListRequest.isLoaded && productTypeRequest.isLoaded) {
+    setProductTypeListRequest({ ...productTypeListRequest, data: [], isFetching: true, isLoaded: false, entity: 'productType', params: { 'f:productTypeIDPath:like': `%${productTypeRequest.data.productTypeID}%`, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
+  }
+  const productTypeData = augmentProductType(id, productTypeListRequest.data)
 
   return (
     <Layout>
-      <Helmet title={request.data.htmlTitle} />
-      {request.data.childProductTypes?.length > 0 && (
-        <ProductTypeList
-          onSelect={urlTitle => {
-            history.push(`/${productsRoute}/${urlTitle}`)
-          }}
-          data={request.data}
+      {productTypeRequest.isLoaded && <Helmet title={productTypeRequest.data.settings.productHTMLTitleString} />}
+      {productTypeRequest.isLoaded && (
+        <PageHeader
+          title={productTypeData?.childProductTypes?.length !== 0 && productTypeRequest.data.productTypeName}
+          crumbs={productTypeRequest.data.ancestors
+            .map(crumb => {
+              return { title: crumb.productTypeName, urlTitle: crumb.urlTitle }
+            })
+            .filter(crumb => crumb.urlTitle !== productTypeBase)
+            .filter(crumb => crumb.urlTitle !== id)
+            .map(crumb => {
+              return { ...crumb, urlTitle: `/${productTypeRoute}/${crumb.urlTitle}` }
+            })}
         />
       )}
-      {request.data.showProducts && (
-        <ListingPage preFilter={{ productType_id: request.data.productTypeID }} hide={['productType']}>
+      {productTypeData?.childProductTypes?.length > 0 && (
+        <ProductTypeList
+          onSelect={urlTitle => {
+            history.push(`/${productTypeRoute}/${urlTitle}`)
+          }}
+          data={productTypeData}
+        />
+      )}
+      {productTypeData?.childProductTypes?.length === 0 && (
+        <ListingPage preFilter={{ productType_id: productTypeRequest.data.productTypeID }} hide={['productType']}>
           <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
-            <h5 className="h4 text-dark mb-0 font-accent">{request.data.title}</h5>
+            <h5 className="h4 text-dark mb-0 font-accent">{productTypeRequest.data.title}</h5>
           </div>
         </ListingPage>
       )}

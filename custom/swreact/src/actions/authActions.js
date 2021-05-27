@@ -1,13 +1,11 @@
 import { toast } from 'react-toastify'
-import { SlatwalApiService } from '../services'
-import { getCart } from './cartActions'
+import { SlatwalApiService, sdkURL, axios } from '../services'
+import { getCart, receiveCart, requestCart } from './cartActions'
 import { requestUser, receiveUser, clearUser } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
 export const ERROR_LOGIN = 'ERROR_LOGIN'
 export const LOGOUT = 'LOGOUT'
-export const UPDATE_TOKEN = 'UPDATE_TOKEN'
-export const NO_TOKEN = 'NO_TOKEN'
 
 export const requestLogin = () => {
   return {
@@ -55,35 +53,36 @@ export const softLogout = () => {
   }
 }
 
-export const updateToken = response => {
-  if (response.token) {
-    return {
-      type: UPDATE_TOKEN,
-      payload: response.token,
-    }
-  }
-  return { type: NO_TOKEN }
-}
-
 export const login = (email, password) => {
   return async (dispatch, getState) => {
     let { accountID } = getState().userReducer
     if (!accountID.length) {
       dispatch(requestLogin())
       dispatch(requestUser())
+      dispatch(requestCart())
 
-      const req = await SlatwalApiService.auth.login({
-        emailAddress: email,
-        password: password,
+      const response = await axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/login`,
+        data: {
+          emailAddress: email,
+          password: password,
+          returnJSONObjects: 'account,cart',
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
 
-      if (req.isFail()) {
-        dispatch(errorLogin(req.toString()))
-        toast.error('Incorrect Username or Password')
-      } else {
+      if (response.status === 200 && response.data) {
         dispatch(receiveLogin({ isAuthenticanted: true }))
-        dispatch(receiveUser(req))
+        dispatch(receiveUser(response.data.account))
+        dispatch(receiveCart(response.data.cart))
         toast.success('Login Successful')
+      } else {
+        errorLogin({})
+        toast.error('Incorrect Username or Password')
       }
     }
   }

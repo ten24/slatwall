@@ -37,6 +37,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
       'billingAddress.name': '',
       'billingAddress.company': '',
       'billingAddress.phoneNumber': '',
+      'billingAddress.emailAddress': '',
       'billingAddress.streetAddress': '',
       'billingAddress.street2Address': '',
       'billingAddress.city': '',
@@ -50,6 +51,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
         delete values['billingAddress.name']
         delete values['billingAddress.company']
         delete values['billingAddress.phoneNumber']
+        delete values['billingAddress.emailAddress']
         delete values['billingAddress.streetAddress']
         delete values['billingAddress.street2Address']
         delete values['billingAddress.city']
@@ -69,48 +71,48 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
       <form onSubmit={formik.handleSubmit} className="mt-5">
         <div className="row">
-            <div className="col-md-6">
-	            <div className="form-group">
-	              <label htmlFor="paymentMethodType">{t('frontend.account.payment_method.heading')}</label>
-	              <SwSelect id="paymentMethodType" value={formik.values['paymentMethodType']} onChange={formik.handleChange} options={accountPaymentMethods} disabled={isEdit} />
-	            </div>
-	        </div>
-            <div className="col-md-12">
-            	<h5 className="my-2">{t('frontend.account.payment_method.cc_details')}</h5>
-           	</div>
-           	<div className="col-md-6">
-	            <div className="form-group">
-	              <label htmlFor="creditCardNumber">{t('frontend.account.payment_method.ccn')}</label>
-	              <input className="form-control" type="text" id="creditCardNumber" placeholder={`************${cardData.creditCardLastFour}`} value={formik.values.creditCardNumber} onChange={formik.handleChange} disabled={isEdit} />
-	            </div>
-        	  </div>
-            <div className="col-md-6">
-	            <div className="form-group">
-	              <label htmlFor="nameOnCreditCard">{t('frontend.account.payment_method.name')}</label>
-	              <input className="form-control" type="text" id="nameOnCreditCard" value={formik.values.nameOnCreditCard} onChange={formik.handleChange} disabled={isEdit} />
-	            </div>
-           	</div>
-           	<div className="col-md-3">
-  	            <div className="form-group">
-  	              <label htmlFor="expirationMonth">{t('frontend.account.payment_method.expiration_month')}</label>
-  	              <SwSelect id="expirationMonth" value={formik.values.expirationMonth} onChange={formik.handleChange} options={months} disabled={isEdit} />
-  	            </div>
-  	        </div>
-  	        <div className="col-md-3">
-  	            <div className="form-group">
-  	              <label htmlFor="expirationYear">{t('frontend.account.payment_method.expiration_year')}</label>
-  	              <SwSelect id="expirationYear" value={formik.values.expirationYear} onChange={formik.handleChange} options={years} disabled={isEdit} />
-  	            </div>
-  	        </div>
-  	        <div className="col-md-6">
-  	            <div className="form-group">
-  	              <label htmlFor="securityCode">{t('frontend.account.payment_method.cvv')}</label>
-  	              <input className="form-control" type="text" placeholder={`***`} id="securityCode" value={formik.values.securityCode} onChange={formik.handleChange} disabled={isEdit} />
-  	            </div>
-  	        </div>
-  	        <div className="col-md-12">
-  	          <hr className="my-4" />
-  	        </div>
+          <div className="col-md-6">
+            <div className="form-group">
+              <label htmlFor="paymentMethodType">{t('frontend.account.payment_method.heading')}</label>
+              <SwSelect id="paymentMethodType" value={formik.values['paymentMethodType']} onChange={formik.handleChange} options={accountPaymentMethods} disabled={isEdit} />
+            </div>
+          </div>
+          <div className="col-md-12">
+            <h5 className="my-2">{t('frontend.account.payment_method.cc_details')}</h5>
+          </div>
+          <div className="col-md-6">
+            <div className="form-group">
+              <label htmlFor="creditCardNumber">{t('frontend.account.payment_method.ccn')}</label>
+              <input className="form-control" type="text" id="creditCardNumber" placeholder={`************${cardData.creditCardLastFour}`} value={formik.values.creditCardNumber} onChange={formik.handleChange} disabled={isEdit} />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="form-group">
+              <label htmlFor="nameOnCreditCard">{t('frontend.account.payment_method.name')}</label>
+              <input className="form-control" type="text" id="nameOnCreditCard" value={formik.values.nameOnCreditCard} onChange={formik.handleChange} disabled={isEdit} />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label htmlFor="expirationMonth">{t('frontend.account.payment_method.expiration_month')}</label>
+              <SwSelect id="expirationMonth" value={formik.values.expirationMonth} onChange={formik.handleChange} options={months} disabled={isEdit} />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label htmlFor="expirationYear">{t('frontend.account.payment_method.expiration_year')}</label>
+              <SwSelect id="expirationYear" value={formik.values.expirationYear} onChange={formik.handleChange} options={years} disabled={isEdit} />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="form-group">
+              <label htmlFor="securityCode">{t('frontend.account.payment_method.cvv')}</label>
+              <input className="form-control" type="text" placeholder={`***`} id="securityCode" value={formik.values.securityCode} onChange={formik.handleChange} disabled={isEdit} />
+            </div>
+          </div>
+          <div className="col-md-12">
+            <hr className="my-4" />
+          </div>
 
           {!isEdit && (
             <div className="row">
@@ -121,19 +123,19 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
                     <SwSelect id="billingAccountAddress.accountAddressID" value={formik.values['billingAccountAddress.accountAddressID']} onChange={formik.handleChange} options={accountAddresses} />
                   </div>
                 </div>
-                  {!formik.values['billingAccountAddress.accountAddressID'] && <AccountAddressForm formik={formik} />}
+                {!formik.values['billingAccountAddress.accountAddressID'] && <AccountAddressForm formik={formik} />}
               </div>
             </div>
           )}
         </div>
-          <div className="row">
-            <hr className="mt-2 mb-3" />
-            <div className="d-flex flex-wrap justify-content-end">
-              <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit}>
-                {isEdit ? 'Save Credit Card Details' : 'Save New Card'}
-              </button>
-            </div>
+        <div className="row">
+          <hr className="mt-2 mb-3" />
+          <div className="d-flex flex-wrap justify-content-end">
+            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit}>
+              {isEdit ? 'Save Credit Card Details' : 'Save New Card'}
+            </button>
           </div>
+        </div>
       </form>
     </AccountLayout>
   )

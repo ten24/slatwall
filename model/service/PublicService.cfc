@@ -49,6 +49,7 @@ Notes:
 component  accessors="true" output="false" 
 {
     property name="siteService" type="any";
+    property name="settingService" type="any";
     property name="accountService" type="any";
     property name="addressService" type="any";
     property name="attributeService" type="any";
@@ -271,8 +272,8 @@ component  accessors="true" output="false"
         // we're not using RequestContext here, but the URL-scope
         arguments.parsedQuery = this.parseGetProductsQuery(arguments.urlScope);
 
-		param name="arguments.parsedQuery.siteID" default='';
 	    param name="arguments.parsedQuery.locale" default=hibachiScope.getSession().getRbLocale(); 
+		param name="arguments.parsedQuery.currencyCode" default='USD';
 
         //  account, order, for pricing
 		param name="arguments.parsedQuery.order" default=hibachiScope.getCart();
@@ -304,34 +305,17 @@ component  accessors="true" output="false"
 	    param name="arguments.parsedQuery.f" default={}; 
 	    
         // Additional Params
-        param name="arguments.parsedQuery.propertyIdentifiers" default='';
         param name="arguments.parsedQuery.includeSKUCount" default=true;
+        param name="arguments.parsedQuery.applySiteFilter" default=false;
         param name="arguments.parsedQuery.priceRangesCount" default=5;
+        param name="arguments.parsedQuery.propertyIdentifierList" default='';
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
-	    param name="arguments.data.includeAttributesMetadata" default=false;
-
-	    //
-	    // TODO: the frontend needs to send `SWX-requestSiteID` OR `SWX-requestSiteCode` headers
-	    //
-	    
 	    var currentRequestSite = hibachiScope.getCurrentRequestSite();
-	    if(isNUll(currentRequestSite) ){
-	        // throw('current request site should never be null');
-	        hibachiScope.logHibachi('CurrentRequest site is null, which should never happen');
-	        var currentRequestSite = this.getSiteService().newSite();
-	    }
-	    if( len(trim(arguments.parsedQuery.siteID)) && currentRequestSite.getSiteID() != arguments.parsedQuery.siteID ){
-	        currentRequestSite = this.getSiteService().getSiteBySiteID(arguments.parsedQuery.siteID);
-	    } else {
-	        // in case if it was not passed in from the frontend, and hibachi-scope figures-out the current-request-site
-	        arguments.parsedQuery.siteID = currentRequestSite.getSiteID();
-	    }
-	    
-	    if( isNull(arguments.parsedQuery.currencyCode) || !len(trim(arguments.parsedQuery.currencyCode)) ){
+	    if( !isNUll(currentRequestSite) ){
+            arguments.parsedQuery.site = currentRequestSite;
 	        arguments.parsedQuery.currencyCode = currentRequestSite.getCurrencyCode() ?: 'USD';
 	    }
-	    
 	    
         /*
             Price group is prioritized as so: 
@@ -353,11 +337,10 @@ component  accessors="true" output="false"
             }
 	    }
 
-	    var integrationPackage = currentRequestSite.setting('siteProductSearchIntegration');
+	    var integrationPackage = this.getSettingService().getSettingValue('siteProductSearchIntegration', hibachiScope.getCurrentRequestSite());
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(integrationPackage);
         var integrationCFC = integrationEntity.getIntegrationCFC("Search");
         
-        arguments.parsedQuery.site = currentRequestSite;
         arguments.data.ajaxResponse = {
             'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
         };
@@ -630,9 +613,9 @@ component  accessors="true" output="false"
 	     
 	     var account = getHibachiScope().getAccount();
 	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
-	         var order = this.getOrderService.getOrder(arguments.data.orderID);
+	         var order = this.getOrderService().getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
-	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService.getOrderDetails(order.getOrderID(), account.getAccountID());
+	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService().getOrderDetails(order.getOrderID(), account.getAccountID());
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
 	         } else {
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
@@ -796,7 +779,7 @@ component  accessors="true" output="false"
         var relatedProducts = getProductService().getAllRelatedProducts(productID = arguments.data.productID);
         //add images
         if(arrayLen(relatedProducts)) {
-            relatedProducts = getProductService().appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
+            relatedProducts = getProductService().appendImagesToProducts(relatedProducts, "relatedProduct_defaultSku_imageFile");
         }
         arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
@@ -824,16 +807,69 @@ component  accessors="true" output="false"
         arguments.data.ajaxResponse['images'] = product.getImageGalleryArray(argumentCollection=arguments.data);
     }
     
+    	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/brand/{entityID}`
+	 * 
+	 */
+	public any function getProductType(required struct data ){
+	    param name="arguments.data.urlTitle" default='';
+	    param name="arguments.data.includeSettingsInList" default=false;
+
+        // if there's some value for urlTitle, set the entityID
+        var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
+            if( !isNull(productType) ){
+	            arguments.data.entityID = productType.getProductTypeID();
+	        }
+	    if( !len(arguments.data.entityID) ){
+	        // Get List or Records
+	        if(structKeyExists(arguments.data, 'brandUrlTitle')){
+                var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
+                url['f:productTypeID:in'] = ArrayToList(brandProductTypeList)
+            }
+            if(structKeyExists(arguments.data, 'searchKeyword')){
+                // Get all possible product types for search keyword
+                var keywordProductTypeList = getProductService().getProductTypesForKeyword( arguments.data.searchKeyword );
+                 url['f:productTypeID:in'] = ArrayToList(keywordProductTypeList)
+            }
+    	    var productTypesList = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+    	    if(arguments.data.includeSettingsInList){
+    	        for( var record in productTypesList.pageRecords) {
+                    productType = getProductService().getProductTypeByUrlTitle( record.urlTitle );
+                    getProductService().appendSettingsToProductType(productType);
+                    record['settings'] = productType['settings']
+                    record['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & productType.getImageFile();
+                }
+    	        
+    	    }
+            arguments.data.ajaxResponse['data'] = productTypesList
+            this.getHibachiScope().addActionResult("public:scope.getProductType", true);
+            return;
+        }else{
+        // Get Single Record
+        var response = {};
+        response['productType'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        getProductService().appendSettingsToProductType(productType);
+        response['productType']['settings'] = productType['settings']
+        response['productType']['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & productType.getImageFile();
+        response['productType']["ancestors"] = getProductService().getProductTypeAncestorsbyPath(productType.getProductTypeIDPath())
+        arguments.data.ajaxResponse['data'] = response;
+        }
+       
+
+        this.getHibachiScope().addActionResult("public:scope.getProductType", true);
+	}
+    
     /**
      * Function get Product Type detail information
      * @param urlTitle
      * @return none
     */
-    public void function getProductType(required struct data){
+    public void function getProductTypeLegacy(required struct data){
         param name="arguments.data.urlTitle";
-        
+
         var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
-        
         if( IsNull( productType ) 
             || ( !IsNull(productType.getActiveFlag()) && !productType.getActiveFlag() ) 
             || ( !IsNull(productType.getPublishedFlag()) && !productType.getPublishedFlag() )
@@ -841,10 +877,12 @@ component  accessors="true" output="false"
             getHibachiScope().addActionResult( "public:product.getProductType", true );
             return;
         }
-        
-        //get sub product types
         var childProductTypeCollectionList = getProductService().getProductTypeCollectionList();
         childProductTypeCollectionList.setDisplayProperties("productTypeName, urlTitle, imageFile, productTypeID, productTypeIDPath");
+        if(structKeyExists(arguments.data, 'brandUrlTitle')){
+            var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
+            childProductTypeCollectionList.addFilter('productTypeID', ArrayToList(brandProductTypeList), "IN");
+        }
         childProductTypeCollectionList.addFilter('productTypeIDPath', "%#productType.getProductTypeID()#%", "LIKE");
         childProductTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
         var childProductTypesRecord = childProductTypeCollectionList.getRecords( formatRecords = true );
@@ -891,16 +929,19 @@ component  accessors="true" output="false"
         
         var descriptionTemplate = productType.getSettingValueFormatted('productTypeMetaDescriptionString');
         var metaKeywordsTemplate = productType.getSettingValueFormatted('productTypeMetaKeywordsString');
-        
+        getProductService().appendSettingsToProductType(productType);
+
         var response = {
             "title"         : productType.getProductTypeName(),
             "urlTitle"      : productType.getUrlTitle(),
+            "breadcrumbs"   : getProductService().getProductTypeAncestorsbyPath(productType.getProductTypeIDPath()),
             "imageFile"     : productType.getImageFile(),
-            "htmlTitle"     : productType.getCustomHtmlTitle(),
+            "settings"      : productType["settings"],
             "description"   : productType.stringReplace(template=descriptionTemplate, formatValues=true),
             "metaKeywords"  : productType.stringReplace(template=metaKeywordsTemplate, formatValues=true),
             "productTypeID" : productType.getProductTypeID()
         };
+
 
         // if image is not empty, prefix with base-path
         if( !isNull(response.imageFile) ){
@@ -1096,7 +1137,7 @@ component  accessors="true" output="false"
      	param name="arguments.data.phoneNumber" default="";
 
      	var addressID = "";
-     	var accountAddress = getHibachiScope().this.getAccountService().getAccountAddress( arguments.data.accountAddressID );
+     	var accountAddress = this.getAccountService().getAccountAddress( arguments.data.accountAddressID );
         
         if (!isNull(accountAddress) && getHibachiScope().getAccount().getAccountID() == accountAddress.getAccount().getAccountID() ){
             addressID = accountAddress.getAddressID();
@@ -1108,7 +1149,7 @@ component  accessors="true" output="false"
      	    newAddress = this.getAddressService().saveAddress(newAddress, arguments.data, "full");
      	    
      	    //save account address
-     	    accountAddress = getHibachiScope().this.getAccountService().saveAccountAddress( accountAddress, arguments.data );
+     	    accountAddress = this.getAccountService().saveAccountAddress( accountAddress, arguments.data );
      	    
             if(!newAddress.hasErrors() && !accountAddress.hasErrors()) {
   	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
@@ -2050,9 +2091,9 @@ component  accessors="true" output="false"
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-                var accountPaymentMethod = getHibachiScope().this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
+                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
             }else{
-                var accountPaymentMethod = getHibachiScope().this.getAccountService().newAccountPaymentMethod(  );	
+                var accountPaymentMethod = this.getAccountService().newAccountPaymentMethod(  );	
                 accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             }
             
@@ -2279,19 +2320,19 @@ component  accessors="true" output="false"
     }
     
     /** 
-     * @http-context changeOrder
-     * @description Change Order
+     * @http-context addCartToSession
+     * @description Add Cart on account to Session
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      */
-    public void function changeOrder( required struct data ){
+    public void function addCartToSession( required struct data ){
         param name="arguments.data.orderID" default="";
         
         var order = this.getOrderService().getOrder( arguments.data.orderID );
-        if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
+        if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() && order.getStatusCode() == "ostNotPlaced") {
             getHibachiScope().getSession().setOrder( order );
-            getHibachiScope().addActionResult( "public:cart.change", false );
+            getHibachiScope().addActionResult( "public:cart.addCartToSession", false );
         } else {
-            getHibachiScope().addActionResult( "public:cart.change", true );
+            getHibachiScope().addActionResult( "public:cart.addCartToSession", true );
         }
     }
     
@@ -4150,42 +4191,47 @@ component  accessors="true" output="false"
 	 * @includeAttributesMetadata, defaults to `false`; is boolean flag to return the attribute-sets metadata for that product
 	 */
 	public any function getProduct(required struct data ){
+        param name="arguments.data.urlTitle" default='';
 	    param name="arguments.data.includeAttributesMetadata" default=false;
-	     arguments.data.ajaxResponse['attributeSets'] = []
-	     
-	     if( arguments.data.includeAttributesMetadata ){
-            	if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeID') ){
-                	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
-            	}
-            	if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
-                	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
-            	}
-	     }
-	    
-	    // if this's  cal to get all-products
+        
+        // if there's some value for urlTitle, set the entityID
+        if( arguments.data.urlTitle.len() ){
+	        var product = this.getProductService().getProductByUrlTitle( arguments.data.urlTitle );
+	        if( !isNull(product) ){
+	            arguments.data.entityID = product.getProductID();
+	        }
+        }
+       
+	    // if there's no entityID, then we're assuming that this's a call to fetch multiple-products
 	    if( !len(arguments.data.entityID) ){
-    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-            arguments.data.ajaxResponse['data'].pageRecords = this.getProductService().appendImagesToProduct(arguments.data.ajaxResponse['data'].pageRecords);
-            arguments.data.ajaxResponse['data'].pageRecords = this.getProductService().appendCategoriesAndOptionsToProduct(arguments.data.ajaxResponse['data'].pageRecords);
-            if(arguments.data.includeAttributesMetadata && Len(arguments.data.ajaxResponse['data'].pageRecords) == 1){
-                var product = this.getProductService().getProduct(arguments.data.ajaxResponse['data'].pageRecords[1].productID)
-                if(!isNull(product)){
-                    arguments.data.ajaxResponse['attributeSets'] = getAttributeSetMetadataForProduct(product.getProductID(), product.getProductType().getProductTypeIDPath() ,product.getBrand().getBrandID() ); 
-                }
-            }
-                
+    	    var collectionData = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+            acollectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData.pageRecords);
+            
+            arguments.data.ajaxResponse['data'] = collectionData; 
             this.getHibachiScope().addActionResult("public:scope.getProduct", true);
             return;
         }
         
-       
+	    // if the API is requesting attribute-set metadata, we need to have `brandID` and `productTypeIDPath` in the collection-query result
+	    if( arguments.data.includeAttributesMetadata ){
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeIDPath') ){
+            	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
+            }
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
+            	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
+            }
+	     }
         
         var response = {};
-        response['product'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
-        response['product'] = this.getProductService().appendImagesToProduct([response['product']]);
+        
+        var product = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        product["breadcrumbs"] = getProductService().getProductTypeAncestorsbyPath(product['productType_productTypeIDPath']);
+        var updatedProductArray = [ product ];
+        updatedProductArray = this.getProductService().appendImagesToProducts(updatedProductArray);
+	    updatedProductArray = this.getProductService().appendCategoriesAndOptionsToProducts(updatedProductArray);
 
-	    response['product'] = this.getProductService().appendCategoriesAndOptionsToProduct(response['product']);
-	    response['product'] = response['product'][1]
+	    response['product'] = updatedProductArray[1];
         if(arguments.data.includeAttributesMetadata){
             response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
         }

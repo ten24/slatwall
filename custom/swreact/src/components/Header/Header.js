@@ -4,9 +4,9 @@ import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
 import AccountBubble from './AccountBubble'
 import { useTranslation } from 'react-i18next'
-import groupBy from 'lodash/groupBy'
 import queryString from 'query-string'
 import { useSelector } from 'react-redux'
+import { groupBy } from '../../utils'
 
 const extractMenuFromContent = content => {
   let menu = Object.keys(content)
@@ -20,7 +20,7 @@ const extractMenuFromContent = content => {
       return a.sortOrder - b.sortOrder
     })
   if (menu.length) {
-    const groupedItems = groupBy(menu, 'parentContentID')
+    const groupedItems = groupBy(menu, 'parentContent_contentID')
     menu = menu
       .map(item => {
         item.children = groupedItems.hasOwnProperty(item.contentID) ? groupedItems[item.contentID] : []
@@ -89,6 +89,22 @@ function Header({ logo, mobileLogo }) {
   const mainNavigation = content['header/main-navigation'] ? content['header/main-navigation'].customBody : ''
   const textInput = useRef(null)
   const mobileTextInput = useRef(null)
+  const toggleMenuButton = useRef(null)
+
+  history.listen(_ => {
+    // listen to path , and toggleNav on path change
+    toggleNav()
+  })
+
+  /**
+   * Toggle menu , while the sub-menu is clicked
+   */
+  const toggleNav = () => {
+    if (toggleMenuButton.current && toggleMenuButton.current.ariaExpanded === 'true') {
+      toggleMenuButton.current.click()
+    }
+  }
+
   return (
     <header className="shadow-sm">
       <div className="navbar-sticky bg-light">
@@ -143,7 +159,7 @@ function Header({ logo, mobileLogo }) {
                   </div>
                 </div>
                 <div className="navbar-toolbar d-flex flex-shrink-0 align-items-center">
-                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+                  <button ref={toggleMenuButton} className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" id="menuToggleButton">
                     <span className="navbar-toggler-icon"></span>
                   </button>
 

@@ -8,6 +8,7 @@
 .product-card {
   padding-bottom: $card-spacer-y;
   border: 0;
+  height: 100%;
   transition: $product-card-transition;
 
   .product-card-actions,
@@ -521,3 +522,21 @@
   }
 }
 .drift-zoom-pane { z-index: $zindex-fixed; }
+
+
+// Product Type Listing
+.typelisting-image {
+  height: 160px;
+  position: relative;
+  @include media-breakpoint-down(sm) {
+    height: 130px;
+  }
+  img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+  }
+}
