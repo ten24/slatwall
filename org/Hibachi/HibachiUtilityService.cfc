@@ -1432,16 +1432,6 @@
 			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
 		}
 		
-		
-		public string function prefixListItem(required string list, required string prefix) {
-			var prefix = arguments.prefix;
-			return ListMap(arguments.list , function(item){
-				return prefix & arguments.item; //beware of scope
-			})
-		}
-		
-		
-
     	/**
     	 * Takes a CSV string and convert it to an array of arrays based on the given field delimiter. 
     	 * Line delimiter is assumed to be new line / carriage return related.
@@ -1671,8 +1661,19 @@
 		}
 	}
 	
+	public string function prefixListItems( required string theList, required string thePrefix ){
+		return ListMap(arguments.theList , function(item){
+			return thePrefix & arguments.item; //beware of scope
+		});
+	}
 	
-	public struct function prefixStructKeys(required struct theStruct, required string thePrefix) {
+	public array function prefixArrayItems( required struct theArray, required string thePrefix ){
+		return arguments.theArray.map( function(item){
+			return thePrefix & arguments.item; //beware of arguments scope
+		});
+	}
+	
+	public struct function prefixStructKeys( required struct theStruct, required string thePrefix ){
 	    var prefixed = {};
 	    arguments.theStruct.each( function(key, value){
 	        prefixed[ thePrefix & arguments.key] = arguments.value;

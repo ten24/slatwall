@@ -371,6 +371,80 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	
+		
+	
+	/**
+	 * An utility function to pagimant over an ERP-one API, and import all of the items in one batch;
+	 * 
+	*/
+	public any function paginateAndImport(
+	    required string erpOneQuery, 
+	    required string columns, 
+	    required struct mapping, 
+	    required function recordFormatterFunction 
+	    
+	    numeric pageSize = 1;
+	){
+	    
+	    this.logHibachi("ERPONE - Starting paginating and importing - Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#]");
+		
+		var pageNumber = 1;
+		var hasPages = true;
+		var total = 0;
+		
+		// create a batch
+		var thisBatch = this.createNewImportBatch(
+	        mapping = arguments.mapping,
+	        batchItemsCount = 0,
+	        batchDescription = "ERPONE - Paginate and Import Batch for Entity-#arguments.mapping.entityName#, Mapping-[#arguments.mapping.mappingCode#], PageSize-#arguments.pageSize# "
+	    );
+		
+		// paginate
+		while(hasPages){
+			
+			this.logHibachi("ERPONE - Paginating #pageNumber#");
+			
+			// get data
+			var itemsArray = this.callErpOneGetDataApi({
+				"skip" : ( pageNumber - 1 ) * arguments.pageSize,
+				"take" : arguments.pageSize,
+				"query": arguments.erpOneQuery,
+				"columns" : arguments.columns
+			});
+			
+			this.logHibachi("ERPONE - skip #( pageNumber - 1 ) * arguments.pageSize# | take: #arguments.pageSize# = Returned : #arrayLen(itemsArray)#");
+			
+			// call formatter function;
+			var formatedItems = [] ;
+			for(var thisItem in itemsArray){
+			    formatRecords.append( arguments.recordFormatterFunction(thisItem) );
+			}
+			
+			var formatedItemsLen = formatedItems.len();
+			
+			
+			if( formatedItemsLen ){
+    			this.pushRecordsIntoImportQueue( arguments.mapping, formatedItems, thisBatch );
+    		}
+    		
+    		// 
+    		if( formatedItemsLen < arguments.pageSize){
+				hasPages = false;
+			}
+			total += formatedItemsLen;
+		    pageNumber++;
+		}
+		
+		// set the 
+		thisBatch.setInitialEntityQueueItemsCount( total );
+
+	    this.logHibachi("ERPONE - Finished paginating and importing - Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#]");
+		
+		return thisBatch;
+	}
+	
+	
+	// TODO: move to utility-service
 	public struct function swapStructKeys(required struct item, required struct keysMapping ){
 
 		var transformedItem = {};
@@ -500,189 +574,129 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		var utilityService = this.getHibachiUtilityService();
 		
-		
 		var isDevModeFlag = this.setting("devMode");
 		var company =  this.setting("prodCompany")
 		if(isDevModeFlag){
 		//	company = this.setting("devCompany"); DISABLED FOR TESTING
 		}
 
-		var requestQuery = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
-	
-		var pageNumber = 1;
-		var pageSize = 1;
-		var hasPages = true;
-		
-		var formatedOrders = [];
-		
-		while(hasPages){
-			
-			logHibachi("ERPONE - Paginating #pageNumber#");
-			
-			var ordersArray = this.callErpOneGetDataApi({
-				"skip" : ( pageNumber - 1 ) * pageSize,
-				"take" : pageSize,
-				"query": requestQuery,
-				"columns" : "oe_head.order,oe_head.name,oe_head.adr,oe_head.state,oe_head.postal_code,oe_head.country_code,oe_head.ship_via_code,oe_head.cu_po,oe_head.ord_date,oe_head.opn,oe_head.o_tot_gross,oe_head.stat,oe_head.customer,oe_head.ord_ext,oe_head.rec_seq"
-			});
-			
-			this.logHibachi("ERPONE - skip #( pageNumber - 1 ) * pageSize# | take: #pageSize# = Returned : #arrayLen(ordersArray)#");
-			
-			for(var order in ordersArray){
-			    
-			    var address = {
-					'streetAddress'     : order['oe_head_adr'][2],
-					'street2Address'    : order['oe_head_adr'][3],
-					'city'              : order['oe_head_adr'][4],
-					'postalCode'        : order['oe_head_postal_code'],
-					'stateCode'         : order['oe_head_state'],
-					'countryCode'       : 'US',
-					'remoteAddressID'   : 'billing_'&order['__rowids']
-					
-					// 'company' : ,
-					// 'email' : ,
-					// 'locality' : ,
-					// 'phoneNumber' : ,
-			    }
-			    
-			    var billingAddress = utilityService.prefixStructKeys(address, 'BillingAddress_');
-			    billingAddress['addressNickName'] = 'Billing Address';
-			    
-			    var shippingAddress = utilityService.prefixStructKeys(address, 'ShippingAddress_');
-			    shippingAddress['addressNickName'] = 'Shipping Address';
-				
-				var orderData =  {
-					//'CanceledDateTime' : ,
-					'CurrencyCode' : 'USD',
-					//'EstimatedDeliveryDateTime' : ,
-					//'OrderCloseDateTime' : ,
-					//'OrderIPAddress' : ,
-					//'OrderNotes' : ,
-					'OrderNumber' : order['oe_head_order'],
-					'OrderOpenDateTime' : order['oe_head_order'],
-					//'OrderSiteCode' : ,
-					'OrderStatusCode' : order['oe_head_order'],
-				// 	'OrderTypeCode' : ,
-					'RemoteAccountID' : order['oe_head_customer'],
-					'RemoteOrderID' : order['__rowids'],
-				};
 
-				
-				/*
-    				OrderHeader Status codes
-    				
-    				CH - credit hold
-    				CL - closed
-    				HO - order hold
-    				
-    				IJ - invoice journal (posted)
-    				IP - invoice printed
-    				IV - invoice (not yet printed)
-    				
-    				OE - Order Entry
-    				OP - Order Printed
-    				QP - Quote Printed
-				*/
-				
-					
-				// append billing and shipping addresses			
-				orderData.append(billingAddress);
-				orderData.append(shippingAddress);
-				
-				
-				formatedOrders.append(orderData);
-			}
-			
-			if(arrayLen(ordersArray) < pageSize){
-				hasPages = false;
-			}
-			
-			pageNumber++;
-		}
-		
-		if( arrayLen(formatedOrders) ){
-		    //TODO: reuse the batch
-			this.pushRecordsIntoImportQueue( "Account", formatedOrders );
-		}
-		
-		this.logHibachi("ERPONE - Finish importing Accounts");
-	}
-	
-	
-	public any function paginateAndImport(required string query, required struct mapping, required any recordFormatteFunction ){
-	    this.logHibachi("ERPONE - Starting importing importErpOneOrders");
-		
-		var utilityService = this.getHibachiUtilityService();
-		
-		
-		var isDevModeFlag = this.setting("devMode");
-		var company =  this.setting("prodCompany")
-		if(isDevModeFlag){
-		//	company = this.setting("devCompany"); DISABLED FOR TESTING
-		}
-
-		var requestQuery = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
-	
-		var pageNumber = 1;
-		var pageSize = 1;
-		var hasPages = true;
-		var totle = 0;
-		
-		var batch = this.createNewImportBatch(
-	        mapping = arguments.mapping,
-	        batchItemsCount = 0;
-	        batchDescription = "Import Batch for Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#] created on " & dateFormat(now(), "long"
-	    );
-		
-		while(hasPages){
-			
-			this.logHibachi("ERPONE - Paginating #pageNumber#");
-			
-			var formatedItems = this.
-			
-			// call formatter function;
-			
-			
-			var formatedItemsLen = formatedItems.len();
-			
-			if( formatedItemsLen ){
-    			this.pushRecordsIntoImportQueue( "Account", formatedItems, batch);
-    		}
-    		
-    		if( formatedItemsLen < pageSize){
-				hasPages = false;
-			}
-			totle += formatedItemsLen;
-		    pageNumber++;
-		}
-		
-		this.logHibachi("ERPONE - Finish importing Accounts");
-	}
-	
-	public void function postProcessOrderImport(){
-		this.importErpOneOrderItemsByOrder(orderData.orderNumber, company);
-		this.fetchErpOneOrderPaymentsByOrder(orderData.orderNumber, company);
-	}
-	
-	public any function importErpOneOrderItemsByOrder(required any orderNumber, required string company){
+		var getOrdersQueryString = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
+        var columns = [ 'order','name','adr','state','postal_code','country_code','ship_via_code','cu_po','ord_date','opn','o_tot_gross','stat','customer','ord_ext','rec_seq' ];
+	    columns = utilityService.prefixListItems(columns.toList(), 'oe_head.');
 	    
-		var query = "
-		            FOR EACH oe_line NO-LOCK 
-		                WHERE oe_line.company_oe = '#arguments.company#' 
-		            AND oe_line.rec_type = 'O' 
-		            AND oe_line.order = '#arguments.OrderNumber#' 
-		      ";
-		      
-		this.logHibachi("ERPONE - fetching order-items for order: #arguments.orderNumber#, Query: #query#");
-			 
-		var orderItems = this.callErpOneGetDataApi({
-			"query": query,
-			"columns" : "order,line,item,descr,price,list_price,q_ord"
-		});
+	    // TODO: prefix erp-one mapping-codes with `erpOne-` ==> erpOneOrder;
+	    var eroOneOrderMapping = this.getMappingByMappingCode('Order');
+	    
+    	var recordFormatterFunction = function(required struct erponeOrder){
+    	    
+    	    var formattedOrderData =  {
+				//'CanceledDateTime' : ,
+				'CurrencyCode' : 'USD',
+				//'EstimatedDeliveryDateTime' : ,
+				//'OrderCloseDateTime' : ,
+				//'OrderIPAddress' : ,
+				//'OrderNotes' : ,
+				'OrderNumber' : arguments.erponeOrder['oe_head_order'],
+				'OrderOpenDateTime' : arguments.erponeOrder['oe_head_order'],
+				//'OrderSiteCode' : ,
+				'OrderStatusCode' : arguments.erponeOrder['oe_head_order'],
+			// 	'OrderTypeCode' : ,
+				'RemoteAccountID' : arguments.erponeOrder['oe_head_customer'],
+				'RemoteOrderID' : arguments.erponeOrder['__rowids'],
+			};
+
+			
+			/*
+				OrderHeader Status codes
+				
+				CH - credit hold
+				CL - closed
+				HO - order hold
+				
+				IJ - invoice journal (posted)
+				IP - invoice printed
+				IV - invoice (not yet printed)
+				
+				OE - Order Entry
+				OP - Order Printed
+				QP - Quote Printed
+			*/
+    	    
+    	    
+    	    
+			// append billing and shipping addresses			
+		    var address = {
+				'streetAddress'     : arguments.erponeOrder['oe_head_adr'][2],
+				'street2Address'    : arguments.erponeOrder['oe_head_adr'][3],
+				'city'              : arguments.erponeOrder['oe_head_adr'][4],
+				'postalCode'        : arguments.erponeOrder['oe_head_postal_code'],
+				'stateCode'         : arguments.erponeOrder['oe_head_state'],
+				'countryCode'       : 'US',
+				// 'company' : ,
+				// 'email' : ,
+				// 'locality' : ,
+				// 'phoneNumber' : ,
+		    }
+		    
+		    var billingAddress = utilityService.prefixStructKeys(address, 'BillingAddress_');
+		    billingAddress['addressNickName'] = 'Billing Address';
+		    billingAddress['remoteAddressID'] = 'billing_'&arguments.erponeOrder['__rowids'];
+		    
+		    var shippingAddress = utilityService.prefixStructKeys(address, 'ShippingAddress_');
+		    shippingAddress['addressNickName'] = 'Shipping Address';
+		    shippingAddress['remoteAddressID'] = 'shipping_'&arguments.erponeOrder['__rowids'];
+				
+			formattedOrderData.append(billingAddress);
+			formattedOrderData.append(shippingAddress);
+			
+			return formattedOrderData;
+		}
 		
-		var transformedItems = [];
-		// TODO: move to variables scope as it's constant
-		var erponeItemMapping = {
+		
+		var orderImportBatch = this.paginateAndImport( 
+		    erpOneQuery             = getOrdersQueryString,
+		    columns                 = columns,
+		    mapping                 = eroOneOrderMapping,
+		    recordFormatterFunction = recordFormatterFunction
+		);
+		
+	}
+	
+
+    // TODO: arguments
+	public void function postProcessOrderImport(){
+		this.importErpOneOrderItemsByOrder(orderData.orderNumber);
+		this.importErpOneOrderPaymentsByOrder(orderData.orderNumber);
+	}
+	
+	public void function postProcessOrderItemImport(){
+		this.importErpOneOrderItemShipmentsByOrderItem(orderData.orderNumber);
+	}
+	
+	public any function importErpOneOrderItemsByOrder(required any orderNumber){
+	    
+	    var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
+		if(isDevModeFlag){
+		//	company = this.setting("devCompany"); DISABLED FOR TESTING
+		}
+	    
+		var getOrderItemsQueryString = "
+            FOR EACH oe_line NO-LOCK 
+                WHERE oe_line.company_oe = '#company#' 
+            AND oe_line.rec_type = 'O' 
+            AND oe_line.order = '#arguments.orderNumber#' 
+        ";
+		var columns = "order,line,item,descr,price,list_price,q_ord";
+		      
+		this.logHibachi("ERPONE - importing order-items for order: #arguments.orderNumber#, Query: #query#, Columns: #columns#");
+		
+		// TODO: prefix erp-one mapping-codes with `erpOne-` ==> erpOneOrder;
+	    var eroOneOrderItemMapping = this.getMappingByMappingCode('Order');
+	    
+	    // TODO: move to variables scope as it's constant
+	    var erponeOrderItemStructKeyMap = {
 			"line"       : "line",
 			"item"       : "remoteSkuID",
 			"order"      : "remoteOrderID",
@@ -690,9 +704,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			"q_ord"      : "quantity",
 			"list_price" : "skuPrice"
 		};
-
-		for(var erponeItem in  orderItems ){
-    		var transformedItem = this.swapStructKeys( erpOneItem, erponeItemMapping);
+		
+    	var recordFormatterFunction = function(required struct erponeOrderItem){
+    	    var transformedItem = this.swapStructKeys( erponeOrderItem, erponeOrderItemStructKeyMap);
 	    	
 	    	// make uniquee import-remote-id for Slatwall's - orderItem
 	    	transformedItem['remoteOrderItemID'] = transformedItem.remoteOrderID&"_"&transformedItem.line;
@@ -702,20 +716,30 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	
 	    	// TODO: order-item-type and status
 	    	
-		    transformedItems.append( transformedItem );
-		}
-		
-		return transformedItems;
+	    	return transformedItem;
+    	}
+    	
+    	var orderItemsImportBatch = this.paginateAndImport( 
+		    erpOneQuery             = getOrderItemsQueryString,
+		    columns                 = columns,
+		    mapping                 = eroOneOrderItemMapping,
+		    recordFormatterFunction = recordFormatterFunction
+		);
 	}
 	
-	public any function fetchErpOneOrderPaymentsByOrder(required any orderNumber, required string company){
+	public any function importErpOneOrderPaymentsByOrder(required any orderNumber){
+	    var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
+		if(isDevModeFlag){
+		//	company = this.setting("devCompany"); DISABLED FOR TESTING
+		}
 	    
-		var query = "
-		            FOR EACH oe_head NO-LOCK 
-		                WHERE oe_head.company_oe = '#arguments.company#' 
-		            AND oe_head.rec_type = 'I' 
-		            AND oe_head.order = '#arguments.OrderNumber#'
-		          ";
+		var getOrderPaymentsQueryString = "
+            FOR EACH oe_head NO-LOCK 
+                WHERE oe_head.company_oe = '#arguments.company#' 
+            AND oe_head.rec_type = 'I' 
+            AND oe_head.order = '#arguments.OrderNumber#'
+        ";
 		          
         var columns = [ 
             "adr",
@@ -745,35 +769,38 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             "postal_code"
         ];        
         
-		this.logHibachi("ERPONE - fetching order-shipments for order: #arguments.orderNumber#, Query: #query#");
-			 
-		var orderInvoices = this.callErpOneGetDataApi({
-			"query": query,
-			"columns" : columns.toList()
-		});
+		      
+		this.logHibachi("ERPONE - importing order-payments for order: #arguments.orderNumber#, Query: #query#, Columns: #columns#");
 		
-		var transformedItems = [];
-
-		for(var erponeItem in  orderInvoices ){
-    		var transformedItem = {};
-    		
-    		// TODO: 
-	    	
-		    transformedItems.append( orderInvoices );
-		}
-		
-		return transformedItems;
-	}
-	
-	
-	public any function fetchErpOneOrderShipmentsByOrder(required any orderNumber, required string company){
+		// TODO: prefix erp-one mapping-codes with `erpOne-` ==> erpOneOrder;
+	    var eroOneOrderPaymentMapping = this.getMappingByMappingCode('OrderPayment');
 	    
-		var query = "
-		            FOR EACH oe_head NO-LOCK 
-		                WHERE oe_head.company_oe = '#arguments.company#' 
-		            AND oe_head.rec_type = 'S' 
-		            AND oe_head.order = '#arguments.OrderNumber#'
-		          ";
+	    
+    	var recordFormatterFunction = function(required struct erponeOrderPayment){
+    	    var transformedItem = {};
+	    	
+	    	// TODO: order-item-type and status
+	    	
+	    	return transformedItem;
+    	}
+    	
+    	var orderPaymentsImportBatch = this.paginateAndImport( 
+		    erpOneQuery             = getOrderPaymentsQueryString,
+		    columns                 = columns,
+		    mapping                 = eroOneOrderPaymentMapping,
+		    recordFormatterFunction = recordFormatterFunction
+		);
+	}
+
+	
+	public any function importErpOneOrderItemShipmentsByOrderItem(required any orderNumber){
+	    
+		var getOrderItemShipmentsQueryString = "
+            FOR EACH oe_head NO-LOCK 
+                WHERE oe_head.company_oe = '#arguments.company#' 
+            AND oe_head.rec_type = 'S' 
+            AND oe_head.order = '#arguments.OrderNumber#'
+        ";
 		          
         var columns = [ 
                         "adr",
@@ -806,18 +833,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
                         "ship_date"
                     ];        
         
-		this.logHibachi("ERPONE - fetching order-shipments for order: #arguments.orderNumber#, Query: #query#");
-			 
-		var orderShipments = this.callErpOneGetDataApi({
-			"query": query,
-			"columns" : columns.toList()
-		});
+		this.logHibachi("ERPONE - fetching order-item-shipments for order: #arguments.orderNumber#, Query: #query#");
 		
-		var transformedItems = [];
+		// TODO: prefix erp-one mapping-codes with `erpOne-` ==> erpOneOrder;
+	    var eroOneOrderPaymentMapping = this.getMappingByMappingCode('OrderPayment');
+	    
+    	var recordFormatterFunction = function(required struct erponeOrderPayment){
 
-		for(var erponeItem in  orderShipments ){
-		    
-    		var transformedItem = {
+	    	var transformedItem = {
     		    // shipping address
         		'shippingAddress_addressNickName'   : 'shipping Address',
     			'ShippingAddress_streetAddress'     : erponeItem['adr'][1],
@@ -861,8 +884,17 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 
 		    transformedItems.append( orderShipments );
-		}
-		
+	    	
+	    	return transformedItem;
+    	}
+    	
+    	var orderPaymentsImportBatch = this.paginateAndImport( 
+		    erpOneQuery             = getOrderPaymentsQueryString,
+		    columns                 = columns,
+		    mapping                 = eroOneOrderpaymentMapping,
+		    recordFormatterFunction = recordFormatterFunction
+		);
+
 		return transformedItems;
 	}
 	
@@ -1014,7 +1046,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	**/ 
 	public any function convertSwAccountToErponeAccount(required any account){
 		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,remoteID,company,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
-		var addressPropList = 	this.getHibachiUtilityService().prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
+		var addressPropList = 	this.getHibachiUtilityService().prefixListItems("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
 
 		accountPropList = accountPropList & ',' & addressPropList;
 		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
