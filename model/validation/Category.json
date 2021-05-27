@@ -1,5 +1,6 @@
 {
 	"properties": {
+		"categoryName": [{ "required" : true }],
 		"childCategories": [{ "contexts": "delete", "maxCollection": 0 }]
 	}
 }
