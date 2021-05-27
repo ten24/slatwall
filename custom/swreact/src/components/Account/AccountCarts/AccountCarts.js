@@ -45,7 +45,7 @@ const OrderListItem = props => {
   )
 }
 
-const AccountCarts = () => {
+const AccountCarts = ({ customBody, crumbs, title, contentTitle }) => {
   const [keyword, setSearchTerm] = useState('')
   const { t } = useTranslation()
   let [orders, setRequest] = useGetAccountCartsAndQuotes()
@@ -63,8 +63,9 @@ const AccountCarts = () => {
   }, [orders, keyword, setRequest])
 
   return (
-    <AccountLayout>
+    <AccountLayout crumbs={crumbs} title={title}>
       <AccountToolBar term={keyword} updateTerm={setSearchTerm} search={search} />
+      <AccountContent contentTitle={contentTitle} customBody={customBody} />
 
       <div className="table-responsive font-size-md">
         <table className="table table-hover mb-0">
