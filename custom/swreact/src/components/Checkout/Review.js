@@ -41,7 +41,16 @@ const ReviewSlide = ({ currentStep }) => {
             <Link to="/checkout/payment">{t('frontend.core.edit')}</Link>
           </div>
         )}
-     
+        {payment.paymentMethod.paymentMethodType === 'giftCard' && (
+          <div className="col-md-4">
+            <GiftCardDetails />
+          </div>
+        )}
+        {payment.paymentMethod.paymentMethodType === 'termPayment' && (
+          <div className="col-md-4">
+            <TermPaymentDetails termPayment={payment} />
+          </div>
+        )}
       </div>
 
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Review your order</h2>

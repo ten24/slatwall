@@ -84,8 +84,6 @@ const ListPayments = () => {
     return null
   }
   
-  console.log("param", location.pathname)
-
   return (
     <>
       <p>{t('frontend.checkout.payments')}</p>
