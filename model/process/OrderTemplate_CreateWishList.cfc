@@ -51,28 +51,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entity
 	property name="orderTemplate";
 
-	property name="newAccountFlag";
+	property name="newAccountFlag" default=false;
 	property name="accountID" hb_rbKey="entity.account" cfc="Account";
-	property name="firstName" hb_rbKey="entity.account.firstName";
-	property name="lastName" hb_rbKey="entity.account.lastName";
-	property name="company" hb_rbKey="entity.account.company";
-	property name="phoneNumber";
-	property name="emailAddress";
-	property name="emailAddressConfirm";
-	property name="createAuthenticationFlag" hb_rbKey="processObject.account_create.createAuthenticationFlag";
-	property name="organizationFlag";
-	property name="password";
-	property name="passwordConfirm";
 	property name="orderTemplateName";
 	
 	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
-	property name="frequencyTermID" hb_rbKey="entity.orderTemplate.frequencyTerm" hb_formFieldType="select";
 	property name="orderTemplateTypeID" hb_rbKey="entity.orderTemplate.orderTemplateType" hb_formFieldType="select";
 	property name="siteID" hb_rbKey="entity.orderTemplate.site" hb_formFieldType="select";  
 	
-	property name="scheduleOrderDayOfTheMonth";
-	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
-	
+
 	public array function getCurrencyCodeOptions() {
 		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();
 		if (ArrayLen(currencyCodeOptions) GT 1) {
@@ -80,10 +67,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return currencyCodeOptions;
 	}	
-
-	public array function getFrequencyTermIDOptions() {
-		return getOrderTemplate().getFrequencyTermOptions();
-	}
 
 	public array function getOrderTemplateTypeIDOptions() {
 		var typeCollection = getService('TypeService').getTypeCollectionList();
@@ -97,13 +80,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		siteCollection.setDisplayProperties('siteID|value,siteName|name');
 		return siteCollection.getRecords(); 
 	} 	
-	
-	public boolean function getNewAccountFlag() {
-		if(!structKeyExists(variables, "newAccountFlag")) {
-			variables.newAccountFlag = 0;
-		}
-		return variables.newAccountFlag;
-	}
+
 	
 	public any function getCurrencyCode() {
 		if( !StructKeyExists(variables, 'currencyCode') || IsNull(variables.currencyCode) ) {
@@ -126,6 +103,25 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!isNull(variables.site) ){
 			return variables['site'];
 		}
+	}
+	
+	public any function getAccount() {
+		if(!StructKeyExists(variables, 'account') ){
+			if( !IsNull(variables.accountID) && len( trim(variables.accountID) ) ){
+				variables['account'] = getService('AccountService').getAccount( variables.accountID );
+			}
+		}
+		if(!isNull(variables.account) ){
+			return variables['account'];
+		}
+	}	    
+
+
+	public any function getOrderTemplateName() {
+		if(!StructKeyExists(variables, 'orderTemplateName') ){
+			variables.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
+		}
+		return variables['orderTemplateName'];
 	}
 	
 }
