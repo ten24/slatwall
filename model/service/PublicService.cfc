@@ -553,6 +553,13 @@ component  accessors="true" output="false"
                 return;
             }
         }
+        productBundleBuild = getProductService().saveProductBundleBuild(productBundleBuild);
+
+        if( productBundleBuild.hasErrors() ){
+            this.addErrors(arguments.data, productBundleBuild.getErrors());
+            getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+            return;
+        }
 
         getHibachiScope().addActionResult("public:product.createProductBundleBuild",false);
 	}

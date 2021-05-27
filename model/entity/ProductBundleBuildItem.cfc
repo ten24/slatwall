@@ -88,6 +88,11 @@ component entityname="SlatwallProductBundleBuildItem" table="SwProductBundleBuil
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+
+	public void function setProductBundleBuild( required any productBundleBuild ){
+		variables.productBundleBuild = arguments.productBundleBuild;
+		variables.productBundleBuild.addProductBundleBuildItem(this);
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
