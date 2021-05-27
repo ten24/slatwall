@@ -1671,6 +1671,15 @@
 		}
 	}
 	
+	
+	public struct function prefixStructKeys(required struct theStruct, required string thePrefix) {
+	    var prefixed = {};
+	    arguments.theStruct.each( function(key, value){
+	        prefixed[ thePrefix & arguments.key] = arguments.value;
+	    })
+	    return prefixed;
+	}
+	
 	public struct function flattenStruct( required struct original, string delimiter=".", string prefix="" ){
 	    var flattened = {};
 	    

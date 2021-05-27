@@ -483,24 +483,35 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		this.logHibachi("ERPONE - Finish importing Accounts");
 	}
 	
+	
+	/*
+	    Order Import flow
+	    
+	    1- fetch order and add to queue
+
+        2- post processing of the order pull payments and items add to queue;
+        
+        3. post processing of items pull shipments and add to queue
+
+	*/
 	public any function importErpOneOrders(){
 		
 		this.logHibachi("ERPONE - Starting importing importErpOneOrders");
 		
+		var utilityService = this.getHibachiUtilityService();
+		
+		
 		var isDevModeFlag = this.setting("devMode");
 		var company =  this.setting("prodCompany")
-		
 		if(isDevModeFlag){
 		//	company = this.setting("devCompany"); DISABLED FOR TESTING
 		}
-		
 
 		var requestQuery = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
 	
 		var pageNumber = 1;
 		var pageSize = 1;
 		var hasPages = true;
-		
 		
 		var formatedOrders = [];
 		
@@ -515,18 +526,32 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				"columns" : "oe_head.order,oe_head.name,oe_head.adr,oe_head.state,oe_head.postal_code,oe_head.country_code,oe_head.ship_via_code,oe_head.cu_po,oe_head.ord_date,oe_head.opn,oe_head.o_tot_gross,oe_head.stat,oe_head.customer,oe_head.ord_ext,oe_head.rec_seq"
 			});
 			
-			logHibachi("ERPONE - skip #( pageNumber - 1 ) * pageSize# | take: #pageSize# = Returned : #arrayLen(ordersArray)#");
+			this.logHibachi("ERPONE - skip #( pageNumber - 1 ) * pageSize# | take: #pageSize# = Returned : #arrayLen(ordersArray)#");
+			
 			for(var order in ordersArray){
+			    
+			    var address = {
+					'streetAddress'     : order['oe_head_adr'][2],
+					'street2Address'    : order['oe_head_adr'][3],
+					'city'              : order['oe_head_adr'][4],
+					'postalCode'        : order['oe_head_postal_code'],
+					'stateCode'         : order['oe_head_state'],
+					'countryCode'       : 'US',
+					'remoteAddressID'   : 'billing_'&order['__rowids']
+					
+					// 'company' : ,
+					// 'email' : ,
+					// 'locality' : ,
+					// 'phoneNumber' : ,
+			    }
+			    
+			    var billingAddress = utilityService.prefixStructKeys(address, 'BillingAddress_');
+			    billingAddress['addressNickName'] = 'Billing Address';
+			    
+			    var shippingAddress = utilityService.prefixStructKeys(address, 'ShippingAddress_');
+			    shippingAddress['addressNickName'] = 'Shipping Address';
 				
 				var orderData =  {
-					'BillingAddress_addressNickName' : 'Billing Address',
-					'BillingAddress_city' : order['oe_head_adr'][4],
-					'BillingAddress_countryCode' : 'US',
-					'BillingAddress_postalCode' : order['oe_head_postal_code'],
-					'BillingAddress_remoteAddressID' : 'billing_'&order['__rowids'],
-					'BillingAddress_stateCode' : order['oe_head_state'],
-					'BillingAddress_street2Address' : order['oe_head_adr'][3],
-					'BillingAddress_streetAddress' : order['oe_head_adr'][2],
 					//'CanceledDateTime' : ,
 					'CurrencyCode' : 'USD',
 					//'EstimatedDeliveryDateTime' : ,
@@ -540,19 +565,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				// 	'OrderTypeCode' : ,
 					'RemoteAccountID' : order['oe_head_customer'],
 					'RemoteOrderID' : order['__rowids'],
-					'ShippingAddress_addressNickName' : 'Shipping Address',
-					'ShippingAddress_city' : order['oe_head_adr'][4],
-					// 'ShippingAddress_company' : ,
-					'ShippingAddress_countryCode' : 'US',
-					// 'ShippingAddress_email' : ,
-					// 'ShippingAddress_locality' : ,
-					// 'ShippingAddress_phoneNumber' : ,
-					'ShippingAddress_postalCode' : order['oe_head_postal_code'],
-					'ShippingAddress_remoteAddressID' : 'shipping_'&order['__rowids'],
-					'ShippingAddress_stateCode' : order['oe_head_state'],
-					'ShippingAddress_street2Address' : order['oe_head_adr'][3],
-					'ShippingAddress_streetAddress' : order['oe_head_adr'][2]
 				};
+
 				
 				/*
     				OrderHeader Status codes
@@ -570,28 +584,87 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     				QP - Quote Printed
 				*/
 				
-				orderData['orderItems'] = this.fetchErpOneOrderItemsByOrder(orderData.orderNumber, company);
-				orderData['orderPayments'] = this.fetchErpOneOrderPaymentsByOrder(orderData.orderNumber, company);
+					
+				// append billing and shipping addresses			
+				orderData.append(billingAddress);
+				orderData.append(shippingAddress);
 				
-				dump(orderData); abort;
 				
-				arrayAppend(formatedOrders,orderData);
+				formatedOrders.append(orderData);
 			}
 			
 			if(arrayLen(ordersArray) < pageSize){
 				hasPages = false;
 			}
-			pageNumber++;
 			
+			pageNumber++;
 		}
-		if(arrayLen(formatedOrders)){
+		
+		if( arrayLen(formatedOrders) ){
+		    //TODO: reuse the batch
 			this.pushRecordsIntoImportQueue( "Account", formatedOrders );
 		}
 		
 		this.logHibachi("ERPONE - Finish importing Accounts");
 	}
 	
-	public any function fetchErpOneOrderItemsByOrder(required any orderNumber, required string company){
+	
+	public any function paginateAndImport(required string query, required struct mapping, required any recordFormatteFunction ){
+	    this.logHibachi("ERPONE - Starting importing importErpOneOrders");
+		
+		var utilityService = this.getHibachiUtilityService();
+		
+		
+		var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
+		if(isDevModeFlag){
+		//	company = this.setting("devCompany"); DISABLED FOR TESTING
+		}
+
+		var requestQuery = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
+	
+		var pageNumber = 1;
+		var pageSize = 1;
+		var hasPages = true;
+		var totle = 0;
+		
+		var batch = this.createNewImportBatch(
+	        mapping = arguments.mapping,
+	        batchItemsCount = 0;
+	        batchDescription = "Import Batch for Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#] created on " & dateFormat(now(), "long"
+	    );
+		
+		while(hasPages){
+			
+			this.logHibachi("ERPONE - Paginating #pageNumber#");
+			
+			var formatedItems = this.
+			
+			// call formatter function;
+			
+			
+			var formatedItemsLen = formatedItems.len();
+			
+			if( formatedItemsLen ){
+    			this.pushRecordsIntoImportQueue( "Account", formatedItems, batch);
+    		}
+    		
+    		if( formatedItemsLen < pageSize){
+				hasPages = false;
+			}
+			totle += formatedItemsLen;
+		    pageNumber++;
+		}
+		
+		this.logHibachi("ERPONE - Finish importing Accounts");
+	}
+	
+	public void function postProcessOrderImport(){
+		this.importErpOneOrderItemsByOrder(orderData.orderNumber, company);
+		this.fetchErpOneOrderPaymentsByOrder(orderData.orderNumber, company);
+	}
+	
+	public any function importErpOneOrderItemsByOrder(required any orderNumber, required string company){
 	    
 		var query = "
 		            FOR EACH oe_line NO-LOCK 

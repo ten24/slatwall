@@ -87,22 +87,24 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	
   	/*****************              Process - Queue - Process                 ******************/
 
-    public any function createNewImportBatch(required struct mapping, required any queryOrArrayOfStruct, string batchDescription){
+    public any function createNewImportBatch(required struct mapping, any numeric batchItemsCount, any queryOrArrayOfStruct, string batchDescription){
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
 	    
-	    if(isQuery(arguments.queryOrArrayOfStruct)){
-	        var batchItemsCount = arguments.queryOrArrayOfStruct.recordCount; // query
-	    } else {
-	        var batchItemsCount = arguments.queryOrArrayOfStruct.len() // array
+	    if( !isNull(arguments.queryOrArrayOfStruct) ){
+    	    if(isQuery(arguments.queryOrArrayOfStruct)){
+    	        arguments.batchItemsCount = arguments.queryOrArrayOfStruct.recordCount; // query
+    	    } else {
+    	        arguments.batchItemsCount = arguments.queryOrArrayOfStruct.len() // array
+    	    }
 	    }
 	    
 	    if(isNull(arguments.batchDescription)){
-	        arguments.batchDescription = "Import Batch for Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#] of length [#batchItemsCount#]  created on " & dateFormat(now(), "long");
+	        arguments.batchDescription = "Import Batch for Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#] of length [#arguments.batchItemsCount#]  created on " & dateFormat(now(), "long");
 	    }
 	    
 	    newBatch.setBaseObject( arguments.mapping.entityName );
-	    newBatch.setInitialEntityQueueItemsCount(batchItemsCount);
+	    newBatch.setInitialEntityQueueItemsCount(arguments.batchItemsCount);
 	    newBatch.setBatchDescription(arguments.batchDescription);
 	    
 	    this.getHibachiEntityQueueService().saveBatch(newBatch);
