@@ -139,7 +139,6 @@ const ShippingSlide = ({ currentStep }) => {
   let selectedAccountID = useSelector(accountAddressSelector)
   const orderFulfillment = useSelector(fulfillmentSelector)
   const { isFetching } = useSelector(state => state.cart)
-  const { t } = useTranslation()
 
   useEffect(() => {
     dispatch(getEligibleFulfillmentMethods())

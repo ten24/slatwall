@@ -4,9 +4,9 @@ import { useHistory } from 'react-router-dom'
 import CartMenuItem from './CartMenuItem'
 import AccountBubble from './AccountBubble'
 import { useTranslation } from 'react-i18next'
-import groupBy from 'lodash/groupBy'
 import queryString from 'query-string'
 import { useSelector } from 'react-redux'
+import { groupBy } from '../../utils'
 
 const extractMenuFromContent = content => {
   let menu = Object.keys(content)
@@ -20,7 +20,7 @@ const extractMenuFromContent = content => {
       return a.sortOrder - b.sortOrder
     })
   if (menu.length) {
-    const groupedItems = groupBy(menu, 'parentContentID')
+    const groupedItems = groupBy(menu, 'parentContent_contentID')
     menu = menu
       .map(item => {
         item.children = groupedItems.hasOwnProperty(item.contentID) ? groupedItems[item.contentID] : []

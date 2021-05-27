@@ -177,7 +177,6 @@ const PaymentSlide = ({ currentStep }) => {
     setPaymentMethodOnOrder(paymentMethod.paymentMethodID)
     setSelectedPaymentMethod(paymentMethod.paymentMethodID)
   }
-  console.log('eligiblePaymentMethodDetails', eligiblePaymentMethodDetails)
   return (
     <Overlay active={isFetching} spinner>
       {/* <!-- Payment Method --> */}

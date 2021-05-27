@@ -1,9 +1,8 @@
 import axios from 'axios'
-import store from '../createStore'
-
+const siteCode = process.env.REACT_APP_SITE_CODE
+// This sadly needs to be a in localStorage or default because of how rollup is setup.
 axios.interceptors.request.use(config => {
-  const siteCode = store.getState().configuration.site.siteCode
-  config.headers['SWX-requestSiteCode'] = siteCode
+  config.headers['SWX-requestSiteCode'] = localStorage.getItem('siteCode') || siteCode
   if (localStorage.getItem('token')) {
     config.headers['Auth-Token'] = `Bearer ${localStorage.getItem('token')}`
   }
