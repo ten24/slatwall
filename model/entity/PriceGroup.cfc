@@ -85,9 +85,7 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	// Non-Persistent Properties
 	property name="parentPriceGroupOptions" persistent="false";
 	
-	// caculated property for account count
-	property name="calculatedAccountsCount" ormtype="integer";
-
+	
 	// Loop over all Price Group Rates and pull the one that is global
     public any function getGlobalPriceGroupRate() {
     	var rates = getPriceGroupRates();

@@ -9,24 +9,19 @@
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
-			<cfset local.formattedStartDate="#dateFormat(rc.product.getPublishedStartDateTime(), 'mm/dd/YYYY')#">
-			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedStartDateTime" edit="#rc.edit#" fieldType="text" fieldAttributes="sw-date-picker 
-														ng-model=""publishedStartDateTime""
-														ng-init=""publishedStartDateTime='#local.formattedStartDate#'""
-														autocomplete=""off"" ng-cloak">
+			<hb:HibachiPropertyDisplay object="#rc.product#" property="productFeaturedFlag" edit="#rc.edit#">
 			
-			<cfset local.formattedEndDate="#dateFormat(rc.product.getPublishedEndDateTime(), 'mm/dd/YYYY')#">
-			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedEndDateTime" edit="#rc.edit#" fieldType="text" fieldAttributes="sw-date-picker 
-														ng-model=""publishedEndDateTime""
-														ng-init=""publishedEndDateTime='#local.formattedEndDate#'""
-														autocomplete=""off"" ng-cloak">
+			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedStartDateTime" edit="#rc.edit#" showNgDateTimePicker="true">
+			
+			
+			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedEndDateTime" edit="#rc.edit#" showNgDateTimePicker="true">
 			
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="urlTitle" edit="#rc.edit#" valueLink="#rc.product.getProductURL()#">
 			<cfif rc.product.getBaseProductType() EQ "event">
-				<hb:HibachiPropertyDisplay object="#rc.product#" property="purchaseStartDateTime" hb_rbKey="entity.product.purchaseStartDateTime" edit="#rc.edit#"/>
-				<hb:HibachiPropertyDisplay object="#rc.product#" property="purchaseEndDateTime" hb_rbKey="entity.product.purchaseEndDateTime" edit="#rc.edit#"/>
+				<hb:HibachiPropertyDisplay object="#rc.product#" property="purchaseStartDateTime" hb_rbKey="entity.product.purchaseStartDateTime" edit="#rc.edit#" showNgDateTimePicker="true"/>
+				<hb:HibachiPropertyDisplay object="#rc.product#" property="purchaseEndDateTime" hb_rbKey="entity.product.purchaseEndDateTime" edit="#rc.edit#" showNgDateTimePicker="true"/>
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="deferredRevenueFlag" edit="#rc.edit#">
 			<hb:HibachiDisplayToggle 
