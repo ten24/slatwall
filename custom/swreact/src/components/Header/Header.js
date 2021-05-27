@@ -117,6 +117,12 @@ function Header({ logo, mobileLogo }) {
       textInput.current.value = ''
       return false
     }
+
+    // minimum 3 keywords required to make a search
+    if (textInput.current.value.length < 3) {
+      return false
+    }
+
     return true
   }
 

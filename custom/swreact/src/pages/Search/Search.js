@@ -194,7 +194,7 @@ const Search = () => {
           }}
         />
       )}
-      {productTypeListRequest.isLoaded && productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_id: productTypeData.productTypeID }} hide={['productType']} />}
+      {productTypeListRequest.isLoaded && productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_slug: productTypeUrl }} hide={['productType']} />}
     </Layout>
   )
 }
