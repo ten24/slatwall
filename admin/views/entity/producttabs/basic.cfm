@@ -9,6 +9,7 @@
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.product#" property="productFeaturedFlag" edit="#rc.edit#">
 			<cfset local.formattedStartDate="#dateFormat(rc.product.getPublishedStartDateTime(), 'mm/dd/YYYY')#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="publishedStartDateTime" edit="#rc.edit#" fieldType="text" fieldAttributes="sw-date-picker 
 														ng-model=""publishedStartDateTime""

@@ -7,6 +7,7 @@ import CreateAccount from '../../components/Account/CreateAccount/CreateAccount'
 import ForgotPassword from '../../components/Account/ForgotPassword/ForgotPassword'
 import { isAuthenticated } from '../../utils'
 import queryString from 'query-string'
+import AccountCarts from '../../components/Account/AccountCarts/AccountCarts'
 
 // I think we should be prelaoding these https://medium.com/maxime-heckel/react-lazy-a-take-on-preloading-views-cc90be869f14
 const AccountLogin = React.lazy(() => import('../../components/Account/AccountLogin/AccountLogin'))
@@ -76,6 +77,9 @@ const MyAccount = () => {
           </Route>
           <Route path={`${match.path}/profile`}>
             <AccountProfile />
+          </Route>
+          <Route path={`${match.path}/carts`}>
+            <AccountCarts />
           </Route>
           <Route path={match.path}>{isAuthenticated() && <AccountOverview />}</Route>
         </Switch>

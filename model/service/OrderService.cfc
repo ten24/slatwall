@@ -101,7 +101,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
         //Order Information
         var orderCollectionList = this.getOrderCollectionList();
-        orderCollectionList.setDisplayProperties('orderID, calculatedTotalQuantity, estimatedFulfillmentDateTime, currencyCode, calculatedSubTotalAfterItemDiscounts, orderCloseDateTime, calculatedDiscountTotal, calculatedTaxTotal, quoteFlag, calculatedTotalItems, calculatedTotal, calculatedSubTotal, orderOpenDateTime, calculatedFulfillmentTotal, orderNumber, modifiedDateTime, orderStatusType.typeName, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode');
+        orderCollectionList.setDisplayProperties('orderID, calculatedTotalQuantity, estimatedFulfillmentDateTime, currencyCode, calculatedSubTotalAfterItemDiscounts, orderCloseDateTime, calculatedDiscountTotal, calculatedTaxTotal, quoteFlag, calculatedTotalItems, calculatedTotal, calculatedSubTotal, orderOpenDateTime, calculatedFulfillmentTotal, orderNumber, modifiedDateTime, orderStatusType.typeName, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.emailAddress, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode');
         orderCollectionList.addFilter( 'orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			orderCollectionList.addFilter( 'account.accountID', arguments.accountID, '=');
@@ -119,13 +119,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var orderItems = ordersItemsCollectionList.getRecords(formatRecords = false);
 		//Append images to products
-		orderItems = getService("productService").appendImagesToProduct(orderItems, "sku_imageFile", false);
+		orderItems = getService("productService").appendImagesToProducts(orderItems, "sku_imageFile", false);
 		
         orderDetails['orderItems'] = orderItems;
 		
 		//Order Payments Information
 		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();
-		orderPaymentCollectionList.setDisplayProperties('order.orderID,paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, purchaseOrderNumber,creditCardType,nameOnCreditCard, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
+		orderPaymentCollectionList.setDisplayProperties('order.orderID,paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, purchaseOrderNumber,creditCardType,nameOnCreditCard, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name,billingAddress.emailAddress, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
 		orderPaymentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			orderPaymentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
@@ -146,7 +146,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		///Order Fulfillment Information
 		var ordersFulfillmentCollectionList = this.getOrderItemCollectionList();
-		ordersFulfillmentCollectionList.setDisplayProperties('orderItemID,order.orderID,orderDeliveryItems.quantity,orderDeliveryItems.orderDelivery.trackingNumber,orderDeliveryItems.orderDelivery.createdDateTime,orderDeliveryItems.orderDelivery.invoiceNumber,orderDeliveryItems.orderDelivery.calculatedTotalQuantityDelivered,sku.skuID, orderFulfillment.fulfillmentCharge, orderFulfillment.currencyCode, orderFulfillment.estimatedDeliveryDateTime, orderFulfillment.estimatedFulfillmentDateTime, orderFulfillment.fulfillmentMethod.fulfillmentMethodName, orderFulfillment.fulfillmentMethod.fulfillmentMethodType, orderFulfillment.pickupLocation.locationName, orderFulfillment.shippingAddress.streetAddress, orderFulfillment.shippingAddress.street2Address, orderFulfillment.shippingAddress.city, orderFulfillment.shippingAddress.stateCode, orderFulfillment.shippingAddress.postalCode, orderFulfillment.shippingAddress.name, orderFulfillment.shippingAddress.countryCode, orderFulfillment.shippingMethod.shippingMethodName, orderFulfillment.shippingMethod.shippingMethodCode');
+		ordersFulfillmentCollectionList.setDisplayProperties('orderItemID,order.orderID,orderDeliveryItems.quantity,orderDeliveryItems.orderDelivery.trackingNumber,orderDeliveryItems.orderDelivery.createdDateTime,orderDeliveryItems.orderDelivery.invoiceNumber,orderDeliveryItems.orderDelivery.calculatedTotalQuantityDelivered,sku.skuID, orderFulfillment.fulfillmentCharge, orderFulfillment.currencyCode, orderFulfillment.estimatedDeliveryDateTime, orderFulfillment.estimatedFulfillmentDateTime, orderFulfillment.fulfillmentMethod.fulfillmentMethodName, orderFulfillment.fulfillmentMethod.fulfillmentMethodType, orderFulfillment.pickupLocation.locationName, orderFulfillment.shippingAddress.streetAddress, orderFulfillment.shippingAddress.street2Address, orderFulfillment.shippingAddress.city, orderFulfillment.shippingAddress.stateCode, orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.emailAddress, orderFulfillment.shippingAddress.name, orderFulfillment.shippingAddress.countryCode, orderFulfillment.shippingMethod.shippingMethodName, orderFulfillment.shippingMethod.shippingMethodCode');
 		ordersFulfillmentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			ordersFulfillmentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
@@ -6390,17 +6390,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var list = this.getOrderTemplateCollectionList();
 		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name");
 		list.addFilter("account.accountID",arguments.accountID);
-		list.addFilter("orderTemplateType.typeCode","WishList");
+		list.addFilter("orderTemplateType.systemCode","ottWishList");
 		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
 		return list.getRecords();
 	}
 	
 	public array function getAccountWishlistsProducts(string accountID){
-		var list = this.getOrderTemplateCollectionList();
-		list.setDisplayProperties("orderTemplateID|value,orderTemplateName|name,orderTemplateItems.sku.skuName,orderTemplateItems.sku.skuID");
-		list.addFilter("account.accountID",arguments.accountID);
-		list.addFilter("orderTemplateType.typeCode","WishList");
-		list.addFilter("orderTemplateStatusType.systemCode","otstCancelled","!=");
+		var list = this.getOrderTemplateItemCollectionList();
+		list.setDisplayProperties("orderTemplate.orderTemplateID,orderTemplate.orderTemplateName,sku.skuDefinition,sku.skuID");
+		list.addFilter("orderTemplate.account.accountID",arguments.accountID);
+		list.addFilter("orderTemplate.orderTemplateType.systemCode","ottWishList");
+		list.addFilter("orderTemplate.orderTemplateStatusType.systemCode","otstCancelled","!=");
 		return list.getRecords();
 	}
 }

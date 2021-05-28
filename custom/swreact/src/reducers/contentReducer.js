@@ -1,6 +1,7 @@
 import { REQUEST_CONTENT, RECEIVE_CONTENT, RECEIVE_STATE_CODES } from '../actions/contentActions'
 
 const initState = {
+  productTypes: [],
   countryCodeOptions: [],
   stateCodeOptions: {},
   isFetching: false,

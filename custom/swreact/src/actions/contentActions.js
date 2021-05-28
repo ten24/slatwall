@@ -1,6 +1,6 @@
-import axios from 'axios'
-import { sdkURL } from '../services'
+import { sdkURL, axios } from '../services'
 import { setTitle } from './configActions'
+import queryString from 'query-string'
 
 export const REQUEST_CONTENT = 'REQUEST_CONTENT'
 export const RECEIVE_CONTENT = 'RECEIVE_CONTENT'
@@ -69,19 +69,24 @@ export const getContent = (content = {}) => {
 
 export const getPageContent = (content = {}, slug = '') => {
   return async (dispatch, getState) => {
-    const { siteCode } = getState().configuration.site
+    if (getState().content[slug]) {
+      return
+    }
     dispatch(requestContent())
     const response = await axios({
-      method: 'POST',
+      method: 'GET',
       withCredentials: true,
-      url: `${sdkURL}api/scope/getSlatwallContent`,
+      url: `${sdkURL}api/public/content?${queryString.stringify({ 'p:show': 250, ...content }, { arrayFormat: 'comma' })}`,
       headers: {
         'Content-Type': 'application/json',
       },
-      data: { ...content, siteCode },
     })
-    if (response.status === 200) {
-      dispatch(receiveContent(response.data.content))
+    if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
+      const data = response.data.data.pageRecords.reduce((accumulator, content) => {
+        accumulator[content.urlTitlePath] = content
+        return accumulator
+      }, {})
+      dispatch(receiveContent(data))
     } else {
       dispatch(receiveContent({}))
     }
@@ -132,6 +137,24 @@ export const addContent = (content = {}) => {
       dispatch(setTitle(content.settings.contentHTMLTitleString))
     }
     dispatch(receiveContent(content))
+  }
+}
+export const getProductTypes = () => {
+  return async dispatch => {
+    dispatch(requestContent())
+    const response = await axios({
+      method: 'GET',
+      withCredentials: true,
+      url: `${sdkURL}api/public/productType?p:show=500`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (response.status === 200 && response.data.data && response.data.data.pageRecords) {
+      dispatch(receiveContent({ productTypes: response.data.data.pageRecords }))
+    } else {
+      dispatch(receiveContent({}))
+    }
   }
 }
 // export const addFormResponse = (content = {}) => {

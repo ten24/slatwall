@@ -122,6 +122,10 @@
 	    }
 	    
 	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
+	        
+	        // DO NOT left here for debugging
+	        // this.logHibachi( "Called flushORMSession() stack: "&callStackGet("string") );
+	    	
 	    	var hibachiScope = this.getHibachiScope();
 	    	
 	    	// Initate the first flush

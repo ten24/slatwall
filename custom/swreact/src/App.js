@@ -54,6 +54,8 @@ const pageComponents = {
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
   const routing = useSelector(state => state.configuration.router)
+  const siteCode = useSelector(state => state.configuration.site.siteCode)
+  console.log('siteCode', siteCode)
   const shopByManufacturer = useSelector(state => state.configuration.shopByManufacturer)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -62,6 +64,7 @@ export default function App() {
     })
     dispatch(getConfiguration())
   }, [dispatch])
+
   return (
     <Suspense fallback={<Loading />}>
       <ScrollToTop />

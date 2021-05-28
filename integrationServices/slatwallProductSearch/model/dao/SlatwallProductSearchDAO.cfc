@@ -48,8 +48,63 @@ Notes:
 */
 component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="true" output="false"{
 	
+	property name="slatwallProductSearchIntegrationCFC";
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false){
+	    return this.getSlatwallProductSearchIntegrationCFC().setting(argumentCollection=arguments);
+	}
+	
+	public string function getCurrentRequestFullURL(){
+	    /*
+    	    Protocol = #getPageContext().getRequest().getScheme()#;
+            Domain = #cgi.server_name#;
+            Template = #cgi.script_name#;
+            QueryString = #cgi.query_string#;
+        */
+	    return getPageContext().getRequest().getScheme()&'://'&CGI.server_name&'/'&CGI.script_name&'?'&CGI.query_string;
+	}
+	
+	public void function logQuery(required any structOrQuery, string prefix='' ){
+	    
+	    if( !this.setting('enableSqlQueryLogs') ){
+	        return;
+	    }
+	    
+        var sql = arguments.structOrQuery['sql'] ?: arguments.structOrQuery.getSql().toString();
+        var recordCount = arguments.structOrQuery['recordCount'] ?:  arguments.structOrQuery.recordCount();
+        var executionTime = arguments.structOrQuery['executionTime'] ?:  arguments.structOrQuery.getExecutionTime()/1000000; // it's returned in nano sec.
+        
+	    var template = "
+	        
+	        /** URL : #this.getCurrentRequestFullURL()#;
+	        /** Time Took #executionTime# in fetching #recordCount# records*/
+	        
+	        /** SQL */
+                #sql#	    
+	    ";
+	    
+	   
+	    if( this.setting('enableSqlQueryResultLogs') ){
+	        template &= " 
+	        
+	        /** Result */
+	        /** 
+	           #serializeJSON(arguments.structOrQuery['result'] ?: arguments.structOrQuery, "struct")# 
+	         */
+	       ";
+	    }
+	    
+	   this.logHibachi("SlatwallProductSearch::     #arguments.prefix#      #template#");
+	    
+
+        // TODO: cleanup, left here for debugging
+	    // var dir = expandPath("/Slatwall/integrationServices/slatwallProductSearch/scripts/");
+	    // var fileName = dir & arguments.prefix & "_" & hash(sql, 'md5') & "__Ext_" & executionTime & "__Recs_" & recordCount & "_" & getTickCount() & '.sql';
+
+	    // fileWrite( fileName, template );
+	}
     
 	public any function getProductAndSkuSelectTypeAttributes(){
 	    var startTicks = getTickCount();
@@ -76,37 +131,49 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    query.setSQL(sql);
 	    query = query.execute().getResult();
 	    
-	    this.logHibachi("SlatwallProductSearchDAO:: getProductAndSkuSelectTypeAttributes took #getTickCount()-startTicks# ms., and fetched #query.recordCount# records ");
+	    this.logQuery(query, 'getProductAndSkuSelectTypeAttributes');
+	    
+	    this.logHibachi("SlatwallProductSearchDAO:: getProductAndSkuSelectTypeAttributes took #getTickCount()-startTicks# ms.");
         
         return query;
 	}
 	
-	public any function truncateProductFilterFacetOptionsTable(){
+
+	public any function rePopulateProductFilterFacetOptionTable(){
         var startTicks = getTickCount();
+
+        
+        // create tmp tabe, so it does not break any queries on the main table 
+	    var sql = " 
+	        CREATE TABLE IF NOT EXISTS `tmp_swProductFilterFacetOption` LIKE `swProductFilterFacetOption`;
+            TRUNCATE TABLE  `tmp_swProductFilterFacetOption`;
+        ";
+        
+        // make and insert the options;
+        sql &= "
+            INSERT INTO tmp_swProductFilterFacetOption (
+                #this.getProductFilterFacetOptionsSeletQueryColumnList()#
+            ) 
+            #this.getProductFilterFacetOptionsSeletQuerySQL()#;
+        ";
+        
+	    // swap tables 
+        sql &= "
+            RENAME TABLE `swProductFilterFacetOption` TO `old_swProductFilterFacetOption`, `tmp_swProductFilterFacetOption` TO `swProductFilterFacetOption`;
+            DROP TABLE `old_swProductFilterFacetOption`;
+        ";
+        
+        // *NOTE - using multi-query syntax here, as if the query takes too-much time, 
+        //         the requests timeouts and the cf kills the request, 
+        //         hence no further code will get executed;
+               
 	    var query = new Query();
-	    var sql = "TRUNCATE TABLE  swProductFilterFacetOption";
 	    query.setSQL(sql);
 	    query.execute().getResult();
-	    this.logHibachi("SlatwallProductSearchDAO:: cleared swProductFilterFacetOption table, in #getTickCount()-startTicks# ms.");
-	}
-	
-	public any function rePopulateProductFilterFacetOptionTable(){
-	    this.truncateProductFilterFacetOptionsTable();
-	    
-	    var sql = " INSERT INTO swProductFilterFacetOption (
-    	                #this.getProductFilterFacetOptionsSeletQueryColumnList()#
-    	            ) 
-                    #this.getProductFilterFacetOptionsSeletQuerySQL()#
-               ";
-               
-        var startTicks = getTickCount();
-	    var query = new Query();
-	    query.setSQL(sql);
-	    query.execute();
 	    
 	    this.logHibachi("SlatwallProductSearchDAO:: rePopulateProductFilterFacetOptionsTable took #getTickCount()-startTicks# ms.");
 	}
-	
+
 	
 	//just to save some maintenance, and remove duplicacy
 	public any function getProductFilterFacetOptionsSeletQueryColumnList(){
@@ -189,20 +256,20 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         attributeIDs = listQualify(attributeIDs, "'");
         
         // TODO: multi-selet type
-        var selectTypeAttributeOptionJoinParts = productAndSkuSelectTypeAttributes.reduce( function(joins,row){
+        var selectTypeAttributeOptionJoinParts = productAndSkuSelectTypeAttributes.reduce( function( joins, row ){
             if( arguments.row.attributeInputType != 'select' ){
                 return arguments.joins;
             }
             if( arguments.row.attributeSetObject == 'sku'){
                 return listAppend(joins, "(
-                    att.attributeCode = `#arguments.row.attributeCode#` 
+                    att.attributeCode = '#arguments.row.attributeCode#' 
                     AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue 
                     AND sk.#arguments.row.attributeCode# != '' 
                     AND sk.#arguments.row.attributeCode# IS NOT NULL
                     )", '$' );
             } 
             return listAppend(joins, "(
-                att.attributeCode = `#arguments.row.attributeCode#` 
+                att.attributeCode = '#arguments.row.attributeCode#' 
                 AND p.#arguments.row.attributeCode# = atto.attributeOptionValue
                 AND p.#arguments.row.attributeCode# != '' 
                 AND p.#arguments.row.attributeCode# IS NOT NULL
@@ -905,8 +972,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	public string function makeGetFacetOptionQuery(
 	    required struct facetMetaData, 
 	    required struct facetsFilterQueryFragments, 
-	    required any site,
 	    boolean includeSKUCount=true
+	    boolean applySiteFilter=false
+	    any site,
 	){
 	    
 	    var thisFacetOptionsQuery = this.getFacetOptionQuerySQLTemplate(arguments.includeSKUCount);
@@ -946,38 +1014,44 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$filterQueryFragment$', filterQueryFragment );
         
-        var stockAvailabilitySQLFragment = '';
-        if(arguments.site.hasLocation() ){
-            // the :siteID param should already be added
-	        // facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
-            stockAvailabilitySQLFragment = "
-    	        INNER JOIN swStock stk 
-    	            ON 
-	                stk.stockID IN (SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID )
-    	            AND stk.calculatedQATS > 0 
-    	            AND rs.skuID = stk.skuID 
-            ";
-	    }
+        var stockAvailabilitySQLFragment = "    
+            INNER JOIN swStock stk 
+                ON rs.skuID = stk.skuID 
+                AND stk.calculatedQATS > 0
+        ";
+        if( arguments.applySiteFilter && arguments.site.hasLocation() ){
+	        // we're filtering for sku-stock for 
+	        // 
+            //  locations having that perticular site 
+	        //  + sku-stock for locations having no site assigned    e.g. `Default` location
+	        //
+            stockAvailabilitySQLFragment &= "
+                    AND stk.locationID IN (
+                        SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID 
+                            UNION ALL
+                        SELECT DISTINCT locationID FROM swLocation where locationID NOT IN (SELECT DISTINCT locationID FROM swLocationSite) 
+                    )";
+	    } 
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$stockAvailabilitySQLFragment$', stockAvailabilitySQLFragment );
         
         return thisFacetOptionsQuery;
 	}
 	
 	public struct function makeFacetSqlFilterQueryFragments(){
-	    param name="arguments.site";
 	    param name="arguments.brand" default={};
 	    param name="arguments.option" default={};
         param name="arguments.content" default={};
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
+	    param name="arguments.applySiteFilter" default=false;
 	    
 	    var facetsSqlFilterQueryParams = {};
 	    var facetsSqlFilterQueryFragments = {};
 	    var subFacetsSqlFilterQueryFragments = {};
 	    
-	    facetsSqlFilterQueryFragments['productSite'] = '';
-	    if( len(arguments.site.getSiteID()) ){
+	    if( arguments.applySiteFilter && !isNull(arguments.site) ){
+	        facetsSqlFilterQueryFragments['productSite'] = '';
 	        facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
 	        facetsSqlFilterQueryFragments['productSite'] = '(siteID = :siteID OR siteID IS NULL)';
 	    }
@@ -1143,7 +1217,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	}
 	
 	public any function getPotentialFilterFacetsAndOptions(){
-        param name="arguments.site";
         param name="arguments.brand" default={};
         param name="arguments.option" default={};
         param name="arguments.content" default={};
@@ -1151,6 +1224,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.attribute" default={};
         param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
+	    param name="arguments.applySiteFilter" default=false;
         
         var startTicks = getTickCount();
 
@@ -1171,8 +1245,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             var thisFacetOptionsQuery = this.makeGetFacetOptionQuery(
                 facetMetaData = facetsMetadata[facetName], 
                 facetsFilterQueryFragments = filterQueryFragmentsData.fragments, 
-                includeSKUCount= arguments.includeSKUCount, 
-                site = arguments.site 
+                includeSKUCount = arguments.includeSKUCount, 
+                applySiteFilter = arguments.applySiteFilter,
+                site = arguments.site ?: javaCast('null', '')
             );
             
             // 1. fetch the options for all sub-facets except which have filters applied 
@@ -1251,10 +1326,12 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         }
         
         
-        this.logHibachi("getAllFacetOptionsSQL: #getAllFacetOptionsSQL#");
+        // TODO cleanup, left here for debugging
+        // this.logHibachi("getAllFacetOptionsSQL: #getAllFacetOptionsSQL#");
         
         var queryService = new Query();
         queryService.setSQL(getAllFacetOptionsSQL);
+        
         for(var paramName in filterQueryFragmentsData.params ){
             var paramValue = filterQueryFragmentsData.params[paramName];
             if( isArray(paramValue) ){
@@ -1266,21 +1343,11 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 
         queryService = queryService.execute().getResult();
 
-        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.; and fetched #queryService.recordCount# records ");
+	    this.logQuery(queryService, 'getPotentialProductFilterFacetOptions' );
+        this.logHibachi("SlatwallProductSearchDAO:: getPotentialProductFilterFacetOptions took #getTickCount()-startTicks# ms.;");
         return queryService;
 	}
 	
-	
-	public any function getPriceRangeMinMax(){
-	    
-	    var queryService = new Query();
-	    var sql = "
-	        SELECT MAX(skuPricePrice) AS max, MIN(skuPricePrice) AS min
-            FROM swProductFilterFacetOption; 
-	    ";
-        queryService.setSQL(sql);
-	    return queryService.execute().getResult();
-	}
 
 	// =====================  END: Logical Methods ============================
 

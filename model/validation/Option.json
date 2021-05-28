@@ -3,7 +3,7 @@
 		"optionCode": [
 			{ "contexts": "save", "required": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$", "method": "isUniqueInOptionGroup" }
 		],
-		"optionName": [{ "contexts": "save", "required": true }],
+		"optionName": [{ "contexts": "save", "required": true , "method": "isUniqueInOptionName" }],
 		"optionGroup": [{ "contexts": "save", "required": true }],
 		"skus": [{ "contexts": "delete", "maxCollection": 0 }]
 	}

@@ -19,7 +19,7 @@ export const getShopBy = createSelector(getAllContent, (content = {}) => {
 export const getMyAccountMenu = createSelector(getAllContent, (content = {}) => {
   return Object.keys(content)
     .filter(key => {
-      return key.includes('my-account/') && content[key].displayInNavigation === '1'
+      return key.includes('my-account/') && content[key].displayInNavigation
     })
     .map(key => {
       return content[key]
