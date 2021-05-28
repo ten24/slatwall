@@ -87,7 +87,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	
   	/*****************              Process - Queue - Process                 ******************/
 
-    public any function createNewImportBatch(required struct mapping, any numeric batchItemsCount, any queryOrArrayOfStruct, string batchDescription){
+    public any function createNewImportBatch(required struct mapping, numeric batchItemsCount, any queryOrArrayOfStruct, string batchDescription){
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
 	    
