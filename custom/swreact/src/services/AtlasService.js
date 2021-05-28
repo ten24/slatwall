@@ -1,0 +1,2 @@
+const AtlasService = {}
+export { AtlasService }

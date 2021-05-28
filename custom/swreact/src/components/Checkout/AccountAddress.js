@@ -11,7 +11,6 @@ const ShippingAddress = ({ onSave, isShipping = true }) => {
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
   const stateCodeOptions = useSelector(state => state.content.stateCodeOptions)
   const [isEdit, setEdit] = useState(true)
-  const { t } = useTranslation()
 
   let initialValues = {
     name: '',

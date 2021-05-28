@@ -19,15 +19,27 @@ const Search = () => {
   const productTypeUrl = params['key'] || productTypeBase
 
   useEffect(() => {
-    if (!productTypeListRequest.isFetching && !productTypeListRequest.isLoaded) {
-      setProductTypeListRequest({ ...productTypeListRequest, isFetching: true, isLoaded: false, entity: 'ProductType', params: { searchKeyword: params?.keyword, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
+    setProductTypeListRequest({ ...productTypeListRequest, isFetching: true, isLoaded: false, entity: 'ProductType', params: { searchKeyword: params?.keyword, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
+  }, [productTypeUrl, params.keyword])
+
+  useEffect(() => {
+    const unload = history.listen(location => {
+      let newParams = queryString.parse(location.search, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
+      if (Object.keys(newParams).length === 1) {
+        setProductTypeListRequest({ ...productTypeListRequest, isFetching: true, isLoaded: false, entity: 'ProductType', params: { searchKeyword: newParams?.keyword, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
+      }
+    })
+    return () => {
+      unload()
     }
-  }, [productTypeListRequest, setProductTypeListRequest, productTypeUrl, params])
+  }, [productTypeListRequest, setProductTypeListRequest, history])
 
   if (!productTypeListRequest.isFetching && productTypeListRequest.isLoaded && Object.keys(productTypeListRequest.data).length === 0) {
     return <Redirect to="/404" />
   }
+
   const productTypeData = augmentProductType(productTypeUrl, productTypeListRequest.data)
+
   return (
     <Layout>
       <div className="container pb-2 pt-5 border-bottom d-none">
@@ -155,6 +167,7 @@ const Search = () => {
       </div>
 
       <Helmet title={`Search - ${params['keyword']}`} />
+
       {productTypeListRequest.isLoaded && (
         <PageHeader
           title={''}
@@ -172,7 +185,7 @@ const Search = () => {
             })}
         />
       )}
-      {productTypeData.childProductTypes?.length > 0 && (
+      {productTypeListRequest.isLoaded && productTypeData.childProductTypes?.length > 0 && (
         <ProductTypeList
           data={productTypeData}
           onSelect={urlTitle => {
@@ -181,7 +194,7 @@ const Search = () => {
           }}
         />
       )}
-      {productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_id: productTypeData.productTypeID }} hide={['productType']} />}
+      {productTypeListRequest.isLoaded && productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_slug: productTypeUrl }} hide={['productType']} />}
     </Layout>
   )
 }
