@@ -459,8 +459,6 @@ class SWListingSearchController {
         for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
             if(searchableColumns.indexOf(this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier) > -1){
                 this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
-            }else{
-                this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
             }
         }
     }
