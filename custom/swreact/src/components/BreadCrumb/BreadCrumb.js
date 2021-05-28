@@ -16,7 +16,7 @@ const Crumb = ({ urlTitle, title }) => {
 const BreadCrumb = ({ crumbs, includeHome = true, brand = [] }) => {
   const { t } = useTranslation()
   return (
-    <>
+    <div className="order-lg-2 mb-3 mb-lg-0 pt-lg-2">
       {crumbs && (
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb flex-lg-nowrap justify-content-center justify-content-lg-start">
@@ -37,7 +37,7 @@ const BreadCrumb = ({ crumbs, includeHome = true, brand = [] }) => {
           </ol>
         </nav>
       )}
-    </>
+    </div>
   )
 }
 
