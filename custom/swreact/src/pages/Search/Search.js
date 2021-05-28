@@ -20,7 +20,7 @@ const Search = () => {
 
   useEffect(() => {
     setProductTypeListRequest({ ...productTypeListRequest, isFetching: true, isLoaded: false, entity: 'ProductType', params: { searchKeyword: params?.keyword, 'p:show': 250, includeSettingsInList: true }, makeRequest: true })
-  }, [productTypeUrl, params.keyword])
+  }, [productTypeUrl, params, productTypeListRequest, setProductTypeListRequest])
 
   useEffect(() => {
     const unload = history.listen(location => {
