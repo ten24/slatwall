@@ -51,7 +51,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entity
 	property name="orderTemplate";
 
-	property name="newAccountFlag" default=false;
 	property name="accountID" hb_rbKey="entity.account" cfc="Account";
 	property name="orderTemplateName";
 	
