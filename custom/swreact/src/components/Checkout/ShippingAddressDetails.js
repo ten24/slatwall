@@ -16,7 +16,7 @@ const ShippingAddressDetails = ({ shippingAddress, shippingAddressNickname }) =>
         {name} <br />
         {streetAddress} <br />
         {`${city}, ${stateCode} ${postalCode}`} <br />
-        {emailAddress && emailAddress}
+        {emailAddress.length > 0 && emailAddress}
       </p>
     </>
   )
