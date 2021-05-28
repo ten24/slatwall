@@ -1,6 +1,6 @@
 {
 	"properties": {
-		"vendorName": [{ "contexts": "save", "required": true, "regex": "^\w+([\s-_#\/:^~|+]\w+)*$"}],
+		"vendorName": [{ "contexts": "save", "required": true, "regex": "^[a-zA-Z\s,.'-]+$"}],
 		"accountNumber": [{ "contexts": "save", "required": true }],
 		"vendorWebsite": [{ "contexts": "save", "dataType": "url" }],
 		"vendororders": [{ "contexts": "delete", "maxCollection": 0 }]
