@@ -79,7 +79,7 @@ const Brand = props => {
           }}
         />
       )}
-      {productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ brand: brandResponse.data[0].brandName, productType_id: productTypeData.productTypeID }} hide={['productType', 'brands']}></ListingPage>}
+      {productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ brand: brandResponse.data[0].brandName, productType_slug: productTypeData.urlTitle }} hide={['productType', 'brands']}></ListingPage>}
     </Layout>
   )
 }

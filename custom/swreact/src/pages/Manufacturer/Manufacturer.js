@@ -73,7 +73,7 @@ const Manufacturer = () => {
                     <div key={brand.brandID} className="d-flex col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
                       <Link className="card border-1 shadow-sm text-center d-flex flex-column rounded-lg hover-shadow-none" to={`/${brandRoute}/${brand.urlTitle}`}>
                         <div className="d-flex align-items-center flex-1">
-                          <SWImage className="d-block w-100 p-2" customPath="/custom/assets/images/brand/logo/" src={brand.imageFile} alt={brand.brandName} />
+                          <SWImage className="d-block w-100 p-2" customPath="/custom/assets/images/brand/logo/" src={brand.imageFile} alt={brand.brandName} type="brand" />
                         </div>
                         <h2 className="h6 mx-1">{brand.brandName}</h2>
                       </Link>
