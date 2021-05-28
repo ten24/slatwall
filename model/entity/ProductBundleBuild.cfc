@@ -113,7 +113,6 @@ component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" p
 	// =============== START: Custom Validation Methods ====================
 
 	public boolean function hasQuantityWithinMaxOrderQuantity(){
-		// dump(var=this, top=4);abort;
 		if(this.hasProductBundleBuildItem()){
 			var maxQuantity = this.getMaxQuantity();
 			var totalQuantity = 0;
