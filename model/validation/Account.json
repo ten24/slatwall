@@ -14,8 +14,8 @@
 		}
 	},
 	"properties": {
-		"firstName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true, "regex": "^\w+([\s-_#\/:^~|+]\w+)*$"}],
-		"lastName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true, "regex": "^\w+([\s-_#\/:^~|+]\w+)*$"}],
+		"firstName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true, "regex": "^[a-zA-Z\s,.'-]+$"}],
+		"lastName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true, "regex": "^[a-zA-Z\s,.'-]+$"}],
 		"company": [{ "conditions": "isOrganizationAccount", "contexts": "save", "required": true }],
 		"accountCode": [
 			{
