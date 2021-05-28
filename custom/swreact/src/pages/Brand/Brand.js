@@ -67,7 +67,7 @@ const Brand = props => {
               return { ...crumb, urlTitle: `${loc.pathname}?${queryString.stringify({ key: crumb.urlTitle }, { arrayFormat: 'comma' })}` }
             })}
         >
-          <BrandBanner brandName={brandResponse.data[0].brandName} imageFile={brandResponse.data[0].imageFile} brandDescription={brandResponse.data[0].brandDescription} />
+          <BrandBanner subHeading={productTypeData?.productTypeName} brandName={brandResponse.data[0].brandName} imageFile={brandResponse.data[0].imageFile} brandDescription={brandResponse.data[0].brandDescription} />
         </PageHeader>
       )}
       {brandResponse.isLoaded && productTypeData.childProductTypes?.length > 0 && (

@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify'
 import { SlatwalApiService, sdkURL, axios } from '../services'
 import { getCart, receiveCart, requestCart } from './cartActions'
-import { requestUser, receiveUser, clearUser } from './userActions'
+import { requestUser, receiveUser, clearUser, getWishLists } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
 export const ERROR_LOGIN = 'ERROR_LOGIN'
@@ -79,6 +79,8 @@ export const login = (email, password) => {
         dispatch(receiveLogin({ isAuthenticanted: true }))
         dispatch(receiveUser(response.data.account))
         dispatch(receiveCart(response.data.cart))
+        dispatch(getWishLists())
+
         toast.success('Login Successful')
       } else {
         errorLogin({})

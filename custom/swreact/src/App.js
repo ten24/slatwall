@@ -7,6 +7,8 @@ import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import { getConfiguration } from './actions/configActions'
 import logo from './assets/images/logo.png'
 import mobileLogo from './assets/images/logo-mobile.png'
+import { ErrorFallback } from './pages'
+import { ErrorBoundary } from 'react-error-boundary'
 
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
 const Cart = lazyWithPreload(() => import('./pages/Cart/Cart'))
@@ -67,29 +69,36 @@ export default function App() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <ScrollToTop />
-      <SEO />
       <Header logo={logo} mobileLogo={mobileLogo} />
-      <CMSWrapper />
-      <Switch>
-        <Route path="/404" component={NotFound} />
-        <Route path="/contact" component={Contact} />
-        {routing.length &&
-          routing.map(({ URLKey, URLKeyType }, index) => {
-            return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
-          })}
-        <Route path="/order-confirmation" component={OrderConfirmation} />
-        <Route path={shopByManufacturer.slug} component={Manufacturer} />
-        <Route path="/search" component={Search} />
-        <Route path="/my-account" component={MyAccount} />
-        <Route path="/checkout" component={Checkout} />
-        <Route path="/checkout/:id" component={Checkout} />
-        <Route path="/MyAccount" component={MyAccount} />
-        <Route path="/testing" component={Testing} />
-        <Route path="/shopping-cart" component={Cart} />
-        <Route exact path="/" component={Home} />
-        <Route path="" component={ContentPage} />
-      </Switch>
+      <ErrorBoundary
+        FallbackComponent={ErrorFallback}
+        onReset={() => {
+          // reset the state of your app so the error doesn't happen again
+        }}
+      >
+        <ScrollToTop />
+        <SEO />
+        <CMSWrapper />
+        <Switch>
+          <Route path="/404" component={NotFound} />
+          <Route path="/contact" component={Contact} />
+          {routing.length &&
+            routing.map(({ URLKey, URLKeyType }, index) => {
+              return <Route key={index} path={`/${URLKey}/:id`} component={pageComponents[URLKeyType]} />
+            })}
+          <Route path="/order-confirmation" component={OrderConfirmation} />
+          <Route path={shopByManufacturer.slug} component={Manufacturer} />
+          <Route path="/search" component={Search} />
+          <Route path="/my-account" component={MyAccount} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/checkout/:id" component={Checkout} />
+          <Route path="/MyAccount" component={MyAccount} />
+          <Route path="/testing" component={Testing} />
+          <Route path="/shopping-cart" component={Cart} />
+          <Route exact path="/" component={Home} />
+          <Route path="" component={ContentPage} />
+        </Switch>
+      </ErrorBoundary>
     </Suspense>
   )
 }
