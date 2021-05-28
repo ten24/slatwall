@@ -1914,25 +1914,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrderTemplate_createWishList(required any orderTemplate, required any processObject, required struct data={}) {
-
 		
-		var account = getHibachiScope().getAccount();
-		
-		if(arguments.processObject.getNewAccountFlag()) {
-			account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} 
-		
-		if(!isNull(arguments.processObject.getAccountID())){
-			account = getAccountService().getAccount(arguments.processObject.getAccountID());
-		}
-
-		if(account.hasErrors()) {
-			arguments.orderTemplate.addError('create', account.getErrors());
-			return arguments.orderTemplate;
-			
-		}
-		
-		arguments.orderTemplate.setAccount(account);
+		arguments.orderTemplate.setAccount(arguments.processObject.getAccount());
 		
 		arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
 		
@@ -1942,14 +1925,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
 		
-		var orderTemplateName = arguments.processObject.getOrderTemplateName();
-		
-		if(!isNull(orderTemplateName)){
-			arguments.orderTemplate.setOrderTemplateName(orderTemplateName);
-		}
-		
-		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
-		
+		arguments.orderTemplate.setOrderTemplateName(arguments.processObject.getOrderTemplateName());
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
 		return arguments.orderTemplate;
 	}
 

@@ -3545,9 +3545,7 @@ component  accessors="true" output="false"
         }
 
         arguments.data['orderTemplateTypeID'] = "2c9280846b712d47016b75464e800014"; // type-id for wishlist
-		if( !len(trim(arguments.data.orderTemplateName)) ){
-			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
-        }
+        arguments.data['accountID'] = this.getHibachiScope().getAccount().getAccountID(); 
         
         var orderTemplate = this.getOrderService().newOrderTemplate();
  		orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
