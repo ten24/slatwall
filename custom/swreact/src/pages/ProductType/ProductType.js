@@ -24,6 +24,7 @@ const ProductType = () => {
       if (!hasData && productTypeListRequest.data.length > 0) {
         setProductTypeRequest({ ...productTypeRequest, data: {}, isFetching: false, isLoaded: false, params: { urlTitle }, makeRequest: true })
         setProductTypeListRequest({ ...productTypeListRequest, data: [], isFetching: false, isLoaded: false, params: {}, makeRequest: false })
+      } else {
       }
     })
     return () => {
@@ -68,7 +69,7 @@ const ProductType = () => {
         />
       )}
       {productTypeData?.childProductTypes?.length === 0 && (
-        <ListingPage preFilter={{ productType_id: productTypeRequest.data.productTypeID }} hide={['productType']}>
+        <ListingPage preFilter={{ productType_slug: id }} hide={['productType']}>
           <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
             <h5 className="h4 text-dark mb-0 font-accent">{productTypeRequest.data.title}</h5>
           </div>

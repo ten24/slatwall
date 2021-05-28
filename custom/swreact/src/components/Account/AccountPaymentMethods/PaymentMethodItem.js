@@ -1,6 +1,5 @@
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { deletePaymentMethod } from '../../../actions/userActions'
 import { useTranslation } from 'react-i18next'
