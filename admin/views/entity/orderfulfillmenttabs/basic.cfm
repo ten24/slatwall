@@ -36,6 +36,9 @@
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="verifiedShippingAddressFlag" edit="false">
 				</cfif>
 				
+				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="userEmailAddress" title="Email Address" />
+
+				
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" valueOptions="#rc.orderFulfillment.getShippingIntegrationOptions()#" property="shippingIntegration" edit="#rc.edit#">
 				<cfif NOT isNull(rc.orderFulfillment.getHandlingFee()) AND rc.orderFulfillment.getHandlingFee() GT 0 >
