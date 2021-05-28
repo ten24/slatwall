@@ -14,20 +14,34 @@
    
     <hb:HibachiPropertyRow>
    	    <hb:HibachiPropertyList>
-		    <cfloop struct="#rc.sampleCsvFilesIndex#" item="local.mappingCode">
-		        <br/>
-		        <hb:HibachiActionCaller 
-		            action="admin:erpone:main.getSampleCSV" 
-		            queryString="mappingCode=#local.mappingCode#" 
-		            text="Download - #rc.sampleCsvFilesIndex[local.mappingCode]# - Import Template CSV" 
-		            modal="false" 
-		            type="link" 
-		            target="_blank" 
-		            icon="download" 
-		            class="btn btn-primary btn-sm" 
-		        />
-		        <br/>
-		   </cfloop> 
+   	        
+   	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importAccunts" 
+	            text="Import Accounts" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+	        
+	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importInventoryItems" 
+	            text="Import Inventory" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+		    
+	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importOrders" 
+	            text="Import Orders" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+	        
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

@@ -22,10 +22,15 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	public any function importAccounts(){
 	    this.getService('erpOneService').importErpOneAccounts();
 	}
+	
 	// Get Order Data
 	public any function importOrders(){
-	    this.getService('erpOneService').importErpOneOrders();
+	    var batch = this.getService('erpOneService').importErpOneOrders();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
 	}
+	
 	// Get Order Items Data
 	public any function importOrderItems(){
 	    this.getService('erpOneService').importErpOneOrderItems();

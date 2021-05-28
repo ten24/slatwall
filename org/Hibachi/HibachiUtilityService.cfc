@@ -1681,6 +1681,20 @@
 	    return prefixed;
 	}
 	
+	public struct function getSubStructByKeyPrefix( required struct theStruct, required string thePrefix, boolean stripPrefix = true){
+	    var prefixLen = arguments.thePrefix.len();
+	    var subStruct = {};
+	    arguments.theStruct.each( function(key, value){
+	        if( key.left(prefixLen) == thePrefix ){
+	            if(stripPrefix){
+	                key = key.replace(thePrefix, '');
+	            }
+	            subStruct[key] = arguments.value;
+	        }
+	    })
+	    return subStruct;
+	}
+	
 	public struct function flattenStruct( required struct original, string delimiter=".", string prefix="" ){
 	    var flattened = {};
 	    

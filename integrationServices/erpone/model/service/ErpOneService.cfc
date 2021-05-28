@@ -381,12 +381,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    required string erpOneQuery, 
 	    required string columns, 
 	    required struct mapping, 
-	    required function recordFormatterFunction 
+	    required function recordFormatterFunction,
 	    
-	    numeric pageSize = 1;
+	    numeric pageSize = 500
 	){
 	    
-	    this.logHibachi("ERPONE - Starting paginating and importing - Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#]");
+	    this.logHibachi("ERPONE - Starting paginating and importing - #arguments.mapping.entityName#-[#arguments.mapping.mappingCode#], Query: #arguments.erpOneQuery#, Columns: #arguments.columns#");
 		
 		var pageNumber = 1;
 		var hasPages = true;
@@ -396,7 +396,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var thisBatch = this.createNewImportBatch(
 	        mapping = arguments.mapping,
 	        batchItemsCount = 0,
-	        batchDescription = "ERPONE - Paginate and Import Batch for Entity-#arguments.mapping.entityName#, Mapping-[#arguments.mapping.mappingCode#], PageSize-#arguments.pageSize# "
+	        batchDescription = "ERPONE - Paginate and Import Batch - #arguments.mapping.entityName#-[#arguments.mapping.mappingCode#], PageSize-#arguments.pageSize# "
 	    );
 		
 		// paginate
@@ -417,26 +417,26 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			// call formatter function;
 			var formatedItems = [] ;
 			for(var thisItem in itemsArray){
-			    formatRecords.append( arguments.recordFormatterFunction(thisItem) );
+			    formatedItems.append( arguments.recordFormatterFunction(thisItem) );
 			}
 			
 			var formatedItemsLen = formatedItems.len();
-			
-			
+            
 			if( formatedItemsLen ){
-    			this.pushRecordsIntoImportQueue( arguments.mapping, formatedItems, thisBatch );
+    			this.pushRecordsIntoImportQueue( arguments.mapping.mappingCode, formatedItems, thisBatch );
     		}
     		
-    		// 
     		if( formatedItemsLen < arguments.pageSize){
 				hasPages = false;
 			}
+
 			total += formatedItemsLen;
 		    pageNumber++;
 		}
 		
 		// set the 
 		thisBatch.setInitialEntityQueueItemsCount( total );
+		this.getHibachiEntityQueueService().saveBatch(thisBatch);
 
 	    this.logHibachi("ERPONE - Finished paginating and importing - Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#]");
 		
@@ -585,28 +585,48 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         var columns = [ 'order','name','adr','state','postal_code','country_code','ship_via_code','cu_po','ord_date','opn','o_tot_gross','stat','customer','ord_ext','rec_seq' ];
 	    columns = utilityService.prefixListItems(columns.toList(), 'oe_head.');
 	    
-	    // TODO: prefix erp-one mapping-codes with `erpOne-` ==> erpOneOrder;
-	    var eroOneOrderMapping = this.getMappingByMappingCode('Order');
+	    var eroOneOrderMapping = this.getMappingByMappingCode('erpOneOrderImport');
 	    
     	var recordFormatterFunction = function(required struct erponeOrder){
     	    
+    	    /* Example response 
+
+                oe_head_order		    =   10001
+                oe_head_name	        =	Test Customer
+                oe_head_adr	            =   [ '9989 Dist Street', '', '', 'Mount Laurel' '', '' ],
+                oe_head_state	        =	NJ
+                oe_head_postal_code	    =	08054
+                oe_head_country_code	=	US
+                oe_head_ship_via_code	=	UPRG-F
+                oe_head_cu_po	        =   ''
+                oe_head_ord_date	    =	2016-10-13
+                oe_head_opn             =   true
+                oe_head_o_tot_gross		=   667
+                oe_head_stat	        =	OE
+                oe_head_customer	    =	TEST
+                oe_head_ord_ext	        =
+                oe_head_rec_seq		    =   0
+                __rowids	            =	0x0000000000025c41
+                __seq		            =    1
+
+    	    */
+    	    
     	    var formattedOrderData =  {
 				//'CanceledDateTime' : ,
-				'CurrencyCode' : 'USD',
+				'currencyCode' : 'USD',
 				//'EstimatedDeliveryDateTime' : ,
 				//'OrderCloseDateTime' : ,
 				//'OrderIPAddress' : ,
 				//'OrderNotes' : ,
-				'OrderNumber' : arguments.erponeOrder['oe_head_order'],
-				'OrderOpenDateTime' : arguments.erponeOrder['oe_head_order'],
-				//'OrderSiteCode' : ,
-				'OrderStatusCode' : arguments.erponeOrder['oe_head_order'],
-			// 	'OrderTypeCode' : ,
-				'RemoteAccountID' : arguments.erponeOrder['oe_head_customer'],
-				'RemoteOrderID' : arguments.erponeOrder['__rowids'],
+				'orderNumber' : arguments.erponeOrder['oe_head_order'],
+				'orderOpenDateTime' : arguments.erponeOrder['oe_head_ord_date'],
+				// 'OrderSiteCode' : ,                                          // default to s&b site, or ignore
+				// 'OrderStatusCode' : arguments.erponeOrder['oe_head_order'],
+			    // 'OrderTypeCode' : ,                                          // ??
+				'remoteAccountID' : arguments.erponeOrder['oe_head_customer'],
+				'remoteOrderID' : arguments.erponeOrder['__rowids'],
 			};
 
-			
 			/*
 				OrderHeader Status codes
 				
@@ -623,8 +643,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				QP - Quote Printed
 			*/
     	    
-    	    
-    	    
 			// append billing and shipping addresses			
 		    var address = {
 				'streetAddress'     : arguments.erponeOrder['oe_head_adr'][2],
@@ -639,11 +657,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				// 'phoneNumber' : ,
 		    }
 		    
-		    var billingAddress = utilityService.prefixStructKeys(address, 'BillingAddress_');
+		    address["name"] =  this.getAddressService().getAddressName(address);
+
+		    var billingAddress = utilityService.prefixStructKeys(address, 'billingAddress_');
 		    billingAddress['addressNickName'] = 'Billing Address';
 		    billingAddress['remoteAddressID'] = 'billing_'&arguments.erponeOrder['__rowids'];
 		    
-		    var shippingAddress = utilityService.prefixStructKeys(address, 'ShippingAddress_');
+		    var shippingAddress = utilityService.prefixStructKeys(address, 'shippingAddress_');
 		    shippingAddress['addressNickName'] = 'Shipping Address';
 		    shippingAddress['remoteAddressID'] = 'shipping_'&arguments.erponeOrder['__rowids'];
 				
@@ -661,7 +681,25 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    recordFormatterFunction = recordFormatterFunction
 		);
 		
+		return orderImportBatch;
 	}
+	
+	public array function generateOrderOrderFulfillments( struct data,  struct mapping,  struct propertyMetaData ){
+		//create new fullfillment
+		var fulfillment = {
+	    	"orderFulfillmentID"	   : "",
+            "remoteID"				   : arguments.data.remoteOrderID,
+            "currencyCode"			   : arguments.data.currencyCode,
+            //this defaultValue for FulfillmentMethod is `Shipping`
+            "fulfillmentMethod"        : {
+            	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
+            }
+		};
+		
+		fulfillment['shippingAddress'] = this.getHibachiUtilityService().getSubStructByKeyPrefix(arguments.data, 'shippingAddress_');
+		
+	    return [ fulfillment ];
+    }
 	
 
     // TODO: arguments
@@ -931,7 +969,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		for(var erponeItem in  orderShipments ){
 		    var transformedItem = {};
 		    
-		    transformedItem['quantity'] = 
+		  //  transformedItem['quantity'] = 
 		    
 		}
     };
@@ -1385,6 +1423,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		logHibachi("ERPOne - End Order pushData");
 	}
 	
+	// TODO: remove --- not in use
 	public any function preProcessOrderData(required struct data ){
 		//dump(data);abort;
 		if( left(arguments.data.order, 1) == '-' ){
