@@ -60,7 +60,6 @@ export const login = (email, password) => {
       dispatch(requestLogin())
       dispatch(requestUser())
       dispatch(requestCart())
-      dispatch(getWishLists())
 
       const response = await axios({
         method: 'POST',
@@ -80,6 +79,8 @@ export const login = (email, password) => {
         dispatch(receiveLogin({ isAuthenticanted: true }))
         dispatch(receiveUser(response.data.account))
         dispatch(receiveCart(response.data.cart))
+        dispatch(getWishLists())
+
         toast.success('Login Successful')
       } else {
         errorLogin({})
