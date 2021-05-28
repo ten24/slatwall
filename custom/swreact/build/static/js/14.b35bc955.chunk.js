@@ -1,0 +1,2 @@
+(this.webpackJsonpswreact=this.webpackJsonpswreact||[]).push([[14],{529:function(e,t,r){"use strict";r.r(t);var a=r(27),c=r(139),s=r(0);t.default=function(e){var t={category:e.location.pathname.split("/").reverse()[0]};return Object(s.jsx)(a.t,{children:Object(s.jsx)(c.a,{preFilter:t,hide:"category"})})}}}]);
+//# sourceMappingURL=14.b35bc955.chunk.js.map
