@@ -7,7 +7,7 @@ import AccountContent from '../AccountContent/AccountContent'
 import { addNewAccountAddress, updateAccountAddress } from '../../../actions/userActions'
 // TODO: Make this component reusable
 import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/contentActions'
 
 const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectLocation = '/my-account/addresses', customBody, contentTitle, action = 'Account Address' }) => {
@@ -16,7 +16,8 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
   const stateCodeOptions = useSelector(state => state.content.stateCodeOptions)
   const isFetching = useSelector(state => state.content.isFetching)
-
+  const [disableButton, setdisableButton] = useState(false);
+  
   const { t } = useTranslation()
 
   const formik = useFormik({
@@ -37,6 +38,7 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
     },
     onSubmit: values => {
       // TODO: Dispatch Actions
+      setdisableButton(true);
       if (isEdit) {
         dispatch(updateAccountAddress(values))
       } else {
@@ -128,7 +130,7 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
         <div className="col-12">
           <hr className="mt-2 mb-3" />
           <div className="d-flex flex-wrap justify-content-end">
-            <button type="submit" className="btn btn-primary mt-3 mt-sm-0">
+            <button type="submit" disabled={disableButton} className="btn btn-primary mt-3 mt-sm-0">
               {isEdit ? `${t('frontend.core.save')} ${action}` : `${t('frontend.core.saveNew')} ${action}`}
             </button>
           </div>

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom'
 import { logout } from '../../../actions/authActions'
 import { useSelector, useDispatch } from 'react-redux'
@@ -12,6 +13,8 @@ const AccountSidebar = () => {
   const accountMenu = useSelector(getMyAccountMenu)
   const user = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
+  const [disableButton, setdisableButton] = useState(false);
+
   return (
     <aside className="col-lg-4 pt-4 pt-lg-0">
       <div className="cz-sidebar-static rounded-lg box-shadow-lg px-0 pb-0 mb-5 mb-lg-0">
@@ -21,8 +24,10 @@ const AccountSidebar = () => {
               <h3 className="font-size-base mb-0">{`${user.firstName} ${user.lastName}`}</h3>
               <button
                 type="button"
+                disabled={disableButton}
                 onClick={() => {
-                  dispatch(logout())
+                  setdisableButton(true);
+                  dispatch(logout());
                 }}
                 className="link-button text-accent font-size-sm"
               >

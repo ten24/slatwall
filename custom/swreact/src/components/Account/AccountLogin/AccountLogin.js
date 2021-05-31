@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { login } from '../../../actions/authActions'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
@@ -10,6 +11,7 @@ const LoginForm = () => {
   const dispatch = useDispatch()
   let match = useRouteMatch()
   const { t } = useTranslation()
+  const [disableButton, setdisableButton] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -22,6 +24,7 @@ const LoginForm = () => {
       loginPassword: Yup.string().required('Required'),
     }),
     onSubmit: values => {
+      setdisableButton(true);
       dispatch(login(values.loginEmail, values.loginPassword))
     },
   })
@@ -52,7 +55,7 @@ const LoginForm = () => {
             </div>
             <hr className="mt-4" />
             <div className="text-right pt-4">
-              <button className="btn btn-primary" type="submit">
+              <button className="btn btn-primary" disabled={disableButton} type="submit">
                 {t('frontend.account.sign_in')}
               </button>
             </div>
