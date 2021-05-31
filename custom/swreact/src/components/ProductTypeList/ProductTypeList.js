@@ -5,9 +5,8 @@ const ProductTypeList = ({ data, onSelect }) => {
     <div className="container bg-light box-shadow-lg rounded-lg p-5">
       {/* <!--- Product Type grid ---> */}
       <div className="row">
-        {/* <!--- Product Type ---> */}
         {data.childProductTypes &&
-          data.childProductTypes.map(({ productTypeID, productTypeName, imageFile, urlTitle, childProductTypes }, index) => {
+          data.childProductTypes.map(({ productTypeID, productTypeName, imageFile, urlTitle, childProductTypes }) => {
             let customImagePath = ''
             let imageFileName = ''
             if (imageFile !== '') {

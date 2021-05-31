@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router'
-import {Link} from 'react-router-dom'
-import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, CreditCardDetails, TermPaymentDetails, BillingAddressDetails, ListPayments } from '../../components'
+import { Link } from 'react-router-dom'
+import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, TermPaymentDetails, BillingAddressDetails, ListPayments } from '../../components'
 import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
 import { useTranslation } from 'react-i18next'
 
