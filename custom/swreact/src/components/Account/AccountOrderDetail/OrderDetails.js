@@ -22,9 +22,6 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
           </div>
           <div className="col-6">
             <BillingAddressDetails billingAddressNickname={''} orderPayment={{ billingAddress: { name: billingAddress_name, streetAddress: billingAddress_streetAddress, city: billingAddress_city, stateCode: billingAddress_stateCode, postalCode: billingAddress_postalCode, emailAddress: billingAddress_emailAddress } }} />
-            {paymentMethod_paymentMethodType === 'termPayment' && <TermPaymentDetails termPayment={{ purchaseOrderNumber: purchaseOrderNumber, paymentMethod: { paymentMethodName: paymentMethod_paymentMethodName } }} />}
-            {paymentMethod_paymentMethodType === 'giftCard' && <GiftCardDetails />}
-            {paymentMethod_paymentMethodType === 'creditCard' && <CreditCardDetails creditCardPayment={{ creditCardType, nameOnCreditCard, creditCardLastFour, paymentMethod: { paymentMethodName: paymentMethod_paymentMethodName } }} />}
           </div>
         </div>
       </div>
