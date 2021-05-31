@@ -366,7 +366,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public struct function getEntityPermissionDetails() {
 		// First check to see if this is cached
-		if(!this.getHibachiCacheService().hasCachedValue('entityPermissionDetails')){
+		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
 			
 			// Create place holder struct for the data
 			var entityPermissions = {};
@@ -440,12 +440,12 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			
 			// Update the cached value to be used in the future
-			this.getHibachiCacheService().setCachedValue('entityPermissionDetails',entityPermissions);
+			this.getHibachiCacheService().setCachedValue('EntityPermissionDetails',entityPermissions);
 			getService('HibachiJsonService').createPermissionJson('entity',entityPermissions);
 			
 			
 		}
-		return this.getHibachiCacheService().getCachedValue('entityPermissionDetails');
+		return getService('HibachiCacheService').getCachedValue('EntityPermissionDetails');
 	}
 	
 	public struct function getActionPermissionDetails(){

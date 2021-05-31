@@ -77,6 +77,9 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	property name="permissionsByDetails" persistent="false"; 
 	property name="jsonCheckSum" persistent="false";
 	
+	//Calculated Properties
+	property name="calculatedAccountsCount" ormtype="integer";
+	
 	public string function getJsonCheckSum(boolean returnFileCheckSum=false){
 		if(arguments.returnFileCheckSum){
 			var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/permissions";
