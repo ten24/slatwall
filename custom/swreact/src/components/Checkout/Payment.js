@@ -103,7 +103,6 @@ const ListPayments = () => {
               {payment.paymentMethod.paymentMethodType === 'giftCard' && <GiftCardDetails />}
               {payment.paymentMethod.paymentMethodType === 'termPayment' && <TermPaymentDetails hideHeading={true} termPayment={payment} />}
               <hr />
-              { location.pathname === "/checkout/payment" &&
                 <button
                 className="btn btn-link px-0 text-danger"
                 type="button"
@@ -116,7 +115,7 @@ const ListPayments = () => {
                 <i className="fal fa-times-circle"></i>
                 <span className="font-size-sm"> Remove</span>
               </button>
-              }
+              
               
             </div>
           )
