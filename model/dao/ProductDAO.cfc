@@ -597,16 +597,6 @@ Notes:
 	</cffunction>
 	
 	<cffunction name="getProductCodeByPropertyName" access="public">
-		<cfargument name="propertyName" type="string" >
-		<cfargument name="propertyValue" type="string" >
-		<cfquery name="local.query" >
-			SELECT productCode FROM swProduct s
-			WHERE :propertyName = :propertyValue;
-		</cfquery>
-		<cfreturn local.query>
-	</cffunction>
-	
-	<cffunction name="getProductCodeByPropertyName" access="public">
 	
 		<cfargument name="propertyName" required="true" />
 		<cfargument name="propertyValue" required="true" type="string" />

@@ -1278,12 +1278,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	
 	public any function generateSkuImageFile( struct data, struct mapping, struct propertyMetaData ){
-		if(structKeyExists(arguments.data,"defaultImage"))
-		{
-			return arguments.data.defaultImage;
-		}else{
-			return arguments.data.skuCode & "-.jpeg";
-		}
+		return arguments.data.skuCode & "-.jpeg";
 	}
 	
 	
