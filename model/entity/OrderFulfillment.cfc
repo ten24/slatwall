@@ -147,7 +147,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     property name="shippingIntegrationName" type="string" persistent="false";
  	property name="suggestedShippingAddressName" type="string" persistent="false";
    	property name="suggestedShippingAddressStruct" type="any" persistent="false";
-   	property name="userEmailAddress" type="string" presistent="false";
 
 	// Deprecated
 	property name="discountTotal" persistent="false";
@@ -694,7 +693,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
         return totalShippingQuantity;
     }
     
-    public string function getUserEmailAddress(){
+    public string function getFulfillmentEmailAddress(){
 		if(!isNull(this.getEmailAddress())){
 			return this.getEmailAddress();
 		}else{

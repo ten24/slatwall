@@ -36,7 +36,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="verifiedShippingAddressFlag" edit="false">
 				</cfif>
 				
-				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="userEmailAddress" title="Email Address" />
+				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="emailAddress" value="#rc.orderFulfillment.getFulfillmentEmailAddress()#" title="#$.slatwall.rbkey('define.emailAddress')#" />
 
 				
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
