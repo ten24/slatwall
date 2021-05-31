@@ -1,6 +1,9 @@
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
 import { useFormatDateTime } from '../../../hooks/useFormatDate'
-import { ShippingAddressDetails, BillingAddressDetails, TermPaymentDetails, GiftCardDetails, CreditCardDetails, PickupLocationDetails } from '../../index'
+import { useSelector } from 'react-redux'
+import { ShippingAddressDetails, BillingAddressDetails, TermPaymentDetails, GiftCardDetails, CreditCardDetails, PickupLocationDetails, ListPayments } from '../../index'
+import { orderPayment } from '../../../selectors/orderSelectors'
+
 
 const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   const { orderOpenDateTime } = orderInfo
@@ -9,6 +12,7 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   const { paymentMethod_paymentMethodType, paymentMethod_paymentMethodName, creditCardLastFour, billingAddress_streetAddress, billingAddress_emailAddress, billingAddress_city, billingAddress_stateCode, billingAddress_postalCode, billingAddress_name, purchaseOrderNumber, nameOnCreditCard, creditCardType } = orderPayments
   const [formateDate] = useFormatDateTime({})
   const [formatCurrency] = useFormatCurrency({})
+  const payment = useSelector(orderPayment)
 
   return (
     <div className="row align-items-start mb-5 mr-3">
@@ -22,6 +26,9 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
           </div>
           <div className="col-6">
             <BillingAddressDetails billingAddressNickname={''} orderPayment={{ billingAddress: { name: billingAddress_name, streetAddress: billingAddress_streetAddress, city: billingAddress_city, stateCode: billingAddress_stateCode, postalCode: billingAddress_postalCode, emailAddress: billingAddress_emailAddress } }} />
+            {paymentMethod_paymentMethodType === 'termPayment' && <TermPaymentDetails termPayment={{ purchaseOrderNumber: purchaseOrderNumber, paymentMethod: { paymentMethodName: paymentMethod_paymentMethodName } }} />}
+            {paymentMethod_paymentMethodType === 'giftCard' && <GiftCardDetails />}
+            {paymentMethod_paymentMethodType === 'creditCard' && <ListPayments creditCardPayment={payment} />}
           </div>
         </div>
       </div>
