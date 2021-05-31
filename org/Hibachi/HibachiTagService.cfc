@@ -192,6 +192,7 @@
 	<cffunction name="cfunzip">
 		<cfargument name="file" type="string" required="true">
 		<cfargument name="zipDestination" type="string" required="true">
+		<cfargument name="filter" type="string" default="*" >
 
 		<cfzip file="#arguments.file#" action="unzip" destination="#arguments.zipDestination#">
 	</cffunction> 
