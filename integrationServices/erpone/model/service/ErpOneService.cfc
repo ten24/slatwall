@@ -802,6 +802,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				*/
 			
 				if( structKeyExists(contactResponse, 'created') && contactResponse.created > 0 ){
+					var prospectResponse = this.callErpOneUpdateDataApi({
+					"table" : "cu_prospect",
+					"triggers" : "true",
+					"records" : [ {
+					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
+					"customer" : contactResponse.rowids[1]
+					} ]
+					}, "create" );
 					entity.setRemoteContact(contactResponse.rowids[1]);
 				} else {
 					throw("ERPONE - callErpOnePushSy_contactApi: API response is not valid json");

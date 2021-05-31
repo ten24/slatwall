@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/custom/swreact/build/static/css/main.c8037a6e.chunk.css",
-    "main.js": "/custom/swreact/build/static/js/main.25788d58.chunk.js",
-    "main.js.map": "/custom/swreact/build/static/js/main.25788d58.chunk.js.map",
+    "main.js": "/custom/swreact/build/static/js/main.4178de04.chunk.js",
+    "main.js.map": "/custom/swreact/build/static/js/main.4178de04.chunk.js.map",
     "runtime-main.js": "/custom/swreact/build/static/js/runtime-main.1c1196f2.js",
     "runtime-main.js.map": "/custom/swreact/build/static/js/runtime-main.1c1196f2.js.map",
     "static/css/2.b789a6aa.chunk.css": "/custom/swreact/build/static/css/2.b789a6aa.chunk.css",
@@ -30,6 +30,6 @@
     "static/css/2.b789a6aa.chunk.css",
     "static/js/2.bf8a668d.chunk.js",
     "static/css/main.c8037a6e.chunk.css",
-    "static/js/main.25788d58.chunk.js"
+    "static/js/main.4178de04.chunk.js"
   ]
 }
