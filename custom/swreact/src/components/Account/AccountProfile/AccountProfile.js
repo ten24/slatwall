@@ -8,14 +8,12 @@ import withReactContent from 'sweetalert2-react-content'
 import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../../../services'
 import { useTranslation } from 'react-i18next'
-import { useState } from 'react'
 
 const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
   const dispatch = useDispatch()
   const MySwal = withReactContent(Swal)
   const { t } = useTranslation()
   const user = useSelector(state => state.userReducer)
-  const [disableButton, setdisableButton] = useState(false);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -28,7 +26,6 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
       accountCompany: user.company,
     },
     onSubmit: values => {
-      setdisableButton(true);
       dispatch(
         updateUser({
           firstName: values.accountFirstName,
@@ -128,7 +125,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
               <button className="btn btn-secondary mt-3 mt-sm-0 mr-3" onClick={updatePassword} type="submit">
                 {t('frontend.account.password_update')}
               </button>
-              <button type="submit" disabled={disableButton} className="btn btn-primary mt-3 mt-sm-0">
+              <button type="submit" disabled={formik.isSubmitting} className="btn btn-primary mt-3 mt-sm-0">
                 {t('frontend.account.profile_update')}
               </button>
             </div>

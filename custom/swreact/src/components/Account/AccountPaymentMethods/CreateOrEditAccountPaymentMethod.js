@@ -6,7 +6,6 @@ import AccountAddressForm from './AccountAddressForm'
 import useRedirect from '../../../hooks/useRedirect'
 import SwSelect from '../../SwSelect/SwSelect'
 import { addPaymentMethod } from '../../../actions/userActions'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const months = Array.from({ length: 12 }, (_, i) => {
@@ -22,7 +21,6 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
   const [redirect, setRedirect] = useRedirect({ location: '/my-account/cards' })
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const [disableButton, setdisableButton] = useState(false);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -48,7 +46,6 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
     },
     onSubmit: values => {
       // TODO: Dispatch Actions
-      setdisableButton(true);
       if (values['billingAccountAddress.accountAddressID'].length) {
         delete values['billingAddress.countryCode']
         delete values['billingAddress.name']
@@ -134,7 +131,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
         <div className="row">
           <hr className="mt-2 mb-3" />
           <div className="d-flex flex-wrap justify-content-end">
-            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit || disableButton}>
+            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit || formik.isSubmitting}>
               {isEdit ? 'Save Credit Card Details' : 'Save New Card'}
             </button>
           </div>
