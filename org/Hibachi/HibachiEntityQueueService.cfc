@@ -228,7 +228,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				
 	
 			
-			}, true, maxThreads);
+			});
 		}
 	}
 	

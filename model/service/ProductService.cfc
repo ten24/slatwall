@@ -55,6 +55,7 @@ component extends="HibachiService" accessors="true" {
 	property name="productTypeDAO" type="any";
 
 	property name="hibachiService" type="any";
+	property name="hibachiTagService" type="any";
 	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
@@ -1400,42 +1401,37 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 
-	public any function processProduct_uploadBulkImage(required any product, required any processObject , any data ) {
-		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
-		try {
-		// Get the upload directory for the current property
-			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
-			var maxFileSize = val(maxFileSizeString) * 1000000;
-			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/defaultImageZip";
+	public any function processProduct_bulkImageUpload(required any product, required any processObject , any data ) {
 		
-		if(getHibachiUtilityService().isS3Path(uploadDirectory)){
-				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
+		var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/defaultImageZip";
+		
+		getHibachiTagService().cfunzip( file=arguments.processObject.getUploadFile(), zipDestination = uploadDirectory , filter = "*.jpg, *.jpeg, *.png");
+		
+		var filePaths = DirectoryList(path=uploadDirectory&"/test_name",recurse="true", listInfo="path");
+	
+		if(arguments.processObject.getimageNameProductProperty() == "ProductCode"){
+			for(var filepath in filePaths) {
+				fileMove(filepath,  getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default");
+			}	
+		}else{
+			for(var filepath in filePaths) {
+				
+				var fileName = listFirst(listLast(filepath, "/"),".");
+				var fileExtension = listLast(listLast(filepath, "/"),".");
+				var productCode = this.getProductDAO().getProductCodeByPropertyName(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName).productCode;
+				
+		        	if(len(productCode) > 0){
+		        		var newFileName = productCode&"."&fileExtension;
+	 					fileMove(filepath,  getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default/"&newFileName);
+	 				} else {
+	 					arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+	 				}
 			}
-
-			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
-
-			// If the directory where this file is going doesn't exists, then create it
-			if(!directoryExists(uploadDirectory)) {
-				directoryCreate(uploadDirectory);
-			}
-
-			// Do the upload, and then move it to the new location
-			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
-			var fileSize = uploadData.fileSize;
- 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
- 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
- 			} else {
- 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", uploadDirectory);
- 				if(getHibachiUtilityService().isS3Path(fullFilePath)){
- 					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
- 				}
- 			}
-		} catch(any e) {
-			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
-			}
-
+			
+		}
+		
 		return arguments.product;
-		
+
 	}
 	// =====================  END: Process Methods ============================
 
