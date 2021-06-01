@@ -71,9 +71,6 @@ component displayname="Address Zone" entityname="SlatwallAddressZone" table="SwA
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	//Calculated Properties
-	property name="calculatedAddressZoneLocationsCount" ormtype="integer";
-	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
