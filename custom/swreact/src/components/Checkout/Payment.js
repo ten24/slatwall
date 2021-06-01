@@ -91,13 +91,6 @@ const ListPayments = () => {
       <div className="row ">
         {payments.map(payment => {
           return (
-            pageName !== "payment" ?
-            <div className="col-md-8" key={payment.orderPaymentID}>
-                {payment.paymentMethod.paymentMethodType === 'creditCard' && <CCDetails hideHeading={true} creditCardPayment={payment} />}
-                {payment.paymentMethod.paymentMethodType === 'giftCard' && <GiftCardDetails />}
-                {payment.paymentMethod.paymentMethodType === 'termPayment' && <TermPaymentDetails hideHeading={true} termPayment={payment} />}
-            </div>
-            :
             <div className="bg-lightgray rounded mb-5 col-md-4" key={payment.orderPaymentID}>
               {payment.paymentMethod.paymentMethodType === 'creditCard' && <CCDetails hideHeading={true} creditCardPayment={payment} />}
               {payment.paymentMethod.paymentMethodType === 'giftCard' && <GiftCardDetails />}
