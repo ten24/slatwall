@@ -608,7 +608,7 @@ Notes:
 			FROM
 				swProduct
 			WHERE
-			#propertyName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.propertyValue#"/>
+			#arguments.propertyName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.propertyValue#"/>
 		</cfquery>
 		<cfreturn rs />
 	</cffunction>
