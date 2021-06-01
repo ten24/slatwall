@@ -69,7 +69,7 @@ Notes:
             <cfif len(rc.editEntityName)>
                 <hb:HibachiEntityDetailItem tabid="processpermissions" lazyLoad="true" view="admin:entity/permissiongrouptabs/processpermissions">
             </cfif>
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts">
+            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts" count=#rc.permissionGroup.getAccountsCount()#>
             
             <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/recordrestrictions">
 		</hb:HibachiEntityDetailGroup>
