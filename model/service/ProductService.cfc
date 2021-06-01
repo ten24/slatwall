@@ -1412,27 +1412,34 @@ component extends="HibachiService" accessors="true" {
 		}
 		getHibachiTagService().cfunzip( file=arguments.processObject.getUploadFile(), zipDestination = uploadTempDirectory , filter = "*.jpg, *.jpeg, *.png");
 		
-		var filePaths = DirectoryList(path=uploadTempDirectory,recurse="true", listInfo="path" , type = "file");
+		var dirPaths = DirectoryList(path=uploadTempDirectory,recurse="true", listInfo="path" , type = "dir");
+		
+		for(var dirPath in dirPaths) {
+			if(!find("MACOSX",dirPath)){
+				var uploadNewTempDirectory = dirPath;
+			}
+		}
+		
+		var filePaths = DirectoryList(path=uploadNewTempDirectory,recurse="true", listInfo="path" , type = "file");
 	
 		for(var filepath in filePaths) {
 
 			var fileNameWithExtension = listLast(filepath, "/");
-			var fileName			  = listFirst(listLast(filepath, "/"),".");
-			var fileExtension         = listLast(listLast(filepath, "/"),".");
-			
-			if(!find("_",fileName)){	
-				if(arguments.processObject.getimageNameProductProperty() == "ProductCode"){			
-						fileMove( filepath, uploadDirectory);
+			var fileName			  = listFirst(fileNameWithExtension,".");
+			var fileExtension         = listLast(fileNameWithExtension,".");
+	
+				if(arguments.processObject.getimageNameProductProperty() == "ProductCode"){
+					getImageService().clearImageCache(uploadDirectory, fileNameWithExtension);
+					fileMove( filepath, uploadDirectory);
 				}else{
 					var productCode = this.getProductDAO().getProductCodeByPropertyName(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName).productCode;
 		        	if(len(productCode) > 0){
 		        		var newFileName = productCode&"."&fileExtension;
+		        		getImageService().clearImageCache(uploadDirectory, newFileName);
 		 				fileMove(filepath, uploadDirectory&newFileName);
 		 			} else {
 		 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
 		 			}
-					
-				}
 			}
 		}
 		
