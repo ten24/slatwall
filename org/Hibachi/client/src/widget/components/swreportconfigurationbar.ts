@@ -23,7 +23,8 @@ class SWReportConfigurationBarController{
     public weekGrouping
     public monthGrouping
     public siteCollectionList
-    
+    public maxDateTime
+
     
     
     
@@ -53,6 +54,7 @@ class SWReportConfigurationBarController{
 		});
 		this.customReportStartDateTime =  new Date(	eomData).addMonths(-11).toDateString().split(' ').slice(1).join(' ')
 		this.customReporEndDateTime = eomData.toDateString().split(' ').slice(1).join(' ')
+    	this.maxDateTime = this.customReporEndDateTime
     	this.site = this.siteCollectionList[0]
 
     }
@@ -121,13 +123,15 @@ class SWReportConfigurationBar implements ng.IDirective {
         scope.swReportConfigurationBar.openCalendarStart = function($event) {
 			$event.preventDefault();
 			$event.stopPropagation();
-		    scope.swReportConfigurationBar.openedCalendarStart = true;
+			scope.swReportConfigurationBar.openedCalendarEnd = false;
+		    scope.swReportConfigurationBar.openedCalendarStart = scope.swReportConfigurationBar.openedCalendarStart ? false : true;
 		};
 				
 		scope.swReportConfigurationBar.openCalendarEnd = function($event) {
 			$event.preventDefault();
 			$event.stopPropagation();
-		    scope.swReportConfigurationBar.openedCalendarEnd = true;
+			scope.swReportConfigurationBar.openedCalendarStart = false;
+		    scope.swReportConfigurationBar.openedCalendarEnd = scope.swReportConfigurationBar.openedCalendarEnd ? false : true;
 		};
 		
 

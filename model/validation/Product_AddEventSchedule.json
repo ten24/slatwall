@@ -19,7 +19,7 @@
 			{
 				"required": true,
 				"conditions": "recurringSchedule",
-				"gtDateTimeProperty": "eventStartDateTime",
+				"gtDateTimeProperty": "eventEndDateTime",
 				"dataType" : "date",
 				"gtNow": true
 			}

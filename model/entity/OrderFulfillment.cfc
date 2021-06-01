@@ -147,7 +147,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     property name="shippingIntegrationName" type="string" persistent="false";
  	property name="suggestedShippingAddressName" type="string" persistent="false";
    	property name="suggestedShippingAddressStruct" type="any" persistent="false";
-   	
+
 	// Deprecated
 	property name="discountTotal" persistent="false";
 	property name="shippingCharge" persistent="false";
@@ -692,6 +692,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
         return totalShippingQuantity;
     }
+    
 
 	// ============  END:  Non-Persistent Property Methods =================
 
