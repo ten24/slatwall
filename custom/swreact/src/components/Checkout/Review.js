@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
-import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, TermPaymentDetails, BillingAddressDetails, ListPayments } from '../../components'
+import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, TermPaymentDetails, BillingAddressDetails, ListPayments, CCDetails } from '../../components'
 import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
 import { useTranslation } from 'react-i18next'
 
@@ -37,7 +37,7 @@ const ReviewSlide = ({ currentStep }) => {
         </div>
         {payment.paymentMethod.paymentMethodType === 'creditCard' && (
           <div className="col-md-4">
-            <ListPayments creditCardPayment={payment} />
+            <CCDetails creditCardPayment={payment} />
             <Link to="/checkout/payment">{t('frontend.core.edit')}</Link>
           </div>
         )}
