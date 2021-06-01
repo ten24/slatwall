@@ -460,8 +460,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	
-	// Importer Functions - Paginated data API call
-	
+	//TODO: refactor to use `paginateAndImport` function
 	public any function importErpOneAccounts(){
 		
 		logHibachi("ERPONE - Starting importing importErpOneAccounts");
@@ -585,7 +584,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         var columns = [ 'order','name','adr','state','postal_code','country_code','ship_via_code','cu_po','ord_date','opn','o_tot_gross','stat','customer','ord_ext','rec_seq' ];
 	    columns = utilityService.prefixListItems(columns.toList(), 'oe_head.');
 	    
-	    var eroOneOrderMapping = this.getMappingByMappingCode('erpOneOrderImport');
+	    var erpOneOrderMapping = this.getMappingByMappingCode('ErpOneOrderImport');
 	    
     	var recordFormatterFunction = function(required struct erponeOrder){
     	    
@@ -673,11 +672,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			return formattedOrderData;
 		}
 		
-		
 		var orderImportBatch = this.paginateAndImport( 
 		    erpOneQuery             = getOrdersQueryString,
 		    columns                 = columns,
-		    mapping                 = eroOneOrderMapping,
+		    mapping                 = erpOneOrderMapping,
 		    recordFormatterFunction = recordFormatterFunction
 		);
 		
@@ -685,10 +683,23 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	public array function generateOrderOrderFulfillments( struct data,  struct mapping,  struct propertyMetaData ){
+	    var remoteID = "Fulfillment_"&arguments.data.remoteOrderID;
+	    
+	    // try to find the previous one in case, the order is getting re-imported
+	    var orderFulfillmentID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  = 'OrderOrderFulfillment',
+	        "uniqueKey"   = 'remoteID',
+	        "uniqueValue" = remoteID
+	    );
+	    
+    	if( !isNull(orderFulfillmentID) ){
+    	    orderFulfillmentID = '';
+    	} 
+    	
 		//create new fullfillment
 		var fulfillment = {
-	    	"orderFulfillmentID"	   : "",
-            "remoteID"				   : arguments.data.remoteOrderID,
+	    	"orderFulfillmentID"	   : orderFulfillmentID,
+            "remoteID"				   : remoteID,
             "currencyCode"			   : arguments.data.currencyCode,
             //this defaultValue for FulfillmentMethod is `Shipping`
             "fulfillmentMethod"        : {
@@ -702,13 +713,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
 	
 
-    // TODO: arguments
-	public void function postProcessOrderImport(){
-		this.importErpOneOrderItemsByOrder(orderData.orderNumber);
-		this.importErpOneOrderPaymentsByOrder(orderData.orderNumber);
+	public void function importErpOneOrderItemsAndOrderPaymentsByOrder(required any order, required struct mapping, required struct data ){
+		this.importErpOneOrderItemsByOrder(arguments.data.orderNumber);
+		this.importErpOneOrderPaymentsByOrder(arguments.data.orderNumber);
 	}
 	
-	public void function postProcessOrderItemImport(){
+	//?? not straight forward, as any shipment/deliveries can have multiple items
+	public void function importErpOneOrderShipmentsByOrderItem(){
 		this.importErpOneOrderItemShipmentsByOrderItem(orderData.orderNumber);
 	}
 	
@@ -730,8 +741,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		      
 		this.logHibachi("ERPONE - importing order-items for order: #arguments.orderNumber#, Query: #query#, Columns: #columns#");
 		
-		// TODO: prefix erp-one mapping-codes with `erpOne-` ==> erpOneOrder;
-	    var eroOneOrderItemMapping = this.getMappingByMappingCode('Order');
+	    var erpOneOrderItemMapping = this.getMappingByMappingCode('ErpOneOrderItemImport');
 	    
 	    // TODO: move to variables scope as it's constant
 	    var erponeOrderItemStructKeyMap = {
@@ -752,7 +762,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	// so that Slatwall does-not update the `price` 
 	    	transformedItem['userDefinedPriceFlag'] = true;
 	    	
-	    	// TODO: order-item-type and status
+	    	// TODO: order-item-type and status, fulfillmentID, currencyCode
 	    	
 	    	return transformedItem;
     	}
@@ -760,7 +770,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	var orderItemsImportBatch = this.paginateAndImport( 
 		    erpOneQuery             = getOrderItemsQueryString,
 		    columns                 = columns,
-		    mapping                 = eroOneOrderItemMapping,
+		    mapping                 = erpOneOrderItemMapping,
 		    recordFormatterFunction = recordFormatterFunction
 		);
 	}
@@ -807,11 +817,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             "postal_code"
         ];        
         
-		      
 		this.logHibachi("ERPONE - importing order-payments for order: #arguments.orderNumber#, Query: #query#, Columns: #columns#");
 		
-		// TODO: prefix erp-one mapping-codes with `erpOne-` ==> erpOneOrder;
-	    var eroOneOrderPaymentMapping = this.getMappingByMappingCode('OrderPayment');
+	    var erpOneOrderPaymentMapping = this.getMappingByMappingCode('ErpOneOrderPaymentImport');
 	    
 	    
     	var recordFormatterFunction = function(required struct erponeOrderPayment){
@@ -825,12 +833,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	var orderPaymentsImportBatch = this.paginateAndImport( 
 		    erpOneQuery             = getOrderPaymentsQueryString,
 		    columns                 = columns,
-		    mapping                 = eroOneOrderPaymentMapping,
+		    mapping                 = erpOneOrderPaymentMapping,
 		    recordFormatterFunction = recordFormatterFunction
 		);
 	}
 
-	
 	public any function importErpOneOrderItemShipmentsByOrderItem(required any orderNumber){
 	    
 		var getOrderItemShipmentsQueryString = "
@@ -873,8 +880,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         
 		this.logHibachi("ERPONE - fetching order-item-shipments for order: #arguments.orderNumber#, Query: #query#");
 		
-		// TODO: prefix erp-one mapping-codes with `erpOne-` ==> erpOneOrder;
-	    var eroOneOrderPaymentMapping = this.getMappingByMappingCode('OrderPayment');
+	    var erpOneOrderPaymentMapping = this.getMappingByMappingCode('OrderPayment');
 	    
     	var recordFormatterFunction = function(required struct erponeOrderPayment){
 
@@ -929,13 +935,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	var orderPaymentsImportBatch = this.paginateAndImport( 
 		    erpOneQuery             = getOrderPaymentsQueryString,
 		    columns                 = columns,
-		    mapping                 = eroOneOrderpaymentMapping,
+		    mapping                 = erpOneOrderpaymentMapping,
 		    recordFormatterFunction = recordFormatterFunction
 		);
 
 		return transformedItems;
 	}
-	
 	
 	public any function fetchErpOneOrderShipmentItems(required any orderNumber, required string company){
 	    
@@ -974,40 +979,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
     };
 
-	
-	public any function importErpOneOrderItems(){
-
-		logHibachi("ERPONE - Starting importing ErpOneOrderItems");
-
-		var response = this.callErpOneGetDataApi({
-			"table" : "oe_line"
-		}, "data/count");
-		
-		var totalRecordsCount = response.count;
-		var currentPage = 1;
-		var pageSize = 100;
-		var recordsFetched = 0;
-
-		while ( recordsFetched < totalRecordsCount ){
-
-			try {
-				this.getOrderItemData( currentPage, pageSize );
-				this.logHibachi("Successfully called getOrderItemData for CurrentPage: #currentPage# and PageSize: #pageSize#");
-
-			} catch(e){
-
-				this.logHibachi("Got error while trying to call getOrderItemData for CurrentPage: #currentPage# and PageSize: #pageSize#");
-				this.getHibachiUtilityService().logException(e);
-			}
-
-			//increment regardless of success or failure;
-			recordsFetched += pageSize;
-			currentPage += 1;
-		}
-
-		this.logHibachi("ERPONE - Finish importing ErpOneOrderItems for totalRecordsCount: #totalRecordsCount#, recordsFetched: #recordsFetched#");
-	}
-	
+    // TODO: refactor to use paginate and import
 	public any function importErpOneInventoryItems(){
 
 		logHibachi("ERPONE - Starting importing ErpOneInventoryItems");
@@ -1215,14 +1187,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				*/
 			
 				if( structKeyExists(contactResponse, 'created') && contactResponse.created > 0 ){
-					var prospectResponse = this.callErpOneUpdateDataApi({
-					"table" : "cu_prospect",
-					"triggers" : "true",
-					"records" : [ {
-					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
-					"customer" : contactResponse.rowids[1]
-					} ]
-					}, "create" );
 					entity.setRemoteContact(contactResponse.rowids[1]);
 				} else {
 					throw("ERPONE - callErpOnePushSy_contactApi: API response is not valid json");

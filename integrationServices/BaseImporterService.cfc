@@ -55,6 +55,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "importerMappingService";
 	
 	property name = "hibachiService";
+	property name = "hibachiEventService";
 	property name = "hibachiUtilityService";
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
@@ -445,21 +446,28 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
 
 	    var entityName = arguments.entity.getClassName();
-	    
-	    if(isNull(arguments.mapping)){
+	    if( isNull(arguments.mapping) ){
 	        arguments.mapping = this.getMappingByMappingCode( arguments.entityQueueData.mappingCode );
 	    }
-        
+	    
         var extensionFunctionName = 'process#entityName#_import';
 	    if( structKeyExists(this, extensionFunctionName) ){
 	        return this.invokeMethod( extensionFunctionName, arguments );
 	    }
+
+	    var eventData = {
+	        "data"      : arguments.entityQueueData,
+	        "entity"    : arguments.entity,
+	        "mapping"   : arguments.mapping,
+	    };
+	    eventData[entityName] = arguments.entity;
 	    
-	    if( !structKeyExists(arguments, 'mapping') ){
-            arguments.mapping = this.getMappingByMappingCode( entityName );
-        }
-        
-        if( structKeyExists(arguments.entityQueueData, '__lazy')){
+	    this.getHibachiEventService().announceEvent(
+	        eventName="before#arguments.enittyName#Process_import",
+	        eventData = eventData
+	    );
+	    
+	    if( structKeyExists(arguments.entityQueueData, '__lazy')){
             this.resolveMappingLazyProperties( 
                 transformedData = arguments.entityQueueData,
                 mapping = arguments.mapping
@@ -470,42 +478,58 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // like Product is required before SKU can be created for that Product	    
 	    if( structKeyExists(arguments.entityQueueData, '__dependencies') ){
             this.resolveEntityDependencies(argumentCollection = arguments);
-    	    if(arguments.entity.hasErrors()){
-    	        return arguments.entity;
+	    }
+	    
+	    if( !arguments.entity.hasErrors() ){
+    	    // make-sure that volatile-relaions are resolved
+    	    // volatile-relaions --> 
+    	    // related-entities which can be created by one of many records in the queue, 
+    	    // for example, Brand can be created by one of multiple-products(which belongs to the same brand) getting imported 
+    	    if( structKeyExists(arguments.entityQueueData, '__volatiles') ){
+                this.resolveMappingVolatileRelations(arguments.mapping.mappingCode, arguments.entityQueueData);
     	    }
+    	    
+    	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
+    	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
+    
+    	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
+    	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
+    	    
+    	    
+    	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
+    	    if( !structKeyExists(arguments.mapping, 'validationContext') ){
+    	        arguments.mapping['validationContext'] = 'save';
+    	    }
+    	    
+    	       // the onMissingSaveMethod in HibachiService does not like named arguments :(
+    	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
+    	        1 : arguments.entity, 
+    	        2 : {},
+    	        3 : arguments.mapping.validationContext
+    	    });
+    	    
+            // will invoke Functions to be called after saving the entity, like `updateCalculatedProperties`
+            this.invokePostSaveMethodsRecursively( arguments.entity, arguments.mapping );
 	    }
 	    
-	    // make-sure that volatile-relaions are resolved
-	    // volatile-relaions --> 
-	    // related-entities which can be created by one of many records in the queue, 
-	    // for example, Brand can be created by one of multiple-products(which belongs to the same brand) getting imported 
-	    if( structKeyExists(arguments.entityQueueData, '__volatiles') ){
-            this.resolveMappingVolatileRelations(arguments.mapping.mappingCode, arguments.entityQueueData);
+	    eventData[entityName] = arguments.entity;
+	    
+	    this.getHibachiEventService().announceEvent(
+	        eventName="after#arguments.enittyName#Process_import",
+	        eventData = eventData
+	    );
+    	    
+	    if(arguments.entity.hasErrors()){
+    	    this.getHibachiEventService().announceEvent(
+    	        eventName="after#arguments.enittyName#Process_importFailure",
+    	        eventData = eventData
+    	    );
+	    } else {
+	        this.getHibachiEventService().announceEvent(
+    	        eventName="after#arguments.enittyName#Process_importSuccess",
+    	        eventData = eventData
+    	    );
 	    }
-	    
-	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
-	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
-
-	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
-	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
-	    
-	    
-	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
-	    if( !structKeyExists(arguments.mapping, 'validationContext') ){
-	        arguments.mapping['validationContext'] = 'save';
-	    }
-	    
-	       // the onMissingSaveMethod in HibachiService does not like named arguments :(
-	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
-	        1 : arguments.entity, 
-	        2 : {},
-	        3 : arguments.mapping.validationContext
-	    });
-	    
-	    
-        // will invoke Functions to be called after saving the entity, like `updateCalculatedProperties`
-        this.invokePostSaveMethodsRecursively( arguments.entity, arguments.mapping );
-   
 	    
 	    return arguments.entity;
 	}

@@ -1,5 +1,6 @@
 component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" accessors="true" output="false"{
 	
+	property name="erpOneService";
 	property name="erpOneIntegrationCFC";
 	property name="hibachiEntityQueueDAO";
 	
@@ -45,5 +46,9 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	
 	public void function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any entity, required any data){
 		addToQueue(arguments.entity , "pushOrderDataToErpOne");
+	}
+	
+	public void function afterOrderProcess_importSuccess(required any order, required struct mapping, required struct data ){
+	    this.getErpOneService().importErpOneOrderItemsAndOrderPaymentsByOrder(argumentCollection = arguments);
 	}
 }
