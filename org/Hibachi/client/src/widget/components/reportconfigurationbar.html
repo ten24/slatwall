@@ -54,6 +54,8 @@
                                     type="text"
                                     is-open="swReportConfigurationBar.openedCalendarStart" 
                                     ng-model="swReportConfigurationBar.customReportStartDateTime"
+                                    max-date="swReportConfigurationBar.maxDateTime"
+
                                     />
                                 <span class="input-group-btn" >
                                 <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -69,6 +71,9 @@
                                     type="text"
                                     is-open="swReportConfigurationBar.openedCalendarEnd" 
                                     ng-model="swReportConfigurationBar.customReporEndDateTime"
+                                    max-date="swReportConfigurationBar.maxDateTime"
+                                    min-date="swReportConfigurationBar.customReportStartDateTime"
+
                                     />
                                 <span class="input-group-btn" >
                                 <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
