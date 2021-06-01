@@ -15,8 +15,8 @@
 			<!--- Estimated Shipping Date --->
 			<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="estimatedShippingDate" edit="#rc.edit#">
 				
-			<!--- Email --->
-			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
+			<!--- Auto --->
+			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "auto">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="emailAddress" edit="#rc.edit#">
 
 			<!--- Pickup --->
@@ -25,6 +25,8 @@
 
 			<!--- Shipping --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+			    <hb:HibachiPropertyDisplay object="#rc.orderFulfillment.getShippingAddress()#" property="emailAddress">
+
 				<cfif rc.edit eq "true">
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingAddress" hint="#$.slatwall.rbkey('entity.orderfulfillment.shippingaddress.hint')#" edit="false">
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="verifiedShippingAddressFlag" edit="false">
@@ -36,8 +38,6 @@
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="verifiedShippingAddressFlag" edit="false">
 				</cfif>
 				
-				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="emailAddress" value="#rc.orderFulfillment.getFulfillmentEmailAddress()#" title="#$.slatwall.rbkey('define.emailAddress')#" />
-
 				
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" valueOptions="#rc.orderFulfillment.getShippingIntegrationOptions()#" property="shippingIntegration" edit="#rc.edit#">
@@ -55,10 +55,6 @@
 				<cfif rc.edit eq "true">
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="saveAccountAddressFlag" fieldtype="yesno" edit="#rc.edit#"></hb:HibachiPropertyDisplay>
 				</cfif>
-			</cfif>
-
-			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "auto">
-				<!--- TODO: Add Fulfill From Location --->
 			</cfif>
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">

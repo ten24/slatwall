@@ -693,13 +693,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
         return totalShippingQuantity;
     }
     
-    public string function getFulfillmentEmailAddress(){
-		if(!isNull(this.getEmailAddress())){
-			return this.getEmailAddress();
-		}else{
-			return this.getShippingAddress().getEmailAddress();
-		}
-	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
