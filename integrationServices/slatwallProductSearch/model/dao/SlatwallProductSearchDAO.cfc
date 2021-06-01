@@ -138,32 +138,42 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         return query;
 	}
 	
-	public any function truncateProductFilterFacetOptionsTable(){
-        var startTicks = getTickCount();
-	    var query = new Query();
-	    var sql = "TRUNCATE TABLE  swProductFilterFacetOption";
-	    query.setSQL(sql);
-	    query.execute().getResult();
 
-	    this.logHibachi("SlatwallProductSearchDAO:: cleared swProductFilterFacetOption table, in #getTickCount()-startTicks# ms.");
-	}
-	
 	public any function rePopulateProductFilterFacetOptionTable(){
-	    this.truncateProductFilterFacetOptionsTable();
-	    
-	    var sql = " INSERT INTO swProductFilterFacetOption (
-    	                #this.getProductFilterFacetOptionsSeletQueryColumnList()#
-    	            ) 
-                    #this.getProductFilterFacetOptionsSeletQuerySQL()#
-               ";
-               
         var startTicks = getTickCount();
+
+        
+        // create tmp tabe, so it does not break any queries on the main table 
+	    var sql = " 
+	        CREATE TABLE IF NOT EXISTS `tmp_swProductFilterFacetOption` LIKE `swProductFilterFacetOption`;
+            TRUNCATE TABLE  `tmp_swProductFilterFacetOption`;
+        ";
+        
+        // make and insert the options;
+        sql &= "
+            INSERT INTO tmp_swProductFilterFacetOption (
+                #this.getProductFilterFacetOptionsSeletQueryColumnList()#
+            ) 
+            #this.getProductFilterFacetOptionsSeletQuerySQL()#;
+        ";
+        
+	    // swap tables 
+        sql &= "
+            RENAME TABLE `swProductFilterFacetOption` TO `old_swProductFilterFacetOption`, `tmp_swProductFilterFacetOption` TO `swProductFilterFacetOption`;
+            DROP TABLE `old_swProductFilterFacetOption`;
+        ";
+        
+        // *NOTE - using multi-query syntax here, as if the query takes too-much time, 
+        //         the requests timeouts and the cf kills the request, 
+        //         hence no further code will get executed;
+               
 	    var query = new Query();
 	    query.setSQL(sql);
 	    query.execute().getResult();
+	    
 	    this.logHibachi("SlatwallProductSearchDAO:: rePopulateProductFilterFacetOptionsTable took #getTickCount()-startTicks# ms.");
 	}
-	
+
 	
 	//just to save some maintenance, and remove duplicacy
 	public any function getProductFilterFacetOptionsSeletQueryColumnList(){
@@ -252,14 +262,14 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             }
             if( arguments.row.attributeSetObject == 'sku'){
                 return listAppend(joins, "(
-                    att.attributeCode = `#arguments.row.attributeCode#` 
+                    att.attributeCode = '#arguments.row.attributeCode#' 
                     AND sk.#arguments.row.attributeCode# = atto.attributeOptionValue 
                     AND sk.#arguments.row.attributeCode# != '' 
                     AND sk.#arguments.row.attributeCode# IS NOT NULL
                     )", '$' );
             } 
             return listAppend(joins, "(
-                att.attributeCode = `#arguments.row.attributeCode#` 
+                att.attributeCode = '#arguments.row.attributeCode#' 
                 AND p.#arguments.row.attributeCode# = atto.attributeOptionValue
                 AND p.#arguments.row.attributeCode# != '' 
                 AND p.#arguments.row.attributeCode# IS NOT NULL
