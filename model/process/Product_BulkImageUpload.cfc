@@ -52,12 +52,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getImageNameProductPropertyOptions(){
 		return publicProperties = [
-		{name  : "ProductCode",
-		 value : "ProductCode"
-		},
-		{name  : "ProductName",
-		 value : "ProductName"
-		}];
+		{ 
+				"name"  : "Product Code",
+				"value" : "ProductCode"
+			},
+			{
+				"name"  : "Product Name",
+				"value" : "ProductName"
+			}
+		];
 		
 	}
 }
