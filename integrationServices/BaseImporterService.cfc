@@ -1240,11 +1240,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	public any function generateProductTypeParentProductType( struct data, struct mapping, struct propertyMetaData ){
-		
+
 	    var productTypeID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
 	        "entityName"  = 'ProductType',
 	        "uniqueKey"   = 'RemoteID',
-	        "uniqueValue" = arguments.data.remoteProductTypeID
+	        "uniqueValue" = arguments.data.productTypeName
 	    );
 	    
     	if( !isNull(productTypeID) && !this.hibachiIsEmpty(productTypeID) ){

@@ -142,7 +142,30 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
-
+	public boolean function isUniqueInAttributeOptionLabel(){
+		var attributeOptionLabel = this.getAttributeOptionLabel();
+		var attributeID = this.getAttribute().getAttributeID();
+		var attributeOptionID = getDAO('attributeDAO').getAttributeOptionIDByAttributeIDAndAttributeOptionLabel(attributeID,attributeOptionLabel);
+		
+	   if(len(attributeOptionID) && attributeOptionID != this.getAttributeOptionID() ){
+	   		return false;
+	   }
+	   
+	   return true;
+	}
+	
+	public boolean function isUniqueInAttributeOptionValue(){
+		var attributeOptionValue = this.getAttributeOptionValue();
+		var attributeID = this.getAttribute().getAttributeID();
+		var attributeOptionID = getDAO('attributeDAO').getAttributeOptionIDByAttributeIDAndAttributeOptionValue(attributeID,attributeOptionValue);
+		
+	   if(len(attributeOptionID) && attributeOptionID != this.getAttributeOptionID() ){
+	   		return false;
+	   }
+	   
+	   return true;
+	}
+	
 	// ===============  END: Custom Validation Methods =====================
 
 	// =============== START: Custom Formatting Methods ====================

@@ -147,5 +147,36 @@ Notes:
 			<cfreturn label>
 		</cfloop>
 	</cffunction>
+	
+	<cfscript>
+	
+	public string function getAttributeOptionIDByAttributeIDAndAttributeOptionValue(required string attributeID, required string attributeOptionValue){
+	
+	    var sql = "SELECT attributeOptionID 
+            	   FROM swattributeoption 
+            	   WHERE attributeID = :attributeID AND attributeOptionValue = :attributeOptionValue
+            	  ";
+            	  
+	    var queryService = new query();
+	    queryService.addParam(name='attributeID', value=arguments.attributeID);
+	    queryService.addParam(name='attributeOptionValue', value=arguments.attributeOptionValue);
 
+    	return queryService.execute(sql=sql).getResult()['attributeOptionID'];
+	}
+    
+    public string function getAttributeOptionIDByAttributeIDAndAttributeOptionLabel(required string attributeID, required string attributeOptionLabel){
+    	
+    	var sql = "SELECT attributeOptionID 
+            	   FROM swattributeoption 
+            	   WHERE attributeID = :attributeID AND attributeOptionLabel = :attributeOptionLabel
+            	  ";
+            	  
+	    var queryService = new query();
+	    queryService.addParam(name='attributeID', value=arguments.attributeID);
+	    queryService.addParam(name='attributeOptionLabel', value=arguments.attributeOptionLabel);
+
+    	return queryService.execute(sql=sql).getResult()['attributeOptionID'];
+    }
+    </cfscript>
+    
 </cfcomponent>
