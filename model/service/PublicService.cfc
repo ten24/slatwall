@@ -536,6 +536,13 @@ component  accessors="true" output="false"
                 return;
             }
         }
+        productBundleBuild = getProductService().saveProductBundleBuild(productBundleBuild);
+
+        if( productBundleBuild.hasErrors() ){
+            this.addErrors(arguments.data, productBundleBuild.getErrors());
+            getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+            return;
+        }
 
         getHibachiScope().addActionResult("public:product.createProductBundleBuild",false);
 	}
@@ -1329,7 +1336,7 @@ component  accessors="true" output="false"
 
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
-        param name="arguments.data.returnTokenFlag" default="0";        
+        param name="arguments.data.returnTokenFlag" default="1";        
 
         var account = this.getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
 
@@ -1407,7 +1414,7 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_ResetPassword
       **/
     public void function resetPasswordUpdate( required struct data ) {
-        param name="data.swprid";
+        param name="data.swprid" default="";
 
         var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
 
@@ -3545,9 +3552,7 @@ component  accessors="true" output="false"
         }
 
         arguments.data['orderTemplateTypeID'] = "2c9280846b712d47016b75464e800014"; // type-id for wishlist
-		if( !len(trim(arguments.data.orderTemplateName)) ){
-			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
-        }
+        arguments.data['accountID'] = this.getHibachiScope().getAccount().getAccountID(); 
         
         var orderTemplate = this.getOrderService().newOrderTemplate();
  		orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
@@ -4206,13 +4211,13 @@ component  accessors="true" output="false"
         }
        
 	    // if there's no entityID, then we're assuming that this's a call to fetch multiple-products
-	    if( !len(arguments.data.entityID) ){
+	    if( !len(arguments.data.entityID)  ){
     	    var collectionData = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-            acollectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
-            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData);
             
             arguments.data.ajaxResponse['data'] = collectionData; 
-            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+            this.getHibachiScope().addActionResult("public:scope.getProduct", false);
             return;
         }
         
@@ -4240,7 +4245,7 @@ component  accessors="true" output="false"
         }
         
         arguments.data.ajaxResponse['data'] = response;
-        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+        this.getHibachiScope().addActionResult("public:scope.getProduct", false);
 	}
 	
 	

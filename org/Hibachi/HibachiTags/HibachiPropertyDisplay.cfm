@@ -52,6 +52,7 @@
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
 	<cfparam name="attributes.attributeFlag" type="boolean" default="false" />				<!--- Set to true when property is a custom property linked to an attribute in order to display the attribute value label rather than the value --->
 	
+	<cfparam name="attributes.showNgDateTimePicker" type="boolean" default="false" />         <!--- Property to populate anuglar date time picker property attributes --->
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -86,6 +87,22 @@
 	<cfif !attributes.object.isPersistent() || attributes.hibachiScope.authenticateEntityProperty('read', attributes.object.getClassName(), attributes.property)>
 		
 		<cfsilent>
+		
+			<!-- Populate angular date time picker field attributes -->
+			<cfif attributes.showNgDateTimePicker eq "true">
+				
+				<cfset local.formattedDateProperty="#dateFormat( attributes.object.getValueByPropertyIdentifier( attributes.property ), 'mm/dd/YYYY')#">
+				<!-- Append Field Attributes -->
+				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, "sw-date-picker 
+														ng-model=""#attributes.property#""
+														ng-init=""#attributes.property#='#local.formattedDateProperty#'""
+														autocomplete=""off"" ng-cloak") />
+				<!-- set field type to text if not already passed (to avoid override in FormField tag) --->
+				<cfif attributes.fieldType eq "">
+					<cfset attributes.fieldType = "text" />
+				</cfif>
+			</cfif>
+			
 			
 			<!--- If this was originally set to edit... make sure that they have edit ability for this property --->
 

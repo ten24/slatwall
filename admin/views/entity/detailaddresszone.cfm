@@ -60,7 +60,7 @@ Notes:
 	
 	<hb:HibachiEntityDetailGroup object="#rc.addressZone#">
 		<hb:HibachiEntityDetailItem view="admin:entity/addresszonetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<hb:HibachiEntityDetailItem count="#rc.addressZone.getCalculatedAddressZoneLocationsCount()#" view="admin:entity/addresszonetabs/locations" />
+		<hb:HibachiEntityDetailItem count="#rc.addressZone.getAddressZoneLocationsCount()#" view="admin:entity/addresszonetabs/locations" />
 	</hb:HibachiEntityDetailGroup>
 	
 </hb:HibachiEntityDetailForm>
