@@ -1089,40 +1089,43 @@
 		// @hint returns the entity meta data object that is used by a lot of the helper methods below
 		public any function getEntityORMMetaDataObject( required string entityName ) {
 			arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
-			if(!structKeyExists(variables.entityORMMetaDataObjects, arguments.entityName)) {
-				variables.entityORMMetaDataObjects[ arguments.entityName ] = ormGetSessionFactory().getClassMetadata( arguments.entityName );
+			var cacheKey = arguments.entityName;
+			if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+				this.getHibachiCacheService().setCachedValue(cacheKey, ormGetSessionFactory().getClassMetadata( arguments.entityName ));
 			}
 			
-			return variables.entityORMMetaDataObjects[ arguments.entityName ];
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		// @hint returns the metaData struct for an entity
 		public any function getEntityObject( required string entityName ) {
 			
 			arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
+			var cacheKey = "classObjectCache_#arguments.entityName#";
 			
-			if(!structKeyExists(variables.entityObjects, arguments.entityName)) {
-				variables.entityObjects[ arguments.entityName ] = entityNew(arguments.entityName);
+			if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+				this.getHibachiCacheService().setCachedValue(cacheKey, entityNew(arguments.entityName));
 			}
-			
-			return variables.entityObjects[ arguments.entityName ];
+	
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		// @hint returns the properties of a given entity
 		public any function getPropertiesByEntityName( required string entityName ) {
+			var cacheKey = "classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#";
 			
-			// First Check the application cache
-			if( hasApplicationValue("classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-				return getApplicationValue("classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+			// First Check the hibachi cache
+			if( this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+				return this.getHibachiCacheService().getCachedValue(cacheKey);
 			}
 			
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+			// Pull the meta data from the object (which in turn will cache it in the hibachi cache for the next time)
 			return getEntityObject( arguments.entityName ).getProperties();
 		}
 		
 		// @hint returns the properties of a given entity
 		public any function getPropertiesStructByEntityName( required string entityName ) {
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+			// Pull the meta data from the object (which in turn will cache it in the hibachi for the next time)
 			return getEntityObject( arguments.entityName ).getPropertiesStruct(); 
 		}
 		
@@ -1510,12 +1513,12 @@
 		
 		//used by the rest api to return default property values
 		public any function getDefaultPropertiesByEntityName(required string entityName){
-			// First Check the application cache
-			if( hasApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-				return getApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+			var cacheKey = "classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#";
+			// First Check the hibachi cache
+			if( this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+				return this.getHibachiCacheService().getCachedValue(cacheKey);
 			}
-			
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+			// Pull the meta data from the object (which in turn will cache it in the hibachi cache for the next time)
 			return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
 		}
 		
