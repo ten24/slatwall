@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/custom/swreact/build/static/css/main.c8037a6e.chunk.css",
-    "main.js": "/custom/swreact/build/static/js/main.4178de04.chunk.js",
-    "main.js.map": "/custom/swreact/build/static/js/main.4178de04.chunk.js.map",
-    "runtime-main.js": "/custom/swreact/build/static/js/runtime-main.1c1196f2.js",
-    "runtime-main.js.map": "/custom/swreact/build/static/js/runtime-main.1c1196f2.js.map",
+    "main.js": "/custom/swreact/build/static/js/main.ccb7af6f.chunk.js",
+    "main.js.map": "/custom/swreact/build/static/js/main.ccb7af6f.chunk.js.map",
+    "runtime-main.js": "/custom/swreact/build/static/js/runtime-main.9806d9e6.js",
+    "runtime-main.js.map": "/custom/swreact/build/static/js/runtime-main.9806d9e6.js.map",
     "static/css/2.b789a6aa.chunk.css": "/custom/swreact/build/static/css/2.b789a6aa.chunk.css",
-    "static/js/2.bf8a668d.chunk.js": "/custom/swreact/build/static/js/2.bf8a668d.chunk.js",
-    "static/js/2.bf8a668d.chunk.js.map": "/custom/swreact/build/static/js/2.bf8a668d.chunk.js.map",
-    "static/js/3.70f3320f.chunk.js": "/custom/swreact/build/static/js/3.70f3320f.chunk.js",
-    "static/js/3.70f3320f.chunk.js.map": "/custom/swreact/build/static/js/3.70f3320f.chunk.js.map",
-    "static/js/4.3c4680e5.chunk.js": "/custom/swreact/build/static/js/4.3c4680e5.chunk.js",
-    "static/js/4.3c4680e5.chunk.js.map": "/custom/swreact/build/static/js/4.3c4680e5.chunk.js.map",
-    "static/js/5.572faf49.chunk.js": "/custom/swreact/build/static/js/5.572faf49.chunk.js",
-    "static/js/5.572faf49.chunk.js.map": "/custom/swreact/build/static/js/5.572faf49.chunk.js.map",
+    "static/js/2.b66c42b6.chunk.js": "/custom/swreact/build/static/js/2.b66c42b6.chunk.js",
+    "static/js/2.b66c42b6.chunk.js.map": "/custom/swreact/build/static/js/2.b66c42b6.chunk.js.map",
+    "static/js/3.7e8199c0.chunk.js": "/custom/swreact/build/static/js/3.7e8199c0.chunk.js",
+    "static/js/3.7e8199c0.chunk.js.map": "/custom/swreact/build/static/js/3.7e8199c0.chunk.js.map",
+    "static/js/4.39396cc7.chunk.js": "/custom/swreact/build/static/js/4.39396cc7.chunk.js",
+    "static/js/4.39396cc7.chunk.js.map": "/custom/swreact/build/static/js/4.39396cc7.chunk.js.map",
+    "static/js/5.5a680874.chunk.js": "/custom/swreact/build/static/js/5.5a680874.chunk.js",
+    "static/js/5.5a680874.chunk.js.map": "/custom/swreact/build/static/js/5.5a680874.chunk.js.map",
     "index.html": "/custom/swreact/build/index.html",
     "static/css/2.b789a6aa.chunk.css.map": "/custom/swreact/build/static/css/2.b789a6aa.chunk.css.map",
     "static/css/main.c8037a6e.chunk.css.map": "/custom/swreact/build/static/css/main.c8037a6e.chunk.css.map",
-    "static/js/2.bf8a668d.chunk.js.LICENSE.txt": "/custom/swreact/build/static/js/2.bf8a668d.chunk.js.LICENSE.txt",
+    "static/js/2.b66c42b6.chunk.js.LICENSE.txt": "/custom/swreact/build/static/js/2.b66c42b6.chunk.js.LICENSE.txt",
     "static/media/app.scss": "/custom/swreact/build/static/media/fa-solid-900.f3aa05aa.woff",
     "static/media/logo.37db8f93.png": "/custom/swreact/build/static/media/logo.37db8f93.png",
     "static/media/missing-brand.309e85b8.png": "/custom/swreact/build/static/media/missing-brand.309e85b8.png",
@@ -26,10 +26,10 @@
     "static/media/missing.9652da67.png": "/custom/swreact/build/static/media/missing.9652da67.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.1c1196f2.js",
+    "static/js/runtime-main.9806d9e6.js",
     "static/css/2.b789a6aa.chunk.css",
-    "static/js/2.bf8a668d.chunk.js",
+    "static/js/2.b66c42b6.chunk.js",
     "static/css/main.c8037a6e.chunk.css",
-    "static/js/main.4178de04.chunk.js"
+    "static/js/main.ccb7af6f.chunk.js"
   ]
 }

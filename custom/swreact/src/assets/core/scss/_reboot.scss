@@ -73,6 +73,11 @@ button:focus {
   text-decoration: underline;
 }
 
+// flex: 1 class
+.flex-1 {
+  flex: 1;
+}
+
 // breakpoints
 @include media-breakpoint-up(l) {
   .container, 

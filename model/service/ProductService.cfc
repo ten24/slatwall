@@ -1388,7 +1388,7 @@ component extends="HibachiService" accessors="true" {
  				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
  				getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());
- 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", uploadDirectory);
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
  				if(getHibachiUtilityService().isS3Path(fullFilePath)){
  					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
  				}
