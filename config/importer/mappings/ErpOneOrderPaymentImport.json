@@ -1,6 +1,6 @@
 {
 	"entityName": "OrderPayment",
-    "mappingCode": "ERPOneOrderPaymentImport.json",
+    "mappingCode": "ErpOneOrderPaymentImport",
 	"properties": {
 
 		"remoteOrderPaymentID": {

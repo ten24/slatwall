@@ -586,42 +586,57 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 
 		var getOrdersQueryString = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
-        var columns = [ 'order','name','adr','state','postal_code','country_code','ship_via_code','cu_po','ord_date','opn','o_tot_gross','stat','customer','ord_ext','rec_seq' ];
+        var columns = [ 
+            'order',
+            'customer',
+            
+            'name',
+            'adr',
+            'email',
+            'state',
+            'postal_code',
+            'country_code',
+            
+            'ship_via_code',
+            
+            'ord_date',
+            'opn',
+            'stat',
+            'ord_ext', 
+            'rec_seq',
+            
+            'cancel_date',
+            'delivery_date',
+            
+            'cu_po', // purchase order
+            
+            // should we use calculated props for these
+            'o_tot_gross', //
+            'o_tot_taxable', //
+	        'o_tot_taxable_it', //
+	        'o_tot_tax_amt', //
+	        'o_tot_net_ar',  //
+            
+            'currency_code',
+            
+            'invc_date',
+            'invc_seq',
+            'invoice',
+        ];
 	    columns = utilityService.prefixListItems(columns.toList(), 'oe_head.');
 	    
 	    var erpOneOrderMapping = this.getMappingByMappingCode('ErpOneOrderImport');
 	    
     	var recordFormatterFunction = function(required struct erponeOrder){
     	    
-    	    /* Example response 
-
-                oe_head_order		    =   10001
-                oe_head_name	        =	Test Customer
-                oe_head_adr	            =   [ '9989 Dist Street', '', '', 'Mount Laurel' '', '' ],
-                oe_head_state	        =	NJ
-                oe_head_postal_code	    =	08054
-                oe_head_country_code	=	US
-                oe_head_ship_via_code	=	UPRG-F
-                oe_head_cu_po	        =   ''
-                oe_head_ord_date	    =	2016-10-13
-                oe_head_opn             =   true
-                oe_head_o_tot_gross		=   667
-                oe_head_stat	        =	OE
-                oe_head_customer	    =	TEST
-                oe_head_ord_ext	        =
-                oe_head_rec_seq		    =   0
-                __rowids	            =	0x0000000000025c41
-                __seq		            =    1
-
-    	    */
-    	    
     	    var formattedOrderData =  {
-				//'CanceledDateTime' : ,
-				'currencyCode' : 'USD',
+				'currencyCode' : arguments.erponeOrder['oe_head_currency_code'] ?: 'USD',
 				//'EstimatedDeliveryDateTime' : ,
 				//'OrderCloseDateTime' : ,
 				//'OrderIPAddress' : ,
 				//'OrderNotes' : ,
+				
+				
 				'orderNumber' : arguments.erponeOrder['oe_head_order'],
 				'orderOpenDateTime' : arguments.erponeOrder['oe_head_ord_date'],
 				// 'OrderSiteCode' : ,                                          // default to s&b site, or ignore
@@ -631,24 +646,32 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				'remoteOrderID' : arguments.erponeOrder['__rowids'],
 			};
 			
+			if( arguments.erponeOrder['oe_head_cancel_date'].len() ){
+			    formattedOrderData['canceledDateTime'] = arguments.erponeOrder['oe_head_cancel_date'];
+			}
+			
 		    
 		    // Set order status type
             formattedOrderData['orderStatusCode'] = this.getSlatwallOrderStatusCodeByERPOrderStatusCode( arguments.erponeOrder['oe_head_stat'] );
+            
+            // TODO: order source
+            // 	"ord_class": "W", 
+            // 	"source_code": "",
+
 
 
     	    
 			// Set billing and shipping addresses			
 		    var address = {
-				'streetAddress'     : arguments.erponeOrder['oe_head_adr'][2],
-				'street2Address'    : arguments.erponeOrder['oe_head_adr'][3],
+				'streetAddress'     : arguments.erponeOrder['oe_head_adr'][1],
+				'street2Address'    : arguments.erponeOrder['oe_head_adr'][2] & " " & arguments.erponeOrder['oe_head_adr'][3],
 				'city'              : arguments.erponeOrder['oe_head_adr'][4],
 				'postalCode'        : arguments.erponeOrder['oe_head_postal_code'],
 				'stateCode'         : arguments.erponeOrder['oe_head_state'],
 				'countryCode'       : 'US',
+				'email'             : arguments.erponeOrder['oe_head_email'],
+				'phoneNumber'       : arguments.erponeOrder['oe_head_phone'],
 				// 'company' : ,
-				// 'email' : ,
-				// 'locality' : ,
-				// 'phoneNumber' : ,
 		    }
 		    
 		    address["name"] =  this.getAddressService().getAddressName(address);
@@ -678,7 +701,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	
-	public srting function getSlatwallOrderStatusCodeByERPOrderStatusCode(required string erpOrderStatusCode){
+	public string function getSlatwallOrderStatusCodeByERPOrderStatusCode(required string erpOrderStatusCode){
 		/*
 			 ERP One Order Status:
 			 
@@ -754,7 +777,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    
 	    // try to find the previous one in case, the order is getting re-imported
 	    var orderFulfillmentID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-	        "entityName"  = 'OrderOrderFulfillment',
+	        "entityName"  = 'OrderFulfillment',
 	        "uniqueKey"   = 'remoteID',
 	        "uniqueValue" = remoteID
 	    );
@@ -807,9 +830,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             AND oe_line.rec_type = 'O' 
             AND oe_line.order = '#arguments.orderNumber#' 
         ";
-		var columns = "order,line,item,descr,price,list_price,q_ord";
+		var columns = "order,line,item,descr,price,list_price,q_ord,item_stat";
 		      
-		this.logHibachi("ERPONE - importing order-items for order: #arguments.orderNumber#, Query: #query#, Columns: #columns#");
+		this.logHibachi("ERPONE - importing order-items for order: #arguments.orderNumber#, Query: #getOrderItemsQueryString#, Columns: #columns#");
 		
 	    var erpOneOrderItemMapping = this.getMappingByMappingCode('ErpOneOrderItemImport');
 	    
@@ -856,7 +879,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    
 		var getOrderPaymentsQueryString = "
             FOR EACH oe_head NO-LOCK 
-                WHERE oe_head.company_oe = '#arguments.company#' 
+                WHERE oe_head.company_oe = '#company#' 
             AND oe_head.rec_type = 'I' 
             AND oe_head.order = '#arguments.OrderNumber#'
         ";
@@ -889,11 +912,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             "postal_code"
         ];        
         
-		this.logHibachi("ERPONE - importing order-payments for order: #arguments.orderNumber#, Query: #query#, Columns: #columns#");
+		this.logHibachi("ERPONE - importing order-payments for order: #arguments.orderNumber#, Query: #getOrderPaymentsQueryString#, Columns: #columns.toList()#");
 		
 	    var erpOneOrderPaymentMapping = this.getMappingByMappingCode('ErpOneOrderPaymentImport');
-	    
-	    
+
     	var recordFormatterFunction = function(required struct erponeOrderPayment){
     	    var transformedItem = {};
 	    	
@@ -912,9 +934,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 	public any function importErpOneOrderItemShipmentsByOrder(required any orderNumber){
 	    
+	    var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
+		if(isDevModeFlag){
+		//	company = this.setting("devCompany"); DISABLED FOR TESTING
+		}
+		
 		var getOrderItemShipmentsQueryString = "
             FOR EACH oe_head NO-LOCK 
-                WHERE oe_head.company_oe = '#arguments.company#' 
+                WHERE oe_head.company_oe = '#company#' 
             AND oe_head.rec_type = 'S' 
             AND oe_head.order = '#arguments.OrderNumber#'
         ";
@@ -950,7 +978,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
                         "ship_date"
                     ];        
         
-		this.logHibachi("ERPONE - fetching order-item-shipments for order: #arguments.orderNumber#, Query: #query#");
+		this.logHibachi("ERPONE - fetching order-item-shipments for order: #arguments.orderNumber#, Query: #getOrderItemShipmentsQueryString#");
 		
 	    var erpOneOrderPaymentMapping = this.getMappingByMappingCode('OrderPayment');
 	    
