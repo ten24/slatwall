@@ -882,7 +882,6 @@ component extends="framework.one" {
 					
 
 					//===================== END: EVENT HANDLER SETUP =========================
-
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
 					var updated = false;
 					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup
@@ -904,6 +903,9 @@ component extends="framework.one" {
 						//Update custom properties
 
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
+						
+						variables.clearClassLevelCache = true;
+						
 						getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterUpdateEntitiesWithCustomProperties");
 						if (success){
 							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
@@ -912,7 +914,7 @@ component extends="framework.one" {
 						}
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
-						getHibachiScope().clearApplicationValueByPrefix('class');
+						
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 						
@@ -935,7 +937,6 @@ component extends="framework.one" {
 						getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationFullUpdate");
 					}
 					// ========================== END: FULL UPDATE ==============================
-
 					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
 					onFirstRequestPostUpdate();
 					//verify that any property changes to audit and auditarchive mirror each other
@@ -1191,6 +1192,9 @@ component extends="framework.one" {
 			
 		}
 		
+		if( StructKeyExists( variables, "clearClassLevelCache")) {
+			getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class',true);
+		}
 	}
 
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed
