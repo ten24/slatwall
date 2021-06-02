@@ -49,13 +49,18 @@ Notes:
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
 	property name="erpOneIntegrationCFC";
+	
 	property name="hibachiCacheService";
 	property name="hibachiDataService";
 	property name="hibachiUtilityService";
-	property name="skuService";
 	
+	property name="skuService";
+	property name="addressService";
+	
+	
+	property name="typeDAO" type="any";
 	property name="accountDAO" type="any";
-	property name= "addressService";
+	
 	
 	public any function getIntegration(){
 		if( !structKeyExists( variables, 'integration') ){
@@ -625,24 +630,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				'remoteAccountID' : arguments.erponeOrder['oe_head_customer'],
 				'remoteOrderID' : arguments.erponeOrder['__rowids'],
 			};
+			
+		    
+		    // Set order status type
+            formattedOrderData['orderStatusCode'] = this.getSlatwallOrderStatusCodeByERPOrderStatusCode( arguments.erponeOrder['oe_head_stat'] );
 
-			/*
-				OrderHeader Status codes
-				
-				CH - credit hold
-				CL - closed
-				HO - order hold
-				
-				IJ - invoice journal (posted)
-				IP - invoice printed
-				IV - invoice (not yet printed)
-				
-				OE - Order Entry
-				OP - Order Printed
-				QP - Quote Printed
-			*/
+
     	    
-			// append billing and shipping addresses			
+			// Set billing and shipping addresses			
 		    var address = {
 				'streetAddress'     : arguments.erponeOrder['oe_head_adr'][2],
 				'street2Address'    : arguments.erponeOrder['oe_head_adr'][3],
@@ -682,8 +677,80 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return orderImportBatch;
 	}
 	
+	
+	public srting function getSlatwallOrderStatusCodeByERPOrderStatusCode(required string erpOrderStatusCode){
+		/*
+			 ERP One Order Status:
+			 
+				OrderHeader Status codes
+				
+				CH - credit hold
+				CL - closed
+				HO - order hold
+				
+				IJ - invoice journal (posted)
+				IP - invoice printed
+				IV - invoice (not yet printed)
+				
+				OE - Order Entry
+				OP - Order Printed
+				QP - Quote Printed
+		*/  
+		
+		/*	
+			Slatwall's Order Statuses:
+
+			
+				typeName="Not Placed"                               systemCode="ostNotPlaced"
+    			typeName="New"                                      systemCode="ostNew"
+    			typeName="Processing"                               systemCode="ostProcessing"
+    
+    			typeName="On Hold"                                  systemCode="ostOnHold" 
+    			typeName="Closed"                                   systemCode="ostClosed" 
+    			typeName="Canceled"                                 systemCode="ostCanceled" 
+    
+    			typeName="Processing - Payment Declined"            systemCode="ostProcessing"  typeCode="paymentDeclined" 
+    			
+    			typeName="Received"                                 systemCode="ostProcessing"  typeCode="rmaReceived"
+    			typeName="Approved"                                 systemCode="ostProcessing"  typeCode="rmaApproved"
+    			typeName="Released"                                 systemCode="ostClosed"      typeCode="rmaReleased"
+			
+		*/
+			
+		if( 'OE' == arguments.erpOrderStatusCode ){
+		    return 'ostNotPlaced';
+		}
+		
+		if( 'OP' == arguments.erpOrderStatusCode ){
+		    return 'ostNew';
+		}
+		
+		if( [ 'QP', 'IJ', 'IP', 'IV' ].find(arguments.erpOrderStatusCode) ){
+		    return 'ostProcessing';
+		}
+		
+		if( [ 'HO', 'CH' ].find(arguments.erpOrderStatusCode) ){
+		    return 'ostHold';
+		}
+		
+		if( 'CL' == arguments.erpOrderStatusCode ){
+		    return 'ostClosed';
+		}
+			
+	}
+	
+	public string function getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( required string erpOneOrderNo ){
+	    return "Fulfillment_"&arguments.erpOneOrderNo;
+	}
+	
+	public string function getSlatwallOrderItemRemoteIDByErpOneOrderNoAndLine( required string erpOneOrderNo, required string erpOneLineNo ){
+	    return arguments.erpOneOrderNo&'_'&arguments.erpOneLineNo;
+	}
+	
 	public array function generateOrderOrderFulfillments( struct data,  struct mapping,  struct propertyMetaData ){
-	    var remoteID = "Fulfillment_"&arguments.data.remoteOrderID;
+	    
+	    // ERP does not have a concept of fulfillemnts, so we're creating a default fulfillment to support Slatwall's functionality;
+	    var remoteID = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo(arguments.data.remoteOrderID);
 	    
 	    // try to find the previous one in case, the order is getting re-imported
 	    var orderFulfillmentID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
@@ -692,20 +759,26 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        "uniqueValue" = remoteID
 	    );
 	    
-    	if( !isNull(orderFulfillmentID) ){
-    	    orderFulfillmentID = '';
+	    var fulfillment = { 
+	        "orderFulfillmentID" : orderFulfillmentID ?: ''
+	    };
+
+		//if creating a new fullfillment
+    	if( fulfillment.orderFulfillmentID == '' ){
+    	    fulfillment.append({
+        	    "remoteID"				   : remoteID,
+                "currencyCode"			   : arguments.data.currencyCode,
+                //this defaultValue for FulfillmentMethod is `Shipping`
+                "fulfillmentMethod"        : {
+                	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
+                }
+    	    });
     	} 
     	
-		//create new fullfillment
-		var fulfillment = {
-	    	"orderFulfillmentID"	   : orderFulfillmentID,
-            "remoteID"				   : remoteID,
-            "currencyCode"			   : arguments.data.currencyCode,
-            //this defaultValue for FulfillmentMethod is `Shipping`
-            "fulfillmentMethod"        : {
-            	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
-            }
-		};
+		
+		// set order fulfillment status based on ERP's order status
+		// 
+		
 		
 		fulfillment['shippingAddress'] = this.getHibachiUtilityService().getSubStructByKeyPrefix(arguments.data, 'shippingAddress_');
 		
@@ -716,12 +789,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	public void function importErpOneOrderItemsAndOrderPaymentsByOrder(required any order, required struct mapping, required struct data ){
 		this.importErpOneOrderItemsByOrder(arguments.data.orderNumber);
 		this.importErpOneOrderPaymentsByOrder(arguments.data.orderNumber);
+		this.importErpOneOrderItemShipmentsByOrder(arguments.data.orderNumber);
 	}
 	
-	//?? not straight forward, as any shipment/deliveries can have multiple items
-	public void function importErpOneOrderShipmentsByOrderItem(){
-		this.importErpOneOrderItemShipmentsByOrderItem(orderData.orderNumber);
-	}
 	
 	public any function importErpOneOrderItemsByOrder(required any orderNumber){
 	    
@@ -756,13 +826,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	var recordFormatterFunction = function(required struct erponeOrderItem){
     	    var transformedItem = this.swapStructKeys( erponeOrderItem, erponeOrderItemStructKeyMap);
 	    	
-	    	// make uniquee import-remote-id for Slatwall's - orderItem
-	    	transformedItem['remoteOrderItemID'] = transformedItem.remoteOrderID&"_"&transformedItem.line;
+	    	// make remote ids
+	    	transformedItem['remoteOrderItemID'] = this.getSlatwallOrderItemRemoteIDByErpOneOrderNoAndLine( transformedItem.remoteOrderID, transformedItem.line );
+	    	transformedData['remoteOrderFulfillmentID'] = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( transformedItem.remoteOrderID );
 	    	
-	    	// so that Slatwall does-not update the `price` 
-	    	transformedItem['userDefinedPriceFlag'] = true;
-	    	
-	    	// TODO: order-item-type and status, fulfillmentID, currencyCode
+	    	// defaults
+	    	transformedItem['currencyCode'] = 'USD';
+	    	transformedItem['userDefinedPriceFlag'] = true; // so that Slatwall does-not update the `price` 
+
+	    	// TODO: order-item-type and status, remoteSkuID
 	    	
 	    	return transformedItem;
     	}
@@ -838,7 +910,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		);
 	}
 
-	public any function importErpOneOrderItemShipmentsByOrderItem(required any orderNumber){
+	public any function importErpOneOrderItemShipmentsByOrder(required any orderNumber){
 	    
 		var getOrderItemShipmentsQueryString = "
             FOR EACH oe_head NO-LOCK 

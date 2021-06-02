@@ -463,7 +463,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    eventData[entityName] = arguments.entity;
 	    
 	    this.getHibachiEventService().announceEvent(
-	        eventName="before#arguments.enittyName#Process_import",
+	        eventName = "beforeProcess#arguments.enittyName#_import",
 	        eventData = eventData
 	    );
 	    
@@ -512,21 +512,24 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             this.invokePostSaveMethodsRecursively( arguments.entity, arguments.mapping );
 	    }
 	    
-	    eventData[entityName] = arguments.entity;
 	    
+	   // announce after- events  
+	 
+	    eventData[entityName] = arguments.entity;
+	  
 	    this.getHibachiEventService().announceEvent(
-	        eventName="after#arguments.enittyName#Process_import",
+	        eventName = "afterProcess#arguments.enittyName#_import",
 	        eventData = eventData
 	    );
     	    
 	    if(arguments.entity.hasErrors()){
     	    this.getHibachiEventService().announceEvent(
-    	        eventName="after#arguments.enittyName#Process_importFailure",
+    	        eventName = "afterProcess#arguments.enittyName#_importFailure",
     	        eventData = eventData
     	    );
 	    } else {
 	        this.getHibachiEventService().announceEvent(
-    	        eventName="after#arguments.enittyName#Process_importSuccess",
+    	        eventName = "afterProcess#arguments.enittyName#_importSuccess",
     	        eventData = eventData
     	    );
 	    }

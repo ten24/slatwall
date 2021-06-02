@@ -84,7 +84,7 @@
             "propertyIdentifier": "order"
         },
         {
-            "key": "remoteOrderID",
+            "key": "remoteOrderFulfillmentID",
             "lookupKey": "remoteID",
             "entityName": "OrderFulfillment",
             "propertyIdentifier": "orderFulfillment"

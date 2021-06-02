@@ -48,7 +48,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 		addToQueue(arguments.entity , "pushOrderDataToErpOne");
 	}
 	
-	public void function afterOrderProcess_importSuccess(required any order, required struct mapping, required struct data ){
+	public void function afterProcessOrder_importSuccess(required any order, required struct mapping, required struct data ){
 	    this.getErpOneService().importErpOneOrderItemsAndOrderPaymentsByOrder(argumentCollection = arguments);
 	}
 }
