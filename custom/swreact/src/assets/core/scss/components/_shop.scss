@@ -339,6 +339,15 @@
   }
 }
 
+.page-overlap-none .page-title-overlap {
+  @include media-breakpoint-down(md) {
+    padding-bottom: 1.6rem;
+  }
+  @include media-breakpoint-down(xs) {
+    padding-bottom: 5.5rem;
+  }
+}
+
 
 // Interactive credit card
 
