@@ -1404,7 +1404,7 @@ component extends="HibachiService" accessors="true" {
 	public any function processProduct_bulkImageUpload(required any product, required any processObject , any data ) {
 
 		var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default/";
-		var uploadTempDirectory = getHibachiTempDirectory()&"/"&CreateUUID();
+		var uploadTempDirectory = getHibachiTempDirectory()&"/"&CreateUUID()&"/";
 		
 		// If the directory where this file is going doesn't exists, then create it
 		if(!directoryExists(uploadTempDirectory)) {
@@ -1412,45 +1412,43 @@ component extends="HibachiService" accessors="true" {
 		}
 		getHibachiTagService().cfunzip( file=arguments.processObject.getUploadFile(), zipDestination = uploadTempDirectory , filter = "*.jpg, *.jpeg, *.png");
 
-		var filePaths = DirectoryList( 
-			path=uploadTempDirectory, 
-			recurse="true", 
-			listInfo="path" , 
-			filter = function(path){ 
-				// custom function to ignore MACOSX dir from dir listing
-				if(findNoCase("MACOSX", arguments.path) > 0){
+		var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+		var maxFileSize = val(maxFileSizeString) * 1000000;
+		var filePaths = DirectoryList( path=uploadTempDirectory, recurse="true",  listInfo="path", type = "file", filter = function(path){ 
+		   // ignore hidden directories lik ._MACOSX
+		   if(findNoCase("__MACOSX", arguments.path) > 0){
 					return false;
-				}else{
-					// file size check to check max upload size
-					var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
-					var maxFileSize = val(maxFileSizeString) * 1000000;
-					var fileInfo = getFileInfo(path);
-					var size = fileInfo.size;
-					if(size < maxFileSize){
-						return true;	
-					}
-				}
-			}, 
-			type = "file" );
+			}
 			
-		for(var filepath in filePaths) {
+		  // file size check to check max upload size
+		  var fileInfo = getFileInfo(path);
+		  var size = fileInfo.size;
+		  if(size < maxFileSize){
+			  return true;	
+		  }
+		  
+		  return false;
+			
+		});
 
+		for(var filepath in filePaths) {
+			
 			var fileNameWithExtension = listLast(filepath, "/");
 			var fileName			  = listFirst(fileNameWithExtension,".");
 			var fileExtension         = listLast(fileNameWithExtension,".");
-	
-				if(arguments.processObject.getimageNameProductProperty() == "ProductCode"){
-					getImageService().clearImageCache(uploadDirectory, fileNameWithExtension);
-					fileMove( filepath, uploadDirectory);
-				}else{
-					var productCode = this.getProductDAO().getProductCodeByPropertyName(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName).productCode;
-		        	if(len(productCode) > 0){
-		        		var newFileName = productCode&"."&fileExtension;
-		        		getImageService().clearImageCache(uploadDirectory, newFileName);
-		 				fileMove(filepath, uploadDirectory&newFileName);
-		 			} else {
-		 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
-		 			}
+			
+			this.getImageService().clearImageCache(uploadDirectory, fileNameWithExtension);
+			
+			if(arguments.processObject.getimageNameProductProperty() == "ProductCode"){
+				fileMove( filepath, uploadDirectory);
+			}else{
+				var productCode = this.getProductDAO().getProductCodeByUniquePropertyNameAndUniqueValue(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName);
+	        	if(len(productCode) > 0){
+	        		var newFileName = productCode&"."&fileExtension;
+	 				fileMove(filepath, uploadDirectory&newFileName);
+	 			}else {
+	 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.unknownImageName'));
+	 			}
 			}
 		}
 		

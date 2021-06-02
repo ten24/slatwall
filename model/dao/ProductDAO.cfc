@@ -596,7 +596,7 @@ Notes:
 			)>
 	</cffunction>
 	
-	<cffunction name="getProductCodeByPropertyName" access="public">
+	<cffunction name="getProductCodeByUniquePropertyNameAndUniqueValue" access="public">
 	
 		<cfargument name="propertyName" required="true" />
 		<cfargument name="propertyValue" required="true" type="string" />
@@ -610,7 +610,7 @@ Notes:
 			WHERE
 			#arguments.propertyName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.propertyValue#"/>
 		</cfquery>
-		<cfreturn rs />
+		<cfreturn rs.productCode />
 	</cffunction>
 	
 	
