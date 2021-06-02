@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
-import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, TermPaymentDetails, BillingAddressDetails, ListPayments, CCDetails } from '../../components'
-import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector } from '../../selectors/orderSelectors'
+import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, TermPaymentDetails, BillingAddressDetails, CCDetails } from '../../components'
+import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector, shippingMethodSelector } from '../../selectors/orderSelectors'
 import { useTranslation } from 'react-i18next'
 
 const ReviewSlide = ({ currentStep }) => {
@@ -10,6 +10,7 @@ const ReviewSlide = ({ currentStep }) => {
   const { fulfillmentMethod } = useSelector(fulfillmentSelector)
   const payment = useSelector(orderPayment)
   const shippingAddress = useSelector(shippingAddressSelector)
+  const shippingMethod = useSelector(shippingMethodSelector)
   let billingNickname = useSelector(billingAddressNickname)
   const { t } = useTranslation()
 
@@ -17,6 +18,7 @@ const ReviewSlide = ({ currentStep }) => {
   if (cart.isPlaced) {
     return <Redirect to={'/order-confirmation'} />
   }
+  
 
   return (
     <>
@@ -51,6 +53,11 @@ const ReviewSlide = ({ currentStep }) => {
             <TermPaymentDetails termPayment={payment} />
           </div>
         )}
+        
+          <div className="col-md-4 mt-4 mb-4">
+            <h3 class="h6">{t('frontend.checkout.shippingMethod')}</h3>
+            {shippingMethod.shippingMethodName}
+          </div>
       </div>
 
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Review your order</h2>

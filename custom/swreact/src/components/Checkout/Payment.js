@@ -77,7 +77,6 @@ const ListPayments = () => {
   const payments = useSelector(getAllOrderPayments)
   const disableInteraction = useSelector(disableInteractionSelector)
   const location = useLocation();
-  const pageName = location.pathname.split('/')[2];
   
   const { t } = useTranslation()
   const dispatch = useDispatch()
