@@ -1411,17 +1411,28 @@ component extends="HibachiService" accessors="true" {
 			directoryCreate(uploadTempDirectory);
 		}
 		getHibachiTagService().cfunzip( file=arguments.processObject.getUploadFile(), zipDestination = uploadTempDirectory , filter = "*.jpg, *.jpeg, *.png");
-		
-		var dirPaths = DirectoryList(path=uploadTempDirectory,recurse="true", listInfo="path" , type = "dir");
-		
-		for(var dirPath in dirPaths) {
-			if(!find("MACOSX",dirPath)){
-				var uploadNewTempDirectory = dirPath;
-			}
-		}
-		
-		var filePaths = DirectoryList(path=uploadNewTempDirectory,recurse="true", listInfo="path" , type = "file");
-	
+
+		var filePaths = DirectoryList( 
+			path=uploadTempDirectory, 
+			recurse="true", 
+			listInfo="path" , 
+			filter = function(path){ 
+				// custom function to ignore MACOSX dir from dir listing
+				if(findNoCase("MACOSX", arguments.path) > 0){
+					return false;
+				}else{
+					// file size check to check max upload size
+					var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+					var maxFileSize = val(maxFileSizeString) * 1000000;
+					var fileInfo = getFileInfo(path);
+					var size = fileInfo.size;
+					if(size < maxFileSize){
+						return true;	
+					}
+				}
+			}, 
+			type = "file" );
+			
 		for(var filepath in filePaths) {
 
 			var fileNameWithExtension = listLast(filepath, "/");
