@@ -452,26 +452,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
-		var subscriptionUsageList = this.getSubscriptionUsageBenefitAccountCollectionList();
+		var subscriptionUsageList = this.getSubscriptionUsageCollectionList();
 
 		subscriptionUsageList.addDisplayProperty("account.calculatedFullName");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.autoRenewFlag");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.autoPayFlag");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.initialTerm.termName");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.accountPaymentMethod.accountPaymentMethodID");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.expirationDate");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.gracePeriodTerm.termName");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.nextBillDate");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.nextReminderEmailDate");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.renewalSku.skuID");
-		subscriptionUsageList.addDisplayProperty("subscriptionUsageBenefit.subscriptionUsage.renewalTerm.termName");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageID");
+		subscriptionUsageList.addDisplayProperty("autoRenewFlag");
+		subscriptionUsageList.addDisplayProperty("autoPayFlag");
+		subscriptionUsageList.addDisplayProperty("initialTerm.termName");
+		subscriptionUsageList.addDisplayProperty("accountPaymentMethod.accountPaymentMethodID");
+		subscriptionUsageList.addDisplayProperty("expirationDate");
+		subscriptionUsageList.addDisplayProperty("gracePeriodTerm.termName");
+		subscriptionUsageList.addDisplayProperty("nextBillDate");
+		subscriptionUsageList.addDisplayProperty("nextReminderEmailDate");
+		subscriptionUsageList.addDisplayProperty("renewalSku.skuID");
+		subscriptionUsageList.addDisplayProperty("renewalTerm.termName");
 
 		subscriptionUsageList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage);
 
+		var subscriptionUsageRecords = subscriptionUsageList.getPageRecords(formatRecords=false);
+
+		// get subscription delivery data
+		for (var i=1; i<= arrayLen(subscriptionUsageRecords); i++) {
+			var subDeliveryCollection = this.getSubscriptionOrderDeliveryItemCollectionList();
+			subDeliveryCollection.setDisplayProperties("createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned");
+			subDeliveryCollection.addFilter("subscriptionOrderItem.subscriptionUsage.subscriptionUsageID", subscriptionUsageRecords[i]['subscriptionUsageID']);
+
+			subscriptionUsageRecords[i]['subscriptionDeliveries'] = subDeliveryCollection.getRecords(formatRecords=false);
+		}
+
 		return { 
-		    "subscriptionsUsageOnAccount":  subscriptionUsageList.getPageRecords(), 
+		    "data": subscriptionUsageRecords, 
 		    "recordsCount": subscriptionUsageList.getRecordsCount() 
 		};
 	}
