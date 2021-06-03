@@ -422,7 +422,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			// call formatter function;
 			var formatedItems = [] ;
 			for(var thisItem in itemsArray){
-			    formatedItems.append( arguments.recordFormatterFunction(thisItem) );
+			    var formatRecord = arguments.recordFormatterFunction(thisItem);
+			    if(!isNull(formatRecord)){
+			        formatedItems.append(formatRecord);
+			    }
 			}
 			
 			var formatedItemsLen = formatedItems.len();
@@ -593,11 +596,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             'name',
             'adr',
             'email',
+            'phone',
             'state',
             'postal_code',
             'country_code',
             
-            'ship_via_code',
+            'ship_via_code', // fulfimment
+            'ord_class',
             
             'ord_date',
             'opn',
@@ -606,22 +611,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             'rec_seq',
             
             'cancel_date',
-            'delivery_date',
-            
-            'cu_po', // purchase order
-            
-            // should we use calculated props for these
-            'o_tot_gross', //
-            'o_tot_taxable', //
-	        'o_tot_taxable_it', //
-	        'o_tot_tax_amt', //
-	        'o_tot_net_ar',  //
-            
-            'currency_code',
-            
-            'invc_date',
-            'invc_seq',
-            'invoice',
+
+            'currency_code'
         ];
 	    columns = utilityService.prefixListItems(columns.toList(), 'oe_head.');
 	    
@@ -629,6 +620,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    
     	var recordFormatterFunction = function(required struct erponeOrder){
     	    
+    	    if(left(arguments.erponeOrder['oe_head_order'], 1) == '-'){
+    	        return; // if it's not a complete order
+    	    }
+    	     
+    	    //TODO for testing only, remove
+    	    arguments.erponeOrder['oe_head_customer'] = "BENTON";
+    	     
+    	     
     	    var formattedOrderData =  {
 				'currencyCode' : arguments.erponeOrder['oe_head_currency_code'] ?: 'USD',
 				//'EstimatedDeliveryDateTime' : ,
@@ -636,31 +635,28 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				//'OrderIPAddress' : ,
 				//'OrderNotes' : ,
 				
-				
 				'orderNumber' : arguments.erponeOrder['oe_head_order'],
-				'orderOpenDateTime' : arguments.erponeOrder['oe_head_ord_date'],
-				// 'OrderSiteCode' : ,                                          // default to s&b site, or ignore
-				// 'OrderStatusCode' : arguments.erponeOrder['oe_head_order'],
-			    // 'OrderTypeCode' : ,                                          // ??
+				'remoteOrderID' : arguments.erponeOrder['oe_head_order'],
 				'remoteAccountID' : arguments.erponeOrder['oe_head_customer'],
-				'remoteOrderID' : arguments.erponeOrder['__rowids'],
+				
+				'orderOpenDateTime' : arguments.erponeOrder['oe_head_ord_date']
 			};
 			
-			if( arguments.erponeOrder['oe_head_cancel_date'].len() ){
+			// status
+			if( !isNull( arguments.erponeOrder['oe_head_cancel_date'] ) ){
 			    formattedOrderData['canceledDateTime'] = arguments.erponeOrder['oe_head_cancel_date'];
+			    arguments.erponeOrder['oe_head_cancel_date'] = "canceled";
 			}
-			
-		    
-		    // Set order status type
-            formattedOrderData['orderStatusCode'] = this.getSlatwallOrderStatusCodeByERPOrderStatusCode( arguments.erponeOrder['oe_head_stat'] );
+            formattedOrderData['orderStatusCode']   = this.getSlatwallOrderStatusCodeByERPOrderStatusCode( arguments.erponeOrder['oe_head_stat'] );
+            formattedOrderData['orderTypeCode']     = "otSalesOrder";
             
-            // TODO: order source
-            // 	"ord_class": "W", 
-            // 	"source_code": "",
+            // origin
+            formattedOrderData['remoteOrderOriginName']   = "ERP";
+            if(arguments.erponeOrder['oe_head_ord_class'] == 'W' ){
+                formattedOrderData['remoteOrderOriginName']   = "Web";
+                formattedOrderData['orderSiteCode']           = "stoneAndBerg";
+            }
 
-
-
-    	    
 			// Set billing and shipping addresses			
 		    var address = {
 				'streetAddress'     : arguments.erponeOrder['oe_head_adr'][1],
@@ -670,8 +666,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				'stateCode'         : arguments.erponeOrder['oe_head_state'],
 				'countryCode'       : 'US',
 				'email'             : arguments.erponeOrder['oe_head_email'],
-				'phoneNumber'       : arguments.erponeOrder['oe_head_phone'],
-				// 'company' : ,
+				'phoneNumber'       : arguments.erponeOrder['oe_head_phone']
 		    }
 		    
 		    address["name"] =  this.getAddressService().getAddressName(address);
@@ -739,11 +734,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     			typeName="Released"                                 systemCode="ostClosed"      typeCode="rmaReleased"
 			
 		*/
-			
-		if( 'OE' == arguments.erpOrderStatusCode ){
-		    return 'ostNotPlaced';
-		}
 		
+		if( 'canceled' == arguments.erpOrderStatusCode ){
+		    return 'ostCanceled';
+		}
+			
 		if( 'OP' == arguments.erpOrderStatusCode ){
 		    return 'ostNew';
 		}
@@ -798,11 +793,16 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    });
     	} 
     	
-		
-		// set order fulfillment status based on ERP's order status
-		// 
-		
-		
+    	// TODO
+    	
+    	
+        // "pickupLocationName"
+        // "handlingFee"
+        // fulfillmentMethod
+        // shippingMethod
+        // shippingIntegration
+        // statusCode
+    	
 		fulfillment['shippingAddress'] = this.getHibachiUtilityService().getSubStructByKeyPrefix(arguments.data, 'shippingAddress_');
 		
 	    return [ fulfillment ];
@@ -811,8 +811,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 	public void function importErpOneOrderItemsAndOrderPaymentsByOrder(required any order, required struct mapping, required struct data ){
 		this.importErpOneOrderItemsByOrder(arguments.data.orderNumber);
-		this.importErpOneOrderPaymentsByOrder(arguments.data.orderNumber);
-		this.importErpOneOrderItemShipmentsByOrder(arguments.data.orderNumber);
+// 		this.importErpOneOrderPaymentsByOrder(arguments.data.orderNumber);
+// 		this.importErpOneOrderItemShipmentsByOrder(arguments.data.orderNumber);
 	}
 	
 	
@@ -843,7 +843,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			"order"      : "remoteOrderID",
 			"price"      : "price",
 			"q_ord"      : "quantity",
-			"list_price" : "skuPrice"
+			"list_price" : "skuPrice",
 		};
 		
     	var recordFormatterFunction = function(required struct erponeOrderItem){
@@ -851,14 +851,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	
 	    	// make remote ids
 	    	transformedItem['remoteOrderItemID'] = this.getSlatwallOrderItemRemoteIDByErpOneOrderNoAndLine( transformedItem.remoteOrderID, transformedItem.line );
-	    	transformedData['remoteOrderFulfillmentID'] = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( transformedItem.remoteOrderID );
-	    	
+	    	transformedItem['remoteOrderFulfillmentID'] = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( transformedItem.remoteOrderID );
+        
 	    	// defaults
-	    	transformedItem['currencyCode'] = 'USD';
+	    	transformedItem['orderItemTypeCode']    = 'oitSale'
+	    	transformedItem['orderItemStatusCode']  = 'oistNew';
+
+	    	transformedItem['currencyCode']         = 'USD';
 	    	transformedItem['userDefinedPriceFlag'] = true; // so that Slatwall does-not update the `price` 
 
-	    	// TODO: order-item-type and status, remoteSkuID
-	    	
 	    	return transformedItem;
     	}
     	
@@ -1437,6 +1438,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}, "create" );
 			
 			if(structKeyExists(response, 'created') && response.created == 1){
+			    // TODO change it to order no
 				arguments.entity.setRemoteID(response.rowids[1]);
 			}else{
 				throw("ERPONE - pushOrderDataToErpOne #arguments.entity.getOrderNumber()#: Error: #Serializejson(response)#");

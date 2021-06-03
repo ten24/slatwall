@@ -199,7 +199,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         );
         
         if(!validation.isValid){
-            arguments.entity.setErrors( validation.errors );
+            arguments.entity.addErrors( validation.errors );
         }
 	    
 	    return arguments.entity;
