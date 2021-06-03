@@ -8,6 +8,7 @@ const ProductPrice = ({ salePrice = 0, listPrice = 0, salePriceSuffixKey, accent
   const showList = salePrice !== listPrice
   const { t } = useTranslation()
   const showMissingPrice = salePrice === 0 && listPrice === 0
+  const showNoPrice = salePrice === 0 || listPrice === 0
   return (
     <div className="product-price">
       {showMissingPrice && <small>{t('frontend.product.price.missing')}</small>}
@@ -17,7 +18,7 @@ const ProductPrice = ({ salePrice = 0, listPrice = 0, salePriceSuffixKey, accent
           <small>{salePriceSuffixKey && ` ${t(salePriceSuffixKey)}`}</small>
         </>
       )}
-      {(showList || !isAuthed) && !showMissingPrice && (
+      {(showList || !isAuthed) && !showMissingPrice && !showNoPrice &&(
         <span style={{ marginLeft: '5px' }}>
           <small>
             {`${formatCurrency(listPrice)}`} {t(listPriceSuffixKey)}
