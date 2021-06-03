@@ -198,7 +198,7 @@ class SWTypeaheadSearchController {
     
     public toggleDropdown = ()=>{
         this.dropdownOpen = !this.dropdownOpen;
-        if(this.dropdownOpen = true){
+        if(this.dropdownOpen == true){
             this.hideSearch = true;
         }
     }
