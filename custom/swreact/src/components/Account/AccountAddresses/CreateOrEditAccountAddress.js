@@ -62,19 +62,6 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
         <div className="row"></div>
         <h2>{heading}</h2>
         <div className="form-group">
-          <label htmlFor="countryCode">{t('frontend.account.countryCode')}</label>
-          <SwSelect
-            id="countryCode"
-            value={formik.values.countryCode}
-            onChange={e => {
-              e.preventDefault()
-              dispatch(getStateCodeOptionsByCountryCode(e.target.value))
-              formik.handleChange(e)
-            }}
-            options={countryCodeOptions}
-          />
-        </div>
-        <div className="form-group">
           <label htmlFor="accountAddressName">{t('frontend.account.nickname')}</label>
           <input className="form-control" type="text" id="accountAddressName" value={formik.values['accountAddressName']} onChange={formik.handleChange} />
         </div>
@@ -93,6 +80,19 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
         <div className="form-group">
           <label htmlFor="phoneNumber">{t('frontend.account.emailAddress')} </label>
           <input className="form-control" type="email" id="emailAddress" value={formik.values['emailAddress']} onChange={formik.handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="countryCode">{t('frontend.account.countryCode')}</label>
+          <SwSelect
+            id="countryCode"
+            value={formik.values.countryCode}
+            onChange={e => {
+              e.preventDefault()
+              dispatch(getStateCodeOptionsByCountryCode(e.target.value))
+              formik.handleChange(e)
+            }}
+            options={countryCodeOptions}
+          />
         </div>
         <div className="form-group">
           <label htmlFor="streetAddress">{t('frontend.account.streetAddress')}</label>
