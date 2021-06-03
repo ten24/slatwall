@@ -55,6 +55,7 @@ component extends="HibachiService" accessors="true" {
 	property name="productTypeDAO" type="any";
 
 	property name="hibachiService" type="any";
+	property name="hibachiTagService" type="any";
 	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
@@ -1387,7 +1388,7 @@ component extends="HibachiService" accessors="true" {
  				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
  				getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());
- 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", uploadDirectory);
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
  				if(getHibachiUtilityService().isS3Path(fullFilePath)){
  					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
  				}
@@ -1400,7 +1401,60 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 
+	public any function processProduct_bulkImageUpload(required any product, required any processObject , any data ) {
 
+		var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default/";
+		var uploadTempDirectory = getHibachiTempDirectory()&"/"&CreateUUID()&"/";
+		
+		// If the directory where this file is going doesn't exists, then create it
+		if(!directoryExists(uploadTempDirectory)) {
+			directoryCreate(uploadTempDirectory);
+		}
+		getHibachiTagService().cfunzip( file=arguments.processObject.getUploadFile(), zipDestination = uploadTempDirectory , filter = "*.jpg, *.jpeg, *.png");
+
+		var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+		var maxFileSize = val(maxFileSizeString) * 1000000;
+		var filePaths = DirectoryList( path=uploadTempDirectory, recurse="true",  listInfo="path", type = "file", filter = function(path){ 
+		   // ignore hidden directories lik ._MACOSX
+		   if(findNoCase("__MACOSX", arguments.path) > 0){
+					return false;
+			}
+			
+		  // file size check to check max upload size
+		  var fileInfo = getFileInfo(path);
+		  var size = fileInfo.size;
+		  if(size < maxFileSize){
+			  return true;	
+		  }
+		  
+		  return false;
+			
+		});
+
+		for(var filepath in filePaths) {
+			
+			var fileNameWithExtension = listLast(filepath, "/");
+			var fileName			  = listFirst(fileNameWithExtension,".");
+			var fileExtension         = listLast(fileNameWithExtension,".");
+			
+			this.getImageService().clearImageCache(uploadDirectory, fileNameWithExtension);
+			
+			if(arguments.processObject.getimageNameProductProperty() == "ProductCode"){
+				fileMove( filepath, uploadDirectory);
+			}else{
+				var productCode = this.getProductDAO().getProductCodeByUniquePropertyNameAndUniqueValue(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName);
+	        	if(len(productCode) > 0){
+	        		var newFileName = productCode&"."&fileExtension;
+	 				fileMove(filepath, uploadDirectory&newFileName);
+	 			}else {
+	 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.unknownImageName'));
+	 			}
+			}
+		}
+		
+		return arguments.product;
+
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================

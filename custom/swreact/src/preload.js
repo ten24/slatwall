@@ -10,7 +10,7 @@ const data = {
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
   cmsProvider: 'slatwallCMS',
-  enforceVerifiedAccountFlag: false,
+  enforceVerifiedAccountFlag: true,
   shopByManufacturer: {
     slug: '/brands',
     showInMenu: true,
