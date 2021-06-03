@@ -470,7 +470,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		subscriptionUsageList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage);
-
+ 
 		var subscriptionUsageRecords = subscriptionUsageList.getPageRecords(formatRecords=false);
 
 		// get subscription delivery and order itemdata
