@@ -473,13 +473,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var subscriptionUsageRecords = subscriptionUsageList.getPageRecords(formatRecords=false);
 
-		// get subscription delivery data
+		// get subscription delivery and order itemdata
 		for (var i=1; i<= arrayLen(subscriptionUsageRecords); i++) {
+			// subscription deliveries
 			var subDeliveryCollection = this.getSubscriptionOrderDeliveryItemCollectionList();
 			subDeliveryCollection.setDisplayProperties("createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned");
 			subDeliveryCollection.addFilter("subscriptionOrderItem.subscriptionUsage.subscriptionUsageID", subscriptionUsageRecords[i]['subscriptionUsageID']);
 
 			subscriptionUsageRecords[i]['subscriptionDeliveries'] = subDeliveryCollection.getRecords(formatRecords=false);
+
+			// subscription order items
+			var subOrderItemCollection = this.getSubscriptionOrderItemCollectionList();
+			subOrderItemCollection.setDisplayProperties("subscriptionOrderItemID,orderItem.order.orderNumber,orderItem.sku.product.productName,orderItem.sku.skuCode,subscriptionOrderItemType.systemCode");
+			subOrderItemCollection.addFilter("subscriptionUsage.subscriptionUsageID", subscriptionUsageRecords[i]['subscriptionUsageID']);
+
+			subscriptionUsageRecords[i]['subscriptionOrderItems'] = subOrderItemCollection.getRecords(formatRecords=false);
 		}
 
 		return { 
