@@ -112,7 +112,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="cmsContentIDPath" ormtype="string" length="500";
 
 
-	// ============ START: Non-Persistent Property Methods =================		
+	// ============ START: Non-Persistent Property Methods =================
 	public string function getAssetsPath(){
 		if(!isNull(getSite()) && !structKeyExists(variables,'assetsPath')){
 			variables.assetsPath = getSite().getAssetsPath();
