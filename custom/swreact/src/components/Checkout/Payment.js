@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom';
 import { CreditCardDetails, SlideNavigation, AccountAddress, GiftCardDetails, CCDetails, SwRadioSelect, TermPaymentDetails, Overlay } from '../../components'
 import { addNewAccountAndSetAsBilling, addPayment, removePayment } from '../../actions/cartActions'
 import { eligiblePaymentMethodDetailSelector, orderPayment, billingAccountAddressSelector, getAllOrderPayments, disableInteractionSelector } from '../../selectors/orderSelectors'
@@ -76,8 +75,7 @@ const GiftCardPayemnt = () => {
 const ListPayments = () => {
   const payments = useSelector(getAllOrderPayments)
   const disableInteraction = useSelector(disableInteractionSelector)
-  const location = useLocation();
-  
+
   const { t } = useTranslation()
   const dispatch = useDispatch()
   if (payments.length === 0) {
