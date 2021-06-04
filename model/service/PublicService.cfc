@@ -2103,20 +2103,12 @@ component  accessors="true" output="false"
                 arguments.data['ajaxResponse']['accountPaymentMethod'] = {
                     "accountPaymentMethodID": accountPaymentMethod.getAccountPaymentMethodID() 
                 }
-                getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", false );
             }else{
                 arguments.data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
             }
-
-           
-            
-
-            
-        } else {
-            
-            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", true );
-                
+	getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
         }
+
         
     }
     
