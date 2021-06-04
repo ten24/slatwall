@@ -362,46 +362,51 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
 	    var product = getProductService().getProduct( arguments.data.productID );
-        
-        if( !isNull(product) && product.getBaseProductType() == "productBundle") {
-            //get product bundles
-            var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
-            bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
-            bundleProductCollectionList.addFilter("productBundleSku.skuID", product.getDefaultSku().getSkuID());
-            bundleProductCollectionList.addFilter("activeFlag", 1);
-            var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
-            
-            
-            //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
-            var bundleResponse = [];
-            
-            //populate bundle response
-            for( var bundle in bundleProducts) {
-                //get sku list form collection config
-                var skuCollections = getSkuService().getSkuCollectionList();
-                skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
-                skuCollections.addDisplayProperties("calculatedSkuDefinition");
-                skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
-	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
-                var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
-                
-                ArrayAppend(bundleResponse, {
-                  'minimumQuantity':  bundle['minimumQuantity'],
-                  'maximumQuantity': bundle['maximumQuantity'],
-                  'bundleType': bundle['productBundleGroupType_typeName'],
-                  'amount': bundle['amount'],
-                  'amountType': bundle['amountType'],
-                  'skuList': bundleSkuList,
-                  'defaultSkuID': product.getDefaultSku().getSkuID(),
-                  'productBundleGroupID': bundle['productBundleGroupID'],
-                });
-            }
-            
-            arguments.data.ajaxResponse['data'] = bundleResponse;
-            getHibachiScope().addActionResult("public:product.getProductBundles",false);
-        } else {
+	    
+        if( isNull(product) || product.getBaseProductType() != "productBundle") {
             getHibachiScope().addActionResult("public:product.getProductBundles",true);
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.product.getProductBundles.productID_invalid");
+            return;
         }
+        
+        var defaultSkuID = product.getDefaultSku().getSkuID();
+        
+        //get product bundles
+        var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
+        bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
+        bundleProductCollectionList.addFilter("productBundleSku.skuID", defaultSkuID);
+        bundleProductCollectionList.addFilter("activeFlag", 1);
+        var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
+        
+        
+        //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
+        var bundleResponse = [];
+        
+        //populate bundle response
+        for( var bundle in bundleProducts) {
+            //get sku list form collection config
+            var skuCollections = getSkuService().getSkuCollectionList();
+            skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+            skuCollections.addDisplayProperties("calculatedSkuDefinition");
+            skuCollections.addDisplayProperties("calculatedQATS");
+            skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
+            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
+            var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
+            
+            ArrayAppend(bundleResponse, {
+              'minimumQuantity':  bundle['minimumQuantity'],
+              'maximumQuantity': bundle['maximumQuantity'],
+              'bundleType': bundle['productBundleGroupType_typeName'],
+              'amount': bundle['amount'],
+              'amountType': bundle['amountType'],
+              'skuList': bundleSkuList,
+              'defaultSkuID': defaultSkuID,
+              'productBundleGroupID': bundle['productBundleGroupID'],
+            });
+        }
+        
+        arguments.data.ajaxResponse['data'] = bundleResponse;
+        getHibachiScope().addActionResult("public:product.getProductBundles",false);
 	}
 	
 	/**
@@ -416,7 +421,8 @@ component  accessors="true" output="false"
 	    var sku = getProductService().getSku( arguments.data.skuID );
 
 	    if( isNull( sku ) ) {
-	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
+	        hibachiScope.addActionResult("public:product.getProductBundleBuilds",true);
+	        arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.product.getProductBundleBuild.skuID_invalid");
 	        return;
 	    }
 
@@ -425,7 +431,7 @@ component  accessors="true" output="false"
 	    if( !account.isNew() ) {
 	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
+	        productBundleBuildCollectionList.addFilter('session.sessionID', hibachiScope.getSession().getSessionID());
 	    }
 	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', sku.getSkuID() );
 	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
@@ -433,7 +439,7 @@ component  accessors="true" output="false"
 
         //return false if there are no active builds
         if( !ArrayLen( productBundle ) ) {
-	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
+	        hibachiScope.addActionResult("public:product.getProductBundleBuilds",true);
 	        return;
 	    }
 
@@ -448,20 +454,20 @@ component  accessors="true" output="false"
         };
 
 	    arguments.data.ajaxResponse['data'] = bundleBuildResponse;
-        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",false);
+        hibachiScope.addActionResult("public:product.getProductBundleBuilds",false);
 	}
 
 		/**
 	 * Method to create product bundle build
 	 * 
-	 * @param - skuID (can also accept comma separated list)
+	 * @param - skuIDList (can also accept comma separated list)
 	 * @param - default skuID (from bundle product)
-	 * @param - quantity (can also accept comma separated list)
+	 * @param - quantities (can also accept comma separated list)
 	 * @param - productBundleGroupID
 	 * */
 	public void function createProductBundleBuild( required struct data ) {
-	    param name="arguments.data.skuID";
-	    param name="arguments.data.quantity";
+	    param name="arguments.data.skuIDList";
+	    param name="arguments.data.quantities";
 	    param name="arguments.data.productBundleGroupID";
 	    param name="arguments.data.defaultSkuID";
 
@@ -629,7 +635,24 @@ component  accessors="true" output="false"
 	         }
 	     } else {
 	         getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	         arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("processAccount_logout");
+	         return;
 	     }
+	     
+    	 var order = orderService.getOrder(arguments.data.orderID);
+    	 if( isNull(order) ){
+    	      hibachiScope.addActionResult("public:account.getOrderDetails", true);
+    	      arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.account.getOrderDetails.orderID_invalid");
+    	      return;
+    	 }
+	     
+	     var account = hibachiScope.getAccount();
+    	 
+    	 // TODO: use permissions
+        if( order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ){
+            arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails( order.getOrderID(), account.getAccountID());
+            getHibachiScope().addActionResult("public:account.getOrderDetails", false);
+        }
 	 }
 	
 	/**
@@ -1836,6 +1859,7 @@ component  accessors="true" output="false"
           var accountAddressId = data.accountAddressID;
         }else{
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.cart.accountAddressID_required");
           return;
         }
 
@@ -1875,6 +1899,7 @@ component  accessors="true" output="false"
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
             }
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.cart.accountAddressID_required");
         }
     }
 
@@ -1938,7 +1963,7 @@ component  accessors="true" output="false"
           break;
         }
       }
-
+    
       if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
         orderFulfillment.setPickupLocation(location);
         orderFulfillment = this.getOrderService().saveOrderFulfillment(orderFulfillment);
@@ -1950,6 +1975,7 @@ component  accessors="true" output="false"
           this.addErrors(arguments.data, orderFulfillment.getErrors());
         }
         getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
+        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.order.addPickupFulfillmentLocation.fulfillment_invalid");
       }
     }
     
@@ -2584,7 +2610,22 @@ component  accessors="true" output="false"
         var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
 
         var existingOrderFulfillment = "";
-
+        var error = [];
+        
+        if( arguments.data.orderItemIDList == "" ){
+            ArrayAppend(error, hibachiScope.rbKey("validate.cart.orderItemIDList_required"));
+        }
+        
+        if( arguments.data.fulfillmentMethodID == "" ){
+            ArrayAppend(error, hibachiScope.rbKey("validate.cart.fulfillmentMethodID_required"));
+        }
+        
+        if( !arrayIsEmpty(error)){
+            hibachiScope.addActionResult( "public:cart.changeOrderFulfillment", true);
+            data['ajaxResponse']['errors'] = error;
+            return;
+        }
+        
         //check if fulfillment method already exists on order
         var allOrderFulfillments = cart.getOrderFulfillments();
         for(var orderFulfillment in allOrderFulfillments) {
@@ -3215,6 +3256,7 @@ component  accessors="true" output="false"
             arguments.data['ajaxResponse']['orderTemplate'] = newOrderTemplate.getOrderTemplateID();
         }
     }
+ 
 
    
 	public void function getOrderTemplates(required any data){ 
@@ -4097,6 +4139,7 @@ component  accessors="true" output="false"
         };
         getHibachiScope().addActionResult("public:scope.getProductFilterOptions",false);
     }
+}
     
     /** 
      * @http-context getDiscountsByCartData
