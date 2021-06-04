@@ -83,6 +83,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 		return getActiveFlag();
 	}
 	
+	public string function getDisplayName() {
+		return getIntegrationName();
+	}
+	
 	public array function getShippingMethodOptions( ) {
 		if(!structKeyExists(variables, "shippingMethodOptions")) {
 			variables.shippingMethodOptions = [];
@@ -95,30 +99,12 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	}	
 
 	public any function getIntegrationCFC( string integrationType="" ) {
-		switch (arguments.integrationType) {
-			case "authentication" : {
-				return getService("integrationService").getAuthenticationIntegrationCFC(this);
-				break;
-			} 
-			case "payment" : {
-				return getService("integrationService").getPaymentIntegrationCFC(this);
-				break;
-			}
-			case "data" : {
-				return getService("integrationService").getDataIntegrationCFC(this);
-				break;
-			}
-			case "shipping" : {
-				return getService("integrationService").getShippingIntegrationCFC(this);
-				break;
-			}
-			case "tax" : {
-				return getService("integrationService").getTaxIntegrationCFC(this);
-				break;
-			}
-			default : {
-				return getService("integrationService").getIntegrationCFC(this);
-			}
+		if( len(trim(arguments.integrationType)) &&  arguments.integrationType != "Integration" ){
+			return getService("integrationService").getIntegrationTypeCFC(this, arguments.integrationType);
+		} 
+		else { 
+			// if no integrationType is defined we'd return an object of ...package../Integration.cfc
+			return getService("integrationService").getIntegrationCFC(this);
 		}
 	}
 	

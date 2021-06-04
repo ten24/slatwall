@@ -59,7 +59,9 @@ class SWDisplayOptions{
                 baseEntityName:"<?",
                 listingName:"@?"
             },
-            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
+            
+            template: require("./displayoptions.html"),
+            
             controller:['$scope','$element','$attrs',function($scope,$element,$attrs){
 
                 this.removeColumn = function(columnIndex){
@@ -158,9 +160,10 @@ class SWDisplayOptions{
                         selectedProperty = scope.selectedAggregate;
                     }
 
-
-
-                    if(selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections'){
+                    if( selectedProperty.$$group === 'simple' || 
+                        selectedProperty.$$group === 'attribute' || 
+                        selectedProperty.$$group === 'compareCollections'
+                    ){
                         $log.debug(scope.columns);
                         if(angular.isDefined(selectedProperty)){
                             var column:any = {

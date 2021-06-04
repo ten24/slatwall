@@ -52,30 +52,21 @@ Notes:
 
 <cfparam name="rc.productReview" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.productReview#" edit="#rc.edit#">
+		<cfif isNull(rc.productReview.getProduct()) && structKeyExists(rc,'productID')>
+			<input type="hidden" name="product.productID" value="#rc.productID#" />
+		</cfif>
 		<hb:HibachiEntityActionBar type="detail" object="#rc.productReview#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<cfif !structKeyExists(rc,"modal")>
-					<hb:HibachiPropertyDisplay object="#rc.productReview.getProduct()#" property="productName" valueLink="?slatAction=admin:entity.detailproduct&productID=#rc.productReview.getProduct().getProductID()#" edit="false">
-				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewerName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="rating" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-
 		<hb:HibachiEntityDetailGroup object="#rc.productReview#">
-				
-		<!--- Custom Attributes --->
-		<cfloop array="#rc.productReview.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-			<swa:SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
-		</cfloop>
+			
+			<hb:HibachiEntityDetailItem view="admin:entity/productreviewtabs/basic" open="true" showOnCreateFlag=true/>
+			
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.productReview.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
+			</cfloop>
 		
 		</hb:HibachiEntityDetailGroup>
 

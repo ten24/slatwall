@@ -74,6 +74,9 @@ Notes:
 			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardcontentaccess')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=contentAccess" modal="true" type="list" />
 			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardfulfillment')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=fulfillment" modal="true" type="list" />
 			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardorder')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=order" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardcanplaceorder')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=canPlaceOrder" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createPromotionRewardSku')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=rewardSku" modal="true" type="list" />
+
 		</hb:HibachiActionCallerDropdown>
 	</cfif>
 

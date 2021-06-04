@@ -56,6 +56,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="lastName" hb_rbKey="entity.account.lastName";
 	property name="company" hb_rbKey="entity.account.company";
 	property name="phoneNumber";
+	property name="username";
 	property name="emailAddress";
 	property name="emailAddressConfirm";
 	property name="createAuthenticationFlag" hb_sessionDefault="1";
@@ -64,20 +65,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accessID";
 	property name="organizationFlag" hb_formFieldType="yesno" default=0;
 	property name="accountID" hb_formFieldType="textautocomplete" cfc="Account";
-	property name="parentAccountID";
+	property name="parentAccountID" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="childAccountID";
-	
+	property name="birthDate";
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
 	property name="childAccount" cfc="Account" fieldtype="many-to-one";
 	property name="accountCreatedSite" cfc="Site" fieldtype="many-to-one";
 	
 	public any function getParentAccount(){
 		if(!structKeyExists(variables,'parentAccount')){
-			if(!isNull(getAccountID())){
-				if(listLen(getAccountID()) > 1){
-					variables.accountID = listFirst(variables.accountID);
+			if(!isNull(getParentAccountID())){
+				if(listLen(getParentAccountID()) > 1){
+					variables.parentAccountID = listFirst(variables.parentAccountID);
 				}
-				variables.parentAccount = getService('accountService').getAccount(getAccountID());	
+				variables.parentAccount = getService('accountService').getAccount(getParentAccountID());	
 			}else{
 				return;
 			}
@@ -110,6 +111,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return true;
 	}
 	
+	public boolean function getUsernameNotInUseFlag() {
+		if(!isNull(getUsername())) {
+			return getService("accountService").getUsernameNotInUseFlag( username=getUsername() );	
+		}
+		return true;
+	}
+	
 	public any function getAccountCreatedSite(){
 		if(!structKeyExists(variables,'accountCreatedSite') && !isNull(getHibachiScope().getCurrentRequestSite())){
 			variables.accountCreatedSite = getHibachiScope().getCurrentRequestSite();
@@ -129,6 +137,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		arrayAppend(options, collectionList.getRecords(), true );
 		
 		return options;
+	}
+	
+	public boolean function eighteenPlus(){
+    	globalEighteenYearsAgo = DateConvert('local2Utc', DateAdd('yyyy', -18, now()));
+    	globalDOB = DateConvert('local2Utc', this.getBirthDate());
+		return DateCompare(globalEighteenYearsAgo, globalDOB) > -1;
 	}
 	
 }

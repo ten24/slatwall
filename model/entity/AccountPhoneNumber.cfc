@@ -51,13 +51,15 @@ component displayname="Account Phone Number" entityname="SlatwallAccountPhoneNum
 	// Persistent Properties
 	property name="accountPhoneNumberID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
+	property name="countryCallingCode" hb_populateEnabled="public" ormtype="string";
 	
 	// Related Object Properties (Many-To-One)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPhoneType" hb_populateEnabled="public" cfc="Type" fieldtype="many-to-one" fkcolumn="accountPhoneTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=accountPhoneType";
 	// Remote properties
- 	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
-  	
+ 	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";

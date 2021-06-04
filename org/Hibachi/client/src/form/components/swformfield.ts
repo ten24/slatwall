@@ -156,6 +156,10 @@ class SWFormFieldController {
 					'propertyIdentifier':this.propertyIdentifier
 				};
 			}
+			
+			if(this.object.$$getID().length){
+				this.optionsArguments.entityID = this.object.$$getID();
+			}
 
 			var optionsPromise = this.$hibachi.getPropertyDisplayOptions(this.object.metaData.className,
 				this.optionsArguments
@@ -222,6 +226,10 @@ class SWFormFieldController {
 				}
 
 			});
+		}else{
+			this.object.data['selected'+this.propertyIdentifier] = this.options.filter(obj => {
+				return obj.value === this.object.data[this.propertyIdentifier]
+			})[0];
 		}
 	}
 

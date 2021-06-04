@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/custom/swreact/build/static/css/main.621b8fe4.chunk.css",
+    "main.js": "/custom/swreact/build/static/js/main.eee902ac.chunk.js",
+    "main.js.map": "/custom/swreact/build/static/js/main.eee902ac.chunk.js.map",
+    "runtime-main.js": "/custom/swreact/build/static/js/runtime-main.bc925c9f.js",
+    "runtime-main.js.map": "/custom/swreact/build/static/js/runtime-main.bc925c9f.js.map",
+    "static/css/2.b789a6aa.chunk.css": "/custom/swreact/build/static/css/2.b789a6aa.chunk.css",
+    "static/js/2.b66c42b6.chunk.js": "/custom/swreact/build/static/js/2.b66c42b6.chunk.js",
+    "static/js/2.b66c42b6.chunk.js.map": "/custom/swreact/build/static/js/2.b66c42b6.chunk.js.map",
+    "static/js/3.7e8199c0.chunk.js": "/custom/swreact/build/static/js/3.7e8199c0.chunk.js",
+    "static/js/3.7e8199c0.chunk.js.map": "/custom/swreact/build/static/js/3.7e8199c0.chunk.js.map",
+    "static/js/4.39396cc7.chunk.js": "/custom/swreact/build/static/js/4.39396cc7.chunk.js",
+    "static/js/4.39396cc7.chunk.js.map": "/custom/swreact/build/static/js/4.39396cc7.chunk.js.map",
+    "static/js/5.8420170e.chunk.js": "/custom/swreact/build/static/js/5.8420170e.chunk.js",
+    "static/js/5.8420170e.chunk.js.map": "/custom/swreact/build/static/js/5.8420170e.chunk.js.map",
+    "index.html": "/custom/swreact/build/index.html",
+    "static/css/2.b789a6aa.chunk.css.map": "/custom/swreact/build/static/css/2.b789a6aa.chunk.css.map",
+    "static/css/main.621b8fe4.chunk.css.map": "/custom/swreact/build/static/css/main.621b8fe4.chunk.css.map",
+    "static/js/2.b66c42b6.chunk.js.LICENSE.txt": "/custom/swreact/build/static/js/2.b66c42b6.chunk.js.LICENSE.txt",
+    "static/media/app.scss": "/custom/swreact/build/static/media/fa-solid-900.f3aa05aa.woff",
+    "static/media/logo.37db8f93.png": "/custom/swreact/build/static/media/logo.37db8f93.png",
+    "static/media/missing-brand.309e85b8.png": "/custom/swreact/build/static/media/missing-brand.309e85b8.png",
+    "static/media/missing-product-type.9de41245.png": "/custom/swreact/build/static/media/missing-product-type.9de41245.png",
+    "static/media/missing-product.6ed7ad7b.png": "/custom/swreact/build/static/media/missing-product.6ed7ad7b.png",
+    "static/media/missing.9652da67.png": "/custom/swreact/build/static/media/missing.9652da67.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.bc925c9f.js",
+    "static/css/2.b789a6aa.chunk.css",
+    "static/js/2.b66c42b6.chunk.js",
+    "static/css/main.621b8fe4.chunk.css",
+    "static/js/main.eee902ac.chunk.js"
+  ]
+}

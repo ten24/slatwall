@@ -1,0 +1,25 @@
+footer{
+    color: #2E2B2C;
+}
+
+.bottomBar{
+    background-color: #F9F9F9;
+}
+
+h3{
+    font-weight: 400 !important;
+}
+
+.stayInformed h3{
+    margin-bottom: 0.3em !important;
+}
+
+.stayInformed p{
+    font-size: 12px;
+    font-weight: 100;
+}
+
+.bgFooter{
+    background-color: #221E20;
+    color: #918E8F;
+}

@@ -1,0 +1,29 @@
+{
+	"name": "Bulk Merge Sku Sample",
+	"entityName": "Sku",
+	"mappingCode": "_bulk_merge_sku_sample",
+	"properties": {
+		"skuCode": {
+			"propertyIdentifier": "skuCode",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		}
+	},
+	"dependencies": [
+		{
+			"key": "productCode",
+			"entityName": "Product",
+			"lookupKey": "productCode",
+			"propertyIdentifier": "product"
+		}
+	],
+	"importIdentifier": {
+		"propertyIdentifier": "importRemoteID",
+		"type": "composite",
+		"keys": [
+			"skuCode"
+		]
+	}
+}

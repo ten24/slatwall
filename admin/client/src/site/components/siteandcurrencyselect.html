@@ -1,0 +1,42 @@
+<div class="form-group">
+    <label class="form-label col-sm-4" 
+            for="siteID" 
+            sw-rbkey="'entity.site'">
+    </label>
+    <div class="col-sm-8">
+        <select name="siteID" 
+                class="form-control"
+                required
+                ng-disabled="swSiteAndCurrencySelect.disabled"
+                ng-change="swSiteAndCurrencySelect.updateSite()"
+                ng-model="swSiteAndCurrencySelect.site"
+                ng-options="site.name for site in swSiteAndCurrencySelect.siteAndCurrencyOptions track by site.value">
+        </select>
+        <input ng-show="false" 
+               ng-if="swSiteAndCurrencySelect.disabled" 
+               name="siteID" 
+               type="hidden" 
+               ng-value="swSiteAndCurrencySelect.site.value" />
+    </div>
+</div>
+
+<div class="form-group" ng-if="swSiteAndCurrencySelect.currencyCodeOptions.length">
+    <label class="form-label col-sm-4" 
+            for="currencyCode" 
+            sw-rbkey="'entity.order.currencyCode'">
+    </label>
+    <div class="col-sm-8">
+        <select name="currencyCode" 
+                class="form-control"
+                required
+                ng-model="swSiteAndCurrencySelect.currencyCode"
+                ng-disabled="swSiteAndCurrencySelect.currencyCodeOptions.length === 1"
+                ng-options="currencyCode for currencyCode in swSiteAndCurrencySelect.currencyCodeOptions track by currencyCode">
+        </select>
+        <input ng-show="false" 
+               ng-if="swSiteAndCurrencySelect.currencyCodeOptions.length === 1" 
+               name="currencyCode" 
+               type="hidden" 
+               ng-value="swSiteAndCurrencySelect.currencyCode" />
+    </div>
+</div>

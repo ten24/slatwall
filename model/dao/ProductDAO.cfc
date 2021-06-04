@@ -137,7 +137,8 @@ Notes:
 				FROM SlatwallProductReview pr 
 				WHERE pr.product = :product
 				AND pr.activeFlag = 1
-				',{product=arguments.product},true
+				AND productReviewStatusType.systemCode = :approved
+				',{product=arguments.product, approved='prstApproved'},true
 			);
 		}
 		
@@ -594,5 +595,24 @@ Notes:
 			true
 			)>
 	</cffunction>
+	
+	<cffunction name="getProductCodeByUniquePropertyNameAndUniqueValue" access="public">
+	
+		<cfargument name="propertyName" required="true" />
+		<cfargument name="propertyValue" required="true" type="string" />
+		
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			SELECT
+				productCode
+			FROM
+				swProduct
+			WHERE
+			#arguments.propertyName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.propertyValue#"/>
+		</cfquery>
+		<cfreturn rs.productCode />
+	</cffunction>
+	
+	
 </cfcomponent>
 

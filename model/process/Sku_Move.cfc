@@ -2,12 +2,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="sku";
 		
 	property name="productID"; 
-	property name="product";
+	property name="product" cfc="Product" hb_formFieldType="typeahead";
 
 	public any function getProduct(){
-		if(!structKeyExists(variables, "product") && !isNull(getProductID())){ 
-			variables.product = getService("ProductService").getProduct(getProductID());
+		if( !isNull(getProductID()) ) { 
+			return getService("ProductService").getProduct(getProductID());
 		} 
-		return variables.product; 
 	} 
+	
+	public any function getProductTypeAheadCollectionList(){
+		var productCollectionList=getHibachiScope().getService('productService').getProductCollectionList();
+		productCollectionList.setDisplayProperties('productID',   {isVisible=false,isSearchable=false} );
+		if(!IsNull(this.getSku())){
+			productCollectionList.addFilter('productID', this.getSku().getProduct().getProductID(), '!=' );
+		}
+		return productCollectionList;
+	}
 } 

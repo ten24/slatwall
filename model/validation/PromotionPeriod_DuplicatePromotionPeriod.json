@@ -1,12 +1,15 @@
 {
-	"conditions":{
-	    "needsEndAfterStart":{
-	        "startDateTime":{"required":true},
-	        "endDateTime":{"required":true}
-	    }
+	"conditions": {
+		"needsEndAfterStart": {
+			"startDateTime": { "required": true },
+			"endDateTime": { "required": true }
+		}
 	},
-	"properties":{
-		"startDateTime":			[{"contexts":"save","dataType":"date"}],
-		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtDateTimeProperty":"startDateTime"}]
+	"properties": {
+		"startDateTime": [{ "contexts": "save", "dataType": "date" }],
+		"endDateTime": [
+			{ "contexts": "save", "dataType": "date" },
+			{ "contexts": "save", "conditions": "needsEndAfterStart", "gtDateTimeProperty": "startDateTime" }
+		]
 	}
 }

@@ -18,109 +18,217 @@ component accessors="true" output="false" extends="HibachiService" {
 		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
 	}
 	
-	public any function processEntityQueue_processQueue( required any entityQueue, any processObject ={} ) {
-		
-		if(!entityQueue.getNewFlag()){
-			//Process a single QUEUE item:
-			
-			var entityService = getServiceByEntityName( entityName=arguments.entityQueue.getBaseObject() );
-			var entity = entityService.invokeMethod( "get#arguments.entityQueue.getBaseObject()#", arguments.entityQueue.getBaseID() );
-			var processContext = arguments.entityQueue.getProcessMethod();
-			if(isNull(entity)){
-				deleteEntityQueueItems(arguments.entityQueue.getEntityQueueID());
-				return arguments.entityQueue;
-			}
-			
-			var processContextIndex = '2';
-			var processData = {'1'=entity};
-			
-			if(isJSON(entityQueue.getEntityQueueData())){
-				processData['2'] = deserializeJSON(entityQueue.getEntityQueueData());
-				processContextIndex = '3';
-			}
 	
-			if(len(processContext) && entity.hasProcessObject(processContext)){
-				processData[processContextIndex] = entity.getProcessObject(processContext);
-			}
-			
-			try{
-				entityService.invokeMethod("#arguments.entityQueue.getProcessMethod()#", processData);
-				deleteEntityQueueItems(arguments.entityQueue.getEntityQueueID());
-			}catch(any e){
-				if(!isNull(entityQueue.getLogHistoryFlag()) && entityQueue.getLogHistoryFlag()){
-					addQueueHistory(entityQueue, false);
-				}
-				arguments.entityQueue.setModifiedDateTime(now());
-				this.saveEntityQueue(arguments.entityQueue);
-			}
-		}else if(structKeyExists(arguments, 'processObject') && structKeyExists(arguments.processObject,'collectionData')){
-			//Process a collection of QUEUE
-			processEntityQueueArray(arguments.processObject.collectionData);
-		}else{
-			//Build a queue collection list 
-			var entityQueueCollection = getEntityQueueCollectionList();
-			entityQueueCollection.setDisplayProperties('entityQueueID,baseObject,baseID,entityQueueData,processMethod');
-			entityQueueCollection.setPageRecordsShow(20);
-			entityQueueCollection.addOrderBy('modifiedDateTime|DESC');
-			var entityQueuItems = entityQueueCollection.getPageRecords(formatRecords=false);
-			
-			return this.processEntityQueue_processQueue( this.newEntityQueue(), { 'collectionData' = entityQueuItems } );
-		}
-	
-		return entityQueue;
+	// will move the entity-queue to entity-queue-failure 
+	public any function processEntityQueueFailure_reQueue(required any entityQueueFailure){
+
+	    this.getHibachiEntityQueueDAO().reQueueEntityQueueFailure( arguments.entityQueueFailure.getEntityQueueFailureID() );
+	    return arguments.entityQueueFailure;
+	}
+
+	// will move the entity-queue to entity-queue-failure 
+	public any function processEntityQueue_archive(required any entityQueue){
+
+	    this.getHibachiEntityQueueDAO().archiveEntityQueue( arguments.entityQueue.getEntityQueueID(), arguments.entityQueue.getMostRecentError() );
+	    return arguments.entityQueue;
 	}
 	
-	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
-			
-		if(!arraylen(arguments.entityQueueArray)){
-			return;
+	
+	public void function resetTimedOutEntityQueueItems(required numeric timeout){
+		getHibachiEntityQueueDAO().resetTimedOutEntityQueueItems(argumentCollection=arguments);	
+	}
+
+	public void function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
+		getHibachiEntityQueueDAO().claimEntityQueueItemsByServer(argumentCollection=arguments);
+	}
+
+	//delegates to processEntityQueueArray so we're not maintaining one function for object and one for hash map
+	//entry point will always be from workflow which should pass collectionData  
+	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
+		
+		var maxTryCount = 3;
+		var retryDelay = 0;
+		
+		if(structKeyExists(arguments.data, 'workflowTrigger') && isNumeric(arguments.data.workflowTrigger.getMaxTryCount())){
+			maxTryCount = arguments.data.workflowTrigger.getMaxTryCount();
 		}
 		
-		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
-			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
-			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {
-				processEntityQueueArray(entityQueueArray, false);
-			}
-		}else{
-			var entityQueueIDsToBeDeleted = '';
-			var entityQueueIDsToBeUpdated = '';
+		if(structKeyExists(arguments.data, 'workflowTrigger') && isNumeric(arguments.data.workflowTrigger.getRetryDelay())){
+			retryDelay = arguments.data.workflowTrigger.getRetryDelay();
+		}
+		
+		if(structKeyExists(arguments.data, 'collectionData')){
+			this.processEntityQueueArray(entityQueueArray=arguments.data.collectionData, maxTryCount=maxTryCount, retryDelay=retryDelay); 
+		} else if(!entityQueue.getNewFlag()){
+			var entityQueueArray = [ arguments.entityQueue.getStructRepresentation() ];
+			this.processEntityQueueArray(entityQueueArray=entityQueueArray, maxTryCount=maxTryCount, retryDelay=retryDelay); 
+		} 
+		return arguments.entityQueue;
+	}
+
+	//attempts to find integration service otherwise gets service by entity name	
+	private any function getServiceForEntityQueue(required struct entityQueue){ 
+		
+		var hasIntegrationPackageService = structKeyExists(entityQueue, 'integration_integrationPackage') && len(trim(entityQueue['integration_integrationPackage']));  
+		var hasIntegration = structKeyExists(entityQueue, 'integration_integrationID') && !isNull(entityQueue['integration_integrationID']) && len(trim(entityQueue['integration_integrationID'])) 			
+
+		if(hasIntegration || hasIntegrationPackageService){
 			
-			for(var entityQueue in arguments.entityQueueArray){
+			if(!hasIntegrationPackageService) { 
+				var integration = getService("IntegrationService").getIntegrationByIntegrationID(entityQueue['integration_integrationID']);
+				entityQueue['integration_integrationPackage'] = integration.getIntegrationPackage();
+			}  				
 			
-				var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
-				var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
-				if(isNull(entity)){
-					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-					continue;
-				}
-				var processContextIndex = '2';
-				var processData = { '1'=entity };
-				
-				if(isJSON(entityQueue['entityQueueData'])){
-					processData['2'] = deserializeJSON(entityQueue['entityQueueData']);
-					processContextIndex = '3';
-				}
+			return getService("#entityQueue['integration_integrationPackage']#Service")
+		}	
 	
-				if(len(entityQueue['processMethod']) && entity.hasProcessObject(entityQueue['processMethod'])){
-					processData[processContextIndex] = entity.getProcessObject(entityQueue['processMethod']);
+		return getServiceByEntityName( entityName=entityQueue['baseObject'] ); 
+	} 
+
+	//handles process method case & validates for context otherwise calls method on service returns true if method was invoked
+	private boolean function invokeMethodOrProcessOnService(required struct entityQueue, required any entity, required any service){
+		
+		var entityValidToInvoke = true; //it may not be a processContext
+
+		//not necessarily a processMethod
+		var method = entityQueue['processMethod']; 
+		
+		var hasEntityQueueData = structKeyExists(entityQueue, 'entityQueueData') && isJSON(entityQueue['entityQueueData']); 
+		var entityQueueData = {};
+		if(hasEntityQueueData){
+			entityQueueData = deserializeJson(entityQueue['entityQueueData']); 
+		}
+
+		var hasProcessContext = left(method, 7) == 'process' && listLen(method, '_') > 1;
+		var processContext = ''; 
+
+		if(hasProcessContext){
+			processContext = listLast(method, '_');//listlast to equate processEntity_processContext & processContext
+			
+			var hibachiErrors = getHibachiValidationService().validate(entity, processContext, false);//don't set errors on object
+			entityValidToInvoke = !hibachiErrors.hasErrors();
+			
+			if(entityValidToInvoke){
+				arguments.entity = 	arguments.service.process(arguments.entity, entityQueueData, processContext); 	
+				entityValidToInvoke = !arguments.entity.hasErrors();
+				if(!entityValidToInvoke){
+					this.logHibachi('entity queue encountered errors after invoking process #serializeJson(arguments.entity.getErrors())#',true);
+				} 
+			}else{
+				throw('Validation Errors: '&serializeJson(hibachiErrors.getErrors()));
+			}
+			
+		} else {
+			
+			var methodData = { '1'=entity };
+			if(hasEntityQueueData){
+				methodData['2'] = entityQueueData;
+			}	
+			
+			var entityOrAnything = arguments.service.invokeMethod("#entityQueue['processMethod']#", methodData);
+
+			if( !isNull(entityOrAnything) && isObject(entityOrAnything) ){   // then assuming it's will be an entity
+
+			    arguments.entity = entityOrAnything;
+
+			    entityValidToInvoke = !arguments.entity.hasErrors();
+
+				if( !entityValidToInvoke ){
+				    throw('Entity queue encountered errors after invoking #entityQueue["processMethod"]#: '&serializeJson(arguments.entity.getErrors()) );
 				}
+			}
+		}
+		
+		return entityValidToInvoke;
+	} 
+ 
+
+	public any function processEntityQueueArray(required array entityQueueArray, boolean useThread = false, numeric maxTryCount = 3, numeric retryDelay = 0){
+
+		if( !arraylen(arguments.entityQueueArray) ){
+		    this.logHibachi("EntityQueue - processEntityQueueArray() - entityQueueArray is empty, skipping this call");
+			return;
+		}
+	
+		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
+		
+			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
+			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" maxTryCount="#arguments.maxTryCount#" retryDelay="#arguments.retryDelay#" {
+                
+                this.processEntityQueueArray(
+				    entityQueueArray = entityQueueArray, 
+				    useThread        = false, 
+				    maxTryCount      = maxTryCount, 
+				    retryDelay       = retryDelay
+				);
+			}
+			
+		} else {
+		    
+			var entityQueueIDsToBeDeleted = '';
+			var maxThreads = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
+			
+			arguments.entityQueueArray.each( function( entityQueue ){
+			    
+				var success = true;
 				
 				try{
-					entityService.invokeMethod("#entityQueue['processMethod']#", processData);
-					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-					ormflush();
-				}catch(any e){
-					entityQueueIDsToBeUpdated = listAppend(entityQueueIDsToBeUpdated, entityQueue['entityQueueID']);
+				
+					var noMethod = !structKeyExists(arguments.entityQueue, 'processMethod') || 
+									isNull(arguments.entityQueue['processMethod']) || 
+								    !len(arguments.entityQueue['processMethod']);  
+	
+					if(noMethod) { 
+                        this.logHibachi("EntityQueue - processEntityQueueArray() did not find any processMethod in entityQueueData, deleting this record");
+						this.deleteEntityQueueItem( arguments.entityQueue['entityQueueID'] );
+						return;
+					}
+					
+					var entityService = getServiceForEntityQueue(arguments.entityQueue);
+	                if( len(arguments.entityQueue['baseID']) ){
+					    // not passing the 2nd argument as true to return a new entity, so that we ignore bad entity-IDs;
+					    var entity = entityService.invokeMethod( "get#arguments.entityQueue['baseObject']#", { 1=arguments.entityQueue['baseID']} );
+	                } else {
+	                    var entity = entityService.invokeMethod( "new#arguments.entityQueue['baseObject']#" );
+	                }
+
+					if( isNull(entity) ){
+						this.logHibachi("EntityQueue - processEntityQueueArray() - entity is null, deleting this record #arguments.entityQueue['entityQueueID']#");
+						this.deleteEntityQueueItem( arguments.entityQueue['entityQueueID'] );
+						return;
+					}
+	
+					var entityMethodInvoked = invokeMethodOrProcessOnService(arguments.entityQueue, entity, entityService);  
+					
+					if( entityMethodInvoked ){
+						this.getHibachiScope().hibachiORMFlush();
+					} else {
+						ORMClearSession();
+						this.getHibachiScope().setORMHasErrors(false);
+					}
+					
+					this.deleteEntityQueueItem(arguments.entityQueue['entityQueueID'], true);
+					
+				} catch(any e){
+					
+					if(!structKeyExists(arguments.entityQueue,'tryCount') || isNull(arguments.entityQueue['tryCount'])){
+						arguments.entityQueue['tryCount'] = 1; 
+					}
+					
+					if(val(arguments.entityQueue['tryCount']) >= maxTryCount){
+						getHibachiEntityQueueDAO().archiveEntityQueue(arguments.entityQueue['entityQueueID'], e.message);
+					}else{
+						getHibachiEntityQueueDAO().updateNextRetryDateAndMostRecentError(arguments.entityQueue['entityQueueID'], e.message);
+					}
+					
+					if(this.getHibachiScope().setting("globalLogMessages") == "detail"){
+						logHibachiException(e);
+					}
 				}
-			}
-			if(listLen(entityQueueIDsToBeDeleted)){
-				deleteEntityQueueItems(entityQueueIDsToBeDeleted);
-			}
-			if(listLen(entityQueueIDsToBeUpdated)){
-				updateModifiedDateTime(entityQueueIDsToBeUpdated);
-			}
+				
+	
 			
-			
+			}, true, maxThreads);
 		}
 	}
 	
@@ -130,12 +238,13 @@ component accessors="true" output="false" extends="HibachiService" {
 		getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
 	}
 	
-	public void function deleteEntityQueueItems(required string entityQueueID){
-		getHibachiEntityQueueDAO().deleteEntityQueues(entityQueueID);
+	public void function deleteEntityQueueItem(required string entityQueueID){
+		getHibachiEntityQueueDAO().deleteEntityQueueItem(entityQueueID);
 	}
 	
 	public void function updateModifiedDateTime(required string entityQueueID){
 		getHibachiEntityQueueDAO().updateModifiedDateTime(entityQueueID);
 	}
+	
 	
 }

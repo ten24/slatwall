@@ -51,17 +51,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Persistent Properties
 	property name="productID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
-	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this product.  For Example: http://www.myslatwallsite.com/sp/my-url-title/ where sp is the global product url key, and my-url-title is the urlTitle of this product";
+	property name="urlTitle" ormtype="string" unique="true" hb_translate="false" description="URL Title defines the string in a URL that Slatwall will use to identify this product.  For Example: http://www.myslatwallsite.com/sp/my-url-title/ where sp is the global product url key, and my-url-title is the urlTitle of this product";
 	property name="productName" ormtype="string" description="Defines the name of the product.  This can also be set at sku level with the skuName property.";
-	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE" description="A unique value that identifies this product and only this product.  This could also be though of as a 'Model Number' but should not be confused with skuCode which identifies the actual unit being sold.";
+	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE" hb_translate="false" description="A unique value that identifies this product and only this product.  This could also be though of as a 'Model Number' but should not be confused with skuCode which identifies the actual unit being sold.";
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg" description="General marketing description of the product.";
 	property name="publishedFlag" ormtype="boolean" default="false" description="This flag is used to determine if the product should be available for sale as published on the frontend of a website.";
+	property name="publishedStartDateTime" ormtype="timestamp" description="This field can be set to restrict the beginning of a time period when this product can be published.";
+	property name="publishedEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time period when this product can be published.";
 	property name="sortOrder" ormtype="integer" description="The sort order value can be used to manually organize all of the products in your catalog.";
 	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
 	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
 	property name="deferredRevenueFlag" ormtype="boolean" description="This field identifies a product as having deferred revenue";
 	property name="startInCurrentPeriodFlag" ormtype="boolean" default="0";
- 
+  	property name="productFeaturedFlag" ormtype="boolean"  hb_formatType="yesno" default="0";
+
 	// Calculated Properties
 	property name="calculatedSalePrice" ormtype="big_decimal" hb_formatType="currency" description="Stores the latest calculation of the dynamic 'salePrice' property which in turn calculates from the defaultSku's dynamic salePrice property.";
 	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
@@ -70,7 +73,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="calculatedProductRating" ormtype="big_decimal" description="Stores the latest calculation of the products Rating which is generated based on the average rating of productReviews.";
 
 	// Related Object Properties (many-to-one)
-	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
+	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_formFieldType="typeahead" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
@@ -104,7 +107,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalProduct" fkcolumn="productID" inversejoincolumn="physicalID" inverse="true";
 
 	// Remote Properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties 
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -152,7 +156,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
-	
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -170,7 +173,27 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return variables.nextDeliveryScheduleDate;
 		}
 	}
+	public any function getActiveSkuPricesForProductByCurrencyCode(required string currencyCode){
+		var skuPriceCollectionList = getService('skuService').getSkuPriceCollectionList();
+		skuPriceCollectionList.addFilter('sku.product.productID', this.getProductID());
+		skuPriceCollectionList.addFilter('activeFlag', 1);
+		skuPriceCollectionList.addFilter('promotionReward.promotionRewardID', 'NULL', 'Is');
+		skuPriceCollectionList.addFilter('currencyCode', arguments.currencyCode);
+		skuPriceCollectionList.addDisplayProperty('sku.skuID');
+		var skuPrices = skuPriceCollectionList.getRecords();
+		var priceStruct = {};
+		
+		for(var priceOb in skuPrices){
 
+			if(!isNull(priceStruct[priceOb.priceGroup_priceGroupCode])) {
+				arrayAppend(priceStruct[priceOb.priceGroup_priceGroupCode], priceOb);
+				continue;
+			}
+			priceStruct[priceOb.priceGroup_priceGroupCode] = [priceOb];
+		}
+		
+		return priceStruct;
+	}
 	public boolean function getDeferredRevenueFlag(){
 		if(!structKeyExists(variables,'deferredRevenueFlag')){
 			return false;
@@ -322,7 +345,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	* @Suppress
 	*/
 	public struct function getSkuSalePriceDetails( required any skuID) {
-		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
+		if(!isNew() && structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
 			return getSalePriceDetailsForSkus()[ arguments.skuID ];
 		}
 		return {};
@@ -422,7 +445,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var filenames = [];
 		var skuCollection = this.getSkusCollectionList();
 		skuCollection.setDisplayProperties('skuID,imageFile');
-		if(arguments.defaultSkuOnlyFlag) {
+		if(arguments.defaultSkuOnlyFlag && !isNull(getDefaultSku()) ) {
 			skuCollection.addFilter("skuID",getDefaultSku().getSkuID());
 		}
 		var skuCollectionRecords = skuCollection.getRecords();
@@ -754,7 +777,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return productCrumbData;
 	}
-
+	
 	// Availability
 	public struct function getEstimatedReceivalDetails() {
 		if(!structKeyExists(variables, "estimatedReceivalDetails")) {
@@ -854,7 +877,25 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
-
+	
+	public any function getAllRelatedProducts() {
+		var relatedProducts = getService("productService").getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.addFilter("product.productID",getProductID());
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		return relatedProducts;
+	}
+	
+	public any function getAllProductReviews() {
+		var relatedProducts = getService("productService").getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",getProductID());
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		return relatedProducts;
+	}
+	
 	public any function getBaseProductType() {
 		if(!isNull(getProductType())){
 			return getProductType().getBaseProductType();
@@ -967,6 +1008,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return variables.brandOptions;
 	}
+	
+	public any function getBrandTypeAheadCollectionList(){
+		
+		var	collectionList = this.getService('brandService').getBrandCollectionList();
+		collectionList.setDisplayProperties('brandID', {isVisible=false,isSearchable=false});
+		collectionList.addDisplayProperties('brandName', {isVisible=true,isSearchable=true});
+		collectionList.addOrderBy('brandName|ASC');
+		return collectionList;
+	}
 
 	public string function getNextSkuCode() {
 	
@@ -976,7 +1026,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public string function getTitle() {
 		if(!structKeyExists(variables, "title")) {
-			variables.title = trim(getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this));
+			variables.title = trim(getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this, formatValues=true));
 		}
 		return variables.title;
 	}
@@ -1230,28 +1280,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return variables.eventRegistrationsSmartList;
 	}
-
+	
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
-
-	// Brand (many-to-one)
-	public void function setBrand(required any brand) {
-		variables.brand = arguments.brand;
-		if(isNew() or !arguments.brand.hasProduct( this )) {
-			arrayAppend(arguments.brand.getProducts(), this);
-		}
-	}
-	public void function removeBrand(any brand) {
-		if(!structKeyExists(arguments, "brand")) {
-			arguments.brand = variables.brand;
-		}
-		var index = arrayFind(arguments.brand.getProducts(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.brand.getProducts(), index);
-		}
-		structDelete(variables, "brand");
-	}
 
 	// Attribute Values (one-to-many)
 	public void function addAttributeValue(required any attributeValue) {
@@ -1315,26 +1347,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public void function removeDeliveryScheduleDate(required any deliveryScheduleDate){
 		arguments.deliveryScheduleDate.removeProduct(this);
-	}
-
-	//  (many-to-many - owner)
- 	public void function addCategory(required any category) {
- 		if(isNew() or !hasCategory(arguments.category)) {
- 			arrayAppend(variables.categories, arguments.category);
- 		}
- 		if(arguments.category.isNew() or !arguments.category.hasProduct( this )) {
- 			arrayAppend(arguments.category.getProducts(), this);
- 		}
- 	}
- 	public void function removeCategory(required any category) {
- 		var thisIndex = arrayFind(variables.categories, arguments.category);
- 		if(thisIndex > 0) {
- 			arrayDeleteAt(variables.categories, thisIndex);
- 		}
- 		var thatIndex = arrayFind(arguments.category.getProducts(), this);
- 		if(thatIndex > 0) {
- 			arrayDeleteAt(arguments.category.getProducts(), thatIndex);
- 		}
 	}
 
 	// Promotion Rewards (many-to-many - inverse)
@@ -1428,6 +1440,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
+	// =============== START: Custom Validation Methods ====================
+
+	public boolean function isValidPublishedEndDateTime() {
+		return 	isNull(this.getPublishedStartDateTime()) || 
+				isNull(this.getPublishedEndDateTime()) ||
+				(
+					!isNull(this.getPublishedStartDateTime()) && 
+					!isNull(this.getPublishedEndDateTime()) &&
+					dateDiff("n", this.getPublishedStartDateTime(), this.getPublishedEndDateTime()) >= 0
+				);
+	}
+
+	// =============== END: Custom Validation Methods ======================
+
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentationPropertyName() {
@@ -1447,6 +1473,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
 
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
+			
+			variables.assignedAttributeSetSmartList.addOrder("sortOrder|ASC");
 
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";
@@ -1463,6 +1491,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.assignedAttributeSetSmartList;
+	}
+	
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList=""){
+
+		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, defaultSku.price, defaultSku.listPrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, productType.productTypeID, productType.productTypeIDPath, defaultSku.imageFile, brand.brandID, brand.brandName, brand.urlTitle, productType.urlTitle";
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
+	
+	
+	public void function setDefaultSku(any sku){
+		if( !isNull(arguments.sku) ){
+			arguments.sku.setProduct(this);
+			variables.defaultSku = arguments.sku;
+		} else{
+			variables.delete('defaultSku');
+		}
 	}
 
 	// ==================  END:  Overridden Methods ========================

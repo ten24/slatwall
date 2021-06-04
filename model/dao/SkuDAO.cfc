@@ -117,7 +117,7 @@ Notes:
 	<cfscript>
 		
 	public array function getImageFileDataBySkuIDList(required string skuIDList){
-		var hql = "SELECT NEW MAP(imageFile as imageFile,skuID as skuID) FROM #getApplicationKey()#Sku WHERE skuID IN (:skuIDList)";
+		var hql = "SELECT NEW MAP(imageFile as imageFile,skuID as skuID, product.defaultSku.imageFile as defaultImage) FROM #getApplicationKey()#Sku WHERE skuID IN (:skuIDList)";
 		
 		var params = {skuIDList=arguments.skuIDList};
 		
@@ -485,6 +485,20 @@ Notes:
 			',{skuID=arguments.skuID,currencyCode=arguments.currencyCode},true)
 		/>
 		
+	</cffunction>
+	
+	
+	<cffunction name="getProductTypeSystemCodeBySkuID" returntype="any" access="public" >
+		<cfargument name="skuID" type="string" />
+	 
+		<cfquery name="local.getProductTypeSystemCodeBySkuID" >
+			SELECT systemCode FROM swProductType 
+			INNER JOIN swProduct ON swProductType.productTypeID = swProduct.productTypeID
+			INNER JOIN swSku ON swProduct.productID = swSku.productID
+			WHERE swSku.skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" />;
+		</cfquery> 
+		
+		<cfreturn local.getProductTypeSystemCodeBySkuID.systemCode />
 	</cffunction>
 	
 </cfcomponent>

@@ -52,13 +52,18 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	property name="accountAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="accountAddressName" hb_populateEnabled="public" ormtype="string" hint="Nickname for this account Address"; 
 	
-	// Related Object Properties
+	// Related Object Properties Many-To-One
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="address" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID" cascade="all" hb_populateValidationContext="full";
+	property name="accountAddressType" hb_populateEnabled="public" cfc="Type" fieldtype="many-to-one" fkcolumn="accountAddressTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=accountAddressType";
+	
+	// Related Object Properties One-To-Many
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="accountAddressID" cascade="all-delete-orphan" inverse="true";
 
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -69,8 +74,15 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
+	public string function getAddressType() {
+		return getAccountAddressType().getTypeName();
+	}
 	
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	public any function getDefaultCollectionProperties(string includesList = "accountAddressID,accountAddressName,address.streetAddress,address.street2Address,address.locality,address.city,address.stateCode,address.postalCode,address.countryCode,address.verificationJson", string excludesList=""){
+		return super.getDefaultCollectionProperties(argumentCollection=arguments);
+	}
 	
 	// Account (many-to-one)
 	public void function setAccount(required any account) {
@@ -111,15 +123,24 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	public string function getSimpleRepresentation() {
 		if(!getAddress().isNew()) {
-			return "#getAccountAddressName()# - #getAddress().getSimpleRepresentation()#";
+			var accoutAddressName = len(getAccountAddressName()) > 0 ? "#getAccountAddressName()# -" : "";
+			return "#accoutAddressName# #getAddress().getSimpleRepresentation()#";
 		}
 		return rbKey('define.new');
 	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
+	public boolean function addressHasNoAssociatedScheduleOrderTemplate(){
+		var scheduleOrderTemplateType = getService('typeService').getTypeBySystemCode('ottSchedule');
+		return getDao('accountAddressDAO').addressHasNoAssociatedOrderTemplateByOrderTemplateType(accountAddressID = this.getAccountAddressID(), orderTemplateTypeID = scheduleOrderTemplateType.getTypeID());
+	}
+	
+	public boolean function isNotDefaultAccountShippingAddress(){
+		return ( isNull(this.getAccount().getPrimaryShippingAddress()) || this.getAccount().getPrimaryShippingAddress().getAccountAddressID() != this.getAccountAddressID() );
+	}
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
-

@@ -1,12 +1,14 @@
 component output="false" accessors="true" extends="HibachiService" {
 
 	property name="hibachiService" type="any";
+	property name="hibachiCacheService" type="any";
 	property name="hibachiSessionService" type="any";
 	property name="totpAuthenticator" type="any";
 	
 	public void function init(){
 		//on init load all possible record level perms
-		loadPermissionRecordRestrictionsCache();
+		variables.permissionRecordRestrictionMap = {};
+		//loadPermissionRecordRestrictionsCache();
 	}
 	
 	public void function loadPermissionRecordRestrictionsCache(boolean refresh=false){
@@ -23,7 +25,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public boolean function hasPermissionRecordRestriction(required string entityName){
-		return structKeyExists(variables.permissionRecordRestrictionMap,entityName);
+		return structKeyExists(variables.permissionRecordRestrictionMap,arguments.entityName);
 	}
 	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
@@ -48,9 +50,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			timeout = false
 		};
 		
-		if(!(!isNull(arguments.account.getJwtToken()) && arguments.account.getJwtToken().verify())){
+		
+		if(!isNull(arguments.account.getJwtToken()) && !arguments.account.getJwtToken().verify()){
 			authDetails.invalidToken = true;
-		}
+		}	
 		
 		// Check if the user is a super admin 
 		if(getHibachiScope().getLoggedInFlag() && arguments.account.getSuperUserFlag() ) {
@@ -70,6 +73,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if( (left(itemname,10) == 'preprocess'  || left(itemname,7) == 'process' )
 			&& structKeyExists(arguments, 'processContext') 
 			&& len(arguments.processContext)
+			&& right(itemName, len(arguments.processContext)) != arguments.processContext
 		){
 			itemName &= '_#arguments.processContext#';
 		}
@@ -220,22 +224,22 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		var cacheKey = "authenticateProcess_#arguments.processContext##arguments.entityName##arguments.account.getPermissionGroupCacheKey()#";
 		
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+		if(!this.getHibachiCacheService().hasCachedValue(cacheKey)){
 			// Loop over each permission group for this account, and ckeck if it has access
 			var accountPermissionGroups = arguments.account.getPermissionGroups();
 			for(var i=1; i<=arrayLen(accountPermissionGroups); i++){
 				var pgOK = authenticateProcessByPermissionGroup(processContext=arguments.processContext, entityName=arguments.entityName, permissionGroup=accountPermissionGroups[i]);
 				if(pgOK) {
-						getService('HibachiCacheService').setCachedValue(cacheKey,true);
+						this.getHibachiCacheService().setCachedValue(cacheKey,true);
 					return true;
 				}
 			}
 		
 		// If for some reason not of the above were meet then just return false
-			getService('HibachiCacheService').setCachedValue(cacheKey,false);
+			this.getHibachiCacheService().setCachedValue(cacheKey,false);
 			return false;
 		}
-		return getService('HibachiCacheService').getCachedValue(cacheKey);
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 	}
 	
 	public boolean function authenticateEntityCrudByAccount(required string crudType, required string entityName, required any account) {
@@ -246,22 +250,22 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		var cacheKey = "authenticateEntity_#arguments.crudType##arguments.entityName##arguments.account.getPermissionGroupCacheKey()#";
 		
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+		if(!this.getHibachiCacheService().hasCachedValue(cacheKey)){
 			// Loop over each permission group for this account, and ckeck if it has access
 			var accountPermissionGroups = arguments.account.getPermissionGroups();
 			for(var i=1; i<=arrayLen(accountPermissionGroups); i++){
 				var pgOK = authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, permissionGroup=accountPermissionGroups[i]);
 				if(pgOK) {
-						getService('HibachiCacheService').setCachedValue(cacheKey,true);
+						this.getHibachiCacheService().setCachedValue(cacheKey,true);
 					return true;
 				}
 			}
 		
 		// If for some reason not of the above were meet then just return false
-			getService('HibachiCacheService').setCachedValue(cacheKey,false);
+			this.getHibachiCacheService().setCachedValue(cacheKey,false);
 			return false;
 		}
-		return getService('HibachiCacheService').getCachedValue(cacheKey);
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 	
 	}
 	
@@ -315,19 +319,19 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 
 		var cacheKey = "authenticateCollectionPropertyIdentifier_" & hash("#arguments.crudType##arguments.collection.getCollectionConfigStruct()['baseEntityName']##arguments.propertyIdentifier##arguments.account.getPermissionGroupCacheKey()#",'md5');;
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+		if(!this.getHibachiCacheService().hasCachedValue(cacheKey)){
 			var propertyIdentifierWithoutAlias = getService('hibachiCollectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);
-			var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+			var isObject = this.getHibachiService().getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
 			if(isObject){
-				var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+				var lastEntity = this.getHibachiService().getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
 			}else{
-				var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
-				var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(lastEntity, listLast(propertyIdentifierWithoutAlias,'.'));
+				var lastEntity = this.getHibachiService().getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+				var propertyStruct = this.getHibachiService().getPropertyByEntityNameAndPropertyName(lastEntity, listLast(propertyIdentifierWithoutAlias,'.'));
 			}
 			
-			getService('HibachiCacheService').setCachedValue(cacheKey,authenticateEntityPropertyCrudByAccount(crudType=arguments.crudType, entityName=lastEntity, propertyName=listLast(propertyIdentifierWithoutAlias,'.'), account=arguments.account));
+			this.getHibachiCacheService().setCachedValue(cacheKey,authenticateEntityPropertyCrudByAccount(crudType=arguments.crudType, entityName=lastEntity, propertyName=listLast(propertyIdentifierWithoutAlias,'.'), account=arguments.account));
 		}
-		return getService('HibachiCacheService').getCachedValue(cacheKey);
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 	}
 	
 	public boolean function authenticateEntityPropertyCrudByAccount(required string crudType, required string entityName, required string propertyName, required any account) {
@@ -335,24 +339,24 @@ component output="false" accessors="true" extends="HibachiService" {
 		if( arguments.account.getSuperUserFlag() ) {
 			return true;
 		}
-		
+
 		var cacheKey = "authenticateEntityProperty_#arguments.crudType##arguments.entityName##arguments.propertyName##arguments.account.getPermissionGroupCacheKey()#";
 		// Loop over each permission group for this account, and ckeck if it has access
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+		if(!this.getHibachiCacheService().hasCachedValue(cacheKey)){
 		var accountPermissionGroups = arguments.account.getPermissionGroups();
 		for(var i=1; i<=arrayLen(accountPermissionGroups); i++){
 			var pgOK = authenticateEntityPropertyByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, permissionGroup=accountPermissionGroups[i]);
 			if(pgOK) {
-					getService('HibachiCacheService').setCachedValue(cacheKey,true);
+					this.getHibachiCacheService().setCachedValue(cacheKey,true);
 				return true;
 			}
 		}
-		
+
 		// If for some reason not of the above were meet then just return false
-			getService('HibachiCacheService').setCachedValue(cacheKey,false);
+			this.getHibachiCacheService().setCachedValue(cacheKey,false);
 		return false;
 	}
-		return getService('HibachiCacheService').getCachedValue(cacheKey);
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 		
 		
 		
@@ -361,9 +365,8 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ================================ PUBLIC META INFO ==========================================
 	
 	public struct function getEntityPermissionDetails() {
-		
 		// First check to see if this is cached
-		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
+		if(!this.getHibachiCacheService().hasCachedValue('entityPermissionDetails')){
 			
 			// Create place holder struct for the data
 			var entityPermissions = {};
@@ -395,7 +398,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						
 						// If for some reason this entities permissions are managed by a parent entity then define it as such
 						if(entityMetaData.hb_permission neq "this") {
-							entityPermissions[ entityName ]['inheritPermissionEntityName'] = getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
+							entityPermissions[ entityName ]['inheritPermissionEntityName'] = this.getHibachiService().getLastEntityNameInPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission);
 							entityPermissions[ entityName ]['inheritPermissionPropertyName'] = listLast(entityMetaData.hb_permission, ".");	
 						}
 						
@@ -404,7 +407,12 @@ component output="false" accessors="true" extends="HibachiService" {
 							
 							// Make sure that this property should be added as a property that can have permissions
 							if( (!structKeyExists(entityMetaData.properties[p], "fieldtype") || entityMetaData.properties[p].fieldtype neq "ID")
-								&& (!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") || entityMetaData.properties[p].hb_populateEnabled neq "false")) {
+								&& (
+									!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") 
+									|| entityMetaData.properties[p].hb_populateEnabled != "false"
+									|| ListFindNoCase('createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID', entityMetaData.properties[p].name) 
+									)
+								) {
 								
 								// Add to ManyToMany Properties
 								if(structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "many-to-one") {
@@ -432,17 +440,18 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			
 			// Update the cached value to be used in the future
-			getService('HibachiCacheService').setCachedValue('entityPermissionDetails',entityPermissions);
+			this.getHibachiCacheService().setCachedValue('entityPermissionDetails',entityPermissions);
 			getService('HibachiJsonService').createPermissionJson('entity',entityPermissions);
 			
+			
 		}
-		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
+		return this.getHibachiCacheService().getCachedValue('entityPermissionDetails');
 	}
 	
 	public struct function getActionPermissionDetails(){
 		
 		// First check to see if this is cached
-		if(!getService('HibachiCacheService').hasCachedValue('actionPermissionDetails')){
+		if(!this.getHibachiCacheService().hasCachedValue('actionPermissionDetails')){
 			
 			// Setup the all permisions structure which will later be set to the variables scope
 			var allPermissions={};
@@ -456,10 +465,10 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 				
 			} // End Subsytem Loop
-			getService('HibachiCacheService').setCachedValue('actionPermissionDetails',allPermissions);
-			getService('HibachiJsonService').createPermissionJson('action',allPermissions);
+			this.getHibachiCacheService().setCachedValue('actionPermissionDetails',allPermissions);
+			
 		}
-		return getService('HibachiCacheService').getCachedValue('actionPermissionDetails');
+		return this.getHibachiCacheService().getCachedValue('actionPermissionDetails');
 	}
 	
 	public any function getSubsytemActionPermissionDetails( required string subsystemName ) {
@@ -642,9 +651,8 @@ component output="false" accessors="true" extends="HibachiService" {
 	public boolean function authenticateEntityPropertyByPermissionGroup(required string crudType, required string entityName, required string propertyName, required any permissionGroup) {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
-		
 
-		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
+		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
 			return true;
 		}
 		
@@ -653,9 +661,16 @@ component output="false" accessors="true" extends="HibachiService" {
 			if( permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag") ) {
 				return true;
 			} else {
+
 				return false;
 			}
 		}
+		
+		var entityPropertiesStruct = getPropertiesStructByEntityName(arguments.entityName);
+		//  check other locations for propertyName
+		if(structKeyExists(entityPropertiesStruct, arguments.propertyName) && structKeyExists(entityPropertiesStruct[arguments.propertyName],'cfc')) {
+			return authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=entityPropertiesStruct[arguments.propertyName].cfc, permissionGroup=arguments.permissionGroup);
+		}	
 		
 		// If there was an entity defined, and special property values have been defined then we need to return false
 		if (structKeyExists(permissions.entity.entities, arguments.entityName) && structCount(permissions.entity.entities[arguments.entityName].properties)) {

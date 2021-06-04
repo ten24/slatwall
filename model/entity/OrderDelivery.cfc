@@ -52,10 +52,14 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="invoiceNumber" ormtype="string";
 	property name="trackingNumber" ormtype="string";
+	property name="trackingUrl" ormtype="string";
 	property name="containerLabel" ormtype="text";
+	property name="undeliverableOrderReason" ormtype="string";
+	
 	// Related Object Properties (Many-To-One)
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="location" cfc="Location" hb_populateEnabled="public" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="orderDeliveryStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderDeliveryStatusTypeID";
 	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
@@ -70,17 +74,22 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	property name="shippingLabelFiles" singularname="shippingLabelFile" cfc="File" fieldtype="many-to-many" linktable="SwOrderDeliveryShipLabelFile" fkcolumn="orderDeliveryID" inversejoincolumn="fileID";
 	
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-
+	
+	// Calculated properties
+	property name="calculatedTotalQuantityDelivered" ormtype="numeric";
+	
 	// Non-Persistent Properties
 	property name="totalQuantityDelivered" persistent="false" type="numeric" hb_formatType="numeric";
-
+	
 	public any function getTotalQuantityDelivered() {
 		var totalDelivered = 0;
 		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
@@ -88,7 +97,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 		}
 		return totalDelivered;
 	}
-
+	
 	public any function getOrderDeliveryGiftCardSmartList() {
 		var giftCardSmartList = getService("GiftCardService").getGiftCardSmartList();
 		giftcardSmartList.joinRelatedProperty("SlatwallGiftCard", "originalOrderItem");
@@ -103,7 +112,10 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	}
 	
 	public boolean function getLocationIsLeafNode(){
-		return  !getLocation().hasChildren();
+		if (!isNull(getLocation())){
+			return  !getLocation().hasChildren();
+		}
+		return false;
 	}
 
     // ============ START: Non-Persistent Property Methods =================
@@ -162,6 +174,16 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	public string function getSimpleRepresentation() {
 		return "Order Delivery: Order ##" & getOrder().getOrderNumber();
 	}
+	
+	public boolean function isQualifiedToAudit(){
+		var qualified = super.isQualifiedToAudit();
+		
+		if(!qualified && !isNull(this.getOrder().getOrderNumber())){
+			qualified = true;
+		}
+		return qualified;
+	}
+
 
 	// ==================  END:  Overridden Methods ========================
 

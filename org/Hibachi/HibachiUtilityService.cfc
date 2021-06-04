@@ -1,8 +1,74 @@
 <cfcomponent output="false" accessors="true" extends="HibachiService">
 
 	<cfproperty name="hibachiTagService" type="any" />
+	<cfproperty name="encryptionPasswordArray" type="any" />
 
 	<cfscript>
+	
+		public any function hibachiArrayMap(required array data, required any closure, numeric parallelThreadNumber, boolean debug = false){
+		
+			if(!structKeyExists(arguments, 'parallelThreadNumber')){
+				arguments.parallelThreadNumber = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
+			}
+			
+			if(!isClosure(arguments.closure)){
+				throw('Invalid argument type, hibachiArrayMap expects a closure');
+			}
+			
+			var resultArray = [];
+			var threadNameList = '';
+			var dataCount = arrayLen(arguments.data);
+			for( var i = 1; i <= dataCount; i++ ){
+				var threadName = 'hibachiArrayMap-#CreateUUID()#-#i#';
+				threadNameList = listAppend(threadNameList, threadName);
+				
+				thread item=arguments.data[i] closure=arguments.closure name=threadName {
+					writeOutput(closure(item));
+				}
+				if(i % arguments.parallelThreadNumber == 0){
+				
+					thread action="join" name=threadNameList;
+				
+					for(var threadResult in threadNameList){
+						if(!structKeyExists(cfthread[threadResult], 'error')){
+							arrayAppend(resultArray, trim(cfthread[threadResult]['output']));
+						}else if(arguments.debug){
+							throw(cfthread[threadResult].error);
+						}
+					}
+					threadNameList = '';
+				}
+			}
+			
+			if(len(threadNameList)){
+			
+				thread action="join" name=threadNameList;
+				
+				for(var threadResult in threadNameList){
+					if(!structKeyExists(cfthread[threadResult], 'error')){
+						arrayAppend(resultArray, trim(cfthread[threadResult]['output']));
+					}else if(arguments.debug){
+						throw(cfthread[threadResult].error);
+					}
+				}
+			}
+			
+			return resultArray;
+		}
+	
+		public any function getHttpResponse(required any http, numeric timeout = 3, boolean throwOnTimeout = true){
+			arguments.http.setTimeout(arguments.timeout);
+			var result = arguments.http.send().getPrefix();
+			if( arguments.throwOnTimeout && result['status_code'] == 408 ){
+				throw(result['errordetail']);
+			}
+			if( findNoCase('application/json', result['header']) ){
+				return deserializeJson(result['filecontent']);
+			}else{
+				return result['filecontent'];
+			}
+		}
+		
 		public string function getDatabaseUUID(){
 			switch(getHibachiScope().getApplicationValue('databaseType')){
 				case 'Oracle10g':
@@ -13,6 +79,7 @@
 					return "LOWER(REPLACE(newid(),'-',''))";
 			}
 		}
+		
 		
 		public function formatStructKeyList(required string str){
  		    if (!structKeyExists(server, "lucee")){
@@ -74,7 +141,15 @@
 		public string function camelCaseToTitleCase(required string stringValue){
 			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
-		
+
+		public string function arrayOfStructsToList(required array structs, required string structKeyForList, string delimiter=','){
+			var listToReturn = "";
+			for(var record in arguments.structs){
+				listToReturn = listAppend(listToReturn, record[arguments.structKeyForList], arguments.delimiter );
+			} 
+			return listToReturn; 
+		}
+
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*
@@ -87,7 +162,7 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public array function arrayOfStructsSort(aOfS,key,sortOrder2="asc"){
+		public array function arrayOfStructsSort(aOfS,key,sortOrder="asc"){
 
 
 		        //by default, we'll use a textnocase sort
@@ -101,12 +176,9 @@
 		        var returnArray = arraynew(1);
 
 		        //grab the number of elements in the array (used in the loops)
-		        var count = arrayLen(aOfS);
+		        var count = arrayLen(arguments.aOfS);
 		        //make a variable to use in the loop
 		        var ii = 1; var j=1;
-		        //if there is a 3rd argument, set the sortOrder
-		        if(arraylen(arguments) GT 2)
-		            sortOrder = arguments[3];
 		        //if there is a 4th argument, set the sortType
 		        if(arraylen(arguments) GT 3)
 		            sortType = arguments[4];
@@ -115,12 +187,12 @@
 		            delim = arguments[5];
 		        //loop over the array of structs, building the sortArray
 		        for(ii = 1; ii lte count; ii = ii + 1)
-		            sortArray[ii] = aOfS[ii][key] & delim & ii;
+		            sortArray[ii] = arguments.aOfS[ii][arguments.key] & delim & ii;
 		        //now sort the array
-		        arraySort(sortArray,sortType,arguments.sortOrder2);
+		        arraySort(sortArray,sortType,arguments.sortOrder);
 		        //now build the return array
 		        for(ii = 1; ii lte count; ii = ii + 1)
-		            returnArray[ii] = aOfS[listLast(sortArray[ii],delim)];
+		            returnArray[ii] = arguments.aOfS[listLast(sortArray[ii],delim)];
 		        //return the array
 		        return returnArray;
 		}
@@ -149,9 +221,9 @@
 
 		// @hint this method will sanitize a struct of data
 		public void function sanitizeData(required any data){
-			for(var key in data){
-			  if( isSimpleValue(data[key]) && key != 'serializedJsonData'){
-			    data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
+			for(var key in arguments.data){
+			  if( isSimpleValue(arguments.data[key]) && key != 'serializedJsonData'){
+			    arguments.data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
 			  }
 			}
 		}
@@ -161,6 +233,33 @@
 
 			if(listFindNoCase("decimal,currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});
+			}else{
+				return this.formatValue_language(value=arguments.value,formatDetails=arguments.formatDetails);
+			}
+			return arguments.value;
+		}
+		
+		public any function formatValue_language(required string value, struct formatDetails={}){
+			if(structKeyExists(arguments.formatDetails,'locale') 
+				&& structKeyExists(arguments.formatDetails,'propertyName')
+				&& structKeyExists(arguments.formatDetails,'object')
+				&& structKeyExists(arguments.formatDetails.object, 'getPrimaryIDValue')
+			){
+				var translation = getService('TranslationService').getTranslationValue(
+					baseObject=arguments.formatDetails.object.getClassName(),
+					baseID = arguments.formatDetails.object.getPrimaryIDValue(),
+					basePropertyName=arguments.formatDetails.propertyName,
+					locale=arguments.formatDetails.locale
+				);
+
+				if(!isNull(translation)){
+					return translation;
+				}else if(!isNull(formatDetails.useFallback) && !formatDetails.useFallback){
+					var globalLocale = getService('SettingService').getSettingValue('globalLocale');
+					if(globalLocale != arguments.formatDetails.locale){
+						return '';
+					}
+				}
 			}
 			return arguments.value;
 		}
@@ -195,11 +294,15 @@
 		}
 
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
-			if(structKeyExists(arguments.formatDetails, "currencyCode") && len(arguments.formatDetails.currencyCode) == 3 ) {
-				return LSCurrencyFormat(arguments.value, arguments.formatDetails.currencyCode, getHibachiScope().getRBLocale());
+
+			if(!structKeyExists(arguments, 'formatDetails')){
+				arguments.formatDetails.locale = getHibachiScope().getRBLocale();   
 			}
-			// If no currency code was passed in then we can default to USD
-			return LSCurrencyFormat(arguments.value, "USD", getHibachiScope().getRBLocale());
+
+			if(structKeyExists(arguments.formatDetails, "currencyCode") && len(arguments.formatDetails.currencyCode) == 3 ) {
+				return LSCurrencyFormat(arguments.value, arguments.formatDetails.currencyCode, arguments.formatDetails.locale);
+			}
+			return LSCurrencyFormat(arguments.value, "local", arguments.formatDetails.locale);
 		}
 
 		public any function formatValue_datetime( required string value, struct formatDetails={} ) {
@@ -275,6 +378,16 @@
 			return returnTitle;
 		}
 		
+		public string function createUniqueCode(required string tableName, required string column, string prefix = '', numeric size = 7) {
+			var isUnique = false;
+			var uniqueCode = "";
+			while(!isUnique) {
+				uniqueCode = prefix & getHibachiUtilityService().generateRandomID(size);
+				isUnique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.column, value=uniqueCode);
+			}
+			return uniqueCode;
+		}
+		
 		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){
 			var addon = 0;
 
@@ -286,8 +399,12 @@
 				returnValue = '#returnValue#-1';
 			}
 
-			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
-
+            var unique = getHibachiDAO().verifyUniquePropertyValue(
+    			entityName=arguments.entityName, 
+    			propertyName=arguments.propertyName, 
+    			value=returnValue
+			);
+			
 			while(!unique) {
 				addon++;
 				returnValue = "#arguments.propertyValue#-#addon#";
@@ -335,9 +452,13 @@
 			return encoder.decodeForHTML(arguments.stringValue);
 		}
 
-		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
+		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, string availablePropertyIdentifierList) {
 			var responseData = {};
-
+			
+			if(!structKeyExists(arguments,'availablePropertyIdentifierList')){
+				arguments.availablePropertyIdentifierList = arguments.propertyIdentifierList;
+			}
+			
 			var propertyIdentifierArray = listToArray(arguments.propertyIdentifierList);
 			for(var i=1; i <= arraylen(propertyIdentifierArray);i++) {
 				var propertyIdentifier = propertyIdentifierArray[i];
@@ -352,9 +473,9 @@
 		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
 			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 				if(structkeyExists(arguments.parentObject,'getValueByPropertyIdentifier')){
-					data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+					arguments.data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
 				}else{
-					data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
+					arguments.data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
 				}
 				return;
 			}
@@ -367,31 +488,31 @@
 			//only structs using closures
 			if(!isNull(object) && (isObject(object) || isStruct(object))) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
-				param name="data[thisProperty]" default="#structNew()#";
+				param name="arguments.data[thisProperty]" default="#structNew()#";
 
-				if(!structKeyExists(data[thisProperty],"errors")) {
+				if(!structKeyExists(arguments.data[thisProperty],"errors")) {
 					// add error messages
-					data[thisProperty]["hasErrors"] = object.hasErrors();
-					data[thisProperty]["errors"] = object.getErrors();
+					arguments.data[thisProperty]["hasErrors"] = object.hasErrors();
+					arguments.data[thisProperty]["errors"] = object.getErrors();
 				}
 
-				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty]);
+				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), arguments.data[thisProperty]);
 			} else if(!isNull(object) && isArray(object)) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
-				param name="data[thisProperty]" default="#arrayNew(1)#";
+				param name="arguments.data[thisProperty]" default="#arrayNew(1)#";
 
 				for(var i = 1; i <= arrayLen(object); i++){
-					param name="data[thisProperty][i]" default="#structNew()#";
+					param name="arguments.data[thisProperty][i]" default="#structNew()#";
 
-					if(!structKeyExists(data[thisProperty][i],"errors")) {
+					if(!structKeyExists(arguments.data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
-							if(structKeyExists(data[thisProperty][i],'hasErrors')){
-								data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-								data[thisProperty][i]["errors"] = object[i].getErrors();
+							if(structKeyExists(arguments.data[thisProperty][i],'hasErrors')){
+								arguments.data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+								arguments.data[thisProperty][i]["errors"] = object[i].getErrors();
 							}else{
-								data[thisProperty][i]["hasErrors"] = false;
-								data[thisProperty][i]["errors"] = {};
+								arguments.data[thisProperty][i]["hasErrors"] = false;
+								arguments.data[thisProperty][i]["errors"] = {};
 							}
 
 
@@ -400,7 +521,7 @@
 						}
 					}
 
-					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
+					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), arguments.data[thisProperty][i]);
 				}
 			}
 		}
@@ -480,27 +601,71 @@
 		}
 
 		public boolean function isStringTemplate(required string value){
-			return arraylen(getTemplateKeys(value));
+			return arraylen(getTemplateKeys(arguments.value));
 		}
 
 		//replace single brackets ${}
-		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList, string locale=getHibachiScope().getSession().getRbLocale()) {
 
 			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
+			
 			for(var i=1; i<=arrayLen(templateKeys); i++) {
 				var replaceDetails = {};
 				replaceDetails.key = templateKeys[i];
 				replaceDetails.value = templateKeys[i];
 
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
-				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
+
+				if( listLen(valueKey,':') == 2 && 
+					listFirst(valueKey,':') == 'template' &&
+					structKeyExists(arguments, 'templateContextPathList')	
+				){
+				
+					//${template:order-details} load order-details.cfm  
+					var templateBody = '';
+					var templateFileName = listRest(valueKey, ':') & '.cfm';
+
+
+					var contextPaths = listToArray(arguments.templateContextPathList); 
+
+					var templateContextPath = ''; 	
+					for(var contextPath in contextPaths){
+						
+						if(fileExists(contextPath & templateFileName)){
+						    templateContextPath = contextPath & templateFileName; 
+							break;	
+						} 
+					} 
+
+					if(len(templateContextPath)){ 
+
+						//TODO: remove Slatwall reference from hibachi
+						templateContextPath = replaceNoCase(templateContextPath, getApplicationValue('applicationRootMappingPath'), getApplicationValue('slatwallRootURL'));
+
+						//make object available in scope with its given name
+						if(structKeyExists(arguments.object, 'getClassName')){
+							local[arguments.object.getClassName()] = arguments.object;
+						} else if(isStruct(arguments.object)) {
+							structAppend(local, arguments.object); 
+						}
+
+						local.locale = arguments.locale;
+
+						savecontent variable="templateBody" {
+							include '#templateContextPath#';
+						} 
+
+						replaceDetails.value = templateBody; 
+					}
+
+				} else if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
 				} else if (isObject(arguments.object) &&
 					(
 						(
-							arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+							arguments.object.isPersistent() && getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
 						)
 						||
 						(
@@ -519,20 +684,27 @@
 					)
 				) {
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
-				} else if (arguments.removeMissingKeys) {
+				}
+					
+				if ( arguments.removeMissingKeys && replaceDetails.key == replaceDetails.value) {
 					replaceDetails.value = '';
 				}
 
 				arrayAppend(replacementArray, replaceDetails);
 			}
+
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
 			}
+
 			if(
 				arguments.template != returnString
 				&& arraylen(getTemplateKeys(returnString))
 			){
-				returnString = replaceStringTemplate(returnString, arguments.object, arguments.formatValues,arguments.removeMissingKeys);
+				var args = arguments; 
+				args['template'] = returnString; 
+
+				returnString = replaceStringTemplate(argumentCollection=args);
 			}
 
 			return returnString;
@@ -603,13 +775,38 @@
 			return arguments.filename;
 		}
 
-		public string function createSEOString(required string toFormat, string delimiter="-"){
+		/**
+          * Utlility Function to sluggify any string input;
+          * 
+          * @stringToBeSlugged 
+          * @spacer, the char to seperate words int the slug
+          *
+          * Uses: 
+          * 
+          * ``` var sluggified = createSEOString( "example string", '-' ); ```
+          * ``` var sluggified = createSEOString("[{,./?:;(*&^%$@!~ This IS a sTrIng abcde àáâãäå èéêë ìíîï òóôö ùúûü ñ año ñññññññññññññ"); ```
+        */
+		public string function createSEOString(required string toFormat, string delimiter="-", boolean smallCase=true){
 
-			//take out all special characters except -
-			arguments.toFormat = reReplace(lcase(trim(arguments.toFormat)), "[^a-z0-9 \-]", "", "all");
+			var result = replace(arguments.toFormat,"'", "", "all");
 
-			//replate spaces with -
-			return reReplace(arguments.toFormat, "[-\s]+", delimiter, "all");
+        	result = trim(ReReplaceNoCase(result, "<[^>]*>", "", "ALL"));
+
+        	result = ReplaceList(result, "À,Á,Â,Ã,Ä,Å,Æ,È,É,Ê,Ë,Ì,Í,Î,Ï,Ð,Ñ,Ò,Ó,Ô,Õ,Ö,Ø,Ù,Ú,Û,Ü,Ý,à,á,â,ã,ä,å,æ,è,é,ê,ë,ì,í,î,ï,ñ,ò,ó,ô,õ,ö,ø,ù,ú,û,ü,ý,&nbsp;,&amp;", "A,A,A,A,A,A,AE,E,E,E,E,I,I,I,I,D,N,O,O,O,O,O,0,U,U,U,U,Y,a,a,a,a,a,a,ae,e,e,e,e,i,i,i,i,n,o,o,o,o,o,0,u,u,u,u,y, , ");
+
+        	result = trim(rereplace(result, "[[:punct:]]"," ","all"));
+
+        	result = rereplace(result, "[[:space:]]+","!","all");
+
+        	result = ReReplace(result, "[^a-zA-Z0-9!]", "", "ALL");
+
+        	result = trim(rereplace(result, "!+", arguments.delimiter, "all"));
+
+            if( arguments.smallCase ){
+                result = lcase(result);
+            }
+
+        	return result;
 		}
 
 		public void function duplicateDirectory(required string source, required string destination, boolean overwrite=false, boolean recurse=true, string copyContentExclusionList='', boolean deleteDestinationContent=false, string deleteDestinationContentExclusionList="" ){
@@ -710,7 +907,7 @@
 				return "";
 			}
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				var sanitizedString = htmlEditFormat(arguments.html);
+				var sanitizedString = esapiEncode('html', arguments.html);
 			}else{
 				var sanitizedString = encodeForHTML(arguments.html);
 			}
@@ -739,7 +936,8 @@
 		}
 
 		public string function decryptValue(required string value, string salt="") {
-			for (var passwordData in getEncryptionPasswordArray()) {
+			var encryptionPasswordArray = getEncryptionPasswordArray();
+			for (var passwordData in encryptionPasswordArray) {
 				var key = "";
 				var algorithm = getEncryptionAlgorithm();
 				var encoding = getEncryptionEncoding();
@@ -769,8 +967,12 @@
 				// Graceful handling of decrypt failure
 				} catch (any e) {}
 			}
-
-			logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin.", true);
+			
+			var errorMessage = "There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin."; 
+		    if( !isNull(this.getHibachiScope().getAccount()) && this.getHibachiScope().getAccount().getAdminAccountFlag() ){
+		        this.getHibachiScope().showMessage( errorMessage, 'error');
+		    }
+			this.logHibachi(errorMessage, true);
 			return "";
 		}
 
@@ -822,6 +1024,10 @@
 		}
 
 		public any function getEncryptionPasswordArray() {
+		
+			if(structKeyExists(variables, 'encryptionPasswordArray')){
+				return variables.encryptionPasswordArray;
+			}
 			var passwords = [];
 
 			// Generate default password if necessary
@@ -876,7 +1082,7 @@
 				}
 
 				// Perform sort on createdDateTime
-				sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
+				var sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
 
 				// Build array of sorted passwords
 				for (var spk in sortedPasswordKeys) {
@@ -892,9 +1098,75 @@
 
 				passwords = sortedPasswords;
 			}
+			
+			variables.encryptionPasswordArray = passwords;
 
 			return passwords;
 		}
+		
+		/**
+		 * Utility function to generate random passowrds of given @length
+		 *  Example. generateRandomPassword(10);
+		*/
+		public string function generateRandomPassword( numeric length=8 ){
+
+            if(arguments.length<5){
+                throw("there must be at least 5 chars in the password")
+            }
+
+    		//  Set up available lower case values. 
+    		var strLowerCaseAlpha = "abcdefghjkmnpqrstuvwxyz"; // o,i,l has been ignored as they can have confusing-font
+    		var strUpperCaseAlpha = UCase( strLowerCaseAlpha );
+    		//  Set up available numbers. 
+    		var strNumbers = "123456789"; // 0 is ignored as it can has confusing fonts for example  o,O,0
+    		//  Set up additional valid password chars. 
+    		var strOtherChars = "~!@##$%^&*";
+
+    		var strAllValidChars = ( strLowerCaseAlpha & strUpperCaseAlpha & strNumbers & strOtherChars );
+
+    		// Create an array to contain the password ( think of a string as an array of character).
+    		var arrPassword = [];
+    		/* 
+    		    Rules
+    		
+            	the password must:
+            	- must be exactly [@arguments.length] characters in length
+            	- must have at least 1 number
+            	- must have at least 1 uppercase letter
+            	- must have at least 1 lower case letter
+            */
+
+    		//  Select the random number from our number set. 
+    		arrPassword[ 1 ] = Mid( strNumbers, RandRange( 1, Len(strNumbers) ), 1 );
+    		//  Select the random letter from our lower case set. 
+    		arrPassword[ 2 ] = Mid( strLowerCaseAlpha, RandRange( 1, Len(strLowerCaseAlpha) ), 1 );
+    		//  Select the random letter from our upper case set. 
+    		arrPassword[ 3 ] = Mid( strUpperCaseAlpha, RandRange( 1, Len(strUpperCaseAlpha) ), 1 );
+    		/* 
+            	ASSERT: At this time, we have satisfied the character
+            	requirements of the password, but NOT the length
+            	requirement. In order to do that, we must add more
+            	random characters to make up a proper length. 
+            */
+
+    		//  Create rest of the password. 
+    		for ( var charIndex=(ArrayLen( arrPassword ) + 1) ; charIndex<= arguments.length ; charIndex++ ) {
+        		/*  Pick random value. For this character, we can choose from the entire set of valid characters. */
+        		arrPassword[ charIndex ] = Mid( strAllValidChars, RandRange( 1, Len(strAllValidChars) ), 1 );
+    		}
+
+    		/* 
+            	Now, we have an array that has the proper number of
+            	characters and fits the business rules. But, we don't
+            	always want the first three characters to be of the
+            	same order (by type).
+            */
+    		CreateObject( "java", "java.util.Collections" ).Shuffle( arrPassword );
+    		/* 
+            	We now have a randomly shuffled array. Now, we just need to join all the characters into a single string.
+            */
+    		return ArrayToList( arrPassword, "" );
+	    }
 
 		private string function getEncryptionKeyFilePath() {
 			return getEncryptionKeyLocation() & getEncryptionKeyFileName();
@@ -968,12 +1240,15 @@
 		}
 
 		private void function writeEncryptionPasswordFile(array encryptionPasswordArray) {
+		
+			
 			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
 			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
 
 			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
 			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
 			logHibachi("Encryption key file updated", true);
+			structDelete(variables, 'encryptionPasswordArray');
 		}
 
 		private any function readEncryptionPasswordFile() {
@@ -1124,7 +1399,7 @@
 	             apiRequestAudit.setParams( serializeJson(form) );
 	        }
 	        
-	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getStatus() );
 	        
 	        apiRequestAudit.setRequestType( arguments.requestType);
 	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
@@ -1151,11 +1426,250 @@
  			return timezoneOffsetInSeconds;
 		}
 
- 		public date function getLocalServerDateTimeByUtcEpoch(number utcEpoch) {
+ 		public date function getLocalServerDateTimeByUtcEpoch(numeric utcEpoch) {
 			//XXX explaination: for "* -1"  ==> https://www.bennadel.com/blog/1595-converting-to-gmt-and-from-gmt-in-coldfusion-for-use-with-http-time-stamps.htm
 			var localEpoch = utcEpoch + getTimeZoneOffsetInSecondsWithDST() * -1 ;
 			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
 		}
+		
+		
+		public string function prefixListItem(required string list, required string prefix) {
+			var prefix = arguments.prefix;
+			return ListMap(arguments.list , function(item){
+				return prefix & arguments.item; //beware of scope
+			})
+		}
+		
+		
+
+    	/**
+    	 * Takes a CSV string and convert it to an array of arrays based on the given field delimiter. 
+    	 * Line delimiter is assumed to be new line / carriage return related.
+    	 * based on https://www.bennadel.com/blog/991-csvtoarray-coldfusion-udf-for-parsing-csv-data-files.htm
+    	 * UPDATE https://gist.github.com/bennadel/9760097
+    	*/
+    	public array function csvStringToArray(string csvString="", string delimiter=",", trimTrailingEmptyLine=true ){
+
+    		/* 
+    			Check to see if we need to trimTrailingEmptyLine the data. By default, we are
+    			going to pull off any new line and carraige returns that are
+    			at the end of the file (we do NOT want to strip spaces or
+    			tabs as those are field delimiters).
+    		*/
+    		if( arguments.trimTrailingEmptyLine ){
+    			//  Remove trailing line breaks and carriage returns. 
+    			arguments.csvString = reReplace( arguments.csvString, "[\r\n]+$", "", "all" );
+    		}
+
+    		//  Make sure the delimiter is just one character. 
+    		if( (len( arguments.delimiter ) != 1) ){
+    			//  Set the default delimiter value. 
+    			arguments.delimiter = ",";
+    		}
+
+    		/* 
+    			Now, let's define the pattern for parsing the CSV data. We are going to use verbose regular expression 
+    			since this is a rather complicated pattern.
+    			NOTE: We are using the verbose flag such that we can use 	white space in our regex for readability.
+    			
+    			"(?x)\G(?:""([^""]*+ (?>""""[^""]*+)* )"" | ([^""\,\r\n]*+)) (\,\r\n?|\n|$)"
+    		*/
+    		var regEx = ""
+    		savecontent variable="regEx"{
+
+    			writeOutput("(?x)");
+
+    			//  Make sure we pick up where we left off. 
+    			writeOutput("\G");
+
+    			/* 
+    				We are going to start off with a field value since
+    				the first thing in our file should be a field (or a completely empty file).
+    			*/
+    			writeOutput("(?:");
+    				//  Quoted value - GROUP 1 
+    				writeOutput("""([^""]*+ (?>""""[^""]*+)* )""");
+    				writeOutput("|");
+    				//  Standard field value - GROUP 2 
+    				writeOutput("([^""\#arguments.delimiter#\r\n]*+)");
+    			writeOutput(")");
+
+    			//  Delimiter - GROUP 3 
+    			writeOutput(
+    				"(
+    					\#arguments.delimiter# |
+    					\r\n? |
+    					\n |
+    					$
+    				)"
+    			);
+    		};
+
+    		/* 
+    			Create a compiled Java regular expression pattern object
+    			for the experssion that will be parsing the CSV.
+    		*/
+    		var pattern = createObject( "java", "java.util.regex.Pattern").compile(javaCast( "string", regEx ) );
+
+    		/* 
+    			Now, get the pattern matcher for our target text (the CSV
+    			data). This will allows us to iterate over all the tokens
+    			in the CSV data for individual evaluation.
+    		*/
+    		var matcher = pattern.matcher( javaCast("string", arguments.csvString) );
+
+    		/* 
+    			Create an array to hold the CSV data. We are going to create an array of arrays in which 
+    			each nested array represents a row in the CSV data file. We are going to start off the CSV
+    			data with a single row.
+    			NOTE: It is impossible to differentiate an empty dataset from a dataset that has one empty row. 
+    			As such, we will always have at least one row in our result.
+    		*/
+    		var csvParsedRows = [ [] ];
+
+    		/* 
+    			Here's where the magic is taking place; we are going to use the Java pattern matcher 
+    			to iterate over each of the CSV data fields using the regular expression we defined above.
+    			Each match will have at least the field value and possibly an optional trailing delimiter.
+    		*/
+    		while( matcher.find() ){
+
+    			// Next, try to get the qualified field value. If the field was not qualified, this value will be null.
+    			var fieldValue = matcher.group( javaCast("int", 1) );
+    			/* 
+    				Check to see if the value exists in the local scope. 
+    				If it doesn't exist, then we want the non-qualified field.
+    				If it does exist, then we want to replace any escaped, embedded quotes.
+    			*/
+
+    			if( !isNull(fieldValue) ){
+
+    				// The qualified field was found. 
+    				// Replace escpaed quotes (two double quotes in a row) with an unescaped double quote.
+    				fieldValue = replace( fieldValue, '""', '"', "all" );
+
+    			} else {
+
+    				// No qualified field value was found; as such, let's use the non-qualified field value.
+    				fieldValue = matcher.group( javaCast("int", 2) );
+    			}
+
+    			// Now that we have our parsed field value, let's add it to the most recently created CSV row collection.
+    			arrayAppend( csvParsedRows[arrayLen(csvParsedRows)], fieldValue );
+
+    			/* 
+    				Get the delimiter. We know that the delimiter will always be matched, 
+    				but in the case that it matched the end of the CSV string, it will not have a length.
+    			*/
+    			var delimiterGroup = matcher.group( javaCast("int", 3) );
+
+    			/* 
+    				Check to see if we found a delimiter that is not the field delimiter (end-of-file delimiter will not have
+    				a length). If this is the case, then our delimiter is the line delimiter. 
+    				Add a new data array to the CSV data collection.
+    			*/
+    			if( len(delimiterGroup) && delimiterGroup != arguments.delimiter ){
+
+    				arrayAppend( csvParsedRows, arrayNew( 1 ) );
+
+    			} else if( !len( delimiterGroup ) ) {
+    				/* 
+    					If our delimiter has no length, it means that we reached the end of the CSV data. 
+    					Let's explicitly break out of the loop otherwise we'll get an extra empty space.
+    				*/
+    				break;
+    			}
+    		}
+
+    		/* 
+    			At this point, our array should contain the parsed contents
+    			of the CSV value as an array of arrays. Return the array.
+    		*/
+    		return csvParsedRows;
+    	}
+    	
+    	
+    public string function getSQLfromHQL(required string HQL, required struct hqlParams) {
+
+		var hydratedHQL = arguments.HQL; 
+		for(var key in arguments.hqlParams ){
+			hydratedHQL = replace(hydratedHQL, ":#key#", "'#arguments.hqlParams[key]#'");
+		}
+		
+		// java magic
+		var javaTranslatorFactory = createObject("java", "org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+		var javaCollections = createObject("java", "java.util.Collections");
+		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hydratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
+		javaTranslator.compile(javaCollections.EMPTY_MAP, false);
+		var sqlStr = javaTranslator.getSQLString();
+
+		// sqlstr = rereplace(sqlstr, "as .*?\d+_\d+_", '', "ALL"); //\sas\s\w+\d+_\d+_,
+
+		return sqlstr;
+	}
+	
+	/**
+	 * Method to upload file
+	 * @param uploadDirectory
+	 * @param fileFormFieldName - name of file type field in form, to get it from POST request
+	 * @param allowedMimeType - file types to be allowed for upload
+	 * */
+	public any function uploadFile( string uploadDirectory, string fileFormFieldName = "uploadFile", string allowedMimeType = "*" ) {
+		
+		if( this.isS3Path( arguments.uploadDirectory ) ){
+			uploadDirectory = this.formatS3Path( arguments.uploadDirectory );
+		}
+		
+		// If the directory where this file is going doesn't exists, then create it
+		if(!directoryExists(arguments.uploadDirectory)) {
+			directoryCreate(arguments.uploadDirectory);
+		}
+		
+		// Upload the file to temp directory
+		var uploadData = fileUpload( getHibachiTempDirectory(), arguments.fileFormFieldName, arguments.allowedMimeType , 'overwrite', 'makeUnique' );
+		var fileSize = uploadData.fileSize;
+		
+		//get max image size
+		var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+		var maxFileSize = val(maxFileSizeString) * 1000000;
+		
+		//check allowed filesize validation
+ 		if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 			return {
+ 				'success': false,
+ 				'message': getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize')
+ 			}
+ 		}
+ 		
+ 		//move file to correct location	
+ 		fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", arguments.uploadDirectory);
+ 		
+ 		if( this.isS3Path( arguments.uploadDirectory ) ){
+ 			StoreSetACL( arguments.uploadDirectory, [{group="all", permission="read"}]);
+ 		}
+ 		
+ 		return {
+ 			'success': true,
+ 			'filePath': uploadData.serverFile
+ 		}
+	}
+	
+	/**
+	 * Method to delete file from server
+	 * @param directoryPath
+	 * @param fileName
+	 * */
+	public void function deleteFileFromPath( string directoryPath, string fileName ) {
+		if( this.isS3Path( arguments.directoryPath ) ){
+			arguments.directoryPath = this.formatS3Path( arguments.directoryPath );
+		}
+		
+		var finalPath = arguments.directoryPath & arguments.fileName;
+		
+		if(fileExists( finalPath ) ) {
+			fileDelete( finalPath );
+		}
+	}
 
 	</cfscript>
 
@@ -1166,16 +1680,16 @@
 		<cftry>
 			<cflog file="#getApplicationValue('applicationKey')#" text="START EXCEPTION" />
 			<cfif structKeyExists(arguments.exception, "detail") and isSimpleValue(arguments.exception.detail)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.detail#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Detail: #arguments.exception.detail#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "errNumber") and isSimpleValue(arguments.exception.errNumber)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.errNumber#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="errNumber: #arguments.exception.errNumber#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "message") and isSimpleValue(arguments.exception.message)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.message#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Message: #arguments.exception.message#" />
 			</cfif>
 			<cfif structKeyExists(arguments.exception, "stackTrace") and isSimpleValue(arguments.exception.stackTrace)>
-				<cflog file="#getApplicationValue('applicationKey')#" text="#arguments.exception.stackTrace#" />
+				<cflog file="#getApplicationValue('applicationKey')#" text="Stack Trace: #arguments.exception.stackTrace#" />
 			</cfif>
 			<cflog file="#getApplicationValue('applicationKey')#" text="END EXCEPTION" />
 			<cfcatch>
@@ -1189,12 +1703,21 @@
 		<cfargument name="messageType" default="" />
 		<cfargument name="messageCode" default="" />
 		<cfargument name="templatePath" default="" />
-		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
+		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning | Trace  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
 		<cfargument name="logPrefix" default="" />
 
 		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
 			<!--- Set default logPrefix if not explicitly provided --->
+			<cfif arguments.logType EQ "Trace">
+				<cfif NOT getHibachiScope().hasValue('startTimer')>
+					<cfset getHibachiScope().setValue('startTimer', getTickCount()) />
+					<cfset getHibachiScope().setValue('lastTimer', getTickCount()) />
+				</cfif>
+				<cfset var timeSpentSinceFirstMarker = getTickCount() - getHibachiScope().getValue('startTimer') />
+				<cfset var timeSpentSinceLastMarker = getTickCount() - getHibachiScope().getValue('lastTimer') />
+				<cfset getHibachiScope().setValue('lastTimer', getTickCount()) />
+			</cfif>
 			
 			<cfif not len(arguments.logPrefix)>
 				<cfif arguments.generalLog>
@@ -1206,6 +1729,9 @@
 			
 			<cfset var logText = arguments.logPrefix />
 
+			<cfif arguments.logType eq "Trace">
+				<cfset logText &= " - [ Time Spent: #timeSpentSinceLastMarker# / #timeSpentSinceFirstMarker# ]" />
+			</cfif>
 			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
 				<cfset logText &= " - #arguments.messageType#" />
 			</cfif>
@@ -1218,9 +1744,9 @@
 			<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
 				<cfset logText &= " - #arguments.message#" />
 			</cfif>
-
+			
 			<!--- Verify that the log type was correct --->
-			<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
+			<cfif not ListFind("Information,Error,Fatal,Warning,Trace", arguments.logType)>
 				<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
 				<cfset arguments.logType = "Information" />
 			</cfif>

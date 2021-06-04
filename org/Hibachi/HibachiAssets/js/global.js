@@ -41,8 +41,99 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		if(jQuery('.paging-show-toggle').length) {
 			jQuery('.paging-show-toggle').closest('ul').find('.show-option').hide();
 		}
+		
+		//Call on Load
+		//Show Loader
+		setTimeout(()=> {
+			loadTabs();
+		}, 0);
+		
+		
 	
 	});
+	
+	function showFullPageLoader() {
+		jQuery("#accordion").append('<div class="fullpage-loader is-active fullpage-loader-default" data-text="Please wait loading tabs"></div>');
+	}
+	
+	function removeFullPageLoader() {
+		setTimeout(()=>{
+			jQuery(".fullpage-loader").remove();
+		}, 1)
+		
+	}
+	
+	//Helper search function
+	function getKeyByValue(object, value) { 
+        return Object.keys(object).find(key => object[key] === value); 
+    }
+	
+	/**
+     * Function to load from Config JSON and udpate tab positions
+     * */
+    function loadTabs() {
+    	
+    	//If detail tab does not exists
+		if( !jQuery('div[id^="tabdetails_"]').length ) {
+			return;
+		}
+		
+    	//get path of global.js
+    	var scripts = document.getElementsByTagName("script");
+    	//derive config json path
+    	var src = scripts[scripts.length-1].src;
+    	var path = (src.substring(0, src.lastIndexOf('/'))).replace("/org/Hibachi/HibachiAssets/js","");
+    	//Load Config JSON file
+		var tabsConfigPath = path+'/custom/system/config.json';
+		//Ready from JSON File
+		jQuery.getJSON( tabsConfigPath, function(tabsConfig) {
+			
+			//check if correct json is loaded
+			if( !tabsConfig.hasOwnProperty('data') || !tabsConfig.data.hasOwnProperty('entityTabs') ) {
+				return;	
+			}
+			
+			//Load tabs info from config
+			tabsConfig = tabsConfig.data.entityTabs;
+			
+			var idsArray = jQuery('div[id^="tabdetails_"]').first().attr("id").split("_");
+			if(idsArray.length != 3  || !tabsConfig.hasOwnProperty(idsArray[1])) {
+				return;
+			}
+			showFullPageLoader();
+			
+			
+			var tabsList = [];
+			var entityName = "";
+			
+			jQuery('#accordion').css({ "display": "flex", "flex-flow": "column"});
+			
+			//Loop through available detail tabs from HTML DOMs
+			jQuery('div[id^="tabdetails_"]').each(function(item, obj){
+				
+				//create IDs array as defined on element
+				//1st index will be entity name
+				//2nd index will be name of view
+				var idsArray = jQuery(obj).attr("id").split("_");
+				//Skip any element with invalid ID
+				if(idsArray.length != 3  || !tabsConfig.hasOwnProperty(idsArray[1])) {
+					return;
+				}
+					
+				//get position of tab
+				//get post by entity name and view name form JSON
+				var position = getKeyByValue( JSON.parse(tabsConfig[ idsArray[1] ]), idsArray[2] );
+				if( position ) {
+					jQuery(obj).css({ "order" : position });
+				}
+				return;
+			});
+			
+			removeFullPageLoader();
+			
+		});
+
+	}
 	
 	function initUIElements( scopeSelector ) {
 	
@@ -132,6 +223,47 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				//allow override via attributes
 			}
 		});
+		
+		// JSON
+		jQuery.each(jQuery( scopeSelector ).find(jQuery( 'pre.json' )), function(i, v){
+
+		    var jsonStr = $(this).text();
+		    var jsonObj = jsonStr;
+
+		    try {
+		        jsonObj = JSON.parse( jsonStr );
+		    } catch (e){
+		        console.warn(e);
+		    }
+
+            var syntaxHighlight = function(json){
+
+                try {
+                    if (typeof json != 'string') {
+                        json = JSON.stringify(json, undefined, "\t");
+                    }
+                } catch (e){
+    		        console.warn(e);
+    		    }   
+
+                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                    var cls = 'number';
+                    if ( /^"/.test(match) ){
+                        cls = (/:$/.test(match)) ? 'key' : 'string';
+                    } else if ( /true|false/.test(match) ){
+                        cls = 'boolean';
+                    } else if ( /null/.test(match) ){
+                        cls = 'null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
+            }
+
+            $(this).html( syntaxHighlight(jsonObj) );
+		});
+
 	
 		// Tooltips
 		jQuery( scopeSelector ).find(jQuery('.hint')).tooltip();
@@ -159,9 +291,12 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				jQuery( this ).removeClass('hide');
 			}
 			*/
-	
+			
+			if( jQuery( '#' + bindData.id ).hasClass('hide') ){
+				$('#' + bindData.id).find('*').attr('disabled', true);
+			}
+
 			jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
-				
 	            var selectedValue = jQuery(this).val() || '';
 	
 	            if(bindData.valueAttribute.length) {
@@ -192,6 +327,16 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 	
 		});
+		
+		//When user adding payment method to account
+		var getPaymentMethodType = $(".j-custom-select option:selected").attr('paymentmethodtype');
+		jQuery.each( jQuery( scopeSelector ).find( jQuery('.hibachi-display-toggle.hide') ), function(index, value){
+			if($("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == getPaymentMethodType || (getPaymentMethodType != undefined && $("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == 'creditCard,termPayment')){
+				$("#"+jQuery(this).attr('id')).removeClass("hide");
+				 $("#"+jQuery(this).attr('id')).find('*').attr('disabled', false);
+				
+			}
+	    });
 		
 		
 		// Form Empty value clear (IMPORTANT!!! KEEP THIS ABOVE THE VALIDATION ASIGNMENT)
@@ -368,8 +513,29 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		// Alerts
 		jQuery('body').on('click', '.alert-confirm', function(e){
 			e.preventDefault();
-			jQuery('#adminConfirm .modal-body').html( jQuery(this).data('confirm') );
-			jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
+			let bodyHtml = '';
+			if(jQuery(this).data('includeForm')){
+				let form = jQuery(this).closest('form')[0];
+				bodyHtml += `<form action="${form.action}" id="adminConfirmForm" method="POST">`
+				for(let i = 0; i < form.length; i++){
+					if(form[i].name){
+						bodyHtml += `<input type="hidden" name="${form[i].name}" value="${form[i].value}">`;
+					}
+				}
+			}
+			bodyHtml += jQuery(this).data('confirm');
+			if(jQuery(this).data('includeForm')){
+				bodyHtml += '</form>';
+			}
+			jQuery('#adminConfirm .modal-body').html( bodyHtml );
+			if(jQuery(this).data('includeForm')){
+				jQuery('#adminConfirm #confirmYesButton').removeClass('hide');
+				jQuery('#adminConfirm #confirmYesLink').addClass('hide');
+			}else{
+				jQuery('#adminConfirm #confirmYesButton').addClass('hide');
+				jQuery('#adminConfirm #confirmYesLink').removeClass('hide');
+				jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
+			}
 			jQuery('#adminConfirm').modal();
 		});
 		jQuery('body').on('click', '.btn-disabled', function(e){	
@@ -842,6 +1008,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		});
 		jQuery('.hibachi-permission-checkbox:checked').change();
 	
+		jQuery('body').on('lazyLoadComplete',function(){
+			jQuery('.hibachi-permission-checkbox').each(function() {
+				if(jQuery(this).attr('checked')=='checked'){
+					updatePermissionCheckboxDisplay( jQuery(this) );
+				}
+			});
+		});
 	
 		// Report Hooks ============================================
 	
@@ -1068,9 +1241,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		    var $rootScope = injector.get('$rootScope');
 		    jQuery('#adminModal').html($compile(html)($rootScope));
 		}else{
-			jQuery('#adminModal').html(html);
+			AngularHelper.Compile($('#adminModal'),html);
 		}
-
+		
 		initUIElements('#adminModal');
 
 		jQuery('#adminModal').css({
@@ -1476,12 +1649,20 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function addLoadingDiv( elementID ) {
+		var element = jQuery('#' + elementID);
 		var loadingDiv = '<div id="loading' + elementID + '" style="position:absolute;float:left;text-align:center;background-color:#FFFFFF;opacity:.9;z-index:900;"><img style="position:relative;" src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" title="loading" /></div>';	
-		jQuery('#' + elementID).before(loadingDiv);
-		jQuery('#loading' + elementID).width(jQuery('#' + elementID).width() + 2);
-		jQuery('#loading' + elementID).height(jQuery('#' + elementID).height() + 2);
-		if(jQuery('#' + elementID).height() > 66) {
-			jQuery('#loading' + elementID + ' img').css('margin-top', ((jQuery('#' + elementID).height() / 2) - 66) + 'px');
+		
+		element.before(loadingDiv);
+		
+		jQuery('#loading' + elementID)
+    		.width( element.outerWidth() )
+    		.height( element.outerHeight() )
+    	    .css('padding', element.css('padding') )
+    	    .css('margin', element.css('margin') );
+	
+		if(element.height() > 66) {
+			jQuery('#loading' + elementID + ' img')
+			.css('margin-top', ((element.height() / 2) - 33) + 'px');
 		}
 	}
 	
@@ -1761,72 +1942,119 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 	function updateReport( page ) {
 		if(jQuery("#hibachi-report").length){
-			var data = {
-				slatAction: 'admin:report.default',
-				reportID: jQuery('input[name="reportID"]').val(),
-				reportName: jQuery('#hibachi-report').data('reportname'),
-				reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
-				reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
-				reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
-				reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
-				reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
-				reportDateTime: jQuery('select[name="reportDateTime"]').val(),
-				reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
-				dimensions: jQuery('input[name="dimensions"]').val(),
-				metrics: jQuery('input[name="metrics"]').val(),
-				reportType: jQuery('select[name="reporttype"]').val(), 
-				orderByType: jQuery('select[name="orderbytype"]').val()
-			};
+		var data = {
+			slatAction: 'admin:report.default',
+			reportID: jQuery('input[name="reportID"]').val(),
+			reportName: jQuery('#hibachi-report').data('reportname'),
+			reportStartDateTime: jQuery('a.hibachi-report-date-group.active').data('start'),
+			reportEndDateTime: jQuery('a.hibachi-report-date-group.active').data('end'),
+			reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
+			reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
+			reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
+			reportDateTime: jQuery('select[name="reportDateTime"]').val(),
+			reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
+			dimensions: jQuery('input[name="dimensions"]').val(),
+			metrics: jQuery('input[name="metrics"]').val(),
+			reportType: jQuery('select[name="reporttype"]').val(), 
+			orderByType: jQuery('select[name="orderbytype"]').val(),
+			reportSite: jQuery('select[name="siteSelector"').val()
+		};
+	
+		if(jQuery('input[name="showReport"]').is(':checked')){
+			data.showReport = true; 
+		} else { 
+			data.showReport = false; 
+		}
 		
-			if(jQuery('input[name="showReport"]').is(':checked')){
-				data.showReport = true; 
-			} else { 
-				data.showReport = false; 
-			}
-			
-			if(jQuery('select[name="limitresults"]').val() != undefined){ 
-				data.limitResults = jQuery('select[name="limitresults"]').val();
-			}
-		
-			if(page != undefined) {
-				data.currentPage = page;
-			}
-		
-			jQuery.ajax({
-				url: hibachiConfig.baseURL + '/',
-				method: 'post',
-				data: data,
-				dataType: 'json',
-				beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
-				error: function( r ) {
-					// Error
-					removeLoadingDiv( 'hibachi-report' );
-				},
-				success: function( r ) {
-					if(r.report.hideChart !== undefined){ 
-						jQuery("#hibachi-report-chart").remove();
-						jQuery("#hibachi-report-chart-wrapper").hide();
-					} else { 
-						if(r.report.chartData.series !== undefined){
-							var html = "<div id='hibachi-report-chart'></div>";
-							jQuery("#hibachi-report-chart-wrapper").html(html);
-							var chart = new Highcharts.Chart(r.report.chartData);	
-						}
-						jQuery("#hibachi-report-chart-wrapper").show();
-					}
-					
-					if(r.report.hideReport !== undefined){
-						jQuery("#reportDataTable").remove();
-					} else { 
-						jQuery('#hibachi-report-table').html(r.report.dataTable);
-						jQuery("#hibachi-report-table").show();
-					}
+		if(jQuery('select[name="limitresults"]').val() != undefined){ 
+			data.limitResults = jQuery('select[name="limitresults"]').val();
+		}
+	
+		if(page != undefined) {
+			data.currentPage = page;
+		}
+	
+		jQuery.ajax({
+			url: hibachiConfig.baseURL + '/',
+			method: 'post',
+			data: data,
+			dataType: 'json',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+			error: function( r ) {
+				// Error
+				removeLoadingDiv( 'hibachi-report' );
+			},
+			success: function( r ) {
+				if(r.report.hideChart !== undefined){ 
+					jQuery("#hibachi-report-chart").remove();
+					jQuery("#hibachi-report-chart-wrapper").hide();
+				} else { 
+					if(r.report.chartData.series !== undefined){
+						var html = "<canvas id='hibachi-report-chart' width='1800' height='600'></canvas>";
+						jQuery("#hibachi-report-chart-wrapper").html(html);
+					    jQuery("#sales-revenue-this-period").html(r.report.salesRevenueThisPeriod);
+						jQuery("#order-count-this-period").html(r.report.orderCount);
+						jQuery("#average-order-total-this-period").html(r.report.averageOrderTotal);
+						jQuery("#accounts-created-this-period").html(r.report.accountCount);
+						jQuery(".time-period").html(r.report.period);
 						
-					jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
-					initUIElements('#hibachi-report');
-					removeLoadingDiv( 'hibachi-report' );
+						var ctx = jQuery("#hibachi-report-chart")[0].getContext("2d");
+                        var chart = new Chart(ctx, {
+						    type: r.report.chartData.data.type,
+						    data: {
+						        datasets: [{
+						            label: r.report.chartData.series[0].label,
+						            data: r.report.chartData.series[0].data,
+						            borderColor: [
+						                '#f38631'
+						            ],
+						            pointBackgroundColor: "#f38631",
+						            pointBorderColor: "#f38631",
+						            fill: false,
+						            borderWidth: 3,
+						            lineTension: 0
+						        }]
+						    },
+						    options: {
+						        scales: {
+						            yAxes: [{
+						                ticks: {
+						                    beginAtZero: true
+						                }
+						            }],
+						            xAxes: [{
+						            	type: 'time',
+						            	ticks: {
+						            		source: 'data',
+						            	},
+						            	time: {
+						            		parser: 'string',
+						            		unit: r.report.reportDateTimeGroupBy,
+						            		stepSize: 1,
+						            	}
+						            }]
+						        },
+						        legend: {
+						        	display: false
+						        }
+						    }
+						});	
+					}
+					jQuery("#hibachi-report-chart-wrapper").show();
 				}
-			});
+				
+				if(r.report.hideReport !== undefined){
+					jQuery("#reportDataTable").remove();
+				} else { 
+					jQuery('#hibachi-report-table').html(r.report.dataTable);
+					jQuery("#hibachi-report-table").show();
+				}
+					
+				jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
+				initUIElements('#hibachi-report');
+				removeLoadingDiv( 'hibachi-report' );
+			}
+		});
 		}
 	
 	}
@@ -1862,18 +2090,18 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		if($('#'+tabID).html().trim().length === 0){
 			//add loading spinner prior to loading
 			$('#'+tabID).html(''+
-				'<i  class="fa fa-refresh fa-spin"></i>'+
+				'<div class="text-center"> <i class="fa fa-spinner fa-spin"></i><div>'+
 			'');
 			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
 
 				//angular should work
-				AngularHelper.Compile($('#'+tabID),htmlToCompile);
-				//jquery should work
-				initUIElements($('#'+tabID));
+				AngularHelper.Compile( $('#'+tabID), htmlToCompile.trim(), function(){
+					//jquery should work
+					initUIElements($('#'+tabID));
+					$('body').trigger('lazyLoadComplete');
+				});
 			});
 		}
-		
-		
 	}
 	/**
 	 * AngularHelper : Contains methods that help using angular without being in the scope of an angular controller or directive
@@ -1891,14 +2119,34 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	         * @$targetDom : The dom in which the compiled html should be placed
 	         * @htmlToCompile : The html to compile using angular
 	         */
-	    AngularHelper.Compile = function ($targetDom, htmlToCompile) {
-	        var $injector = angular.element(document).injector();
-
-	        $injector.invoke(["$compile", "$rootScope", function ($compile, $rootScope) {
-	                        //Get the scope of the target, use the rootScope if it does not exists
-	            var $scope = $targetDom.html(htmlToCompile).scope();
-	            $compile($targetDom)($scope || $rootScope);
-	            $rootScope.$digest();
+	    AngularHelper.Compile = function ($targetDom, htmlToCompile, callback) {
+	        
+	        try {
+	        	var $injector = angular.element(document).injector();
+	        	if($injector == null) {
+	        		throw("Unable to get Injector for", $targetDom.selector);
+	        	}
+            }
+            catch(err){
+			   console.warn("Will retry in 1 sec: error->", err);
+               setTimeout(function(){
+                    AngularHelper.Compile( $targetDom, htmlToCompile, callback);
+               }, 500);
+			   return; 
+            }
+	        
+	        $injector.invoke(["$compile", "$rootScope", "$timeout",  function ($compile, $rootScope, $timeout) {
+	            // to make it not interfere with already running digest-cycle
+	            $timeout( () => {
+    	            //Get the scope of the target, use the rootScope if it does not exists
+    	            var $scope = $targetDom.html(htmlToCompile).scope();
+    	            $compile($targetDom)($scope || $rootScope);
+    	            
+    	            if(typeof callback === 'function' ){
+    	            	callback();
+    	            }
+    	            
+	            }, 0);
 	        }]);
 	   }
 

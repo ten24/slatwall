@@ -71,7 +71,9 @@ class SWEditFilterItem{
 				comparisonType:"=",
                 simple:"="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
+			
+			template: require("./editfilteritem.html"),
+			
 			link: function(scope, element,attrs,filterGroupsController){
 
 
@@ -214,7 +216,7 @@ class SWEditFilterItem{
                     scope.selectedFilterProperty = selectedFilterProperty;
                 };
 
-                scope.addFilterItem = function(){
+                scope.addFilterItem = () => {
                     collectionService.newFilterItem(filterGroupsController.swFilterGroups.getFilterGroupItem(),filterGroupsController.swFilterGroups.setItemInUse);
                     this.observerService.notify('collectionConfigUpdated', {
                         collectionConfig: collectionService
@@ -233,7 +235,7 @@ class SWEditFilterItem{
                     if(scope.filterItem.$$isNew === true){
                         scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
                     }else{
-                        observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
+                        observerService.notifyById('filterItemAction', filterGroupsController.swListingControls.tableId, {action: 'close',filterItemIndex:scope.filterItemIndex});
                     }
                 };
 
@@ -333,48 +335,48 @@ class SWEditFilterItem{
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
                                 //is it null or a range
-
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
                                     filterItem.displayValue = filterItem.value;
                                 }else{
                                     if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation'){
+                                        
                                         var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart),new Date(selectedFilterProperty.criteriaRangeEnd));
-
-                                        filterItem.value = _daysBetween;
+                                        
                                         filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+                                        
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        
                                         if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                        }
-
-                                    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate'){
-                                        if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)){
-                                            filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                            filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
-                                        }else{
-                                            filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
-                                            filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
-                                            filterItem.criteriaNumberOf = "0";
-
-
-                                            if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
-                                                filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                            }
                                             filterItem.value = filterItem.criteriaNumberOf;
-                                            filterItem.displayValue = filterItem.criteriaNumberOf;
-
+                                            
+                                            //Update Display Value
+                                            filterItem.displayValue = filterItem.displayValue.replace("N", filterItem.criteriaNumberOf);
+                                        
+                                        } else {
+                                            filterItem.criteriaNumberOf = "0";
+                                            filterItem.value = _daysBetween;
+                                        }
+                                    }else  if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart'){
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+                                            filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
                                             switch(filterItem.measureType){
                                                 case 'd':
-                                                    filterItem.displayValue +=' Day';
+                                                    filterItem.displayValue +='Day ';
                                                     break;
                                                 case 'm':
-                                                    filterItem.displayValue +=' Month';
+                                                    filterItem.displayValue +='Month ';
                                                     break;
                                                 case 'y':
-                                                    filterItem.displayValue +=' Year';
+                                                    filterItem.displayValue +='Year ';
                                                     break;
                                             }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1)?'s':'')+' Ago';
+                                            filterItem.displayValue += filterItem.value;
                                         }
                                     }else{
                                         filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
@@ -389,9 +391,6 @@ class SWEditFilterItem{
                                 }
 
                                 break;
-                            
-                            
-
                         }
 
                         switch(selectedFilterProperty.fieldtype){
@@ -451,8 +450,17 @@ class SWEditFilterItem{
                         var timeoutpromise = $timeout(function(){
                             callback();
                         });
+                        
                         timeoutpromise.then(()=>{
-                            observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex,collectionConfig:this.collectionConfig});
+                           
+                            observerService.notifyById( 'filterItemAction', filterGroupsController.swListingControls.tableId, 
+                                {
+                                    action: 'add',
+                                    filterItemIndex:scope.filterItemIndex,
+                                    collectionConfig:this.collectionConfig
+                                }
+                            );
+                            
                         });
 
 

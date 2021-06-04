@@ -83,6 +83,12 @@ class SWContentListController{
                         isSearchable:false
                     },
                     {
+                        propertyIdentifier:'_content.sortOrder',
+                        isVisible:true,
+                        ormtype:'integer',
+                        isSearchable:true
+                    },
+                    {
                         propertyIdentifier:'_content.activeFlag',
                         isVisible:true,
                         ormtype:'boolean',
@@ -192,7 +198,8 @@ class SWContentListController{
 
                     this.collectionConfig.addFilter(filter.propertyIdentifier,filter.value,filter.comparisonOperator,filter.logicalOperator);
                 });
-
+                
+                this.collectionConfig.setOrderBy("sortOrder|ASC");
 
 
                 this.collectionListingPromise = this.collectionConfig.getEntity();
@@ -297,7 +304,7 @@ class SWContentList implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
-        scope.$on('$destroy', function handler() {
+        scope.$on('$destroy', () => {
             this.observerService.detachByEvent('optionsChanged');
             this.observerService.detachByEvent('sortByColumn');
         });

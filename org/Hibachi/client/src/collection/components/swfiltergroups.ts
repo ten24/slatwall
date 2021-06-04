@@ -1,32 +1,14 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+const filterGroupsTemplateString = require("./filtergroups.html");
+
 class SWFilterGroups{
 	public static Factory(){
-		var directive = (
-			$log,
-			collectionPartialsPath,
-			hibachiPathBuilder,
-			observerService
-		)=> new SWFilterGroups(
-			$log,
-			collectionPartialsPath,
-			hibachiPathBuilder,
-			observerService
-		);
-		directive.$inject = [
-			'$log',
-			'collectionPartialsPath',
-			'hibachiPathBuilder',
-			'observerService'
-		];
-		return directive;
+		return /** @ngInject; */ ($log,observerService)=> new this( $log, observerService );
 	}
-	constructor(
-		$log,
-		collectionPartialsPath,
-		hibachiPathBuilder,
-		observerService
-	){
+	
+    // 	@ngInject;
+	constructor( $log, observerService ){
 		return {
 			restrict: 'EA',
 			scope:{
@@ -39,7 +21,7 @@ class SWFilterGroups{
                 simple:"=",
                 readOnly:"="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
+			template: filterGroupsTemplateString,
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
 				//if the filter group comparisontype is not specified, then assume we are doing filters
 				if(!angular.isDefined($scope.comparisonType)){

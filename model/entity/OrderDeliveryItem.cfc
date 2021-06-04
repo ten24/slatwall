@@ -53,7 +53,7 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	property name="quantity" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
-	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
+	property name="orderDelivery" cfc="OrderDelivery" hb_populateEnabled="private" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID" hb_cascadeCalculate="true";
 
@@ -63,7 +63,9 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	property name="containerItems" singularname="containerItem" fieldType="one-to-many" type="array" fkColumn="orderDeliveryItemID" cfc="ContainerItem" inverse="true";
 	
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -208,10 +210,14 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	public void function preInsert(){
 		super.preInsert();
 		getService("inventoryService").createInventory( this );
+		// update the openorderitem records
+		getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'update', orderItemID = this.getOrderItem().getOrderItemID(), quantityDelivered = getQuantity());
 	}
 
 	public void function preUpdate(struct oldData){
-		throw("Updates to Order Delivery Items are not allowed because this illustrates a fundamental flaw in inventory tracking.");
+		if(arguments.oldData["quantity"] != getQuantity()){
+			throw("Updates to Order Delivery Items are not allowed because this illustrates a fundamental flaw in inventory tracking.");
+		}
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================

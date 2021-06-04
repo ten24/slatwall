@@ -1,6 +1,6 @@
 {
-	"properties":{
-		"fromLocation":			[{"contexts":"save","required":true}],
-		"toLocation":			[{"contexts":"save","required":true}]
+	"properties": {
+		"fromLocation": [{ "contexts": "save", "required": true }],
+		"toLocation": [{ "contexts": "save", "required": true }]
 	}
 }

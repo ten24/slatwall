@@ -54,11 +54,11 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#" sRedirectAction="admin:entity.listcurrency">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#" />
 		
 		<hb:HibachiEntityDetailGroup object="#rc.currency#">
-			<hb:HibachiEntityDetailItem view="admin:entity/currencytabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/currencytabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.currencytabs.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem property="currencyrates" />
 		</hb:HibachiEntityDetailGroup>
 		

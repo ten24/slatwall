@@ -55,14 +55,10 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Call the super populate to do all the standard logic
 		super.populate(argumentcollection=arguments);
 
-		// Loop over attribute sets
-		for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
-			
-			// Loop over attributes
-			for(var attribute in attributeSet.getAttributes()) {
-				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], ""), this.getRollbackProcessedFlag() && attribute.getAttributeInputType() == "password");
-				}
+		var attributes = getAssignedAttributes(includeCustomProperties=true);
+		for(var attribute in attributes) {
+			if(structKeyExists(arguments.data, attribute['attributeCode'])) {
+				setAttributeValue( attribute['attributeCode'], nullReplace(data[ attribute['attributeCode'] ], ""), this.getRollbackProcessedFlag() && attribute['attributeInputType'] == "password");
 			}
 			
 		}
@@ -136,19 +132,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.filesSmartList;
 	}
 	
-	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		//preventing multiple look ups on the external cache look up
-		var cacheKey = "#arguments.settingName##arguments.formatValue#";
-		for(var filterEntity in arguments.filterEntities){
-			cacheKey &= filterEntity.getPrimaryIDValue();
-		}
-		if(!structKeyExists(variables,cacheKey)){
-			variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
-		}
-		
-		return variables[cacheKey];
-	}
+
 	
 	
 
@@ -183,6 +167,28 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return variables.attributeValuesForEntity;
 	}
+
+	//please note that getAttributeValueFormatted is reserved by the entity AttributeValue
+	public any function getFormattedAttributeValue( required string attribute, required string formatType, string locale, boolean useFallback=true){
+		var attributeValue = getAttributeValue(attribute=arguments.attribute, returnEntity=false);
+
+		if(!structKeyExists(arguments, 'locale')){
+			arguments.locale = getHibachiScope().getSession().getRbLocale();
+		}
+
+		var formatDetails = {
+				locale:arguments.locale,
+				object:this,
+				propertyName:arguments.attribute,
+				useFallback:arguments.useFallback
+		};		
+			
+		if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
+			formatDetails.currencyCode = getCurrencyCode();
+		}
+
+		return getService("hibachiUtilityService").formatValue(value=attributeValue, formatType=arguments.formatType, formatDetails=formatDetails);
+	} 
 
 	public any function getAttributeValue(required string attribute, returnEntity=false){
 		//If custom property exists for this attribute, return the property value instead
@@ -382,13 +388,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.assignedAttributeSetSmartList;
 	}
 	
-	public array function getAssignedAttributes() {
+	public array function getAssignedAttributes(boolean includeCustomProperties = false) {
 		 //cacheing structure of attribute code and type info
-		 var cacheKey = "attributes_getAssignedAttribtues"&getClassName();
+		 var cacheKey = 'attributes_getAssignedAttributes_' & getClassName();
+		 if(arguments.includeCustomProperties){
+		 	cacheKey &= '_customproperties';
+		 }
 		 if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+		 	
 			var assignedAttributesArray = [];
 		 	
-		 	var attributesDataQuery = getService("attributeDAO").getAttributesDataByEntityName(getClassName());
+		 	var attributesDataQuery = getService("attributeDAO").getAttributesDataByEntityName(entityName=getClassName(), includeCustomProperties = arguments.includeCustomProperties);
 		 	// Converts query to struct object
 		 	for (var attributeStruct in attributesDataQuery) {
 		 		arrayAppend(assignedAttributesArray, attributeStruct);
@@ -411,6 +421,22 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 
 		return variables.attributeValuesByAttributeIDStruct;
+	}
+	
+	public string function getAttributeValueLabel(required string attributeCode){
+		var cacheKey = 'attributeValueLabel_#arguments.attributeCode#';
+		if(!structKeyExists(variables, cacheKey)){
+			var label = '';
+			var attributeValue = getAttributeValue(arguments.attributeCode);
+			if( !isNull( attributeValue ) ){
+				var attributeOptionLabel = getService("AttributeService").getAttributeOptionLabelByAttributeCodeAndAttributeValue(arguments.attributeCode, attributeValue);
+				if( !isNull( attributeOptionLabel ) ){
+					label = attributeOptionLabel;
+				}
+			}
+			variables[cacheKey] = label;
+		}
+		return variables[cacheKey];
 	}
 
 	public struct function getAttributeValuesByAttributeCodeStruct() {
@@ -440,13 +466,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
 			var auditableProperties = super.getAuditableProperties();
 			
-			for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
-			
-				// Loop over attributes
-				for(var attribute in attributeSet.getAttributes()) {
-					if (!listFindNoCase(getAuditablePropertyExclusionList(), attribute.getAttributeCode())) {
-						arrayAppend(auditableProperties, {name=attribute.getAttributeCode(), attributeFlag=true});
-					}
+			var attributes = getAssignedAttributes(includeCustomProperties=true);
+			var propertyExclusionList = getAuditablePropertyExclusionList();
+			// Loop over attributes
+			for(var attribute in attributes) {
+				if (!listFindNoCase(propertyExclusionList, attribute['attributeCode'])) {
+					arrayAppend(auditableProperties, {name=attribute['attributeCode'], attributeFlag=true});
 				}
 				
 			}
@@ -456,7 +481,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
 	}
-	
+
 	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
 		var propertyCollection = super.getPropertyCountCollectionList(argumentCollection=arguments);
 
@@ -504,9 +529,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return listToArray( defaultPropertyIdentifiersList );
 	}
 	
-	public string function getDefaultPropertyIdentifiersList(){
+	public string function getDefaultPropertyIdentifiersList(string includesList, string excludesList){
 		// Lets figure out the properties that need to be returned
-		var defaultProperties = getDefaultCollectionProperties();
+		var defaultProperties = this.getDefaultCollectionProperties(argumentCollection = arguments);
 		var defaultPropertyIdentifiersList = "";
 		for(var i=1; i<=arrayLen(defaultProperties); i++) {
 			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i]['name']);
@@ -569,6 +594,29 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	
+	/**
+	 * param  wildCardPosition  => left, right, both; default driven by sys-stting
+	 * param searchFilterPropertyIdentifier => any propertyIdentifier where  ormtype = dateTime
+	 * 
+	*/ 
 	
-
+	public struct function getListingSearchConfig() {
+		param name = "arguments.wildCardPosition" default = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
+		param name = "arguments.showWildCardPositionDropdown" default = true; // ability to change wildcard position
+		param name = "arguments.searchFilterPropertyIdentifier" default = 'createdDateTime';
+		param name = "arguments.showSearchFilterDropDown" default = true; // ability to change search filter period
+		param name = "arguments.ignoreSearchFilters" default = false; // searchFilters will be ignored
+		param name = "arguments.selectedSearchFilterCode" default = "allRecords";
+		
+		var listingSearchConfig  = {
+			"wildCardPosition" = arguments.wildCardPosition,
+			"showWildCardPositionDropdown" = arguments.showWildCardPositionDropdown,
+			"searchFilterPropertyIdentifier" = arguments.searchFilterPropertyIdentifier,
+			"showSearchFilterDropDown" = arguments.showSearchFilterDropDown,
+			"ignoreSearchFilters" = arguments.ignoreSearchFilters,
+			"selectedSearchFilterCode" = arguments.selectedSearchFilterCode,
+		};
+		return listingSearchConfig;
+	}
+	
 }

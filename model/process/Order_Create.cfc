@@ -66,7 +66,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="password";
 	property name="passwordConfirm";
 	property name="orderOriginID" hb_rbKey="entity.orderOrigin" hb_formFieldType="select";
-	property name="defaultStockLocationID" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="select";
+	property name="defaultStockLocationID" cfc="Location" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="typeahead";
 	property name="orderCreatedSite" cfc="Site" fieldtype="many-to-one";
 	property name="organizationFlag" hb_rbKey="entity.account.organizationFlag" hb_formFieldType="yesno" default=0;
 
@@ -79,6 +79,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.orderTypeID;
 	}
+
+	public string function getCurrencyCode() {
+
+		if(!structKeyExists(variables, 'currencyCode')){
+			variables.currencyCode = getService("SettingService").getSettingValue('skuCurrency');//'Default Currency'
+		} 
+		return variables.currencyCode; 
+	} 
 	
 	public array function getCurrencyCodeOptions() {
 		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();
@@ -136,6 +144,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.fulfillmentMethodIDOptions;
 	}
 	
+	public any function getLocationTypeAheadCollectionList(){
+		var locationCollectionList=getHibachiScope().getService('locationService').getLocationCollectionList();
+		locationCollectionList.setDisplayProperties('locationID',{isVisible=false,isSearchable=false});
+		locationCollectionList.addDisplayProperties('locationName',{isVisible=true,isSearchable=true});
+		locationCollectionList.addFilter('activeFlag',1);
+		locationCollectionList.addFilter('parentLocation',"NULL",'IS NOT');
+		return locationCollectionList;
+	}
+
 	public any function getOrderCreatedSiteOptions(){
 		var collectionList = getService('SiteService').getCollectionList('Site');
 		collectionList.addDisplayProperty('siteID|value');

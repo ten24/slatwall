@@ -48,6 +48,10 @@ Notes:
 */
 
 component  extends="HibachiService" accessors="true" {
+
+	property name="siteDAO"; 
+	property name="hibachiCacheService"; 
+	
 	variables.skeletonSitePath = expandPath('/#getApplicationValue('applicationKey')#')&'/integrationServices/slatwallcms/skeletonsite';
 	variables.sharedAssetsPath = expandPath('/#getApplicationValue('applicationKey')#')&'/custom/assets';
 
@@ -63,6 +67,27 @@ component  extends="HibachiService" accessors="true" {
 	public any function getCurrentDomain() {
 		return getHibachiScope().getCurrentDomain();
 	}
+
+	public any function getSiteByDomainName(required string siteName) {
+		var cacheKey = 'site' & replaceNoCase(arguments.siteName,' ','','all') & 'ID'; 
+		if(!getHibachiCacheService().hasCachedValue(cacheKey)){
+			var site = getSiteDAO().getSiteByDomainName(arguments.siteName);
+			
+			if(isNull(site)){
+				getHibachiCacheService().setCachedValue(cacheKey, '');  
+			} else { 
+				getHibachiCacheService().setCachedValue(cacheKey, site.getSiteID());  
+			} 	
+
+		} 
+		var cachedSiteID = getHibachiCacheService().getCachedValue(cacheKey);
+
+		if(len(cachedSiteID) == 0){
+			return; 
+		}   
+
+		return this.getSite(cachedSiteID);  
+	}  
 
 	public string function getSkeletonSitePath(){
 		return variables.skeletonSitePath;
@@ -374,6 +399,101 @@ component  extends="HibachiService" accessors="true" {
 		}
 		return arguments.site;
 	}
+	
+	public boolean function deleteSite(required any site) {
+        // Check delete validation for site
+		if(arguments.site.isDeletable()) {
+		  var data = getDAO("SiteDAO").removeSite(arguments.site.getSiteID());
+		}
+		return delete( arguments.site );
+
+	}
+	
+	public string function dspForm(required string formCode, string sRedirectUrl="/"){
+		request.context.newFormResponse = getHibachiScope().getService('formService').newFormResponse();
+		request.context.requestedForm = getHibachiScope().getService('formService').getFormByFormCode(arguments.formCode);
+		var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
+		var specificFormTemplateFileName = "form_"  & formCode & ".cfm";
+		var defaultFormTemplateFileName = "slatwall-form.cfm";
+
+		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
+		var siteTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
+		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/templates/";
+
+		if(fileExists(ExpandPath(specificFormTemplateFilePath))){
+			var templatePath = siteTemplatePath & specificFormTemplateFileName;
+		} else if(fileExists(ExpandPath(baseTemplatePath) & specificFormTemplateFileName)){
+			var templatePath = baseTemplatePath & specificFormTemplateFileName;
+		} else if(fileExists(ExpandPath(siteTemplatePath) & defaultFormTemplateFileName)){
+			var templatePath = siteTemplatePath & defaultFormTemplateFileName;
+		} else {
+			var templatePath = baseTemplatePath & defaultFormTemplateFileName;
+		}
+
+		savecontent variable="local.formHTML"{
+			include templatePath;
+		};
+
+		return reReplace(formHtml,"#chr(13)#|#chr(9)#|\n|\r","","ALL");
+	}
+
+	
+	public struct function getStackedContent(required struct urlTitlePathConfiguration, boolean sanitizeOutput = true){
+		var columns = [];
+		var urlTitlePaths = '';
+		
+		var stackedContent = {};
+	
+		for(var urlTitlePath in urlTitlePathConfiguration){
+			ArrayAppend(columns,urlTitlePathConfiguration[urlTitlePath],true);
+			urlTitlePaths = listAppend(urlTitlePaths, urlTitlePath);
+		}
+		var columnsList = listRemoveDuplicates('c.'&ArrayToList(columns, ', c.')); //add prefix
+		
+		var currentSite = getCurrentRequestSite();
+		
+		if(!isNull(currentSite) && len(urlTitlePaths) && len(columnsList)){
+			var contentData = getHibachiScope().getService("ContentService").getAllContentBySiteIDAndUrlTitlePaths(currentSite.getSiteID(),urlTitlePaths, columnsList);
+			for(var content in contentData){
+				if(isArray(arguments.urlTitlePathConfiguration[content['urlTitlePath']])){
+					stackedContent[content['urlTitlePath']] = {};
+					for(var column in arguments.urlTitlePathConfiguration[content['urlTitlePath']]){
+						stackedContent[content['urlTitlePath']][column] = reReplace(content[column],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
+					}
+				}else{
+					stackedContent[content['urlTitlePath']] = reReplace(content[arguments.urlTitlePathConfiguration[content['urlTitlePath']]],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
+				}
+			}
+		}
+        return stackedContent
+    }
+    
+    public struct function getStackedContentForPage(required struct urlTitlePathConfiguration, boolean sanitizeOutput = true){
+		var columns = [];
+		var urlTitlePathPrefix = '';
+		
+		var stackedContent = {};
+	
+		for(var urlTitlePath in urlTitlePathConfiguration){
+			ArrayAppend(columns,urlTitlePathConfiguration[urlTitlePath],true);
+			urlTitlePathPrefix = listAppend(urlTitlePathPrefix, urlTitlePath);
+		}
+		var columnsList = listRemoveDuplicates('c.'&ArrayToList(columns, ', c.')); //add prefix
+		
+		var currentSite = getCurrentRequestSite();
+		
+		if(!isNull(currentSite) && len(urlTitlePathPrefix) && len(columnsList)){
+			var contentData = getHibachiScope().getService("ContentService").getAllContentBySiteIDAndUrlTitlePathPrefix(currentSite.getSiteID(),urlTitlePathPrefix, columnsList);
+			for(var content in contentData){
+					stackedContent[content['urlTitlePath']] = {};
+					for(var column in arguments.urlTitlePathConfiguration[urlTitlePathPrefix]){
+						stackedContent[content['urlTitlePath']][column] = reReplace(content[column],"#chr(13)#|#chr(9)#|\n|\r","","ALL");
+					}
+				stackedContent[content['urlTitlePath']] = getService("ContentService").appendSettingsAndOptionsToContent(stackedContent[content['urlTitlePath']]);
+			}
+		}
+        return stackedContent
+    }
 
 	// ======================  END: Save Overrides ============================
 

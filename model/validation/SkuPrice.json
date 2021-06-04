@@ -1,34 +1,49 @@
 {
-	"conditions":{
-	},
-	"properties":{
-	    "price": [{
-	        "contexts":"save",
-	        "required":"true",
-	        "dataType":"numeric", 
-	        "minValue":"0"
-	    }],
-	    "listPrice": [{
-	        "contexts":"save",
-	        "dataType":"numeric"
-	    }],
-	    "minQuantity" : [{
-	        "contexts":"save",
-	        "required":"false",
-	        "dataType":"numeric",
-	        "minValue":"0",
-			"method" : "hasValidQuantityConfiguration"
-        }],
-	    "maxQuantity" : [{
-	        "contexts":"save",
-	        "required":"false",
-	        "dataType":"numeric",
-	        "minValue":"0",
-			"method" : "hasValidQuantityConfiguration"
-        }],
-        "currencyCode" : [{
-            "contexts":"save",
-            "required":"true"
-        }]
+	"conditions": {},
+	"properties": {
+		"skuPriceID": [
+			{
+				"contexts": "delete",
+				"method": "isNotDefaultSkuPrice"
+			}
+		],
+		"price": [
+			{
+				"contexts": "save",
+				"required": "true",
+				"dataType": "numeric",
+				"minValue": "0"
+			}
+		],
+		"listPrice": [
+			{
+				"contexts": "save",
+				"dataType": "numeric"
+			}
+		],
+		"minQuantity": [
+			{
+				"contexts": "save",
+				"required": "false",
+				"dataType": "numeric",
+				"minValue": "0",
+				"method": "hasValidQuantityConfiguration"
+			}
+		],
+		"maxQuantity": [
+			{
+				"contexts": "save",
+				"required": "false",
+				"dataType": "numeric",
+				"minValue": "0",
+				"method": "hasValidQuantityConfiguration"
+			}
+		],
+		"currencyCode": [
+			{
+				"contexts": "save",
+				"required": "true"
+			}
+		]
 	}
 }

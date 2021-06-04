@@ -75,12 +75,9 @@ Notes:
 						<hb:HibachiFieldDisplay fieldname="phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
 					</hb:HibachiDisplayToggle>
 					<!--- Existing Account --->
-					<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" >
-						<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
-						<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+					<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0">
+						<swa:SlatwallAccountTypeahead /> 	
 					</hb:HibachiDisplayToggle>
-					<!---<hb:HibachiFieldDisplay fieldname="createOrderFlag" title="#$.slatwall.rbKey('processObject.Sku_AddEventRegistration.createOrderFlag')#" fieldType="yesno" edit="#rc.edit#" value="1">--->
-				
 				</hb:HibachiPropertyList>
 				
 			</hb:HibachiPropertyRow>

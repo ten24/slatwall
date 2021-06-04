@@ -67,12 +67,14 @@ Notes:
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/brand" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/category" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/content" />
+		<hb:hibachiEntityDetailItem view="admin:entity/settingstabs/collectionSetting">
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/email" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/fulfillmentmethod" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/image" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/location" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/locationConfiguration" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/order" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/orderTemplate" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/paymentmethod" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/physical" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/producttype" />

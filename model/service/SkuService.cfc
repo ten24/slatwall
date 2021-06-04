@@ -48,7 +48,9 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
+	property name="hibachiService" type="any";
 	property name="skuDAO" type="any";
+	property name="stockDAO" type="any";
 	property name="inventoryService" type="any";
 	property name="locationService" type="any";
 	property name="optionService" type="any";
@@ -92,6 +94,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	public any function getPriceBySkuIDAndCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups) {
+
+		var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
+
+		if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
+			var prices = [];
+			for(var i=1; i <= arrayLen(skuPriceResults); i++){
+				if(isNull(skuPriceResults[i]['price'])){
+					skuPriceResults[i]['price'] = 0;
+				}
+				ArrayAppend(prices, skuPriceResults[i]['price']);
+			}
+
+			ArraySort(prices, "numeric","asc");
+			return prices[1];
+		}
+
+		var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(arguments.skuID, arguments.currencyCode);  
+
+		if(!isNull(baseSkuPrice)){
+			return baseSkuPrice.getPrice(); 
 		}
 	}
 
@@ -154,7 +180,50 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	// ===================== START: Logical Methods ===========================
+	
+	/** 
+	 * Function append settings value and options to existing sku List
+	 * @param - array of skus
+	 * @return - updated array of skus
+	 **/
+	public array function appendSettingsAndOptionsToSku(required array skus) {
+		if(arrayLen(arguments.skus)) {
+			
+			for(var sku in arguments.skus) {
+	            
+	            var currentSku = this.getSku(sku.skuID);
+	            sku['skuOrderMinimumQuantity'] = currentSku.setting('skuOrderMinimumQuantity');
+	            sku['skuOrderMaximumQuantity'] = currentSku.setting('skuOrderMaximumQuantity');
+	            sku['skuFulfillmentMethods'] = currentSku.getEligibleFulfillmentMethodsWithShippingMethods();
+	            
+	            
+	            var options = [];
+				if( arrayLen(currentSku.getOptions()) ) {
+					for(var option in currentSku.getOptions()){
+						ArrayAppend( options, {
+							"optionID" : option.getOptionID(),
+							"optionName" : option.getOptionName(),
+							"optionGroupID": option.getOptionGroup().getOptionGroupID(),
+							"optionGroupName": option.getOptionGroup().getOptionGroupName(),
+						} )
+					}
+				}
+	            sku['options'] = options;
+	            sku['selectedOptionIDList'] = currentSku.getOptionsIDList();
+	            
+	            sku['imagePath'] = currentSku.getImagePath();
+	        }
+		}
+		return arguments.skus;
+	}
 
+	public array function getSkuPublicProperties(){
+		var publicProperties =  ["skuID","skuCode","skuName","calculatedSkuDefinition","price","skuDescription","skuDefinition","calculatedQATS","activeFlag","product.activeFlag","publishedFlag","listPrice","renewalPrice","product.productName","product.productCode","product.productType.productTypeName","product.brand.brandName"];
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Sku');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties; 
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
@@ -209,8 +278,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			eventRegistration.setAccount(newAccount);
 
 		}
-
-		if(arguments.sku.getAvailableSeatCount > 0 ) {
+		if(arguments.sku.getAvailableSeatCount() > 0 ) {
 			eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
 		} else {
 			eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
@@ -247,6 +315,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return sku;
 	}
 
+	public any function processSku_createEmptySKUStocksForAllParentLocations(required any sku){
+	    this.getStockDAO().createEmptySKUStocksForAllParentLocations(arguments.sku.getSkuID());
+		return sku;
+	}
+	
 	// @help Modifies capacity and waitlisting properties
 	public any function processSku_editCapacity(required any sku, required any processObject) {
 		if(arguments.processObject.getEditScope() == "none"  ){
@@ -495,7 +568,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 			var makeupQuantity = bundledSku.getNativeUnitQuantityFromBundledQuantity() * arguments.processObject.getQuantity();
 
-			if(thisStock.getQATS() >=  makeupQuantity){
+			if(!arguments.processObject.getValidateQuantityFlag() || thisStock.getQATS() >=  makeupQuantity){
 
 				var bundleItem = getStockService().newStockAdjustmentItem();
 				bundleItem.setStockAdjustment( stockAdjustment );
@@ -598,14 +671,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processSku_move(required any sku, any processObject){
 		var originalProduct = arguments.sku.getProduct(); 
-		var isDefaultSku = originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSkuID(); 	
+		var isDefaultSku = false;
+		if(!IsNull(originalProduct.getDefaultSku()) && originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSkuID()){
+			isDefaultSku = true;
+		}
 		
-		arguments.sku.setProduct(processObject.getProduct());
+		arguments.sku.setProduct(arguments.processObject.getProduct());
 		arguments.sku = this.saveSku(arguments.sku);		
-	
-		if(originalProduct.getSkusCount() == 1){
+		if(isDefaultSku){
+			originalProduct.setDefaultSku(JavaCast('null',''));
+		}
+		getHibachiScope().flushORMSession();
+		if(originalProduct.getSkusCount() == 0){
 			originalProduct.setSkus([]);
 			var success = getProductService().deleteProduct(originalProduct); 
+			if(!success){
+				arguments.sku.addError('deleteProduct',rbKey('validate.delete.product'));
+			}
 		} else if(isDefaultSku){
 			originalProduct.setDefaultSku(originalProduct.getSkus()[1]); 
 			originalProduct = getProductService().saveProduct(originalProduct); 
@@ -640,9 +722,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				this.saveSkuLocationQuantity(skuLocationQuantity);
 			}
 
-			return arguments.sku;
 
 		}
+		return arguments.sku;
 	}
 
 	// =====================  END: Process Methods ============================

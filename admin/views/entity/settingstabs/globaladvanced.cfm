@@ -53,10 +53,12 @@ Notes:
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
 		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
+        <swa:SlatwallSetting settingName="globalCORSWhitelist" />
         <swa:SlatwallSetting settingName="globalWhiteListedEmailDomains" />
         <swa:SlatwallSetting settingName="globalTestingEmailDomain" />
 		<swa:SlatwallSetting settingName="globalAPIDirtyRead" />
 		<swa:SlatwallSetting settingName="globalAPIPageShowLimit" />
+		<swa:SlatwallSetting settingName="globalAPIExportLimit" />
 		<swa:SlatwallSetting settingName="globalClientSecret" />
 		<swa:SlatwallSetting settingName="globalDeploySitesAndApplicationsOnUpdate" />
 		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
@@ -73,9 +75,12 @@ Notes:
 		<swa:SlatwallSetting settingName="globalFileTypeWhiteList" />
 		<swa:SlatwallSetting settingName="globalMIMETypeWhiteList" />
 		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
-		<swa:SlatwallSetting settingName="globalShippingIntegrationForAddressVerification" />
+		<swa:SlatwallSetting settingName="globalIntegrationForAddressVerification" />
 		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
+		
 		<swa:SlatwallSetting settingName="globalCollectionKeywordWildcardConfig" />
+		<swa:SlatwallSetting settingName="globalDefaultOrderByMaxRecordsLimit" />
+		
 		<swa:SlatwallSetting settingName="globalAllowCustomBranchUpdates"/>
 		<swa:SlatwallSetting settingName="globalDisableSearchSettings"/>
 		
@@ -83,6 +88,10 @@ Notes:
 		<swa:SlatwallSetting settingName="globalS3AccessKey"/>
 		<swa:SlatwallSetting settingName="globalS3SecretAccessKey"/>
 		<swa:SlatwallSetting settingName="globalEntityQueueDataProcessCount"/>
+		<swa:SlatwallSetting settingName="globalDisableUninstalledIntegration"/>
+		<swa:SlatwallSetting settingName="globalIntegrationRequestLog"/>
+		<swa:SlatwallSetting settingName="globalIntegrationRequestLogExpirationDays"/>
+		<swa:SlatwallSetting settingName="globalPublicApiEntities" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

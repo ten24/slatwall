@@ -4,13 +4,14 @@ class DateReporting{
     //@ngInject
     public static Factory($filter){
         return (date,periodInterval)=>{
-            if(date.trim && date.trim().length===0){
+            if( !date?.trim?.()?.length ){
                 return '';
             }
+            
             switch(periodInterval){
                 case 'hour':
                     var dateArray = date.split('-');
-                    return 'Hour #'+dateArray[3]+ ' of '+dateArray[1]+'/'+dateArray[2]+'/'+dateArray[0];
+                    return  dateArray[1]+'/'+dateArray[2] + " " + dateArray[3] + ":00"
                 case 'day':
                     var dateArray = date.split('-');
                     return dateArray[1]+'/'+dateArray[2]+'/'+dateArray[0];

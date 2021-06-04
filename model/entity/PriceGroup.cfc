@@ -56,7 +56,9 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	property name="priceGroupCode" ormtype="string" index="PI_PRICEGROUPCODE";
 	
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
+
 	
 	// Related Object Properties (Many-To-One)
 	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" hb_optionsNullRBKey="define.none";
@@ -128,13 +130,10 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 		}
 		structDelete(variables, "parentPriceGroup");
 	}
-	
+
 	// Applied Order Items (one-to-many)    
 	public void function addAppliedOrderItem(required any appliedOrderItem) {    
 		arguments.appliedOrderItem.setAppliedPriceGroup( this );    
-	}    
-	public void function removeAppliedOrderItem(required any appliedOrderItem) {    
-		arguments.appliedOrderItem.removeAppliedPriceGroup( this );    
 	}
 	
 	// Child Price Groups (one-to-many)    
@@ -160,14 +159,6 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	public void function removeLoyaltyRedemption(required any loyaltyRedemption) {
 		arguments.loyaltyRedemption.removePriceGroup( this );
 	}	
-	
-	// Accounts (many-to-many - inverse)
-	public void function addAccount(required any account) {
-		arguments.account.addPriceGroup( this );
-	}
-	public void function removeAccount(required any account) {
-		arguments.account.removePriceGroup( this );
-	}
 	
 	// Subscription Benefits (many-to-many - inverse)
 	public void function addSubscriptionBenefit(required any subscriptionBenefit) {

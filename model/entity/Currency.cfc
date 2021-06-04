@@ -52,8 +52,9 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	property name="currencyCode" ormtype="string" fieldtype="id" unique="true" generated="never";
 	property name="currencyISONumber" ormtype="integer";
 	property name="activeFlag" ormtype="boolean";
-	property name="currencyName" ormtype="string";
-	property name="currencySymbol" ormtype="string";
+	property name="currencyName" ormtype="string" hb_translate="false";
+	property name="currencySymbol" ormtype="string" hb_translate="false";
+	property name="formatMask" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	

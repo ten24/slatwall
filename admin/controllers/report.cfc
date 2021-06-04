@@ -46,9 +46,13 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiControllerEntity" {
 
 	property name="hibachiReportService" type="any";
+	property name="orderService" type="any";
+	property name="accountService" type="any";
+	property name="permissionService" type="any";
+	property name="updateService" type="any";
 
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods,'default');
@@ -56,6 +60,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'exportcsv');
 
 	public void function default(required struct rc) {
+		
+		arguments.rc.orderCollectionList = getOrderService().getOrderCollectionList();
+		arguments.rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
+		arguments.rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
+		arguments.rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
+
 		param name="arguments.rc.reportID" default="";
 		
 		if(!arguments.rc.ajaxRequest) {
@@ -122,9 +133,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				arguments.rc.ajaxResponse["report"]["hideReport"] = true; 	
 			}
 			
-		} else {
-			arguments.rc.pageTitle = arguments.rc.report.getReportTitle();
 		}
+		
 	}
 	
 	public void function exportxls(required struct rc) {
@@ -156,6 +166,5 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
 	}
-	
-	
+
 }
