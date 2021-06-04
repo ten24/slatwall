@@ -72,11 +72,6 @@
 				"dataType": "date"
 			}
 		},
-		"transactionID": {
-			"validations": {
-				"dataType": "string"
-			}
-		},
 		"authorizationCode": {
 		    "validations": {
 		        "dataType": "string"
@@ -86,16 +81,18 @@
 
 	"relations": [
 	    {
-    		"type": "manyToOne",
-    		"entityName": "Address",
-    		"mappingCode": "Address",
-    		"propertyIdentifier": "billingAddress"
-    	},
+         "type":"manyToOne",
+         "entityName":"Address",
+         "mappingCode":"Address",
+         "isNullable":true,
+         "propertyIdentifier":"billingAddress",
+         "sourceDataKeysPrefix":"billingAddress_"
+        },
     	{
     	    "type" : "oneToMany",
             "entityName" : "PaymentTransaction",
             "hasMapping"         : false,
-            "generatorFunction" : "generateOrderPaymentTransactions",
+            "generatorFunction" : "generateErpOneOrderPaymentTransactions",
             "propertyIdentifier" : "paymentTransactions",
     	}
 	],
@@ -109,8 +106,6 @@
 		{
 			"key"                   : "paymentMethod",
 			"lookupKey"             : "paymentMethodName",
-			"defaultValue"          : "444df303dedc6dab69dd7ebcc9b8036a",
-			"__hint"                : "default payment-method is credit-card",
 			"entityName"            : "PaymentMethod",
 			"propertyIdentifier"    : "paymentMethod"
 		},
@@ -123,16 +118,12 @@
 		},
 		{
 			"key"                   : "orderPaymentTypeCode",
-			"defaultValue"          : "444df2f0fed139ff94191de8fcd1f61b",
-			"__hint"                : "default order-payment-type is `optCharge`",
 			"lookupKey"             : "systemCode",
 			"entityName"            : "Type",
 			"propertyIdentifier"    : "orderPaymentType"
 		},
 		{
 			"key"                   : "orderPaymentStatusTypeCode",
-			"defaultValue"          : "5accbf57dcf5bb3eb71614febe83a31d",
-			"__hint"                : "default order-payment-status-type is `opstActive`",
 			"lookupKey"             : "systemCode",
 			"entityName"            : "Type",
 			"propertyIdentifier"    : "orderPaymentStatusType"

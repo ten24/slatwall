@@ -31,6 +31,22 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
         super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
 	}
 	
+	// Get Order Data
+	public any function importOrderItems(){
+	    var batch = this.getService('erpOneService').importErpOneOrderItems();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	// Get Order Data
+	public any function importOrderPayments(){
+	    var batch = this.getService('erpOneService').importErpOneOrderPayments();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+	}
+	
 	// Get Order Items Data
 	public any function importOrderItems(){
 	    this.getService('erpOneService').importErpOneOrderItems();

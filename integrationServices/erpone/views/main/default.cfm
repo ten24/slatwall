@@ -15,6 +15,8 @@
     <hb:HibachiPropertyRow>
    	    <hb:HibachiPropertyList>
    	        
+   	        These are for testing only, should be removed after the development is completed
+   	        
    	        <hb:HibachiActionCaller 
 	            action="admin:erpone:main.importAccunts" 
 	            text="Import Accounts" 
@@ -35,7 +37,25 @@
 		    
 	        <hb:HibachiActionCaller 
 	            action="admin:erpone:main.importOrders" 
-	            text="Import Orders" 
+	            text="Import All Orders" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+	        
+	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importOrderItems" 
+	            text="Import All Order Items" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+	        
+	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importOrderPayments" 
+	            text="Import All Order Payments" 
 	            modal="false" 
 	            type="link" 
 	            icon="download" 

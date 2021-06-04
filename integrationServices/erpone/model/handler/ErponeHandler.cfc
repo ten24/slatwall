@@ -49,6 +49,6 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	}
 	
 	public void function afterProcessOrder_importSuccess(required any order, required struct mapping, required struct data ){
-	    this.getErpOneService().importErpOneOrderItemsAndOrderPaymentsByOrder(argumentCollection = arguments);
+	    this.getErpOneService().importOrderRelations(argumentCollection = arguments);
 	}
 }
