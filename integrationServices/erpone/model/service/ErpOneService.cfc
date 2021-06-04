@@ -849,7 +849,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			"order"      : "remoteOrderID",
 			"price"      : "price",
 			"q_ord"      : "quantity",
-			"list_price" : "skuPrice",
+			"list_price" : "skuPrice"
 		};
 		
     	var recordFormatterFunction = function(required struct erponeOrderItem){
@@ -860,7 +860,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	transformedItem['remoteOrderFulfillmentID'] = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( transformedItem.remoteOrderID );
         
 	    	// defaults
-	    	transformedItem['orderItemTypeCode']    = 'oitSale'
+	    	transformedItem['orderItemTypeCode']    = 'oitSale';
 	    	transformedItem['orderItemStatusCode']  = 'oistNew';
 
 	    	transformedItem['currencyCode']         = 'USD';
