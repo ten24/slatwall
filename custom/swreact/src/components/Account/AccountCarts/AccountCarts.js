@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
 import { useTranslation } from 'react-i18next'
 import { useGetAccountCartsAndQuotes } from '../../../hooks/useAPI'
 import { useFormatCurrency, useFormatDate } from '../../../hooks'
