@@ -14,6 +14,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="categoryName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="restrictAccessFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="allowProductAssignmentFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.category#" property="activeFlag" edit="#rc.edit#">
 			<cfif !structKeyExists(rc, "parentCategoryID")>
 				<hb:HibachiPropertyDisplay object="#rc.category#" property="parentCategory" edit="#rc.edit#" valueLink="#!isNull(rc.category.getParentCategory()) ? '?slatAction=admin:entity.detailCategory&categoryID=' & rc.category.getParentCategory().getCategoryID() : ''#">
 			</cfif>
