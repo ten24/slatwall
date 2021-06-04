@@ -59,22 +59,8 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
     <AccountLayout title={`Add ${action}`}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
       <form onSubmit={formik.handleSubmit}>
-        <h2>{heading}</h2>
-        
+        <h2>{heading}</h2>        
         <div className="row">
-          <div className="form-group col-md-6">
-            <label htmlFor="countryCode">{t('frontend.account.countryCode')}</label>
-            <SwSelect
-              id="countryCode"
-              value={formik.values.countryCode}
-              onChange={e => {
-                e.preventDefault()
-                dispatch(getStateCodeOptionsByCountryCode(e.target.value))
-                formik.handleChange(e)
-              }}
-              options={countryCodeOptions}
-            />
-          </div>
           <div className="form-group col-md-6">
             <label htmlFor="accountAddressName">{t('frontend.account.nickname')}</label>
             <input className="form-control" type="text" id="accountAddressName" value={formik.values['accountAddressName']} onChange={formik.handleChange} />
@@ -94,6 +80,19 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
           <div className="form-group col-md-6">
             <label htmlFor="phoneNumber">{t('frontend.account.emailAddress')} </label>
             <input className="form-control" type="email" id="emailAddress" value={formik.values['emailAddress']} onChange={formik.handleChange} />
+          </div>
+          <div className="form-group col-md-6">
+            <label htmlFor="countryCode">{t('frontend.account.countryCode')}</label>
+            <SwSelect
+              id="countryCode"
+              value={formik.values.countryCode}
+              onChange={e => {
+                e.preventDefault()
+                dispatch(getStateCodeOptionsByCountryCode(e.target.value))
+                formik.handleChange(e)
+              }}
+              options={countryCodeOptions}
+            />
           </div>
           <div className="form-group col-md-6">
             <label htmlFor="streetAddress">{t('frontend.account.streetAddress')}</label>
