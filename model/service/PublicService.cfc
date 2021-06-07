@@ -624,35 +624,21 @@ component  accessors="true" output="false"
 	 public void function getOrderDetails(required struct data) {
 	     param name="arguments.data.orderID";
 	     
-	     var account = getHibachiScope().getAccount();
-	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
+	     var hibachiScope = getHibachiScope();
+	     var account = hibachiScope.getAccount();
+	     if(!isNull(account) && !hibachiScope.hibachiIsEmpty(account.getAccountID())) {
 	         var order = this.getOrderService().getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
 	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService().getOrderDetails(order.getOrderID(), account.getAccountID());
-	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
+	             hibachiScope.addActionResult("public:account.getOrderDetails",false);
 	         } else {
-	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	             hibachiScope.addActionResult("public:account.getOrderDetails",true);
 	         }
 	     } else {
-	         getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	         hibachiScope.addActionResult("public:account.getOrderDetails",true);
 	         arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("processAccount_logout");
 	         return;
 	     }
-	     
-    	 var order = orderService.getOrder(arguments.data.orderID);
-    	 if( isNull(order) ){
-    	      hibachiScope.addActionResult("public:account.getOrderDetails", true);
-    	      arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.account.getOrderDetails.orderID_invalid");
-    	      return;
-    	 }
-	     
-	     var account = hibachiScope.getAccount();
-    	 
-    	 // TODO: use permissions
-        if( order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ){
-            arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails( order.getOrderID(), account.getAccountID());
-            getHibachiScope().addActionResult("public:account.getOrderDetails", false);
-        }
 	 }
 	
 	/**
