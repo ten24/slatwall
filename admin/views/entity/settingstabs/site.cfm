@@ -51,12 +51,19 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="siteDefaultCountry" />
+		<swa:SlatwallSetting settingName="siteAvailableLocales" />
+		<swa:SlatwallSetting settingName="siteDefaultLocale" />
+		<swa:SlatwallSetting settingName="siteDateFormat" />
+		<swa:SlatwallSetting settingName="siteDefaultAccountPaymentMethod" />	
 		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
 		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
 		<swa:SlatwallSetting settingName="siteOrderOrigin" />
 		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" />
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" />
 		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" />
+		<swa:SlatwallSetting settingName="siteWishlistShareEmailTemplate" />
+		<swa:SlatwallSetting settingName="siteProductSearchIntegration"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

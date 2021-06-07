@@ -10,6 +10,7 @@
 	<!--- These are optional Attributes --->
 	<cfparam name="attributes.edit" type="boolean" default="false" />						<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
 	<cfparam name="attributes.requiredFlag" type="boolean" default="false" />				<!--- Determines whether property is required or not in edit mode --->
+	<cfparam name="attributes.notRequiredClass" type="string" default="false" />			<!--- If set to s-not-required, will override any default validation. We can't reuse the requiredFlag because using requiredFlag false will break other fields.  --->
 	
 	<cfparam name="attributes.title" type="string" default="" />							<!--- hint: This can be used to override the displayName of a property" --->
 	<cfparam name="attributes.hint" type="string" default="" />								<!--- hint: If specified, then this will produce a tooltip around the title --->
@@ -49,6 +50,9 @@
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
+	<cfparam name="attributes.attributeFlag" type="boolean" default="false" />				<!--- Set to true when property is a custom property linked to an attribute in order to display the attribute value label rather than the value --->
+	
+	<cfparam name="attributes.showNgDateTimePicker" type="boolean" default="false" />         <!--- Property to populate anuglar date time picker property attributes --->
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -63,6 +67,7 @@
 		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		text				|	Simple Text Field
 		textarea			|	Simple Textarea
+		json    			|	Simple Formatted json
 		time				|	This is still just a textbox, but it adds the jQuery time picker
 		wysiwyg				|	Value needs to be a string
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
@@ -82,6 +87,22 @@
 	<cfif !attributes.object.isPersistent() || attributes.hibachiScope.authenticateEntityProperty('read', attributes.object.getClassName(), attributes.property)>
 		
 		<cfsilent>
+		
+			<!-- Populate angular date time picker field attributes -->
+			<cfif attributes.showNgDateTimePicker eq "true">
+				
+				<cfset local.formattedDateProperty="#dateFormat( attributes.object.getValueByPropertyIdentifier( attributes.property ), 'mm/dd/YYYY')#">
+				<!-- Append Field Attributes -->
+				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, "sw-date-picker 
+														ng-model=""#attributes.property#""
+														ng-init=""#attributes.property#='#local.formattedDateProperty#'""
+														autocomplete=""off"" ng-cloak") />
+				<!-- set field type to text if not already passed (to avoid override in FormField tag) --->
+				<cfif attributes.fieldType eq "">
+					<cfset attributes.fieldType = "text" />
+				</cfif>
+			</cfif>
+			
 			
 			<!--- If this was originally set to edit... make sure that they have edit ability for this property --->
 
@@ -186,7 +207,11 @@
 							<cfset attributes.valueClass &= " negative" />
 						</cfif>
 						
-						<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						<cfif attributes.attributeFlag AND attributes.object.hasAttributeCode(attributes.property)>
+							<cfset attributes.value = attributes.object.getAttributeValueLabel(attributes.property)>
+						<cfelse>
+							<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						</cfif>
 						
 					</cfif>
 				</cfif>
@@ -209,6 +234,30 @@
 			
 			<cfif attributes.hint eq "">
 				<cfset attributes.hint = attributes.object.getPropertyHint( attributes.property ) />
+			</cfif>
+			
+			<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif 
+				attributes.object.isPersistent() 
+				and listFindNoCase('text,textarea,wysiwyg', attributes.fieldType) 
+				and structKeyExists(attributes.object.getPropertyMetaData(attributes.property), 'ormtype')
+				and attributes.object.getPropertyMetaData(attributes.property).ormtype eq 'string'
+				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.object.getClassName())
+				and (
+					not structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_translate") 
+					or attributes.object.getPropertyMetaData(attributes.property).hb_translate
+				)
+			>
+				<cfset attributes.translateAttributes = {} />
+				<cfset attributes.translateAttributes.queryString = '' />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseObject=#attributes.object.getClassName()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseID=#attributes.object.getPrimaryIDValue()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "basePropertyName=#attributes.property#", "&") />
+			</cfif>
+			
+				<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif attributes.fieldType EQ 'json'>
+			    <cfset attributes.fieldClass= attributes.fieldClass &" json"/>
 			</cfif>
 				
 			<!--- Add the error class to the form field if it didn't pass validation --->

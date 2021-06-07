@@ -137,7 +137,8 @@ Notes:
 				FROM SlatwallProductReview pr 
 				WHERE pr.product = :product
 				AND pr.activeFlag = 1
-				',{product=arguments.product},true
+				AND productReviewStatusType.systemCode = :approved
+				',{product=arguments.product, approved='prstApproved'},true
 			);
 		}
 		

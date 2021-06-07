@@ -48,9 +48,22 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
+	property name="imageService" type="any";
+    property name="hibachiService" type="any";
 	property name="hibachiDataService" type="any";
-	
+	property name="settingService" type="any";
 	// ===================== START: Logical Methods ===========================
+	
+	public array function getBrandPublicProperties(){
+	    var publicProperties = ['brandID','brandName','urlTitle', 'brandDescription', 'activeFlag', 'brandFeatured', 'brandWebsite', 'imageFile'];
+	    var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Brand');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
+	
+	public string function getImageBasePath( boolean frontendURL = false ) {
+		return (arguments.frontendURL ? getHibachiScope().getBaseImageURL() : getHibachiScope().setting('globalAssetsImageFolderPath') ) & "/brand/logo";
+	}
 	
 	// =====================  END: Logical Methods ============================
 	
@@ -59,7 +72,52 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
+	public any function processBrand_uploadBrandLogo(required any brand, required any processObject) {
+		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
+		try {
+			
+			var uploadDirectory = this.getImageBasePath();
+			
+			var fileUpload = getHibachiUtilityService().uploadFile( 
+				uploadDirectory = uploadDirectory,
+				fileFormFieldName = 'uploadFile',
+				allowedMimeType = arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType
+			);
+			
+			if( !fileUpload.success ) {
+ 				arguments.brand.addError('imageFile', fileUpload.message);
+ 			} else {
+ 				
+ 				//delete existing image from object
+ 				if( arguments.brand.getImageFile() != "") {
+ 					arguments.brand = this.processBrand_deleteBrandLogo( arguments.brand, {"imageFile": arguments.brand.getImageFile()});
+ 				}
+ 				
+ 				arguments.brand.setImageFile( fileUpload.filePath );
+ 			}
+		} catch(any e) {
+			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
+		}
+
+		return arguments.brand;
+	}
 	
+	public any function processBrand_deleteBrandLogo(required any brand, required struct data) {
+		if(structKeyExists(arguments.data, "imageFile")) {
+			
+			var imageBasePath = this.getImageBasePath();
+			
+			getHibachiUtilityService().deleteFileFromPath( 
+			 	directoryPath = imageBasePath,
+			 	fileName = arguments.data.imageFile
+			 );
+			 
+			arguments.brand.setImageFile('');
+			getImageService().clearImageCache(imageBasePath, arguments.data.imageFile);
+		}
+
+		return arguments.brand;
+	}
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
@@ -76,6 +134,47 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return super.save(arguments.brand, arguments.data);
 	}
 	
+		/** 
+	 * Function append settings value and options to existing sku List
+	 * @param - array of skus
+	 * @return - updated array of skus
+	 **/
+	public array function appendSettingsAndOptions(required array brands) {
+		if(arrayLen(arguments.brands)) {
+			var directory = 'brand/logo';
+			for(var brand in arguments.brands) {
+	            
+	            var currentBrand = this.getBrand(brand.brandID);
+				var attributeSets = currentBrand.getAssignedAttributes()
+				var attributeStruct = currentBrand.getAttributeValuesByAttributeCodeStruct()
+			    var attributes = [];
+				for(var attribute in attributeSets) {
+					if(StructKeyExists(attributeStruct, attribute["attributeCode"])){
+						var thisAttributeObject = attributeStruct[attribute["attributeCode"]];
+						ArrayAppend( attributes, {
+							"attributeValueID" : thisAttributeObject.getAttributeValueID(),
+							"attributeID" : thisAttributeObject.getAttributeID(),
+							"attributeValue" : thisAttributeObject.getAttributeValue(),
+							"attributeCode" : attribute["attributeCode"]
+					} )
+					}
+					
+				}
+
+	            brand['settings']= {
+		            "brandHTMLTitleString": currentBrand.stringReplace( template = currentBrand.setting('brandHTMLTitleString'), formatValues = true ),
+	            	"brandMetaDescriptionString":  currentBrand.stringReplace( template = currentBrand.setting('brandMetaDescriptionString'), formatValues = true ),
+	            	"brandMetaKeywordsString": currentBrand.stringReplace( template = currentBrand.setting('brandMetaKeywordsString'), formatValues = true )
+	            }
+                brand['imagePath'] = getImageService().getImagePathByImageFileAndDirectory(brand['imageFile'], directory);
+	         	
+
+	            brand['attributes'] = attributes;
+	        }
+		}
+		return arguments.brands;
+	}
+	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
@@ -87,4 +186,3 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 	
 }
-

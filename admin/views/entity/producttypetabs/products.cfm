@@ -53,7 +53,7 @@ Notes:
     <cfset productsCollectionList = getHibachiScope().getService('productService').getProductCollectionList()>
     <cfset productsCollectionList.addFilter('productType.productTypeIDPath',rc.productType.getProductTypeIDPath()&'%','LIKE')/>
     
-	<cfset displayPropertyList = "productName,productCode,brand.brandName,activeFlag,publishedFlag,calculatedSalePrice"/>
+	<cfset displayPropertyList = "productName,productCode,brand.brandName,activeFlag,publishedFlag,price"/>
 	
     <cfset productsCollectionList.setDisplayProperties( displayPropertyList, {
     			isVisible=true,

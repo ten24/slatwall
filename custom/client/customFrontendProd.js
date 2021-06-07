@@ -1,1 +1,0 @@
-cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js

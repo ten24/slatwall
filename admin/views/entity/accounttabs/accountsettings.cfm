@@ -54,6 +54,9 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable>
+	    <cfif $.slatwall.getAccount().getSuperUserFlag() >
+		    <swa:SlatwallSetting settingName="accountCustomAdminStylesheet" settingObject="#rc.account#" />
+	    </cfif>
 		<swa:SlatwallSetting settingName="accountEligiblePaymentMethods" settingObject="#rc.account#" />
 		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" settingObject="#rc.account#" />
 		<swa:SlatwallSetting settingName="accountPaymentTerm" settingObject="#rc.account#" />

@@ -31,7 +31,12 @@ $(document).ready(function(e){
 					var input = jQuery( this ).closest('.slatwall-address-container').find( classSelector );
 					if( !country[key] && jQuery(input).hasClass('required') ) {
 						jQuery(input).removeClass('required');
-					} else if ( country[key] && !jQuery(input).hasClass('required') ) {
+					
+					// When the hibachi form field see that the requiredFlag is explicitly set to false 
+					// on an input, it will add the class s-not-required which tells this branch to NOT 
+					// add the required flag - we are overriding the value it should add.
+					
+					} else if ( country[key] && !jQuery(input).hasClass('required') && !jQuery(input).hasClass('s-not-required') ) {
 						jQuery(input).addClass('required');
 					}
 					
@@ -59,6 +64,7 @@ $(document).ready(function(e){
 					var stateField = jQuery( this ).closest('.slatwall-address-container').find( '.slatwall-address-stateCode' );
 				}
 				jQuery(stateField).html('');
+				jQuery( stateField ).append('<option value="">Select</option>');
 				jQuery.each(stateSmartList.pageRecords, function(i, v){
 					jQuery( stateField ).append('<option value="' + v['stateCode'] + '">' + v['stateName'] + '</option>');
 				});

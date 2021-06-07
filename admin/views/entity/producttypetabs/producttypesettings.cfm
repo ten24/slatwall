@@ -57,6 +57,7 @@ Notes:
 		<swa:SlatwallSetting settingName="productTypeHTMLTitleString" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="productTypeMetaDescriptionString" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="productTypeMetaKeywordsString" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesMQATSBOMFlag" settingObject="#rc.productType#" />
 		
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">

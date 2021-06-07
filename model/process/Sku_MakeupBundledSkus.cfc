@@ -61,6 +61,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Data Properties (Inputs)
 	property name="quantity";
+	property name="validateQuantityFlag" type="boolean";
 	
 	// Data Properties (Related Entity Populate)
 	
@@ -89,6 +90,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ===================  END: Lazy Object Helpers =======================
 	
 	// ================== START: New Property Helpers ======================
+	
+	public any function getValidateQuantityFlag(){
+		if(!structKeyExists(variables,'validateQuantityFlag')){
+			variables.validateQuantityFlag = true;
+		}
+		return variables.validateQuantityFlag;
+	}
 	
 	// ==================  END: New Property Helpers =======================
 	

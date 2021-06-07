@@ -304,7 +304,7 @@ class SWContentList implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
-        scope.$on('$destroy', function handler() {
+        scope.$on('$destroy', () => {
             this.observerService.detachByEvent('optionsChanged');
             this.observerService.detachByEvent('sortByColumn');
         });

@@ -3,14 +3,22 @@
 class SWModalLauncherController {
 
     public showModal:boolean; 
+    public showExit:boolean;
+    
+    public modalOptions;
+    
+    public launchEventName:string;
     public modalName:string; 
     public title:string; 
+    
     public hasSaveAction:boolean=false;
     public hasCancelAction:boolean=false;
     public hasDeleteAction:boolean=false; 
 
     public saveActionText:string; 
-    public cancelActionText:string; 
+    public cancelActionText:string;
+    
+    public saveDisabled:boolean;
 
     //callbacks
     public saveAction;
@@ -18,7 +26,19 @@ class SWModalLauncherController {
     public deleteAction; 
     
     // @ngInject
-    constructor(){
+    constructor(public observerService){
+        this.hasSaveAction = typeof this.saveAction === 'function';
+        this.hasDeleteAction = typeof this.deleteAction === 'function';
+        
+        if(angular.isUndefined(this.hasCancelAction)){
+            this.hasCancelAction = true;
+        }
+        if(angular.isUndefined(this.saveDisabled)){
+            this.saveDisabled = false; 
+        }
+        if(angular.isUndefined(this.showExit)){
+            this.showExit = true; 
+        }
         if(angular.isUndefined(this.showModal)){
             this.showModal = false; 
         }
@@ -28,11 +48,21 @@ class SWModalLauncherController {
         if(angular.isUndefined(this.cancelActionText)){
             this.cancelActionText = "Cancel"; 
         }
+        if(angular.isUndefined(this.modalOptions)){
+           this.modalOptions =  {};
+        }
+        
+        if(angular.isDefined(this.launchEventName)){
+            this.observerService.attach(this.launchModal, this.launchEventName);
+        }
     }
     
     public launchModal = () =>{
-        //activate the necessary modal
+        //this.showModal is only for use with custom template
         this.showModal = true; 
+        
+        //trigger bootstrap event to show modal
+        $("#" + this.modalName).modal(this.modalOptions);
     }
     
     public saveCallback = () =>{
@@ -76,8 +106,7 @@ class SWModalLauncherController {
 
 class SWModalLauncher implements ng.IDirective{
 
-    public templateUrl;
-    transclude = {
+    public transclude = {
         button: '?swModalButton',
         staticButton: '?swModalStaticButton',
         content: '?swModalContent'
@@ -85,22 +114,28 @@ class SWModalLauncher implements ng.IDirective{
     public restrict = "EA";
     public scope = {};
     public bindToController = {
+        modalOptions:"<?",
         showModal:"=?",
+        showExit:"=?",
+        launchEventName:"@?",
         modalName:"@", 
         title:"@",
+        saveDisabled:"=?",
         saveAction:"&?",
         deleteAction:"&?",
         cancelAction:"&?",
         saveActionText:"@?",
-        cancelActionText:"@?"
+        cancelActionText:"@?",
+        hasCancelAction:"=?"
     };
     public controller=SWModalLauncherController;
     public controllerAs="swModalLauncher";
+    
+    public template = require("./modallauncher.html");
 
-    // @ngInject
-    constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modallauncher.html";
-    }
+	public static Factory(){
+		return /** @ngInject; */ () => new this();
+	}
 
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
@@ -118,22 +153,6 @@ class SWModalLauncher implements ng.IDirective{
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
             }
         };
-    }
-
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            $compile
-            ,corePartialsPath
-            ,hibachiPathBuilder
-
-        )=> new SWModalLauncher(
-            $compile
-            ,corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["$compile","corePartialsPath",
-            'hibachiPathBuilder'];
-        return directive;
     }
 }
 export{

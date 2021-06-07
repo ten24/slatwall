@@ -58,6 +58,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="productTypeNamePath" ormtype="string";
 	property name="productTypeDescription" ormtype="string" length="4000";
 	property name="systemCode" ormtype="string";
+	property name="imageFile" ormtype="string" length="250" default="";
 
 	// Related Object Properties (Many-To-One)
 	property name="parentProductType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="parentProductTypeID";
@@ -83,7 +84,8 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalProductType" fkcolumn="productTypeID" inversejoincolumn="physicalID" inverse="true";
 
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -118,11 +120,11 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		var baseID = listFirst(getProductTypeIDPath());
 	
 		var cacheKey = 'productType_getBaseProductType#baseID#';
-		if(isNull(getSystemCode()) || getSystemCode() == ""){
+		if(!isNull(this.getParentProductType())){
 			if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 				getService('HibachiCacheService').setCachedValue(cacheKey,getService("ProductService").getProductType(baseID).getSystemCode());
 			}
-			return getService('HibachiCacheService').getCachedValue(cacheKey);;
+			return getService('HibachiCacheService').getCachedValue(cacheKey);
 		}
 		return getSystemCode();
 	}

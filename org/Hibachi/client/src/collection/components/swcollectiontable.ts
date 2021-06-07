@@ -43,7 +43,8 @@ class SWCollectionTable{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"collectiontable.html",
+			template: require("./collectiontable.html"),
+			
 			scope:{
 				collection:"=",
 				collectionConfig:"=",

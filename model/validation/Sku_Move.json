@@ -1,5 +1,5 @@
 {
-	"properties":{
-		"product":						[{"required":true}]
+	"properties": {
+		"product": [{ "required": true }]
 	}
 }

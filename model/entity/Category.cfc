@@ -84,9 +84,6 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-
-
-
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

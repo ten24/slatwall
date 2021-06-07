@@ -1,18 +1,19 @@
 {
-    "conditions":{
-    	"fulfillmentTypeNotAuto":{
-	        "orderFulfillment.fulfillmentMethod.fulfillmentMethodType":	{"neq":"auto"}
-	    }
-    },
-	"properties":{
-	    "orderDeliveryItems":					[
-		    										{"method":"isValidQuantity"},{"method":"isValidDeliveryQuantity"},
-		    										{"method":"hasQuantityOnOneOrderDeliveryItem"},
-		    										{"method":"hasRecipientsForAllGiftCardDeliveryItems"},
-		    										{"method":"canDeliverGiftCardItems"}
-		    									],
-	    "giftCardCodes":						[{"method":"hasGiftCardCodesForAllGiftCardDeliveryItems"}],
-	    "location":								[{"conditions":"fulfillmentTypeNotAuto","required":true}]
+	"conditions": {
+		"fulfillmentTypeNotAuto": {
+			"orderFulfillment.fulfillmentMethod.fulfillmentMethodType": { "neq": "auto" }
+		}
 	},
-	"populatedPropertyValidation":{}
+	"properties": {
+		"orderDeliveryItems": [
+			{ "method": "isValidQuantity" },
+			{ "method": "isValidDeliveryQuantity" },
+			{ "method": "hasQuantityOnOneOrderDeliveryItem" },
+			{ "method": "hasRecipientsForAllGiftCardDeliveryItems" },
+			{ "method": "canDeliverGiftCardItems" }
+		],
+		"giftCardCodes": [{ "method": "hasGiftCardCodesForAllGiftCardDeliveryItems" }],
+		"location": [{ "conditions": "fulfillmentTypeNotAuto", "required": true }]
+	},
+	"populatedPropertyValidation": {}
 }

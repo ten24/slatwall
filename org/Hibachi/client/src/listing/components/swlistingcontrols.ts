@@ -12,7 +12,8 @@ class SWListingControlsController {
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
     private personalCollectionsClosed:boolean=true;
-    private showExport:boolean; 
+    private showExport:boolean;
+    private showAutoRefresh:boolean; 
     private showReport:boolean;
     private showFilters:boolean;
     private showPersonalCollections:boolean;
@@ -46,6 +47,10 @@ class SWListingControlsController {
             this.showReport = true; 
         }
         
+        if(angular.isUndefined(this.showAutoRefresh)){
+            this.showAutoRefresh = false; 
+        }
+        
         if(angular.isUndefined(this.showToggleSearch)){
             this.showToggleSearch = true;
         }
@@ -76,7 +81,7 @@ class SWListingControlsController {
             metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias], this.collectionConfig.baseEntityAlias);
         });
 
-        this.observerService.attach(this.filterActions, 'filterItemAction');
+        this.observerService.attach(this.filterActions, 'filterItemAction', this.tableId);
 
     }
     public filterActions =(res)=>{
@@ -189,8 +194,8 @@ class SWListingControlsController {
 
 class SWListingControls  implements ng.IDirective{
 
-    public static $inject = ['listingPartialPath', 'hibachiPathBuilder'];
-    public templateUrl;
+    public template= require('./listingcontrols.html');
+    
     public restrict = 'E';
     public scope = {};
     public require={swListingDisplay:'?^swListingDisplay'}
@@ -201,34 +206,21 @@ class SWListingControls  implements ng.IDirective{
         getCollection : "&",
         showReport:"=?",
         showExport: "=?",
+        showAutoRefresh: "=?",
         showFilters : "=?",
         showPrintOptions: "=?",
         showToggleSearch: "=?",
         showToggleFilters : "=?",
         showToggleDisplayOptions : "=?",
         displayOptionsClosed:"=?",
-        simple:"=?"
+        simple:"=?",
+        defaultSearchColumn:"=?"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';
 
-    constructor(
-        public collectionPartialsPath,
-        public hibachiPathBuilder
-    ){
-        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingcontrols.html";
-    }
-
     public static Factory(){
-        var directive = (
-            listingPartialPath,
-            hibachiPathBuilder
-        )=> new SWListingControls(
-            listingPartialPath,
-            hibachiPathBuilder
-        );
-        directive.$inject = [ 'listingPartialPath', 'hibachiPathBuilder'];
-        return directive;
+        return /** @ngInject */ () => new this();
     }
 }
 

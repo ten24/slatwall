@@ -58,7 +58,7 @@ Notes:
 		</cfif>
 	</cffunction>
 	
-	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public">
+	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public" localMode="true">
 		<cfargument name="attributeSetObject" required="true" type="string" />
 		
 		<cfset var rs = "" />
@@ -107,21 +107,76 @@ Notes:
 	
 	<cffunction name = "getAttributesDataByEntityName">
 		<cfargument name="entityName" type="string" required="true" >
+		<cfargument name="includeCustomProperties" type="boolean" default="false" >
 		
 		<cfquery name = "local.attributesDataQuery">
 				SELECT attributeCode, attributeInputType 
 				FROM swAttribute
 				INNER JOIN swAttributeSet on swAttribute.attributeSetID = swAttributeSet.attributeSetID
 				WHERE
+				<cfif !arguments.includeCustomProperties >
 					( swAttribute.customPropertyFlag is null OR swAttribute.customPropertyFlag = 0 )
 				AND
+				</cfif>
 					swAttributeSet.activeFlag = 1
-				AND 
-					swAttributeSet.globalFlag = 1
 				AND 
 					swAttributeSet.attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.entityName#"/>
 		</cfquery>
 		<cfreturn local.attributesDataQuery />
 	</cffunction>
+	
+	<cffunction name="getAttributeOptionByAttributeOptionValueAndAttributeID" output="false" access="public">
+		<cfargument name="attributeOptionValue" type="string" required="true" >
+		<cfargument name="attributeID" type="string" required="true" >
+		
+		<cfreturn ormExecuteQuery("SELECT aAttributeOption FROM SlatwallAttributeOption aAttributeOption WHERE aAttributeOption.attributeOptionValue = ? AND aAttributeOption.attribute.attributeID = ? ORDER BY sortOrder ASC", [arguments.attributeOptionValue, arguments.attributeID], true, {maxResults=1}) />
+	</cffunction>
+	
+	<cffunction name="getAttributeOptionLabelByAttributeCodeAndAttributeValue" output="false" access="public">
+		<cfargument name="attributeCode" type="string" required="true">
+		<cfargument name="attributeValue" type="string" required="true">
+		<cfquery name="local.attributeOptionLabels">
+			SELECT IFNULL(ao.attributeOptionLabel,'') as label
+			FROM swattributeoption ao 
+				JOIN swattribute a on a.attributeID = ao.attributeID
+			WHERE ao.attributeOptionValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeValue#"/>
+				AND a.attributeCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeCode#"/>
+			LIMIT 1
+		</cfquery>
+		<cfloop query="#local.attributeOptionLabels#">
+			<cfreturn label>
+		</cfloop>
+	</cffunction>
+	
+	<cfscript>
+	
+	public string function getAttributeOptionIDByAttributeIDAndAttributeOptionValue(required string attributeID, required string attributeOptionValue){
+	
+	    var sql = "SELECT attributeOptionID 
+            	   FROM swattributeoption 
+            	   WHERE attributeID = :attributeID AND attributeOptionValue = :attributeOptionValue
+            	  ";
+            	  
+	    var queryService = new query();
+	    queryService.addParam(name='attributeID', value=arguments.attributeID);
+	    queryService.addParam(name='attributeOptionValue', value=arguments.attributeOptionValue);
 
+    	return queryService.execute(sql=sql).getResult()['attributeOptionID'];
+	}
+    
+    public string function getAttributeOptionIDByAttributeIDAndAttributeOptionLabel(required string attributeID, required string attributeOptionLabel){
+    	
+    	var sql = "SELECT attributeOptionID 
+            	   FROM swattributeoption 
+            	   WHERE attributeID = :attributeID AND attributeOptionLabel = :attributeOptionLabel
+            	  ";
+            	  
+	    var queryService = new query();
+	    queryService.addParam(name='attributeID', value=arguments.attributeID);
+	    queryService.addParam(name='attributeOptionLabel', value=arguments.attributeOptionLabel);
+
+    	return queryService.execute(sql=sql).getResult()['attributeOptionID'];
+    }
+    </cfscript>
+    
 </cfcomponent>

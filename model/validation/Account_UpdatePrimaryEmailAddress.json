@@ -1,6 +1,6 @@
 {
-    "properties": {
-        "emailAddress":             [{"required":true,"dataType":"email","method":"isUniqueEmailToAccount"}],
-        "emailAddressConfirm":      [{"required":true,"eqProperty":"emailAddress"}]
-    }
+	"properties": {
+		"emailAddress": [{ "required": true, "dataType": "email", "method": "isUniqueEmailToAccount" }],
+		"emailAddressConfirm": [{ "required": true, "eqProperty": "emailAddress" }]
+	}
 }

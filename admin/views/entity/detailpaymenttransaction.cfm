@@ -56,34 +56,37 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.paymentTransaction#" edit="#rc.edit#">
 		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.paymentTransaction#" edit="#rc.edit#">
-			<hb:HibachiProcessCaller entity="#rc.paymentTransaction#" action="admin:entity.processPaymentTransaction" type="list" processContext="voidTransaction" modal="false">		
-		</hb:HibachiEntityActionBar>
-		
 		<!--- Order Payment Back --->
 		<cfif !isNull(rc.paymentTransaction.getOrderPayment())>
-					<hb:HibachiEntityActionBar  type="detail" 
-									object="#rc.paymentTransaction#" 
-									edit="#rc.edit#"
-									backaction="admin:entity.detailOrderPayment"
-     								backquerystring="orderPaymentID=#rc.paymentTransaction.getOrderPayment().getOrderPaymentID()#">
-  									</hb:HibachiEntityActionBar>
+			<hb:HibachiEntityActionBar  type="detail" 
+				object="#rc.paymentTransaction#" 
+				edit="#rc.edit#"
+				backaction="admin:entity.detailOrderPayment"
+ 				backquerystring="orderPaymentID=#rc.paymentTransaction.getOrderPayment().getOrderPaymentID()#">
+				<hb:HibachiProcessCaller entity="#rc.paymentTransaction#" action="admin:entity.processPaymentTransaction" type="list" processContext="voidTransaction" modal="false">
+  			</hb:HibachiEntityActionBar>
 		<!--- Account Payment Method Back --->
 		<cfelseif !isNull(rc.paymentTransaction.getAccountPaymentMethod())>
-					<hb:HibachiEntityActionBar  type="detail" 
-									object="#rc.paymentTransaction#" 
-									edit="#rc.edit#"
-									backaction="admin:entity.detailAccountPaymentMethod"
-     								backquerystring="accountPaymentMethodID=#rc.paymentTransaction.getAccountPaymentMethod().getAccountPaymentMethodID()#">
-  									</hb:HibachiEntityActionBar>
+			<hb:HibachiEntityActionBar  type="detail" 
+				object="#rc.paymentTransaction#" 
+				edit="#rc.edit#"
+				backaction="admin:entity.detailAccountPaymentMethod"
+ 				backquerystring="accountPaymentMethodID=#rc.paymentTransaction.getAccountPaymentMethod().getAccountPaymentMethodID()#">
+				<hb:HibachiProcessCaller entity="#rc.paymentTransaction#" action="admin:entity.processPaymentTransaction" type="list" processContext="voidTransaction" modal="false">
+  			</hb:HibachiEntityActionBar>
   		<!--- Account Payment Back --->
   		<cfelseif !isNull(rc.paymentTransaction.getAccountPayment())>
-					<hb:HibachiEntityActionBar  type="detail" 
-									object="#rc.paymentTransaction#" 
-									edit="#rc.edit#"
-									backaction="admin:entity.detailAccountPayment"
-     								backquerystring="accountPaymentID=#rc.paymentTransaction.getAccountPayment().getAccountPaymentID()#">
-  									</hb:HibachiEntityActionBar>
+			<hb:HibachiEntityActionBar  type="detail" 
+				object="#rc.paymentTransaction#" 
+				edit="#rc.edit#"
+				backaction="admin:entity.detailAccountPayment"
+ 				backquerystring="accountPaymentID=#rc.paymentTransaction.getAccountPayment().getAccountPaymentID()#">
+				<hb:HibachiProcessCaller entity="#rc.paymentTransaction#" action="admin:entity.processPaymentTransaction" type="list" processContext="voidTransaction" modal="false">
+  			</hb:HibachiEntityActionBar>
+  		<cfelse>
+  			<hb:HibachiEntityActionBar type="detail" object="#rc.paymentTransaction#" edit="#rc.edit#">
+				<hb:HibachiProcessCaller entity="#rc.paymentTransaction#" action="admin:entity.processPaymentTransaction" type="list" processContext="voidTransaction" modal="false">		
+			</hb:HibachiEntityActionBar>
 		</cfif>
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>

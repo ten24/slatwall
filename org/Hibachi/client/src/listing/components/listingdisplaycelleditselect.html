@@ -1,0 +1,8 @@
+<select type="{{swListingDisplayCell.column.type}}"
+       class="form-control"
+       ng-keypress="swListingDisplayCell.handleKeyPress($event)"
+       ng-model="swListingDisplayCell.pageRecord[swListingDisplayCell.pageRecordKey]"
+       ng-init="swListingDisplayCell.pageRecord[swListingDisplayCell.pageRecordKey] = swListingDisplayCell.column.options[0]"
+       value="{{swListingDisplayCell.column.default}}"
+       ng-options="option as option.name for option in swListingDisplayCell.column.options track by option.value">
+</select>
