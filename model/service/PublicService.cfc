@@ -4125,7 +4125,7 @@ component  accessors="true" output="false"
         };
         getHibachiScope().addActionResult("public:scope.getProductFilterOptions",false);
     }
-}
+
     
     /** 
      * @http-context getDiscountsByCartData
@@ -4482,7 +4482,7 @@ component  accessors="true" output="false"
         }
     }
     
-     public void function productAvailableSkuOptions( required struct data ) {
+    public void function productAvailableSkuOptions( required struct data ) {
 		param name="arguments.data.productID" type="string" default="";
 		param name="arguments.data.selectedOptionIDList" type="string" default="";
 
@@ -4531,7 +4531,7 @@ component  accessors="true" output="false"
         var skuOptionDetails = product.getSkuOptionDetails()
         var defaultSku = product.getDefaultSku()
         if(!isNull(defaultSku)){
-        defaultSelectedOptions = defaultSku.getOptionsIDList()
+            defaultSelectedOptions = defaultSku.getOptionsIDList()
             for(var optionGroup in optionGroupsArr) {
                 var options = product.getOptionsByOptionGroup( optionGroup.getOptionGroupID() )
                 var group = []
