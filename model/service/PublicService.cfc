@@ -419,7 +419,7 @@ component  accessors="true" output="false"
 
 	    var account = getHibachiScope().getAccount();
 	    var sku = getProductService().getSku( arguments.data.skuID );
-
+	    var hibachiScope = this.getHibachiScope();
 	    if( isNull( sku ) ) {
 	        hibachiScope.addActionResult("public:product.getProductBundleBuilds",true);
 	        arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.product.getProductBundleBuild.skuID_invalid");
