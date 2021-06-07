@@ -3,6 +3,7 @@ import { useFormatDateTime } from '../../../hooks/useFormatDate'
 import { useSelector } from 'react-redux'
 import { ShippingAddressDetails, BillingAddressDetails, TermPaymentDetails, GiftCardDetails, CCDetails, PickupLocationDetails } from '../../index'
 import { orderPayment } from '../../../selectors/orderSelectors'
+import { useTranslation } from 'react-i18next'
 
 
 const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
@@ -13,6 +14,7 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   const [formateDate] = useFormatDateTime({})
   const [formatCurrency] = useFormatCurrency({})
   const payment = useSelector(orderPayment)
+  const { t } = useTranslation()
 
   return (
     <div className="row align-items-start mb-5 mr-3">
@@ -21,8 +23,10 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
           <div className="col-6 ">
             {orderFulfillment_fulfillmentMethod_fulfillmentMethodType === 'shipping' && <ShippingAddressDetails className="" shippingAddress={{ name: orderFulfillment_shippingAddress_name, streetAddress: orderFulfillment_shippingAddress_streetAddress, city: orderFulfillment_shippingAddress_city, emailAddress: orderFulfillment_shippingAddress_emailAddress, stateCode: orderFulfillment_shippingAddress_stateCode, postalCode: orderFulfillment_shippingAddress_postalCode }} shippingAddressNickname={''} />}
             {orderFulfillment_fulfillmentMethod_fulfillmentMethodType === 'pickup' && <PickupLocationDetails className="" pickupLocation={{ locationName: orderFulfillment_pickupLocation_locationName }} />}
-            <h3 className="h6">Date Placed</h3>
+            <h3 className="h6">{t('frontend.account.order.datePlaced')}</h3>
             <p>{formateDate(orderOpenDateTime)}</p>
+            <h3 className="h6">{t('frontend.order.OrderNo')}</h3>
+            <p>{orderPayments.order_orderNumber}</p>
           </div>
           <div className="col-6">
             <BillingAddressDetails billingAddressNickname={''} orderPayment={{ billingAddress: { name: billingAddress_name, streetAddress: billingAddress_streetAddress, city: billingAddress_city, stateCode: billingAddress_stateCode, postalCode: billingAddress_postalCode, emailAddress: billingAddress_emailAddress } }} />

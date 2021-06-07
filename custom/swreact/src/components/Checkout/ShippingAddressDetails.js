@@ -9,7 +9,7 @@ const ShippingAddressDetails = ({ shippingAddress, shippingAddressNickname }) =>
       <p>
         {shippingAddressNickname && (
           <>
-            <em>{shippingAddressNickname}</em>
+            {shippingAddressNickname}
             <br />
           </>
         )}

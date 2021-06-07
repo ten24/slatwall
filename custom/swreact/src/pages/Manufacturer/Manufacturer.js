@@ -64,7 +64,7 @@ const Manufacturer = () => {
               __html: customBody || '',
             }}
           />
-          {customBody && <hr />}
+          {customBody}
           <div className="pb-4 pb-sm-5">
             <div className="row">
               {request.isLoaded &&
