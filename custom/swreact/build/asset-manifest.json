@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/custom/swreact/build/static/css/main.50d4e7ee.chunk.css",
-    "main.js": "/custom/swreact/build/static/js/main.41c7a180.chunk.js",
-    "main.js.map": "/custom/swreact/build/static/js/main.41c7a180.chunk.js.map",
+    "main.js": "/custom/swreact/build/static/js/main.434ce76d.chunk.js",
+    "main.js.map": "/custom/swreact/build/static/js/main.434ce76d.chunk.js.map",
     "runtime-main.js": "/custom/swreact/build/static/js/runtime-main.ebdecba3.js",
     "runtime-main.js.map": "/custom/swreact/build/static/js/runtime-main.ebdecba3.js.map",
     "static/css/2.b789a6aa.chunk.css": "/custom/swreact/build/static/css/2.b789a6aa.chunk.css",
-    "static/js/2.a43183e9.chunk.js": "/custom/swreact/build/static/js/2.a43183e9.chunk.js",
-    "static/js/2.a43183e9.chunk.js.map": "/custom/swreact/build/static/js/2.a43183e9.chunk.js.map",
+    "static/js/2.ab7b665c.chunk.js": "/custom/swreact/build/static/js/2.ab7b665c.chunk.js",
+    "static/js/2.ab7b665c.chunk.js.map": "/custom/swreact/build/static/js/2.ab7b665c.chunk.js.map",
     "static/css/3.b6c73b33.chunk.css": "/custom/swreact/build/static/css/3.b6c73b33.chunk.css",
     "static/js/3.36c818f8.chunk.js": "/custom/swreact/build/static/js/3.36c818f8.chunk.js",
     "static/js/3.36c818f8.chunk.js.map": "/custom/swreact/build/static/js/3.36c818f8.chunk.js.map",
@@ -53,7 +53,7 @@
     "static/css/2.b789a6aa.chunk.css.map": "/custom/swreact/build/static/css/2.b789a6aa.chunk.css.map",
     "static/css/3.b6c73b33.chunk.css.map": "/custom/swreact/build/static/css/3.b6c73b33.chunk.css.map",
     "static/css/main.50d4e7ee.chunk.css.map": "/custom/swreact/build/static/css/main.50d4e7ee.chunk.css.map",
-    "static/js/2.a43183e9.chunk.js.LICENSE.txt": "/custom/swreact/build/static/js/2.a43183e9.chunk.js.LICENSE.txt",
+    "static/js/2.ab7b665c.chunk.js.LICENSE.txt": "/custom/swreact/build/static/js/2.ab7b665c.chunk.js.LICENSE.txt",
     "static/media/app.scss": "/custom/swreact/build/static/media/fa-solid-900.f3aa05aa.woff",
     "static/media/logo.37db8f93.png": "/custom/swreact/build/static/media/logo.37db8f93.png",
     "static/media/missing-brand.309e85b8.png": "/custom/swreact/build/static/media/missing-brand.309e85b8.png",
@@ -64,8 +64,8 @@
   "entrypoints": [
     "static/js/runtime-main.ebdecba3.js",
     "static/css/2.b789a6aa.chunk.css",
-    "static/js/2.a43183e9.chunk.js",
+    "static/js/2.ab7b665c.chunk.js",
     "static/css/main.50d4e7ee.chunk.css",
-    "static/js/main.41c7a180.chunk.js"
+    "static/js/main.434ce76d.chunk.js"
   ]
 }
