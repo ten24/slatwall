@@ -180,4 +180,21 @@
 		
 		<cfreturn returnContent />
 	</cffunction>
+	
+	<cffunction name="cfzip">
+		<cfargument name="file" type="string" required="true">
+		<cfargument name="zipSource" type="string" required="true">
+		<cfargument name="filter" type="string" default="*" >
+
+		<cfzip file="#arguments.file#" action="zip" source="#arguments.zipSource#" filter="#arguments.filter#">
+	</cffunction> 
+	
+	<cffunction name="cfunzip">
+		<cfargument name="file" type="string" required="true">
+		<cfargument name="zipDestination" type="string" required="true">
+		<cfargument name="filter" type="string" default="*" >
+
+		<cfzip file="#arguments.file#" action="unzip" destination="#arguments.zipDestination#">
+	</cffunction> 
+	
 </cfcomponent>

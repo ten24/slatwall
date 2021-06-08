@@ -26,15 +26,13 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
 
   return (
     <div className="d-sm-flex justify-content-between align-items-top my-4 py-3 border-bottom">
-      
       <Link className="d-inline-block mr-sm-4" to={urlTitle} style={{ width: '10rem' }}>
         <ProductImage productID={productID} skuID={skuID} />
         {/* <SWImage customPath={imagePath} alt="Product" /> */}
       </Link>
-      
+
       <div className="d-sm-flex flex-row flex-wrap w-100">
         <div className="d-flex justify-content-between align-items-center w-100">
-        
           <div className="media media-ie-fix d-block d-sm-flex">
             <div className="media-body pt-2 pt-sm-0">
               <span className="product-meta d-block font-size-xs pb-1">{productSeries || t('frontend.product.series')}</span>
@@ -52,11 +50,11 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
                 {`${brandName} `}
                 <span className="text-muted mr-2">{skuCode}</span>
               </div>
-              <ProductPrice salePrice={price} listPrice={listPrice} salePriceSuffixKey="frontend.core.each" accentSalePrice={false} />
+              {price !== listPrice && <ProductPrice salePrice={price} listPrice={listPrice} salePriceSuffixKey="frontend.core.each" accentSalePrice={false} />}
               <div className="font-size-lg text-accent pt-2">{formatCurrency(extendedPriceAfterDiscount)}</div>
             </div>
           </div>
-        
+
           <div className="pt-2 pt-sm-0 pl-sm-3 mx-0" style={{ maxWidth: '8rem' }}>
             {isDisabled && (
               <div className="form-group mb-0">
@@ -100,18 +98,15 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
               </>
             )}
           </div>
-          
         </div>
-        
+
         {isBackordered && (
           <div className="p-2 border rounded w-100 d-flex mt-2 align-items-center">
             <i className="fal fa-exclamation-circle mr-2"></i>
             <p className="text-sm mb-0">{t('frontend.order.backorder')}</p>
           </div>
         )}
-        
       </div>
-      
     </div>
   )
 }

@@ -7,7 +7,6 @@ import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 import { getConfiguration } from './actions/configActions'
 import logo from './assets/images/logo.png'
 import mobileLogo from './assets/images/logo-mobile.png'
-import { ErrorFallback } from './pages'
 import { ErrorBoundary } from 'react-error-boundary'
 
 const Home = lazyWithPreload(() => import('./pages/Home/Home'))
@@ -22,6 +21,7 @@ const Brand = lazyWithPreload(() => import('./pages/Brand/Brand'))
 const Manufacturer = lazyWithPreload(() => import('./pages/Manufacturer/Manufacturer'))
 
 const NotFound = lazyWithPreload(() => import('./pages/NotFound/NotFound'))
+const ErrorFallback = lazyWithPreload(() => import('./pages/ErrorFallback/ErrorFallback'))
 const ContentPage = lazyWithPreload(() => import('./pages/ContentPage/ContentPage'))
 const Product = lazyWithPreload(() => import('./pages/Product/Product'))
 const ProductType = lazyWithPreload(() => import('./pages/ProductType/ProductType'))
@@ -81,6 +81,7 @@ export default function App() {
         <CMSWrapper />
         <Switch>
           <Route path="/404" component={NotFound} />
+          <Route path="/Error" component={ErrorFallback} />
           <Route path="/contact" component={Contact} />
           {routing.length &&
             routing.map(({ URLKey, URLKeyType }, index) => {
