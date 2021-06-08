@@ -1090,7 +1090,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	transformedItem['remoteOrderFulfillmentID'] = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( transformedItem.remoteOrderID );
         
 	    	// defaults
-	    	transformedItem['orderItemTypeCode']    = 'oitSale'
+	    	transformedItem['orderItemTypeCode']    = 'oitSale';
 	    	transformedItem['orderItemStatusCode']  = 'oistNew';
 
 	    	transformedItem['currencyCode']         = 'USD';

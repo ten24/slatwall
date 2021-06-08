@@ -97,7 +97,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    if(isQuery(arguments.queryOrArrayOfStruct)){
     	        arguments.batchItemsCount = arguments.queryOrArrayOfStruct.recordCount; // query
     	    } else {
-    	        arguments.batchItemsCount = arguments.queryOrArrayOfStruct.len() // array
+    	        arguments.batchItemsCount = arguments.queryOrArrayOfStruct.len(); // array
     	    }
 	    }
 	    
