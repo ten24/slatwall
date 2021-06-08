@@ -1369,6 +1369,11 @@ component extends="HibachiService" accessors="true" {
 		if(!directoryExists(uploadTempDirectory)) {
 			directoryCreate(uploadTempDirectory);
 		}
+		
+		if(!directoryExists(uploadDirectory)) {
+		    directoryCreate(uploadDirectory);
+		}
+		
 		getHibachiTagService().cfunzip( file=arguments.processObject.getUploadFile(), zipDestination = uploadTempDirectory , filter = "*.jpg, *.jpeg, *.png");
 
 		var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
