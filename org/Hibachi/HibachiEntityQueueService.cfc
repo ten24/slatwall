@@ -126,7 +126,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}	
 			
 			var entityOrAnything = arguments.service.invokeMethod("#entityQueue['processMethod']#", methodData);
-
+			
 			if( !isNull(entityOrAnything) && isObject(entityOrAnything) ){   // then assuming it's will be an entity
 
 			    arguments.entity = entityOrAnything;

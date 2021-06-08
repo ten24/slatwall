@@ -92,7 +92,7 @@
          "entityName":"OrderFulfillment",
          "hasMapping":false,
          "propertyIdentifier":"orderFulfillments",
-         "generatorFunction":"generateOrderOrderFulfillments"
+         "generatorFunction":"generateERPOneOrderOrderFulfillments"
       }
    ],
    "dependencies":[

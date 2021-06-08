@@ -62,6 +62,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiEntityQueueDAO";
 	property name = "OptionDAO";
 	property name = "OrderDAO";
+	property name = "StockDAO";
 	
 	public any function init() {
 	    super.init(argumentCollection = arguments);
@@ -174,7 +175,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        emptyRelations = validation.emptyRelations
     	    );
     	    
-    
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
@@ -450,11 +450,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        arguments.mapping = this.getMappingByMappingCode( arguments.entityQueueData.mappingCode );
 	    }
 	    
-        var extensionFunctionName = 'process#entityName#_import';
+        var extensionFunctionName = 'process#entityName#Import';
 	    if( structKeyExists(this, extensionFunctionName) ){
+	        this.logHibachi("BaseImporterService:: processEntityImport, found and invoking extensionFunction: #extensionFunctionName#");
 	        return this.invokeMethod( extensionFunctionName, arguments );
 	    }
+        
+        return this.genericProcessEntityImport( argumentCollection=arguments );
+	}
+	
+	public any function genericProcessEntityImport( required any entity, required struct entityQueueData, struct mapping ){
+        this.logHibachi("BaseImporterService:: Starting genericProcessEntityImport, Mapping: #arguments.mapping.mappingCode#");
 
+	    var entityName = arguments.entity.getClassName();
+	    
 	    var eventData = {
 	        "data"      : arguments.entityQueueData,
 	        "entity"    : arguments.entity,
@@ -534,9 +543,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    );
 	    }
 	    
+        this.logHibachi("BaseImporterService:: Finished genericProcessEntityImport, Mapping: #arguments.mapping.mappingCode#");
+        
 	    return arguments.entity;
 	}
-	
+
 	
 	
 	/*****************                      VALIDATE                 ******************/
@@ -1412,31 +1423,31 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public any function generateInventoryStock( struct data, struct mapping, struct propertyMetaData ){
 		
 	    var skuID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-            	        "entityName"  : 'Sku',
-            	        "uniqueKey"   : 'remoteID',
-            	        "uniqueValue" : arguments.data.remoteSkuID
-            	    );
+	        "entityName"  : 'Sku',
+	        "uniqueKey"   : 'remoteID',
+	        "uniqueValue" : arguments.data.remoteSkuID
+	    );
             	    
         var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-            	        "entityName"  : 'Location',
-            	        "uniqueKey"   : 'remoteID',
-            	        "uniqueValue" : arguments.data.remoteLocationID
-            	    ); 
+	        "entityName"  : 'Location',
+	        "uniqueKey"   : 'remoteID',
+	        "uniqueValue" : arguments.data.remoteLocationID
+	    ); 
             	    
-        if (!isNull(skuID) && !this.hibachiIsEmpty(skuID) ){
+        if (!isNull(skuID) && len(skuID) ){
             
-            if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
+            if( isNull(locationID) || !len(locationID) ){
                 // fallback to `Default Location` 
-                locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
+                locationID = "88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
             }
-            
-    	    //Find if we have a stock for this sku and location.
-		    var stock = this.getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
 		    
-		    if( !isNull(stock) ){
-		    	return { "stockID" : stock.getstockID() };
+		    //Find if we have a stock for this sku and location.
+    	    var stockID = this.getStockDAO().getStockIDBySkuIDAndLocationID( skuID, locationID);
+	    
+		    if( !isNull(stockID) && len(stockID) ){
+		    	return { "stockID" : stockID };
 		    }
-		    
+			    
 		    //create new stock
 		    return {
 	            "stockID" : "",
@@ -1449,7 +1460,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        };
         }
         
-        //dont create stock if there is no locationID / skuID
 	}
 	
 	
@@ -1502,40 +1512,32 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     
     public any function generateOrderDeliveryItemStock( struct data, struct mapping, struct propertyMetaData ){
 		
-	    var skuID = getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID).skuID;
-        if (!isNull(skuID) && !this.hibachiIsEmpty(skuID) ){
-	        var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-	            	        "entityName"  : 'Location',
-	            	        "uniqueKey"   : 'remoteID',
-	            	        "uniqueValue" : arguments.data.PickupLocationRemoteID
-	            	    ); 
+	    var skuID = this.getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID);
+	    
+        if( !isNull(skuID) && len(skuID) ){
+            
+            var locationID = '';
+            
+            if(!isNull(arguments.data.warehouseLocationRemoteID)){
+    	        locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+        	        "entityName"  : 'Location',
+        	        "uniqueKey"   : 'remoteID',
+        	        "uniqueValue" : arguments.data.warehouseLocationRemoteID
+        	    ); 
+            }
 	            
-	        if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
-	            // fallback to `Default Location` 
-	            locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
+	        if( isNull(locationID) || !len(locationID) ){
+	            locationID = "88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
 	        }
             
-	    //Find if we have a stock for this sku and location.
-	    var stock = this.getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
+    	    //Find if we have a stock for this sku and location.
+    	    var stockID = this.getStockDAO().getStockIDBySkuIDAndLocationID( skuID, locationID);
 	    
-		    if( !isNull(stock) ){
-		    	return { "stockID" : stock.getstockID() };
+		    if( !isNull(stockID) && len(stockID) ){
+		    	return { "stockID" : stockID };
 		    }
-			    
-		    //create new stock
-		    return {
-	            "stockID" : "",
-	            "sku": {
-	                    "skuID": skuID
-	           },
-	            "location" :{
-	                "locationID" : locationID
-	            }
-	        };
         }
-        return {};
         
-        //dont create stock if there is no locationID / skuID
 	}
 	
 	/////////////////.                  Order Delivery

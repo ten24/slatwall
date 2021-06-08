@@ -62,6 +62,15 @@
 	            class="btn btn-primary btn-sm" 
 	        />
 	        
+	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importOrderShipments" 
+	            text="Import All Order Shipments" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+	        
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

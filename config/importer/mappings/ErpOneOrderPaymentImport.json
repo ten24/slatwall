@@ -33,7 +33,7 @@
 		"ccNumberLastFour": {
 			"propertyIdentifier": "creditCardLastFour",
 			"validations": {
-				"dataType": "string"
+				"dataType": "numeric"
 			}
 		},
 		"ccType": {
@@ -129,6 +129,8 @@
 			"propertyIdentifier"    : "orderPaymentStatusType"
 		}
 	],
+	
+    "validationContext": "erpImport",
 
 	"importIdentifier": {
 		"propertyIdentifier" : "importRemoteID",
