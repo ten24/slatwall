@@ -46,7 +46,8 @@
 Notes:
 
 --->
-<cfcomponent extends="HibachiDAO">
+<cfcomponent extends="HibachiDAO" accessors=true >
+    <cfproperty name="SettingService" type="any" />
 	
 	<cfscript>
 		 
@@ -810,7 +811,8 @@ Notes:
 	</cffunction>
 	
 	<cffunction name="manageOpenOrderItem" returntype="void" access="public">
-	    <cfif NOT this.getHibachiScope().getManageOpenOrderItemFlag() >
+	
+	    <cfif NOT this.getSettingService().getSettingValue('skuTrackInventoryFlag') >
 	        <cfreturn/>
 	    </cfif>
 	    

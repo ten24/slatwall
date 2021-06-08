@@ -68,6 +68,13 @@
          "validations":{
             "dataType":"string"
          }
+      },
+      "erpOrderStatusCode":{
+         "propertyIdentifier":"erpOrderStatusCode",
+         "validations":{
+            "dataType" : "string",
+            "required" : true
+         }
       }
    },
    "relations":[

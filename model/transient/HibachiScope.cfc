@@ -64,8 +64,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="emailQueue" type="array";
 	
 	property name="integrationsData" type="struct";
-	property name="manageOpenOrderItemFlag" type="boolean" default=true;
-	
+
 	// Deprecated Properties
 	property name="currentAccount";
 	property name="currentBrand";

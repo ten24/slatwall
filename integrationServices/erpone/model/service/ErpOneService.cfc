@@ -55,11 +55,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="hibachiUtilityService";
 	
 	property name="skuService";
+	property name="typeService";
 	property name="orderService";
 	property name="addressService";
-	
-	property name="typeDAO" type="any";
-	property name="accountDAO" type="any";
 	
 	
 	public any function getIntegration(){
@@ -687,9 +685,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    
 	    var thisOrmTransaction = ORMGetSession().beginTransaction(); 
         
-        // the InventoryDAO's manageOpenOrderItem() creats a dead-lock at order-delivery-item pre-insert;
-        this.getHibachiScope().setManageOpenOrderItemFlag(false);
-        
         var order = this.genericProcessEntityImport(argumentCollection=arguments);
 		this.getOrderService().saveOrder(order);
 		
@@ -785,7 +780,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	       throw "invalid"; 
     	    }
             this.getHibachiDAO().flushORMSession();
-            
+ 
+            // set order status type
+            var orderStatusTypeCode = this.getSlatwallOrderStatusCodeByERPOrderStatusCode( arguments.entityQueueData['erpOrderStatusCode'] );
+            order.setOrderStatusType( this.getTypeService().getTypeBySystemCode(orderStatusTypeCode) );
+ 
+    		this.getOrderService().saveOrder(order);
+            if(order.hasErrors()){
+    	       throw "invalid"; 
+    	    }
+            this.getHibachiDAO().flushORMSession();
+ 
+ 
             this.logHibachi('ErpOneService :: processOrderImport, successfully importer Order: #order.getOrderID()# ');
     	    
     	    // commit the transaction
@@ -860,10 +866,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	        return; // if it's not a complete order
     	    }
     	     
-    	    //TODO for testing only, remove
-    	    arguments.erponeOrder['oe_head_customer'] = "BENTON";
-    	     
-    	     
     	    var formattedOrderData =  {
 				'currencyCode' : arguments.erponeOrder['oe_head_currency_code'] ?: 'USD',
 				//'EstimatedDeliveryDateTime' : ,
@@ -883,7 +885,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			    formattedOrderData['canceledDateTime'] = arguments.erponeOrder['oe_head_cancel_date'];
 			    arguments.erponeOrder['oe_head_cancel_date'] = "canceled";
 			}
-            formattedOrderData['orderStatusCode']   = this.getSlatwallOrderStatusCodeByERPOrderStatusCode( arguments.erponeOrder['oe_head_stat'] );
+			
+			formattedOrderData['erpOrderStatusCode'] = arguments.erponeOrder['oe_head_stat']; // carying forward this data to processOrderImport
+            formattedOrderData['orderStatusCode']   = 'ostNew'; // The order-status get's updated at the end of the `processOrderImport()`
             formattedOrderData['orderTypeCode']     = "otSalesOrder";
             
             // origin
@@ -970,8 +974,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 		*/
 		
-				    return 'ostNew'; // for testing
-
 		
 		if( [ 'OE', 'OP', 'QP', 'IJ', 'IP', 'IV'  ].find(arguments.erpOrderStatusCode) ){
 		    return 'ostNew';
@@ -1025,24 +1027,33 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        "uniqueValue" = remoteID
 	    );
 	    
+	    var fulfillmentMethodID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  = 'FulfillmentMethod',
+	        "uniqueKey"   = 'fulfillmentMethodName',
+	        "uniqueValue" = 'Freight' // this default FulfillmentMethod is `Freight` // TODO: create a record in dev/prod DB
+	    );
+	    
+	    var shippingMethodID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        "entityName"  = 'ShippingMethod',
+	        "uniqueKey"   = 'shippingMethodCode',
+	        "uniqueValue" = 'erpOneShippingMethod' // this default ShippingMethod is `erpOneShippingMethod` // TODO: create a record in dev/prod DB
+	    );
+	    
 	    var fulfillment = { 
 	        "remoteID"				   : remoteID,
             "currencyCode"			   : arguments.data.currencyCode,
 	        "orderFulfillmentID"       : orderFulfillmentID ?: '',
             "fulfillmentMethod"        : {
-            	"fulfillmentMethodID"  : "444df2fb93d5fa960ba2966ba2017953" // this defaultValue for FulfillmentMethod is `Shipping`
+            	"fulfillmentMethodID"  : fulfillmentMethodID 
+            },
+            "shippingMethod" : {
+                'shippingMethodID' : shippingMethodID
             }
 	    };
     	
-    	// TODO
-    	
-    	
-        // "pickupLocationName" // default to one location
-        // "handlingFee"
-        // fulfillmentMethod // Shipping || Pickup
-        // shippingMethod // ?
-        // shippingIntegration // ?
-        // statusCode // ?
+    	// TODO:
+        // "handlingFee" ?? // not known 
+        // statusCode    ?? // not known
     	
 		fulfillment['shippingAddress'] = this.getHibachiUtilityService().getSubStructByKeyPrefix(arguments.data, 'shippingAddress_');
 		
@@ -1198,6 +1209,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         	    'remoteOrderPaymentID'	: remoteID
     	    };
     	    
+    	    
+    	    orderPayment['orderPaymentStatusTypeCode'] = 'opstActive';
         	if( !isNull(arguments.erponeOrderPayment['oe_head_cu_po']) && arguments.erponeOrderPayment['oe_head_cu_po'].len() ){
         	    orderPayment['paymentMethod'] = 'Purchase Order';
         	    orderPayment['paymentTerm'] = 'ERP One default PO term';        // TODO: add a record in dev/prod DB -- term
@@ -1205,8 +1218,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         	    orderPayment['paymentMethod'] = 'ERP payment method';           // TODO: add a record in dev/prod DB -- externalPaymentMethod
         	}
         	
-    	    orderPayment['orderPaymentStatusTypeCode'] = 'opstActive';
-    	    
         	// Set billing and shipping addresses			
 		    var address = {
 				'streetAddress'     : arguments.erponeOrderPayment['oe_head_adr'][1],
@@ -1324,25 +1335,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         	    'remoteOrderID'         : arguments.erponeOrderShipment['oe_head_order'],
     	        'orderDeliveryID'       : orderDeliveryID ?: '',
         	    'remoteOrderDeliveryID'	: remoteID,
-        	    'warehouseLocationCode' : 'default'
+        	    'warehouseLocationCode' : 'default',
+        	    'shippingMethodCode'    : 'erpOneShippingMethod',
+        	    'fulfillmentMethodName' : "Freight"
     	    };
         	
         	// TODO 
         	/*
-        	    statusCode // open/closed
-                // $shipment->setOpen($erpShipment->opn);                       ??
-                // $shipment->setStatus($erpShipment->stat);
-        	    
-        	    trackingNumber,
-        	    trackingUrl,
-        	    
-        	    // TODO: pickup or shipping
-            	// if shipping
-            	// fulfillmentMethodName // Pickup || Shipping
-            	// shippingMethodCode //  ?
+        	    statusCode       // not known
+        	    trackingUrl,     // not known
+        	    trackingNumber,  // not known
             */
-        	
-        	 
+            
         	// Set shipping addresses			
 		    var address = {
 				'streetAddress'     : arguments.erponeOrderShipment['oe_head_adr'][1],
