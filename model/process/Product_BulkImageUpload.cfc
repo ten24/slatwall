@@ -1,5 +1,4 @@
-<!---
-
+/*
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,44 +39,38 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+	// Injected Entity
+	property name="product";
 
-
-<cfparam name="rc.orderTemplate" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-<hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailwishlist">
-	<hb:HibachiEntityActionBar type="preprocess" backAction="admin:entity.listwishlist" object="#rc.orderTemplate#">
-	</hb:HibachiEntityActionBar>
+	// Data Properties
+	property name="imageNameProductProperty" hb_formFieldType="radio";
+	property name="uploadFile" hb_formFieldType="file" hb_fileAcceptMIMEType="application/zip" hb_fileAcceptExtension=".zip";
 	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-		    <cfif isNull(rc.accountID)>
-    			<swa:SlatwallAccountTypeahead /> 
-    			<hr>
-    		<cfelse>
-    		    <swa:SlatwallAccountTypeahead /> 
-    		    <input type="hidden" name="accountID" value="#rc.accountID#" />	
-    		    <hr>
-			</cfif>
-			<!--- Always use schedule order template type for wishlist ---> 
-			<input type="hidden" name="orderTemplateTypeID" value="2c9280846b712d47016b75464e800014" />	
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="disabled='true'">
+	public any function getImageNameProductPropertyOptions(){
+		return publicProperties = [
+		{ 
+				"name"  : "Product Code",
+				"value" : "ProductCode"
+			},
+			{
+				"name"  : "Product Name",
+				"value" : "ProductName"
+			}
+		];
+		
+	}
+	
+	public boolean function isValidPropertyName(){
 
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="siteID" edit="#rc.edit#">
-
-			<hr>
-			<hb:HibachiPropertyDisplay object="#rc.orderTemplate#" property="orderTemplateName" edit="#rc.edit#">
-
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-</hb:HibachiEntityProcessForm>
-</cfoutput>
+	    if( ! listFind("ProductCode,ProductName", this.getImageNameProductProperty() ) ){
+	        return false;
+	    }else{
+	        return true;
+	    }
+    
+	}
+}
