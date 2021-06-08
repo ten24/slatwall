@@ -990,8 +990,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		if( 'CL' == arguments.erpOrderStatusCode ){
 		    return 'ostClosed';
 		}
-		
-		return arguments.erpOrderStatusCode; //TODO: for debuggin, remove
 			
 	}
 	
