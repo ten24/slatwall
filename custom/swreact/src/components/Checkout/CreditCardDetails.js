@@ -4,7 +4,9 @@ import { useFormik } from 'formik'
 import { SwSelect, AccountAddress } from '../../components'
 import { useTranslation } from 'react-i18next'
 import { addNewAccountAndSetAsBilling } from '../../actions/cartActions'
-import { addPaymentMethod } from '../../actions/userActions'
+import { addPayment } from '../../actions/cartActions'
+import { SlatwalApiService } from '../../services'
+import { toast } from 'react-toastify'
 
 export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'
 export const GIFT_CARD = '50d8cd61009931554764385482347f3a'
@@ -17,6 +19,19 @@ const years = Array(10)
   .map((year, index) => {
     return { key: year + index, value: year + index }
   })
+
+/* see: userAction addPaymentMethod */
+const addPaymentMethodAndSetAsPayment = async (newPaymentMethod, callback, dispatch) => {
+  const response = await SlatwalApiService.account.addPaymentMethod({ ...newPaymentMethod, returnJSONObjects: 'account' })
+
+  if (response.isSuccess()) {
+    const { accountPaymentMethod } = response.success()
+    dispatch(addPayment({ accountPaymentMethodID: accountPaymentMethod.accountPaymentMethodID }))
+  } else {
+    toast.error('Save Failed')
+  }
+  callback()
+}
 
 const CreditCardDetails = ({ onSubmit }) => {
   const [isEdit, setEdit] = useState(true)
@@ -54,9 +69,9 @@ const CreditCardDetails = ({ onSubmit }) => {
         payload.newOrderPayment['saveShippingAsBilling'] = 1
         delete payload.newOrderPayment.accountAddressID
       }
-      dispatch(addPaymentMethod(payload))
+
+      addPaymentMethodAndSetAsPayment(payload, onSubmit, dispatch)
       setEdit(!isEdit)
-      onSubmit()
     },
   })
 

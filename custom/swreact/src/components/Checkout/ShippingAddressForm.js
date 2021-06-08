@@ -27,7 +27,7 @@ const ShippingAddressForm = ({ formik, isEdit, countryCodeOptions, stateCodeOpti
         </div>
         <div className="col-sm-6">
           <div className="form-group">
-            <label htmlFor="name">{t('frontend.account.name')}</label>
+            <label htmlFor="name">{t('frontend.account.fullname')}</label>
             <input disabled={!isEdit} className="form-control" type="text" id="name" value={formik.values.name} onChange={formik.handleChange} />
           </div>
         </div>
@@ -87,7 +87,7 @@ const ShippingAddressForm = ({ formik, isEdit, countryCodeOptions, stateCodeOpti
           </div>
         )}
 
-        <div className="col-sm-2">
+        <div className="col-sm-3">
           <div className="form-group">
             <label htmlFor="postalCode">{t('frontend.account.postalCode')}</label>
             <input disabled={!isEdit} className="form-control" type="text" id="postalCode" value={formik.values.postalCode} onChange={formik.handleChange} />
