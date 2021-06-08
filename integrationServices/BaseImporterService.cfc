@@ -1485,6 +1485,32 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     }
     
     /////////////////.                  ORDER
+    
+      public array function generateOrderOrderFulfillments( 
+    	struct data, 
+    	struct mapping, 
+    	struct propertyMetaData
+    ){
+		//create new fullfillment
+	    return [{
+	    	"orderFulfillmentID"	   : "",
+            "remoteID"				   : arguments.data.remoteOrderID,
+            "currencyCode"			   : arguments.data.currency_code,
+            //this defaultValue for FulfillmentMethod is `Shipping`
+            "fulfillmentMethod"        : {
+            	"fulfillmentMethodID"  :"444df2fb93d5fa960ba2966ba2017953"
+            },
+            "shippingAddress"		   : {
+            		  "name"		   : this.getAddressService().getAddressName(arguments.data.FullAddress),
+	                  "streetAddress"  : arguments.data.ShippingAddress_streetAddress,
+	                  "street2Address" : arguments.data.ShippingAddress_street2Address,
+	                  "city"           : arguments.data.ShippingAddress_city,
+	                  "countryCode"	   : arguments.data.ShippingAddress_countryCode,
+	                  "stateCode"	   : arguments.data.ShippingAddress_stateCode,
+	                  "postalCode"	   : arguments.data.ShippingAddress_postalCode,
+	           },
+        }];
+    }
 
     
     
