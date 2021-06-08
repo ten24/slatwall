@@ -1032,6 +1032,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
                 
             } catch(any e) { 
                 transaction action="rollback"; 
+                // HACK step-3
+	            this.getHibachiDAO().flushORMSession();
+	            
                 var errorMessage = (e.message ?: '') & " : " & ( e.details ?: '' ); 
                 order.addError("Encountered Error while processOrderImport ", errorMessage);
         	    this.logHibachi("ERPONE - Encountered Error while processOrderImport - ");
