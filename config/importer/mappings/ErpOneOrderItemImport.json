@@ -75,12 +75,14 @@
         },
         {
             "key": "remoteOrderID",
+            "useORM": true,
             "lookupKey": "remoteID",
             "entityName": "Order",
             "propertyIdentifier": "order"
         },
         {
             "key": "remoteOrderFulfillmentID",
+            "useORM": true,
             "lookupKey": "remoteID",
             "entityName": "OrderFulfillment",
             "propertyIdentifier": "orderFulfillment"

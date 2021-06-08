@@ -304,7 +304,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
                     "entityName"    = dependency.entityName,
         	        "uniqueKey"     = dependency.lookupKey,
-        	        "uniqueValue"   = dependency.lookupValue
+        	        "uniqueValue"   = dependency.lookupValue,
+        	        "useORM"        = dependency.useORM ?: false // this will run an HQL query instead of SQL, for to support ORM-transactions
                 );
 
             }   
@@ -1538,7 +1539,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     
     public any function generateOrderDeliveryItemStock( struct data, struct mapping, struct propertyMetaData ){
 		
-	    var skuID = this.getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID);
+		if(!isNull(arguments.propertyMetaData) && !isNull(arguments.propertyMetaData.useORM) && arguments.propertyMetaData.useORM ){
+    	    var skuID = this.getOrderDAO().getAnyPropertyIdentifierValueByEntityNameAndUniquePropertyIdentifierValue( 
+	            "OrderItem",
+	            "sku.skuID",
+	            "remoteID",
+	            arguments.data.remoteOrderItemID
+	        );
+		} else {
+	        var skuID = this.getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID);
+		}
 	    
         if( !isNull(skuID) && len(skuID) ){
             

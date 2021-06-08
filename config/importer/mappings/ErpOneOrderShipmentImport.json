@@ -62,6 +62,7 @@
 
 	"dependencies": [{
 			"key": "remoteOrderID",
+            "useORM" : true,
 			"entityName": "Order",
 			"lookupKey": "remoteID",
 			"propertyIdentifier": "order"

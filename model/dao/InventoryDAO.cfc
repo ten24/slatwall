@@ -810,6 +810,10 @@ Notes:
 	</cffunction>
 	
 	<cffunction name="manageOpenOrderItem" returntype="void" access="public">
+	    <cfif NOT this.getHibachiScope().getManageOpenOrderItemFlag() >
+	        <cfreturn/>
+	    </cfif>
+	    
 		<cfargument name="actionType" type="string" required="true"/>
 		<cfargument name="orderID" type="string" required="false"/>
 		<cfargument name="orderItemID" type="string" required="false"/>

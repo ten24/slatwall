@@ -45,7 +45,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	//delegates to processEntityQueueArray so we're not maintaining one function for object and one for hash map
 	//entry point will always be from workflow which should pass collectionData  
 	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
-		
+	    
 		var maxTryCount = 3;
 		var retryDelay = 0;
 		
