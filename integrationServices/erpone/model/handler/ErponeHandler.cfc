@@ -12,10 +12,19 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	}
 	
 	public function addToQueue(required any entity , required any processMethod){
+	    var entityName = arguments.entity.getClassName();
+	    
+	    if( entityName == 'Account' && !this.getErpOneIntegrationCFC().setting('pushAccountsEnabled') ){
+	        return;
+	    }
+	    if( entityName == 'Order' && !this.getErpOneIntegrationCFC().setting('pushOrdersEnabled') ){
+	        return;
+	    }
+	    
 		try {
 			this.getHibachiEntityQueueDAO().insertEntityQueue(
 				baseID          = arguments.entity.getPrimaryIDValue(),
-				baseObject      = arguments.entity.getClassName(),
+				baseObject      = entityName,
 				processMethod   = arguments.processMethod,
 				integrationID   = this.getIntegrationID()
 			);
@@ -47,5 +56,4 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	public void function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any entity, required any data){
 		addToQueue(arguments.entity , "pushOrderDataToErpOne");
 	}
-	
 }
