@@ -63,4 +63,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		];
 		
 	}
+	
+	public boolean function isValidPropertyName(){
+
+	    if( ! listFind("ProductCode,ProductName", this.getImageNameProductProperty() ) ){
+	        return false;
+	    }else{
+	        return true;
+	    }
+    
+	}
 }
