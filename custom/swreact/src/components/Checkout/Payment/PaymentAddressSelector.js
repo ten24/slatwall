@@ -134,7 +134,7 @@ const BillingAddress = ({ onSave }) => {
               <div className="custom-control custom-checkbox">
                 <input className="custom-control-input" type="checkbox" id="saveAddress" checked={formik.values.saveAddress} onChange={formik.handleChange} />
                 <label className="custom-control-label" htmlFor="saveAddress">
-                  Save to Account
+                  {t('frontend.account.save_to')}
                 </label>
               </div>
             </div>
@@ -145,7 +145,7 @@ const BillingAddress = ({ onSave }) => {
           <div className="w-50 pr-3"></div>
           <div className="w-50 pl-2">
             <button className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
-              <span className="d-none d-sm-inline">Save</span>
+              <span className="d-none d-sm-inline">{t('frontend.core.save')}</span>
             </button>
           </div>
         </div>
@@ -154,7 +154,7 @@ const BillingAddress = ({ onSave }) => {
   )
 }
 
-const PaymentAddressSelector = ({ onSelect, onSave, selectedAccountID, addressTitle = 'Addresses', isShipping = true }) => {
+const PaymentAddressSelector = ({ onSelect, onSave, selectedAccountID, addressTitle = 'frontend.account.addresses', isShipping = true }) => {
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const [showAddress, setShowAddress] = useState(false)
   const { t } = useTranslation()
@@ -165,7 +165,7 @@ const PaymentAddressSelector = ({ onSelect, onSave, selectedAccountID, addressTi
 
   return (
     <>
-      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{addressTitle}</h2>
+      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t('addressTitle')}</h2>
       {accountAddresses && (
         <div className="row">
           <div className="col-sm-12">

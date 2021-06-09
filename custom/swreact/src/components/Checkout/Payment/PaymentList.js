@@ -35,7 +35,7 @@ const PaymentList = () => {
                 }}
               >
                 <i className="fal fa-times-circle"></i>
-                <span className="font-size-sm"> Remove</span>
+                <span className="font-size-sm"> {t('frontend.core.remove')}</span>
               </button>
             </div>
           )

@@ -16,6 +16,7 @@ const PaymentSlide = ({ currentStep }) => {
   const [paymentMethodOnOrder, setPaymentMethodOnOrder] = useState(false)
   const allPayments = useSelector(getAllOrderPayments)
   const { isFetching } = useSelector(state => state.cart)
+  const { t } = useTranslation()
 
   if (paymentMethod && paymentMethod.paymentMethodID && paymentMethodOnOrder !== paymentMethod.paymentMethodID) {
     setPaymentMethodOnOrder(paymentMethod.paymentMethodID)
@@ -30,7 +31,7 @@ const PaymentSlide = ({ currentStep }) => {
           <div className="row mb-3">
             <div className="col-sm-12">
               <SwRadioSelect
-                label="Select Your Method of Payment"
+                label={t('frontend.checkout.payment.select')}
                 options={eligiblePaymentMethodDetails}
                 onChange={value => {
                   setSelectedPaymentMethod(value)

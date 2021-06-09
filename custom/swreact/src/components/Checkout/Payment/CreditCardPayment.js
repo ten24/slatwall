@@ -11,6 +11,7 @@ const CreditCardPayment = () => {
   const [newOrderPayment, setNewOrderPayment] = useState(false)
   const { accountPaymentMethod = { accountPaymentMethodID: '' } } = useSelector(orderPayment)
   const dispatch = useDispatch()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (paymentMethods.length === 0) {
@@ -24,7 +25,7 @@ const CreditCardPayment = () => {
       <div className="row mb-3">
         <div className="col-sm-12">
           <SwRadioSelect
-            label="Select Payment"
+            label={t('frontend.checkout.payment.select')}
             options={paymentMethods}
             onChange={value => {
               if (value === 'new') {
@@ -47,7 +48,7 @@ const CreditCardPayment = () => {
               setNewOrderPayment('new')
             }}
           >
-            Add Payment Method
+            {t('frontend.checkout.payment.add')}
           </button>
         </div>
       </div>

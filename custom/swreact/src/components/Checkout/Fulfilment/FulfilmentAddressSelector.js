@@ -134,7 +134,7 @@ const BillingAddress = ({ onSave }) => {
               <div className="custom-control custom-checkbox">
                 <input className="custom-control-input" type="checkbox" id="saveAddress" checked={formik.values.saveAddress} onChange={formik.handleChange} />
                 <label className="custom-control-label" htmlFor="saveAddress">
-                  Save to Account
+                  {t('frontend.account.save_to')}
                 </label>
               </div>
             </div>
@@ -145,7 +145,7 @@ const BillingAddress = ({ onSave }) => {
           <div className="w-50 pr-3"></div>
           <div className="w-50 pl-2">
             <button className="btn btn-outline-primary btn-block" onClick={formik.handleSubmit}>
-              <span className="d-none d-sm-inline">Save</span>
+              <span className="d-none d-sm-inline">{t('frontend.core.save')}</span>
             </button>
           </div>
         </div>
@@ -154,7 +154,7 @@ const BillingAddress = ({ onSave }) => {
   )
 }
 
-const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addressTitle = 'Addresses', isShipping = true }) => {
+const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addressTitle = 'frontend.account.addresses', isShipping = true }) => {
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const fulfillments = useSelector(state => state.cart.orderFulfillments)
   const [showAddress, setShowAddress] = useState(false)
@@ -167,7 +167,7 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
   const hasShippingAddress = fulfillments.length > 0 && fulfillments[0].shippingAddress.addressID.length > 0
   return (
     <>
-      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{addressTitle}</h2>
+      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t(addressTitle)}</h2>
 
       {!hasRemovedShippingAddress && hasShippingAddress && (
         <div className="row ">
@@ -216,7 +216,7 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
               displayNew={true}
             />
             <button className="btn btn-secondary mt-2" onClick={() => setShowAddress(true)}>
-              New Address
+              {t('frontend.account.address.add')}
             </button>
           </div>
         </div>

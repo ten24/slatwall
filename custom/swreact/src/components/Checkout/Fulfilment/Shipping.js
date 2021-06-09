@@ -3,7 +3,6 @@ import { addAddressAndAttachAsShipping, addShippingAddressUsingAccountAddress, a
 import { FulfilmentAddressSelector, SlideNavigation, Overlay, FulfillmentPicker, PickupLocationPicker, ShippingMethodPicker } from '../../../components'
 import { useEffect } from 'react'
 import { accountAddressSelector, fulfillmentSelector } from '../../../selectors/orderSelectors'
-import { useTranslation } from 'react-i18next'
 
 const ShippingSlide = ({ currentStep }) => {
   const dispatch = useDispatch()

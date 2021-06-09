@@ -45,7 +45,8 @@ const TermPayment = ({ method }) => {
                 }}
               />
               <label className="custom-control-label" htmlFor="saveShippingAsBilling">
-                Same as shipping address
+                {t('frontend.checkout.shipping_address_clone')}
+
               </label>
             </div>
           </div>
@@ -75,7 +76,7 @@ const TermPayment = ({ method }) => {
       )}
       {!saveShippingAsBilling && termOrderNumber && termOrderNumber.length > 0 && (
         <PaymentAddressSelector
-          addressTitle={'Billing Address'}
+          addressTitle={'frontend.checkout.billing_address'}
           selectedAccountID={selectedAccountID || accountAddressID}
           onSelect={value => {
             dispatch(

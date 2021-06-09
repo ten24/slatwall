@@ -63,7 +63,7 @@ const ReviewSlide = ({ currentStep }) => {
         </div>
       </div>
 
-      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Review your order</h2>
+      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t('frontend.checkout.review.order')}</h2>
       {cart.orderItems &&
         cart.orderItems.map(({ orderItemID }) => {
           return <CartLineItem key={orderItemID} orderItemID={orderItemID} isDisabled={true} /> // this cannot be index or it wont force a rerender

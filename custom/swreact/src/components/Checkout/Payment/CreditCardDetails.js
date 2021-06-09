@@ -10,7 +10,6 @@ import { Button } from '../../Button/Button'
 
 export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'
 export const GIFT_CARD = '50d8cd61009931554764385482347f3a'
-// 4111111111111111
 const months = Array.from({ length: 12 }, (_, i) => {
   return { key: i + 1, value: i + 1 }
 })
@@ -21,14 +20,14 @@ const years = Array(10)
   })
 
 /* see: userAction addPaymentMethod */
-const addPaymentMethodAndSetAsPayment = async (newPaymentMethod, callback, dispatch) => {
+const addPaymentMethodAndSetAsPayment = async (newPaymentMethod, callback, dispatch, t) => {
   const response = await SlatwalApiService.account.addPaymentMethod({ ...newPaymentMethod, returnJSONObjects: 'account' })
 
   if (response.isSuccess()) {
     const { accountPaymentMethod } = response.success()
     dispatch(addPayment({ accountPaymentMethodID: accountPaymentMethod.accountPaymentMethodID }))
   } else {
-    toast.error('Save Failed')
+    toast.error(t('frontend.core.save_failed'))
   }
   callback()
 }
@@ -70,7 +69,7 @@ const CreditCardDetails = ({ onSubmit }) => {
         delete payload.newOrderPayment.accountAddressID
       }
 
-      addPaymentMethodAndSetAsPayment(payload, onSubmit, dispatch)
+      addPaymentMethodAndSetAsPayment(payload, onSubmit, dispatch, t)
     },
   })
 
@@ -129,14 +128,14 @@ const CreditCardDetails = ({ onSubmit }) => {
                   <div className="custom-control custom-checkbox">
                     <input className="custom-control-input" type="checkbox" id="saveShippingAsBilling" checked={formik.values.saveShippingAsBilling} onChange={formik.handleChange} />
                     <label className="custom-control-label" htmlFor="saveShippingAsBilling">
-                      Same as shipping address
+                      {t('frontend.checkout.shipping_address_clone')}
                     </label>
                   </div>
                   {/* do we have a shipping address ?*/}
                   {/* <div className="custom-control custom-checkbox">
                     <input className="custom-control-input" type="checkbox" id="savePaymentMethodToAccount" checked={formik.values.savePaymentMethodToAccount} onChange={formik.handleChange} />
                     <label className="custom-control-label" htmlFor="savePaymentMethodToAccount">
-                      Save to Payment Method To Account
+                    {t('frontend.checkout.payment.save_to_account')}
                     </label>
                   </div> */}
                 </div>

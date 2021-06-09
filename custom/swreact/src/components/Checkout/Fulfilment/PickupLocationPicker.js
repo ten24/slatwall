@@ -23,7 +23,7 @@ const PickupLocationPicker = () => {
       <div className="row mb-3">
         <div className="col-sm-12">
           <div className="form-group">
-            <label htmlFor="locationPickupDate">Pickup Date</label>
+            <label htmlFor="locationPickupDate">{t('frontend.checkout.fulfilment.pickup.date')}</label>
             <br />
             <DatePicker
               id="locationPickupDate"
