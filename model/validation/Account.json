@@ -41,6 +41,7 @@
 			}
 		],
 		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
+		"phoneNumber" : [{ "contexts" : "save", "dataType":"numeric"}],
 		"emailAddress": [
 			{
 				"contexts": "save,updateAccount",
