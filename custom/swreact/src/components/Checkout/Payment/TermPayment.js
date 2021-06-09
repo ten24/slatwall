@@ -13,13 +13,14 @@ const TermPayment = ({ method }) => {
   const { purchaseOrderNumber } = useSelector(orderPayment)
   const [termOrderNumber, setTermOrderNumber] = useState(purchaseOrderNumber)
   const selectedAccountID = useSelector(billingAccountAddressSelector)
+  const { t } = useTranslation()
 
   return (
     <>
       <div className="row mb-3">
         <div className="col-sm-12">
           <div className="form-group">
-            <label htmlFor="purchaseOrderNumber">Purchase Order Number</label>
+            <label htmlFor="purchaseOrderNumber">{t('frontend.checkout.payment.po.number')}</label>
             <input
               className="form-control"
               type="text"
@@ -45,8 +46,7 @@ const TermPayment = ({ method }) => {
                 }}
               />
               <label className="custom-control-label" htmlFor="saveShippingAsBilling">
-                {t('frontend.checkout.shipping_address_clone')}
-
+                Same as shipping address
               </label>
             </div>
           </div>
@@ -76,7 +76,7 @@ const TermPayment = ({ method }) => {
       )}
       {!saveShippingAsBilling && termOrderNumber && termOrderNumber.length > 0 && (
         <PaymentAddressSelector
-          addressTitle={'frontend.checkout.billing_address'}
+          addressTitle={'Billing Address'}
           selectedAccountID={selectedAccountID || accountAddressID}
           onSelect={value => {
             dispatch(
