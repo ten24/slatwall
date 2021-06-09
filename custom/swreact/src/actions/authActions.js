@@ -1,6 +1,5 @@
 import { toast } from 'react-toastify'
 import { SlatwalApiService, sdkURL, axios } from '../services'
-import { getErrorMessage } from '../utils'
 import { getCart, receiveCart, requestCart } from './cartActions'
 import { requestUser, receiveUser, clearUser, getWishLists } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
@@ -33,16 +32,16 @@ export const requestLogOut = () => {
     type: LOGOUT,
   }
 }
-export const logout = () => {
+export const logout = (success = '', failure = '') => {
   return async dispatch => {
     const response = await SlatwalApiService.auth.revokeToken()
     dispatch(softLogout())
     dispatch(getCart())
 
     if (response.isSuccess()) {
-      toast.success('Logout Successful')
+      toast.success(success)
     } else {
-      toast.error('Logout failed. Please close your browser')
+      toast.error(failure)
     }
   }
 }
@@ -54,7 +53,7 @@ export const softLogout = () => {
   }
 }
 
-export const login = (email, password) => {
+export const login = (email, password, success, failure) => {
   return async (dispatch, getState) => {
     let { accountID } = getState().userReducer
     if (!accountID.length) {
@@ -76,9 +75,9 @@ export const login = (email, password) => {
         },
       })
 
-      if (response.status === 200 && response.data) {
-        if (Object.keys(response.data.errors).length) {
-          toast.error('Incorrect Username or Password')
+      if (response && response.status === 200 && response.data) {
+        if (response?.data?.errors && Object.keys(response?.data?.errors).length) {
+          toast.error(failure)
           // toast.error(getErrorMessage(response.data.errors))
           errorLogin({})
         } else {
@@ -87,11 +86,11 @@ export const login = (email, password) => {
           dispatch(receiveCart(response.data.cart))
           dispatch(getWishLists())
 
-          toast.success('Login Successful')
+          toast.success(success)
         }
       } else {
         errorLogin({})
-        toast.error('Incorrect Username or Password')
+        toast.error(failure)
       }
     }
   }
