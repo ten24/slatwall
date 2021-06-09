@@ -1,3 +1,4 @@
+// Account Components
 export { default as AccountAddresses } from './Account/AccountAddresses/AccountAddresses'
 export { default as CreateOrEditAccountAddress } from './Account/AccountAddresses/CreateOrEditAccountAddress'
 
@@ -24,55 +25,43 @@ export { default as AccountProfile } from './Account/AccountProfile/AccountProfi
 export { default as CreateAccount } from './Account/CreateAccount/CreateAccount'
 export { default as ForgotPassword } from './Account/ForgotPassword/ForgotPassword'
 
-export { default as ActionBanner } from './ActionBanner/ActionBanner'
-export { default as BreadCrumb } from './BreadCrumb/BreadCrumb'
-export { Button } from './Button/Button'
+// Cart Components
 
 export { default as CartLineItem } from './Cart/CartLineItem'
 export { default as CartPromoBox } from './Cart/CartPromoBox'
 export { default as OrderNotes } from './Cart/OrderNotes'
+export { default as PromotionalMessaging } from './Cart/PromotionalMessaging'
 
+// Checkout Components
 export { OrderSummary } from './Checkout/OrderSummary'
-export { PickupLocationDetails } from './Checkout/PickupLocationDetails'
-export { ShippingAddressDetails } from './Checkout/ShippingAddressDetails'
-export { BillingAddressDetails } from './Checkout/BillingAddressDetails'
 
-export { TermPaymentDetails } from './Checkout/TermPaymentDetails'
-export { CCDetails } from './Checkout/CCDetails'
-export { CreditCardDetails } from './Checkout/Payment/CreditCardDetails'
-export { GiftCardDetails } from './Checkout/GiftCardDetails'
 export { CheckoutSideBar } from './Checkout/CheckoutSideBar'
 export { StepsHeader } from './Checkout/StepsHeader'
-export { AccountAddress } from './Checkout/AccountAddress'
 export { SlideNavigation } from './Checkout/SlideNavigation'
-export { ShippingAddressForm } from './Checkout/ShippingAddressForm'
-export { Overlay } from './Overlay/Overlay'
+export { checkOutSteps, CART, SHIPPING, PAYMENT, REVIEW, getCurrentStep } from './Checkout/steps'
+
+export { PickupLocationDetails } from './Checkout/Review/PickupLocationDetails'
+export { ShippingAddressDetails } from './Checkout/Review/ShippingAddressDetails'
+export { BillingAddressDetails } from './Checkout/Review/BillingAddressDetails'
+export { TermPaymentDetails } from './Checkout/Review/TermPaymentDetails'
+export { CCDetails } from './Checkout/Review/CCDetails'
+export { GiftCardDetails } from './Checkout/Review/GiftCardDetails'
+export { ReviewSlide } from './Checkout/Review/Review'
 
 export { TermPayment } from './Checkout/Payment/TermPayment'
 export { PaymentList } from './Checkout/Payment/PaymentList'
 export { GiftCardPayment } from './Checkout/Payment/GiftCardPayment'
 export { CreditCardPayment } from './Checkout/Payment/CreditCardPayment'
 export { PaymentSlide } from './Checkout/Payment/Payment'
-export { ReviewSlide } from './Checkout/Review'
+export { CreditCardDetails } from './Checkout/Payment/CreditCardDetails'
+
 export { PickupLocationPicker } from './Checkout/Fulfilment/PickupLocationPicker'
 export { ShippingMethodPicker } from './Checkout/Fulfilment/ShippingMethodPicker'
 export { FulfillmentPicker } from './Checkout/Fulfilment/FulfillmentPicker'
 export { FulfilmentAddressSelector } from './Checkout/Fulfilment/FulfilmentAddressSelector'
-
 export { ShippingSlide } from './Checkout/Fulfilment/Shipping'
-export { checkOutSteps, CART, SHIPPING, PAYMENT, REVIEW, getCurrentStep } from './Checkout/steps'
 
-export { ProductTypeList } from './ProductTypeList/ProductTypeList'
-
-export { default as CMSWrapper } from './CMSWrapper/CMSWrapper'
-export { default as Footer } from './Footer/Footer'
-export { default as Header } from './Header/Header'
-export { default as HeartButton } from './HeartButton/HeartButton'
-export { default as HomeBanner } from './HomeBanner/HomeBanner'
-export { default as HomeBrand } from './HomeBrand/HomeBrand'
-export { default as HomeDetails } from './HomeDetails/HomeDetails'
-export { default as Layout } from './Layout/Layout'
-export { default as lazyWithPreload } from './lazyWithPreload/lazyWithPreload'
+// Listing Components
 
 export { default as Grid } from './Listing/Grid'
 export { default as Listing } from './Listing/Listing'
@@ -82,17 +71,45 @@ export { default as ListingPagination } from './Listing/ListingPagination'
 export { default as ListingSidebar } from './Listing/ListingSidebar'
 export { default as ListingToolBar } from './Listing/ListingToolBar'
 
-export { default as Loading } from './Loading/Loading'
-export { default as PageHeader } from './PageHeader/PageHeader'
+export { ProductTypeList } from './ProductTypeList/ProductTypeList'
+
+// Product Components
+
 export { default as ProductCard } from './ProductCard/ProductCard'
 export { default as ProductPrice } from './ProductPrice/ProductPrice'
 export { default as ProductSlider } from './ProductSlider/ProductSlider'
-export { default as ScrollToTop } from './ScrollToTop/ScrollToTop'
-export { default as SEO } from './SEO/SEO'
-export { default as SignUpForm } from './SignUpForm/SignUpForm'
+
+// Loading UI Components
+export { Overlay } from './Overlay/Overlay'
 export { default as Spinner } from './Spinner/Spinner'
+
+// Utility Components
 export { SWForm, SWInput } from './SWForm/SWForm'
 export { default as SWImage } from './SWImage/SWImage'
 export { default as SwRadioSelect } from './SwRadioSelect/SwRadioSelect'
 export { default as SwSelect } from './SwSelect/SwSelect'
-export { default as PromotionalMessaging } from './Cart/PromotionalMessaging'
+export { Button } from './Button/Button'
+export { default as Loading } from './Loading/Loading'
+export { default as ScrollToTop } from './ScrollToTop/ScrollToTop'
+export { default as SEO } from './SEO/SEO'
+
+//Global
+export { default as CMSWrapper } from './CMSWrapper/CMSWrapper'
+export { default as Footer } from './Footer/Footer'
+export { default as Header } from './Header/Header'
+export { default as Layout } from './Layout/Layout'
+export { default as PageHeader } from './PageHeader/PageHeader'
+
+export { default as ActionBanner } from './ActionBanner/ActionBanner'
+export { default as BreadCrumb } from './BreadCrumb/BreadCrumb'
+export { default as HeartButton } from './HeartButton/HeartButton'
+
+// Page Components
+export { default as HomeBanner } from './HomeBanner/HomeBanner'
+export { default as HomeBrand } from './HomeBrand/HomeBrand'
+export { default as HomeDetails } from './HomeDetails/HomeDetails'
+export { default as SignUpForm } from './SignUpForm/SignUpForm'
+
+// Plumbing Components
+
+export { default as lazyWithPreload } from './lazyWithPreload/lazyWithPreload'
