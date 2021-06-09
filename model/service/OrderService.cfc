@@ -6022,10 +6022,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		optionsArray = getService('hibachiUtilityService').arrayOfStructsSort(optionsArray,sortProperty);
-
-		if(!arrayLen(optionsArray)) {
-			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
-		}
+		
     	return optionsArray;
     }
 

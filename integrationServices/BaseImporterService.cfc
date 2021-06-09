@@ -514,7 +514,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	       // the onMissingSaveMethod in HibachiService does not like named arguments :(
     	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
     	        1 : arguments.entity, 
-    	        2 : {},
+	            2 : { 'importedData' : true },
     	        3 : arguments.mapping.validationContext
     	    });
     	    

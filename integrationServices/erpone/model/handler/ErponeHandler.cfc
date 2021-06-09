@@ -37,23 +37,38 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' persistent="false" 
 	}
 	
 	
-	public void function afterAccountSaveSuccess(any slatwallScope, any entity, any eventData) {
+	public void function afterAccountSaveSuccess(any slatwallScope, any entity, any data) {
+		if(structKeyExists(arguments.data, 'importedData') && arguments.data['importedData']){
+			return;
+		}
 		addToQueue(arguments.entity , "pushAccountDataToErpOne");
 	}
 	
-	public void function afterAccountEmailAddressSaveSuccess(any slatwallScope, any entity, any eventData) {
+	public void function afterAccountEmailAddressSaveSuccess(any slatwallScope, any entity, any data) {
+		if(structKeyExists(arguments.data, 'importedData') && arguments.data['importedData']){
+			return;
+		}
 		addToQueue(arguments.entity.getAccount()  , "pushAccountDataToErpOne");
 	}
 	
-	public void function afterAccountPhoneNumberSaveSuccess(any slatwallScope, any entity, any eventData) {
+	public void function afterAccountPhoneNumberSaveSuccess(any slatwallScope, any entity, any data) {
+		if(structKeyExists(arguments.data, 'importedData') && arguments.data['importedData']){
+			return;
+		}
 		addToQueue(arguments.entity.getAccount()  , "pushAccountDataToErpOne");
 	}
 	
-	public void function afterAccountAddressSaveSuccess(any slatwallScope, any entity, any eventData) {
+	public void function afterAccountAddressSaveSuccess(any slatwallScope, any entity, any data) {
+		if(structKeyExists(arguments.data, 'importedData') && arguments.data['importedData']){
+			return;
+		}
 		addToQueue(arguments.entity.getAccount()  , "pushAccountDataToErpOne");
 	}
 	
-	public void function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any entity, required any data){
+	public void function afterOrderProcess_placeOrderSuccess(any slatwallScope, required any entity, any data){
+		if(structKeyExists(arguments.data, 'importedData') && arguments.data['importedData']){
+			return;
+		}
 		addToQueue(arguments.entity , "pushOrderDataToErpOne");
 	}
 }
