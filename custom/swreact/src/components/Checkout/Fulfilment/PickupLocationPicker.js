@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { addPickupLocation, setPickupDate } from '../../../actions/cartActions'
 import { SwRadioSelect } from '../../../components'
-import { fulfillmentSelector, pickupLocation, pickupLocationOptions } from '../../../selectors/orderSelectors'
+import { fulfillmentSelector, shippingMethodSelector, pickupLocationOptions } from '../../../selectors/orderSelectors'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useTranslation } from 'react-i18next'
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 const PickupLocationPicker = () => {
   const dispatch = useDispatch()
   const pickupLocations = useSelector(pickupLocationOptions)
-  const selectedLocation = useSelector(pickupLocation)
+  const selectedLocation = useSelector(shippingMethodSelector)
   const { orderFulfillmentID, estimatedShippingDate } = useSelector(fulfillmentSelector)
   const { t } = useTranslation()
 

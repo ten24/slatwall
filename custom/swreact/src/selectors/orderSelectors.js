@@ -70,7 +70,7 @@ export const pickupLocationOptions = createSelector(getAllPickupLocations, (loca
   })
 })
 
-export const pickupLocation = createSelector(fulfillmentSelector, fulfillment => {
+export const pickupLocationSelector = createSelector(fulfillmentSelector, fulfillment => {
   let location = { locationID: '' }
   if (fulfillment.pickupLocation) {
     location = fulfillment.pickupLocation
