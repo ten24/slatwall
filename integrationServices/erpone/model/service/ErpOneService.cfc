@@ -833,6 +833,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var getOrdersQueryString = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
         var columns = [ 
             'order',
+            'ord_ext', 
             'customer',
             
             'name',
@@ -849,7 +850,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             'ord_date',
             'opn',
             'stat',
-            'ord_ext', 
             'rec_seq',
             
             'cancel_date',
@@ -873,30 +873,44 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				//'OrderIPAddress' : ,
 				//'OrderNotes' : ,
 				
-				'orderNumber' : arguments.erponeOrder['oe_head_order'],
-				'remoteOrderID' : arguments.erponeOrder['oe_head_order'],
-				'remoteAccountID' : arguments.erponeOrder['oe_head_customer'],
-				
+				'remoteOrderID'     : arguments.erponeOrder['oe_head_order'],
+				'remoteAccountID'   : arguments.erponeOrder['oe_head_customer'],
 				'orderOpenDateTime' : arguments.erponeOrder['oe_head_ord_date']
 			};
 			
+			
+			if( !isNUll(arguments.erponeOrder['oe_head_ord_ext']) && len(arguments.erponeOrder['oe_head_ord_ext']) ){
+			    
+			    // set the remoteID on Slatwall's order
+			    QueryExecute( 
+			        sql = 'Update swOrder SET `remoteID` = :erpOrderNumber WHERE `orderNumber` = :slatwallOrderNumber AND `remoteID` IS NULL',
+			        params = {
+				        'erpOrderNumber':       { 'type': 'string', 'value': arguments.erponeOrder['oe_head_order'] },
+				        'slatwallOrderNumber':  { 'type': 'string', 'value': arguments.erponeOrder['oe_head_ord_ext'] },
+			        }
+		        );
+			    
+			    formattedOrderData['orderNumber']             = arguments.erponeOrder['oe_head_ord_ext']; // slatwall's order number
+                formattedOrderData['orderSiteCode']           = "stoneAndBerg"; // make-sure the site is created with this code
+			    formattedOrderData['remoteOrderOriginName']   = "Web";
+                
+			} else {
+                
+                formattedOrderData['remoteOrderOriginName']   = "ERP"; 
+			    formattedOrderData['orderNumber'] = arguments.erponeOrder['oe_head_order'];
+			    
+			}
+
 			// status
 			if( !isNull( arguments.erponeOrder['oe_head_cancel_date'] ) ){
+			    arguments.erponeOrder['oe_head_stat']  = "canceled";
 			    formattedOrderData['canceledDateTime'] = arguments.erponeOrder['oe_head_cancel_date'];
-			    arguments.erponeOrder['oe_head_cancel_date'] = "canceled";
 			}
 			
+            formattedOrderData['orderTypeCode']      = "otSalesOrder";
+            formattedOrderData['orderStatusCode']    = 'ostNew'; // The order-status get's updated at the end of the `processOrderImport()`
 			formattedOrderData['erpOrderStatusCode'] = arguments.erponeOrder['oe_head_stat']; // carying forward this data to processOrderImport
-            formattedOrderData['orderStatusCode']   = 'ostNew'; // The order-status get's updated at the end of the `processOrderImport()`
-            formattedOrderData['orderTypeCode']     = "otSalesOrder";
-            
-            // origin
-            formattedOrderData['remoteOrderOriginName']   = "ERP"; // TODO: create an order origin in the Dev/Prod DB
-            if(arguments.erponeOrder['oe_head_ord_class'] == 'W' ){  //TODO use source-code
-                formattedOrderData['remoteOrderOriginName']   = "Web";
-                formattedOrderData['orderSiteCode']           = "stoneAndBerg";
-            }
-
+        
 			// Set billing and shipping addresses
 		    var address = {
 				'streetAddress'     : arguments.erponeOrder['oe_head_adr'][1],
@@ -1028,13 +1042,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    var fulfillmentMethodID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
 	        "entityName"  = 'FulfillmentMethod',
 	        "uniqueKey"   = 'fulfillmentMethodName',
-	        "uniqueValue" = 'Freight' // this default FulfillmentMethod is `Freight` // TODO: create a record in dev/prod DB
+	        "uniqueValue" = 'Freight' // this default FulfillmentMethod is `Freight` 
 	    );
 	    
 	    var shippingMethodID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
 	        "entityName"  = 'ShippingMethod',
 	        "uniqueKey"   = 'shippingMethodCode',
-	        "uniqueValue" = 'erpOneShippingMethod' // this default ShippingMethod is `erpOneShippingMethod` // TODO: create a record in dev/prod DB
+	        "uniqueValue" = 'erpOneShippingMethod' // this default ShippingMethod is `erpOneShippingMethod` 
 	    );
 	    
 	    var fulfillment = { 
@@ -1058,10 +1072,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return [ fulfillment ];
     }
 
-	public any function importErpOneOrderItems( numeric orderNumber, boolean processInLine = false){
+	public any function importErpOneOrderItems( any orderNumber, boolean processInLine = false){
+	    
+		var company =  this.setting("prodCompany")
 	    
 	    var isDevModeFlag = this.setting("devMode");
-		var company =  this.setting("prodCompany")
 		if(isDevModeFlag){
 			company = this.setting("devCompany");
 		}
@@ -1130,7 +1145,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return orderItemsImportBatch;
 	}
 	
-	public any function importErpOneOrderPayments( numeric orderNumber, boolean processInLine = false){
+	public any function importErpOneOrderPayments( any orderNumber, boolean processInLine = false){
 		var utilityService = this.getHibachiUtilityService();
 
 	    var isDevModeFlag = this.setting("devMode");
@@ -1211,9 +1226,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    orderPayment['orderPaymentStatusTypeCode'] = 'opstActive';
         	if( !isNull(arguments.erponeOrderPayment['oe_head_cu_po']) && arguments.erponeOrderPayment['oe_head_cu_po'].len() ){
         	    orderPayment['paymentMethod'] = 'Purchase Order';
-        	    orderPayment['paymentTerm'] = 'ERP One default PO term';        // TODO: add a record in dev/prod DB -- term
+        	    orderPayment['paymentTerm'] = 'ERP One default PO term';
         	} else {
-        	    orderPayment['paymentMethod'] = 'ERP payment method';           // TODO: add a record in dev/prod DB -- externalPaymentMethod
+        	    orderPayment['paymentMethod'] = 'ERP payment method';
         	}
         	
         	// Set billing and shipping addresses			
@@ -1284,7 +1299,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         return [ transactionData ];
 	}
 
-	public any function importErpOneOrderShipments(numeric orderNumber, boolean processInLine = false){
+	public any function importErpOneOrderShipments(any orderNumber, boolean processInLine = false){
 	    
 	    var utilityService = this.getHibachiUtilityService();
 
@@ -1698,21 +1713,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	
 	public void function pushOrderDataToErpOne(required any entity, any data ={}){
-		logHibachi("ERPOne - Start pushData - Order: #arguments.entity.getOrderID()#");
+		this.logHibachi("ERPOne - Start pushData - Order: #arguments.entity.getOrderID()#");
 		
-
 		var isDevModeFlag = this.setting("devMode");
-		if(!len(arguments.entity.getRemoteID())){
-			
-			
+		
+		if( !len(arguments.entity.getRemoteID()) ){
 			
 			arguments.data.payload = {
 				'order_ext' : arguments.entity.getOrderNumber(),
 	            'customer' : arguments.entity.getAccount().getCompanyCode(),
 			}
 			
-			
-			for(var orderPayment in arguments.entity.getOrderPayments()) {
+			for( var orderPayment in arguments.entity.getOrderPayments() ){
 				if(orderPayment.getStatusCode() == "opstActive"){
 					if(orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment'){
 						arguments.data.payload['cu_po'] = orderPayment.getPurchaseOrderNumber();
@@ -1782,8 +1794,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}, "create" );
 			
 			if(structKeyExists(response, 'created') && response.created == 1){
-			    // TODO change it to order no
-				arguments.entity.setRemoteID(response.rowids[1]);
+			    // the order in th ERP is not gonna have an order number, until it has been processed there
+			    // and we need ERP's order-number as the remove ID, that's what used to figure-out and link the order relations
+				
+				// arguments.entity.setRemoteID(response.rowids[1]);
+				
+				// so instead of trying to set the remote-id here, we'd send a DAO query to update the Slatwall's order
+				// while importing an puting th orders in the queue; it's safe as once created the order-number is not going to change.
+				
 			}else{
 				throw("ERPONE - pushOrderDataToErpOne #arguments.entity.getOrderNumber()#: Error: #Serializejson(response)#");
 			}

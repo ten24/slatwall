@@ -22,8 +22,7 @@
       "orderNumber":{
          "propertyIdentifier":"orderNumber",
          "validations":{
-            "required":true,
-            "dataType":"numeric"
+            "required":true
          }
       },
       "currencyCode":{
