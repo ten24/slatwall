@@ -29,6 +29,11 @@ const ShippingMethodPicker = () => {
             selectedValue={selectedShippingMethod.shippingMethodID}
           />
         )}
+        {orderFulfillment.shippingMethodOptions.length === 0 && (
+          <div className="alert alert-info" role="alert">
+            {t('frontend.checkout.fulfilment.shipping.no_eligible_options')}
+          </div>
+        )}
       </div>
     </div>
   )
