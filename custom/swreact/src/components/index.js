@@ -39,7 +39,7 @@ export { BillingAddressDetails } from './Checkout/BillingAddressDetails'
 
 export { TermPaymentDetails } from './Checkout/TermPaymentDetails'
 export { CCDetails } from './Checkout/CCDetails'
-export { CreditCardDetails } from './Checkout/CreditCardDetails'
+export { CreditCardDetails } from './Checkout/Payment/CreditCardDetails'
 export { GiftCardDetails } from './Checkout/GiftCardDetails'
 export { CheckoutSideBar } from './Checkout/CheckoutSideBar'
 export { StepsHeader } from './Checkout/StepsHeader'

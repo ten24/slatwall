@@ -12,15 +12,10 @@ const CreditCardPayment = () => {
   const { accountPaymentMethod = { accountPaymentMethodID: '' } } = useSelector(orderPayment)
   const dispatch = useDispatch()
 
-  // @function - Opens new payment method form
-  const openAddPaymentForm = () => {
-    setNewOrderPayment('new')
-  }
-
   useEffect(() => {
     if (paymentMethods.length === 0) {
       // if there is no payment method found for the user , open new payment form
-      openAddPaymentForm()
+      setNewOrderPayment('new')
     }
   }, [paymentMethods])
 
@@ -33,7 +28,7 @@ const CreditCardPayment = () => {
             options={paymentMethods}
             onChange={value => {
               if (value === 'new') {
-                openAddPaymentForm()
+                setNewOrderPayment('new')
               } else {
                 setNewOrderPayment(false)
                 dispatch(
@@ -43,10 +38,17 @@ const CreditCardPayment = () => {
                 )
               }
             }}
-            newLabel="Add Payment Method"
             selectedValue={newOrderPayment ? newOrderPayment : accountPaymentMethod.accountPaymentMethodID}
             displayNew={true}
           />
+          <button
+            className="btn btn-secondary mt-2"
+            onClick={() => {
+              setNewOrderPayment('new')
+            }}
+          >
+            Add Payment Method
+          </button>
         </div>
       </div>
       {newOrderPayment === 'new' && (

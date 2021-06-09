@@ -164,12 +164,12 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
   if (showAddress || accountAddresses.length === 0) {
     selectedAccountID = 'new'
   }
-
+  const hasShippingAddress = fulfillments.length > 0 && fulfillments[0].shippingAddress.addressID.length > 0
   return (
     <>
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{addressTitle}</h2>
 
-      {!hasRemovedShippingAddress && fulfillments.length > 0 && (
+      {!hasRemovedShippingAddress && hasShippingAddress && (
         <div className="row ">
           {fulfillments.map(({ shippingAddress }) => {
             return (
@@ -199,7 +199,7 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
           })}
         </div>
       )}
-      {hasRemovedShippingAddress && accountAddresses && (
+      {(hasRemovedShippingAddress || !hasShippingAddress) && accountAddresses && (
         <div className="row">
           <div className="col-sm-12">
             <SwRadioSelect
