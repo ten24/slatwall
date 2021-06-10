@@ -55,12 +55,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "importerMappingService";
 	
 	property name = "hibachiService";
+	property name = "hibachiEventService";
 	property name = "hibachiUtilityService";
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
 	property name = "hibachiEntityQueueDAO";
 	property name = "OptionDAO";
 	property name = "OrderDAO";
+	property name = "StockDAO";
 	
 	public any function init() {
 	    super.init(argumentCollection = arguments);
@@ -87,22 +89,24 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	
   	/*****************              Process - Queue - Process                 ******************/
 
-    public any function createNewImportBatch(required struct mapping, required any queryOrArrayOfStruct, string batchDescription){
+    public any function createNewImportBatch(required struct mapping, numeric batchItemsCount, any queryOrArrayOfStruct, string batchDescription){
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
 	    
-	    if(isQuery(arguments.queryOrArrayOfStruct)){
-	        var batchItemsCount = arguments.queryOrArrayOfStruct.recordCount; // query
-	    } else {
-	        var batchItemsCount = arguments.queryOrArrayOfStruct.len() // array
+	    if( !isNull(arguments.queryOrArrayOfStruct) ){
+    	    if(isQuery(arguments.queryOrArrayOfStruct)){
+    	        arguments.batchItemsCount = arguments.queryOrArrayOfStruct.recordCount; // query
+    	    } else {
+    	        arguments.batchItemsCount = arguments.queryOrArrayOfStruct.len(); // array
+    	    }
 	    }
 	    
 	    if(isNull(arguments.batchDescription)){
-	        arguments.batchDescription = "Import Batch for Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#] of length [#batchItemsCount#]  created on " & dateFormat(now(), "long");
+	        arguments.batchDescription = "Import Batch for Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#] of length [#arguments.batchItemsCount#]  created on " & dateFormat(now(), "long");
 	    }
 	    
 	    newBatch.setBaseObject( arguments.mapping.entityName );
-	    newBatch.setInitialEntityQueueItemsCount(batchItemsCount);
+	    newBatch.setInitialEntityQueueItemsCount(arguments.batchItemsCount);
 	    newBatch.setBatchDescription(arguments.batchDescription);
 	    
 	    this.getHibachiEntityQueueService().saveBatch(newBatch);
@@ -171,7 +175,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        emptyRelations = validation.emptyRelations
     	    );
     	    
-    
     	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
     
     	    this.getHibachiEntityQueueDAO().insertEntityQueue(
@@ -196,7 +199,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         );
         
         if(!validation.isValid){
-            arguments.entity.setErrors( validation.errors );
+            arguments.entity.addErrors( validation.errors );
         }
 	    
 	    return arguments.entity;
@@ -301,7 +304,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                 var dependencyPrimaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
                     "entityName"    = dependency.entityName,
         	        "uniqueKey"     = dependency.lookupKey,
-        	        "uniqueValue"   = dependency.lookupValue
+        	        "uniqueValue"   = dependency.lookupValue,
+        	        "useORM"        = dependency.useORM ?: false // this will run an HQL query instead of SQL, for to support ORM-transactions
                 );
 
             }   
@@ -443,21 +447,37 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
 
 	    var entityName = arguments.entity.getClassName();
-	    
-	    if(isNull(arguments.mapping)){
+	    if( isNull(arguments.mapping) ){
 	        arguments.mapping = this.getMappingByMappingCode( arguments.entityQueueData.mappingCode );
 	    }
-        
-        var extensionFunctionName = 'process#entityName#_import';
+	    
+        var extensionFunctionName = 'process#entityName#Import';
 	    if( structKeyExists(this, extensionFunctionName) ){
+	        this.logHibachi("BaseImporterService:: processEntityImport, found and invoking extensionFunction: #extensionFunctionName#");
 	        return this.invokeMethod( extensionFunctionName, arguments );
 	    }
-	    
-	    if( !structKeyExists(arguments, 'mapping') ){
-            arguments.mapping = this.getMappingByMappingCode( entityName );
-        }
         
-        if( structKeyExists(arguments.entityQueueData, '__lazy')){
+        return this.genericProcessEntityImport( argumentCollection=arguments );
+	}
+	
+	public any function genericProcessEntityImport( required any entity, required struct entityQueueData, struct mapping ){
+        this.logHibachi("BaseImporterService:: Starting genericProcessEntityImport, Mapping: #arguments.mapping.mappingCode#");
+
+	    var entityName = arguments.entity.getClassName();
+	    
+	    var eventData = {
+	        "data"      : arguments.entityQueueData,
+	        "entity"    : arguments.entity,
+	        "mapping"   : arguments.mapping,
+	    };
+	    eventData[entityName] = arguments.entity;
+	    
+	    this.getHibachiEventService().announceEvent(
+	        eventName = "beforeProcess#entityName#_import",
+	        eventData = eventData
+	    );
+	    
+	    if( structKeyExists(arguments.entityQueueData, '__lazy')){
             this.resolveMappingLazyProperties( 
                 transformedData = arguments.entityQueueData,
                 mapping = arguments.mapping
@@ -468,46 +488,67 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // like Product is required before SKU can be created for that Product	    
 	    if( structKeyExists(arguments.entityQueueData, '__dependencies') ){
             this.resolveEntityDependencies(argumentCollection = arguments);
-    	    if(arguments.entity.hasErrors()){
-    	        return arguments.entity;
+	    }
+	    
+	    if( !arguments.entity.hasErrors() ){
+    	    // make-sure that volatile-relaions are resolved
+    	    // volatile-relaions --> 
+    	    // related-entities which can be created by one of many records in the queue, 
+    	    // for example, Brand can be created by one of multiple-products(which belongs to the same brand) getting imported 
+    	    if( structKeyExists(arguments.entityQueueData, '__volatiles') ){
+                this.resolveMappingVolatileRelations(arguments.mapping.mappingCode, arguments.entityQueueData);
     	    }
+    	    
+    	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
+    	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
+    
+    	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
+    	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
+    	    
+    	    
+    	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
+    	    if( !structKeyExists(arguments.mapping, 'validationContext') ){
+    	        arguments.mapping['validationContext'] = 'save';
+    	    }
+    	    
+    	       // the onMissingSaveMethod in HibachiService does not like named arguments :(
+    	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
+    	        1 : arguments.entity, 
+	            2 : { 'importedData' : true },
+    	        3 : arguments.mapping.validationContext
+    	    });
+    	    
+            // will invoke Functions to be called after saving the entity, like `updateCalculatedProperties`
+            this.invokePostSaveMethodsRecursively( arguments.entity, arguments.mapping );
 	    }
 	    
-	    // make-sure that volatile-relaions are resolved
-	    // volatile-relaions --> 
-	    // related-entities which can be created by one of many records in the queue, 
-	    // for example, Brand can be created by one of multiple-products(which belongs to the same brand) getting imported 
-	    if( structKeyExists(arguments.entityQueueData, '__volatiles') ){
-            this.resolveMappingVolatileRelations(arguments.mapping.mappingCode, arguments.entityQueueData);
+	    
+	   // announce after- events  
+	 
+	    eventData[entityName] = arguments.entity;
+	  
+	    this.getHibachiEventService().announceEvent(
+	        eventName = "afterProcess#entityName#_import",
+	        eventData = eventData
+	    );
+    	    
+	    if(arguments.entity.hasErrors()){
+    	    this.getHibachiEventService().announceEvent(
+    	        eventName = "afterProcess#entityName#_importFailure",
+    	        eventData = eventData
+    	    );
+	    } else {
+	        this.getHibachiEventService().announceEvent(
+    	        eventName = "afterProcess#entityName#_importSuccess",
+    	        eventData = eventData
+    	    );
 	    }
 	    
-	    // we're populating in private-mode, which will set properties having hb_populateEnabled = [ true, public, private ]
-	    arguments.entity.populate( data=arguments.entityQueueData, objectPopulateMode='private' );
-
-	    // will invoke Functions to be called after populating the entity, like `updateCalculatedProperties`
-	    this.invokePostPopulateMethodsRecursively( arguments.entity, arguments.mapping );
-	    
-	    
-	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
-	    if( !structKeyExists(arguments.mapping, 'validationContext') ){
-	        arguments.mapping['validationContext'] = 'save';
-	    }
-	    
-	       // the onMissingSaveMethod in HibachiService does not like named arguments :(
-	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
-	        1 : arguments.entity, 
-	        2 : { 'importedData' : true },
-	        3 : arguments.mapping.validationContext
-	    });
-	    
-	    
-        // will invoke Functions to be called after saving the entity, like `updateCalculatedProperties`
-        this.invokePostSaveMethodsRecursively( arguments.entity, arguments.mapping );
-   
-	    
+        this.logHibachi("BaseImporterService:: Finished genericProcessEntityImport, Mapping: #arguments.mapping.mappingCode#");
+        
 	    return arguments.entity;
 	}
-	
+
 	
 	
 	/*****************                      VALIDATE                 ******************/
@@ -1383,31 +1424,31 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public any function generateInventoryStock( struct data, struct mapping, struct propertyMetaData ){
 		
 	    var skuID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-            	        "entityName"  : 'Sku',
-            	        "uniqueKey"   : 'remoteID',
-            	        "uniqueValue" : arguments.data.remoteSkuID
-            	    );
+	        "entityName"  : 'Sku',
+	        "uniqueKey"   : 'remoteID',
+	        "uniqueValue" : arguments.data.remoteSkuID
+	    );
             	    
         var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-            	        "entityName"  : 'Location',
-            	        "uniqueKey"   : 'remoteID',
-            	        "uniqueValue" : arguments.data.remoteLocationID
-            	    ); 
+	        "entityName"  : 'Location',
+	        "uniqueKey"   : 'remoteID',
+	        "uniqueValue" : arguments.data.remoteLocationID
+	    ); 
             	    
-        if (!isNull(skuID) && !this.hibachiIsEmpty(skuID) ){
+        if (!isNull(skuID) && len(skuID) ){
             
-            if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
+            if( isNull(locationID) || !len(locationID) ){
                 // fallback to `Default Location` 
-                locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
+                locationID = "88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
             }
-            
-    	    //Find if we have a stock for this sku and location.
-		    var stock = this.getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
 		    
-		    if( !isNull(stock) ){
-		    	return { "stockID" : stock.getstockID() };
+		    //Find if we have a stock for this sku and location.
+    	    var stockID = this.getStockDAO().getStockIDBySkuIDAndLocationID( skuID, locationID);
+	    
+		    if( !isNull(stockID) && len(stockID) ){
+		    	return { "stockID" : stockID };
 		    }
-		    
+			    
 		    //create new stock
 		    return {
 	            "stockID" : "",
@@ -1420,7 +1461,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        };
         }
         
-        //dont create stock if there is no locationID / skuID
 	}
 	
 	
@@ -1446,8 +1486,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     }
     
     /////////////////.                  ORDER
-
-    public array function generateOrderOrderFulfillments( 
+    
+      public array function generateOrderOrderFulfillments( 
     	struct data, 
     	struct mapping, 
     	struct propertyMetaData
@@ -1472,6 +1512,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	           },
         }];
     }
+
+    
     
     /////////////////.                  Order Delivery
 
@@ -1497,40 +1539,41 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     
     public any function generateOrderDeliveryItemStock( struct data, struct mapping, struct propertyMetaData ){
 		
-	    var skuID = getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID).skuID;
-        if (!isNull(skuID) && !this.hibachiIsEmpty(skuID) ){
-	        var locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-	            	        "entityName"  : 'Location',
-	            	        "uniqueKey"   : 'remoteID',
-	            	        "uniqueValue" : arguments.data.PickupLocationRemoteID
-	            	    ); 
+		if(!isNull(arguments.propertyMetaData) && !isNull(arguments.propertyMetaData.useORM) && arguments.propertyMetaData.useORM ){
+    	    var skuID = this.getOrderDAO().getAnyPropertyIdentifierValueByEntityNameAndUniquePropertyIdentifierValue( 
+	            "OrderItem",
+	            "sku.skuID",
+	            "remoteID",
+	            arguments.data.remoteOrderItemID
+	        );
+		} else {
+	        var skuID = this.getOrderDAO().getSkuIDByOrderItemRemoteID(arguments.data.remoteOrderItemID);
+		}
+	    
+        if( !isNull(skuID) && len(skuID) ){
+            
+            var locationID = '';
+            
+            if(!isNull(arguments.data.warehouseLocationRemoteID)){
+    	        locationID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+        	        "entityName"  : 'Location',
+        	        "uniqueKey"   : 'remoteID',
+        	        "uniqueValue" : arguments.data.warehouseLocationRemoteID
+        	    ); 
+            }
 	            
-	        if( isNull(locationID) || this.hibachiIsEmpty(locationID) ){
-	            // fallback to `Default Location` 
-	            locationID="88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
+	        if( isNull(locationID) || !len(locationID) ){
+	            locationID = "88e6d435d3ac2e5947c81ab3da60eba2"; // default locationID
 	        }
             
-	    //Find if we have a stock for this sku and location.
-	    var stock = this.getStockService().getStockBySkuIdAndLocationId(skuID,locationID);
+    	    //Find if we have a stock for this sku and location.
+    	    var stockID = this.getStockDAO().getStockIDBySkuIDAndLocationID( skuID, locationID);
 	    
-		    if( !isNull(stock) ){
-		    	return { "stockID" : stock.getstockID() };
+		    if( !isNull(stockID) && len(stockID) ){
+		    	return { "stockID" : stockID };
 		    }
-			    
-		    //create new stock
-		    return {
-	            "stockID" : "",
-	            "sku": {
-	                    "skuID": skuID
-	           },
-	            "location" :{
-	                "locationID" : locationID
-	            }
-	        };
         }
-        return {};
         
-        //dont create stock if there is no locationID / skuID
 	}
 	
 	/////////////////.                  Order Delivery
