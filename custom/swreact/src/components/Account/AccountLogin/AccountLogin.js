@@ -52,7 +52,7 @@ const LoginForm = () => {
             </div>
             <hr className="mt-4" />
             <div className="text-right pt-4">
-              <button className="btn btn-primary" type="submit">
+              <button className="btn btn-primary" disabled={formik.isSubmitting} type="submit">
                 {t('frontend.account.sign_in')}
               </button>
             </div>
