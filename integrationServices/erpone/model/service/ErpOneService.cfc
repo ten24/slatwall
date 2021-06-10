@@ -944,19 +944,30 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	
-	public any function updateSlatwallOrdrRemoteIDsWithERPOrder(required any slatwallOrderNumber, required any erpOrderNumber ){
+	public any function updateSlatwallOrdrRemoteIDsWithERPOrder(required any slatwallOrderNumber, required any remoteOrderID ){
 	    
+	    // make the import-remote-id, so the importer can find the same order
+	    var orderImportRemoteID = this.createMappingImportRemoteID( 
+	        data    = { "remoteOrderID": arguments.remoteOrderID }, 
+	        mapping = this.getMappingByMappingCode('ErpOneOrderImport')
+	    );
+
 	    // Slatwall's order
 	    QueryExecute( 
-	        sql = 'UPDATE swOrder SET `remoteID` = :erpOrderNumber WHERE `orderNumber` = :slatwallOrderNumber AND `remoteID` IS NULL',
+	        sql = "
+    	        UPDATE swOrder 
+    	        SET `remoteID` = :remoteOrderID, `importRemoteID` = :orderImportRemoteID
+    	        WHERE `orderNumber` = :slatwallOrderNumber AND `remoteID` IS NULL
+    	    ",
 	        params = {
-		        'erpOrderNumber':       { 'type': 'string', 'value': arguments.erpOrderNumber },
+		        'remoteOrderID':       { 'type': 'string', 'value': arguments.remoteOrderID },
 		        'slatwallOrderNumber':  { 'type': 'string', 'value': arguments.slatwallOrderNumber },
+		        'orderImportRemoteID':  { 'type': 'string', 'value': orderImportRemoteID }
 	        }
         );
         
         // Slatwall's fulfillment
-        var fulfillmentRemoteID = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo(arguments.erpOrderNumber);
+        var fulfillmentRemoteID = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo(arguments.remoteOrderID);
         QueryExecute( 
 	        sql = "
 	            UPDATE swOrderFulfillment f
@@ -973,30 +984,40 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         );
         
         // Slatwall's Order's order-items
-        // the logic here needs to be consistent with `getSlatwallOrderItemRemoteID`
-        QueryExecute( 
-	        sql = "
-	            UPDATE swOrderItem oi
-                INNER JOIN swOrder o ON oi.orderID = o.orderID
-                	AND o.orderNumber = :slatwallOrderNumber
-                INNER JOIN swSku s ON oi.skuID = s.skuID
-                
-                SET oi.remoteID = CONCAT( o.remoteID , '_', s.remoteID )
-                
-                WHERE oi.remoteID IS NULL
-	        ",
-	        params = {
-		        'slatwallOrderNumber': { 'type': 'string', 'value': arguments.slatwallOrderNumber }
-	        }
-        );
-        
-        
+        // will get updated while pulling the order items
+           
         //
         // no need to update the payment, as we only authorize in slatwall, and payment is captured in ERP.
         //
         // no need to update anything else, as that's the END of order lifecycle in Slatwall
         //
 	}
+	
+	public any function updateSlatwallOrdrItemRemoteID(required any remoteOrderID, required string remoteOrderItemID ){
+	    
+
+	     // make the import-remote-id, so the importer can find the same order-item
+	    var orderItemImportRemoteID = this.createMappingImportRemoteID( 
+	        data    = { "remoteOrderItemID": arguments.remoteOrderItemID }, 
+	        mapping = this.getMappingByMappingCode('ErpOneOrderItemImport')
+	    );
+	    
+	    var hql = "UPDATE SlatwallOrderItem oi SET oi.remoteID = :remoteOrderItemID, oi.importRemoteID= :orderItemImportRemoteID WHERE oi.remoteID IS NULL AND oi.order.remoteID = :remoteOrderID ";
+        
+	    var params = {
+	        'remoteOrderID'           :  arguments.remoteOrderID ,
+	        'remoteOrderItemID'       :  arguments.remoteOrderItemID ,
+	        'orderItemImportRemoteID' :  orderItemImportRemoteID 
+        };
+        
+        ormExecuteQuery( hql, params, false );
+	    
+	}
+	    
+
+	
+	
+     
 	
 	public string function getSlatwallOrderStatusCodeByERPOrderStatusCode(required string erpOrderStatusCode){
 		/*
@@ -1162,6 +1183,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    	
 	    	// make remote ids
 	    	transformedItem['remoteOrderItemID'] = this.getSlatwallOrderItemRemoteID( transformedItem.remoteOrderID, transformedItem.remoteSkuID);
+	    	
+	    	// If it belongs to a Slatwall Order, we'd need to update the remoteID, unfortunally there's no simpler way ATM
+	   // 	this.updateSlatwallOrdrItemRemoteID( transformedItem.remoteOrderID, transformedItem.remoteOrderItemID );
+	    	
 	    	transformedItem['remoteOrderFulfillmentID'] = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( transformedItem.remoteOrderID );
         
 	    	// defaults
@@ -1386,17 +1411,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    
     	    var remoteID = this.getSlatwallOrderDelivderyRemoteIDByErpOneOrder(arguments.erponeOrderShipment['oe_head_order'], arguments.erponeOrderShipment['oe_head_rec_seq'] );
     	    
-    	    // try to find the previous one in case, the order is getting re-imported
-    	    var orderDeliveryID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-    	        'entityName'  = 'OrderDelivery',
-    	        'uniqueKey'   = 'remoteID',
-    	        'uniqueValue' = remoteID
-    	    );
-    	    
     	    var orderDelivery = { 
     	        'rec_seq'               : arguments.erponeOrderShipment['oe_head_rec_seq'],
         	    'remoteOrderID'         : arguments.erponeOrderShipment['oe_head_order'],
-    	        'orderDeliveryID'       : orderDeliveryID ?: '',
         	    'remoteOrderDeliveryID'	: remoteID,
         	    'warehouseLocationCode' : 'default',
         	    'shippingMethodCode'    : 'erpOneShippingMethod',
