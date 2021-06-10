@@ -10,7 +10,7 @@ const data = {
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
   cmsProvider: 'slatwallCMS',
-  enforceVerifiedAccountFlag: false,
+  enforceVerifiedAccountFlag: true,
   shopByManufacturer: {
     slug: '/brands',
     showInMenu: true,
@@ -29,7 +29,7 @@ const data = {
     formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
   },
   theme: {
-    host: 'https://stoneandberg.ten24dev.com',
+    host: process.env.REACT_APP_API_URL,
     basePath: '/custom/client/assets/images/',
     primaryColor: '5f1018',
   },

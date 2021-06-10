@@ -393,7 +393,8 @@ export const addPayment = (params = {}) => {
     if (req.isSuccess()) {
       dispatch(receiveCart(req.success().cart))
       dispatch(receiveUser(req.success().account))
-      if (req.success().errors) dispatch(setError(req.success().errors))
+      console.log('req.success().errors', req.success().errors)
+      if (req.success().errors && Object.keys(req.success().errors).length) toast.error(getErrorMessage(req.success().errors))
     }
   }
 }

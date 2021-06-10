@@ -61,25 +61,26 @@ const Search = () => {
             })}
         />
       )}
-      <div className="container bg-light box-shadow-lg rounded-lg p-5">
-        {/* <!--- Product Type grid ---> */}
-        <div className="row">
-          {productTypeListRequest.isLoaded && productTypeData.childProductTypes?.length > 0 && (
-            <ProductTypeList
-              data={productTypeData}
-              onSelect={urlTitle => {
-                params['key'] = urlTitle
-                history.push(`${loc.pathname}?${queryString.stringify(params, { arrayFormat: 'comma' })}`)
-              }}
-            />
-          )}
-          {!productTypeListRequest.isFetching && productTypeListRequest.isLoaded && Object.keys(productTypeListRequest.data).length === 0 && (
+
+      {productTypeListRequest.isLoaded && productTypeData.childProductTypes?.length > 0 && (
+        <ProductTypeList
+          data={productTypeData}
+          onSelect={urlTitle => {
+            params['key'] = urlTitle
+            history.push(`${loc.pathname}?${queryString.stringify(params, { arrayFormat: 'comma' })}`)
+          }}
+        />
+      )}
+      {!productTypeListRequest.isFetching && productTypeListRequest.isLoaded && Object.keys(productTypeListRequest.data).length === 0 && (
+        <div className="container bg-light box-shadow-lg rounded-lg p-5">
+          <div className="row">
             <div className="alert alert-info" role="alert">
               {`${t('frontend.search.no_results')} ${params?.keyword}`}
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
+
       {productTypeListRequest.isLoaded && productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_slug: productTypeUrl }} hide={['productType']} />}
     </Layout>
   )

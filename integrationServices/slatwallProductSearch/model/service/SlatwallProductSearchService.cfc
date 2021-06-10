@@ -206,41 +206,46 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	public array function makePriceRangeOptions( required number priceRangesCount, required any priceRangeCollectionList ){
-    
-        //check to avoid division by zero
-        if( arguments.priceRangesCount <= 0 ){
-            return [];
-        }
+		//check to avoid division by zero
+		if( arguments.priceRangesCount <= 0 ){
+		    return [];
+		}
         
-        var startTicks = getTickCount();
-        var records = arguments.priceRangeCollectionList.getRecords(formatRecords=false);
+		var startTicks = getTickCount();
+		var records = arguments.priceRangeCollectionList.getRecords(formatRecords=false);
+
+		var min = val(records[1]['min'] ?: 0);
+		var max = val(records[1]['max'] ?: 0);
+		this.getSlatwallProductSearchDAO().logQuery({
+		    'sql': arguments.priceRangeCollectionList.getSQL(),
+		    'result' : { 'min': min, 'max': max},
+		    'recordCount' : 1,
+		    'executionTime' : getTickCount() - startTicks,
+		}, 'getProducts:: priceRangeCollectionList.getRecords' );
+
+
+		min = floor(min);
+		max = ceiling(max);
+		var delta = floor((max - min) / arguments.priceRangesCount);
+
+		if(delta <= 1){
+		    return  [{"name": (min) &" - "&(max), "value": (min) &"-"&(max)}]
+		}
         
-        var min = val(records[1]['min'] ?: 0);
-        var max = val(records[1]['max'] ?: 0);
-        this.getSlatwallProductSearchDAO().logQuery({
-            'sql': arguments.priceRangeCollectionList.getSQL(),
-            'result' : { 'min': min, 'max': max},
-            'recordCount' : 1,
-            'executionTime' : getTickCount() - startTicks,
-        }, 'getProducts:: priceRangeCollectionList.getRecords' );
-        
-        
-        
-        var delta = floor((max - min) / arguments.priceRangesCount);
-        var ranges = [
-            {"name": (min) &" - "&(min+delta), "value": (min) &"-"&(min+delta)}
-        ];
-        
-        while( min < max) {
-            min = min + delta;
-            if( min + delta < max ) {
-                ranges.append(
-                    { "name": (min + 1) &" - "&(min+delta), "value": (min + 1) &"-"&(min+delta) }
-                );
-            }
-        }
-        return ranges;
-    }
+		var ranges = [
+		    {"name": (min) &" - "&(min+delta), "value": (min) &"-"&(min+delta)}
+		];
+
+		while( min < max) {
+		    min = min + delta;
+		    if( min + delta < max ) {
+			ranges.append(
+                    		{ "name": min &" - "&(min+delta), "value": min &"-"&(min+delta) }
+			);
+		    }
+		}
+        	return ranges;
+    	}
     
 
 	public string function getFacetFilterKeyPropertyIdentifierByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){

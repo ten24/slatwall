@@ -1,7 +1,7 @@
 <cfoutput>
 	<div id="container#order.getOrderId()#-#local.batchPageCount#" class="invoice" style="width: 625px; font-family: arial; font-size: 12px;background:##fff;">
 		<div class="invoice-intro">
-			<cfif cgi.server_name CONTAINS "ten24dev">
+			<cfif cgi.server_name CONTAINS "slatwallcommerce-dev">
 				
 				<!---client header/image goes here--->
 			

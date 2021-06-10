@@ -22,7 +22,7 @@ const LoginForm = () => {
       loginPassword: Yup.string().required('Required'),
     }),
     onSubmit: values => {
-      dispatch(login(values.loginEmail, values.loginPassword))
+      dispatch(login(values.loginEmail, values.loginPassword, t('frontend.account.auth.success'), t('frontend.account.auth.failure')))
     },
   })
 

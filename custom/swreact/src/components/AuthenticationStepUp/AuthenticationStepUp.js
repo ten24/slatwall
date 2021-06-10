@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { orderItemsCountSelector } from '../../selectors'
 import { isAuthenticated } from '../../utils'
 
-const AuthenticationStepUp = ({ messageKey = 'frontend.account.auth' }) => {
+const AuthenticationStepUp = ({ messageKey = 'frontend.account.auth.price' }) => {
   const loc = useLocation()
   const { t } = useTranslation()
   const orderItemsCount = useSelector(orderItemsCountSelector)

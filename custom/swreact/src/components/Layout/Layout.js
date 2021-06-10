@@ -2,11 +2,11 @@ import { Footer } from '..'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-const Layout = ({ children }) => {
+const Layout = ({ classNameList, children }) => {
   return (
     <>
       <ToastContainer />
-      <div style={{ minHeight: '800px' }}>{children}</div>
+      <div style={{ minHeight: '800px' }} className={classNameList}>{children}</div>
       <Footer />
     </>
   )

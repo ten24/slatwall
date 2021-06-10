@@ -22,7 +22,7 @@ const AccountSidebar = () => {
           <div className="media align-items-center">
             <div className="media-body">
               <h3 className="font-size-base mb-0">{`${user.firstName} ${user.lastName}`}</h3>
-              <button
+               <button
                 type="button"
                 disabled={disableButton}
                 onClick={() => {

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
 import { useTranslation } from 'react-i18next'
 import { useGetAccountCartsAndQuotes } from '../../../hooks/useAPI'
 import { useFormatCurrency, useFormatDate } from '../../../hooks'
-import { Button } from '../../Button/Button'
+import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setOrderOnCart } from '../../../actions'
 import { ListingPagination } from '../..'
@@ -28,7 +27,8 @@ const OrderListItem = props => {
       </td>
       <td className="py-3">{formatCurrency(calculatedTotal)}</td>
       <td className="py-3">
-        <Button
+        <Link
+          className="text-link"
           onClick={event => {
             dispatch(setOrderOnCart(orderID))
             window.scrollTo({
@@ -38,7 +38,7 @@ const OrderListItem = props => {
           }}
         >
           {t('frontend.account.order.change_order')}
-        </Button>
+        </Link>
         <br />
       </td>
     </tr>
@@ -65,7 +65,6 @@ const AccountCarts = ({ customBody, crumbs, title, contentTitle }) => {
   return (
     <AccountLayout crumbs={crumbs} title={title}>
       <AccountToolBar term={keyword} updateTerm={setSearchTerm} search={search} />
-      <AccountContent contentTitle={contentTitle} customBody={customBody} />
 
       <div className="table-responsive font-size-md">
         <table className="table table-hover mb-0">
