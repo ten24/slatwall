@@ -65,6 +65,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return returnList;
 	}
+
+	public any function clearOrderFulfillment(required any orderFulfillment, struct data = {}){
+		arguments.orderFulfillment.setFulfillmentCharge(0);
+		arguments.orderFulfillment.setHandlingFee(0);
+		arguments.orderFulfillment.setFulfillmentMethodOptionsCacheKey(javacast('null',''));
+		arguments.orderFulfillment.setAccountAddress(javacast('null',''));
+		arguments.orderFulfillment.setShippingAddress(javacast('null',''));
+		arguments.orderFulfillment.setShippingMethod(javacast('null',''));
+		arguments.orderFulfillment.setHandlingFeeTaxCategory(javacast('null',''));
+
+		return arguments.orderFulfillment
+	}
 	
 	// =====================  END: Logical Methods ============================
 	

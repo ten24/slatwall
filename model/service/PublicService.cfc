@@ -72,6 +72,7 @@ component  accessors="true" output="false"
     property name="integrationService" type="any";
     property name="imageService" type="any";
     property name="locationService" type="any";
+    property name="fulfillmentService" type="any";
 
 
     variables.publicContexts = [];
@@ -2583,18 +2584,6 @@ component  accessors="true" output="false"
 
         var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
 
-        var existingOrderFulfillment = "";
-
-        //check if fulfillment method already exists on order
-        var allOrderFulfillments = cart.getOrderFulfillments();
-        for(var orderFulfillment in allOrderFulfillments) {
-
-            //get existing fulfillment method based on fulfillment method ID
-            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodID() == arguments.data.fulfillmentMethodID ) {
-                existingOrderFulfillment = orderFulfillment;
-            }
-        }
-
         var orderItems = cart.getOrderItems();
         for(var orderItem in orderItems) {
 
@@ -2604,32 +2593,51 @@ component  accessors="true" output="false"
             //Check if item id exists, existing fulfillment method is different than the one we're passing, and new fulfillment should be eligible
             if( ArrayContains(orderItemIDList, orderItem.getOrderItemID()) && orderItem.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() != arguments.data.fulfillmentMethodID &&  ArrayContains(eligibleFulfillmentMethods, arguments.data.fulfillmentMethodID) ) {
 
-                //Remove existing method
-                orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
+                // clear order fulfillment and change fulfillment method
+                var fulfillmentMethod = getFulfillmentService().getFulfillmentMethod(arguments.data.fulfillmentMethodID);
+                var orderFulfillment = orderItem.getOrderFulfillment();
+                orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
+                orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
 
-                if( !this.getHibachiScope().hibachiIsEmpty(existingOrderFulfillment) ) {
-                    orderItem.setOrderFulfillment( existingOrderFulfillment );
-                } else {
-                    //get fulfillment method
-                    var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
+                orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
 
-                    //create new method
-                    var orderFulfillment = this.getOrderService().newOrderFulfillment();
-                    orderFulfillment.setOrder( cart );
-                    orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
-    				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
-
-                    orderItem.setOrderFulfillment( orderFulfillment );
+                if(orderFulfillment.hasErrors()){
+                    this.addErrors(arguments.data, orderFulfillment.getErrors());
+                    getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", true );
+                    return;
                 }
             }
         }
 
-        this.getOrderService().saveOrder(getHibachiScope().getCart());
-
-        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", false );
     }
 
+    /**
+     * @http-context clearFulfillment
+     * @description Clear Order Fulfillment from order
+     * @param orderFulfillmentID 
+     */
+    public any function clearOrderFulfillment(required any data){
+        param name="data.orderFulfillmentID" default="";
 
+        var orderFulfillment = getFulfillmentService().getOrderFulfillment(arguments.data.orderFulfillmentID);
+
+        if(!isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID()){
+
+            orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
+            orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
+
+            if(orderFulfillment.hasErrors()){
+                this.addErrors(arguments.data, orderFulfillment.getErrors());
+                getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
+                return;
+            }
+
+            getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", false );
+        } else {
+            getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
+        }
+    }
 
     /** 
      * @http-context updateOrderFulfillmentAddressZone
