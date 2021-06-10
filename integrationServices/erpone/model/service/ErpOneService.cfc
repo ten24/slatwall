@@ -705,7 +705,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		logHibachi("ERPOne - Start pushData - Account: #arguments.entity.getAccountID()#");
 		
 		var customerChanges = {
-			"name" : entity.getCompany(),
+			"name" : arguments.entity.getFirstName()&" "&arguments.entity.getLastName(),
+			"customer" : arguments.entity.getCompanyCode()
 		};
 		if(!isNull(entity.getAddress())){
 			var address = entity.getAddress();
@@ -773,7 +774,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			var response = this.callErpOneUpdateDataApi({
 				"table"	   : "customer",
 				"triggers" : "true",
-				"changes"  : [ customerChanges ]
+				"records"  : [ customerChanges ]
 			}, "create" );
 			/** Format error:
 			 * typical error response: { "errordetail": "error", "filecontent": "null"};
@@ -800,17 +801,21 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				 * typical error response: { "errordetail": "error", "filecontent": "null"};
 				 * typical successful response: {"table":"customer","updated":1,"triggers":false}
 				*/
-			
+				logHibachi("ERPOne - Successfully created sy_contact on Erpone with rowID #contactResponse.rowids[1]#");
+				
 				if( structKeyExists(contactResponse, 'created') && contactResponse.created > 0 ){
 					var prospectResponse = this.callErpOneUpdateDataApi({
 					"table" : "cu_prospect",
 					"triggers" : "true",
 					"records" : [ {
 					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
-					"customer" : contactResponse.rowids[1]
+					"customer" : arguments.entity.getCompanyCode()
 					} ]
 					}, "create" );
 					entity.setRemoteContact(contactResponse.rowids[1]);
+					
+					logHibachi("ERPOne - Successfully created cu_prospect on Erpone with rowID #prospectResponse.rowids[1]#");
+					
 				} else {
 					throw("ERPONE - callErpOnePushSy_contactApi: API response is not valid json");
 				}
@@ -952,7 +957,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				arguments.data.payload['company_cu'] = this.setting("prodCompany");
 				arguments.data.payload['company_oe'] = this.setting("prodCompany");
 			}
-
 			var response = this.callErpOneUpdateDataApi({
 			  "table"	 : "ec_oehead",
 			  "triggers" : "true",
