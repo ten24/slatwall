@@ -29,7 +29,7 @@ const data = {
     formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
   },
   theme: {
-    host: process.env.REACT_APP_API_URL,
+    host: process.env.REACT_APP_ADMIN_URL,
     basePath: '/custom/client/assets/images/',
     primaryColor: '5f1018',
   },
