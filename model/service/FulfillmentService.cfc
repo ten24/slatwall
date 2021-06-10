@@ -73,7 +73,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderFulfillment.setAccountAddress(javacast('null',''));
 		arguments.orderFulfillment.setShippingAddress(javacast('null',''));
 		arguments.orderFulfillment.setShippingMethod(javacast('null',''));
+		arguments.orderFulfillment.setPickupLocation(javacast('null',''));
 		arguments.orderFulfillment.setHandlingFeeTaxCategory(javacast('null',''));
+
+		if(orderFulfillment.hasFulfillmentShippingMethodOption()){
+			for(var option in orderFulfillment.getFulfillmentShippingMethodOptions()){
+				orderFulfillment.removeFulfillmentShippingMethodOption(option);
+			}
+		}
 
 		return arguments.orderFulfillment
 	}
