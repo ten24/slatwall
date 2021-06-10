@@ -1665,7 +1665,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					"changes"	 : [ 
 						{
 							"__rowid" : entity.getRemoteContact(),
-        					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
 							"First_Name" : entity.getFirstName(),
 							"Last_Name" : entity.getLastName()
 						} 
@@ -1707,7 +1706,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					"table"	 : "sy_contact",
 					"triggers" : "true",
 					"records"	 : [ {
-    					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
 						"First_Name" : entity.getFirstName(),
 						"Last_Name" : entity.getLastName()
 					} ]
