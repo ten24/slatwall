@@ -22,7 +22,7 @@ const AccountSidebar = () => {
               <button
                 type="button"
                 onClick={() => {
-                  dispatch(logout())
+                  dispatch(logout(t('frontend.account.logout.success'), t('frontend.account.logout.failure')))
                 }}
                 className="link-button text-accent font-size-sm"
               >

@@ -2680,8 +2680,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName,orderTemplateStatusType.systemCode,currencyCode";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
-		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
-		var billingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "billingAccountAddress.");
+		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItems(addressCollectionProps, "shippingAccountAddress.");
+		var billingAddressPropList = getService('hibachiUtilityService').prefixListItems(addressCollectionProps, "billingAccountAddress.");
 		displayProperties &= ',' & shippingAddressPropList; 
 		displayProperties &= ',' & billingAddressPropList;  
 	
@@ -2789,7 +2789,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedDiscountTotal"; //extra prop we need
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
-		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
+		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItems(accountPaymentMethodProps, "accountPaymentMethod.");
 		
 		orderTemplateCollectionPropList = ListAppend(orderTemplateCollectionPropList,accountPaymentMethodProps);
 		
@@ -6022,10 +6022,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		optionsArray = getService('hibachiUtilityService').arrayOfStructsSort(optionsArray,sortProperty);
-
-		if(!arrayLen(optionsArray)) {
-			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});
-		}
+		
     	return optionsArray;
     }
 

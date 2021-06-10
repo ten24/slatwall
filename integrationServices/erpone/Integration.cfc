@@ -65,17 +65,21 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	
 	public struct function getSettings() {
 		return {
-		    devGatewayURL = {fieldType="text"},
-			prodGatewayURL = {fieldType="text"},
-			devMode = { fieldType="yesno", defaultValue=1 },
-			devClient = {fieldType="text", defaultValue="web"},
-			prodClient = {fieldType="text", defaultValue="web"},
-			devCompany = {fieldType="text", defaultValue="DC"},
-			prodCompany = {fieldType="text", defaultValue="DC"},
-			devUsername = {fieldType="text", defaultValue="Ten24Dev"},
-			prodUsername = {fieldType="text", defaultValue="Ten24Dev"},
-			devPassword = {fieldType="password"},
-			prodPassword = {fieldType="password"}
+		    
+		    pushOrdersEnabled   = { fieldType="yesno", defaultValue=0 },
+		    pushAccountsEnabled = { fieldType="yesno", defaultValue=0 },
+		    
+		    devGatewayURL   = {fieldType="text"},
+			prodGatewayURL  = {fieldType="text"},
+			devMode         = {fieldType="yesno", defaultValue=1 },
+			devClient       = {fieldType="text", defaultValue="web"},
+			prodClient      = {fieldType="text", defaultValue="web"},
+			devCompany      = {fieldType="text", defaultValue="DC"},
+			prodCompany     = {fieldType="text", defaultValue="DC"},
+			devUsername     = {fieldType="text", defaultValue="Ten24Dev"},
+			prodUsername    = {fieldType="text", defaultValue="Ten24Dev"},
+			devPassword     = {fieldType="password"},
+			prodPassword    = {fieldType="password"}
     	};
 	}
 }

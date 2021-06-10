@@ -22,14 +22,39 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	public any function importAccounts(){
 	    this.getService('erpOneService').importErpOneAccounts();
 	}
+	
 	// Get Order Data
 	public any function importOrders(){
-	    this.getService('erpOneService').importErpOneOrders();
+	    var batch = this.getService('erpOneService').importErpOneOrders();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
 	}
-	// Get Order Items Data
+	
+	// Get Order Data
 	public any function importOrderItems(){
-	    this.getService('erpOneService').importErpOneOrderItems();
+	    var batch = this.getService('erpOneService').importErpOneOrderItems();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
 	}
+	
+	// Get Order Data
+	public any function importOrderPayments(){
+	    var batch = this.getService('erpOneService').importErpOneOrderPayments();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	public any function importOrderShipments(){
+	    var batch = this.getService('erpOneService').importErpOneOrderShipments();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+
 	// Get Inventory Items Data
 	public any function importInventoryItems(){
 	    this.getService('erpOneService').importErpOneInventoryItems();

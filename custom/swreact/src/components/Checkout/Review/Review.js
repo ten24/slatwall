@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux'
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
-import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, TermPaymentDetails, BillingAddressDetails, CCDetails } from '../../components'
-import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector, shippingMethodSelector } from '../../selectors/orderSelectors'
+import { SlideNavigation, CartLineItem, GiftCardDetails, PickupLocationDetails, ShippingAddressDetails, TermPaymentDetails, BillingAddressDetails, CCDetails } from '../..'
+import { fulfillmentSelector, shippingAddressSelector, orderPayment, billingAddressNickname, shippingAddressNicknameSelector, shippingMethodSelector, pickupLocationSelector } from '../../../selectors/orderSelectors'
 import { useTranslation } from 'react-i18next'
 
 const ReviewSlide = ({ currentStep }) => {
@@ -11,6 +11,8 @@ const ReviewSlide = ({ currentStep }) => {
   const payment = useSelector(orderPayment)
   const shippingAddress = useSelector(shippingAddressSelector)
   const shippingMethod = useSelector(shippingMethodSelector)
+  const pickupLocation = useSelector(pickupLocationSelector)
+
   let billingNickname = useSelector(billingAddressNickname)
   const { t } = useTranslation()
 
@@ -18,7 +20,6 @@ const ReviewSlide = ({ currentStep }) => {
   if (cart.isPlaced) {
     return <Redirect to={'/order-confirmation'} />
   }
-  
 
   return (
     <>
@@ -26,12 +27,14 @@ const ReviewSlide = ({ currentStep }) => {
         {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
           <div className="col-md-4">
             <ShippingAddressDetails shippingAddress={shippingAddress} shippingAddressNickname={shippingAddressNickname} />
-            <Link to="/checkout/shipping" className="text-link">{t('frontend.core.edit')}</Link>
+            <Link to="/checkout/shipping" className="text-link">
+              {t('frontend.core.edit')}
+            </Link>
           </div>
         )}
         {fulfillmentMethod.fulfillmentMethodType === 'pickup' && (
           <div className="col-md-4">
-            <PickupLocationDetails pickupLocation={fulfillmentMethod} />
+            <PickupLocationDetails pickupLocation={pickupLocation} />
           </div>
         )}
         <div className="col-md-4">
@@ -40,7 +43,9 @@ const ReviewSlide = ({ currentStep }) => {
         {payment.paymentMethod.paymentMethodType === 'creditCard' && (
           <div className="col-md-4">
             <CCDetails creditCardPayment={payment} />
-            <Link to="/checkout/payment" className="text-link">{t('frontend.core.edit')}</Link>
+            <Link to="/checkout/payment" className="text-link">
+              {t('frontend.core.edit')}
+            </Link>
           </div>
         )}
         {payment.paymentMethod.paymentMethodType === 'giftCard' && (
@@ -53,14 +58,15 @@ const ReviewSlide = ({ currentStep }) => {
             <TermPaymentDetails termPayment={payment} />
           </div>
         )}
-        
+        {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
           <div className="col-md-4 mt-4 mb-4">
-            <h3 class="h6">{t('frontend.checkout.shippingMethod')}</h3>
+            <h3 className="h6">{t('frontend.checkout.shippingMethod')}</h3>
             {shippingMethod.shippingMethodName}
           </div>
+        )}
       </div>
 
-      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">Review your order</h2>
+      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t('frontend.checkout.review.order')}</h2>
       {cart.orderItems &&
         cart.orderItems.map(({ orderItemID }) => {
           return <CartLineItem key={orderItemID} orderItemID={orderItemID} isDisabled={true} /> // this cannot be index or it wont force a rerender
