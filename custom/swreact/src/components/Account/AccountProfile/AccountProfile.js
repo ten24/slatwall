@@ -125,7 +125,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
               <button className="btn btn-secondary mt-3 mt-sm-0 mr-3" onClick={updatePassword} type="submit">
                 {t('frontend.account.password_update')}
               </button>
-              <button type="submit" className="btn btn-primary mt-3 mt-sm-0">
+              <button type="submit" disabled={formik.isSubmitting} className="btn btn-primary mt-3 mt-sm-0">
                 {t('frontend.account.profile_update')}
               </button>
             </div>
