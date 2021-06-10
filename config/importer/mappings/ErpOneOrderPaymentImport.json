@@ -1,0 +1,150 @@
+{
+	"entityName": "OrderPayment",
+    "mappingCode": "ErpOneOrderPaymentImport",
+	"properties": {
+
+		"remoteOrderPaymentID": {
+			"propertyIdentifier": "remoteID",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		},
+		"amount": {
+			"propertyIdentifier": "amount",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		},
+		"currencyCode": {
+			"propertyIdentifier": "currencyCode",
+			"default": "USD",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccProviderToken": {
+		    "propertyIdentifier": "providerToken",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccNumberLastFour": {
+			"propertyIdentifier": "creditCardLastFour",
+			"validations": {
+				"dataType": "numeric"
+			}
+		},
+		"ccType": {
+			"propertyIdentifier": "creditCardType",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccExpirationMonth": {
+			"propertyIdentifier": "expirationMonth",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccExpirationYear": {
+			"propertyIdentifier": "expirationYear",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"ccHolderName": {
+			"propertyIdentifier": "nameOnCreditCard",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"purchaseOrderNumber": {
+			"propertyIdentifier": "purchaseOrderNumber",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"paymentDueDate": {
+			"propertyIdentifier": "paymentDueDate",
+			"validations": {
+				"dataType": "date"
+			}
+		},
+		"authorizationCode": {
+		    "validations": {
+		        "dataType": "string"
+		    }
+		}
+	},
+
+	"relations": [
+	    {
+         "type":"manyToOne",
+         "entityName":"Address",
+         "mappingCode":"Address",
+         "isNullable":true,
+         "propertyIdentifier":"billingAddress",
+         "sourceDataKeysPrefix":"billingAddress_"
+        },
+    	{
+    	    "type" : "oneToMany",
+            "entityName" : "PaymentTransaction",
+            "hasMapping"         : false,
+            "generatorFunction" : "generateErpOneOrderPaymentTransactions",
+            "propertyIdentifier" : "paymentTransactions",
+    	}
+	],
+
+	"dependencies": [{
+			"key"                   : "remoteOrderID",
+            "useORM"                : true,
+			"entityName"            : "Order",
+			"lookupKey"             : "remoteID",
+			"propertyIdentifier"    : "order"
+		},
+		{
+			"key"                   : "paymentMethod",
+			"lookupKey"             : "paymentMethodName",
+			"entityName"            : "PaymentMethod",
+			"propertyIdentifier"    : "paymentMethod"
+		},
+		{
+			"key"                   : "paymentTerm",
+			"lookupKey"             : "paymentTermName",
+			"isNullable"            : true,
+			"entityName"            : "PaymentTerm",
+			"propertyIdentifier"    : "paymentTerm"
+		},
+		{
+			"key"                   : "termPaymentAccountRemoteID",
+			"lookupKey"             : "remoteID",
+			"entityName"            : "Account",
+			"isNullable"            : true,
+			"propertyIdentifier"    : "termPaymentAccount"
+		},
+		{
+			"key"                   : "orderPaymentTypeCode",
+			"lookupKey"             : "systemCode",
+			"entityName"            : "Type",
+			"propertyIdentifier"    : "orderPaymentType"
+		},
+		{
+			"key"                   : "orderPaymentStatusTypeCode",
+			"lookupKey"             : "systemCode",
+			"entityName"            : "Type",
+			"propertyIdentifier"    : "orderPaymentStatusType"
+		}
+	],
+	
+    "validationContext": "erpImport",
+
+	"importIdentifier": {
+		"propertyIdentifier" : "importRemoteID",
+		"type" : "composite",
+		"keys" : [
+			"remoteOrderPaymentID"
+		]
+	}
+}

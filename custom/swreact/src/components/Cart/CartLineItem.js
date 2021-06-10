@@ -50,7 +50,7 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
                 {`${brandName} `}
                 <span className="text-muted mr-2">{skuCode}</span>
               </div>
-              {price !== listPrice && <ProductPrice salePrice={price} listPrice={listPrice} salePriceSuffixKey="frontend.core.each" accentSalePrice={false} />}
+              <ProductPrice salePrice={price} listPrice={listPrice} salePriceSuffixKey="frontend.core.each" accentSalePrice={false} />
               <div className="font-size-lg text-accent pt-2">{formatCurrency(extendedPriceAfterDiscount)}</div>
             </div>
           </div>

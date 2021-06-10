@@ -113,25 +113,26 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
           <div className="col-md-12">
             <hr className="my-4" />
           </div>
-        </div>
-        
-        {!isEdit && (
-          <div className="row">
-            <div className="col-md-6">
-              <div className="form-group">
-                <label htmlFor="accountAddressID">{t('frontend.account.billing_address')}</label>
-                <SwSelect id="billingAccountAddress.accountAddressID" value={formik.values['billingAccountAddress.accountAddressID']} onChange={formik.handleChange} options={accountAddresses} />
+
+          {!isEdit && (
+            <div className="row">
+              <div className="col-sm-12">
+                <div className="col-md-6 pl-0">
+                  <div className="form-group">
+                    <label htmlFor="accountAddressID">{t('frontend.account.billing_address')}</label>
+                    <SwSelect id="billingAccountAddress.accountAddressID" value={formik.values['billingAccountAddress.accountAddressID']} onChange={formik.handleChange} options={accountAddresses} />
+                  </div>
+                </div>
+                {!formik.values['billingAccountAddress.accountAddressID'] && <AccountAddressForm formik={formik} />}
               </div>
             </div>
-            {!formik.values['billingAccountAddress.accountAddressID'] && <AccountAddressForm formik={formik} />}
-          </div>
-        )}
-          
+          )}
+        </div>
         <div className="row">
           <hr className="mt-2 mb-3" />
-          <div className="col-12">
-            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit}>
-              {isEdit ? 'Save Credit Card Details' : 'Save New Card'}
+          <div className="d-flex flex-wrap justify-content-end">
+            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit || formik.isSubmitting}>
+              {isEdit ? t('frontend.account.payment.save'): t('frontend.account.payment.saveNew')}
             </button>
           </div>
         </div>

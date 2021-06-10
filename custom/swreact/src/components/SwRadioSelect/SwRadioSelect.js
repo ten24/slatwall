@@ -1,9 +1,4 @@
-// @param {React.Component} customLabel - Override the default label
-const SwRadioSelect = ({ label, onChange, options = [], selectedValue, newLabel = '', displayNew = false, customLabel = undefined }) => {
-  if (displayNew) {
-    options = [...options]
-  }
-
+const SwRadioSelect = ({ label, onChange, options = [], selectedValue }) => {
   return (
     <div className="form-group">
       {/* don't pass label for custom label */}
@@ -14,8 +9,7 @@ const SwRadioSelect = ({ label, onChange, options = [], selectedValue, newLabel 
           <br />
         </>
       )}
-      {/* renders custom label if available */}
-      {customLabel}
+
       <div className="d-flex flex-column">
         {options.length > 0 &&
           options.map(({ value, name, code }) => {
@@ -36,12 +30,6 @@ const SwRadioSelect = ({ label, onChange, options = [], selectedValue, newLabel 
             )
           })}
       </div>
-
-      {displayNew && (
-        <button className="btn btn-secondary mt-2" onClick={() => onChange('new')}>
-          {newLabel}
-        </button>
-      )}
     </div>
   )
 }

@@ -64,7 +64,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="emailQueue" type="array";
 	
 	property name="integrationsData" type="struct";
-	
+
 	// Deprecated Properties
 	property name="currentAccount";
 	property name="currentBrand";
