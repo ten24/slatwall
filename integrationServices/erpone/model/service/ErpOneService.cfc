@@ -1618,6 +1618,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		var customerChanges = {
 			"name" : arguments.entity.getFirstName()&" "&arguments.entity.getLastName(),
+			"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
 			"customer" : arguments.entity.getCompanyCode()
 		};
 		if(!isNull(entity.getAddress())){
@@ -1663,6 +1664,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					"changes"	 : [ 
 						{
 							"__rowid" : entity.getRemoteContact(),
+        					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
 							"First_Name" : entity.getFirstName(),
 							"Last_Name" : entity.getLastName()
 						} 
@@ -1704,6 +1706,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					"table"	 : "sy_contact",
 					"triggers" : "true",
 					"records"	 : [ {
+    					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
 						"First_Name" : entity.getFirstName(),
 						"Last_Name" : entity.getLastName()
 					} ]
@@ -1718,12 +1721,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				if( structKeyExists(contactResponse, 'created') && contactResponse.created > 0 ){
 
 					var prospectResponse = this.callErpOneUpdateDataApi({
-					"table" : "cu_prospect",
-					"triggers" : "true",
-					"records" : [ {
-					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
-					"customer" : arguments.entity.getCompanyCode()
-					} ]
+    					"table" : "cu_prospect",
+    					"triggers" : "true",
+    					"records" : [{
+        					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
+        					"customer" : arguments.entity.getCompanyCode()
+    					}] 
 					}, "create" );
 
 					entity.setRemoteContact(contactResponse.rowids[1]);
