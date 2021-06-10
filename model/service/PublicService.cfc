@@ -1819,11 +1819,30 @@ component  accessors="true" output="false"
                  	var accountAddress = this.getAccountService().newAccountAddress();
                  	accountAddress.setAddress(shippingAddress);
                  	accountAddress.setAccount(getHibachiScope().getAccount());
-                 	var savedAccountAddress = this.getAccountService().saveAccountAddress(accountAddress);
-                 	if (!savedAddress.hasErrors()){
-                 		getDao('hibachiDao').flushOrmSession();
-                 	}
-                  
+                 	accountAddress = this.getAccountService().saveAccountAddress(accountAddress);
+                    
+                    orderFulfillment.setAccountAddress(accountAddress);
+                    orderFulfillment = getFulfillmentService().saveOrderFullfillment(orderFulfillment);
+
+                    if(orderFulfillment.hasErrors() || accountAddress.hasErrors()){
+                        var errors = [];
+                        arrayAppend(errors, orderFulfillment.getErros(), true);
+                        arrayAppend(errors, accountAddress.getErrors(), true);
+
+                        this.addErrors(arguments.data, errors);
+                        getHibachiScope().addActionResult( "public:cart.addOrderShippingAddress", true );
+                        return;
+                    }
+
+                } else {
+                    orderFulfillment.setAccountAddress(javacast('null',''));
+                    orderFulfillment = getFulfillmentService().saveOrderFullfillment(orderFulfillment);
+
+                    if(orderFulfillment.hasErrors()){
+                        this.addErrors(arguments.data, orderFulfillment.getErrors());
+                        getHibachiScope().addActionResult( "public:cart.addOrderShippingAddress", true );
+                        return;
+                    }
                 }
                 
                 this.getOrderService().saveOrder(order);
