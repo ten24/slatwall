@@ -155,7 +155,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	
+
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
 			var deliveryScheduleDateSmartList = this.getDeliveryScheduleDatesSmartList();
@@ -440,7 +440,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return arrayLen(getOptionGroups());
 	}
 
-	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}],boolean defaultSkuOnlyFlag=false) {
+	public array function getImageGalleryArray(array resizeSizes=[{size='small'},{size='medium'},{size='large'}],boolean defaultSkuOnlyFlag=false) {
 		var imageGalleryArray = [];
 		var filenames = [];
 		var skuCollection = this.getSkusCollectionList();
@@ -474,6 +474,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					var resizeImageData = arguments.resizeSizes[s];
 					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
 					resizeImageData.missingImagePath = missingImagePath;
+					if(resizeImageData.size == "medium"){
+			            resizeImageData.height = getSettingService().getSettingValue("productImageMediumHeight");
+			            resizeImageData.width  = getSettingService().getSettingValue("productImageMediumWidth");
+			        } else if (resizeImageData.size == "large"){
+			            resizeImageData.height = getSettingService().getSettingValue("productImageLargeHeight");
+			            resizeImageData.width  = getSettingService().getSettingValue("productImageLargeWidth");
+			        }else if (resizeImageData.size == "xlarge"){
+			            resizeImageData.height = getSettingService().getSettingValue("productImageXLargeWidth");
+			            resizeImageData.width  = getSettingService().getSettingValue("productImageXLargeHeight");
+			        }else if (resizeImageData.size == "listing"){
+			            resizeImageData.height = getSettingService().getSettingValue("productListingImageHeight");
+			            resizeImageData.width  = getSettingService().getSettingValue("productListingImageWidth");
+			        } else{ //default case small
+			            resizeImageData.height = getSettingService().getSettingValue("productImageSmallHeight");
+			            resizeImageData.width  = getSettingService().getSettingValue("productImageSmallWidth");
+			        }
 					arrayAppend(
 						thisImage.resizedImagePaths, 
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)

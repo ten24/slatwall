@@ -95,6 +95,12 @@ component persistent="false" extends="HibachiService" output="false" accessors="
         } else if (arguments.profileName == "large"){
             var imageHeight = getSettingService().getSettingValue("productImageLargeHeight");
             var imageWidth  = getSettingService().getSettingValue("productImageLargeWidth");
+        }else if (arguments.profileName == "xlarge"){
+            var imageHeight = getSettingService().getSettingValue("productImageXLargeWidth");
+            var imageWidth  = getSettingService().getSettingValue("productImageXLargeHeight");
+        }else if (arguments.profileName == "listing"){
+            var imageHeight = getSettingService().getSettingValue("productListingImageHeight");
+            var imageWidth  = getSettingService().getSettingValue("productListingImageWidth");
         } else{ //default case small
             var imageHeight = getSettingService().getSettingValue("productImageSmallHeight");
             var imageWidth  = getSettingService().getSettingValue("productImageSmallWidth");
