@@ -890,7 +890,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 			
 			arguments.data.payload = {
-				'order' : arguments.entity.getOrderNumber(),
 				'order_ext' : arguments.entity.getOrderNumber(),
 	            'customer' : arguments.entity.getAccount().getCompanyCode(),
 			}
