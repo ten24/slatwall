@@ -118,6 +118,13 @@
 			"propertyIdentifier"    : "paymentTerm"
 		},
 		{
+			"key"                   : "termPaymentAccountRemoteID",
+			"lookupKey"             : "remoteID",
+			"entityName"            : "Account",
+			"isNullable"            : true,
+			"propertyIdentifier"    : "termPaymentAccount"
+		},
+		{
 			"key"                   : "orderPaymentTypeCode",
 			"lookupKey"             : "systemCode",
 			"entityName"            : "Type",

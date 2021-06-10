@@ -881,14 +881,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			
 			if( !isNUll(arguments.erponeOrder['oe_head_ord_ext']) && len(arguments.erponeOrder['oe_head_ord_ext']) ){
 			    
-			    // set the remoteID on Slatwall's order
-			    QueryExecute( 
-			        sql = 'Update swOrder SET `remoteID` = :erpOrderNumber WHERE `orderNumber` = :slatwallOrderNumber AND `remoteID` IS NULL',
-			        params = {
-				        'erpOrderNumber':       { 'type': 'string', 'value': arguments.erponeOrder['oe_head_order'] },
-				        'slatwallOrderNumber':  { 'type': 'string', 'value': arguments.erponeOrder['oe_head_ord_ext'] },
-			        }
-		        );
+			    // set the remoteID on Slatwall's order, orderItems and order-fulfillment
+			    this.updateSlatwallOrdrRemoteIDsWithERPOrder( arguments.erponeOrder['oe_head_ord_ext'], arguments.erponeOrder['oe_head_order'] );
 			    
 			    formattedOrderData['orderNumber']             = arguments.erponeOrder['oe_head_ord_ext']; // slatwall's order number
                 formattedOrderData['orderSiteCode']           = "stoneAndBerg"; // make-sure the site is created with this code
@@ -947,6 +941,61 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		);
 		
 		return orderImportBatch;
+	}
+	
+	
+	public any function updateSlatwallOrdrRemoteIDsWithERPOrder(required any slatwallOrderNumber, required any erpOrderNumber ){
+	    
+	    // Slatwall's order
+	    QueryExecute( 
+	        sql = 'UPDATE swOrder SET `remoteID` = :erpOrderNumber WHERE `orderNumber` = :slatwallOrderNumber AND `remoteID` IS NULL',
+	        params = {
+		        'erpOrderNumber':       { 'type': 'string', 'value': arguments.erpOrderNumber },
+		        'slatwallOrderNumber':  { 'type': 'string', 'value': arguments.slatwallOrderNumber },
+	        }
+        );
+        
+        // Slatwall's fulfillment
+        var fulfillmentRemoteID = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo(arguments.erpOrderNumber);
+        QueryExecute( 
+	        sql = "
+	            UPDATE swOrderFulfillment f
+	                INNER JOIN swOrder o
+	                    ON f.orderID = o.orderID 
+	                    AND o.orderNumber = :slatwallOrderNumber 
+	            SET f.remoteID = :fulfillmentRemoteID
+	            WHERE f.remoteID IS NULL
+	        ",
+	        params = {
+		        'fulfillmentRemoteID': { 'type': 'string', 'value': fulfillmentRemoteID },
+		        'slatwallOrderNumber': { 'type': 'string', 'value': arguments.slatwallOrderNumber },
+	        }
+        );
+        
+        // Slatwall's Order's order-items
+        // the logic here needs to be consistent with `getSlatwallOrderItemRemoteID`
+        QueryExecute( 
+	        sql = "
+	            UPDATE swOrderItem oi
+                INNER JOIN swOrder o ON oi.orderID = o.orderID
+                	AND o.orderNumber = :slatwallOrderNumber
+                INNER JOIN swSku s ON oi.skuID = s.skuID
+                
+                SET oi.remoteID = CONCAT( o.remoteID , '_', s.remoteID )
+                
+                WHERE oi.remoteID IS NULL
+	        ",
+	        params = {
+		        'slatwallOrderNumber': { 'type': 'string', 'value': arguments.slatwallOrderNumber }
+	        }
+        );
+        
+        
+        //
+        // no need to update the payment, as we only authorize in slatwall, and payment is captured in ERP.
+        //
+        // no need to update anything else, as that's the END of order lifecycle in Slatwall
+        //
 	}
 	
 	public string function getSlatwallOrderStatusCodeByERPOrderStatusCode(required string erpOrderStatusCode){
@@ -1019,7 +1068,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return 'Delivery_'&arguments.erpOneOrderNo&'_'&arguments.recordSeq;
 	}
 	
-	public string function getSlatwallOrderItemRemoteID( required string erpOneOrderNo, required string remoteSkuID,){
+	public string function getSlatwallOrderItemRemoteID( required string erpOneOrderNo, required string remoteSkuID){
 	    return arguments.erpOneOrderNo&'_'&arguments.remoteSkuID;
 	}
 	
@@ -1225,8 +1274,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	    
     	    orderPayment['orderPaymentStatusTypeCode'] = 'opstActive';
         	if( !isNull(arguments.erponeOrderPayment['oe_head_cu_po']) && arguments.erponeOrderPayment['oe_head_cu_po'].len() ){
+        	    orderPayment['paymentTerm']   = 'ERP One default PO term';
         	    orderPayment['paymentMethod'] = 'Purchase Order';
-        	    orderPayment['paymentTerm'] = 'ERP One default PO term';
+        	    orderPayment['termPaymentAccountRemoteID'] =  arguments.erponeOrderPayment['customer'];
         	} else {
         	    orderPayment['paymentMethod'] = 'ERP payment method';
         	}
