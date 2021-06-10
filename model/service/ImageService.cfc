@@ -90,14 +90,20 @@ component persistent="false" extends="HibachiService" output="false" accessors="
     public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
 
         if(arguments.profileName == "medium"){
-            var imageHeight = getSettingService().getSettingValue("productImageMediumHeight");
-            var imageWidth  = getSettingService().getSettingValue("productImageMediumWidth");
+            var imageHeight = getService('SettingService').getSettingValue("productImageMediumHeight");
+            var imageWidth  = getService('SettingService').getSettingValue("productImageMediumWidth");
         } else if (arguments.profileName == "large"){
-            var imageHeight = getSettingService().getSettingValue("productImageLargeHeight");
-            var imageWidth  = getSettingService().getSettingValue("productImageLargeWidth");
+            var imageHeight = getService('SettingService').getSettingValue("productImageLargeHeight");
+            var imageWidth  = getService('SettingService').getSettingValue("productImageLargeWidth");
+        }else if (arguments.profileName == "xlarge"){
+            var imageHeight = getService('SettingService').getSettingValue("productImageXLargeWidth");
+            var imageWidth  = getService('SettingService').getSettingValue("productImageXLargeHeight");
+        }else if (arguments.profileName == "listing"){
+            var imageHeight = getService('SettingService').getSettingValue("productListingImageHeight");
+            var imageWidth  = getService('SettingService').getSettingValue("productListingImageWidth");
         } else{ //default case small
-            var imageHeight = getSettingService().getSettingValue("productImageSmallHeight");
-            var imageWidth  = getSettingService().getSettingValue("productImageSmallWidth");
+            var imageHeight = getService('SettingService').getSettingValue("productImageSmallHeight");
+            var imageWidth  = getService('SettingService').getSettingValue("productImageSmallWidth");
         }
 
 
