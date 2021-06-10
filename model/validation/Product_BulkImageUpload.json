@@ -1,0 +1,6 @@
+{
+	"properties": {
+		"uploadFile": [{ "required": true }],
+		"imageNameProductProperty": [{ "required":true , "method": "isValidPropertyName"}]
+	}
+}

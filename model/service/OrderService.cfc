@@ -742,6 +742,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var childOrderItemData in arguments.processObject.getChildOrderItems()) {
 						var childOrderItem = this.newOrderItem();
 						populateChildOrderItems(newOrderItem,childOrderItem,childOrderItemData,arguments.order,orderFulfillment);
+						childOrderItem.validate(context='save');
+
+						if(childOrderItem.hasErrors()) {
+							//String replace the max order qty to give user feedback (with 0 as the minimum)
+							var messageReplaceKeys = {
+								quantityAvailable =  childOrderItem.getMaximumOrderQuantity(),
+								maxQuantity = childOrderItem.getSku().setting('skuOrderMaximumQuantity')
+							};
+							
+							for (var error in childOrderItem.getErrors()){
+								for (var errorMessage in childOrderItem.getErrors()[error]){
+									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+									message = childOrderItem.stringReplace(message);
+									
+									childOrderItem.addError('addOrderItem', message, true);
+									arguments.order.addError('addOrderItem', message, true);
+								}
+							}
+							return arguments.order;
+						}
 					}
 				}
 
