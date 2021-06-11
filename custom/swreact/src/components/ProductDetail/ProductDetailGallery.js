@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Slider from 'react-slick'
-import { SWImage } from '../../components'
+import { SWImage } from '..'
 import { useGetProductImageGallery } from '../../hooks/useAPI'
 
 /*
@@ -81,4 +81,4 @@ const ProductDetailGallery = ({ productID, skuID, imageFile }) => {
     </div>
   )
 }
-export default ProductDetailGallery
+export { ProductDetailGallery }

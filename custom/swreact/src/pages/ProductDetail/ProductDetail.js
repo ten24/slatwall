@@ -1,15 +1,13 @@
 // import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 
-import { BreadCrumb, Layout, RelatedProductsSlider } from '../../components'
-import ProductPageHeader from './ProductPageHeader'
-import ProductPageContent from './ProductPageContent'
+import { BreadCrumb, Layout, RelatedProductsSlider, ProductPageHeader, ProductPageContent } from '../../components'
 import { Redirect, useHistory, useLocation } from 'react-router-dom'
-import { useGetProductAvailableSkuOptions, useGetEntityByUrlTitle } from '../../hooks/useAPI'
+import { useGetProductAvailableSkuOptions, useGetEntityByUrlTitle } from '../../hooks'
 import queryString from 'query-string'
 import { Helmet } from 'react-helmet'
 import { useSelector } from 'react-redux'
-import { getProductTypeRoute } from '../../selectors/configurationSelectors'
+import { getProductTypeRoute } from '../../selectors'
 const skuCodesToSkuIds = (params, productOptionGroups) => {
   const parsedOptions = queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
   const temp = Object.keys(parsedOptions).map(optionGroupCode => {

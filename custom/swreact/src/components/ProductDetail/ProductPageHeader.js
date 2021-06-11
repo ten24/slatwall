@@ -11,4 +11,4 @@ const ProductPageHeader = ({ title = '', children }) => {
   )
 }
 
-export default ProductPageHeader
+export { ProductPageHeader }

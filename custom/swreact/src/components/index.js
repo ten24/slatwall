@@ -79,6 +79,11 @@ export { default as ProductCard } from './ProductCard/ProductCard'
 export { default as ProductPrice } from './ProductPrice/ProductPrice'
 export { default as ProductSlider } from './ProductSlider/ProductSlider'
 export { RelatedProductsSlider } from './RelatedProductsSlider/RelatedProductsSlider'
+export { ProductDetailGallery } from './ProductDetail/ProductDetailGallery'
+export { ProductPageContent } from './ProductDetail/ProductPageContent'
+export { ProductPageHeader } from './ProductDetail/ProductPageHeader'
+export { ProductPagePanels } from './ProductDetail/ProductPagePanels'
+export { SkuOptions } from './ProductDetail/SkuOptions'
 
 // Loading UI Components
 export { Overlay } from './Overlay/Overlay'

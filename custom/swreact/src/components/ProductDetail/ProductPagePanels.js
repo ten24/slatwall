@@ -91,4 +91,4 @@ const ProductPagePanels = ({ product = {}, attributeSets = [] }) => {
   )
 }
 
-export default ProductPagePanels
+export { ProductPagePanels }
