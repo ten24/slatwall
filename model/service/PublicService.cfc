@@ -2668,8 +2668,10 @@ component  accessors="true" output="false"
         param name="data.orderFulfillmentID" default="";
 
         var orderFulfillment = getFulfillmentService().getOrderFulfillment(arguments.data.orderFulfillmentID);
+        var orderValid = !isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID();
+        var orderPlaced = !isNull(getHibachiScope().getCart().getOrderNumber()) && len(getHibachiScope().getCart().getOrderNumber());
 
-        if(!isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID()){
+        if( orderValid && !orderPlaced ){
 
             orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
             orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
