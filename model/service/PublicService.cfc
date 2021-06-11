@@ -340,11 +340,19 @@ component  accessors="true" output="false"
 
 	    var integrationPackage = this.getSettingService().getSettingValue('siteProductSearchIntegration', hibachiScope.getCurrentRequestSite());
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(integrationPackage);
-        var integrationCFC = integrationEntity.getIntegrationCFC("Search");
-        
-        arguments.data.ajaxResponse = {
-            'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
-        };
+	    
+	    if( !isNull(integrationEntity) && integrationEntity.getActiveFlag() ){
+            
+            var integrationCFC = integrationEntity.getIntegrationCFC("Search");
+            
+            arguments.data.ajaxResponse = {
+                'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
+            };
+            
+	    } else {
+	        // if integration is not active fallback to getEntity colelction API;
+	        this.getEntity(argumentCollection = arguments);
+	    }
     }
 
 
