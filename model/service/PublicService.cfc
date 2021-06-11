@@ -351,7 +351,8 @@ component  accessors="true" output="false"
             
 	    } else {
 	        // if integration is not active fallback to getEntity colelction API;
-	        this.getEntity(argumentCollection = arguments);
+	        arguments.data['entityName'] = 'Product';
+	        this.getEntity(arguments.data);
 	    }
     }
 
@@ -4219,7 +4220,6 @@ component  accessors="true" output="false"
             collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData.pageRecords);
             
             arguments.data.ajaxResponse['data'] = collectionData; 
-            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
             return;
         }
         
@@ -4247,7 +4247,6 @@ component  accessors="true" output="false"
         }
         
         arguments.data.ajaxResponse['data'] = response;
-        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
 	}
 	
 	
