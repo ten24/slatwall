@@ -13,7 +13,7 @@ const BasicPage = () => {
   const { title, customBody } = content || {}
   const [path, setPath] = useState(loc.search)
   let [request, setRequest] = useGetProducts(params)
-
+  console.log('content', content)
   const setPage = pageNumber => {
     params['currentPage'] = pageNumber
     request.data.currentPage = pageNumber
@@ -22,7 +22,7 @@ const BasicPage = () => {
 
   useEffect(() => {
     let didCancel = false
-    if (!didCancel && ((!request.isFetching && !request.isLoaded) || loc.search !== path) && content.productListingPageFlag === '1') {
+    if (!didCancel && ((!request.isFetching && !request.isLoaded) || loc.search !== path) && content.productListingPageFlag) {
       setPath(loc.search)
       setRequest({ ...request, params: { ...params, content_id: content.contentID, includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
     }
@@ -57,7 +57,7 @@ const BasicPage = () => {
             __html: customBody || '',
           }}
         />
-        {content.productListingPageFlag === '1' && (
+        {content.productListingPageFlag && (
           <div className="col">
             <ListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
             <ListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />

@@ -2,7 +2,8 @@ import { HeartButton, ProductPrice, SWImage } from '..'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { getBrandRoute, getProductRoute } from '../../selectors/configurationSelectors'
+import { getBrandRoute, getProductRoute } from '../../selectors'
+import ProductImage from '../ProductImage/ProductImage'
 
 const ProductCard = props => {
   const { productName, productCode, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, listPrice, imageFile, defaultSku_imageFile, productClearance, skuID = '' } = props
@@ -16,7 +17,7 @@ const ProductCard = props => {
       {productClearance === true && <span className="badge badge-primary">{t('frontend.core.special')}</span>}
       <HeartButton skuID={skuID} />
       <Link className="card-img-top d-block overflow-hidden" to={productLink}>
-        <SWImage customPath="/custom/assets/images/product/default/" src={imageFile || defaultSku_imageFile} alt="Product" />
+        <ProductImage skuID={skuID} />
       </Link>
       <div className="card-body py-2 text-left">
         <Link className="product-meta d-block font-size-xs pb-1" to={`/${brand}/${brand_urlTitle}`}>
