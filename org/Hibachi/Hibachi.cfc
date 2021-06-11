@@ -67,6 +67,9 @@ component extends="framework.one" {
 		 { "$GET/api/scope/$" = "/api:public/get/" }
 		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
 		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
+		
+		,{ "$GET/api/public/:entityName/$" = "/api:public/get/context/getEntity/entityName/:entityName"}
+		,{ "$GET/api/public/:entityName/:entityID/$" = "/api:public/get/context/getEntity/entityName/:entityName/entityID/:entityID"}
 
 		,{ "$POST/api/auth/login/$" = "/api:main/login"}
 		,{ "$GET/api/auth/login/$" = "/api:main/login"}
@@ -388,29 +391,8 @@ component extends="framework.one" {
 			}
 		}
 		
-		//Sets the correct site for api calls.
-		//set custom headers on rc
-        if( StructKeyExists(httpRequestData, "headers") ) {
-            var headers = httpRequestData.headers;
-            
-            for (var key in headers) { 
-                
-                if( left(ucase(key), 4) == 'SWX-' ) {
-                    var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
-                    
-                    //check to prevent overriding anything on rc, we can't really trust these headers
-                    if(structKeyExists(request,'context') && !StructKeyExists(request.context, headerName)) {
-                        request.context[headerName] = headers[key]; 
-                    }
-                    
-                    if(key == 'SWX-cmsSiteID'){
-			            getHibachiScope().setCurrentRequestSite(getHibachiScope().getService('siteService').getSiteByCMSSiteID(headers[key]));
-			            getHibachiScope().setCurrentRequestSitePathType('cmsSiteID');
-			        }
-			    }
-            }
-        }
-        
+		
+		
 		// Verify that the session is setup
 		if(!structKeyExists(arguments, "managesession") || arguments.managesession == true){
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
@@ -418,39 +400,48 @@ component extends="framework.one" {
 			getHibachiScope().setPersistSessionFlag(false);
 		}
 		
-		var AuthToken = "";
-		if(structKeyExists(httpRequestData.Headers,'Auth-Token')){
-			AuthToken = httpRequestData.Headers['Auth-Token'];
-		}
+		
+		//Sets the correct site for api calls.
+		//set custom headers on rc
+		if( StructKeyExists(httpRequestData, "headers") ) {
+			var headers = httpRequestData.headers;
 
-		// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
-		if(
-			structKeyExists(httpRequestData, "headers") &&
-			structKeyExists(httpRequestData.headers, "Access-Key") &&
-			len(httpRequestData.headers["Access-Key"]) &&
-			structKeyExists(httpRequestData.headers, "Access-Key-Secret") &&
-			len(httpRequestData.headers["Access-Key-Secret"])) {
-
-			var accessKey 		= httpRequestData.headers["Access-Key"];
-			var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
-
-			// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
-			var accessKeyAccount = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
-
-			// If an account was found, then set that account in the session for this request.  This should not persist
-			if (!isNull(accessKeyAccount)){
-				getHibachiScope().getSession().setAccount( accessKeyAccount );
-				AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
+			for (var key in headers) { 
+				
+				if( left(ucase(key), 4) == 'SWX-' ) {
+                    var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
+                    
+                    //check to prevent overriding anything on rc and URL-scope, we can't really trust these headers
+                    if(structKeyExists(request,'context') && !StructKeyExists(request.context, headerName)) {
+                        request.context[headerName] = headers[key]; 
+                    }
+                    if( !isNull(URL) && !StructKeyExists( URL, headerName) ){
+                        URL[headerName] = headers[key]; 
+                    }
+			    }
 			}
-			
-		}else if( structKeyExists(url,'token') && len(url.token)){
-			//HACK: refactor this
-			AuthToken = 'Bearer '& url.token;
-		}
-		//check if we have the authorization header
-		if(len(AuthToken)){
-			getHibachiScope().getService("hibachiSessionService").setAccountSessionByAuthToken(AuthToken);
-		}
+
+			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
+			if(
+				structKeyExists(headers, "Access-Key") &&
+				len(headers["Access-Key"]) &&
+				structKeyExists(headers, "Access-Key-Secret") &&
+				len(headers["Access-Key-Secret"])) {
+	
+				var accessKey 		= headers["Access-Key"];
+				var accessKeySecret = headers["Access-Key-Secret"];
+	
+				// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
+				var accessKeyAccount = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
+	
+				// If an account was found, then set that account in the session for this request.  This should not persist
+				if (!isNull(accessKeyAccount)){
+					getHibachiScope().getSession().setAccount( accessKeyAccount );
+				}
+				
+			}
+        }
+
 
 		// Call the onEveryRequest() Method for the parent Application.cfc
 		onEveryRequest();
@@ -458,6 +449,7 @@ component extends="framework.one" {
 			getHibachiScope().getService("HibachiEventService").announceEvent(eventName="setupGlobalRequestComplete");
 		}
 	}
+	
 
 	public void function setupRequest() {
 
@@ -469,9 +461,11 @@ component extends="framework.one" {
 		if( variables.framework.preflightOptions &&
         	request._fw1.cgiRequestMethod == "OPTIONS" &&
 			structKeyExists(httpRequestData.headers,'Origin')
-			){
+		){
 			variables.framework.optionsAccessControl.origin = httpRequestData.headers['Origin'];
-			populateCORSHeader(httpRequestData.headers['Origin']);
+			var CORSWhitelist = listToArray(getHibachiScope().setting('globalCORSWhitelist'));
+			 populateCORSHeader(httpRequestData.headers['Origin'], CORSWhitelist);
+			
 			return;
 		}
 
@@ -985,9 +979,10 @@ component extends="framework.one" {
 	public void function populateAPIHeaders(){
 		param name="request.context.headers" default="#structNew()#";
 		var httpRequestData = getHTTPRequestData();
-
-		if(this.CORSEnabled && arrayLen(this.CORSWhitelist) && structKeyExists(httpRequestData.headers,'Origin') && !isNull(httpRequestData.headers['Origin'])){
-			populateCORSHeader(httpRequestData.headers['Origin']);
+		
+		var CORSWhitelist = listToArray(getHibachiScope().setting('globalCORSWhitelist'));
+		if(arrayLen(CORSWhitelist) && structKeyExists(httpRequestData.headers,'Origin') && !isNull(httpRequestData.headers['Origin'])){
+			populateCORSHeader(httpRequestData.headers['Origin'],CORSWhitelist);
 		}
 		if(!structKeyExists(request.context.headers,'Content-Type')){
 			request.context.headers['Content-Type'] = 'application/json';
@@ -1002,9 +997,9 @@ component extends="framework.one" {
 		}
 	}
 
-	public void function populateCORSHeader(origin){
+	public void function populateCORSHeader(required string origin, array CORSWhitelist){
 		var matched = false;
-		for(var domain in this.CORSWhiteList){
+		for(var domain in arguments.CORSWhiteList){
 			if(domain == '*'){
 				request.context.headers['Access-Control-Allow-Origin'] = domain;
 				matched = true;
@@ -1041,17 +1036,23 @@ component extends="framework.one" {
 			}
 
 		}
-
+		
+		//regenerate token with existing payload
+		var httpRequestData = GetHttpRequestData();
+		if(structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']) ){
+			request.context.apiResponse.content['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
+		}
+		
 		//leaving a note here in case we ever wish to support XML for api responses
-		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/json'){
+		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] == 'application/json'){
 			responseString = serializeJSON(request.context.apiResponse.content);
 
 			// If running CF9 we need to fix strings that were improperly cast to numbers
-			if(left(server.coldFusion.productVersion, 1) eq 9) {
+			if(left(server.coldFusion.productVersion, 1) == 9) {
 				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
 			}
 		}
-		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/xml'){
+		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] == 'application/xml'){
 			//response String to xml placeholder
 		}
 		writeOutput( responseString );
@@ -1075,7 +1076,16 @@ component extends="framework.one" {
 		if(getHibachiScope().getService('hibachiUtilityService').isInThread()){
 			abort;
 		}
-
+		if(arguments.rc.apiRequest || arguments.rc.ajaxRequest) {
+			populateAPIHeaders();
+			//regenerate token with existing payload
+			var httpRequestData = GetHttpRequestData();
+			var jwtTokenProvided = structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']);
+			if( (jwtTokenProvided || getHibachiScope().getPersistSessionFlag()) && !getHibachiScope().getSession().getNewFlag()){
+				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
+			}
+			
+		}
 		// Check for an API Response
 		if(arguments.rc.apiRequest) {
 			renderApiResponse();
@@ -1084,6 +1094,12 @@ component extends="framework.one" {
 		// Check for an Ajax Response
 		if(arguments.rc.ajaxRequest && !structKeyExists(request, "exception")) {
 			populateAPIHeaders();
+			//regenerate token with existing payload
+			var httpRequestData = GetHttpRequestData();
+			if(structKeyExists(httpRequestData.headers,'Auth-Token') && len(httpRequestData.headers['Auth-Token']) ){
+				arguments.rc.ajaxResponse['token'] = getHibachiScope().getService('HibachiJWTService').createToken();
+			}
+			
 			if(isStruct(arguments.rc.ajaxResponse)){
 				if(structKeyExists(arguments.rc, "messages")) {
 					arrayAppend(arguments.rc.messages,getHibachiScope().getMessages(),true);
@@ -1128,9 +1144,9 @@ component extends="framework.one" {
 
 	// Allows for custom views to be created for the admin, frontend or public subsystems
 	public string function customizeViewOrLayoutPath( struct pathInfo, string type, string fullPath ) {
-		if(!fileExists(expandPath(arguments.fullPath)) && left(listLast(arguments.fullPath, "/"), 6) eq "create" && fileExists(expandPath(replace(arguments.fullPath, "/create", "/detail")))) {
+		if(!fileExists(expandPath(arguments.fullPath)) && left(listLast(arguments.fullPath, "/"), 6) == "create" && fileExists(expandPath(replace(arguments.fullPath, "/create", "/detail")))) {
 			return replace(arguments.fullPath, "/create", "/detail");
-		} else if(!fileExists(expandPath(arguments.fullPath)) && left(listLast(arguments.fullPath, "/"), 4) eq "edit" && fileExists(expandPath(replace(arguments.fullPath, "/edit", "/detail")))) {
+		} else if(!fileExists(expandPath(arguments.fullPath)) && left(listLast(arguments.fullPath, "/"), 4) == "edit" && fileExists(expandPath(replace(arguments.fullPath, "/edit", "/detail")))) {
 			return replace(arguments.fullPath, "/edit", "/detail");
 		}
 
@@ -1351,7 +1367,9 @@ component extends="framework.one" {
 			applicationStop();
 			location('?reload=true&update=true',false);
 		}
+		
 		if(variables.framework.hibachi.errorDisplayFlag && structKeyExists(request,'context') && structKeyExists(request.context,'apiRequest') && request.context.apiRequest){
+			populateAPIHeaders();
 			writeDump(exception); abort;
 		}
 		response.setStatus(500);

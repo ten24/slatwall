@@ -49,10 +49,13 @@ Notes:
 component extends="HibachiService" accessors="true" {
 
 	// Slatwall Service Injection
+	property name="hibachiDAO" type="any";
 	property name="productDAO" type="any";
 	property name="skuDAO" type="any";
 	property name="productTypeDAO" type="any";
 
+	property name="hibachiService" type="any";
+	property name="hibachiTagService" type="any";
 	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
@@ -77,19 +80,24 @@ component extends="HibachiService" accessors="true" {
 		return approvedProductReviewCollectionList;
 	}
 	
-	public any function getAllRelatedProducts(required any productID) {
-		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
-		relatedProducts.addFilter("product.productID",arguments.productID);
-		relatedProducts.addFilter("product.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=false);
-		return relatedProducts;
+	public array function getProductPublicProperties(){
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.imagePath','defaultSku.listPrice', 'defaultSku.skuID', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
+	
+	public array function getProductTypePublicProperties(){
+		var publicProperties = ['productTypeID','productTypeIDPath','urlTitle', 'productTypeName', 'productTypeNamePath', 'productTypeDescription', 'systemCode'];
+		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('ProductType');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
 	}
 	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
         
-        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.productClearance, relatedProduct.calculatedSalePrice";	
+        var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.calculatedSalePrice";	
         properties &= ",relatedProduct.brand.brandID, relatedProduct.brand.brandName, relatedProduct.brand.urlTitle";
         properties &= ",relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID";
         properties &= ",relatedProduct.defaultSku.imageFile, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.defaultSku.skuID";
@@ -116,16 +124,12 @@ component extends="HibachiService" accessors="true" {
 	 * @param - addAltImage - boolean to ignore alt images
 	 * @return - updated array of products
 	 **/
-	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+	public array function appendImagesToProducts(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
-			var resizeSizes=['s','m','l','xl']; //add all sized images
+			var resizeSizes=['small','medium', 'listing'];
 			
 			for(var product in arguments.products) {
-				
-				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-					continue;
-				}
 				
 	            var imageFile = product[arguments.propertyName] ? : '';
 	            if( this.hibachiIsEmpty(imageFile) ) {
@@ -138,6 +142,22 @@ component extends="HibachiService" accessors="true" {
 		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
 		                missingImagePath = missingImageSetting
 		            };
+		            if(resizeImageData.size == "medium"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageMediumHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageMediumWidth");
+			        } else if (resizeImageData.size == "large"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageLargeHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageLargeWidth");
+			        }else if (resizeImageData.size == "xlarge"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageXLargeWidth");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageXLargeHeight");
+			        }else if (resizeImageData.size == "listing"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productListingImageHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productListingImageWidth");
+			        } else{ //default case small
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageSmallHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageSmallWidth");
+			        }
 		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
 	            }
 	            
@@ -147,54 +167,10 @@ component extends="HibachiService" accessors="true" {
 	        //If there's only one product in response, add alternate images as well
 	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && StructKeyExists(arguments.products[1], 'productID') && trim(arguments.products[1].productID) != "" ) {
 	        	//Modify image size to be used as size index
-	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
+	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='small'},{size='medium'},{size='large'},{size='xlarge'}]);
 	        }
 	        
 		}
-		return arguments.products;
-	}
-	
-	/**
-	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
-	 * */
-	public any function appendCategoriesAndOptionsToProduct(required array products) {
-		
-		for(var product in arguments.products) {
-			if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-				continue;
-			}
-			
-			var currentProduct = this.getProduct(product.productID);
-			if( isNull( currentProduct ) ) {
-				continue;
-			}
-			
-			var categories = [];
-			var currentProductCategories = currentProduct.getCategories();
-			for(var category in currentProductCategories){
-				ArrayAppend( categories, {
-					"urlTitle"      : category.getUrlTitle(),
-					"categoryID"    : category.getCategoryID(),
-					"categoryName"  : category.getCategoryName(),
-				});
-			}
-			product['categories'] = categories;
-			
-			//Append Option Groups
-			var optionGroups = [];
-			var currentProductoptionGroups = currentProduct.getOptionGroups();
-			for(var optionGroup in currentProductoptionGroups){
-				ArrayAppend( optionGroups, {
-					"optionGroupdID"    : optionGroup.getOptionGroupID(),
-					"optionGroupName"   : optionGroup.getOptionGroupName()
-				});
-			}
-			product['optionGroups'] =  optionGroups;
-			
-			//Append base product type system code
-			product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
-		}
-	
 		return arguments.products;
 	}
 	
@@ -228,6 +204,26 @@ component extends="HibachiService" accessors="true" {
 		return AvailableOptions;
 	}
 
+	public string function getNextSkuCode(required struct productSchedule={}, required struct product={}) {
+		var productCode = arguments.product.getProductCode();
+		if( (isStruct(arguments.productSchedule) && structIsEmpty(arguments.productSchedule)) || (isObject(arguments.productSchedule) && ArrayIsEmpty(arguments.productSchedule.getSkus())) ) {
+			return getService('HibachiUtilityService').createUniqueProperty(propertyValue=productCode, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=true );
+		}
+		
+		//Check if last sku is exist in skulist, return unique sku
+		var productScheduleSkus = arguments.productSchedule.getSkus();
+		var lastSku = ArrayLast(productScheduleSkus);
+		var newSkuCode = lastSku.getSkuCode();
+		for( var i=1; i<=ArrayLen(productScheduleSkus); i++ ){
+			if( productScheduleSkus[i].getSkuCode() == newSkuCode ) {
+				var returnValue = "#productCode#-#i+1#";
+				newSkuCode = getService('HibachiUtilityService').createUniqueProperty(propertyValue=returnValue, entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=false );
+				break;
+			}
+		}
+		return newSkuCode;
+	}
+	
 	// @help Generates an event sku stub. Used to replace repetitive code.
 	private any function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
 
@@ -310,7 +306,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
-				newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
+				newSku.setSkuCode( this.getNextSkuCode( arguments.productSchedule, newSku.getProduct() ) );
 				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
@@ -322,7 +318,6 @@ component extends="HibachiService" accessors="true" {
 				} else {
 					newSku.setEventCapacity(1);
 				}
-
 
 				// Set default Sku if its not already set
 				if( isNull( newSku.getProduct().getDefaultSku() ) ) {
@@ -435,9 +430,8 @@ component extends="HibachiService" accessors="true" {
 		var lastDay = 0;
 
 		do {
-
+			
 			latestSku = createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
-
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuStartDateTime,cursorPosition);
 			newSkuEndDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuEndDateTime,cursorPosition);
@@ -449,7 +443,6 @@ component extends="HibachiService" accessors="true" {
 			}
 
 		} while ( !latestSku.hasErrors() && newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
-		
 		if (latestSku.hasErrors()) {
 			arguments.product.addErrors(latestSku.getErrors());
 		}
@@ -590,54 +583,26 @@ component extends="HibachiService" accessors="true" {
 		return relatedProducts;
 	}
 	
-	/** Function append Images to existing product List
-	 * @param - array of products
-	 * @param - image property name
-	 * @param - addAltImage - boolean to ignore alt images
-	 * @return - updated array of products
-	 **/
-	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
-		if(arrayLen(arguments.products)) {
-			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
-			var resizeSizes=['s','m','l','xl']; //add all sized images
-			
-			for(var product in arguments.products) {
-				
-				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-					continue;
-				}
-				
-	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( this.hibachiIsEmpty(imageFile) ){
-	            	continue;
-	            }
-	            var imageArray = [];
-	            for( var size in resizeSizes) {
-	            	var resizeImageData = {
-		                size=size, //Large Image
-		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
-		                missingImagePath = missingImageSetting
-		            };
-		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
-	            }
-	            
-	            product['images'] = imageArray;
-	        }
-	        
-	        //If there's only one product in response, add alternate images as well
-	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && StructKeyExists(arguments.products[1], 'productID') && trim(arguments.products[1].productID) != "" ) {
-	        	//Modify image size to be used as size index
-	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
-	        }
-	        
-		}
-		return arguments.products;
+	public any function appendSettingsToProductType(required struct productType) {
+		productType['settings']= {
+           	"productHTMLTitleString":  productType.stringReplace( template = productType.setting('productTypeHTMLTitleString'), formatValues = true ),
+           	"productMetaDescriptionString": productType.stringReplace( template = productType.setting('productTypeMetaDescriptionString'), formatValues = true ),
+           	"productMetaKeywordsString": productType.stringReplace( template = productType.setting('productTypeMetaKeywordsString'), formatValues = true )
+	    };
+	    return arguments.productType;
+	}
+	public any function getProductTypeAncestorsbyPath(required productTypeIDPath) {
+		var productTypeCollectionList = this.getProductTypeCollectionList();
+        productTypeCollectionList.setDisplayProperties("productTypeName, urlTitle");
+        productTypeCollectionList.addFilter('productTypeID', "#productTypeIDPath#", "IN");
+        productTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+        return productTypeCollectionList.getRecords( formatRecords = true );
 	}
 	
 	/**
 	 * Method to append categories, baseProductTypeSystemCode and options to Product repsonse using get method
 	 * */
-	public any function appendCategoriesAndOptionsToProduct(required array products) {
+	public any function appendCategoriesAndOptionsToProducts(required array products) {
 		if(arrayLen(arguments.products)) {
 			for(var product in arguments.products) {
 				
@@ -662,25 +627,55 @@ component extends="HibachiService" accessors="true" {
 				product['categories'] = categories;
 				
 				//Append Option Groups
-				var optionGroups = [];
-				if( arrayLen(currentProduct.getOptionGroups()) ) {
-					for(var optionGroup in currentProduct.getOptionGroups()){
-						ArrayAppend( optionGroups, {
-							"optionGroupdID" : optionGroup.getOptionGroupID(),
-							"optionGroupName" : optionGroup.getOptionGroupName(),
-						} )
-					}
-				}
-				product['optionGroups'] =  optionGroups;
-				
-				//Append base product type system code
+				var optsList = [];
+        		var defaultSelectedOptions = '';
+				var defaultSku = currentProduct.getDefaultSku()
+				var optionGroupsArr = currentProduct.getOptionGroups()
+    			var skuOptionDetails = currentProduct.getSkuOptionDetails()
+		        if(!isNull(defaultSku)){
+		        defaultSelectedOptions = defaultSku.getOptionsIDList()
+		            for(var optionGroup in optionGroupsArr) {
+		                var options = currentProduct.getOptionsByOptionGroup( optionGroup.getOptionGroupID() )
+		                var group = []
+		                for(var option in options) {
+		                    ArrayAppend(group,{"optionID": option.getOptionID()
+		                    ,"optionCode": option.getOptionCode()
+		                    ,"optionName": option.getOptionName()})
+		                }
+		                ArrayAppend(optsList, {
+		                    "optionGroupName": optionGroup.getOptionGroupName(),
+		                    "optionGroupID": optionGroup.getOptionGroupID(),
+		                    "optionGroupCode": optionGroup.getOptionGroupCode(),
+		                    "options": group })
+		            }
+		        }
+		        
+		        product['optionGroups'] = optsList;
+    			product['defaultSelectedOptions'] = defaultSelectedOptions;
+
+    			product['settings']= {
+		            "productTitleString": currentProduct.stringReplace( template = currentProduct.setting('productTitleString'), formatValues = true ),
+	            	"productHTMLTitleString":  currentProduct.stringReplace( template = currentProduct.setting('productHTMLTitleString'), formatValues = true ),
+	            	"productMetaDescriptionString": currentProduct.stringReplace( template = currentProduct.setting('productMetaDescriptionString'), formatValues = true ),
+	            	"productMetaKeywordsString": currentProduct.stringReplace( template = currentProduct.setting('productMetaKeywordsString'), formatValues = true )
+	            }
+     
+     			//Append base product type system code
 				product['baseProductTypeSystemCode'] = currentProduct.getBaseProductType();
 			}
 		}
 		
+		
 		return arguments.products;
 	}
-
+	
+	
+	/**
+	 * Method to return product type image base path
+	 * */
+	public string function getProductTypeImageBasePath( boolean frontendURL = false ) {
+		return (arguments.frontendURL ? getHibachiScope().getBaseImageURL() : getHibachiScope().setting('globalAssetsImageFolderPath') ) & "/productType/logo";
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -693,7 +688,70 @@ component extends="HibachiService" accessors="true" {
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
+	
+	/***
+	 * Process method to upload logo for product type
+	 * */
+	public any function processProductType_uploadLogo(required any productType, required any processObject) {
+		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
+		try {
+			
+			//get upload directory base path
+			var uploadDirectory = this.getProductTypeImageBasePath();
+			
+			//upload file
+			var fileUpload = getHibachiUtilityService().uploadFile( 
+				uploadDirectory = uploadDirectory,
+				fileFormFieldName = 'uploadFile',
+				allowedMimeType = arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType
+			);
+			
+			//check if upload had any errors
+			if( !fileUpload.success ) {
+ 				arguments.productType.addError('imageFile', fileUpload.message);
+ 			} else {
+ 				
+ 				//delete existing image from object
+ 				if( arguments.productType.getImageFile() != "") {
+ 					arguments.productType = this.processCategory_deleteCategoryLogo( arguments.category );
+ 				}
+ 				
+ 				//set image path
+ 				arguments.productType.setImageFile( fileUpload.filePath );
+ 			}
+		} catch(any e) {
+			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
+		}
 
+		return arguments.productType;
+	}
+	
+	/**
+	 * Process method to delete logo for product type
+	 * */
+	public any function processProductType_deleteLogo(required any productType, required struct data) {
+		if(structKeyExists(arguments.data, "imageFile")) {
+			
+			//get image base path
+			var imageBasePath = this.getProductTypeImageBasePath();
+			var fileName = arguments.productType.getImageFile();
+			
+			//delete file
+			getHibachiUtilityService().deleteFileFromPath( 
+			 	directoryPath = imageBasePath,
+			 	fileName = fileName
+			 );
+			 
+			arguments.productType.setImageFile('');
+			
+			//clear image cache
+			getImageService().clearImageCache(imageBasePath, fileName);
+		}
+
+		return arguments.productType;
+	}
+	
+	
 	// Process: Product
 	public any function processProduct_addOptionGroup(required any product, required any processObject) {
 		getOptionService().addOptionGroupByOptionGroupIDAndProductID(arguments.processObject.getOptionGroup(),arguments.product.getProductID());
@@ -807,7 +865,6 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 		}
-
 		// Return the product
 		return arguments.product;
 	}
@@ -1139,7 +1196,6 @@ component extends="HibachiService" accessors="true" {
 		
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
-
         // Return the product
 		return arguments.product;
 	}
@@ -1158,7 +1214,6 @@ component extends="HibachiService" accessors="true" {
 		arguments.product.getSkus()[1].setImageFile(sku.generateImageFileName());
 
 		arguments.product = this.saveProduct(arguments.product);
-
 
 		return arguments.product;
 	}
@@ -1310,7 +1365,60 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 
+	public any function processProduct_bulkImageUpload(required any product, required any processObject , any data ) {
 
+		var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default/";
+		var uploadTempDirectory = getHibachiTempDirectory()&"/"&CreateUUID()&"/";
+		
+		// If the directory where this file is going doesn't exists, then create it
+		if(!directoryExists(uploadTempDirectory)) {
+			directoryCreate(uploadTempDirectory);
+		}
+		getHibachiTagService().cfunzip( file=arguments.processObject.getUploadFile(), zipDestination = uploadTempDirectory , filter = "*.jpg, *.jpeg, *.png");
+
+		var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+		var maxFileSize = val(maxFileSizeString) * 1000000;
+		var filePaths = DirectoryList( path=uploadTempDirectory, recurse="true",  listInfo="path", type = "file", filter = function(path){ 
+		   // ignore hidden directories lik ._MACOSX
+		   if(findNoCase("__MACOSX", arguments.path) > 0){
+					return false;
+			}
+			
+		  // file size check to check max upload size
+		  var fileInfo = getFileInfo(path);
+		  var size = fileInfo.size;
+		  if(size < maxFileSize){
+			  return true;	
+		  }
+		  
+		  return false;
+			
+		});
+
+		for(var filepath in filePaths) {
+			
+			var fileNameWithExtension = listLast(filepath, "/");
+			var fileName			  = listFirst(fileNameWithExtension,".");
+			var fileExtension         = listLast(fileNameWithExtension,".");
+			
+			this.getImageService().clearImageCache(uploadDirectory, fileNameWithExtension);
+			
+			if(arguments.processObject.getimageNameProductProperty() == "ProductCode"){
+				fileMove( filepath, uploadDirectory);
+			}else{
+				var productCode = this.getProductDAO().getProductCodeByUniquePropertyNameAndUniqueValue(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName);
+	        	if(len(productCode) > 0){
+	        		var newFileName = productCode&"."&fileExtension;
+	 				fileMove(filepath, uploadDirectory&newFileName);
+	 			}else {
+	 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.unknownImageName'));
+	 			}
+			}
+		}
+		
+		return arguments.product;
+
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
@@ -1452,7 +1560,7 @@ component extends="HibachiService" accessors="true" {
 
 		// if this type has a parent, inherit all products that were assigned to that parent
 		if(!arguments.productType.hasErrors() && !isNull(arguments.productType.getParentProductType()) and arrayLen(arguments.productType.getParentProductType().getProducts())) {
-			getProductDAO().flushOrmSession();
+			getHibachiDAO().flushOrmSession();
 			getProductDAO().updateProductProductType( arguments.productType.getParentProductType().getProductTypeID(), arguments.productType.getProductTypeID() );
 		}
 
@@ -1472,6 +1580,60 @@ component extends="HibachiService" accessors="true" {
 		}
 		return arguments.productReview;
 		
+	}
+	
+	public any function getProductTypesForBrand(required string urlTitle){
+		var productTypeCollectionList = getService('HibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
+		productTypeCollectionList.addFilter('products.brand.urlTitle', urlTitle);
+        productTypeCollectionList.addOrderBy("productTypeIDPath|Agit statusSC"); //to arrange them from parent to child order
+		var filteredTypes =  productTypeCollectionList.getRecords( formatRecords = true );
+		var filteredTypeIDPaths = []
+            for( var filteredType in filteredTypes ) {
+                for(var ptyi in ListToArray(filteredType.productTypeIDPath)){
+                    if(!arrayFindNoCase(filteredTypeIDPaths, ptyi)){
+                    	ArrayAppend(filteredTypeIDPaths, ptyi);
+                    }
+                }
+            }
+        return filteredTypeIDPaths
+	}
+	
+	public any function getProductTypesForKeyword(required string keyword){
+		var productTypeCollectionList = getService('HibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
+		productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.productName', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.productCode', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addFilter(
+                    propertyIdentifier='products.skus.skuCode', 
+                    value='%#arguments.keyword#%', 
+                    comparisonOperator='LIKE', 
+                    filterGroupAlias='keyword',
+                    logicalOperator='OR'
+        );
+        productTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
+		var filteredTypes =  productTypeCollectionList.getRecords( formatRecords = true );
+		var filteredTypeIDPaths = []
+            for( var filteredType in filteredTypes ) {
+                for(var ptyi in ListToArray(filteredType.productTypeIDPath)){
+                    if(!arrayFindNoCase(filteredTypeIDPaths, ptyi)){
+                    	ArrayAppend(filteredTypeIDPaths, ptyi);
+                    }
+                }
+            }
+        return filteredTypeIDPaths
 	}
 
 	// ======================  END: Save Overrides ============================

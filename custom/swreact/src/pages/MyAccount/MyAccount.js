@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
 import { Layout } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
-import { Switch, Route, useRouteMatch, useLocation } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, useLocation, Redirect } from 'react-router-dom'
 import { getUser } from '../../actions/userActions'
 import CreateAccount from '../../components/Account/CreateAccount/CreateAccount'
 import ForgotPassword from '../../components/Account/ForgotPassword/ForgotPassword'
 import { isAuthenticated } from '../../utils'
+import queryString from 'query-string'
+import AccountCarts from '../../components/Account/AccountCarts/AccountCarts'
 
 // I think we should be prelaoding these https://medium.com/maxime-heckel/react-lazy-a-take-on-preloading-views-cc90be869f14
 const AccountLogin = React.lazy(() => import('../../components/Account/AccountLogin/AccountLogin'))
@@ -18,6 +20,7 @@ const AccountOrderDetail = React.lazy(() => import('../../components/Account/Acc
 const AccountPaymentMethods = React.lazy(() => import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods'))
 const AccountOrderHistory = React.lazy(() => import('../../components/Account/AccountOrderHistory/AccountOrderHistory'))
 const CreateOrEditAccountPaymentMethod = React.lazy(() => import('../../components/Account/AccountPaymentMethods/CreateOrEditAccountPaymentMethod'))
+// eslint-disable-next-line no-unused-vars
 const pageComponents = {
   AccountLogin,
   AccountOverview,
@@ -40,7 +43,11 @@ const MyAccount = () => {
     if (isAuthenticated() && !user.isFetching && !user.accountID.length) {
       dispatch(getUser())
     }
-  }, [dispatch, isAuthenticated, user])
+  }, [dispatch, user])
+  if (isAuthenticated() && loc.search.includes('redirect=')) {
+    const params = queryString.parse(loc.search)
+    return <Redirect to={params.redirect} />
+  }
 
   const path = loc.pathname.split('/').reverse()
   return (
@@ -70,6 +77,9 @@ const MyAccount = () => {
           </Route>
           <Route path={`${match.path}/profile`}>
             <AccountProfile />
+          </Route>
+          <Route path={`${match.path}/carts`}>
+            <AccountCarts />
           </Route>
           <Route path={match.path}>{isAuthenticated() && <AccountOverview />}</Route>
         </Switch>

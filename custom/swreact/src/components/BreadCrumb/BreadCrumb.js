@@ -1,61 +1,43 @@
 import React from 'react'
-import { useLocation } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 // import PropTypes from 'prop-types'
 
-const Crumb = ({ path, name, index }) => {
-  if (index > 0) {
-    return (
-      <li className="breadcrumb-item text-nowrap">
-        <Link to={path}>{name}</Link>
-      </li>
-    )
-  }
+const Crumb = ({ urlTitle, title }) => {
   return (
     <li className="breadcrumb-item ">
-      <Link className="text-nowrap" to={path}>
-        <i className="far fa-home" />
-        {name}
+      <Link className="text-nowrap" to={urlTitle}>
+        {title}
       </Link>
     </li>
   )
 }
-const titleizeWord = str => `${str[0].toUpperCase()}${str.slice(1)}`
-const kebabToTitle = str => str.split('-').map(titleizeWord).join(' ')
-const toBreadcrumbs = (link, { rootName = 'Home', nameTransform = s => s } = {}) =>
-  link
-    .split('/')
-    .filter(Boolean)
-    .reduce(
-      (acc, curr, idx, arr) => {
-        acc.path += `/${curr}`
-        acc.crumbs.push({
-          path: acc.path,
-          name: nameTransform(curr),
-        })
 
-        if (idx === arr.length - 1) return acc.crumbs
-        else return acc
-      },
-      { path: '', crumbs: [{ path: '/', name: rootName }] }
-    )
-
-const BreadCrumb = () => {
-  let location = useLocation()
-  let crumbs = toBreadcrumbs(location.pathname, { nameTransform: kebabToTitle })
-  crumbs.pop()
+const BreadCrumb = ({ crumbs, includeHome = true, brand = [] }) => {
+  const { t } = useTranslation()
   return (
-    <>
+    <div className="order-lg-2 mb-3 mb-lg-0 pt-lg-2">
       {crumbs && (
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb flex-lg-nowrap justify-content-center justify-content-lg-start">
-            {crumbs.map((crumb, index) => {
-              return <Crumb key={index} {...crumb} index={index} />
+            {includeHome && (
+              <li className="breadcrumb-item ">
+                <Link className="text-nowrap" to="/">
+                  <i className="far fa-home" />
+                  {t('frontend.core.home')}
+                </Link>
+              </li>
+            )}
+            {brand.map(crumb => {
+              return <Crumb key={crumb.urlTitle} {...crumb} />
+            })}
+            {crumbs.map(crumb => {
+              return <Crumb key={crumb.urlTitle} {...crumb} />
             })}
           </ol>
         </nav>
       )}
-    </>
+    </div>
   )
 }
 

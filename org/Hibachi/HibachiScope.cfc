@@ -12,6 +12,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
 	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
+	property name="sessionFoundWithExpiredJwtToken" type="boolean";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale" type="string";
 	property name="url" type="string";
@@ -34,6 +35,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
 		setSessionFoundExtendedPSIDCookieFlag( false );
+		setSessionfoundWithExpiredJwtToken( false );
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
 		setFailureActions( [] );
@@ -567,7 +569,11 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	public boolean function authenticateCollectionPropertyIdentifier(required string crudType, required any collection, required string propertyIdentifier){
-		return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
+		if(getAccount().getNewFlag() || !getAccount().getAdminAccountFlag()){
+			return arrayFindNoCase(arguments.collection.getAuthorizedProperties(), arguments.propertyIdentifier);
+		}else{
+			return getHibachiAuthenticationService().authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
+		}
 	}
 	
 

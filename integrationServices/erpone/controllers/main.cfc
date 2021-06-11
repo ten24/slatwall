@@ -22,14 +22,39 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	public any function importAccounts(){
 	    this.getService('erpOneService').importErpOneAccounts();
 	}
+	
 	// Get Order Data
 	public any function importOrders(){
-	    this.getService('erpOneService').importErpOneOrders();
+	    var batch = this.getService('erpOneService').importErpOneOrders();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
 	}
-	// Get Order Items Data
+	
+	// Get Order Data
 	public any function importOrderItems(){
-	    this.getService('erpOneService').importErpOneOrderItems();
+	    var batch = this.getService('erpOneService').importErpOneOrderItems();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
 	}
+	
+	// Get Order Data
+	public any function importOrderPayments(){
+	    var batch = this.getService('erpOneService').importErpOneOrderPayments();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	public any function importOrderShipments(){
+	    var batch = this.getService('erpOneService').importErpOneOrderShipments();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+
 	// Get Inventory Items Data
 	public any function importInventoryItems(){
 	    this.getService('erpOneService').importErpOneInventoryItems();
@@ -54,19 +79,34 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	}
 
 	public void function processIntegration( required any rc ){
-	
-		this.getService("hibachiTagService").cfsetting( requesttimeout=60000 );
-		var batch = this.getService("erpOneService").uploadCSVFile( arguments.rc );
 		
-		if( !isNull(batch) ){
-		    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
-		    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
-	        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
-		} 
-		// if no batch returned, then there was some issue with the import; sending user back
-		else{ 
-		    super.renderOrRedirectFailure( defaultAction="erpone:main.preProcessIntegration", maintainQueryString=true, rc=arguments.rc);
+		switch (arguments.rc.processContext) {
+			case 'importerponecsv':
+				this.getService("hibachiTagService").cfsetting( requesttimeout=60000 );
+				var batch = this.getService("erpOneService").uploadCSVFile( arguments.rc );
+				
+				if( !isNull(batch) ){
+				    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+				    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+			        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+				} else{ 
+					// if no batch returned, then there was some issue with the import; sending user back
+				    super.renderOrRedirectFailure( defaultAction="erpone:main.preProcessIntegration", maintainQueryString=true, rc=arguments.rc);
+				}
+				break;
+			case 'debug':
+				super.genericPreProcessMethod(entityName="Integration", rc=arguments.rc);
+				arguments.rc.result = this.getService("erpOneService").debugDataApi(requestData = { 
+					'query' : arguments.rc.erpQuery, 
+					'columns' : arguments.rc.columns, 
+					'skip' : arguments.rc.offset,
+					'take' : arguments.rc.amountPerPage
+				}, endpoint = arguments.rc.endpoint, requestType = arguments.rc.httpMethod);
+				getFW().setView("erpone:main.preprocessintegration_debug");
+				break;
 		}
+	
+		
 	}
 	
 	

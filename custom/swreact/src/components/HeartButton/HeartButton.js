@@ -1,25 +1,34 @@
-import { useDispatch } from 'react-redux'
-import { addWishlistItem, removeWishlistItem } from '../../actions/userActions'
-import useWishList from '../../hooks/useWishlist'
+import { useDispatch, useSelector } from 'react-redux'
+import { addSkuToWishList, removeWishlistItem, createListAndAddItem } from '../../actions/userActions'
+import { getDefaultWishlist, getItemsForDefaultWishList } from '../../selectors/userSelectors'
+import { isAuthenticated } from '../../utils'
 
 const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
   const dispatch = useDispatch()
-  const [isOnWishlist] = useWishList(skuID)
-  if (isOnWishlist) {
+  const primaryColor = useSelector(state => state.configuration.theme.primaryColor)
+  const defaultWishlist = useSelector(getDefaultWishlist)
+  const isListLoaded = useSelector(state => state.userReducer.wishList.isListLoaded)
+  const items = useSelector(getItemsForDefaultWishList)
+
+  if (!isAuthenticated()) {
+    return null
+  }
+
+  if (items.includes(skuID)) {
     return (
       <button
         className={className}
         onClick={e => {
           e.preventDefault()
-          dispatch(removeWishlistItem(skuID))
+          dispatch(removeWishlistItem(skuID, defaultWishlist?.value))
         }}
         type="button"
         data-toggle="tooltip"
         data-placement="left"
         title=""
-        data-original-title="Add to wishlist"
+        data-original-title="Remove from wishlist"
       >
-        <i className="far fa-heart" style={{ color: '#5f1018' }}></i>
+        <i className="fas fa-heart" style={{ color: `#${primaryColor}` }}></i>
       </button>
     )
   } else {
@@ -27,7 +36,11 @@ const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
       <button
         onClick={e => {
           e.preventDefault()
-          dispatch(addWishlistItem(skuID))
+          if (isListLoaded && !defaultWishlist?.value) {
+            dispatch(createListAndAddItem(skuID))
+          } else {
+            dispatch(addSkuToWishList(skuID, defaultWishlist?.value))
+          }
         }}
         className={className}
         type="button"

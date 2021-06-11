@@ -1,42 +1,73 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { getContent } from '../../actions/contentActions'
+import { getPageContent } from '../../actions/contentActions'
 import { useHistory, useLocation } from 'react-router'
-import { getFavouriteProducts } from '../../actions/userActions'
+import { getWishLists } from '../../actions/userActions'
 
 const CMSWrapper = ({ children }) => {
   const dispatch = useDispatch()
   const { pathname } = useLocation()
   const history = useHistory()
-
-  let path = pathname.split('/').reverse()[0].toLowerCase()
-  path = path.length ? path : 'home'
-  let payload = {}
-  payload.header = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
-  payload.footer = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
-  payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
-  payload['404'] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
+  const [isLoaded, setIsLoaded] = useState(false)
+  let basePath = pathname.split('/')[1].toLowerCase()
+  basePath = basePath.length ? basePath : 'home'
 
   useEffect(() => {
-    dispatch(getFavouriteProducts())
-    dispatch(
-      getContent({
-        content: payload,
-      })
-    )
-    history.listen(location => {
-      payload = {}
-      path = location.pathname.split('/').reverse()[0].toLowerCase()
-      path = path.length ? path : 'home'
-      payload[path] = ['title', 'customSummary', 'customBody', 'contentID', 'urlTitlePath', 'urlTitle', 'sortOrder', 'linkUrl', 'linkLabel', 'associatedImage', 'parentContentID']
-      dispatch(getFavouriteProducts())
+    if (!isLoaded) {
+      dispatch(getWishLists())
       dispatch(
-        getContent({
-          content: payload,
-        })
+        getPageContent(
+          {
+            'f:urlTitlePath:like': `header%`,
+          },
+          'header'
+        )
+      )
+      dispatch(
+        getPageContent(
+          {
+            'f:urlTitlePath:like': `404%`,
+          },
+          '404'
+        )
+      )
+      dispatch(
+        getPageContent(
+          {
+            'f:urlTitlePath:like': `footer%`,
+          },
+          'footer'
+        )
+      )
+      dispatch(
+        getPageContent(
+          {
+            'f:urlTitlePath:like': `${basePath}%`,
+          },
+          basePath
+        )
+      )
+      setIsLoaded(true)
+    }
+  }, [dispatch, history, basePath, isLoaded])
+
+  useEffect(() => {
+    const unload = history.listen(location => {
+      let newPath = location.pathname.split('/').reverse()[0].toLowerCase()
+      newPath = newPath.length ? newPath : 'home'
+      dispatch(
+        getPageContent(
+          {
+            'f:urlTitlePath:like': `${newPath}%`,
+          },
+          newPath
+        )
       )
     })
-  }, [dispatch])
+    return () => {
+      unload()
+    }
+  }, [dispatch, history, basePath])
 
   return <>{children}</>
 }

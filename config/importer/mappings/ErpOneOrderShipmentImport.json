@@ -1,0 +1,108 @@
+{
+	"entityName": "OrderDelivery",
+    "mappingCode": "ErpOneOrderShipmentImport",
+	"properties": {
+
+		"remoteOrderDeliveryID": {
+			"propertyIdentifier": "remoteID",
+			"validations": {
+				"required": true,
+				"dataType": "string"
+			}
+		},
+		"invoiceNumber": {
+			"propertyIdentifier": "invoiceNumber",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"trackingNumber": {
+			"propertyIdentifier": "trackingNumber",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"trackingUrl": {
+			"propertyIdentifier": "trackingUrl",
+			"validations": {
+				"dataType": "URL"
+			}
+		},
+		"containerLabel": {
+			"propertyIdentifier": "containerLabel",
+			"validations": {
+				"dataType": "string"
+			}
+		},
+		"undeliverableOrderReason": {
+			"propertyIdentifier": "undeliverableOrderReason",
+			"validations": {
+				"dataType": "string"
+			}
+		}
+	},
+
+	"relations": [
+	    {
+    		"type": "manyToOne",
+    		"entityName": "Address",
+    		"mappingCode": "Address",
+    		"isNullable": true,
+    		"propertyIdentifier": "shippingAddress",
+            "sourceDataKeysPrefix":"shippingAddress_"
+	    },
+	    {
+	        "type": "oneToMany",
+	        "entityName": "OrderDeliveryItem",
+	        "hasMapping": false,
+	        "propertyIdentifier": "orderDeliveryItems",
+	        "generatorFunction" : "generateErpOneOrderDeliveryItems"
+	    }
+	],
+
+	"dependencies": [{
+			"key": "remoteOrderID",
+            "useORM" : true,
+			"entityName": "Order",
+			"lookupKey": "remoteID",
+			"propertyIdentifier": "order"
+		},
+		{
+			"key": "warehouseLocationCode",
+			"entityName": "Location",
+			"lookupKey": "locationCode",
+			"defaultValue": "default",
+			"__hint": "this defaultValue for Location is `Default`.",
+			"propertyIdentifier": "location"
+		},
+		{
+			"key": "fulfillmentMethodName",
+			"entityName": "FulfillmentMethod",
+			"isNullable" : true,
+			"lookupKey": "fulfillmentMethodName",
+			"propertyIdentifier": "fulfillmentMethod"
+		},
+		{
+			"key": "shippingMethodCode",
+			"entityName": "ShippingMethod",
+			"isNullable": true,
+			"lookupKey": "shippingMethodCode",
+			"propertyIdentifier": "shippingMethod"
+		},
+		{
+			"key": "statusCode",
+			"lookupKey": "systemCode",
+			"entityName": "Type",
+			"isNullable": true,
+			"propertyIdentifier": "orderDeliveryStatusType"
+		}
+	],
+
+	"importIdentifier": {
+		"propertyIdentifier": "importRemoteID",
+		"type": "composite",
+		"keys": [
+			"remoteOrderDeliveryID"
+		]
+	}
+}

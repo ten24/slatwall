@@ -30,8 +30,8 @@
                             inst.dpDiv.addClass('month_year_datepicker')
 
                             if ((datestr = $(this).val()).length > 0) {
-                                year = datestr.substring(datestr.length-4, datestr.length);
-                                month = datestr.substring(0, 2);
+                                year = datestr.substring(0, datestr.length-3);
+                                month = datestr.substring(datestr.length-2, datestr.length);
                                 $(this).datepicker('option', 'defaultDate', new Date(year, month-1, 1));
                                 $(this).datepicker('setDate', new Date(year, month-1, 1));
                                 $(".ui-datepicker-calendar").hide();
@@ -73,6 +73,7 @@
 	    }
     </style>
 <cfoutput>
+	<cfparam name="rc.reportName" default="" />
 	<div id="reporting-top">
 		
 		<form id="revrecognition" action="?s=1" method="post">
@@ -82,21 +83,11 @@
 				<div class="flex flex-space-bettween align-items-end">
 					<div class="col flex align-items-end">
 						<!--- BACKEND TODO: Add logic for subscription name --->
-						<h3>[Report Name Here]</h3>
+						<h3>#rc.reportName#</h3>
 					</div>
 					
                     <!-- Button (Rectangle) -->
 					<div class="col flex flex-end">	
-						<div class="report-select">
-	                        <!--- BACKEND TODO: Wireup subscription report dropdown --->
-	                        <select name="report" data-live-search="true" data-width="auto">
-	                        	<option value="##">Subscription Reports ...</option>
-	                        	 <option value="##">Deferred Revenue Report</option>
-	                        	 <option value="##">Earned Revenue Report</option>
-	                        	 <option value="##">New Subscription Orders Report</option>
-	                        	 <option value="##">Cancelled Orders Report</option>
-	                        </select>
-	                    </div>
 				        <div id="u123" class="ax_default shape" data-label="Button" style="cursor: pointer;">
 				            <div id="u123_div" class="" tabindex="0"></div>
 				            <div id="u123_text" class="text single-select">

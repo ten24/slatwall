@@ -121,7 +121,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountAuthentication = [ "integration.integrationID" ],
 			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
 			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ],
-			account = ["accountCreatedSite.siteID"]
+			account = ["accountCreatedSite.siteID"],
+			orderTemplate = ["site.siteID"]
 		};
 	}
 
@@ -241,6 +242,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
 			globalCurrencyType = {fieldType="select",defaultValue="Local"},
 			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalVATCountries = {fieldType="listingMultiselect", listingMultiselectEntityName="Country", defaultValue=""},
 			globalDeploySitesAndApplicationsOnUpdate = {fieldtype="yesno", defaultValue=1}, 
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
@@ -291,6 +293,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3Bucket = {fieldtype="text"},
 			globalS3AccessKey = {fieldtype="text"},
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
+			globalCORSWhitelist = {fieldtype="text",defaultValue=""},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
 			globalHibachiCacheName= {fieldtype="text",defaultValue="slatwall"},
@@ -301,7 +304,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
 			globalIntegrationRequestLog = {fieldType="yesno",defaultValue=0},
 			globalIntegrationRequestLogExpirationDays = {fieldtype="text", defaultValue=30, validate={dataType="numeric",required=true,maxValue=180}},
-
+			globalPublicApiEntities = {fieldType="multiselect",defaultValue="Brand,Product,ProductType,Sku"},
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -344,7 +347,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="ShippingMethod"
 			},
-			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=1},
+			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=0},
 			orderTemplateDaysAllowedToEditNextOrderTemplate = {fieldtype="text", defaultValue="2", validate={dataType="numeric",required=true}},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
@@ -392,6 +395,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
 			siteDateFormat = {fieldType="select", defaultValue="mm-dd-yyyy"},
 			siteDefaultAccountPaymentMethod = {fieldtype="select", defaultValue="444df303dedc6dab69dd7ebcc9b8036a"},	
+			siteDefaultCountry = {fieldType="select", defaultValue="us"},
 			siteDefaultLocale = {fieldType="select"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
@@ -400,7 +404,6 @@ component extends="HibachiService" output="false" accessors="true" {
             siteRecaptchaSiteKey = {fieldType="text"},
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
-			siteOrderTemplateEligibleShippingMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="ShippingMethod"},
 			siteWishlistShareEmailTemplate = { fieldtype="select", defaultValue="" },
 			siteProductSearchIntegration = {fieldtype="text", defaultValue="SlatwallProductSearch"},
 			
@@ -462,7 +465,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
 			skuDisableAverageCostCalculation = {fieldType="yesno", defaultValue=0},
 			skuDisableQoQCalculation = {fieldType="yesno", defaultValue=0},
-			skuAllowableRefundPercentages = {fieldType="text", defaultValue=0},
+			skuAllowableRefundPercentages = {fieldType="text"},
 			
 			skuRevenueLedgerAccount = {fieldType="select", defaultValue="54cf9c67d219bd4eddc6aa7dfe32aa02"},
 			skuCogsLedgerAccount = {fieldType="select", defaultValue="54cd90d6dd39c2e90c99cdb675371a05"},
@@ -642,6 +645,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalTranslateEntities":
 				return getTranslationService().getEntityNameOptions();
+			case "globalPublicApiEntities":
+				return getTranslationService().getEntityNameOptions();
 			case "globalTranslateLocales":
 				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
@@ -668,6 +673,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return options;
 			case "siteDefaultLocale":
 				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDefaultCountry":
+				return this.getCountryCollectionList().getRecordOptions(false);
 			case "siteDefaultAccountPaymentMethod":
 				return getPaymentService().getActivePaymentMethodOptions();
 			case "siteForgotPasswordEmailTemplate":
@@ -1297,6 +1304,8 @@ component extends="HibachiService" output="false" accessors="true" {
 					formatDetails.object = settingObject;
 
 					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, '', formatDetails);
+				} else {
+					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, settingDetails.fieldType);
 				}
 			// This is the no deffinition case
 			} else if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){

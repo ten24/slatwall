@@ -1,15 +1,14 @@
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { deletePaymentMethod } from '../../../actions/userActions'
 import { useTranslation } from 'react-i18next'
 
 const PaymentMethodItem = props => {
-  const { accountPaymentMethodID, accountPaymentMethodName, nameOnCreditCard, isPrimary = false, creditCardType, activeFlag, expirationYear, expirationMonth } = props
+  const { accountPaymentMethodID, accountPaymentMethodName, nameOnCreditCard, isPrimary = false, creditCardType, expirationYear, expirationMonth } = props
   const MySwal = withReactContent(Swal)
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <tr>
@@ -25,17 +24,9 @@ const PaymentMethodItem = props => {
       <td className="py-3 align-middle">{nameOnCreditCard}</td>
       <td className="py-3 align-middle">{`${expirationMonth}/${expirationYear}`}</td>
       <td className="py-3 align-middle">
-        <Link
-          className="nav-link-style mr-2"
-          to={{
-            pathname: `/my-account/cards/${accountPaymentMethodID}`,
-            state: { ...props },
-          }}
-        >
-          <i className="far fa-edit"></i>
-        </Link>
-        <a
-          className="nav-link-style text-primary"
+        <button
+          type="button"
+          className="link-button nav-link-style text-primary"
           onClick={() => {
             MySwal.fire({
               icon: 'info',
@@ -55,7 +46,7 @@ const PaymentMethodItem = props => {
           data-original-title="Remove"
         >
           <i className="far fa-trash-alt"></i>
-        </a>
+        </button>
       </td>
     </tr>
   )

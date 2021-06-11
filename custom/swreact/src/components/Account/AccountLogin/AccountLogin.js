@@ -4,21 +4,28 @@ import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useRouteMatch } from 'react-router-dom'
+import * as Yup from 'yup'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
   let match = useRouteMatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const formik = useFormik({
     initialValues: {
       loginEmail: '',
       loginPassword: '',
     },
+    validateOnChange: false,
+    validationSchema: Yup.object().shape({
+      loginEmail: Yup.string().email('Invalid email').required('Required'),
+      loginPassword: Yup.string().required('Required'),
+    }),
     onSubmit: values => {
-      dispatch(login(values.loginEmail, values.loginPassword))
+      dispatch(login(values.loginEmail, values.loginPassword, t('frontend.account.auth.success'), t('frontend.account.auth.failure')))
     },
   })
+
   return (
     <div className="col-md-6">
       <div className="card box-shadow">
@@ -30,11 +37,13 @@ const LoginForm = () => {
           <form onSubmit={formik.handleSubmit}>
             <div className="form-group">
               <label htmlFor="loginEmail">{t('frontend.account.email')}</label>
-              <input value={formik.values.loginEmail} onChange={formik.handleChange} autoComplete="email" required className="form-control" type="email" id="loginEmail" />
+              <input value={formik.values.loginEmail} onBlur={formik.handleBlur} onChange={formik.handleChange} autoComplete="email" className="form-control" type="email" id="loginEmail" />
+              {formik.errors.loginEmail && <span className="form-error-msg">{formik.errors.loginEmail}</span>}
             </div>
             <div className="form-group">
               <label htmlFor="loginPassword">{t('frontend.account.password')}</label>
-              <input value={formik.values.loginPassword} onChange={formik.handleChange} autoComplete="current-password" required className="form-control" type="password" id="loginPassword" />
+              <input value={formik.values.loginPassword} onBlur={formik.handleBlur} onChange={formik.handleChange} autoComplete="current-password" className="form-control" type="password" id="loginPassword" />
+              {formik.errors.loginPassword && formik.touched.loginPassword && <span className="form-error-msg">{formik.errors.loginPassword}</span>}
             </div>
             <div className="text-right">
               <Link to={`${match.path}/forgotPassword`} className="nav-link-inline font-size-sm">
@@ -43,7 +52,7 @@ const LoginForm = () => {
             </div>
             <hr className="mt-4" />
             <div className="text-right pt-4">
-              <button className="btn btn-primary" type="submit">
+              <button className="btn btn-primary" disabled={formik.isSubmitting} type="submit">
                 {t('frontend.account.sign_in')}
               </button>
             </div>

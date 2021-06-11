@@ -52,6 +52,7 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable>
+		<swa:SlatwallSetting settingName="siteDefaultCountry" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteAvailableLocales" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteDateFormat" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteDefaultLocale" settingObject="#rc.site#" />
@@ -62,7 +63,7 @@ Notes:
 		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" settingObject="#rc.site#" />
-		<swa:SlatwallSetting settingName="siteOrderTemplateEligibleShippingMethods" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="orderTemplateEligibleShippingMethods" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteWishlistShareEmailTemplate" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteProductSearchIntegration" settingObject="#rc.site#" />
 	</swa:SlatwallSettingTable>

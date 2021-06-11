@@ -31,14 +31,15 @@ const SWForm = ({ formik, children, title = '', subTitle = '', primaryButtontext
   )
 }
 
-const SWInput = ({ formik, token = '', label = '', wrapperClasses = 'row', type = 'text' }) => {
+const SWInput = ({ required = false, formik, token = '', label = '', wrapperClasses = 'row', type = 'text', showErrors = true }) => {
   return (
     <div className={wrapperClasses}>
       <div className="col form-group">
         <label className="control-label" htmlFor={token}>
           {label}
         </label>
-        <input className="form-control" type={type} id={token} value={formik.values[token]} onChange={formik.handleChange} />
+        <input className="form-control" type={type} id={token} value={formik.values[token]} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+        {showErrors && formik.touched[token] && formik.errors[token] && <span className="form-error-msg">{formik.errors[token]}</span>}
       </div>
     </div>
   )

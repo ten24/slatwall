@@ -1,0 +1,12 @@
+._loading_overlay_overlay {
+  background-color: #f6f9fc;
+  opacity: 0.8;
+}
+
+._loading_overlay_spinner {
+  svg {
+    circle {
+      stroke: $brand-primary;
+    }
+  }
+}

@@ -52,7 +52,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		return variables.signature;
 	}
 	
-	public any function decode(){
+	public any function decode(boolean ignoreExpiration = false){
 		if(listLen(getTokenString(),".") neq 3){
 			throw(type="Invalid Token", message="Token should contain 3 segments");
 		}
@@ -91,18 +91,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			throw(type="No Account ID",message="No Account ID");
 		}
 
-		/*if has session then verify session account against token*/
-		if(
-			!isNull(getHibachiScope().getSession())
-			&& !getHibachiScope().getSession().getAccount().getNewFlag()
-			&& getHibachiScope().getSession().getAccount().getAccountID() != payload.accountID
-		){
-			throw(type='AccountID is not valid',message='AccountID is not valid');
-		}
-
-		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		if(currentTime lt payload.iat || currentTime gt payload.exp){
-			throw(type="Token is expired",message="Token is expired"); 
+		if(!arguments.ignoreExpiration){
+			var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+			if(currentTime < payload.iat || currentTime > payload.exp){
+				throw(type="Token is expired",message="Token is expired"); 
+			}
 		}
 		
 		var serverName = CGI['server_name'];

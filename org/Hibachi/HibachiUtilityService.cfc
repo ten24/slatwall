@@ -967,8 +967,12 @@
 				// Graceful handling of decrypt failure
 				} catch (any e) {}
 			}
-
-			logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin.", true);
+			
+			var errorMessage = "There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin."; 
+		    if( !isNull(this.getHibachiScope().getAccount()) && this.getHibachiScope().getAccount().getAdminAccountFlag() ){
+		        this.getHibachiScope().showMessage( errorMessage, 'error');
+		    }
+			this.logHibachi(errorMessage, true);
 			return "";
 		}
 
@@ -1395,7 +1399,7 @@
 	             apiRequestAudit.setParams( serializeJson(form) );
 	        }
 	        
-	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getStatus() );
 	        
 	        apiRequestAudit.setRequestType( arguments.requestType);
 	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
@@ -1428,16 +1432,6 @@
 			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
 		}
 		
-		
-		public string function prefixListItem(required string list, required string prefix) {
-			var prefix = arguments.prefix;
-			return ListMap(arguments.list , function(item){
-				return prefix & arguments.item; //beware of scope
-			})
-		}
-		
-		
-
     	/**
     	 * Takes a CSV string and convert it to an array of arrays based on the given field delimiter. 
     	 * Line delimiter is assumed to be new line / carriage return related.
@@ -1587,22 +1581,172 @@
     	
     public string function getSQLfromHQL(required string HQL, required struct hqlParams) {
 
-		var hidratedHQL = HQL; 
-		cfloop(collection=hqlParams, item="key") {
-			hidratedHQL = replace(hidratedHQL, ":#key#", "'#hqlParams[key]#'");
+		var hydratedHQL = arguments.HQL; 
+		for(var key in arguments.hqlParams ){
+			hydratedHQL = replace(hydratedHQL, ":#key#", "'#arguments.hqlParams[key]#'");
 		}
+		
 		// java magic
 		var javaTranslatorFactory = createObject("java", "org.hibernate.hql.ast.ASTQueryTranslatorFactory");
 		var javaCollections = createObject("java", "java.util.Collections");
-		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hidratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
+		var javaTranslator = javaTranslatorFactory.createQueryTranslator('', hydratedHQL, javaCollections.EMPTY_MAP, ormGetSessionFactory());
 		javaTranslator.compile(javaCollections.EMPTY_MAP, false);
-		var sqlstr = javaTranslator.getSQLString();
+		var sqlStr = javaTranslator.getSQLString();
 
 		// sqlstr = rereplace(sqlstr, "as .*?\d+_\d+_", '', "ALL"); //\sas\s\w+\d+_\d+_,
 
 		return sqlstr;
 	}
-
+	
+	/**
+	 * Method to upload file
+	 * @param uploadDirectory
+	 * @param fileFormFieldName - name of file type field in form, to get it from POST request
+	 * @param allowedMimeType - file types to be allowed for upload
+	 * */
+	public any function uploadFile( string uploadDirectory, string fileFormFieldName = "uploadFile", string allowedMimeType = "*" ) {
+		
+		if( this.isS3Path( arguments.uploadDirectory ) ){
+			uploadDirectory = this.formatS3Path( arguments.uploadDirectory );
+		}
+		
+		// If the directory where this file is going doesn't exists, then create it
+		if(!directoryExists(arguments.uploadDirectory)) {
+			directoryCreate(arguments.uploadDirectory);
+		}
+		
+		// Upload the file to temp directory
+		var uploadData = fileUpload( getHibachiTempDirectory(), arguments.fileFormFieldName, arguments.allowedMimeType , 'overwrite', 'makeUnique' );
+		var fileSize = uploadData.fileSize;
+		
+		//get max image size
+		var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+		var maxFileSize = val(maxFileSizeString) * 1000000;
+		
+		//check allowed filesize validation
+ 		if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 			return {
+ 				'success': false,
+ 				'message': getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize')
+ 			}
+ 		}
+ 		
+ 		//move file to correct location	
+ 		fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", arguments.uploadDirectory);
+ 		
+ 		if( this.isS3Path( arguments.uploadDirectory ) ){
+ 			StoreSetACL( arguments.uploadDirectory, [{group="all", permission="read"}]);
+ 		}
+ 		
+ 		return {
+ 			'success': true,
+ 			'filePath': uploadData.serverFile
+ 		}
+	}
+	
+	/**
+	 * Method to delete file from server
+	 * @param directoryPath
+	 * @param fileName
+	 * */
+	public void function deleteFileFromPath( string directoryPath, string fileName ) {
+		if( this.isS3Path( arguments.directoryPath ) ){
+			arguments.directoryPath = this.formatS3Path( arguments.directoryPath );
+		}
+		
+		var finalPath = arguments.directoryPath & arguments.fileName;
+		
+		if(fileExists( finalPath ) ) {
+			fileDelete( finalPath );
+		}
+	}
+	
+	public string function prefixListItems( required string theList, required string thePrefix ){
+		return ListMap(arguments.theList , function(item){
+			return thePrefix & arguments.item; //beware of scope
+		});
+	}
+	
+	public array function prefixArrayItems( required struct theArray, required string thePrefix ){
+		return arguments.theArray.map( function(item){
+			return thePrefix & arguments.item; //beware of arguments scope
+		});
+	}
+	
+	public struct function prefixStructKeys( required struct theStruct, required string thePrefix ){
+	    var prefixed = {};
+	    arguments.theStruct.each( function(key, value){
+	        prefixed[ thePrefix & arguments.key] = arguments.value;
+	    })
+	    return prefixed;
+	}
+	
+	public struct function getSubStructByKeyPrefix( required struct theStruct, required string thePrefix, boolean stripPrefix = true){
+	    var prefixLen = arguments.thePrefix.len();
+	    var subStruct = {};
+	    arguments.theStruct.each( function(key, value){
+	        if( key.left(prefixLen) == thePrefix ){
+	            if(stripPrefix){
+	                key = key.replace(thePrefix, '');
+	            }
+	            subStruct[key] = arguments.value;
+	        }
+	    })
+	    return subStruct;
+	}
+	
+	public struct function flattenStruct( required struct original, string delimiter=".", string prefix="" ){
+	    var flattened = {};
+	    
+		var keysArray = arguments.original.keyArray();
+		for ( var thisKey in keysArray ) {
+		    
+		    var nextPrefix = prefix & thisKey;
+		    
+			if( isArray(arguments.original[thisKey]) ){
+				
+				var flattenedArray = flattenArray(arguments.original[thisKey], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedArray);
+				
+			} else if ( IsStruct(arguments.original[thisKey]) ) {
+				
+				var flattenedStruct = flattenStruct(arguments.original[thisKey], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedStruct);
+				
+			} else {
+			
+				flattened[ nextPrefix ] = arguments.original[thisKey];
+			}
+		}
+		
+		return flattened;
+	}
+	
+	public struct function flattenArray( required array original, string delimiter=".", string prefix="" ){
+	    var flattened = {};
+	    
+		for ( var i=1; i<= arguments.original.len(); i++ ){
+		    
+		    var nextPrefix = arguments.prefix &"["& i &"]";
+		    
+			if( isArray(arguments.original[i]) ){
+				
+				var flattenedArray = this.flattenArray(arguments.original[i], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedArray);
+				
+			} else if ( isStruct(arguments.original[i]) ){
+				
+				var flattenedStruct = this.flattenStruct(arguments.original[i], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedStruct);
+				
+			} else {
+			
+				flattened[nextPrefix] = arguments.original[i];
+			}
+		}
+		
+		return flattened;
+	}
 
 	</cfscript>
 

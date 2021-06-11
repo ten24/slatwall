@@ -1,4 +1,4 @@
-import './spinner.scss'
+//import './spinner.scss'
 const Spinner = () => {
   return (
     <div className="spinner">

@@ -1,6 +1,7 @@
-import { REQUEST_CONTENT, RECIVE_CONTENT, RECIVE_STATE_CODES } from '../actions/contentActions'
+import { REQUEST_CONTENT, RECEIVE_CONTENT, RECEIVE_STATE_CODES } from '../actions/contentActions'
 
 const initState = {
+  productTypes: [],
   countryCodeOptions: [],
   stateCodeOptions: {},
   isFetching: false,
@@ -11,11 +12,11 @@ const content = (state = initState, action) => {
     case REQUEST_CONTENT:
       return { ...state, isFetching: true }
 
-    case RECIVE_CONTENT:
+    case RECEIVE_CONTENT:
       const { content } = action
       return { ...state, ...content, isFetching: false }
 
-    case RECIVE_STATE_CODES:
+    case RECEIVE_STATE_CODES:
       return { ...state, stateCodeOptions: { ...state.stateCodeOptions, ...action.payload }, isFetching: false }
 
     default:

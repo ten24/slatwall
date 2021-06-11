@@ -23,6 +23,7 @@ const auth = (state = initState, action) => {
 
     case LOGOUT:
       return { ...state, isAuthenticanted: false, isFetching: false }
+
     case '@@INIT':
       return { ...state, isAuthenticanted: token ? true : false }
 

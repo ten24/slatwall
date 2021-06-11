@@ -53,6 +53,7 @@ Notes:
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
 		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
+        <swa:SlatwallSetting settingName="globalCORSWhitelist" />
         <swa:SlatwallSetting settingName="globalWhiteListedEmailDomains" />
         <swa:SlatwallSetting settingName="globalTestingEmailDomain" />
 		<swa:SlatwallSetting settingName="globalAPIDirtyRead" />
@@ -90,6 +91,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalDisableUninstalledIntegration"/>
 		<swa:SlatwallSetting settingName="globalIntegrationRequestLog"/>
 		<swa:SlatwallSetting settingName="globalIntegrationRequestLogExpirationDays"/>
+		<swa:SlatwallSetting settingName="globalPublicApiEntities" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

@@ -236,7 +236,7 @@
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
 	    	
 			// If data was passed in to this method then populate it with the new data
-	        if(structKeyExists(arguments,"data")){
+	        if(structKeyExists(arguments,"data") && isStruct(arguments.data) && !StructIsEmpty(arguments.data)){
 	        	// Populate this object
 				arguments.entity.populate(argumentCollection=arguments);
 	
@@ -510,8 +510,7 @@
 		private function onMissingDeleteMethod( required string missingMethodName, required struct missingMethodArguments ) {
 			return delete( arguments.missingMethodArguments[ 1 ] );
 		}
-	
-	
+		
 		/**
 		 * Provides dynamic get methods, by convention, on missing method:
 		 *
@@ -987,7 +986,6 @@
 		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public any function getServiceByEntityName( required string entityName ) {
-			
 			// Use the short version of the entityName
 			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
 			
@@ -1151,12 +1149,14 @@
 			var cacheKey = 'getPropertyIsPersistentByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
 			
 			if(!structKeyExists(variables,cacheKey)){
-				var propertyMetaData = getPropertiesStructByEntityName(
-				getLastEntityNameInPropertyIdentifier(
-						arguments.entityName,
-						arguments.propertyIdentifier
-					)	
-				)[listLast(arguments.propertyIdentifier, ".")];
+			    var lastEntityName = getLastEntityNameInPropertyIdentifier( arguments.entityName, arguments.propertyIdentifier );
+				var propertiesMetaData = getPropertiesStructByEntityName(lastEntityName);
+				var lastPropertyName = listLast(arguments.propertyIdentifier, ".");
+				if(!structKeyExists(propertiesMetaData, lastPropertyName) ){
+				    throw("propertyName: #lastPropertyName# is not valid for entityName: #lastEntityName#");
+				}
+				var propertyMetaData = propertiesMetaData[lastPropertyName];
+				
 				variables[cacheKey] = !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
 			}
 			
@@ -1430,23 +1430,42 @@
 		}
 		
 		
-		public any function getAnyColumnValueByEntityNameAndUniqueKeyValue( required string entityName, required string columnToFetch, required string uniqueKey, required any uniqueValue ){
-		
+		public any function getAnyColumnValueByEntityNameAndUniqueKeyValue( required string entityName, required string columnToFetch, required string uniqueKey, required any uniqueValue, boolean useORM = false ){
+		    
+		    if(arguments.useORM){
+		        return this.getHibachiDAO().getAnyPropertyIdentifierValueByEntityNameAndUniquePropertyIdentifierValue(
+		            entityName                  = arguments.entityName,
+		            propertyIdentifierToFetch   = arguments.columnToFetch,
+		            filterPropertyIdentifier    = arguments.uniqueKey,
+		            filterValue                 = arguments.uniqueValue
+		        );
+		    }
+		    
 		    return this.getHibachiDAO().getAnyColumnValueByTableNameAndUniqueKeyValue(
-		        tableName   = this.getTableNameByEntityName( arguments.entityName ), 
-		        columnToFetch  = arguments.columnToFetch, 
-		        uniqueKey   = arguments.uniqueKey, 
-		        uniqueValue = arguments.uniqueValue
+		        tableName       = this.getTableNameByEntityName( arguments.entityName ), 
+		        columnToFetch   = arguments.columnToFetch, 
+		        uniqueKey       = arguments.uniqueKey, 
+		        uniqueValue     = arguments.uniqueValue
 		    );
 		    
 		}
 		
-		public any function getPrimaryIDValueByEntityNameAndUniqueKeyValue( required string entityName, required string uniqueKey, required any uniqueValue ){
+		public any function getPrimaryIDValueByEntityNameAndUniqueKeyValue( required string entityName, required string uniqueKey, required any uniqueValue, boolean useORM = false  ){
 		    
 		    arguments.columnToFetch  = this.getPrimaryIDColumnNameByEntityName( arguments.entityName );
 		    
+		    if(arguments.useORM){
+		        return this.getHibachiDAO().getAnyPropertyIdentifierValueByEntityNameAndUniquePropertyIdentifierValue(
+		            entityName                  = arguments.entityName,
+		            propertyIdentifierToFetch   = arguments.columnToFetch,
+		            filterPropertyIdentifier    = arguments.uniqueKey,
+		            filterValue                 = arguments.uniqueValue
+		        );
+		    }
+		    
 		    return this.getAnyColumnValueByEntityNameAndUniqueKeyValue( argumentCollection = arguments );
 		}
+		
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {
 			var entityMetaData = getEntityMetaData( arguments.entityName );

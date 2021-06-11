@@ -55,6 +55,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 	property name="skuService" type="any";
 
+	public array function getContentPublicProperties(){
+	    var publicProperties = ['contentID','contentIDPath','title', 'urlTitlePath', 'urlTitle', 'sortOrder', 'associatedImage', 'parentContent.contentID', 'productListingPageFlag', 'displayInNavigation'];
+	    var publicAttributes = this.getPublicAttributesByEntityName('content');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
+	public array function getCategoryPublicProperties(){
+		var publicProperties = ['categoryID','categoryIDPath','urlTitle', 'categoryName', 'categoryNamePath', 'categoryDescription'];
+		var publicAttributes = this.getPublicAttributesByEntityName('Category');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
 	public boolean function restrictedContentExists() {
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
@@ -336,14 +348,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function appendSettingsAndOptionsToContent(required any content) {
 				if(structKeyExists(content, "contentID")){
 					var currentContent = this.getContent(content.contentID);
-	            	content["setting"]['contentHTMLTitleString'] = currentContent.setting('contentHTMLTitleString');
-	            	content["setting"]['contentMetaDescriptionString'] = currentContent.setting('contentMetaDescriptionString');
-	            	content["setting"]['contentMetaKeywordsString'] = currentContent.setting('contentMetaKeywordsString');
-	            	content["setting"]['contentRestrictAccessFlag'] = currentContent.setting('contentRestrictAccessFlag');
-	            	content["setting"]['contentRequirePurchaseFlag'] = currentContent.setting('contentRequirePurchaseFlag');
-	            	content["setting"]['contentRequireSubscriptionFlag'] = currentContent.setting('contentRequireSubscriptionFlag');
-	            	content["setting"]['contentEnableTrackingFlag'] = currentContent.setting('contentEnableTrackingFlag');
-	            	content["setting"]['contentTemplateFile'] = currentContent.setting('contentTemplateFile');
+	            	content["settings"]['contentHTMLTitleString'] = currentContent.stringReplace( template = currentContent.setting('contentHTMLTitleString'), formatValues = true );
+	            	content["settings"]['contentMetaDescriptionString'] = currentContent.stringReplace( template = currentContent.setting('contentMetaDescriptionString'), formatValues = true );
+	            	content["settings"]['contentMetaKeywordsString'] = currentContent.stringReplace( template = currentContent.setting('contentMetaKeywordsString'), formatValues = true );
+	            	content["settings"]['contentRestrictAccessFlag'] = currentContent.stringReplace( template = currentContent.setting('contentRestrictAccessFlag'), formatValues = true );
+	            	content["settings"]['contentRequirePurchaseFlag'] = currentContent.stringReplace( template = currentContent.setting('contentRequirePurchaseFlag'), formatValues = true );
+	            	content["settings"]['contentRequireSubscriptionFlag'] = currentContent.stringReplace( template = currentContent.setting('contentRequireSubscriptionFlag'), formatValues = true );
+	            	content["settings"]['contentEnableTrackingFlag'] = currentContent.stringReplace( template = currentContent.setting('contentEnableTrackingFlag'), formatValues = true );
+	            	content["settings"]['contentTemplateFile'] = currentContent.stringReplace( template = currentContent.setting('contentTemplateFile'), formatValues = true );
 				}
 
 		return arguments.content;

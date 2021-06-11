@@ -186,7 +186,7 @@ Notes:
 										<!--- Existing Account --->
 										<hb:HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
 											<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
-											<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="account" fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
 										</hb:HibachiDisplayToggle>
 									</fieldset>
 									<br>
@@ -342,7 +342,7 @@ Notes:
 					</hb:HibachiPropertyRow>
 
 					<cfif rc.processObject.getSku().isGiftCardSku() && rc.processObject.getSku().getGiftCardRecipientRequiredFlag()>
-						<div sw-add-order-item-gift-recipient quantity="giftRecipientControl.quantity" order-item-gift-recipients="giftRecipientControl.orderItemGiftRecipients"></div>
+						<div sw-add-order-item-gift-recipient quantity="giftRecipientControl.quantity" order-item-gift-recipients="giftRecipientControl.orderItemGiftRecipients" message-max-length="#rc.$.slatwall.getService('SettingService').getSettingValue('globalGiftCardMessageLength')#"></div>
 					</cfif>
 			</span>
 		<cfelse>

@@ -11,7 +11,8 @@ const ActionBanner = props => {
   const allBanners = useSelector(state => {
     return Object.keys(state.content)
       .map(key => {
-        if (state.content[key] && state.content[key].setting && state.content[key].setting.contentTemplateFile === 'banner.cfm') {
+        if (state.content[key] && state.content[key].settings && state.content[key].settings.contentTemplateFile === 'banner.cfm') {
+
           state.content[key].key = key
           return state.content[key]
         }
@@ -55,7 +56,7 @@ const ActionBanner = props => {
             onClick={event => {
               event.preventDefault()
               if (event.target.getAttribute('href')) {
-                if (event.target.getAttribute('href').includes('.pdf')) {
+                if (event.target.getAttribute('href').includes('http')) {
                   window.location.href = event.target.getAttribute('href')
                 } else {
                   history.push(event.target.getAttribute('href'))

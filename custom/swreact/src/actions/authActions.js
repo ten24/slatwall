@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify'
-import { SlatwalApiService } from '../services'
-import { requestUser, receiveUser, clearUser } from './userActions'
+import { SlatwalApiService, sdkURL, axios } from '../services'
+import { getCart, receiveCart, requestCart } from './cartActions'
+import { requestUser, receiveUser, clearUser, getWishLists } from './userActions'
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
 export const ERROR_LOGIN = 'ERROR_LOGIN'
@@ -31,15 +32,16 @@ export const requestLogOut = () => {
     type: LOGOUT,
   }
 }
-export const logout = () => {
+export const logout = (success = '', failure = '') => {
   return async dispatch => {
     const response = await SlatwalApiService.auth.revokeToken()
     dispatch(softLogout())
+    dispatch(getCart())
 
     if (response.isSuccess()) {
-      toast.success('Logout Successful')
+      toast.success(success)
     } else {
-      toast.error('Logout failed. Please close your browser')
+      toast.error(failure)
     }
   }
 }
@@ -51,25 +53,44 @@ export const softLogout = () => {
   }
 }
 
-export const login = (email, password) => {
+export const login = (email, password, success, failure) => {
   return async (dispatch, getState) => {
     let { accountID } = getState().userReducer
     if (!accountID.length) {
       dispatch(requestLogin())
       dispatch(requestUser())
+      dispatch(requestCart())
 
-      const req = await SlatwalApiService.auth.login({
-        emailAddress: email,
-        password: password,
+      const response = await axios({
+        method: 'POST',
+        withCredentials: true,
+        url: `${sdkURL}api/scope/login`,
+        data: {
+          emailAddress: email,
+          password: password,
+          returnJSONObjects: 'account,cart',
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
 
-      if (req.isFail()) {
-        dispatch(errorLogin(req.toString()))
-        toast.error('Incorrect Username or Password')
+      if (response && response.status === 200 && response.data) {
+        if (response?.data?.errors && Object.keys(response?.data?.errors).length) {
+          toast.error(failure)
+          // toast.error(getErrorMessage(response.data.errors))
+          errorLogin({})
+        } else {
+          dispatch(receiveLogin({ isAuthenticanted: true }))
+          dispatch(receiveUser(response.data.account))
+          dispatch(receiveCart(response.data.cart))
+          dispatch(getWishLists())
+
+          toast.success(success)
+        }
       } else {
-        dispatch(receiveLogin({ isAuthenticanted: true }))
-        dispatch(receiveUser(req))
-        toast.success('Login Successful')
+        errorLogin({})
+        toast.error(failure)
       }
     }
   }

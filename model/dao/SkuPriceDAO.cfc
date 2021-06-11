@@ -103,7 +103,7 @@ component extends="HibachiDAO" accessors="true" output="false" {
 		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity AND sp.promotionReward is null", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
 	}
 
-	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups()){
+	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=[]){
 		var priceGroupString = "";
 		
 		if(arraylen(arguments.priceGroups)){
@@ -147,7 +147,6 @@ component extends="HibachiDAO" accessors="true" output="false" {
 			}
 			params.priceGroupIDs= priceGroupIDs;
 		}
-		this.logHibachi('getSkuPrices HQL #hql#',true);
 		return  ormExecuteQuery( hql,
 			params
 		);

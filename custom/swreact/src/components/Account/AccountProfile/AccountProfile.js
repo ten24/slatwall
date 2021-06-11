@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
   const dispatch = useDispatch()
   const MySwal = withReactContent(Swal)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const user = useSelector(state => state.userReducer)
 
   const formik = useFormik({
@@ -43,7 +43,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
 
     MySwal.fire({
       title: 'Update Password',
-      html: '<input id="accountPassword" placeholder="Password" class="swal2-input"><input id="accountPasswordConfirm" placeholder="Confirm Password" class="swal2-input">',
+      html: '<form><div class="form-group text-left"><label for="accountPassword">Password</label><input id="accountPassword" class="form-control" /></div><div class="form-group text-left"><label for="accountPasswordConfirm">Confirm Password</label><input id="accountPasswordConfirm" class="form-control"></div></form>',
       focusConfirm: false,
       showCancelButton: true,
       preConfirm: () => {
@@ -80,6 +80,9 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
       <form onSubmit={formik.handleSubmit}>
         <div className="row">
+          <div className="col-sm-12">
+            <h4 className="text-left my-lg-4">Profile Info</h4>
+          </div>
           <div className="col-sm-6">
             <div className="form-group">
               <label htmlFor="accountFirstName">{t('frontend.account.first_name')}</label>
@@ -122,7 +125,7 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
               <button className="btn btn-secondary mt-3 mt-sm-0 mr-3" onClick={updatePassword} type="submit">
                 {t('frontend.account.password_update')}
               </button>
-              <button type="submit" className="btn btn-primary mt-3 mt-sm-0">
+              <button type="submit" disabled={formik.isSubmitting} className="btn btn-primary mt-3 mt-sm-0">
                 {t('frontend.account.profile_update')}
               </button>
             </div>

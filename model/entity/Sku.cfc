@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="changeEventDates,addLocation,removeLocation" {
+component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="changeEventDates,addLocation,removeLocation,createEmptySKUStocksForAllParentLocations" {
 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -224,8 +224,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// ==================== START: Logical Methods =========================	
 
-	
- 
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -718,6 +716,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// START: Quantity Helper Methods
 
 	public numeric function getQuantity(required string quantityType, string locationID, string stockID, string currencyCode) {
+		
 		//DataCache prefix means this cache will be cleared whenever an orm flush occurs
 		var cacheKey = arguments.quantityType;
 		if(structKeyExists(arguments,'locationID')){
@@ -2005,6 +2004,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
 		}
 	}
+	
+	
+
+	public boolean function getCalculatedQATSPerformCalculateFlag(){
+		return this.setting('skuTrackInventoryFlag');
+	}
+	
+	public boolean function getCalculatedQOHPerformCalculateFlag(){
+		return this.setting('skuTrackInventoryFlag');
+	}
+	
+	public boolean function getCalculatedQOQPerformCalculateFlag(){
+		return this.setting('skuTrackInventoryFlag');
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -2013,16 +2026,25 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function preInsert(){
 		super.preInsert();
 		
-		var skuPrice = getService("SkuPriceService").newSkuPrice();
-		
-		skuPrice.setCurrencyCode(this.getCurrencyCode());
-		skuPrice.setSku(this);
-		skuPrice.setPrice(this.getPrice());
-		skuPrice.setCreatedDateTime(NOW());
-
-		skuPrice = getService("SkuPriceService").saveSkuPrice(skuPrice);
+		if(this.getSkuPricesCount() == 0){
+			var skuPrice = getService("SkuPriceService").newSkuPrice();
+			
+			skuPrice.setCurrencyCode(this.getCurrencyCode());
+			skuPrice.setSku(this);
+			skuPrice.setPrice(this.getPrice());
+			skuPrice.setCreatedDateTime(NOW());
+	
+			getService("SkuPriceService").saveSkuPrice(skuPrice);
+		}
 	}
-
+	
+	public void function postInsert(){
+		super.postInsert();
+		
+	    // TODO: add a global-setting
+		this.getHibachiScope().addEntityQueueData(this.getSkuID(), 'Sku', 'processSku_createEmptySKUStocksForAllParentLocations');
+	}
+	
 	public void function preUpdate(Struct oldData){
 		super.preUpdate(argumentCollection=arguments);
 		

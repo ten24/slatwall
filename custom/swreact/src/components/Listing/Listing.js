@@ -4,23 +4,22 @@ import ProductListingGrid from './ListingGrid'
 import ProductListingToolBar from './ListingToolBar'
 import ProductListingPagination from './ListingPagination'
 import ProductListingSidebar from './ListingSidebar'
-import PageHeader from '../PageHeader/PageHeader'
 import queryString from 'query-string'
 import { useGetProducts } from '../../hooks/useAPI'
 
-const processQueryParamters = params => {
+const processQueryParameters = params => {
   return queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
 }
 const buildPath = params => {
   return queryString.stringify(params, { arrayFormat: 'comma' })
 }
-const initalData = { brands: '', orderBy: 'product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
+const initialData = { brand: '', orderBy: 'product.productFeaturedFlag|DESC,product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
 
-const ListingPage = ({ children, preFilter, hide }) => {
+const ListingPage = ({ children, preFilter, hide = [] }) => {
   const loc = useLocation()
   let history = useHistory()
-  let params = processQueryParamters(loc.search)
-  params = { ...initalData, ...params, ...preFilter }
+  let params = processQueryParameters(loc.search)
+  params = { ...initialData, ...params, ...preFilter }
   const [path, setPath] = useState(loc.search)
   let [request, setRequest] = useGetProducts(params)
 
@@ -33,6 +32,7 @@ const ListingPage = ({ children, preFilter, hide }) => {
   }
   const setKeyword = keyword => {
     params['keyword'] = keyword
+    params['currentPage'] = 1
     history.push({
       pathname: loc.pathname,
       search: buildPath(params, { arrayFormat: 'comma' }),
@@ -40,7 +40,7 @@ const ListingPage = ({ children, preFilter, hide }) => {
   }
   const setSort = orderBy => {
     params['orderBy'] = orderBy
-
+    params['currentPage'] = 1
     history.push({
       pathname: loc.pathname,
       search: buildPath(params, { arrayFormat: 'comma' }),
@@ -64,7 +64,7 @@ const ListingPage = ({ children, preFilter, hide }) => {
     } else {
       params[attribute.filterName] = [attribute.name]
     }
-
+    params['currentPage'] = 1
     history.push({
       pathname: loc.pathname,
       search: buildPath(params, { arrayFormat: 'comma' }),
@@ -80,15 +80,13 @@ const ListingPage = ({ children, preFilter, hide }) => {
     return () => {
       didCancel = true
     }
-  }, [request, setRequest, params])
-
+  }, [request, setRequest, params, loc, path])
   return (
     <>
-      <PageHeader> {children}</PageHeader>
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <aside className="col-lg-4">
-            <ProductListingSidebar isFetching={request.isFetching} hide={hide} qs={loc.search} {...request.filtering} recordsCount={request.data.recordsCount} setKeyword={setKeyword} updateAttribute={updateAttribute} />
+            <ProductListingSidebar isFetching={request.isFetching} hide={hide} qs={loc.search} {...request.filtering} recordsCount={request.data.recordsCount} keyword={params['keyword']} setKeyword={setKeyword} updateAttribute={updateAttribute} />
           </aside>
           <div className="col-lg-8">
             <ProductListingToolBar hide={hide} {...request.filtering} removeFilter={updateAttribute} setSort={setSort} />

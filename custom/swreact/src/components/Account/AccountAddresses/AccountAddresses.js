@@ -1,6 +1,6 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
 import AccountContent from '../AccountContent/AccountContent'
 import { Link } from 'react-router-dom'
@@ -8,13 +8,15 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { deleteAccountAddress } from '../../../actions/userActions'
 import { useTranslation } from 'react-i18next'
+import { getAllAccountAddresses, getPrimaryAddress } from '../../../selectors/userSelectors'
+import { Redirect } from 'react-router-dom'
 
 const Address = props => {
-  const { accountAddressID, address } = props
-  const { streetAddress, addressID, city, stateCode, postalCode, isPrimary } = address
+  const { accountAddressID, address, isPrimary } = props
+  const { streetAddress, addressID, city, stateCode, postalCode } = address
   const MySwal = withReactContent(Swal)
   const dispatch = useDispatch()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <tr>
@@ -32,8 +34,9 @@ const Address = props => {
         >
           <i className="far fa-edit"></i>
         </Link>
-        <a
-          className="nav-link-style text-primary"
+        <button
+          type="button"
+          className="link-button nav-link-style text-primary"
           onClick={() => {
             MySwal.fire({
               icon: 'info',
@@ -50,35 +53,42 @@ const Address = props => {
           }}
         >
           <i className="far fa-trash-alt"></i>
-        </a>
+        </button>
       </td>
     </tr>
   )
 }
 
-const AccountAddresses = props => {
-  const { primaryAddress, accountAddresses, title, customBody, contentTitle } = props
-  const { t, i18n } = useTranslation()
+const AccountAddresses = ({ title }) => {
+  const { t } = useTranslation()
+  const isLoaded = useSelector(state => state.userReducer.isLoaded)
+  const accountAddresses = useSelector(getAllAccountAddresses)
+  const primaryAddress = useSelector(getPrimaryAddress)
 
+  if (isLoaded && accountAddresses.length === 0) {
+    return <Redirect to="/my-account/addresses/new" />
+  }
   return (
     <AccountLayout title={title}>
-      <AccountContent customBody={customBody} contentTitle={contentTitle} />
-      <div className="table-responsive font-size-md">
-        <table className="table table-hover mb-0">
-          <thead>
-            <tr>
-              <th>{t('frontend.account.address.heading')}</th>
-              <th>{t('frontend.core.actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accountAddresses &&
-              accountAddresses.map((address, index) => {
-                return <Address key={index} {...address} isPrimary={address.accountAddressID === primaryAddress.accountAddressID} />
-              })}
-          </tbody>
-        </table>
-      </div>
+      <AccountContent />
+      {accountAddresses.length > 0 && (
+        <div className="table-responsive font-size-md">
+          <table className="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>{t('frontend.account.address.heading')}</th>
+                <th>{t('frontend.core.actions')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {accountAddresses &&
+                accountAddresses.map((address, index) => {
+                  return <Address key={index} {...address} isPrimary={address.accountAddressID === primaryAddress.accountAddressID} />
+                })}
+            </tbody>
+          </table>
+        </div>
+      )}
       <hr className="pb-4" />
       <div className="text-sm-right">
         <Link className="btn btn-primary" to="/my-account/addresses/new">
@@ -89,9 +99,4 @@ const AccountAddresses = props => {
   )
 }
 
-function mapStateToProps(state) {
-  return state.userReducer
-}
-
-AccountAddresses.propTypes = {}
-export default connect(mapStateToProps)(AccountAddresses)
+export default AccountAddresses

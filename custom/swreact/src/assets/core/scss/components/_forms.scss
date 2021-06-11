@@ -329,3 +329,21 @@ label {
 .contactForm.hide {
   display: none;
 }
+
+// Validations
+.form-error-msg {
+    font-size: .875em;
+    color: #dc3545;
+}
+
+// @extend heading and buttons of modal need to style
+h2#swal2-title{
+  @extend .h3;
+}
+button.swal2-confirm.swal2-styled,
+button.swal2-deny.swal2-styled{
+  @extend .btn-primary;
+}
+button.swal2-cancel.swal2-styled{
+  @extend .btn-secondary;
+}

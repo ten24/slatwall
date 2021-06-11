@@ -1,125 +1,27 @@
 component extends="Slatwall.model.service.PublicService" {
-    
-        
-     public void function productAvailableSkuOptions( required struct data ) {
-		param name="arguments.data.productID" type="string" default="";
-		param name="arguments.data.selectedOptionIDList" type="string" default="";
 
-		var product = getProductService().getProduct( arguments.data.productID );
-
-		if(!isNull(product) && product.getActiveFlag() && product.getPublishedFlag()) {
-			arguments.data.ajaxResponse["availableSkuOptions"] = product.getAvailableSkuOptions( arguments.data.selectedOptionIDList );
-		}
-	}
-
-	public void function productSkuSelected(required struct data){
-		param name="arguments.data.productID" type="string" default="";
-		param name="arguments.data.selectedOptionIDList" type="string" default="";
-		var product = getProductService().getProduct( arguments.data.productID );
-		try{
-			var sku = product.getSkuBySelectedOptions(arguments.data.selectedOptionIDList);
-			arguments.data.ajaxResponse['skuID'] = sku.getSkuID();
-		}catch(any e){
-			arguments.data.ajaxResponse['skuID'] = '';
-		}
-	}
-	
-	public void function getSkuOptionDetails(required struct data){
-		param name="arguments.data.productID" type="string" default="";
-		param name="arguments.data.selectedOptionIDList" type="string" default="";
-		var product = getProductService().getProduct( arguments.data.productID );
-		try{
-			var skuOptionDetails = product.getSkuOptionDetails(arguments.data.selectedOptionIDList);
-			arguments.data.ajaxResponse['skuOptionDetails'] = skuOptionDetails;
-		}catch(any e){
-			arguments.data.ajaxResponse['skuOptionDetails'] = '';
-		}
-	}
-	
-	
-	
      
-     public void function getProductSkus( required struct data ) {
-	    param name="arguments.data.productID";
-	    param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        var optsList = [];
-        var defaultSelectedOptions = '';
-        var product = getService("productService").getProduct( arguments.data.productID )
-        var optionGroupsArr = product.getOptionGroups()
-        var skuOptionDetails = product.getSkuOptionDetails()
-        var defaultSku = product.getDefaultSku()
-        if(!isNull(defaultSku)){
-        defaultSelectedOptions = defaultSku.getOptionsIDList()
-            for(var optionGroup in optionGroupsArr) {
-                var options = product.getOptionsByOptionGroup( optionGroup.getOptionGroupID() )
-                var group = []
-                for(var option in options) {
-                    ArrayAppend(group,{"optionID": option.getOptionID()
-                    ,"optionName": option.getOptionName()})
-                }
-                ArrayAppend(optsList, {
-                    "optionGroupName": optionGroup.getOptionGroupName(),
-                    "optionGroupID": optionGroup.getOptionGroupID(),
-                    "optionGroupCode": optionGroup.getOptionGroupCode(),
-                    "options": group })
-            }
-        }
- 
-        
-      var skuCollectionList = getService('SkuService').getSkuCollectionList();
-	    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
-         skuCollectionList.addFilter('product.productID',trim(arguments.data.productID));
-		 skuCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		var results = skuCollectionList.getRecords()
-    
-        getHibachiScope().addActionResult("public:getProductSkus");
-
-        arguments.data['ajaxResponse']['skus'] = results;
-        arguments.data['ajaxResponse']['options'] = optsList;
-                arguments.data['ajaxResponse']['defaultSelectedOptions'] = defaultSelectedOptions;
-     
-     }
-     
-public void function getConfiguration( required struct data ) {
-        param name="arguments.data.siteCode" default="";
-        var siteLookup = getService('siteService').getSiteBySiteCode(arguments.data.siteCode);
-        getHibachiScope().setSite(siteLookup);
-        
-            var site = {};
-            site["siteID"] = siteLookup.getSiteID();
-            site["siteCode"] = siteLookup.getSiteCode();
-            site["siteName"] = siteLookup.getSiteName();
-            site["hibachiInstanceApplicationScopeKey"] = siteLookup.getHibachiInstanceApplicationScopeKey();
-            site["hibachiConfig"] = getHibachiScope().getHibachiConfig();
-            arguments.data['ajaxResponse']['config']['site'] = site;
-        
-
-
-        var router = []
-        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyProduct'),"URLKeyType": 'Product' });
-        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyProductType'),"URLKeyType": 'ProductType' });
-        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyCategory'),"URLKeyType": 'Category' });
-        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyBrand'),"URLKeyType": 'Brand' });
-        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAccount'),"URLKeyType": 'Account' });
-        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAddress'),"URLKeyType": 'Address' });
-        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAttribute'),"URLKeyType": 'Attribute' });
-        
-        getHibachiScope().addActionResult("public:getConfiguration");
-
-        arguments.data['ajaxResponse']['config']['router'] = router;
-        return 
-         
-     }
-     
-        /**
+      /**
      * Function to override addOrderPayment 
-     * Remove Other Payment methods
+     * populate orderPayment paymentMthodID
+     * and make orderPayment billingAddress optional
      * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
         param name = "data.orderID" default = "";
         param name = "data.paymentIntegrationType" default="";
         
+        if(StructKeyExists(arguments.data,'accountPaymentMethodID') && StructKeyExists(arguments.data, "paymentIntegrationType") && !isEmpty(arguments.data.paymentIntegrationType) ) {
+            var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
+            accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
+            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", arguments.data.paymentIntegrationType);
+            accountPaymentMethodCollectionList.addFilter("accountPaymentMethodID", arguments.data.accountPaymentMethodID);
+            accountPaymentMethodCollectionList = accountPaymentMethodCollectionList.getRecords(formatRecords=true);
+            
+            if( arrayLen(accountPaymentMethodCollectionList) ) {
+               arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].paymentMethod_paymentMethodID;
+                arguments.data.newOrderPayment.requireBillingAddress = 0;
+            }
+        }
         
         if (len(arguments.data.orderID)) {
             var order = getOrderService().getOrder(arguments.data.orderID);
@@ -142,4 +44,134 @@ public void function getConfiguration( required struct data ) {
         
         super.addOrderPayment(argumentCollection = arguments);
     }
+    
+     
+	/**
+	 * Get Product List (an alternative to generic entity api call for products)
+	 * */
+	public void function getProductListing( required struct data ) {
+	    param name="arguments.data.includeChildProductType" default= 0;
+	    param name="arguments.data.productTypeUrlTitle" default= "";
+	    arguments.data.entityName = "Product";
+	    arguments.data.restRequestFlag = 1;
+	    
+	    //Set an In filter for child types
+	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
+	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
+
+	       //Append filter in URL
+	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
+	    }
+
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
+
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("productService").appendImagesToProducts(result.pageRecords);
+
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProducts(result.pageRecords);
+	    }
+
+	    arguments.data.ajaxResponse = result;
+	}
+	
+	
+	/**
+	 * Get Product List (an alternative to generic entity api call for products)
+	 * */
+	public void function getProductList( required struct data ) {
+	    param name="arguments.data.includeChildProductType" default= 0;
+	    param name="arguments.data.productTypeUrlTitle" default= "";
+	    arguments.data.entityName = "Product";
+	    arguments.data.restRequestFlag = 1;
+	    
+	    //Set an In filter for child types
+	    if( arguments.data.includeChildProductType && trim( arguments.data.productTypeUrlTitle ) != "" ) {
+	        var productType = getService("productService").getProductTypeByUrlTitle(arguments.data.productTypeUrlTitle);
+
+	       //Append filter in URL
+	       StructAppend( url, {"f:productType.productTypeIDPath:like" : "%" & productType.getProductTypeID()} );
+	    }
+
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
+
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("productService").appendImagesToProducts(result.pageRecords);
+
+	        result.pageRecords = getService("productService").appendCategoriesAndOptionsToProducts(result.pageRecords);
+	    }
+
+	    arguments.data.ajaxResponse = result;
+	}
+
+	/**
+	 * Get Sku List (an alternative to generic entity api call for products)
+	 * */
+	public void function getSkuListing( required struct data ) {
+	    arguments.data.entityName = "Sku";
+	    arguments.data.restRequestFlag = 1;
+
+	    var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
+
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("skuService").appendSettingsAndOptionsToSku(result.pageRecords);
+	    }
+
+	    arguments.data.ajaxResponse = result;
+
+	}
+	
+		/**
+	 * Get Sku List (an alternative to generic entity api call for products)
+	 * */
+	public void function getBrandListing( required struct data ) {
+	    arguments.data.entityName = "Brand";
+	    arguments.data.restRequestFlag = 1;
+    
+        var result = getService('hibachiCollectionService').getAPIResponseForEntityName( 
+	        entityName=arguments.data.entityName, 
+	        data=arguments.data, 
+	        enforceAuthorization=false
+	    );
+	    
+	    if( StructKeyExists(result, 'pageRecords') && !ArrayIsEmpty(result.pageRecords) ) {
+	        result.pageRecords = getService("brandService").appendSettingsAndOptions(result.pageRecords);
+	    }
+
+	    arguments.data.ajaxResponse = result;
+
+	}
+	
+	
+	public void function productDetailData( required struct data ) {
+		
+		super.productDetailData(argumentCollection=arguments);
+		try{
+			if(structKeyExists(arguments.data.ajaxResponse, 'sku') && arrayLen(arguments.data.ajaxResponse.sku)){
+				// Change prices to ERP One Prices
+				getService('erpOneService').getLiveListingPrices(
+					data = arguments.data.ajaxResponse.sku,
+					skuCodeKey = "skuCode", 
+					priceKeys = "listPrice" ,  // We can also pass a list of prices ex:"listPrice,skuPrice"
+					customerCode = getHibachiScope().getAccount().getRemoteID()
+				);
+			}
+		}catch(any e){
+			getHibachiScope().logHibachi('Error getting live prices', true);
+		}
+		
+	}
+
+	
 }
