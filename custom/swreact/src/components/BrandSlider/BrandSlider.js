@@ -22,7 +22,7 @@ const BandSlide = ({ brandLogo, urlTitle = '', title, customPath = '/custom/asse
   )
 }
 
-const HomeBrand = props => {
+const BrandSlider = props => {
   const { t } = useTranslation()
   let [request, setRequest] = useGetEntity()
   const shopBy = useSelector(getShopBy)
@@ -75,11 +75,11 @@ const HomeBrand = props => {
           })}
       </Slider>
 
-      <Link className="btn btn-primary mt-3 btn-long" to='/brands'>
+      <Link className="btn btn-primary mt-3 btn-long" to="/brands">
         {t('frontend.home.more_brands')}
       </Link>
     </div>
   )
 }
 
-export default HomeBrand
+export { BrandSlider }

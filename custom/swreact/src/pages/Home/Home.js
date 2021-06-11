@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { ContentSlider, ProductSlider, HomeBrand, HomeDetails, Layout } from '../../components'
+import { ContentSlider, ProductSlider, BrandSlider, ContentColumns, Layout } from '../../components'
 const Home = () => {
   const home = useSelector(state => state.content['home'])
 
@@ -16,8 +16,8 @@ const Home = () => {
         {home && <div dangerouslySetInnerHTML={{ __html: home.customBody }} />}
       </ProductSlider>
 
-      <HomeDetails />
-      <HomeBrand />
+      <ContentColumns page={'home'} />
+      <BrandSlider />
     </Layout>
   )
 }

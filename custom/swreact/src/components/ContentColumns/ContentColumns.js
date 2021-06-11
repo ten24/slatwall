@@ -1,15 +1,15 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { SWImage } from '..'
 import { useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 //        local.homeContentColumns.addFilter("urlTitlePath","%content-columns/%","LIKE")
 
-function HomeDetails(props) {
+function ContentColumns({ page }) {
+  const content = useSelector(state => state.content)
   let homeContent = []
-  Object.keys(props).forEach(key => {
-    if (key.includes('content-columns/')) {
-      homeContent.push(props[key])
+  Object.keys(content).forEach(key => {
+    if (key.includes(`${page}/content-columns/`)) {
+      homeContent.push(content[key])
     }
   })
   let history = useHistory()
@@ -40,12 +40,4 @@ function HomeDetails(props) {
   )
 }
 
-HomeDetails.propTypes = {
-  homeContent: PropTypes.array,
-}
-
-function mapStateToProps(state) {
-  return state.content
-}
-
-export default connect(mapStateToProps)(HomeDetails)
+export { ContentColumns }

@@ -108,8 +108,8 @@ export { default as HeartButton } from './HeartButton/HeartButton'
 // Page Components
 export { ContentSlider } from './ContentSlider/ContentSlider'
 
-export { default as HomeBrand } from './HomeBrand/HomeBrand'
-export { default as HomeDetails } from './HomeDetails/HomeDetails'
+export { BrandSlider } from './BrandSlider/BrandSlider'
+export { ContentColumns } from './ContentColumns/ContentColumns'
 export { default as SignUpForm } from './SignUpForm/SignUpForm'
 
 // Plumbing Components
