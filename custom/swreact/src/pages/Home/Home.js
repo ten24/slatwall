@@ -1,9 +1,21 @@
 import React from 'react'
-import { HomeBanner, HomeBrand, HomeDetails, Layout } from '../../components'
+import { useSelector } from 'react-redux'
+import { ContentSlider, ProductSlider, HomeBrand, HomeDetails, Layout } from '../../components'
 const Home = () => {
+  const home = useSelector(state => state.content['home'])
+
   return (
     <Layout>
-      <HomeBanner />
+      <ContentSlider />
+      <ProductSlider
+        params={{
+          'f:publishedFlag': 1,
+          'f:productFeaturedFlag': 1,
+        }}
+      >
+        {home && <div dangerouslySetInnerHTML={{ __html: home.customBody }} />}
+      </ProductSlider>
+
       <HomeDetails />
       <HomeBrand />
     </Layout>

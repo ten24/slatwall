@@ -78,6 +78,7 @@ export { ProductTypeList } from './ProductTypeList/ProductTypeList'
 export { default as ProductCard } from './ProductCard/ProductCard'
 export { default as ProductPrice } from './ProductPrice/ProductPrice'
 export { default as ProductSlider } from './ProductSlider/ProductSlider'
+export { RelatedProductsSlider } from './RelatedProductsSlider/RelatedProductsSlider'
 
 // Loading UI Components
 export { Overlay } from './Overlay/Overlay'
@@ -105,7 +106,8 @@ export { default as BreadCrumb } from './BreadCrumb/BreadCrumb'
 export { default as HeartButton } from './HeartButton/HeartButton'
 
 // Page Components
-export { default as HomeBanner } from './HomeBanner/HomeBanner'
+export { ContentSlider } from './ContentSlider/ContentSlider'
+
 export { default as HomeBrand } from './HomeBrand/HomeBrand'
 export { default as HomeDetails } from './HomeDetails/HomeDetails'
 export { default as SignUpForm } from './SignUpForm/SignUpForm'
