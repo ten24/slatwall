@@ -13,7 +13,6 @@ const BasicPage = () => {
   const { title, customBody } = content || {}
   const [path, setPath] = useState(loc.search)
   let [request, setRequest] = useGetProducts(params)
-  console.log('content', content)
   const setPage = pageNumber => {
     params['currentPage'] = pageNumber
     request.data.currentPage = pageNumber
