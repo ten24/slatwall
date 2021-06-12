@@ -20,10 +20,9 @@ export const receiveLogin = isAuthenticanted => {
   }
 }
 
-const errorLogin = err => {
+export const errorLogin = () => {
   return {
     type: ERROR_LOGIN,
-    err,
   }
 }
 
@@ -79,7 +78,7 @@ export const login = (email, password, success, failure) => {
         if (response?.data?.errors && Object.keys(response?.data?.errors).length) {
           toast.error(failure)
           // toast.error(getErrorMessage(response.data.errors))
-          errorLogin({})
+          dispatch(errorLogin())
         } else {
           dispatch(receiveLogin({ isAuthenticanted: true }))
           dispatch(receiveUser(response.data.account))
@@ -89,7 +88,7 @@ export const login = (email, password, success, failure) => {
           toast.success(success)
         }
       } else {
-        errorLogin({})
+        dispatch(errorLogin())
         toast.error(failure)
       }
     }

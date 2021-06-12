@@ -469,6 +469,38 @@ export const useGetAccountCartsAndQuotes = () => {
   return [request, setRequest]
 }
 
+export const useResizedImageByProfileName = () => {
+  let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: [], error: '', params: { profileName: 'listing', skuIDs: '' } })
+  useEffect(() => {
+    let source = axios.CancelToken.source()
+    if (request.makeRequest) {
+      axios({
+        method: 'POST',
+        withCredentials: true, // default
+        url: `${sdkURL}api/scope/getResizedImageByProfileName?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: request.params,
+        cancelToken: source.token,
+      })
+        .then(response => {
+          if (response.status === 200 && response.data && response.data.resizedImagePaths && Object.keys(response.data.resizedImagePaths).length > 0) {
+            setRequest({ data: response.data.resizedImagePaths, isFetching: false, isLoaded: true, makeRequest: false, params: {} })
+          } else {
+            setRequest({ data: {}, isFetching: false, makeRequest: false, isLoaded: true, params: {}, error: 'Something was wrong' })
+          }
+        })
+        .catch(thrown => {})
+    }
+    return () => {
+      source.cancel()
+    }
+  }, [request, setRequest])
+
+  return [request, setRequest]
+}
+
 export const useAddOrderShippingAddress = () => {
   let [request, setRequest] = useState({ isFetching: false, isLoaded: false, makeRequest: false, data: {}, error: '', params: {} })
   useEffect(() => {
