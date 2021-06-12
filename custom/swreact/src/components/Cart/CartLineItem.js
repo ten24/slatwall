@@ -18,8 +18,8 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
     return orderItem.orderItemID === orderItemID
   })
   const { price, quantity, sku, extendedPriceAfterDiscount } = orderItem[0]
-  const { skuID, listPrice, skuCode, product } = sku
-  const { productID, productName, urlTitle, brand, productSeries } = product
+  const { skuID, listPrice, skuCode, product, imageFile } = sku
+  const { productName, urlTitle, brand, productSeries } = product
   const { brandName } = brand
 
   const isBackordered = false
@@ -27,8 +27,7 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
   return (
     <div className="d-sm-flex justify-content-between align-items-top my-4 py-3 border-bottom">
       <Link className="d-inline-block mr-sm-4" to={urlTitle} style={{ width: '10rem' }}>
-        <ProductImage productID={productID} skuID={skuID} />
-        {/* <SWImage customPath={imagePath} alt="Product" /> */}
+        <ProductImage skuID={skuID} imageFile={imageFile} />
       </Link>
 
       <div className="d-sm-flex flex-row flex-wrap w-100">
