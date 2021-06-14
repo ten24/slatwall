@@ -2282,6 +2282,13 @@ component  accessors="true" output="false"
         var updateOrderAmounts = structKeyExists( arguments.data, 'updateOrderAmounts' ) && arguments.data.updateOrderAmounts;
     
         arguments.data.ajaxResponse = {'cart':getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions'], updateOrderAmounts = updateOrderAmounts)};
+
+        // remove order payments with a status type of 'opstRemoved'
+        arguments.data.ajaxResponse.cart.orderPayments = arrayFilter(arguments.data.ajaxResponse.cart.orderPayments, function(orderPayment){
+            return arguments.orderPayment.orderPaymentStatusType.systemCode != "opstRemoved";
+        });
+        
+        
     }
     
     public void function getAccountData(any data) {
