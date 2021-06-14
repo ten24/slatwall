@@ -2669,7 +2669,7 @@ component  accessors="true" output="false"
 
         var orderFulfillment = getFulfillmentService().getOrderFulfillment(arguments.data.orderFulfillmentID);
         var orderValid = !isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID();
-        var orderPlaced = !isNull(getHibachiScope().getCart().getOrderNumber()) && len(getHibachiScope().getCart().getOrderNumber());
+        var orderPlaced = !isNull(orderFulfillment.getOrder().getOrderStatusType()) && orderFulfillment.getOrder().getOrderStatusType().getSystemCode() == "ostNotPlaced";
 
         if( orderValid && !orderPlaced ){
 
