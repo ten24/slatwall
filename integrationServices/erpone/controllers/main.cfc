@@ -1,14 +1,27 @@
 component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true" output="false"{
 	
-	this.secureMethods=listAppend(this.secureMethods, 'getGrant');
-	this.secureMethods=listAppend(this.secureMethods, 'getAccess');
-	this.secureMethods=listAppend(this.secureMethods, 'importAccounts');
-	this.secureMethods=listAppend(this.secureMethods, 'importOrders');
-	this.secureMethods=listAppend(this.secureMethods, 'importOrderItems');
-	this.secureMethods=listAppend(this.secureMethods, 'importInventoryItems');
-	this.secureMethods=listAppend(this.secureMethods, 'default');
-	this.secureMethods=listAppend(this.secureMethods, 'preprocessintegration');
-	this.secureMethods=listAppend(this.secureMethods, 'processintegration');
+	 this.secureMethods = [ 
+    	 'main',
+    	 'default',
+    	 
+	     'getGrant',
+    	 'getAccess',
+    	
+    	 'updateChangeTracking',
+    	 'getChangeTrackingStatus',
+    	
+    	 'importAccounts',
+    	
+    	 'importOrders',
+    	 'importOrderItems',
+    	 'importOrderPayments',
+    	 'importOrderShipments',
+    	
+    	 'importInventoryItems',
+    	
+    	 'preprocessintegration',
+    	 'processintegration'
+	 ].toList();
 	
 	// Get GarntToken from cache
 	public any function getGrant(){
@@ -54,6 +67,27 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
         super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
 	}
 	
+	
+	// Set change-reacking
+	public any function updateChangeTracking(required any rc ){
+	    param name="rc.tableName";
+	    param name="rc.enabled" default=true;
+	    
+	    var response = this.getService('erpOneService').updateErpTableChangeTracking( argumentCollection = rc);
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+        
+        dump(response); 
+	}
+	
+	// Get change-reacking
+	public any function getChangeTrackingStatus(required any rc ){
+	    param name="rc.tableName";
+
+	    var response = this.getService('erpOneService').getErpTableChangeTrackingStatus( argumentCollection = rc);
+        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+        
+        dump(response); 
+	}
 
 	// Get Inventory Items Data
 	public any function importInventoryItems(){

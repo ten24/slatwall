@@ -255,6 +255,57 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return httpRequest;
 	}
 	
+	public any function updateErpTableChangeTracking( required struct tableName, boolean enabled=true){
+		return this.callErpOneGetDataApi( 
+		    { "table": arguments.tableName, "begin": arguments.enabled },
+		    "change-tracker/update"
+		);
+	}
+	
+	public any function getErpTableChangeTrackingStatus( required struct tableName){
+		return this.callErpOneGetDataApi( 
+		    { "table": arguments.tableName, "begin": arguments.enabled },
+		    "change-tracker/details"
+		);
+	}
+	
+	public string function dateTimeToISOString(required any dateTime ){
+	    var fmt = SERVER.keyExists("lucee") ? "iso8601" : "iso" ;
+	    return dateTimeFormat( arguments.dateTime, fmt );
+	}
+	
+	public any function callErpOneGetChangesApi( 
+	    required struct tableName, 
+	    required string columns,
+	    any     since   = now() - 1, // 1 day before now
+	    string  filter  = '', 
+	    numeric skip    = 0, 
+	    numeric take    = 500
+	){
+	    var httpRequest = this.createHttpRequest( 'distone/rest/service/change-tracker/fetch/', "POST", "application/x-www-form-urlencoded; charset=UTF-8" );
+        
+        arguments.since = this.dateTimeToISOString( arguments.since );
+        
+        // Authentication headers
+		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
+		
+		
+		httpRequest.addParam( type='formfield', name= "columns", value = arguments.columns );
+		httpRequest.addParam( type='formfield', name= "filter",  value = arguments.filter );
+		httpRequest.addParam( type='formfield', name= "table",   value = arguments.tableName );
+		httpRequest.addParam( type='formfield', name= "since",   value = arguments.since );
+		httpRequest.addParam( type='formfield', name= "skip",    value = arguments.skip );
+		httpRequest.addParam( type='formfield', name= "take",    value = arguments.take );
+		
+				
+		var rawRequest = httpRequest.send().getPrefix();
+		
+		if( !IsJson(rawRequest.fileContent) ){
+			throw("ERPONE - callErpOneGetChangesApi: API response is not valid json for request: #Serializejson(arguments)# response: #rawRequest.fileContent#");
+		}
+		return DeSerializeJson(rawRequest.fileContent);
+	}
+	
 	public any function callErpOneGetDataApi( required struct requestData, string endpoint="data/read" ){
 		getService('hibachiTagService').cfsetting(requesttimeout=100000);
 		var httpRequest = this.createHttpRequest('distone/rest/service/'&arguments.endpoint);
@@ -474,9 +525,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return result;
 	}
 	
-	
-		
-	
+
 	/**
 	 * An utility function to pagimant over an ERP-one API, and import all of the items in one batch;
 	 * 
@@ -549,6 +598,79 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		return thisBatch;
 	}
+	
+	public any function paginateAndImportChangesToQueue(
+	    required string table, 
+	    required string columns, 
+	    required struct mapping, 
+	    required string filter, 
+	    required any since,
+	    required function recordFormatterFunction,
+	    
+	    numeric pageSize = 500
+	){
+	    
+	    this.logHibachi("ERPONE - Starting paginating and importing changes - #arguments.mapping.entityName#-[#arguments.mapping.mappingCode#], Query: #arguments.erpOneQuery#, Columns: #arguments.columns#");
+		
+		var pageNumber = 1;
+		var hasPages = true;
+		var total = 0;
+		
+		// create a batch
+		var thisBatch = this.createNewImportBatch(
+	        mapping = arguments.mapping,
+	        batchItemsCount = 0,
+	        batchDescription = "ERPONE - Paginate and Import Changes Batch - #arguments.mapping.entityName#-[#arguments.mapping.mappingCode#], PageSize-#arguments.pageSize# "
+	    );
+		
+		// paginate
+		while(hasPages){
+			
+			this.logHibachi("ERPONE - Paginating #pageNumber#");
+			
+			// get data
+			var itemsArray = this.callErpOneGetChangesApi(
+				"skip"    = ( pageNumber - 1 ) * arguments.pageSize,
+				"take"    = arguments.pageSize,
+				"filter"  = arguments.filter,
+				"columns" = arguments.columns,
+				"tabls"   = arguments.tableName
+			);
+			
+			this.logHibachi("ERPONE - skip #( pageNumber - 1 ) * arguments.pageSize# | take: #arguments.pageSize# = Returned : #arrayLen(itemsArray)#");
+			
+			// call formatter function;
+			var formatedItems = [] ;
+			for(var thisItem in itemsArray){
+			    var formatRecord = arguments.recordFormatterFunction(thisItem);
+			    if(!isNull(formatRecord)){
+			        formatedItems.append(formatRecord);
+			    }
+			}
+			
+			var formatedItemsLen = formatedItems.len();
+            
+			if( formatedItemsLen ){
+    			this.pushRecordsIntoImportQueue( arguments.mapping.mappingCode, formatedItems, thisBatch );
+    		}
+    		
+    		if( formatedItemsLen < arguments.pageSize){
+				hasPages = false;
+			}
+
+			total += formatedItemsLen;
+		    pageNumber++;
+		}
+		
+		// set the 
+		thisBatch.setInitialEntityQueueItemsCount( total );
+		this.getHibachiEntityQueueService().saveBatch(thisBatch);
+
+	    this.logHibachi("ERPONE - Finished paginating and importing changes - Entity-#arguments.mapping.entityName#. Mapping-[#arguments.mapping.mappingCode#]");
+		
+		return thisBatch;
+	}
+	
 	
 	
 	// TODO: move to utility-service
