@@ -72,6 +72,7 @@ component  accessors="true" output="false"
     property name="integrationService" type="any";
     property name="imageService" type="any";
     property name="locationService" type="any";
+    property name="fulfillmentService" type="any";
 
 
     variables.publicContexts = [];
@@ -1818,11 +1819,30 @@ component  accessors="true" output="false"
                  	var accountAddress = this.getAccountService().newAccountAddress();
                  	accountAddress.setAddress(shippingAddress);
                  	accountAddress.setAccount(getHibachiScope().getAccount());
-                 	var savedAccountAddress = this.getAccountService().saveAccountAddress(accountAddress);
-                 	if (!savedAddress.hasErrors()){
-                 		getDao('hibachiDao').flushOrmSession();
-                 	}
-                  
+                 	accountAddress = this.getAccountService().saveAccountAddress(accountAddress);
+                    
+                    orderFulfillment.setAccountAddress(accountAddress);
+                    orderFulfillment = getFulfillmentService().saveOrderFullfillment(orderFulfillment);
+
+                    if(orderFulfillment.hasErrors() || accountAddress.hasErrors()){
+                        var errors = [];
+                        arrayAppend(errors, orderFulfillment.getErros(), true);
+                        arrayAppend(errors, accountAddress.getErrors(), true);
+
+                        this.addErrors(arguments.data, errors);
+                        getHibachiScope().addActionResult( "public:cart.addOrderShippingAddress", true );
+                        return;
+                    }
+
+                } else {
+                    orderFulfillment.setAccountAddress(javacast('null',''));
+                    orderFulfillment = getFulfillmentService().saveOrderFullfillment(orderFulfillment);
+
+                    if(orderFulfillment.hasErrors()){
+                        this.addErrors(arguments.data, orderFulfillment.getErrors());
+                        getHibachiScope().addActionResult( "public:cart.addOrderShippingAddress", true );
+                        return;
+                    }
                 }
                 
                 this.getOrderService().saveOrder(order);
@@ -2591,11 +2611,6 @@ component  accessors="true" output="false"
         param name="data.orderItemIDList";
         param name="data.fulfillmentMethodID";
 
-        var cart = getHibachiScope().getCart();
-
-        var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
-
-        var existingOrderFulfillment = "";
         var error = [];
         
         if( arguments.data.orderItemIDList == "" ){
@@ -2611,16 +2626,10 @@ component  accessors="true" output="false"
             data['ajaxResponse']['errors'] = error;
             return;
         }
-        
-        //check if fulfillment method already exists on order
-        var allOrderFulfillments = cart.getOrderFulfillments();
-        for(var orderFulfillment in allOrderFulfillments) {
 
-            //get existing fulfillment method based on fulfillment method ID
-            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodID() == arguments.data.fulfillmentMethodID ) {
-                existingOrderFulfillment = orderFulfillment;
-            }
-        }
+        var cart = getHibachiScope().getCart();
+
+        var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
 
         var orderItems = cart.getOrderItems();
         for(var orderItem in orderItems) {
@@ -2631,32 +2640,53 @@ component  accessors="true" output="false"
             //Check if item id exists, existing fulfillment method is different than the one we're passing, and new fulfillment should be eligible
             if( ArrayContains(orderItemIDList, orderItem.getOrderItemID()) && orderItem.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() != arguments.data.fulfillmentMethodID &&  ArrayContains(eligibleFulfillmentMethods, arguments.data.fulfillmentMethodID) ) {
 
-                //Remove existing method
-                orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
+                // clear order fulfillment and change fulfillment method
+                var fulfillmentMethod = getFulfillmentService().getFulfillmentMethod(arguments.data.fulfillmentMethodID);
+                var orderFulfillment = orderItem.getOrderFulfillment();
+                orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
+                orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
 
-                if( !this.getHibachiScope().hibachiIsEmpty(existingOrderFulfillment) ) {
-                    orderItem.setOrderFulfillment( existingOrderFulfillment );
-                } else {
-                    //get fulfillment method
-                    var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
+                orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
 
-                    //create new method
-                    var orderFulfillment = this.getOrderService().newOrderFulfillment();
-                    orderFulfillment.setOrder( cart );
-                    orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
-    				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
-
-                    orderItem.setOrderFulfillment( orderFulfillment );
+                if(orderFulfillment.hasErrors()){
+                    this.addErrors(arguments.data, orderFulfillment.getErrors());
+                    getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", true );
+                    return;
                 }
             }
         }
 
-        this.getOrderService().saveOrder(getHibachiScope().getCart());
-
-        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", false );
     }
 
+    /**
+     * @http-context clearFulfillment
+     * @description Clear Order Fulfillment from order
+     * @param orderFulfillmentID 
+     */
+    public any function clearOrderFulfillment(required any data){
+        param name="data.orderFulfillmentID" default="";
 
+        var orderFulfillment = getFulfillmentService().getOrderFulfillment(arguments.data.orderFulfillmentID);
+        var orderValid = !isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID();
+        var orderPlaced = !isNull(orderFulfillment.getOrder().getOrderStatusType()) && orderFulfillment.getOrder().getOrderStatusType().getSystemCode() != "ostNotPlaced";
+
+        if( orderValid && !orderPlaced ){
+
+            orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
+            orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
+
+            if(orderFulfillment.hasErrors()){
+                this.addErrors(arguments.data, orderFulfillment.getErrors());
+                getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
+                return;
+            }
+
+            getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", false );
+        } else {
+            getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
+        }
+    }
 
     /** 
      * @http-context updateOrderFulfillmentAddressZone
