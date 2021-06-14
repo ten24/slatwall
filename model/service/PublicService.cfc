@@ -2837,15 +2837,23 @@ component  accessors="true" output="false"
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
             
             //If we have saveShippingAsBilling
-             if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
+            if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
 
-                 var addressData = {
-                    address=order.getShippingAddress()
-                };
+                var fulfillmentCollection = getFulfillmentService().getOrderFulfillmentCollectionList();
+                fulfillmentCollection.setDisplayProperties("orderFulfillmentID");
+                fulfillmentCollection.addFilter("order.orderID", order.getOrderID());
+                fulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping");
+                var fulfillments = fulfillmentCollection.getRecords(formatRecords = false);
+                
+                if(arrayLen(fulfillments)){
+                    var addressData = {
+                        address=getFulfillmentService().getOrderFulfillment(fulfillments[1]['orderFullfillmentID']).getShippingAddress();
+                    };
+                }
 
-                 var newBillingAddress = this.addBillingAddress(addressData, "billing");
+                var newBillingAddress = this.addBillingAddress(addressData, "billing");
 
-             } else {
+            } else {
                 // Only create a new billing address here if its not being created later using the account payment method.
                 if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
                     && (!structKeyExists(data, "accountPaymentMethodID") 
