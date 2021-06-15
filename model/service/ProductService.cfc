@@ -1446,7 +1446,6 @@ component extends="HibachiService" accessors="true" {
 		// remove all existing categories
 		if(structKeyExists(arguments.data,'categories')){
 			arguments.data.categories = listRemoveDuplicates(arguments.data.categories) // remove duplicates from the categories sent in request
-			arrayClear(arguments.product.getCategories());	// clear all existing categories 		
 		}
 
 		arguments.product = super.save(arguments.product, arguments.data);
