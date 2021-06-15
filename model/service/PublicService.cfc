@@ -2849,9 +2849,9 @@ component  accessors="true" output="false"
                     var addressData = {
                         address=getFulfillmentService().getOrderFulfillment(fulfillments[1]['orderFullfillmentID']).getShippingAddress();
                     };
+                    
+                    var newBillingAddress = this.addBillingAddress(addressData, "billing");
                 }
-
-                var newBillingAddress = this.addBillingAddress(addressData, "billing");
 
             } else {
                 // Only create a new billing address here if its not being created later using the account payment method.
