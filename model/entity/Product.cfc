@@ -1455,8 +1455,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public boolean function isValidPurchaseEndDateTime() {
 		return 	isNull(this.getPurchaseStartDateTime()) || isNull(this.getPurchaseEndDateTime()) ||
 			(
-				!isNull(this.getPurchaseStartDateTime()) && 
-				!isNull(this.getPurchaseEndDateTime()) &&
 				dateDiff("n", this.getPurchaseStartDateTime(), this.getPurchaseEndDateTime()) >= 0
 			);
 	}
