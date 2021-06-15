@@ -13,13 +13,12 @@
     </hb:HibachiEntityActionBar>
    
     <hb:HibachiPropertyRow>
+          These are for testing only </br> </br>
    	    <hb:HibachiPropertyList>
    	        
-   	        These are for testing only, should be removed after the development is completed
-   	        
    	        <hb:HibachiActionCaller 
-	            action="admin:erpone:main.importAccunts" 
-	            text="Import Accounts" 
+	            action="admin:erpone:main.importAccounts" 
+	            text="Import All Accounts" 
 	            modal="false" 
 	            type="link" 
 	            icon="download" 
@@ -27,6 +26,22 @@
 	        />
 	        
 	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importAccounts" 
+	            queryString="changes=true"
+	            text="Import Account Updates" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+	        
+		</hb:HibachiPropertyList>
+		
+		</br>
+		</br>
+		
+   	    <hb:HibachiPropertyList>
+    		 <hb:HibachiActionCaller 
 	            action="admin:erpone:main.importInventoryItems" 
 	            text="Import Inventory" 
 	            modal="false" 
@@ -34,7 +49,14 @@
 	            icon="download" 
 	            class="btn btn-primary btn-sm" 
 	        />
-		    
+	   	</hb:HibachiPropertyList>
+	   	
+	   	</br>
+	   	</br>
+
+		
+	    <hb:HibachiPropertyList>
+	        
 	        <hb:HibachiActionCaller 
 	            action="admin:erpone:main.importOrders" 
 	            text="Import All Orders" 
@@ -71,7 +93,12 @@
 	            class="btn btn-primary btn-sm" 
 	        />
 	        
-		</hb:HibachiPropertyList>
+	   	</hb:HibachiPropertyList>
+	   	
 	</hb:HibachiPropertyRow>
+	
+	<cfif structKeyExists(rc, "showDump")>
+	    <cfdump var=#rc.showDump#>
+	</cfif>
 	
 </cfoutput>

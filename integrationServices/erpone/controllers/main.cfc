@@ -24,47 +24,65 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	 ].toList();
 	
 	// Get GarntToken from cache
-	public any function getGrant(){
-	    this.getService('erpOneService').getGrantToken();
+	public any function getGrant(required struct rc){
+	    var token = this.getService('erpOneService').getGrantToken();
+	    arguments.rc['showDump'] = { "getGrant": token };
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
+
 	// Get AccessToken from cache
-	public any function getAccess(){
-	    this.getService('erpOneService').getAccessToken();
+	public any function getAccess(required struct rc){
+	    var token = this.getService('erpOneService').getAccessToken();
+	    arguments.rc['showDump'] = { "getAccess": token };
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
+	
 	// Get Customer Data
-	public any function importAccounts(){
-	    this.getService('erpOneService').importErpOneAccounts();
+	public any function importAccounts(required any rc){
+	    param name="rc.changes" default=false;
+	    
+	    if(arguments.rc.changes){
+	        if(isNull(arguments.rc['dateTimeSince']) ){
+	            arguments.rc['dateTimeSince'] = DateAdd('d', -1, now() ); // 1 day before now ==> since last 24 hours 
+	        }
+	        var batch =  this.getService('erpOneService').importErpOneAccountChanges(argumentCollection = rc);
+	    } else {
+	        var batch = this.getService('erpOneService').importErpOneAccounts();
+	    }
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
 	
 	// Get Order Data
-	public any function importOrders(){
+	public any function importOrders(required any rc){
 	    var batch = this.getService('erpOneService').importErpOneOrders();
 	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
 	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
-        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
 	
 	// Get Order Data
-	public any function importOrderItems(){
+	public any function importOrderItems(required any rc){
 	    var batch = this.getService('erpOneService').importErpOneOrderItems();
 	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
 	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
-        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
 	
 	// Get Order Data
-	public any function importOrderPayments(){
+	public any function importOrderPayments(required any rc){
 	    var batch = this.getService('erpOneService').importErpOneOrderPayments();
 	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
 	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
-        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
 	
-	public any function importOrderShipments(){
+	public any function importOrderShipments(required any rc){
 	    var batch = this.getService('erpOneService').importErpOneOrderShipments();
 	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
 	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
-        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
 	
 	
@@ -74,9 +92,8 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	    param name="rc.enabled" default=true;
 	    
 	    var response = this.getService('erpOneService').updateErpTableChangeTracking( argumentCollection = rc);
-        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
-        
-        dump(response); 
+	    arguments.rc['showDump'] = { "updateChangeTracking": response };
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
 	
 	// Get change-reacking
@@ -84,9 +101,8 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	    param name="rc.tableName";
 
 	    var response = this.getService('erpOneService').getErpTableChangeTrackingStatus( argumentCollection = rc);
-        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
-        
-        dump(response); 
+	    arguments.rc['showDump'] = { "getChangeTrackingStatus": response };
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
 
 	// Get Inventory Items Data
@@ -122,7 +138,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 				if( !isNull(batch) ){
 				    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
 				    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
-			        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+			        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 				} else{ 
 					// if no batch returned, then there was some issue with the import; sending user back
 				    super.renderOrRedirectFailure( defaultAction="erpone:main.preProcessIntegration", maintainQueryString=true, rc=arguments.rc);
@@ -163,7 +179,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
    		} 
    		else {
    		    this.getHibachiScope().showMessage("Invalid import type, no sample file available", "warning");
-   		    super.renderOrRedirectFailure( defaultAction="erpone:main", maintainQueryString=false, rc=arguments.rc);
+   		    super.renderOrRedirectFailure( defaultAction="default", maintainQueryString=false, rc=arguments.rc);
    		}
 	}
 
