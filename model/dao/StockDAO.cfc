@@ -549,6 +549,17 @@ Notes:
 			
 			return ormExecuteQuery(hql, params);
 		}
+		
+		public any function getStockIDBySkuIDAndLocationID(required string skuID, required string locationID){
+    		var sql = 'SELECT stockID FROM swStock WHERE skuID = :skuID AND locationID = :locationID ';
+    		var params = {
+    		    'skuID' : arguments.skuID,
+    		    'locationID' : arguments.locationID
+    		};
+    		
+    		var result = queryExecute(sql, params);
+    		return result['stockID'];
+    	}
 	
 	</cfscript>
 </cfcomponent>

@@ -122,6 +122,14 @@
 			"propertyIdentifier"    : "paymentTerm"
 		},
 		{
+			"key"                   : "termPaymentAccountRemoteID",
+			"lookupKey"             : "remoteID",
+			"entityName"            : "Account",
+			"isNullable"            : true,
+			"propertyIdentifier"    : "termPaymentAccount"
+		},
+		
+		{
 			"key"                   : "orderPaymentTypeCode",
 			"defaultValue"          : "444df2f0fed139ff94191de8fcd1f61b",
 			"__hint"                : "default order-payment-type is `optCharge`",

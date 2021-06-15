@@ -2116,40 +2116,41 @@ component  accessors="true" output="false"
      */
     public void function addAccountPaymentMethod(required any data) {
         
-        if (!isNull(data) && !structKeyExists(data, 'accountPaymentMethod') && structKeyExists(data, "selectedPaymentMethod")){
-        	data['accountPaymentMethod'] = {};
-        	data['accountPaymentMethod']['accountPaymentMethodID']  = data.selectedPaymentMethod;
+        if (!isNull(arguments.data) && !structKeyExists(arguments.data, 'accountPaymentMethod') && structKeyExists(arguments.data, "selectedPaymentMethod")){
+        	arguments.data['accountPaymentMethod'] = {};
+        	arguments.data['accountPaymentMethod']['accountPaymentMethodID']  = arguments.data.selectedPaymentMethod;
         }
-        if (!isNull(data) && !structKeyExists(data, 'paymentMethod')){
-         	data['paymentMethod'] = {};
-         	data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
+        if (!isNull(arguments.data) && !structKeyExists(arguments.data, 'paymentMethod')){
+         	arguments.data['paymentMethod'] = {};
+         	arguments.data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
         }
-        if (!isNull(data) && structKeyExists(data, 'newOrderPayment')){
-         	data['accountPaymentMethod'] = data;
-         	data['accountPaymentMethod']['billingAddress'] = data.newOrderPayment;
+        if (!isNull(arguments.data) && structKeyExists(arguments.data, 'newOrderPayment')){
+         	arguments.data['accountPaymentMethod'] = arguments.data;
+         	arguments.data['accountPaymentMethod']['billingAddress'] = arguments.data.newOrderPayment;
         }
         
         if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
+                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( arguments.data.selectedPaymentMethod );
             }else{
                 var accountPaymentMethod = this.getAccountService().newAccountPaymentMethod(  );	
                 accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
-            
-            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
-            data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
-            // If there were no errors then we can clear out the
-            
-        } else {
-            
-            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", true );
-                
+            if (!accountPaymentMethod.hasErrors()){
+                getHibachiScope().flushORMSession();
+                arguments.data['ajaxResponse']['accountPaymentMethod'] = {
+                    "accountPaymentMethodID": accountPaymentMethod.getAccountPaymentMethodID() 
+                }
+            }else{
+                arguments.data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
+            }
+	getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
         }
+
         
     }
     
@@ -2282,6 +2283,13 @@ component  accessors="true" output="false"
         var updateOrderAmounts = structKeyExists( arguments.data, 'updateOrderAmounts' ) && arguments.data.updateOrderAmounts;
     
         arguments.data.ajaxResponse = {'cart':getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions'], updateOrderAmounts = updateOrderAmounts)};
+
+        // remove order payments with a status type of 'opstRemoved'
+        arguments.data.ajaxResponse.cart.orderPayments = arrayFilter(arguments.data.ajaxResponse.cart.orderPayments, function(orderPayment){
+            return arguments.orderPayment.orderPaymentStatusType.systemCode != "opstRemoved";
+        });
+        
+        
     }
     
     public void function getAccountData(any data) {
@@ -2830,15 +2838,23 @@ component  accessors="true" output="false"
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
             
             //If we have saveShippingAsBilling
-             if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
+            if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
 
-                 var addressData = {
-                    address=order.getShippingAddress()
-                };
+                var fulfillmentCollection = getFulfillmentService().getOrderFulfillmentCollectionList();
+                fulfillmentCollection.setDisplayProperties("orderFulfillmentID");
+                fulfillmentCollection.addFilter("order.orderID", order.getOrderID());
+                fulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping");
+                var fulfillments = fulfillmentCollection.getRecords(formatRecords = false);
+                
+                if(arrayLen(fulfillments)){
+                    var addressData = {
+                        address=getFulfillmentService().getOrderFulfillment(fulfillments[1]['orderFullfillmentID']).getShippingAddress();
+                    };
+                    
+                    var newBillingAddress = this.addBillingAddress(addressData, "billing");
+                }
 
-                 var newBillingAddress = this.addBillingAddress(addressData, "billing");
-
-             } else {
+            } else {
                 // Only create a new billing address here if its not being created later using the account payment method.
                 if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
                     && (!structKeyExists(data, "accountPaymentMethodID") 

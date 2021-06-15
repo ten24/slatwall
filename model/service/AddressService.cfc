@@ -260,11 +260,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	 * @addressID id, of the Address to verify
 	*/ 
 	public any function verifyAddressByID(required string addressID){
-			var data = getDAO("AddressDAO").getAddressStruct(addressID);
-		
-			if(len(data)){
-				return this.verifyAddressStruct(data[1]);
-			}
+		var data = getDAO("AddressDAO").getAddressStruct(addressID);
+	
+		if(len(data)){
+			return this.verifyAddressStruct(data[1]);
+		}
 	}
 	
 	/**
@@ -274,25 +274,25 @@ component extends="HibachiService" accessors="true" output="false" {
 	 * @accountAddressID id, of the AccountAddress to verify
 	 */ 
 	public any function verifyAccountAddressByID(required string accountAddressID){
-			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
-		
-			if(len(data)){
-				return this.verifyAddressStruct(data[1]);
-			} 
+		var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
+	
+		if(len(data)){
+			return this.verifyAddressStruct(data[1]);
+		} 
 	}
 
 	
 	public any function getAddressName(required any addressStruct){
-			var name = "";
-			var fields = [ 'StreetAddress',  'Street2Address',  'City',  'StateCode',  'PostalCode','CountryCode'];
-			
-			for(var field in fields){
-				if( structKeyExists(arguments.addressStruct,field) ) {
-					name = listAppend(name, " #arguments.addressStruct[field]#" );
-				}
+		var name = "";
+		var fields = [ 'StreetAddress',  'Street2Address',  'City',  'StateCode',  'PostalCode','CountryCode'];
+		
+		for(var field in fields){
+			if( structKeyExists(arguments.addressStruct,field) ) {
+				name = listAppend(name, " #arguments.addressStruct[field]#" );
 			}
-			
-			return name;
+		}
+		
+		return name;
 		
 	}
 	
