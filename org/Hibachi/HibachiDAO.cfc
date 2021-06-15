@@ -199,6 +199,29 @@
 
 	    	return result[arguments.columnToFetch];
 		}
+		
+		public any function getAnyPropertyIdentifierValueByEntityNameAndUniquePropertyIdentifierValue(required string entityName, required string propertyIdentifierToFetch, required string filterPropertyIdentifier, required any filterValue ){
+            
+            if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
+				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
+			}
+           
+            var alias = replace( arguments.propertyIdentifierToFetch, ".", "_", "All" );
+			var hql = " 
+    			SELECT new Map(  e.#arguments.propertyIdentifierToFetch# as  #alias# )
+    			FROM #arguments.entityName# e 
+    			WHERE e.#arguments.filterPropertyIdentifier# = :filterValue
+			";
+
+			var result = ormExecuteQuery( hql, { filterValue=filterValue }, true);
+            
+            if( structKeyExists(result, alias) ){
+	    	    return result[alias];
+            }
+		}
+		
+		
+
 
 
 	</cfscript>

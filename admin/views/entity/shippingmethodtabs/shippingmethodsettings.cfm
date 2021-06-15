@@ -55,7 +55,6 @@ Notes:
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="shippingMethodQualifiedRateSelection" settingObject="#rc.shippingMethod#" />
 	    <swa:SlatwallSetting settingName="shippingMethodTrackingURL" settingObject="#rc.shippingMethod#" />
-	
 	</swa:SlatwallSettingTable>
 	
 </cfoutput>

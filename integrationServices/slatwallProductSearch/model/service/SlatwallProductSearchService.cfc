@@ -635,23 +635,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         param name="arguments.includeSKUCount" default=true;
         param name="arguments.applySiteFilter" default=false;
         param name="arguments.priceRangesCount" default=5;
+        param name="arguments.includePagination" default=false;
 	    param name="arguments.includePotentialFilters" default=true;
 	    
 	    
 	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);
 	    
 	    var startTicks = getTickCount();
-	    var total = collectionData.collectionList.getRecordsCount();
-
-        this.getSlatwallProductSearchDAO().logQuery({
-            'sql': collectionData.collectionList.getSelectionCountSQL(),
-            'result' : { 'total': total},
-            'recordCount' : total,
-            'executionTime' : getTickCount() - startTicks,
-        }, 'getProducts:: collection.getRecordsCount' );
-        
-        
-        startTicks = getTickCount();
         
 	    var records = collectionData.collectionList.getPageRecords();
 	    
@@ -661,17 +651,34 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             'recordCount' : arrayLen(records),
             'executionTime' : getTickCount() - startTicks,
         }, 'getProducts:: collection.getPageRecords, [page:#arguments.currentPage#, size: #arguments.pageSize#]');
-
+        
 	    var resultSet = {
-	        'total' : total,
-	        'pageSize': arguments.pageSize,
-	        'currentPage' : arguments.currentPage,
 	        'currencyCode': collectionData.currencyCode,
 	        'priceGroupCode': collectionData.priceGroupCode,
 	        
 	        'products' : records
 	    };
 	    
+	    // Pagination
+	    if(arguments.includePagination){
+	        
+            startTicks = getTickCount();
+	        var total = collectionData.collectionList.getRecordsCount();
+
+            this.getSlatwallProductSearchDAO().logQuery({
+                'sql': collectionData.collectionList.getSelectionCountSQL(),
+                'result' : { 'total': total},
+                'recordCount' : total,
+                'executionTime' : getTickCount() - startTicks,
+            }, 'getProducts:: collection.getRecordsCount' );
+            
+        
+	        resultSet['total']  = total;
+	        resultSet['pageSize'] = arguments.pageSize;
+	        resultSet['currentPage'] = arguments.currentPage;
+	    }
+	    
+	    // filter's options
 	    if( arguments.includePotentialFilters ){
 	        var potentialFilters = this.getPotentialFilterFacetsAndOptionsFormatted(argumentCollection=arguments);
 	        potentialFilters['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount, collectionData.priceRangeCollectionList );

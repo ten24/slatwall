@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 
 export const getRoutes = state => state.configuration.router
+export const getImageFallbackFlag = state => state.configuration.products.fallbackImageCall
 
 export const getBrandRoute = createSelector(getRoutes, routes => {
   return routes

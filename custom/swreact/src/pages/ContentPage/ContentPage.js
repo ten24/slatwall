@@ -9,7 +9,6 @@ import BasicPage from '../BasicPage/BasicPage'
 
 const pageComponents = {
   BasicPageWithSidebar,
-  // ProductListingContent,
   BasicPage,
   NotFound,
 }
@@ -23,7 +22,7 @@ const ContentPage = () => {
   if (!content.isFetching && content[path]) {
     component = content[path].settings.contentTemplateFile.replace('.cfm', '')
   }
-
+  console.log('content', content)
   return <Layout>{!content.isFetching && createElement(pageComponents[component])}</Layout>
 }
 

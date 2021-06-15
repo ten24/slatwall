@@ -488,6 +488,15 @@ Notes:
 
     		return query.execute( sql=sql, returntype='array').getResult();
         }
+        
+        public any function getSkuIDByOrderItemRemoteID(required string orderItemRemoteID){
+    		var sql = 'SELECT skuID from sworderitem where remoteID = :orderItemRemoteID';
+    		var params = {'orderItemRemoteID' : arguments.orderItemRemoteID};
+    		
+    		var result = queryExecute(sql, params);
+    		return result['skuID'];
+    	}
+	
 	</cfscript>
 
 </cfcomponent>

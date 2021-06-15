@@ -13,7 +13,7 @@
 		    </cfif>
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="processMethod" edit="#rc.edit#" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="entityQueueDateTime">
-			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="tryCount">
+			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="tryCount" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="mostRecentError" fieldType="json" fieldAttributes="rows='10'" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="entityQueueProcessingDateTime">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="entityQueueData" edit="#rc.edit#" fieldType="json" fieldAttributes="rows='20'">	
