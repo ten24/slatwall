@@ -706,70 +706,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var columns = "name,country_code,email_address,phone,Active,company_cu,customer,tax_code,adr[1],adr[2],adr[3],adr[4],adr[5],state,postal_code";
 	    var erpOneAccountMapping = this.getMappingByMappingCode('Account');
 	    
-	    var recordFormatterFunction = function(required struct account){
-	        if(isNull(arguments.account['customer'])){
-	            return; // can't import accounts not having `customer` value, as it's the remoteID
-	        }
-	        
-	        var formattedAccountData =  {
-				"remoteAccountID" : arguments.account['customer'],
-				"remoteAccountAddressID" : arguments.account['customer'],
-				"remoteAddressID" : arguments.account['customer'],
-				"firstName" : arguments.account['name'] ?: '',
-				"lastName" : "",
-				"companyName" : arguments.account['name'] ?: '',
-				"phoneNumber" : arguments.account['phone'] ?: '',
-				"companyCode" : arguments.account['customer'],
-				"taxExemptFlag" : arguments.account['tax_code'] == 'EXEMPT',
-				"organizationFlag" : true,
-				"addressNickName" : "Default",
-				"streetAddress" : arguments.account['adr_1'] ?: '',
-				"street2Address" : "",
-				"city" : arguments.account['adr_4'] ?: '',
-				"stateCode" : arguments.account['state'] ?: '',
-				"postalCode" : arguments.account['postal_code'] ?: '',
-				"countryCode" : "US"
-			};
-			
-			if(!isNull(arguments.account['email_address'])){
-				formattedAccountData['email'] = arguments.account['email_address'];
-			}
-
-			var syAccountsArray = this.callErpOneGetDataApi({
-				"query": 'FOR EACH sy_contact WHERE sy_contact.company_sy = "#company#" AND sy_contact.contact_type = "customer" AND sy_contact.key1 = "'&arguments.account.customer&'"',
-				"columns" : "First_Name,Last_Name,key1,key2,contact,cell,contact_type"
-			});
-			
-			
-			if(arrayLen(syAccountsArray)){
-			    var syAccount = syAccountsArray[1];
-			    
-				formattedAccountData['remoteContactID'] = arguments.account.customer;
-				
-				if( !isNull(syAccount["First_Name"]) ){
-					formattedAccountData["firstName"] = syAccount["First_Name"];
-				}
-				
-				if( !isNull(syAccount["Last_Name"]) ){
-					formattedAccountData["lastName"] = syAccount["Last_Name"];
-				}
-				
-				if( 
-				    ( isNull(formattedAccountData['phoneNumber']) || !len(formattedAccountData['phoneNumber']) )
-				    && !isNull(syAccount["cell"])
-				){
-					formattedAccountData["phoneNumber"] = syAccount["cell"];
-				}
-			}
-			
-			return formattedAccountData;
-	    }
-	    
 	    var accountImportBatch = this.paginateAndImportToQueue( 
 		    erpOneQuery             = getAccountsQueryString,
 		    columns                 = columns,
 		    mapping                 = erpOneAccountMapping,
-		    recordFormatterFunction = recordFormatterFunction,
+		    recordFormatterFunction = erpOneAccountFormatterFunction,
 		    pageSize                = 100
 		);
 		
@@ -794,70 +735,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var tableName = 'customer';
 	    var erpOneAccountMapping = this.getMappingByMappingCode('Account');
 	    
-	    var recordFormatterFunction = function(required struct account){
-	        if(isNull(arguments.account['customer'])){
-	            return; // can't import accounts not having `customer` value, as it's the remoteID
-	        }
-	        var formattedAccountData =  {
-				"remoteAccountID" : arguments.account['customer'],
-				"remoteAccountAddressID" : arguments.account['customer'],
-				"remoteAddressID" : arguments.account['customer'],
-				"firstName" : arguments.account['name'] ?: '',
-				"lastName" : "",
-				"companyName" : arguments.account['name'] ?: '',
-				"phoneNumber" : arguments.account['phone'] ?: '',
-				"companyCode" : arguments.account['customer'],
-				"taxExemptFlag" : arguments.account['tax_code'] == 'EXEMPT',
-				"organizationFlag" : true,
-				"addressNickName" : "Default",
-				"streetAddress" : arguments.account['adr_1'] ?: '',
-				"street2Address" : "",
-				"city" : arguments.account['adr_4'] ?: '',
-				"stateCode" : arguments.account['state'] ?: '',
-				"postalCode" : arguments.account['postal_code'] ?: '',
-				"countryCode" : "US"
-			};
-			
-			if(!isNull(arguments.account['email_address'])){
-				formattedAccountData['email'] = arguments.account['email_address'];
-			}
-
-			var syAccountsArray = this.callErpOneGetDataApi({
-				"query": 'FOR EACH sy_contact WHERE sy_contact.company_sy = "#company#" AND sy_contact.contact_type = "customer" AND sy_contact.key1 = "'&arguments.account.customer&'"',
-				"columns" : "First_Name,Last_Name,key1,key2,contact,cell,contact_type"
-			});
-			
-			
-			if(arrayLen(syAccountsArray)){
-			    var syAccount = syAccountsArray[1];
-			    
-				formattedAccountData['remoteContactID'] = arguments.account.customer;
-				
-				if( !isNull(syAccount["First_Name"]) ){
-					formattedAccountData["firstName"] = syAccount["First_Name"];
-				}
-				
-				if( !isNull(syAccount["Last_Name"]) ){
-					formattedAccountData["lastName"] = syAccount["Last_Name"];
-				}
-				
-				if( 
-				    ( isNull(formattedAccountData['phoneNumber']) || !len(formattedAccountData['phoneNumber']) )
-				    && !isNull(syAccount["cell"])
-				){
-					formattedAccountData["phoneNumber"] = syAccount["cell"];
-				}
-			}
-			
-			return formattedAccountData;
-	    }
-	    
 	    var accountImportBatch = this.paginateAndImportChangesToQueue( 
 		    tableName               = tableName,
 		    columns                 = columns,
 		    mapping                 = erpOneAccountMapping,
 		    filter                  = filter,
-		    recordFormatterFunction = recordFormatterFunction,
+		    recordFormatterFunction = erpOneAccountFormatterFunction,
 		    dateTimeSince           = arguments.dateTimeSince,
 		    pageSize                = 100
 		);
@@ -867,6 +750,69 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		return accountImportBatch;
 	}
+	
+	public any function erpOneAccountFormatterFunction(required struct account){
+	    
+        if(isNull(arguments.account['customer'])){
+            return; // can't import accounts not having `customer` value, as it's the remoteID
+        }
+
+        var formattedAccountData =  {
+			"remoteAccountID" : arguments.account['customer'],
+			"remoteAccountAddressID" : arguments.account['customer'],
+			"remoteAddressID" : arguments.account['customer'],
+			"firstName" : arguments.account['name'] ?: '',
+			"lastName" : "",
+			"companyName" : arguments.account['name'] ?: '',
+			"phoneNumber" : arguments.account['phone'] ?: '',
+			"companyCode" : arguments.account['customer'],
+			"taxExemptFlag" : arguments.account['tax_code'] == 'EXEMPT',
+			"organizationFlag" : true,
+			"addressNickName" : "Default",
+			"streetAddress" : arguments.account['adr_1'] ?: '',
+			"street2Address" : "",
+			"city" : arguments.account['adr_4'] ?: '',
+			"stateCode" : arguments.account['state'] ?: '',
+			"postalCode" : arguments.account['postal_code'] ?: '',
+			"countryCode" : "US"
+		};
+		
+		if(!isNull(arguments.account['email_address'])){
+			formattedAccountData['email'] = arguments.account['email_address'];
+		}
+
+        var company =  this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany");
+
+		var syAccountsArray = this.callErpOneGetDataApi({
+			"query": 'FOR EACH sy_contact WHERE sy_contact.company_sy = "#company#" AND sy_contact.contact_type = "customer" AND sy_contact.key1 = "'&arguments.account.customer&'"',
+			"columns" : "First_Name,Last_Name,key1,key2,contact,cell,contact_type"
+		});
+		
+		
+		if(arrayLen(syAccountsArray)){
+		    var syAccount = syAccountsArray[1];
+		    
+			formattedAccountData['remoteContactID'] = arguments.account.customer;
+			
+			if( !isNull(syAccount["First_Name"]) ){
+				formattedAccountData["firstName"] = syAccount["First_Name"];
+			}
+			
+			if( !isNull(syAccount["Last_Name"]) ){
+				formattedAccountData["lastName"] = syAccount["Last_Name"];
+			}
+			
+			if( 
+			    ( isNull(formattedAccountData['phoneNumber']) || !len(formattedAccountData['phoneNumber']) )
+			    && !isNull(syAccount["cell"])
+			){
+				formattedAccountData["phoneNumber"] = syAccount["cell"];
+			}
+		}
+		
+		return formattedAccountData;
+    }
+
 
 	
 	/**
