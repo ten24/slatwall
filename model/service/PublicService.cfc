@@ -3664,7 +3664,7 @@ component  accessors="true" output="false"
             arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
         }
         var wishlist = getOrderService().getAccountWishlists(getHibachiScope().getAccount().getAccountID());
-        arguments.data.ajaxResponse["accountWishlists"] = wishlist;
+        arguments.data.ajaxResponse["accountWishlistProducts"] = wishlist;
         getHibachiScope().addActionResult( "public:order.getWishlist", false);
     }
     
