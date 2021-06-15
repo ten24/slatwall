@@ -69,4 +69,4 @@ const ProductSlider = ({ children, params = {}, settings, title, slidesToShow = 
     </div>
   )
 }
-export default ProductSlider
+export { ProductSlider }

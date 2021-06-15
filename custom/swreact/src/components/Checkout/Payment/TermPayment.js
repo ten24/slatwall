@@ -33,7 +33,7 @@ const TermPayment = ({ method }) => {
             />
           </div>
         </div>
-        {/* <div className="col-sm-12">
+        <div className="col-sm-12">
           <div className="form-group">
             <div className="custom-control custom-checkbox">
               <input
@@ -50,16 +50,13 @@ const TermPayment = ({ method }) => {
               </label>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
       {saveShippingAsBilling && termOrderNumber && termOrderNumber.length > 0 && (
         <Button
           label="Submit"
           onClick={e => {
             e.preventDefault()
-            console.log('saveShippingAsBilling', saveShippingAsBilling)
-            //TODO: BROKEN
-
             dispatch(
               addPayment({
                 newOrderPayment: {

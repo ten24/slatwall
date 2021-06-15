@@ -4,15 +4,15 @@ import defaultMissingBrand from '../../assets/images/missing-brand.png'
 import defaultMissingProductType from '../../assets/images/missing-product-type.png'
 import defaultMissingProduct from '../../assets/images/missing-product.png'
 
-const DefaultImage = ({ alt = '', style, type }) => {
+const DefaultImage = ({ alt = '', style, type, className = '' }) => {
   if (type === 'product') {
-    return <img style={style} src={defaultMissingProduct} alt={alt} />
+    return <img className={className} style={style} src={defaultMissingProduct} alt={alt} />
   } else if (type === 'productType') {
-    return <img style={style} src={defaultMissingProductType} alt={alt} />
+    return <img className={className} style={style} src={defaultMissingProductType} alt={alt} />
   } else if (type === 'brand') {
-    return <img style={style} src={defaultMissingBrand} alt={alt} />
+    return <img className={className} style={style} src={defaultMissingBrand} alt={alt} />
   }
-  return <img style={style} src={defaultMissing} alt={alt} />
+  return <img className={className} style={style} src={defaultMissing} alt={alt} />
 }
 const SWImage = ({ className, customPath, src, alt = '', style = {}, type = 'product' }) => {
   const { host, basePath } = useSelector(state => state.configuration.theme)
@@ -41,7 +41,7 @@ const SWImage = ({ className, customPath, src, alt = '', style = {}, type = 'pro
       />
     )
   }
-  return <DefaultImage style={style} type={type} />
+  return <DefaultImage className={className} style={style} type={type} />
 }
 
 export default SWImage

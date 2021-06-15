@@ -4,7 +4,7 @@ import { useHistory } from 'react-router'
 export default function ScrollToTop() {
   const history = useHistory()
   useEffect(() => {
-    history.listen(location => {
+    const unload = history.listen(location => {
       if (!location.pathname.includes('/product/')) {
         window.scrollTo({
           top: 0,
@@ -12,6 +12,9 @@ export default function ScrollToTop() {
         })
       }
     })
+    return () => {
+      unload()
+    }
   }, [history])
 
   return null
