@@ -81,7 +81,7 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public array function getProductPublicProperties(){
-		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.listPrice', 'defaultSku.skuID', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.imagePath','defaultSku.listPrice', 'defaultSku.skuID', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
@@ -92,15 +92,6 @@ component extends="HibachiService" accessors="true" {
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('ProductType');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
-	}
-	
-	public any function getAllRelatedProducts(required any productID) {
-		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
-		relatedProducts.addFilter("product.productID",arguments.productID);
-		relatedProducts.addFilter("product.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=false);
-		return relatedProducts;
 	}
 	
 	public any function getAllRelatedProducts(required any productID) {
@@ -126,6 +117,63 @@ component extends="HibachiService" accessors="true" {
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
 		return relatedProducts;
 	}
+	
+	/** Function append Images to existing product List
+	 * @param - array of products
+	 * @param - image property name
+	 * @param - addAltImage - boolean to ignore alt images
+	 * @return - updated array of products
+	 **/
+	public array function appendImagesToProducts(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
+		if(arrayLen(arguments.products)) {
+			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
+			var resizeSizes=['small','medium', 'listing'];
+			
+			for(var product in arguments.products) {
+				
+	            var imageFile = product[arguments.propertyName] ? : '';
+	            if( this.hibachiIsEmpty(imageFile) ) {
+	            	continue;
+	            }
+	            var imageArray = [];
+	            for( var size in resizeSizes) {
+	            	var resizeImageData = {
+		                size=size, //Large Image
+		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
+		                missingImagePath = missingImageSetting
+		            };
+		            if(resizeImageData.size == "medium"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageMediumHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageMediumWidth");
+			        } else if (resizeImageData.size == "large"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageLargeHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageLargeWidth");
+			        }else if (resizeImageData.size == "xlarge"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageXLargeWidth");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageXLargeHeight");
+			        }else if (resizeImageData.size == "listing"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productListingImageHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productListingImageWidth");
+			        } else{ //default case small
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageSmallHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageSmallWidth");
+			        }
+		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
+	            }
+	            
+	            product['images'] = imageArray;
+	        }
+	        
+	        //If there's only one product in response, add alternate images as well
+	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && StructKeyExists(arguments.products[1], 'productID') && trim(arguments.products[1].productID) != "" ) {
+	        	//Modify image size to be used as size index
+	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='small'},{size='medium'},{size='large'},{size='xlarge'}]);
+	        }
+	        
+		}
+		return arguments.products;
+	}
+	
 
 	public numeric function getProductRating(required any product){
 		return getDao('productDao').getProductRating(arguments.product);
@@ -535,49 +583,6 @@ component extends="HibachiService" accessors="true" {
 		return relatedProducts;
 	}
 	
-	/** Function append Images to existing product List
-	 * @param - array of products
-	 * @param - image property name
-	 * @param - addAltImage - boolean to ignore alt images
-	 * @return - updated array of products
-	 **/
-	public array function appendImagesToProducts(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
-		if(arrayLen(arguments.products)) {
-			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
-			var resizeSizes=['s','m','l','xl']; //add all sized images
-			
-			for(var product in arguments.products) {
-				
-				if( !StructKeyExists(product, 'productID') || trim(product.productID) == "" ) {
-					continue;
-				}
-				
-	            var imageFile = product[arguments.propertyName] ? : '';
-	            if( this.hibachiIsEmpty(imageFile) ){
-	            	continue;
-	            }
-	            var imageArray = [];
-	            for( var size in resizeSizes) {
-	            	var resizeImageData = {
-		                size=size, //Large Image
-		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
-		                missingImagePath = missingImageSetting
-		            };
-		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
-	            }
-	            
-	            product['images'] = imageArray;
-	        }
-	        
-	        //If there's only one product in response, add alternate images as well
-	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage && StructKeyExists(arguments.products[1], 'productID') && trim(arguments.products[1].productID) != "" ) {
-	        	//Modify image size to be used as size index
-	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
-	        }
-	        
-		}
-		return arguments.products;
-	}
 	public any function appendSettingsToProductType(required struct productType) {
 		productType['settings']= {
            	"productHTMLTitleString":  productType.stringReplace( template = productType.setting('productTypeHTMLTitleString'), formatValues = true ),
