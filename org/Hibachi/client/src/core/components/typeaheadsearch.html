@@ -14,7 +14,7 @@
                             <span sw-rbkey="'define.all'"></span>
                         </a>
                     </li>
-                    <li ng-repeat="column in swTypeaheadSearch.searchableColumns">
+                    <li ng-repeat="column in swTypeaheadSearch.searchableColumns | unique: 'title' ">
                         <a ng-click="swTypeaheadSearch.updateSearchableProperties(column)">{{column.title}}</a>
                     </li>
                 </ul>

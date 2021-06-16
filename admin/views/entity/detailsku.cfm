@@ -109,7 +109,7 @@ Notes:
 				<cfif rc.sku.getBundleFlag() eq true>
 					<hb:HibachiEntityDetailItem view="admin:entity/skutabs/bundledskus" />
 				<cfelse>
-					<hb:HibachiEntityDetailItem view="admin:entity/skutabs/options" />
+					<hb:HibachiEntityDetailItem count="#rc.sku.getOptionsCount()#" view="admin:entity/skutabs/options" />
 				</cfif>
 			</cfif>
 			<hb:HibachiEntityDetailItem property="skuDescription" />

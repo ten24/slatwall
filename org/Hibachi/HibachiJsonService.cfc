@@ -58,6 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var configDirectoryPath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/system/';
 		if(!directoryExists(configDirectoryPath)){
 			directoryCreate(configDirectoryPath);
+			directoryCreate(configDirectoryPath & "shared/");
 		}
 		
 		json = appendTabsJson(json);

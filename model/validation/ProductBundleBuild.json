@@ -1,13 +1,14 @@
 {
 	"properties": {
-		"quantity": [{
+		"maxQuantity": [
+            {
 				"contexts": "save",
-				"dataType": "numeric",
 				"method": "hasQuantityWithinMaxOrderQuantity"
-			},
-			{
+			}
+		],
+		"minQuantity": [
+            {
 				"contexts": "save",
-				"dataType": "numeric",
 				"method": "hasQuantityWithinMinOrderQuantity"
 			}
 		]

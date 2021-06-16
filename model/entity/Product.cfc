@@ -1467,6 +1467,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					dateDiff("n", this.getPublishedStartDateTime(), this.getPublishedEndDateTime()) >= 0
 				);
 	}
+	
+	public boolean function isValidPurchaseEndDateTime() {
+		return 	isNull(this.getPurchaseStartDateTime()) || isNull(this.getPurchaseEndDateTime()) ||
+			(
+				dateDiff("n", this.getPurchaseStartDateTime(), this.getPurchaseEndDateTime()) >= 0
+			);
+	}
 
 	// =============== END: Custom Validation Methods ======================
 

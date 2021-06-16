@@ -76,4 +76,12 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 
 		return settings;
 	}
+
+	public boolean function getAllowSiteSpecificSettingsFlag() {
+		return true;
+	}
+
+	public string function getAllowedSiteSettingNames() {
+		return "loginID,transKey";
+	}
 }
