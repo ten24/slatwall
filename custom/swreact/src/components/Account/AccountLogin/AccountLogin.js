@@ -73,4 +73,4 @@ const AccountLogin = () => {
   )
 }
 
-export default AccountLogin
+export { AccountLogin }

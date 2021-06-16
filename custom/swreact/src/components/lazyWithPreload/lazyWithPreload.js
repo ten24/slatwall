@@ -6,4 +6,4 @@ const lazyWithPreload = factory => {
   return Component
 }
 
-export default lazyWithPreload
+export { lazyWithPreload }

@@ -2,7 +2,7 @@ import React from 'react'
 // import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
+import { AccountContent } from '../../'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -99,4 +99,4 @@ const AccountAddresses = ({ title }) => {
   )
 }
 
-export default AccountAddresses
+export { AccountAddresses }

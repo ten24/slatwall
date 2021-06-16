@@ -48,4 +48,4 @@ const OrderNotes = () => {
     </div>
   )
 }
-export default OrderNotes
+export { OrderNotes }

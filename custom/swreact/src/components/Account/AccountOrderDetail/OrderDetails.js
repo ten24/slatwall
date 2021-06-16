@@ -5,7 +5,6 @@ import { ShippingAddressDetails, BillingAddressDetails, TermPaymentDetails, Gift
 import { orderPayment } from '../../../selectors/orderSelectors'
 import { useTranslation } from 'react-i18next'
 
-
 const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   const { orderOpenDateTime } = orderInfo
   const { orderFulfillment_shippingAddress_emailAddress, orderFulfillment_fulfillmentMethod_fulfillmentMethodType, orderFulfillment_shippingAddress_name, orderFulfillment_shippingAddress_streetAddress, orderFulfillment_shippingAddress_city, orderFulfillment_shippingAddress_stateCode, orderFulfillment_shippingAddress_postalCode, orderFulfillment_pickupLocation_locationName } = orderFulfillments
@@ -66,4 +65,4 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   )
 }
 
-export default OrderDetails
+export { OrderDetails }

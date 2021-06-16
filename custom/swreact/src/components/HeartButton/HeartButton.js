@@ -54,4 +54,4 @@ const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {
     )
   }
 }
-export default HeartButton
+export { HeartButton }

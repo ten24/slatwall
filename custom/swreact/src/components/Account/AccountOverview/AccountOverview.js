@@ -1,5 +1,4 @@
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
+import { AccountLayout, AccountContent } from '../../'
 import { useGetAllOrders } from '../../../hooks/useAPI'
 import { useEffect } from 'react'
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
@@ -63,4 +62,4 @@ const AccountOverview = ({ customBody, crumbs, title, contentTitle }) => {
   )
 }
 
-export default AccountOverview
+export { AccountOverview }

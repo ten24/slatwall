@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet'
-import { Layout, PageHeader, ProductTypeList } from '../../components'
-import ListingPage from '../../components/Listing/Listing'
+import { Listing, Layout, PageHeader, ProductTypeList } from '../../components'
 import { useHistory, useLocation } from 'react-router'
 import { useGetEntity } from '../../hooks/useAPI'
 import { useSelector } from 'react-redux'
@@ -81,7 +80,7 @@ const Search = () => {
         </div>
       )}
 
-      {productTypeListRequest.isLoaded && productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ productType_slug: productTypeUrl }} hide={['productType']} />}
+      {productTypeListRequest.isLoaded && productTypeData?.childProductTypes?.length === 0 && <Listing preFilter={{ productType_slug: productTypeUrl }} hide={['productType']} />}
     </Layout>
   )
 }

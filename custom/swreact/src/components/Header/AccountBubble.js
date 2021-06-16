@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getUser } from '../../actions/userActions'
 import { useTranslation } from 'react-i18next'
 
-const AccountBubble = ({ isAuthenticated, name }) => {
+const AccountBubble = () => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-
+  const { firstName, lastName, accountID } = useSelector(state => state.userReducer)
+  const name = `${firstName} ${lastName}`
   useEffect(() => {
     dispatch(getUser())
   }, [dispatch])
@@ -17,8 +18,8 @@ const AccountBubble = ({ isAuthenticated, name }) => {
       </div>
       <div className="navbar-tool-text ml-n3">
         <small>
-          Hello, {isAuthenticated && name}
-          {!isAuthenticated && t('frontend.account.sign_in')}
+          Hello, {accountID && name}
+          {!accountID && t('frontend.account.sign_in')}
         </small>
         My Account
       </div>
@@ -26,10 +27,4 @@ const AccountBubble = ({ isAuthenticated, name }) => {
   )
 }
 
-function mapStateToProps(state) {
-  return {
-    isAuthenticated: state.userReducer.accountID,
-    name: `${state.userReducer.firstName} ${state.userReducer.lastName}`,
-  }
-}
-export default connect(mapStateToProps)(AccountBubble)
+export { AccountBubble }

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useHistory } from 'react-router'
 
-export default function ScrollToTop() {
+const ScrollToTop = () => {
   const history = useHistory()
   useEffect(() => {
     const unload = history.listen(location => {
@@ -19,3 +19,5 @@ export default function ScrollToTop() {
 
   return null
 }
+
+export { ScrollToTop }

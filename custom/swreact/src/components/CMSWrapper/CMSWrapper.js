@@ -76,4 +76,4 @@ const CMSWrapper = ({ children }) => {
   return <>{children}</>
 }
 
-export default CMSWrapper
+export { CMSWrapper }

@@ -29,4 +29,4 @@ const AccountContent = () => {
     </>
   )
 }
-export default AccountContent
+export { AccountContent }

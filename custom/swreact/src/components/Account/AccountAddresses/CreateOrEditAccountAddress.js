@@ -1,9 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
-import SwSelect from '../../SwSelect/SwSelect'
 import { useFormik } from 'formik'
 import useRedirect from '../../../hooks/useRedirect'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
+import { AccountContent, AccountLayout, SwSelect } from '../../'
 import { addNewAccountAddress, updateAccountAddress } from '../../../actions/userActions'
 // TODO: Make this component reusable
 import { useTranslation } from 'react-i18next'
@@ -143,4 +141,4 @@ const CreateOrEditAccountAddress = ({ path, heading, redirectLocation = '/my-acc
   )
 }
 
-export default CreateOrEditAccountAddress
+export { CreateOrEditAccountAddress }

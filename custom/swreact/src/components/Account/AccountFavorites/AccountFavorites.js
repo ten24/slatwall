@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 // import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
 import { useGetProductsByEntity } from '../../../hooks/useAPI'
-import Grid from '../../Listing/Grid'
-import ListingPagination from '../../Listing/ListingPagination'
+import { ListingPagination, Grid, AccountLayout } from '../../'
 import { getItemsForDefaultWishList } from '../../../selectors/userSelectors'
 
 const AccountFavorites = () => {
@@ -42,4 +40,4 @@ const AccountFavorites = () => {
   )
 }
 
-export default AccountFavorites
+export { AccountFavorites }

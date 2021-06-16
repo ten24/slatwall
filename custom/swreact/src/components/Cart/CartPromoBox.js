@@ -64,4 +64,4 @@ const CartPromoBox = () => {
     </div>
   )
 }
-export default CartPromoBox
+export { CartPromoBox }

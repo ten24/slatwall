@@ -1,5 +1,5 @@
 import Slider from 'react-slick'
-import ProductCard from '../ProductCard/ProductCard'
+import { ProductCard } from '../'
 import { useGetProductsByEntity } from '../../hooks/useAPI'
 import { useEffect } from 'react'
 

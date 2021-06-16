@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-import { AccountLayout } from '../AccountLayout/AccountLayout'
+import { AccountLayout, ListingPagination, AccountToolBar } from '../../'
 import { useTranslation } from 'react-i18next'
 import useFormatCurrency from '../../../hooks/useFormatCurrency'
 import { useFormatDateTime } from '../../../hooks/useFormatDate'
 
 import { useGetAllOrders } from '../../../hooks/useAPI'
-import ListingPagination from '../../Listing/ListingPagination'
-import { AccountToolBar } from '../..'
 
 const OrderStatus = ({ type = 'info', text }) => {
   return <span className={`badge badge-${type} m-0`}>{text}</span>
@@ -94,4 +92,4 @@ const AccountOrderHistory = ({ crumbs, title, orders }) => {
   )
 }
 
-export default AccountOrderHistory
+export { AccountOrderHistory }

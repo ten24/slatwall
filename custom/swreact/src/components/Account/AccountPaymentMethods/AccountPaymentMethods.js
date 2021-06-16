@@ -1,9 +1,7 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
-import PaymentMethodItem from './PaymentMethodItem'
+import { AccountLayout, AccountContent, PaymentMethodItem } from '../../'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -49,4 +47,4 @@ const AccountPaymentMethods = () => {
 }
 
 AccountPaymentMethods.propTypes = {}
-export default AccountPaymentMethods
+export { AccountPaymentMethods }

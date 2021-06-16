@@ -1,10 +1,7 @@
 import { useFormik } from 'formik'
 import { connect, useDispatch } from 'react-redux'
-import AccountContent from '../AccountContent/AccountContent'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountAddressForm from './AccountAddressForm'
-import useRedirect from '../../../hooks/useRedirect'
-import SwSelect from '../../SwSelect/SwSelect'
+import { useRedirect } from '../../../hooks/'
+import { SwSelect, AccountAddressForm, AccountLayout, AccountContent } from '../../'
 import { addPaymentMethod } from '../../../actions/userActions'
 import { useTranslation } from 'react-i18next'
 
@@ -132,7 +129,7 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
           <hr className="mt-2 mb-3" />
           <div className="d-flex flex-wrap justify-content-end">
             <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit || formik.isSubmitting}>
-              {isEdit ? t('frontend.account.payment.save'): t('frontend.account.payment.saveNew')}
+              {isEdit ? t('frontend.account.payment.save') : t('frontend.account.payment.saveNew')}
             </button>
           </div>
         </div>

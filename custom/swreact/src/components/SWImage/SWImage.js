@@ -44,4 +44,4 @@ const SWImage = ({ className, customPath, src, alt = '', style = {}, type = 'pro
   return <DefaultImage className={className} style={style} type={type} />
 }
 
-export default SWImage
+export { SWImage }

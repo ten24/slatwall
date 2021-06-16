@@ -42,4 +42,4 @@ const ProductImage = ({ skuID, imageFile, defaultSku_imageFile, customPath, forc
   )
 }
 
-export default ProductImage
+export { ProductImage }

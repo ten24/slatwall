@@ -90,4 +90,4 @@ const AccountCarts = ({ customBody, crumbs, title, contentTitle }) => {
   )
 }
 
-export default AccountCarts
+export { AccountCarts }

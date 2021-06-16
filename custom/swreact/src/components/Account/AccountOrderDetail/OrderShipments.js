@@ -92,4 +92,4 @@ const OrderShipments = ({ shipments }) => {
   )
 }
 
-export default OrderShipments
+export { OrderShipments }

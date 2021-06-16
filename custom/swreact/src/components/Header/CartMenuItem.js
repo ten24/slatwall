@@ -23,4 +23,4 @@ const CartMenuItem = () => {
   )
 }
 
-export default CartMenuItem
+export { CartMenuItem }

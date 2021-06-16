@@ -19,4 +19,4 @@ const PageHeader = ({ title, children, ...props }) => {
   )
 }
 
-export default PageHeader
+export { PageHeader }

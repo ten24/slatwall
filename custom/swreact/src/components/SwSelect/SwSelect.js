@@ -13,4 +13,4 @@ const SwSelect = ({ id, value, onChange, options, disabled }) => {
   )
 }
 
-export default SwSelect
+export { SwSelect }

@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
+import { AccountLayout, AccountContent } from '../../'
 import { useFormik } from 'formik'
 import { updateUser } from '../../../actions/userActions'
 import Swal from 'sweetalert2'
@@ -136,4 +135,4 @@ const AccountProfile = ({ crumbs, title, customBody, contentTitle }) => {
   )
 }
 
-export default AccountProfile
+export { AccountProfile }

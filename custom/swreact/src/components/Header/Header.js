@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
-import CartMenuItem from './CartMenuItem'
-import AccountBubble from './AccountBubble'
+import { AccountBubble, CartMenuItem } from '../'
 import { useTranslation } from 'react-i18next'
 import queryString from 'query-string'
 import { useSelector } from 'react-redux'
@@ -257,4 +256,4 @@ function Header({ logo, mobileLogo }) {
   )
 }
 
-export default Header
+export { Header }

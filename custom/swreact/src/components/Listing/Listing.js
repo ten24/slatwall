@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import ProductListingGrid from './ListingGrid'
-import ProductListingToolBar from './ListingToolBar'
-import ProductListingPagination from './ListingPagination'
-import ProductListingSidebar from './ListingSidebar'
+
+import { ListingSidebar, ListingPagination, ListingToolBar, ListingGrid } from '..'
 import queryString from 'query-string'
 import { useGetProducts } from '../../hooks/useAPI'
 
@@ -15,7 +13,7 @@ const buildPath = params => {
 }
 const initialData = { brand: '', orderBy: 'product.productFeaturedFlag|DESC,product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
 
-const ListingPage = ({ children, preFilter, hide = [] }) => {
+const Listing = ({ children, preFilter, hide = [] }) => {
   const loc = useLocation()
   let history = useHistory()
   let params = processQueryParameters(loc.search)
@@ -86,12 +84,12 @@ const ListingPage = ({ children, preFilter, hide = [] }) => {
       <div className="container pb-5 mb-2 mb-md-4">
         <div className="row">
           <aside className="col-lg-4">
-            <ProductListingSidebar isFetching={request.isFetching} hide={hide} qs={loc.search} {...request.filtering} recordsCount={request.data.recordsCount} keyword={params['keyword']} setKeyword={setKeyword} updateAttribute={updateAttribute} />
+            <ListingSidebar isFetching={request.isFetching} hide={hide} qs={loc.search} {...request.filtering} recordsCount={request.data.recordsCount} keyword={params['keyword']} setKeyword={setKeyword} updateAttribute={updateAttribute} />
           </aside>
           <div className="col-lg-8">
-            <ProductListingToolBar hide={hide} {...request.filtering} removeFilter={updateAttribute} setSort={setSort} />
-            <ProductListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
-            <ProductListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />
+            <ListingToolBar hide={hide} {...request.filtering} removeFilter={updateAttribute} setSort={setSort} />
+            <ListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
+            <ListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />
           </div>
         </div>
       </div>
@@ -99,4 +97,4 @@ const ListingPage = ({ children, preFilter, hide = [] }) => {
   )
 }
 
-export default ListingPage
+export { Listing }

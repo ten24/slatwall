@@ -102,4 +102,4 @@ const ListingFilter = ({ qs, appliedFilters, name, facetKey, selectType, options
   )
 }
 
-export default ListingFilter
+export { ListingFilter }

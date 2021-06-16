@@ -51,4 +51,4 @@ const PaymentMethodItem = props => {
     </tr>
   )
 }
-export default PaymentMethodItem
+export { PaymentMethodItem }

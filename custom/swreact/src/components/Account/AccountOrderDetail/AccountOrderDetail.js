@@ -1,9 +1,6 @@
 import { useEffect } from 'react'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import OrderShipments from './OrderShipments'
-import OrderToolbar from './OrderToolbar'
+import { AccountLayout, OrderDetails, OrderShipments, OrderToolbar } from '../../'
 import { useGetOrderDetails } from '../../../hooks/useAPI'
-import OrderDetails from './OrderDetails'
 
 const AccountOrderDetail = props => {
   const orderID = props.path
@@ -26,4 +23,4 @@ const AccountOrderDetail = props => {
     </AccountLayout>
   )
 }
-export default AccountOrderDetail
+export { AccountOrderDetail }
