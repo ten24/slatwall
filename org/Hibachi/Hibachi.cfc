@@ -905,17 +905,18 @@ component extends="framework.one" {
 
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
 
-						getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class',true);
-
 						getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterUpdateEntitiesWithCustomProperties");
 						if (success){
 							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
 						}else{
 							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
 						}
+						
+                        // clear Entity-metadata cache						
+						getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class',true);
+
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
-						
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 						
