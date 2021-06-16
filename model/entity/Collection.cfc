@@ -4019,7 +4019,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getPeriodIntervalDateFormat(){
 		switch(getCollectionConfigStruct()['periodInterval']){
 			case 'hour':
-				return 'yyyy-mm-dd-hh';
+				return 'yyyy-mm-dd-HH';
 			case 'day':
 				return 'yyyy-mm-dd';
 			case 'week':

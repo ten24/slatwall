@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 	
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.locationAddress#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.locationAddress#" edit="#rc.edit#" sRedirectQS="locationID=#rc.location.getLocationID()#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.locationAddress#" edit="#rc.edit#" 
 								   backAction="admin:entity.detailLocation" 
 								   backQueryString="locationID=#rc.location.getLocationID()#"

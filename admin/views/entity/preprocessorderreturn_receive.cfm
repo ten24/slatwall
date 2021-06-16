@@ -118,7 +118,7 @@ Notes:
 				</tr>
 			</cfloop>
 		</table>
-		<input type="text" id="orderReturnItemsQuantityTotal" ng-model="local.orderReturnItemsQuantityTotal" value="{{#ArrayToList(orderReturnItemQuantityArray,'--')#}}" style="display:none;">
+		<input type="text" id="orderReturnItemsQuantityTotal" ng-cloak ng-model="local.orderReturnItemsQuantityTotal" value="{{#ArrayToList(orderReturnItemQuantityArray,'--')#}}" ng-change="{{local.orderReturnItemsQuantityTotal = #ArrayToList(orderReturnItemQuantityArray,'--')#}}" style="display:none;">
 		
 	</hb:HibachiEntityProcessForm>
 </cfoutput>

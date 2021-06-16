@@ -1,6 +1,7 @@
 {
 	"properties": {
-		"statusCode": [{ "contexts": "edit,delete", "eq": "ccbstOpen" }],
-		"location": [{ "contexts": "save", "required": true }]
+		"statusCode": [{ "contexts": "edit,delete", "eq": "ccbstOpen"}],
+		"location": [{ "contexts": "save", "required": true }],
+		"physicals": [{ "contexts": "delete", "maxCollection": 0 }]
 	}
 }

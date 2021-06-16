@@ -64,6 +64,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="maximumUsePerOrder" />
 		<hb:HibachiListingColumn propertyIdentifier="maximumUsePerItem" />
 		<hb:HibachiListingColumn propertyIdentifier="maximumUsePerQualification" />
+		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
 		
 	</hb:HibachiListingDisplay>
 	
