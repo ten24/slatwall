@@ -379,8 +379,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    
 	    this.logHibachi("ERPONE:: called processIntegration_fetchChanges :: Tracker: #arguments.processObject.getTracker()#, DateTimeSince: #arguments.processObject.getDateTimeSince()# " );
 	    
-	    arguments.processObject.getDateTimeSince()
-	    
 	    if(arguments.processObject.getTracker() == 'accounts'){
 	        return this.importErpOneAccountChanges(arguments.processObject.getDateTimeSince() );
 	    }
@@ -388,7 +386,19 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    if(arguments.processObject.getTracker() == 'orders'){
 	        return this.importErpOneOrderChanges(arguments.processObject.getDateTimeSince() );
 	    }
-
+	    
+	    if(arguments.processObject.getTracker() == 'orderItems'){
+	        return this.importErpOneOrderItemChanges(arguments.processObject.getDateTimeSince() );
+	    }
+	    
+	    if(arguments.processObject.getTracker() == 'orderPayments'){
+	        return this.importErpOneOrderPaymentChanges(arguments.processObject.getDateTimeSince() );
+	    }
+	    
+	    if(arguments.processObject.getTracker() == 'orderDeliveries'){
+	        return this.importErpOneOrderShipmentChanges(arguments.processObject.getDateTimeSince() );
+	    }
+        
 	}
 	
 	public any function callErpOneGetChangesApi( 
@@ -764,6 +774,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	}
 	
 	public any function importErpOneAccountChanges( any dateTimeSince = now() - 1 ){
+	    
+	    // first ask the ERP to calculate the changes
+	    this.trackErpTableChanges('customer', true);
 		
 		this.logHibachi("ERPONE - Starting importing importErpOneAccountChanges");
 		
@@ -876,7 +889,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
 
 
-		var getOrdersQueryString = 'FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
+		var getOrdersQueryString = 'FOR EACH oe_head NO-LOCK WHERE company_oe = "#company#" AND rec_type = "O" ';
         var columns = [ 
             'order',
             'ord_ext', 
@@ -917,6 +930,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	public any function importErpOneOrderChanges( any dateTimeSince = now() - 1 ){
 		
+		// first ask the ERP to calculate the changes
+	    this.trackErpTableChanges('oe_head', true);
+		
 		this.logHibachi("ERPONE - Starting importing importErpOneOrderChanges");
 		
 		var isDevModeFlag = this.setting("devMode");
@@ -926,7 +942,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		}
 		
 		var tableName = 'oe_head';
-		var filter = ' oe_head.company_oe = "#company#" AND oe_head.rec_type = "O" ';
+		var filter = ' company_oe = "#company#" AND rec_type = "O" ';
 		var columns = [ 
             'order',
             'ord_ext', 
@@ -964,14 +980,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    dateTimeSince           = arguments.dateTimeSince
 		);
 		
-		this.logHibachi("ERPONE - Finish importing Account changes");
+		this.logHibachi("ERPONE - Finish importing Orders changes");
 		
 		return ordersImportBatch;
 	}
 
 	public any function erpOneOrderFormatterFunction(required struct erponeOrder){
     	
-    	 if(isNull(arguments.erponeOrder['order'])){
+    	if(isNull(arguments.erponeOrder['order'])){
             return; // erp returns a lot of empty objects, need to filter those out
         }
     	
@@ -1396,16 +1412,47 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 
 
+    public any function erpOneOrderItemFormatterFunction(required struct erponeOrderItem){
+        
+        if(isNull(arguments.erponeOrderItem['order'])){
+            return; // erp returns a lot of empty objects, need to filter those out
+        }
+    	    
+	    if(left(arguments.erponeOrderItem['order'], 1) == '-'){
+	        return; // if it's not a complete order
+	    }
+	    
+	     var erponeOrderItemStructKeyMap = {
+			"line"       : "line",
+			"item"       : "remoteSkuID",
+			"order"      : "remoteOrderID",
+			"price"      : "price",
+			"q_ord"      : "quantity",
+			"list_price" : "skuPrice",
+			"rec_seq"    : "sequence"
+		};
+	    
+	    var transformedItem = this.getHibachiUtilityService().swapStructKeys( erponeOrderItem, erponeOrderItemStructKeyMap);
+    	
+    	// make remote ids
+    	transformedItem['remoteOrderItemID'] = this.getSlatwallOrderItemRemoteID( transformedItem.remoteOrderID, transformedItem.remoteSkuID);
+    	
+    	transformedItem['remoteOrderFulfillmentID'] = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( transformedItem.remoteOrderID );
+    
+    	// defaults
+    	transformedItem['orderItemTypeCode']    = 'oitSale';
+    	transformedItem['orderItemStatusCode']  = 'oistNew';
 
+    	transformedItem['currencyCode']         = 'USD';
+    	transformedItem['userDefinedPriceFlag'] = true; // so that Slatwall does-not update the `price` 
 
+    	return transformedItem;
+	}
 
 	public any function importErpOneOrderItems( any orderNumber, boolean processInLine = false){
 	    
-	    var utilityService = this.getHibachiUtilityService();
-	    
-		var company =  this.setting("prodCompany")
-	    
 	    var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
 		if(isDevModeFlag){
 			company = this.setting("devCompany");
 		}
@@ -1416,51 +1463,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         }
             
 		var columns = "order,line,item,descr,price,list_price,q_ord,item_stat,rec_seq,o_ext";
+	    var erpOneOrderItemMapping = this.getMappingByMappingCode('ErpOneOrderItemImport');
+		      
 		      
 		this.logHibachi("ERPONE - importing order-items for order: #arguments.orderNumber ?: 'All'#, Query: #getOrderItemsQueryString#, Columns: #columns#");
 		
-	    var erpOneOrderItemMapping = this.getMappingByMappingCode('ErpOneOrderItemImport');
-	    
-	    var erponeOrderItemStructKeyMap = {
-			"line"       : "line",
-			"item"       : "remoteSkuID",
-			"order"      : "remoteOrderID",
-			"price"      : "price",
-			"q_ord"      : "quantity",
-			"list_price" : "skuPrice",
-			"rec_seq"    : "sequence"
-		};
-		
-    	var recordFormatterFunction = function(required struct erponeOrderItem){
-    	    
-    	    if(left(arguments.erponeOrderItem['order'], 1) == '-'){
-    	        return; // if it's not a complete order
-    	    }
-    	    
-    	    var transformedItem = utilityService.swapStructKeys( erponeOrderItem, erponeOrderItemStructKeyMap);
-	    	
-	    	// make remote ids
-	    	transformedItem['remoteOrderItemID'] = this.getSlatwallOrderItemRemoteID( transformedItem.remoteOrderID, transformedItem.remoteSkuID);
-	    	
-	    	transformedItem['remoteOrderFulfillmentID'] = this.getSlatwallOrderFulfillmentRemoteIDByErpOneOrderNo( transformedItem.remoteOrderID );
-        
-	    	// defaults
-	    	transformedItem['orderItemTypeCode']    = 'oitSale';
-	    	transformedItem['orderItemStatusCode']  = 'oistNew';
-
-	    	transformedItem['currencyCode']         = 'USD';
-	    	transformedItem['userDefinedPriceFlag'] = true; // so that Slatwall does-not update the `price` 
-
-	    	return transformedItem;
-    	}
-    	
     	
     	if(processInLine){
     	    return this.fetchAndImportInline( 
     	        erpOneQuery             = getOrderItemsQueryString,
     		    columns                 = columns,
     		    mapping                 = erpOneOrderItemMapping,
-    		    recordFormatterFunction = recordFormatterFunction
+    		    recordFormatterFunction = erpOneOrderItemFormatterFunction
 		    );  
     	}
     	
@@ -1468,12 +1482,107 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    erpOneQuery             = getOrderItemsQueryString,
 		    columns                 = columns,
 		    mapping                 = erpOneOrderItemMapping,
-		    recordFormatterFunction = recordFormatterFunction
+		    recordFormatterFunction = erpOneOrderItemFormatterFunction
 		);
 		
 		return orderItemsImportBatch;
 	}
+
+	public any function importErpOneOrderItemChanges( any dateTimeSince = now() - 1 ){
+        
+        	// first ask the ERP to calculate the changes
+	    this.trackErpTableChanges('oe_line', true);
 	
+	
+		this.logHibachi("ERPONE - Starting importing importErpOneOrderItemChanges");
+		
+		var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
+		if(isDevModeFlag){
+			company = this.setting("devCompany");
+		}
+		
+		var tableName = 'oe_line';
+		var filter = " oe_line.company_oe = '#company#' AND oe_line.rec_type = 'O' ";
+		var columns = "order,line,item,descr,price,list_price,q_ord,item_stat,rec_seq,o_ext";
+	    var erpOneOrderItemMapping = this.getMappingByMappingCode('ErpOneOrderItemImport');
+		
+	    var orderItemsImportBatch = this.paginateAndImportChangesToQueue( 
+		    tableName               = tableName,
+		    columns                 = columns,
+		    filter                  = filter,
+		    mapping                 = erpOneOrderItemMapping,
+		    recordFormatterFunction = erpOneOrderItemFormatterFunction,
+		    dateTimeSince           = arguments.dateTimeSince
+		);
+		
+		this.logHibachi("ERPONE - Finish importing Order Items changes");
+		
+		return orderItemsImportBatch;
+	}
+
+	
+	
+    public any function erpOneOrderPaymentFormatterFunction(required struct erponeOrderPayment){
+	    
+	    if(isNull(arguments.erponeOrderPayment['order'])){
+            return; // erp returns a lot of empty objects, need to filter those out
+        }
+	    if(left(arguments.erponeOrderPayment['order'], 1) == '-'){
+	        return; // if it's not a complete order
+	    }
+	    
+	    var remoteID = this.getSlatwallOrderPaymentRemoteIDByErpOneOrder(arguments.erponeOrderPayment['order'], arguments.erponeOrderPayment['rec_seq'] );
+	    
+	    // try to find the previous one in case, the order is getting re-imported
+	    var orderPaymentID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+	        'entityName'  = 'OrderPayment',
+	        'uniqueKey'   = 'remoteID',
+	        'uniqueValue' = remoteID
+	    );
+	    
+	    var orderPayment = { 
+    	    'amount'                : arguments.erponeOrderPayment['i_tot_gross'],
+	        'rec_seq'               : arguments.erponeOrderPayment['rec_seq'], // needed for transaction generator function
+            'currencyCode'			: arguments.erponeOrderPayment['currency_code'] ?: 'USD',
+	        'remoteOrderID'         : arguments.erponeOrderPayment['order'],
+	        'orderPaymentID'        : orderPaymentID ?: '',
+	        'orderPaymentTypeCode'  : 'optCharge',
+    	    'remoteOrderPaymentID'	: remoteID
+	    };
+	    
+	    
+	    orderPayment['orderPaymentStatusTypeCode'] = 'opstActive';
+    	if( !isNull(arguments.erponeOrderPayment['cu_po']) && arguments.erponeOrderPayment['cu_po'].len() ){
+    	    orderPayment['paymentTerm']   = 'ERP One default PO term';
+    	    orderPayment['paymentMethod'] = 'Purchase Order';
+    	    orderPayment['termPaymentAccountRemoteID'] =  arguments.erponeOrderPayment['customer'];
+    	} else {
+    	    orderPayment['paymentMethod'] = 'ERP payment method';
+    	}
+    	
+    	// Set billing and shipping addresses			
+	    var address = {
+			'streetAddress'     : arguments.erponeOrderPayment['adr'][1],
+			'street2Address'    : arguments.erponeOrderPayment['adr'][2] & " " & arguments.erponeOrderPayment['adr'][3],
+			'city'              : arguments.erponeOrderPayment['adr'][4],
+			'email'             : arguments.erponeOrderPayment['email'],
+			'phoneNumber'       : arguments.erponeOrderPayment['phone'],
+			'stateCode'         : arguments.erponeOrderPayment['state'],
+			'postalCode'        : arguments.erponeOrderPayment['postal_code'],
+			'countryCode'       : arguments.erponeOrderPayment['country_code'] ?: 'US'
+	    }
+	    
+	    address["name"] =  this.getAddressService().getAddressName(address);
+	    address['addressNickName'] = "Billing Address" & address["name"];
+	    address['remoteAddressID'] = 'billing_'&orderPayment['remoteOrderPaymentID'];
+	    
+	    var billingAddress = this.getHibachiUtilityService().prefixStructKeys(address, 'billingAddress_');
+    	orderPayment.append(billingAddress);
+    	
+    	return orderPayment;
+	}
+
 	public any function importErpOneOrderPayments( any orderNumber, boolean processInLine = false){
 		var utilityService = this.getHibachiUtilityService();
 
@@ -1483,9 +1592,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			company = this.setting("devCompany");
 		}
 		
-		var getOrderPaymentsQueryString = "FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = '#company#' AND oe_head.rec_type = 'I'";
+		var getOrderPaymentsQueryString = "FOR EACH oe_head NO-LOCK WHERE company_oe = '#company#' AND rec_type = 'I'";
 		if( !isNull(arguments.orderNumber) ){
-		    getOrderPaymentsQueryString &= " AND oe_head.order = '#arguments.OrderNumber#'";
+		    getOrderPaymentsQueryString &= " AND order = '#arguments.OrderNumber#'";
 		}
 		          
         var columns = [ 
@@ -1518,77 +1627,19 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             // 'invoice',
             
             'stat'
-        ];        
-        
-	    columns = utilityService.prefixListItems(columns.toList(), 'oe_head.');
+        ].toList();        
         
 		this.logHibachi("ERPONE - importing order-payments for order: #arguments.orderNumber ?: 'all' #, Query: #getOrderPaymentsQueryString#, Columns: #columns#");
 		
 	    var erpOneOrderPaymentMapping = this.getMappingByMappingCode('ErpOneOrderPaymentImport');
 
-    	var recordFormatterFunction = function(required struct erponeOrderPayment){
-    	    
-    	    if(left(arguments.erponeOrderPayment['oe_head_order'], 1) == '-'){
-    	        return; // if it's not a complete order
-    	    }
-    	    
-    	    var remoteID = this.getSlatwallOrderPaymentRemoteIDByErpOneOrder(arguments.erponeOrderPayment['oe_head_order'], arguments.erponeOrderPayment['oe_head_rec_seq'] );
-    	    
-    	    // try to find the previous one in case, the order is getting re-imported
-    	    var orderPaymentID = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
-    	        'entityName'  = 'OrderPayment',
-    	        'uniqueKey'   = 'remoteID',
-    	        'uniqueValue' = remoteID
-    	    );
-    	    
-    	    var orderPayment = { 
-        	    'amount'                : arguments.erponeOrderPayment['oe_head_i_tot_gross'],
-    	        'rec_seq'               : arguments.erponeOrderPayment['oe_head_rec_seq'], // needed for transaction generator function
-                'currencyCode'			: arguments.erponeOrderPayment['oe_head_currency_code'] ?: 'USD',
-    	        'remoteOrderID'         : arguments.erponeOrderPayment['oe_head_order'],
-    	        'orderPaymentID'        : orderPaymentID ?: '',
-    	        'orderPaymentTypeCode'  : 'optCharge',
-        	    'remoteOrderPaymentID'	: remoteID
-    	    };
-    	    
-    	    
-    	    orderPayment['orderPaymentStatusTypeCode'] = 'opstActive';
-        	if( !isNull(arguments.erponeOrderPayment['oe_head_cu_po']) && arguments.erponeOrderPayment['oe_head_cu_po'].len() ){
-        	    orderPayment['paymentTerm']   = 'ERP One default PO term';
-        	    orderPayment['paymentMethod'] = 'Purchase Order';
-        	    orderPayment['termPaymentAccountRemoteID'] =  arguments.erponeOrderPayment['customer'];
-        	} else {
-        	    orderPayment['paymentMethod'] = 'ERP payment method';
-        	}
-        	
-        	// Set billing and shipping addresses			
-		    var address = {
-				'streetAddress'     : arguments.erponeOrderPayment['oe_head_adr'][1],
-				'street2Address'    : arguments.erponeOrderPayment['oe_head_adr'][2] & " " & arguments.erponeOrderPayment['oe_head_adr'][3],
-				'city'              : arguments.erponeOrderPayment['oe_head_adr'][4],
-				'email'             : arguments.erponeOrderPayment['oe_head_email'],
-				'phoneNumber'       : arguments.erponeOrderPayment['oe_head_phone'],
-				'stateCode'         : arguments.erponeOrderPayment['oe_head_state'],
-				'postalCode'        : arguments.erponeOrderPayment['oe_head_postal_code'],
-				'countryCode'       : arguments.erponeOrderPayment['oe_head_country_code'] ?: 'US'
-		    }
-		    
-		    address["name"] =  this.getAddressService().getAddressName(address);
-		    address['addressNickName'] = "Billing Address" & address["name"];
-		    address['remoteAddressID'] = 'billing_'&orderPayment['remoteOrderPaymentID'];
-		    
-		    var billingAddress = utilityService.prefixStructKeys(address, 'billingAddress_');
-        	orderPayment.append(billingAddress);
-        	
-	    	return orderPayment;
-    	}
     	
     	if(processInLine){
     	    return this.fetchAndImportInline( 
     	        erpOneQuery             = getOrderPaymentsQueryString,
     		    columns                 = columns,
     		    mapping                 = erpOneOrderPaymentMapping,
-    		    recordFormatterFunction = recordFormatterFunction
+    		    recordFormatterFunction = erpOneOrderPaymentFormatterFunction
 		    );  
     	}
     	
@@ -1596,8 +1647,71 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    erpOneQuery             = getOrderPaymentsQueryString,
 		    columns                 = columns,
 		    mapping                 = erpOneOrderPaymentMapping,
-		    recordFormatterFunction = recordFormatterFunction
+		    recordFormatterFunction = erpOneOrderPaymentFormatterFunction
 		);
+		
+		return orderPaymentsImportBatch;
+	}
+	
+	public any function importErpOneOrderPaymentChanges( any dateTimeSince = now() - 1 ){
+        
+        // first ask the ERP to calculate the changes
+	    this.trackErpTableChanges('oe_head', true);
+	
+		this.logHibachi("ERPONE - Starting importing importErpOneOrderPaymentChanges");
+		
+		var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
+		if(isDevModeFlag){
+			company = this.setting("devCompany");
+		}
+		
+		var tableName = 'oe_head';
+		var filter = " company_oe = '#company#' AND rec_type = 'I'";
+        var columns = [ 
+            
+            'order',
+            'customer',
+            'rec_seq',
+            'currency_code',
+            
+            'adr',
+            'state',
+            'email',
+            'phone',
+            'country_code',
+            'postal_code',
+            
+            'created_date',
+            'created_time',
+            
+            'cu_po',
+            'c_tot_code',
+            'c_tot_code_amt',
+            
+            
+            'i_tot_gross',
+            'i_tot_net_ar',
+            
+            // 'invc_date',
+            // 'invc_seq',
+            // 'invoice',
+            
+            'stat'
+        ].toList();        
+
+	    var erpOneOrderPaymentMapping = this.getMappingByMappingCode('ErpOneOrderPaymentImport');
+		
+	    var orderPaymentsImportBatch = this.paginateAndImportChangesToQueue( 
+		    tableName               = tableName,
+		    columns                 = columns,
+		    filter                  = filter,
+		    mapping                 = erpOneOrderPaymentMapping,
+		    recordFormatterFunction = erpOneOrderPaymentFormatterFunction,
+		    dateTimeSince           = arguments.dateTimeSince
+		);
+		
+		this.logHibachi("ERPONE - Finish importing Order Payments changes");
 		
 		return orderPaymentsImportBatch;
 	}
@@ -1629,6 +1743,58 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         return [ transactionData ];
 	}
 
+
+
+
+    public any function erpOneOrderShipmentFormatterFunction(required struct erponeOrderPayment){
+	    
+	    if(isNull(arguments.erponeOrderPayment['order'])){
+            return; // erp returns a lot of empty objects, need to filter those out
+        }
+	    if(left(arguments.erponeOrderPayment['order'], 1) == '-'){
+	        return; // if it's not a complete order
+	    }
+	    
+	    var remoteID = this.getSlatwallOrderDelivderyRemoteIDByErpOneOrder(arguments.erponeOrderShipment['order'], arguments.erponeOrderShipment['rec_seq'] );
+    	    
+	    var orderDelivery = { 
+	        'rec_seq'               : arguments.erponeOrderShipment['rec_seq'],
+    	    'remoteOrderID'         : arguments.erponeOrderShipment['order'],
+    	    'remoteOrderDeliveryID'	: remoteID,
+    	    'warehouseLocationCode' : 'default',
+    	    'shippingMethodCode'    : 'erpOneShippingMethod',
+    	    'fulfillmentMethodName' : "Freight"
+	    };
+    	
+    	// TODO 
+    	/*
+    	    statusCode       // not known
+    	    trackingUrl,     // not known
+    	    trackingNumber,  // not known
+        */
+        
+    	// Set shipping addresses			
+	    var address = {
+			'streetAddress'     : arguments.erponeOrderShipment['adr'][1],
+			'street2Address'    : arguments.erponeOrderShipment['adr'][2] & " " & arguments.erponeOrderShipment['adr'][3],
+			'city'              : arguments.erponeOrderShipment['adr'][4],
+			'email'             : arguments.erponeOrderShipment['email'],
+			'phoneNumber'       : arguments.erponeOrderShipment['phone'],
+			'stateCode'         : arguments.erponeOrderShipment['state'],
+			'postalCode'        : arguments.erponeOrderShipment['postal_code'],
+			'countryCode'       : arguments.erponeOrderShipment['country_code'] ?: 'US'
+	    };
+	    
+	    address["name"] =  this.getAddressService().getAddressName(address);
+	    address['addressNickName'] = "Shipping Address" & address["name"];
+	    address['remoteAddressID'] = 'shipping_'&orderDelivery['remoteOrderDeliveryID'];
+	   
+	    var shippingAddress = this.getHibachiUtilityService().prefixStructKeys(address, 'shippingAddress_');
+    	orderDelivery.append(shippingAddress);
+    	
+    	return orderDelivery;
+    }
+
 	public any function importErpOneOrderShipments(any orderNumber, boolean processInLine = false){
 	    
 	    var utilityService = this.getHibachiUtilityService();
@@ -1639,9 +1805,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			company = this.setting("devCompany");
 		}
 		
-		var getOrderShipmentsQueryString = "FOR EACH oe_head NO-LOCK WHERE oe_head.company_oe = '#company#' AND oe_head.rec_type = 'S'";
+		var getOrderShipmentsQueryString = "FOR EACH oe_head NO-LOCK WHERE company_oe = '#company#' AND rec_type = 'S'";
 		if( !isNull(arguments.orderNumber) ){
-		    getOrderShipmentsQueryString &= " AND oe_head.order = '#arguments.OrderNumber#'";
+		    getOrderShipmentsQueryString &= " AND order = '#arguments.OrderNumber#'";
 		}
 		    
         var columns = [ 
@@ -1651,66 +1817,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             "order", "opn", "stat", "ord_ext", "ord_date",
             "ship_date", "num_pages", "manifest_id", "warehouse", "ship_via_code",
             "adr", "phone", "email", "state", "country_code", "postal_code"
-        ];   
+        ].toList();   
        
-        columns = utilityService.prefixListItems(columns.toList(), 'oe_head.');
 	    var erpOneOrderShipmentMapping = this.getMappingByMappingCode('ErpOneOrderShipmentImport');
+		
 		this.logHibachi("ERPONE - importing order-payments for order: #arguments.orderNumber ?: 'all' #, Query: #getOrderShipmentsQueryString#, Columns: #columns#");
 		
-		
-    	var recordFormatterFunction = function(required struct erponeOrderShipment){
-    	    
-    	    if(left(arguments.erponeOrderShipment['oe_head_order'], 1) == '-'){
-    	        return; // if it's not a complete order
-    	    }
-    	    
-    	    var remoteID = this.getSlatwallOrderDelivderyRemoteIDByErpOneOrder(arguments.erponeOrderShipment['oe_head_order'], arguments.erponeOrderShipment['oe_head_rec_seq'] );
-    	    
-    	    var orderDelivery = { 
-    	        'rec_seq'               : arguments.erponeOrderShipment['oe_head_rec_seq'],
-        	    'remoteOrderID'         : arguments.erponeOrderShipment['oe_head_order'],
-        	    'remoteOrderDeliveryID'	: remoteID,
-        	    'warehouseLocationCode' : 'default',
-        	    'shippingMethodCode'    : 'erpOneShippingMethod',
-        	    'fulfillmentMethodName' : "Freight"
-    	    };
-        	
-        	// TODO 
-        	/*
-        	    statusCode       // not known
-        	    trackingUrl,     // not known
-        	    trackingNumber,  // not known
-            */
-            
-        	// Set shipping addresses			
-		    var address = {
-				'streetAddress'     : arguments.erponeOrderShipment['oe_head_adr'][1],
-				'street2Address'    : arguments.erponeOrderShipment['oe_head_adr'][2] & " " & arguments.erponeOrderShipment['oe_head_adr'][3],
-				'city'              : arguments.erponeOrderShipment['oe_head_adr'][4],
-				'email'             : arguments.erponeOrderShipment['oe_head_email'],
-				'phoneNumber'       : arguments.erponeOrderShipment['oe_head_phone'],
-				'stateCode'         : arguments.erponeOrderShipment['oe_head_state'],
-				'postalCode'        : arguments.erponeOrderShipment['oe_head_postal_code'],
-				'countryCode'       : arguments.erponeOrderShipment['oe_head_country_code'] ?: 'US'
-		    };
-		    
-		    address["name"] =  this.getAddressService().getAddressName(address);
-		    address['addressNickName'] = "Shipping Address" & address["name"];
-		    address['remoteAddressID'] = 'shipping_'&orderDelivery['remoteOrderDeliveryID'];
-		   
-		    var shippingAddress = utilityService.prefixStructKeys(address, 'shippingAddress_');
-        	orderDelivery.append(shippingAddress);
-        	
-	    	return orderDelivery;
-    	}
-    	
-    	
     	if(processInLine){
     	    return this.fetchAndImportInline( 
     	        erpOneQuery             = getOrderShipmentsQueryString,
     		    columns                 = columns,
     		    mapping                 = erpOneOrderShipmentMapping,
-    		    recordFormatterFunction = recordFormatterFunction
+    		    recordFormatterFunction = erpOneOrderShipmentFormatterFunction
 		    );  
     	}
     	
@@ -1718,12 +1836,52 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    erpOneQuery             = getOrderShipmentsQueryString,
 		    columns                 = columns,
 		    mapping                 = erpOneOrderShipmentMapping,
-		    recordFormatterFunction = recordFormatterFunction
+		    recordFormatterFunction = erpOneOrderShipmentFormatterFunction
 		);
 
 		return orderShipmentImportBatch;
 	}
 	
+	public any function importErpOneOrderShipmentChanges( any dateTimeSince = now() - 1 ){
+        
+    	// first ask the ERP to calculate the changes
+	    this.trackErpTableChanges('oe_head', true);
+	
+		this.logHibachi("ERPONE - Starting importing importErpOneOrderShipmentChanges");
+		
+		var isDevModeFlag = this.setting("devMode");
+		var company =  this.setting("prodCompany")
+		if(isDevModeFlag){
+			company = this.setting("devCompany");
+		}
+		
+		var tableName = 'oe_head';
+		var filter = " company_oe = '#company#' AND rec_type = 'S'";
+        var columns = [ 
+            "customer",
+            "invc_seq", "invoice",
+            "rec_seq", "created_date", "created_time",
+            "order", "opn", "stat", "ord_ext", "ord_date",
+            "ship_date", "num_pages", "manifest_id", "warehouse", "ship_via_code",
+            "adr", "phone", "email", "state", "country_code", "postal_code"
+        ].toList(); 
+        
+	    var erpOneOrderShipmentMapping = this.getMappingByMappingCode('ErpOneOrderShipmentImport');
+		
+	    var orderShipmentsImportBatch = this.paginateAndImportChangesToQueue( 
+		    tableName               = tableName,
+		    columns                 = columns,
+		    filter                  = filter,
+		    mapping                 = erpOneOrderShipmentMapping,
+		    recordFormatterFunction = erpOneOrderShipmentFormatterFunction,
+		    dateTimeSince           = arguments.dateTimeSince
+		);
+		
+		this.logHibachi("ERPONE - Finish importing Order Shipments changes");
+		
+		return orderShipmentsImportBatch;
+	}
+
 	public any function generateErpOneOrderDeliveryItems(struct data,  struct mapping,  struct propertyMetaData ){
 	    
 	    var isDevModeFlag = this.setting("devMode");
