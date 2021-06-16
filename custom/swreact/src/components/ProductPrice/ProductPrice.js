@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import useFormatCurrency from '../../hooks/useFormatCurrency'
+import { useFormatCurrency } from '../../hooks/'
 import { isAuthenticated } from '../../utils'
 
 const ProductPrice = ({ salePrice = 0, listPrice = 0, salePriceSuffixKey, accentSalePrice = true, listPriceSuffixKey = 'frontend.core.list' }) => {

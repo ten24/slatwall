@@ -1,6 +1,6 @@
 import Slider from 'react-slick'
 import { ProductCard } from '../'
-import { useGetProductsByEntity } from '../../hooks/useAPI'
+import { useGetProductsByEntity } from '../../hooks/'
 import { useEffect } from 'react'
 
 const ProductSlider = ({ children, params = {}, settings, title, slidesToShow = 4 }) => {

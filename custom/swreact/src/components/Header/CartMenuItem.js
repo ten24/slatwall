@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import useFormatCurrency from '../../hooks/useFormatCurrency'
+import { useFormatCurrency } from '../../hooks/'
 
 const CartMenuItem = () => {
   const { t } = useTranslation()

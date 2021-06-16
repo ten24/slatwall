@@ -1,4 +1,4 @@
-import { BreadCrumb } from '../../components'
+import { BreadCrumb } from '../'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 

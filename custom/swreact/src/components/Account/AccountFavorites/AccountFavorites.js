@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 // import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
-import { useGetProductsByEntity } from '../../../hooks/useAPI'
+import { useGetProductsByEntity } from '../../../hooks/'
 import { ListingPagination, Grid, AccountLayout } from '../../'
-import { getItemsForDefaultWishList } from '../../../selectors/userSelectors'
+import { getItemsForDefaultWishList } from '../../../selectors/'
 
 const AccountFavorites = () => {
   const items = useSelector(getItemsForDefaultWishList)

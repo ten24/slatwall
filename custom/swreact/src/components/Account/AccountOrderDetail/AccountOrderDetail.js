@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { AccountLayout, OrderDetails, OrderShipments, OrderToolbar } from '../../'
-import { useGetOrderDetails } from '../../../hooks/useAPI'
+import { useGetOrderDetails } from '../../../hooks/'
 
 const AccountOrderDetail = props => {
   const orderID = props.path

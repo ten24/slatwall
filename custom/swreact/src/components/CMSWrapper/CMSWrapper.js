@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { getPageContent } from '../../actions/contentActions'
 import { useHistory, useLocation } from 'react-router'
-import { getWishLists } from '../../actions/userActions'
+import { getWishLists, getPageContent } from '../../actions/'
 
 const CMSWrapper = ({ children }) => {
   const dispatch = useDispatch()

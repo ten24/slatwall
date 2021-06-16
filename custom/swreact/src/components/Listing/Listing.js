@@ -3,7 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 
 import { ListingSidebar, ListingPagination, ListingToolBar, ListingGrid } from '..'
 import queryString from 'query-string'
-import { useGetProducts } from '../../hooks/useAPI'
+import { useGetProducts } from '../../hooks/'
 
 const processQueryParameters = params => {
   return queryString.parse(params, { arrayFormat: 'separator', arrayFormatSeparator: ',' })
@@ -13,7 +13,7 @@ const buildPath = params => {
 }
 const initialData = { brand: '', orderBy: 'product.productFeaturedFlag|DESC,product.productName|ASC', pageSize: 12, currentPage: 1, keyword: '' }
 
-const Listing = ({ children, preFilter, hide = [] }) => {
+const Listing = ({ preFilter, hide = [] }) => {
   const loc = useLocation()
   let history = useHistory()
   let params = processQueryParameters(loc.search)

@@ -1,9 +1,7 @@
 import { AccountLayout, AccountContent } from '../../'
-import { useGetAllOrders } from '../../../hooks/useAPI'
 import { useEffect } from 'react'
-import useFormatCurrency from '../../../hooks/useFormatCurrency'
 import { Link } from 'react-router-dom'
-import { useFormatDateTime } from '../../../hooks/useFormatDate'
+import { useFormatDateTime, useFormatCurrency, useGetAllOrders } from '../../../hooks/'
 
 const AccountRecentOrders = () => {
   let [orders, setRequest] = useGetAllOrders()

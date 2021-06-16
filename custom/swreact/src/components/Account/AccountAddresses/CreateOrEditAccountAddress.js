@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import useRedirect from '../../../hooks/useRedirect'
+import { useRedirect } from '../../../hooks/'
 import { AccountContent, AccountLayout, SwSelect } from '../../'
-import { addNewAccountAddress, updateAccountAddress } from '../../../actions/userActions'
+import { addNewAccountAddress, updateAccountAddress } from '../../../actions/'
 // TODO: Make this component reusable
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
-import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/contentActions'
+import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/'
 
 const CreateOrEditAccountAddress = ({ path, heading, redirectLocation = '/my-account/addresses', customBody, contentTitle, action = 'Account Address' }) => {
   const [redirect, setRedirect] = useRedirect({ location: redirectLocation })

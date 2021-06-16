@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { addSkuToWishList, removeWishlistItem, createListAndAddItem } from '../../actions/userActions'
-import { getDefaultWishlist, getItemsForDefaultWishList } from '../../selectors/userSelectors'
+import { addSkuToWishList, removeWishlistItem, createListAndAddItem } from '../../actions/'
+import { getDefaultWishlist, getItemsForDefaultWishList } from '../../selectors/'
 import { isAuthenticated } from '../../utils'
 
 const HeartButton = ({ skuID, className = 'btn-wishlist btn-sm' }) => {

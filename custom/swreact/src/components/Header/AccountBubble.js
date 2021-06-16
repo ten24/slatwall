@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUser } from '../../actions/userActions'
+import { getUser } from '../../actions/'
 import { useTranslation } from 'react-i18next'
 
 const AccountBubble = () => {

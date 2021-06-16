@@ -19,7 +19,7 @@ export { AccountCarts } from './Account/AccountCarts/AccountCarts'
 
 export { AccountPaymentMethods } from './Account/AccountPaymentMethods/AccountPaymentMethods'
 export { AccountAddressForm } from './Account/AccountPaymentMethods/AccountAddressForm'
-export { default as CreateOrEditAccountPaymentMethod } from './Account/AccountPaymentMethods/CreateOrEditAccountPaymentMethod'
+export { CreateOrEditAccountPaymentMethod } from './Account/AccountPaymentMethods/CreateOrEditAccountPaymentMethod'
 export { PaymentMethodItem } from './Account/AccountPaymentMethods/PaymentMethodItem'
 
 export { AccountProfile } from './Account/AccountProfile/AccountProfile'
@@ -55,6 +55,7 @@ export { GiftCardPayment } from './Checkout/Payment/GiftCardPayment'
 export { CreditCardPayment } from './Checkout/Payment/CreditCardPayment'
 export { PaymentSlide } from './Checkout/Payment/Payment'
 export { CreditCardDetails } from './Checkout/Payment/CreditCardDetails'
+export { PaymentAddressSelector } from './Checkout/Payment/PaymentAddressSelector'
 
 export { PickupLocationPicker } from './Checkout/Fulfilment/PickupLocationPicker'
 export { ShippingMethodPicker } from './Checkout/Fulfilment/ShippingMethodPicker'

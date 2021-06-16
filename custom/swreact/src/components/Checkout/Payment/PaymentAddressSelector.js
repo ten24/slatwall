@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/contentActions'
+import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/'
 import { useFormik } from 'formik'
 import { SwRadioSelect, SwSelect } from '../..'
 import { useTranslation } from 'react-i18next'

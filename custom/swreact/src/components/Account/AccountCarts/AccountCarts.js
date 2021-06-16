@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
+import { AccountLayout, ListingPagination, AccountToolBar } from '../../'
 import { useTranslation } from 'react-i18next'
-import { useGetAccountCartsAndQuotes } from '../../../hooks/useAPI'
-import { useFormatCurrency, useFormatDate } from '../../../hooks'
+import { useFormatCurrency, useFormatDate, useGetAccountCartsAndQuotes } from '../../../hooks'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setOrderOnCart } from '../../../actions'
-import { ListingPagination } from '../..'
-import { AccountToolBar } from '../AccountToolBar/AccountToolBar'
+
 const OrderStatus = ({ type = 'info', text }) => {
   return <span className={`badge badge-${type} m-0`}>{text}</span>
 }

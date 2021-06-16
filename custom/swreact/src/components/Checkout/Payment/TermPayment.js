@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { PaymentAddressSelector } from './PaymentAddressSelector'
-import { addNewAccountAndSetAsBilling, addPayment } from '../../../actions/cartActions'
-import { orderPayment, billingAccountAddressSelector } from '../../../selectors/orderSelectors'
+import { PaymentAddressSelector, Button } from '../../'
+import { addNewAccountAndSetAsBilling, addPayment } from '../../../actions/'
+import { orderPayment, billingAccountAddressSelector } from '../../../selectors/'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../Button/Button'
 
 const TermPayment = ({ method }) => {
   const dispatch = useDispatch()

@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import { connect, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRedirect } from '../../../hooks/'
 import { SwSelect, AccountAddressForm, AccountLayout, AccountContent } from '../../'
 import { addPaymentMethod } from '../../../actions/userActions'
@@ -14,7 +14,8 @@ const years = Array(10)
     return { key: year + index, value: year + index }
   })
 
-const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, contentTitle, accountAddresses, accountPaymentMethods }) => {
+const CreateOrEditAccountPaymentMethod = ({ customBody, contentTitle }) => {
+  const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const [redirect, setRedirect] = useRedirect({ location: '/my-account/cards' })
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -22,12 +23,12 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      accountPaymentMethodName: cardData.accountPaymentMethodName,
+      accountPaymentMethodName: '',
       paymentMethodType: 'creditCard',
       creditCardNumber: ``,
-      nameOnCreditCard: cardData.nameOnCreditCard,
-      expirationMonth: cardData.expirationMonth || new Date().getMonth() + 1,
-      expirationYear: cardData.expirationYear ? `${cardData.expirationYear}` : new Date().getFullYear().toString().substring(2),
+      nameOnCreditCard: '',
+      expirationMonth: new Date().getMonth() + 1,
+      expirationYear: new Date().getFullYear().toString().substring(2),
       securityCode: '',
       'billingAccountAddress.accountAddressID': '',
       'billingAddress.countryCode': 'US',
@@ -56,10 +57,8 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
         delete values['billingAddress.postalCode']
       }
 
-      if (!isEdit) {
-        delete values['paymentMethod.paymentMethodID']
-        dispatch(addPaymentMethod(values))
-      }
+      dispatch(addPaymentMethod(values))
+
       setRedirect({ ...redirect, shouldRedirect: true })
     },
   })
@@ -71,7 +70,18 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="paymentMethodType">{t('frontend.account.payment_method.heading')}</label>
-              <SwSelect id="paymentMethodType" value={formik.values['paymentMethodType']} onChange={formik.handleChange} options={accountPaymentMethods} disabled={isEdit} />
+              <SwSelect
+                id="paymentMethodType"
+                value={formik.values['paymentMethodType']}
+                onChange={formik.handleChange}
+                options={[
+                  {
+                    key: 'Credit Card',
+                    value: 'creditCard',
+                  },
+                ]}
+                disabled={formik.isSubmitting}
+              />
             </div>
           </div>
           <div className="col-md-12">
@@ -80,56 +90,54 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="creditCardNumber">{t('frontend.account.payment_method.ccn')}</label>
-              <input className="form-control" type="text" id="creditCardNumber" placeholder={`************${cardData.creditCardLastFour}`} value={formik.values.creditCardNumber} onChange={formik.handleChange} disabled={isEdit} />
+              <input className="form-control" type="text" id="creditCardNumber" value={formik.values.creditCardNumber} onChange={formik.handleChange} disabled={formik.isSubmitting} />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="nameOnCreditCard">{t('frontend.account.payment_method.name')}</label>
-              <input className="form-control" type="text" id="nameOnCreditCard" value={formik.values.nameOnCreditCard} onChange={formik.handleChange} disabled={isEdit} />
+              <input className="form-control" type="text" id="nameOnCreditCard" value={formik.values.nameOnCreditCard} onChange={formik.handleChange} disabled={formik.isSubmitting} />
             </div>
           </div>
           <div className="col-md-3">
             <div className="form-group">
               <label htmlFor="expirationMonth">{t('frontend.account.payment_method.expiration_month')}</label>
-              <SwSelect id="expirationMonth" value={formik.values.expirationMonth} onChange={formik.handleChange} options={months} disabled={isEdit} />
+              <SwSelect id="expirationMonth" value={formik.values.expirationMonth} onChange={formik.handleChange} options={months} disabled={formik.isSubmitting} />
             </div>
           </div>
           <div className="col-md-3">
             <div className="form-group">
               <label htmlFor="expirationYear">{t('frontend.account.payment_method.expiration_year')}</label>
-              <SwSelect id="expirationYear" value={formik.values.expirationYear} onChange={formik.handleChange} options={years} disabled={isEdit} />
+              <SwSelect id="expirationYear" value={formik.values.expirationYear} onChange={formik.handleChange} options={years} disabled={formik.isSubmitting} />
             </div>
           </div>
           <div className="col-md-6">
             <div className="form-group">
               <label htmlFor="securityCode">{t('frontend.account.payment_method.cvv')}</label>
-              <input className="form-control" type="text" placeholder={`***`} id="securityCode" value={formik.values.securityCode} onChange={formik.handleChange} disabled={isEdit} />
+              <input className="form-control" type="text" placeholder={`***`} id="securityCode" value={formik.values.securityCode} onChange={formik.handleChange} disabled={formik.isSubmitting} />
             </div>
           </div>
           <div className="col-md-12">
             <hr className="my-4" />
           </div>
 
-          {!isEdit && (
-            <div className="row">
-              <div className="col-sm-12">
-                <div className="col-md-6 pl-0">
-                  <div className="form-group">
-                    <label htmlFor="accountAddressID">{t('frontend.account.billing_address')}</label>
-                    <SwSelect id="billingAccountAddress.accountAddressID" value={formik.values['billingAccountAddress.accountAddressID']} onChange={formik.handleChange} options={accountAddresses} />
-                  </div>
+          <div className="row">
+            <div className="col-sm-12">
+              <div className="col-md-6 pl-0">
+                <div className="form-group">
+                  <label htmlFor="accountAddressID">{t('frontend.account.billing_address')}</label>
+                  <SwSelect id="billingAccountAddress.accountAddressID" value={formik.values['billingAccountAddress.accountAddressID']} onChange={formik.handleChange} options={accountAddresses} />
                 </div>
-                {!formik.values['billingAccountAddress.accountAddressID'] && <AccountAddressForm formik={formik} />}
               </div>
+              {!formik.values['billingAccountAddress.accountAddressID'] && <AccountAddressForm formik={formik} />}
             </div>
-          )}
+          </div>
         </div>
         <div className="row">
           <hr className="mt-2 mb-3" />
           <div className="d-flex flex-wrap justify-content-end">
-            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit || formik.isSubmitting}>
-              {isEdit ? t('frontend.account.payment.save') : t('frontend.account.payment.saveNew')}
+            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={formik.isSubmitting}>
+              {t('frontend.account.payment.saveNew')}
             </button>
           </div>
         </div>
@@ -138,38 +146,4 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
   )
 }
 
-// This seems weird but this logic just complicated the essence of the component
-const mapStateToProps = (state, ownProps) => {
-  let accountAddresses = state.userReducer.accountAddresses.map(({ address, accountAddressID }) => {
-    return { key: `${address.streetAddress} ${address.city}, ${address.stateCode}`, value: accountAddressID }
-  })
-
-  let cardData = state.userReducer.accountPaymentMethods.filter(card => {
-    return card.accountPaymentMethodID === ownProps.path
-  })
-  //1: "Payment Method Type must be in list cash,check,creditCard,external,giftCard,termPayment"
-  return {
-    accountAddresses: [...accountAddresses, { key: 'New', value: '' }],
-    cardData: cardData.length
-      ? cardData[0]
-      : {
-          accountPaymentMethodID: '',
-          accountPaymentMethodName: '',
-          activeFlag: false,
-          creditCardLastFour: '',
-          creditCardType: '',
-          expirationMonth: '',
-          expirationYear: '',
-          hasErrors: false,
-          nameOnCreditCard: '',
-        },
-    isEdit: cardData.length,
-    accountPaymentMethods: [
-      {
-        key: 'Credit Card',
-        value: 'creditCard',
-      },
-    ],
-  }
-}
-export default connect(mapStateToProps)(CreateOrEditAccountPaymentMethod)
+export { CreateOrEditAccountPaymentMethod }

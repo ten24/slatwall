@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { SWImage } from '../..'
-import { addToCart } from '../../../actions/cartActions'
-import useFormatCurrency from '../../../hooks/useFormatCurrency'
-import { getProductRoute } from '../../../selectors/configurationSelectors'
+import { addToCart } from '../../../actions/'
+import { useFormatCurrency } from '../../../hooks/'
+import { getProductRoute } from '../../../selectors/'
 
 const OrderItem = ({ quantity, sku_skuID, sku_product_productName, sku_product_urlTitle, BrandName, isSeries, ProductSeries, calculatedExtendedPriceAfterDiscount, sku_calculatedSkuDefinition, sku_imageFile, price }) => {
   const [formatCurrency] = useFormatCurrency({})

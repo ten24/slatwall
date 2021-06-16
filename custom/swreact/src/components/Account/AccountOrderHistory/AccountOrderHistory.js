@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { AccountLayout, ListingPagination, AccountToolBar } from '../../'
 import { useTranslation } from 'react-i18next'
-import useFormatCurrency from '../../../hooks/useFormatCurrency'
-import { useFormatDateTime } from '../../../hooks/useFormatDate'
-
-import { useGetAllOrders } from '../../../hooks/useAPI'
+import { useFormatCurrency, useGetAllOrders, useFormatDateTime } from '../../../hooks/'
 
 const OrderStatus = ({ type = 'info', text }) => {
   return <span className={`badge badge-${type} m-0`}>{text}</span>
