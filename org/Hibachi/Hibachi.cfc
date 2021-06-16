@@ -110,6 +110,7 @@ component extends="framework.one" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipMigrateAttributeValuesOnServerStartup = true;
+	variables.framework.hibachi.skipCreateRBKeysForAttributeCustomProperties = true;
 	variables.framework.hibachi.skipCreateJsonOnServerStartup = false;	
 	variables.framework.hibachi.skipDbData = false;
 	variables.framework.hibachi.useServerInstanceCacheControl=true;
@@ -903,9 +904,9 @@ component extends="framework.one" {
 						//Update custom properties
 
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
-						
-						variables.clearClassLevelCache = true;
-						
+
+						getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class',true);
+
 						getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterUpdateEntitiesWithCustomProperties");
 						if (success){
 							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
@@ -921,7 +922,15 @@ component extends="framework.one" {
 						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
 					
 						if(!variables.framework.hibachi.skipMigrateAttributeValuesOnServerStartup){	
+    						writeLog(file="#variables.framework.applicationKey#", text="General Log - Migtate attributes to custom properties - START ");
 							getHibachiScope().getService('updateService').migrateAttributeValuesToCustomProperties();
+							writeLog(file="#variables.framework.applicationKey#", text="General Log - Migtate attributes to custom properties - END ");
+						}
+						
+						if(!variables.framework.hibachi.skipCreateRBKeysForAttributeCustomProperties){	
+    						writeLog(file="#variables.framework.applicationKey#", text="General Log - Create RB-keys for attributes custom properties - START ");
+							getHibachiScope().getService('updateService').createRBKeysForAttributeCustomProperties();
+							writeLog(file="#variables.framework.applicationKey#", text="General Log - Create RB-keys for attributes custom properties - END ");
 						}
 
 						onUpdateRequest();
@@ -929,7 +938,7 @@ component extends="framework.one" {
 						if(structKeyExists(server,'Lucee')){
 							SystemCacheClear('component');
 						}
-
+						
 						// Write File
 						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/system/lastFullUpdate.txt.cfm', now());
 						updated = true;
@@ -1189,12 +1198,8 @@ component extends="framework.one" {
 			}
 			
 			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
-			
 		}
 		
-		if( StructKeyExists( variables, "clearClassLevelCache")) {
-			getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class',true);
-		}
 	}
 
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed
