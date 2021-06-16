@@ -20,11 +20,7 @@
 	<div class="invoice-temp">
 		<div class="invoice-intro">
 			<div style="width: 100%; text-align:center;">
-				<cfif cgi.server_name CONTAINS "slatwallcommerce-dev">
-				
-					<!---client header image goes here--->
-					
-				</cfif>
+				<!---client header image goes here--->
 			</div>
 			<h1>INVOICE</h1>
 		</div>
