@@ -251,4 +251,64 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	
 	
+	
+	/////////////.  workflow function to import changes from ERP-One    //////////////////
+	
+	public any function processOrder_importErpOneOrderChanges(required any order, struct data={}) {
+
+        if( isNull(arguments.data.dateTimeSince) ){
+            arguments.data.dateTimeSince = DateTimeFormat( 
+	            DateAdd('h', -2, now() ), // since 2 hours ago  ---  https://cfdocs.org/dateadd
+	            'medium' // mmm d, yyyy h:nn:ss tt
+	        ); 
+        }
+        
+	    this.getService('erpOneService').importErpOneOrderChanges( arguments.data.dateTimeSince );
+	    
+		return arguments.order;
+	}
+	
+	public any function processOrderItem_importErpOneOrderItemChanges(required any orderItem, struct data={}) {
+
+        if( isNull(arguments.data.dateTimeSince) ){
+            arguments.data.dateTimeSince = DateTimeFormat( 
+	            DateAdd('h', -2, now() ), // since 2 hours ago  ---  https://cfdocs.org/dateadd
+	            'medium' // mmm d, yyyy h:nn:ss tt
+	        ); 
+        }
+        
+	    this.getService('erpOneService').importErpOneOrderItemChanges( arguments.data.dateTimeSince );
+	    
+		return arguments.orderItem;
+	}
+	
+	public any function processOrderPayment_importErpOneOrderPaymentChanges(required any orderPayment, struct data={}) {
+
+        if( isNull(arguments.data.dateTimeSince) ){
+            arguments.data.dateTimeSince = DateTimeFormat( 
+	            DateAdd('h', -2, now() ), // since 2 hours ago  ---  https://cfdocs.org/dateadd
+	            'medium' // mmm d, yyyy h:nn:ss tt
+	        ); 
+        }
+        
+	    this.getService('erpOneService').importErpOneOrderPaymentChanges( arguments.data.dateTimeSince );
+	    
+		return arguments.orderPayment;
+	}
+	
+	public any function processOrderDelivery_importErpOneOrderShipmentChanges(required any orderDelivery, struct data={}) {
+
+        if( isNull(arguments.data.dateTimeSince) ){
+            arguments.data.dateTimeSince = DateTimeFormat( 
+	            DateAdd('h', -2, now() ), // since 2 hours ago  ---  https://cfdocs.org/dateadd
+	            'medium' // mmm d, yyyy h:nn:ss tt
+	        ); 
+        }
+        
+	    this.getService('erpOneService').importErpOneOrderShipmentChanges( arguments.data.dateTimeSince );
+	    
+		return arguments.orderDelivery;
+	}
+	
+	
 }
