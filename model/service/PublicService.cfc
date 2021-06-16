@@ -2848,7 +2848,7 @@ component  accessors="true" output="false"
                 
                 if(arrayLen(fulfillments)){
                     var addressData = {
-                        address=getFulfillmentService().getOrderFulfillment(fulfillments[1]['orderFullfillmentID']).getShippingAddress();
+                        address=getFulfillmentService().getOrderFulfillment(fulfillments[1]['orderFulfillmentID']).getShippingAddress()
                     };
                     
                     var newBillingAddress = this.addBillingAddress(addressData, "billing");
