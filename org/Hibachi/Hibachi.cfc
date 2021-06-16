@@ -1354,7 +1354,7 @@ component extends="framework.one" {
 
 	public void function onError(any exception, string event){
 		ORMClearSession();
-	    getHibachiScope().logHibachiException(arguments.exception);
+
 		writeLog(file="#variables.framework.applicationKey#", text="General Log - ORM Session Cleared on error; Event: #arguments.event#");
 
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
