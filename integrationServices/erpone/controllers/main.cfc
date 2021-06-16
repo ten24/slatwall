@@ -91,7 +91,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	    param name="rc.tableName";
 	    param name="rc.enabled" default=true;
 	    
-	    var response = this.getService('erpOneService').updateErpTableChangeTracking( argumentCollection = rc);
+	    var response = this.getService('erpOneService').trackErpTableChanges( argumentCollection = rc);
 	    arguments.rc['showDump'] = { "updateChangeTracking": response };
         super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
@@ -154,11 +154,28 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 				}, endpoint = arguments.rc.endpoint, requestType = arguments.rc.httpMethod);
 				getFW().setView("erpone:main.preprocessintegration_debug");
 				break;
+			case 'trackChanges':
+				    this.preProcessIntegration(arguments.rc);
+    				arguments.rc.result = this.getService("erpOneService").trackErpTableChanges(argumentCollection = arguments.rc );
+    				getFW().setView("erpone:main.preprocessintegration_trackChanges");
+				break;
+				
+			case 'fetchChanges':
+				    this.preProcessIntegration(arguments.rc);
+    				
+    				var batch = this.getService("erpOneService").processIntegration_fetchChanges(arguments.rc.processObject, arguments.rc)
+    				
+    				if(!isNull(batch)){
+    				    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+                	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+                        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
+                        break;
+    				} 
+    				
+    				getFW().setView("erpone:main.preprocessintegration_trackChanges");
+				break;
 		}
-	
-		
 	}
-	
 	
 	public void function getSampleCSV( required struct rc ){
    		
