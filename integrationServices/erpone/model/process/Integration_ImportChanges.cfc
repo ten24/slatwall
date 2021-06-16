@@ -19,11 +19,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiP
 	}
 	
 	public any function getDateTimeSince(){
-	    if(isNull(variables.dateTimeSince)){
-	        variables.dateTimeSince = dateTimeFormat( 
-	            DateAdd('n', -10, now() ), 
-	            'medium' 
-	       ); // since 10 minutes ago
+	    if( isNull(variables.dateTimeSince) ){
+	        variables.dateTimeSince = DateTimeFormat( 
+	            DateAdd('h', -2, now() ), // since 2 hours ago  ---  https://cfdocs.org/dateadd
+	            'medium' // mmm d, yyyy h:nn:ss tt
+	        );
 	    }
 	    return variables.dateTimeSince;
 	}

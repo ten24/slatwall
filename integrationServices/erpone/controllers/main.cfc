@@ -160,10 +160,10 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
     				getFW().setView("erpone:main.preprocessintegration_trackChanges");
 				break;
 				
-			case 'fetchChanges':
+			case 'importChanges':
 				    this.preProcessIntegration(arguments.rc);
     				
-    				var batch = this.getService("erpOneService").processIntegration_fetchChanges(arguments.rc.processObject, arguments.rc)
+    				var batch = this.getService("erpOneService").processIntegration_importChanges(arguments.rc.processObject, arguments.rc)
     				
     				if(!isNull(batch)){
     				    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";

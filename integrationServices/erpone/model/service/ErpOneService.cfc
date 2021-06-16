@@ -375,9 +375,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    return dateTimeFormat( arguments.dateTime, fmt );
 	}
 	
-	public any function processIntegration_fetchChanges( required any processObject, struct data){
+	public any function processIntegration_importChanges( required any processObject, struct data){
 	    
-	    this.logHibachi("ERPONE:: called processIntegration_fetchChanges :: Tracker: #arguments.processObject.getTracker()#, DateTimeSince: #arguments.processObject.getDateTimeSince()# " );
+	    this.logHibachi("ERPONE:: called processIntegration_importChanges :: Tracker: #arguments.processObject.getTracker()#, DateTimeSince: #arguments.processObject.getDateTimeSince()# " );
 	    
 	    if(arguments.processObject.getTracker() == 'accounts'){
 	        return this.importErpOneAccountChanges(arguments.processObject.getDateTimeSince() );

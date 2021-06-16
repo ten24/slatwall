@@ -11,11 +11,10 @@
         <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="importerponecsv" type="list" icon="upload icon-white" modal="true" />
         <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="debug" type="list"  />
         <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="trackChanges" type="list"  modal="true" />
-        <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="fetchChanges" type="list"  modal="true" />
+        <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="importChanges" type="list"  modal="true" />
     </hb:HibachiEntityActionBar>
    
     <hb:HibachiPropertyRow>
-          These are for testing only </br> </br>
    	    <hb:HibachiPropertyList>
    	        
    	        <hb:HibachiActionCaller 
@@ -27,13 +26,7 @@
 	            class="btn btn-primary btn-sm" 
 	        />
 	        
-		</hb:HibachiPropertyList>
-		
-		</br>
-		</br>
-		
-   	    <hb:HibachiPropertyList>
-    		 <hb:HibachiActionCaller 
+    		<hb:HibachiActionCaller 
 	            action="admin:erpone:main.importInventoryItems" 
 	            text="Import Inventory" 
 	            modal="false" 
@@ -41,13 +34,6 @@
 	            icon="download" 
 	            class="btn btn-primary btn-sm" 
 	        />
-	   	</hb:HibachiPropertyList>
-	   	
-	   	</br>
-	   	</br>
-
-		
-	    <hb:HibachiPropertyList>
 	        
 	        <hb:HibachiActionCaller 
 	            action="admin:erpone:main.importOrders" 
@@ -57,34 +43,7 @@
 	            icon="download" 
 	            class="btn btn-primary btn-sm" 
 	        />
-	       <!---
-	        <hb:HibachiActionCaller 
-	            action="admin:erpone:main.importOrderItems" 
-	            text="Import All Order Items" 
-	            modal="false" 
-	            type="link" 
-	            icon="download" 
-	            class="btn btn-primary btn-sm" 
-	        />
-	        
-	        <hb:HibachiActionCaller 
-	            action="admin:erpone:main.importOrderPayments" 
-	            text="Import All Order Payments" 
-	            modal="false" 
-	            type="link" 
-	            icon="download" 
-	            class="btn btn-primary btn-sm" 
-	        />
-	        
-	        <hb:HibachiActionCaller 
-	            action="admin:erpone:main.importOrderShipments" 
-	            text="Import All Order Shipments" 
-	            modal="false" 
-	            type="link" 
-	            icon="download" 
-	            class="btn btn-primary btn-sm" 
-	        />
-	        --->
+
 	   	</hb:HibachiPropertyList>
 	   	
 	</hb:HibachiPropertyRow>
