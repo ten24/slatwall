@@ -197,7 +197,10 @@ class SWTypeaheadSearchController {
     };
     
     public toggleDropdown = ()=>{
-        this.dropdownOpen = !this.dropdownOpen;    
+        this.dropdownOpen = !this.dropdownOpen;
+        if(this.dropdownOpen == true){
+            this.hideSearch = true;
+        }
     }
 
     public toggleOptions = (onClickSearch) =>{
@@ -207,6 +210,9 @@ class SWTypeaheadSearchController {
         }
         
         this.hideSearch = !this.hideSearch;
+        if(this.hideSearch == false){
+            this.dropdownOpen = false;
+        }
         
     };
 

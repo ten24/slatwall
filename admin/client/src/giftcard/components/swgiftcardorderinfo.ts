@@ -19,6 +19,7 @@ class SWGiftCardOrderInfoController{
 
 		orderConfig.getEntity().then((response)=>{
 			this.order = response.records[0];
+			this.order.orderOpenDateTime = new Date(this.order.orderOpenDateTime);
 		});
 	}
 }

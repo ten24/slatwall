@@ -137,16 +137,29 @@ Notes:
 			return arguments.value & " " & getSettingService().getSettingValue("globalWeightUnitCode");
 		}
 
-		private string function getEncryptionKeyLocation() {
-			var keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
-			if(len(keyLocation)) {
-				if(right(keyLocation, 1) eq '/' or right(keyLocation, 1) eq '\') {
-					return keyLocation;
+		public string function getEncryptionKeyLocation() {
+			
+			if( !structkeyExists(variables, "cached_encryptionKeyLocation") ){
+			
+			    var keyLocation = expandPath("/#getApplicationValue('applicationKey')#") & "/custom/system/";
+			    
+				if( getSettingService().getSettingValue("globalEncryptionKeyLocation") NEQ "") {
+					
+					keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
+					if(right(keyLocation, 1) neq '/' and right(keyLocation, 1) neq '\') {
+						keyLocation = keyLocation & '/';
+					}
+					
+				} else {
+					var defaultPath = expandPath("/#getApplicationValue('applicationKey')#") & "/custom/system/shared/";
+					if(directoryExists(defaultPath)){
+						keyLocation = defaultPath;
+					}
 				}
-
-				return keyLocation & '/';
+				variables.cached_encryptionKeyLocation = keyLocation;
 			}
-			return expandPath('/#getApplicationValue('applicationKey')#/custom/system/');
+			
+			return variables.cached_encryptionKeyLocation;
 		}
 
 		public string function getLegacyEncryptionAlgorithm() {

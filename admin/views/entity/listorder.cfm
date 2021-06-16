@@ -124,17 +124,17 @@ Notes:
 	
 	</cfif>
 	
-	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.firstName',columnConfig={
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.company',columnConfig={
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
-	})/>
+	},prepend=true)/>
 	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.lastName',columnConfig={
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
-	})/>
-	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.company',columnConfig={
+	},prepend=true)/>
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.firstName',columnConfig={
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true

@@ -2,6 +2,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	property name="hibachiService" type="any";
 	property name="hibachiCacheService" type="any";
+	//The Hibachi cache Service is not bean factory safe.
 	property name="hibachiSessionService" type="any";
 	property name="totpAuthenticator" type="any";
 	
@@ -366,7 +367,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public struct function getEntityPermissionDetails() {
 		// First check to see if this is cached
-		if(!this.getHibachiCacheService().hasCachedValue('entityPermissionDetails')){
+		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
 			
 			// Create place holder struct for the data
 			var entityPermissions = {};
@@ -445,7 +446,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			
 		}
-		return this.getHibachiCacheService().getCachedValue('entityPermissionDetails');
+		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
 	}
 	
 	public struct function getActionPermissionDetails(){

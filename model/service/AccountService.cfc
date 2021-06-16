@@ -565,7 +565,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				getHibachiDAO().save(accountAuthentication);
 	
 				// Set the password
+				if(!isNull(arguments.processObject.getPassword())) {
 				accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+				}
+				
 			}
 	
 			// Call save on the account now that it is all setup

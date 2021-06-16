@@ -1,4 +1,9 @@
 {
+	"conditions": {
+		"recurringSchedule": {
+			"schedulingType": { "eq": "recurring" }
+		}
+	},
 	"properties": {
 		"eventStartDateTime": [{ "required": true, "dataType": "date", "gtNow": true }],
 		"eventEndDateTime": [
@@ -10,6 +15,15 @@
 			}
 		],
 		"locationConfigurations": [{ "required": true }],
+		"scheduleEndDate" : [
+			{
+				"required": true,
+				"conditions": "recurringSchedule",
+				"gtDateTimeProperty": "eventEndDateTime",
+				"dataType" : "date",
+				"gtNow": true
+			}
+		],
 		"schedulingType": [{ "required": true }],
 		"price": [{ "required": false }],
 		"eventCapacity": [{ "required": true }]
