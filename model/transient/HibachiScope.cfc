@@ -64,7 +64,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="emailQueue" type="array";
 	
 	property name="integrationsData" type="struct";
-	
+
 	// Deprecated Properties
 	property name="currentAccount";
 	property name="currentBrand";
@@ -506,7 +506,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,orderPayments.purchaseOrderNumber,
 				orderPayments.billingAccountAddress.accountAddressID,orderPayments.billingAddress.addressID,orderPayments.billingAddress.name,orderPayments.billingAddress.emailAddress,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.stateCode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
 				orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName,orderPayments.paymentMethod.paymentMethodType, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode,promotionCodes.promotion.promotionName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodType,eligiblePaymentMethodDetails.paymentMethod.paymentMethodID,eligiblePaymentMethodDetails.maximumAmount,
-				orderNotes,orderPayments.accountPaymentMethod.accountPaymentMethodID
+				orderNotes,orderPayments.accountPaymentMethod.accountPaymentMethodID,orderpayments.orderPaymentStatusType.systemCode
 			";
 		}
 		

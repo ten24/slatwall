@@ -72,6 +72,7 @@ component  accessors="true" output="false"
     property name="integrationService" type="any";
     property name="imageService" type="any";
     property name="locationService" type="any";
+    property name="fulfillmentService" type="any";
 
 
     variables.publicContexts = [];
@@ -1818,11 +1819,30 @@ component  accessors="true" output="false"
                  	var accountAddress = this.getAccountService().newAccountAddress();
                  	accountAddress.setAddress(shippingAddress);
                  	accountAddress.setAccount(getHibachiScope().getAccount());
-                 	var savedAccountAddress = this.getAccountService().saveAccountAddress(accountAddress);
-                 	if (!savedAddress.hasErrors()){
-                 		getDao('hibachiDao').flushOrmSession();
-                 	}
-                  
+                 	accountAddress = this.getAccountService().saveAccountAddress(accountAddress);
+                    
+                    orderFulfillment.setAccountAddress(accountAddress);
+                    orderFulfillment = getFulfillmentService().saveOrderFullfillment(orderFulfillment);
+
+                    if(orderFulfillment.hasErrors() || accountAddress.hasErrors()){
+                        var errors = [];
+                        arrayAppend(errors, orderFulfillment.getErros(), true);
+                        arrayAppend(errors, accountAddress.getErrors(), true);
+
+                        this.addErrors(arguments.data, errors);
+                        getHibachiScope().addActionResult( "public:cart.addOrderShippingAddress", true );
+                        return;
+                    }
+
+                } else {
+                    orderFulfillment.setAccountAddress(javacast('null',''));
+                    orderFulfillment = getFulfillmentService().saveOrderFullfillment(orderFulfillment);
+
+                    if(orderFulfillment.hasErrors()){
+                        this.addErrors(arguments.data, orderFulfillment.getErrors());
+                        getHibachiScope().addActionResult( "public:cart.addOrderShippingAddress", true );
+                        return;
+                    }
                 }
                 
                 this.getOrderService().saveOrder(order);
@@ -2096,40 +2116,41 @@ component  accessors="true" output="false"
      */
     public void function addAccountPaymentMethod(required any data) {
         
-        if (!isNull(data) && !structKeyExists(data, 'accountPaymentMethod') && structKeyExists(data, "selectedPaymentMethod")){
-        	data['accountPaymentMethod'] = {};
-        	data['accountPaymentMethod']['accountPaymentMethodID']  = data.selectedPaymentMethod;
+        if (!isNull(arguments.data) && !structKeyExists(arguments.data, 'accountPaymentMethod') && structKeyExists(arguments.data, "selectedPaymentMethod")){
+        	arguments.data['accountPaymentMethod'] = {};
+        	arguments.data['accountPaymentMethod']['accountPaymentMethodID']  = arguments.data.selectedPaymentMethod;
         }
-        if (!isNull(data) && !structKeyExists(data, 'paymentMethod')){
-         	data['paymentMethod'] = {};
-         	data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
+        if (!isNull(arguments.data) && !structKeyExists(arguments.data, 'paymentMethod')){
+         	arguments.data['paymentMethod'] = {};
+         	arguments.data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
         }
-        if (!isNull(data) && structKeyExists(data, 'newOrderPayment')){
-         	data['accountPaymentMethod'] = data;
-         	data['accountPaymentMethod']['billingAddress'] = data.newOrderPayment;
+        if (!isNull(arguments.data) && structKeyExists(arguments.data, 'newOrderPayment')){
+         	arguments.data['accountPaymentMethod'] = arguments.data;
+         	arguments.data['accountPaymentMethod']['billingAddress'] = arguments.data.newOrderPayment;
         }
         
         if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
+                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( arguments.data.selectedPaymentMethod );
             }else{
                 var accountPaymentMethod = this.getAccountService().newAccountPaymentMethod(  );	
                 accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
-            
-            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
-            data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
-            // If there were no errors then we can clear out the
-            
-        } else {
-            
-            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", true );
-                
+            if (!accountPaymentMethod.hasErrors()){
+                getHibachiScope().flushORMSession();
+                arguments.data['ajaxResponse']['accountPaymentMethod'] = {
+                    "accountPaymentMethodID": accountPaymentMethod.getAccountPaymentMethodID() 
+                }
+            }else{
+                arguments.data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
+            }
+	getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
         }
+
         
     }
     
@@ -2262,6 +2283,13 @@ component  accessors="true" output="false"
         var updateOrderAmounts = structKeyExists( arguments.data, 'updateOrderAmounts' ) && arguments.data.updateOrderAmounts;
     
         arguments.data.ajaxResponse = {'cart':getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions'], updateOrderAmounts = updateOrderAmounts)};
+
+        // remove order payments with a status type of 'opstRemoved'
+        arguments.data.ajaxResponse.cart.orderPayments = arrayFilter(arguments.data.ajaxResponse.cart.orderPayments, function(orderPayment){
+            return arguments.orderPayment.orderPaymentStatusType.systemCode != "opstRemoved";
+        });
+        
+        
     }
     
     public void function getAccountData(any data) {
@@ -2591,11 +2619,6 @@ component  accessors="true" output="false"
         param name="data.orderItemIDList";
         param name="data.fulfillmentMethodID";
 
-        var cart = getHibachiScope().getCart();
-
-        var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
-
-        var existingOrderFulfillment = "";
         var error = [];
         
         if( arguments.data.orderItemIDList == "" ){
@@ -2611,16 +2634,10 @@ component  accessors="true" output="false"
             data['ajaxResponse']['errors'] = error;
             return;
         }
-        
-        //check if fulfillment method already exists on order
-        var allOrderFulfillments = cart.getOrderFulfillments();
-        for(var orderFulfillment in allOrderFulfillments) {
 
-            //get existing fulfillment method based on fulfillment method ID
-            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodID() == arguments.data.fulfillmentMethodID ) {
-                existingOrderFulfillment = orderFulfillment;
-            }
-        }
+        var cart = getHibachiScope().getCart();
+
+        var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
 
         var orderItems = cart.getOrderItems();
         for(var orderItem in orderItems) {
@@ -2631,32 +2648,53 @@ component  accessors="true" output="false"
             //Check if item id exists, existing fulfillment method is different than the one we're passing, and new fulfillment should be eligible
             if( ArrayContains(orderItemIDList, orderItem.getOrderItemID()) && orderItem.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() != arguments.data.fulfillmentMethodID &&  ArrayContains(eligibleFulfillmentMethods, arguments.data.fulfillmentMethodID) ) {
 
-                //Remove existing method
-                orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
+                // clear order fulfillment and change fulfillment method
+                var fulfillmentMethod = getFulfillmentService().getFulfillmentMethod(arguments.data.fulfillmentMethodID);
+                var orderFulfillment = orderItem.getOrderFulfillment();
+                orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
+                orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
 
-                if( !this.getHibachiScope().hibachiIsEmpty(existingOrderFulfillment) ) {
-                    orderItem.setOrderFulfillment( existingOrderFulfillment );
-                } else {
-                    //get fulfillment method
-                    var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
+                orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
 
-                    //create new method
-                    var orderFulfillment = this.getOrderService().newOrderFulfillment();
-                    orderFulfillment.setOrder( cart );
-                    orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
-    				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
-
-                    orderItem.setOrderFulfillment( orderFulfillment );
+                if(orderFulfillment.hasErrors()){
+                    this.addErrors(arguments.data, orderFulfillment.getErrors());
+                    getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", true );
+                    return;
                 }
             }
         }
 
-        this.getOrderService().saveOrder(getHibachiScope().getCart());
-
-        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", false );
     }
 
+    /**
+     * @http-context clearFulfillment
+     * @description Clear Order Fulfillment from order
+     * @param orderFulfillmentID 
+     */
+    public any function clearOrderFulfillment(required any data){
+        param name="data.orderFulfillmentID" default="";
 
+        var orderFulfillment = getFulfillmentService().getOrderFulfillment(arguments.data.orderFulfillmentID);
+        var orderValid = !isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID();
+        var orderPlaced = !isNull(orderFulfillment.getOrder().getOrderStatusType()) && orderFulfillment.getOrder().getOrderStatusType().getSystemCode() != "ostNotPlaced";
+
+        if( orderValid && !orderPlaced ){
+
+            orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
+            orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
+
+            if(orderFulfillment.hasErrors()){
+                this.addErrors(arguments.data, orderFulfillment.getErrors());
+                getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
+                return;
+            }
+
+            getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", false );
+        } else {
+            getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
+        }
+    }
 
     /** 
      * @http-context updateOrderFulfillmentAddressZone
@@ -2800,15 +2838,23 @@ component  accessors="true" output="false"
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
             
             //If we have saveShippingAsBilling
-             if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
+            if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
 
-                 var addressData = {
-                    address=order.getShippingAddress()
-                };
+                var fulfillmentCollection = getFulfillmentService().getOrderFulfillmentCollectionList();
+                fulfillmentCollection.setDisplayProperties("orderFulfillmentID");
+                fulfillmentCollection.addFilter("order.orderID", order.getOrderID());
+                fulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping");
+                var fulfillments = fulfillmentCollection.getRecords(formatRecords = false);
+                
+                if(arrayLen(fulfillments)){
+                    var addressData = {
+                        address=getFulfillmentService().getOrderFulfillment(fulfillments[1]['orderFulfillmentID']).getShippingAddress()
+                    };
+                    
+                    var newBillingAddress = this.addBillingAddress(addressData, "billing");
+                }
 
-                 var newBillingAddress = this.addBillingAddress(addressData, "billing");
-
-             } else {
+            } else {
                 // Only create a new billing address here if its not being created later using the account payment method.
                 if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
                     && (!structKeyExists(data, "accountPaymentMethodID") 

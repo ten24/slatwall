@@ -65,7 +65,9 @@ Notes:
     			<swa:SlatwallAccountTypeahead /> 
     			<hr>
     		<cfelse>
+    		    <swa:SlatwallAccountTypeahead /> 
     		    <input type="hidden" name="accountID" value="#rc.accountID#" />	
+    		    <hr>
 			</cfif>
 			<!--- Always use schedule order template type for wishlist ---> 
 			<input type="hidden" name="orderTemplateTypeID" value="2c9280846b712d47016b75464e800014" />	
