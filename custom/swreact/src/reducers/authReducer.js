@@ -18,8 +18,7 @@ const auth = (state = initState, action) => {
       return { ...state, isAuthenticanted, isFetching: false, err: null }
 
     case ERROR_LOGIN:
-      const { err } = action
-      return { ...state, err, isFetching: false }
+      return { ...state, isFetching: false }
 
     case LOGOUT:
       return { ...state, isAuthenticanted: false, isFetching: false }

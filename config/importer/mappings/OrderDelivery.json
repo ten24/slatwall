@@ -57,9 +57,10 @@
 			"propertyIdentifier": "order"
 		},
 		{
-			"key": "pickupLocationRemoteID",
+			"key": "warehouseLocationRemoteID",
 			"entityName": "Location",
-			"isNullable": true,
+			"defaultValue": "88e6d435d3ac2e5947c81ab3da60eba2",
+			"__hint": "this defaultValue for Location is `Default`.",
 			"lookupKey": "remoteID",
 			"propertyIdentifier": "location"
 		},

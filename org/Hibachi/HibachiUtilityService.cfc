@@ -1432,16 +1432,6 @@
 			return DateAdd("s", localEpoch, CreateDateTime(1970, 1, 1, 0, 0, 0)); // convert from epoch 
 		}
 		
-		
-		public string function prefixListItem(required string list, required string prefix) {
-			var prefix = arguments.prefix;
-			return ListMap(arguments.list , function(item){
-				return prefix & arguments.item; //beware of scope
-			})
-		}
-		
-		
-
     	/**
     	 * Takes a CSV string and convert it to an array of arrays based on the given field delimiter. 
     	 * Line delimiter is assumed to be new line / carriage return related.
@@ -1669,6 +1659,108 @@
 		if(fileExists( finalPath ) ) {
 			fileDelete( finalPath );
 		}
+	}
+	
+	public string function prefixListItems( required string theList, required string thePrefix ){
+		return ListMap(arguments.theList , function(item){
+			return thePrefix & arguments.item; //beware of scope
+		});
+	}
+	
+	public array function prefixArrayItems( required struct theArray, required string thePrefix ){
+		return arguments.theArray.map( function(item){
+			return thePrefix & arguments.item; //beware of arguments scope
+		});
+	}
+	
+	public struct function prefixStructKeys( required struct theStruct, required string thePrefix ){
+	    var prefixed = {};
+	    arguments.theStruct.each( function(key, value){
+	        prefixed[ thePrefix & arguments.key] = arguments.value;
+	    })
+	    return prefixed;
+	}
+	
+	public struct function getSubStructByKeyPrefix( required struct theStruct, required string thePrefix, boolean stripPrefix = true){
+	    var prefixLen = arguments.thePrefix.len();
+	    var subStruct = {};
+	    arguments.theStruct.each( function(key, value){
+	        if( key.left(prefixLen) == thePrefix ){
+	            if(stripPrefix){
+	                key = key.replace(thePrefix, '');
+	            }
+	            subStruct[key] = arguments.value;
+	        }
+	    })
+	    return subStruct;
+	}
+	
+	public struct function swapStructKeys(required struct sourceStruct, required struct keysMap ){
+
+		var newStruct = {};
+		for( var sourceKey in arguments.keysMap ){
+			var destinationKey = arguments.keysMap[ sourceKey ];
+			
+			if( structKeyExists(arguments.sourceStruct, sourceKey) ){
+				newStruct[ destinationKey ] = arguments.sourceStruct[ sourceKey ];
+			}
+		}
+	
+		return newStruct;
+	}
+	
+	
+	public struct function flattenStruct( required struct original, string delimiter=".", string prefix="" ){
+	    var flattened = {};
+	    
+		var keysArray = arguments.original.keyArray();
+		for ( var thisKey in keysArray ) {
+		    
+		    var nextPrefix = prefix & thisKey;
+		    
+			if( isArray(arguments.original[thisKey]) ){
+				
+				var flattenedArray = flattenArray(arguments.original[thisKey], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedArray);
+				
+			} else if ( IsStruct(arguments.original[thisKey]) ) {
+				
+				var flattenedStruct = flattenStruct(arguments.original[thisKey], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedStruct);
+				
+			} else {
+			
+				flattened[ nextPrefix ] = arguments.original[thisKey];
+			}
+		}
+		
+		return flattened;
+	}
+	
+	public struct function flattenArray( required array original, string delimiter=".", string prefix="" ){
+	    var flattened = {};
+	    
+		for ( var i=1; i<= arguments.original.len(); i++ ){
+		    
+		    var nextPrefix = arguments.prefix &"["& i &"]";
+		    
+			if( isArray(arguments.original[i]) ){
+				
+				var flattenedArray = this.flattenArray(arguments.original[i], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedArray);
+				
+			} else if ( isStruct(arguments.original[i]) ){
+				
+				var flattenedStruct = this.flattenStruct(arguments.original[i], arguments.delimiter, nextPrefix & arguments.delimiter);
+				flattened.append(flattenedStruct);
+				
+			} else {
+			
+				flattened[nextPrefix] = arguments.original[i];
+			}
+		}
+		
+		return flattened;
 	}
 
 	</cfscript>

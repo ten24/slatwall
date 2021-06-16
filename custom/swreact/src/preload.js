@@ -1,5 +1,5 @@
 const data = {
-  site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: 'stoneandberg' },
+  site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: process.env.REACT_APP_SITE_CODE },
   router: [
     { URLKeyType: 'Product', URLKey: 'product' },
     { URLKeyType: 'ProductType', URLKey: 'products' },
@@ -10,7 +10,10 @@ const data = {
     { URLKeyType: 'Attribute', URLKey: 'att' },
   ],
   cmsProvider: 'slatwallCMS',
-  enforceVerifiedAccountFlag: false,
+  enforceVerifiedAccountFlag: true,
+  products: {
+    fallbackImageCall: false,
+  },
   shopByManufacturer: {
     slug: '/brands',
     showInMenu: true,
@@ -29,7 +32,7 @@ const data = {
     formLink: 'https://stoneandberg.us3.list-manage.com/subscribe/post?u=8eee6b8b93baf1968074021ef&id=ddc565ac59',
   },
   theme: {
-    host: 'https://stoneandberg.ten24dev.com',
+    host: process.env.REACT_APP_ADMIN_URL,
     basePath: '/custom/client/assets/images/',
     primaryColor: '5f1018',
   },

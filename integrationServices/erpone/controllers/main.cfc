@@ -1,35 +1,110 @@
 component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true" output="false"{
 	
-	this.secureMethods=listAppend(this.secureMethods, 'getGrant');
-	this.secureMethods=listAppend(this.secureMethods, 'getAccess');
-	this.secureMethods=listAppend(this.secureMethods, 'importAccounts');
-	this.secureMethods=listAppend(this.secureMethods, 'importOrders');
-	this.secureMethods=listAppend(this.secureMethods, 'importOrderItems');
-	this.secureMethods=listAppend(this.secureMethods, 'importInventoryItems');
-	this.secureMethods=listAppend(this.secureMethods, 'default');
-	this.secureMethods=listAppend(this.secureMethods, 'preprocessintegration');
-	this.secureMethods=listAppend(this.secureMethods, 'processintegration');
+	 this.secureMethods = [ 
+    	 'main',
+    	 'default',
+    	 
+	     'getGrant',
+    	 'getAccess',
+    	
+    	 'updateChangeTracking',
+    	 'getChangeTrackingStatus',
+    	
+    	 'importAccounts',
+    	
+    	 'importOrders',
+    	 'importOrderItems',
+    	 'importOrderPayments',
+    	 'importOrderShipments',
+    	
+    	 'importInventoryItems',
+    	
+    	 'preprocessintegration',
+    	 'processintegration'
+	 ].toList();
 	
 	// Get GarntToken from cache
-	public any function getGrant(){
-	    this.getService('erpOneService').getGrantToken();
+	public any function getGrant(required struct rc){
+	    var token = this.getService('erpOneService').getGrantToken();
+	    arguments.rc['showDump'] = { "getGrant": token };
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
+
 	// Get AccessToken from cache
-	public any function getAccess(){
-	    this.getService('erpOneService').getAccessToken();
+	public any function getAccess(required struct rc){
+	    var token = this.getService('erpOneService').getAccessToken();
+	    arguments.rc['showDump'] = { "getAccess": token };
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
+	
 	// Get Customer Data
-	public any function importAccounts(){
-	    this.getService('erpOneService').importErpOneAccounts();
+	public any function importAccounts(required any rc){
+	    param name="rc.changes" default=false;
+	    
+	    if(arguments.rc.changes){
+	        if(isNull(arguments.rc['dateTimeSince']) ){
+	            arguments.rc['dateTimeSince'] = DateAdd('d', -1, now() ); // 1 day before now ==> since last 24 hours 
+	        }
+	        var batch =  this.getService('erpOneService').importErpOneAccountChanges(argumentCollection = rc);
+	    } else {
+	        var batch = this.getService('erpOneService').importErpOneAccounts();
+	    }
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
+	
 	// Get Order Data
-	public any function importOrders(){
-	    this.getService('erpOneService').importErpOneOrders();
+	public any function importOrders(required any rc){
+	    var batch = this.getService('erpOneService').importErpOneOrders();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
-	// Get Order Items Data
-	public any function importOrderItems(){
-	    this.getService('erpOneService').importErpOneOrderItems();
+	
+	// Get Order Data
+	public any function importOrderItems(required any rc){
+	    var batch = this.getService('erpOneService').importErpOneOrderItems();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 	}
+	
+	// Get Order Data
+	public any function importOrderPayments(required any rc){
+	    var batch = this.getService('erpOneService').importErpOneOrderPayments();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	public any function importOrderShipments(required any rc){
+	    var batch = this.getService('erpOneService').importErpOneOrderShipments();
+	    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	
+	// Set change-reacking
+	public any function updateChangeTracking(required any rc ){
+	    param name="rc.tableName";
+	    param name="rc.enabled" default=true;
+	    
+	    var response = this.getService('erpOneService').trackErpTableChanges( argumentCollection = rc);
+	    arguments.rc['showDump'] = { "updateChangeTracking": response };
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	// Get change-reacking
+	public any function getChangeTrackingStatus(required any rc ){
+	    param name="rc.tableName";
+
+	    var response = this.getService('erpOneService').getErpTableChangeTrackingStatus( argumentCollection = rc);
+	    arguments.rc['showDump'] = { "getChangeTrackingStatus": response };
+        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
+	}
+
 	// Get Inventory Items Data
 	public any function importInventoryItems(){
 	    this.getService('erpOneService').importErpOneInventoryItems();
@@ -63,7 +138,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 				if( !isNull(batch) ){
 				    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
 				    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
-			        super.renderOrRedirectSuccess( defaultAction="erpone:main", maintainQueryString=true, rc=arguments.rc);
+			        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
 				} else{ 
 					// if no batch returned, then there was some issue with the import; sending user back
 				    super.renderOrRedirectFailure( defaultAction="erpone:main.preProcessIntegration", maintainQueryString=true, rc=arguments.rc);
@@ -79,11 +154,28 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 				}, endpoint = arguments.rc.endpoint, requestType = arguments.rc.httpMethod);
 				getFW().setView("erpone:main.preprocessintegration_debug");
 				break;
+			case 'trackChanges':
+				    this.preProcessIntegration(arguments.rc);
+    				arguments.rc.result = this.getService("erpOneService").trackErpTableChanges(argumentCollection = arguments.rc );
+    				getFW().setView("erpone:main.preprocessintegration_trackChanges");
+				break;
+				
+			case 'importChanges':
+				    this.preProcessIntegration(arguments.rc);
+    				
+    				var batch = this.getService("erpOneService").processIntegration_importChanges(arguments.rc.processObject, arguments.rc)
+    				
+    				if(!isNull(batch)){
+    				    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+                	    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+                        super.renderOrRedirectSuccess( defaultAction="default", maintainQueryString=true, rc=arguments.rc);
+                        break;
+    				} 
+    				
+    				getFW().setView("erpone:main.preprocessintegration_trackChanges");
+				break;
 		}
-	
-		
 	}
-	
 	
 	public void function getSampleCSV( required struct rc ){
    		
@@ -104,7 +196,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
    		} 
    		else {
    		    this.getHibachiScope().showMessage("Invalid import type, no sample file available", "warning");
-   		    super.renderOrRedirectFailure( defaultAction="erpone:main", maintainQueryString=false, rc=arguments.rc);
+   		    super.renderOrRedirectFailure( defaultAction="default", maintainQueryString=false, rc=arguments.rc);
    		}
 	}
 

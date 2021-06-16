@@ -5,7 +5,7 @@
 <cfoutput>
 	<div id="container" style="width: 625px; font-family: arial; font-size: 12px;background:##fff;">
 		<div style="background-color: ##ffffff; width: 100%; padding: 20px; text-align:center;">
-			<cfif cgi.server_name CONTAINS "ten24dev">
+			<cfif cgi.server_name CONTAINS "slatwallcommerce-dev">
 				
 				<!--- client header/image goes here --->
 				

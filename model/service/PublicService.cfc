@@ -308,6 +308,7 @@ component  accessors="true" output="false"
         param name="arguments.parsedQuery.includeSKUCount" default=true;
         param name="arguments.parsedQuery.applySiteFilter" default=false;
         param name="arguments.parsedQuery.priceRangesCount" default=5;
+        param name="arguments.parsedQuery.includePagination" default=false;
         param name="arguments.parsedQuery.propertyIdentifierList" default='';
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
@@ -339,11 +340,20 @@ component  accessors="true" output="false"
 
 	    var integrationPackage = this.getSettingService().getSettingValue('siteProductSearchIntegration', hibachiScope.getCurrentRequestSite());
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(integrationPackage);
-        var integrationCFC = integrationEntity.getIntegrationCFC("Search");
-        
-        arguments.data.ajaxResponse = {
-            'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
-        };
+	    
+	    if( !isNull(integrationEntity) && integrationEntity.getActiveFlag() ){
+            
+            var integrationCFC = integrationEntity.getIntegrationCFC("Search");
+            
+            arguments.data.ajaxResponse = {
+                'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
+            };
+            
+	    } else {
+	        // if integration is not active fallback to getEntity colelction API;
+	        arguments.data['entityName'] = 'Product';
+	        this.getEntity(arguments.data);
+	    }
     }
 
 
@@ -2074,40 +2084,41 @@ component  accessors="true" output="false"
      */
     public void function addAccountPaymentMethod(required any data) {
         
-        if (!isNull(data) && !structKeyExists(data, 'accountPaymentMethod') && structKeyExists(data, "selectedPaymentMethod")){
-        	data['accountPaymentMethod'] = {};
-        	data['accountPaymentMethod']['accountPaymentMethodID']  = data.selectedPaymentMethod;
+        if (!isNull(arguments.data) && !structKeyExists(arguments.data, 'accountPaymentMethod') && structKeyExists(arguments.data, "selectedPaymentMethod")){
+        	arguments.data['accountPaymentMethod'] = {};
+        	arguments.data['accountPaymentMethod']['accountPaymentMethodID']  = arguments.data.selectedPaymentMethod;
         }
-        if (!isNull(data) && !structKeyExists(data, 'paymentMethod')){
-         	data['paymentMethod'] = {};
-         	data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
+        if (!isNull(arguments.data) && !structKeyExists(arguments.data, 'paymentMethod')){
+         	arguments.data['paymentMethod'] = {};
+         	arguments.data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
         }
-        if (!isNull(data) && structKeyExists(data, 'newOrderPayment')){
-         	data['accountPaymentMethod'] = data;
-         	data['accountPaymentMethod']['billingAddress'] = data.newOrderPayment;
+        if (!isNull(arguments.data) && structKeyExists(arguments.data, 'newOrderPayment')){
+         	arguments.data['accountPaymentMethod'] = arguments.data;
+         	arguments.data['accountPaymentMethod']['billingAddress'] = arguments.data.newOrderPayment;
         }
         
         if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( data.selectedPaymentMethod );
+                var accountPaymentMethod = this.getAccountService().getAccountPaymentMethod( arguments.data.selectedPaymentMethod );
             }else{
                 var accountPaymentMethod = this.getAccountService().newAccountPaymentMethod(  );	
                 accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
-            
-            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
-            data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
-            // If there were no errors then we can clear out the
-            
-        } else {
-            
-            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", true );
-                
+            if (!accountPaymentMethod.hasErrors()){
+                getHibachiScope().flushORMSession();
+                arguments.data['ajaxResponse']['accountPaymentMethod'] = {
+                    "accountPaymentMethodID": accountPaymentMethod.getAccountPaymentMethodID() 
+                }
+            }else{
+                arguments.data['ajaxResponse']['errors'] = accountPaymentMethod.getErrors();
+            }
+	getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
         }
+
         
     }
     
@@ -4209,7 +4220,6 @@ component  accessors="true" output="false"
             collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData.pageRecords);
             
             arguments.data.ajaxResponse['data'] = collectionData; 
-            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
             return;
         }
         
@@ -4237,7 +4247,6 @@ component  accessors="true" output="false"
         }
         
         arguments.data.ajaxResponse['data'] = response;
-        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
 	}
 	
 	

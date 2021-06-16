@@ -10,25 +10,46 @@
     <hb:HibachiEntityActionBar pageTitle="ErpOne Importer" type="detail" object="#rc.integration#" showcancel="false" showbackAction="false" showcreate="false" showedit="false" showdelete="false">
         <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="importerponecsv" type="list" icon="upload icon-white" modal="true" />
         <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="debug" type="list"  />
+        <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="trackChanges" type="list"  modal="true" />
+        <hb:HibachiProcessCaller entity="#rc.integration#" action="erpone:main.preprocessintegration" processContext="importChanges" type="list"  modal="true" />
     </hb:HibachiEntityActionBar>
    
     <hb:HibachiPropertyRow>
    	    <hb:HibachiPropertyList>
-		    <cfloop struct="#rc.sampleCsvFilesIndex#" item="local.mappingCode">
-		        <br/>
-		        <hb:HibachiActionCaller 
-		            action="admin:erpone:main.getSampleCSV" 
-		            queryString="mappingCode=#local.mappingCode#" 
-		            text="Download - #rc.sampleCsvFilesIndex[local.mappingCode]# - Import Template CSV" 
-		            modal="false" 
-		            type="link" 
-		            target="_blank" 
-		            icon="download" 
-		            class="btn btn-primary btn-sm" 
-		        />
-		        <br/>
-		   </cfloop> 
-		</hb:HibachiPropertyList>
+   	        
+   	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importAccounts" 
+	            text="Import All Accounts" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+	        
+    		<hb:HibachiActionCaller 
+	            action="admin:erpone:main.importInventoryItems" 
+	            text="Import Inventory" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+	        
+	        <hb:HibachiActionCaller 
+	            action="admin:erpone:main.importOrders" 
+	            text="Import All Orders" 
+	            modal="false" 
+	            type="link" 
+	            icon="download" 
+	            class="btn btn-primary btn-sm" 
+	        />
+
+	   	</hb:HibachiPropertyList>
+	   	
 	</hb:HibachiPropertyRow>
+	
+	<cfif structKeyExists(rc, "showDump")>
+	    <cfdump var=#rc.showDump#>
+	</cfif>
 	
 </cfoutput>

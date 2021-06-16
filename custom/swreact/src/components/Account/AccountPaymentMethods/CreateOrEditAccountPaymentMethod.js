@@ -131,8 +131,8 @@ const CreateOrEditAccountPaymentMethod = ({ cardData, isEdit, customBody, conten
         <div className="row">
           <hr className="mt-2 mb-3" />
           <div className="d-flex flex-wrap justify-content-end">
-            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit}>
-              {isEdit ? 'Save Credit Card Details' : 'Save New Card'}
+            <button type="submit" className="btn btn-primary mt-3 mt-sm-0" disabled={isEdit || formik.isSubmitting}>
+              {isEdit ? t('frontend.account.payment.save'): t('frontend.account.payment.saveNew')}
             </button>
           </div>
         </div>
