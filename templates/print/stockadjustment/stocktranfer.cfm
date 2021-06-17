@@ -82,7 +82,7 @@
 							<td align="right">(#dollarFormat(itemCostTotal)#)</td>
 							<td>
 								<cfif not isNull(stockAdjustmentItem.getFromStock()) AND not isNull(stockAdjustmentItem.getFromStock().getLocation()) >
-									#stockAdjustmentItem.getToStock().getLocation().getLocationName()#
+									#stockAdjustmentItem.getFromStock().getLocation().getLocationName()#
 								</cfif>								
 							</td>
 						</tr>
