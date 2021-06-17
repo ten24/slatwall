@@ -2,6 +2,14 @@
 	"properties": {
 		"setupName": [{ "contexts": "save", "required": true }],
 		"location": [{ "contexts": "save", "required": true }],
+		"minQuantity": [
+			{
+				"contexts": "save",
+				"required": true,
+				"dataType": "numeric",
+				"lteProperty": "maxQuantity"
+			}
+		],
 		"maxQuantity": [
 			{
 				"contexts": "save",

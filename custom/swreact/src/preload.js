@@ -1,5 +1,5 @@
 const data = {
-  site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: 'stoneandberg' },
+  site: { hibachiInstanceApplicationScopeKey: '', siteName: 'Stone & Berg', siteID: '2c9680847491ce86017491f46ec50036', siteCode: process.env.REACT_APP_SITE_CODE },
   router: [
     { URLKeyType: 'Product', URLKey: 'product' },
     { URLKeyType: 'ProductType', URLKey: 'products' },
@@ -11,6 +11,9 @@ const data = {
   ],
   cmsProvider: 'slatwallCMS',
   enforceVerifiedAccountFlag: true,
+  products: {
+    fallbackImageCall: false,
+  },
   shopByManufacturer: {
     slug: '/brands',
     showInMenu: true,

@@ -1,9 +1,7 @@
 import React, { Suspense, useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Loading, Header, SEO, CMSWrapper } from './components'
-import lazyWithPreload from './components/lazyWithPreload/lazyWithPreload'
-import ScrollToTop from './components/ScrollToTop/ScrollToTop'
+import { Loading, Header, SEO, CMSWrapper, ScrollToTop, lazyWithPreload } from './components'
 import { getConfiguration } from './actions/configActions'
 import logo from './assets/images/logo.png'
 import mobileLogo from './assets/images/logo-mobile.png'
@@ -56,8 +54,6 @@ const pageComponents = {
 //https://itnext.io/react-router-transitions-with-lazy-loading-2faa7a1d24a
 export default function App() {
   const routing = useSelector(state => state.configuration.router)
-  const siteCode = useSelector(state => state.configuration.site.siteCode)
-  console.log('siteCode', siteCode)
   const shopByManufacturer = useSelector(state => state.configuration.shopByManufacturer)
   const dispatch = useDispatch()
   useEffect(() => {

@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { getPageContent } from '../../actions/contentActions'
 import { useHistory, useLocation } from 'react-router'
-import { getWishLists } from '../../actions/userActions'
+import { getWishLists, getPageContent } from '../../actions/'
 
 const CMSWrapper = ({ children }) => {
   const dispatch = useDispatch()
-  const { pathname } = useLocation()
+  const { pathname } = useLocation('home')
   const history = useHistory()
   const [isLoaded, setIsLoaded] = useState(false)
-  let basePath = pathname.split('/')[1].toLowerCase()
-  basePath = basePath.length ? basePath : 'home'
+  const [currentPath, setCurrentPath] = useState(pathname)
 
   useEffect(() => {
     if (!isLoaded) {
+      let basePath = pathname.split('/')[1].toLowerCase()
+      basePath = basePath.length ? basePath : 'home'
       dispatch(getWishLists())
       dispatch(
         getPageContent(
@@ -49,27 +49,30 @@ const CMSWrapper = ({ children }) => {
       )
       setIsLoaded(true)
     }
-  }, [dispatch, history, basePath, isLoaded])
+  }, [dispatch, history, pathname, isLoaded])
 
   useEffect(() => {
     const unload = history.listen(location => {
-      let newPath = location.pathname.split('/').reverse()[0].toLowerCase()
-      newPath = newPath.length ? newPath : 'home'
-      dispatch(
-        getPageContent(
-          {
-            'f:urlTitlePath:like': `${newPath}%`,
-          },
-          newPath
+      if (location.pathname !== currentPath) {
+        let newPath = location.pathname.split('/').reverse()[0].toLowerCase()
+        newPath = newPath.length ? newPath : 'home'
+        setCurrentPath(location.pathname)
+        dispatch(
+          getPageContent(
+            {
+              'f:urlTitlePath:like': `${newPath}%`,
+            },
+            newPath
+          )
         )
-      )
+      }
     })
     return () => {
       unload()
     }
-  }, [dispatch, history, basePath])
+  }, [dispatch, history, setCurrentPath, currentPath])
 
   return <>{children}</>
 }
 
-export default CMSWrapper
+export { CMSWrapper }

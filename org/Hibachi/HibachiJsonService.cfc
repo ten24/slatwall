@@ -51,16 +51,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public void function createConfigJson(){
 		var json = {};
 		var config = {};
+
 		config = getService('HibachiSessionService').getConfig();
-		config[ 'modelConfig' ] = getModel();
+		config['modelConfig'] = getModel();
+		var entityTabs = getEntityTabsJson();
+		
+        if( !structIsEmpty(entityTabs) ){
+    		config['entityTabs'] = entityTabs;
+        }
+	
 		json['data'] = config;
 		json = serializeJson(json);
+		
 		var configDirectoryPath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/system/';
 		if(!directoryExists(configDirectoryPath)){
 			directoryCreate(configDirectoryPath);
+			directoryCreate(configDirectoryPath & "shared/");
 		}
-		
-		json = appendTabsJson(json);
 		
 		var filePath = configDirectoryPath & 'config.json';
 		fileWrite(filePath,json,'utf-8');
@@ -71,10 +78,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     /**
      * Function to append tabs JSON file to Config JSON
      * */
-    public any function appendTabsJson(required string json) {
-        //Existing Config Json
-        var configJson = DeserializeJSON( arguments.json );
-        
+    public struct function getEntityTabsJson() {
+
         var tabsList = {};
         //Layouts Path
         var templatePath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/config/tabs";
@@ -92,18 +97,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 
                 tabsList[entity] = entityTabs;
             }
-            
-            configJson["data"]["entityTabs"] = tabsList;
         }
         
-        return serializeJson( configJson );
+        return tabsList;
     }
 
 	private any function getModel(){
         var model = {};
         var entities = [];
         var processContextsStruct = getService('hibachiService').getEntitiesProcessContexts();
-        var entitiesListArray = listToArray(structKeyList(getService('hibachiService').getEntitiesMetaData()));
+        var entitiesListArray = structKeyArray( getService('hibachiService').getEntitiesMetaData() );
 
 
         model['entities'] = {};
@@ -133,6 +136,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     }
     
     public void function createJson(){
+		
+		writeLog(file=getApplicationKey(), text="org.hibachi.HibachiJsonService::createJson start");
+	    
 	    createConfigJson();
 	    createRBJson();
 	    getService('HibachiJsonService').createPermissionJson('entity',getService('HibachiAuthenticationService').getEntityPermissionDetails());
@@ -146,6 +152,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	            permissionGroup.setCalculatedJsonCheckSum(hash(serializeJson(getPermissionJsonStruct(permissionGroupJsonDetails)),'md5'));
     	    }
     	}
+    	
+		writeLog(file=getApplicationKey(), text="org.hibachi.HibachiJsonService::createJson finished");
     }
     
     //permission types are entity and action
@@ -375,17 +383,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     }catch(any e){
                         defaultValue = javacast('null','');
                     }
-                    if (isNull(local.defaultValue)){
+                    if (isNull(defaultValue)){
                         model.defaultValues[entity.getClassName()][property.name] = javacast('null','');
-                    }else if (structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)){
+                    }else if (structKeyExists(property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', property.ormType)){
                         model.defaultValues[entity.getClassName()][property.name] = defaultValue;
-                    }else if (structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)){
-                        if(structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json"){
+                    }else if (structKeyExists(property, "ormType") and listFindNoCase('string', property.ormType)){
+                        if(structKeyExists(property, "hb_formFieldType") and property.hb_formFieldType eq "json"){
                             model.defaultValues[entity.getClassName()][property.name] = deserializeJson(defaultValue);
                         }else{
                             model.defaultValues[entity.getClassName()][property.name] = defaultValue;
                         }
-                    }else if(structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'){
+                    }else if(structKeyExists(property, "ormType") and property.ormType eq 'timestamp'){
                         model.defaultValues[entity.getClassName()][property.name] = defaultValue;
                     }else{
                         model.defaultValues[entity.getClassName()][property.name] = defaultValue;

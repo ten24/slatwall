@@ -1,4 +1,4 @@
-import { Footer, Header, SEO } from '../index'
+import { Footer, Header, SEO } from '..'
 
 const Loading = () => {
   return (
@@ -11,4 +11,4 @@ const Loading = () => {
   )
 }
 
-export default Loading
+export { Loading }

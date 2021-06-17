@@ -440,7 +440,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return arrayLen(getOptionGroups());
 	}
 
-	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}],boolean defaultSkuOnlyFlag=false) {
+	public array function getImageGalleryArray(array resizeSizes=[{size='small'},{size='medium'},{size='large'}],boolean defaultSkuOnlyFlag=false) {
 		var imageGalleryArray = [];
 		var filenames = [];
 		var skuCollection = this.getSkusCollectionList();
@@ -474,6 +474,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					var resizeImageData = arguments.resizeSizes[s];
 					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
 					resizeImageData.missingImagePath = missingImagePath;
+					if(resizeImageData.size == "medium"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageMediumHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageMediumWidth");
+			        } else if (resizeImageData.size == "large"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageLargeHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageLargeWidth");
+			        }else if (resizeImageData.size == "xlarge"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageXLargeWidth");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageXLargeHeight");
+			        }else if (resizeImageData.size == "listing"){
+			            resizeImageData.height = getService('SettingService').getSettingValue("productListingImageHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productListingImageWidth");
+			        } else{ //default case small
+			            resizeImageData.height = getService('SettingService').getSettingValue("productImageSmallHeight");
+			            resizeImageData.width  = getService('SettingService').getSettingValue("productImageSmallWidth");
+			        }
 					arrayAppend(
 						thisImage.resizedImagePaths, 
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
@@ -1450,6 +1466,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					!isNull(this.getPublishedEndDateTime()) &&
 					dateDiff("n", this.getPublishedStartDateTime(), this.getPublishedEndDateTime()) >= 0
 				);
+	}
+	
+	public boolean function isValidPurchaseEndDateTime() {
+		return 	isNull(this.getPurchaseStartDateTime()) || isNull(this.getPurchaseEndDateTime()) ||
+			(
+				dateDiff("n", this.getPurchaseStartDateTime(), this.getPurchaseEndDateTime()) >= 0
+			);
 	}
 
 	// =============== END: Custom Validation Methods ======================

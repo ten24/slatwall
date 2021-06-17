@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const AttributeFacet = ({ qs, facet, filterName, facetKey, updateAttribute, isSelected = false }) => {
+const AttributeFacet = ({ facet, filterName, facetKey, updateAttribute, isSelected = false }) => {
   const token = filterName.replace(/\s/g, '') + facet.name.replace(/\s/g, '') + 'input'
   return (
     <li className="widget-list-item cz-filter-item">
@@ -102,4 +102,4 @@ const ListingFilter = ({ qs, appliedFilters, name, facetKey, selectType, options
   )
 }
 
-export default ListingFilter
+export { ListingFilter }

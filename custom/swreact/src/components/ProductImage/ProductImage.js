@@ -1,31 +1,45 @@
 import React, { useEffect } from 'react'
 import { SWImage } from '..'
-import { useGetProductImageGallery } from '../../hooks/useAPI'
+import { useResizedImageByProfileName } from '../../hooks/'
+import { useSelector } from 'react-redux'
+import { getImageFallbackFlag } from '../../selectors'
+import ContentLoader from 'react-content-loader'
 
-const ProductImage = ({ productID, skuID }) => {
-  let [productImageGallery, setRequest] = useGetProductImageGallery()
+const ImageSkeleton = props => {
+  return (
+    <ContentLoader speed={2} width={200} height={200} viewBox="0 0 200 200" backgroundColor="#f3f3f3" foregroundColor="#dedede" {...props}>
+      <rect x="0" y="0" rx="44" ry="44" width="200" height="200" />
+    </ContentLoader>
+  )
+}
 
-  let filterImages = productImageGallery.isLoaded
-    ? productImageGallery.data.images.filter(({ ASSIGNEDSKUIDLIST = false, TYPE }) => {
-        return TYPE === 'skuDefaultImage' || (ASSIGNEDSKUIDLIST && ASSIGNEDSKUIDLIST.includes(skuID))
-      })
-    : []
-  if (filterImages.length === 0) {
-    filterImages = [{ ORIGINALPATH: '', NAME: '' }]
-  }
-
+const ProductImage = ({ skuID, imageFile, defaultSku_imageFile, customPath, forceImageCall = false }) => {
+  const imageFallbackFlag = useSelector(getImageFallbackFlag)
+  let [request, setRequest] = useResizedImageByProfileName()
+  const callForImage = (!imageFile || !defaultSku_imageFile) && (imageFallbackFlag || forceImageCall)
   useEffect(() => {
     let didCancel = false
-
-    if (!productImageGallery.isLoaded && !productImageGallery.isFetching && !didCancel) {
-      setRequest({ ...productImageGallery, isFetching: true, isLoaded: false, params: { productID }, makeRequest: true })
+    if (!didCancel && !request.isFetching && !request.isLoaded && callForImage) {
+      setRequest({
+        ...request,
+        params: { skuIDs: skuID, profileName: 'listing' },
+        makeRequest: true,
+        isFetching: true,
+        isLoaded: false,
+      })
     }
     return () => {
       didCancel = true
     }
-  }, [productImageGallery, setRequest, productID])
+  }, [request, setRequest, skuID, callForImage])
 
-  return <>{productImageGallery.isLoaded && <SWImage key={productImageGallery.data.images[0].NAME} customPath="/" src={productImageGallery.data.images[0].ORIGINALPATH} />}</>
+  return (
+    <>
+      {!callForImage && <SWImage customPath={customPath ? customPath : 'custom/assets/images/product/default/'} src={imageFile || defaultSku_imageFile} alt="Product" />}
+      {callForImage && request.isLoaded && <SWImage customPath="/" src={request.data[skuID]} alt="Product" />}
+      {/* {callForImage && request.isFetching && <ImageSkeleton />} */}
+    </>
+  )
 }
 
-export default ProductImage
+export { ProductImage }

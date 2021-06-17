@@ -1,14 +1,13 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
+import { AccountContent, AccountLayout } from '../../'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { deleteAccountAddress } from '../../../actions/userActions'
+import { deleteAccountAddress } from '../../../actions/'
 import { useTranslation } from 'react-i18next'
-import { getAllAccountAddresses, getPrimaryAddress } from '../../../selectors/userSelectors'
+import { getAllAccountAddresses, getPrimaryAddress } from '../../../selectors/'
 import { Redirect } from 'react-router-dom'
 
 const Address = props => {
@@ -99,4 +98,4 @@ const AccountAddresses = ({ title }) => {
   )
 }
 
-export default AccountAddresses
+export { AccountAddresses }

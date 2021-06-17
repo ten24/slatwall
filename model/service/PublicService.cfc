@@ -72,6 +72,7 @@ component  accessors="true" output="false"
     property name="integrationService" type="any";
     property name="imageService" type="any";
     property name="locationService" type="any";
+    property name="fulfillmentService" type="any";
 
 
     variables.publicContexts = [];
@@ -308,6 +309,7 @@ component  accessors="true" output="false"
         param name="arguments.parsedQuery.includeSKUCount" default=true;
         param name="arguments.parsedQuery.applySiteFilter" default=false;
         param name="arguments.parsedQuery.priceRangesCount" default=5;
+        param name="arguments.parsedQuery.includePagination" default=false;
         param name="arguments.parsedQuery.propertyIdentifierList" default='';
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
@@ -339,11 +341,20 @@ component  accessors="true" output="false"
 
 	    var integrationPackage = this.getSettingService().getSettingValue('siteProductSearchIntegration', hibachiScope.getCurrentRequestSite());
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(integrationPackage);
-        var integrationCFC = integrationEntity.getIntegrationCFC("Search");
-        
-        arguments.data.ajaxResponse = {
-            'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
-        };
+	    
+	    if( !isNull(integrationEntity) && integrationEntity.getActiveFlag() ){
+            
+            var integrationCFC = integrationEntity.getIntegrationCFC("Search");
+            
+            arguments.data.ajaxResponse = {
+                'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
+            };
+            
+	    } else {
+	        // if integration is not active fallback to getEntity colelction API;
+	        arguments.data['entityName'] = 'Product';
+	        this.getEntity(arguments.data);
+	    }
     }
 
 
@@ -362,46 +373,51 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
 	    var product = getProductService().getProduct( arguments.data.productID );
-        
-        if( !isNull(product) && product.getBaseProductType() == "productBundle") {
-            //get product bundles
-            var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
-            bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
-            bundleProductCollectionList.addFilter("productBundleSku.skuID", product.getDefaultSku().getSkuID());
-            bundleProductCollectionList.addFilter("activeFlag", 1);
-            var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
-            
-            
-            //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
-            var bundleResponse = [];
-            
-            //populate bundle response
-            for( var bundle in bundleProducts) {
-                //get sku list form collection config
-                var skuCollections = getSkuService().getSkuCollectionList();
-                skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
-                skuCollections.addDisplayProperties("calculatedSkuDefinition");
-                skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
-	            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
-                var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
-                
-                ArrayAppend(bundleResponse, {
-                  'minimumQuantity':  bundle['minimumQuantity'],
-                  'maximumQuantity': bundle['maximumQuantity'],
-                  'bundleType': bundle['productBundleGroupType_typeName'],
-                  'amount': bundle['amount'],
-                  'amountType': bundle['amountType'],
-                  'skuList': bundleSkuList,
-                  'defaultSkuID': product.getDefaultSku().getSkuID(),
-                  'productBundleGroupID': bundle['productBundleGroupID'],
-                });
-            }
-            
-            arguments.data.ajaxResponse['data'] = bundleResponse;
-            getHibachiScope().addActionResult("public:product.getProductBundles",false);
-        } else {
+	    
+        if( isNull(product) || product.getBaseProductType() != "productBundle") {
             getHibachiScope().addActionResult("public:product.getProductBundles",true);
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.product.getProductBundles.productID_invalid");
+            return;
         }
+        
+        var defaultSkuID = product.getDefaultSku().getSkuID();
+        
+        //get product bundles
+        var bundleProductCollectionList = getProductService().getProductBundleGroupCollectionList();
+        bundleProductCollectionList.setDisplayProperties("productBundleGroupID, skuCollectionConfig, minimumQuantity, maximumQuantity, amount, amountType, productBundleGroupType.typeName");
+        bundleProductCollectionList.addFilter("productBundleSku.skuID", defaultSkuID);
+        bundleProductCollectionList.addFilter("activeFlag", 1);
+        var bundleProducts = bundleProductCollectionList.getRecords(formatRecords=false);
+        
+        
+        //var bundleProducts = product.getDefaultSku().getProductBundleGroups();
+        var bundleResponse = [];
+        
+        //populate bundle response
+        for( var bundle in bundleProducts) {
+            //get sku list form collection config
+            var skuCollections = getSkuService().getSkuCollectionList();
+            skuCollections.setCollectionConfig( bundle['skuCollectionConfig'] );
+            skuCollections.addDisplayProperties("calculatedSkuDefinition");
+            skuCollections.addDisplayProperties("calculatedQATS");
+            skuCollections.setPageRecordsShow(arguments.data.pageRecordsShow);
+            skuCollections.setCurrentPageDeclaration(arguments.data.currentPage); 
+            var bundleSkuList = skuCollections.getPageRecords(formatRecords=false);
+            
+            ArrayAppend(bundleResponse, {
+              'minimumQuantity':  bundle['minimumQuantity'],
+              'maximumQuantity': bundle['maximumQuantity'],
+              'bundleType': bundle['productBundleGroupType_typeName'],
+              'amount': bundle['amount'],
+              'amountType': bundle['amountType'],
+              'skuList': bundleSkuList,
+              'defaultSkuID': defaultSkuID,
+              'productBundleGroupID': bundle['productBundleGroupID'],
+            });
+        }
+        
+        arguments.data.ajaxResponse['data'] = bundleResponse;
+        getHibachiScope().addActionResult("public:product.getProductBundles",false);
 	}
 	
 	/**
@@ -414,9 +430,10 @@ component  accessors="true" output="false"
 
 	    var account = getHibachiScope().getAccount();
 	    var sku = getProductService().getSku( arguments.data.skuID );
-
+	    var hibachiScope = this.getHibachiScope();
 	    if( isNull( sku ) ) {
-	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
+	        hibachiScope.addActionResult("public:product.getProductBundleBuilds",true);
+	        arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("validate.product.getProductBundleBuild.skuID_invalid");
 	        return;
 	    }
 
@@ -425,7 +442,7 @@ component  accessors="true" output="false"
 	    if( !account.isNew() ) {
 	        productBundleBuildCollectionList.addFilter('account.accountID', account.getAccountID());
 	    } else {
-	        productBundleBuildCollectionList.addFilter('session.sessionID', getHibachiScope().getSession().getSessionID());
+	        productBundleBuildCollectionList.addFilter('session.sessionID', hibachiScope.getSession().getSessionID());
 	    }
 	    productBundleBuildCollectionList.addFilter('productBundleSku.skuID', sku.getSkuID() );
 	    productBundleBuildCollectionList.addFilter('activeFlag', 1);
@@ -433,7 +450,7 @@ component  accessors="true" output="false"
 
         //return false if there are no active builds
         if( !ArrayLen( productBundle ) ) {
-	        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",true);
+	        hibachiScope.addActionResult("public:product.getProductBundleBuilds",true);
 	        return;
 	    }
 
@@ -448,20 +465,20 @@ component  accessors="true" output="false"
         };
 
 	    arguments.data.ajaxResponse['data'] = bundleBuildResponse;
-        getHibachiScope().addActionResult("public:product.getProductBundleBuilds",false);
+        hibachiScope.addActionResult("public:product.getProductBundleBuilds",false);
 	}
 
 		/**
 	 * Method to create product bundle build
 	 * 
-	 * @param - skuID (can also accept comma separated list)
+	 * @param - skuIDList (can also accept comma separated list)
 	 * @param - default skuID (from bundle product)
-	 * @param - quantity (can also accept comma separated list)
+	 * @param - quantities (can also accept comma separated list)
 	 * @param - productBundleGroupID
 	 * */
 	public void function createProductBundleBuild( required struct data ) {
-	    param name="arguments.data.skuID";
-	    param name="arguments.data.quantity";
+	    param name="arguments.data.skuIDList";
+	    param name="arguments.data.quantities";
 	    param name="arguments.data.productBundleGroupID";
 	    param name="arguments.data.defaultSkuID";
 
@@ -535,6 +552,13 @@ component  accessors="true" output="false"
                 getHibachiScope().addActionResult("public:product.createProductBundleBuild", productBundleBuildItem.hasErrors());
                 return;
             }
+        }
+        productBundleBuild = getProductService().saveProductBundleBuild(productBundleBuild);
+
+        if( productBundleBuild.hasErrors() ){
+            this.addErrors(arguments.data, productBundleBuild.getErrors());
+            getHibachiScope().addActionResult("public:product.createProductBundleBuild",true);
+            return;
         }
 
         getHibachiScope().addActionResult("public:product.createProductBundleBuild",false);
@@ -611,17 +635,20 @@ component  accessors="true" output="false"
 	 public void function getOrderDetails(required struct data) {
 	     param name="arguments.data.orderID";
 	     
-	     var account = getHibachiScope().getAccount();
-	     if(!isNull(account) && !this.getHibachiScope().hibachiIsEmpty(account.getAccountID())) {
+	     var hibachiScope = getHibachiScope();
+	     var account = hibachiScope.getAccount();
+	     if(!isNull(account) && !hibachiScope.hibachiIsEmpty(account.getAccountID())) {
 	         var order = this.getOrderService().getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
 	             arguments.data.ajaxResponse['orderDetails'] = this.getOrderService().getOrderDetails(order.getOrderID(), account.getAccountID());
-	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
+	             hibachiScope.addActionResult("public:account.getOrderDetails",false);
 	         } else {
-	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	             hibachiScope.addActionResult("public:account.getOrderDetails",true);
 	         }
 	     } else {
-	         getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	         hibachiScope.addActionResult("public:account.getOrderDetails",true);
+	         arguments.data.ajaxResponse['error'] = hibachiScope.rbKey("processAccount_logout");
+	         return;
 	     }
 	 }
 	
@@ -1061,9 +1088,12 @@ component  accessors="true" output="false"
      * @param currentPage optional
      * @return none
      **/
-    public void function getAllGiftCardsOnAccount(required any data) {
+    public void function getGiftCardsOnAccount(required any data) {
+        param name="arguments.data.giftCardCode" default="";
+        param name="arguments.data.giftCardID" default="";
+
         arguments.account = getHibachiScope().getAccount();
-        var giftCards = getService('giftCardService').getAllGiftCardsOnAccount( argumentCollection=arguments);
+        var giftCards = getService('giftCardService').getGiftCardsOnAccount( argumentCollection=arguments);
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
     }
 	
@@ -1326,7 +1356,7 @@ component  accessors="true" output="false"
 
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
-        param name="arguments.data.returnTokenFlag" default="0";        
+        param name="arguments.data.returnTokenFlag" default="1";        
 
         var account = this.getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
 
@@ -1404,7 +1434,7 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_ResetPassword
       **/
     public void function resetPasswordUpdate( required struct data ) {
-        param name="data.swprid";
+        param name="data.swprid" default="";
 
         var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
 
@@ -1799,11 +1829,30 @@ component  accessors="true" output="false"
                  	var accountAddress = this.getAccountService().newAccountAddress();
                  	accountAddress.setAddress(shippingAddress);
                  	accountAddress.setAccount(getHibachiScope().getAccount());
-                 	var savedAccountAddress = this.getAccountService().saveAccountAddress(accountAddress);
-                 	if (!savedAddress.hasErrors()){
-                 		getDao('hibachiDao').flushOrmSession();
-                 	}
-                  
+                 	accountAddress = this.getAccountService().saveAccountAddress(accountAddress);
+                    
+                    orderFulfillment.setAccountAddress(accountAddress);
+                    orderFulfillment = getFulfillmentService().saveOrderFullfillment(orderFulfillment);
+
+                    if(orderFulfillment.hasErrors() || accountAddress.hasErrors()){
+                        var errors = [];
+                        arrayAppend(errors, orderFulfillment.getErros(), true);
+                        arrayAppend(errors, accountAddress.getErrors(), true);
+
+                        this.addErrors(arguments.data, errors);
+                        getHibachiScope().addActionResult( "public:cart.addOrderShippingAddress", true );
+                        return;
+                    }
+
+                } else {
+                    orderFulfillment.setAccountAddress(javacast('null',''));
+                    orderFulfillment = getFulfillmentService().saveOrderFullfillment(orderFulfillment);
+
+                    if(orderFulfillment.hasErrors()){
+                        this.addErrors(arguments.data, orderFulfillment.getErrors());
+                        getHibachiScope().addActionResult( "public:cart.addOrderShippingAddress", true );
+                        return;
+                    }
                 }
                 
                 this.getOrderService().saveOrder(order);
@@ -1826,6 +1875,7 @@ component  accessors="true" output="false"
           var accountAddressId = data.accountAddressID;
         }else{
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.cart.accountAddressID_required");
           return;
         }
 
@@ -1865,6 +1915,7 @@ component  accessors="true" output="false"
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
             }
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.cart.accountAddressID_required");
         }
     }
 
@@ -1928,7 +1979,7 @@ component  accessors="true" output="false"
           break;
         }
       }
-
+    
       if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
         orderFulfillment.setPickupLocation(location);
         orderFulfillment = this.getOrderService().saveOrderFulfillment(orderFulfillment);
@@ -1940,6 +1991,7 @@ component  accessors="true" output="false"
           this.addErrors(arguments.data, orderFulfillment.getErrors());
         }
         getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
+        arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey("validate.order.addPickupFulfillmentLocation.fulfillment_invalid");
       }
     }
     
@@ -2241,6 +2293,13 @@ component  accessors="true" output="false"
         var updateOrderAmounts = structKeyExists( arguments.data, 'updateOrderAmounts' ) && arguments.data.updateOrderAmounts;
     
         arguments.data.ajaxResponse = {'cart':getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions'], updateOrderAmounts = updateOrderAmounts)};
+
+        // remove order payments with a status type of 'opstRemoved'
+        arguments.data.ajaxResponse.cart.orderPayments = arrayFilter(arguments.data.ajaxResponse.cart.orderPayments, function(orderPayment){
+            return arguments.orderPayment.orderPaymentStatusType.systemCode != "opstRemoved";
+        });
+        
+        
     }
     
     public void function getAccountData(any data) {
@@ -2570,21 +2629,25 @@ component  accessors="true" output="false"
         param name="data.orderItemIDList";
         param name="data.fulfillmentMethodID";
 
+        var error = [];
+        
+        if( arguments.data.orderItemIDList == "" ){
+            ArrayAppend(error, hibachiScope.rbKey("validate.cart.orderItemIDList_required"));
+        }
+        
+        if( arguments.data.fulfillmentMethodID == "" ){
+            ArrayAppend(error, hibachiScope.rbKey("validate.cart.fulfillmentMethodID_required"));
+        }
+        
+        if( !arrayIsEmpty(error)){
+            hibachiScope.addActionResult( "public:cart.changeOrderFulfillment", true);
+            data['ajaxResponse']['errors'] = error;
+            return;
+        }
+
         var cart = getHibachiScope().getCart();
 
         var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
-
-        var existingOrderFulfillment = "";
-
-        //check if fulfillment method already exists on order
-        var allOrderFulfillments = cart.getOrderFulfillments();
-        for(var orderFulfillment in allOrderFulfillments) {
-
-            //get existing fulfillment method based on fulfillment method ID
-            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodID() == arguments.data.fulfillmentMethodID ) {
-                existingOrderFulfillment = orderFulfillment;
-            }
-        }
 
         var orderItems = cart.getOrderItems();
         for(var orderItem in orderItems) {
@@ -2595,32 +2658,53 @@ component  accessors="true" output="false"
             //Check if item id exists, existing fulfillment method is different than the one we're passing, and new fulfillment should be eligible
             if( ArrayContains(orderItemIDList, orderItem.getOrderItemID()) && orderItem.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() != arguments.data.fulfillmentMethodID &&  ArrayContains(eligibleFulfillmentMethods, arguments.data.fulfillmentMethodID) ) {
 
-                //Remove existing method
-                orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
+                // clear order fulfillment and change fulfillment method
+                var fulfillmentMethod = getFulfillmentService().getFulfillmentMethod(arguments.data.fulfillmentMethodID);
+                var orderFulfillment = orderItem.getOrderFulfillment();
+                orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
+                orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
 
-                if( !this.getHibachiScope().hibachiIsEmpty(existingOrderFulfillment) ) {
-                    orderItem.setOrderFulfillment( existingOrderFulfillment );
-                } else {
-                    //get fulfillment method
-                    var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
+                orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
 
-                    //create new method
-                    var orderFulfillment = this.getOrderService().newOrderFulfillment();
-                    orderFulfillment.setOrder( cart );
-                    orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
-    				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
-
-                    orderItem.setOrderFulfillment( orderFulfillment );
+                if(orderFulfillment.hasErrors()){
+                    this.addErrors(arguments.data, orderFulfillment.getErrors());
+                    getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", true );
+                    return;
                 }
             }
         }
 
-        this.getOrderService().saveOrder(getHibachiScope().getCart());
-
-        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", false );
     }
 
+    /**
+     * @http-context clearFulfillment
+     * @description Clear Order Fulfillment from order
+     * @param orderFulfillmentID 
+     */
+    public any function clearOrderFulfillment(required any data){
+        param name="data.orderFulfillmentID" default="";
 
+        var orderFulfillment = getFulfillmentService().getOrderFulfillment(arguments.data.orderFulfillmentID);
+        var orderValid = !isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID();
+        var orderPlaced = !isNull(orderFulfillment.getOrder().getOrderStatusType()) && orderFulfillment.getOrder().getOrderStatusType().getSystemCode() != "ostNotPlaced";
+
+        if( orderValid && !orderPlaced ){
+
+            orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
+            orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
+
+            if(orderFulfillment.hasErrors()){
+                this.addErrors(arguments.data, orderFulfillment.getErrors());
+                getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
+                return;
+            }
+
+            getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", false );
+        } else {
+            getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
+        }
+    }
 
     /** 
      * @http-context updateOrderFulfillmentAddressZone
@@ -2764,15 +2848,23 @@ component  accessors="true" output="false"
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
             
             //If we have saveShippingAsBilling
-             if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
+            if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
 
-                 var addressData = {
-                    address=order.getShippingAddress()
-                };
+                var fulfillmentCollection = getFulfillmentService().getOrderFulfillmentCollectionList();
+                fulfillmentCollection.setDisplayProperties("orderFulfillmentID");
+                fulfillmentCollection.addFilter("order.orderID", order.getOrderID());
+                fulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping");
+                var fulfillments = fulfillmentCollection.getRecords(formatRecords = false);
+                
+                if(arrayLen(fulfillments)){
+                    var addressData = {
+                        address=getFulfillmentService().getOrderFulfillment(fulfillments[1]['orderFulfillmentID']).getShippingAddress()
+                    };
+                    
+                    var newBillingAddress = this.addBillingAddress(addressData, "billing");
+                }
 
-                 var newBillingAddress = this.addBillingAddress(addressData, "billing");
-
-             } else {
+            } else {
                 // Only create a new billing address here if its not being created later using the account payment method.
                 if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
                     && (!structKeyExists(data, "accountPaymentMethodID") 
@@ -3206,6 +3298,7 @@ component  accessors="true" output="false"
             arguments.data['ajaxResponse']['orderTemplate'] = newOrderTemplate.getOrderTemplateID();
         }
     }
+ 
 
    
 	public void function getOrderTemplates(required any data){ 
@@ -3543,9 +3636,7 @@ component  accessors="true" output="false"
         }
 
         arguments.data['orderTemplateTypeID'] = "2c9280846b712d47016b75464e800014"; // type-id for wishlist
-		if( !len(trim(arguments.data.orderTemplateName)) ){
-			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
-        }
+        arguments.data['accountID'] = this.getHibachiScope().getAccount().getAccountID(); 
         
         var orderTemplate = this.getOrderService().newOrderTemplate();
  		orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
@@ -4090,6 +4181,7 @@ component  accessors="true" output="false"
         };
         getHibachiScope().addActionResult("public:scope.getProductFilterOptions",false);
     }
+
     
     /** 
      * @http-context getDiscountsByCartData
@@ -4204,13 +4296,13 @@ component  accessors="true" output="false"
         }
        
 	    // if there's no entityID, then we're assuming that this's a call to fetch multiple-products
-	    if( !len(arguments.data.entityID) ){
+	    if( !len(arguments.data.entityID)  ){
     	    var collectionData = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
-            acollectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
-            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData);
             
             arguments.data.ajaxResponse['data'] = collectionData; 
-            this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+            this.getHibachiScope().addActionResult("public:scope.getProduct", false);
             return;
         }
         
@@ -4238,7 +4330,7 @@ component  accessors="true" output="false"
         }
         
         arguments.data.ajaxResponse['data'] = response;
-        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+        this.getHibachiScope().addActionResult("public:scope.getProduct", false);
 	}
 	
 	
@@ -4446,7 +4538,7 @@ component  accessors="true" output="false"
         }
     }
     
-     public void function productAvailableSkuOptions( required struct data ) {
+    public void function productAvailableSkuOptions( required struct data ) {
 		param name="arguments.data.productID" type="string" default="";
 		param name="arguments.data.selectedOptionIDList" type="string" default="";
 
@@ -4495,7 +4587,7 @@ component  accessors="true" output="false"
         var skuOptionDetails = product.getSkuOptionDetails()
         var defaultSku = product.getDefaultSku()
         if(!isNull(defaultSku)){
-        defaultSelectedOptions = defaultSku.getOptionsIDList()
+            defaultSelectedOptions = defaultSku.getOptionsIDList()
             for(var optionGroup in optionGroupsArr) {
                 var options = product.getOptionsByOptionGroup( optionGroup.getOptionGroupID() )
                 var group = []

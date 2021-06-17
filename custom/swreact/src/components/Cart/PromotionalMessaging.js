@@ -16,4 +16,4 @@ const PromotionalMessaging = () => {
     </>
   )
 }
-export default PromotionalMessaging
+export { PromotionalMessaging }

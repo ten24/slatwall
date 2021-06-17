@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { GiftCardDetails, CCDetails, TermPaymentDetails } from '../..'
-import { removePayment } from '../../../actions/cartActions'
-import { getAllOrderPayments, disableInteractionSelector } from '../../../selectors/orderSelectors'
+import { removePayment } from '../../../actions/'
+import { getAllOrderPayments, disableInteractionSelector } from '../../../selectors/'
 import { useTranslation } from 'react-i18next'
 
 const PaymentList = () => {

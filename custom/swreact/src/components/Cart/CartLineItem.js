@@ -1,11 +1,10 @@
-import { ProductPrice } from '../../components'
+import { ProductPrice, ProductImage } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { updateItemQuantity, removeItem } from '../../actions/cartActions'
-import useFormatCurrency from '../../hooks/useFormatCurrency'
-import { getProductRoute } from '../../selectors/configurationSelectors'
-import ProductImage from '../ProductImage/ProductImage'
+import { updateItemQuantity, removeItem } from '../../actions/'
+import { useFormatCurrency } from '../../hooks/'
+import { getProductRoute } from '../../selectors/'
 
 const CartLineItem = ({ orderItemID, isDisabled = false }) => {
   const { isFetching, orderItems } = useSelector(state => state.cart)
@@ -18,8 +17,8 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
     return orderItem.orderItemID === orderItemID
   })
   const { price, quantity, sku, extendedPriceAfterDiscount } = orderItem[0]
-  const { skuID, listPrice, skuCode, product } = sku
-  const { productID, productName, urlTitle, brand, productSeries } = product
+  const { skuID, listPrice, skuCode, product, imageFile } = sku
+  const { productName, urlTitle, brand, productSeries } = product
   const { brandName } = brand
 
   const isBackordered = false
@@ -27,8 +26,7 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
   return (
     <div className="d-sm-flex justify-content-between align-items-top my-4 py-3 border-bottom">
       <Link className="d-inline-block mr-sm-4" to={urlTitle} style={{ width: '10rem' }}>
-        <ProductImage productID={productID} skuID={skuID} />
-        {/* <SWImage customPath={imagePath} alt="Product" /> */}
+        <ProductImage skuID={skuID} imageFile={imageFile} />
       </Link>
 
       <div className="d-sm-flex flex-row flex-wrap w-100">
@@ -110,4 +108,4 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
     </div>
   )
 }
-export default CartLineItem
+export { CartLineItem }

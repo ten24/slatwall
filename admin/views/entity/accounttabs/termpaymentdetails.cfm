@@ -60,6 +60,7 @@ Notes:
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	<cfset orderCurrencies = rc.account.getOrderCurrencies()/>
+    
 	<sw-tab-group id="#getHibachiScope().createHibachiUUID()#">
 		<cfloop array="#orderCurrencies#" index="orderCurrencyRecord">
 		<cfset orderCurrency = orderCurrencyRecord['currencyCode']/>

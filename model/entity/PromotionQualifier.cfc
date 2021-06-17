@@ -340,25 +340,6 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 			hasOrder = !getCollectionHasOrderByOrderID( getExcludedOrdersCollection(transient=true), arguments.orderID );
 		}
 		
-		/* DEBUGGING CODE, TO BE REMOVED */
-		if( !hasOrder 
-			&& findNoCase( 'Purchase Plus',this.getPromotionPeriod().getPromotion().getPromotionName() )
-			&& findNoCase( '15%',this.getPromotionPeriod().getPromotionPeriodName() ) ){
-			var order = getService('OrderService').getOrder(arguments.orderID);
-			var orderItems = order.getOrderItems();
-			var qualifyingTotal = 0;
-			var qualifyingCalculatedTotal = 0;
-			var qualifyingItemCount = 0;
-			for(var orderItem in orderItems){
-				if( !listFindNoCase('productPack,starter-kit,other-income,enrollment-fee-vip,renewal-fee-mp,vpn-customer-registr,termination-fee,samples-and-pop,gift-card,miscFee,refund', orderItem.getSku().getProduct().getProductType().getUrlTitle() ) ){
-					qualifyingTotal += orderItem.getExtendedPriceAfterDiscount();
-					qualifyingCalculatedTotal += orderItem.getCalculatedExtendedPriceAfterDiscount();
-					qualifyingItemCount += 1;
-				}
-			}
-			//logHibachi('Purchase Plus #this.getPromotionPeriod().getPromotionPeriodName()# failed, order ID #order.getOrderID()#, price group #order.getPriceGroup().getPriceGroupCode()#, subtotalAfterItemDiscounts = #order.getSubtotalAfterItemDiscounts()#, calculatedSubtotalAfterItemDiscounts = #order.getCalculatedSubtotalAfterItemDiscounts()#, qualifyingTotal = #qualifyingTotal#, qualifyingCalculatedTotal = #qualifyingCalculatedTotal#, qualifyingItemCount = #qualifyingItemCount#');
-		}
-		/*      END DEBUGGING CODE      */
 		return hasOrder;
 
 	}

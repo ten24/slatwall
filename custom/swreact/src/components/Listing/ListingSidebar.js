@@ -1,4 +1,4 @@
-import ListingFilter from './ListingFilter'
+import { ListingFilter } from '../'
 import { useTranslation } from 'react-i18next'
 import queryString from 'query-string'
 import ContentLoader from 'react-content-loader'
@@ -153,4 +153,4 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
   )
 }
 
-export default ListingSidebar
+export { ListingSidebar }

@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useDispatch } from 'react-redux'
-import { deletePaymentMethod } from '../../../actions/userActions'
+import { deletePaymentMethod } from '../../../actions/'
 import { useTranslation } from 'react-i18next'
 
 const PaymentMethodItem = props => {
@@ -51,4 +51,4 @@ const PaymentMethodItem = props => {
     </tr>
   )
 }
-export default PaymentMethodItem
+export { PaymentMethodItem }

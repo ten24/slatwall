@@ -1,4 +1,4 @@
-import { login } from '../../../actions/authActions'
+import { login } from '../../../actions/'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
@@ -73,4 +73,4 @@ const AccountLogin = () => {
   )
 }
 
-export default AccountLogin
+export { AccountLogin }

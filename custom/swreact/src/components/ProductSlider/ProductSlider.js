@@ -1,11 +1,35 @@
 import Slider from 'react-slick'
-import ProductCard from '../ProductCard/ProductCard'
-const ProductSlider = ({ children, sliderData = [], settings, title, slidesToShow = 4 }) => {
+import { ProductCard } from '../'
+import { useGetProductsByEntity } from '../../hooks/'
+import { useEffect } from 'react'
+
+const ProductSlider = ({ children, params = {}, settings, title, slidesToShow = 4 }) => {
+  let [request, setRequest] = useGetProductsByEntity()
+
+  useEffect(() => {
+    let didCancel = false
+    if (!didCancel && !request.isFetching && !request.isLoaded) {
+      setRequest({
+        ...request,
+        params,
+        entity: 'product',
+        makeRequest: true,
+        isFetching: true,
+        isLoaded: false,
+      })
+    }
+    return () => {
+      didCancel = true
+    }
+  }, [request, setRequest, params])
+  if (!request.data.length) {
+    return null
+  }
   settings = settings
     ? settings
     : {
         dots: false,
-        infinite: sliderData && sliderData.length >= slidesToShow,
+        infinite: request.data && request.data.length >= slidesToShow,
         // infinite: true,
         slidesToShow: slidesToShow,
         slidesToScroll: 1,
@@ -30,21 +54,19 @@ const ProductSlider = ({ children, sliderData = [], settings, title, slidesToSho
           },
         ],
       }
-  if (!sliderData.length) {
-    return null
-  }
+
   return (
     <div className="container">
       <div className="featured-products shadow bg-white text-center my-5 py-3">
         <h3 className="h3 mb-0">{title}</h3>
         {children}
         <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
-          {sliderData.map((slide, index) => {
-            return <ProductCard {...slide} imageFile={slide.defaultSku_imageFile} skuID={slide.defaultSku_skuID} listPrice={slide.defaultSku_listPrice} key={index} />
+          {request.data.map((slide, index) => {
+            return <ProductCard {...slide} imagePath={slide.defaultSku_imagePath} skuID={slide.defaultSku_skuID} listPrice={slide.defaultSku_listPrice} key={index} />
           })}
         </Slider>
       </div>
     </div>
   )
 }
-export default ProductSlider
+export { ProductSlider }

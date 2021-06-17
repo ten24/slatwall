@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import useFormatCurrency from '../../hooks/useFormatCurrency'
+import { useFormatCurrency } from '../../hooks/'
 import { isAuthenticated } from '../../utils'
 
 const ProductPrice = ({ salePrice = 0, listPrice = 0, salePriceSuffixKey, accentSalePrice = true, listPriceSuffixKey = 'frontend.core.list' }) => {
@@ -18,7 +18,7 @@ const ProductPrice = ({ salePrice = 0, listPrice = 0, salePriceSuffixKey, accent
           <small>{salePriceSuffixKey && ` ${t(salePriceSuffixKey)}`}</small>
         </>
       )}
-      {(showList || !isAuthed) && !showMissingPrice && !showNoPrice &&(
+      {(showList || !isAuthed) && !showMissingPrice && !showNoPrice && (
         <span style={{ marginLeft: '5px' }}>
           <small>
             {`${formatCurrency(listPrice)}`} {t(listPriceSuffixKey)}
@@ -29,4 +29,4 @@ const ProductPrice = ({ salePrice = 0, listPrice = 0, salePriceSuffixKey, accent
   )
 }
 
-export default ProductPrice
+export { ProductPrice }

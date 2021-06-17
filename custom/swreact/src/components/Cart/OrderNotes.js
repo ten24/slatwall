@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import { updateOrderNotes } from '../../actions/cartActions'
+import { updateOrderNotes } from '../../actions/'
 
 const OrderNotes = () => {
   const dispatch = useDispatch()
@@ -48,4 +48,4 @@ const OrderNotes = () => {
     </div>
   )
 }
-export default OrderNotes
+export { OrderNotes }

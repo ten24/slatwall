@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { addAddressAndAttachAsShipping, addShippingAddressUsingAccountAddress, addShippingAddress, getEligibleFulfillmentMethods, getPickupLocations } from '../../../actions/cartActions'
-import { FulfilmentAddressSelector, SlideNavigation, Overlay, FulfillmentPicker, PickupLocationPicker, ShippingMethodPicker } from '../../../components'
+import { addAddressAndAttachAsShipping, addShippingAddressUsingAccountAddress, addShippingAddress, getEligibleFulfillmentMethods, getPickupLocations } from '../../../actions'
+import { FulfilmentAddressSelector, SlideNavigation, Overlay, FulfillmentPicker, PickupLocationPicker, ShippingMethodPicker } from '../../'
 import { useEffect } from 'react'
-import { accountAddressSelector, fulfillmentSelector } from '../../../selectors/orderSelectors'
+import { accountAddressSelector, fulfillmentSelector } from '../../../selectors/'
 
 const ShippingSlide = ({ currentStep }) => {
   const dispatch = useDispatch()

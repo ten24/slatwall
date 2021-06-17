@@ -1,0 +1,107 @@
+{
+    "entityName": "Account",
+    "mappingCode": "ErpOneAccountImport",
+    
+    "properties": {
+        
+        "remoteAccountID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "remoteContactID": {
+            "propertyIdentifier": "remoteContact",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        
+        "firstName": {
+            "propertyIdentifier": "firstName",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "lastName": {
+            "propertyIdentifier": "lastName",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "companyName": {
+            "propertyIdentifier": "company",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "companyCode": {
+            "propertyIdentifier": "companyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "organizationFlag": {
+            "propertyIdentifier": "organizationFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "accountActiveFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "taxExemptFlag": {
+            "propertyIdentifier": "taxExemptFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    
+    "generatedProperties": [
+        {
+            "propertyIdentifier": "urtTitle",
+            "allowUpdate": false
+        }    
+    ],
+    
+    "relations": [
+        {
+            "type": "oneToOne",
+            "isNullable": true,
+            "mappingCode": "AccountPhoneNumber",
+            "entityName": "AccountPhoneNumber",
+            "propertyIdentifier": "primaryPhoneNumber"
+        },
+        {
+            "type": "oneToOne",
+            "isNullable": true,
+            "mappingCode": "AccountEmailAddress",
+            "entityName": "AccountEmailAddress",
+            "propertyIdentifier": "primaryEmailAddress"
+        },
+        {
+            "type": "manyToOne",
+            "isNullable": true,
+            "entityName": "AccountAddress",
+            "mappingCode": "AccountAddress",
+            "propertyIdentifier": "primaryAddress"
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteAccountID"
+        ]
+    }
+    
+}

@@ -304,7 +304,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
 			globalIntegrationRequestLog = {fieldType="yesno",defaultValue=0},
 			globalIntegrationRequestLogExpirationDays = {fieldtype="text", defaultValue=30, validate={dataType="numeric",required=true,maxValue=180}},
-			globalPublicApiEntities = {fieldType="multiselect",defaultValue="Brand,Product,ProductType,Sku"},
+			globalPublicApiEntities = {fieldType="multiselect",defaultValue="Brand,Category,Product,ProductType,Sku"},
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -325,6 +325,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			//Order
 			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
 			orderReturnReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
+			orderRefundReasonTypeOptions = {
 				fieldType="listingMultiselect", 
 				listingMultiselectEntityName="Type"
 			},
@@ -410,7 +414,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 			shippingMethodTrackingURL = {fieldType="text", defaultValue=""},
-			
+			shippingMethodIncludePriceFlag = {fieldType="yesno", defaultValue="true"},
+
 			// Shipping Method Rate
 			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
