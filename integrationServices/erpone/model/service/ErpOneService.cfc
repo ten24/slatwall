@@ -904,7 +904,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             'country_code',
             
             'ship_via_code', // fulfimment
-            'ord_class',
+            'i_tot_codes_amt',
             
             'ord_date',
             'opn',
@@ -957,7 +957,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             'country_code',
             
             'ship_via_code', // fulfimment
-            'ord_class',
+            'i_tot_codes_amt',
             
             'ord_date',
             'opn',
@@ -1032,7 +1032,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         formattedOrderData['orderTypeCode']      = "otSalesOrder";
         formattedOrderData['orderStatusCode']    = 'ostNew'; // The order-status get's updated at the end of the `processOrderImport()`
 		formattedOrderData['erpOrderStatusCode'] = arguments.erponeOrder['stat']; // carying forward this data to processOrderImport
-    
+        
+        
+        formattedOrderData['fulfillmentCharge']       = arguments.erponeOrder['i_tot_codes_amt'];
+        
+        
 		// Set billing and shipping addresses
 	    var address = {
 			'streetAddress'     : arguments.erponeOrder['adr'][1],
@@ -1094,15 +1098,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             "fulfillmentMethod"        : {
             	"fulfillmentMethodID"  : fulfillmentMethodID 
             },
+            "fulfillmentCharge"           : arguments.data.fulfillmentCharge, 
+            "manualFulfillmentChargeFlag" : true,
             "shippingMethod" : {
                 'shippingMethodID' : shippingMethodID
             }
 	    };
-    	
-    	// TODO:
-        // "handlingFee" ?? // not known 
-        // statusCode    ?? // not known
-    	
+
 		fulfillment['shippingAddress'] = this.getHibachiUtilityService().getSubStructByKeyPrefix(arguments.data, 'shippingAddress_');
 		
 	    return [ fulfillment ];
@@ -1532,6 +1534,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	        return; // if it's not a complete order
 	    }
 	    
+	    if( isNull(arguments.erponeOrderPayment['opn']) || arguments.erponeOrderPayment['opn'] ){
+            return; // if the invoice is still open we're not importing it, we can only say that it was a succeccful payment when the imvoice is closed 
+        }
+	    
 	    var remoteID = this.getSlatwallOrderPaymentRemoteIDByErpOneOrder(arguments.erponeOrderPayment['order'], arguments.erponeOrderPayment['rec_seq'] );
 	    
 	    // try to find the previous one in case, the order is getting re-imported
@@ -1542,7 +1548,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    );
 	    
 	    var orderPayment = { 
-    	    'amount'                : arguments.erponeOrderPayment['i_tot_gross'],
+    	    'amount'                : arguments.erponeOrderPayment['c_tot_net_ar'],
 	        'rec_seq'               : arguments.erponeOrderPayment['rec_seq'], // needed for transaction generator function
             'currencyCode'			: arguments.erponeOrderPayment['currency_code'] ?: 'USD',
 	        'remoteOrderID'         : arguments.erponeOrderPayment['order'],
@@ -1621,6 +1627,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             
             'i_tot_gross',
             'i_tot_net_ar',
+            'c_tot_net_ar',
             
             // 'invc_date',
             // 'invc_seq',
@@ -1692,6 +1699,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             
             'i_tot_gross',
             'i_tot_net_ar',
+            'c_tot_net_ar',
             
             // 'invc_date',
             // 'invc_seq',
@@ -1730,28 +1738,25 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    var transactionData = { 
             'amount'                : arguments.data.amount,
     	    "remoteID"				: remoteID,
-	        "paymentTransactionID"  : paymentTransactionID ?: ''
+            'amountReceived'        : arguments.data.amount,
+            'transactionType'       : "ERP-one Transaction",
+            'amountAuthorized'      : arguments.data.amount,
+	        "paymentTransactionID"  : paymentTransactionID ?: '',
+            'transactionSuccessFlag' : true
 	    };
-        
-        if(structKeyExists(arguments.data, 'providerTransactionID')){
-            transactionData['providerTransactionID'] = arguments.data.providerTransactionID;
-        }
-        if(structKeyExists(arguments.data, 'authorizationCode')){
-            transactionData['authorizationCode'] = arguments.data.authorizationCode;
-        }
-        
+	   
         return [ transactionData ];
 	}
 
 
 
 
-    public any function erpOneOrderShipmentFormatterFunction(required struct erponeOrderPayment){
+    public any function erpOneOrderShipmentFormatterFunction(required struct erponeOrderShipment){
 	    
-	    if(isNull(arguments.erponeOrderPayment['order'])){
+	    if(isNull(arguments.erponeOrderShipment['order'])){
             return; // erp returns a lot of empty objects, need to filter those out
         }
-	    if(left(arguments.erponeOrderPayment['order'], 1) == '-'){
+	    if(left(arguments.erponeOrderShipment['order'], 1) == '-'){
 	        return; // if it's not a complete order
 	    }
 	    
