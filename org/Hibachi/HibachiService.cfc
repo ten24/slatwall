@@ -1039,7 +1039,9 @@
 			var allEntitiesMetadata = this.getEntitiesMetaData();
 			
 			if( this.getEntitiesMetaData().keyExists(arguments.entityName) ){
-				variables.properlyCasedShortEntityName[arguments.entityName] = arguments.entityName;
+			    var properlyCasedEntityNames = this.getEntitiesMetaData().keyArray();
+			    var idx = properlyCasedEntityNames.findNoCase(arguments.entityName);
+				variables.properlyCasedShortEntityName[arguments.entityName] = properlyCasedEntityNames[idx];
 				return variables.properlyCasedShortEntityName[arguments.entityName];
 			}
 			
