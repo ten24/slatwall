@@ -912,8 +912,9 @@ component extends="framework.one" {
 							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
 						}
 						
-                        // clear Entity-metadata cache						
-						getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class',true);
+                        // Flag to clear Entity-metadata cache	
+						variables.clearEntityMetadataCache = true;
+
 
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
@@ -955,7 +956,10 @@ component extends="framework.one" {
 					//==================== START: JSON BUILD SETUP ========================
 
 					if(!variables.framework.hibachi.skipCreateJsonOnServerStartup){
-						getBeanFactory().getBean('HibachiJsonService').createJson();
+                        if(!isNull(variables.clearEntityMetadataCache)){
+                			this.getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class', true);
+                		} 						
+                		getBeanFactory().getBean('HibachiJsonService').createJson();
 					}
 
 					//===================== END: JSON BUILD SETUP =========================
@@ -1199,6 +1203,10 @@ component extends="framework.one" {
 			}
 			
 			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
+		}
+		
+		if(!isNull(variables.clearEntityMetadataCache)){
+			this.getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class', true);
 		}
 		
 	}
