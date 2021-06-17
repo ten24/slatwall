@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import useFormatCurrency from '../../hooks/useFormatCurrency'
+import { useFormatCurrency } from '../../hooks/'
 
 const OrderSummary = () => {
   const cart = useSelector(state => state.cart)

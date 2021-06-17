@@ -5,9 +5,8 @@ import { useTranslation } from 'react-i18next'
 import Slider from 'react-slick'
 import { ProductCard } from '..'
 
-const RelatedProductsSlider = ({ productID }) => {
+const RelatedProductsSlider = ({ productID, slidesToShow = 4 }) => {
   const { t } = useTranslation()
-  const slidesToShow = 4
   const [relatedProducts, setRelatedProducts] = useState({ products: [], isLoaded: false, err: '', productID })
   if (relatedProducts.productID !== productID) {
     setRelatedProducts({ products: [], isLoaded: false, err: '', productID })

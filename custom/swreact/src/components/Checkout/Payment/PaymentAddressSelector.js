@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/contentActions'
+import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/'
 import { useFormik } from 'formik'
 import { SwRadioSelect, SwSelect } from '../..'
 import { useTranslation } from 'react-i18next'
@@ -165,7 +165,7 @@ const PaymentAddressSelector = ({ onSelect, onSave, selectedAccountID, addressTi
 
   return (
     <>
-      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t('addressTitle')}</h2>
+      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t(addressTitle)}</h2>
       {accountAddresses && (
         <div className="row">
           <div className="col-sm-12">

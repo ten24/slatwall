@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { SWImage } from '..'
-import { useResizedImageByProfileName } from '../../hooks/useAPI'
+import { useResizedImageByProfileName } from '../../hooks/'
 import { useSelector } from 'react-redux'
 import { getImageFallbackFlag } from '../../selectors'
 import ContentLoader from 'react-content-loader'
@@ -42,4 +42,4 @@ const ProductImage = ({ skuID, imageFile, defaultSku_imageFile, customPath, forc
   )
 }
 
-export default ProductImage
+export { ProductImage }

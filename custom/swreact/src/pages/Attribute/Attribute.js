@@ -1,5 +1,4 @@
-import { Layout } from '../../components'
-import ListingPage from '../../components/Listing/Listing'
+import { Layout, Listing } from '../../components'
 
 const Attribute = props => {
   const path = props.location.pathname.split('/').reverse()
@@ -8,7 +7,7 @@ const Attribute = props => {
   }
   return (
     <Layout>
-      <ListingPage preFilter={filter} hide={'attributeOptions'} />
+      <Listing preFilter={filter} hide={'attributeOptions'} />
     </Layout>
   )
 }

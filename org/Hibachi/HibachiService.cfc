@@ -973,30 +973,51 @@
 		}
 		
 		
+		
+		
+		
+		
+		
+		////////////                                                                         //////////////////////////// 
+		////////////                         META DATA functions haviely CACHED              //////////////////////////// 
+		////////////                                                                         //////////////////////////// 
+		
+		
+		
+		
+		
+		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public boolean function getEntityNameIsValidFlag( required string entityName ) {
 			
 			// Use the short version of the entityName
-			if(len(getProperlyCasedShortEntityName(arguments.entityName, true))){
-				return true;
-			}
+			arguments.entityName = this.getProperlyCasedShortEntityName(arguments.entityName, true);
 			
-			return false;
+			return  arguments.entityName.len();
 		}
 		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public any function getServiceByEntityName( required string entityName ) {
 			// Use the short version of the entityName
-			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
+			arguments.entityName = this.getProperlyCasedShortEntityName(arguments.entityName);
 			
-			if(structKeyExists(getEntitiesMetaData(), arguments.entityName) && structKeyExists(getEntitiesMetaData()[arguments.entityName], "hb_serviceName")) {
-				if(hasService(getEntitiesMetaData()[ arguments.entityName ].hb_serviceName)){
-					return getService( getEntitiesMetaData()[ arguments.entityName ].hb_serviceName );
+			if( isNull(arguments.entityName) ){
+			    return;
+			}
+			
+			var thisEntityMetadata = this.getEntityMetaData( arguments.entityName );
+			
+			if( thisEntityMetadata.keyExists('hb_serviceName') ){
+			    var serviceName = thisEntityMetadata['hb_serviceName'];
+			    
+			    // check the beanfactory if there's a service-bean registered by this name
+				if( this.hasService(serviceName) ){
+					return this.getService( serviceName );
 				}
 			}
 			
 			// By default just return the base hibachi service
-			return getService("hibachiService");
+			return this.getService("hibachiService");
 		}
 		
 		// ======================= START: Entity Name Helper Methods ==============================
@@ -1006,18 +1027,25 @@
 			if(structKeyExists(variables.properlyCasedShortEntityName, arguments.entityName)){
 				return variables.properlyCasedShortEntityName[arguments.entityName];
 			}
-			if(left(arguments.entityName, len(getApplicationValue('applicationKey'))) == getApplicationValue('applicationKey')) {
-				arguments.entityName = right(arguments.entityName, len(arguments.entityName)-len(getApplicationValue('applicationKey')));
+			
+			var applicationKey = this.getApplicationValue('applicationKey');
+			var applicationKeyLen = len(applicationKey);
+			
+			// if it begins with applicationKey, strip that that
+			if( left(arguments.entityName, applicationKeyLen) == applicationKey ){
+				arguments.entityName = right( arguments.entityName, len(arguments.entityName)-applicationKeyLen );
 			}
 			
-			if( structKeyExists(getEntitiesMetaData(), arguments.entityName) ) {
-				var keyList = structKeyList(getEntitiesMetaData());
-				var keyIndex = listFindNoCase(keyList, arguments.entityName);
-				variables.properlyCasedShortEntityName[arguments.entityName] = listGetAt(keyList, keyIndex)
+			var allEntitiesMetadata = this.getEntitiesMetaData();
+			
+			if( this.getEntitiesMetaData().keyExists(arguments.entityName) ){
+			    var properlyCasedEntityNames = this.getEntitiesMetaData().keyArray();
+			    var idx = properlyCasedEntityNames.findNoCase(arguments.entityName);
+				variables.properlyCasedShortEntityName[arguments.entityName] = properlyCasedEntityNames[idx];
 				return variables.properlyCasedShortEntityName[arguments.entityName];
 			}
 			
-			if(arguments.returnBlankIfNotFound) {
+			if(arguments.returnBlankIfNotFound){
 				return "";
 			}
 			
@@ -1025,16 +1053,18 @@
 		}
 		
 		public string function getProperlyCasedFullEntityName( required string entityName ) {
-			return "#getApplicationValue('applicationKey')##getProperlyCasedShortEntityName( arguments.entityName )#";
+			return this.getApplicationValue('applicationKey')&this.getProperlyCasedShortEntityName( arguments.entityName );
 		}
 		
 		public string function getProperlyCasedFullClassNameByEntityName( required string entityName ) {
-			return "#getApplicationValue('applicationKey')#.model.entity.#getProperlyCasedShortEntityName( arguments.entityName )#";
+			return this.getApplicationValue('applicationKey')&".model.entity."&this.getProperlyCasedShortEntityName( arguments.entityName );
 		}
 
 		public string function getProperlyCasedPropertyIdentifier( required string baseEntityName, required string propertyIdentifier ) {
-			var currentPropertiesStruct = getPropertiesStructByEntityName(arguments.baseEntityName);
-			var currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
+			
+			var currentPropertiesStruct = this.getPropertiesStructByEntityName(arguments.baseEntityName);
+			var currentStructKeys = StructKeyArray(currentPropertiesStruct);
+			
 			var _propertyIdentifier = '';
 			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 
@@ -1043,15 +1073,16 @@
 					_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
 					continue;
 				}
+				// TODO investigate/optimize, the structs are case-insensitive ????
 				if(structKeyExists(currentPropertiesStruct, propertyIdentifierParts[i])){
 					propertyIdentifierParts[i] = currentStructKeys[arrayFindNoCase(currentStructKeys, propertyIdentifierParts[i])];
 					if(structKeyExists(currentPropertiesStruct[propertyIdentifierParts[i]], 'cfc')){
 						arguments.baseEntityName = currentPropertiesStruct[propertyIdentifierParts[i]]['cfc'];
-						currentPropertiesStruct = getService('hibachiService').getPropertiesStructByEntityName(arguments.baseEntityName);
-						currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
+						currentPropertiesStruct = this.getPropertiesStructByEntityName(arguments.baseEntityName);
+						currentStructKeys = StructKeyArray(currentPropertiesStruct);
 					}
 				}else{
-					logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#");
+					this.logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#");
 				}
 				_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
 			}
@@ -1063,86 +1094,105 @@
 		// ===================== START: Cached Entity Meta Data Methods ===========================
 		
 		public any function getEntitiesMetaData() {
-			if(!structKeyExists(variables, 'entitiesMetaData') || !structCount(variables.entitiesMetaData)) {
-				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		    var cacheKey = "class_EntitiesMetaData_ALL"; // prefixed with class, as it has been used at a lot of other places, and we clear the cache by prefix
+			
+			if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ){
+			    
+			    var applicationKey = this.getApplicationKey();
+			    
+			    // this function is not bean factory safe;
+			    
+			    writeLog( file=applicationKey, text="HibachiService::getEntitiesMetaData is not cached, cacheKey: #cacheKey#, ... CACHING ");
+			    
+			    var ormEntitiesMetaData = ORMGetSessionFactory().getAllClassMetadata();
+			    var entityNamesArr = structKeyArray( ormEntitiesMetaData );
 				var allMD = {};
+			
 				for(var entityName in entityNamesArr) {
-					var entity = entityNew(entityName);
-					if(structKeyExists(entity, "getThisMetaData")) {
-						var entityMetaData = entityNew(entityName).getThisMetaData();
-						if(isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname")) {
+				
+					var entityObject = entityNew(entityName); // cant use this.getEntityObject(...) here as it becomes recursive
+					
+					if( structKeyExists(entityObject, "getThisMetaData") ){
+						var entityMetaData = entityObject.getThisMetaData();
+						if( isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname") ){
 							var entityShortName = listLast(entityMetaData.fullname, '.');
 							allMD[ entityShortName ] = entityMetaData;
 						}
 					}
+					
 				}
-				variables.entitiesMetaData = allMD;
+				
+				this.getHibachiCacheService().setCachedValue(cacheKey, allMD );
+				
+			    writeLog( file=applicationKey, text="HibachiService::getEntitiesMetaData FINISHED caching ");
 			}
-			
-			return variables.entitiesMetaData;
+	
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		public any function getEntityMetaData( required string entityName ) {
-			return getEntitiesMetaData()[ getProperlyCasedShortEntityName( arguments.entityName ) ];
+			return this.getEntitiesMetaData()[ this.getProperlyCasedShortEntityName( arguments.entityName ) ];
 		}
 		
 		// @hint returns the entity meta data object that is used by a lot of the helper methods below
 		public any function getEntityORMMetaDataObject( required string entityName ) {
-			arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
-			if(!structKeyExists(variables.entityORMMetaDataObjects, arguments.entityName)) {
-				variables.entityORMMetaDataObjects[ arguments.entityName ] = ormGetSessionFactory().getClassMetadata( arguments.entityName );
+			var cacheKey = "class_EntityORMMetaDataCache_"&arguments.entityName;
+			
+			if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+			    arguments.entityName = this.getProperlyCasedFullEntityName( arguments.entityName );
+				this.getHibachiCacheService().setCachedValue(cacheKey, ormGetSessionFactory().getClassMetadata( arguments.entityName ));
 			}
 			
-			return variables.entityORMMetaDataObjects[ arguments.entityName ];
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		// @hint returns the metaData struct for an entity
-		public any function getEntityObject( required string entityName ) {
+		public any function getEntityObject( required string entityName ){
 			
-			arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
+			var cacheKey = "class_EntityObjectCache_#arguments.entityName#";
 			
-			if(!structKeyExists(variables.entityObjects, arguments.entityName)) {
-				variables.entityObjects[ arguments.entityName ] = entityNew(arguments.entityName);
+			if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ){
+			    arguments.entityName = this.getProperlyCasedFullEntityName( arguments.entityName );
+				this.getHibachiCacheService().setCachedValue(cacheKey, entityNew(arguments.entityName));
 			}
-			
-			return variables.entityObjects[ arguments.entityName ];
+	
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		// @hint returns the properties of a given entity
-		public any function getPropertiesByEntityName( required string entityName ) {
-			
-			// First Check the application cache
-			if( hasApplicationValue("classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-				return getApplicationValue("classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
-			}
-			
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
-			return getEntityObject( arguments.entityName ).getProperties();
+		public any function getPropertiesByEntityName( required string entityName ){
+		    // this Hibachi transient caches this into HibachiCacheService
+			return this.getEntityObject( arguments.entityName ).getProperties();
 		}
 		
-		// @hint returns the properties of a given entity
-		public any function getPropertiesStructByEntityName( required string entityName ) {
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
-			return getEntityObject( arguments.entityName ).getPropertiesStruct(); 
+		// @hint returns the propertieStruct of a given entity
+		public any function getPropertiesStructByEntityName( required string entityName ){
+		    // this Hibachi transient caches this into HibachiCacheService
+		    return this.getEntityObject( arguments.entityName ).getPropertiesStruct();
 		}
 		
 		public any function getToManyPropertiesByEntityName(required string entityName){
-			var cacheKey = 'toManyPropertiesBy#arguments.entityName#';
-			if(!structKeyExists(variables,cacheKey)){
-				var toManyProperties = [];
-				var properties = getComponentMetaData(getBeanFactory().getBeanInfo( arguments.entityName ).cfc).properties;
-				var propertyCount = arrayLen(properties);
-				// Loop over all properties
-				for(var i=1; i<=propertyCount; i++) {
-					// Set any one-to-many or many-to-many properties with a blank array as the default value
-					if(structKeyExists(properties[i], "fieldtype") && listFindNoCase("many-to-many,one-to-many", properties[i].fieldtype) && !structKeyExists(variables, properties[i].name) ) {
-						arrayAppend(toManyProperties,properties[i].name);
+		    var cacheKey = "class_EntityToManyPropertiesNamesCache_#arguments.entityName#";
+		    
+		    if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ){
+		        
+		        // this's is not safe to use HibachiService's cached metadata-function, 
+		        // as on HibachiEntity.init() we call `getToManyPropertiesByEntityName`, 
+		        // now if the Hibachi caches were empty for whatever reason, these functions will try to obtain an object on the same entity to cache it's metadata first
+		        // hence we can never use an EntityObject or Hibachi's cached-metadata funcfions in here
+			    var allProperties  = GetComponentMetaData( this.getBeanFactory().getBeanInfo( arguments.entityName ).cfc ).properties;;
+				
+				var toManyPropertiesNames = [];
+			    for(var thisProperty in allProperties ){
+			        if( thisProperty.keyExists("fieldtype") && listFindNoCase("many-to-many,one-to-many", thisProperty.fieldtype) && !structKeyExists(variables, thisProperty.name) ){
+						toManyPropertiesNames.append(thisProperty.name);
 					}
-				}
-				variables[cacheKey] = toManyProperties;
+			    }
+			    
+				this.getHibachiCacheService().setCachedValue(cacheKey, toManyPropertiesNames );
 			}
-			return variables[cacheKey];
 			
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		public any function getPropertyIsPersistentByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
@@ -1529,12 +1579,12 @@
 		
 		//used by the rest api to return default property values
 		public any function getDefaultPropertiesByEntityName(required string entityName){
-			// First Check the application cache
-			if( hasApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-				return getApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+			var cacheKey = "classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#";
+			// First Check the hibachi cache
+			if( this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+				return this.getHibachiCacheService().getCachedValue(cacheKey);
 			}
-			
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+			// Pull the meta data from the object (which in turn will cache it in the hibachi cache for the next time)
 			return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
 		}
 		

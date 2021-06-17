@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/contentActions'
+import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/'
 import { useFormik } from 'formik'
 import { SwRadioSelect, SwSelect } from '../..'
 import { useTranslation } from 'react-i18next'
+import { clearOrderFulfillment } from '../../../actions'
 let initialValues = {
   name: '',
   company: '',
@@ -158,8 +159,8 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
   const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const fulfillments = useSelector(state => state.cart.orderFulfillments)
   const [showAddress, setShowAddress] = useState(false)
-  const [hasRemovedShippingAddress, setRemovedShippingAddress] = useState(false)
   const { t } = useTranslation()
+  const dispatch = useDispatch()
 
   if (showAddress || accountAddresses.length === 0) {
     selectedAccountID = 'new'
@@ -169,9 +170,9 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
     <>
       <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t(addressTitle)}</h2>
 
-      {!hasRemovedShippingAddress && hasShippingAddress && (
+      {hasShippingAddress && (
         <div className="row ">
-          {fulfillments.map(({ shippingAddress }) => {
+          {fulfillments.map(({ shippingAddress, orderFulfillmentID }) => {
             return (
               <div className="bg-lightgray rounded mb-5 col-md-4" key={shippingAddress?.addressID}>
                 <p>
@@ -187,8 +188,7 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
                   disabled={false}
                   onClick={event => {
                     event.preventDefault()
-                    setRemovedShippingAddress(true)
-                    //   dispatch(removePayment({ orderPaymentID: payment.orderPaymentID }))
+                    dispatch(clearOrderFulfillment(orderFulfillmentID))
                   }}
                 >
                   <i className="fal fa-times-circle"></i>
@@ -199,7 +199,7 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
           })}
         </div>
       )}
-      {(hasRemovedShippingAddress || !hasShippingAddress) && accountAddresses && (
+      {!hasShippingAddress && accountAddresses && (
         <div className="row">
           <div className="col-sm-12">
             <SwRadioSelect
@@ -208,7 +208,6 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
               })}
               onChange={value => {
                 setShowAddress(false)
-                setRemovedShippingAddress(false)
                 onSelect(value)
               }}
               customLabel={t('frontend.checkout.receive_option')}
@@ -227,7 +226,6 @@ const FulfilmentAddressSelector = ({ onSelect, onSave, selectedAccountID, addres
           setShowAddress={showAddress}
           onSave={values => {
             setShowAddress(false)
-            setRemovedShippingAddress(false)
             onSave(values)
           }}
         />

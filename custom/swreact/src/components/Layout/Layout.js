@@ -6,10 +6,12 @@ const Layout = ({ classNameList, children }) => {
   return (
     <>
       <ToastContainer />
-      <div style={{ minHeight: '800px' }} className={classNameList}>{children}</div>
+      <div style={{ minHeight: '800px' }} className={classNameList}>
+        {children}
+      </div>
       <Footer />
     </>
   )
 }
 
-export default Layout
+export { Layout }

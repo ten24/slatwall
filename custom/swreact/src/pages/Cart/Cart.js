@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { getCart } from '../../actions/cartActions'
 import { useEffect } from 'react'
-import PageHeader from '../../components/PageHeader/PageHeader'
+import { PageHeader } from '../../components'
 import { AuthenticationStepUp } from '../../components/AuthenticationStepUp/AuthenticationStepUp'
 import { disableInteractionSelector } from '../../selectors'
 

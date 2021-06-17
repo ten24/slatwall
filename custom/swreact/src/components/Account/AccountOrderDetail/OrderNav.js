@@ -11,4 +11,4 @@ const OrderNav = () => {
   )
 }
 
-export default OrderNav
+export { OrderNav }

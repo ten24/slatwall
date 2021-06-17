@@ -4,10 +4,9 @@ import { SWImage } from '..'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useGetEntity } from '../../hooks/useAPI'
+import { useGetEntity } from '../../hooks/'
 import { useEffect } from 'react'
-import { getShopBy } from '../../selectors/contentSelectors'
-import { getBrandRoute } from '../../selectors/configurationSelectors'
+import { getBrandRoute, getShopBy } from '../../selectors/'
 
 const BandSlide = ({ brandLogo, urlTitle = '', title, customPath = '/custom/assets/files/associatedimage/' }) => {
   const brand = useSelector(getBrandRoute)

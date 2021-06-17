@@ -24,4 +24,4 @@ const OrderToolbar = ({ delivered }) => {
   )
 }
 
-export default OrderToolbar
+export { OrderToolbar }
