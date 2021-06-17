@@ -318,7 +318,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.processObject.setNewContent(arguments.content.duplicate(onlyPersistent=true));
 		var data = {};
 		data['title']=arguments.processObject.getTitle();
-		data['urlTitle']=arguments.processObject.getUrlTitle();
+		
+		// check if url title exists or not 
+		if(IsNull(arguments.processObject.getUrlTitle())){
+			data['urlTitle'] = "#data['title']#-cloned"
+		}else{
+			data['urlTitle']=arguments.processObject.getUrlTitle();
+		}
+
 		this.saveContent(arguments.processObject.getNewContent(),data);
 		//get all settings that exist on the object
 		var settingCollectionList = this.getSettingCollectionList();

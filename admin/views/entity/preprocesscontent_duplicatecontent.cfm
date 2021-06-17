@@ -65,7 +65,7 @@ Notes:
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="title" edit="#rc.edit#" value="#rc.content.getTitle()#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="urlTitle" edit="#rc.edit#" value="#rc.content.getUrlTitle()#-cloned" requiredFlag="true">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="urlTitle" edit="#rc.edit#" value="#rc.content.getUrlTitle()#-cloned">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	
