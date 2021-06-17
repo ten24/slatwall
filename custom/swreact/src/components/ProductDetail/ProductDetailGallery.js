@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Slider from 'react-slick'
 import { SWImage } from '..'
-import { useGetProductImageGallery } from '../../hooks/useAPI'
+import { useGetProductImageGallery } from '../../hooks/'
 
 /*
 

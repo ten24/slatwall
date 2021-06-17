@@ -1,4 +1,4 @@
-import ProductCard from '../ProductCard/ProductCard'
+import { ProductCard } from '../'
 import ContentLoader from 'react-content-loader'
 
 import { useTranslation } from 'react-i18next'
@@ -49,4 +49,4 @@ const ListingGrid = ({ isFetching, pageRecords }) => {
     </div>
   )
 }
-export default ListingGrid
+export { ListingGrid }

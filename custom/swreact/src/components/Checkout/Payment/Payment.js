@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { SlideNavigation, SwRadioSelect, Overlay, PaymentList, CreditCardPayment, TermPayment, GiftCardPayment } from '../..'
-import { eligiblePaymentMethodDetailSelector, orderPayment, getAllOrderPayments } from '../../../selectors/orderSelectors'
+import { eligiblePaymentMethodDetailSelector, orderPayment, getAllOrderPayments } from '../../../selectors/'
 import { useTranslation } from 'react-i18next'
 
 export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'

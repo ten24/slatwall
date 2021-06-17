@@ -1,25 +1,12 @@
 import React, { useEffect } from 'react'
-import { Layout } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route, useRouteMatch, useLocation, Redirect } from 'react-router-dom'
 import { getUser } from '../../actions/userActions'
-import CreateAccount from '../../components/Account/CreateAccount/CreateAccount'
-import ForgotPassword from '../../components/Account/ForgotPassword/ForgotPassword'
+
 import { isAuthenticated } from '../../utils'
 import queryString from 'query-string'
-import AccountCarts from '../../components/Account/AccountCarts/AccountCarts'
+import { Layout, CreateAccount, ForgotPassword, AccountCarts, AccountLogin, AccountOverview, AccountProfile, AccountFavorites, AccountAddresses, CreateOrEditAccountAddress, AccountOrderDetail, AccountPaymentMethods, AccountOrderHistory, CreateOrEditAccountPaymentMethod } from '../../components'
 
-// I think we should be prelaoding these https://medium.com/maxime-heckel/react-lazy-a-take-on-preloading-views-cc90be869f14
-const AccountLogin = React.lazy(() => import('../../components/Account/AccountLogin/AccountLogin'))
-const AccountOverview = React.lazy(() => import('../../components/Account/AccountOverview/AccountOverview'))
-const AccountProfile = React.lazy(() => import('../../components/Account/AccountProfile/AccountProfile'))
-const AccountFavorites = React.lazy(() => import('../../components/Account/AccountFavorites/AccountFavorites'))
-const AccountAddresses = React.lazy(() => import('../../components/Account/AccountAddresses/AccountAddresses'))
-const CreateOrEditAccountAddress = React.lazy(() => import('../../components/Account/AccountAddresses/CreateOrEditAccountAddress'))
-const AccountOrderDetail = React.lazy(() => import('../../components/Account/AccountOrderDetail/AccountOrderDetail'))
-const AccountPaymentMethods = React.lazy(() => import('../../components/Account/AccountPaymentMethods/AccountPaymentMethods'))
-const AccountOrderHistory = React.lazy(() => import('../../components/Account/AccountOrderHistory/AccountOrderHistory'))
-const CreateOrEditAccountPaymentMethod = React.lazy(() => import('../../components/Account/AccountPaymentMethods/CreateOrEditAccountPaymentMethod'))
 // eslint-disable-next-line no-unused-vars
 const pageComponents = {
   AccountLogin,

@@ -143,4 +143,4 @@ const ListingPagination = ({ recordsCount, pageNeighbours = 2, currentPage, tota
   )
 }
 
-export default ListingPagination
+export { ListingPagination }

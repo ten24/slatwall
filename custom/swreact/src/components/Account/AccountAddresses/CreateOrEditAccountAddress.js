@@ -1,22 +1,23 @@
-import { connect, useDispatch, useSelector } from 'react-redux'
-import SwSelect from '../../SwSelect/SwSelect'
+import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import useRedirect from '../../../hooks/useRedirect'
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
-import { addNewAccountAddress, updateAccountAddress } from '../../../actions/userActions'
+import { useRedirect } from '../../../hooks/'
+import { AccountContent, AccountLayout, SwSelect } from '../../'
+import { addNewAccountAddress, updateAccountAddress } from '../../../actions/'
 // TODO: Make this component reusable
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
-import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/contentActions'
+import { getCountries, getStateCodeOptionsByCountryCode } from '../../../actions/'
 
-const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectLocation = '/my-account/addresses', customBody, contentTitle, action = 'Account Address' }) => {
+const CreateOrEditAccountAddress = ({ path, heading, redirectLocation = '/my-account/addresses', customBody, contentTitle, action = 'Account Address' }) => {
   const [redirect, setRedirect] = useRedirect({ location: redirectLocation })
   const dispatch = useDispatch()
+  const accountAddresses = useSelector(state => state.userReducer.accountAddresses)
   const countryCodeOptions = useSelector(state => state.content.countryCodeOptions)
   const stateCodeOptions = useSelector(state => state.content.stateCodeOptions)
   const isFetching = useSelector(state => state.content.isFetching)
-
+  const filteredAddress = accountAddresses.filter(address => address.address.addressID === path)
+  const isEdit = filteredAddress.length ? true : false
+  const accountAddress = filteredAddress.length ? filteredAddress[0] : null
   const { t } = useTranslation()
 
   const formik = useFormik({
@@ -59,9 +60,8 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
     <AccountLayout title={`Add ${action}`}>
       <AccountContent customBody={customBody} contentTitle={contentTitle} />
       <form onSubmit={formik.handleSubmit}>
-        <h2>{heading}</h2>        
+        <h2>{heading}</h2>
         <div className="row">
-        
           <div className="form-group col-md-6">
             <label htmlFor="accountAddressName">{t('frontend.account.nickname')}</label>
             <input className="form-control" type="text" id="accountAddressName" value={formik.values['accountAddressName']} onChange={formik.handleChange} />
@@ -121,12 +121,12 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
               />
             </div>
           )}
-  
+
           <div className="form-group col-md-3">
             <label htmlFor="postalCode">{t('frontend.account.postalCode')}</label>
             <input className="form-control" type="text" id="postalCode" value={formik.values['postalCode']} onChange={formik.handleChange} />
           </div>
-        
+
           <div className="col-12">
             <hr className="mt-2 mb-3" />
             <div className="d-flex flex-wrap justify-content-end">
@@ -141,15 +141,4 @@ const CreateOrEditAccountAddress = ({ isEdit, heading, accountAddress, redirectL
   )
 }
 
-const mapStateToProps = (state, ownProps) => {
-  let { accountAddresses } = state.userReducer
-
-  accountAddresses = accountAddresses.filter(({ address }) => {
-    return address.addressID === ownProps.path
-  })
-  return {
-    isEdit: accountAddresses.length ? true : false,
-    accountAddress: accountAddresses.length ? accountAddresses[0] : null,
-  }
-}
-export default connect(mapStateToProps)(CreateOrEditAccountAddress)
+export { CreateOrEditAccountAddress }

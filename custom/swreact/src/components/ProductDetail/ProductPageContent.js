@@ -1,8 +1,7 @@
-import { ProductDetailGallery, ProductPagePanels, SkuOptions } from '../../components'
 import { useState } from 'react'
-import { addToCart } from '../../actions/cartActions'
+import { addToCart } from '../../actions/'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, HeartButton, ProductPrice } from '..'
+import { ProductDetailGallery, ProductPagePanels, SkuOptions, Button, HeartButton, ProductPrice } from '..'
 import { useTranslation } from 'react-i18next'
 
 const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions = [], availableSkuOptions = '', isFetching = false }) => {

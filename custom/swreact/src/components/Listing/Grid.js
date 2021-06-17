@@ -1,4 +1,4 @@
-import ProductCard from '../ProductCard/ProductCard'
+import { ProductCard } from '../'
 import ContentLoader from 'react-content-loader'
 
 const ListingGridLoader = props => (
@@ -36,4 +36,4 @@ const Grid = ({ isFetching, products = [] }) => {
     </div>
   )
 }
-export default Grid
+export { Grid }

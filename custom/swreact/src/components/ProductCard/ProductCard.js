@@ -1,9 +1,8 @@
-import { HeartButton, ProductPrice } from '..'
+import { HeartButton, ProductPrice, ProductImage } from '..'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { getBrandRoute, getProductRoute } from '../../selectors'
-import ProductImage from '../ProductImage/ProductImage'
 
 const ProductCard = props => {
   const { productName, productCode, calculatedSalePrice, urlTitle, brand_brandName, brand_urlTitle, listPrice, imageFile, defaultSku_imageFile, productClearance, imagePath, skuID = '' } = props
@@ -35,4 +34,4 @@ const ProductCard = props => {
   )
 }
 
-export default ProductCard
+export { ProductCard }

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { changeOrderFulfillment } from '../../../actions/cartActions'
-import { SwRadioSelect } from '../../../components'
-import { fulfillmentMethodSelector } from '../../../selectors/orderSelectors'
+import { changeOrderFulfillment } from '../../../actions/'
+import { SwRadioSelect } from '../../'
+import { fulfillmentMethodSelector } from '../../../selectors/'
 import { useTranslation } from 'react-i18next'
 
 const FulfillmentPicker = () => {

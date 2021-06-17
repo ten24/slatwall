@@ -1,4 +1,4 @@
-import { SWImage } from '../../components'
+import { SWImage } from '..'
 const BrandBanner = ({ brandName = '', imageFile, brandDescription, subHeading }) => {
   return (
     <div className="row align-items-center">
@@ -17,4 +17,4 @@ const BrandBanner = ({ brandName = '', imageFile, brandDescription, subHeading }
   )
 }
 
-export default BrandBanner
+export { BrandBanner }

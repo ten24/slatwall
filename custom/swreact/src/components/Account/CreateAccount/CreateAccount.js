@@ -1,9 +1,8 @@
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { SlatwalApiService } from '../../../services'
-import { SWForm, SWInput } from '../../SWForm/SWForm'
-import { PromptLayout } from '../AccountLayout/AccountLayout'
-import useRedirect from '../../../hooks/useRedirect'
+import { PromptLayout, SWForm, SWInput } from '../../'
+import { useRedirect } from '../../../hooks/'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
@@ -74,4 +73,4 @@ const CreateAccount = () => {
   )
 }
 
-export default CreateAccount
+export { CreateAccount }

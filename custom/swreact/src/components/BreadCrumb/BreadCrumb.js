@@ -41,4 +41,4 @@ const BreadCrumb = ({ crumbs, includeHome = true, brand = [] }) => {
   )
 }
 
-export default BreadCrumb
+export { BreadCrumb }

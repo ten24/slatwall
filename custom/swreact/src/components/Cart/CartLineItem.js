@@ -1,11 +1,10 @@
-import { ProductPrice } from '../../components'
+import { ProductPrice, ProductImage } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { updateItemQuantity, removeItem } from '../../actions/cartActions'
-import useFormatCurrency from '../../hooks/useFormatCurrency'
-import { getProductRoute } from '../../selectors/configurationSelectors'
-import ProductImage from '../ProductImage/ProductImage'
+import { updateItemQuantity, removeItem } from '../../actions/'
+import { useFormatCurrency } from '../../hooks/'
+import { getProductRoute } from '../../selectors/'
 
 const CartLineItem = ({ orderItemID, isDisabled = false }) => {
   const { isFetching, orderItems } = useSelector(state => state.cart)
@@ -109,4 +108,4 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
     </div>
   )
 }
-export default CartLineItem
+export { CartLineItem }

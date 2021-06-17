@@ -39,4 +39,4 @@ const ListingToolBar = ({ hide, sorting, orderBy, setSort }) => {
   )
 }
 
-export default ListingToolBar
+export { ListingToolBar }
