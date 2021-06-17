@@ -318,7 +318,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.processObject.setNewContent(arguments.content.duplicate(onlyPersistent=true));
 		var data = {};
 		data['title']=arguments.processObject.getTitle();
-		data['urlTitle']=arguments.processObject.getUrlTitle();
+		
+		// check if url title exists or not 
+		var urlTitle = arguments.processObject.getUrlTitle() ?: arguments.content.getUrlTitle();
+		urlTitle = this.getHibachiUtilityService().createUniqueURLTitle(titleString=urlTitle, tableName="SwContent");
+		data["urlTitle"] = urlTitle;
+
+
 		this.saveContent(arguments.processObject.getNewContent(),data);
 		//get all settings that exist on the object
 		var settingCollectionList = this.getSettingCollectionList();
