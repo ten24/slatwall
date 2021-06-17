@@ -320,11 +320,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		data['title']=arguments.processObject.getTitle();
 		
 		// check if url title exists or not 
-		if(IsNull(arguments.processObject.getUrlTitle())){
-			data['urlTitle'] = "#data['title']#-cloned"
-		}else{
-			data['urlTitle']=arguments.processObject.getUrlTitle();
-		}
+		var urlTitle = arguments.processObject.getUrlTitle() ?: arguments.content.getUrlTitle();
+		urlTitle = this.getHibachiUtilityService().createUniqueURLTitle(titleString=urlTitle, tableName="SwContent");
+		data["urlTitle"] = urlTitle;
+
 
 		this.saveContent(arguments.processObject.getNewContent(),data);
 		//get all settings that exist on the object
