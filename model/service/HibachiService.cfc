@@ -127,30 +127,40 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	
 	public string function getAttributeCodeListByEntityName(required string entityName){
-		if( hasApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-			return getApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		arguments.entityName = getProperlyCasedFullClassNameByEntityName( arguments.entityName );
+		var cacheKey = "classAttributeCodeListByEntityNameCache_#arguments.entityName#";
+		//first check hibachi cache
+		if( this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		return getEntityObject( arguments.entityName ).getAttributesCodeList();
 	}
 	
 	public array function getAttributesArrayByEntityName(required string entityName){
-		if( hasApplicationValue("classAttributesArrayByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-			return getApplicationValue("classAttributesArrayByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		arguments.entityName = getProperlyCasedFullClassNameByEntityName( arguments.entityName );
+		var cacheKey = "classAttributesArrayByEntityNameCache_#arguments.entityName#";
+		
+		if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+			this.getHibachiCacheService().setCachedValue(cacheKey, getEntityObject( arguments.entityName ).getAttributesArray() );
 		}
 		
-		return getEntityObject( arguments.entityName ).getAttributesArray();
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 	}
 	
 	public any function getAttributesPropertiesByEntityName(required string entityName){
-		if( hasApplicationValue("classAttributesPropertiesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-			return getApplicationValue("classAttributesPropertiesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		arguments.entityName = getProperlyCasedFullClassNameByEntityName( arguments.entityName );
+		var cacheKey = "classAttributesPropertiesByEntityNameCache_#arguments.entityName#";
+		
+		if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+			this.getHibachiCacheService().setCachedValue(cacheKey, getEntityObject( arguments.entityName ).getAttributesProperties() );
 		}
 		
-		return getEntityObject( arguments.entityName ).getAttributesProperties();
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 	}
 	
 	public any function getPropertiesWithAttributesByEntityName(required string entityName, boolean includeNonPersistent = false){
+		
 		var entityObject = getEntityObject( arguments.entityName );
 		var properties = entityObject.getFilterProperties("","", includeNonPersistent);
 		
@@ -158,13 +168,14 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public any function getFilterPropertiesByEntityName(required string entityName){
+		var cacheKey = "classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#";
+		
 		// First Check the application cache
-		if( hasApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-			return getApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+			this.gethibachiCacheService().setCachedValue(cacheKey, getEntityObject( arguments.entityName ).getFilterProperties() );
 		}
 		
-		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
-		return getEntityObject( arguments.entityName ).getFilterProperties();
+		return this.getHibachiCacheService().getCachedValue(cacheKey);
 	}
 	
 	
