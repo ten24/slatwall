@@ -165,7 +165,7 @@ const PaymentAddressSelector = ({ onSelect, onSave, selectedAccountID, addressTi
 
   return (
     <>
-      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t('addressTitle')}</h2>
+      <h2 className="h6 pt-1 pb-3 mb-3 border-bottom">{t(addressTitle)}</h2>
       {accountAddresses && (
         <div className="row">
           <div className="col-sm-12">

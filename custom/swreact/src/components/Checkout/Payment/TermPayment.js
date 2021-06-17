@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PaymentAddressSelector, Button } from '../../'
 import { addNewAccountAndSetAsBilling, addPayment } from '../../../actions/'
-import { orderPayment, billingAccountAddressSelector } from '../../../selectors/'
+import { orderPayment, billingAccountAddressSelector, fulfillmentSelector } from '../../../selectors'
 import { useTranslation } from 'react-i18next'
 
 const TermPayment = ({ method }) => {
@@ -13,7 +13,7 @@ const TermPayment = ({ method }) => {
   const [termOrderNumber, setTermOrderNumber] = useState(purchaseOrderNumber)
   const selectedAccountID = useSelector(billingAccountAddressSelector)
   const { t } = useTranslation()
-
+  const { fulfillmentMethod } = useSelector(fulfillmentSelector)
   return (
     <>
       <div className="row mb-3">
@@ -32,30 +32,35 @@ const TermPayment = ({ method }) => {
             />
           </div>
         </div>
-        <div className="col-sm-12">
-          <div className="form-group">
-            <div className="custom-control custom-checkbox">
-              <input
-                className="custom-control-input"
-                type="checkbox"
-                id="saveShippingAsBilling"
-                checked={saveShippingAsBilling}
-                onChange={e => {
-                  setSaveShippingAsBilling(!saveShippingAsBilling)
-                }}
-              />
-              <label className="custom-control-label" htmlFor="saveShippingAsBilling">
-                Same as shipping address
-              </label>
+        {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
+          <div className="col-sm-12">
+            <div className="form-group">
+              <div className="custom-control custom-checkbox">
+                <input
+                  className="custom-control-input"
+                  type="checkbox"
+                  id="saveShippingAsBilling"
+                  checked={saveShippingAsBilling}
+                  onChange={e => {
+                    setSaveShippingAsBilling(!saveShippingAsBilling)
+                  }}
+                />
+                <label className="custom-control-label" htmlFor="saveShippingAsBilling">
+                  Same as shipping address
+                </label>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       {saveShippingAsBilling && termOrderNumber && termOrderNumber.length > 0 && (
         <Button
           label="Submit"
           onClick={e => {
             e.preventDefault()
+            console.log('saveShippingAsBilling', saveShippingAsBilling)
+            //TODO: BROKEN
+
             dispatch(
               addPayment({
                 newOrderPayment: {
